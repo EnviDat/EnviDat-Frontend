@@ -1,0 +1,30 @@
+{
+  "type": "wms",
+  "baseURL": "http://wms.geo.admin.ch/?",
+  "bbox": {
+    "minx": 0.659965,
+    "miny": 45.4183,
+    "maxx": 10.8344,
+    "maxy": 48.7495
+  },
+  "layers": [
+    {
+      "name": "ch.babs.kulturgueter",
+      "title": "KGS Inventar",
+      "abstract":"Als Kulturgüter von nationaler Bedeutung im Inventar von 2009 gelten rund 3200 Objekte (Einzelbauten / Sammlungen in Museeen, Archiven und Bibliotheken sowie Archäologie).",
+      "visibility": true
+    },
+    {
+      "name": "ch.bafu.bundesinventare-trockenwiesen_trockenweiden_anhang2",
+      "title": "TWW Anhang 2",
+      "abstract":"Als Kulturgüter von nationaler Bedeutung im Inventar von 2009 gelten rund 3200 Objekte (Einzelbauten / Sammlungen in Museeen, Archiven und Bibliotheken sowie Archäologie).",
+      "visibility": false
+    },
+    {
+      "name": "ch.swisstopo.geologie-eiszeit-lgm",
+      "title": "Letzteiszeitl. Max. (Vektor) 500",
+      "abstract":"Als Kulturgüter von nationaler Bedeutung im Inventar von 2009 gelten rund 3200 Objekte (Einzelbauten / Sammlungen in Museeen, Archiven und Bibliotheken sowie Archäologie).",
+      "visibility": false
+    }
+  ]
+}
