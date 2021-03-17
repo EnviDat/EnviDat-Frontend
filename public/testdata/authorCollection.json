@@ -1,0 +1,3192 @@
+{
+  "WSL": {
+    "firstName": "WSL",
+    "fullName": "WSL",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Institute for Forest, Snow and Landscape Research WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "nathaz-db@wsl.ch",
+    "dataCredit": null
+  },
+  "Matthias Haeni": {
+    "firstName": "Matthias",
+    "lastName": "Haeni",
+    "fullName": "Matthias Haeni",
+    "datasetCount": 17,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "matthias.haeni@wsl.ch",
+    "dataCredit": null
+  },
+  "Arthur Gessler": {
+    "firstName": "Arthur",
+    "lastName": "Gessler",
+    "fullName": "Arthur Gessler",
+    "datasetCount": 18,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "arthur.gessler@wsl.ch",
+    "dataCredit": null
+  },
+  "Martine Rebetez": {
+    "firstName": "Martine",
+    "lastName": "Rebetez",
+    "fullName": "Martine Rebetez",
+    "datasetCount": 16,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "martine.rebetez@wsl.ch",
+    "dataCredit": null
+  },
+  "Axel Volkwein": {
+    "firstName": "Axel",
+    "lastName": "Volkwein",
+    "fullName": "Axel Volkwein",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0003-3585-6426"
+    },
+    "email": "volkwein@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Dominik Brödlin": {
+    "firstName": "Dominik",
+    "lastName": "Brödlin",
+    "fullName": "Dominik Brödlin",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "dominik.broedlin@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Klaus Kaiser": {
+    "firstName": "Klaus",
+    "lastName": "Kaiser",
+    "fullName": "Klaus Kaiser",
+    "datasetCount": 1,
+    "affiliation": "Martin Luther University Halle Wittenberg",
+    "id": {
+      "identifier": ""
+    },
+    "email": "klaus.kaiser@landw.uni-halle.de",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Frank Hagedorn": {
+    "firstName": "Frank",
+    "lastName": "Hagedorn",
+    "fullName": "Frank Hagedorn",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "frank.hagedorn@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Anna Haberkorn": {
+    "firstName": "Anna",
+    "lastName": "Haberkorn",
+    "fullName": "Anna Haberkorn",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "identifier": "0000-0001-7512-2940"
+    },
+    "email": "anna.haberkorn@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Giulia Francesca Azzurra Donati": {
+    "firstName": "Giulia",
+    "lastName": "Francesca",
+    "fullName": "Giulia Francesca Azzurra Donati",
+    "datasetCount": 1,
+    "affiliation": "ETH Zürich",
+    "id": {
+      "identifier": "0000-0002-5954-3283"
+    },
+    "email": "giulia.donati@usys.ethz.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Valeriano Parravicini": {
+    "firstName": "Valeriano",
+    "lastName": "Parravicini",
+    "fullName": "Valeriano Parravicini",
+    "datasetCount": 1,
+    "affiliation": "CRIOBE, USR 3278 CNRS-EPHE-UPVD, LABEX ‘CORAIL’, University of Perpignan, 66860 Perpignan, France",
+    "id": {
+      "identifier": "0000-0002-3408-1625"
+    },
+    "email": "valeriano.parravicini@gmail.com",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Fabien Leprieur": {
+    "firstName": "Fabien",
+    "lastName": "Leprieur",
+    "fullName": "Fabien Leprieur",
+    "datasetCount": 1,
+    "affiliation": "MARBEC, Université de Montpellier, CNRS, Ifremer, IRD, Montpellier, France",
+    "id": {
+      "identifier": "0000-0001-6869-342X"
+    },
+    "email": "fabien.leprieur@umontpellier.fr",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Oskar Hagen": {
+    "firstName": "Oskar",
+    "lastName": "Hagen",
+    "fullName": "Oskar Hagen",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0002-7931-6571"
+    },
+    "email": "oskar.hagen@usys.ethz.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1
+    }
+  },
+  "Theo Gaboriau": {
+    "firstName": "Theo",
+    "lastName": "Gaboriau",
+    "fullName": "Theo Gaboriau",
+    "datasetCount": 1,
+    "affiliation": "Department of Computational Biology, University of Lausanne, 1015 Lausanne, Switzerland.",
+    "id": {
+      "identifier": "0000-0001-7530-2204"
+    },
+    "email": "theogaboriau@gmail.com",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1
+    }
+  },
+  "Christian Heine": {
+    "firstName": "Christian",
+    "lastName": "Heine",
+    "fullName": "Christian Heine",
+    "datasetCount": 1,
+    "affiliation": "EarthByte Group, The University of Sydney, Australia. Now: Upstream International New Ventures, Shell International Exploration & Production, The Hague, The Netherlands.",
+    "id": {
+      "identifier": ""
+    },
+    "email": "chhei@mensa.uberspace.de",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Michel Kulbicki": {
+    "firstName": "Michel",
+    "lastName": "Kulbicki",
+    "fullName": "Michel Kulbicki",
+    "datasetCount": 1,
+    "affiliation": "Institut pour la Recherche en Développement, UR UMR “Entropie” -Labex Corail- Université de Perpignan- 66000-Perpignan- France.",
+    "id": {
+      "identifier": "0000-0003-1258-5061"
+    },
+    "email": "michel.kulbicki@ird.fr",
+    "dataCredit": {
+      "collection": 1,
+      "supervision": 1
+    }
+  },
+  "Jonathan Rolland": {
+    "firstName": "Jonathan",
+    "lastName": "Rolland",
+    "fullName": "Jonathan Rolland",
+    "datasetCount": 1,
+    "affiliation": "Department of Computational Biology, University of Lausanne, 1015 Lausanne, Switzerland.",
+    "id": {
+      "identifier": "0000-0002-7141-0870"
+    },
+    "email": "jonathan.rolland@yahoo.fr",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Nicolas Salamin": {
+    "firstName": "Nicolas",
+    "lastName": "Salamin",
+    "fullName": "Nicolas Salamin",
+    "datasetCount": 1,
+    "affiliation": "Department of Computational Biology, University of Lausanne, 1015 Lausanne, Switzerland.",
+    "id": {
+      "identifier": "0000-0002-3963-4954"
+    },
+    "email": "nicolas.salamin@unil.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Camille Albouy": {
+    "firstName": "Camille",
+    "lastName": "Albouy",
+    "fullName": "Camille Albouy",
+    "datasetCount": 1,
+    "affiliation": "ETH",
+    "id": {
+      "identifier": "0000-0003-1629-2389"
+    },
+    "email": "albouycamille@gmail.com",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Loic Pellissier": {
+    "firstName": "Loic",
+    "lastName": "Pellissier",
+    "fullName": "Loic Pellissier",
+    "datasetCount": 1,
+    "affiliation": "ETH",
+    "id": {
+      "identifier": "0000-0002-2289-8259"
+    },
+    "email": "loic.pellissier@usys.ethz.ch",
+    "dataCredit": {
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Beat Wermelinger": {
+    "firstName": "Beat",
+    "lastName": "Wermelinger",
+    "fullName": "Beat Wermelinger",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-3235-6741"
+    },
+    "email": "beat.wermelinger@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Doris Schneider Mathis": {
+    "firstName": "Doris",
+    "lastName": "Schneider Mathis",
+    "fullName": "Doris Schneider Mathis",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "doris.schneider@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Martin Gossner": {
+    "firstName": "Martin",
+    "lastName": "Gossner",
+    "fullName": "Martin Gossner",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "martin.gossner@wsl.ch",
+    "dataCredit": {
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Leo Gallus Bont": {
+    "firstName": "Leo",
+    "lastName": "Gallus Bont",
+    "fullName": "Leo Gallus Bont",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "leo.bont@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Marielle Fraefel": {
+    "firstName": "Marielle",
+    "lastName": "Fraefel",
+    "fullName": "Marielle Fraefel",
+    "datasetCount": 3,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "marielle.fraefel@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Ionuț Iosifescu Enescu": {
+    "firstName": "Ionuț",
+    "lastName": "Iosifescu Enescu",
+    "fullName": "Ionuț Iosifescu Enescu",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0002-1770-7833"
+    },
+    "email": "ionut.iosifescu@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Carolin Willibald": {
+    "firstName": "Carolin",
+    "lastName": "Willibald",
+    "fullName": "Carolin Willibald",
+    "datasetCount": 1,
+    "affiliation": "SLF",
+    "id": {
+      "identifier": "0000-0001-6063-9998"
+    },
+    "email": "carolin.willibald@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Sophia Scheuber": {
+    "firstName": "Sophia",
+    "lastName": "Scheuber",
+    "fullName": "Sophia Scheuber",
+    "datasetCount": 1,
+    "affiliation": "ETH ",
+    "id": {
+      "identifier": ""
+    },
+    "email": "saugys@student.ethz.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Henning Löwe": {
+    "firstName": "Henning",
+    "lastName": "Löwe",
+    "fullName": "Henning Löwe",
+    "datasetCount": 1,
+    "affiliation": "SLF",
+    "id": {
+      "identifier": "0000-0001-7515-6809"
+    },
+    "email": "henning.loewe@slf.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Martin Schneebeli": {
+    "firstName": "Martin",
+    "lastName": "Schneebeli",
+    "fullName": "Martin Schneebeli",
+    "datasetCount": 2,
+    "affiliation": "SLF",
+    "id": {
+      "identifier": "0000-0003-2872-4409"
+    },
+    "email": "martin.schneebeli@slf.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Jürg Dual": {
+    "firstName": "Jürg",
+    "lastName": "Dual",
+    "fullName": "Jürg Dual",
+    "datasetCount": 1,
+    "affiliation": "ETH",
+    "id": {
+      "identifier": ""
+    },
+    "email": "dual@imes.mavt.ethz.ch",
+    "dataCredit": null
+  },
+  "Jonas Stillhard": {
+    "firstName": "Jonas",
+    "lastName": "Stillhard",
+    "fullName": "Jonas Stillhard",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-8850-4817"
+    },
+    "email": "jonas.stillhard@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Martina Hobi": {
+    "firstName": "Martina",
+    "lastName": "Hobi",
+    "fullName": "Martina Hobi",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "martina.hobi@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Lisa Hülsmann": {
+    "firstName": "Lisa",
+    "lastName": "Hülsmann",
+    "fullName": "Lisa Hülsmann",
+    "datasetCount": 3,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-4252-2715"
+    },
+    "email": "lisa.huelsmann@ur.de",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Peter Brang": {
+    "firstName": "Peter",
+    "lastName": "Brang",
+    "fullName": "Peter Brang",
+    "datasetCount": 3,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "peter.brang@wsl.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Christian Ginzler": {
+    "firstName": "Christian",
+    "lastName": "Ginzler",
+    "fullName": "Christian Ginzler",
+    "datasetCount": 5,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-6365-2151"
+    },
+    "email": "christian.ginzler@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Myroslav Kabal": {
+    "firstName": "Myroslav",
+    "lastName": "Kabal",
+    "fullName": "Myroslav Kabal",
+    "datasetCount": 1,
+    "affiliation": "Carpathian Biosphere Reserve, Rakhiv, Ukraine",
+    "id": {
+      "identifier": "0000-0002-9256-2531"
+    },
+    "email": "myroslawk@gmail.com",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Jens Nitzsche": {
+    "firstName": "Jens",
+    "lastName": "Nitzsche",
+    "fullName": "Jens Nitzsche",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "jens.nitzsche@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Gilbert Projer": {
+    "firstName": "Gilbert",
+    "lastName": "Projer",
+    "fullName": "Gilbert Projer",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "gilbert.projer@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Yuriy Shparyk": {
+    "firstName": "Yuriy",
+    "lastName": "Shparyk",
+    "fullName": "Yuriy Shparyk",
+    "datasetCount": 1,
+    "affiliation": "Faculty of Natural Sciences, Vasyl Stefanyk Precarpathian University, Ivano Frankivsk, Ukraine",
+    "id": {
+      "identifier": ""
+    },
+    "email": "yuriy.shparyk@gmail.com",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Brigitte Commarmot": {
+    "firstName": "Brigitte",
+    "lastName": "Commarmot",
+    "fullName": "Brigitte Commarmot",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "brigitte.commarmot@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Harald Bugmann": {
+    "firstName": "Harald",
+    "lastName": "Bugmann",
+    "fullName": "Harald Bugmann",
+    "datasetCount": 2,
+    "affiliation": "ETHZ",
+    "id": {
+      "identifier": ""
+    },
+    "email": "harald.bugmann@env.ethz.ch",
+    "dataCredit": null
+  },
+  "Maxime Cailleret": {
+    "firstName": "Maxime",
+    "lastName": "Cailleret",
+    "fullName": "Maxime Cailleret",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "maxime.cailleret@wsl.ch",
+    "dataCredit": null
+  },
+  "Peter Meyer": {
+    "firstName": "Peter",
+    "lastName": "Meyer",
+    "fullName": "Peter Meyer",
+    "datasetCount": 2,
+    "affiliation": "NW-FVA",
+    "id": {
+      "identifier": ""
+    },
+    "email": "peter.meyer@nw-fva.de",
+    "dataCredit": null
+  },
+  "Stephan Zimmermann": {
+    "firstName": "Stephan",
+    "lastName": "Zimmermann",
+    "fullName": "Stephan Zimmermann",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "stephan.zimmermann@wsl.ch",
+    "dataCredit": null
+  },
+  "Giulia Mazzotti": {
+    "firstName": "Giulia",
+    "lastName": "Mazzotti",
+    "fullName": "Giulia Mazzotti",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "identifier": "0000-0003-3857-7449"
+    },
+    "email": "giulia.mazzotti@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "C. David Moeser": {
+    "firstName": "C.",
+    "lastName": "David Moeser",
+    "fullName": "C. David Moeser",
+    "datasetCount": 1,
+    "affiliation": "United States Geological Survey, New Mexico Water Science Center",
+    "id": {
+      "identifier": "0000-0003-0154-9110"
+    },
+    "email": "cmoeser@usgs.gov",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Tobias Jonas": {
+    "firstName": "Tobias",
+    "lastName": "Jonas",
+    "fullName": "Tobias Jonas",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "identifier": "0000-0003-0386-8676"
+    },
+    "email": "jonas@slf.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "James W. Kirchner": {
+    "firstName": "James",
+    "lastName": "W. Kirchner",
+    "fullName": "James W. Kirchner",
+    "datasetCount": 3,
+    "affiliation": "Department of Environmental Systems Science, ETH Zürich, Switzerland",
+    "id": {
+      "identifier": "0000-0001-6577-3619"
+    },
+    "email": "kirchner@env.ethz.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Julia L.A. Knapp": {
+    "firstName": "Julia",
+    "lastName": "L.A. Knapp",
+    "fullName": "Julia L.A. Knapp",
+    "datasetCount": 1,
+    "affiliation": "Department of Environmental Systems Science, ETH Zürich, Switzerland",
+    "id": {
+      "identifier": "0000-0003-0885-7829"
+    },
+    "email": "julia.knapp@usys.ethz.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Alessandro Schlumpf": {
+    "firstName": "Alessandro",
+    "lastName": "Schlumpf",
+    "fullName": "Alessandro Schlumpf",
+    "datasetCount": 1,
+    "affiliation": "Eidg. Forschungsanstalt für Wald, Schnee und Landschaft, WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "alessandro.schlumpf@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Colin Neal": {
+    "firstName": "Colin",
+    "lastName": "Neal",
+    "fullName": "Colin Neal",
+    "datasetCount": 1,
+    "affiliation": "Center for Ecology and Hydrology, Wallingford, UK",
+    "id": {
+      "identifier": ""
+    },
+    "email": "cn@ceh.ac.uk",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Margaret Neal": {
+    "firstName": "Margaret",
+    "lastName": "Neal",
+    "fullName": "Margaret Neal",
+    "datasetCount": 1,
+    "affiliation": "Center for Ecology and Hydrology, Wallingford, UK",
+    "id": {
+      "identifier": ""
+    },
+    "email": "mne@ceh.ac.uk",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Malle Johanne": {
+    "firstName": "Malle",
+    "lastName": "Johanne",
+    "fullName": "Malle Johanne",
+    "datasetCount": 1,
+    "affiliation": "Department of Geography and Environmental Sciences, Northumbria University, Newcastle",
+    "id": {
+      "identifier": "0000-0002-6185-6449"
+    },
+    "email": "johanna.malle@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Rutter Nick": {
+    "firstName": "Rutter",
+    "lastName": "Nick",
+    "fullName": "Rutter Nick",
+    "datasetCount": 1,
+    "affiliation": "Department of Geography and Environmental Sciences, Northumbria University, Newcastle",
+    "id": {
+      "identifier": "0000-0002-5008-3575"
+    },
+    "email": "nick.rutter@northumbria.ac.uk",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Mazzotti Giulia": {
+    "firstName": "Mazzotti",
+    "lastName": "Giulia",
+    "fullName": "Mazzotti Giulia",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-3857-7449"
+    },
+    "email": "giulia.mazzotti@slf.ch",
+    "dataCredit": {
+      "publication": 1
+    }
+  },
+  "Jonas Tobias": {
+    "firstName": "Jonas",
+    "lastName": "Tobias",
+    "fullName": "Jonas Tobias",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "jonas@wsl.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Marcus Schaub": {
+    "firstName": "Marcus",
+    "lastName": "Schaub",
+    "fullName": "Marcus Schaub",
+    "datasetCount": 2,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "marcus.schaub@wsl.ch",
+    "dataCredit": null
+  },
+  "Christian Hug": {
+    "firstName": "Christian",
+    "lastName": "Hug",
+    "fullName": "Christian Hug",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "christian.hug@wsl.ch",
+    "dataCredit": null
+  },
+  "Andreas Rigling": {
+    "firstName": "Andreas",
+    "lastName": "Rigling",
+    "fullName": "Andreas Rigling",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "andreas.rigling@wsl.ch",
+    "dataCredit": null
+  },
+  "Markus Didion": {
+    "firstName": "Markus",
+    "lastName": "Didion",
+    "fullName": "Markus Didion",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-0346-0646"
+    },
+    "email": "markus.didion@wsl.ch",
+    "dataCredit": null
+  },
+  "Flurin Sutter": {
+    "firstName": "Flurin",
+    "lastName": "Sutter",
+    "fullName": "Flurin Sutter",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "flurin.sutter@wsl.ch",
+    "dataCredit": null
+  },
+  "Pierre Vollenweider": {
+    "firstName": "Pierre",
+    "lastName": "Vollenweider",
+    "fullName": "Pierre Vollenweider",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "pierre.vollenweider@wsl.ch",
+    "dataCredit": null
+  },
+  "Peter Waldner": {
+    "firstName": "Peter",
+    "lastName": "Waldner",
+    "fullName": "Peter Waldner",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "pater.waldner@wsl.ch",
+    "dataCredit": null
+  },
+  "Madleina Gerecke": {
+    "firstName": "Madleina",
+    "lastName": "Gerecke",
+    "fullName": "Madleina Gerecke",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "madleina.gerecke@protonmail.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Andrea Rücker": {
+    "firstName": "Andrea",
+    "lastName": "Rücker",
+    "fullName": "Andrea Rücker",
+    "datasetCount": 2,
+    "affiliation": "WSL, ETH Zürich",
+    "id": {
+      "identifier": "https://orcid.org/0000-0003-2162-7278"
+    },
+    "email": "andrea.ruecker@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Massimiliano Zappa": {
+    "firstName": "Massimiliano",
+    "lastName": "Zappa",
+    "fullName": "Massimiliano Zappa",
+    "datasetCount": 5,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "https://orcid.org/0000-0002-2837-8190"
+    },
+    "email": "massimiliano.zappa@wsl.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Jana von Freyberg": {
+    "firstName": "Jana",
+    "lastName": "von Freyberg",
+    "fullName": "Jana von Freyberg",
+    "datasetCount": 2,
+    "affiliation": "ETH Zürich",
+    "id": {
+      "identifier": "https://orcid.org/0000-0002-2111-0001"
+    },
+    "email": "jana.vonfreyberg@usys.ethz.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Christoph Marty": {
+    "firstName": "Christoph",
+    "lastName": "Marty",
+    "fullName": "Christoph Marty",
+    "datasetCount": 5,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF ",
+    "id": {
+      "identifier": ""
+    },
+    "email": "marty@slf.ch",
+    "dataCredit": null
+  },
+  "Abegg, M.": {
+    "firstName": "Abegg,",
+    "lastName": "M.",
+    "fullName": "Abegg, M.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "meinrad.abegg@wsl.ch",
+    "dataCredit": null
+  },
+  "Brändli, U.-B.": {
+    "firstName": "Brändli,",
+    "lastName": "U.-B.",
+    "fullName": "Brändli, U.-B.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "urs-beat.braendli@wsl.ch",
+    "dataCredit": null
+  },
+  "Cioldi, F.": {
+    "firstName": "Cioldi,",
+    "lastName": "F.",
+    "fullName": "Cioldi, F.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "fabrizio.cioldi@wsl.ch",
+    "dataCredit": null
+  },
+  "Fischer, C.": {
+    "firstName": "Fischer,",
+    "lastName": "C.",
+    "fullName": "Fischer, C.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "christoph.fischer@wsl.ch",
+    "dataCredit": null
+  },
+  "Herold-Bonardi, A.": {
+    "firstName": "Herold-Bonardi,",
+    "lastName": "A.",
+    "fullName": "Herold-Bonardi, A.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "anne.herold@wsl.ch",
+    "dataCredit": null
+  },
+  "Huber M.": {
+    "firstName": "Huber",
+    "lastName": "M.",
+    "fullName": "Huber M.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "markus.huber@wsl.ch",
+    "dataCredit": null
+  },
+  "Keller, M.": {
+    "firstName": "Keller,",
+    "lastName": "M.",
+    "fullName": "Keller, M.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "markus.keller@wsl.ch",
+    "dataCredit": null
+  },
+  "Rolf Meile": {
+    "firstName": "Rolf",
+    "lastName": "Meile",
+    "fullName": "Rolf Meile",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "rolf.meile@wsl.ch",
+    "dataCredit": null
+  },
+  "Rösler, E.": {
+    "firstName": "Rösler,",
+    "lastName": "E.",
+    "fullName": "Rösler, E.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "erik.roesler@wsl.ch",
+    "dataCredit": null
+  },
+  "Speich, S.": {
+    "firstName": "Speich,",
+    "lastName": "S.",
+    "fullName": "Speich, S.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "simon.speich@wsl.ch",
+    "dataCredit": null
+  },
+  "Traub, B.": {
+    "firstName": "Traub,",
+    "lastName": "B.",
+    "fullName": "Traub, B.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "berthold.traub@wsl.ch",
+    "dataCredit": null
+  },
+  "Vidondo, B.": {
+    "firstName": "Vidondo,",
+    "lastName": "B.",
+    "fullName": "Vidondo, B.",
+    "datasetCount": 65,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "beatriz.vidondo@wsl.ch",
+    "dataCredit": null
+  },
+  "Saskia Gindraux": {
+    "firstName": "Saskia",
+    "lastName": "Gindraux",
+    "fullName": "Saskia Gindraux",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "saskia.gindraux@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Daniel Farinotti": {
+    "firstName": "Daniel",
+    "lastName": "Farinotti",
+    "fullName": "Daniel Farinotti",
+    "datasetCount": 1,
+    "affiliation": "ETH-VAW/WSL",
+    "id": {
+      "identifier": "0000-0003-3417-4570"
+    },
+    "email": "daniel.farinotti@ethz.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Ruedi Boesch": {
+    "firstName": "Ruedi",
+    "lastName": "Boesch",
+    "fullName": "Ruedi Boesch",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "ruedi.boesch@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Felix Gugerli": {
+    "firstName": "Felix",
+    "lastName": "Gugerli",
+    "fullName": "Felix Gugerli",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-3878-1845"
+    },
+    "email": "felix.gugerli@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "René Graf": {
+    "firstName": "René",
+    "lastName": "Graf",
+    "fullName": "René Graf",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "rene.graf@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "publication": 1
+    }
+  },
+  "Valeria Trivellone": {
+    "firstName": "Valeria",
+    "lastName": "Trivellone",
+    "fullName": "Valeria Trivellone",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-1415-4097"
+    },
+    "email": "valeria.trivellone@gmail.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Steffen Boch": {
+    "firstName": "Steffen",
+    "lastName": "Boch",
+    "fullName": "Steffen Boch",
+    "datasetCount": 1,
+    "affiliation": "WSL Swiss Federal Research Institute, Birmensdorf, Switzerland",
+    "id": {
+      "identifier": "0000-0003-2814-5343"
+    },
+    "email": "steffen.boch@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Anabela Martins": {
+    "firstName": "Anabela",
+    "lastName": "Martins",
+    "fullName": "Anabela Martins",
+    "datasetCount": 1,
+    "affiliation": "cE3c - Centre for Ecology, Evolution and Environmental Changes, Natural History and Systematics (NHS) Research Group /MUHNAC - Museu Nacional de História Natural e da Ciência, Universidade de Lisboa, Lisboa, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "anabelamartins323@gmail.com",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1
+    }
+  },
+  "Sara Ruas": {
+    "firstName": "Sara",
+    "lastName": "Ruas",
+    "fullName": "Sara Ruas",
+    "datasetCount": 1,
+    "affiliation": "cE3c - Centre for Ecology, Evolution and Environmental Changes, Natural History and Systematics (NHS) Research Group /MUHNAC - Museu Nacional de História Natural e da Ciência, Universidade de Lisboa, Lisboa, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "sara.ruas@research.gmit.ie",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Susana Fontinha": {
+    "firstName": "Susana",
+    "lastName": "Fontinha",
+    "fullName": "Susana Fontinha",
+    "datasetCount": 1,
+    "affiliation": "Banco de Germoplasma ISOPlexis, Universidade da Madeira, Funchal, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "susanafontinha.sra@gov-madeira.pt",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Palmira Carvalho": {
+    "firstName": "Palmira",
+    "lastName": "Carvalho",
+    "fullName": "Palmira Carvalho",
+    "datasetCount": 1,
+    "affiliation": "cE3c - Centre for Ecology, Evolution and Environmental Changes, Natural History and Systematics (NHS) Research Group /MUHNAC - Museu Nacional de História Natural e da Ciência, Universidade de Lisboa, Lisboa, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "pcarvalho@museus.ul.pt",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Fábio Reis": {
+    "firstName": "Fábio",
+    "lastName": "Reis",
+    "fullName": "Fábio Reis",
+    "datasetCount": 1,
+    "affiliation": "Banco de Germoplasma ISOPlexis, Universidade da Madeira, Funchal, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "fabioreismd@yahoo.com.br",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Ariel Bergamini": {
+    "firstName": "Ariel",
+    "lastName": "Bergamini",
+    "fullName": "Ariel Bergamini",
+    "datasetCount": 1,
+    "affiliation": "WSL Swiss Federal Research Institute, Birmensdorf, Switzerland",
+    "id": {
+      "identifier": "0000-0001-8816-1420"
+    },
+    "email": "ariel.bergamini@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Manuela Sim-Sim": {
+    "firstName": "Manuela",
+    "lastName": "Sim-Sim",
+    "fullName": "Manuela Sim-Sim",
+    "datasetCount": 1,
+    "affiliation": "cE3c - Centre for Ecology, Evolution and Environmental Changes, Natural History and Systematics (NHS) Research Group /MUHNAC - Museu Nacional de História Natural e da Ciência, Universidade de Lisboa, Lisboa, Portugal",
+    "id": {
+      "identifier": ""
+    },
+    "email": "mmsim-sim@fc.ul.pt",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1
+    }
+  },
+  "Christian Vögeli": {
+    "firstName": "Christian",
+    "lastName": "Vögeli",
+    "fullName": "Christian Vögeli",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "christian.voegeli@slf.ch",
+    "dataCredit": null
+  },
+  "Michael Lehning": {
+    "firstName": "Michael",
+    "lastName": "Lehning",
+    "fullName": "Michael Lehning",
+    "datasetCount": 17,
+    "affiliation": "WSL and EPFL",
+    "id": {},
+    "email": "lehning@slf.ch",
+    "dataCredit": null
+  },
+  "Mathias Bavay": {
+    "firstName": "Mathias",
+    "lastName": "Bavay",
+    "fullName": "Mathias Bavay",
+    "datasetCount": 3,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "bavay@slf.ch",
+    "dataCredit": null
+  },
+  "Elisabeth Hafner": {
+    "firstName": "Elisabeth",
+    "lastName": "Hafner",
+    "fullName": "Elisabeth Hafner",
+    "datasetCount": 1,
+    "affiliation": "SLF",
+    "id": {
+      "identifier": ""
+    },
+    "email": "elisabeth.hafner@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "publication": 1
+    }
+  },
+  "Yves Bühler": {
+    "firstName": "Yves",
+    "lastName": "Bühler",
+    "fullName": "Yves Bühler",
+    "datasetCount": 5,
+    "affiliation": "SLF",
+    "id": {
+      "identifier": "0000-0002-0815-2717"
+    },
+    "email": "buehler@slf.ch",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Thomas Grünewald": {
+    "firstName": "Thomas",
+    "lastName": "Grünewald",
+    "fullName": "Thomas Grünewald",
+    "datasetCount": 2,
+    "affiliation": "WSL/SLF",
+    "id": {
+      "identifier": ""
+    },
+    "email": "gruenewald@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Albrecht von Boetticher": {
+    "firstName": "Albrecht",
+    "lastName": "von Boetticher",
+    "fullName": "Albrecht von Boetticher",
+    "datasetCount": 1,
+    "affiliation": "WSL / ETH Zürich / SK&",
+    "id": {
+      "identifier": "0000-0003-1933-6236"
+    },
+    "email": "albrecht.vonboetticher@wasserbau.ch",
+    "dataCredit": {
+      "software": 1
+    }
+  },
+  "Jérôme Oppliger": {
+    "firstName": "Jérôme",
+    "lastName": "Oppliger",
+    "fullName": "Jérôme Oppliger",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": ""
+    },
+    "email": "jerome.oppliger@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "publication": 1
+    }
+  },
+  "Eva Lieberherr": {
+    "firstName": "Eva",
+    "lastName": "Lieberherr",
+    "fullName": "Eva Lieberherr",
+    "datasetCount": 1,
+    "affiliation": "D-USYS, ETHZ",
+    "id": {
+      "identifier": "0000-0001-5985-0809"
+    },
+    "email": "eva.lieberherr@usys.ethz.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Tessa Hegetschweiler": {
+    "firstName": "Tessa",
+    "lastName": "Hegetschweiler",
+    "fullName": "Tessa Hegetschweiler",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-6738-7148"
+    },
+    "email": "tessa.hegetschweiler@wsl.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Patrick Schleppi": {
+    "firstName": "Patrick",
+    "lastName": "Schleppi",
+    "fullName": "Patrick Schleppi",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0002-3578-6563"
+    },
+    "email": "patrick.schleppi@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Tamir Klein": {
+    "firstName": "Tamir",
+    "lastName": "Klein",
+    "fullName": "Tamir Klein",
+    "datasetCount": 1,
+    "affiliation": "University of Basel (present address: Weizmann Institute)",
+    "id": {
+      "identifier": "0000-0002-3882-8845"
+    },
+    "email": "tamir.klein@weizmann.ac.il",
+    "dataCredit": {
+      "collection": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Christian Körner": {
+    "firstName": "Christian",
+    "lastName": "Körner",
+    "fullName": "Christian Körner",
+    "datasetCount": 1,
+    "affiliation": "Universit of Basel",
+    "id": {
+      "identifier": "0000-0001-7768-7638"
+    },
+    "email": "ch.koerner@unibas.ch",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Franziska Koch": {
+    "firstName": "Franziska",
+    "lastName": "Koch",
+    "fullName": "Franziska Koch",
+    "datasetCount": 1,
+    "affiliation": "University of Natural Resources and Life Sciences",
+    "id": {
+      "identifier": "0000-0001-5826-295X"
+    },
+    "email": "franziska.koch@boku.ac.at",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Patrick Henkel": {
+    "firstName": "Patrick",
+    "lastName": "Henkel",
+    "fullName": "Patrick Henkel",
+    "datasetCount": 1,
+    "affiliation": "Advanced Navigation Solutions GmbH",
+    "id": {
+      "identifier": "0000-0003-2934-3456"
+    },
+    "email": "patrick.henkel@anavs.de",
+    "dataCredit": {
+      "validation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Florian Appel": {
+    "firstName": "Florian",
+    "lastName": "Appel",
+    "fullName": "Florian Appel",
+    "datasetCount": 1,
+    "affiliation": "Vista Remote Sensing GmbH",
+    "id": {
+      "identifier": "0000-0002-1907-9076"
+    },
+    "email": "appel@vista-geo.de",
+    "dataCredit": {
+      "validation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Wolfram Mauser": {
+    "firstName": "Wolfram",
+    "lastName": "Mauser",
+    "fullName": "Wolfram Mauser",
+    "datasetCount": 1,
+    "affiliation": "Ludwig-Maximilians-Universität München",
+    "id": {
+      "identifier": "0000-0002-2963-8759"
+    },
+    "email": "w.mauser@lmu.de",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Jürg Schweizer": {
+    "firstName": "Jürg",
+    "lastName": "Schweizer",
+    "fullName": "Jürg Schweizer",
+    "datasetCount": 3,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "identifier": "0000-0001-5076-2968"
+    },
+    "email": "schweizer@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "publication": 1
+    }
+  },
+  "Manuela Brunner": {
+    "firstName": "Manuela",
+    "lastName": "Brunner",
+    "fullName": "Manuela Brunner",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-8824-877X"
+    },
+    "email": "manuela.brunner@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "publication": 1
+    }
+  },
+  "Matthias Heck": {
+    "firstName": "Matthias",
+    "lastName": "Heck",
+    "fullName": "Matthias Heck",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "identifier": ""
+    },
+    "email": "heck@slf.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Michael Rinderer": {
+    "firstName": "Michael",
+    "lastName": "Rinderer",
+    "fullName": "Michael Rinderer",
+    "datasetCount": 1,
+    "affiliation": "Duke University, NC, USA (now at: University of Freiburg, DE)",
+    "id": {
+      "identifier": "0000-0001-7690-7686"
+    },
+    "email": "michael rinderer@gmx.net",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Maryam Moslehi": {
+    "firstName": "Maryam",
+    "lastName": "Moslehi",
+    "fullName": "Maryam Moslehi",
+    "datasetCount": 1,
+    "affiliation": "Research Division of Natural Resources, Hormozgan Agricultural and Natural Resources Research and Education Center, AREEO, Bandarabbas, Iran",
+    "id": {
+      "identifier": "0000-0003-2065-5234"
+    },
+    "email": "maryam.moslehi508@gmail.com",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Hashem Habashi": {
+    "firstName": "Hashem",
+    "lastName": "Habashi",
+    "fullName": "Hashem Habashi",
+    "datasetCount": 1,
+    "affiliation": "Faculty of Gorgan University of Agricultural Science and Natural Resources, I.R.I Iran",
+    "id": {},
+    "email": "hashem.habashi@gmail.com",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Farhad Khormali": {
+    "firstName": "Farhad",
+    "lastName": "Khormali",
+    "fullName": "Farhad Khormali",
+    "datasetCount": 1,
+    "affiliation": "Faculty of Gorgan University of Agricultural Science and Natural Resources, I.R.I Iran",
+    "id": {},
+    "email": "farhad.khormali@gmail.com",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Akram Ahmadi": {
+    "firstName": "Akram",
+    "lastName": "Ahmadi",
+    "fullName": "Akram Ahmadi",
+    "datasetCount": 1,
+    "affiliation": "Research Division of Natural Resources, Golestan Agricultural and Natural Resources Research and Education Center, AREEO, Gorgan, Iran",
+    "id": {},
+    "email": "akram.ahmadi@gmail.com",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Ivano Brunner": {
+    "firstName": "Ivano",
+    "lastName": "Brunner",
+    "fullName": "Ivano Brunner",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-3436-995X"
+    },
+    "email": "ivano.brunner@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Christoph Fischer": {
+    "firstName": "Christoph",
+    "lastName": "Fischer",
+    "fullName": "Christoph Fischer",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "Christoph.Fischer@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Christoph Düggelin": {
+    "firstName": "Christoph",
+    "lastName": "Düggelin",
+    "fullName": "Christoph Düggelin",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "Christoph.Dueggelin@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Marc Baume": {
+    "firstName": "Marc",
+    "lastName": "Baume",
+    "fullName": "Marc Baume",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "Marc.Baume@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Marcel Hunziker": {
+    "firstName": "Marcel",
+    "lastName": "Hunziker",
+    "fullName": "Marcel Hunziker",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "Marcel.Hunziker@wsl.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Achille Capelli": {
+    "firstName": "Achille",
+    "lastName": "Capelli",
+    "fullName": "Achille Capelli",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF ",
+    "id": {
+      "identifier": "0000-0003-3052-3032"
+    },
+    "email": "capelli@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Ingrid Reiweger": {
+    "firstName": "Ingrid",
+    "lastName": "Reiweger",
+    "fullName": "Ingrid Reiweger",
+    "datasetCount": 1,
+    "affiliation": "BOKU University of Natural Resources and Life Sciences, Department of Civil Engineering and Natural Hazards, Institute of Mountain Risk Engineering, Austria",
+    "id": {
+      "identifier": "0000-0003-2364-5760"
+    },
+    "email": "ingrid.reiweger@boku.ac.at",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Manuela Irene Brunner": {
+    "firstName": "Manuela",
+    "lastName": "Irene Brunner",
+    "fullName": "Manuela Irene Brunner",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-8824-877X"
+    },
+    "email": "manuela.brunner@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1
+    }
+  },
+  "Astrid Björnsen Gurung": {
+    "firstName": "Astrid",
+    "lastName": "Björnsen Gurung",
+    "fullName": "Astrid Björnsen Gurung",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "astrid.bjoernsen@wsl.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Manfred Stähli": {
+    "firstName": "Manfred",
+    "lastName": "Stähli",
+    "fullName": "Manfred Stähli",
+    "datasetCount": 4,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0003-0855-5994"
+    },
+    "email": "manfred.staehli@wsl.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Daniela Lorenzi": {
+    "firstName": "Daniela",
+    "lastName": "Lorenzi",
+    "fullName": "Daniela Lorenzi",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {},
+    "email": "lorenzi@meteodat.ch",
+    "dataCredit": null
+  },
+  "Mario Rohrer": {
+    "firstName": "Mario",
+    "lastName": "Rohrer",
+    "fullName": "Mario Rohrer",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {
+      "identifier": "0000-0002-5311-383X"
+    },
+    "email": "rohrer@meteodat.ch",
+    "dataCredit": null
+  },
+  "Manfred Schwarb": {
+    "firstName": "Manfred",
+    "lastName": "Schwarb",
+    "fullName": "Manfred Schwarb",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {
+      "identifier": "0000-0002-0508-2530"
+    },
+    "email": "schwarb@meteodat.ch",
+    "dataCredit": null
+  },
+  "Urs Steinegger": {
+    "firstName": "Urs",
+    "lastName": "Steinegger",
+    "fullName": "Urs Steinegger",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {},
+    "email": "steinegger@meteodat.ch",
+    "dataCredit": null
+  },
+  "Christian Nötzli": {
+    "firstName": "Christian",
+    "lastName": "Nötzli",
+    "fullName": "Christian Nötzli",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {},
+    "email": "noetzli@meteodat.ch",
+    "dataCredit": null
+  },
+  "Simone Schauwecker": {
+    "firstName": "Simone",
+    "lastName": "Schauwecker",
+    "fullName": "Simone Schauwecker",
+    "datasetCount": 1,
+    "affiliation": "Meteodat GmbH",
+    "id": {
+      "identifier": "0000-0002-7626-7284"
+    },
+    "email": "schauwecker@meteodat.ch",
+    "dataCredit": null
+  },
+  "Hans Siegenthaler": {
+    "firstName": "Hans",
+    "lastName": "Siegenthaler",
+    "fullName": "Hans Siegenthaler",
+    "datasetCount": 1,
+    "affiliation": "Institute of Geography, ETH Zurich (IAC ETH Zurich)",
+    "id": {},
+    "email": "schwarb@meteodat.ch",
+    "dataCredit": null
+  },
+  "Fulvio Giudici": {
+    "firstName": "Fulvio",
+    "lastName": "Giudici",
+    "fullName": "Fulvio Giudici",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "fulvio.giudici@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Jerome Schneuwly": {
+    "firstName": "Jerome",
+    "lastName": "Schneuwly",
+    "fullName": "Jerome Schneuwly",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "jerome.schneuwly@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Eric Gehring": {
+    "firstName": "Eric",
+    "lastName": "Gehring",
+    "fullName": "Eric Gehring",
+    "datasetCount": 1,
+    "affiliation": "Insubric Ecosystem Research Group, WSL Swiss Federal Research Institute, A Ramél 18, 6593 Cadenazzo, Switzerland",
+    "id": {
+      "identifier": "0000-0002-4338-540"
+    },
+    "email": "eric.gehring@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Bruno Bellosi": {
+    "firstName": "Bruno",
+    "lastName": "Bellosi",
+    "fullName": "Bruno Bellosi",
+    "datasetCount": 1,
+    "affiliation": "Insubric Ecosystem Research Group, WSL Swiss Federal Research Institute, A Ramél 18, 6593 Cadenazzo, Switzerland",
+    "id": {},
+    "email": "bellosi.bruno@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "curation": 1
+    }
+  },
+  "Marco Conedera": {
+    "firstName": "Marco",
+    "lastName": "Conedera",
+    "fullName": "Marco Conedera",
+    "datasetCount": 1,
+    "affiliation": "Insubric Ecosystem Research Group, WSL Swiss Federal Research Institute, A Ramél 18, 6593 Cadenazzo, Switzerland",
+    "id": {
+      "identifier": "0000-0003-3980-2142"
+    },
+    "email": "marco.conedera@wsl.ch",
+    "dataCredit": {
+      "supervision": 1
+    }
+  },
+  "Anita Risch": {
+    "firstName": "Anita",
+    "lastName": "Risch",
+    "fullName": "Anita Risch",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "A-9836-2012"
+    },
+    "email": "anita.risch@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Martin Schuetz": {
+    "firstName": "Martin",
+    "lastName": "Schuetz",
+    "fullName": "Martin Schuetz",
+    "datasetCount": 2,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "martin.schuetz@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Raul Ochoa-Hueso": {
+    "firstName": "Raul",
+    "lastName": "Ochoa-Hueso",
+    "fullName": "Raul Ochoa-Hueso",
+    "datasetCount": 1,
+    "affiliation": "Autonomous University of Madrid",
+    "id": {
+      "identifier": "https://www.researchgate.net/profile/Raul_Ochoa-Hueso2"
+    },
+    "email": "rochoahueso@gmail.com",
+    "dataCredit": {
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Daniel von Rickenbach": {
+    "firstName": "Daniel",
+    "lastName": "von Rickenbach",
+    "fullName": "Daniel von Rickenbach",
+    "datasetCount": 1,
+    "affiliation": "SLF / GIUZ",
+    "id": {},
+    "email": "daniel.vonrickenbach@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "M. Carol Resch": {
+    "firstName": "M.",
+    "lastName": "Carol Resch",
+    "fullName": "M. Carol Resch",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "carol.resch@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "publication": 1
+    }
+  },
+  "Martin Schütz": {
+    "firstName": "Martin",
+    "lastName": "Schütz",
+    "fullName": "Martin Schütz",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "martin.schuetz@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Anita C. Risch": {
+    "firstName": "Anita",
+    "lastName": "C. Risch",
+    "fullName": "Anita C. Risch",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "anita.risch@wsl.ch",
+    "dataCredit": {
+      "validation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Francesco Comola": {
+    "firstName": "Francesco",
+    "lastName": "Comola",
+    "fullName": "Francesco Comola",
+    "datasetCount": 3,
+    "affiliation": "EPFL",
+    "id": {
+      "identifier": "0000-0002-3867-732X"
+    },
+    "email": "francesco.comola@gmail.com",
+    "dataCredit": null
+  },
+  "Marco G. Giometto": {
+    "firstName": "Marco",
+    "lastName": "G. Giometto",
+    "fullName": "Marco G. Giometto",
+    "datasetCount": 1,
+    "affiliation": "Columbia University, New York, USA",
+    "id": {},
+    "email": "marco.giometto@columbia.edu",
+    "dataCredit": {
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Scott T. Salesky": {
+    "firstName": "Scott",
+    "lastName": "T. Salesky",
+    "fullName": "Scott T. Salesky",
+    "datasetCount": 1,
+    "affiliation": "The University of Oklahoma, USA",
+    "id": {},
+    "email": "salesky@ou.edu",
+    "dataCredit": {
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Marc B. Parlange": {
+    "firstName": "Marc",
+    "lastName": "B. Parlange",
+    "fullName": "Marc B. Parlange",
+    "datasetCount": 1,
+    "affiliation": "Monash University, Australia",
+    "id": {},
+    "email": "marc.oparlange@monash.edu",
+    "dataCredit": {
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Patricia Edith Moll": {
+    "firstName": "Patricia",
+    "lastName": "Edith Moll",
+    "fullName": "Patricia Edith Moll",
+    "datasetCount": 1,
+    "affiliation": "ETH Zurich",
+    "id": {},
+    "email": "patricia.edith.moll@gmail.com",
+    "dataCredit": {
+      "software": 1
+    }
+  },
+  "Mauro Marty": {
+    "firstName": "Mauro",
+    "lastName": "Marty",
+    "fullName": "Mauro Marty",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0002-0943-2454"
+    },
+    "email": "mauro.marty@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Johan Gaume": {
+    "firstName": "Johan",
+    "lastName": "Gaume",
+    "fullName": "Johan Gaume",
+    "datasetCount": 1,
+    "affiliation": "Ecole Polytechnique Fédérale de Lausanne",
+    "id": {},
+    "email": "johan.gaume@epfl.ch",
+    "dataCredit": {
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Jasper F. Kok": {
+    "firstName": "Jasper",
+    "lastName": "F. Kok",
+    "fullName": "Jasper F. Kok",
+    "datasetCount": 1,
+    "affiliation": "University of California, Los Angeles",
+    "id": {},
+    "email": "jfkok@atmos.ucla.edu",
+    "dataCredit": {
+      "software": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Franziska Gerber": {
+    "firstName": "Franziska",
+    "lastName": "Gerber",
+    "fullName": "Franziska Gerber",
+    "datasetCount": 3,
+    "affiliation": "CRYOS, EPFL; WSL-SLF",
+    "id": {},
+    "email": "franziska.gerber@epfl.ch",
+    "dataCredit": null
+  },
+  "Varun Sharma": {
+    "firstName": "Varun",
+    "lastName": "Sharma",
+    "fullName": "Varun Sharma",
+    "datasetCount": 2,
+    "affiliation": "CRYOS, EPFL",
+    "id": {},
+    "email": "varun.sharma@epfl.ch",
+    "dataCredit": null
+  },
+  "Rebecca Mott": {
+    "firstName": "Rebecca",
+    "lastName": "Mott",
+    "fullName": "Rebecca Mott",
+    "datasetCount": 5,
+    "affiliation": "KIT/IMK_IFU; WSL-SLF",
+    "id": {},
+    "email": "mott@slf.ch",
+    "dataCredit": null
+  },
+  "Megan Daniels": {
+    "firstName": "Megan",
+    "lastName": "Daniels",
+    "fullName": "Megan Daniels",
+    "datasetCount": 1,
+    "affiliation": "unaffiliated",
+    "id": {},
+    "email": "mhdaniels@gmail.com",
+    "dataCredit": null
+  },
+  "Matthias Bürgi": {
+    "firstName": "Matthias",
+    "lastName": "Bürgi",
+    "fullName": "Matthias Bürgi",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {
+      "identifier": "0000-0001-9681-601X"
+    },
+    "email": "matthias.buergi@wsl.ch",
+    "dataCredit": {
+      "collection": 1
+    }
+  },
+  "Adam Winstral": {
+    "firstName": "Adam",
+    "lastName": "Winstral",
+    "fullName": "Adam Winstral",
+    "datasetCount": 1,
+    "affiliation": "WSL-SLF",
+    "id": {
+      "identifier": "0000-0003-2556-8359"
+    },
+    "email": "adam.winstral@slf.ch",
+    "dataCredit": null
+  },
+  "Werner Gerber": {
+    "firstName": "Werner",
+    "lastName": "Gerber",
+    "fullName": "Werner Gerber",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "werner.gerber@wsl.ch",
+    "dataCredit": null
+  },
+  "Sebastian Schoegl": {
+    "firstName": "Sebastian",
+    "lastName": "Schoegl",
+    "fullName": "Sebastian Schoegl",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avanche Research SLF",
+    "id": {},
+    "email": "sebastian.schoegl@slf.ch",
+    "dataCredit": null
+  },
+  "Matthias Bavay": {
+    "firstName": "Matthias",
+    "lastName": "Bavay",
+    "fullName": "Matthias Bavay",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avanche Research SLF",
+    "id": {},
+    "email": "bavay@slf.ch",
+    "dataCredit": null
+  },
+  "Oliver Thees": {
+    "firstName": "Oliver",
+    "lastName": "Thees",
+    "fullName": "Oliver Thees",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "oliver.thees@wsl.ch",
+    "dataCredit": null
+  },
+  "Vanessa Burg": {
+    "firstName": "Vanessa",
+    "lastName": "Burg",
+    "fullName": "Vanessa Burg",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "vanessa.burg@wsl.ch",
+    "dataCredit": null
+  },
+  "Matthias Erni": {
+    "firstName": "Matthias",
+    "lastName": "Erni",
+    "fullName": "Matthias Erni",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "matthias.erni@wsl.ch",
+    "dataCredit": null
+  },
+  "Gillianne Bowman": {
+    "firstName": "Gillianne",
+    "lastName": "Bowman",
+    "fullName": "Gillianne Bowman",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "gillianne.bowman@wsl.ch",
+    "dataCredit": null
+  },
+  "Renato Lemm": {
+    "firstName": "Renato",
+    "lastName": "Lemm",
+    "fullName": "Renato Lemm",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "renato.lemm@wsl.ch",
+    "dataCredit": null
+  },
+  "Marcia Phillips": {
+    "firstName": "Marcia",
+    "lastName": "Phillips",
+    "fullName": "Marcia Phillips",
+    "datasetCount": 4,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {},
+    "email": "phillips@slf.ch",
+    "dataCredit": null
+  },
+  "Annelen Kahl": {
+    "firstName": "Annelen",
+    "lastName": "Kahl",
+    "fullName": "Annelen Kahl",
+    "datasetCount": 1,
+    "affiliation": "WSL/SLF and EPFL",
+    "id": {},
+    "email": "annelen.kahl@epfl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Jérôme Dujardin": {
+    "firstName": "Jérôme",
+    "lastName": "Dujardin",
+    "fullName": "Jérôme Dujardin",
+    "datasetCount": 1,
+    "affiliation": "EPFL",
+    "id": {},
+    "email": "jerome.dujardin@epfl.ch",
+    "dataCredit": null
+  },
+  "SLF": {
+    "firstName": "SLF",
+    "fullName": "SLF",
+    "datasetCount": 3,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {},
+    "email": "accidents@slf.ch",
+    "dataCredit": null
+  },
+  "Sebastian Schlögl": {
+    "firstName": "Sebastian",
+    "lastName": "Schlögl",
+    "fullName": "Sebastian Schlögl",
+    "datasetCount": 3,
+    "affiliation": "SLF",
+    "id": {},
+    "email": "sebastian.schloegl@slf.ch",
+    "dataCredit": null
+  },
+  "Frank Techel": {
+    "firstName": "Frank",
+    "lastName": "Techel",
+    "fullName": "Frank Techel",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0001-5686-6127"
+    },
+    "email": "techel@slf.ch",
+    "dataCredit": null
+  },
+  "Frédéric Jarry": {
+    "firstName": "Frédéric",
+    "lastName": "Jarry",
+    "fullName": "Frédéric Jarry",
+    "datasetCount": 1,
+    "affiliation": "Association Nationale pour l'Étude de la Neige et des Avalanches, Grenoble, France",
+    "id": {},
+    "email": "frederic.jarry@anena.org",
+    "dataCredit": null
+  },
+  "Georg Kronthaler": {
+    "firstName": "Georg",
+    "lastName": "Kronthaler",
+    "fullName": "Georg Kronthaler",
+    "datasetCount": 1,
+    "affiliation": "Lawinenwarndienst Bayern, Munich, Germany",
+    "id": {},
+    "email": "georg.kronthaler@lfu.bayern.de",
+    "dataCredit": null
+  },
+  "Susanna Mitterer": {
+    "firstName": "Susanna",
+    "lastName": "Mitterer",
+    "fullName": "Susanna Mitterer",
+    "datasetCount": 1,
+    "affiliation": "Österreichisches Kuratorium für alpine Sicherheit, Innsbruck, Austria",
+    "id": {},
+    "email": "susanna.mitterer@alpinesicherheit.at",
+    "dataCredit": null
+  },
+  "Patrick Nairz": {
+    "firstName": "Patrick",
+    "lastName": "Nairz",
+    "fullName": "Patrick Nairz",
+    "datasetCount": 1,
+    "affiliation": "Lawinenwarndienst Tirol, Innsbruck, Austria",
+    "id": {},
+    "email": "patrick.nairz@tirol.gv.at",
+    "dataCredit": null
+  },
+  "Miha Pavšek": {
+    "firstName": "Miha",
+    "lastName": "Pavšek",
+    "fullName": "Miha Pavšek",
+    "datasetCount": 1,
+    "affiliation": "Anton Melik Geographical Institute, Research Centre of the Slovenian Academy of Sciences and Arts, Ljubljana, Slovenia",
+    "id": {},
+    "email": "miha.pavsek@zrc-sazu.si",
+    "dataCredit": null
+  },
+  "Mauro Valt": {
+    "firstName": "Mauro",
+    "lastName": "Valt",
+    "fullName": "Mauro Valt",
+    "datasetCount": 1,
+    "affiliation": "Centro Valanghe di Arabba, Arabba, Italy",
+    "id": {},
+    "email": "cva@arpa.veneto.it",
+    "dataCredit": null
+  },
+  "Nander Wever": {
+    "firstName": "Nander",
+    "lastName": "Wever",
+    "fullName": "Nander Wever",
+    "datasetCount": 2,
+    "affiliation": " WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland",
+    "id": {},
+    "email": "nander.wever@colorado.edu",
+    "dataCredit": null
+  },
+  "Christian Sommer": {
+    "firstName": "Christian",
+    "lastName": "Sommer",
+    "fullName": "Christian Sommer",
+    "datasetCount": 1,
+    "affiliation": " WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland and CRYOS, School of Architecture and Civil Engineering, École Polytechnique Fédérale de Lausanne, Lausanne, Switzerland",
+    "id": {},
+    "email": "sommer@slf.ch",
+    "dataCredit": null
+  },
+  "Philip Crivelli": {
+    "firstName": "Philip",
+    "lastName": "Crivelli",
+    "fullName": "Philip Crivelli",
+    "datasetCount": 2,
+    "affiliation": " WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland and CRYOS, School of Architecture and Civil Engineering, École Polytechnique Fédérale de Lausanne, Lausanne, Switzerland",
+    "id": {},
+    "email": "crivelli@slf.ch",
+    "dataCredit": null
+  },
+  "A. Ludwig": {
+    "firstName": "A.",
+    "lastName": "Ludwig",
+    "fullName": "A. Ludwig",
+    "datasetCount": 1,
+    "affiliation": "None",
+    "id": {},
+    "email": "andreas.ludwig@wsl.ch",
+    "dataCredit": null
+  },
+  "Karl Steiner": {
+    "firstName": "Karl",
+    "lastName": "Steiner",
+    "fullName": "Karl Steiner",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "karl.steiner@wsl.ch",
+    "dataCredit": null
+  },
+  "Alexandre Badoux": {
+    "firstName": "Alexandre",
+    "lastName": "Badoux",
+    "fullName": "Alexandre Badoux",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "alexandre.badoux@wsl.ch",
+    "dataCredit": null
+  },
+  "Enrico Paterna": {
+    "firstName": "Enrico",
+    "lastName": "Paterna",
+    "fullName": "Enrico Paterna",
+    "datasetCount": 1,
+    "affiliation": "SLF",
+    "id": {},
+    "email": "enrico.paterna@slf.ch",
+    "dataCredit": null
+  },
+  "Amin Askarinejad": {
+    "firstName": "Amin",
+    "lastName": "Askarinejad",
+    "fullName": "Amin Askarinejad",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {},
+    "email": "amin.askarinejad@igt.baug.ethz.ch",
+    "dataCredit": null
+  },
+  "Peter Kienzler": {
+    "firstName": "Peter",
+    "lastName": "Kienzler",
+    "fullName": "Peter Kienzler",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {},
+    "email": "peter.kienzler@ifu.baug.ethz.ch",
+    "dataCredit": null
+  },
+  "Francesca Casini": {
+    "firstName": "Francesca",
+    "lastName": "Casini",
+    "fullName": "Francesca Casini",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {},
+    "email": "francesca.casini@igt.baug.ethz.ch",
+    "dataCredit": null
+  },
+  "Sarah M. Springman": {
+    "firstName": "Sarah",
+    "lastName": "M. Springman",
+    "fullName": "Sarah M. Springman",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {
+      "type": "isni",
+      "identifier": "0000000041102119"
+    },
+    "email": "sarah.springman@igt.baug.ethz.ch",
+    "dataCredit": null
+  },
+  "Christian G. Sommer": {
+    "firstName": "Christian",
+    "lastName": "G. Sommer",
+    "fullName": "Christian G. Sommer",
+    "datasetCount": 2,
+    "affiliation": " WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland and CRYOS, School of Architecture and Civil Engineering, École Polytechnique Fédérale de Lausanne, Lausanne, Switzerland",
+    "id": {},
+    "email": "sommer@slf.ch",
+    "dataCredit": null
+  },
+  "Charles Fierz": {
+    "firstName": "Charles",
+    "lastName": "Fierz",
+    "fullName": "Charles Fierz",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland",
+    "id": {},
+    "email": "fierz@slf.ch",
+    "dataCredit": null
+  },
+  "WSL Institute for Snow and Avalanche Research SLF": {
+    "firstName": "WSL",
+    "lastName": "Institute",
+    "fullName": "WSL Institute for Snow and Avalanche Research SLF",
+    "datasetCount": 3,
+    "affiliation": "SLF",
+    "id": {},
+    "email": "nander.wever@slf.ch",
+    "dataCredit": null
+  },
+  "Sebastian W. Hoch": {
+    "firstName": "Sebastian",
+    "lastName": "W. Hoch",
+    "fullName": "Sebastian W. Hoch",
+    "datasetCount": 1,
+    "affiliation": "Department of Atmospheric Sciences, University of Utah, Salt Lake City, Utah",
+    "id": {},
+    "email": "sebastian.hoch@utah.edu",
+    "dataCredit": null
+  },
+  "Peter Bebi": {
+    "firstName": "Peter",
+    "lastName": "Bebi",
+    "fullName": "Peter Bebi",
+    "datasetCount": 4,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {},
+    "email": "bebi@slf.ch",
+    "dataCredit": null
+  },
+  "Melissa Dawes": {
+    "firstName": "Melissa",
+    "lastName": "Dawes",
+    "fullName": "Melissa Dawes",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for snow and avalanche research SLF",
+    "id": {},
+    "email": "melissa.dawes@slf.ch",
+    "dataCredit": null
+  },
+  "Christian Rixen": {
+    "firstName": "Christian",
+    "lastName": "Rixen",
+    "fullName": "Christian Rixen",
+    "datasetCount": 2,
+    "affiliation": "WSL Institute for snow and avalanche research SLF",
+    "id": {},
+    "email": "rixen@slf.ch",
+    "dataCredit": null
+  },
+  "Alec van Herwijnen": {
+    "firstName": "Alec",
+    "lastName": "van Herwijnen",
+    "fullName": "Alec van Herwijnen",
+    "datasetCount": 2,
+    "affiliation": " WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland",
+    "id": {},
+    "email": "vanherwijnen@slf.ch",
+    "dataCredit": null
+  },
+  "Esther R. Frei": {
+    "firstName": "Esther",
+    "lastName": "R. Frei",
+    "fullName": "Esther R. Frei",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0003-1910-7900"
+    },
+    "email": "esther.frei@wsl.ch",
+    "dataCredit": null
+  },
+  "Melissa A. Dawes": {
+    "firstName": "Melissa",
+    "lastName": "A. Dawes",
+    "fullName": "Melissa A. Dawes",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Research Institute WSL",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0003-4919-0151"
+    },
+    "email": "melissa.dawes@wsl.ch",
+    "dataCredit": null
+  },
+  "Swiss Avalanche Warning Service": {
+    "firstName": "Swiss",
+    "lastName": "Avalanche",
+    "fullName": "Swiss Avalanche Warning Service",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {},
+    "email": "lwp@slf.ch",
+    "dataCredit": null
+  },
+  "Cornelia Brönnimann": {
+    "firstName": "Cornelia",
+    "lastName": "Brönnimann",
+    "fullName": "Cornelia Brönnimann",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "conae@gmx.net",
+    "dataCredit": null
+  },
+  "Seraina Kauer": {
+    "firstName": "Seraina",
+    "lastName": "Kauer",
+    "fullName": "Seraina Kauer",
+    "datasetCount": 1,
+    "affiliation": "University of Zürich, Department of Geography",
+    "id": {},
+    "email": "seraina.kauer@geo.uzh.ch",
+    "dataCredit": null
+  },
+  "Philipp Schneider": {
+    "firstName": "Philipp",
+    "lastName": "Schneider",
+    "fullName": "Philipp Schneider",
+    "datasetCount": 1,
+    "affiliation": "University of Zürich, Department of Geography",
+    "id": {},
+    "email": "philipp.schneider@geo.uzh.ch",
+    "dataCredit": null
+  },
+  "Lisa Dirks": {
+    "firstName": "Lisa",
+    "lastName": "Dirks",
+    "fullName": "Lisa Dirks",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF, Davos, Switzerland",
+    "id": {},
+    "email": "lisa.dirks@stmail.uni-bayreuth.de",
+    "dataCredit": null
+  },
+  "Pirmin P. Ebner": {
+    "firstName": "Pirmin",
+    "lastName": "P. Ebner",
+    "fullName": "Pirmin P. Ebner",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0003-1012-5643"
+    },
+    "email": "pirmin.ebner@slf.ch",
+    "dataCredit": null
+  },
+  "Dirk Nikolaus Karger": {
+    "firstName": "Dirk",
+    "lastName": "Nikolaus Karger",
+    "fullName": "Dirk Nikolaus Karger",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "dirk.karger@wsl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "publication": 1,
+      "supervision": 1
+    }
+  },
+  "Olaf Conrad": {
+    "firstName": "Olaf",
+    "lastName": "Conrad",
+    "fullName": "Olaf Conrad",
+    "datasetCount": 1,
+    "affiliation": "University of Hamburg",
+    "id": {},
+    "email": "olaf.conrad@uni-hamburg.de",
+    "dataCredit": null
+  },
+  "Jürgen Böhner": {
+    "firstName": "Jürgen",
+    "lastName": "Böhner",
+    "fullName": "Jürgen Böhner",
+    "datasetCount": 1,
+    "affiliation": "University of Hamburg",
+    "id": {},
+    "email": "juergen.boehner@uni-hamburg.de",
+    "dataCredit": null
+  },
+  "Tobias Kawohl": {
+    "firstName": "Tobias",
+    "lastName": "Kawohl",
+    "fullName": "Tobias Kawohl",
+    "datasetCount": 1,
+    "affiliation": "University of Hamburg",
+    "id": {},
+    "email": "tobias.kawohl@uni-hamburg.de",
+    "dataCredit": null
+  },
+  "Holger Kreft": {
+    "firstName": "Holger",
+    "lastName": "Kreft",
+    "fullName": "Holger Kreft",
+    "datasetCount": 1,
+    "affiliation": "University of Goettingen",
+    "id": {},
+    "email": "hkreft@uni-goettingen.de",
+    "dataCredit": null
+  },
+  "Rodrigo Wilber Soria-Auza": {
+    "firstName": "Rodrigo",
+    "lastName": "Wilber Soria-Auza",
+    "fullName": "Rodrigo Wilber Soria-Auza",
+    "datasetCount": 1,
+    "affiliation": "Rodrigo Wilber Soria-Auza",
+    "id": {},
+    "email": "wilbersa@armonia-bo.org",
+    "dataCredit": null
+  },
+  "Niklaus E. Zimmermann": {
+    "firstName": "Niklaus",
+    "lastName": "E. Zimmermann",
+    "fullName": "Niklaus E. Zimmermann",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "niklaus.zimmermann@wsl.ch",
+    "dataCredit": null
+  },
+  "H. Peter Linder": {
+    "firstName": "H.",
+    "lastName": "Peter Linder",
+    "fullName": "H. Peter Linder",
+    "datasetCount": 1,
+    "affiliation": "University of Zurich",
+    "id": {},
+    "email": "peter.linder@systbot.uzh.ch",
+    "dataCredit": null
+  },
+  "Michael Kessler": {
+    "firstName": "Michael",
+    "lastName": "Kessler",
+    "fullName": "Michael Kessler",
+    "datasetCount": 1,
+    "affiliation": "University of Zurich",
+    "id": {},
+    "email": "michael.kessler@systbot.uzh.ch",
+    "dataCredit": null
+  },
+  "Sebastian Würzer": {
+    "firstName": "Sebastian",
+    "lastName": "Würzer",
+    "fullName": "Sebastian Würzer",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "sebastian.wuerzer@gmail.com",
+    "dataCredit": null
+  },
+  "Tristan Brauchli": {
+    "firstName": "Tristan",
+    "lastName": "Brauchli",
+    "fullName": "Tristan Brauchli",
+    "datasetCount": 1,
+    "affiliation": "EPFL",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0003-3332-4995"
+    },
+    "email": "tristan.brauchli@alumni.epfl.ch",
+    "dataCredit": null
+  },
+  "Andrin Caviezel": {
+    "firstName": "Andrin",
+    "lastName": "Caviezel",
+    "fullName": "Andrin Caviezel",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0001-6249-4913"
+    },
+    "email": "caviezel@slf.ch",
+    "dataCredit": null
+  },
+  "Marc Christen": {
+    "firstName": "Marc",
+    "lastName": "Christen",
+    "fullName": "Marc Christen",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {},
+    "email": "christen@slf.ch",
+    "dataCredit": null
+  },
+  "Perry Bartelt": {
+    "firstName": "Perry",
+    "lastName": "Bartelt",
+    "fullName": "Perry Bartelt",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {},
+    "email": "bartelt@slf.ch",
+    "dataCredit": null
+  },
+  "Bert Kruyt": {
+    "firstName": "Bert",
+    "lastName": "Kruyt",
+    "fullName": "Bert Kruyt",
+    "datasetCount": 1,
+    "affiliation": "CRYOS EPFL and WSL",
+    "id": {},
+    "email": "bert.kruyt@epfl.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1
+    }
+  },
+  "Fabian Wolfsperger": {
+    "firstName": "Fabian",
+    "lastName": "Wolfsperger",
+    "fullName": "Fabian Wolfsperger",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {},
+    "email": "wolfsperger@slf.ch",
+    "dataCredit": null
+  },
+  "Benjamin Reuter": {
+    "firstName": "Benjamin",
+    "lastName": "Reuter",
+    "fullName": "Benjamin Reuter",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0002-7302-3858"
+    },
+    "email": "reuter@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1,
+      "curation": 1,
+      "software": 1,
+      "publication": 1
+    }
+  },
+  "Sascha Bellaire": {
+    "firstName": "Sascha",
+    "lastName": "Bellaire",
+    "fullName": "Sascha Bellaire",
+    "datasetCount": 1,
+    "affiliation": "WSL Institute for Snow and Avalanche Research SLF",
+    "id": {
+      "type": "orcid"
+    },
+    "email": "bellaire@slf.ch",
+    "dataCredit": {
+      "collection": 1,
+      "validation": 1
+    }
+  },
+  "Kalin Müller": {
+    "firstName": "Kalin",
+    "lastName": "Müller",
+    "fullName": "Kalin Müller",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "kalin.müller@wsl.ch",
+    "dataCredit": null
+  },
+  "Fabrizio Cioldi": {
+    "firstName": "Fabrizio",
+    "lastName": "Cioldi",
+    "fullName": "Fabrizio Cioldi",
+    "datasetCount": 1,
+    "affiliation": "WSL",
+    "id": {},
+    "email": "fabrizio.cioldi@wsl.ch",
+    "dataCredit": null
+  },
+  "Paolo Camin": {
+    "firstName": "Paolo",
+    "lastName": "Camin",
+    "fullName": "Paolo Camin",
+    "datasetCount": 1,
+    "affiliation": "FOEN",
+    "id": {},
+    "email": "paolo.camin@bafu.admin.ch",
+    "dataCredit": null
+  },
+  "F. Alexander Haumann": {
+    "firstName": "F.",
+    "lastName": "Alexander Haumann",
+    "fullName": "F. Alexander Haumann",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {
+      "type": "orcid",
+      "identifier": "0000-0002-8218-977X"
+    },
+    "email": "alexander.haumann@usys.ethz.ch",
+    "dataCredit": null
+  },
+  "Nicolas Gruber": {
+    "firstName": "Nicolas",
+    "lastName": "Gruber",
+    "fullName": "Nicolas Gruber",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {},
+    "email": "nicolas.gruber@env.ethz.ch",
+    "dataCredit": null
+  },
+  "Matthias Münnich": {
+    "firstName": "Matthias",
+    "lastName": "Münnich",
+    "fullName": "Matthias Münnich",
+    "datasetCount": 1,
+    "affiliation": "ETHZ",
+    "id": {},
+    "email": "munnich@env.ethz.ch",
+    "dataCredit": null
+  },
+  "Ivy Frenger": {
+    "firstName": "Ivy",
+    "lastName": "Frenger",
+    "fullName": "Ivy Frenger",
+    "datasetCount": 1,
+    "affiliation": "ETHZ, GEOMAR Helmholtz Centre for Ocean Research Kiel",
+    "id": {},
+    "email": "ifrenger@geomar.de ",
+    "dataCredit": null
+  },
+  "Stefan Kern": {
+    "firstName": "Stefan",
+    "lastName": "Kern",
+    "fullName": "Stefan Kern",
+    "datasetCount": 1,
+    "affiliation": "ICDC  University of Hamburg",
+    "id": {},
+    "email": "stefan.kern@uni-hamburg.de",
+    "dataCredit": null
+  },
+  "Alexandre Buttler": {
+    "firstName": "Alexandre",
+    "lastName": "Buttler",
+    "fullName": "Alexandre Buttler",
+    "datasetCount": 1,
+    "affiliation": "Ecole Polytechnique Fédérale de Lausanne",
+    "id": {},
+    "email": "Ecole Polytechnique Fédérale de Lausanne",
+    "dataCredit": null
+  },
+  "Konstantin Gavazov": {
+    "firstName": "Konstantin",
+    "lastName": "Gavazov",
+    "fullName": "Konstantin Gavazov",
+    "datasetCount": 1,
+    "affiliation": "Ecole Polytechnique Fédérale de Lausanne",
+    "id": {},
+    "email": "konstantin.gavazov@epfl.ch",
+    "dataCredit": null
+  },
+  "Alexander Peringer": {
+    "firstName": "Alexander",
+    "lastName": "Peringer",
+    "fullName": "Alexander Peringer",
+    "datasetCount": 1,
+    "affiliation": "Ecole Polytechnique Fédérale de Lausanne",
+    "id": {},
+    "email": "alexander.peringer@uni-kassel.de",
+    "dataCredit": null
+  },
+  "Thomas Spiegelberger": {
+    "firstName": "Thomas",
+    "lastName": "Spiegelberger",
+    "fullName": "Thomas Spiegelberger",
+    "datasetCount": 1,
+    "affiliation": "Ecole Polytechnique Fédérale de Lausanne",
+    "id": {},
+    "email": "thomas.spiegelberger@epfl.ch",
+    "dataCredit": null
+  },
+  "Ernesto Trujillo": {
+    "firstName": "Ernesto",
+    "lastName": "Trujillo",
+    "fullName": "Ernesto Trujillo",
+    "datasetCount": 1,
+    "affiliation": "EPFL, SLF",
+    "id": {},
+    "email": "ernesto.trujillo@epfl.ch",
+    "dataCredit": null
+  },
+  "Raphaël Hoesli": {
+    "firstName": "Raphaël",
+    "lastName": "Hoesli",
+    "fullName": "Raphaël Hoesli",
+    "datasetCount": 1,
+    "affiliation": "EPFL",
+    "id": {},
+    "email": "raphael.hoesli@epfl.ch",
+    "dataCredit": null
+  },
+  "T. Maksym": {
+    "firstName": "T.",
+    "lastName": "Maksym",
+    "fullName": "T. Maksym",
+    "datasetCount": 1,
+    "affiliation": "Woods Hole Oceanographic Institute",
+    "id": {},
+    "email": "tmaksym@whoi.edu",
+    "dataCredit": null
+  },
+  "K. Leonard": {
+    "firstName": "K.",
+    "lastName": "Leonard",
+    "fullName": "K. Leonard",
+    "datasetCount": 1,
+    "affiliation": "EPFL, SLF, University of Colorado, Boulder",
+    "id": {},
+    "email": "katherine.leonard@epfl.ch",
+    "dataCredit": null
+  },
+  "Lars Waser": {
+    "firstName": "Lars",
+    "lastName": "Waser",
+    "fullName": "Lars Waser",
+    "datasetCount": 1,
+    "affiliation": "Swiss Federal Institute for Forest, Snow and Landscape Research WSL ",
+    "id": {
+      "type": "rid",
+      "identifier": "D-5937-2011"
+    },
+    "email": "lars.waser@wsl.ch",
+    "dataCredit": null
+  }
+}

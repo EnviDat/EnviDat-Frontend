@@ -1,0 +1,243 @@
+{
+  "fileObjects":[
+    {
+       "fileName":"temp_v.json",
+       "chartTitle":"Air Temperatures Recent Days",
+       "numberFormat":"##  °C",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"temp.json",
+       "chartTitle":"Air Temperatures Historical Data",
+       "numberFormat":"##  °C",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"ws_v.json",
+       "chartTitle":"Wind Speed Recent Days",
+       "numberFormat":"###  m/s",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"ws.json",
+       "chartTitle":"Wind Speed Historical Data",
+       "numberFormat":"###  m/s",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"wd_v.json",
+       "chartTitle":"Wind Direction Recent Days",
+       "numberFormat":"###  °",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"wd.json",
+       "chartTitle":"Wind Direction Historical Data",
+       "numberFormat":"###  °",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"rh_v.json",
+       "chartTitle":"Relative Humidity Recent Days",
+       "numberFormat":"##  %",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false,
+       "seriesNumberFormat":"#."
+    },
+    {
+       "fileName":"rh.json",
+       "chartTitle":"Relative Humidity Historical Data",
+       "numberFormat":"##  %",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false,
+       "seriesNumberFormat":"#."
+    },
+    {
+       "fileName":"rad_v.json",
+       "chartTitle":"Radiation Recent Days",
+       "numberFormat":"###  W/m²",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"rad.json",
+       "chartTitle":"Radiation Historical Data",
+       "numberFormat":"###  W/m²",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"sheight_v.json",
+       "chartTitle":"Snow Heights Recent Days",
+       "numberFormat":"#.##  m",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false,
+       "seriesNumberFormat":"#.00"
+    },
+    {
+       "fileName":"sheight.json",
+       "chartTitle":"Snow Heights Historical Data",
+       "numberFormat":"#.##  m",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"press_v.json",
+       "chartTitle":"Air Pressure Recent Days",
+       "numberFormat":"###  mbar",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"press.json",
+       "chartTitle":"Air Pressure Historical Data",
+       "numberFormat":"###  mbar",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"battvolt_v.json",
+       "chartTitle":"Battery Voltage Recent Days",
+       "numberFormat":"## V",
+       "dateFormatTime":true,
+       "preload":true,
+       "showDisclaimer":false
+    },
+    {
+       "fileName":"battvolt.json",
+       "chartTitle":"Battery Voltage Historical Data",
+       "numberFormat":"## V",
+       "dateFormatTime":false,
+       "preload":true,
+       "showDisclaimer":false
+    }
+ ],
+  "valueFieldMapping":{
+    "temp":[
+       {
+          "parameter":"AirTC1",
+          "color":"#D48E00",
+          "negativeColor":"#00CED4",
+          "titleString":"Thermocouple 1",
+          "precision":1
+       },
+       {
+          "parameter":"AirTC2",
+          "color":"#D26200",
+          "negativeColor":"#07AACD",
+          "titleString":"Thermocouple 2",
+          "precision":1
+       }
+    ],
+    "ws":[
+       {
+          "parameter":"WS1",
+          "color":"#046401",
+          "titleString":"Wind-speed 1",
+          "precision":1
+       },
+       {
+          "parameter":"WS2",
+          "color":"#5ED352",
+          "titleString":"Wind-speed 2",
+          "precision":1
+       }
+    ],
+    "wd":[
+       {
+          "parameter":"WD1",
+          "color":"#046401",
+          "titleString":"Wind-direction 1",
+          "precision":1
+       },
+       {
+          "parameter":"WD2",
+          "color":"#2FCE32",
+          "titleString":"Wind-direction 2",
+          "precision":1
+       }
+    ],
+    "rh":[
+       {
+          "parameter":"RH1",
+          "color":"#1DAFD7",
+          "titleString":"Relative humidity 1"
+       },
+       {
+          "parameter":"RH2",
+          "color":"#393DA3",
+          "titleString":"Relative humidity 2"
+       }
+    ],
+    "rad":[
+       {
+          "parameter":"SWin",
+          "color":"#E79F32",
+          "titleString":"Short-wave incoming",
+          "precision":1
+       },
+       {
+          "parameter":"SWout",
+          "color":"#9A6008",
+          "titleString":"Short-wave outgoing",
+          "precision":1
+       },
+       {
+          "parameter":"NetRad",
+          "color":"#1C5197",
+          "titleString":"Net radiation",
+          "precision":1
+       }
+    ],
+    "sheight":[
+       {
+          "parameter":"Sheight1",
+          "color":"#679DE2",
+          "titleString":"Snow height 1",
+          "precision":2
+       },
+       {
+          "parameter":"Sheight2",
+          "color":"#3375CD",
+          "titleString":"Snow height 2",
+          "precision":2
+       }
+    ],
+    "press":[
+       {
+          "parameter":"press",
+          "color":"#FF01FF",
+          "titleString":"Atmospheric pressure",
+          "precision":1
+       }
+    ],
+    "battvolt":[
+       {
+          "parameter":"BattVolt",
+          "color":"#27AE61",
+          "titleString":"Battery voltage",
+          "precision":1
+       }
+    ]
+ }
+}

@@ -1,0 +1,308 @@
+[
+  {
+    "id": 0,
+    "name": "Swiss Camp 10m",
+    "latitude": "69.56833",
+    "longitude": "49.31582",
+    "elevation": 1176,
+    "startdate": "1990.4",
+    "active": true,
+    "alias": "swisscamp10m",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp_10m_tower/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/0temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp10m.jpg"
+    }
+  },
+  {
+    "id": 1,
+    "name": "Swiss Camp",
+    "latitude": "69.56833",
+    "longitude": "49.31582",
+    "elevation": 1176,
+    "startdate": "1990.30",
+    "active": true,
+    "alias": "swisscamp",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/1temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg"
+    }
+  },
+	{
+		"id" : 2,
+		"name" : "Crawford Point",
+		"latitude" : "69.87975",
+		"longitude" : "46.98667",
+		"elevation" : 2022,
+		"startdate" : "1995.39",
+		"active" : true,
+		"alias" : "crawfordpoint",
+		"data" : 1,
+		"envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/crawfordpoint/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/2temp.json",
+			"fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/crawfordpoint.jpg"
+		}
+	},
+	{
+		"id" : 3,
+		"name" : "NASA-U",
+		"latitude" : "73.84189",
+		"longitude" : "49.49831",
+		"elevation" : 2369,
+		"startdate" : "1995.41",
+		"active" : true,
+		"alias" : "nasau",
+		"data" : 0,
+		"envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_u/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/3temp.json",
+			"fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg"
+		}
+	},
+	{
+		"id" : 4,
+		"name" : "GITS",
+		"latitude" : "77.13781",
+		"longitude" : "61.04113",
+		"elevation" : 1887,
+		"startdate" : "1995.43",
+		"active" : true,
+		"alias" : "gits",
+		"data" : 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/gits/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/4temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg"
+    }
+	},
+	{
+		"id" : 5,
+		"name" : "Humboldt",
+		"latitude" : "78.5266",
+		"longitude" : "56.8305",
+		"elevation" : 1995,
+		"startdate" : "1995.47",
+		"active" : true,
+		"alias" : "humboldt",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/humboldt/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/5temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/humboldt.jpg"
+    }
+	},
+	{
+		"id" : 6,
+		"name" : "Summit Station",
+		"latitude" : "72.57972",
+		"longitude" : "38.50454",
+		"elevation" : 3199,
+		"startdate" : "1996.37 ",
+		"active" : true,
+		"alias" : "summitstation",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/summit/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/6temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/summitstation.jpg"
+    }
+	},
+	{
+		"id" : 7,
+		"name" : "TUNU-N",
+		"latitude" : "78.01677",
+		"longitude" : "33.99387",
+		"elevation" : 2113,
+		"startdate" : "1996.38",
+		"active" : true,
+		"alias" : "tununorth",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/tunu_n/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/7temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/tununorth.jpg"
+    }
+	},
+	{
+		"id" : 8,
+		"name" : "DYE-2",
+		"latitude" : "66.48001",
+		"longitude" : "46.27889",
+		"elevation" : 2165,
+		"startdate" : "1996.40",
+		"active" : true,
+		"alias" : "dyeii",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/dye2/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/8temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/dyeii.jpg"
+    }
+	},
+	{
+		"id" : 9,
+		"name" : "JAR 1",
+		"latitude" : "69.498358",
+		"longitude" : "49.68156",
+		"elevation" : 932,
+		"startdate" : "1996.47",
+		"active" : true,
+		"alias" : "jar1",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/jar1/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/9temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/jar1.jpg"
+    }
+	},
+	{
+		"id" : 10,
+		"name" : "Saddle",
+		"latitude" : "65.99947",
+		"longitude" : "44.50016",
+		"elevation" : 2467,
+		"startdate" : "1997.30",
+		"active" : true,
+		"alias" : "saddle",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/saddle/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/10temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/saddle.jpg"
+    }
+	},
+	{
+		"id" : 11,
+		"name" : "South Dome",
+		"latitude" : "63.1488",
+		"longitude" : "44.81717",
+		"elevation" : 2922,
+		"startdate" : "1997.31",
+		"active" : true,
+		"alias" : "southdome",
+		"data" : 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/southdome/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/11temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/southdome.jpg"
+    }
+	},
+	{
+		"id" : 12,
+		"name" : "NASA-E",
+		"latitude" : "75.00000",
+		"longitude" : "29.99972",
+		"elevation" : 2631,
+		"startdate" : "1997.34",
+		"active" : true,
+		"alias" : "nasaeast",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_east/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/12temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasaeast.jpg"
+    }
+	},
+	{
+		"id" : 15,
+		"name" : "NASA-SE",
+		"latitude" : "66.4797",
+		"longitude" : "42.5002",
+		"elevation" : 2425,
+		"startdate" : "1998.30",
+		"active" : false,
+		"alias" : "nasasoutheast",
+		"data" : 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_southeast/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/15temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasasoutheast.jpg"
+    }
+	},
+	{
+		"id" : 22,
+		"name" : "Peterman ELA",
+		"latitude" : "80.09694444",
+		"longitude" : "58.13166667",
+		"elevation" : 924,
+		"startdate" : "2003.40",
+		"active" : true,
+		"alias" : "petermann",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/petermann/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/22temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/petermann.jpg"
+    }
+	},
+	{
+		"id" : 23,
+		"name" : "NEEM",
+		"latitude" : "77.50222222",
+		"longitude" : "50.87444444",
+		"elevation" : 2454,
+		"startdate" : "2006",
+		"active" : true,
+		"alias" : "neem",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/neem/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/23temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/neem.jpg"
+    }
+	},
+	{
+		"id" : 24,
+		"name" : "East Grip",
+		"latitude" : "75.59333333",
+		"longitude" : "35.98861111",
+		"elevation" : 2600,
+		"startdate" : "2014",
+		"active" : true,
+		"alias" : "eastgrip",
+		"data" : 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/east_grip/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/24temp.json",
+      "fallbackParameter": "airtemp1",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/eastgrip.jpg"
+    }
+	}
+]
