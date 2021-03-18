@@ -2,7 +2,7 @@
   <div style="height: 100%; width: 100%; z-index: 100; max-width: 100%; position: relative;">
 
     <div :class="config.timeseries ? 'map-container-timeslider' : 'map-container'">
-      <v-row class="top-slot">
+      <v-row class="top-slot" no-gutters>
         <slot name="top"></slot>
       </v-row>
 
@@ -15,22 +15,32 @@
         :layers="config.layers"
         :selected="selectedLayerName"
         @select="select"
+        @setOpacity="setOpacity"
+        :opacity="opacity"
         style="position: absolute; z-index: 999; top: 95px; bottom: 150px; left: 35px;"
       ></map-layer-control>
 
+      <feature-info
+        :div-id="`${mapDivId}_graph`"
+        v-if="featureinfo.length > 0"
+        :layers="config.layers"
+        :selected="selectedLayerName"
+        style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;"
+      ></feature-info>
+
       <div v-if="!hasGeom" style="color: red;">No data to show</div>
-      <map-leaflet v-if="!show3d" :layer="selectedLayer" :map-div-id="mapDivId">
+      <map-leaflet v-if="!show3d" :layer="selectedLayer" :map-div-id="mapDivId" :points="featureinfo" :opacity="opacity">
         <slot></slot><br>
-        <v-btn fab small @click="show3d = true">3D</v-btn>
+        <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn>
       </map-leaflet>
-      <map-cesium v-if="show3d" :layer="selectedLayer" :map-div-id="mapDivId">
+      <map-cesium v-if="show3d" :layer="selectedLayer" :map-div-id="mapDivId" :opacity="opacity">
         <slot></slot><br>
-        <v-btn fab small @click="show3d = false">2D</v-btn>
+        <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>
       </map-cesium>
     </div>
     <div class="timeslider-container" v-if="config.timeseries" style="position: relative;">
       <timeslider
-        style="height: 120px; z-index: 10000; position: relative;"
+        style="height: 100px; z-index: 10000; position: relative;"
         @select="select"
         :chart-data="config.layers"
         :div-id="`timeslider_${mapDivId}`"
@@ -46,10 +56,12 @@
   import MapCesium from './MapCesium';
   import MapLayerControl from './MapLayerControl';
   import Timeslider from './Timeslider';
+  import FeatureInfo from './FeatureInfo';
 
   export default {
     name: 'Map',
     components: {
+      FeatureInfo,
       Timeslider,
       MapLayerControl,
       MapCesium,
@@ -58,14 +70,17 @@
     props: {
       config: { type: Object, required: true },
       mapDivId: { type: String, required: true },
-      selected: { type: String },
+      selectedLayerName: { type: String },
+      show3d: { type: Boolean },
     },
     data: () => ({
       layerControlOpen: false,
-      show3d: false,
-      selectedLayerName: null,
+      opacity: 100,
     }),
     computed: {
+      featureinfo() {
+        return this.$store.state.geoservices.timeseries;
+      },
       selectedLayer() {
         if (!this.selectedLayerName) {
           return null;
@@ -81,22 +96,15 @@
       },
     },
     methods: {
+      setShow3d(value) {
+        this.$emit('setShow3d', value);
+      },
+      setOpacity(value) {
+        this.opacity = value;
+      },
       select(layerName) {
-        this.selectedLayerName = layerName;
+        this.$emit('changeLayer', layerName);
       },
-    },
-    watch: {
-      selectedLayerName() {
-        this.$emit('changeLayer', this.selectedLayerName);
-      },
-    },
-    mounted() {
-      if (this.selected) {
-        this.select(this.selected);
-      } else {
-        const layer = this.config.layers.find(l => l.visibility);
-        this.select(layer.name);
-      }
     },
   };
 </script>
@@ -116,12 +124,11 @@
   }
 
   .map-container-timeslider {
-    height: calc(100% - 120px);
+    height: calc(100% - 100px);
   }
 
   .timeslider-container {
-    height: 120px;
+    height: 100px;
   }
-
 
 </style>
