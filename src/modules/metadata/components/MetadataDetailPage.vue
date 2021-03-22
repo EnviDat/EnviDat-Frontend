@@ -7,7 +7,7 @@
       <v-col class="elevation-5 pa-0"
               cols="12"
               ref="header"
-              style="z-index: 1; left: 0; " 
+              style="z-index: 1; left: 0; "
               :style="headerStyle" >
 
         <metadata-header v-bind="header"
@@ -57,7 +57,7 @@
                       :authorDeadInfo="authorDeadInfo" />
           </v-col>
         </v-row>
-        
+
       </template>
     </two-column-layout>
 
@@ -266,12 +266,12 @@ export default {
           showDisclaimer: fileObj.showDisclaimer,
           seriesNumberFormat: fileObj.seriesNumberFormat,
         };
-        
+
         fileList.push(fileObjectTemplate);
       }
 
       return fileList;
-    },    
+    },
     baseUrl() {
       return process.env.NODE_ENV === 'production' ? this.baseStationURL : this.baseStationURLTestdata;
     },
@@ -353,7 +353,7 @@ export default {
       axios
       .get(url)
       .then((response) => {
-        
+
         this.fileObjects = response.data.fileObjects;
         this.graphStyling = response.data.graphStyling;
       })
