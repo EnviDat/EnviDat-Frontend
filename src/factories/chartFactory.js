@@ -155,9 +155,10 @@ function getConfigFiles(resources) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json') {
+function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
   let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
   let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
+  let geoUrl = configs?.geoServiceConfig?.url || null;
 
   if (!configs) {
     configs = {};
@@ -166,6 +167,7 @@ function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/st
   if (process.env.NODE_ENV === 'development') {
     stationsConfigUrl = ''; // testStationsConfigUrl;
     stationParametersUrl = ''; // testStationParametersUrl;
+    geoUrl = testGeoUrl;
 
   } else {
 
@@ -180,6 +182,7 @@ function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/st
 
   configs.stationsConfigUrl = stationsConfigUrl;
   configs.stationParametersUrl = stationParametersUrl;
+  configs.geoUrl = geoUrl;
 
   return configs;
 }
@@ -191,5 +194,5 @@ export {
   addStartEndDateUrl,
   hasData,
   getConfigFiles,
-  getGcnetStationsConfigs,
+  getConfigUrls,
 };

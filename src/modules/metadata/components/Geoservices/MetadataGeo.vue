@@ -59,8 +59,8 @@
     watch: {
       ready: {
         handler() {
-          if (this.genericProps.config) {
-            this.$store.dispatch('fetchConfig', this.genericProps.config.url);
+          if (this.genericProps.configUrl) {
+            this.$store.dispatch('fetchConfig', this.genericProps.configUrl);
           }
         },
         immediate: true,

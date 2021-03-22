@@ -123,7 +123,7 @@ import {
 } from '@/factories/authorFactory';
 import {
   getConfigFiles,
-  getGcnetStationsConfigs,
+  getConfigUrls,
 } from '@/factories/chartFactory';
 
 import {
@@ -361,6 +361,17 @@ export default {
         this.stationParametersError = error;
       });
     },
+    geoConfigJson(url) {
+
+      axios
+      .get(url)
+      .then((response) => {
+        this.geoServicesConfig = response.data;
+      })
+      .catch((error) => {
+        this.geoServiceConfigError = error;
+      });
+    },    
     getCurrentStation(stationId) {
       for (let i = 0; i < this.stationsConfig.length; i++) {
         const station = this.stationsConfig[i];
@@ -458,7 +469,7 @@ export default {
       this.$set(components.MetadataBody, 'genericProps', { body: this.body });
       this.$set(components.MetadataCitation, 'genericProps', this.citation);
 
-      configs = getGcnetStationsConfigs(configs);
+      configs = getConfigUrls(configs);
 
       if (configs?.stationsConfigUrl) {
         this.loadStationsConfig(configs.stationsConfigUrl);
@@ -468,15 +479,20 @@ export default {
         this.loadParameterJson(configs.stationParametersUrl);
       }
 
+      // if (configs?.geoUrl) {
+      //   this.geoConfigJson(configs.geoUrl);
+      // }
+
       this.$set(components.MetadataResources, 'genericProps', {
         ...this.resources,
         resourcesConfig: this.resourcesConfig,
       });
 
-      const geoConfig = configs?.geoServicesConfig ? configs.geoServicesConfig : null;
+      // const geoConfig = configs?.geoServicesConfig ? configs.geoServicesConfig : null;
 
-      if (geoConfig) {
-        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, config: geoConfig });
+      // if (geoConfig) {
+      if (configs?.geoUrl) {
+        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, configUrl: configs?.geoUrl });
       } else {
         this.$set(components.MetadataLocation, 'genericProps', this.location);
       }
@@ -506,7 +522,7 @@ export default {
 
       this.secondCol = [
         components.MetadataResources,
-        geoConfig ? components.MetadataGeo : components.MetadataLocation,
+        configs?.geoUrl ? components.MetadataGeo : components.MetadataLocation,
         components.MetadataDetails,
       ];
 
@@ -516,7 +532,7 @@ export default {
         components.MetadataPublications,
         components.MetadataResources,
         components.MetadataFunding,
-        geoConfig ? components.MetadataGeo : components.MetadataLocation,
+        configs?.geoUrl ? components.MetadataGeo : components.MetadataLocation,
         components.MetadataAuthors,
         components.MetadataDetails,
       ];
@@ -704,6 +720,7 @@ export default {
     graphStyling: null,
     stationsConfigError: null,
     stationParametersError: null,
+    geoServiceConfigError: null,
     header: null,
     body: null,
     citation: null,
