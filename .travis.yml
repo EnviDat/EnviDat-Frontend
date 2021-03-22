@@ -1,0 +1,14 @@
+language: node_js
+# safelist
+branches:
+  only:
+  - master
+  - develop
+node_js:
+  - "12"
+before_install:
+  - npm i -g npm
+  - npm i
+script:
+  - npm run test:unit
+  - npm run build
