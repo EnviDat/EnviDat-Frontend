@@ -154,6 +154,7 @@ function getConfigFiles(resources) {
   return configs;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json') {
   let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
   let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
@@ -163,8 +164,8 @@ function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/st
   }
 
   if (process.env.NODE_ENV === 'development') {
-    stationsConfigUrl = testStationsConfigUrl;
-    stationParametersUrl = testStationParametersUrl;
+    stationsConfigUrl = ''; // testStationsConfigUrl;
+    stationParametersUrl = ''; // testStationParametersUrl;
 
   } else {
 
