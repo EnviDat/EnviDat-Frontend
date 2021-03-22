@@ -1,7 +1,5 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/01f1c3e5efb84ce2a39a515682d6e136)](https://www.codacy.com/gh/EnviDat/EnviDat-Frontend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=EnviDat/EnviDat-Frontend&amp;utm_campaign=Badge_Grade)
-
 [![DeepScan grade](https://deepscan.io/api/teams/6114/projects/16319/branches/347336/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=6114&pid=16319&bid=347336)
-
 ![Travis (.com) branch](https://img.shields.io/travis/com/EnviDat/EnviDat-Frontend?branch=master&label=master%20build)
 ![Travis (.com) branch](https://img.shields.io/travis/com/EnviDat/EnviDat-Frontend?branch=develop&label=develop%20build)
 
