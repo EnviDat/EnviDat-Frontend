@@ -488,11 +488,10 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      // const geoConfig = configs?.geoServicesConfig ? configs.geoServicesConfig : null;
+      const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
 
-      // if (geoConfig) {
-      if (configs?.geoUrl) {
-        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, configUrl: configs?.geoUrl });
+      if (geoConfigUrl) {
+        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, configUrl: geoConfigUrl });
       } else {
         this.$set(components.MetadataLocation, 'genericProps', this.location);
       }
@@ -522,7 +521,7 @@ export default {
 
       this.secondCol = [
         components.MetadataResources,
-        configs?.geoUrl ? components.MetadataGeo : components.MetadataLocation,
+        geoConfigUrl ? components.MetadataGeo : components.MetadataLocation,
         components.MetadataDetails,
       ];
 
@@ -532,7 +531,7 @@ export default {
         components.MetadataPublications,
         components.MetadataResources,
         components.MetadataFunding,
-        configs?.geoUrl ? components.MetadataGeo : components.MetadataLocation,
+        geoConfigUrl ? components.MetadataGeo : components.MetadataLocation,
         components.MetadataAuthors,
         components.MetadataDetails,
       ];

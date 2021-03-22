@@ -156,17 +156,20 @@ function getConfigFiles(resources) {
 
 // eslint-disable-next-line no-unused-vars
 function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
+  // eslint-disable-next-line prefer-const
   let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
+  // eslint-disable-next-line prefer-const
   let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
-  let geoUrl = configs?.geoServiceConfig?.url || null;
+  // eslint-disable-next-line prefer-const
+  let geoUrl = configs?.geoServicesConfig?.url || null;
 
   if (!configs) {
     configs = {};
   }
 
   if (process.env.NODE_ENV === 'development') {
-    stationsConfigUrl = ''; // testStationsConfigUrl;
-    stationParametersUrl = ''; // testStationParametersUrl;
+    // stationsConfigUrl = ''; // testStationsConfigUrl;
+    // stationParametersUrl = ''; // testStationParametersUrl;
     geoUrl = testGeoUrl;
 
   } else {
@@ -178,6 +181,8 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
     if (configs?.gcnetStationParameters) {
       configs.gcnetStationParameters.hideFromResourceList = true;
     }
+
+    configs.geoServicesConfig.hideFromResourceList = configs?.geoServicesConfig || false;
   }
 
   configs.stationsConfigUrl = stationsConfigUrl;
