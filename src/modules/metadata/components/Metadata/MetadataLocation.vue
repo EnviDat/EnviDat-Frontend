@@ -1,18 +1,17 @@
 <template>
-  <v-card id="MetadataLocation" >
+  <v-card id="MetadataLocation">
 
     <v-card-title class="title metadata_title">
       {{ METADATA_LOCATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="!hasGeom"
+    <v-card-text v-if="!hasGeom && !hasMapService"
                   class="pa-4 pt-0"
                   :style="`color: ${emptyTextColor};`" >
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-else-if="hasGeom"
-                  class="pa-4 pt-0" >
+    <v-card-text v-else-if="hasGeom || hasMapService" class="pa-4 pt-0" >
 
       <metadata-location-cesium v-show="show3d"
                                 v-bind="mapSize"
@@ -22,7 +21,7 @@
                                 :zoomExtent="zoomExtent"
                                 :color="color"
                                 :fillAlpha="fillAlpha"
-                                :outline-width="outlineWidth" >
+                                :outline-width="outlineWidth">
         <v-btn v-if="enabled3d" fab small @click="show3d = false">2D</v-btn>
       </metadata-location-cesium>
 
@@ -33,6 +32,12 @@
                                   :color="color"
                                   :fillAlpha="fillAlpha"
                                   :outline-width="outlineWidth" >
+        <v-menu v-if="hasMapService" offset-x right top>
+          <template v-slot:activator="{ on }">
+            <v-btn icon small fab v-on="on" class="white elevation-4"><v-icon>layers</v-icon></v-btn>
+          </template>
+          <metadata-location-catalog :url="genericProps.mapService.url" :type="genericProps.mapService.type"></metadata-location-catalog>
+        </v-menu>
         <v-btn v-if="enabled3d" fab small @click="show3d = true">3D</v-btn>
       </metadata-location-leaflet>
     </v-card-text>
@@ -51,6 +56,7 @@ import {
 } from '@turf/turf';
 
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
+import MetadataLocationCatalog from './MetadataLocationCatalog';
 
 const MetadataLocationCesium = () => import('./MetadataLocationCesium');
 const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
@@ -59,6 +65,7 @@ const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
 export default {
   name: 'MetadataLocation',
   components: {
+    MetadataLocationCatalog,
     MetadataLocationLeaflet,
     MetadataLocationCesium,
   },
@@ -113,6 +120,9 @@ export default {
     },
     hasGeom() {
       return !!this.geom;
+    },
+    hasMapService() {
+      return !!this.genericProps.mapService;
     },
     mapSize() {
       const heightSm = 300;

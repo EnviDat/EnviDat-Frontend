@@ -27,8 +27,6 @@
   import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
   import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
   import Color from 'cesium/Core/Color';
-  // import Credit from 'cesium/Core/Credit';
-  // import CreditDisplay from 'cesium/Scene/CreditDisplay';
   import Rectangle from 'cesium/Core/Rectangle';
   import 'cesium/Widgets/widgets.css';
 
@@ -107,7 +105,7 @@
             });
           });
 
-        this.zoomToGeometry();        
+        this.zoomToGeometry();
       },
       zoomIn() {
         this.viewer.camera.zoomIn();

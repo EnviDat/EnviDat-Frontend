@@ -361,17 +361,6 @@ export default {
         this.stationParametersError = error;
       });
     },
-    geoConfigJson(url) {
-
-      axios
-      .get(url)
-      .then((response) => {
-        this.geoServicesConfig = response.data;
-      })
-      .catch((error) => {
-        this.geoServiceConfigError = error;
-      });
-    },    
     getCurrentStation(stationId) {
       for (let i = 0; i < this.stationsConfig.length; i++) {
         const station = this.stationsConfig[i];
@@ -479,16 +468,19 @@ export default {
         this.loadParameterJson(configs.stationParametersUrl);
       }
 
-      // if (configs?.geoUrl) {
-      //   this.geoConfigJson(configs.geoUrl);
-      // }
-
       this.$set(components.MetadataResources, 'genericProps', {
         ...this.resources,
         resourcesConfig: this.resourcesConfig,
       });
 
-      const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
+      // const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
+      const geoConfigUrl = null;
+      if (this.location) {
+        this.location.mapService = {
+          url: 'https://wms.zh.ch/FnsPflegeZHWMS?SERVICE=WMS&Request=GetCapabilities',
+          type: 'wms',
+        };
+      }
 
       if (geoConfigUrl) {
         this.$set(components.MetadataGeo, 'genericProps', { ...this.location, configUrl: geoConfigUrl });
