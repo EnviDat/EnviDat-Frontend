@@ -31,12 +31,19 @@
                                   :zoomExtent="zoomExtent"
                                   :color="color"
                                   :fillAlpha="fillAlpha"
-                                  :outline-width="outlineWidth" >
+                                  :outline-width="outlineWidth"
+                                 :wms="selectedWms"
+      >
         <v-menu v-if="hasMapService" offset-x right top>
           <template v-slot:activator="{ on }">
             <v-btn icon small fab v-on="on" class="white elevation-4"><v-icon>layers</v-icon></v-btn>
           </template>
-          <metadata-location-catalog :url="genericProps.mapService.url" :type="genericProps.mapService.type"></metadata-location-catalog>
+          <metadata-location-catalog
+            :url="genericProps.mapService.url"
+            :type="genericProps.mapService.type"
+            :selected="selectedWms ? selectedWms.id : null"
+            @select="selectMapService"
+          ></metadata-location-catalog>
         </v-menu>
         <v-btn v-if="enabled3d" fab small @click="show3d = true">3D</v-btn>
       </metadata-location-leaflet>
@@ -78,7 +85,14 @@ export default {
     fillAlpha: 0.5,
     outlineWidth: 3,
     METADATA_LOCATION_TITLE,
+    selectedWms: null,
   }),
+  methods: {
+    selectMapService(value) {
+      this.selectedWms = value;
+      console.log(value);
+    },
+  },
   computed: {
     emptyTextColor() {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
