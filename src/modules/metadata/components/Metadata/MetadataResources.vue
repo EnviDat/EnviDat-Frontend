@@ -53,8 +53,7 @@
                           :dateCreatedIcon="dateCreatedIcon"
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig.downloadActive"
-                          @clicked="resClicked(res)" />
+                          :downloadActive="resourcesConfig.downloadActive" />
         </v-col>
       </v-row>
 
@@ -94,6 +93,7 @@ import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import {
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
+  INJECT_RESOURCE_STRATEGY,
 } from '@/factories/eventBus';
 
 import ResourceCard from '../ResourceCard';
@@ -113,10 +113,18 @@ export default {
   created() {
     this.injectedComponent = null;
     eventBus.$on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
+
+    this.strategyEvent = null;
+    this.strategyProperty = null;
+    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
   beforeDestroy() {
     this.injectedComponent = null;
     eventBus.$off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
+
+    this.strategyEvent = null;
+    this.strategyProperty = null;
+    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },  
   computed: {
     doi() {
@@ -158,24 +166,22 @@ export default {
     readMore() {
       this.showAllResources = !this.showAllResources;
     },
-    resClicked(res) {
-      this.$router.push({
-        name: 'ResourceDetailPage',
-        params: {
-          id: res.id,
-        },
-      });
-    },
     injectComponent(injectedComponent, injectedComponentConfig, injectAtStart = true) {
       this.injectedComponent = injectedComponent;
       this.injectedComponentConfig = injectedComponentConfig;
       this.injectAtStart = injectAtStart;
     },    
+    injectStrategy(strategyEvent, strategyProperty) {
+      this.strategyEvent = strategyEvent;
+      this.strategyProperty = strategyProperty;
+    },
   },
   data: () => ({
     injectedComponent: null,
     injectAtStart: true,
     injectedComponentConfig: null,
+    strategyEvent: null,
+    strategyProperty: null,
     showAllResources: false,
     emptyText: 'No resources found for this dataset',
     METADATA_RESOURCES_TITLE,
