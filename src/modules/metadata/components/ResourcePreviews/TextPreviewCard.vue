@@ -27,13 +27,8 @@
 */
 import { renderMarkdown } from '@/factories/stringFactory';
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
-
 export default {
   components: {
-    BaseIconLabelView,
-    BaseIconButton,
   },
   props: {
     title: String,
