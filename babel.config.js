@@ -9,13 +9,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-module.exports = {
+ module.exports = {
   presets: [
-    ['@babel/preset-env', { targets: { node: 'current' } }],
+    [
+      '@vue/cli-plugin-babel/preset',
+    ],
   ],
   env: {
     test: {
-      plugins: ['require-context-hook'],
+      plugins: [
+        'require-context-hook',
+        '@babel/plugin-proposal-nullish-coalescing-operator',
+        '@babel/plugin-proposal-optional-chaining',
+      ],
     },
   },  
 };
