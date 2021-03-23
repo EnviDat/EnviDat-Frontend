@@ -477,7 +477,7 @@ export default {
       const geoConfigUrl = null;
       if (this.location) {
         this.location.mapService = {
-          url: 'https://wms.zh.ch/FnsPflegeZHWMS?SERVICE=WMS&Request=GetCapabilities',
+          url: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
           type: 'wms',
         };
       }

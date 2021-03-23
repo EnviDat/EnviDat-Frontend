@@ -32,7 +32,8 @@
                                   :color="color"
                                   :fillAlpha="fillAlpha"
                                   :outline-width="outlineWidth"
-                                 :wms="selectedWms"
+                                 :selectedMapService="selectedWms"
+                                 :mapService="genericProps.mapService"
       >
         <v-menu v-if="hasMapService" offset-x right top>
           <template v-slot:activator="{ on }">
@@ -136,7 +137,7 @@ export default {
       return !!this.geom;
     },
     hasMapService() {
-      return !!this.genericProps.mapService;
+      return this.genericProps ? !!this.genericProps.mapService : false;
     },
     mapSize() {
       const heightSm = 300;

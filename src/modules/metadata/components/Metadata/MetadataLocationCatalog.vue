@@ -4,7 +4,7 @@
       <v-progress-circular indeterminate></v-progress-circular>
     </div>
     <v-card-text v-else>
-    <div style="overflow-y: auto; max-height: 300px;">
+    <div style="overflow-y: auto; max-height: 300px;" v-if="catalog.layerdata">
       <div v-for="(cat, key) in catalog.layerdata.children" :key="key" class="item" @click="select(cat)" :class="{'selected': isSelected(cat.id)}">
         {{ cat.name }}
       </div>

@@ -32,12 +32,15 @@
       color: String,
       fillAlpha: Number,
       outlineWidth: Number,
+      selectedMapService: Object,
+      mapService: Object,
     },
     data: () => ({
       marker,
       marker2x,
       markerShadow,
       map: null,
+      mapServiceLayer: null,
     }),
     mounted() {
       this.setupMap();
@@ -125,6 +128,29 @@
         this.mapLayerGroup.addTo(map);
 
         L.control.layers(baseMaps).addTo(map);
+      },
+    },
+    watch: {
+      selectedMapService: {
+        handler() {
+          if (this.mapServiceLayer) {
+            this.map.removeLayer(this.mapServiceLayer);
+          }
+          if (this.mapService && this.selectedMapService) {
+            // eslint-disable-next-line new-cap
+            this.mapServiceLayer = new L.tileLayer.wms(
+              this.mapService.url,
+              {
+                layers: this.selectedMapService.id,
+                transparent: 'true',
+                format: 'image/png',
+              },
+            );
+            this.map.addLayer(this.mapServiceLayer);
+          }
+        },
+        deep: true,
+        immediate: true,
       },
     },
   };
