@@ -1,8 +1,9 @@
 <template>
   <v-dialog v-model="showDialog"
+            id="GenericModalPageLayout"
             transition="dialog-bottom-transition"
             scrollable
-            persistent >
+            class="modalHeight" >
 
     <v-card class="pa-0 ml-15">
       
@@ -84,3 +85,13 @@ export default {
   }),
 };
 </script>
+
+
+<style scoped>
+
+  .modalHeight {
+    max-height: 95% !important;
+    height: 95% !important;
+  }
+
+</style>

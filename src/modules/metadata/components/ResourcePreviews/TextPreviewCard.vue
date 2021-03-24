@@ -1,12 +1,8 @@
 <template>
   <v-card id="TextPreviewCard" >
 
-    <v-card-title class="title">
-      {{ title }}
-    </v-card-title>
-
-    <v-card-text class="pt-0" >
-      {{ enableMarkdown ? markdownText : text }}
+    <v-card-text >
+      {{ enableMarkdown ? markdownText : fileContent }}
     </v-card-text>
 
   </v-card>
@@ -25,28 +21,41 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import axios from 'axios';
 import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
-  components: {
-  },
   props: {
-    title: String,
-    text: String,
+    url: String,
     enableMarkdown: {
       type: Boolean,
       default: false,
     },
   },
-  data: () => ({
-  }),
+  mounted() {
+    this.getFileContent();
+  },
   computed: {
     markdownText() {
-      return renderMarkdown(this.description.trim());
+      return renderMarkdown(this.fileContent.trim());
     },
   },
   methods: {
+    getFileContent() {
+      axios.get(this.url)
+      .then((response) => {
+        this.fileContent = response.data;
+      })
+      .catch((reason) => {
+        this.fileError = reason;
+      });
+
+    },
   },
+  data: () => ({
+    fileContent: '',
+    fileError: '',
+  }),
 };
 </script>
 

@@ -49,10 +49,7 @@ export function getPreviewStrategyFromUrl(url) {
   const resExtension = getUrlExtension(url);
 
   if (resExtension) {
-    const strat = getPreviewStrategy(resExtension);
-    if (strat) {
-      return strat;
-    }
+    return getPreviewStrategy(resExtension);
   }
 
   return null;

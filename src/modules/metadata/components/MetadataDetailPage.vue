@@ -61,7 +61,7 @@
       </template>
     </two-column-layout>
 
-    <GenericModalPageLayout :title="`All sensor data charts for ${currentStation ? currentStation.name : ''} station`" >
+    <GenericModalPageLayout :title="modalTitle" >
 
       <component :is="gcnetModalComponent"
                   :currentStation="currentStation"
@@ -394,6 +394,7 @@ export default {
 
       this.currentStation = this.getCurrentStation(stationId);
       this.gcnetModalComponent = this.$options.components.DetailChartsList;
+      this.modalTitle = `All sensor data charts for ${this.currentStation ? this.currentStation.name : ''} station`;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -403,6 +404,11 @@ export default {
 
       this.filePreviewComponent = strat.component;
       this.filePreviewUrl = url;
+
+      const splits = url.split('/');
+      const fileName = splits[splits.length - 1];
+
+      this.modalTitle = `Preview of ${fileName}`;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -752,6 +758,7 @@ export default {
     contactIcon: null,
     mailIcon: null,
     licenseIcon: null,
+    modalTitle: '',
     gcnetModalComponent: null,
     filePreviewComponent: null,
     filePreviewUrl: null,
