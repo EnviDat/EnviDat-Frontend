@@ -1,14 +1,10 @@
 <template>
   <v-card id="MetadataLocation" v-if="catalog">
-    {{ genericProps }}
-
     <v-card-title class="title metadata_title">
       {{ METADATA_LOCATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="!hasGeom && !hasMapService"
-                  class="pa-4 pt-0"
-                  :style="`color: ${emptyTextColor};`" >
+    <v-card-text v-if="!hasGeom && !hasMapService" class="pa-4 pt-0" :style="`color: ${emptyTextColor};`">
       {{ emptyText }}
     </v-card-text>
 
@@ -33,7 +29,7 @@
                                   :color="color"
                                   :fillAlpha="fillAlpha"
                                   :outline-width="outlineWidth"
-                                 :selectedMapService="selectedWms"
+                                 :selectedMapService="selectedMapService"
                                  :mapService="genericProps.mapService"
       >
         <v-menu v-if="hasMapService" offset-x right top>
@@ -41,7 +37,7 @@
             <v-btn icon small fab v-on="on" class="white elevation-4"><v-icon>layers</v-icon></v-btn>
           </template>
           <metadata-location-catalog
-            :selected="selectedWms ? selectedWms.id : null"
+            :selected="selectedMapService ? selectedMapService.id : null"
             :catalog="catalog"
             @select="selectMapService"
           ></metadata-location-catalog>
@@ -87,12 +83,12 @@ export default {
     fillAlpha: 0.5,
     outlineWidth: 3,
     METADATA_LOCATION_TITLE,
-    selectedWms: null,
+    selectedMapService: null,
     catalog: null,
   }),
   methods: {
     selectMapService(value) {
-      this.selectedWms = value;
+      this.selectedMapService = value;
     },
   },
   computed: {
@@ -140,21 +136,11 @@ export default {
           maxX: this.catalog.bbox[2],
           maxY: this.catalog.bbox[3],
         };
-      } else {
-        extent = {
-          minX: 1,
-          minY: 2,
-          maxX: 3,
-          maxY: 4,
-        };
       }
       return extent;
     },
     enabled3d() {
       return Math.abs(this.lat) > 60;
-    },
-    title() {
-      return this.mixinMethods_getGenericProp('title');
     },
     hasGeom() {
       return !!this.geom;
