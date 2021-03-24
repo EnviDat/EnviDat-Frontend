@@ -22,15 +22,16 @@
         <v-btn v-if="enabled3d" fab small @click="show3d = false">2D</v-btn>
       </metadata-location-cesium>
 
-      <metadata-location-leaflet v-show="!show3d"
-                                  v-bind="mapSize"
-                                  :geom="geom"
-                                  :zoomExtent="zoomExtent"
-                                  :color="color"
-                                  :fillAlpha="fillAlpha"
-                                  :outline-width="outlineWidth"
-                                 :selectedMapService="selectedMapService"
-                                 :mapService="genericProps.mapService"
+      <metadata-location-leaflet
+        v-show="!show3d"
+        v-bind="mapSize"
+        :geom="geom"
+        :zoomExtent="zoomExtent"
+        :color="color"
+        :fillAlpha="fillAlpha"
+        :outline-width="outlineWidth"
+        :selectedMapService="selectedMapService"
+        :mapServiceUrl="genericProps.mapService.url"
       >
         <v-menu v-if="hasMapService" offset-x right top>
           <template v-slot:activator="{ on }">
