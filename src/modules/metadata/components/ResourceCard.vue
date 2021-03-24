@@ -123,7 +123,7 @@
                             color="accent"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
-                            @clicked="$emit('clicked')" />
+                            @clicked="$emit('previewClicked')" />
         </v-col>
 
         <v-col cols="12"

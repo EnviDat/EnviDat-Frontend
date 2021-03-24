@@ -53,7 +53,10 @@
                           :dateCreatedIcon="dateCreatedIcon"
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig.downloadActive" />
+                          :downloadActive="resourcesConfig.downloadActive"
+                          :showGenericOpenButton="res.openPreviewEvent ? true : false"
+                          :openButtonTooltip="openButtonTooltip"
+                          @previewClicked="catchPreviewClick(res.openPreviewEvent, res.previewProperty)" />
         </v-col>
       </v-row>
 
@@ -175,6 +178,9 @@ export default {
       this.strategyEvent = strategyEvent;
       this.strategyProperty = strategyProperty;
     },
+    catchPreviewClick(event, eventProperty) {
+      eventBus.$emit(event, eventProperty);
+    },
   },
   data: () => ({
     injectedComponent: null,
@@ -182,6 +188,7 @@ export default {
     injectedComponentConfig: null,
     strategyEvent: null,
     strategyProperty: null,
+    openButtonTooltip: 'Click for a preview of this resource',
     showAllResources: false,
     emptyText: 'No resources found for this dataset',
     METADATA_RESOURCES_TITLE,
