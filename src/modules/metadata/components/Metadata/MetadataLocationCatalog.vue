@@ -14,16 +14,11 @@
 </template>
 
 <script>
-import { createCatalog } from '../GeoservicesMVP/catalog';
 
 export default {
   name: 'MetadataLocationCatalog',
-  data: () => ({
-    catalog: null,
-  }),
   props: {
-    url: String,
-    type: String,
+    catalog: Object,
     selected: String,
   },
   methods: {
@@ -33,11 +28,6 @@ export default {
     isSelected(id) {
       return this.selected === id;
     },
-  },
-  beforeMount() {
-    this.catalog = createCatalog(this.url, this.type)
-      // eslint-disable-next-line no-return-assign
-    .then(res => this.catalog = res);
   },
 };
 </script>

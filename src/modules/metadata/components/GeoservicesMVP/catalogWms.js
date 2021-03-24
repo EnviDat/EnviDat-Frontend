@@ -41,18 +41,17 @@ function getTree(data) {
   const maxLevel = null;
   const layer = customizeProperties(resp.Capability.Layer, 0, maxLevel);
   layer.root = true;
+  layer.bbox = resp.Capability.Layer.EX_GeographicBoundingBox;
   layer.name = layer.title;
   return layer;
 }
 
 function createWmsCatalog(url) {
-  console.log('wms');
   return axios
     .get(url)
     .then((response) => {
       const layerdata = getTree(response);
-      console.log(layerdata);
-      return { layerdata, url };
+      return { layerdata };
     })
     .catch(() => ({ error: 'Couldnt get data', url }));
 }

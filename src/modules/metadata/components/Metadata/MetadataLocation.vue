@@ -1,5 +1,6 @@
 <template>
-  <v-card id="MetadataLocation">
+  <v-card id="MetadataLocation" v-if="catalog">
+    {{ genericProps }}
 
     <v-card-title class="title metadata_title">
       {{ METADATA_LOCATION_TITLE }}
@@ -11,7 +12,7 @@
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-else-if="hasGeom || hasMapService" class="pa-4 pt-0" >
+    <v-card-text v-else-if="hasGeom || hasMapService && catalog" class="pa-4 pt-0" >
 
       <metadata-location-cesium v-show="show3d"
                                 v-bind="mapSize"
@@ -40,9 +41,8 @@
             <v-btn icon small fab v-on="on" class="white elevation-4"><v-icon>layers</v-icon></v-btn>
           </template>
           <metadata-location-catalog
-            :url="genericProps.mapService.url"
-            :type="genericProps.mapService.type"
             :selected="selectedWms ? selectedWms.id : null"
+            :catalog="catalog"
             @select="selectMapService"
           ></metadata-location-catalog>
         </v-menu>
@@ -65,6 +65,7 @@ import {
 
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MetadataLocationCatalog from './MetadataLocationCatalog';
+import { createCatalog } from '../GeoservicesMVP/catalog';
 
 const MetadataLocationCesium = () => import('./MetadataLocationCesium');
 const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
@@ -87,11 +88,11 @@ export default {
     outlineWidth: 3,
     METADATA_LOCATION_TITLE,
     selectedWms: null,
+    catalog: null,
   }),
   methods: {
     selectMapService(value) {
       this.selectedWms = value;
-      console.log(value);
     },
   },
   computed: {
@@ -114,18 +115,42 @@ export default {
       return this.centroid.geometry.coordinates[1];
     },
     zoomExtent() {
-      let dist = tDistance(this.bbox.geometry.coordinates[0][0], this.bbox.geometry.coordinates[0][2]);
-      if (dist === 0) { dist = 100; }
-      if (Math.abs(this.lat) > 60) { dist = 10000; }
+      console.log('zoomext', this.catalog.layerdata);
+      let extent = null;
+      if (!this.hasMapService) {
+        let dist = tDistance(this.bbox.geometry.coordinates[0][0], this.bbox.geometry.coordinates[0][2]);
+        if (dist === 0) {
+          dist = 100;
+        }
+        if (Math.abs(this.lat) > 60) {
+          dist = 10000;
+        }
 
-      let enve = tBuffer(this.bbox, ((dist + 1) / 4), { units: 'kilometers' });
-      enve = tEnvelope(enve);
-      return {
-        minX: enve.geometry.coordinates[0][0][0],
-        minY: enve.geometry.coordinates[0][0][1],
-        maxX: enve.geometry.coordinates[0][2][0],
-        maxY: enve.geometry.coordinates[0][2][1],
-      };
+        let enve = tBuffer(this.bbox, ((dist + 1) / 4), { units: 'kilometers' });
+        enve = tEnvelope(enve);
+        extent = {
+          minX: enve.geometry.coordinates[0][0][0],
+          minY: enve.geometry.coordinates[0][0][1],
+          maxX: enve.geometry.coordinates[0][2][0],
+          maxY: enve.geometry.coordinates[0][2][1],
+        };
+      } else if (this.catalog) {
+        console.log(this.catalog);
+        extent = {
+          minX: this.catalog.layerdata.bbox[0],
+          minY: this.catalog.layerdata.bbox[1],
+          maxX: this.catalog.layerdata.bbox[2],
+          maxY: this.catalog.layerdata.bbox[3],
+        };
+      } else {
+        extent = {
+          minX: 1,
+          minY: 2,
+          maxX: 3,
+          maxY: 4,
+        };
+      }
+      return extent;
     },
     enabled3d() {
       return Math.abs(this.lat) > 60;
@@ -160,6 +185,16 @@ export default {
                   max-width: 100%;
                   height: ${height}px !important;`,
       };
+    },
+  },
+  watch: {
+    genericProps() {
+      createCatalog(this.genericProps.mapService.url, this.genericProps.mapService.type)
+        // eslint-disable-next-line no-return-assign
+        .then((res) => {
+          this.catalog = res;
+          this.selectMapService(this.catalog.layerdata.children[0]);
+        });
     },
   },
 };
