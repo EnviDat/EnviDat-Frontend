@@ -49,10 +49,7 @@ function getTree(data) {
 function createWmsCatalog(url) {
   return axios
     .get(url)
-    .then((response) => {
-      const layerdata = getTree(response);
-      return { layerdata };
-    })
+    .then(response => getTree(response))
     .catch(() => ({ error: 'Couldnt get data', url }));
 }
 

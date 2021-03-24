@@ -115,7 +115,6 @@ export default {
       return this.centroid.geometry.coordinates[1];
     },
     zoomExtent() {
-      console.log('zoomext', this.catalog.layerdata);
       let extent = null;
       if (!this.hasMapService) {
         let dist = tDistance(this.bbox.geometry.coordinates[0][0], this.bbox.geometry.coordinates[0][2]);
@@ -135,12 +134,11 @@ export default {
           maxY: enve.geometry.coordinates[0][2][1],
         };
       } else if (this.catalog) {
-        console.log(this.catalog);
         extent = {
-          minX: this.catalog.layerdata.bbox[0],
-          minY: this.catalog.layerdata.bbox[1],
-          maxX: this.catalog.layerdata.bbox[2],
-          maxY: this.catalog.layerdata.bbox[3],
+          minX: this.catalog.bbox[0],
+          minY: this.catalog.bbox[1],
+          maxX: this.catalog.bbox[2],
+          maxY: this.catalog.bbox[3],
         };
       } else {
         extent = {
@@ -193,7 +191,7 @@ export default {
         // eslint-disable-next-line no-return-assign
         .then((res) => {
           this.catalog = res;
-          this.selectMapService(this.catalog.layerdata.children[0]);
+          this.selectMapService(this.catalog.children[0]);
         });
     },
   },
