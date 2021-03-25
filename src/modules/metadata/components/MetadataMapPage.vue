@@ -12,7 +12,7 @@
                         :tool-tip-bottom="true"
                         @clicked="close"/>
     </v-card>
-    <v-row v-if="splitScreen" 
+    <v-row v-if="splitScreen"
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
         <Map :config="configFile" :default-layer="layer" :map-div-id="'map1'"
@@ -54,9 +54,7 @@
 </template>
 
 <script>
-  /* eslint-disable new-cap */
   import { mapGetters } from 'vuex';
-  /* eslint-disable no-unused-vars */
   import { METADATADETAIL_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import {

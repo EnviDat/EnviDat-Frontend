@@ -473,8 +473,10 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      // const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
-      const geoConfigUrl = null;
+      console.log(configs);
+      console.log(this.location);
+      const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
+      // const geoConfigUrl = null;
       if (this.location) {
         this.location.mapService = {
           url: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
@@ -482,8 +484,24 @@ export default {
         };
       }
 
+      const geo = {
+        site: {
+          geoJSON: this.location.geoJSON,
+          id: this.location.id,
+          name: this.location.name,
+          title: this.location.title,
+        },
+        data: {
+          configUrl: configs?.geoUrl ? configs.geoUrl : null,
+          mapService: {
+            url: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
+            type: 'wms',
+          },
+        },
+      };
+
       if (geoConfigUrl) {
-        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, configUrl: geoConfigUrl });
+        this.$set(components.MetadataGeo, 'genericProps', geo);
       } else {
         this.$set(components.MetadataLocation, 'genericProps', this.location);
       }

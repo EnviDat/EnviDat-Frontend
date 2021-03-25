@@ -6,6 +6,7 @@
     "maxx": 180,
     "maxy": 90
   },
+  "timeseries": true,
   "layers": [
     {
       "name": "CHELSA_bio01__200_V_1_020191213102644554",

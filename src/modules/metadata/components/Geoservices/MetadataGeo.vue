@@ -20,7 +20,7 @@
     name: 'MetadataGeo',
     components: { Map },
     props: {
-      genericProps: Object,
+      geo: Object,
     },
     data: () => ({
       map: null,
@@ -37,7 +37,7 @@
         return this.$store.state.geoservices.config;
       },
       ready() {
-        return !!this.genericProps.config;
+        return !!this.geo.data.config;
       },
       title() {
         return this.mixinMethods_getGenericProp('title');
@@ -59,8 +59,8 @@
     watch: {
       ready: {
         handler() {
-          if (this.genericProps.configUrl) {
-            this.$store.dispatch('fetchConfig', this.genericProps.configUrl);
+          if (this.geo.data.configUrl) {
+            this.$store.dispatch('fetchConfig', this.geo.data.configUrl);
           }
         },
         immediate: true,
@@ -73,6 +73,9 @@
       openFullscreen() {
         this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
       },
+    },
+    mounted() {
+      console.log(this.geo);
     },
   };
 </script>
