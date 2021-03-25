@@ -6,8 +6,8 @@ import {
 import dataset from '@/../public/testdata/testResoures';
 
 
-describe('authorFactory - createAuthors', () => {
-  it('empty', () => {
+describe('chartFactory - getConfigFiles()', () => {
+  it('with testResources', () => {
     const resources = dataset.resources;
     expect(resources).not.toBeNull();
     

@@ -29,9 +29,10 @@
             {{ markdownTextTruncated }}
           </v-col>
 
-          <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
+          <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
                   style="width: 30px;"
-                  class="shrink" align-self="end" >
+                  class="shrink"
+                  align-self="end" >
 
             <base-icon-button material-icon-name="expand_more"
                               iconColor="accent"
@@ -39,7 +40,7 @@
                               outlined
                               tooltipText="Show full description"
                               @clicked="showFullDescription = !showFullDescription" />
-          </v-col>
+          </v-col> -->
         </v-row>
 
         <v-row v-if="!showFullDescription"
@@ -91,46 +92,73 @@
     <v-card-actions class="ma-0 pa-2"
                     style="position: absolute; bottom: 0px; right: 50px;" >
 
-      <base-icon-button v-if="maxDescriptionLengthReached && showFullDescription"
+      <base-icon-button v-if="maxDescriptionLengthReached"
                         :class="isProtected ? 'mr-2' : ''"
                         material-icon-name="expand_more"
-                        iconColor="primary"
+                        :iconColor="showFullDescription ? 'primary' : 'accent'"
                         color="accent"
-                        :fillColor="$vuetify.theme.themes.light.accent"
+                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
                         outlined
                         :rotateOnClick="true"
                         :rotateToggle="showFullDescription"
-                        tooltipText="Hide full description"
+                        :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
                         @clicked="showFullDescription = !showFullDescription" />
+
     </v-card-actions>
 
-    <div class="ma-0 py-3"
-          style="position: absolute; bottom: 0px; right: 0px;" >
+    <!-- <div class="ma-0 py-3"
+          style="position: absolute; bottom: 0px; right: 0px;" > -->
+    <!-- <v-card-actions class="ma-0 pa-0"
+                    style="position: absolute; bottom: 0px; right: 0px;" >
+ -->
+      <v-container fluid class="pa-2" 
+                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
+        
+      <v-row v-if="!isProtected">
+        <v-col v-if="showGenericOpenButton"
+                cols="12"
+                class="py-1">
+          <base-icon-button materialIconName="preview"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :tooltipText="openButtonTooltip"
+                            @clicked="$emit('previewClicked')" />
+        </v-col>
 
-      <div v-if="isProtected"
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
+        <v-col cols="12"
+                class="pt-1">
+          <base-icon-button :materialIconName="isFile ? 'file_download' : 'link'"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :tooltipText="isFile ? 'Download file' : 'Open link'"
+                            :url="url"
+                            :disabled="!downloadActive" />
+        </v-col>
+      </v-row>
 
-        <v-icon class="pl-1 pt-1"
-                :disabled="!downloadActive">shield</v-icon>
+      <v-row v-if="isProtected">
+        <v-col>
+          <div class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
+                :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
 
-        <p v-if="downloadActive"
-            class="pt-2 lockedText black--text resourceCardText"
-            v-html="protectedText">
-        </p>
-      </div>
+            <v-icon class="pl-1 pt-1"
+                    :disabled="!downloadActive">shield</v-icon>
 
-      <base-icon-button v-if="!isProtected"
-                        class="fabPosition ma-2"
-                        style="height: 40px; width: 40px;"
-                        :materialIconName="isFile ? 'file_download' : 'link'"
-                        iconColor="black"
-                        color="accent"
-                        :isElevated="true"
-                        :tooltipText="isFile ? 'Download file' : 'Open link'"
-                        :url="url"
-                        :disabled="!downloadActive" />
-    </div>
+            <p v-if="downloadActive"
+                class="pt-2 lockedText black--text resourceCardText"
+                v-html="protectedText">
+            </p>
+          </div>
+        </v-col>
+      </v-row>
+
+      </v-container>
+
+    <!-- </div> -->
+    <!-- </v-card-actions> -->
+
   </v-card>
 </template>
 
@@ -182,6 +210,11 @@ export default {
       type: Boolean,
       default: true,
     },
+    showGenericOpenButton: {
+      type: Boolean,
+      default: false,
+    },
+    openButtonTooltip: String,
   },
   data: () => ({
     maxDescriptionLength: 175,
@@ -242,9 +275,6 @@ export default {
     },
   },
   methods: {
-    clicked() {
-      this.$emit('clicked');
-    },
     extensionIcon() {
       if (typeof this.mixinMethods_getIconFileExtension === 'undefined'
           || typeof this.$store === 'undefined') {

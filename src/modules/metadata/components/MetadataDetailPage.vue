@@ -61,14 +61,16 @@
       </template>
     </two-column-layout>
 
-    <GenericModalPageLayout :title="`All sensor data charts for ${currentStation ? currentStation.name : ''} station`" >
+    <GenericModalPageLayout :title="modalTitle" >
 
       <component :is="gcnetModalComponent"
                   :currentStation="currentStation"
                   :fileObjects="fileObjects"
                   :graphStyling="graphStyling" />
 
-                  <!-- :fileObjects="generateFileList" -->
+      <component :is="filePreviewComponent"
+                  :url="filePreviewUrl" />
+                  
 
     </GenericModalPageLayout>
 
@@ -132,7 +134,14 @@ import {
   METADATA_CLOSE_MODAL,
   GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
+  OPEN_TEXT_PREVIEW,
 } from '@/factories/eventBus';
+
+import {
+  enhanceResourcesStrategyEvents,
+  getPreviewStrategyFromUrl,
+} from '@/factories/strategyFactory';
+
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
 import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout';
@@ -166,13 +175,17 @@ export default {
     });
   },
   created() {
-    eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showModal);
+    eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+
+    this.filePreviewUrl = null;
+    this.filePreviewComponent = null;
+    eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
   },
   /**
-     * @description load all the icons once before the first component's rendering.
-     */
+   * @description load all the icons once before the first component's rendering.
+   */
   beforeMount() {
     this.doiIcon = this.mixinMethods_getIcon('doi');
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
@@ -183,8 +196,8 @@ export default {
     this.licenseIcon = this.mixinMethods_getIcon('license');
   },
   /**
-     * @description reset the scrolling to the top.
-     */
+   * @description reset the scrolling to the top.
+   */
   mounted() {
     this.loadMetaDataContent();
 
@@ -197,7 +210,11 @@ export default {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 
-    eventBus.$off(GCNET_OPEN_DETAIL_CHARTS, this.showModal);
+    eventBus.$off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+
+    this.filePreviewUrl = null;
+    this.filePreviewComponent = null;
+    eventBus.$off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
     eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
   },
   computed: {
@@ -371,10 +388,25 @@ export default {
 
       return null;
     },
-    showModal(stationId) {
+    showGCNetModal(stationId) {
 
       this.currentStation = this.getCurrentStation(stationId);
       this.gcnetModalComponent = this.$options.components.DetailChartsList;
+      this.modalTitle = `All sensor data charts for ${this.currentStation ? this.currentStation.name : ''} station`;
+
+      eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    showFilePreviewModal(url) {
+
+      const strat = getPreviewStrategyFromUrl(url);
+
+      this.filePreviewComponent = strat.component;
+      this.filePreviewUrl = url;
+
+      const splits = url.split('/');
+      const fileName = splits[splits.length - 1];
+
+      this.modalTitle = `Preview of ${fileName}`;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -452,6 +484,8 @@ export default {
 
       if (this.resources?.resources) {
         configs = getConfigFiles(this.resources.resources);
+
+        enhanceResourcesStrategyEvents(this.resources.resources);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
@@ -722,7 +756,10 @@ export default {
     contactIcon: null,
     mailIcon: null,
     licenseIcon: null,
+    modalTitle: '',
     gcnetModalComponent: null,
+    filePreviewComponent: null,
+    filePreviewUrl: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,

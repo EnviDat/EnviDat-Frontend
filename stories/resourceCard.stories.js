@@ -89,6 +89,7 @@ storiesOf('3 Cards / Resource Cards', module)
                         :dateCreatedIcon="dateCreatedIcon"
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
+                        :isProtected="true"
                         @clicked="onCardClick" />
       </v-col>
 
@@ -109,7 +110,7 @@ storiesOf('3 Cards / Resource Cards', module)
       </v-col>
 
       <v-col cols="6" class="pa-2"
-            v-for="(res, index) in metadataCards[2].resources"
+            v-for="(res, index) in metadataCards[0].resources"
             :key="'cols-6_' + index" >
 
         <resource-card v-bind="res"
@@ -119,6 +120,39 @@ storiesOf('3 Cards / Resource Cards', module)
                         :fileExtensionIcon="iconFiles"
                         :downloadActive="false"
                         @clicked="onCardClick" />
+      </v-col>
+
+    </v-row>
+    `,
+    methods,
+    data: () => ({
+      metadataCards,
+      doiIcon,
+      fileSizeIcon,
+      dateCreatedIcon,
+      lastModifiedIcon,
+      iconFiles,
+    }),
+  }))
+
+  .add('Resource cards with open preview', () => ({
+    components: { ResourceCard },
+    template: `
+    <v-row >
+
+      <v-col cols="3" class="pa-2"
+              v-for="(res, index) in metadataCards[2].resources"
+              :key="'cols-3_' + index" >
+
+              <resource-card v-bind="res"
+                              description="Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, Very long description, "
+                              :doiIcon="doiIcon"
+                              :dateCreatedIcon="dateCreatedIcon"
+                              :lastModifiedIcon="lastModifiedIcon"
+                              :fileExtensionIcon="iconFiles"
+                              :showGenericOpenButton="true"
+                              openButtonTooltip="Open File in Preview"
+                              @clicked="onCardClick" />
       </v-col>
 
     </v-row>
