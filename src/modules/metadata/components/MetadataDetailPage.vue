@@ -392,7 +392,7 @@ export default {
 
       this.currentStation = this.getCurrentStation(stationId);
       this.gcnetModalComponent = this.$options.components.DetailChartsList;
-      this.modalTitle = `All sensor data charts for ${this.currentStation ? this.currentStation.name : ''} station`;
+      this.modalTitle = `Sensor measurements for ${this.currentStation ? this.currentStation.name : ''} station`;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -412,6 +412,7 @@ export default {
     },
     closeModal() {
       this.gcnetModalComponent = null;
+      this.filePreviewComponent = null;
     },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;

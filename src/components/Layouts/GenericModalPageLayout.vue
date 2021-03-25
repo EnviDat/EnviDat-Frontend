@@ -3,6 +3,7 @@
             id="GenericModalPageLayout"
             transition="dialog-bottom-transition"
             scrollable
+            persistent
             class="modalHeight" >
 
     <v-card class="pa-0 ml-15">
@@ -63,16 +64,15 @@ export default {
   },
   created() {
     eventBus.$on(METADATA_OPEN_MODAL, this.openClicked);
-    eventBus.$on(METADATA_CLOSE_MODAL, this.closeClicked);
   },
   beforeDestroy() {
     eventBus.$off(METADATA_OPEN_MODAL, this.openClicked);
-    eventBus.$off(METADATA_CLOSE_MODAL, this.closeClicked);
   },
   methods: {
     closeClicked() {
       this.showDialog = false;
       this.modalContentComponent = null;
+      eventBus.$emit(METADATA_CLOSE_MODAL);
     },
     openClicked(modalContentComponent) {
       this.modalContentComponent = modalContentComponent;
