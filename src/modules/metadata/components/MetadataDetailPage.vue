@@ -68,8 +68,6 @@
                   :fileObjects="fileObjects"
                   :graphStyling="graphStyling" />
 
-                  <!-- :fileObjects="generateFileList" -->
-
       <component :is="filePreviewComponent"
                   :url="filePreviewUrl" />
                   
