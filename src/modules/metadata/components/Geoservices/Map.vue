@@ -29,7 +29,7 @@
       ></feature-info>
 
       <div v-if="!hasGeom" style="color: red;">No data to show</div>
-      <map-leaflet v-if="!show3d" :layer="selectedLayer" :map-div-id="mapDivId" :points="featureinfo" :opacity="opacity">
+      <map-leaflet v-if="!show3d" :layer="selectedLayer" :map-div-id="mapDivId" :points="featureinfo" :opacity="opacity" :site="site">
         <slot></slot><br>
         <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn>
       </map-leaflet>
@@ -72,10 +72,12 @@
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
       show3d: { type: Boolean },
+      site: Object,
     },
     data: () => ({
       layerControlOpen: false,
       opacity: 100,
+      showSite: true,
     }),
     computed: {
       featureinfo() {

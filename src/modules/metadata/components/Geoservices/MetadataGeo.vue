@@ -3,7 +3,13 @@
     <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
 
     <v-card-text v-if="configFile" style="width: 100%; height: 500px; position: relative;">
-      <Map :config="configFile" :map-div-id="'map-small'" :selected-layer-name="selectedLayer" @changeLayer="setLayer">
+      <Map
+        :config="configFile"
+        :map-div-id="'map-small'"
+        :selected-layer-name="selectedLayer"
+        @changeLayer="setLayer"
+        :site="geo.site"
+      >
         <v-btn fab small color="primary" @click.native.stop="openFullscreen">
           <v-icon medium style="height: auto;">fullscreen</v-icon>
         </v-btn>
@@ -39,21 +45,10 @@
       ready() {
         return !!this.geo.data.config;
       },
-      title() {
-        return this.mixinMethods_getGenericProp('title');
-      },
       mapSize() {
-        let height = this.mediumSize;
-
-        if (this.$vuetify.breakpoint.xsOnly) {
-          height = this.smallSize;
-        } else if (this.$vuetify.breakpoint.smAndDown) {
-          height = this.smallSize;
-        }
-        return {
-          style: `max-width: 100%;
-                  height: ${height}px !important;`,
-        };
+        const height = this.$vuetify.breakpoint.xsOnly || this.$vuetify.breakpoint.smAndDown
+          ? this.smallSize : this.mediumSize;
+        return { style: `max-width: 100%; height: ${height}px !important;` };
       },
     },
     watch: {
@@ -73,9 +68,6 @@
       openFullscreen() {
         this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
       },
-    },
-    mounted() {
-      console.log(this.geo);
     },
   };
 </script>

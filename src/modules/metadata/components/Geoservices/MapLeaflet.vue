@@ -18,7 +18,6 @@
 </template>
 
 <script>
-/* eslint-disable new-cap */
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-bing-layer';
@@ -45,6 +44,7 @@ export default {
     points: Array,
     layer: Object,
     mapDivId: String,
+    site: Object,
   },
   computed: {
     linkedScreens() {
@@ -150,22 +150,13 @@ export default {
           ],
           maxBoundsViscosity: 0.5,
         });
-      L.control.scale()
-        .addTo(this.map);
+      L.control.scale().addTo(this.map);
       this.replaceLayer();
       this.replaceBasemap();
 
-      this.map.on('click', (e) => {
-        this.getFeatureInfo(e.latlng);
-      });
-
-      this.map.on('drag', () => {
-        this.$store.commit('setExtent', this.map.getBounds());
-      });
-
-      this.map.on('zoom', () => {
-        this.$store.commit('setExtent', this.map.getBounds());
-      });
+      this.map.on('click', e => this.getFeatureInfo(e.latlng));
+      this.map.on('drag', () => this.$store.commit('setExtent', this.map.getBounds()));
+      this.map.on('zoom', () => this.$store.commit('setExtent', this.map.getBounds()));
 
     },
     zoomToExtent(bbox) {
@@ -244,12 +235,11 @@ export default {
     },
   },
   mounted() {
+    console.log(this.site);
     this.setupMap();
   },
   beforeDestroy() {
-    if (this.map) {
-      this.map.remove();
-    }
+    if (this.map) this.map.remove();
   },
 };
 </script>
