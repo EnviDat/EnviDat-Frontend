@@ -86,6 +86,36 @@ export default {
     },
   },
   methods: {
+    removeSite() {
+      this.map.removeLayer(this.siteLayer);
+      this.siteLayer = null;
+    },
+    addSite() {
+      // Set marker icon
+      const iconOptions = L.Icon.Default.prototype.options;
+      iconOptions.iconUrl = this.markerIcon;
+      iconOptions.iconRetinaUrl = this.markerIcon2x;
+      iconOptions.shadowUrl = this.markerIconShadow;
+      const icon = L.icon(iconOptions);
+
+      // Add geodata to map
+      this.siteLayer = L.geoJSON(tRewind(JSON.parse(this.site.geoJSON)), {
+        pointToLayer(feature, latlng) {
+          return L.marker(latlng, {
+            icon,
+            opacity: 0.65,
+            riseOnHover: true,
+          });
+        },
+        style: {
+          color: this.color,
+          fillOpacity: this.fillAlpha,
+          opacity: 1,
+          weight: this.outlineWidth,
+        },
+      });
+      this.map.addLayer(this.siteLayer);
+    },
     getFeatureInfo(latlng) {
       if (Math.abs(latlng[0]) > 90 || Math.abs(latlng[1]) > 180) {
         return;
@@ -161,35 +191,12 @@ export default {
       this.replaceLayer();
       this.replaceBasemap();
 
-
-      // Set marker icon
-      const iconOptions = L.Icon.Default.prototype.options;
-      iconOptions.iconUrl = this.markerIcon;
-      iconOptions.iconRetinaUrl = this.markerIcon2x;
-      iconOptions.shadowUrl = this.markerIconShadow;
-      const icon = L.icon(iconOptions);
-
-      // Add geodata to map
-      L.geoJSON(tRewind(JSON.parse(this.site.geoJSON)), {
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon,
-            opacity: 0.65,
-            riseOnHover: true,
-          });
-        },
-        style: {
-          color: this.color,
-          fillOpacity: this.fillAlpha,
-          opacity: 1,
-          weight: this.outlineWidth,
-        },
-      }).addTo(this.map);
-
       this.map.on('click', e => this.getFeatureInfo(e.latlng));
       this.map.on('drag', () => this.$store.commit('setExtent', this.map.getBounds()));
       this.map.on('zoom', () => this.$store.commit('setExtent', this.map.getBounds()));
-
+      if (this.site) {
+        this.addSite();
+      }
     },
     zoomToExtent(bbox) {
       this.map.fitBounds([
@@ -226,11 +233,7 @@ export default {
         fillColor: '#f03',
         fillOpacity: 0.5,
         radius: 1000,
-      })
-        .addTo(this.map);
-      marker.on('mouseover', (val) => {
-        console.log(val);
-      });
+      }).addTo(this.map);
       marker.bindPopup(`${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`);
       this.markers.push(marker);
     },
@@ -251,8 +254,7 @@ export default {
       }
     },
     extent() {
-      if (this.linkedScreens && !this.map.getBounds()
-        .equals(this.extent)) {
+      if (this.linkedScreens && !this.map.getBounds().equals(this.extent)) {
         this.map.fitBounds(this.extent);
       }
     },
@@ -264,6 +266,10 @@ export default {
     },
     basemap() {
       this.replaceBasemap();
+    },
+    site() {
+      if (this.site) this.addSite();
+      else this.removeSite();
     },
   },
   mounted() {

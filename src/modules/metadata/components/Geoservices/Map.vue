@@ -6,6 +6,10 @@
         <slot name="top"></slot>
       </v-row>
 
+      <v-icon @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
+        location_on
+      </v-icon>
+
       <v-icon @click="layerControlOpen = !layerControlOpen" class="icon elevation-5" style="position: absolute; top: 95px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
         layers
       </v-icon>
@@ -35,7 +39,7 @@
         :map-div-id="mapDivId"
         :featureInfoPts="featureinfo"
         :opacity="opacity"
-        :site="site"
+        :site="showSite ? site : null"
       >
         <slot></slot><br>
         <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn>
@@ -98,11 +102,9 @@
         return this.$store.state.geoservices.timeseries;
       },
       selectedLayer() {
-        console.log('name', this.selectedLayerName);
         if (!this.selectedLayerName) {
           return null;
         }
-        console.log('config', this.config);
         const layer = this.config.layers.find(l => l.name === this.selectedLayerName);
         layer.baseURL = this.config.baseURL;
         layer.bbox = this.config.bbox;
