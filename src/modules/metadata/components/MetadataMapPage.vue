@@ -15,8 +15,8 @@
     <v-row v-if="splitScreen"
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
-        <Map :config="configFile" :default-layer="layer" :map-div-id="'map1'"
-             @changeLayer="setLayer" :key="'map1'" :selected="layer">
+        <Map :config="configFile" :map-div-id="'map1'"
+             @changeLayer="setLayer" :key="'map1'" :selected-layer-name="selectedLayer">
           <template v-slot:top>
             <v-btn icon color="red" style="display: inline-block" @click="quitSplitFrom(1)">
               <v-icon>close</v-icon>
@@ -25,9 +25,9 @@
         </Map>
       </div>
       <div style=" border: 1px solid gray;"></div>
-      <div style="width: 50%; float: left; position:relative;">
-        <Map :config="configFile" :default-layer="layerSplit" :map-div-id="'map2'"
-              @changeLayer="setLayerSplit" :key="'map2'" :selected="layerSplit">
+      <div style="width: 49%; float: left; position:relative;">
+        <Map :config="configFile" :map-div-id="'map2'"
+             @changeLayer="setLayerSplit" :key="'map2'" :selected-layer-name="splitLayer">
           <template v-slot:top>
             <v-btn icon color="red" @click="quitSplitFrom(2)">
               <v-icon>close</v-icon>
@@ -43,8 +43,8 @@
           style="height: 100%;"
           :key="'map0'">
       <div style="width: 100%;">
-        <Map :config="configFile" @changeLayer="setLayer" :map-div-id="'map0'" :selected="layer">
-          <v-btn color="primary" @click="splitScreen = true" fab small>
+        <Map :config="configFile" @changeLayer="setLayer" :map-div-id="'map0'" :selected-layer-name="selectedLayer">
+          <v-btn color="primary" @click="startSplit" fab small>
             <v-icon style="height:auto;">vertical_split</v-icon>
           </v-btn>
         </Map>
@@ -62,7 +62,6 @@
     LOAD_METADATA_CONTENT_BY_ID,
     METADATA_NAMESPACE,
   } from '@/store/metadataMutationsConsts';
-  import axios from 'axios';
   import BaseIconButton from '@/components/BaseElements/BaseIconButton';
   import Map from './Geoservices/Map';
 
@@ -73,12 +72,8 @@
       BaseIconButton,
     },
     data: () => ({
-      layer: null,
-      layerSplit: null,
-      splitScreen: false,
       geoConfig: null,
       PageBGImage: 'app_b_browsepage',
-      configFile: null,
       map: null,
     }),
     beforeRouteEnter(to, from, next) {
@@ -103,57 +98,54 @@
         currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
         detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       }),
-      /**
-       * @returns {String} the metadataId from the route
-       */
+      splitScreen() {
+        return this.$store.state.geoservices.splitScreen;
+      },
+      splitLayer() {
+        return this.$store.state.geoservices.splitLayer;
+      },
+      selectedLayer() {
+        return this.$store.state.geoservices.selectedLayer;
+      },
+      configFile() {
+        return this.$store.state.geoservices.config;
+      },
       metadataId() {
         return this.$route.params.metadataid;
       },
-      /**
-       * @returns {Boolean} if the placeHolders should be shown be somethings are still loading
-       */
       loading() {
         return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
       },
     },
     methods: {
       setLayer(name) {
-        this.layer = name;
+        this.$store.commit('setSelectedLayer', name);
       },
       setLayerSplit(name) {
-        this.layerSplit = name;
+        this.$store.commit('setSplitLayer', name);
       },
       quitSplitFrom(mapId) {
         if (mapId === 1) {
-          this.layer = this.layerSplit;
+          this.$store.commit('setSelectedLayer', this.splitLayer);
         }
-        this.splitScreen = false;
+        this.$store.commit('setSplitScreen', false);
+      },
+      startSplit() {
+        this.$store.commit('setSelectedLayer', this.selectedLayer);
+        this.$store.commit('setSplitScreen', true);
       },
       loadConfig() {
-        const url = this.geoConfig.url;
-        axios.get(url)
-          .then((res) => {
-            this.configFile = res.data;
-            return 'Success';
-          });
+        if (this.geoConfig?.url) {
+          this.$store.dispatch('fetchConfig', this.geoConfig.url);
+        }
       },
       rerender() {
         this.$forceUpdate();
       },
-      /**
-       * @description
-       */
       createMetadataContent() {
-        const res = this.currentMetadataContent && this.currentMetadataContent.resources ? this.currentMetadataContent.resources : null;
-        this.geoConfig = res ? res.find(src => src.name === 'geoservices_config.json') : null;
-
+        this.geoConfig = { url: './testdata/geoservices_config.json' };
         this.rerender();
       },
-      /**
-       * @description
-       * @param {any} idOrName
-       * @returns {any}
-       */
       isCurrentIdOrName(idOrName) {
         return this.currentMetadataContent.id === idOrName || this.currentMetadataContent.name === idOrName;
       },
@@ -181,11 +173,6 @@
       geoConfig() {
         if (this.geoConfig) {
           this.loadConfig();
-        }
-      },
-      layer() {
-        if (!this.splitScreen) {
-          this.layerSplit = this.layer;
         }
       },
       /* eslint-disable no-unused-vars */

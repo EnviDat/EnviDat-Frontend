@@ -71,6 +71,7 @@ export const geoservices = {
           .then((res) => {
             commit('setConfig', res.data);
             commit('setSelectedLayer', res.data.layers.find(layer => layer.visibility).name);
+            commit('setSplitLayer', res.data.layers.find(layer => layer.visibility).name);
           });
       }
     },

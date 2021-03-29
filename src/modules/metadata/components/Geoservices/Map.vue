@@ -98,9 +98,11 @@
         return this.$store.state.geoservices.timeseries;
       },
       selectedLayer() {
+        console.log('name', this.selectedLayerName);
         if (!this.selectedLayerName) {
           return null;
         }
+        console.log('config', this.config);
         const layer = this.config.layers.find(l => l.name === this.selectedLayerName);
         layer.baseURL = this.config.baseURL;
         layer.bbox = this.config.bbox;
