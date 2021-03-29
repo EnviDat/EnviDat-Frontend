@@ -37,8 +37,10 @@
       components: { ZoomBtn },
       props: {
         opacity: Number,
-        layer: Object,
+        featureInfoPts: Array,
+        wmsLayer: Object,
         mapDivId: String,
+        site: Object,
       },
       data() {
         return {
@@ -99,7 +101,7 @@
 
         this.replaceLayer();
         this.replaceBasemap();
-        this.zoomToExtent(this.layer.bbox);
+        this.zoomToExtent(this.wmsLayer.bbox);
 
         this.viewer.scene.canvas.addEventListener('click', (event) => {
           event.preventDefault();
@@ -148,7 +150,7 @@
             this.mapLayer = null;
           }
           // Attention: new WebMapServiceImageryProvider can not be used as removable layer object
-          this.mapLayer = this.viewer.imageryLayers.addImageryProvider(cesiumLayer(this.layer));
+          this.mapLayer = this.viewer.imageryLayers.addImageryProvider(cesiumLayer(this.wmsLayer));
         },
         replaceBasemap() {
           if (this.basemapLayer) {
@@ -163,7 +165,7 @@
         opacity() {
           this.mapLayer.alpha = this.opacity / 100;
         },
-        layer: {
+        wmsLayer: {
           handler() {
             this.replaceLayer();
           },

@@ -1,7 +1,7 @@
 <template>
   <div :id="mapDivId" style="height: 100%; width: 100%; z-index: 100;">
     <div class="zoom">
-      <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(layer.bbox)"/>
+      <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(wmsLayer.bbox)"/>
     </div>
     <v-card ripple class="basemap-toggle">
       <img width="40" height="40" v-if="basemap==='streets'" src="./satellite-icon.png" @click="basemap='satellite'">
@@ -11,7 +11,7 @@
       <slot></slot>
     </div>
     <div  v-if="map">
-    <map-leaflet-point v-for="(point, key) in points" :key="key" :data="point" @add="addPoint"
+    <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
                        @remove="removePoint"></map-leaflet-point>
     </div>
   </div>
@@ -23,6 +23,10 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-bing-layer';
 import axios from 'axios';
 import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafletPoint';
+import markerIcon from '@/assets/map/marker-icon.png';
+import markerIcon2x from '@/assets/map/marker-icon-2x.png';
+import markerIconShadow from '@/assets/map/marker-shadow.png';
+import { rewind as tRewind } from '@turf/turf';
 import { leafletLayer } from './layer-leaflet';
 import ZoomBtn from './ZoomBtn';
 
@@ -38,11 +42,14 @@ export default {
     mapLayer: null,
     basemapLayer: null,
     markers: [],
+    markerIcon,
+    markerIcon2x,
+    markerIconShadow,
   }),
   props: {
     opacity: Number,
-    points: Array,
-    layer: Object,
+    featureInfoPts: Array,
+    wmsLayer: Object,
     mapDivId: String,
     site: Object,
   },
@@ -132,7 +139,7 @@ export default {
         i: point.x,
         j: point.y,
       };
-      return this.layer.baseURL + L.Util.getParamString(params, this.layer.baseURL, true);
+      return this.wmsLayer.baseURL + L.Util.getParamString(params, this.wmsLayer.baseURL, true);
     },
     zoomIn() {
       this.map.zoomIn();
@@ -154,6 +161,31 @@ export default {
       this.replaceLayer();
       this.replaceBasemap();
 
+
+      // Set marker icon
+      const iconOptions = L.Icon.Default.prototype.options;
+      iconOptions.iconUrl = this.markerIcon;
+      iconOptions.iconRetinaUrl = this.markerIcon2x;
+      iconOptions.shadowUrl = this.markerIconShadow;
+      const icon = L.icon(iconOptions);
+
+      // Add geodata to map
+      L.geoJSON(tRewind(JSON.parse(this.site.geoJSON)), {
+        pointToLayer(feature, latlng) {
+          return L.marker(latlng, {
+            icon,
+            opacity: 0.65,
+            riseOnHover: true,
+          });
+        },
+        style: {
+          color: this.color,
+          fillOpacity: this.fillAlpha,
+          opacity: 1,
+          weight: this.outlineWidth,
+        },
+      }).addTo(this.map);
+
       this.map.on('click', e => this.getFeatureInfo(e.latlng));
       this.map.on('drag', () => this.$store.commit('setExtent', this.map.getBounds()));
       this.map.on('zoom', () => this.$store.commit('setExtent', this.map.getBounds()));
@@ -170,10 +202,10 @@ export default {
         this.map.removeLayer(this.mapLayer);
         this.mapLayer = null;
       } else {
-        this.zoomToExtent(this.layer.bbox);
+        this.zoomToExtent(this.wmsLayer.bbox);
       }
-      if (this.layer) {
-        this.mapLayer = leafletLayer(this.layer);
+      if (this.wmsLayer) {
+        this.mapLayer = leafletLayer(this.wmsLayer);
         this.map.addLayer(this.mapLayer);
         this.mapLayer.setOpacity(this.opacity / 100);
         this.mapLayer.bringToFront();
@@ -224,7 +256,7 @@ export default {
         this.map.fitBounds(this.extent);
       }
     },
-    layer: {
+    wmsLayer: {
       handler() {
         this.replaceLayer();
       },
@@ -235,7 +267,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.site);
     this.setupMap();
   },
   beforeDestroy() {
