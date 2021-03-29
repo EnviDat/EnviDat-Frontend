@@ -15,8 +15,15 @@
     <v-row v-if="splitScreen"
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
-        <Map :config="configFile" :map-div-id="'map1'"
-             @changeLayer="setLayer" :key="'map1'" :selected-layer-name="selectedLayer">
+        <Map
+          :config="configFile"
+          :map-div-id="'map1'"
+          @changeLayer="setLayer"
+          :key="'map1'"
+          :selected-layer-name="selectedLayer"
+          @setShow3d="setShow3d"
+          :show3d="show3d"
+        >
           <template v-slot:top>
             <v-btn icon color="red" style="display: inline-block" @click="quitSplitFrom(1)">
               <v-icon>close</v-icon>
@@ -26,8 +33,15 @@
       </div>
       <div style=" border: 1px solid gray;"></div>
       <div style="width: 49%; float: left; position:relative;">
-        <Map :config="configFile" :map-div-id="'map2'"
-             @changeLayer="setLayerSplit" :key="'map2'" :selected-layer-name="splitLayer">
+        <Map
+          :config="configFile"
+          :map-div-id="'map2'"
+          @changeLayer="setLayerSplit"
+          :key="'map2'"
+          :selected-layer-name="splitLayer"
+          @setShow3d="setShow3dSplit"
+          :show3d="show3dSplit"
+        >
           <template v-slot:top>
             <v-btn icon color="red" @click="quitSplitFrom(2)">
               <v-icon>close</v-icon>
@@ -43,7 +57,14 @@
           style="height: 100%;"
           :key="'map0'">
       <div style="width: 100%;">
-        <Map :config="configFile" @changeLayer="setLayer" :map-div-id="'map0'" :selected-layer-name="selectedLayer">
+        <Map
+          :config="configFile"
+          @changeLayer="setLayer"
+          :map-div-id="'map0'"
+          :selected-layer-name="selectedLayer"
+          @setShow3d="setShow3d"
+          :show3d="show3d"
+        >
           <v-btn color="primary" @click="startSplit" fab small>
             <v-icon style="height:auto;">vertical_split</v-icon>
           </v-btn>
@@ -116,8 +137,20 @@
       loading() {
         return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
       },
+      show3d() {
+        return this.$store.state.geoservices.show3d;
+      },
+      show3dSplit() {
+        return this.$store.state.geoservices.show3dSplit;
+      },
     },
     methods: {
+      setShow3d(value) {
+        this.$store.commit('setShow3d', value);
+      },
+      setShow3dSplit(value) {
+        this.$store.commit('setShow3dSplit', value);
+      },
       setLayer(name) {
         this.$store.commit('setSelectedLayer', name);
       },

@@ -8,6 +8,8 @@
         :map-div-id="'map-small'"
         :selected-layer-name="selectedLayer"
         @changeLayer="setLayer"
+        @setShow3d="setShow3d"
+        :show3d="show3d"
         :site="genericProps.site"
       >
         <v-btn fab small color="primary" @click.native.stop="openFullscreen">
@@ -50,6 +52,9 @@
           ? this.smallSize : this.mediumSize;
         return { style: `max-width: 100%; height: ${height}px !important;` };
       },
+      show3d() {
+        return this.$store.state.geoservices.show3d;
+      },
     },
     watch: {
       ready: {
@@ -67,6 +72,9 @@
       },
       openFullscreen() {
         this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
+      },
+      setShow3d(value) {
+        this.$store.commit('setShow3d', value);
       },
     },
   };
