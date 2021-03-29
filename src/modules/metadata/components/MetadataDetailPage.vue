@@ -473,23 +473,12 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      console.log(configs);
-      console.log(this.location);
-      const geoConfigUrl = configs?.geoUrl ? configs.geoUrl : null;
-      // const geoConfigUrl = null;
-      if (this.location) {
-        this.location.mapService = {
-          url: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
-          type: 'wms',
-        };
-      }
-
       const geo = {
         site: {
-          geoJSON: this.location.geoJSON,
-          id: this.location.id,
-          name: this.location.name,
-          title: this.location.title,
+          geoJSON: this.location ? this.location.geoJSON : null,
+          id: this.location ? this.location.id : null,
+          name: this.location ? this.location.name : null,
+          title: this.location ? this.location.title : null,
         },
         data: {
           configUrl: configs?.geoUrl ? configs.geoUrl : null,
@@ -499,12 +488,7 @@ export default {
           },
         },
       };
-
-      if (geoConfigUrl) {
-        this.$set(components.MetadataGeo, 'genericProps', geo);
-      } else {
-        this.$set(components.MetadataLocation, 'genericProps', this.location);
-      }
+      this.$set(components.MetadataGeo, 'genericProps', geo);
 
       this.$set(components.MetadataDetails, 'genericProps', { details: this.details });
       this.$set(components.MetadataAuthors, 'genericProps', {
@@ -531,7 +515,7 @@ export default {
 
       this.secondCol = [
         components.MetadataResources,
-        geoConfigUrl ? components.MetadataGeo : components.MetadataLocation,
+        components.MetadataGeo,
         components.MetadataDetails,
       ];
 
@@ -541,7 +525,7 @@ export default {
         components.MetadataPublications,
         components.MetadataResources,
         components.MetadataFunding,
-        geoConfigUrl ? components.MetadataGeo : components.MetadataLocation,
+        components.MetadataGeo,
         components.MetadataAuthors,
         components.MetadataDetails,
       ];

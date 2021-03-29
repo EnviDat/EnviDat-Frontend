@@ -8,7 +8,7 @@
         :map-div-id="'map-small'"
         :selected-layer-name="selectedLayer"
         @changeLayer="setLayer"
-        :site="geo.site"
+        :site="genericProps.site"
       >
         <v-btn fab small color="primary" @click.native.stop="openFullscreen">
           <v-icon medium style="height: auto;">fullscreen</v-icon>
@@ -26,7 +26,7 @@
     name: 'MetadataGeo',
     components: { Map },
     props: {
-      geo: Object,
+      genericProps: Object,
     },
     data: () => ({
       map: null,
@@ -43,7 +43,7 @@
         return this.$store.state.geoservices.config;
       },
       ready() {
-        return !!this.geo.data.config;
+        return !!this.genericProps.data.config;
       },
       mapSize() {
         const height = this.$vuetify.breakpoint.xsOnly || this.$vuetify.breakpoint.smAndDown
@@ -54,8 +54,8 @@
     watch: {
       ready: {
         handler() {
-          if (this.geo.data.configUrl) {
-            this.$store.dispatch('fetchConfig', this.geo.data.configUrl);
+          if (this.genericProps?.data?.configUrl) {
+            this.$store.dispatch('fetchConfig', this.genericProps.data.configUrl);
           }
         },
         immediate: true,
