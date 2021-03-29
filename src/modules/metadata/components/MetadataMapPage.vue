@@ -31,8 +31,7 @@
           </template>
         </Map>
       </div>
-      <div style=" border: 1px solid gray;"></div>
-      <div style="width: 49%; float: left; position:relative;">
+      <div style="width: 50%; float: left; position: relative; border-left: 1px solid gray;">
         <Map
           :config="configFile"
           :map-div-id="'map2'"
