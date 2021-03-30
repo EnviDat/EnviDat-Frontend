@@ -155,24 +155,24 @@ function getConfigFiles(resources) {
 }
 
 function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json') {
-  let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
-  let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
-
   if (!configs) {
     configs = {};
   }
 
+  let stationsConfigUrl = configs.gcnetStationsConfig?.url || null;
+  let stationParametersUrl = configs.gcnetStationParameters?.url || null;
+
   if (process.env.NODE_ENV === 'development') {
-    stationsConfigUrl = testStationsConfigUrl;
-    stationParametersUrl = testStationParametersUrl;
+    stationsConfigUrl = ''; // testStationsConfigUrl;
+    stationParametersUrl = ''; // testStationParametersUrl;
 
   } else {
 
-    if (configs?.gcnetStationsConfig) {
+    if (configs.gcnetStationsConfig) {
       configs.gcnetStationsConfig.hideFromResourceList = true;
     }
 
-    if (configs?.gcnetStationParameters) {
+    if (configs.gcnetStationParameters) {
       configs.gcnetStationParameters.hideFromResourceList = true;
     }
   }
