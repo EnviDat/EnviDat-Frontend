@@ -50,7 +50,7 @@
         :map-div-id="mapDivId"
         :featureInfoPts="featureinfo"
         :opacity="opacity"
-        :site="site"
+        :site="showSite ? site : null"
       >
         <slot></slot><br>
         <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>

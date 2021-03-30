@@ -28,7 +28,15 @@
     import Cartesian2 from 'cesium/Core/Cartesian2';
     import Ellipsoid from 'cesium/Core/Ellipsoid';
     import CesiumMath from 'cesium/Core/Math';
+    import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
+    import HorizontalOrigin from 'cesium/Scene/HorizontalOrigin';
+    import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
+    import Color from 'cesium/Core/Color';
     import 'cesium/Widgets/widgets.css';
+    import marker from '@/assets/map/marker-icon.png';
+    import marker2x from '@/assets/map/marker-icon-2x.png';
+    import markerShadow from '@/assets/map/marker-shadow.png';
+    import { rewind as tRewind } from '@turf/turf';
     import ZoomBtn from './ZoomBtn';
     import { cesiumLayer } from './layer-cesium';
 
@@ -44,6 +52,9 @@
       },
       data() {
         return {
+          marker,
+          marker2x,
+          markerShadow,
           viewer: null,
           mapLayer: null,
           basemapLayer: null,
@@ -99,7 +110,7 @@
         const cesiumWidgets = document.getElementsByClassName('cesium-widget-credits');
         cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
 
-        this.replaceLayer();
+        // this.replaceLayer();
         this.replaceBasemap();
         this.zoomToExtent(this.wmsLayer.bbox);
 
@@ -129,10 +140,37 @@
           console.log(maxLat, maxLon, minLat, minLon);
 
         }, false);
-
-
+        if (this.site) {
+          this.addSite();
+        }
       },
       methods: {
+        addSite() {
+          const geoJSON = tRewind(JSON.parse(this.site.geoJSON));
+          GeoJsonDataSource.load(geoJSON)
+            .then((dataSource) => {
+              this.viewer.dataSources.add(dataSource);
+              const entities = dataSource.entities.values;
+
+
+              // TODO: Check if point or polygon and handle with if-else, otherwise it doesnt really work
+              entities.forEach((entity) => {
+                console.log(entity);
+                // Set point style
+                entity.billboard = {
+                  image: marker,
+                  horizontalOrigin: HorizontalOrigin.CENTER,
+                  verticalOrigin: VerticalOrigin.BOTTOM,
+                };
+
+                // Set polygon style
+                entity.polygon.material = new Color.fromCssColorString(this.color).withAlpha(this.fillAlpha);
+                entity.outline = true;
+                entity.outlineWidth = this.outlineWidth;
+                entity.polygon.outlineColor = new Color.fromCssColorString(this.color);
+              });
+            });
+        },
         zoomIn() {
           this.viewer.camera.zoomIn();
         },
