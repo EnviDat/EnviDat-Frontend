@@ -41,6 +41,9 @@
       selectedLayer() {
         return this.$store.state.geoservices.selectedLayer;
       },
+      mapService() {
+        return this.genericProps.data.mapService;
+      },
       configFile() {
         return this.$store.state.geoservices.config;
       },
@@ -61,6 +64,14 @@
         handler() {
           if (this.genericProps?.data?.configUrl) {
             this.$store.dispatch('fetchConfig', this.genericProps.data.configUrl);
+          }
+        },
+        immediate: true,
+      },
+      mapService: {
+        handler() {
+          if (this.mapService) {
+            this.$store.dispatch('fetchWmsConfig', this.mapService.url);
           }
         },
         immediate: true,

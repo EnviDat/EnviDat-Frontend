@@ -174,7 +174,7 @@ export default {
   },
   watch: {
     genericProps() {
-      createWmsCatalog(this.genericProps.mapService.url, this.genericProps.mapService.type)
+      createWmsCatalog(this.genericProps.mapService.url)
         // eslint-disable-next-line no-return-assign
         .then((res) => {
           this.catalog = res;
