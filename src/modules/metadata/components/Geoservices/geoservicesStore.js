@@ -37,6 +37,9 @@ export const geoservices = {
     setLayerConfig(state, payload) {
       state.layerConfig = payload;
     },
+    setExtent(state, payload) {
+      state.extent = payload;
+    },
     setSelectedLayer(state, payload) {
       state.selectedLayer = payload;
     },

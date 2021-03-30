@@ -49,6 +49,7 @@ export default {
     wmsLayer: Object,
     site: Object,
     featureInfoPts: Array,
+    maxExtent: Object,
     opacity: Number,
     mapDivId: String,
   },
@@ -56,6 +57,7 @@ export default {
     linkedScreens() {
       return this.$store.state.geoservices.linkedScreens;
     },
+    // Current extent of user
     extent() {
       return this.$store.state.geoservices.extent;
     },
@@ -187,7 +189,6 @@ export default {
           maxBoundsViscosity: 0.5,
         });
       L.control.scale().addTo(this.map);
-      this.replaceLayer();
       this.replaceBasemap();
 
       this.map.on('click', e => this.getFeatureInfo(e.latlng));
@@ -196,6 +197,8 @@ export default {
       if (this.site) {
         this.addSite();
       }
+      this.zoomToExtent(this.maxExtent);
+      this.replaceLayer();
     },
     zoomToExtent(bbox) {
       this.map.fitBounds([
@@ -208,7 +211,6 @@ export default {
         this.map.removeLayer(this.mapLayer);
         this.mapLayer = null;
       } else if (this.wmsLayer) {
-        this.zoomToExtent(this.wmsLayer.bbox);
         this.mapLayer = leafletLayer(this.wmsLayer);
         this.map.addLayer(this.mapLayer);
         this.mapLayer.setOpacity(this.opacity / 100);

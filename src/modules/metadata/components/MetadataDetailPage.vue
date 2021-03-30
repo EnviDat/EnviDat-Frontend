@@ -476,13 +476,12 @@ export default {
 
       // Object that defines the content of MetadataGeo
       const geoJSON = this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null;
-      console.log(geoJSON);
 
       const geo = {
         site: { geoJSON },
         data: {
           // configUrl: configs?.geoUrl ? configs.geoUrl : null,
-          // wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
+          wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
         },
       };
 

@@ -1,6 +1,5 @@
 <template>
   <div style="height: 100%; width: 100%; z-index: 100; max-width: 100%; position: relative;">
-
     <div :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'">
       <v-row class="top-slot" no-gutters>
         <slot name="top"></slot>
@@ -35,6 +34,7 @@
       <map-leaflet
         v-if="!show3d"
         :wmsLayer="selectedLayer"
+        :max-extent="maxExtent"
         :map-div-id="mapDivId"
         :featureInfoPts="featureinfo"
         :opacity="opacity"
@@ -69,6 +69,12 @@
 </template>
 
 <script>
+  import {
+    buffer as tBuffer,
+    centroid as tCentroid,
+    distance as tDistance,
+    envelope as tEnvelope,
+  } from '@turf/turf';
   import MapLeaflet from './MapLeaflet';
   import MapCesium from './MapCesium';
   import MapLayerControl from './MapLayerControl';
@@ -97,6 +103,33 @@
       showSite: true,
     }),
     computed: {
+      maxAbsLat() {
+        return Math.abs(tCentroid(this.site.geoJSON).geometry.coordinates[1]);
+      },
+      maxExtent() {
+        let extent = null;
+        if (this.site) {
+          const bbox = tEnvelope(this.site.geoJSON);
+          let dist = tDistance(bbox.geometry.coordinates[0][0], bbox.geometry.coordinates[0][2]);
+            if (dist === 0) {
+              dist = 100;
+            }
+            if (this.maxAbsLat > 60) {
+              dist = 10000;
+            }
+            let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
+            enve = tEnvelope(enve);
+            extent = {
+              minx: enve.geometry.coordinates[0][0][0],
+              miny: enve.geometry.coordinates[0][0][1],
+              maxx: enve.geometry.coordinates[0][2][0],
+              maxy: enve.geometry.coordinates[0][2][1],
+            };
+        } else if (this.layerConfig) {
+          extent = this.layerConfig.bbox;
+        }
+        return extent;
+      },
       featureinfo() {
         return this.$store.state.geoservices.timeseries;
       },
