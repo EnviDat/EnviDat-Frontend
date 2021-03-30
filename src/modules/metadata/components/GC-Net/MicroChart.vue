@@ -21,16 +21,13 @@
           <v-img :src="image"
                   @load="imageLoadSuccess"
                   @error="imageLoadError"
-                  height="100%" 
+                  :width="imageLoading || imageError ? '0%' : '100%'" 
+                  :height="imageLoading || imageError ? '0%' : '100%'" 
                   style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;" />
 
-        </v-col>
-
-        <v-col v-if="image && imageLoading"
-                cols="3"
-                id="loading_image_col" >
-          <div class='skeleton skeleton-animation-shimmer' style="height: 100%;" >
-            <div style="width: 100%;" class='bone bone-type-image'></div>
+          <div v-show="imageLoading"
+                class='skeleton skeleton-animation-shimmer' style="height: 100%;" >
+            <div style="width: 100%; min-height: 100%; " class='bone bone-type-image'></div>
           </div>
         </v-col>
  
