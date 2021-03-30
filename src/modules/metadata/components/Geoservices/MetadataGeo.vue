@@ -2,20 +2,23 @@
   <v-card>
     <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
 
-    <v-card-text v-if="configFile" style="width: 100%; height: 500px; position: relative;">
+    <v-card-text v-if="hasData" style="width: 100%; height: 500px; position: relative;">
       <Map
-        :config="configFile"
+        :layer-config="layerConfig"
         :map-div-id="'map-small'"
         :selected-layer-name="selectedLayer"
         @changeLayer="setLayer"
         @setShow3d="setShow3d"
         :show3d="show3d"
-        :site="genericProps.site"
+        :site="site"
       >
         <v-btn fab small color="primary" @click.native.stop="openFullscreen">
           <v-icon medium style="height: auto;">fullscreen</v-icon>
         </v-btn>
       </Map>
+    </v-card-text>
+    <v-card-text v-else>
+      No location data available
     </v-card-text>
 
   </v-card>
@@ -38,17 +41,23 @@
       fullWidthSize: 875,
     }),
     computed: {
+      hasData() {
+        return this.layerConfig || this.site;
+      },
       selectedLayer() {
         return this.$store.state.geoservices.selectedLayer;
       },
-      mapService() {
-        return this.genericProps.data.mapService;
+      site() {
+        return this.genericProps.site;
       },
-      configFile() {
-        return this.$store.state.geoservices.config;
+      wmsUrl() {
+        return this.genericProps.data.wmsUrl;
       },
-      ready() {
-        return !!this.genericProps.data.config;
+      configUrl() {
+        return this.genericProps.data.configUrl;
+      },
+      layerConfig() {
+        return this.$store.state.geoservices.layerConfig;
       },
       mapSize() {
         const height = this.$vuetify.breakpoint.xsOnly || this.$vuetify.breakpoint.smAndDown
@@ -60,18 +69,18 @@
       },
     },
     watch: {
-      ready: {
+      configUrl: {
         handler() {
           if (this.genericProps?.data?.configUrl) {
-            this.$store.dispatch('fetchConfig', this.genericProps.data.configUrl);
+            this.$store.dispatch('fetchLayerConfig', this.genericProps.data.configUrl);
           }
         },
         immediate: true,
       },
-      mapService: {
+      wmsUrl: {
         handler() {
-          if (this.mapService) {
-            this.$store.dispatch('fetchWmsConfig', this.mapService.url);
+          if (this.wmsUrl) {
+            this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
           }
         },
         immediate: true,

@@ -6,7 +6,7 @@ const COLORS = ['#B266E3', '#ED2D5D', '#142832', '#CB1FB2', '#85D257', '#9C6804'
 export const geoservices = {
   state: {
     basemap: 'streets',
-    config: null,
+    layerConfig: null,
     selectedLayer: null,
     splitLayer: null,
     splitScreen: false,
@@ -37,8 +37,8 @@ export const geoservices = {
     setLinkedScreens(state, payload) {
       state.linkedScreens = payload;
     },
-    setConfig(state, payload) {
-      state.config = payload;
+    setLayerConfig(state, payload) {
+      state.layerConfig = payload;
     },
     setSelectedLayer(state, payload) {
       state.selectedLayer = payload;
@@ -66,11 +66,11 @@ export const geoservices = {
     },
   },
   actions: {
-    fetchConfig({ state, commit }, url) {
-      if (!state.config) {
+    fetchLayerConfig({ state, commit }, url) {
+      if (!state.layerConfig) {
         axios.get(url)
           .then((res) => {
-            commit('setConfig', res.data);
+            commit('setLayerConfig', res.data);
             commit('setSelectedLayer', res.data.layers.find(layer => layer.visibility).name);
             commit('setSplitLayer', res.data.layers.find(layer => layer.visibility).name);
           });
@@ -79,7 +79,7 @@ export const geoservices = {
     fetchWmsConfig({ commit }, url) {
       createWmsCatalog(url)
         .then((res) => {
-          commit('setConfig', res);
+          commit('setLayerConfig', res);
           commit('setSelectedLayer', res.layers[0].name);
         });
     },

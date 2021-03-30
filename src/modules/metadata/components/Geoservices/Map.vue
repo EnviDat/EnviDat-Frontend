@@ -1,7 +1,7 @@
 <template>
   <div style="height: 100%; width: 100%; z-index: 100; max-width: 100%; position: relative;">
 
-    <div :class="config.timeseries ? 'map-container-timeslider' : 'map-container'">
+    <div :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'">
       <v-row class="top-slot" no-gutters>
         <slot name="top"></slot>
       </v-row>
@@ -10,13 +10,13 @@
         location_on
       </v-icon>
 
-      <v-icon @click="layerControlOpen = !layerControlOpen" class="icon elevation-5" style="position: absolute; top: 95px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
+      <v-icon v-if="layerConfig" @click="layerControlOpen = !layerControlOpen" class="icon elevation-5" style="position: absolute; top: 95px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
         layers
       </v-icon>
 
       <map-layer-control
         v-if="layerControlOpen"
-        :layers="config.layers"
+        :layers="layerConfig.layers"
         :selected="selectedLayerName"
         @select="select"
         @setOpacity="setOpacity"
@@ -27,7 +27,7 @@
       <feature-info
         :div-id="`${mapDivId}_graph`"
         v-if="featureinfo.length > 0"
-        :layers="config.layers"
+        :layers="layerConfig.layers"
         :selected="selectedLayerName"
         style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;"
       ></feature-info>
@@ -56,11 +56,11 @@
         <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>
       </map-cesium>
     </div>
-    <div class="timeslider-container" v-if="config.timeseries" style="position: relative;">
+    <div class="timeslider-container" v-if="layerConfig.timeseries" style="position: relative;">
       <timeslider
         style="height: 100px; z-index: 10000; position: relative;"
         @select="select"
-        :chart-data="config.layers"
+        :chart-data="layerConfig.layers"
         :div-id="`timeslider_${mapDivId}`"
         :selected="selectedLayerName"
       ></timeslider>
@@ -86,7 +86,7 @@
       MapLeaflet,
     },
     props: {
-      config: { type: Object, required: true },
+      layerConfig: { type: Object, required: true },
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
       show3d: { type: Boolean },
@@ -105,14 +105,14 @@
         if (!this.selectedLayerName) {
           return null;
         }
-        const layer = this.config.layers.find(l => l.name === this.selectedLayerName);
-        layer.baseURL = this.config.baseURL;
-        layer.bbox = this.config.bbox;
-        layer.type = 'wms'; // this.config.type || 'wms';
+        const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
+        layer.baseURL = this.layerConfig.baseURL;
+        layer.bbox = this.layerConfig.bbox;
+        layer.type = 'wms';
         return layer;
       },
       hasGeom() {
-        return !!this.config;
+        return !!this.layerConfig;
       },
     },
     methods: {

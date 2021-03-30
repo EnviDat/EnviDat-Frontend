@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; width: 100%;" v-if="configFile">
+  <div style="height: 100%; width: 100%;" v-if="layerConfig">
     <v-card
       style="position: absolute; top: 0; right: 0; z-index: 200; background-color: rgba(255, 255, 255, 0.6);"
       class="ma-2">
@@ -16,7 +16,7 @@
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
         <Map
-          :config="configFile"
+          :layer-config="layerConfig"
           :map-div-id="'map1'"
           @changeLayer="setLayer"
           :key="'map1'"
@@ -33,7 +33,7 @@
       </div>
       <div style="width: 50%; float: left; position: relative; border-left: 1px solid gray;">
         <Map
-          :config="configFile"
+          :layer-config="layerConfig"
           :map-div-id="'map2'"
           @changeLayer="setLayerSplit"
           :key="'map2'"
@@ -57,7 +57,7 @@
           :key="'map0'">
       <div style="width: 100%;">
         <Map
-          :config="configFile"
+          :layer-config="layerConfig"
           @changeLayer="setLayer"
           :map-div-id="'map0'"
           :selected-layer-name="selectedLayer"
@@ -127,8 +127,8 @@
       selectedLayer() {
         return this.$store.state.geoservices.selectedLayer;
       },
-      configFile() {
-        return this.$store.state.geoservices.config;
+      layerConfig() {
+        return this.$store.state.geoservices.layerConfig;
       },
       metadataId() {
         return this.$route.params.metadataid;

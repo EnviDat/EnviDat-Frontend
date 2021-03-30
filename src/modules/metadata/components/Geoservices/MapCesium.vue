@@ -36,7 +36,6 @@
     import marker from '@/assets/map/marker-icon.png';
     import marker2x from '@/assets/map/marker-icon-2x.png';
     import markerShadow from '@/assets/map/marker-shadow.png';
-    import { rewind as tRewind } from '@turf/turf';
     import ZoomBtn from './ZoomBtn';
     import { cesiumLayer } from './layer-cesium';
 
@@ -146,8 +145,7 @@
       },
       methods: {
         addSite() {
-          const geoJSON = tRewind(JSON.parse(this.site.geoJSON));
-          GeoJsonDataSource.load(geoJSON)
+          GeoJsonDataSource.load(this.site.geoJSON)
             .then((dataSource) => {
               this.viewer.dataSources.add(dataSource);
               const entities = dataSource.entities.values;

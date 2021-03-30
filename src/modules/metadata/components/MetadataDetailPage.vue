@@ -139,6 +139,7 @@ import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout'
 import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
 
+import { rewind as tRewind } from '@turf/turf';
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
 import MetadataResources from './Metadata/MetadataResources';
@@ -473,21 +474,17 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
+      // Object that defines the content of MetadataGeo
+      const geoJSON = this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null;
+
       const geo = {
-        site: {
-          geoJSON: this.location ? this.location.geoJSON : null,
-          id: this.location ? this.location.id : null,
-          name: this.location ? this.location.name : null,
-          title: this.location ? this.location.title : null,
-        },
+        site: { geoJSON },
         data: {
-          configUrl: configs?.geoUrl ? configs.geoUrl : null,
-          mapService: {
-            url: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
-            type: 'wms',
-          },
+          // configUrl: configs?.geoUrl ? configs.geoUrl : null,
+          wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
         },
       };
+
       this.$set(components.MetadataGeo, 'genericProps', geo);
 
       this.$set(components.MetadataDetails, 'genericProps', { details: this.details });

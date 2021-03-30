@@ -26,7 +26,6 @@ import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafle
 import markerIcon from '@/assets/map/marker-icon.png';
 import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
-import { rewind as tRewind } from '@turf/turf';
 import { leafletLayer } from './layer-leaflet';
 import ZoomBtn from './ZoomBtn';
 
@@ -99,7 +98,7 @@ export default {
       const icon = L.icon(iconOptions);
 
       // Add geodata to map
-      this.siteLayer = L.geoJSON(tRewind(JSON.parse(this.site.geoJSON)), {
+      this.siteLayer = L.geoJSON(this.site.geoJSON, {
         pointToLayer(feature, latlng) {
           return L.marker(latlng, {
             icon,
@@ -123,7 +122,7 @@ export default {
       let start = 0;
       const featureinfo = [];
       const promises = [];
-      while (start < this.$store.state.geoservices.config.layers.length) {
+      while (start < this.$store.state.geoservices.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
         const promise = axios.get(url)
           .then((res) => {
@@ -154,7 +153,7 @@ export default {
       let bbox = this.map.getBounds(); // bbox in WGS coordinates
       // eslint-disable-next-line no-underscore-dangle
       bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
-      const layers = this.$store.state.geoservices.config.layers.map(layer => layer.name)
+      const layers = this.$store.state.geoservices.layerConfig.layers.map(layer => layer.name)
         .slice(start, stop);
       const params = {
         request: 'GetFeatureInfo',
@@ -260,6 +259,7 @@ export default {
     },
     wmsLayer: {
       handler() {
+        console.log(this.wmsLayer);
         this.replaceLayer();
       },
       deep: true,
