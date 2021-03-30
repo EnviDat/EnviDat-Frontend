@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
 
-    <v-card-text v-if="hasData" style="width: 100%; height: 500px; position: relative;">
+    <v-card-text v-if="isReady" style="width: 100%; height: 500px; position: relative;">
       <Map
         :layer-config="layerConfig"
         :map-div-id="'map-small'"
@@ -34,6 +34,7 @@
       genericProps: Object,
     },
     data: () => ({
+      ready: false,
       map: null,
       smallSize: 300,
       mediumSize: 500,
@@ -41,6 +42,9 @@
       fullWidthSize: 875,
     }),
     computed: {
+      isReady() {
+        return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl) && this.layerConfig !== null);
+      },
       hasData() {
         return this.layerConfig || this.site;
       },
@@ -68,24 +72,6 @@
         return this.$store.state.geoservices.show3d;
       },
     },
-    watch: {
-      configUrl: {
-        handler() {
-          if (this.genericProps?.data?.configUrl) {
-            this.$store.dispatch('fetchLayerConfig', this.configUrl);
-          }
-        },
-        immediate: true,
-      },
-      wmsUrl: {
-        handler() {
-          if (this.wmsUrl) {
-            this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
-          }
-        },
-        immediate: true,
-      },
-    },
     methods: {
       setLayer(name) {
         this.$store.commit('setSelectedLayer', name);
@@ -96,6 +82,14 @@
       setShow3d(value) {
         this.$store.commit('setShow3d', value);
       },
+    },
+    mounted() {
+      if (this.wmsUrl) {
+        this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
+      }
+      if (this.configUrl) {
+        this.$store.dispatch('fetchLayerConfig', this.configUrl);
+      }
     },
   };
 </script>

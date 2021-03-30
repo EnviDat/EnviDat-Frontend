@@ -103,9 +103,6 @@
       showSite: true,
     }),
     computed: {
-      maxAbsLat() {
-        return Math.abs(tCentroid(this.site.geoJSON).geometry.coordinates[1]);
-      },
       maxExtent() {
         let extent = null;
         if (this.site) {
@@ -114,7 +111,7 @@
             if (dist === 0) {
               dist = 100;
             }
-            if (this.maxAbsLat > 60) {
+            if (Math.abs(tCentroid(this.site.geoJSON).geometry.coordinates[1]) > 60) {
               dist = 10000;
             }
             let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
@@ -140,7 +137,6 @@
         const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
         layer.baseURL = this.layerConfig.baseURL;
         layer.bbox = this.layerConfig.bbox;
-        layer.type = 'wms';
         return layer;
       },
     },

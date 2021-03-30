@@ -36,7 +36,6 @@ export default {
     ZoomBtn,
   },
   data: () => ({
-    bingApiKey: process.env.VUE_APP_BING_API_KEY,
     map: null,
     mapLayer: null,
     basemapLayer: null,
@@ -80,7 +79,7 @@ export default {
     },
     satellite() {
       return L.tileLayer.bing({
-        bingMapsKey: this.bingApiKey,
+        bingMapsKey: '',
         imagerySet: 'AerialWithLabels',
         noWrap: true,
       });
@@ -191,7 +190,9 @@ export default {
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
-      this.map.on('click', e => this.getFeatureInfo(e.latlng));
+      if (this.layerConfig && this.layerConfig.timeseries) {
+        this.map.on('click', e => this.getFeatureInfo(e.latlng));
+      }
       this.map.on('drag', () => this.$store.commit('setExtent', this.map.getBounds()));
       this.map.on('zoom', () => this.$store.commit('setExtent', this.map.getBounds()));
       if (this.site) {

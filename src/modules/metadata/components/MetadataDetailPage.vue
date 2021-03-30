@@ -476,7 +476,7 @@ export default {
 
       // Object that defines the content of MetadataGeo
       const geoJSON = this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null;
-
+      console.log(geoJSON);
       const geo = {
         site: { geoJSON },
         data: {
