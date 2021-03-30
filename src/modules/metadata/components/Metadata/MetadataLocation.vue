@@ -62,7 +62,7 @@ import {
 
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MetadataLocationCatalog from './MetadataLocationCatalog';
-import { createCatalog } from '../GeoservicesMVP/catalog';
+import { createWmsCatalog } from '../GeoservicesMVP/catalogWms';
 
 const MetadataLocationCesium = () => import('./MetadataLocationCesium');
 const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
@@ -174,7 +174,7 @@ export default {
   },
   watch: {
     genericProps() {
-      createCatalog(this.genericProps.mapService.url, this.genericProps.mapService.type)
+      createWmsCatalog(this.genericProps.mapService.url, this.genericProps.mapService.type)
         // eslint-disable-next-line no-return-assign
         .then((res) => {
           this.catalog = res;
