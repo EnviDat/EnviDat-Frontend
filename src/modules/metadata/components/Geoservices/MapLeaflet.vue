@@ -46,11 +46,11 @@ export default {
     markerIconShadow,
   }),
   props: {
-    opacity: Number,
-    featureInfoPts: Array,
     wmsLayer: Object,
-    mapDivId: String,
     site: Object,
+    featureInfoPts: Array,
+    opacity: Number,
+    mapDivId: String,
   },
   computed: {
     linkedScreens() {
@@ -207,10 +207,8 @@ export default {
       if (this.mapLayer) {
         this.map.removeLayer(this.mapLayer);
         this.mapLayer = null;
-      } else {
+      } else if (this.wmsLayer) {
         this.zoomToExtent(this.wmsLayer.bbox);
-      }
-      if (this.wmsLayer) {
         this.mapLayer = leafletLayer(this.wmsLayer);
         this.map.addLayer(this.mapLayer);
         this.mapLayer.setOpacity(this.opacity / 100);
@@ -259,7 +257,6 @@ export default {
     },
     wmsLayer: {
       handler() {
-        console.log(this.wmsLayer);
         this.replaceLayer();
       },
       deep: true,

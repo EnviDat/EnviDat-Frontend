@@ -31,9 +31,6 @@ export const geoservices = {
     removeTimeseries(state, id) {
       state.timeseries = state.timeseries.filter(t => t.id === id);
     },
-    setExtent(state, payload) {
-      state.extent = payload;
-    },
     setLinkedScreens(state, payload) {
       state.linkedScreens = payload;
     },

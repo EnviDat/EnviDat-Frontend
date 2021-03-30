@@ -72,7 +72,7 @@
       configUrl: {
         handler() {
           if (this.genericProps?.data?.configUrl) {
-            this.$store.dispatch('fetchLayerConfig', this.genericProps.data.configUrl);
+            this.$store.dispatch('fetchLayerConfig', this.configUrl);
           }
         },
         immediate: true,

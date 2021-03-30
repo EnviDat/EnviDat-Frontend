@@ -6,7 +6,7 @@
         <slot name="top"></slot>
       </v-row>
 
-      <v-icon @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
+      <v-icon v-if="site" @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
         location_on
       </v-icon>
 
@@ -15,7 +15,7 @@
       </v-icon>
 
       <map-layer-control
-        v-if="layerControlOpen"
+        v-if="layerConfig && layerControlOpen"
         :layers="layerConfig.layers"
         :selected="selectedLayerName"
         @select="select"
@@ -32,7 +32,6 @@
         style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;"
       ></feature-info>
 
-      <div v-if="!hasGeom" style="color: red;">No data to show</div>
       <map-leaflet
         v-if="!show3d"
         :wmsLayer="selectedLayer"
@@ -56,7 +55,7 @@
         <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>
       </map-cesium>
     </div>
-    <div class="timeslider-container" v-if="layerConfig.timeseries" style="position: relative;">
+    <div class="timeslider-container" v-if="layerConfig && layerConfig.timeseries" style="position: relative;">
       <timeslider
         style="height: 100px; z-index: 10000; position: relative;"
         @select="select"
@@ -86,11 +85,11 @@
       MapLeaflet,
     },
     props: {
-      layerConfig: { type: Object, required: true },
+      layerConfig: Object,
+      site: Object,
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
       show3d: { type: Boolean },
-      site: Object,
     },
     data: () => ({
       layerControlOpen: false,
@@ -102,7 +101,7 @@
         return this.$store.state.geoservices.timeseries;
       },
       selectedLayer() {
-        if (!this.selectedLayerName) {
+        if (!this.layerConfig || !this.selectedLayerName) {
           return null;
         }
         const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
@@ -110,9 +109,6 @@
         layer.bbox = this.layerConfig.bbox;
         layer.type = 'wms';
         return layer;
-      },
-      hasGeom() {
-        return !!this.layerConfig;
       },
     },
     methods: {
