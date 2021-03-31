@@ -1,7 +1,7 @@
 <template>
   <div :id="mapDivId" class="cesiumContainer">
     <div class="zoom">
-        <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" />
+        <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(maxExtent)" />
     </div>
     <v-card ripple class="basemap-toggle">
       <img width="40" height="40" v-if="basemap==='streets'" src="./satellite-icon.png" @click="basemap='satellite'">
@@ -113,7 +113,9 @@
 
         this.replaceBasemap();
         this.zoomToExtent(this.maxExtent);
-        this.replaceLayer();
+        if (this.wmsLayer) {
+          this.replaceLayer();
+        }
 
         this.viewer.scene.canvas.addEventListener('click', (event) => {
           event.preventDefault();
