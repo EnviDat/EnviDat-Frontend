@@ -12,7 +12,7 @@
         :show3d="show3d"
         :site="site"
       >
-        <v-btn fab small color="primary" @click.native.stop="openFullscreen">
+        <v-btn fab small color="primary" @click.native.stop="openFullscreen" v-if="hasData">
           <v-icon medium style="height: auto;">fullscreen</v-icon>
         </v-btn>
       </Map>
@@ -46,7 +46,7 @@
         return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl) && this.layerConfig !== null);
       },
       hasData() {
-        return this.layerConfig || this.site;
+        return this.layerConfig;
       },
       selectedLayer() {
         return this.$store.state.geoservices.selectedLayer;
@@ -55,10 +55,10 @@
         return this.genericProps.site;
       },
       wmsUrl() {
-        return this.genericProps.data.wmsUrl;
+        return this.genericProps.data?.wmsUrl;
       },
       configUrl() {
-        return this.genericProps.data.configUrl;
+        return this.genericProps.data?.configUrl;
       },
       layerConfig() {
         return this.$store.state.geoservices.layerConfig;

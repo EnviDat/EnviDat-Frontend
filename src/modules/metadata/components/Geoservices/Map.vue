@@ -5,7 +5,7 @@
         <slot name="top"></slot>
       </v-row>
 
-      <v-icon v-if="site" @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
+      <v-icon v-if="site && layerConfig" @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
         location_on
       </v-icon>
 
