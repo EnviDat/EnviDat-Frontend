@@ -107,16 +107,23 @@
       maxExtent() {
         let extent = null;
         if (this.site) {
+          // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
           const bbox = tEnvelope(this.site.geoJSON);
+          // Get the distance of the diagonal (lower left and upper right)
           let dist = tDistance(bbox.geometry.coordinates[0][0], bbox.geometry.coordinates[0][2]);
-            if (dist === 0) {
+          // If there is only one point (distance = 0)
+          if (dist === 0) {
               dist = 100;
             }
+            // If the centroid of the geometry is above 60° or below -60°
             if (Math.abs(tCentroid(this.site.geoJSON).geometry.coordinates[1]) > 60) {
               dist = 10000;
             }
+            // Buffer
             let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
             enve = tEnvelope(enve);
+
+            // Convert from geometry to extent object
             extent = {
               minx: enve.geometry.coordinates[0][0][0],
               miny: enve.geometry.coordinates[0][0][1],
