@@ -23,6 +23,7 @@
           :selected-layer-name="selectedLayer"
           @setShow3d="setShow3d"
           :show3d="show3d"
+          :site="site"
         >
           <template v-slot:top>
             <v-btn icon color="red" style="display: inline-block" @click="quitSplitFrom(1)">
@@ -40,6 +41,7 @@
           :selected-layer-name="splitLayer"
           @setShow3d="setShow3dSplit"
           :show3d="show3dSplit"
+          :site="site"
         >
           <template v-slot:top>
             <v-btn icon color="red" @click="quitSplitFrom(2)">
@@ -63,6 +65,7 @@
           :selected-layer-name="selectedLayer"
           @setShow3d="setShow3d"
           :show3d="show3d"
+          :site="site"
         >
           <v-btn color="primary" @click="startSplit" fab small>
             <v-icon style="height:auto;">vertical_split</v-icon>
@@ -118,6 +121,9 @@
         currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
         detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       }),
+      site() {
+        return this.$store.state.geoservices.site;
+      },
       splitScreen() {
         return this.$store.state.geoservices.splitScreen;
       },

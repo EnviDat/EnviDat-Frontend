@@ -90,6 +90,9 @@
       if (this.configUrl) {
         this.$store.dispatch('fetchLayerConfig', this.configUrl);
       }
+      if (this.site) {
+        this.$store.commit('setSite', this.site);
+      }
     },
   };
 </script>

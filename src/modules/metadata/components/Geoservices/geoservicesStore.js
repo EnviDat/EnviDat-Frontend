@@ -15,6 +15,7 @@ export const geoservices = {
     linkedScreens: false,
     extent: null,
     timeseries: [],
+    site: null,
   },
   getters: {
     coords(state) {
@@ -51,6 +52,9 @@ export const geoservices = {
     },
     setBasemap(state, payload) {
       state.basemap = payload;
+    },
+    setSite(state, payload) {
+      state.site = payload;
     },
     setShow3d(state, payload) {
       state.show3d = payload;
