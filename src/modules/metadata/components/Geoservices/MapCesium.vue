@@ -58,6 +58,7 @@
           viewer: null,
           mapLayer: null,
           basemapLayer: null,
+          siteLayer: null,
         };
       },
       computed: {
@@ -145,10 +146,14 @@
         }
       },
       methods: {
+        removeSite() {
+          this.viewer.dataSources.remove(this.siteLayer, true);
+        },
         addSite() {
           GeoJsonDataSource.load(this.site.geoJSON)
             .then((dataSource) => {
               this.viewer.dataSources.add(dataSource);
+              this.siteLayer = dataSource;
               const entities = dataSource.entities.values;
 
               const isPoints = this.site.geoJSON.type === 'MultiPoint' || this.site.geoJSON.type === 'Point';
@@ -212,6 +217,13 @@
         basemap() {
           this.replaceBasemap();
         },
+      site: {
+        handler() {
+          if (this.site) this.addSite();
+          else this.removeSite();
+        },
+        deep: true,
+      },
       },
       beforeDestroy() {
         this.viewer.destroy();

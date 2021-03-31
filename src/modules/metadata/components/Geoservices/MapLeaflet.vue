@@ -1,7 +1,7 @@
 <template>
   <div :id="mapDivId" style="height: 100%; width: 100%; z-index: 100;">
     <div class="zoom">
-      <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(wmsLayer.bbox)"/>
+      <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(maxExtent)"/>
     </div>
     <v-card ripple class="basemap-toggle">
       <img width="40" height="40" v-if="basemap==='streets'" src="./satellite-icon.png" @click="basemap='satellite'">
