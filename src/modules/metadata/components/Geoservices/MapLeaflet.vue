@@ -3,10 +3,7 @@
     <div class="zoom">
       <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(maxExtent)"/>
     </div>
-    <v-card ripple class="basemap-toggle">
-      <img width="40" height="40" v-if="basemap==='streets'" src="./satellite-icon.png" @click="basemap='satellite'">
-      <img width="40" height="40" v-if="basemap==='satellite'" src="./streets-icon.png" @click="basemap='streets'">
-    </v-card>
+    <basemap-toggle v-model="basemap" class="basemap-toggle"></basemap-toggle>
     <div style="position: absolute; bottom: 70px; right: 16px; z-index: 99999; cursor: auto;">
       <slot></slot>
     </div>
@@ -29,10 +26,12 @@ import markerIconShadow from '@/assets/map/marker-shadow.png';
 import { mapState } from 'vuex';
 import { leafletLayer } from './layer-leaflet';
 import ZoomBtn from './ZoomBtn';
+import BasemapToggle from './BasemapToggle/BasemapToggle';
 
 export default {
   name: 'MapLeaflet',
   components: {
+    BasemapToggle,
     MapLeafletPoint,
     ZoomBtn,
   },
@@ -93,6 +92,9 @@ export default {
     },
   },
   methods: {
+    setBasemap(value) {
+      this.basemap = value;
+    },
     removeSite() {
       this.map.removeLayer(this.siteLayer);
       this.siteLayer = null;
@@ -290,16 +292,11 @@ export default {
 .leaflet-container {
   cursor: default;
 }
-
 .basemap-toggle {
   position: absolute;
   bottom: 20px;
   right: 15px;
   z-index: 10000;
-  cursor: pointer;
-  padding: 2px;
-  width: 44px;
-  height: 44px;
 }
 
 .zoom {
