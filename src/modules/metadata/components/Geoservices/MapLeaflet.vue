@@ -157,8 +157,7 @@ export default {
       let bbox = this.map.getBounds(); // bbox in WGS coordinates
       // eslint-disable-next-line no-underscore-dangle
       bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
-      const layers = this.layerConfig.layers.map(layer => layer.name)
-        .slice(start, stop);
+      const layers = this.layerConfig.layers.map(layer => layer.name).slice(start, stop);
       const params = {
         request: 'GetFeatureInfo',
         service: 'WMS',

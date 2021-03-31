@@ -109,9 +109,9 @@
         const cesiumWidgets = document.getElementsByClassName('cesium-widget-credits');
         cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
 
-        // this.replaceLayer();
         this.replaceBasemap();
         this.zoomToExtent(this.wmsLayer.bbox);
+        this.replaceLayer();
 
         this.viewer.scene.canvas.addEventListener('click', (event) => {
           event.preventDefault();

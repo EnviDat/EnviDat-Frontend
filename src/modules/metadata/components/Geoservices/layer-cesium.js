@@ -1,7 +1,6 @@
 import WebMapServiceImageryProvider from 'cesium/Scene/WebMapServiceImageryProvider';
 
 export function cesiumLayer(config) {
-  if (config.type === 'wms') {
     return new WebMapServiceImageryProvider({
       parameters: {
         transparent: true,
@@ -11,6 +10,4 @@ export function cesiumLayer(config) {
       layers: config.name,
       enablePickFeatures: false,
     });
-  }
-  return null;
 }
