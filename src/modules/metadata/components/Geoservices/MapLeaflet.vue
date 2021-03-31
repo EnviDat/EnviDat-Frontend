@@ -26,6 +26,7 @@ import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafle
 import markerIcon from '@/assets/map/marker-icon.png';
 import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
+import { mapState } from 'vuex';
 import { leafletLayer } from './layer-leaflet';
 import ZoomBtn from './ZoomBtn';
 
@@ -53,6 +54,9 @@ export default {
     mapDivId: String,
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
     layerConfig() {
       return this.$store.state.geoservices.layerConfig;
     },
@@ -82,7 +86,7 @@ export default {
     },
     satellite() {
       return L.tileLayer.bing({
-        bingMapsKey: '',
+        bingMapsKey: this.config?.apiKeys?.bing || null,
         imagerySet: 'AerialWithLabels',
         noWrap: true,
       });

@@ -36,6 +36,7 @@
     import marker from '@/assets/map/marker-icon.png';
     import marker2x from '@/assets/map/marker-icon-2x.png';
     import markerShadow from '@/assets/map/marker-shadow.png';
+    import { mapState } from 'vuex';
     import ZoomBtn from './ZoomBtn';
     import { cesiumLayer } from './layer-cesium';
 
@@ -62,6 +63,9 @@
         };
       },
       computed: {
+        ...mapState([
+          'config',
+        ]),
         extent() {
           return this.viewer.camera;
         },
@@ -81,7 +85,7 @@
         satellite() {
           return new BingMapsImageryProvider({
             url: 'https://dev.virtualearth.net',
-            key: process.env.VUE_APP_BING_API_KEY,
+            key: this.config?.apiKeys?.bing || null,
             mapStyle: BingMapsStyle.AERIAL,
           });
         },
