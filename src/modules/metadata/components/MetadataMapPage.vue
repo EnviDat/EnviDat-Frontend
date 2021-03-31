@@ -26,7 +26,7 @@
           :site="site"
         >
           <template v-slot:top>
-            <v-btn icon color="red" style="display: inline-block" @click="quitSplitFrom(1)">
+            <v-btn icon outlined color="red" style="display: inline-block; background-color: #cccccc" @click="quitSplitFrom(1)">
               <v-icon>close</v-icon>
             </v-btn>
           </template>
@@ -44,7 +44,7 @@
           :site="site"
         >
           <template v-slot:top>
-            <v-btn icon color="red" @click="quitSplitFrom(2)">
+            <v-btn icon outlined color="red" style="background-color: #cccccc" @click="quitSplitFrom(2)">
               <v-icon>close</v-icon>
             </v-btn>
           </template>

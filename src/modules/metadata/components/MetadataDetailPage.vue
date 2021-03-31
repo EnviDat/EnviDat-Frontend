@@ -479,8 +479,8 @@ export default {
       const geo = {
         site: { geoJSON },
         data: {
-          // configUrl: configs?.geoUrl ? configs.geoUrl : null,
-          wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
+          configUrl: configs?.geoUrl ? configs.geoUrl : null,
+          // wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
         },
       };
 
