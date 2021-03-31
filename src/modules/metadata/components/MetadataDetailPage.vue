@@ -143,7 +143,6 @@ import { rewind as tRewind } from '@turf/turf';
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
 import MetadataResources from './Metadata/MetadataResources';
-import MetadataLocation from './Metadata/MetadataLocation';
 import MetadataDetails from './Metadata/MetadataDetails';
 import MetadataCitation from './Metadata/MetadataCitation';
 import MetadataPublications from './Metadata/MetadataPublications';
@@ -689,7 +688,6 @@ export default {
     MetadataHeader,
     MetadataBody,
     MetadataResources,
-    MetadataLocation,
     MetadataDetails,
     MetadataCitation,
     MetadataPublications,
