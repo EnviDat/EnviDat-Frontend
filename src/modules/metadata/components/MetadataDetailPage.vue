@@ -3,7 +3,8 @@
                 fluid
                 tag="article"
                 id="MetadataDetailPage" >
-    <v-row >
+
+    <v-row no-gutters >
       <v-col class="elevation-5 pa-0"
               cols="12"
               ref="header"
