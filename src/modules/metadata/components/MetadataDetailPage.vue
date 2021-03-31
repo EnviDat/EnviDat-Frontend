@@ -40,8 +40,7 @@
 
           <component :is="entry"
                       :generic-props="entry.genericProps"
-                      :show-placeholder="showPlaceholder"
-                      :authorDeadInfo="authorDeadInfo" />
+                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
       </template>
@@ -54,8 +53,7 @@
 
           <component :is="entry"
                       :generic-props="entry.genericProps"
-                      :show-placeholder="showPlaceholder"
-                      :authorDeadInfo="authorDeadInfo" />
+                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
         
@@ -521,6 +519,7 @@ export default {
       this.$set(components.MetadataAuthors, 'genericProps', {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
       });
 
       this.$set(components.MetadataPublications, 'genericProps', {

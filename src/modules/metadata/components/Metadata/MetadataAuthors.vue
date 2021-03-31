@@ -84,7 +84,6 @@ export default {
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
-    authorDeadInfo: Object,
   },
   mounted() {
     const options = this.options || {};
@@ -113,6 +112,9 @@ export default {
     },
     authorDetailsConfig() {
       return this.mixinMethods_getGenericProp('authorDetailsConfig', {});
+    },
+    authorDeadInfo() {
+      return this.mixinMethods_getGenericProp('authorDeadInfo', {});
     },
     hasAuthors() {
       return this.authors && this.authors.length > 0;
