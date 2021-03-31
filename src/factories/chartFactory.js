@@ -154,6 +154,7 @@ function getConfigFiles(resources) {
   return configs;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json') {
   if (!configs) {
     configs = {};
