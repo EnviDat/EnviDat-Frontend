@@ -9,7 +9,8 @@
     </div>
     <div id="credits">
       <a style="padding-right: 10px;" href="https://cesium.com/cesiumjs/" target="_blank">CesiumJS</a>
-      <a href="https://www.bing.com/maps/" target="_blank">Images &copy; Bing Maps</a>
+      <a href="https://www.bing.com/maps/" target="_blank" v-if="basemap==='satellite'">Images &copy; Bing Maps</a>
+      <a href="https://www.openstreetmap.org/" target="_blank" v-if="basemap==='streets'">OpenStreetMap</a>
     </div>
   </div>
 </template>
