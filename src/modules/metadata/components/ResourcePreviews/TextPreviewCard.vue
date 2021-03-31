@@ -1,8 +1,18 @@
 <template>
   <v-card id="TextPreviewCard" >
 
-    <v-card-text >
+    <v-card-text v-if="fileContent && !enableMarkdown">
       {{ enableMarkdown ? markdownText : fileContent }}
+    </v-card-text>
+
+    <v-card-text v-if="fileContent && enableMarkdown"
+                v-html="markdownText" />
+
+    <v-card-text v-if="errorObject"
+                  :style="`color: ${$vuetify.theme.themes.light.error};`">
+      {{ errorObject.title }}
+      <br />
+      {{ errorObject.message }}
     </v-card-text>
 
   </v-card>
@@ -22,7 +32,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import axios from 'axios';
-import { renderMarkdown } from '@/factories/stringFactory';
+import { 
+  renderMarkdown,
+} from '@/factories/stringFactory';
 
 export default {
   props: {
@@ -39,6 +51,34 @@ export default {
     markdownText() {
       return renderMarkdown(this.fileContent.trim());
     },
+    errorObject() {
+      if (this.fileError) {
+
+        if (!this.url) {
+          return {
+            title: 'No file provided for the Preview!',
+          };
+        }
+
+        const splits = this.url.split('/');
+        const fileName = splits[splits.length - 1];
+
+        if (this.fileError.response?.status === 404) {
+          return {
+            title: `Could not load ${fileName}`,
+            message: `The file ${fileName} doesn't exist at ${this.url}`,
+          };
+        }
+
+        return {
+          title: `Could not load ${fileName}`,
+          message: `Because of a ${this.fileError}. Try downloading it directly.`,
+        };
+      }
+
+      return null;
+    },
+
   },
   methods: {
     getFileContent() {
