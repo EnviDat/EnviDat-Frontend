@@ -1,20 +1,20 @@
 <template>
   <v-container class="pa-0 unselectable">
 
-    <v-row justify="center" class="btn zoom_in elevation-10" @click="$emit('zoomIn')" no-gutters>
+    <v-row justify="center" class="btn zoom_in elevation-10" @click.stop="$emit('zoomIn')" no-gutters>
       <v-icon class="icon">
         add
       </v-icon>
     </v-row>
     <v-divider light></v-divider>
 
-    <v-row justify="center" class="btn zoom_out elevation-10" @click="$emit('zoomOut')" no-gutters>
+    <v-row justify="center" class="btn zoom_out elevation-10" @click.stop="$emit('zoomOut')" no-gutters>
       <v-icon class="icon">
         remove
       </v-icon>
     </v-row>
 
-    <v-row justify="center" class="btn zoom_geom mt-1 elevation-10" @click="$emit('zoomToGeometry')" no-gutters>
+    <v-row justify="center" class="btn zoom_geom mt-1 elevation-10" @click.stop="$emit('zoomToGeometry')" no-gutters>
       <v-icon class="icon">
         zoom_out_map
       </v-icon>
