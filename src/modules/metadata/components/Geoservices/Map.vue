@@ -50,6 +50,7 @@
         :featureInfoPts="featureinfo"
         :opacity="opacity"
         :site="showSite ? site : null"
+        :max-extent="maxExtent"
       >
         <slot></slot><br>
         <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>

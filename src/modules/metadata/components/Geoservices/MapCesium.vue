@@ -47,6 +47,7 @@
         featureInfoPts: Array,
         wmsLayer: Object,
         mapDivId: String,
+        maxExtent: Object,
         site: Object,
       },
       data() {
@@ -110,7 +111,7 @@
         cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
 
         this.replaceBasemap();
-        this.zoomToExtent(this.wmsLayer.bbox);
+        this.zoomToExtent(this.maxExtent);
         this.replaceLayer();
 
         this.viewer.scene.canvas.addEventListener('click', (event) => {
