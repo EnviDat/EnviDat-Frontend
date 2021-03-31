@@ -150,22 +150,23 @@
               this.viewer.dataSources.add(dataSource);
               const entities = dataSource.entities.values;
 
+              const isPoints = this.site.geoJSON.type === 'MultiPoint' || this.site.geoJSON.type === 'Point';
 
-              // TODO: Check if point or polygon and handle with if-else, otherwise it doesnt really work
               entities.forEach((entity) => {
-                console.log(entity);
                 // Set point style
-                entity.billboard = {
-                  image: marker,
-                  horizontalOrigin: HorizontalOrigin.CENTER,
-                  verticalOrigin: VerticalOrigin.BOTTOM,
-                };
-
-                // Set polygon style
-                entity.polygon.material = new Color.fromCssColorString(this.color).withAlpha(this.fillAlpha);
-                entity.outline = true;
-                entity.outlineWidth = this.outlineWidth;
-                entity.polygon.outlineColor = new Color.fromCssColorString(this.color);
+                if (isPoints) {
+                  entity.billboard = {
+                    image: marker,
+                    horizontalOrigin: HorizontalOrigin.CENTER,
+                    verticalOrigin: VerticalOrigin.BOTTOM,
+                  };
+                } else {
+                  // Set polygon style
+                  entity.polygon.material = new Color.fromCssColorString(this.color).withAlpha(this.fillAlpha);
+                  entity.outline = true;
+                  entity.outlineWidth = this.outlineWidth;
+                  entity.polygon.outlineColor = new Color.fromCssColorString(this.color);
+                }
               });
             });
         },
