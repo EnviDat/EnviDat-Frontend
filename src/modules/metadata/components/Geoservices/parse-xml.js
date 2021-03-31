@@ -1,3 +1,8 @@
+/**
+ * This script queries the CHELSA test WMS GetCapabilities document and creates a configuration file
+ * for it. The configuration file can be used for MetadataGeo.
+ */
+
 const fs = require('fs');
 const axios = require('axios');
 const parseString = require('xml2js').parseString;

@@ -53,6 +53,9 @@ export default {
     mapDivId: String,
   },
   computed: {
+    layerConfig() {
+      return this.$store.state.geoservices.layerConfig;
+    },
     linkedScreens() {
       return this.$store.state.geoservices.linkedScreens;
     },
@@ -123,7 +126,7 @@ export default {
       let start = 0;
       const featureinfo = [];
       const promises = [];
-      while (start < this.$store.state.geoservices.layerConfig.layers.length) {
+      while (start < this.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
         const promise = axios.get(url)
           .then((res) => {
@@ -154,7 +157,7 @@ export default {
       let bbox = this.map.getBounds(); // bbox in WGS coordinates
       // eslint-disable-next-line no-underscore-dangle
       bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
-      const layers = this.$store.state.geoservices.layerConfig.layers.map(layer => layer.name)
+      const layers = this.layerConfig.layers.map(layer => layer.name)
         .slice(start, stop);
       const params = {
         request: 'GetFeatureInfo',
@@ -169,7 +172,7 @@ export default {
         i: point.x,
         j: point.y,
       };
-      return this.wmsLayer.baseURL + L.Util.getParamString(params, this.wmsLayer.baseURL, true);
+      return this.layerConfig.baseURL + L.Util.getParamString(params, this.layerConfig.baseURL, true);
     },
     zoomIn() {
       this.map.zoomIn();
@@ -248,8 +251,7 @@ export default {
       this.mapLayer.setOpacity(this.opacity / 100);
     },
     linkedScreens() {
-      if (this.linkedScreens && !this.map.getBounds()
-        .equals(this.extent)) {
+      if (this.linkedScreens && !this.map.getBounds().equals(this.extent)) {
         this.map.fitBounds(this.extent);
       }
     },

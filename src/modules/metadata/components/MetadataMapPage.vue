@@ -95,7 +95,7 @@
       BaseIconButton,
     },
     data: () => ({
-      geoConfig: null,
+      geoConfig: './testdata/geoservices_config_timeseries.json',
       PageBGImage: 'app_b_browsepage',
       map: null,
     }),
@@ -172,17 +172,8 @@
         this.$store.commit('setSelectedLayer', this.selectedLayer);
         this.$store.commit('setSplitScreen', true);
       },
-      loadConfig() {
-        if (this.geoConfig?.url) {
-          this.$store.dispatch('fetchConfig', this.geoConfig.url);
-        }
-      },
       rerender() {
         this.$forceUpdate();
-      },
-      createMetadataContent() {
-        this.geoConfig = { url: './testdata/geoservices_config.json' };
-        this.rerender();
       },
       isCurrentIdOrName(idOrName) {
         return this.currentMetadataContent.id === idOrName || this.currentMetadataContent.name === idOrName;
@@ -203,24 +194,16 @@
           // in case of directly entring the page load the content directly via Id
           this.$store.dispatch(`metadata/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
         } else {
-          this.createMetadataContent();
+          this.$store.dispatch('fetchLayerConfig', this.geoConfig);
+          this.rerender();
         }
       },
     },
     watch: {
-      geoConfig() {
-        if (this.geoConfig) {
-          this.loadConfig();
-        }
-      },
       /* eslint-disable no-unused-vars */
       $route: function watchRouteChanges(to, from) {
         // react on changes of the route (browser back / forward click)
-
         this.loadMetaDataContent();
-      },
-      currentMetadataContent() {
-        this.createMetadataContent();
       },
       metadatasContent() {
         // in case all the metadataContents are already loaded take it from there
