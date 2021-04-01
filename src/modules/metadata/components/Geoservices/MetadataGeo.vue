@@ -18,7 +18,7 @@
               <v-icon medium style="height: auto;">fullscreen</v-icon>
             </v-btn>
           </template>
-          <metadata-map-page @close="fullscreen = false"></metadata-map-page>
+          <metadata-map-fullscreen @close="fullscreen = false"></metadata-map-fullscreen>
         </v-dialog>
       </Map>
     </v-card-text>
@@ -31,11 +31,11 @@
 
 <script>
   import Map from './Map';
-  import MetadataMapPage from './MetadataMapPage';
+  import MetadataMapFullscreen from './MetadataMapFullscreen';
 
   export default {
     name: 'MetadataGeo',
-    components: { MetadataMapPage, Map },
+    components: { MetadataMapFullscreen, Map },
     props: {
       genericProps: Object,
     },

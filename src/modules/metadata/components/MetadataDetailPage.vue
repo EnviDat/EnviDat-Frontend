@@ -154,7 +154,7 @@ import MetadataPublications from './Metadata/MetadataPublications';
 import MetadataFunding from './Metadata/MetadataFunding';
 import MetadataAuthors from './Metadata/MetadataAuthors';
 import MetadataGeo from './Geoservices/MetadataGeo';
-import MetadataMapPage from './Geoservices/MetadataMapPage';
+import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -386,7 +386,7 @@ export default {
     },
     showFullscreenMapModal(configFile) {
       console.log(configFile);
-      this.fullScreenComponent = MetadataMapPage;
+      this.fullScreenComponent = MetadataMapFullscreen;
       this.mapConfigFile = configFile;
     },
     closeModal() {

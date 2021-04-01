@@ -80,7 +80,7 @@
   import Map from './Map';
 
   export default {
-    name: 'MetadataMapPage',
+    name: 'MetadataMapFullscreen',
     components: {
       Map,
       BaseIconButton,
