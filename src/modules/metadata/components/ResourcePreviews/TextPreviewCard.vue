@@ -1,18 +1,25 @@
 <template>
   <v-card id="TextPreviewCard" >
 
-    <v-card-text v-if="fileContent && !enableMarkdown">
-      {{ enableMarkdown ? markdownText : fileContent }}
+    <v-card-text v-if="fileContent && !enableMarkdown" 
+                  style="white-space: break-spaces;">
+      {{ fileContent }}
     </v-card-text>
 
     <v-card-text v-if="fileContent && enableMarkdown"
-                v-html="markdownText" />
+                  v-html="markdownText" />
 
     <v-card-text v-if="errorObject"
                   :style="`color: ${$vuetify.theme.themes.light.error};`">
       {{ errorObject.title }}
       <br />
       {{ errorObject.message }}
+    </v-card-text>
+
+    <v-card-text v-show="loading" >
+      <div class='skeleton skeleton-animation-shimmer' style="height: 100%;" >
+        <div style="width: 100%; min-height: 100%; " class='bone bone-type-paragrah'></div>
+      </div>
     </v-card-text>
 
   </v-card>
@@ -82,11 +89,15 @@ export default {
   },
   methods: {
     getFileContent() {
+      this.loading = true;
+
       axios.get(this.url)
       .then((response) => {
+        this.loading = false;
         this.fileContent = response.data;
       })
       .catch((reason) => {
+        this.loading = false;
         this.fileError = reason;
       });
 
@@ -95,6 +106,7 @@ export default {
   data: () => ({
     fileContent: '',
     fileError: '',
+    loading: false,
   }),
 };
 </script>
