@@ -68,7 +68,12 @@
                   :fileObjects="fileObjects"
                   :graphStyling="graphStyling" />
 
-                  <!-- :fileObjects="generateFileList" -->
+      <component :is="filePreviewComponent"
+                  :url="filePreviewUrl" />
+
+      <component :is="fullScreenComponent"
+                  :configFile="mapConfigFile" />
+
 
     </GenericModalPageLayout>
 
@@ -149,6 +154,7 @@ import MetadataPublications from './Metadata/MetadataPublications';
 import MetadataFunding from './Metadata/MetadataFunding';
 import MetadataAuthors from './Metadata/MetadataAuthors';
 import MetadataGeo from './Geoservices/MetadataGeo';
+import MetadataMapPage from './MetadataMapPage.vue';
 
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
@@ -377,6 +383,10 @@ export default {
       this.gcnetModalComponent = this.$options.components.DetailChartsList;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    showFullscreenMapModal(configFile) {
+      this.fullScreenComponent = MetadataMapPage;
+      this.mapConfigFile = configFile;
     },
     closeModal() {
       this.gcnetModalComponent = null;

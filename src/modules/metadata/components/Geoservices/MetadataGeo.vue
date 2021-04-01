@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
+    <v-card-title class="text-h6 metadata_title">Location Geoservices</v-card-title>
 
     <v-card-text v-if="isReady" style="width: 100%; height: 500px; position: relative;">
       <Map
@@ -25,7 +25,12 @@
 </template>
 
 <script>
+  import {
+    OPEN_MAP_FULLSCREEN,
+    eventBus,
+  } from '@/factories/eventBus';
   import Map from './Map';
+
 
   export default {
     name: 'MetadataGeo',
@@ -78,6 +83,7 @@
       },
       openFullscreen() {
         this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
+        eventBus.$emit(OPEN_MAP_FULLSCREEN);
       },
       setShow3d(value) {
         this.$store.commit('setShow3d', value);
