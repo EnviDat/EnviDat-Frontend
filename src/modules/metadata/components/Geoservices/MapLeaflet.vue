@@ -59,13 +59,6 @@ export default {
     layerConfig() {
       return this.$store.state.geoservices.layerConfig;
     },
-    linkedScreens() {
-      return this.$store.state.geoservices.linkedScreens;
-    },
-    // Current extent of user
-    extent() {
-      return this.$store.state.geoservices.extent;
-    },
     basemap: {
       get() {
         return this.$store.state.geoservices.basemap;
@@ -201,8 +194,6 @@ export default {
       if (this.layerConfig && this.layerConfig.timeseries) {
         this.map.on('click', e => this.getFeatureInfo(e.latlng));
       }
-      this.map.on('drag', () => this.$store.commit('setExtent', this.map.getBounds()));
-      this.map.on('zoom', () => this.$store.commit('setExtent', this.map.getBounds()));
       if (this.site) {
         this.addSite();
       }
@@ -254,16 +245,6 @@ export default {
   watch: {
     opacity() {
       this.mapLayer.setOpacity(this.opacity / 100);
-    },
-    linkedScreens() {
-      if (this.linkedScreens && !this.map.getBounds().equals(this.extent)) {
-        this.map.fitBounds(this.extent);
-      }
-    },
-    extent() {
-      if (this.linkedScreens && !this.map.getBounds().equals(this.extent)) {
-        this.map.fitBounds(this.extent);
-      }
     },
     wmsLayer: {
       handler() {

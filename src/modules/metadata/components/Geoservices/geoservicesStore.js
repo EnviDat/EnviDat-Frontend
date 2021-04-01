@@ -12,8 +12,6 @@ export const geoservices = {
     splitScreen: false,
     show3d: false,
     show3dSplit: false,
-    linkedScreens: false,
-    extent: null,
     timeseries: [],
     site: null,
   },
@@ -32,14 +30,8 @@ export const geoservices = {
     removeTimeseries(state, id) {
       state.timeseries = state.timeseries.filter(t => t.id === id);
     },
-    setLinkedScreens(state, payload) {
-      state.linkedScreens = payload;
-    },
     setLayerConfig(state, payload) {
       state.layerConfig = payload;
-    },
-    setExtent(state, payload) {
-      state.extent = payload;
     },
     setSelectedLayer(state, payload) {
       state.selectedLayer = payload;
@@ -58,15 +50,9 @@ export const geoservices = {
     },
     setShow3d(state, payload) {
       state.show3d = payload;
-      if (state.linkedScreens || !state.splitScreen) {
-        state.show3dSplit = payload;
-      }
     },
     setShow3dSplit(state, payload) {
       state.show3dSplit = payload;
-      if (state.linkedScreens) {
-        state.show3d = payload;
-      }
     },
   },
   actions: {
