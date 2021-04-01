@@ -12,9 +12,14 @@
         :show3d="show3d"
         :site="site"
       >
-        <v-btn fab small color="primary" @click.native.stop="openFullscreen" v-if="hasData">
-          <v-icon medium style="height: auto;">fullscreen</v-icon>
-        </v-btn>
+        <v-dialog v-model="fullscreen" fullscreen>
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" fab small color="primary" v-if="hasData">
+              <v-icon medium style="height: auto;">fullscreen</v-icon>
+            </v-btn>
+          </template>
+          <metadata-map-page @close="fullscreen = false"></metadata-map-page>
+        </v-dialog>
       </Map>
     </v-card-text>
     <v-card-text v-else>
@@ -25,16 +30,12 @@
 </template>
 
 <script>
-  import {
-    OPEN_MAP_FULLSCREEN,
-    eventBus,
-  } from '@/factories/eventBus';
   import Map from './Map';
-
+  import MetadataMapPage from '../MetadataMapPage';
 
   export default {
     name: 'MetadataGeo',
-    components: { Map },
+    components: { MetadataMapPage, Map },
     props: {
       genericProps: Object,
     },
@@ -45,6 +46,7 @@
       mediumSize: 500,
       largeSize: 725,
       fullWidthSize: 875,
+      fullscreen: false,
     }),
     computed: {
       isReady() {
@@ -80,10 +82,6 @@
     methods: {
       setLayer(name) {
         this.$store.commit('setSelectedLayer', name);
-      },
-      openFullscreen() {
-        this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
-        eventBus.$emit(OPEN_MAP_FULLSCREEN);
       },
       setShow3d(value) {
         this.$store.commit('setShow3d', value);

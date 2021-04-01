@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%; width: 100%;" v-if="layerConfig">
+  <div style="height: 100%; width: 100%;" v-if="layerConfig && ready">
     <v-card
       style="position: absolute; top: 0; right: 0; z-index: 200; background-color: rgba(255, 255, 255, 0.6);"
       class="ma-2">
@@ -12,7 +12,7 @@
                         :tool-tip-bottom="true"
                         @clicked="close"/>
     </v-card>
-    <v-row v-if="splitScreen"
+    <v-card v-if="splitScreen"
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
         <Map
@@ -50,14 +50,13 @@
           </template>
         </Map>
       </div>
-    </v-row>
+    </v-card>
 
-
-    <v-row v-else
-          class="pa-0 ma-0 map-div-id"
-          style="height: 100%;"
+    <v-card v-else
+          class="pa-0 ma-0"
+          style="height: 100%; width: 100%; top: 0; position: absolute;"
           :key="'map0'">
-      <div style="width: 100%;">
+      <div style="width: 100%; height: 100%;">
         <Map
           :layer-config="layerConfig"
           @changeLayer="setLayer"
@@ -72,19 +71,11 @@
           </v-btn>
         </Map>
       </div>
-    </v-row>
+    </v-card>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import { METADATADETAIL_PAGENAME } from '@/router/routeConsts';
-  import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-  import {
-    CLEAN_CURRENT_METADATA,
-    LOAD_METADATA_CONTENT_BY_ID,
-    METADATA_NAMESPACE,
-  } from '@/store/metadataMutationsConsts';
   import BaseIconButton from '@/components/BaseElements/BaseIconButton';
   import Map from './Geoservices/Map';
 
@@ -94,33 +85,12 @@
       Map,
       BaseIconButton,
     },
-    data: () => ({
-      geoConfig: './testdata/geoservices_config_timeseries.json',
-      PageBGImage: 'app_b_browsepage',
-      map: null,
-    }),
-    beforeRouteEnter(to, from, next) {
-      next((vm) => {
-        vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
-        vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
-      });
-    },
-    mounted() {
-      this.loadMetaDataContent();
-    },
-    beforeDestroy() {
-      // clean current metadata to make be empty for the next to load up
-      this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
+    data() {
+      return {
+        ready: false,
+      };
     },
     computed: {
-      ...mapGetters({
-        metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-        metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
-        loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
-        loadingCurrentMetadataContent: `${METADATA_NAMESPACE}/loadingCurrentMetadataContent`,
-        currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
-        detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
-      }),
       site() {
         return this.$store.state.geoservices.site;
       },
@@ -135,12 +105,6 @@
       },
       layerConfig() {
         return this.$store.state.geoservices.layerConfig;
-      },
-      metadataId() {
-        return this.$route.params.metadataid;
-      },
-      loading() {
-        return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
       },
       show3d() {
         return this.$store.state.geoservices.show3d;
@@ -172,47 +136,13 @@
         this.$store.commit('setSelectedLayer', this.selectedLayer);
         this.$store.commit('setSplitScreen', true);
       },
-      rerender() {
-        this.$forceUpdate();
-      },
-      isCurrentIdOrName(idOrName) {
-        return this.currentMetadataContent.id === idOrName || this.currentMetadataContent.name === idOrName;
-      },
       close() {
-        this.$router.push({
-          name: this.$route.matched[this.$route.matched.length - 1].name,
-        });
-      },
-      /**
-       * @description loads the content of this metadata entry (metadataid) from the URL.
-       * Either loads it from the backend via action or creates it from the localStorage.
-       */
-      loadMetaDataContent() {
-        if (!this.loadingMetadatasContent
-          && (this.currentMetadataContent.title === undefined
-            || !this.isCurrentIdOrName(this.metadataId))) {
-          // in case of directly entring the page load the content directly via Id
-          this.$store.dispatch(`metadata/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
-        } else {
-          this.$store.dispatch('fetchLayerConfig', this.geoConfig);
-          this.rerender();
-        }
+        this.$emit('close');
       },
     },
-    watch: {
-      /* eslint-disable no-unused-vars */
-      $route: function watchRouteChanges(to, from) {
-        // react on changes of the route (browser back / forward click)
-        this.loadMetaDataContent();
-      },
-      metadatasContent() {
-        // in case all the metadataContents are already loaded take it from there
-        // if EnviDat is called via MetadataDetailPage URL directly
-
-        if (!this.loadingCurrentMetadataContent) {
-          this.$store.dispatch(`metadata/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
-        }
-      },
+    mounted() {
+      // Wait for dialog transition to complete
+      setTimeout(() => { this.ready = true; }, 50);
     },
   };
 </script>
