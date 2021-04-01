@@ -77,7 +77,7 @@
 
 <script>
   import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-  import Map from './Geoservices/Map';
+  import Map from './Map';
 
   export default {
     name: 'MetadataMapPage',

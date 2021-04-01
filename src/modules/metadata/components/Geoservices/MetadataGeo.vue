@@ -31,7 +31,7 @@
 
 <script>
   import Map from './Map';
-  import MetadataMapPage from '../MetadataMapPage';
+  import MetadataMapPage from './MetadataMapPage';
 
   export default {
     name: 'MetadataGeo',

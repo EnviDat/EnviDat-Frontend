@@ -68,11 +68,10 @@
                   :fileObjects="fileObjects"
                   :graphStyling="graphStyling" />
 
-      <component :is="filePreviewComponent"
-                  :url="filePreviewUrl" />
+<!--      <component :is="filePreviewComponent"-->
+<!--                  :url="filePreviewUrl" />-->
 
-      <component :is="fullScreenComponent"
-                  :configFile="mapConfigFile" />
+      <component :is="fullScreenComponent" />
 
 
     </GenericModalPageLayout>
@@ -137,6 +136,7 @@ import {
   METADATA_CLOSE_MODAL,
   GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
+  OPEN_MAP_FULLSCREEN,
 } from '@/factories/eventBus';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
@@ -154,8 +154,7 @@ import MetadataPublications from './Metadata/MetadataPublications';
 import MetadataFunding from './Metadata/MetadataFunding';
 import MetadataAuthors from './Metadata/MetadataAuthors';
 import MetadataGeo from './Geoservices/MetadataGeo';
-import MetadataMapPage from './MetadataMapPage.vue';
-
+import MetadataMapPage from './Geoservices/MetadataMapPage';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -175,6 +174,7 @@ export default {
     eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
+    eventBus.$on(OPEN_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   /**
      * @description load all the icons once before the first component's rendering.
@@ -385,6 +385,7 @@ export default {
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
     showFullscreenMapModal(configFile) {
+      console.log(configFile);
       this.fullScreenComponent = MetadataMapPage;
       this.mapConfigFile = configFile;
     },
@@ -737,6 +738,8 @@ export default {
     mailIcon: null,
     licenseIcon: null,
     gcnetModalComponent: null,
+    fullScreenComponent: null,
+    mapConfigFile: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,
