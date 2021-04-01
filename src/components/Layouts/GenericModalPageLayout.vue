@@ -24,7 +24,7 @@
       </v-toolbar>
 
       <v-card-text class="pa-0"
-                    :style="autoScroll ? '' : 'overflow: hidden;'" >
+                    :style="autoScroll ? 'overflow: auto;' : 'overflow: hidden;'" >
         
         <slot name="default" />
 

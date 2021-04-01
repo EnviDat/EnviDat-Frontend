@@ -60,7 +60,8 @@
       </template>
     </two-column-layout>
 
-    <GenericModalPageLayout :title="modalTitle" >
+    <GenericModalPageLayout :title="modalTitle"
+                              :autoScroll="filePreviewComponent !== null" >
 
       <component :is="gcnetModalComponent"
                   :currentStation="currentStation"
