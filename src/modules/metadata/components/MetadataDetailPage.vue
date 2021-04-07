@@ -61,7 +61,8 @@
       </template>
     </two-column-layout>
 
-    <GenericModalPageLayout :title="`All sensor data charts for ${currentStation ? currentStation.name : ''} station`" >
+    <GenericModalPageLayout :title="`All sensor data charts for ${currentStation ? currentStation.name : ''} station`"
+                              style="height: 100vh;" >
 
       <component :is="gcnetModalComponent"
                   :currentStation="currentStation"
@@ -71,7 +72,9 @@
 <!--      <component :is="filePreviewComponent"-->
 <!--                  :url="filePreviewUrl" />-->
 
-      <component :is="fullScreenComponent" />
+      <component :is="fullScreenComponent"
+                  :fileConfig="mapConfigFile"
+                  :configUrl="geoConfigUrl" />
 
 
     </GenericModalPageLayout>
@@ -136,7 +139,7 @@ import {
   METADATA_CLOSE_MODAL,
   GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
-  OPEN_MAP_FULLSCREEN,
+  INJECT_MAP_FULLSCREEN,
 } from '@/factories/eventBus';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
@@ -174,7 +177,8 @@ export default {
     eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
-    eventBus.$on(OPEN_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
+    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   /**
      * @description load all the icons once before the first component's rendering.
@@ -205,6 +209,7 @@ export default {
 
     eventBus.$off(GCNET_OPEN_DETAIL_CHARTS, this.showModal);
     eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
+    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   computed: {
     ...mapState([
@@ -384,13 +389,19 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
-    showFullscreenMapModal(configFile) {
-      console.log(configFile);
+    showFullscreenMapModal(configFile, configUrl) {
+      // console.log(`showFullscreenMapModal ${configFile}`);
       this.fullScreenComponent = MetadataMapFullscreen;
+      // this.fullScreenComponent = this.$options.components.MetadataMapFullscreen;
       this.mapConfigFile = configFile;
+
+      this.geoConfigUrl = configUrl;
+
+      eventBus.$emit(METADATA_OPEN_MODAL);
     },
     closeModal() {
       this.gcnetModalComponent = null;
+      this.fullScreenComponent = null;
     },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;
@@ -486,7 +497,8 @@ export default {
 
       // Object that defines the content of MetadataGeo
       const geoJSON = this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null;
-      console.log(geoJSON);
+      // console.log('geoJSON');
+      // console.log(geoJSON);
       const geo = {
         site: { geoJSON },
         data: {
@@ -709,11 +721,13 @@ export default {
     GenericModalPageLayout,
     DetailChartsList,
     MicroChartList,
+    MetadataMapFullscreen,
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
+    geoConfigUrl: '',
     fileObjects: null,
     graphStyling: null,
     stationsConfigError: null,

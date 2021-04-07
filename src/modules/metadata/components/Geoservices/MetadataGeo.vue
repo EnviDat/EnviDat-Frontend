@@ -30,12 +30,20 @@
 </template>
 
 <script>
+  import {
+    INJECT_MAP_FULLSCREEN,
+    eventBus,
+  } from '@/factories/eventBus';
+
   import Map from './Map';
-  import MetadataMapFullscreen from './MetadataMapFullscreen';
+  // import MetadataMapFullscreen from './MetadataMapFullscreen';
 
   export default {
     name: 'MetadataGeo',
-    components: { MetadataMapFullscreen, Map },
+    components: {
+      // MetadataMapFullscreen,
+      Map,
+    },
     props: {
       genericProps: Object,
     },
@@ -80,6 +88,10 @@
       },
     },
     methods: {
+      triggerFullscreenEvent() {
+        // console.log(`triggerFullscreenEvent ${this.layerConfig}`);
+        eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
+      },
       setLayer(name) {
         this.$store.commit('setSelectedLayer', name);
       },
