@@ -22,7 +22,7 @@
       </v-toolbar>
 
       <v-card-text class="pa-0"
-                    :style="autoScroll ? '' : 'overflow: hidden;'" >
+                    :style="autoScroll ? '' : 'overflow: hidden; height: 100vh;'" >
         
         <slot name="default" />
 
@@ -62,25 +62,25 @@ export default {
   },
   created() {
     eventBus.$on(METADATA_OPEN_MODAL, this.openClicked);
-    eventBus.$on(METADATA_CLOSE_MODAL, this.closeClicked);
   },
   beforeDestroy() {
     eventBus.$off(METADATA_OPEN_MODAL, this.openClicked);
-    eventBus.$off(METADATA_CLOSE_MODAL, this.closeClicked);
   },
   methods: {
     closeClicked() {
       this.showDialog = false;
-      this.modalContentComponent = null;
+      // this.modalContentComponent = null;
+      eventBus.$emit(METADATA_CLOSE_MODAL);
     },
-    openClicked(modalContentComponent) {
-      this.modalContentComponent = modalContentComponent;
+    // openClicked(modalContentComponent) {
+      // this.modalContentComponent = modalContentComponent;
+    openClicked() {
       this.showDialog = true;
     },    
   },
   data: () => ({
     showDialog: false,
-    modalContentComponent: null,
+    // modalContentComponent: null,
   }),
 };
 </script>
