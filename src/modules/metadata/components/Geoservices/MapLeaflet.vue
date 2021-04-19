@@ -1,12 +1,8 @@
 <template>
   <div :id="mapDivId" style="height: 100%; width: 100%; z-index: 100;">
-    <div class="zoom">
-      <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(maxExtent)"/>
-    </div>
+
     <basemap-toggle v-model="basemap" class="basemap-toggle"></basemap-toggle>
-    <div style="position: absolute; bottom: 70px; right: 16px; z-index: 99999; cursor: auto;">
-      <slot></slot>
-    </div>
+
     <div  v-if="map">
     <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
                        @remove="removePoint"></map-leaflet-point>
@@ -24,16 +20,21 @@ import markerIcon from '@/assets/map/marker-icon.png';
 import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
 import { mapState } from 'vuex';
+import {
+  MAP_ZOOM_IN,
+  MAP_ZOOM_OUT,
+  MAP_ZOOM_CENTER,
+  eventBus,
+} from '@/factories/eventBus';
 import { leafletLayer } from './layer-leaflet';
-import ZoomBtn from './ZoomBtn';
 import BasemapToggle from './BasemapToggle/BasemapToggle';
+
 
 export default {
   name: 'MapLeaflet',
   components: {
     BasemapToggle,
     MapLeafletPoint,
-    ZoomBtn,
   },
   data: () => ({
     map: null,
@@ -51,6 +52,22 @@ export default {
     maxExtent: Object,
     opacity: Number,
     mapDivId: String,
+  },
+  mounted() {
+    eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
+
+    this.setupMap();
+  },
+  beforeDestroy() {
+    eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
+
+    if (this.map) {
+      this.map.remove();
+    }
   },
   computed: {
     ...mapState([
@@ -172,13 +189,23 @@ export default {
       };
       return this.layerConfig.baseURL + L.Util.getParamString(params, this.layerConfig.baseURL, true);
     },
-    zoomIn() {
-      this.map.zoomIn();
+    zoomIn(mapId) {
+      if (this.mapDivId === mapId) {
+        this.map.zoomIn();
+      }
     },
-    zoomOut() {
-      this.map.zoomOut();
+    zoomOut(mapId) {
+      if (this.mapDivId === mapId) {
+        this.map.zoomOut();
+      }
+    },
+    triggerCenter(mapId) {
+      if (this.mapDivId === mapId) {
+        this.zoomToExtent(this.maxExtent);
+      }
     },
     setupMap() {
+
       this.map = new L.Map(this.mapDivId,
         {
           zoomControl: false,
@@ -259,12 +286,6 @@ export default {
       if (this.site) this.addSite();
       else this.removeSite();
     },
-  },
-  mounted() {
-    this.setupMap();
-  },
-  beforeDestroy() {
-    if (this.map) this.map.remove();
   },
 };
 </script>

@@ -1,7 +1,18 @@
 <template>
-  <div style="height: 100%; width: 100%; z-index: 100; max-width: 100%; position: relative;">
+  <div id="MapComponet"
+        class="fill-height" >
+
+    <MapWidget style="position: absolute; top: 0; z-index: 1000;"
+                :layerConfig="layerConfig"
+                :site="site"
+                :mapDivId="mapDivId"
+                :selectedLayerName="selectedLayerName"
+                :mapIs3D="mapIn3D"
+                @toggleMapIn3D="toggle3D" /> 
+
+                 
     <div :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'">
-      <v-row class="top-slot" no-gutters>
+      <!-- <v-row class="top-slot" no-gutters>
         <slot name="top"></slot>
       </v-row>
 
@@ -29,33 +40,35 @@
         :layers="layerConfig.layers"
         :selected="selectedLayerName"
         style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;"
-      ></feature-info>
+      ></feature-info> -->
 
-      <map-leaflet
-        v-if="!show3d"
-        :wmsLayer="selectedLayer"
-        :max-extent="maxExtent"
-        :map-div-id="mapDivId"
-        :featureInfoPts="featureinfo"
-        :opacity="opacity"
-        :site="showSite ? site : null"
-      >
-        <slot></slot><br>
-        <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn>
+      <map-leaflet v-if="!mapIn3D"
+                    :wmsLayer="selectedLayer"
+                    :max-extent="maxExtent"
+                    :map-div-id="mapDivId"
+                    :featureInfoPts="featureinfo"
+                    :opacity="opacity"
+                    :site="showSite ? site : null" >
+        
+        <!-- <slot></slot><br>
+        
+        <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn> -->
       </map-leaflet>
-      <map-cesium
-        v-if="show3d"
-        :wmsLayer="selectedLayer"
-        :map-div-id="mapDivId"
-        :featureInfoPts="featureinfo"
-        :opacity="opacity"
-        :site="showSite ? site : null"
-        :max-extent="maxExtent"
-      >
-        <slot></slot><br>
-        <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn>
+
+      <map-cesium v-if="mapIn3D"
+                  :wmsLayer="selectedLayer"
+                  :map-div-id="mapDivId"
+                  :featureInfoPts="featureinfo"
+                  :opacity="opacity"
+                  :site="showSite ? site : null"
+                  :max-extent="maxExtent" >
+        <!-- <slot></slot><br>
+
+        <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn> -->
+
       </map-cesium>
-    </div>
+
+    <!-- </div>
     <div class="timeslider-container" v-if="layerConfig && layerConfig.timeseries" style="position: relative;">
       <timeslider
         style="height: 100px; z-index: 10000; position: relative;"
@@ -63,13 +76,15 @@
         :chart-data="layerConfig.layers"
         :div-id="`timeslider_${mapDivId}`"
         :selected="selectedLayerName"
-      ></timeslider>
+      ></timeslider> -->
+      
     </div>
 
   </div>
 </template>
 
 <script>
+
   import {
     buffer as tBuffer,
     centroid as tCentroid,
@@ -78,31 +93,29 @@
   } from '@turf/turf';
   import MapLeaflet from './MapLeaflet';
   import MapCesium from './MapCesium';
-  import MapLayerControl from './MapLayerControl';
-  import Timeslider from './Timeslider';
-  import FeatureInfo from './FeatureInfo';
+  // import MapLayerControl from './MapLayerControl';
+  // import Timeslider from './Timeslider';
+  // import FeatureInfo from './FeatureInfo';
+
+  import MapWidget from './MapWidget';
 
   export default {
     name: 'Map',
     components: {
-      FeatureInfo,
-      Timeslider,
-      MapLayerControl,
+      // FeatureInfo,
+      // Timeslider,
+      // MapLayerControl,
       MapCesium,
       MapLeaflet,
+      MapWidget,
     },
     props: {
       layerConfig: Object,
       site: Object,
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
-      show3d: { type: Boolean },
+      startMapIn3D: Boolean,
     },
-    data: () => ({
-      layerControlOpen: false,
-      opacity: 100,
-      showSite: true,
-    }),
     computed: {
       maxExtent() {
         let extent = null;
@@ -149,8 +162,9 @@
       },
     },
     methods: {
-      setShow3d(value) {
-        this.$emit('setShow3d', value);
+      toggle3D() {
+        this.mapIn3D = !this.mapIn3D;
+        // this.$emit('setShow3d', !this.mapIn3D);
       },
       setOpacity(value) {
         this.opacity = value;
@@ -159,6 +173,12 @@
         this.$emit('changeLayer', layerName);
       },
     },
+    data: () => ({
+      layerControlOpen: false,
+      opacity: 100,
+      showSite: true,
+      mapIn3D: false,
+    }),
   };
 </script>
 

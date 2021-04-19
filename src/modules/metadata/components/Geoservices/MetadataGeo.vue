@@ -1,27 +1,18 @@
 <template>
-  <v-card>
+  <v-card id="MetadataGeo" >
+
     <v-card-title class="text-h6 metadata_title">Location Geoservices</v-card-title>
 
     <v-card-text v-if="isReady" style="width: 100%; height: 500px; position: relative;">
-      <Map
-        :layer-config="layerConfig"
-        :map-div-id="'map-small'"
-        :selected-layer-name="selectedLayer"
-        @changeLayer="setLayer"
-        @setShow3d="setShow3d"
-        :show3d="show3d"
-        :site="site"
-      >
-        <v-dialog v-model="fullscreen" fullscreen>
-          <template v-slot:activator="{ on }">
-            <v-btn v-on="on" fab small color="primary" v-if="hasData">
-              <v-icon medium style="height: auto;">fullscreen</v-icon>
-            </v-btn>
-          </template>
-          <metadata-map-fullscreen @close="fullscreen = false"></metadata-map-fullscreen>
-        </v-dialog>
-      </Map>
+      <Map :layer-config="layerConfig"
+            :map-div-id="'map-small'"
+            :selected-layer-name="selectedLayer"
+            @changeLayer="setLayer"
+            @setShow3d="setShow3d"
+            :startMapIn3D="show3d"
+            :site="site" />
     </v-card-text>
+
     <v-card-text v-else>
       No location data available
     </v-card-text>
@@ -36,12 +27,10 @@
   } from '@/factories/eventBus';
 
   import Map from './Map';
-  // import MetadataMapFullscreen from './MetadataMapFullscreen';
 
   export default {
     name: 'MetadataGeo',
     components: {
-      // MetadataMapFullscreen,
       Map,
     },
     props: {

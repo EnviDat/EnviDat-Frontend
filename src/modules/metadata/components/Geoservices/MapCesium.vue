@@ -1,12 +1,8 @@
 <template>
   <div :id="mapDivId" class="cesiumContainer">
-    <div class="zoom">
-        <zoom-btn @zoomIn="zoomIn" @zoomOut="zoomOut" @zoomToGeometry="zoomToExtent(maxExtent)" />
-    </div>
+
     <basemap-toggle v-model="basemap" class="basemap-toggle"></basemap-toggle>
-    <div style="position: absolute; bottom: 70px; right: 16px; z-index: 99999;">
-      <slot></slot>
-    </div>
+
     <div id="credits">
       <a style="padding-right: 10px;" href="https://cesium.com/cesiumjs/" target="_blank">CesiumJS</a>
       <a href="https://www.bing.com/maps/" target="_blank" v-if="basemap==='satellite'">Images &copy; Bing Maps</a>
@@ -35,13 +31,21 @@
     import marker2x from '@/assets/map/marker-icon-2x.png';
     import markerShadow from '@/assets/map/marker-shadow.png';
     import { mapState } from 'vuex';
-    import ZoomBtn from './ZoomBtn';
+
+    import {
+      MAP_ZOOM_IN,
+      MAP_ZOOM_OUT,
+      MAP_ZOOM_CENTER,
+      eventBus,
+    } from '@/factories/eventBus';
     import { cesiumLayer } from './layer-cesium';
     import BasemapToggle from './BasemapToggle/BasemapToggle';
 
     export default {
       name: 'MapCesium',
-      components: { BasemapToggle, ZoomBtn },
+      components: {
+        BasemapToggle,
+      },
       props: {
         opacity: Number,
         featureInfoPts: Array,
@@ -49,6 +53,20 @@
         mapDivId: String,
         maxExtent: Object,
         site: Object,
+      },
+      mounted() {
+        eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
+        eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
+        eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
+
+        this.setupMap();
+      },
+      beforeDestroy() {
+        eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
+        eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
+        eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
+
+        this.viewer.destroy();
       },
       data() {
         return {
@@ -89,68 +107,68 @@
           });
         },
       },
-      mounted() {
-        this.viewer = new Viewer(this.mapDivId, {
-          animation: false,
-          imageryProvider: false,
-          baseLayerPicker: false,
-          enablePickFeatures: true,
-          fullscreenButton: false,
-          vrButton: false,
-          geocoder: false,
-          homeButton: false,
-          sceneMode: SceneMode.SCENE3D,
-          infoBox: false,
-          sceneModePicker: false,
-          selectionIndicator: false,
-          timeline: false,
-          navigationHelpButton: false,
-          navigationInstructionsInitiallyVisible: false,
-          clockViewModel: null,
-          requestRenderMode: true,
-          maximumRenderTimeChange: Infinity,
-        });
-        // Hide default credits from all existing cesium maps
-        const cesiumWidgets = document.getElementsByClassName('cesium-widget-credits');
-        cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
-
-        this.replaceBasemap();
-        this.zoomToExtent(this.maxExtent);
-        if (this.wmsLayer) {
-          this.replaceLayer();
-        }
-
-        this.viewer.scene.canvas.addEventListener('click', (event) => {
-          event.preventDefault();
-          const mousePosition = new Cartesian2(event.clientX, event.clientY);
-          const selectedLocation = this.viewer.scene.pickPosition(mousePosition);
-          const wgs = Ellipsoid.WGS84.cartesianToCartographic(selectedLocation);
-          console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
-          console.log(this.viewer.scene);
-
-
-          const posUL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, 0), Ellipsoid.WGS84);
-          const posLR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, this.viewer.canvas.height), Ellipsoid.WGS84);
-          const posLL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, this.viewer.canvas.height), Ellipsoid.WGS84);
-          const posUR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, 0), Ellipsoid.WGS84);
-          const cartUl = Ellipsoid.WGS84.cartesianToCartographic(posUL);
-          const maxLat = CesiumMath.toDegrees(cartUl.latitude).toFixed(2);
-
-          const cartUr = Ellipsoid.WGS84.cartesianToCartographic(posUR);
-          const maxLon = CesiumMath.toDegrees(cartUr.longitude).toFixed(2);
-          const cartLr = Ellipsoid.WGS84.cartesianToCartographic(posLR);
-          const minLat = CesiumMath.toDegrees(cartLr.latitude).toFixed(2);
-          const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
-          const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
-
-          console.log(maxLat, maxLon, minLat, minLon);
-
-        }, false);
-        if (this.site) {
-          this.addSite();
-        }
-      },
       methods: {
+        setupMap() {
+          this.viewer = new Viewer(this.mapDivId, {
+            animation: false,
+            imageryProvider: false,
+            baseLayerPicker: false,
+            enablePickFeatures: true,
+            fullscreenButton: false,
+            vrButton: false,
+            geocoder: false,
+            homeButton: false,
+            sceneMode: SceneMode.SCENE3D,
+            infoBox: false,
+            sceneModePicker: false,
+            selectionIndicator: false,
+            timeline: false,
+            navigationHelpButton: false,
+            navigationInstructionsInitiallyVisible: false,
+            clockViewModel: null,
+            requestRenderMode: true,
+            maximumRenderTimeChange: Infinity,
+          });
+          // Hide default credits from all existing cesium maps
+          const cesiumWidgets = document.getElementsByClassName('cesium-widget-credits');
+          cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
+
+          this.replaceBasemap();
+          this.zoomToExtent(this.maxExtent);
+          if (this.wmsLayer) {
+            this.replaceLayer();
+          }
+
+          this.viewer.scene.canvas.addEventListener('click', (event) => {
+            event.preventDefault();
+            const mousePosition = new Cartesian2(event.clientX, event.clientY);
+            const selectedLocation = this.viewer.scene.pickPosition(mousePosition);
+            const wgs = Ellipsoid.WGS84.cartesianToCartographic(selectedLocation);
+            console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
+            console.log(this.viewer.scene);
+
+
+            const posUL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, 0), Ellipsoid.WGS84);
+            const posLR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, this.viewer.canvas.height), Ellipsoid.WGS84);
+            const posLL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, this.viewer.canvas.height), Ellipsoid.WGS84);
+            const posUR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, 0), Ellipsoid.WGS84);
+            const cartUl = Ellipsoid.WGS84.cartesianToCartographic(posUL);
+            const maxLat = CesiumMath.toDegrees(cartUl.latitude).toFixed(2);
+
+            const cartUr = Ellipsoid.WGS84.cartesianToCartographic(posUR);
+            const maxLon = CesiumMath.toDegrees(cartUr.longitude).toFixed(2);
+            const cartLr = Ellipsoid.WGS84.cartesianToCartographic(posLR);
+            const minLat = CesiumMath.toDegrees(cartLr.latitude).toFixed(2);
+            const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
+            const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
+
+            console.log(maxLat, maxLon, minLat, minLon);
+
+          }, false);
+          if (this.site) {
+            this.addSite();
+          }
+        },
         removeSite() {
           this.viewer.dataSources.remove(this.siteLayer, true);
         },
@@ -181,11 +199,20 @@
               });
             });
         },
-        zoomIn() {
-          this.viewer.camera.zoomIn();
+        zoomIn(mapId) {
+          if (this.mapDivId === mapId) {
+            this.viewer.camera.zoomIn();
+          }
         },
-        zoomOut() {
-          this.viewer.camera.zoomOut();
+        zoomOut(mapId) {
+          if (this.mapDivId === mapId) {
+            this.viewer.camera.zoomOut();
+          }
+        },
+        triggerCenter(mapId) {
+          if (this.mapDivId === mapId) {
+            this.zoomToExtent(this.maxExtent);
+          }
         },
         zoomToExtent(bbox) {
           this.viewer.camera.setView({
@@ -222,16 +249,13 @@
         basemap() {
           this.replaceBasemap();
         },
-      site: {
-        handler() {
-          if (this.site) this.addSite();
-          else this.removeSite();
+        site: {
+          handler() {
+            if (this.site) this.addSite();
+            else this.removeSite();
+          },
+          deep: true,
         },
-        deep: true,
-      },
-      },
-      beforeDestroy() {
-        this.viewer.destroy();
       },
     };
 </script>

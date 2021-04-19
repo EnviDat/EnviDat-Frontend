@@ -34,6 +34,9 @@
                   :style="rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''" >
             {{ materialIconName }}
           </v-icon>
+
+          <slot v-else>
+          </slot>
         </v-btn>
       </template >
 
@@ -66,6 +69,10 @@
               :style="rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''" >
         {{ materialIconName }}
       </v-icon>
+      
+      <slot v-else>
+      </slot>
+
     </v-btn>
 
     <v-badge v-if="count > 0"

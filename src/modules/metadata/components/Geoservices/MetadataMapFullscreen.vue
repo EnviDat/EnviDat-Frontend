@@ -1,6 +1,7 @@
 <template>
-  <div style="height: 100%; width: 100%;" v-if="layerConfig && ready">
-    <v-card
+  <div id="MetadataMapFullscreen"
+        style="height: 100%; width: 100%;" v-if="layerConfig && ready">
+    <!-- <v-card
       style="position: absolute; top: 0; right: 0; z-index: 200; background-color: rgba(255, 255, 255, 0.6);"
       class="ma-2">
       <base-icon-button class="ma-2"
@@ -11,7 +12,7 @@
                         tool-tip-text="Close Metadata"
                         :tool-tip-bottom="true"
                         @clicked="close"/>
-    </v-card>
+    </v-card> -->
     <v-card v-if="splitScreen"
             class="pa-0 ma-0" style="height: 100%;" :key="'split'">
       <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
@@ -22,7 +23,7 @@
           :key="'map1'"
           :selected-layer-name="selectedLayer"
           @setShow3d="setShow3d"
-          :show3d="show3d"
+          :startMapIn3D="show3d"
           :site="site"
         >
           <template v-slot:top>
@@ -40,7 +41,7 @@
           :key="'map2'"
           :selected-layer-name="splitLayer"
           @setShow3d="setShow3dSplit"
-          :show3d="show3dSplit"
+          :startMapIn3D="show3dSplit"
           :site="site"
         >
           <template v-slot:top>
@@ -51,10 +52,11 @@
         </Map>
       </div>
     </v-card>
+          <!-- style="height: 100%; width: 100%; top: 0; position: absolute;" -->
 
     <v-card v-else
           class="pa-0 ma-0"
-          style="height: 100%; width: 100%; top: 0; position: absolute;"
+          style="height: 100%; width: 100%; top: 0;"
           :key="'map0'">
       <div style="width: 100%; height: 100%;">
         <Map
@@ -76,14 +78,14 @@
 </template>
 
 <script>
-  import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+  // import BaseIconButton from '@/components/BaseElements/BaseIconButton';
   import Map from './Map';
 
   export default {
     name: 'MetadataMapFullscreen',
     components: {
       Map,
-      BaseIconButton,
+      // BaseIconButton,
     },
     data() {
       return {
