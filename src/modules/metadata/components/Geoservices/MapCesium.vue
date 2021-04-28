@@ -1,12 +1,12 @@
 <template>
-  <div :id="mapDivId" class="cesiumContainer">
-
-    <basemap-toggle v-model="basemap" class="basemap-toggle"></basemap-toggle>
+  <div :id="mapDivId"
+        :style="`height: ${height === 0 ? '100%' : height + 'px' };`"
+        class="cesiumContainer">
 
     <div id="credits">
       <a style="padding-right: 10px;" href="https://cesium.com/cesiumjs/" target="_blank">CesiumJS</a>
-      <a href="https://www.bing.com/maps/" target="_blank" v-if="basemap==='satellite'">Images &copy; Bing Maps</a>
-      <a href="https://www.openstreetmap.org/" target="_blank" v-if="basemap==='streets'">OpenStreetMap</a>
+      <a href="https://www.bing.com/maps/" target="_blank" v-if="baseMapLayerName === 'satellite'">Images &copy; Bing Maps</a>
+      <a href="https://www.openstreetmap.org/" target="_blank" v-if="baseMapLayerName === 'streets'">OpenStreetMap</a>
     </div>
   </div>
 </template>
@@ -39,20 +39,23 @@
       eventBus,
     } from '@/factories/eventBus';
     import { cesiumLayer } from './layer-cesium';
-    import BasemapToggle from './BasemapToggle/BasemapToggle';
 
     export default {
       name: 'MapCesium',
       components: {
-        BasemapToggle,
       },
       props: {
+        baseMapLayerName: String,
         opacity: Number,
         featureInfoPts: Array,
         wmsLayer: Object,
         mapDivId: String,
         maxExtent: Object,
         site: Object,
+        height: {
+          type: Number,
+          default: 0,
+        },
       },
       mounted() {
         eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
@@ -85,14 +88,6 @@
         ]),
         extent() {
           return this.viewer.camera;
-        },
-        basemap: {
-          get() {
-            return this.$store.state.geoservices.basemap;
-          },
-          set(value) {
-            this.$store.commit('setBasemap', value);
-          },
         },
         streets() {
           return new OpenStreetMapImageryProvider({
@@ -232,7 +227,7 @@
             this.viewer.imageryLayers.remove(this.basemapLayer);
             this.basemapLayer = null;
           }
-          this.basemapLayer = this.basemap === 'streets' ? this.streets : this.satellite;
+          this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
           this.basemapLayer = this.viewer.imageryLayers.addImageryProvider(this.basemapLayer, 0);
         },
       },
@@ -246,7 +241,7 @@
           },
           deep: true,
         },
-        basemap() {
+        baseMapLayerName() {
           this.replaceBasemap();
         },
         site: {
@@ -264,16 +259,8 @@
   .cesiumContainer {
     position: relative;
     line-height:0;
-    height: 100%;
-    width: 100%;
-    z-index: 100;
-    max-height: 100%;
   }
-  .zoom {
-    position: absolute;
-    padding: 10px;
-    z-index: 999;
-  }
+
   #credits {
     font-size: 8pt;
     position: absolute;
@@ -282,11 +269,13 @@
     padding: 8px 6px 10px 6px;
     z-index: 999;
     background-color: aliceblue;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;    
   }
+
   .basemap-toggle {
     position: absolute;
     bottom: 20px;
-    right: 15px;
+    right: 8px;
     z-index: 10000;
   }
 </style>

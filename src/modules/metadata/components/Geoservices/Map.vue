@@ -1,89 +1,67 @@
 <template>
-  <div id="MapComponet"
-        class="fill-height" >
+  <v-container id="MapComponet"
+                fluid
+                class="fill-height pa-0" >
 
-    <MapWidget style="position: absolute; top: 0; z-index: 1000;"
+    <MapWidget :style="`position: absolute; top: 16px;
+                        z-index: 1000;
+                        width: ${showMapSplitCloseButton ? '50' : '96'}%;
+                        height: 95%; `"
+
+                :baseMapLayerName="currentBaseMapLayer"
                 :layerConfig="layerConfig"
                 :site="site"
                 :mapDivId="mapDivId"
                 :selectedLayerName="selectedLayerName"
                 :mapIs3D="mapIn3D"
+                :showMapSplitButton="showMapSplitButton"
+                :showFullscreenButton="showFullscreenButton"
+                :showMapSplitCloseButton="showMapSplitCloseButton"
                 @toggleMapIn3D="toggle3D" /> 
 
-                 
-    <div :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'">
-      <!-- <v-row class="top-slot" no-gutters>
-        <slot name="top"></slot>
-      </v-row>
+    <v-row no-gutters
+            class="fill-height" >
+      <v-col class="fill-height">
 
-      <v-icon v-if="site && layerConfig" @click="showSite = !showSite" class="icon elevation-5" style="position: absolute; top: 125px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
-        location_on
-      </v-icon>
+        <!-- <div style="height:100%; background-color: green;" ></div> -->
 
-      <v-icon v-if="layerConfig" @click="layerControlOpen = !layerControlOpen" class="icon elevation-5" style="position: absolute; top: 95px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
-        layers
-      </v-icon>
+    <!-- <div class="fill-height" :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'"> -->
 
-      <map-layer-control
-        v-if="layerConfig && layerControlOpen"
-        :layers="layerConfig.layers"
-        :selected="selectedLayerName"
-        @select="select"
-        @setOpacity="setOpacity"
-        :opacity="opacity"
-        style="position: absolute; z-index: 999; top: 95px; bottom: 150px; left: 35px;"
-      ></map-layer-control>
+      <map-cesium v-if="mapIn3D"
+                  :baseMapLayerName="currentBaseMapLayer"
+                  :wmsLayer="selectedLayer"
+                  :map-div-id="mapDivId"
+                  :featureInfoPts="featureinfo"
+                  :opacity="opacity"
+                  :site="site"
+                  :max-extent="maxExtent" 
+                  :height="height" >
+      </map-cesium>
 
-      <feature-info
-        :div-id="`${mapDivId}_graph`"
-        v-if="featureinfo.length > 0"
-        :layers="layerConfig.layers"
-        :selected="selectedLayerName"
-        style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;"
-      ></feature-info> -->
-
-      <map-leaflet v-if="!mapIn3D"
+      <map-leaflet v-else
+                    :baseMapLayerName="currentBaseMapLayer"
                     :wmsLayer="selectedLayer"
                     :max-extent="maxExtent"
                     :map-div-id="mapDivId"
                     :featureInfoPts="featureinfo"
                     :opacity="opacity"
-                    :site="showSite ? site : null" >
-        
-        <!-- <slot></slot><br>
-        
-        <v-btn fab small @click="setShow3d(true)" class="my-1">3D</v-btn> -->
+                    :site="site"
+                    :height="height" >
       </map-leaflet>
 
-      <map-cesium v-if="mapIn3D"
-                  :wmsLayer="selectedLayer"
-                  :map-div-id="mapDivId"
-                  :featureInfoPts="featureinfo"
-                  :opacity="opacity"
-                  :site="showSite ? site : null"
-                  :max-extent="maxExtent" >
-        <!-- <slot></slot><br>
+    <!-- </div> -->
 
-        <v-btn fab small @click="setShow3d(false)" class="my-1">2D</v-btn> -->
+      </v-col>
+    </v-row>
 
-      </map-cesium>
-
-    <!-- </div>
-    <div class="timeslider-container" v-if="layerConfig && layerConfig.timeseries" style="position: relative;">
-      <timeslider
-        style="height: 100px; z-index: 10000; position: relative;"
-        @select="select"
-        :chart-data="layerConfig.layers"
-        :div-id="`timeslider_${mapDivId}`"
-        :selected="selectedLayerName"
-      ></timeslider> -->
-      
-    </div>
-
-  </div>
+  </v-container>
 </template>
 
 <script>
+  import {
+    MAP_TOGGLE_BASE_LAYER,
+    eventBus,
+  } from '@/factories/eventBus';
 
   import {
     buffer as tBuffer,
@@ -93,33 +71,43 @@
   } from '@turf/turf';
   import MapLeaflet from './MapLeaflet';
   import MapCesium from './MapCesium';
-  // import MapLayerControl from './MapLayerControl';
-  // import Timeslider from './Timeslider';
-  // import FeatureInfo from './FeatureInfo';
 
   import MapWidget from './MapWidget';
+/* eslint-disable vue/no-unused-components */
 
   export default {
     name: 'Map',
     components: {
-      // FeatureInfo,
-      // Timeslider,
-      // MapLayerControl,
       MapCesium,
       MapLeaflet,
       MapWidget,
     },
     props: {
+      baseMapLayer: String,
       layerConfig: Object,
       site: Object,
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
       startMapIn3D: Boolean,
+      showMapSplitButton: Boolean,
+      showMapSplitCloseButton: Boolean,
+      showFullscreenButton: Boolean,
+      height: {
+        type: Number,
+        default: 0,
+      },
+      webpIsSupported: Boolean,
+    },
+    mounted() {
+      eventBus.$on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
+    },
+    beforeDestroy() {
+      eventBus.$off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
     },
     computed: {
       maxExtent() {
         let extent = null;
-        if (this.site) {
+        if (this.site && this.site.geoJSON) {
           // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
           const bbox = tEnvelope(this.site.geoJSON);
           // Get the distance of the diagonal (lower left and upper right)
@@ -164,7 +152,6 @@
     methods: {
       toggle3D() {
         this.mapIn3D = !this.mapIn3D;
-        // this.$emit('setShow3d', !this.mapIn3D);
       },
       setOpacity(value) {
         this.opacity = value;
@@ -172,12 +159,23 @@
       select(layerName) {
         this.$emit('changeLayer', layerName);
       },
+      toggleBaseMapLayer(mapId) {
+        if (this.mapDivId !== mapId) {
+          return;
+        }
+
+        if (this.currentBaseMapLayer === 'streets') {
+          this.currentBaseMapLayer = 'satellite';
+        } else {
+          this.currentBaseMapLayer = 'streets';
+        }
+      },
     },
     data: () => ({
       layerControlOpen: false,
       opacity: 100,
-      showSite: true,
       mapIn3D: false,
+      currentBaseMapLayer: 'streets',
     }),
   };
 </script>

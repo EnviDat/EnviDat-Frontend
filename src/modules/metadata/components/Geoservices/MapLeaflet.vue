@@ -1,11 +1,10 @@
 <template>
-  <div :id="mapDivId" style="height: 100%; width: 100%; z-index: 100;">
-
-    <basemap-toggle v-model="basemap" class="basemap-toggle"></basemap-toggle>
+  <div :id="mapDivId"
+        :style="`height: ${height === 0 ? '100%' : height + 'px' };`">
 
     <div  v-if="map">
-    <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
-                       @remove="removePoint"></map-leaflet-point>
+      <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
+                        @remove="removePoint"></map-leaflet-point>
     </div>
   </div>
 </template>
@@ -26,32 +25,27 @@ import {
   MAP_ZOOM_CENTER,
   eventBus,
 } from '@/factories/eventBus';
-import { leafletLayer } from './layer-leaflet';
-import BasemapToggle from './BasemapToggle/BasemapToggle';
+// import { leafletLayer } from './layer-leaflet';
 
+/* eslint-disable vue/no-unused-components */
 
 export default {
   name: 'MapLeaflet',
   components: {
-    BasemapToggle,
     MapLeafletPoint,
   },
-  data: () => ({
-    map: null,
-    mapLayer: null,
-    basemapLayer: null,
-    markers: [],
-    markerIcon,
-    markerIcon2x,
-    markerIconShadow,
-  }),
   props: {
+    baseMapLayerName: String,
     wmsLayer: Object,
     site: Object,
     featureInfoPts: Array,
     maxExtent: Object,
     opacity: Number,
     mapDivId: String,
+    height: {
+      type: Number,
+      default: 0,
+    },
   },
   mounted() {
     eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
@@ -76,14 +70,6 @@ export default {
     layerConfig() {
       return this.$store.state.geoservices.layerConfig;
     },
-    basemap: {
-      get() {
-        return this.$store.state.geoservices.basemap;
-      },
-      set(value) {
-        this.$store.commit('setBasemap', value);
-      },
-    },
     streets() {
       return L.tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -102,9 +88,6 @@ export default {
     },
   },
   methods: {
-    setBasemap(value) {
-      this.basemap = value;
-    },
     removeSite() {
       this.map.removeLayer(this.siteLayer);
       this.siteLayer = null;
@@ -238,17 +221,26 @@ export default {
         this.map.removeLayer(this.mapLayer);
         this.mapLayer = null;
       } else if (this.wmsLayer) {
-        this.mapLayer = leafletLayer(this.wmsLayer);
+        this.mapLayer = this.leafletLayer(this.wmsLayer);
         this.map.addLayer(this.mapLayer);
         this.mapLayer.setOpacity(this.opacity / 100);
         this.mapLayer.bringToFront();
       }
     },
+    leafletLayer(config) {
+      // eslint-disable-next-line new-cap
+      return new L.tileLayer.wms(config.baseURL, {
+        layers: config.name,
+        transparent: true,
+        format: 'image/png',
+        noWrap: true,
+      });      
+    },
     replaceBasemap() {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer = this.basemap === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
       this.basemapLayer.bringToBack();
     },
@@ -297,13 +289,8 @@ export default {
 .basemap-toggle {
   position: absolute;
   bottom: 20px;
-  right: 15px;
+  right: 8px;
   z-index: 10000;
 }
 
-.zoom {
-  position: absolute;
-  padding: 10px;
-  z-index: 999;
-}
 </style>

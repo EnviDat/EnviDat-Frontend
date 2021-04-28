@@ -1,138 +1,146 @@
 <template>
-  <v-container fluid
-                id="MapWidget">
-                
-                <!-- class="fill-height"  -->
-    <!-- <v-row class="top-slot" no-gutters>
-      <v-col>
-        <slot name="top"></slot>
+    <div id="MapWidget" 
+          class="pa-2 overlayInteraction">
+
+  <!-- <v-container fluid
+                id="MapWidget"> -->
+
+    <v-row no-gutters >
+      <v-col >
+
+        <v-row no-gutters >
+          <v-col class="shrink" >
+            <BaseIconButton materialIconName="add"
+                            iconColor="black"
+                            fillColor="white"
+                            color="secondary"
+                            outlined
+                            @clicked="triggerZoomIn" />
+          </v-col>
+
+          <v-col class="px-1 shrink" >
+            <BaseIconButton materialIconName="remove"
+                            iconColor="black"
+                            fillColor="white"
+                            color="secondary"
+                            outlined
+                            @clicked="triggerZoomOut" />
+          </v-col>
+
+          <v-col class="px-2 shrink" >
+            <BaseIconButton materialIconName="filter_center_focus"
+                            iconColor="black"
+                            fillColor="white"
+                            color="secondary"
+                            outlined
+                            @clicked="triggerZoomCenter" />
+          </v-col>
+        </v-row>
+
       </v-col>
-    </v-row> -->
 
-    <v-row no-gutters
-            align="start" >
+      <v-col class="ml-auto">
 
-      <v-col class="shrink" >
-        <BaseIconButton materialIconName="add"
-                        iconColor="black"
-                        fillColor="white"
-                        @clicked="triggerZoomIn" />
+        <div v-if="showMapSplitButton" >
+              <!-- style="position: absolute; top: 0; left: 45%;" -->
+          <BaseIconButton materialIconName="vertical_split"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerSplit" />
+        </div>
+
+        <div v-if="showMapSplitCloseButton" >
+              <!-- style="position: absolute; top: 0; left: 45%;" -->
+          <BaseIconButton materialIconName="close"
+                          iconColor="red"
+                          fillColor="white"
+                          @clicked="triggerSplitEnd" />
+        </div>
+
       </v-col>
 
-      <v-col class="px-1 shrink" >
-        <BaseIconButton materialIconName="remove"
-                        iconColor="black"
-                        fillColor="white"
-                        @clicked="triggerZoomOut" />
-      </v-col>
+      <v-col v-show="showFullscreenButton"
+              class="shrink ml-auto">
 
-      <v-col class="px-2 shrink" >
         <BaseIconButton materialIconName="zoom_out_map"
                         iconColor="black"
-                        fillColor="white"
-                        @clicked="triggerZoomCenter" />
-      </v-col>
-
-    </v-row>
-    
-    <v-row no-gutters >
-      <v-col v-if="site && layerConfig" 
-              cols="12"
-              class="py-1" >
-        <BaseIconButton materialIconName="location_on"
-                        iconColor="black"
-                        fillColor="white"
-                        @clicked="showSite = !showSite" />
-
-        <!-- <v-icon v-if="site && layerConfig"
-                @click="showSite = !showSite"
-                class="icon elevation-5" >
-            location_on
-        </v-icon> -->
-      </v-col>
-
-      <v-col v-if="layerConfig"
-              cols="12"
-              class="pb-1" >
-        <BaseIconButton materialIconName="layers"
-                        iconColor="black"
-                        fillColor="white"
-                        @clicked="layerControlOpen = !layerControlOpen" />
-
-        <!-- <v-icon v-if="layerConfig"
-                @click="layerControlOpen = !layerControlOpen"
-                class="icon elevation-5" >
-          layers
-        </v-icon> -->
-      </v-col>
-    <!-- </v-row> -->
-
-    <!-- <v-row no-gutters > -->
-      <v-col v-if="layerConfig && layerControlOpen"
-              cols="12"
-              class="py-1" >
-        <map-layer-control
-          :layers="layerConfig.layers"
-          :selected="selectedLayerName"
-          @select="select"
-          @setOpacity="setOpacity"
-          :opacity="opacity" 
-        ></map-layer-control>
-      </v-col>
-    <!-- </v-row> -->
-
-    <!-- <v-row no-gutters > -->
-      <v-col v-if="featureinfo.length > 0"
-              cols="12">
-
-        <feature-info
-          :div-id="`${mapDivId}_graph`"
-          :layers="layerConfig.layers"
-          :selected="selectedLayerName"
-        ></feature-info>
-
-          <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
-      </v-col>
-    </v-row>
-
-    <v-row no-gutters>
-      <v-col cols="12">
-
-        <BaseIconButton materialIconName="fullscreen"
-                        iconColor="white"
-                        :fillColor="$vuetify.theme.themes.light.primary"
+                        :fillColor="$vuetify.theme.themes.light.accent"
                         @clicked="triggerFullscreen" />
 
       </v-col>
 
-      <v-col cols="12">
+    </v-row>
+
+    <v-row no-gutters
+            class="pt-3" >
+      <v-col class="shrink">
 
         <BaseIconButton color="black"
-                        fillColor="white"
-                        @clicked="$emit('toggleMapIn3D')" >
+                        :fillColor="$vuetify.theme.themes.light.accent"
+                        @clicked="toggle3D" >
                         {{ mapIs3D ? '2D' : '3D' }}
         </BaseIconButton>
 
       </v-col>
 
+
+    </v-row>
+    
+    <v-row v-if="layerConfig"
+              no-gutters >
+      <v-col v-if="site" 
+              cols="12"
+              class="py-2" >
+        <BaseIconButton materialIconName="location_on"
+                        iconColor="black"
+                        fillColor="white"
+                        @clicked="showSite = !showSite" />
+      </v-col>
+
+      <v-col cols="12"
+              class="pb-2" >
+        <BaseIconButton materialIconName="layers"
+                        iconColor="black"
+                        fillColor="white"
+                        @clicked="layerControlOpen = !layerControlOpen" />
+      </v-col>
+
+      <v-col v-if="layerControlOpen"
+              cols="12"
+              class="pb-2" >
+        <map-layer-control :layers="layerConfig.layers"
+                            :selected="selectedLayerName"
+                            @select="select"
+                            @setOpacity="setOpacity"
+                            :opacity="opacity" />
+      </v-col>
+
+      <v-col v-if="featureinfo.length > 0"
+              cols="12">
+
+        <feature-info :div-id="`${mapDivId}_graph`"
+                      :layers="layerConfig.layers"
+                      :selected="selectedLayerName" />
+
+          <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
+      </v-col>
     </v-row>
 
-    <!-- <v-row no-gutters >
-      <v-col>
+    <div style="position: absolute; bottom: 50px;" >
+      <v-card ripple
+              class="pa-0"
+              style="width: 48px; height: 48px;"
+              @click="toggleBaseMap">
+        <img width="40"
+              height="40"
+              :src="baseMapImage"
+              class="ma-1">
+      </v-card>
+    </div>
 
-        <div class="timeslider-container" v-if="layerConfig && layerConfig.timeseries" style="position: relative;">
-          <timeslider
-            @select="select"
-            :chart-data="layerConfig.layers"
-            :div-id="`timeslider_${mapDivId}`"
-            :selected="selectedLayerName"
-          ></timeslider>
 
-        </div>
-
-      </v-col>
-    </v-row> -->
-  </v-container>
+  <!-- </v-container> -->
+  </div>
 
 </template>
 
@@ -143,6 +151,9 @@
     MAP_ZOOM_IN,
     MAP_ZOOM_OUT,
     MAP_ZOOM_CENTER,
+    MAP_COMPARE_START,
+    MAP_COMPARE_END,
+    MAP_TOGGLE_BASE_LAYER,
     eventBus,
   } from '@/factories/eventBus';
 
@@ -159,16 +170,28 @@
       BaseIconButton,
     },
     props: {
+      baseMapLayerName: String,
       layerConfig: Object,
       site: Object,
-      mapDivId: { type: String, required: true },
+      mapDivId: {
+        type: String,
+        required: true,
+      },
       selectedLayerName: { type: String },
-      mapIs3D: { type: Boolean },
+      mapIs3D: Boolean,
+      showMapSplitButton: Boolean,
+      showMapSplitCloseButton: Boolean,
+      showFullscreenButton: Boolean,
+    },
+    created() {
+      // console.log(this.showMapSplitButton);
+      this.loadBaseMapImages();
     },
     data: () => ({
       layerControlOpen: false,
       opacity: 100,
       showSite: true,
+      mapIn3D: false,
     }),
     computed: {
       featureinfo() {
@@ -183,8 +206,15 @@
         layer.bbox = this.layerConfig.bbox;
         return layer;
       },
+      baseMapImage() {
+        return this.baseMapLayerName === 'streets' ? this.baseMapSatelliteImg : this.baseMapStreetsImg;
+      },
     },
     methods: {
+      loadBaseMapImages() {
+        this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
+        this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
+      },
       setOpacity(value) {
         this.opacity = value;
       },
@@ -203,6 +233,19 @@
       },
       triggerZoomCenter() {
         eventBus.$emit(MAP_ZOOM_CENTER, this.mapDivId);
+      },
+      triggerSplit() {
+        eventBus.$emit(MAP_COMPARE_START, this.mapDivId);
+        this.triggerZoomCenter();
+      },
+      triggerSplitEnd() {
+        eventBus.$emit(MAP_COMPARE_END, this.mapDivId);
+      },
+      toggle3D() {
+        this.$emit('toggleMapIn3D');
+      },
+      toggleBaseMap() {
+        eventBus.$emit(MAP_TOGGLE_BASE_LAYER, this.mapDivId);
       },
     },
   };
@@ -228,6 +271,15 @@
 
   .timeslider-container {
     height: 100px;
+  }
+
+  .overlayInteraction {
+    pointer-events: none;
+  }
+
+  .overlayInteraction .col,
+  .overlayInteraction .v-card {
+    pointer-events: auto;
   }
 
 </style>
