@@ -73,8 +73,7 @@
 <!--                  :url="filePreviewUrl" />-->
 
       <component :is="fullScreenComponent"
-                  :fileConfig="mapConfigFile"
-                  :configUrl="geoConfigUrl" />
+                  :fileConfig="geoServiceConfig" />
 
 
     </GenericModalPageLayout>
@@ -338,7 +337,21 @@ export default {
     },
   },
   methods: {
-    loadStationsConfig(url) {
+    loadGeoServiceLayers(url, successCallback) {
+      this.geoServiceLayers = null;
+
+      axios
+      .get(url)
+      .then((response) => {
+        this.geoServiceLayers = response.data;
+
+        successCallback();
+      })
+      .catch((error) => {
+        this.geoServiceLayersError = error;
+      });
+    },
+    loadStationsConfig(url, successCallback) {
       this.stationsConfig = null;
 
       axios
@@ -346,17 +359,13 @@ export default {
       .then((response) => {
         this.stationsConfig = response.data;
 
-        // Rebecca:
-        // get now date, substract 14days
-        // go through each station add the timestamps to the url
-
-        this.injectMicroCharts();
+        successCallback();
       })
       .catch((error) => {
         this.stationsConfigError = error;
       });
     },
-    loadParameterJson(url) {
+    loadParameterJson(url, successCallback) {
 
       this.fileObjects = null;
       this.graphStyling = null;
@@ -367,6 +376,8 @@ export default {
 
         this.fileObjects = response.data.fileObjects;
         this.graphStyling = response.data.graphStyling;
+
+        successCallback();
       })
       .catch((error) => {
         this.stationParametersError = error;
@@ -389,13 +400,8 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
-    showFullscreenMapModal(configFile, configUrl) {
-      // console.log(`showFullscreenMapModal ${configFile}`);
+    showFullscreenMapModal() {
       this.fullScreenComponent = MetadataMapFullscreen;
-      // this.fullScreenComponent = this.$options.components.MetadataMapFullscreen;
-      this.mapConfigFile = configFile;
-
-      this.geoConfigUrl = configUrl;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -470,24 +476,35 @@ export default {
     setMetadataContent() {
       const { components } = this.$options;
 
-      let configs = null;
+      this.configInfos = {
+        stationsConfigUrl: null,
+        stationParametersUrl: null,
+        geoUrl: null,
+      };
 
       if (this.resources?.resources) {
-        configs = getConfigFiles(this.resources.resources);
+        this.configInfos = getConfigFiles(this.resources.resources);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
       this.$set(components.MetadataBody, 'genericProps', { body: this.body });
       this.$set(components.MetadataCitation, 'genericProps', this.citation);
 
-      configs = getConfigUrls(configs);
+      this.configInfos = getConfigUrls(this.configInfos);
 
-      if (configs?.stationsConfigUrl) {
-        this.loadStationsConfig(configs.stationsConfigUrl);
+      if (this.configInfos?.stationsConfigUrl) {
+        this.loadStationsConfig(this.configInfos.stationsConfigUrl, () => {
+          this.injectMicroCharts();
+        });
       }
 
-      if (configs?.stationParametersUrl) {
-        this.loadParameterJson(configs.stationParametersUrl);
+      if (this.configInfos?.stationParametersUrl) {
+        this.loadParameterJson(this.configInfos.stationParametersUrl);
+      }
+
+      if (this.configInfos?.geoConfigUrl) {
+        // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
+        this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
       }
 
       this.$set(components.MetadataResources, 'genericProps', {
@@ -495,19 +512,6 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      // Object that defines the content of MetadataGeo
-      const geoJSON = this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null;
-      // console.log('geoJSON');
-      // console.log(geoJSON);
-      const geo = {
-        site: { geoJSON },
-        data: {
-          configUrl: configs?.geoUrl ? configs.geoUrl : null,
-          // wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
-        },
-      };
-
-      this.$set(components.MetadataGeo, 'genericProps', geo);
 
       this.$set(components.MetadataDetails, 'genericProps', { details: this.details });
       this.$set(components.MetadataAuthors, 'genericProps', {
@@ -608,9 +612,6 @@ export default {
         query,
       });
     },
-    /**
-       * @description
-       */
     catchBackClicked() {
       const backRoute = this.detailPageBackRoute;
 
@@ -644,6 +645,20 @@ export default {
     },
   },
   watch: {
+    geoServiceLayers() {
+      // console.log('geoServiceLayers loaded');
+
+      this.geoServiceConfig = {
+        site: this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null,
+        layerConfig: this.geoServiceLayers,
+        wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
+        // wmsUrl: null,
+        configUrl: this.configInfos?.geoConfigUrl ? this.configInfos.geoConfigUrl : null,
+      };
+
+      const { components } = this.$options;
+      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+    },
     /**
      * @description watcher on idsToResolve start resolving them, if not already in the works
      */
@@ -732,7 +747,10 @@ export default {
     graphStyling: null,
     stationsConfigError: null,
     stationParametersError: null,
-    geoServiceConfigError: null,
+    configInfos: null,
+    geoServiceConfig: null,
+    geoServiceLayers: null,
+    geoServiceLayersError: null,
     header: null,
     body: null,
     citation: null,

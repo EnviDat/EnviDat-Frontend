@@ -129,10 +129,10 @@ function hasData(data, parameter) {
 }
 
 function getConfigFiles(resources) {
-  const configs = {};
+  const configResources = {};
 
   if (!resources) {
-    return configs;
+    return configResources;
   }
 
   for (let i = 0; i < resources.length; i++) {
@@ -142,16 +142,16 @@ function getConfigFiles(resources) {
     const resUrl = res.url.toLowerCase();
 
     if (resName.includes('geoservices_config')) {
-      configs.geoServicesConfig = res;
+      configResources.geoServicesConfig = res;
     } else if (resUrl.includes('stationparameters')) {
-      configs.gcnetStationParameters = res;
+      configResources.gcnetStationParameters = res;
     } else if (resUrl.includes('stationsconfig')) {
-      configs.gcnetStationsConfig = res;
+      configResources.gcnetStationsConfig = res;
     }
 
   }
 
-  return configs;
+  return configResources;
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -161,7 +161,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   // eslint-disable-next-line prefer-const
   let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
   // eslint-disable-next-line prefer-const
-  let geoUrl = configs?.geoServicesConfig?.url || null;
+  let geoConfigUrl = configs?.geoServicesConfig?.url || null;
 
   if (!configs) {
     configs = {};
@@ -170,7 +170,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   if (process.env.NODE_ENV === 'development') {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
     // stationParametersUrl = ''; // testStationParametersUrl;
-    geoUrl = testGeoUrl;
+    geoConfigUrl = testGeoUrl;
 
   } else {
 
@@ -187,7 +187,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
 
   configs.stationsConfigUrl = stationsConfigUrl;
   configs.stationParametersUrl = stationParametersUrl;
-  configs.geoUrl = geoUrl;
+  configs.geoConfigUrl = geoConfigUrl;
 
   return configs;
 }

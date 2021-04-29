@@ -1,6 +1,5 @@
 <template>
   <v-dialog v-model="showDialog"
-            transition="dialog-bottom-transition"
             scrollable
             persistent >
 

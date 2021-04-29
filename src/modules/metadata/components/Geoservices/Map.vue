@@ -88,7 +88,6 @@
       site: Object,
       mapDivId: { type: String, required: true },
       selectedLayerName: { type: String },
-      startMapIn3D: Boolean,
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
       showFullscreenButton: Boolean,
@@ -107,9 +106,10 @@
     computed: {
       maxExtent() {
         let extent = null;
-        if (this.site && this.site.geoJSON) {
+
+        if (this.site) {
           // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
-          const bbox = tEnvelope(this.site.geoJSON);
+          const bbox = tEnvelope(this.site);
           // Get the distance of the diagonal (lower left and upper right)
           let dist = tDistance(bbox.geometry.coordinates[0][0], bbox.geometry.coordinates[0][2]);
           // If there is only one point (distance = 0)
@@ -117,7 +117,7 @@
               dist = 100;
             }
             // If the centroid of the geometry is above 60° or below -60°
-            if (Math.abs(tCentroid(this.site.geoJSON).geometry.coordinates[1]) > 60) {
+            if (Math.abs(tCentroid(this.site).geometry.coordinates[1]) > 60) {
               dist = 10000;
             }
             // Buffer
@@ -134,19 +134,22 @@
         } else if (this.layerConfig) {
           extent = this.layerConfig.bbox;
         }
+        
         return extent;
       },
       featureinfo() {
         return this.$store.state.geoservices.timeseries;
       },
       selectedLayer() {
-        if (!this.layerConfig || !this.selectedLayerName) {
-          return null;
-        }
-        const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
-        layer.baseURL = this.layerConfig.baseURL;
-        layer.bbox = this.layerConfig.bbox;
-        return layer;
+        return null;
+
+        // if (!this.layerConfig || !this.selectedLayerName) {
+        //   return null;
+        // }
+        // const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
+        // layer.baseURL = this.layerConfig.baseURL;
+        // layer.bbox = this.layerConfig.bbox;
+        // return layer;
       },
     },
     methods: {

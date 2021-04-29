@@ -89,8 +89,10 @@ export default {
   },
   methods: {
     removeSite() {
-      this.map.removeLayer(this.siteLayer);
-      this.siteLayer = null;
+      if (this.siteLayer) {
+        this.map.removeLayer(this.siteLayer);
+        this.siteLayer = null;
+      }
     },
     addSite() {
       // Set marker icon
@@ -101,7 +103,7 @@ export default {
       const icon = L.icon(iconOptions);
 
       // Add geodata to map
-      this.siteLayer = L.geoJSON(this.site.geoJSON, {
+      this.siteLayer = L.geoJSON(this.site, {
         pointToLayer(feature, latlng) {
           return L.marker(latlng, {
             icon,
@@ -122,9 +124,11 @@ export default {
       if (Math.abs(latlng[0]) > 90 || Math.abs(latlng[1]) > 180) {
         return;
       }
+
       let start = 0;
       const featureinfo = [];
       const promises = [];
+
       while (start < this.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
         const promise = axios.get(url)
@@ -142,12 +146,13 @@ export default {
         promises.push(promise);
         start += 50;
       }
+
       Promise.all(promises)
-        .then(() => this.$store.commit('addTimeSeries',
-          {
-            values: featureinfo,
-            coords: latlng,
-          }));
+      .then(() => this.$store.commit('addTimeSeries',
+        {
+          values: featureinfo,
+          coords: latlng,
+        }));
     },
     getFeatureInfoUrl(latlng, start, stop) {
       // Construct a GetFeatureInfo request URL given a point
@@ -173,41 +178,56 @@ export default {
       return this.layerConfig.baseURL + L.Util.getParamString(params, this.layerConfig.baseURL, true);
     },
     zoomIn(mapId) {
-      if (this.mapDivId === mapId) {
-        this.map.zoomIn();
+      if (this.mapDivId !== mapId) {
+        return;
       }
+
+      this.map.zoomIn();
     },
     zoomOut(mapId) {
-      if (this.mapDivId === mapId) {
-        this.map.zoomOut();
+      if (this.mapDivId !== mapId) {
+        return;
       }
+
+      this.map.zoomOut();
     },
     triggerCenter(mapId) {
-      if (this.mapDivId === mapId) {
+      if (this.mapDivId !== mapId) {
+        return;
+      }
+
+      if (this.maxExtent) {
         this.zoomToExtent(this.maxExtent);
       }
     },
     setupMap() {
 
-      this.map = new L.Map(this.mapDivId,
-        {
-          zoomControl: false,
-          maxBounds: [
-            [-90, -180],
-            [90, 180],
-          ],
-          maxBoundsViscosity: 0.5,
-        });
+      const defaultMaxBound = [
+        [-90, -180],
+        [90, 180],
+      ];
+
+      this.map = new L.Map(this.mapDivId, {
+        zoomControl: false,
+        maxBounds: defaultMaxBound,
+        maxBoundsViscosity: 0.5,
+      });
+        
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
       if (this.layerConfig && this.layerConfig.timeseries) {
         this.map.on('click', e => this.getFeatureInfo(e.latlng));
       }
+
       if (this.site) {
         this.addSite();
       }
-      this.zoomToExtent(this.maxExtent);
+
+      if (this.maxExtent) {
+        this.zoomToExtent(this.maxExtent);
+      }
+
       this.replaceLayer();
     },
     zoomToExtent(bbox) {
@@ -271,14 +291,35 @@ export default {
       },
       deep: true,
     },
-    basemap() {
+    baseMapLayerName() {
       this.replaceBasemap();
     },
+    maxExtent() {
+      if (this.map) {
+        this.triggerCenter(this.mapDivId);
+      }
+    },
     site() {
-      if (this.site) this.addSite();
-      else this.removeSite();
+      // if (!this.map) {
+      //   this.setupMap();
+      // }
+
+      if (this.site) {
+        this.addSite();
+      } else {
+        this.removeSite();
+      }
     },
   },
+  data: () => ({
+    map: null,
+    mapLayer: null,
+    basemapLayer: null,
+    markers: [],
+    markerIcon,
+    markerIcon2x,
+    markerIconShadow,
+  }),
 };
 </script>
 

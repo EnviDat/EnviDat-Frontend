@@ -3,14 +3,21 @@
 
     <v-card-title class="text-h6 metadata_title">Location Geoservices</v-card-title>
 
-    <v-card-text v-if="isReady" style="width: 100%; height: 500px; position: relative;">
+    <v-card-text class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" >
+      Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison. There might be bugs.
+    </v-card-text>
+
+    <v-card-text v-if="isReady"
+                  style="position: relative;" >
+    <!-- style="height: 500px;" -->
       <Map :layer-config="layerConfig"
             :map-div-id="'map-small'"
             :selected-layer-name="selectedLayer"
             @changeLayer="setLayer"
-            @setShow3d="setShow3d"
-            :startMapIn3D="show3d"
-            :site="site" />
+            :site="site"
+            :showFullscreenButton="true"
+            :height="450" />
     </v-card-text>
 
     <v-card-text v-else>
@@ -36,18 +43,20 @@
     props: {
       genericProps: Object,
     },
-    data: () => ({
-      ready: false,
-      map: null,
-      smallSize: 300,
-      mediumSize: 500,
-      largeSize: 725,
-      fullWidthSize: 875,
-      fullscreen: false,
-    }),
+    mounted() {
+      
+      if (this.wmsUrl) {
+        this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
+      }
+
+      if (this.configUrl) {
+        this.$store.dispatch('fetchLayerConfig', this.configUrl);
+      }
+    },
     computed: {
       isReady() {
-        return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl) && this.layerConfig !== null);
+        return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl));
+        // return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl) && this.layerConfig !== null);
       },
       hasData() {
         return this.layerConfig;
@@ -56,24 +65,22 @@
         return this.$store.state.geoservices.selectedLayer;
       },
       site() {
-        return this.genericProps.site;
+        return this.genericProps?.site;
       },
       wmsUrl() {
-        return this.genericProps.data?.wmsUrl;
+        return this.genericProps?.wmsUrl;
       },
       configUrl() {
-        return this.genericProps.data?.configUrl;
+        return this.genericProps?.configUrl;
       },
       layerConfig() {
-        return this.$store.state.geoservices.layerConfig;
+        return this.genericProps?.layerConfig;
+        // return this.$store.state.geoservices.layerConfig;
       },
       mapSize() {
         const height = this.$vuetify.breakpoint.xsOnly || this.$vuetify.breakpoint.smAndDown
           ? this.smallSize : this.mediumSize;
         return { style: `max-width: 100%; height: ${height}px !important;` };
-      },
-      show3d() {
-        return this.$store.state.geoservices.show3d;
       },
     },
     methods: {
@@ -84,21 +91,16 @@
       setLayer(name) {
         this.$store.commit('setSelectedLayer', name);
       },
-      setShow3d(value) {
-        this.$store.commit('setShow3d', value);
-      },
     },
-    mounted() {
-      if (this.wmsUrl) {
-        this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
-      }
-      if (this.configUrl) {
-        this.$store.dispatch('fetchLayerConfig', this.configUrl);
-      }
-      if (this.site) {
-        this.$store.commit('setSite', this.site);
-      }
-    },
+    data: () => ({
+      ready: false,
+      map: null,
+      smallSize: 300,
+      mediumSize: 500,
+      largeSize: 725,
+      fullWidthSize: 875,
+      fullscreen: false,
+    }),    
   };
 </script>
 <style scoped>

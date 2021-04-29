@@ -1,119 +1,96 @@
 <template>
-  <div id="MetadataMapFullscreen"
-        style="height: 100%; width: 100%;" v-if="layerConfig && ready">
-    <!-- <v-card
-      style="position: absolute; top: 0; right: 0; z-index: 200; background-color: rgba(255, 255, 255, 0.6);"
-      class="ma-2">
-      <base-icon-button class="ma-2"
-                        material-icon-name="close"
-                        icon-color="primary"
-                        color="primary"
-                        outlined
-                        tool-tip-text="Close Metadata"
-                        :tool-tip-bottom="true"
-                        @clicked="close"/>
-    </v-card> -->
-    <v-card v-if="splitScreen"
-            class="pa-0 ma-0" style="height: 100%;" :key="'split'">
-      <div style="width: 50%; max-width: 50%; float: left; height: 100%; position: relative;">
-        <Map
-          :layer-config="layerConfig"
-          :map-div-id="'map1'"
-          @changeLayer="setLayer"
-          :key="'map1'"
-          :selected-layer-name="selectedLayer"
-          @setShow3d="setShow3d"
-          :startMapIn3D="show3d"
-          :site="site"
-        >
-          <template v-slot:top>
-            <v-btn icon outlined color="red" style="display: inline-block; background-color: #cccccc" @click="quitSplitFrom(1)">
-              <v-icon>close</v-icon>
-            </v-btn>
-          </template>
-        </Map>
-      </div>
-      <div style="width: 50%; float: left; position: relative; border-left: 1px solid gray;">
-        <Map
-          :layer-config="layerConfig"
-          :map-div-id="'map2'"
-          @changeLayer="setLayerSplit"
-          :key="'map2'"
-          :selected-layer-name="splitLayer"
-          @setShow3d="setShow3dSplit"
-          :startMapIn3D="show3dSplit"
-          :site="site"
-        >
-          <template v-slot:top>
-            <v-btn icon outlined color="red" style="background-color: #cccccc" @click="quitSplitFrom(2)">
-              <v-icon>close</v-icon>
-            </v-btn>
-          </template>
-        </Map>
-      </div>
-    </v-card>
-          <!-- style="height: 100%; width: 100%; top: 0; position: absolute;" -->
+  <v-container id="MetadataMapFullscreen"
+                v-if="ready"
+                style="position: relative;" 
+                fluid
+                class="fill-height">
 
-    <v-card v-else
-          class="pa-0 ma-0"
-          style="height: 100%; width: 100%; top: 0;"
-          :key="'map0'">
-      <div style="width: 100%; height: 100%;">
-        <Map
-          :layer-config="layerConfig"
-          @changeLayer="setLayer"
-          :map-div-id="'map0'"
-          :selected-layer-name="selectedLayer"
-          @setShow3d="setShow3d"
-          :show3d="show3d"
-          :site="site"
-        >
-          <v-btn color="primary" @click="startSplit" fab small>
-            <v-icon style="height:auto;">vertical_split</v-icon>
-          </v-btn>
-        </Map>
-      </div>
-    </v-card>
-  </div>
+    <v-row no-gutters
+            class="fill-height">
+      <v-col :cols="mapCompareActive ? '6' : '12'"
+              :class="mapCompareActive ? 'splitDelimiter' : ''">
+
+        <Map :layer-config="layerConfig"
+              @changeLayer="setLayer"
+              :map-div-id="'map0'"
+              :site="site"
+              :showMapSplitButton="!mapCompareActive"
+              :showMapSplitCloseButton="mapCompareActive" />
+
+              <!-- :selected-layer-name="selectedLayer" -->
+
+      </v-col>
+
+      <v-col v-if="mapCompareActive" 
+              cols="6">
+        <Map :layer-config="layerConfig"
+              @changeLayer="setLayer"
+              :map-div-id="'map1'"
+              :site="site"
+              :showMapSplitButton="!mapCompareActive"
+              :showMapSplitCloseButton="mapCompareActive" />
+
+              <!-- :selected-layer-name="selectedLayer" -->
+      </v-col>
+
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-  // import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+  import {
+    MAP_COMPARE_START,
+    MAP_COMPARE_END,
+    eventBus,
+  } from '@/factories/eventBus';
+
   import Map from './Map';
 
   export default {
     name: 'MetadataMapFullscreen',
     components: {
       Map,
-      // BaseIconButton,
     },
-    data() {
-      return {
-        ready: false,
-      };
+    props: {
+      fileConfig: Object,
     },
+    mounted() {
+      // Wait for dialog transition to complete
+      setTimeout(() => { this.ready = true; }, 250);
+
+      eventBus.$on(MAP_COMPARE_START, this.startSplit);
+      eventBus.$on(MAP_COMPARE_END, this.quitSplit);
+    },
+    beforeDestroy() {
+      eventBus.$off(MAP_COMPARE_START, this.startSplit);
+      eventBus.$off(MAP_COMPARE_END, this.quitSplit);
+
+      if (this.map) {
+        this.map.remove();
+      }
+    },    
     computed: {
       site() {
-        return this.$store.state.geoservices.site;
+        return this.fileConfig.site;
       },
-      splitScreen() {
-        return this.$store.state.geoservices.splitScreen;
-      },
-      splitLayer() {
-        return this.$store.state.geoservices.splitLayer;
-      },
-      selectedLayer() {
-        return this.$store.state.geoservices.selectedLayer;
-      },
+      // splitScreen() {
+      //   return this.$store.state.geoservices.splitScreen;
+      // },
+      // splitLayer() {
+      //   return this.$store.state.geoservices.splitLayer;
+      // },
+      // selectedLayer() {
+      //   return this.$store.state.geoservices.selectedLayer;
+      // },
       layerConfig() {
-        return this.$store.state.geoservices.layerConfig;
+        return this.fileConfig.layerConfig;
       },
-      show3d() {
-        return this.$store.state.geoservices.show3d;
-      },
-      show3dSplit() {
-        return this.$store.state.geoservices.show3dSplit;
-      },
+      // show3d() {
+      //   return this.$store.state.geoservices.show3d;
+      // },
+      // show3dSplit() {
+      //   return this.$store.state.geoservices.show3dSplit;
+      // },
     },
     methods: {
       setShow3d(value) {
@@ -128,27 +105,37 @@
       setLayerSplit(name) {
         this.$store.commit('setSplitLayer', name);
       },
-      quitSplitFrom(mapId) {
-        if (mapId === 1) {
-          this.$store.commit('setSelectedLayer', this.splitLayer);
-        }
-        this.$store.commit('setSplitScreen', false);
+      // eslint-disable-next-line no-unused-vars
+      quitSplit(mapId) {
+        this.mapCompareActive = false;
+        // if (mapId === 1) {
+        //   this.$store.commit('setSelectedLayer', this.splitLayer);
+        // }
+        // this.$store.commit('setSplitScreen', false);
       },
       startSplit() {
-        this.$store.commit('setSelectedLayer', this.selectedLayer);
-        this.$store.commit('setSplitScreen', true);
+        // this.mapCompareActive = !this.mapCompareActive;
+        this.mapCompareActive = true;
+
+        // this.$store.commit('setSelectedLayer', this.selectedLayer);
+        // this.$store.commit('setSplitScreen', true);
       },
       close() {
         this.$emit('close');
       },
     },
-    mounted() {
-      // Wait for dialog transition to complete
-      setTimeout(() => { this.ready = true; }, 50);
-    },
+    data: () => ({
+      layerControlOpen: false,
+      opacity: 100,
+      mapCompareActive: false,
+      ready: false,
+    }),
   };
 </script>
 
 <style scoped>
 
+  .splitDelimiter {
+    border-right: 1px dashed black;
+  }
 </style>

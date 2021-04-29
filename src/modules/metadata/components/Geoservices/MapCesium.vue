@@ -129,37 +129,50 @@
           cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
 
           this.replaceBasemap();
-          this.zoomToExtent(this.maxExtent);
+
+          if (this.maxExtent) {
+            this.zoomToExtent(this.maxExtent);
+          }
+
           if (this.wmsLayer) {
             this.replaceLayer();
           }
 
+          const that = this;
+
           this.viewer.scene.canvas.addEventListener('click', (event) => {
             event.preventDefault();
+            const viewer = that.viewer;
             const mousePosition = new Cartesian2(event.clientX, event.clientY);
-            const selectedLocation = this.viewer.scene.pickPosition(mousePosition);
-            const wgs = Ellipsoid.WGS84.cartesianToCartographic(selectedLocation);
-            console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
-            console.log(this.viewer.scene);
+            const selectedLocation = viewer.scene.pickPosition(mousePosition);
+
+            if (selectedLocation) {
+              const wgs = Ellipsoid.WGS84.cartesianToCartographic(selectedLocation);
+              console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
+              console.log(viewer.scene);
 
 
-            const posUL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, 0), Ellipsoid.WGS84);
-            const posLR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, this.viewer.canvas.height), Ellipsoid.WGS84);
-            const posLL = this.viewer.camera.pickEllipsoid(new Cartesian2(0, this.viewer.canvas.height), Ellipsoid.WGS84);
-            const posUR = this.viewer.camera.pickEllipsoid(new Cartesian2(this.viewer.canvas.width, 0), Ellipsoid.WGS84);
-            const cartUl = Ellipsoid.WGS84.cartesianToCartographic(posUL);
-            const maxLat = CesiumMath.toDegrees(cartUl.latitude).toFixed(2);
+              const posUL = viewer.camera.pickEllipsoid(new Cartesian2(0, 0), Ellipsoid.WGS84);
+              const posLR = viewer.camera.pickEllipsoid(new Cartesian2(viewer.canvas.width, viewer.canvas.height), Ellipsoid.WGS84);
+              const posLL = viewer.camera.pickEllipsoid(new Cartesian2(0, viewer.canvas.height), Ellipsoid.WGS84);
+              const posUR = viewer.camera.pickEllipsoid(new Cartesian2(viewer.canvas.width, 0), Ellipsoid.WGS84);
+              const cartUl = Ellipsoid.WGS84.cartesianToCartographic(posUL);
+              const maxLat = CesiumMath.toDegrees(cartUl.latitude).toFixed(2);
 
-            const cartUr = Ellipsoid.WGS84.cartesianToCartographic(posUR);
-            const maxLon = CesiumMath.toDegrees(cartUr.longitude).toFixed(2);
-            const cartLr = Ellipsoid.WGS84.cartesianToCartographic(posLR);
-            const minLat = CesiumMath.toDegrees(cartLr.latitude).toFixed(2);
-            const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
-            const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
+              const cartUr = Ellipsoid.WGS84.cartesianToCartographic(posUR);
+              const maxLon = CesiumMath.toDegrees(cartUr.longitude).toFixed(2);
+              const cartLr = Ellipsoid.WGS84.cartesianToCartographic(posLR);
+              const minLat = CesiumMath.toDegrees(cartLr.latitude).toFixed(2);
+              const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
+              const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
 
-            console.log(maxLat, maxLon, minLat, minLon);
+              console.log(maxLat, maxLon, minLat, minLon);
+            } else {
+              console.log('could not resolve selected Location');
+            }
 
           }, false);
+
           if (this.site) {
             this.addSite();
           }
@@ -168,13 +181,13 @@
           this.viewer.dataSources.remove(this.siteLayer, true);
         },
         addSite() {
-          GeoJsonDataSource.load(this.site.geoJSON)
+          GeoJsonDataSource.load(this.site)
             .then((dataSource) => {
               this.viewer.dataSources.add(dataSource);
               this.siteLayer = dataSource;
               const entities = dataSource.entities.values;
 
-              const isPoints = this.site.geoJSON.type === 'MultiPoint' || this.site.geoJSON.type === 'Point';
+              const isPoints = this.site.type === 'MultiPoint' || this.site.type === 'Point';
 
               entities.forEach((entity) => {
                 // Set point style
@@ -195,19 +208,25 @@
             });
         },
         zoomIn(mapId) {
-          if (this.mapDivId === mapId) {
-            this.viewer.camera.zoomIn();
+          if (this.mapDivId !== mapId) {
+            return;
           }
+
+          this.viewer.camera.zoomIn();
         },
         zoomOut(mapId) {
-          if (this.mapDivId === mapId) {
-            this.viewer.camera.zoomOut();
+          if (this.mapDivId !== mapId) {
+            return;
           }
+
+          this.viewer.camera.zoomOut();
         },
         triggerCenter(mapId) {
-          if (this.mapDivId === mapId) {
-            this.zoomToExtent(this.maxExtent);
+          if (this.mapDivId !== mapId) {
+            return;
           }
+
+          this.zoomToExtent(this.maxExtent);
         },
         zoomToExtent(bbox) {
           this.viewer.camera.setView({
