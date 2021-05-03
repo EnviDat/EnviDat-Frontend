@@ -2,9 +2,6 @@
     <div id="MapWidget" 
           class="pa-2 overlayInteraction">
 
-  <!-- <v-container fluid
-                id="MapWidget"> -->
-
     <v-row no-gutters >
       <v-col >
 
@@ -94,6 +91,7 @@
         <BaseIconButton materialIconName="location_on"
                         iconColor="black"
                         fillColor="white"
+                        disabled
                         @clicked="showSite = !showSite" />
       </v-col>
 
@@ -102,6 +100,7 @@
         <BaseIconButton materialIconName="layers"
                         iconColor="black"
                         fillColor="white"
+                        disabled
                         @clicked="layerControlOpen = !layerControlOpen" />
       </v-col>
 
@@ -123,6 +122,7 @@
                       :selected="selectedLayerName" />
 
           <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
+          
       </v-col>
     </v-row>
 
@@ -138,8 +138,6 @@
       </v-card>
     </div>
 
-
-  <!-- </v-container> -->
   </div>
 
 </template>
