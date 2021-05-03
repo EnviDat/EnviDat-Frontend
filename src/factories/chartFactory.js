@@ -170,7 +170,9 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   if (process.env.NODE_ENV === 'development') {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
     // stationParametersUrl = ''; // testStationParametersUrl;
-    geoConfigUrl = testGeoUrl;
+
+    // overwrite the local development config url for testing in development
+    geoConfigUrl = configs?.geoServicesConfig?.url ? testGeoUrl : null;
 
   } else {
 
