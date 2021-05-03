@@ -5,7 +5,7 @@
 
     <MapWidget :style="`position: absolute; top: 16px;
                         z-index: 1000;
-                        width: ${showMapSplitCloseButton ? '50' : '96'}%;
+                        width: ${showMapSplitCloseButton ? '50' : '95'}%;
                         height: 95%; `"
 
                 :baseMapLayerName="currentBaseMapLayer"
@@ -114,27 +114,30 @@
           let dist = tDistance(bbox.geometry.coordinates[0][0], bbox.geometry.coordinates[0][2]);
           // If there is only one point (distance = 0)
           if (dist === 0) {
-              dist = 100;
-            }
-            // If the centroid of the geometry is above 60° or below -60°
-            if (Math.abs(tCentroid(this.site).geometry.coordinates[1]) > 60) {
-              dist = 10000;
-            }
-            // Buffer
-            let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
-            enve = tEnvelope(enve);
+            dist = 100;
+          }
 
-            // Convert from geometry to extent object
-            extent = {
-              minx: enve.geometry.coordinates[0][0][0],
-              miny: enve.geometry.coordinates[0][0][1],
-              maxx: enve.geometry.coordinates[0][2][0],
-              maxy: enve.geometry.coordinates[0][2][1],
-            };
+          const centroid = tCentroid(this.site);
+          // If the centroid of the geometry is above 60° or below -60°
+          if (Math.abs(centroid.geometry.coordinates[1]) > 60) {
+            dist = 10000;
+          }
+
+          // Buffer
+          let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
+          enve = tEnvelope(enve);
+
+          // Convert from geometry to extent object
+          extent = {
+            minx: enve.geometry.coordinates[0][0][0],
+            miny: enve.geometry.coordinates[0][0][1],
+            maxx: enve.geometry.coordinates[0][2][0],
+            maxy: enve.geometry.coordinates[0][2][1],
+          };
         } else if (this.layerConfig) {
           extent = this.layerConfig.bbox;
         }
-        
+
         return extent;
       },
       featureinfo() {

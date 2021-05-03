@@ -8,6 +8,12 @@
       Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison. There might be bugs.
     </v-card-text>
 
+    <v-card-text v-if="error"
+                  class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.error };`" >
+      {{ error }}
+    </v-card-text>
+
     <v-card-text v-if="isReady"
                   style="position: relative;" >
     <!-- style="height: 500px;" -->
@@ -44,14 +50,14 @@
       genericProps: Object,
     },
     mounted() {
-      
+
       if (this.wmsUrl) {
         this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
       }
 
-      if (this.configUrl) {
-        this.$store.dispatch('fetchLayerConfig', this.configUrl);
-      }
+      // if (this.configUrl) {
+      //   this.$store.dispatch('fetchLayerConfig', this.configUrl);
+      // }
     },
     computed: {
       isReady() {
@@ -60,6 +66,9 @@
       },
       hasData() {
         return this.layerConfig;
+      },
+      error() {
+        return this.genericProps?.error;
       },
       selectedLayer() {
         return this.$store.state.geoservices.selectedLayer;
@@ -70,9 +79,9 @@
       wmsUrl() {
         return this.genericProps?.wmsUrl;
       },
-      configUrl() {
-        return this.genericProps?.configUrl;
-      },
+      // configUrl() {
+      //   return this.genericProps?.configUrl;
+      // },
       layerConfig() {
         return this.genericProps?.layerConfig;
         // return this.$store.state.geoservices.layerConfig;

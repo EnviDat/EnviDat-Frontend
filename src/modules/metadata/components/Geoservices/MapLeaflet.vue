@@ -94,7 +94,7 @@ export default {
         this.siteLayer = null;
       }
     },
-    addSite() {
+    addSite(geoJson) {
       // Set marker icon
       const iconOptions = L.Icon.Default.prototype.options;
       iconOptions.iconUrl = this.markerIcon;
@@ -102,22 +102,36 @@ export default {
       iconOptions.shadowUrl = this.markerIconShadow;
       const icon = L.icon(iconOptions);
 
-      // Add geodata to map
-      this.siteLayer = L.geoJSON(this.site, {
-        pointToLayer(feature, latlng) {
-          return L.marker(latlng, {
-            icon,
-            opacity: 0.65,
-            riseOnHover: true,
-          });
+      const polygonColor = this.$vuetify.theme.themes.light.accent;
+
+      this.siteLayer = L.geoJSON(
+        [{
+          type: 'Feature',
+          properties: {
+            name: 'Data site',
+            describtion: 'Data origin',
+          },
+          geometry: geoJson,
+        }],
+        {
+          pointToLayer(feature, latlng) {
+            return L.marker(latlng, {
+              icon,
+              opacity: 0.65,
+              riseOnHover: true,
+            });
+          },
+          style: {
+            color: polygonColor,
+            // fillOpacity: 0.5,
+            // opacity: 1,
+            // weight: 1,
+          },
         },
-        style: {
-          color: this.color,
-          fillOpacity: this.fillAlpha,
-          opacity: 1,
-          weight: this.outlineWidth,
-        },
-      });
+      );
+
+      // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
+
       this.map.addLayer(this.siteLayer);
     },
     getFeatureInfo(latlng) {
@@ -221,7 +235,7 @@ export default {
       }
 
       if (this.site) {
-        this.addSite();
+        this.addSite(this.site);
       }
 
       if (this.maxExtent) {
@@ -262,7 +276,7 @@ export default {
       }
       this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
-      this.basemapLayer.bringToBack();
+      // this.basemapLayer.bringToBack();
     },
     addPoint(data) {
       const marker = L.circle(data.coords, {
@@ -300,14 +314,10 @@ export default {
       }
     },
     site() {
-      // if (!this.map) {
-      //   this.setupMap();
-      // }
+      this.removeSite();
 
       if (this.site) {
-        this.addSite();
-      } else {
-        this.removeSite();
+        this.addSite(this.site);
       }
     },
   },

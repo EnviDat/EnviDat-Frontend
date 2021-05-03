@@ -337,15 +337,32 @@ export default {
     },
   },
   methods: {
-    loadGeoServiceLayers(url, successCallback) {
+    setGeoServiceLayers(location, layerConfig, wmsUrl) {
+
+      try {
+        location = location ? tRewind(JSON.parse(location.geoJSON)) : null;
+      } catch (error) {
+        this.geoServiceLayersError = error;
+      }
+
+      this.geoServiceConfig = {
+        site: location,
+        layerConfig,
+        wmsUrl,
+        error: this.geoServiceLayersError,
+      };
+
+      const { components } = this.$options;
+      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+    },    
+    loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
+      this.geoServiceLayersError = null;
 
       axios
       .get(url)
       .then((response) => {
         this.geoServiceLayers = response.data;
-
-        successCallback();
       })
       .catch((error) => {
         this.geoServiceLayersError = error;
@@ -365,7 +382,7 @@ export default {
         this.stationsConfigError = error;
       });
     },
-    loadParameterJson(url, successCallback) {
+    loadParameterJson(url) {
 
       this.fileObjects = null;
       this.graphStyling = null;
@@ -376,8 +393,6 @@ export default {
 
         this.fileObjects = response.data.fileObjects;
         this.graphStyling = response.data.graphStyling;
-
-        successCallback();
       })
       .catch((error) => {
         this.stationParametersError = error;
@@ -505,6 +520,8 @@ export default {
       if (this.configInfos?.geoConfigUrl) {
         // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
         this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
+      } else {
+        this.setGeoServiceLayers(this.location, null, null);
       }
 
       this.$set(components.MetadataResources, 'genericProps', {
@@ -646,18 +663,12 @@ export default {
   },
   watch: {
     geoServiceLayers() {
-      // console.log('geoServiceLayers loaded');
-
-      this.geoServiceConfig = {
-        site: this.location ? tRewind(JSON.parse(this.location.geoJSON)) : null,
-        layerConfig: this.geoServiceLayers,
-        wmsUrl: 'https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities',
-        // wmsUrl: null,
-        configUrl: this.configInfos?.geoConfigUrl ? this.configInfos.geoConfigUrl : null,
-      };
-
-      const { components } = this.$options;
-      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+      this.setGeoServiceLayers(this.location, this.geoServiceLayers, null);
+    },
+    geoServiceLayersError() {
+      if (this.geoServiceLayersError) {
+        this.setGeoServiceLayers(null, null, null);
+      }
     },
     /**
      * @description watcher on idsToResolve start resolving them, if not already in the works

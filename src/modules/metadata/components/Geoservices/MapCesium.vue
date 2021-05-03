@@ -174,20 +174,20 @@
           }, false);
 
           if (this.site) {
-            this.addSite();
+            this.addSite(this.site);
           }
         },
         removeSite() {
           this.viewer.dataSources.remove(this.siteLayer, true);
         },
-        addSite() {
-          GeoJsonDataSource.load(this.site)
+        addSite(geoJson) {
+          GeoJsonDataSource.load(geoJson)
             .then((dataSource) => {
               this.viewer.dataSources.add(dataSource);
               this.siteLayer = dataSource;
               const entities = dataSource.entities.values;
 
-              const isPoints = this.site.type === 'MultiPoint' || this.site.type === 'Point';
+              const isPoints = geoJson.type === 'MultiPoint' || geoJson.type === 'Point';
 
               entities.forEach((entity) => {
                 // Set point style
@@ -265,8 +265,11 @@
         },
         site: {
           handler() {
-            if (this.site) this.addSite();
-            else this.removeSite();
+            if (this.site) {
+              this.addSite(this.site);
+            } else {
+              this.removeSite();
+            }
           },
           deep: true,
         },
