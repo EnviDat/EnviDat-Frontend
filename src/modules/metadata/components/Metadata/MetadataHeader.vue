@@ -81,7 +81,7 @@
                   key="authors" >
 
             <v-row no-gutters
-                    style="max-height: 100px; overflow-y: auto;" >
+                    :style="`max-height: ${authorTagsMaxHeight}px; overflow-y: auto;`" >
               <v-col v-for="(author, index) in authors"
                       :key="index"
                       :class="{
@@ -315,6 +315,7 @@ export default {
     whiteTopToBottom: 'rgba(255,255,255, 0.6) 0%, rgba(255,255,255, 0.99) 70%',
     authorToolTipText: 'Show more datasets of this author',
     NotFoundTitle: 'No metadata found for',
+    authorTagsMaxHeight: 75,
   }),
   computed: {
     asciiDead() {
