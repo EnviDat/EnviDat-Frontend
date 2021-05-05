@@ -3,7 +3,7 @@
           class="pa-2 overlayInteraction">
 
     <v-row no-gutters >
-      <v-col >
+      <v-col style="pointer-events: none;" >
 
         <v-row no-gutters >
           <v-col class="shrink" >
@@ -36,24 +36,28 @@
 
       </v-col>
 
-      <v-col class="ml-auto">
+      <v-col class="ml-auto"
+              style="pointer-events: none;" >
 
-        <div v-if="showMapSplitButton" >
-              <!-- style="position: absolute; top: 0; left: 45%;" -->
-          <BaseIconButton materialIconName="vertical_split"
-                          iconColor="black"
-                          :fillColor="$vuetify.theme.themes.light.accent"
-                          @clicked="triggerSplit" />
-        </div>
+        <v-row no-gutters >
+          <v-col v-if="showMapSplitButton"
+                  class="shrink" >
+                <!-- style="position: absolute; top: 0; left: 45%;" -->
+            <BaseIconButton materialIconName="vertical_split"
+                            iconColor="black"
+                            :fillColor="$vuetify.theme.themes.light.accent"
+                            @clicked="triggerSplit" />
+          </v-col>
 
-        <div v-if="showMapSplitCloseButton" >
-              <!-- style="position: absolute; top: 0; left: 45%;" -->
-          <BaseIconButton materialIconName="close"
-                          iconColor="red"
-                          fillColor="white"
-                          @clicked="triggerSplitEnd" />
-        </div>
-
+          <v-col v-if="showMapSplitCloseButton"
+                  class="shrink" >
+                <!-- style="position: absolute; top: 0; left: 45%;" -->
+            <BaseIconButton materialIconName="close"
+                            iconColor="red"
+                            fillColor="white"
+                            @clicked="triggerSplitEnd" />
+          </v-col>
+        </v-row>
       </v-col>
 
       <v-col v-show="showFullscreenButton"
@@ -83,11 +87,11 @@
 
     </v-row>
     
-    <v-row v-if="layerConfig"
+    <v-row  v-if="layerConfig"
+              class="d-flex flex-column"
               no-gutters >
       <v-col v-if="site" 
-              cols="12"
-              class="py-2" >
+              class="py-2 shrink" >
         <BaseIconButton materialIconName="location_on"
                         iconColor="black"
                         fillColor="white"
@@ -95,8 +99,7 @@
                         @clicked="showSite = !showSite" />
       </v-col>
 
-      <v-col cols="12"
-              class="pb-2" >
+      <v-col class="pb-2 shrink" >
         <BaseIconButton materialIconName="layers"
                         iconColor="black"
                         fillColor="white"
@@ -105,8 +108,7 @@
       </v-col>
 
       <v-col v-if="layerControlOpen"
-              cols="12"
-              class="pb-2" >
+              class="pb-2 shrink" >
         <map-layer-control :layers="layerConfig.layers"
                             :selected="selectedLayerName"
                             @select="select"
@@ -115,7 +117,7 @@
       </v-col>
 
       <v-col v-if="featureinfo.length > 0"
-              cols="12">
+              cols="12 shrink">
 
         <feature-info :div-id="`${mapDivId}_graph`"
                       :layers="layerConfig.layers"
