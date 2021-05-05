@@ -100,7 +100,7 @@ export default {
       return this.mixinMethods_getGenericProp('emptyText', 'No location found for this dataset.');
     },
     geom() {
-      return this.genericProps ? tRewind(JSON.parse(this.genericProps.geoJSON)) : null;
+      return this.genericProps ? tRewind(this.genericProps.geoJSON) : null;
     },
     centroid() {
       return tCentroid(this.geom);

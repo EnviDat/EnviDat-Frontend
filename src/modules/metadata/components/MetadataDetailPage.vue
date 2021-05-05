@@ -340,7 +340,7 @@ export default {
     setGeoServiceLayers(location, layerConfig, wmsUrl) {
 
       try {
-        location = location ? tRewind(JSON.parse(location.geoJSON)) : null;
+        location = location ? tRewind(location.geoJSON) : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }

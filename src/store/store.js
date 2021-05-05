@@ -31,7 +31,6 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { checkWebpFeatureAsync } from '@/factories/enhancementsFactory';
-import { getCardBackgrounds } from '@/factories/metaDataFactory';
 
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 import globalMethods from '@/factories/globalMethods';
@@ -113,7 +112,7 @@ function loadImages(isSupported = false) {
 
   store.commit(SET_WEBP_SUPPORT, isSupported);
 
-  const cardBGImages = getCardBackgrounds(isSupported);
+  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
 
   if (cardBGImages) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
