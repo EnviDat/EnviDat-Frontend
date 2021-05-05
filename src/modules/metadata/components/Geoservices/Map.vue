@@ -66,7 +66,7 @@
   import {
     buffer as tBuffer,
     centroid as tCentroid,
-    distance as tDistance,
+    // distance as tDistance,
     envelope as tEnvelope,
   } from '@turf/turf';
   import MapLeaflet from './MapLeaflet';
@@ -108,23 +108,25 @@
         let extent = null;
 
         if (this.site) {
-          // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
-          const bbox = tEnvelope(this.site);
-          // Get the distance of the diagonal (lower left and upper right)
-          let dist = tDistance(bbox.geometry.coordinates[0][0], bbox.geometry.coordinates[0][2]);
-          // If there is only one point (distance = 0)
-          if (dist === 0) {
-            dist = 100;
+
+          // default zoom distance for single Points 50km otherwise go closer
+          let zoomDist = 10;
+          if (this.site.type === 'Point') {
+            zoomDist = 50;
+          } else if (this.site.type === 'MultiPoint') {
+            zoomDist = 15;
           }
 
-          const centroid = tCentroid(this.site);
           // If the centroid of the geometry is above 60° or below -60°
+          // zoom out even futher
+          const centroid = tCentroid(this.site);
           if (Math.abs(centroid.geometry.coordinates[1]) > 60) {
-            dist = 10000;
+            zoomDist = 200;
           }
 
-          // Buffer
-          let enve = tBuffer(bbox, ((dist + 1) / 4), { units: 'kilometers' });
+          // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
+          // const bbox = tEnvelope(this.site);
+          let enve = tBuffer(this.site, zoomDist, { units: 'kilometers' });
           enve = tEnvelope(enve);
 
           // Convert from geometry to extent object

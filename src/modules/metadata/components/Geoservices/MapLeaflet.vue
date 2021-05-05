@@ -103,16 +103,17 @@ export default {
       const icon = L.icon(iconOptions);
 
       const polygonColor = this.$vuetify.theme.themes.light.accent;
-
-      this.siteLayer = L.geoJSON(
-        [{
+      const dataOrigin = {
           type: 'Feature',
           properties: {
             name: 'Data site',
             describtion: 'Data origin',
           },
           geometry: geoJson,
-        }],
+        };
+
+      this.siteLayer = L.geoJSON(
+        [dataOrigin],
         {
           pointToLayer(feature, latlng) {
             return L.marker(latlng, {
@@ -123,9 +124,7 @@ export default {
           },
           style: {
             color: polygonColor,
-            // fillOpacity: 0.5,
-            // opacity: 1,
-            // weight: 1,
+            // fillOpacity: 0.5, opacity: 1, weight: 1,
           },
         },
       );
