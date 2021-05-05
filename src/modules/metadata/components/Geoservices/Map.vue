@@ -69,9 +69,14 @@
     // distance as tDistance,
     envelope as tEnvelope,
   } from '@turf/turf';
+
+  import { 
+    LOCATION_TYPE_POINT,
+    LOCATION_TYPE_MULTIPOINT,
+  } from '@/factories/metaDataFactory';
+
   import MapLeaflet from './MapLeaflet';
   import MapCesium from './MapCesium';
-
   import MapWidget from './MapWidget';
 /* eslint-disable vue/no-unused-components */
 
@@ -111,9 +116,9 @@
 
           // default zoom distance for single Points 50km otherwise go closer
           let zoomDist = 10;
-          if (this.site.type === 'Point') {
+          if (this.site.type === LOCATION_TYPE_POINT) {
             zoomDist = 50;
-          } else if (this.site.type === 'MultiPoint') {
+          } else if (this.site.type === LOCATION_TYPE_MULTIPOINT) {
             zoomDist = 15;
           }
 

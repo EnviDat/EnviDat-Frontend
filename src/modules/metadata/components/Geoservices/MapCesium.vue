@@ -50,7 +50,13 @@
       MAP_ZOOM_CENTER,
       eventBus,
     } from '@/factories/eventBus';
+    import {
+      LOCATION_TYPE_POINT,
+      LOCATION_TYPE_MULTIPOINT,
+      LOCATION_TYPE_POLYGON,
+    } from '@/factories/metaDataFactory';
     import { cesiumLayer } from './layer-cesium';
+
 
     export default {
       name: 'MapCesium',
@@ -250,7 +256,7 @@
             this.siteLayer = dataSource;
             const entities = dataSource.entities.values;
 
-            const isPoints = geoJson.type === 'MultiPoint' || geoJson.type === 'Point';
+            const isPoints = geoJson.type === LOCATION_TYPE_MULTIPOINT || geoJson.type === LOCATION_TYPE_POINT;
 
             entities.forEach((entity) => {
               // Set point style
@@ -305,9 +311,9 @@
 
           let dest = this.siteLayer;
 
-          if (this.site.type === 'Polygon') {
+          if (this.site.type === LOCATION_TYPE_POLYGON) {
             this.viewer.flyTo(dest, {
-              duration: 0.75,
+              duration: 1,
               offset: new HeadingPitchRange(0, -90, 0),
             });
           } else {
@@ -387,6 +393,7 @@
         basemapLayer: null,
         siteLayer: null,
         siteLayerCameraPos: null,
+        LOCATION_TYPE_POLYGON,
       }),
     };
 </script>
