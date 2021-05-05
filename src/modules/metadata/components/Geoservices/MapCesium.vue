@@ -307,7 +307,7 @@
 
           if (this.site.type === 'Polygon') {
             this.viewer.flyTo(dest, {
-              duration: 0.5,
+              duration: 0.75,
               offset: new HeadingPitchRange(0, -90, 0),
             });
           } else {
