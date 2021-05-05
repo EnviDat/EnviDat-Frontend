@@ -604,6 +604,10 @@ export default {
   opacity: 0.7;
 }
 
+.metadataTitleIcons {
+  opacity: 0.5;
+}
+
 .envidatBadge span {
   font-size: 0.8rem !important;
 }

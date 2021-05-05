@@ -60,16 +60,6 @@
         </v-row>
       </v-col>
 
-      <v-col v-show="showFullscreenButton"
-              class="shrink ml-auto">
-
-        <BaseIconButton materialIconName="zoom_out_map"
-                        iconColor="black"
-                        :fillColor="$vuetify.theme.themes.light.accent"
-                        @clicked="triggerFullscreen" />
-
-      </v-col>
-
     </v-row>
 
     <v-row no-gutters
@@ -147,7 +137,6 @@
 <script>
   import BaseIconButton from '@/components/BaseElements/BaseIconButton';
   import {
-    INJECT_MAP_FULLSCREEN,
     MAP_ZOOM_IN,
     MAP_ZOOM_OUT,
     MAP_ZOOM_CENTER,
@@ -220,10 +209,6 @@
       },
       select(layerName) {
         this.$emit('changeLayer', layerName);
-      },
-      triggerFullscreen() {
-        // console.log(`triggerFullscreen ${this.layerConfig}`);
-        eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
       },
       triggerZoomIn() {
         eventBus.$emit(MAP_ZOOM_IN, this.mapDivId);

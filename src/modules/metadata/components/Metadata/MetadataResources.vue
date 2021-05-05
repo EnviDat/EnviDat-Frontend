@@ -9,7 +9,7 @@
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
-        <v-col class="shrink resourcesIcons" >
+        <v-col class="shrink metadataTitleIcons" >
           <base-icon-count-view v-if="!showPlaceholder && resources && resources.length > 0"
                                 :count="resources.length"
                                 :icon-string="fileIcon" />
@@ -189,10 +189,6 @@ export default {
     max-height: 750px;
     overflow-y: auto !important;
     scrollbar-width: thin;
-  }
-
-  .resourcesIcons {
-    opacity: 0.5;
   }
 
 </style>
