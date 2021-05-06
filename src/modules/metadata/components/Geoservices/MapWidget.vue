@@ -103,7 +103,7 @@
         <map-layer-control :layers="layerConfig.layers"
                             :selectedLayerName="selectedLayerName"
                             @changeLayer="changeLayer"
-                            @setOpacity="setOpacity"
+                            @changeOpacity="changeOpacity"
                             :opacity="opacity" />
       </v-col>
 
@@ -205,8 +205,8 @@
         this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
         this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
       },
-      setOpacity(value) {
-        this.opacity = value;
+      changeOpacity(value) {
+        this.$emit('changeOpacity', value);
       },
       changeLayer(layerName) {
         this.$emit('changeLayer', layerName);

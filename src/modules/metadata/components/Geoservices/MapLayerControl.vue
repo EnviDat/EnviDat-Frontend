@@ -1,7 +1,7 @@
 <template>
-    <v-card style="max-height: 225px;">
+    <v-card style="max-height: 235px;">
 
-      <v-card-text class="py-2">
+      <v-card-text class="pt-2 pb-0">
         <v-row no-gutters
                 align="center">
 
@@ -19,18 +19,24 @@
           </v-col>
 
         </v-row>          
+        <v-row v-if="selectedLayerName"
+                no-gutters
+                align="center">          
+          <v-slider min="0" max="100"
+                    v-model="opacity"
+                    hide-details
+                    :thumb-size="24"
+                    :step="5"
+                    :tick-size="2"
+                    ticks="always"
+                    thumb-label="always"
+                    @change="changeOpacity" />
+        </v-row>          
       </v-card-text>
-
+      
       <v-list dense
               style="overflow-y: auto; max-height: 200px;"
               class="pt-0">
-
-        <!-- <v-list-item>
-          <v-slider min="0" max="100"
-                    :value="opacity"
-                    hide-details
-                    @change="setOpacity" />
-        </v-list-item> -->
 
         <v-list-item v-for="(layer, key) in layers"
                       :key="key"
@@ -52,7 +58,6 @@ export default {
     BaseIconButton,
   },
   props: {
-    opacity: Number,
     layers: Array,
     selectedLayerName: String,
   },
@@ -60,10 +65,13 @@ export default {
     changeLayer(layerName) {
       this.$emit('changeLayer', layerName);
     },
-    setOpacity(value) {
-      this.$emit('setOpacity', value);
+    changeOpacity(value) {
+      this.$emit('changeOpacity', value);
     },
   },
+  data: () => ({
+    opacity: 75,
+  }),
 };
 </script>
 

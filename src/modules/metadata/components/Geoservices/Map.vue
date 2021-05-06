@@ -17,6 +17,7 @@
                 :showFullscreenButton="showFullscreenButton"
                 :showMapSplitCloseButton="showMapSplitCloseButton"
                 @changeLayer="changeLayer"
+                @changeOpacity="changeOpacity"
                 @toggleMapIn3D="toggle3D" /> 
 
     <v-row no-gutters
@@ -158,7 +159,7 @@
       toggle3D() {
         this.mapIn3D = !this.mapIn3D;
       },
-      setOpacity(value) {
+      changeOpacity(value) {
         this.opacity = value;
       },
       changeLayer(layerName) {
