@@ -37,18 +37,23 @@ function customizeProperties(ogcLayer, level, maxLevel) {
 function getTree(data) {
   let resp = data.data.substr(data.data.indexOf('<WMS_Capabilities')); // Start at the <WMS_Capabilities>-tag
   resp = new WMSCapabilities(resp).toJSON(); // Convert XML to JSON
+
   const maxLevel = null;
   const layer = customizeProperties(resp.Capability.Layer, 0, maxLevel);
   layer.root = true;
   layer.baseURL = resp.Service.OnlineResource;
+
   const bbox = resp.Capability.Layer.EX_GeographicBoundingBox;
+
   layer.bbox = {
     minx: bbox[0],
     miny: bbox[1],
     maxx: bbox[2],
     maxy: bbox[3],
   };
+
   layer.name = layer.title;
+
   return layer;
 }
 

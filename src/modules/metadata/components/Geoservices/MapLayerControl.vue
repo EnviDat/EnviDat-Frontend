@@ -70,7 +70,7 @@ export default {
     },
   },
   data: () => ({
-    opacity: 75,
+    opacity: 50,
   }),
 };
 </script>

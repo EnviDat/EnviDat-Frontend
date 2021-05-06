@@ -90,12 +90,26 @@
                         @clicked="showSite = !showSite" />
       </v-col>
 
-      <v-col cols="1"
-              class="pb-2 shrink" >
-        <BaseIconButton materialIconName="layers"
-                        iconColor="black"
-                        fillColor="white"
-                        @clicked="layerControlOpen = !layerControlOpen" />
+      <v-col class="pb-2 shrink" >
+        <v-row no-gutters>
+
+          <v-col class="shrink"
+                  cols="1" >
+            <BaseIconButton materialIconName="layers"
+                            iconColor="black"
+                            fillColor="white"
+                            @clicked="layerControlOpen = !layerControlOpen" />
+          </v-col>
+
+          <v-col v-if="layerControlOpen">
+            <v-card >
+              <v-card-text class="readableText">
+                {{ layerConfigTitle }}
+              </v-card-text>
+            </v-card>
+          </v-col>
+
+        </v-row>
       </v-col>
 
       <v-col v-if="layerControlOpen"
@@ -103,8 +117,7 @@
         <map-layer-control :layers="layerConfig.layers"
                             :selectedLayerName="selectedLayerName"
                             @changeLayer="changeLayer"
-                            @changeOpacity="changeOpacity"
-                            :opacity="opacity" />
+                            @changeOpacity="changeOpacity"  />
       </v-col>
 
       <v-col v-if="featureinfo.length > 0"
@@ -184,6 +197,10 @@
       mapIn3D: false,
     }),
     computed: {
+      layerConfigTitle() {
+        return `WMS Config Title: ${this.layerConfig?.title}`;
+        // return `${this.layerConfig?.title} ${this.layerConfig?.ContactInformation?.ContactPersonPrimary?.ContactOrganization}`;
+      },
       featureinfo() {
         return this.$store.state.geoservices.timeseries;
       },
