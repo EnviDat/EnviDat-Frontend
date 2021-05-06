@@ -112,6 +112,15 @@
         </v-row>
       </v-col>
 
+      <v-col v-if="!layerControlOpen && selectedLayerName"
+              class="pb-2 shrink" >
+            <v-card max-width="25%">
+              <v-card-text class="readableText">
+                {{ `Active Layer: ${selectedLayerName}` }}
+              </v-card-text>
+            </v-card>
+      </v-col>
+
       <v-col v-if="layerControlOpen"
               class="pb-2 shrink" >
         <map-layer-control :layers="layerConfig.layers"

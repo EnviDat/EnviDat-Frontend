@@ -29,7 +29,8 @@
 
     <v-card-text class="py-1 text-caption readableText"
                   :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" >
-      Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison. There might be bugs.
+      Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison.
+      The Swisstopo WMS layers are being loaded for testing. Be aware there might be bugs, please report them to envidat@wsl.ch
     </v-card-text>
 
     <v-card-text v-if="error"
