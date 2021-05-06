@@ -3,7 +3,7 @@
           class="pa-2 overlayInteraction">
 
     <v-row no-gutters >
-      <v-col style="pointer-events: none;" >
+      <v-col >
 
         <v-row no-gutters >
           <v-col class="shrink" >
@@ -36,8 +36,7 @@
 
       </v-col>
 
-      <v-col class="ml-auto"
-              style="pointer-events: none;" >
+      <v-col class="ml-auto" >
 
         <v-row no-gutters >
           <v-col v-if="showMapSplitButton"
@@ -80,7 +79,9 @@
     <v-row  v-if="layerConfig"
               class="d-flex flex-column"
               no-gutters >
+
       <v-col v-if="site" 
+              cols="1"
               class="py-2 shrink" >
         <BaseIconButton materialIconName="location_on"
                         iconColor="black"
@@ -89,19 +90,19 @@
                         @clicked="showSite = !showSite" />
       </v-col>
 
-      <v-col class="pb-2 shrink" >
+      <v-col cols="1"
+              class="pb-2 shrink" >
         <BaseIconButton materialIconName="layers"
                         iconColor="black"
                         fillColor="white"
-                        disabled
                         @clicked="layerControlOpen = !layerControlOpen" />
       </v-col>
 
       <v-col v-if="layerControlOpen"
               class="pb-2 shrink" >
         <map-layer-control :layers="layerConfig.layers"
-                            :selected="selectedLayerName"
-                            @select="select"
+                            :selectedLayerName="selectedLayerName"
+                            @changeLayer="changeLayer"
                             @setOpacity="setOpacity"
                             :opacity="opacity" />
       </v-col>
@@ -111,7 +112,7 @@
 
         <feature-info :div-id="`${mapDivId}_graph`"
                       :layers="layerConfig.layers"
-                      :selected="selectedLayerName" />
+                      :selectedLayerName="selectedLayerName" />
 
           <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
           
@@ -207,7 +208,7 @@
       setOpacity(value) {
         this.opacity = value;
       },
-      select(layerName) {
+      changeLayer(layerName) {
         this.$emit('changeLayer', layerName);
       },
       triggerZoomIn() {
@@ -266,5 +267,9 @@
   .overlayInteraction .v-card {
     pointer-events: auto;
   }
+
+  /* .overlayInteraction .v-btn {
+    pointer-events: auto !important;
+  } */
 
 </style>
