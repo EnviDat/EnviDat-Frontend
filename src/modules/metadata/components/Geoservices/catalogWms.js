@@ -56,7 +56,7 @@ function createWmsCatalog(url) {
   return axios
     .get(url)
     .then(response => getTree(response))
-    .catch(() => ({ error: 'Couldnt get data', url }));
+    .catch(e => ({ error: `WMS Error: ${e}`, url }));
 }
 
 

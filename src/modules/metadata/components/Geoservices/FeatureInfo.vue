@@ -29,7 +29,7 @@
     props: {
       divId: String,
       layers: Array,
-      selected: String,
+      selectedLayerName: String,
     },
     computed: {
       coords() {

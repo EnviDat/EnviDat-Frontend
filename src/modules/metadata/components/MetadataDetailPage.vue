@@ -147,6 +147,8 @@ import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsL
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
 
 import { rewind as tRewind } from '@turf/turf';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
+import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
 import MetadataResources from './Metadata/MetadataResources';
@@ -155,8 +157,8 @@ import MetadataCitation from './Metadata/MetadataCitation';
 import MetadataPublications from './Metadata/MetadataPublications';
 import MetadataFunding from './Metadata/MetadataFunding';
 import MetadataAuthors from './Metadata/MetadataAuthors';
-import MetadataGeo from './Geoservices/MetadataGeo';
 import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
+
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -345,15 +347,19 @@ export default {
         this.geoServiceLayersError = error;
       }
 
-      this.geoServiceConfig = {
-        site: location,
-        layerConfig,
-        wmsUrl,
-        error: this.geoServiceLayersError,
-      };
+      if (wmsUrl) {
+        this.fetchWmsConfig(wmsUrl);
+      } else { 
 
-      const { components } = this.$options;
-      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+        this.geoServiceConfig = {
+          site: location,
+          layerConfig,
+          error: this.geoServiceLayersError,
+        };
+
+        const { components } = this.$options;
+        this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+      }
     },    
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
@@ -660,10 +666,16 @@ export default {
         this.setMetadataContent();
       }
     },
+    fetchWmsConfig(url) {
+      createWmsCatalog(url)
+        .then((res) => {
+          this.setGeoServiceLayers(this.location, res, null);
+        });
+    },
   },
   watch: {
     geoServiceLayers() {
-      this.setGeoServiceLayers(this.location, this.geoServiceLayers, null);
+      this.setGeoServiceLayers(this.location, this.geoServiceLayers, this.geoServiceLayers?.wmsUrl);
     },
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {

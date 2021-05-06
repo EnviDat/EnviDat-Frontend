@@ -7,7 +7,6 @@
                         z-index: 1000;
                         width: ${showMapSplitCloseButton ? '50' : '95'}%;
                         height: 95%; `"
-
                 :baseMapLayerName="currentBaseMapLayer"
                 :layerConfig="layerConfig"
                 :site="site"
@@ -17,39 +16,34 @@
                 :showMapSplitButton="showMapSplitButton"
                 :showFullscreenButton="showFullscreenButton"
                 :showMapSplitCloseButton="showMapSplitCloseButton"
+                @changeLayer="changeLayer"
                 @toggleMapIn3D="toggle3D" /> 
 
     <v-row no-gutters
             class="fill-height" >
       <v-col class="fill-height">
 
-        <!-- <div style="height:100%; background-color: green;" ></div> -->
-
-    <!-- <div class="fill-height" :class="layerConfig && layerConfig.timeseries ? 'map-container-timeslider' : 'map-container'"> -->
-
-      <map-cesium v-if="mapIn3D"
-                  :baseMapLayerName="currentBaseMapLayer"
-                  :wmsLayer="selectedLayer"
-                  :map-div-id="mapDivId"
-                  :featureInfoPts="featureinfo"
-                  :opacity="opacity"
-                  :site="site"
-                  :max-extent="maxExtent" 
-                  :height="height" >
-      </map-cesium>
-
-      <map-leaflet v-else
+        <map-cesium v-if="mapIn3D"
                     :baseMapLayerName="currentBaseMapLayer"
                     :wmsLayer="selectedLayer"
-                    :max-extent="maxExtent"
                     :map-div-id="mapDivId"
                     :featureInfoPts="featureinfo"
                     :opacity="opacity"
                     :site="site"
+                    :max-extent="maxExtent" 
                     :height="height" >
-      </map-leaflet>
+        </map-cesium>
 
-    <!-- </div> -->
+        <map-leaflet v-if="!mapIn3D"
+                      :baseMapLayerName="currentBaseMapLayer"
+                      :wmsLayer="selectedLayer"
+                      :max-extent="maxExtent"
+                      :map-div-id="mapDivId"
+                      :featureInfoPts="featureinfo"
+                      :opacity="opacity"
+                      :site="site"
+                      :height="height" >
+        </map-leaflet>
 
       </v-col>
     </v-row>
@@ -66,7 +60,6 @@
   import {
     buffer as tBuffer,
     centroid as tCentroid,
-    // distance as tDistance,
     envelope as tEnvelope,
   } from '@turf/turf';
 
@@ -78,7 +71,6 @@
   import MapLeaflet from './MapLeaflet';
   import MapCesium from './MapCesium';
   import MapWidget from './MapWidget';
-/* eslint-disable vue/no-unused-components */
 
   export default {
     name: 'Map',
@@ -151,15 +143,15 @@
         return this.$store.state.geoservices.timeseries;
       },
       selectedLayer() {
-        return null;
+        // return null;
 
-        // if (!this.layerConfig || !this.selectedLayerName) {
-        //   return null;
-        // }
-        // const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
-        // layer.baseURL = this.layerConfig.baseURL;
-        // layer.bbox = this.layerConfig.bbox;
-        // return layer;
+        if (!this.layerConfig || !this.selectedLayerName) {
+          return null;
+        }
+        const layer = this.layerConfig.layers.find(l => l.name === this.selectedLayerName);
+        layer.baseURL = this.layerConfig.baseURL;
+        layer.bbox = this.layerConfig.bbox;
+        return layer;
       },
     },
     methods: {
@@ -169,8 +161,8 @@
       setOpacity(value) {
         this.opacity = value;
       },
-      select(layerName) {
-        this.$emit('changeLayer', layerName);
+      changeLayer(layerName) {
+        this.$emit('changeLayer', layerName, this.mapDivId);
       },
       toggleBaseMapLayer(mapId) {
         if (this.mapDivId !== mapId) {

@@ -11,26 +11,23 @@
               :class="mapCompareActive ? 'splitDelimiter' : ''">
 
         <Map :layer-config="layerConfig"
+              :mapDivId="mapId1"
+              :selectedLayerName="selectedLayer1"
               @changeLayer="setLayer"
-              :map-div-id="'map0'"
               :site="site"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
-
-              <!-- :selected-layer-name="selectedLayer" -->
-
       </v-col>
 
       <v-col v-if="mapCompareActive" 
               cols="6">
         <Map :layer-config="layerConfig"
+              :mapDivId="mapId2"
+              :selectedLayerName="selectedLayer2"
               @changeLayer="setLayer"
-              :map-div-id="'map1'"
               :site="site"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
-
-              <!-- :selected-layer-name="selectedLayer" -->
       </v-col>
 
     </v-row>
@@ -73,24 +70,9 @@
       site() {
         return this.fileConfig.site;
       },
-      // splitScreen() {
-      //   return this.$store.state.geoservices.splitScreen;
-      // },
-      // splitLayer() {
-      //   return this.$store.state.geoservices.splitLayer;
-      // },
-      // selectedLayer() {
-      //   return this.$store.state.geoservices.selectedLayer;
-      // },
       layerConfig() {
         return this.fileConfig.layerConfig;
       },
-      // show3d() {
-      //   return this.$store.state.geoservices.show3d;
-      // },
-      // show3dSplit() {
-      //   return this.$store.state.geoservices.show3dSplit;
-      // },
     },
     methods: {
       setShow3d(value) {
@@ -99,29 +81,21 @@
       setShow3dSplit(value) {
         this.$store.commit('setShow3dSplit', value);
       },
-      setLayer(name) {
-        this.$store.commit('setSelectedLayer', name);
+      setLayer(name, mapId) {
+        if (this.mapId1 === mapId) {
+          this.selectedLayer1 = name;
+        } else if (this.mapId2 === mapId) {
+          this.selectedLayer2 = name;
+        }
       },
       setLayerSplit(name) {
         this.$store.commit('setSplitLayer', name);
       },
-      // eslint-disable-next-line no-unused-vars
-      quitSplit(mapId) {
+      quitSplit() {
         this.mapCompareActive = false;
-        // if (mapId === 1) {
-        //   this.$store.commit('setSelectedLayer', this.splitLayer);
-        // }
-        // this.$store.commit('setSplitScreen', false);
       },
       startSplit() {
-        // this.mapCompareActive = !this.mapCompareActive;
         this.mapCompareActive = true;
-
-        // this.$store.commit('setSelectedLayer', this.selectedLayer);
-        // this.$store.commit('setSplitScreen', true);
-      },
-      close() {
-        this.$emit('close');
       },
     },
     data: () => ({
@@ -129,6 +103,10 @@
       opacity: 100,
       mapCompareActive: false,
       ready: false,
+      selectedLayer1: '',
+      selectedLayer2: '',
+      mapId1: 'map1',
+      mapId2: 'map2',
     }),
   };
 </script>

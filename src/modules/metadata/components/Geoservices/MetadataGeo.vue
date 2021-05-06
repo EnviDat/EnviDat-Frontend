@@ -38,20 +38,15 @@
       {{ error }}
     </v-card-text>
 
-    <v-card-text v-if="isReady"
-                  style="position: relative;" >
-    <!-- style="height: 500px;" -->
+    <v-card-text style="position: relative;" >
+
       <Map :layer-config="layerConfig"
-            :map-div-id="'map-small'"
-            :selected-layer-name="selectedLayer"
-            @changeLayer="setLayer"
+            :mapDivId="'map-small'"
+            :selectedLayerName="selectedLayerName"
+            @changeLayer="selectLayer"
             :site="site"
             :showFullscreenButton="true"
             :height="450" />
-    </v-card-text>
-
-    <v-card-text v-else>
-      No location data available
     </v-card-text>
 
   </v-card>
@@ -81,45 +76,17 @@
     },
     mounted() {
 
-      if (this.wmsUrl) {
-        this.$store.dispatch('fetchWmsConfig', this.wmsUrl);
-      }
-
-      // if (this.configUrl) {
-      //   this.$store.dispatch('fetchLayerConfig', this.configUrl);
-      // }
     },
     computed: {
-      isReady() {
-        return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl));
-        // return (!this.wmsUrl && !this.configUrl) || ((this.wmsUrl || this.configUrl) && this.layerConfig !== null);
-      },
-      hasData() {
-        return this.layerConfig;
-      },
       error() {
         return this.genericProps?.error;
-      },
-      selectedLayer() {
-        return this.$store.state.geoservices.selectedLayer;
       },
       site() {
         return this.genericProps?.site;
       },
-      wmsUrl() {
-        return this.genericProps?.wmsUrl;
-      },
-      // configUrl() {
-      //   return this.genericProps?.configUrl;
-      // },
+
       layerConfig() {
         return this.genericProps?.layerConfig;
-        // return this.$store.state.geoservices.layerConfig;
-      },
-      mapSize() {
-        const height = this.$vuetify.breakpoint.xsOnly || this.$vuetify.breakpoint.smAndDown
-          ? this.smallSize : this.mediumSize;
-        return { style: `max-width: 100%; height: ${height}px !important;` };
       },
     },
     methods: {
@@ -127,8 +94,8 @@
         // console.log(`triggerFullscreenEvent ${this.layerConfig}`);
         eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
       },
-      setLayer(name) {
-        this.$store.commit('setSelectedLayer', name);
+      selectLayer(layerName) {
+        this.selectedLayerName = layerName;
       },
       getGeoJSONIcon() {
         return this.mixinMethods_getGeoJSONIcon(this.site?.type);
@@ -143,6 +110,7 @@
       fullWidthSize: 875,
       fullscreen: false,
       METADATA_LOCATION_TITLE,
+      selectedLayerName: '',
     }),    
   };
 </script>
