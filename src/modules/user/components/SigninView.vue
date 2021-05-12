@@ -15,7 +15,7 @@
 
       <v-row v-if="signedIn">
         <v-col cols="12"
-                class="text-md-h6 text-xs-body-1"
+                class="text-h6"
                 :style="`background-color: ${signedInColor};`" >
           {{ alreadSignInText + signedInEmail }}
         </v-col>
@@ -23,14 +23,16 @@
 
       <v-row v-if="!signedIn">
         <v-col cols="12"
-                class="text-md-h6 text-xs-body-1" >
+                class="text-h6" >
           {{ instructionsText }}
         </v-col>
       </v-row>
 
       <form class="enviDatForm">
-        <v-row id="emailRow" >
-          <v-col>
+        <v-row id="emailRow"
+                align="center" >
+          <v-col cols="12"
+                  md="9">
 
             <v-text-field v-model="email"
                           :error-messages="emailErrors"
@@ -39,21 +41,61 @@
                           @input="$v.email.$touch()"
                           @blur="$v.email.$touch()" />
           </v-col>
+
+          <v-col v-if="!signedIn && email && emailErrors.length <= 0"
+                  cols="12"
+                  md="3"
+                  id="tokenButton" >
+
+            <v-btn color="primary"
+                    :loading="requestLoading"
+                    @click="catchRequestToken">
+              {{ tokenButtonText }}
+            </v-btn>
+            <!-- <v-row no-gutters >
+              <v-col v-if="requestSuccess"
+                      cols="12"
+                      class="caption" >
+                {{ `${requestSentText} ${email}. ${requestSentText2}` }}
+              </v-col>
+
+              <v-col v-if="!key || !keyErrors"
+                      cols="12"
+                      :class="requestSuccess ? 'pt-3' : ''" >
+                <v-btn color="primary"
+                        :loading="requestLoading"
+                        @click="catchRequestToken">
+                  {{ tokenButtonText }}
+                </v-btn>
+              </v-col>
+
+            </v-row> -->
+          </v-col>
+
         </v-row>
+
+        <v-row v-if="requestSuccess" >
+          <v-col cols="12"
+                  class="caption" >
+            {{ `${requestSentText} ${email}. ${requestSentText2}` }}
+          </v-col>
+        </v-row>
+
 
         <v-row v-if="email && emailErrors.length <= 0"
                 id="tokenRow"
                 align="center"
-                no-gutters >
+                justify="space-between"                
+                class="pt-4" >
 
           <v-col cols="12"
-                  md="4"
-                  class="text-md-h6 text-xs-body-1" >
+                  md="3"
+                  class="shrink text-h6" >
             {{ requestTokenText }}
           </v-col>
 
           <v-col cols="12"
-                  md="8"
+                  md="5"
                   class="pt-0">
             <v-text-field v-model="key"
                           :error-messages="keyErrors"
@@ -65,18 +107,30 @@
                           @input="$v.key.$touch()"
                           @blur="$v.key.$touch()" />
           </v-col>
+
+          <v-col cols="12"
+                  md="3" >
+
+            <v-btn v-show="!signedIn && !$v.$invalid"
+                    color="primary"
+                    :loading="signInLoading && !signInSuccess"
+                    @click="catchSignIn">
+              {{ signinButtonText}}
+            </v-btn>
+          </v-col>
         </v-row>
 
         <v-row v-if="formInvalid || showError"
                 id="errorTextRow"
-                :style="`background-color: ${errorColor};`" >
+                :style="`background-color: ${errorColor};`"                
+                class="mt-4" >
           <v-col cols="12"
                   class="body-1">
             {{ formErrorText }}
           </v-col>
         </v-row>
 
-        <v-row v-if="!key || !keyErrors"
+        <!-- <v-row v-if="!key || !keyErrors"
                 id="tokenButtonRow" >
 
           <v-col v-if="!signedIn"
@@ -102,9 +156,10 @@
             </v-row>
           </v-col>
 
-        </v-row>
+        </v-row> -->
 
-        <v-row id="signinButtonRow" >
+        <v-row v-if="signedIn"
+                id="signinButtonRow" >
 
           <v-col v-if="signedIn">
             <v-btn color="secondary"
@@ -113,13 +168,13 @@
             </v-btn>
           </v-col>
 
-          <v-col v-if="!signedIn && !$v.$invalid">
+          <!-- <v-col v-if="!signedIn && !$v.$invalid">
             <v-btn color="primary"
                     :loading="signInLoading && !signInSuccess"
                     @click="catchSignIn">
               {{ signinButtonText}}
             </v-btn>
-          </v-col>
+          </v-col> -->
 
         </v-row>
       </form>
@@ -208,11 +263,11 @@ export default {
       if (!this.$v.key.$dirty) return errors;
 
       if (!this.$v.key.minLength || !this.$v.key.maxLength) {
-        errors.push(`Key must be ${this.keyLength} characters long`);
+        errors.push(`Token must be ${this.keyLength} characters long`);
       }
       
       if (!this.$v.key.required) {
-        errors.push('Key is required.');
+        errors.push('Token is required.');
       }
       
       return errors;
