@@ -100,6 +100,8 @@ export default {
       if (this.error) {
         if (this.errorType === VALIDATION_ERROR) {
           errMsg = `A field was filled incorrectly: ${this.error}`;
+        } else {
+          errMsg = `Error: ${this.error.message} for backend call ${this.error.config?.url}`;
         }
       }
 
