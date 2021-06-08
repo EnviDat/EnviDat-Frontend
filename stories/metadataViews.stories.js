@@ -14,14 +14,14 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
-import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
-import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
-import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation.vue';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
+import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
+import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
+import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding';
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
 
 import doiIcon from '@/assets/icons/doi.png';
 import mailIcon from '@/assets/icons/mail.png';
