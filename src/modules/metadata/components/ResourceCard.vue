@@ -144,6 +144,7 @@
                 :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
 
             <v-icon class="pl-1 pt-1"
+                    :class="downloadActive ? 'iconCircle' : ''"
                     :disabled="!downloadActive">shield</v-icon>
 
             <p v-if="downloadActive"
@@ -331,7 +332,8 @@ export default {
   }
 
   .fabPosition {
-    position: absolute; bottom: 0px; right: 0px;
+    position: absolute;
+    bottom: 0px; right: 0px;
   }
 
   .fabMenu {
@@ -339,7 +341,7 @@ export default {
     height: 48px;
     background-color: #FFD740;
     border-radius: 50%;
-    transition: .3s;
+    transition: .1s;
   }
 
   .fabMenuDisabled {
@@ -351,23 +353,28 @@ export default {
   .fabMenuHover:active {
     background: #FFF;
     min-width: 160px;
+    min-height: 160px;
     width: 100%;
     height: 100%;
-    min-height: 160px;
     border-radius: 3px 3px;
-    visibility: visible;
+    display: inherit;
   }
 
+  .fabMenuHover:hover .v-icon,
+  .fabMenuHover:active .v-icon {
+    border: 1px solid grey;
+    border-radius: 50%;
+    padding: 0 4px 4px 0;
+  }  
+
   .lockedText {
-    visibility: hidden;
+    display: none;
     opacity: 0;
-    transition: 0.1s;
   }
 
   .fabMenuHover:hover .lockedText,
   .fabMenuHover:active .lockedText {
-    visibility: visible;
-    transition: 0.5s;
+    display: inherit;
     opacity: 1;
   }
 
@@ -376,4 +383,5 @@ export default {
     line-height: 0.8rem !important;
     opacity: 0.9;
   }
+
 </style>
