@@ -1,17 +1,34 @@
 <template>
-  <v-card id="EditMetadataHeader" >
+  <v-card id="EditMetadataHeader">
 
-    <v-card-title >
-      <MetadataHeader />
-    </v-card-title>
+ <v-container fluid>
+    
+    <v-row no-gutters
+           dense>
 
-    <v-card-text>
+      <v-col cols="12">   
+            <MetadataHeader :headerTitle="inputTitle || prefilledTitle" />    
+      </v-col>       
+
+    </v-row>
+
+
+    <v-row>
+
+      <v-col cols="6">     
+        <v-text-field label="Title"
+                      outlined
+                      v-model="inputTitle"
+                      :placeholder="prefilledTitle">
+        </v-text-field>
+      </v-col>
+
+    </v-row>
       
-      <input type="text" />
 
-    </v-card-text>
+  </v-container>
+    </v-card>  
 
-  </v-card>
 </template>
 
 <script>
@@ -38,12 +55,14 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 export default {
   name: 'EditMetadataHeader',
   props: {
+    prefilledTitle: String,    
   },
   computed: {
   },
   methods: {
   },
   data: () => ({
+    inputTitle: ''
   }),
   components: {
     MetadataHeader,
