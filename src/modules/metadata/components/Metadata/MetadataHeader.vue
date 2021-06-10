@@ -1,8 +1,7 @@
 <template>
   <v-card id="MetadataHeader"
           :dark="dark"
-          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'white'" 
-          >
+          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'white'"  >
 
     <div v-bind="{['style'] : $vuetify.breakpoint.mdAndUp ? dynamicCardBackground : ''}" >
       <!-- this loads the background image -->
@@ -20,27 +19,26 @@
                       @clicked="catchBackClicked" />
 
     <v-container fluid
-                class="pa-4">
+                  class="pa-4">
     <v-row no-gutters
             style="position: relative; z-index: 1;">
-      
 
-      <v-col v-if="headerTitle"
+      <v-col v-if="metadataTitle"
               cols="12" >
-        <div class="header"
+        <div class="headerTitle"
               :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
                         'display-2': $vuetify.breakpoint.xlAndUp,
                         'display-1': $vuetify.breakpoint.mdAndUp,
                         'headline': $vuetify.breakpoint.smOnly,
                         'subtitle-1': $vuetify.breakpoint.xsOnly,
                       }" >
-          {{ headerTitle }}
+          {{ metadataTitle }}
         </div>
       </v-col>
 
-      <v-col v-if="!headerTitle && !showPlaceholder"
+      <v-col v-if="!metadataTitle && !showPlaceholder"
               cols="12" >
-        <div class="header py-3"
+        <div class="headerTitle py-3"
               :style="`color: ${$vuetify.theme.themes.light.error}`"
               :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
                         'display-1': $vuetify.breakpoint.mdAndDown,
@@ -50,7 +48,7 @@
         </div>
       </v-col>
 
-      <v-col v-if="!headerTitle && showPlaceholder"
+      <v-col v-if="!metadataTitle && showPlaceholder"
               cols="12" >
         <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
           <div class="bone bone-type-multiline bone-style-steps" />
@@ -275,8 +273,6 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import { getAuthorName } from '@/factories/authorFactory';
 import TagChipAuthor from '../TagChipAuthor';
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
-
 export default {
   name: 'MetadataHeader',
   components: {
@@ -285,7 +281,6 @@ export default {
     TagChipPlaceholder,
     BaseIconLabelView,
     BaseIconButton,
-    EditMetadataHeader,
   },
   props: {
     metadataId: String,
@@ -311,7 +306,6 @@ export default {
       type: Object,
       default: null,
     },
-    headerTitle: String,
   },
   data: () => ({
     showTagsExpanded: false,
@@ -394,7 +388,7 @@ export default {
 
 <style scoped>
 
-  .header {
+  .headerTitle {
     font-family: 'Baskervville', serif !important;
     font-weight: 400;
     opacity: 1;

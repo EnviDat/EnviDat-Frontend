@@ -12,7 +12,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
@@ -58,7 +58,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader />
+          <EditMetadataHeader prefilledTitle="Enter the title for your Metadata" />
         </v-col>
       </v-row>
 

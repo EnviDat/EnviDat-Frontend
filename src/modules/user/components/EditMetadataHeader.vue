@@ -7,7 +7,7 @@
            dense>
 
       <v-col cols="12">   
-            <MetadataHeader :headerTitle="inputTitle || prefilledTitle" />    
+            <MetadataHeader :metadataTitle="inputTitle || prefilledTitle" />    
       </v-col>       
 
     </v-row>
