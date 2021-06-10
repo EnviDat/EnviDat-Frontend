@@ -101,7 +101,7 @@
 
         <v-row v-if="geoJSONIcon" >
           <v-col class="py-2 px-3" >
-            <base-icon-label-view :icon="geoJSONIcon" />
+            <BaseIconLabelView :icon="geoJSONIcon" />
 
           </v-col>
         </v-row>

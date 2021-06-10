@@ -1,9 +1,10 @@
 <template>
-  <v-card color="primary"
+  <v-card :id="`resourceCard_${id}`"
+          color="primary"
           class="metadataResourceCard"
           style="height: 100%;" >
 
-    <v-card-title class="headline white--text">
+    <v-card-title class="headline resourceHeadline white--text">
       {{ name }}
     </v-card-title>
 
@@ -56,30 +57,35 @@
           <v-col class="resourceInfo" >
             <base-icon-label-view v-if="doi"
                                   :text="doi"
+                                  :label="doiIcon ? '' : 'DOI:'"
                                   :icon="doiIcon"
                                   icon-tooltip="Data Object Identifier"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="format" 
                                   :text="format"
-                                  :icon="extensionIcon()"
+                                  :label="extensionIcon ? '' : 'File format:'"
+                                  :icon="extensionIcon"
                                   icon-tooltip="Format of the file"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="size" 
                                   :text="formatedBytes"
+                                  :label="fileSizeIcon ? '' : 'File size:'"
                                   :icon="fileSizeIcon"
                                   icon-tooltip="Filesize"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="created" 
                                   :text="created"
+                                  :label="dateCreatedIcon ? '' : 'Created at:'"
                                   :icon="dateCreatedIcon"
                                   icon-tooltip="Date of file creation"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="lastModified" 
                                   :text="lastModified"
+                                  :label="lastModifiedIcon ? '' : 'Modified at:'"
                                   :icon="lastModifiedIcon"
                                   icon-tooltip="Date of last modification"
                                   :align-left="twoColumnLayout" />
@@ -148,7 +154,7 @@
                     :disabled="!downloadActive">shield</v-icon>
 
             <p v-if="downloadActive"
-                class="pt-2 lockedText black--text resourceCardText"
+                class="pt-2 lockedText black--text protectedLink"
                 v-html="protectedText">
             </p>
           </div>
@@ -183,6 +189,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 
 export default {
+  name: 'ResourceCard',
   components: {
     BaseIconLabelView,
     BaseIconButton,
@@ -274,48 +281,59 @@ export default {
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
+    extensionIcon() {
+      if (this.$store) {
+
+        if (this.audioFormats.includes(this.format)) {
+          return this.mixinMethods_getIcon('Audio');
+        }
+
+        let extIcon = this.mixinMethods_getIconFileExtension(this.format);
+
+        if (!extIcon && this.format.toLowerCase() === 'url') {
+          extIcon = this.linkIcon;
+        }
+
+        if (extIcon) {
+          return extIcon;
+        }
+
+        return this.mixinMethods_getIcon('file');
+      }
+      
+      if (this.fileExtensionIcon) {
+        return this.lookupExtensionIcon;
+      }
+
+      return null;
+    },
+    lookupExtensionIcon() {
+      const lookUp = `file${this.format.toLowerCase()}`;
+      let icon = this.fileExtensionIcon.get(lookUp);
+
+      if (!icon && this.audioFormats.includes(this.format)) {
+        icon = this.fileExtensionIcon.get('fileAudio');
+      }
+
+      if (!icon) {
+        icon = this.fileExtensionIcon.get('file');
+      }
+
+      // console.log(`icon ${icon}`);
+      return icon;
+    },    
   },
   methods: {
-    extensionIcon() {
-      if (typeof this.mixinMethods_getIconFileExtension === 'undefined'
-          || typeof this.$store === 'undefined') {
 
-        const lookUp = `file${this.format.toLowerCase()}`;
-        let icon = this.fileExtensionIcon.get(lookUp);
-
-        if (!icon && this.audioFormats.includes(this.format)) {
-          icon = this.fileExtensionIcon.get('fileAudio');
-        }
-
-        if (!icon) {
-          icon = this.fileExtensionIcon.get('file');
-        }
-
-        // console.log(`icon ${icon}`);
-        return icon;
-      }
-
-      if (this.audioFormats.includes(this.format)) {
-        return this.mixinMethods_getIcon('Audio');
-      }
-
-      let extIcon = this.mixinMethods_getIconFileExtension(this.format);
-
-      if (!extIcon && this.format.toLowerCase() === 'url') {
-        extIcon = this.linkIcon;
-      }
-
-      if (extIcon) {
-        return extIcon;
-      }
-
-      return this.mixinMethods_getIcon('file');
-    },
   },
 };
 </script>
 
 <style scoped>
+
+  .resourceHeadline {
+    line-height: 1.5rem;
+  }
 
   .black_title {
     color: rgba(0,0,0,.87) !important;
@@ -341,7 +359,7 @@ export default {
     height: 48px;
     background-color: #FFD740;
     border-radius: 50%;
-    transition: .1s;
+    /* transition: .1s; */
   }
 
   .fabMenuDisabled {
@@ -383,5 +401,10 @@ export default {
     line-height: 0.8rem !important;
     opacity: 0.9;
   }
+
+  .protectedLink {
+    font-size: 12px;
+    overflow: hidden;
+  }  
 
 </style>

@@ -189,6 +189,7 @@ export default {
   beforeMount() {
     this.doiIcon = this.mixinMethods_getIcon('doi');
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
+    this.fileIcon = this.mixinMethods_getIcon('file');
     this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
     this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
     this.contactIcon = this.mixinMethods_getIcon('contact2');
@@ -463,6 +464,7 @@ export default {
         this.resources = createResources(currentContent);
         this.resources.doiIcon = this.doiIcon;
         this.resources.fileSizeIcon = this.fileSizeIcon;
+        this.resources.fileIcon = this.fileIcon;
         this.resources.dateCreatedIcon = this.dateCreatedIcon;
         this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
@@ -753,6 +755,7 @@ export default {
     notFoundBackPath: 'browse',
     doiIcon: null,
     fileSizeIcon: null,
+    fileIcon: null,
     dateCreatedIcon: null,
     lastModifiedIcon: null,
     contactIcon: null,
@@ -791,7 +794,6 @@ export default {
   }
 
   .resourceCardText {
-    font-size: 12px;
     color: rgba(255, 255, 255, 0.87) !important;
     overflow: hidden;
   }

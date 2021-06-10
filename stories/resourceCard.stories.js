@@ -2,20 +2,20 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
-import Vue2Filters from 'vue2-filters';
 
 import globalMethods from '@/factories/globalMethods';
 
-import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
-import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
+import ResourceCard from '@/modules/metadata/components/ResourceCard';
+import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
 import doiIcon from '@/assets/icons/doi.png';
 import dateCreatedIcon from '@/assets/icons/dateCreated.png';
 import lastModifiedIcon from '@/assets/icons/dateModified.png';
+import { createResources } from '@/factories/metaDataFactory';
 import unFormatedMetadataCards from './js/metadata';
 
-Vue.use(Vue2Filters);
+
 Vue.mixin(globalMethods);
 
 const apiFactory = require('@/factories/apiFactory');
@@ -47,13 +47,14 @@ const iconFiles = getIcons();
 const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
-  const formatted = apiFactory.solrResultToCKANJSON(el);
+  let formatted = apiFactory.solrResultToCKANJSON(el);
   // let keys = Object.keys(el.tags[0]);
   // let props = '';
   // keys.forEach(element => {
   //   props += element + ' ';
   // });
   // alert(typeof el.resources + ' resources: ' + el.resources.length + ' ' + el.resources instanceof Array);
+  formatted = createResources(formatted);
   metadataCards.push(formatted);
 });
 

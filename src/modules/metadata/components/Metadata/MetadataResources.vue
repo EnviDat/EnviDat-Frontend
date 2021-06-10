@@ -5,21 +5,39 @@
     <v-card-title >
       <v-row justify="end"
               no-gutters>
+
         <v-col class="title metadata_title grow">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
-        <v-col class="shrink resourcesIcons" >
-          <base-icon-count-view v-if="!showPlaceholder && resources && resources.length > 0"
-                                :count="resources.length"
+        <v-col v-if="!showPlaceholder && resources && resources.length > 0"
+                class="shrink resourcesIcons pt-2" >
+          <base-icon-count-view :count="resources.length"
                                 :icon-string="fileIcon" />
         </v-col>
       </v-row>
     </v-card-title>
 
-    <v-container v-if="availableResources && availableResources.length > 0"
-                fluid
-                class="heightAndScroll pa-2 pt-0" >
+
+    <v-container v-if="showPlaceholder"
+                  id="resourcePlaceholderList"
+                  fluid
+                  class="pa-2 pt-0" >
+      <v-row no-gutters >
+        <v-col v-for="n in 2"
+                :key="n"
+                cols="12" sm="6"
+                class="pa-2" >
+
+          <ResourceCardPlaceholder />
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-container v-if="!showPlaceholder && availableResources && availableResources.length > 0"
+                  id="resourceList"
+                  fluid
+                  class="heightAndScroll pa-2 pt-0" >
 
       <v-row v-if="injectedComponent && injectAtStart"
               no-gutters >
@@ -27,19 +45,7 @@
                     :config="injectedComponentConfig" />
       </v-row>
 
-      <v-row v-if="showPlaceholder"
-              no-gutters >
-        <v-col v-for="n in 2"
-                  :key="n"
-                  cols="12" sm="6"
-                  class="pa-2" >
-
-          <resource-card-placeholder />
-        </v-col>
-      </v-row>
-
-      <v-row v-if="!showPlaceholder"
-              no-gutters >
+      <v-row no-gutters >
 
         <v-col v-for="res in availableResources"
                 :key="res.id"
@@ -47,7 +53,7 @@
                 :sm="availableResources.length > 1 ? 6 : 12"
                 class="pa-2" >
 
-          <resource-card v-bind="res"
+          <ResourceCard v-bind="res"
                           :doiIcon="doiIcon"
                           :fileSizeIcon="fileSizeIcon"
                           :dateCreatedIcon="dateCreatedIcon"
@@ -156,7 +162,7 @@ export default {
       return this.mixinMethods_getGenericProp('fileSizeIcon');
     },
     fileIcon() {
-      return this.mixinMethods_getIcon('file');
+      return this.mixinMethods_getGenericProp('fileIcon');
     },
     dateCreatedIcon() {
       return this.mixinMethods_getGenericProp('dateCreatedIcon');

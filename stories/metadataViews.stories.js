@@ -14,19 +14,22 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
-import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
-import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
-import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation.vue';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
-import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
+import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
+import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
+import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding';
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources';
 
 import doiIcon from '@/assets/icons/doi.png';
 import mailIcon from '@/assets/icons/mail.png';
 import contactIcon from '@/assets/icons/contact2.png';
 import licenseIcon from '@/assets/icons/license.png';
+import fileSizeIcon from '@/assets/icons/fileSize.png';
+import fileIcon from '@/assets/icons/file.png';
 
 import {
   createHeader,
@@ -35,14 +38,32 @@ import {
   createPublications,
   createBody,
   createLocation,
+  createResources,
 } from '@/factories/metaDataFactory';
 import { createAuthors } from '@/factories/authorFactory';
+
+function getIcons() {
+  const icons = new Map();
+
+  const imgPaths = require.context('@/assets/icons/', false, /\.png$/);
+
+  imgPaths.keys().forEach((iconFileName) => {
+    const splits = iconFileName.split('/');
+    let key = splits[splits.length - 1];
+    key = key.replace('.png', '');
+    icons.set(key, iconFileName);
+  });
+
+  return icons;
+}
+
+const iconFiles = getIcons();
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
 
 const smallHeader = createHeader(metadata[0], true);
-const largeHeader = createHeader(metadata[1], false);
+const largeHeader = createHeader(metadata[2], false);
 
 const citation1 = createCitation(metadata[0]);
 const citation2 = createCitation(metadata[2]);
@@ -87,6 +108,14 @@ const funding2 = [
   { grant_number: '', institution: 'Someone', institution_url: '' },
   { grant_number: '', institution: 'Someone you do not know with a long name', institution_url: '' },
 ];
+
+const resources1 = createResources(metadata[1]);
+const resources2 = createResources(metadata[2]);
+
+const resDataDict = JSON.parse(metadata[1].data_dict);
+resources1.resources = resDataDict.resources;
+const resDataDict2 = JSON.parse(metadata[2].data_dict);
+resources2.resources = resDataDict2.resources;
 
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
@@ -137,48 +166,73 @@ storiesOf('6 Detail Views / Metadata', module)
         Empty Metadata Header
       </v-row>
 
-      <v-row class="py-3" >
-      <v-col >
-        <metadata-header metadataId="id-which-can-not-be-found" />
-      </v-col>
+      <v-row class="py-2" >
+        <v-col >
+          <metadata-header metadataId="id-which-can-not-be-found" />
+        </v-col>
       </v-row>
 
-      <v-row class="py-3" >
-      <v-col >
-        Metadata Header with showPlaceholder
-      </v-col>
+      <v-row class="py-2" >
+        <v-col >
+          Metadata Header with showPlaceholder
+        </v-col>
       </v-row>
 
-      <v-row class="py-3" >
-      <v-col >
-        <metadata-header :showPlaceholder="true" />
-      </v-col>
+      <v-row class="py-2" >
+        <v-col >
+          <metadata-header :showPlaceholder="true" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-2" >
+        <v-col >
+          Short Title Metadata Header
+        </v-col>
+      </v-row>
+
+      <v-row class="py-2">
+        <v-col >
+          <metadata-header
+            v-bind="smallHeader"
+            :doiIcon="doiIcon"
+            :contactIcon="contactIcon"
+            :mailIcon="mailIcon"
+            :licenseIcon="licenseIcon"
+          />
+        </v-col>
+      </v-row>        
+
+      <v-row class="py-2" >
+        <v-col >
+          Long Title Metadata Header
+        </v-col>
       </v-row>
 
       <v-row class="py-3">
-      <v-col >
-        <metadata-header
-          v-bind="smallHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
-        />
-      </v-col>
+        <v-col >
+          <metadata-header
+            v-bind="largeHeader"
+            :doiIcon="doiIcon"
+            :contactIcon="contactIcon"
+            :mailIcon="mailIcon"
+            :licenseIcon="licenseIcon"
+          />
+        </v-col>
       </v-row>        
+
+      <v-row class="py-2" >
+        <v-col >
+          Long Title Metadata Header without icons for fallback labels
+        </v-col>
+      </v-row>
 
       <v-row class="py-3">
-      <v-col >
-        <metadata-header
-          v-bind="largeHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
-        />
-      </v-col>
-      </v-row>        
-
+        <v-col >
+          <metadata-header
+            v-bind="largeHeader"
+          />
+        </v-col>
+      </v-row>          
     </v-col>
     `,
     methods,
@@ -443,7 +497,60 @@ storiesOf('6 Detail Views / Metadata', module)
       },
     }),
   }))
-.add('Metadata Authors', () => ({
+  .add('Metadata Resources', () => ({
+    components: { MetadataResources },
+    template: `
+    <v-row >
+
+      <v-col cols="12" class="py-3">
+        <MetadataResources :genericProps="genericPropsPlaceholder"
+                            :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      </v-col>
+
+      <v-col cols="12" class="py-3">
+        <MetadataResources :genericProps="genericProp"
+                            :showPlaceholder="genericProp.showPlaceholder" />
+      </v-col>
+
+      <v-col cols="12" class="py-3">
+        <MetadataResources :genericProps="genericProps2"
+                            :showPlaceholder="genericProps2.showPlaceholder" />
+      </v-col>
+
+    </v-row>
+    `,
+    updated() {
+    },
+    methods: {
+    },
+    data: () => ({
+      genericProp: {
+        resources: resources1.resources,
+        showPlaceholder: false,
+        doiIcon,
+        contactIcon,
+        licenseIcon,
+        mailIcon,
+        fileIcon,
+        fileSizeIcon,
+      },
+      genericPropsPlaceholder: {
+        resources: null,
+        showPlaceholder: true,
+      },
+      genericProps2: {
+        resources: resources2.resources,
+        showPlaceholder: false,
+        doiIcon,
+        contactIcon,
+        licenseIcon,
+        mailIcon,
+        fileIcon,
+        fileSizeIcon,
+      },
+    }),
+  }))
+  .add('Metadata Authors', () => ({
     components: { MetadataAuthors },
     template: `
     <v-row>
