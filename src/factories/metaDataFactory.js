@@ -260,7 +260,7 @@ export function createResource(resource, datasetName) {
   }
 
   let isProtected = false;
-  // let restrictedUsers;
+  let restrictedUsers;
   let restrictedObj = false;
 
   if (resource.restricted && typeof resource.restricted === 'string'
@@ -269,23 +269,23 @@ export function createResource(resource, datasetName) {
     try {
       restrictedObj = JSON.parse(resource.restricted);
       isProtected = restrictedObj.level !== 'public';
-      // restrictedUsers = restrictedObj.allowed_users !== '';
+      restrictedUsers = restrictedObj.allowed_users !== '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
       isProtected = !resource.restricted.includes('public');
     }
   }
 
-  // let resURL = resource.url;
+  let resURL = resource.url;
 
-  // if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
-  //   const splits = resource.url.split('resource');
-  //   if (splits && splits.length > 0) {
-  //     resURL = splits[0];
-  //   } else {
-  //     resURL = '';
-  //   }
-  // }
+  if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
+    const splits = resource.url.split('resource');
+    if (splits && splits.length > 0) {
+      resURL = splits[0];
+    } else {
+      resURL = '';
+    }
+  }
 
   let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
@@ -308,7 +308,8 @@ export function createResource(resource, datasetName) {
     cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
     name: resource.name,
-    url: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
+    url: resURL,
+    restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
     state: resource.state ? resource.state : '',
