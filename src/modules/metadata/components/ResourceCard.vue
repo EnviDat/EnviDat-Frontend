@@ -20,12 +20,12 @@
       <v-container class="pa-0"
                     fluid >
         <v-row no-gutters >
-          <v-col v-if="showFullDescription"
+          <v-col v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
                   class="readableText resourceCardText heightAndScroll"
                   v-html="markdownText" >
           </v-col>
 
-          <v-col v-if="!showFullDescription"
+          <v-col v-if="!showFullDescription && maxDescriptionLengthReached"
                   class="readableText resourceCardText" >
             {{ markdownTextTruncated }}
           </v-col>
@@ -183,7 +183,10 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { stripMarkdown } from '@/factories/stringFactory';
+import {
+  stripMarkdown,
+  renderMarkdown,
+ } from '@/factories/stringFactory';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
@@ -200,6 +203,7 @@ export default {
     name: String,
     description: String,
     url: String,
+    restrictedUrl: String,
     created: String,
     lastModified: String,
     size: Number,
@@ -231,7 +235,7 @@ export default {
   }),
   computed: {
     markdownText() {
-      return stripMarkdown(this.description.trim());
+      return renderMarkdown(this.description.trim());
     },
     markdownTextTruncated() {
       if (this.maxDescriptionLengthReached) {
@@ -275,8 +279,8 @@ export default {
       return this.description && this.description.length > this.maxDescriptionLength;
     },
     protectedText() {
-      if (this.url && this.url.length > 0) {
-        return `This resource is protected <a href="${this.url}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+      if (this.restrictedUrl && this.restrictedUrl.length > 0) {
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
