@@ -94,7 +94,7 @@
                           :fileIconString="fileIconString"
                           :lockedIconString="lockedIconString"
                           :unlockedIconString="unlockedIconString"
-                          :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId])"
+                          :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
@@ -120,7 +120,7 @@
                         :fileIconString="fileIconString"
                         :lockedIconString="lockedIconString"
                         :unlockedIconString="unlockedIconString"
-                        :geoJSONIcon="getGeoJSONIcon(metadata)"
+                        :geoJSONIcon="getGeoJSONIcon(metadata.location)"
                         :categoryColor="metadata.categoryColor"
                         @clickedEvent="metaDataClicked"
                         @clickedTag="catchTagClicked" />
@@ -324,26 +324,8 @@ export default {
     },
   },
   methods: {
-    getGeoJSONIcon(metadata) {
-      if (!metadata.location) {
-        return null;
-      }
-
-      const location = metadata.location;
-
-      if (location.isPoint) {
-        return this.pinIcon;
-      }
-
-      if (location.isMultiPoint) {
-        return this.multiPinIcon;
-      }
-      
-      if (location.isPolygon) {
-        return this.polygonIcon;
-      }
-
-      return null;
+    getGeoJSONIcon(location) {
+      return this.mixinMethods_getGeoJSONIcon(location?.geoJSON?.type);
     },
     infiniteHandler($state) {
       const that = this;

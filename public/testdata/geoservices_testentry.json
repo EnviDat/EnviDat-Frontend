@@ -1,0 +1,153 @@
+{
+  "author": "[{\"name\": \"Hanimann\", \"data_credit\": \"software\", \"affiliation\": \"WSL\", \"affiliation_03\": \"\", \"given_name\": \"David\", \"identifier\": \"\", \"email\": \"david.hanimann@wsl.ch\", \"affiliation_02\": \"\"}, {\"name\": \"Iosifescu Enescu\", \"data_credit\": \"supervision\", \"affiliation\": \"WSL\", \"affiliation_03\": \"\", \"given_name\": \"Ionu\\u021b\", \"identifier\": \"\", \"email\": \"ionut.iosifescu\\u00a9wsl.ch\", \"affiliation_02\": \"\"}]",
+  "author_email": null,
+  "creator_user_id": "334cee1e-6afa-4639-88a2-f980e6ff42c3",
+  "date": "[{\"date\": \"2020-06-08\", \"date_type\": \"created\", \"end_date\": \"\"}]",
+  "doi": "",
+  "funding": "[{\"grant_number\": \"EnviDat\", \"institution\": \"WSL\", \"institution_url\": \"https://www.envidat.ch\"}]",
+  "id": "3397f564-fb50-41ac-a8f1-b2549c9524ba",
+  "isopen": true,
+  "language": "en",
+  "license_id": "odc-odbl",
+  "license_title": "ODbL with Database Contents License (DbCL)",
+  "license_url": "https://opendefinition.org/licenses/odc-odbl",
+  "maintainer": "{\"affiliation\": \"WSL\", \"identifier\": \"\", \"given_name\": \"Ionu\u021b\", \"name\": \"Iosifescu Enescu\", \"email\": \"ionut.iosifescu@wsl.ch\"}",
+  "maintainer_email": null,
+  "metadata_created": "2016-12-19T13:21:37.506384",
+  "metadata_modified": "2020-08-20T08:10:33.824731",
+  "name": "dataset-for-testing-geoservices",
+  "notes": "This is a __temporary dataset for geoservices testing pourposes__. \r\n\r\nFew functionalities for demonstration purposes:\r\n\r\n* automatic display of the data in the data set map (as a 2D map or on a globe)\r\n* temporal navigation for a large number of layers of a time series\r\n* querying and displaying point data on charts for the entire time series. \r\n\r\nFeel free to give it a try and report any issue to envidat@wsl.ch.",
+  "num_resources": 2,
+  "num_tags": 6,
+  "organization": {
+    "id": "bd536a0f-d6ac-400e-923c-9dd351cb05fa",
+    "name": "trusted",
+    "title": "Trusted Users Organization",
+    "type": "organization",
+    "description": "Administrator Approved Users",
+    "image_url": "2016-10-19-084653.517200trusteduser.png",
+    "created": "2016-10-19T10:46:53.557869",
+    "is_organization": true,
+    "approval_status": "approved",
+    "state": "active"
+  },
+  "owner_org": "bd536a0f-d6ac-400e-923c-9dd351cb05fa",
+  "private": true,
+  "publication": "{\"publisher\": \"EnviDat\", \"publication_year\": \"2020\"}",
+  "publication_state": "",
+  "related_datasets": "",
+  "related_publications": "* Ionu\u021b Iosifescu Enescu; Gian-Kasper Plattner; Dirk Nikolaus Karger; David Hanimann; Dominik Haas-Artho; Martin H\u00e4geli; Niklaus E. Zimmermann; Konrad Steffen; 2020: Challenges and Opportunities in the Publication of Global-scale, High-resolution Climate Model Outputs. Workshop \"Data Science in Climate and Climate Impact Research\"\r\nConceptual Issues, Challenges, and Opportunities. ETH Z\u00fcrich, Switzerland.",
+  "resource_type": "dataset",
+  "resource_type_general": "dataset",
+  "spatial": "{  \"type\": \"MultiPoint\",  \"coordinates\": [    [8.498823,47.405771],   [8.455696105957031,47.381149222795024],[8.451919555664062,47.350221638911236],[8.494491577148438,47.344406158662125],[8.518180847167969,47.37161708892748]    ]      }",
+  "spatial_info": "Switzerland",
+  "state": "active",
+  "subtitle": "",
+  "title": "Dataset for testing Geoservices",
+  "type": "dataset",
+  "url": null,
+  "version": "1.0",
+  "extras": [
+    {
+      "key": "dora_link",
+      "value": ""
+    }
+  ],
+  "resources": [
+    {
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2018-10-31T15:50:31.546585",
+      "description": "",
+      "doi": "",
+      "format": "XML",
+      "hash": "",
+      "id": "139f7116-622f-442a-85c4-fa28dfb817b9",
+      "last_modified": "2018-10-31T15:50:31.480499",
+      "metadata_modified": null,
+      "mimetype": "application/xml",
+      "mimetype_inner": null,
+      "name": "Mockup Climate Dataset for Testing Purposes",
+      "package_id": "3397f564-fb50-41ac-a8f1-b2549c9524ba",
+      "position": 0,
+      "resource_size": "{\"size_value\": \"\", \"size_units\": \"kb\"}",
+      "resource_type": null,
+      "restricted": "{\"shared_secret\": \"\", \"allowed_users\": \"\", \"level\": \"public\"}",
+      "size": 5358,
+      "state": "active",
+      "url": "https://www.envidat.ch/dataset/3397f564-fb50-41ac-a8f1-b2549c9524ba/resource/139f7116-622f-442a-85c4-fa28dfb817b9/download/datasets-for-testing-the-repository-and-storage_gcmd_dif.xml",
+      "url_type": "upload"
+    },
+    {
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-08T07:58:59.673229",
+      "description": "geoservices configuration",
+      "doi": "",
+      "format": "JSON",
+      "hash": "",
+      "id": "e634b1a8-c662-46dc-8a2f-999a5c5706a8",
+      "last_modified": "2020-06-18T07:19:04.906973",
+      "metadata_modified": null,
+      "mimetype": "application/json",
+      "mimetype_inner": null,
+      "name": "geoservices_config.json",
+      "package_id": "3397f564-fb50-41ac-a8f1-b2549c9524ba",
+      "position": 1,
+      "resource_size": "{\"size_value\": \"\", \"size_units\": \"kb\"}",
+      "resource_type": null,
+      "restricted": "{\"level\": \"public\", \"allowed_users\": \"\", \"shared_secret\": \"\"}",
+      "size": 39570,
+      "state": "active",
+      "url": "https://www.envidat.ch/dataset/3397f564-fb50-41ac-a8f1-b2549c9524ba/resource/e634b1a8-c662-46dc-8a2f-999a5c5706a8/download/geoservice_chelsa_parsed.json",
+      "url_type": "upload"
+    }
+  ],
+  "tags": [
+    {
+      "display_name": "FREE CLIMATE DATA",
+      "id": "1d6d8005-8bfb-4f4f-ae60-71a75399d963",
+      "name": "FREE CLIMATE DATA",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "GEOSERVICES",
+      "id": "48411ffc-0ebf-48a3-9fba-0791ac48ef24",
+      "name": "GEOSERVICES",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "MAPS",
+      "id": "9d46f51d-93f0-4516-8b5b-a2ef3c9aa8a8",
+      "name": "MAPS",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "RASTER",
+      "id": "ac99fddf-60e4-4ead-80dc-3f06239fc350",
+      "name": "RASTER",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "SDI",
+      "id": "8ac8e1b8-65b6-4090-b217-4f8878b1b4b0",
+      "name": "SDI",
+      "state": "active",
+      "vocabulary_id": null
+    },
+    {
+      "display_name": "WMS",
+      "id": "414089a5-23d2-4d5d-b1ac-2a37cc027e3d",
+      "name": "WMS",
+      "state": "active",
+      "vocabulary_id": null
+    }
+  ],
+  "groups": [],
+  "relationships_as_subject": [],
+  "relationships_as_object": []
+}

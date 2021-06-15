@@ -18,6 +18,7 @@ import createPersist from 'vuex-localstorage';
 import { about } from '@/modules/about/store/aboutStore';
 import { projects } from '@/modules/projects/store/projectsStore';
 import { metadata } from '@/modules/metadata/store/metadataStore';
+import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -30,7 +31,6 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import { checkWebpFeatureAsync } from '@/factories/enhancementsFactory';
-import { getCardBackgrounds } from '@/factories/metaDataFactory';
 
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 import globalMethods from '@/factories/globalMethods';
@@ -104,6 +104,7 @@ const store = new Vuex.Store({
     metadata,
     about,
     projects,
+    geoservices,
   },
 });
 
@@ -111,7 +112,7 @@ function loadImages(isSupported = false) {
 
   store.commit(SET_WEBP_SUPPORT, isSupported);
 
-  const cardBGImages = getCardBackgrounds(isSupported);
+  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
 
   if (cardBGImages) {
     store.commit(SET_CARD_IMAGES, cardBGImages);

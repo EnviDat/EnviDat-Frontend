@@ -8,7 +8,7 @@
       <v-col class="elevation-5 pa-0"
               cols="12"
               ref="header"
-              style="z-index: 1; left: 0; " 
+              style="z-index: 1; left: 0; "
               :style="headerStyle" >
 
         <metadata-header v-bind="header"
@@ -56,7 +56,7 @@
                       :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
-        
+
       </template>
     </two-column-layout>
 
@@ -125,7 +125,7 @@ import {
 } from '@/factories/authorFactory';
 import {
   getConfigFiles,
-  getGcnetStationsConfigs,
+  getConfigUrls,
 } from '@/factories/chartFactory';
 
 import {
@@ -148,16 +148,18 @@ import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout'
 import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
 
+import { rewind as tRewind } from '@turf/turf';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
+import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
 import MetadataResources from './Metadata/MetadataResources';
-import MetadataLocation from './Metadata/MetadataLocation';
 import MetadataDetails from './Metadata/MetadataDetails';
 import MetadataCitation from './Metadata/MetadataCitation';
 import MetadataPublications from './Metadata/MetadataPublications';
 import MetadataFunding from './Metadata/MetadataFunding';
 import MetadataAuthors from './Metadata/MetadataAuthors';
-import MetadataGeo from './Geoservices/MetadataGeo';
+import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
 
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
@@ -182,6 +184,8 @@ export default {
     eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
+    // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
+    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -217,6 +221,7 @@ export default {
     this.filePreviewComponent = null;
     eventBus.$off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
     eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
+    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   computed: {
     ...mapState([
@@ -284,12 +289,12 @@ export default {
           showDisclaimer: fileObj.showDisclaimer,
           seriesNumberFormat: fileObj.seriesNumberFormat,
         };
-        
+
         fileList.push(fileObjectTemplate);
       }
 
       return fileList;
-    },    
+    },
     baseUrl() {
       return process.env.NODE_ENV === 'production' ? this.baseStationURL : this.baseStationURLTestdata;
     },
@@ -345,7 +350,42 @@ export default {
     },
   },
   methods: {
-    loadStationsConfig(url) {
+    setGeoServiceLayers(location, layerConfig, wmsUrl) {
+
+      try {
+        location = location ? tRewind(location.geoJSON) : null;
+      } catch (error) {
+        this.geoServiceLayersError = error;
+      }
+
+      if (wmsUrl) {
+        this.fetchWmsConfig(wmsUrl);
+      } else { 
+
+        this.geoServiceConfig = {
+          site: location,
+          layerConfig,
+          error: this.geoServiceLayersError,
+        };
+
+        const { components } = this.$options;
+        this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+      }
+    },    
+    loadGeoServiceLayers(url) {
+      this.geoServiceLayers = null;
+      this.geoServiceLayersError = null;
+
+      axios
+      .get(url)
+      .then((response) => {
+        this.geoServiceLayers = response.data;
+      })
+      .catch((error) => {
+        this.geoServiceLayersError = error;
+      });
+    },
+    loadStationsConfig(url, successCallback) {
       this.stationsConfig = null;
 
       axios
@@ -353,11 +393,7 @@ export default {
       .then((response) => {
         this.stationsConfig = response.data;
 
-        // Rebecca:
-        // get now date, substract 14days
-        // go through each station add the timestamps to the url
-
-        this.injectMicroCharts();
+        successCallback();
       })
       .catch((error) => {
         this.stationsConfigError = error;
@@ -371,7 +407,7 @@ export default {
       axios
       .get(url)
       .then((response) => {
-        
+
         this.fileObjects = response.data.fileObjects;
         this.graphStyling = response.data.graphStyling;
       })
@@ -408,6 +444,11 @@ export default {
       const fileName = splits[splits.length - 1];
 
       this.modalTitle = `Preview of ${fileName}`;
+
+      eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    showFullscreenMapModal() {
+      this.fullScreenComponent = MetadataMapFullscreen;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -483,10 +524,14 @@ export default {
     setMetadataContent() {
       const { components } = this.$options;
 
-      let configs = null;
+      this.configInfos = {
+        stationsConfigUrl: null,
+        stationParametersUrl: null,
+        geoUrl: null,
+      };
 
       if (this.resources?.resources) {
-        configs = getConfigFiles(this.resources.resources);
+        this.configInfos = getConfigFiles(this.resources.resources);
 
         enhanceResourcesStrategyEvents(this.resources.resources);
       }
@@ -495,14 +540,23 @@ export default {
       this.$set(components.MetadataBody, 'genericProps', { body: this.body });
       this.$set(components.MetadataCitation, 'genericProps', this.citation);
 
-      configs = getGcnetStationsConfigs(configs);
+      this.configInfos = getConfigUrls(this.configInfos);
 
-      if (configs?.stationsConfigUrl) {
-        this.loadStationsConfig(configs.stationsConfigUrl);
+      if (this.configInfos?.stationsConfigUrl) {
+        this.loadStationsConfig(this.configInfos.stationsConfigUrl, () => {
+          this.injectMicroCharts();
+        });
       }
 
-      if (configs?.stationParametersUrl) {
-        this.loadParameterJson(configs.stationParametersUrl);
+      if (this.configInfos?.stationParametersUrl) {
+        this.loadParameterJson(this.configInfos.stationParametersUrl);
+      }
+
+      if (this.configInfos?.geoConfigUrl) {
+        // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
+        this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
+      } else {
+        this.setGeoServiceLayers(this.location, null, null);
       }
 
       this.$set(components.MetadataResources, 'genericProps', {
@@ -510,13 +564,6 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      const geoConfig = configs?.geoServicesConfig ? configs.geoServicesConfig : null;
-
-      if (geoConfig) {
-        this.$set(components.MetadataGeo, 'genericProps', { ...this.location, config: geoConfig });
-      } else {
-        this.$set(components.MetadataLocation, 'genericProps', this.location);
-      }
 
       this.$set(components.MetadataDetails, 'genericProps', { details: this.details });
       this.$set(components.MetadataAuthors, 'genericProps', {
@@ -544,7 +591,7 @@ export default {
 
       this.secondCol = [
         components.MetadataResources,
-        geoConfig ? components.MetadataGeo : components.MetadataLocation,
+        components.MetadataGeo,
         components.MetadataDetails,
       ];
 
@@ -554,7 +601,7 @@ export default {
         components.MetadataPublications,
         components.MetadataResources,
         components.MetadataFunding,
-        geoConfig ? components.MetadataGeo : components.MetadataLocation,
+        components.MetadataGeo,
         components.MetadataAuthors,
         components.MetadataDetails,
       ];
@@ -618,11 +665,7 @@ export default {
         query,
       });
     },
-    /**
-       * @description
-       */
     catchBackClicked() {
-      // console.log(this.$router);
       const backRoute = this.detailPageBackRoute;
 
       if (backRoute) {
@@ -653,8 +696,22 @@ export default {
         this.setMetadataContent();
       }
     },
+    fetchWmsConfig(url) {
+      createWmsCatalog(url)
+        .then((res) => {
+          this.setGeoServiceLayers(this.location, res, null);
+        });
+    },
   },
   watch: {
+    geoServiceLayers() {
+      this.setGeoServiceLayers(this.location, this.geoServiceLayers, this.geoServiceLayers?.wmsUrl);
+    },
+    geoServiceLayersError() {
+      if (this.geoServiceLayersError) {
+        this.setGeoServiceLayers(null, null, null);
+      }
+    },
     /**
      * @description watcher on idsToResolve start resolving them, if not already in the works
      */
@@ -722,7 +779,6 @@ export default {
     MetadataHeader,
     MetadataBody,
     MetadataResources,
-    MetadataLocation,
     MetadataDetails,
     MetadataCitation,
     MetadataPublications,
@@ -733,15 +789,21 @@ export default {
     GenericModalPageLayout,
     DetailChartsList,
     MicroChartList,
+    MetadataMapFullscreen,
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
+    geoConfigUrl: '',
     fileObjects: null,
     graphStyling: null,
     stationsConfigError: null,
     stationParametersError: null,
+    configInfos: null,
+    geoServiceConfig: null,
+    geoServiceLayers: null,
+    geoServiceLayersError: null,
     header: null,
     body: null,
     citation: null,

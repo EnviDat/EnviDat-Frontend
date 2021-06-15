@@ -72,6 +72,7 @@
     mapState,
     mapGetters,
   } from 'vuex';
+  
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   import 'leaflet.markercluster/dist/leaflet.markercluster';

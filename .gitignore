@@ -96,3 +96,5 @@ storybook-static/
 .vscode/
 
 public/version_*
+
+public/testdata/config.json

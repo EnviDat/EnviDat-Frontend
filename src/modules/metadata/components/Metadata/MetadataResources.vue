@@ -217,8 +217,4 @@ export default {
     scrollbar-width: thin;
   }
 
-  .resourcesIcons {
-    opacity: 0.5;
-  }
-
 </style>

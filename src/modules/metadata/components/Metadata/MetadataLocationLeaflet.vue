@@ -32,12 +32,15 @@
       color: String,
       fillAlpha: Number,
       outlineWidth: Number,
+      selectedMapService: Object,
+      mapServiceUrl: String,
     },
     data: () => ({
       marker,
       marker2x,
       markerShadow,
       map: null,
+      mapServiceLayer: null,
     }),
     mounted() {
       this.setupMap();
@@ -98,6 +101,7 @@
           [this.zoomExtent.minY, this.zoomExtent.minX],
           [this.zoomExtent.maxY, this.zoomExtent.maxX],
         ]);
+        this.replaceMapServiceLayer();
       },
       addImageMapLayer(map, bingKey) {
         const streetTiles = L.tileLayer(
@@ -125,6 +129,33 @@
         this.mapLayerGroup.addTo(map);
 
         L.control.layers(baseMaps).addTo(map);
+      },
+      replaceMapServiceLayer() {
+        if (!this.map) return;
+        if (this.mapServiceLayer) {
+          this.map.removeLayer(this.mapServiceLayer);
+        }
+        if (this.mapServiceUrl && this.selectedMapService) {
+          // eslint-disable-next-line new-cap
+          this.mapServiceLayer = new L.tileLayer.wms(
+            this.mapServiceUrl,
+            {
+              layers: this.selectedMapService.id,
+              transparent: 'true',
+              format: 'image/png',
+            },
+          );
+          this.map.addLayer(this.mapServiceLayer);
+        }
+      },
+    },
+    watch: {
+      selectedMapService: {
+        handler() {
+          this.replaceMapServiceLayer();
+        },
+        deep: true,
+        immediate: true,
       },
     },
   };

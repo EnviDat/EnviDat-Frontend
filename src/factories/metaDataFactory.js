@@ -20,8 +20,6 @@ import {
   getAuthorsString,
 } from '@/factories/authorFactory';
 
-import globalMethods from '@/factories/globalMethods';
-
 import {
   FOREST,
   SNOW,
@@ -423,6 +421,10 @@ function getMultiPointArray(coordinates) {
   return points;
 }
 
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+
 export function createLocation(dataset) {
   if (!dataset) {
     return null;
@@ -442,12 +444,20 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-    const spatialJSON = JSON.parse(dataset.spatial);
+    
+    let spatialJSON = null;
+    try {
+      spatialJSON = JSON.parse(dataset.spatial);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`MetaDataFactory: geojson parsing error ${error}`);
+    }
 
     if (spatialJSON) {
-      location.isPolygon = spatialJSON.type === 'Polygon';
-      location.isPoint = spatialJSON.type === 'Point';
-      location.isMultiPoint = spatialJSON.type === 'MultiPoint';
+      location.geoJSON = spatialJSON;
+      location.isPolygon = spatialJSON.type === LOCATION_TYPE_POLYGON;
+      location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
+      location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
@@ -588,27 +598,4 @@ export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
   }
 
   return metadatas;
-}
-
-
-export function getCardBackgrounds(useWebp = false) {
-  const bgs = {};
-
-  if (useWebp) {
-    bgs[LAND] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
-    bgs[FOREST] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
-    bgs[SNOW] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
-    bgs[DIVERSITY] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
-    bgs[HAZARD] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
-    bgs[METEO] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
-  } else {
-    bgs[LAND] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
-    bgs[FOREST] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
-    bgs[SNOW] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
-    bgs[DIVERSITY] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
-    bgs[HAZARD] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
-    bgs[METEO] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
-  }
-
-  return bgs;
 }
