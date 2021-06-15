@@ -135,6 +135,7 @@ import {
   GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
   OPEN_TEXT_PREVIEW,
+  INJECT_MAP_FULLSCREEN,
 } from '@/factories/eventBus';
 
 import {
