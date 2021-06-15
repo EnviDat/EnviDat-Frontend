@@ -321,7 +321,7 @@ export default {
       }
 
       if (this.$vuetify.breakpoint.lg) {
-        width = 83.25;
+        width = 82.5;
       }
 
       let pos = 'position: ';

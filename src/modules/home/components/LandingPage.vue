@@ -5,8 +5,12 @@
                 id="LandingPage">
 
     <div v-show="showPolygonParticles"
-          id="polygon-canvas"
-          style="position: absolute; width: 100%; height: 400px; bottom: 0; left: 0;"></div>
+          id="polygon-canvas" 
+          style="position: absolute; width: 100%; height: 325px; bottom: 0; left: 0;" />
+
+    <div v-show="showPolygonParticles"
+          id="polygon-canvas2"
+          style="position: absolute; width: 400px; height: 300px; bottom: 30%; left: 22.5%;" />
 
       <v-row class="pb-5"
               no-gutters>
@@ -129,8 +133,6 @@ import SloganCard from '@/modules/home/components/SloganCard';
 import TheTitleScreenLayout from './TheTitleScreenLayout';
 import SearchBarView from './SearchBarView';
 
-require('particles.js');
-
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
 
@@ -167,7 +169,7 @@ export default {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
     },
     showPolygonParticles() {
-      return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
+      return this.$vuetify.breakpoint.lgAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
     },
     showDecemberParticles() {
       return this.effectsConfig.decemberParticles && this.itIsDecember;
@@ -229,8 +231,18 @@ export default {
       if (this.showPolygonParticles) {
         // particleOptions have to be in the folder public/particles/polygonParticleOptions.json for development
         // in production they have to be in same folder as the index.html there -> ./particles/polygonParticleOptions.json
+
         // eslint-disable-next-line no-undef
         particlesJS.load('polygon-canvas', './particles/polygonParticleOptions.json', () => {
+          // console.log('polygon-canvas - particles.js config loaded');
+          if (this.currentParticles) {
+            this.stopParticles(false);
+          }
+          this.currentParticles = window.pJS;
+        });
+
+        // eslint-disable-next-line no-undef
+        particlesJS.load('polygon-canvas2', './particles/polygonParticleOptions2.json', () => {
           // console.log('polygon-canvas - particles.js config loaded');
           if (this.currentParticles) {
             this.stopParticles(false);

@@ -142,8 +142,6 @@ import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
 import TextBanner from '@/components/Layouts/TextBanner';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
-require('particles.js');
-
 export default {
   name: 'App',
   beforeCreate() {
