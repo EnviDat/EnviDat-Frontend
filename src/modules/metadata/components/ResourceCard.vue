@@ -22,6 +22,7 @@
         <v-row no-gutters >
           <v-col v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
                   class="readableText resourceCardText heightAndScroll"
+                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   v-html="markdownText" >
           </v-col>
 
@@ -234,6 +235,12 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
     markdownText() {
       return renderMarkdown(this.description.trim());
     },

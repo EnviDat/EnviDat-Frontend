@@ -26,6 +26,7 @@
     <v-card-text v-if="showAuthors && !showPlaceholder && hasAuthors"
                   class="pa-2 pt-0" >
       <v-container fluid
+                    :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                     class="pa-0 heightAndScroll" >
 
         <v-row no-gutters >
@@ -124,6 +125,12 @@ export default {
     },
     emptyText() {
       return this.mixinMethods_getGenericProp('emptyText', 'No authors found for this dataset.');
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {
