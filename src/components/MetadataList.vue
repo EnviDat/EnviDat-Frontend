@@ -94,6 +94,7 @@
                           :fileIconString="fileIconString"
                           :lockedIconString="lockedIconString"
                           :unlockedIconString="unlockedIconString"
+                          :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId])"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
