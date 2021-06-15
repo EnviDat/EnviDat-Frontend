@@ -5,8 +5,12 @@
                 id="LandingPage">
 
     <div v-show="showPolygonParticles"
-          id="polygon-canvas"
-          style="position: absolute; width: 100%; height: 400px; bottom: 0; left: 0;"></div>
+          id="polygon-canvas" 
+          style="position: absolute; width: 100%; height: 325px; bottom: 0; left: 0;" />
+
+    <div v-show="showPolygonParticles"
+          id="polygon-canvas2"
+          style="position: absolute; width: 400px; height: 300px; bottom: 30%; left: 22.5%;" />
 
       <v-row class="pb-5"
               no-gutters>
@@ -31,9 +35,9 @@
                       :subSlogan="newYearWishes" />
         </v-col>
 
-        <the-title-screen-layout :title="envidatTitle"
-                                  :slogan="envidatSlogan"
-                                  :subSlogan="envidatSubSlogan"
+        <the-title-screen-layout :title="welcomeInfo.titleText"
+                                  :slogan="welcomeInfo.Slogan"
+                                  :subSlogan="welcomeInfo.SubSlogan"
                                   :buttonText="sloganButtonText"
                                   :buttonCallback="catchBrowseClicked"
                                   :moreButtonText="sloganMoreButtonText"
@@ -43,7 +47,7 @@
 
       <v-row class="hidden-xs-only px-0 py-5 offset-md-4 offset-lg-6"
               no-gutters>
-        <search-bar-view :labelText="labelText"
+        <search-bar-view :labelText="welcomeInfo.searchLabelText"
                           :buttonText="buttonText"
                           :hasButton="true"
                           @clicked="catchSearchClicked" />
@@ -51,7 +55,7 @@
 
       <v-row class="py-5 pa-0 hidden-sm-and-up"
               no-gutters>
-        <small-search-bar-view :labelText="smallScreenLabelText"
+        <small-search-bar-view :labelText="welcomeInfo.smallSearchLabelText"
                                 :buttonText="buttonText"
                                 @clicked="catchSearchClicked" />
       </v-row>
@@ -129,8 +133,6 @@ import SloganCard from '@/modules/home/components/SloganCard';
 import TheTitleScreenLayout from './TheTitleScreenLayout';
 import SearchBarView from './SearchBarView';
 
-require('particles.js');
-
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
 
@@ -163,8 +165,11 @@ export default {
       'categoryCards',
       'config',
     ]),
+    welcomeInfo() {
+      return this.config?.welcomeInfo || this.defaultWelcomeInfo;
+    },
     showPolygonParticles() {
-      return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
+      return this.$vuetify.breakpoint.lgAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
     },
     showDecemberParticles() {
       return this.effectsConfig.decemberParticles && this.itIsDecember;
@@ -234,6 +239,15 @@ export default {
           }
           this.currentParticles = window.pJS;
         });
+
+        // eslint-disable-next-line no-undef
+        particlesJS.load('polygon-canvas2', './particles/polygonParticleOptions2.json', () => {
+          // console.log('polygon-canvas - particles.js config loaded');
+          if (this.currentParticles) {
+            this.stopParticles(false);
+          }
+          this.currentParticles = window.pJS;
+        });
       }
     },
     catchCategoryClicked(cardType) {
@@ -287,19 +301,17 @@ export default {
   data: () => ({
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
-    labelText: 'Looking for something specific? Enter research term, topic or author here!',
-    smallScreenLabelText: 'Enter research term, topic or author',
     buttonText: 'SEARCH',
-    envidatTitle: 'EnviDat',
-    envidatSlogan: 'Environmental Research Data at your Fingertips',
-    envidatSubSlogan: 'EnviDat provides research data from Switzerland and all over the world. The data is being being provided by researchers of the many research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
     sloganButtonText: 'EXPLORE DATA',
     sloganMoreButtonText: 'ABOUT ENVIDAT',
-    welcomeInfo: {
-      titleText: 'Welcome to EnviDat',
+    defaultWelcomeInfo: {
+      titleText: 'EnviDat',
+      Slogan: 'Environmental Research Data at your Fingertips',
+      SubSlogan: 'EnviDat provides research data from Switzerland and all over the world. The data is being provided by researchers of the many research units of the Swiss Federal Institute for Forest, Snow and Landscape WSL.',
+      searchLabelText: 'Looking for something specific? Enter research term, topic or author here!',
+      smallSearchLabelText: 'Enter research term, topic or author',
       searchText: 'Looking for something specific?',
-      // categoryText: 'Have a look at a category of research data or sign in',
-      categoryText: 'Have a look at the data of one of theses categories or sign in to upload your data',
+      categoryText: 'Have a look at one of theses categories or sign in to upload your data',
     },
   }),
 };

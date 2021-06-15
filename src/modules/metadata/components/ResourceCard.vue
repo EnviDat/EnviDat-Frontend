@@ -1,9 +1,10 @@
 <template>
-  <v-card color="primary"
+  <v-card :id="`resourceCard_${id}`"
+          color="primary"
           class="metadataResourceCard"
           style="height: 100%;" >
 
-    <v-card-title class="headline white--text">
+    <v-card-title class="headline resourceHeadline white--text">
       {{ name }}
     </v-card-title>
 
@@ -19,19 +20,21 @@
       <v-container class="pa-0"
                     fluid >
         <v-row no-gutters >
-          <v-col v-if="showFullDescription"
+          <v-col v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
                   class="readableText resourceCardText heightAndScroll"
+                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   v-html="markdownText" >
           </v-col>
 
-          <v-col v-if="!showFullDescription"
+          <v-col v-if="!showFullDescription && maxDescriptionLengthReached"
                   class="readableText resourceCardText" >
             {{ markdownTextTruncated }}
           </v-col>
 
-          <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
+          <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
                   style="width: 30px;"
-                  class="shrink" align-self="end" >
+                  class="shrink"
+                  align-self="end" >
 
             <base-icon-button material-icon-name="expand_more"
                               iconColor="accent"
@@ -39,7 +42,7 @@
                               outlined
                               tooltipText="Show full description"
                               @clicked="showFullDescription = !showFullDescription" />
-          </v-col>
+          </v-col> -->
         </v-row>
 
         <v-row v-if="!showFullDescription"
@@ -55,30 +58,35 @@
           <v-col class="resourceInfo" >
             <base-icon-label-view v-if="doi"
                                   :text="doi"
+                                  :label="doiIcon ? '' : 'DOI:'"
                                   :icon="doiIcon"
                                   icon-tooltip="Data Object Identifier"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="format" 
                                   :text="format"
-                                  :icon="extensionIcon()"
+                                  :label="extensionIcon ? '' : 'File format:'"
+                                  :icon="extensionIcon"
                                   icon-tooltip="Format of the file"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="size" 
                                   :text="formatedBytes"
+                                  :label="fileSizeIcon ? '' : 'File size:'"
                                   :icon="fileSizeIcon"
                                   icon-tooltip="Filesize"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="created" 
                                   :text="created"
+                                  :label="dateCreatedIcon ? '' : 'Created at:'"
                                   :icon="dateCreatedIcon"
                                   icon-tooltip="Date of file creation"
                                   :align-left="twoColumnLayout" />
 
             <base-icon-label-view v-if="lastModified" 
                                   :text="lastModified"
+                                  :label="lastModifiedIcon ? '' : 'Modified at:'"
                                   :icon="lastModifiedIcon"
                                   icon-tooltip="Date of last modification"
                                   :align-left="twoColumnLayout" />
@@ -91,46 +99,74 @@
     <v-card-actions class="ma-0 pa-2"
                     style="position: absolute; bottom: 0px; right: 50px;" >
 
-      <base-icon-button v-if="maxDescriptionLengthReached && showFullDescription"
+      <base-icon-button v-if="maxDescriptionLengthReached"
                         :class="isProtected ? 'mr-2' : ''"
                         material-icon-name="expand_more"
-                        iconColor="primary"
+                        :iconColor="showFullDescription ? 'primary' : 'accent'"
                         color="accent"
-                        :fillColor="$vuetify.theme.themes.light.accent"
+                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
                         outlined
                         :rotateOnClick="true"
                         :rotateToggle="showFullDescription"
-                        tooltipText="Hide full description"
+                        :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
                         @clicked="showFullDescription = !showFullDescription" />
+
     </v-card-actions>
 
-    <div class="ma-0 py-3"
-          style="position: absolute; bottom: 0px; right: 0px;" >
+    <!-- <div class="ma-0 py-3"
+          style="position: absolute; bottom: 0px; right: 0px;" > -->
+    <!-- <v-card-actions class="ma-0 pa-0"
+                    style="position: absolute; bottom: 0px; right: 0px;" >
+ -->
+      <v-container fluid class="pa-2" 
+                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
+        
+      <v-row v-if="!isProtected">
+        <v-col v-if="showGenericOpenButton"
+                cols="12"
+                class="py-1">
+          <base-icon-button materialIconName="preview"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :tooltipText="openButtonTooltip"
+                            @clicked="$emit('previewClicked')" />
+        </v-col>
 
-      <div v-if="isProtected"
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
-            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
+        <v-col cols="12"
+                class="pt-1">
+          <base-icon-button :materialIconName="isFile ? 'file_download' : 'link'"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :tooltipText="isFile ? 'Download file' : 'Open link'"
+                            :url="url"
+                            :disabled="!downloadActive" />
+        </v-col>
+      </v-row>
 
-        <v-icon class="pl-1 pt-1"
-                :disabled="!downloadActive">shield</v-icon>
+      <v-row v-if="isProtected">
+        <v-col>
+          <div class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
+                :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
 
-        <p v-if="downloadActive"
-            class="pt-2 lockedText black--text resourceCardText"
-            v-html="protectedText">
-        </p>
-      </div>
+            <v-icon class="pl-1 pt-1"
+                    :class="downloadActive ? 'iconCircle' : ''"
+                    :disabled="!downloadActive">shield</v-icon>
 
-      <base-icon-button v-if="!isProtected"
-                        class="fabPosition ma-2"
-                        style="height: 40px; width: 40px;"
-                        :materialIconName="isFile ? 'file_download' : 'link'"
-                        iconColor="black"
-                        color="accent"
-                        :isElevated="true"
-                        :tooltipText="isFile ? 'Download file' : 'Open link'"
-                        :url="url"
-                        :disabled="!downloadActive" />
-    </div>
+            <p v-if="downloadActive"
+                class="pt-2 lockedText black--text protectedLink"
+                v-html="protectedText">
+            </p>
+          </div>
+        </v-col>
+      </v-row>
+
+      </v-container>
+
+    <!-- </div> -->
+    <!-- </v-card-actions> -->
+
   </v-card>
 </template>
 
@@ -148,12 +184,16 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { stripMarkdown } from '@/factories/stringFactory';
+import {
+  stripMarkdown,
+  renderMarkdown,
+ } from '@/factories/stringFactory';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 
 export default {
+  name: 'ResourceCard',
   components: {
     BaseIconLabelView,
     BaseIconButton,
@@ -164,6 +204,7 @@ export default {
     name: String,
     description: String,
     url: String,
+    restrictedUrl: String,
     created: String,
     lastModified: String,
     size: Number,
@@ -182,6 +223,11 @@ export default {
       type: Boolean,
       default: true,
     },
+    showGenericOpenButton: {
+      type: Boolean,
+      default: false,
+    },
+    openButtonTooltip: String,
   },
   data: () => ({
     maxDescriptionLength: 175,
@@ -189,8 +235,14 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
     markdownText() {
-      return stripMarkdown(this.description.trim());
+      return renderMarkdown(this.description.trim());
     },
     markdownTextTruncated() {
       if (this.maxDescriptionLengthReached) {
@@ -234,57 +286,65 @@ export default {
       return this.description && this.description.length > this.maxDescriptionLength;
     },
     protectedText() {
-      if (this.url && this.url.length > 0) {
-        return `This resource is protected <a href="${this.url}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+      if (this.restrictedUrl && this.restrictedUrl.length > 0) {
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
+    extensionIcon() {
+      if (this.$store) {
+
+        if (this.audioFormats.includes(this.format)) {
+          return this.mixinMethods_getIcon('Audio');
+        }
+
+        let extIcon = this.mixinMethods_getIconFileExtension(this.format);
+
+        if (!extIcon && this.format.toLowerCase() === 'url') {
+          extIcon = this.linkIcon;
+        }
+
+        if (extIcon) {
+          return extIcon;
+        }
+
+        return this.mixinMethods_getIcon('file');
+      }
+      
+      if (this.fileExtensionIcon) {
+        return this.lookupExtensionIcon;
+      }
+
+      return null;
+    },
+    lookupExtensionIcon() {
+      const lookUp = `file${this.format.toLowerCase()}`;
+      let icon = this.fileExtensionIcon.get(lookUp);
+
+      if (!icon && this.audioFormats.includes(this.format)) {
+        icon = this.fileExtensionIcon.get('fileAudio');
+      }
+
+      if (!icon) {
+        icon = this.fileExtensionIcon.get('file');
+      }
+
+      // console.log(`icon ${icon}`);
+      return icon;
+    },    
   },
   methods: {
-    clicked() {
-      this.$emit('clicked');
-    },
-    extensionIcon() {
-      if (typeof this.mixinMethods_getIconFileExtension === 'undefined'
-          || typeof this.$store === 'undefined') {
 
-        const lookUp = `file${this.format.toLowerCase()}`;
-        let icon = this.fileExtensionIcon.get(lookUp);
-
-        if (!icon && this.audioFormats.includes(this.format)) {
-          icon = this.fileExtensionIcon.get('fileAudio');
-        }
-
-        if (!icon) {
-          icon = this.fileExtensionIcon.get('file');
-        }
-
-        // console.log(`icon ${icon}`);
-        return icon;
-      }
-
-      if (this.audioFormats.includes(this.format)) {
-        return this.mixinMethods_getIcon('Audio');
-      }
-
-      let extIcon = this.mixinMethods_getIconFileExtension(this.format);
-
-      if (!extIcon && this.format.toLowerCase() === 'url') {
-        extIcon = this.linkIcon;
-      }
-
-      if (extIcon) {
-        return extIcon;
-      }
-
-      return this.mixinMethods_getIcon('file');
-    },
   },
 };
 </script>
 
 <style scoped>
+
+  .resourceHeadline {
+    line-height: 1.5rem;
+  }
 
   .black_title {
     color: rgba(0,0,0,.87) !important;
@@ -301,7 +361,8 @@ export default {
   }
 
   .fabPosition {
-    position: absolute; bottom: 0px; right: 0px;
+    position: absolute;
+    bottom: 0px; right: 0px;
   }
 
   .fabMenu {
@@ -309,7 +370,7 @@ export default {
     height: 48px;
     background-color: #FFD740;
     border-radius: 50%;
-    transition: .3s;
+    /* transition: .1s; */
   }
 
   .fabMenuDisabled {
@@ -321,23 +382,28 @@ export default {
   .fabMenuHover:active {
     background: #FFF;
     min-width: 160px;
+    min-height: 160px;
     width: 100%;
     height: 100%;
-    min-height: 160px;
     border-radius: 3px 3px;
-    visibility: visible;
+    display: inherit;
   }
 
+  .fabMenuHover:hover .v-icon,
+  .fabMenuHover:active .v-icon {
+    border: 1px solid grey;
+    border-radius: 50%;
+    padding: 0 4px 4px 0;
+  }  
+
   .lockedText {
-    visibility: hidden;
+    display: none;
     opacity: 0;
-    transition: 0.1s;
   }
 
   .fabMenuHover:hover .lockedText,
   .fabMenuHover:active .lockedText {
-    visibility: visible;
-    transition: 0.5s;
+    display: inherit;
     opacity: 1;
   }
 
@@ -346,4 +412,10 @@ export default {
     line-height: 0.8rem !important;
     opacity: 0.9;
   }
+
+  .protectedLink {
+    font-size: 12px;
+    overflow: hidden;
+  }  
+
 </style>

@@ -1,7 +1,8 @@
 <template>
   <v-container class="pa-0"
                 fluid
-                tag="article" >
+                tag="article"
+                id="MetadataDetailPage" >
 
     <v-row no-gutters >
       <v-col class="elevation-5 pa-0"
@@ -39,8 +40,7 @@
 
           <component :is="entry"
                       :generic-props="entry.genericProps"
-                      :show-placeholder="showPlaceholder"
-                      :authorDeadInfo="authorDeadInfo" />
+                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
       </template>
@@ -53,12 +53,27 @@
 
           <component :is="entry"
                       :generic-props="entry.genericProps"
-                      :show-placeholder="showPlaceholder"
-                      :authorDeadInfo="authorDeadInfo" />
+                      :show-placeholder="showPlaceholder" />
           </v-col>
         </v-row>
+        
       </template>
     </two-column-layout>
+
+    <GenericModalPageLayout :title="modalTitle"
+                              :autoScroll="filePreviewComponent !== null" >
+
+      <component :is="gcnetModalComponent"
+                  :currentStation="currentStation"
+                  :fileObjects="fileObjects"
+                  :graphStyling="graphStyling" />
+
+      <component :is="filePreviewComponent"
+                  :url="filePreviewUrl" />
+                  
+
+    </GenericModalPageLayout>
+
   </v-container>
 </template>
 
@@ -71,12 +86,13 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2021-01-06 16:47:28
+ * Last modified  : 2021-02-11 13:31:07
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
 import {
   BROWSE_PATH,
@@ -107,7 +123,30 @@ import {
 import {
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
+import {
+  getConfigFiles,
+  getGcnetStationsConfigs,
+} from '@/factories/chartFactory';
+
+import {
+  eventBus,
+  METADATA_OPEN_MODAL,
+  METADATA_CLOSE_MODAL,
+  GCNET_OPEN_DETAIL_CHARTS,
+  GCNET_INJECT_MICRO_CHARTS,
+  OPEN_TEXT_PREVIEW,
+} from '@/factories/eventBus';
+
+import {
+  enhanceResourcesStrategyEvents,
+  getPreviewStrategyFromUrl,
+} from '@/factories/strategyFactory';
+
+
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
+import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
+import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
 
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
@@ -135,12 +174,22 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
+  created() {
+    eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+
+    this.filePreviewUrl = null;
+    this.filePreviewComponent = null;
+    eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+
+    eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
+  },
   /**
-     * @description load all the icons once before the first component's rendering.
-     */
+   * @description load all the icons once before the first component's rendering.
+   */
   beforeMount() {
     this.doiIcon = this.mixinMethods_getIcon('doi');
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
+    this.fileIcon = this.mixinMethods_getIcon('file');
     this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
     this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
     this.contactIcon = this.mixinMethods_getIcon('contact2');
@@ -148,8 +197,8 @@ export default {
     this.licenseIcon = this.mixinMethods_getIcon('license');
   },
   /**
-     * @description reset the scrolling to the top.
-     */
+   * @description reset the scrolling to the top.
+   */
   mounted() {
     this.loadMetaDataContent();
 
@@ -161,6 +210,13 @@ export default {
   beforeDestroy() {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
+
+    eventBus.$off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+
+    this.filePreviewUrl = null;
+    this.filePreviewComponent = null;
+    eventBus.$off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+    eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
   },
   computed: {
     ...mapState([
@@ -187,6 +243,9 @@ export default {
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
       publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
+    hasGcnetStationConfig() {
+      return this.stationsConfig !== null;
+    },
     metadataConfig() {
       return this.config?.metadataConfig || {};
     },
@@ -204,6 +263,35 @@ export default {
         asciiDead: this.asciiDead,
         authorPassedInfo: this.authorPassedInfo,
       };
+    },
+    generateFileList() {
+      const fileList = [];
+
+      if (!this.currentStation || !this.fileObjects) {
+        // handle empty case, just return the empty list
+        return fileList;
+      }
+
+      for (let i = 0; i < this.fileObjects.length; i++) {
+        const fileObj = this.fileObjects[i];
+
+        const fileObjectTemplate = {
+          fileName: `${this.baseUrl}${this.currentStation.id}${fileObj.fileName}`,
+          chartTitle: fileObj.chartTitle,
+          numberFormat: fileObj.numberFormat,
+          dateFormatTime: fileObj.dateFormatTime,
+          preload: fileObj.preload,
+          showDisclaimer: fileObj.showDisclaimer,
+          seriesNumberFormat: fileObj.seriesNumberFormat,
+        };
+        
+        fileList.push(fileObjectTemplate);
+      }
+
+      return fileList;
+    },    
+    baseUrl() {
+      return process.env.NODE_ENV === 'production' ? this.baseStationURL : this.baseStationURLTestdata;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -233,7 +321,7 @@ export default {
       }
 
       if (this.$vuetify.breakpoint.lg) {
-        width = 83.25;
+        width = 82.5;
       }
 
       let pos = 'position: ';
@@ -257,6 +345,76 @@ export default {
     },
   },
   methods: {
+    loadStationsConfig(url) {
+      this.stationsConfig = null;
+
+      axios
+      .get(url)
+      .then((response) => {
+        this.stationsConfig = response.data;
+
+        // Rebecca:
+        // get now date, substract 14days
+        // go through each station add the timestamps to the url
+
+        this.injectMicroCharts();
+      })
+      .catch((error) => {
+        this.stationsConfigError = error;
+      });
+    },
+    loadParameterJson(url) {
+
+      this.fileObjects = null;
+      this.graphStyling = null;
+
+      axios
+      .get(url)
+      .then((response) => {
+        
+        this.fileObjects = response.data.fileObjects;
+        this.graphStyling = response.data.graphStyling;
+      })
+      .catch((error) => {
+        this.stationParametersError = error;
+      });
+    },
+    getCurrentStation(stationId) {
+      for (let i = 0; i < this.stationsConfig.length; i++) {
+        const station = this.stationsConfig[i];
+        if (station.id === stationId || station.alias === stationId) {
+          return station;
+        }
+      }
+
+      return null;
+    },
+    showGCNetModal(stationId) {
+
+      this.currentStation = this.getCurrentStation(stationId);
+      this.gcnetModalComponent = this.$options.components.DetailChartsList;
+      this.modalTitle = `Sensor measurements for ${this.currentStation ? this.currentStation.name : ''} station`;
+
+      eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    showFilePreviewModal(url) {
+
+      const strat = getPreviewStrategyFromUrl(url);
+
+      this.filePreviewComponent = strat.component;
+      this.filePreviewUrl = url;
+
+      const splits = url.split('/');
+      const fileName = splits[splits.length - 1];
+
+      this.modalTitle = `Preview of ${fileName}`;
+
+      eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    closeModal() {
+      this.gcnetModalComponent = null;
+      this.filePreviewComponent = null;
+    },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;
       this.$forceUpdate();
@@ -267,10 +425,10 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if ((this.$vuetify.breakpoint.smAndDown
-        && this.appScrollPosition > 20) || this.$vuetify.breakpoint.mdAndUp) {
+      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
+        || this.$vuetify.breakpoint.mdAndUp) {
 
-        if (!this.showPlaceholder && this.$refs && this.$refs.header) {
+        if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
       }
@@ -306,6 +464,7 @@ export default {
         this.resources = createResources(currentContent);
         this.resources.doiIcon = this.doiIcon;
         this.resources.fileSizeIcon = this.fileSizeIcon;
+        this.resources.fileIcon = this.fileIcon;
         this.resources.dateCreatedIcon = this.dateCreatedIcon;
         this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
@@ -324,17 +483,34 @@ export default {
     setMetadataContent() {
       const { components } = this.$options;
 
-      const res = this.currentMetadataContent && this.currentMetadataContent.resources ? this.currentMetadataContent.resources : null;
-      const geoConfig = res ? res.find(src => src.name === 'geoservices_config.json') : null;
+      let configs = null;
+
+      if (this.resources?.resources) {
+        configs = getConfigFiles(this.resources.resources);
+
+        enhanceResourcesStrategyEvents(this.resources.resources);
+      }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
       this.$set(components.MetadataBody, 'genericProps', { body: this.body });
       this.$set(components.MetadataCitation, 'genericProps', this.citation);
+
+      configs = getGcnetStationsConfigs(configs);
+
+      if (configs?.stationsConfigUrl) {
+        this.loadStationsConfig(configs.stationsConfigUrl);
+      }
+
+      if (configs?.stationParametersUrl) {
+        this.loadParameterJson(configs.stationParametersUrl);
+      }
+
       this.$set(components.MetadataResources, 'genericProps', {
         ...this.resources,
         resourcesConfig: this.resourcesConfig,
       });
 
+      const geoConfig = configs?.geoServicesConfig ? configs.geoServicesConfig : null;
 
       if (geoConfig) {
         this.$set(components.MetadataGeo, 'genericProps', { ...this.location, config: geoConfig });
@@ -346,6 +522,7 @@ export default {
       this.$set(components.MetadataAuthors, 'genericProps', {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
       });
 
       this.$set(components.MetadataPublications, 'genericProps', {
@@ -382,6 +559,13 @@ export default {
         components.MetadataDetails,
       ];
 
+    },
+    async injectMicroCharts() {
+      eventBus.$emit(
+        GCNET_INJECT_MICRO_CHARTS,
+        this.$options.components.MicroChartList,
+        this.stationsConfig,
+      );
     },
     startExtractingIds() {
       if (this.publicationsConfig?.resolveIds && !this.extractingIds) {
@@ -458,7 +642,7 @@ export default {
      * @description loads the content of this metadata entry (metadataid) from the URL.
      * Either loads it from the backend via action or creates it from the localStorage.
      */
-    loadMetaDataContent() {
+    async loadMetaDataContent() {
       if (!this.loadingMetadatasContent && !this.isCurrentIdOrName(this.metadataId)) {
         // in case of navigating into the page load the content directly via Id
         this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
@@ -517,7 +701,7 @@ export default {
      * @description watch the currentMetadataContent when it is the same as the url
      * the components will be filled with the metdata contents
      */
-    currentMetadataContent() {
+    async currentMetadataContent() {
       if (this.isCurrentIdOrName(this.metadataId)) {
         this.createMetadataContent();
         this.setMetadataContent();
@@ -546,9 +730,18 @@ export default {
     TwoColumnLayout,
     MetadataAuthors,
     MetadataGeo,
+    GenericModalPageLayout,
+    DetailChartsList,
+    MicroChartList,
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
+    baseStationURL: 'https://www.envidat.ch/data-files/',
+    baseStationURLTestdata: './testdata/',
+    fileObjects: null,
+    graphStyling: null,
+    stationsConfigError: null,
+    stationParametersError: null,
     header: null,
     body: null,
     citation: null,
@@ -562,11 +755,19 @@ export default {
     notFoundBackPath: 'browse',
     doiIcon: null,
     fileSizeIcon: null,
+    fileIcon: null,
     dateCreatedIcon: null,
     lastModifiedIcon: null,
     contactIcon: null,
     mailIcon: null,
     licenseIcon: null,
+    modalTitle: '',
+    gcnetModalComponent: null,
+    filePreviewComponent: null,
+    filePreviewUrl: null,
+    eventBus,
+    stationsConfig: null,
+    currentStation: null,
     firstCol: [],
     secondCol: [],
     singleCol: [],
@@ -593,7 +794,6 @@ export default {
   }
 
   .resourceCardText {
-    font-size: 12px;
     color: rgba(255, 255, 255, 0.87) !important;
     overflow: hidden;
   }

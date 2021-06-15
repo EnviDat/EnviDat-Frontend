@@ -76,13 +76,13 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-3 pr-2 "
-                    style="position: absolute; bottom: 0px; right: 0px; background-color: white;" >
+    <v-card-actions class="ma-0 pa-2 "
+                    style="position: absolute; bottom: 0px; right: 0px; background-color: white; border-radius: 10px;" >
 
       <v-container fluid class="pa-0 cardIcons">        
-        <v-row no-gutters>
+        <v-row >
           <v-col v-if="modeData"
-                  class="py-1" >
+                  class="py-2 px-3" >
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -92,14 +92,16 @@
 
         </v-row>
 
-        <base-icon-count-view :count="resourceAmount"
-                              :icon-string="fileIconString" />
+        <v-row >
+          <v-col class="py-2 px-3" >
+            <base-icon-count-view :count="resourceAmount"
+                                  :icon-string="fileIconString" />
+          </v-col>
+        </v-row>
 
-        <v-row v-if="geoJSONIcon"
-                no-gutters
-                justify="end" >
-          <v-col class="pa-0" >
-            <base-icon-label-view :icon="geoJSONIcon" />
+        <v-row v-if="geoJSONIcon" >
+          <v-col class="py-2 px-3" >
+            <BaseIconLabelView :icon="geoJSONIcon" />
 
           </v-col>
         </v-row>

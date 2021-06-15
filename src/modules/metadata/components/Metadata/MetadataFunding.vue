@@ -14,7 +14,7 @@
 
     <v-card-text v-if="fundingItems"
                   ref="funding"
-                  style="overflow-x: hidden;"
+                  :style="`overflow-x: hidden; scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   class="pa-4 pt-0 readableText heightAndScroll" >
 
       <v-row >
@@ -125,6 +125,12 @@ export default {
     emptyText() {
       return this.mixinMethods_getGenericProp('emptyText', 'No information about funding available for this dataset.');
     },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
+    },
   },
   methods: {
     showFundingItem(item) {
@@ -138,3 +144,13 @@ export default {
   }),
 };
 </script>
+
+<style scoped>
+
+  .heightAndScroll {
+    max-height: 750px;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+  }
+
+</style>

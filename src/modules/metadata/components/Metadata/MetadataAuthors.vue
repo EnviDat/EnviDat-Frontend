@@ -26,6 +26,7 @@
     <v-card-text v-if="showAuthors && !showPlaceholder && hasAuthors"
                   class="pa-2 pt-0" >
       <v-container fluid
+                    :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                     class="pa-0 heightAndScroll" >
 
         <v-row no-gutters >
@@ -84,7 +85,6 @@ export default {
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
-    authorDeadInfo: Object,
   },
   mounted() {
     const options = this.options || {};
@@ -114,6 +114,9 @@ export default {
     authorDetailsConfig() {
       return this.mixinMethods_getGenericProp('authorDetailsConfig', {});
     },
+    authorDeadInfo() {
+      return this.mixinMethods_getGenericProp('authorDeadInfo', {});
+    },
     hasAuthors() {
       return this.authors && this.authors.length > 0;
     },
@@ -122,6 +125,12 @@ export default {
     },
     emptyText() {
       return this.mixinMethods_getGenericProp('emptyText', 'No authors found for this dataset.');
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {

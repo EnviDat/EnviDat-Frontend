@@ -44,7 +44,8 @@
 
         <v-list-item-content v-if="item.icon === 'envidat'"
                               @click.stop="itemClick(item)">
-          <v-row class="fill-height"
+          <v-row no-gutters
+                  class="fill-height"
                   align="start"
                   justify="end" >
             <v-col cols="12"

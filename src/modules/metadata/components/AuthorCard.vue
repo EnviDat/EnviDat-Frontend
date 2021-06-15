@@ -24,6 +24,7 @@
               <template v-slot:activator="{ on }">
                 <v-icon v-on="on"
                         dark
+                        small
                         :class="dark ? 'white--text' : 'black--text'">
                   hourglass_empty
                 </v-icon>

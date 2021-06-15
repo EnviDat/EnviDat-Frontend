@@ -9,10 +9,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
- module.exports = {
+module.exports = {
   presets: [
     [
       '@vue/cli-plugin-babel/preset',
+      // '@babel/preset-env', { targets: { node: 'current' } },
     ],
   ],
   env: {

@@ -1,30 +1,29 @@
 <template>
-  <v-row no-gutters>
+  <div id="BaseIconCountView" >
     <v-tooltip v-if="$vuetify.breakpoint.mdAndUp && tooltipText"
                 bottom >
       <template v-slot:activator="{ on }">
         <div v-on="on"
               class="iconCountView" >
           <v-container fluid
-                      class="pa-0" >
-            <v-row @mouseover="hoverBadge = true"
-                    @mouseleave="hoverBadge = false"
-                    no-gutters>
-              <v-col >
-                <v-badge :left="!hoverBadge"
-                          overlap
-                          color="secondary"
-                          :class="{ envidatBadgeBigNumber : count > 9,
-                                    envidatBadge: count <= 9 }" >
-                                                        
-                  <span slot="badge" >{{ count }}</span>
-                </v-badge>
-              </v-col>
+                    class="py-0">
+          <v-row @mouseover="hoverBadge = true"
+                  @mouseleave="hoverBadge = false" >
+            <v-col class="pa-0" >
+              <v-badge :left="!hoverBadge"
+                        overlap
+                        color="secondary"
+                        :class="{ envidatBadgeBigNumber : count > 9,
+                                  envidatBadge: count <= 9 }" >
+                                                      
+                <span slot="badge" >{{ count }}</span>
+              </v-badge>
+            </v-col>
 
-              <v-col >
-                <img class="envidatIcon" :src="iconString" :alt="`${iconString} icon`">
-              </v-col>
-            </v-row>
+            <v-col class="pa-0" >
+              <img class="envidatIcon" :src="iconString" :alt="`${iconString} icon`">
+            </v-col>
+          </v-row>
           </v-container>
         </div>
       </template>
@@ -35,32 +34,31 @@
     <div v-else
           class="iconCountView" >
       <v-container fluid
-                    class="pa-0" >
-        <v-row @mouseover="hoverBadge = true"
-                @mouseleave="hoverBadge = false"
-                no-gutters>
+                    class="py-0">
+      <v-row @mouseover="hoverBadge = true"
+              @mouseleave="hoverBadge = false" >
 
-          <v-col >
-            <v-badge :left="!hoverBadge"
-                      overlap
-                      color="secondary"
-                      style="z-index: 2;"
-                      :class="{ envidatBadgeBigNumber : count > 9,
-                                envidatBadge: count <= 9 }" >
-                                                    
-              <span slot="badge">{{ count }}</span>
-            </v-badge>
-          </v-col>
+        <v-col class="pa-0" >
+          <v-badge :left="!hoverBadge"
+                    overlap
+                    color="secondary"
+                    style="z-index: 2;"
+                    :class="{ envidatBadgeBigNumber : count > 9,
+                              envidatBadge: count <= 9 }" >
+                                                  
+            <span slot="badge">{{ count }}</span>
+          </v-badge>
+        </v-col>
 
-          <v-col style="z-index: 1;" >
-            <img class="envidatIcon" :src="iconString" :alt="`${iconString} icon`">
-          </v-col>
+        <v-col class="pa-0" style="z-index: 1;" >
+          <img class="envidatIcon" :src="iconString" :alt="`${iconString} icon`">
+        </v-col>
 
-        </v-row>
+      </v-row>
       </v-container>
     </div>
 
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -72,7 +70,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-02 11:24:00
- * Last modified  : 2021-01-06 11:36:34
+ * Last modified  : 2019-11-27 14:54:23
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

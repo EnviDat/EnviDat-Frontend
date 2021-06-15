@@ -16,7 +16,7 @@
     <v-tooltip v-if="authorIsDead"
                 bottom>
       <template v-slot:activator="{ on }">
-        <v-icon v-on="on" >hourglass_empty</v-icon>
+        <v-icon v-on="on" x-small >hourglass_empty</v-icon>
       </template>
       {{ authorPassedInfo }}
     </v-tooltip>
@@ -33,7 +33,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2019-10-23 14:16:14
+ * Last modified  : 2021-02-10 16:46:06
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

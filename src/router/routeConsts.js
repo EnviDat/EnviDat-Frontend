@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:23 
- * Last modified  : 2019-10-23 16:35:03
+ * Last modified  : 2021-01-27 07:14:12
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -35,3 +35,4 @@ export const PROJECT_DETAIL_PATH = '/projects';
 export const PROJECT_DETAIL_PAGENAME = 'ProjectDetailPage';
 export const REPORT_PATH = '/report';
 export const REPORT_PAGENAME = 'ReportPage';
+export const PAGENOTFOUND_PAGENAME = 'PageNotFound';

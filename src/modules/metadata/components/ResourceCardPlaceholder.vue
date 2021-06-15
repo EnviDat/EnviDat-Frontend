@@ -1,14 +1,12 @@
 <template>
-  <v-card
-    color="primary"
-    class="metadataResourceCard white--text"
-    style="height: 100%; min-width: 200px;"
-  >
+  <v-card id="ResourceCardPlaceholder"
+          color="primary"
+          class="metadataResourceCard white--text"
+          style="height: 100%; min-width: 200px;" >
+
     <v-card-title>
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-        style="width: 100%;"
-      >
+      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
+            style="width: 100%;" >
         <div class="bone bone-type-heading" />
       </div>
     </v-card-title>
@@ -61,6 +59,7 @@
 */
 
 export default {
+  name: 'ResourceCardPlaceholder',
   components: {
   },
   props: {

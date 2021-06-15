@@ -25,6 +25,15 @@ export function renderMarkdown(markdownString) {
   return strippedMDFile.contents;
 }
 
+export function stripHTML(htmlString) {
+  if (!htmlString || htmlString.length <= 0) {
+    return '';
+  }
+
+  const strippedHtmlFile = remark().use(remarkStripHtmlLib).processSync(htmlString);
+  return strippedHtmlFile.contents;
+}
+
 export function stripMarkdown(markdownString, stripHtml = false) {
   if (!markdownString || markdownString.length <= 0) {
     return '';
@@ -34,8 +43,7 @@ export function stripMarkdown(markdownString, stripHtml = false) {
 
   let strippedString = strippedMDFile.contents;
   if (stripHtml) {
-    const strippedHtmlFile = remark().use(remarkStripHtmlLib).processSync(strippedString);
-    strippedString = strippedHtmlFile.contents;
+    strippedString = stripHTML(strippedString);
   }
 
   return strippedString;

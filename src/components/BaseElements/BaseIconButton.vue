@@ -1,5 +1,5 @@
 <template>
-  <div :style="isSmall ? 'height: 28px;' : 'height: 36px;'"
+  <div :style="`height: ${height}px;`"
         @mouseover="hoverBadge = true"
         @mouseleave="hoverBadge = false">
 
@@ -8,11 +8,12 @@
 
       <template v-slot:activator="{ on }">
         <v-btn v-on="on"
-               :style="{backgroundColor: fillColor ? fillColor : ''}"
+               :style="{ backgroundColor: fillColor ? fillColor : '' }"
                 style="margin: 0 !important;"
                 :icon="!isElevated"
                 :fab="isElevated"
-                :small="isSmall || isElevated"
+                :small="(isSmall || isElevated) && !(isSmall && isElevated)"
+                :x-small="isSmall && isElevated"
                 :outlined="outlined"
                 :color="color ? color : disabled ? '' : 'primary'"
                 :href="url"
@@ -134,6 +135,19 @@ export default {
   data: () => ({
     hoverBadge: false,
   }),
+  computed: {
+    height() {
+      let height = 36;
+      
+      if (this.isSmall) {
+        height = 28;
+      } else if (this.isElevated) {
+        height = 40;
+      } 
+
+      return height;
+    },
+  },  
   methods: {
     onClick() {
       this.$emit('clicked');

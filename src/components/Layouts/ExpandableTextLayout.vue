@@ -18,6 +18,7 @@
                   ref="text"
                   :usedMaxTextLength="maxTextLength"
                   class="pa-4 pt-0 heightAndScroll readableText"
+                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   v-html="markdownText" >
     </v-card-text>
 
@@ -112,6 +113,12 @@ export default {
     },
     maxTextLengthReached() {
       return this.text && this.maxTextLength && this.text.length > this.maxTextLength;
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {

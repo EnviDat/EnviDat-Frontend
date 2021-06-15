@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:33:32
- * Last modified  : 2019-10-25 15:40:50
+ * Last modified  : 2021-01-27 07:23:55
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -19,6 +19,7 @@ import {
   GCMD_PAGENAME,
   REPORT_PATH,
   REPORT_PAGENAME,
+  PAGENOTFOUND_PAGENAME,
 } from '@/router/routeConsts';
 
 import { homeRoutes } from '@/modules/home/routes';
@@ -42,17 +43,23 @@ const routes = [
     name: REPORT_PAGENAME,
     component: () => import(/* webpackChunkName: "guidelinesPage", webpackPrefetch: true */ '@/components/Pages/ReportPage'),
   },
+  /* The not found route needes to be last in the list! */
+  {
+    path: '/:catchAll(.*)',
+    name: PAGENOTFOUND_PAGENAME,
+    component: () => import(/* webpackChunkName: "pageNotFound", webpackPrefetch: true */ '@/components/Pages/PageNotFound'),
+  },  
 ];
 
 
 export default new Router({
   routes: [
-    ...routes,
     ...homeRoutes,
     ...browseRoutes,
     ...metadataRoutes,
     ...projectsRoutes,
     ...aboutRoutes,
+    ...routes,
   ],
   // routes: [...routes, ...aboutRoutes],
   scrollBehavior(to, from, savedPosition) {
