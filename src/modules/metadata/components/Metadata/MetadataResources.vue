@@ -37,6 +37,7 @@
     <v-container v-if="!showPlaceholder && availableResources && availableResources.length > 0"
                   id="resourceList"
                   fluid
+                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
                   class="heightAndScroll pa-2 pt-0" >
 
       <v-row v-if="injectedComponent && injectAtStart"
@@ -169,6 +170,12 @@ export default {
     },
     lastModifiedIcon() {
       return this.mixinMethods_getGenericProp('lastModifiedIcon');
+    },
+    scrollbarColorFront() {
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+    },
+    scrollbarColorBack() {
+      return this.$vuetify ? '#F0F0F0' : 'auto';
     },
   },
   methods: {
