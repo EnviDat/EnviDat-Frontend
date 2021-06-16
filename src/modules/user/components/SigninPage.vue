@@ -1,4 +1,3 @@
-
 <template >
 
     <signinView :prefilledEmail="prefilledEmail"
@@ -95,17 +94,21 @@ export default {
   },
   methods: {
     errorText() {
-      let errMsg = 'Please make sure everything is filled correctly';
+      // let errMsg = 'Please make sure everything is filled correctly';
 
       if (this.error) {
+        if (typeof this.error === 'string') {
+          return this.error;
+        } 
+        
         if (this.errorType === VALIDATION_ERROR) {
-          errMsg = `A field was filled incorrectly: ${this.error}`;
-        } else {
-          errMsg = `Error: ${this.error.message} for backend call ${this.error.config?.url}`;
-        }
+          return `A field was filled incorrectly: ${this.error}`;
+        } 
+        
+        return `Error: ${this.error.message} for backend call ${this.error.config?.url}`;
       }
 
-      return errMsg;
+      return null;
     },
     checkUserSignedIn() {
       this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,

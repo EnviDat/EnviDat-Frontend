@@ -17,7 +17,7 @@
         <v-col cols="12"
                 class="text-h6"
                 :style="`background-color: ${signedInColor};`" >
-          {{ alreadSignInText + signedInEmail }}
+          {{ signedInText + signedInEmail }}
         </v-col>
       </v-row>
 
@@ -319,7 +319,7 @@ export default {
     requestSentText: 'The token was sent to ',
     requestSentText2: 'Please check your e-mail address.',
     title: 'Sign in',
-    alreadSignInText: 'You are already signed in as ',
+    signedInText: 'You are signed in as ',
     instructionsText: 'Sign into EnviDat with your e-mail address and the token which will be sent by e-mail.',
     signInPic,
   }),
