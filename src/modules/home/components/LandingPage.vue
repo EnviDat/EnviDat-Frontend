@@ -85,6 +85,7 @@ import {
   LANDING_PAGENAME,
   BROWSE_PATH,
   ABOUT_PATH,
+  USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 import BaseClickCard from '@/components/BaseElements/BaseClickCard';
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
@@ -123,7 +124,7 @@ export default {
   methods: {
     catchCategoryClicked(cardType) {
       if (cardType.includes('login')) {
-        this.catchLoginclick();
+        this.catchSigninClick();
         return;
       }
 
@@ -155,8 +156,11 @@ export default {
     catchMoreClicked() {
       this.$router.push({ path: ABOUT_PATH });
     },
-    catchLoginclick() {
-      this.redirectToDashboard();
+    catchSigninClick() {
+      if (this.$route.path === USER_SIGNIN_PATH) {
+        return;
+      }
+      this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     redirectToDashboard() {
       window.open('https://www.envidat.ch/user/reset', '_blank');
