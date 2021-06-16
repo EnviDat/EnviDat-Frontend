@@ -23,7 +23,7 @@
           </v-col>
 
           <v-col cols="6" >
-            <v-row>
+            <v-row no-gutters>
               <v-col class="headline envidatNavbarTitleSmall py-0">
                 {{ logoText }}
               </v-col>
