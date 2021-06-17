@@ -254,7 +254,7 @@ export default {
     },
     catchCategoryClicked(cardType) {
       if (cardType.includes('login')) {
-        this.catchLoginclick();
+        this.catchSigninClick();
         return;
       }
 
@@ -286,8 +286,11 @@ export default {
     catchMoreClicked() {
       this.$router.push({ path: ABOUT_PATH });
     },
-    catchLoginclick() {
-      this.redirectToDashboard();
+    catchSigninClick() {
+      if (this.$route.path === USER_SIGNIN_PATH) {
+        return;
+      }
+      this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     redirectToDashboard() {
       window.open('https://www.envidat.ch/user/reset', '_blank');

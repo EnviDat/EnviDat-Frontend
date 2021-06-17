@@ -219,7 +219,7 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import {
-  contentFilteredByTags,
+  tagsIncludedInSelectedTags,
   getPopularTags,
 } from '@/factories/metadataFilterMethods';
 
@@ -321,13 +321,20 @@ export default {
       for (let i = 0; i < this.userDatasets.length; i++) {
         const entry = this.userDatasets[i];
 
-        if (contentFilteredByTags(entry, this.selectedTagNames)) {
+        if (this.contentFilteredByTags(entry, this.selectedTagNames)) {
           filteredContent.push(entry);
         }
       }
       
       return filteredContent;
     },
+    contentFilteredByTags(value, selectedTagNames) {
+      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
+        return true;
+      }
+
+      return false;
+    },    
     publishedDatasets() {
       if (this.user.datasets) {
         return this.user.datasets.filter(dataset => !dataset.private);

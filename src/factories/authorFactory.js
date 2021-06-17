@@ -276,3 +276,11 @@ export function getLevelProgress(dataCreditScore) {
 
   return progress;
 }
+
+export function getNameInitials(userObject) {
+  if (!userObject || !userObject.name || !userObject.fullname) {
+    return '';
+  }
+
+  return `${userObject.name.substring(0, 1)}${userObject.fullname.substring(0, 1)}`.toUpperCase();
+}
