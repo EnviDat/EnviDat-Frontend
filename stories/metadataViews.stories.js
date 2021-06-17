@@ -42,25 +42,25 @@ import {
 } from '@/factories/metaDataFactory';
 import { createAuthors } from '@/factories/authorFactory';
 
-function getIcons() {
-  const icons = new Map();
-
-  const imgPaths = require.context('@/assets/icons/', false, /\.png$/);
-
-  imgPaths.keys().forEach((iconFileName) => {
-    const splits = iconFileName.split('/');
-    let key = splits[splits.length - 1];
-    key = key.replace('.png', '');
-    icons.set(key, iconFileName);
-  });
-
-  return icons;
-}
-
-const iconFiles = getIcons();
+// const iconFiles = getIcons();
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
+
+// function getIcons() {
+//   const icons = new Map();
+
+//   const imgPaths = require.context('@/assets/icons/', false, /\.png$/);
+
+//   imgPaths.keys().forEach((iconFileName) => {
+//     const splits = iconFileName.split('/');
+//     let key = splits[splits.length - 1];
+//     key = key.replace('.png', '');
+//     icons.set(key, iconFileName);
+//   });
+
+//   return icons;
+// }
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);

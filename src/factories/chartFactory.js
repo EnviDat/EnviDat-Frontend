@@ -185,7 +185,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
       configs.gcnetStationParameters.hideFromResourceList = true;
     }
 
-    if (configs?.geoServicesConfig) {
+    if (configs.geoServicesConfig) {
       configs.geoServicesConfig.hideFromResourceList = true;
     }
   }

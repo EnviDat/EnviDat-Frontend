@@ -45,7 +45,7 @@ if (!useTestdata) {
 function extractBodyIntoUrl(url, body) {
   const keys = Object.keys(body);
 
-  if (keys && keys.length > 0) {
+  if (keys.length > 0) {
     url += '?';
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];

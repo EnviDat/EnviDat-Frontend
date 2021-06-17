@@ -53,7 +53,7 @@ function extractError(store, reason, errorProperty = 'error') {
   let field = '';
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
-  if (reason.response?.status !== 200) {
+  if (reason?.response?.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText} url: ${reason.response.config?.url}`;
     store._vm.$set(store.state.user, errorProperty, msg);
     return;
