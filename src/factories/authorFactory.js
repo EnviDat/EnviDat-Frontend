@@ -139,7 +139,6 @@ export function createAuthors(dataset) {
 
   return authorObjs;
 }
-
 function overwriteDataCredit(author, existingAuthor) {
   const keys = Object.keys(author.data_credit);
 

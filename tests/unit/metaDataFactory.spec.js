@@ -58,8 +58,10 @@ describe('metaDataFactory - createBody', () => {
     const body = createBody(dataset);
 
     expect(body).toBeDefined();
+    expect(body.title).toBeDefined();
     expect(body.text).toBeDefined();
     expect(body.maxTextLength).toBeDefined();
+    expect(body.emptyText).toBeDefined();
   });
 
   it('with dataset, compare maxTextLength', () => {
@@ -208,6 +210,8 @@ describe('metaDataFactory - createPublications', () => {
     expect(pub).toBeDefined();
     expect(pub.text).toBeDefined();
     expect(pub.maxTextLength).toBeDefined();
+    expect(pub.emptyText).toBeDefined();
+    expect(pub.emptyTextColor).toBeDefined();
   });
 });
 

@@ -28,6 +28,8 @@ import { metadataRoutes } from '@/modules/metadata/routes';
 import { projectsRoutes } from '@/modules/projects/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 
+import { userRoutes } from '@/modules/user/routes';
+
 Vue.use(Router);
 
 const START = '/';
@@ -59,9 +61,9 @@ export default new Router({
     ...metadataRoutes,
     ...projectsRoutes,
     ...aboutRoutes,
+    ...userRoutes,
     ...routes,
   ],
-  // routes: [...routes, ...aboutRoutes],
   scrollBehavior(to, from, savedPosition) {
     return new Promise((resolve) => {
       setTimeout(() => {

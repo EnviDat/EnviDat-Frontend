@@ -209,7 +209,6 @@
                   class="py-0"
                   id="tags"
                   key="tags" >
-
             <v-row no-gutters >
               <v-col v-for="tag in slicedTags"
                       :key="tag.name"

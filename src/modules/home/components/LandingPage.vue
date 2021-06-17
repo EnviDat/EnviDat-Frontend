@@ -120,6 +120,7 @@ import {
   LANDING_PAGENAME,
   BROWSE_PATH,
   ABOUT_PATH,
+  USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard';

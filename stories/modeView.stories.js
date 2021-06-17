@@ -12,7 +12,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 
-import ModeView from '@/components/Layouts/ModeView.vue';
+import ModeView from '@/components/Layouts/ModeView';
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
 
