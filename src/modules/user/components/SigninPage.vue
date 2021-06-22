@@ -1,22 +1,34 @@
 <template >
 
-    <signinView :prefilledEmail="prefilledEmail"
-                :prefilledKey="prefilledKey"
-                :signInLoading="signInLoading"
-                :signInSuccess="signInSuccess"
-                :signedIn="user !== null"
-                :signedInColor="$vuetify.theme.themes.light.highlight"
-                :signedInEmail="user ? user.email : null"
-                :requestLoading="requestLoading"
-                :requestSuccess="requestSuccess"
-                :formErrorText="errorText()"
-                :errorFieldText="error"
-                :showError="error !== null"
-                :errorField="errorField"
-                :errorColor="$vuetify.theme.themes.light.errorHighlight"
-                @requestToken="catchRequestToken"
-                @signIn="catchSignIn"
-                @signOut="catchSignOut" />
+  <v-container fluid
+                id="SigninPage"
+                key="SigninPage"
+                tag="article"
+                class="pa-0">
+    <v-row no-gutters>
+      <v-col>
+
+        <signinView :prefilledEmail="prefilledEmail"
+                    :prefilledKey="prefilledKey"
+                    :signInLoading="signInLoading"
+                    :signInSuccess="signInSuccess"
+                    :signedIn="user !== null"
+                    :signedInColor="$vuetify.theme.themes.light.highlight"
+                    :signedInEmail="user ? user.email : null"
+                    :requestLoading="requestLoading"
+                    :requestSuccess="requestSuccess"
+                    :formErrorText="errorText()"
+                    :errorFieldText="error"
+                    :showError="error !== null"
+                    :errorField="errorField"
+                    :errorColor="$vuetify.theme.themes.light.errorHighlight"
+                    @requestToken="catchRequestToken"
+                    @signIn="catchSignIn"
+                    @signOut="catchSignOut" />
+      </v-col>
+    </v-row>
+
+  </v-container>
 
 </template>
 
@@ -146,7 +158,7 @@ export default {
     },
   },
   data: () => ({
-    PageBGImage: './app_b_browsepage.jpg',
+    PageBGImage: 'app_b_browsepage',
   }),
 };
 </script>

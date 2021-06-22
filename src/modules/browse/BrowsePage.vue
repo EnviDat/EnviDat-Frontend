@@ -1,6 +1,7 @@
 <template>
   <article class="ma-0 pa-0 fill-height"
-            id="BrowsePage">
+            id="BrowsePage"
+            key="BrowsePage">
 
     <metadata-list ref="metadataList"
                     :listContent="filteredContent"

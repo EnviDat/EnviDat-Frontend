@@ -27,7 +27,7 @@ export const userRoutes = [
   {
     path: '/user/:id',
     name: 'user',
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "signinPage" */ '@/modules/user/UserModule'),
+    component: () => import(/* webpackPrefetch: true, webpackChunkName: "userModule" */ '@/modules/user/UserModule'),
     children: [
       {
         path: USER_DASHBOARD_PATH,

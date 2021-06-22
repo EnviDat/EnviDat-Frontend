@@ -53,7 +53,8 @@
                     ref="appContainer"
                     :style="pageStyle" >
 
-        <v-row v-if="maintaincanceBannerVisible"
+        <v-row v-if="maintenanceBannerVisible"
+                id="maintenanceBanner"
                 no-gutters
                 class="pb-2">
           <v-col>
@@ -63,7 +64,8 @@
           </v-col>
         </v-row>
 
-        <v-row class="fill-height" >
+        <v-row class="fill-height" 
+                id="maintenanceBanner" >
           <v-col class="mx-0 py-0"
                   cols="12" >
 
@@ -163,11 +165,6 @@ export default {
   },
   created() {
     this.checkUserSignedIn();
-    this.loadAllMetadata();
-
-    const bgImgs = require.context('./assets/', false, /\.jpg$/);
-    this.appBGImages = this.mixinMethods_importImages(bgImgs, 'app_b');
-
   },
   mounted() {
     this.startParticles();
@@ -263,15 +260,12 @@ export default {
         window.open(item.path, '_blank');
         return;
       }
-      if (this.$route.name === item.pageName) {
-        return;
-      }
 
       if (this.showSmallNavigation) {
         this.catchMenuClicked();
       }
 
-      this.$router.push({ path: item.path, query: '' });
+      this.navigateTo(item.path);
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -285,18 +279,18 @@ export default {
         path: BROWSE_PATH,
       });
     },
-    navigateTo(navItem) {
-      if (navItem.pageName === 'external') {
-        window.open(navItem.path, '_blank');
-      } else {
-        this.$router.push(navItem.path);
-      }
-
-      if (this.$route.name === navItem.pageName) {
+    navigateTo(path) {
+      if (this.$route.path === path) {
         return;
       }
 
-      this.$router.push({ path: navItem.path, query: '' });
+      this.$router.push({ path, query: '' },
+        (route) => {
+          console.log(`onComplete: ${route.name}`);
+        },
+        (route) => {
+          console.log(`onAbort: ${route.name}`);
+        });      
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -310,16 +304,10 @@ export default {
       this.$router.push({ path: REPORT_PATH, query: index });
     },
     catchSigninClicked() {
-      if (this.$route.path === USER_SIGNIN_PATH) {
-        return;
-      }
-      this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
+      this.navigateTo(USER_SIGNIN_PATH);
     },
     catchHomeClicked() {
-      if (this.$route.path === LANDING_PATH) {
-        return;
-      }
-      this.$router.push({ path: LANDING_PATH, query: '' });
+      this.navigateTo(LANDING_PATH);
     },
     reloadApp() {
       window.location.reload();
@@ -392,7 +380,7 @@ export default {
     maintenanceConfig() {
       return this.config?.maintenanceConfig || {};
     },
-    maintaincanceBannerVisible() {
+    maintenanceBannerVisible() {
       return this.maintenanceConfig && this.maintenanceConfig.messageActive && this.showMaintenanceBanner;
     },
     signinDisabled() {
@@ -443,8 +431,10 @@ export default {
         return '';
       }
 
-      // const bgImg = this.appBGImages[imageKey];
       const bgImg = this.mixinMethods_getWebpImage(imageKey, this.$store.state);
+      if (!bgImg) {
+        return '';
+      }
 
       let bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
 
@@ -501,7 +491,6 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    appBGImages: {},
     reloadDialogCanceled: false,
     appVersion: process.env.VUE_APP_VERSION,
     showMenu: true,

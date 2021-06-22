@@ -1,5 +1,6 @@
 <template>
-  <v-card class="pa-0 signInGrid" >
+  <v-card class="pa-0 signInGrid"
+          id="signInGrid" >
 
     <v-img :src="signInPic"
             max-height="500"
@@ -188,7 +189,7 @@
 
 <script>
 /**
- * LoginView.vue provides the users with login form with email and token
+ * SigninView.vue provides the users with login form with email and token
  *
  * @summary login form with email and token
  * @author Dominik Haas-Artho

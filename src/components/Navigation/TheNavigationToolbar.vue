@@ -4,7 +4,8 @@
               color="white"
               :height="$vuetify.breakpoint.xsOnly ? 50 : 36" >
 
-    <v-container fluid>
+    <v-container fluid
+                  class="pa-0" >
 
       <!-- <v-row class="pa-0" >
         <v-col v-if="hasModeData" >
@@ -26,16 +27,16 @@
       </v-row>
 
     </v-container> -->
-      <v-row class="pa-0"
+      <v-row no-gutters
               align="center"
               justify="space-between" >
 
-        <v-col class="shrink pl-5">
+        <v-col class="shrink pl-2">
           <v-row no-gutters>
 
             <v-col cols="6" >
               <v-btn icon
-                      class="ma-0"
+                      class="ma-0 pt-1"
                       small
                       @click.stop="catchHomeClicked" >
                       <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->

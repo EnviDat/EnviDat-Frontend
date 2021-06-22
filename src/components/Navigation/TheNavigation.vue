@@ -111,7 +111,7 @@ import Logo from '@/assets/logo/EnviDat_logo_32.png';
 
 export default {
   props: {
-    navItems: Array,
+    navigationItems: Array,
     version: String,
   },
   data: () => ({
@@ -129,7 +129,7 @@ export default {
     navItemsMenuExcluded() {
       const actives = [];
 
-      this.navItems.forEach((el) => {
+      this.navigationItems.forEach((el) => {
         if (el.icon !== 'menu') {
           actives.push(el);
         }
