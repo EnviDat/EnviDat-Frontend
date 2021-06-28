@@ -15,6 +15,7 @@ import { storiesOf } from '@storybook/vue';
 // import { action } from '@storybook/addon-actions';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
+import EditDescription from '@/modules/user/components/EditDescription';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 // import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -49,7 +50,7 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Editing Metadata Header', () => ({
-    components: { EditMetadataHeader },
+    components: { EditMetadataHeader, EditDescription },
     template: `
     <v-col>
       <v-row>
@@ -61,6 +62,17 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
           <EditMetadataHeader prefilledTitle="Enter the title for your metadata entry here" prefilledHeaderTitle="Metadata Title" placeholderAuthor="Sarah Smith" />
         </v-col>
       </v-row>
+
+      <v-row>
+        Edit Description
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDescription />
+        </v-col>
+      </v-row>
+
 
     </v-col>
     `,

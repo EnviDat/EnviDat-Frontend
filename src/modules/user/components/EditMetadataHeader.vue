@@ -164,7 +164,7 @@ export default {
     inputContactEmail: '',
     emailRules: [
        v => !!v || 'Main Contact Email is required',
-      // v => /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Please enter valid email address',
+       v => /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Please enter valid email address',
       ],
     iconName: imageContact,
     iconMail: imageMail,
@@ -176,9 +176,4 @@ export default {
 </script>
 
 <style scoped>
-
-
-.preview >>> fieldset {border-width: thick; border-color: #E7E7E7 }
-
-
 </style>
