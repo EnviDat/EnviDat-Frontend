@@ -58,7 +58,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader prefilledTitle="Enter the title for your Metadata" />
+          <EditMetadataHeader prefilledTitle="Enter the title for your metadata entry here" prefilledHeaderTitle="Metadata Title" placeholderAuthor="Sarah Smith" />
         </v-col>
       </v-row>
 
