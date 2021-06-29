@@ -30,19 +30,17 @@
                       :rules="descriptionRules"
                       required
                       auto-grow
-                      v-model="inputDescription"
-                      placeholder="Enter your metadata description here">
+                      v-model="bodyObject.body.text"
+                    >
         </v-textarea>
       </v-col>
 
       <v-col cols="6">     
-        <v-textarea class="preview"
-                      label="Preview Description"
-                      outlined
-                      disabled
-                      auto-grow
-                      v-model="inputDescription">
-        </v-textarea>
+        <MetadataBody
+          :genericProps="bodyObject"
+          :showPlaceholder="showPreviewPlaceholder"
+        />
+
       </v-col>
 
 
@@ -68,6 +66,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+
+
 
 export default {
   name: 'EditDescription',
@@ -78,10 +79,42 @@ export default {
   methods: {
   },
   data: () => ({
-    inputDescription: '',
+    previewTitle: 'Preview Description',
+    showPreviewPlaceholder: false,
     descriptionRules: [v => !!v || 'Description is required'],
+    bodyObject: { 
+                  body: 
+                    { text: 
+                    
+`# Why user stories?                     
+
+User Stories can help you to constantly improve the value of
+your product, estimate development efforts in an appropriate way and prioritize
+feature development during the MVP and post-MVP stages. 
+
+# How user stories 
+
+## 1. Step think about "Who" - type of user 
+
+Try to omit using such a role as simply
+“the user”. It can be applied to any person - from your customers to admins -
+and, therefore, it doesn’t reflect the personality of particular target groups,
+the way they interact with the application. You can create personas. 
+
+## 2. Step think about the "What" - function, UI & UX 
+
+Define what functionality each user expects. How she’s going to interact with the app. 
+
+## 3. Step think about the "Why" - added value 
+
+It should either improve the UX, increase retention rates,
+shorten users’ journey to the issue solution or whatever. Each Story should
+contribute something to the general goal of your product.
+` },
+                },     
    }),
   components: {
+    MetadataBody,
   },  
 };
 </script>
