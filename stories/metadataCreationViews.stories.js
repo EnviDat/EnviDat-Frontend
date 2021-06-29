@@ -50,9 +50,10 @@ import EditDescription from '@/modules/user/components/EditDescription';
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Editing Metadata Header', () => ({
-    components: { EditMetadataHeader, EditDescription },
+    components: { EditMetadataHeader },
     template: `
     <v-col>
+    
       <v-row>
         Edit Metadata Header
       </v-row>
@@ -63,6 +64,17 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         </v-col>
       </v-row>
 
+    </v-col>
+    `,
+    methods: {
+    },
+    data: () => ({
+    }),
+  })).add('Editing Metadata Description', () => ({
+    components: { EditDescription },
+    template: `
+     <v-col>
+     
       <v-row>
         Edit Description
       </v-row>
@@ -73,11 +85,9 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         </v-col>
       </v-row>
 
-
     </v-col>
     `,
     methods: {
-
     },
     data: () => ({
     }),
