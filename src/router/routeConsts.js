@@ -36,3 +36,4 @@ export const PROJECT_DETAIL_PAGENAME = 'ProjectDetailPage';
 export const REPORT_PATH = '/report';
 export const REPORT_PAGENAME = 'ReportPage';
 export const PAGENOTFOUND_PAGENAME = 'PageNotFound';
+export const METADATAEDIT_PAGENAME = 'MetadataEditPage';
