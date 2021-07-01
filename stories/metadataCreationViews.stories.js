@@ -49,18 +49,29 @@ import EditDescription from '@/modules/user/components/EditDescription';
 // };
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Editing Metadata Header', () => ({
+  .add('Edit Metadata Header', () => ({
     components: { EditMetadataHeader },
     template: `
     <v-col>
-    
+
       <v-row>
-        Edit Metadata Header
+        Edit Metadata Header Fields Unfilled
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader prefilledTitle="Enter the title for your metadata entry here" prefilledHeaderTitle="Metadata Title" placeholderAuthor="Sarah Smith" />
+          <EditMetadataHeader />
+        </v-col>
+      </v-row>
+
+
+      <v-row>
+        Edit Metadata Header Fields Filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditMetadataHeader inputTitle="My Glorious Title" inputContactEmail="sarah@smith.com" inputContactGivenName="Sarah" inputContactSurname="Smith" />
         </v-col>
       </v-row>
 
@@ -70,7 +81,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
     },
     data: () => ({
     }),
-  })).add('Editing Metadata Description', () => ({
+  })).add('Edit Metadata Description', () => ({
     components: { EditDescription },
     template: `
      <v-col>

@@ -6,7 +6,7 @@
    <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-h5">Metadata Basic Information</v-text>
+        <v-text class="text-h5">{{ cardTitle }}</v-text>
       </v-col>
 
     </v-row>  
@@ -15,7 +15,7 @@
     <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-body-1">Enter research data title and authors. Please make sure that title is meaningful and specific.</v-text>
+        <v-text class="text-body-1">{{ cardInstructions }}</v-text>
       </v-col>
 
     </v-row>
@@ -25,22 +25,25 @@
 
       <v-col cols="6">     
         <v-text-field   
-                      label="Title"
+                      :label="labelTitle"
                       outlined
-                      :rules="titleRules"
+                      :rules="rulesTitle"
                       required
-                      v-model="inputTitle"
-                      :placeholder="prefilledTitle">
+                      :placeholder="placeholderTitle"
+                      v-model="inputTitle" >
         </v-text-field>
       </v-col>
 
-      <!-- <v-col cols="6">   
+      <v-col cols="6"> 
         <v-text-field 
-                      label="Authors"
+                      :label="labelContactEmail"
                       outlined
-                      :placeholder="placeholderAuthor">
+                      :rules="rulesEmail"
+                      required
+                      :placeholder="placeholderContactEmail" 
+                      v-model="inputContactEmail">
         </v-text-field>
-      </v-col> -->
+      </v-col>
 
     </v-row>
 
@@ -49,38 +52,26 @@
 
       <v-col cols="6"> 
         <v-text-field 
-                      label="Main Contact Name"
+                      :label="labelContactGivenName"
                       outlined
-                      :rules="nameRules"
+                      :rules="rulesGivenName"
                       required
-                      placeholder="Enter main contact given and surname here"
-                      v-model="inputContactName">
+                      :placeholder="placeholderContactGivenName"
+                      v-model="inputContactGivenName">
         </v-text-field>
       </v-col>
 
       <v-col cols="6"> 
         <v-text-field 
-                      label="Main Contact Email"
+                      :label="labelContactSurname"
                       outlined
-                      :rules="emailRules"
+                      :rules="rulesSurname"
                       required
-                      placeholder="Enter main contact email address here"
-                      v-model="inputContactEmail">
+                      :placeholder="placeholderContactSurname"
+                      v-model="inputContactSurname">
         </v-text-field>
       </v-col>
 
-
-      <!-- <v-col cols="2"> 
-        <v-btn 
-          text
-          elevation="2" 
-          outlined 
-          raised 
-          color="#30B9BA"
-          rounded>
-          I am the Main Contact
-        </v-btn>
-      </v-col> -->
 
 
     </v-row>
@@ -89,7 +80,7 @@
     <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-body-1">Metadata Header Preview</v-text>
+        <v-text class="text-body-1">{{ previewText }}</v-text>
       </v-col>
 
       <v-col cols="12"> 
@@ -104,8 +95,8 @@
 
       <v-col cols="12">   
             <MetadataHeader 
-              :metadataTitle="inputTitle || prefilledHeaderTitle" 
-              :contactName="inputContactName" 
+              :metadataTitle="inputTitle || placeholderHeaderTitle" 
+              :contactName="inputContactFullName" 
               :contactIcon="iconName"
               :contactEmail="inputContactEmail"
               :mailIcon="iconMail" />    
@@ -147,22 +138,83 @@ import imageMail from '@/assets/icons/mail.png';
 export default {
   name: 'EditMetadataHeader',
   props: {
-    prefilledTitle: String,    
-    prefilledHeaderTitle: String,
-    prefilledAuthor: String,
-    placeholderAuthor: String,
+    cardTitle: { 
+      type: String, 
+      default: 'Metadata Basic Information',
     },
+    cardInstructions: { 
+      type: String, 
+      default: 'Enter research data title and authors. Please make sure that title is meaningful and specific.', 
+    },
+    labelTitle: { 
+      type: String, 
+      default: 'Title',
+    },
+    placeholderTitle: {
+      type: String,
+      default: 'Enter the title for your metadata entry here',
+    },     
+    placeholderHeaderTitle: { 
+      type: String, 
+      default: 'Metadata Title',
+    },
+    inputTitle: {
+      type: String,
+      default: '',
+    },
+    labelContactEmail: { 
+      type: String, 
+      default: 'Main Contact Email',
+    },
+    placeholderContactEmail: { 
+      type: String, 
+      default: 'Enter main contact email address here',
+    },
+    inputContactEmail: {
+      type: String,
+      default: '',
+    },
+    inputContactGivenName: {
+      type: String,
+      default: '',
+    },  
+    labelContactGivenName: {
+      type: String,
+      default: 'Main Contact Given Name',
+    },
+    placeholderContactGivenName: {
+      type: String,
+      default: 'Enter Main Contact given (first) name here',
+    },
+    labelContactSurname: {
+      type: String,
+      default: 'Main Contact Surname',
+    },
+    placeholderContactSurname: {
+      type: String,
+      default: 'Enter main contact surname name here',
+    },
+    inputContactSurname: {
+      type: String,
+      default: '',
+    },
+    previewText: {
+      type: String,
+      default: 'Metadata Header Preview',
+    },
+  },  
   computed: {
+    inputContactFullName() {
+      return `${this.inputContactGivenName.trim()} ${this.inputContactSurname.trim()}`; 
+    },
   },
   methods: {
   },
   data: () => ({
-    inputTitle: '',
-    titleRules: [v => !!v || 'Title is required'],
-    inputContactName: '',
-    nameRules: [v => !!v || 'Main Contact Name is required'],
-    inputContactEmail: '',
-    emailRules: [
+    rulesTitle: [v => !!v || 'Title is required'],
+    rulesGivenName: [v => !!v || 'Main Contact given (first) name is required'],
+    rulesSurname: [v => !!v || 'Main Contact surname is required'],
+    rulesEmail: [
        v => !!v || 'Main Contact Email is required',
        v => /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Please enter valid email address',
       ],
