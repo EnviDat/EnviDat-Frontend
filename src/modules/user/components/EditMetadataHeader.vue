@@ -112,10 +112,10 @@
 
 <script>
 /**
- * MetadataHeader.vue shows the title, authors, keywords,
- * main contact, doi and license of a metadata entry.
+ * EditMetadataHeader.vue shows the title, main contact email, main contact given name, 
+ * main contact surname, and metadata header preview.
  *
- * @summary shows the main infos the a metadata entry
+ * @summary shows the title, main contact information, and header preview
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
