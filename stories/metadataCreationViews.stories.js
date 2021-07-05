@@ -18,6 +18,7 @@ import { storiesOf } from '@storybook/vue';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
+import EditCustomFields from '@/modules/user/components/EditCustomFields';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 // import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -51,7 +52,28 @@ import EditDescription from '@/modules/user/components/EditDescription';
 // };
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Edit Metadata Header', () => ({
+  .add('Edit Custom Fields', () => ({
+    components: { EditCustomFields },
+    template: `
+    <v-col>
+
+      <v-row>
+        Edit Custom Fields fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+    methods: {
+    },
+    data: () => ({
+    }),
+  })).add('Edit Metadata Header', () => ({
     components: { EditMetadataHeader },
     template: `
     <v-col>
@@ -99,15 +121,15 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
       </v-row>
 
 
-      <v-row>
-        Edit Description textarea filled
-      </v-row>
+      // <v-row>
+      //   Edit Description textarea filled
+      // </v-row>
 
-      <v-row class="py-3" >
-        <v-col >
-          <EditDescription :bodyobject="bodyObjectPlaceholder">
-        </v-col>
-      </v-row>
+      // <v-row class="py-3" >
+      //   <v-col >
+      //     <EditDescription :bodyobject="bodyObjectPlaceholder">
+      //   </v-col>
+      // </v-row>
 
 
     </v-col>
