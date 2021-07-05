@@ -67,8 +67,55 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         </v-col>
       </v-row>
 
+       <v-row>
+        Edit Custom Fields fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields :customFieldsList="customFields" />
+        </v-col>
+      </v-row>
+
     </v-col>
     `,
+    props: {  
+      customFields: {
+        type: Array,
+        default: () => [
+          { 
+            field0: { 
+              fieldName: 'SubProject', 
+              content: 'Projectx',
+            },
+          },
+          {
+            field1: {
+              fieldName: 'Game',
+              content: 'Gloomhaven',
+            },
+          },
+          {
+            field2: {
+              fieldName: 'Drink',
+              content: 'Prosecco',
+            },
+          },
+          {
+            field3: {
+              fieldName: '',
+              content: '',
+            },
+          },
+          {
+            field4: {
+              fieldName: '',
+              content: '',
+            },
+          },
+        ],
+      },
+  },
     methods: {
     },
     data: () => ({
@@ -121,15 +168,15 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
       </v-row>
 
 
-      // <v-row>
-      //   Edit Description textarea filled
-      // </v-row>
+      <v-row>
+        Edit Description textarea filled
+      </v-row>
 
-      // <v-row class="py-3" >
-      //   <v-col >
-      //     <EditDescription :bodyobject="bodyObjectPlaceholder">
-      //   </v-col>
-      // </v-row>
+      <v-row class="py-3" >
+        <v-col >
+          <EditDescription :bodyobject="bodyObjectPlaceholder">
+        </v-col>
+      </v-row>
 
 
     </v-col>
