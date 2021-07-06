@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditCustomFields" max-width="30%">
+  <v-card id="EditCustomFields" max-width="25%">
 
     <v-container fluid >
 
@@ -124,7 +124,7 @@ export default {
         return true;
       }
 
-      // Assign field object for one field before current iteration in this.customFieldsList if index is not less than 2
+      // Assign field object with values for one field before current iteration in this.customFieldsList if index is not less than 2
       const previousIndex = index - 1;
       const fieldObj = Object.values(this.customFieldsList[previousIndex]);
       

@@ -1,5 +1,3 @@
-// TODO pass bodyObject text 
-
 /* eslint-disable object-property-newline */
 /**
  * @summary story of all the MetadataDetailViews for sandbox testing
@@ -169,48 +167,52 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
 
       <v-row>
-        Edit Description textarea filled
+        Edit Description textarea filled 
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription :bodyobject="bodyObjectPlaceholder">
+          <EditDescription :bodyObject="bodyObjectPlaceholder">
         </v-col>
       </v-row>
 
 
     </v-col>
     `,
-    data: () => ({
+    props: {
       bodyObjectPlaceholder: {
-        body: {
-          text:
-            `# Why user stories?
-
-                      User Stories can help you to constantly improve the value of
-                      your product, estimate development efforts in an appropriate way and prioritize
-                      feature development during the MVP and post-MVP stages. 
-
-                      # How user stories 
-
-                      ## 1. Step think about "Who" - type of user 
-
-                      Try to omit using such a role as simply
-                      “the user”. It can be applied to any person - from your customers to admins -
-                      and, therefore, it doesn’t reflect the personality of particular target groups,
-                      the way they interact with the application. You can create personas. 
-
-                      ## 2. Step think about the "What" - function, UI & UX 
-
-                      Define what functionality each user expects. How she’s going to interact with the app. 
-
-                      ## 3. Step think about the "Why" - added value 
-
-                      It should either improve the UX, increase retention rates,
-                      shorten users’ journey to the issue solution or whatever. Each Story should
-                      contribute something to the general goal of your product.
-                      `,
+        type: Object,
+        default() {
+          return {
+            body: {
+              text: `# Why user stories?
+&nbsp;          
+User Stories can help you to constantly improve the value of
+your product, estimate development efforts in an appropriate way and prioritize
+feature development during the MVP and post-MVP stages. 
+&nbsp;
+# How user stories
+&nbsp; 
+## 1. Step think about "Who" - type of user
+&nbsp;
+Try to omit using such a role as simply
+“the user”. It can be applied to any person - from your customers to admins -
+and, therefore, it doesn’t reflect the personality of particular target groups,
+the way they interact with the application. You can create personas. 
+&nbsp;
+## 2. Step think about the "What" - function, UI & UX 
+&nbsp;
+Define what functionality each user expects. How she’s going to interact with the app. 
+&nbsp;
+## 3. Step think about the "Why" - added value 
+&nbsp;
+It should either improve the UX, increase retention rates,
+shorten users’ journey to the issue solution or whatever. Each Story should
+contribute something to the general goal of your product.
+                        `,
+            },
+          };
         },
       },
-    }), 
+    },
 }));
