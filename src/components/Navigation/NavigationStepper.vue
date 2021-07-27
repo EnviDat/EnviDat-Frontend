@@ -1,13 +1,18 @@
+/* eslint-disable vue/no-unused-vars */
 <template>
-  <v-container id="NavigationStepper">
-
+  <v-container id="NavigationStepper"
+                fluid
+                class="pa-0">
 
     <v-row no-gutters
             :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light.primary : ''}`" >
       <v-col cols="12">
-        <Stepper :steps="mySteps"
-                  activeColor="accent"
-                  @stepClick="catchStepClick" />
+        <StepperHeader :steps="steps"
+                        activeColor="accent"
+                        inactiveColor="primary"
+                        :initialStep="currentStepIndex"
+                        @stepClick="catchStepClick">
+        </StepperHeader>
       </v-col>
     </v-row>
     <v-row no-gutters >
@@ -15,9 +20,28 @@
               :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light.primary : ''}`">
 
         <v-card style="background-color: white;"
-                :height="500"
-                class="ma-1">
-          {{ currentStep.title }}
+                class="ma-1 pa-4">
+
+          <v-row>
+            <v-col cols="12" >
+              
+              <div v-if="currentStep">
+                <component :is="currentStep.component" />
+              </div>
+
+              <div v-if="!currentStep">
+                Nothing selected, please select a step in the navigation!
+              </div>              
+            </v-col>
+          </v-row>
+
+          <v-row >
+            <v-col>
+              <BaseRectangleButton buttonText="Next Step"
+                                    @clicked="nextStep" />
+            </v-col>
+          </v-row>
+
         </v-card>
       </v-col>
     </v-row>
@@ -29,48 +53,74 @@
 /**
 
  * @summary NavigationStepper for structuring a workflow
- * @author Rebecca Kurup Buchholz
+ * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-06-29 18:00:53
+ * Last modified  : 2021-07-27 15:13:20
 
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import Stepper from '@/components/Navigation/Stepper';
+import StepperHeader from '@/components/Navigation/StepperHeader';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
 
 export default {
   name: 'NavigationStepper',
   props: {
     steps: Array,
+    initialStepTitle: String,
   },
   beforeMount() {
-    this.mySteps = this.steps;
-    this.currentStep = this.mySteps[0];
-    this.currentStep.active = true;
+
+    if (this.initialStepTitle) {
+      this.setCurrentStep(this.initialStepTitle);
+    } else {
+      const first = this.steps?.length > 0 ? this.steps[0] : null;
+
+      this.setCurrentStep(first?.title);
+    }
+
   },
   computed: {
   },
   methods: {
-    catchStepClick(step) {
-      // alert(`clicked ${step}`);
+    catchStepClick(stepTitle) {
+      this.setCurrentStep(stepTitle);
+      // this.$emit('stepClick', step);
+    },
+    nextStep() {
+      let nextIndex = this.currentStepIndex + 1;
+      if (nextIndex > this.steps.length - 1) {
+        nextIndex = 0;
+      }
 
-      for (let i = 0; i < this.mySteps.length; i++) {
-        const s = this.mySteps[i];
-        s.active = s.title === step;
+      this.setCurrentStep(this.steps[nextIndex].title);
+    },
+    setCurrentStep(stepTitle) {
+
+      for (let i = 0; i < this.steps.length; i++) {
+        const s = this.steps[i];
+        s.active = s.title === stepTitle;
+
         if (s.active) {
           this.currentStep = s;
+          this.currentStepIndex = i;
+          return;
         }
       }
+
+      this.currentStepIndex = -1;
+      this.currentStep = null;
     },
   },
   data: () => ({
     currentStep: null,
-    mySteps: [],
+    currentStepIndex: -1,
   }),
   components: {
-    Stepper,
+    StepperHeader,
+    BaseRectangleButton,
   },  
 };
 </script>

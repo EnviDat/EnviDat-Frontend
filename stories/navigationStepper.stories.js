@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-06-29 18:02:56
+ * Last modified  : 2021-07-27 16:15:05
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -13,30 +13,62 @@
 import { storiesOf } from '@storybook/vue';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
+import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
+import EditDescription from '@/modules/user/components/EditDescription';
+import EditCustomFields from '@/modules/user/components/EditCustomFields';
 
+// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 
 const steps = [
   {
-    title: 'Main Info', icon: 'pen', tooltip: 'Back to the start page', completed: false, color: 'aqua',
+    title: 'Main Info',
+    icon: 'pen',
+    tooltip: 'Back to the start page',
+    completed: false,
+    color: 'secondary',
+    active: false,
+    component: EditMetadataHeader,
   },
   {
-    title: 'Data Info', icon: 'pen', tooltip: 'Back to the start page', completed: true, color: 'red',
+    title: 'Data Info',
+    icon: 'pen',
+    tooltip: 'Back to the start page',
+    completed: false,
+    color: 'red',
+    active: false,
+    component: EditDescription,
   },
   {
-    title: 'Related Info', icon: 'pen', tooltip: 'Back to the start page', completed: false, color: 'green',
+    title: 'Related Info',
+    icon: 'pen',
+    tooltip: 'Back to the start page',
+    completed: false,
+    color: 'green',
+    active: false,
+    component: EditCustomFields,
   },
   {
-    title: 'Publication Info', icon: 'pen', tooltip: 'Back to the start page', completed: false, color: 'orange',
+    title: 'Publication Info',
+    icon: 'pen',
+    tooltip: 'Back to the start page',
+    completed: false,
+    color: 'orange',
+    active: false,
+    component: EditDescription,
   },
 ];
 
 storiesOf('5 Navigation / Navigation Stepper', module)
-  .add('Stepper', () => ({
-    components: { NavigationStepper },
+  .add('Navigation Stepper', () => ({
+    components: {
+      NavigationStepper,
+    },
     template: `
     <v-row>
       <v-col cols="12">
-        <NavigationStepper :steps="steps" />
+        <NavigationStepper :steps="steps"
+                            :initialStepTitle="steps[1].title" />
+
       </v-col>
 
     </v-row>
