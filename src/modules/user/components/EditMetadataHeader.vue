@@ -6,7 +6,7 @@
    <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-h5">{{ cardTitle }}</v-text>
+        <div class="text-h5">{{ cardTitle }}</div>
       </v-col>
 
     </v-row>  
@@ -15,7 +15,7 @@
     <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-body-1">{{ cardInstructions }}</v-text>
+        <div class="text-body-1">{{ cardInstructions }}</div>
       </v-col>
 
     </v-row>
@@ -72,19 +72,17 @@
         </v-text-field>
       </v-col>
 
-
-
     </v-row>
 
 
     <v-row>
 
       <v-col cols="12"> 
-        <v-text class="text-body-1">{{ previewText }}</v-text>
+        <div class="text-body-1">{{ previewText }}</div>
       </v-col>
 
       <v-col cols="12"> 
-        <v-text class="text-body-1"></v-text>
+        <div class="text-body-1"></div>
       </v-col>
 
 
@@ -99,14 +97,15 @@
               :contactName="inputContactFullName" 
               :contactIcon="iconName"
               :contactEmail="inputContactEmail"
-              :mailIcon="iconMail" />    
+              :mailIcon="iconMail"
+              :showCloseButton="false" />    
       </v-col>       
 
     </v-row>
     
 
   </v-container>
-    </v-card>  
+  </v-card>  
 
 </template>
 
@@ -119,7 +118,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-06-28 15:55:22
+ * Last modified  : 2021-07-28 09:06:09
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

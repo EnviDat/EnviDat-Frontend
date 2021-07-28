@@ -6,7 +6,7 @@
       <v-row>
 
           <v-col cols="12"> 
-            <v-text class="text-h5">{{ cardTitle }}</v-text>
+            <div class="text-h5">{{ cardTitle }}</div>
           </v-col>
 
         </v-row>  
@@ -15,7 +15,7 @@
         <v-row>
 
           <v-col cols="12"> 
-            <v-text class="text-body-1">{{ cardInstructions }}</v-text>
+            <div class="text-body-1">{{ cardInstructions }}</div>
           </v-col>
 
         </v-row>
@@ -53,7 +53,7 @@
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
  * Created at     : 2021-07-05
- * Last modified  : 2021-07-05
+ * Last modified  : 2021-07-28 08:15:34
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
