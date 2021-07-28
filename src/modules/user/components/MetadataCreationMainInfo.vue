@@ -1,52 +1,48 @@
-/* eslint-disable vue/no-unused-vars */
 <template>
-  <v-container id="NavigationStepper"
+  <v-container id="MetadataCreationMainInfo"
                 fluid
                 class="pa-0">
 
-    <v-row no-gutters
-            :style="`background-color: ${backgroundColor}`" >
-      <v-col cols="12">
-        <StepperHeader :steps="steps"
-                        activeColor="accent"
-                        inactiveColor="primary"
-                        :stepColor="stepColor"
-                        :initialStep="currentStepIndex"
-                        @stepClick="catchStepClick" />
+    <v-row no-gutters >
+      <v-col >
+        <v-card class="mx-15">
+          <StepperHeader :steps="steps"
+                          activeColor="accent"
+                          inactiveColor="primary"
+                          :stepColor="stepColor"
+                          :initialStep="currentStepIndex"
+                          @stepClick="catchStepClick" />
+          
+        </v-card>
+      </v-col>
+    </v-row>
+    
+    <v-row >
+      <v-col cols="12" >
+
+        <v-row>
+          <v-col cols="12" >
+            
+            <div v-if="currentStep">
+              <component :is="currentStep.component"
+                          :value="currentStep.value"
+                          @input="notifyChange" />
+                          <!-- :value="currentStep ? currentStep.value : undefined" -->
+            </div>
+
+            <div v-if="!currentStep">
+              Nothing selected, please select a step in the navigation!
+            </div>              
+          </v-col>
+        </v-row>
 
       </v-col>
     </v-row>
-    <v-row no-gutters >
-      <v-col cols="12" 
-              :style="`background-color: ${backgroundColor}`">
 
-        <v-card style="background-color: white;"
-                class="ma-1 pa-4">
-
-          <v-row>
-            <v-col cols="12" >
-              
-              <div v-if="currentStep">
-                <component :is="currentStep.component"
-                            :steps="currentStep.detailSteps"
-                            stepColor="highlight"
-                            @input="notifyChange" />
-              </div>
-
-              <div v-if="!currentStep">
-                Nothing selected, please select a step in the navigation!
-              </div>
-            </v-col>
-          </v-row>
-
-          <!-- <v-row >
-            <v-col>
-              <BaseRectangleButton buttonText="Next Step"
-                                    @clicked="nextStep" />
-            </v-col>
-          </v-row> -->
-
-        </v-card>
+    <v-row justify="end" >
+      <v-col class="shrink">
+        <BaseRectangleButton buttonText="Next Step"
+                              @clicked="nextStep" />
       </v-col>
     </v-row>
 
@@ -56,11 +52,11 @@
 <script>
 /**
 
- * @summary NavigationStepper for structuring a workflow
+ * @summary MetadataCreationMainInfo provides the different steps for editing the main info a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 09:06:16
+ * Last modified  : 2021-07-28 08:57:27
 
  *
  * This file is subject to the terms and conditions defined in
@@ -70,7 +66,7 @@ import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
 
 export default {
-  name: 'NavigationStepper',
+  name: 'MetadataCreationMainInfo',
   props: {
     steps: Array,
     initialStepTitle: String,
@@ -91,14 +87,10 @@ export default {
 
   },
   computed: {
-    backgroundColor() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
-    },
   },
   methods: {
     catchStepClick(stepTitle) {
       this.setCurrentStep(stepTitle);
-      // this.$emit('stepClick', step);
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -125,8 +117,6 @@ export default {
       this.currentStep = null;
     },
     notifyChange(e) {
-      // console.log(`${this.name} ${e}`);
-      console.log(e);
       this.$emit('input', e);
     },
   },

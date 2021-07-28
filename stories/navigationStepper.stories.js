@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-07-27 16:15:05
+ * Last modified  : 2021-07-28 09:08:14
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -17,43 +17,55 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 
-// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+
+const mainDetailSteps = [
+  {
+    title: 'Basic Info',
+    completed: false,
+    component: EditMetadataHeader,
+  },
+  {
+    title: 'Description',
+    completed: false,
+    component: EditDescription,
+  },
+  {
+    title: 'Keywords',
+    completed: false,
+    component: EditCustomFields,
+  },
+  {
+    title: 'Authors',
+    completed: false,
+    component: EditDescription,
+  },
+];
 
 const steps = [
   {
     title: 'Main Info',
-    icon: 'pen',
-    tooltip: 'Back to the start page',
     completed: false,
     color: 'secondary',
-    active: false,
-    component: EditMetadataHeader,
+    component: MetadataCreationMainInfo,
+    detailSteps: mainDetailSteps,
   },
   {
     title: 'Data Info',
-    icon: 'pen',
-    tooltip: 'Back to the start page',
     completed: false,
     color: 'red',
-    active: false,
     component: EditDescription,
   },
   {
     title: 'Related Info',
-    icon: 'pen',
-    tooltip: 'Back to the start page',
     completed: false,
     color: 'green',
-    active: false,
     component: EditCustomFields,
   },
   {
     title: 'Publication Info',
-    icon: 'pen',
-    tooltip: 'Back to the start page',
     completed: false,
     color: 'orange',
-    active: false,
     component: EditDescription,
   },
 ];
@@ -67,7 +79,8 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     <v-row>
       <v-col cols="12">
         <NavigationStepper :steps="steps"
-                            :initialStepTitle="steps[1].title" />
+                            :initialStepTitle="steps[0].title"
+                            stepColor="success" />
 
       </v-col>
 
@@ -77,24 +90,27 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     steps,
   }),
   methods: {
-    // catchStepClick(step) {
-    //   alert(`clicked ${step}`);
-
-    //   for (let i = 0; i < steps.length; i++) {
-    //     const s = steps[i];
-    //     s.active = s.title === step;
-    //   }
-    // },
   },
-// }))
-// .add('Toolbar', () => ({
-//   components: { TheNavigationToolbar },
-//   template: `
-//       <the-navigation-toolbar
-//                   labelText="Search for something"
-//             v-on:menuClick="onMenuClick"
-//             v-on:searchClick="onSearchClick"
-//             v-on:loginClick="onLoginClick"
-//             />`,
-//   methods,
+}))
+.add('Main Info Stepper', () => ({
+  components: {
+    MetadataCreationMainInfo,
+  },
+  template: `
+  <v-row>
+    <v-col cols="12">
+      <MetadataCreationMainInfo :steps="mainDetailSteps"
+                                :initialStepTitle="mainDetailSteps[0].title"
+                                stepColor="highlight" />
+
+
+    </v-col>
+
+  </v-row>
+  `,
+  data: () => ({
+    mainDetailSteps,
+  }),
+  methods: {
+  },
 }));

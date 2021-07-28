@@ -20,8 +20,9 @@
                           @click="catchStepClick(step)"
                           class="py-0 px-3 ma-4 blackTextStepIcon"
                           style="border-radius: 4px;"
-                          :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light.secondary : ''};`"
+                          :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light[stepColor] : ''};`"
                         >
+                        
                           <!-- :style="`border: 1px solid ${step.active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.secondary};
                                     background-color: ${$vuetify ? $vuetify.theme.themes.light.secondary : ''};`" -->
                           <!-- :style="`background-color: ${step.color};`" -->
@@ -46,7 +47,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-27 15:03:58
+ * Last modified  : 2021-07-28 07:54:13
 
  *
  * This file is subject to the terms and conditions defined in
@@ -65,7 +66,11 @@ export default {
     inactiveColor: {
       type: String,
       default: 'grey',
-    },    
+    },
+    stepColor: {
+      type: String,
+      default: 'white',
+    },
   },
   created() {
     // +1 so that the steps icons are beginning with 1 not 0
