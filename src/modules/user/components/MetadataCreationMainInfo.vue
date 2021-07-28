@@ -25,9 +25,8 @@
             
             <div v-if="currentStep">
               <component :is="currentStep.component"
-                          :value="currentStep.value"
-                          @input="notifyChange" />
-                          <!-- :value="currentStep ? currentStep.value : undefined" -->
+                          :genericProps="currentStep.genericProps"
+                          />
             </div>
 
             <div v-if="!currentStep">
@@ -56,12 +55,13 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 08:57:27
+ * Last modified  : 2021-07-28 11:28:12
 
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
 
@@ -115,9 +115,6 @@ export default {
 
       this.currentStepIndex = -1;
       this.currentStep = null;
-    },
-    notifyChange(e) {
-      this.$emit('input', e);
     },
   },
   data: () => ({

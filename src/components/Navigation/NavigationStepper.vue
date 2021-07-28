@@ -29,8 +29,8 @@
               <div v-if="currentStep">
                 <component :is="currentStep.component"
                             :steps="currentStep.detailSteps"
-                            stepColor="highlight"
-                            @input="notifyChange" />
+                            :genericProps="currentStep.genericProps"
+                            stepColor="highlight" />
               </div>
 
               <div v-if="!currentStep">
@@ -60,12 +60,17 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 09:06:16
+ * Last modified  : 2021-07-28 11:26:17
 
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
+
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
 
@@ -78,6 +83,12 @@ export default {
       type: String,
       default: 'secondary',
     },
+  },
+  created() {
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   beforeMount() {
 
@@ -124,15 +135,16 @@ export default {
       this.currentStepIndex = -1;
       this.currentStep = null;
     },
-    notifyChange(e) {
-      // console.log(`${this.name} ${e}`);
-      console.log(e);
-      this.$emit('input', e);
+    editComponentsChanged(updateObj) {
+      console.log(`got update on ${ JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
+      // this.editState[updateObj.object] = updateObj.data;
+      // console.log(`got update on ${this.editState}`);
     },
   },
   data: () => ({
     currentStep: null,
     currentStepIndex: -1,
+    editState: {},
   }),
   components: {
     StepperHeader,
