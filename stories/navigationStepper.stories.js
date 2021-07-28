@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-07-28 09:08:14
+ * Last modified  : 2021-07-28 17:25:37
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -11,6 +11,13 @@
 
 // /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  EDITMETADATA_MAIN_HEADER,
+  eventBus,
+} from '@/factories/eventBus';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
@@ -19,11 +26,50 @@ import EditCustomFields from '@/modules/user/components/EditCustomFields';
 
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 
+const componentToStateMapping = {
+  EDITMETADATA_MAIN_HEADER: EditMetadataHeader,
+  EDITMETADATA_MAIN_DESCRIPTION: EditDescription,
+  EDITMETADATA_CUSTOMFIELDS: EditCustomFields,
+};
+
+function getStepToUpdate(eventName, steps) {
+  if (!steps) {
+    return null;
+  }
+
+  const cKeys = Object.keys(componentToStateMapping);
+  const filteredKeys = cKeys.filter(k => k === eventName);
+  const compKey = filteredKeys[0] || null;
+
+  if (compKey) {
+
+    const comp = componentToStateMapping[compKey];
+
+    for (let i = 0; i < steps.length; i++) {
+      const s = steps[i];
+      if (s?.component?.name === comp?.name) {
+        return s;
+      }
+      
+      if (s?.detailSteps) {
+        return getStepToUpdate(eventName, s.detailSteps);
+      }
+    }
+  }
+
+  return null;
+}
+
 const mainDetailSteps = [
   {
     title: 'Basic Info',
     completed: false,
     component: EditMetadataHeader,
+    genericProps: {
+      body: {
+        text: '',
+      },
+    },
   },
   {
     title: 'Description',
@@ -55,6 +101,11 @@ const steps = [
     completed: false,
     color: 'red',
     component: EditDescription,
+    genericProps: {
+      body: {
+        text: '',
+      },
+    },
   },
   {
     title: 'Related Info',
@@ -86,10 +137,28 @@ storiesOf('5 Navigation / Navigation Stepper', module)
 
     </v-row>
   `,
+  created() {
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
   data: () => ({
     steps,
   }),
   methods: {
+    getStepToUpdate,
+    editComponentsChanged(updateObj) {
+      console.log(`got update on ${ JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
+      // this.editState[updateObj.object] = updateObj.data;
+      // console.log(`got update on ${this.editState}`);
+
+      this.updateSteps(updateObj.object, updateObj.data);
+    },
+    updateSteps(eventName, newGenericProps) {
+      const stepToUpdate = this.getStepToUpdate(eventName, this.steps);
+      stepToUpdate.genericProps = newGenericProps;
+    },    
   },
 }))
 .add('Main Info Stepper', () => ({
@@ -108,9 +177,18 @@ storiesOf('5 Navigation / Navigation Stepper', module)
 
   </v-row>
   `,
+  created() {
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.logChanges);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.logChanges);
+  },
   data: () => ({
     mainDetailSteps,
   }),
   methods: {
+    logChanges(updateObj) {
+      console.log(`got update on ${updateObj.object} with data ${updateObj.data}`);
+    },
   },
 }));

@@ -1,16 +1,14 @@
 <template>
-  <v-card id="EditDescription">
+<v-card id="EditDescription">
 
- <v-container fluid>
+  <v-container fluid>
 
-   <v-row>
-
+    <v-row>
       <v-col cols="12"> 
         <div class="text-h5">{{ cardTitle }}</div>
       </v-col>
 
     </v-row>  
-
 
     <v-row>
 
@@ -24,22 +22,21 @@
     <v-row>
 
       <v-col cols="6">     
-        <v-textarea 
-                      :label="labelDescription"
+        <v-textarea :label="labelDescription"
                       outlined
                       :rules="descriptionRules"
                       required
                       auto-grow
                       v-model="bodyObject.body.text"
-                    >
+                      @input="notifyChange"
+                      >
         </v-textarea>
       </v-col>
 
       <v-col cols="6">     
-        <MetadataBody
-          :genericProps="bodyObject"
-          :showPlaceholder="showPreviewPlaceholder"
-        />
+        <MetadataBody :genericProps="bodyObject"
+                        :showPlaceholder="showPreviewPlaceholder"
+                        />
 
       </v-col>
 
@@ -48,23 +45,27 @@
     
 
   </v-container>
-    </v-card>  
+</v-card>  
 
 </template>
 
 <script>
 /**
-
  * @summary shows the description and description preview of a metadata entry
  * @author Rebecca Kurup Buchholz
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-07-28 08:59:23
+ * Last modified  : 2021-07-28 13:17:05
 
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  eventBus,
+} from '@/factories/eventBus';
 
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 
@@ -84,7 +85,7 @@ export default {
       type: String, 
       default: 'Description',
     },
-    bodyObject: {
+    genericProps: {
       type: Object,
       default() {
         return {
@@ -96,14 +97,23 @@ export default {
     },
   },
   computed: {
+    bodyObject() {
+      return this.genericProps;
+    },
   },
   methods: {
+    notifyChange() {
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_MAIN_DESCRIPTION,
+        data: this.genericProps,
+      });
+    },
   },
   data: () => ({
     previewTitle: 'Preview Description',
     showPreviewPlaceholder: false,
     descriptionRules: [v => !!v || 'Description is required'],
-   }),
+  }),
   components: {
     MetadataBody,
   },  

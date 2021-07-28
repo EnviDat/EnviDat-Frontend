@@ -5,45 +5,50 @@
 
       <v-row>
 
-          <v-col cols="12"> 
-            <div class="text-h5">{{ cardTitle }}</div>
-          </v-col>
+        <v-col cols="12"> 
+          <div class="text-h5">{{ cardTitle }}</div>
+        </v-col>
 
-        </v-row>  
-
-
-        <v-row>
-
-          <v-col cols="12"> 
-            <div class="text-body-1">{{ cardInstructions }}</div>
-          </v-col>
-
-        </v-row>
+      </v-row>  
 
 
-        <div v-for="(field, index) in customFieldsList" >
-          <div v-if="showFieldRow(index)">
-            <v-row v-for="(item) in field">
-              <v-col cols="6" >     
-                <v-text-field @change="showFieldRow(index)"
-                              :label="labelFieldName"
-                              outlined
-                              v-model="item.fieldName" >
-                </v-text-field>
-              </v-col>
-              <v-col cols="6" > 
-                <v-text-field @change="showFieldRow(index)"
-                              :label="labelContent" 
-                              outlined 
-                              v-model="item.content">
-                </v-text-field>
-              </v-col>
-            </v-row>
-          </div>
-        </div>   
+      <v-row>
 
-      </v-container>
-    </v-card>  
+        <v-col cols="12"> 
+          <div class="text-body-1">{{ cardInstructions }}</div>
+        </v-col>
+
+      </v-row>
+
+
+      <div v-for="(field, index) in customFieldsList" 
+            :key="`${field}_${index}`">
+
+        <div v-if="showFieldRow(index)">
+
+          <v-row v-for="(item, itemIndex) in field"
+                  :key="`${item}_${itemIndex}`">
+
+            <v-col cols="6" >
+              <v-text-field :label="labelFieldName"
+                            outlined
+                            v-model="item.fieldName"
+                            @input="notifyChange" >
+              </v-text-field>
+            </v-col>
+            <v-col cols="6" > 
+              <v-text-field :label="labelContent" 
+                            outlined 
+                            v-model="item.content"
+                            @input="notifyChange" >
+              </v-text-field>
+            </v-col>
+          </v-row>
+        </div>
+      </div>   
+
+    </v-container>
+  </v-card>  
 
 </template>
 
@@ -53,11 +58,16 @@
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
  * Created at     : 2021-07-05
- * Last modified  : 2021-07-28 08:15:34
+ * Last modified  : 2021-07-28 10:35:28
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_CUSTOMFIELDS,
+  eventBus,
+} from '@/factories/eventBus';
 
 export default {
   name: 'EditCustomFields',
@@ -78,7 +88,7 @@ export default {
       type: String,
       default: 'Content',
     },
-    customFieldsList: {
+    genericProps: {
       type: Array,
       default: () => [
         { 
@@ -115,6 +125,9 @@ export default {
     },
   },
   computed: {
+    customFieldsList() {
+      return this.genericProps;
+    },
   },
   methods: {
     showFieldRow(index) {
@@ -139,6 +152,12 @@ export default {
 
       // Else do not show field
       return false;
+    },
+    notifyChange() {
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_CUSTOMFIELDS,
+        data: this.genericProps,
+      });
     },
   },
   data: () => ({

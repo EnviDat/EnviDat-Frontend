@@ -39,13 +39,6 @@
             </v-col>
           </v-row>
 
-          <!-- <v-row >
-            <v-col>
-              <BaseRectangleButton buttonText="Next Step"
-                                    @clicked="nextStep" />
-            </v-col>
-          </v-row> -->
-
         </v-card>
       </v-col>
     </v-row>
@@ -60,7 +53,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 11:26:17
+ * Last modified  : 2021-07-28 17:29:54
 
  *
  * This file is subject to the terms and conditions defined in
@@ -83,12 +76,6 @@ export default {
       type: String,
       default: 'secondary',
     },
-  },
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   beforeMount() {
 
@@ -135,16 +122,10 @@ export default {
       this.currentStepIndex = -1;
       this.currentStep = null;
     },
-    editComponentsChanged(updateObj) {
-      console.log(`got update on ${ JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
-      // this.editState[updateObj.object] = updateObj.data;
-      // console.log(`got update on ${this.editState}`);
-    },
   },
   data: () => ({
     currentStep: null,
     currentStepIndex: -1,
-    editState: {},
   }),
   components: {
     StepperHeader,
