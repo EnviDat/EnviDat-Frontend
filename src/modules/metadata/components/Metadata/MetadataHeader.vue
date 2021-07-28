@@ -7,7 +7,9 @@
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button class="ma-2"
+    <base-icon-button id="MetadataHeaderCloseButton"
+                      v-if="showCloseButton"
+                      class="ma-2"
                       :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
                       style="position: absolute; top: 0px; right: 0px; z-index: 2;"
                       material-icon-name="close"
@@ -259,7 +261,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-01-05 15:55:22
+ * Last modified  : 2021-07-27 17:28:23
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -305,6 +307,10 @@ export default {
     authorDeadInfo: {
       type: Object,
       default: null,
+    },
+    showCloseButton: {
+      type: Boolean,
+      default: true,
     },
   },
   data: () => ({
