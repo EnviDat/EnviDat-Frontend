@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-07-28 17:25:37
+ * Last modified  : 2021-07-28 17:32:17
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -20,106 +20,14 @@ import {
 } from '@/factories/eventBus';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
-import EditDescription from '@/modules/user/components/EditDescription';
-import EditCustomFields from '@/modules/user/components/EditCustomFields';
-
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 
-const componentToStateMapping = {
-  EDITMETADATA_MAIN_HEADER: EditMetadataHeader,
-  EDITMETADATA_MAIN_DESCRIPTION: EditDescription,
-  EDITMETADATA_CUSTOMFIELDS: EditCustomFields,
-};
+import {
+  metadataCreationSteps,
+  mainDetailSteps,
+  getStepToUpdate,
+} from '@/modules/user/components/MetadataCreationSteps';
 
-function getStepToUpdate(eventName, steps) {
-  if (!steps) {
-    return null;
-  }
-
-  const cKeys = Object.keys(componentToStateMapping);
-  const filteredKeys = cKeys.filter(k => k === eventName);
-  const compKey = filteredKeys[0] || null;
-
-  if (compKey) {
-
-    const comp = componentToStateMapping[compKey];
-
-    for (let i = 0; i < steps.length; i++) {
-      const s = steps[i];
-      if (s?.component?.name === comp?.name) {
-        return s;
-      }
-      
-      if (s?.detailSteps) {
-        return getStepToUpdate(eventName, s.detailSteps);
-      }
-    }
-  }
-
-  return null;
-}
-
-const mainDetailSteps = [
-  {
-    title: 'Basic Info',
-    completed: false,
-    component: EditMetadataHeader,
-    genericProps: {
-      body: {
-        text: '',
-      },
-    },
-  },
-  {
-    title: 'Description',
-    completed: false,
-    component: EditDescription,
-  },
-  {
-    title: 'Keywords',
-    completed: false,
-    component: EditCustomFields,
-  },
-  {
-    title: 'Authors',
-    completed: false,
-    component: EditDescription,
-  },
-];
-
-const steps = [
-  {
-    title: 'Main Info',
-    completed: false,
-    color: 'secondary',
-    component: MetadataCreationMainInfo,
-    detailSteps: mainDetailSteps,
-  },
-  {
-    title: 'Data Info',
-    completed: false,
-    color: 'red',
-    component: EditDescription,
-    genericProps: {
-      body: {
-        text: '',
-      },
-    },
-  },
-  {
-    title: 'Related Info',
-    completed: false,
-    color: 'green',
-    component: EditCustomFields,
-  },
-  {
-    title: 'Publication Info',
-    completed: false,
-    color: 'orange',
-    component: EditDescription,
-  },
-];
 
 storiesOf('5 Navigation / Navigation Stepper', module)
   .add('Navigation Stepper', () => ({
@@ -144,7 +52,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   data: () => ({
-    steps,
+    steps: metadataCreationSteps,
   }),
   methods: {
     getStepToUpdate,
@@ -158,7 +66,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     updateSteps(eventName, newGenericProps) {
       const stepToUpdate = this.getStepToUpdate(eventName, this.steps);
       stepToUpdate.genericProps = newGenericProps;
-    },    
+    },
   },
 }))
 .add('Main Info Stepper', () => ({

@@ -55,7 +55,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-07-28 13:17:05
+ * Last modified  : 2021-07-28 17:34:05
 
  *
  * This file is subject to the terms and conditions defined in
@@ -85,6 +85,7 @@ export default {
       type: String, 
       default: 'Description',
     },
+    // genericProps: Object,
     genericProps: {
       type: Object,
       default() {
