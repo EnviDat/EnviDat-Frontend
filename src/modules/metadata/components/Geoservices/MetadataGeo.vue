@@ -1,83 +1,118 @@
 <template>
-  <v-card>
-    <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
+  <v-card id="MetadataGeo" >
 
-    <v-card-text v-if="configFile" style="width: 100%; height: 500px; position: relative;">
-      <Map :config="configFile" :map-div-id="'map-small'">
-        <v-btn fab small color="primary" @click.native.stop="openFullscreen">
-          <v-icon medium style="height:auto;">fullscreen</v-icon>
-        </v-btn>
-      </Map>
+    <v-card-title >
+      <v-row justify="end"
+              align="center"
+              no-gutters>
+
+        <v-col class="title metadata_title grow"
+                align-self="start">
+          {{ METADATA_LOCATION_TITLE }}
+        </v-col>
+
+        <v-col class="shrink metadataTitleIcons" >
+          <BaseIconLabelView :icon="getGeoJSONIcon()" />
+        </v-col>
+
+        <v-col class="shrink pl-2">
+
+          <BaseIconButton materialIconName="zoom_out_map"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerFullscreen" />
+
+        </v-col>
+
+      </v-row>
+    </v-card-title>
+
+    <v-card-text class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" >
+      Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison.
+      The Swisstopo WMS layers are being loaded for testing. Be aware there might be bugs, please report them to envidat@wsl.ch
+    </v-card-text>
+
+    <v-card-text v-if="error"
+                  class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.error };`" >
+      {{ error }}
+    </v-card-text>
+
+    <v-card-text style="position: relative;" >
+
+      <Map :layer-config="layerConfig"
+            :mapDivId="'map-small'"
+            :selectedLayerName="selectedLayerName"
+            @changeLayer="selectLayer"
+            :site="site"
+            :showFullscreenButton="true"
+            :height="450" />
     </v-card-text>
 
   </v-card>
 </template>
 
 <script>
-  import axios from 'axios';
+  import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
+
+  import {
+    INJECT_MAP_FULLSCREEN,
+    eventBus,
+  } from '@/factories/eventBus';
+
+  import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+  import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
   import Map from './Map';
 
   export default {
     name: 'MetadataGeo',
-    components: { Map },
+    components: {
+      Map,
+      BaseIconButton,
+      BaseIconLabelView,
+    },
     props: {
       genericProps: Object,
     },
+    mounted() {
+
+    },
+    computed: {
+      error() {
+        return this.genericProps?.error;
+      },
+      site() {
+        return this.genericProps?.site;
+      },
+
+      layerConfig() {
+        return this.genericProps?.layerConfig;
+      },
+    },
+    methods: {
+      triggerFullscreen() {
+        // console.log(`triggerFullscreenEvent ${this.layerConfig}`);
+        eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
+      },
+      selectLayer(layerName) {
+        this.selectedLayerName = layerName;
+      },
+      getGeoJSONIcon() {
+        return this.mixinMethods_getGeoJSONIcon(this.site?.type);
+      },
+    },
     data: () => ({
+      ready: false,
       map: null,
-      mapLayer: null,
-      configFile: null,
-      selectedLayer: null,
       smallSize: 300,
       mediumSize: 500,
       largeSize: 725,
       fullWidthSize: 875,
-    }),
-    computed: {
-      ready() {
-        return !!this.genericProps.config;
-      },
-      title() {
-        return this.mixinMethods_getGenericProp('title');
-      },
-      mapSize() {
-        let height = this.mediumSize;
-
-        if (this.$vuetify.breakpoint.xsOnly) {
-          height = this.smallSize;
-        } else if (this.$vuetify.breakpoint.smAndDown) {
-          height = this.smallSize;
-        }
-        return {
-          style: `max-width: 100%;
-                  height: ${height}px !important;`,
-        };
-      },
-    },
-    watch: {
-      ready: {
-        handler() {
-          if (this.genericProps.config) {
-            this.loadConfig();
-          }
-        },
-        immediate: true,
-      },
-    },
-    methods: {
-      openFullscreen() {
-        this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
-      },
-      loadConfig() {
-        const url = this.genericProps.config.url;
-        axios.get(url)
-          .then((res) => {
-            this.configFile = res.data;
-            this.selectedLayer = this.configFile.layers.find(layer => layer.visibility).name;
-            return 'Success';
-          });
-      },
-    },
+      fullscreen: false,
+      METADATA_LOCATION_TITLE,
+      selectedLayerName: '',
+    }),    
   };
 </script>
 <style scoped>

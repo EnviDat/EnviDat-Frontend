@@ -1,17 +1,19 @@
 <template>
   <v-card style="width: 100%; max-width: 100%;">
-    <v-row class="fill-height" align="center">
-
-      <v-col>
+    <v-row class="pb-0" justify="center" align="center" style="height: 20%;" no-gutters>
+      {{ currentName }}
+    </v-row>
+    <v-row align="center" style="height: 80%;" no-gutters>
+      <v-col style="max-width: 50px;">
         <v-btn icon small @click="previous()" :disabled="this.currentIndex <= 0">
           <v-icon>arrow_left</v-icon>
         </v-btn>
       </v-col>
-
-      <div :id="divId" style="width: 100%; height: 100%;"></div>
-
-      <v-col>
-        <v-btn icon small @click="next()" :disabled="this.currentIndex > this.nDataPoints - 1">
+      <v-col style="height: 100%; width: 100%;" class="grow">
+        <div :id="divId" style="width: 100%; height: 100%;"></div>
+      </v-col>
+      <v-col style="max-width: 50px;">
+        <v-btn icon small @click="next()" :disabled="this.currentIndex >= this.nDataPoints - 1">
           <v-icon>arrow_right</v-icon>
         </v-btn>
       </v-col>
@@ -48,10 +50,25 @@
           this.$emit('select', this.chart.chart.dataProvider[this.currentIndex - 1].name);
         }
       },
+      updateSelection() {
+        this.chart.chart.dataProvider.forEach((dataPoint) => {
+          if (dataPoint.name !== this.selected) {
+            dataPoint.selectedColor = undefined;
+            dataPoint.selectedSize = undefined;
+          } else {
+            dataPoint.selectedColor = '#8198b4';
+            dataPoint.selectedSize = '20';
+          }
+        });
+        this.chart.chart.validateData(); // update chart
+      },
     },
     computed: {
       currentIndex() {
         return this.chart ? this.chart.chart.dataProvider.findIndex(dataPoint => dataPoint.name === this.selected) : null;
+      },
+      currentName() {
+        return this.chart ? this.chart.chart.dataProvider[this.currentIndex].name : null;
       },
       nDataPoints() {
         return this.chart ? this.chart.chart.dataProvider.length : null;
@@ -67,10 +84,16 @@
         addClassNames: true,
         zoomOutText: '', // Hack, to hide show all button
         categoryAxis: {
-          parseDates: true,
+          minorGridEnabled: false,
+          gridThickness: 0,
+          parseDates: false,
+          labelsEnabled: false,
         },
         chartCursor: {
           enabled: true,
+          bulletsEnabled: true,
+          valueLineBalloonEnabled: false,
+          valueLineEnabled: false,
         },
         chartScrollbar: {
           enabled: true,
@@ -89,7 +112,8 @@
             id: 'AmGraph-1',
             title: 'graph 1',
             valueField: 'value',
-            showBalloon: false,
+            showBalloon: true,
+            balloonText: '[[name]]',
             showHandOnHover: true,
           },
         ],
@@ -99,11 +123,18 @@
             autoGridCount: false,
             axisThickness: 0,
             gridThickness: 0,
+            zeroGridAlpha: 0,
             labelsEnabled: false,
-            minorGridEnabled: true,
+            minorGridEnabled: false,
             title: '',
           },
         ],
+        balloon: {
+          maxWidth: 500,
+          fillAlpha: 1,
+        },
+        marginTop: 0,
+        paddingTop: 0,
         zoomOutOnDataUpdate: false,
         listeners: [{
           event: 'init',
@@ -130,19 +161,11 @@
 
       // eslint-disable-next-line no-undef
       AmCharts.makeChart(this.divId, config);
+      this.updateSelection();
     },
     watch: {
       selected() {
-        this.chart.chart.dataProvider.forEach((dataPoint) => {
-          if (dataPoint.name !== this.selected) {
-            dataPoint.selectedColor = undefined;
-            dataPoint.selectedSize = undefined;
-          } else {
-            dataPoint.selectedColor = '#8198b4';
-            dataPoint.selectedSize = '20';
-          }
-        });
-        this.chart.chart.validateData(); // update chart
+        this.updateSelection();
       },
     },
   };

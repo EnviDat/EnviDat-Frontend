@@ -1,6 +1,7 @@
 <template>
   <article class="ma-0 pa-0 fill-height"
-            id="BrowsePage">
+            id="BrowsePage"
+            key="BrowsePage">
 
     <metadata-list ref="metadataList"
                     :listContent="filteredContent"
@@ -21,7 +22,7 @@
                     :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
                     @onScroll="storeScroll"
                     :showSearch="true"
-                    :searchTerm="searchTerm"
+                    :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
@@ -97,13 +98,6 @@ export default {
 
       return false;
     },
-    storeScroll(scrollY) {
-      this.$store.commit(SET_BROWSE_SCROLL_POSITION, scrollY);
-    },
-    resetScrollPos() {
-      this.storeScroll(0);
-      this.setScrollPos(0);
-    },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {
         const newTags = [...this.selectedTagNames, tagName];
@@ -153,73 +147,87 @@ export default {
       this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, { selectedTagNames: this.selectedTagNames, mode });
     },
     checkRouteChanges(fromRoute) {
+      let triggerClearSearch = false;
+      let triggerScrollReset = false;
+
       if (!fromRoute) {
         if (this.detailPageBackRoute) {
           fromRoute = this.detailPageBackRoute;
         } else if (this.currentSearchTerm) {
-          this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
+          triggerClearSearch = true;
         }
       }
 
-      // const isBackNavigation = false;
       const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
       const tagsChanged = this.loadRouteTags();
       const searchParameter = this.$route.query.search || '';
-      const checkSearchTriggering = searchParameter !== this.searchTerm;
+      const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
 
-      if (checkSearchTriggering) {
+      if (!checkSearchTriggering) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
-        this.searchTerm = searchParameter;
-      // } else if (!tagsChanged && isBackNavigation) {
-      //   // when having a back navigation with no changes, make sure
-      //   // no possible prefiltered state is shown. So retrigger a search check
-      //   // when the filtered size is equal not to the total available content size
-      //   checkSearchTriggering = this.filteredContentSize !== this.metadatasContentSize;
+        // this.searchTerm = searchParameter;
+        triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
       }
 
       if (isBackNavigation) {
-      // if (isBackNavigation && !checkSearchTriggering) {
         // use a delayed scroll position setup because the list as to be loaded first
         setTimeout(() => {
           this.setScrollPos(this.browseScrollPosition);
         }, this.scrollPositionDelay);
-      } else {
-        if (checkSearchTriggering) {
-          if (this.searchTerm && this.searchTerm.length > 0) {
-
-            this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, {
-              searchTerm: this.searchTerm,
-              metadataConfig: this.metadataConfig,
-            });
-
-            this.resetScrollPos();
-
-            // prevent immediately filtering, the search results
-            // will be filtered via searchingMetadatasContentOK watch
-            return;
-          }
-
-          // the searchTerm was changed to empty -> clear the search results
-          this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
-          // and manually reset the scrolling
-          this.resetScrollPos();
-        }
-
-        if (tagsChanged) {
-          // in case the tags have changed the scroll needs to be reset
-          this.resetScrollPos();
-        }
-
-        // always filter changes of the url except a change of the search term
-        // because due to navigation the inital filter might be needed
-        this.filterContent();
       }
+
+      if (checkSearchTriggering) {
+        if (searchParameter && searchParameter.length > 0) {
+
+          this.metadataSearch(searchParameter, this.metadataConfig);
+          this.resetScrollPos();
+
+          // prevent immediately filtering, the search results
+          // will be filtered via searchingMetadatasContentOK watch
+          return;
+        }
+
+        // the searchTerm was changed to empty -> clear the search results
+        triggerClearSearch = true;
+        triggerScrollReset = true;
+      }
+
+      if (tagsChanged) {
+        // in case the tags have changed the scroll needs to be reset
+        triggerScrollReset = true;
+      }
+      
+      if (triggerScrollReset && !isBackNavigation) {
+        // and manually reset the scrolling
+        this.resetScrollPos();
+      }
+
+      if (triggerClearSearch) {
+        this.clearSearchResults();
+      }
+
+      // always filter changes of the url except a change of the search term
+      // because due to navigation the inital filter might be needed
+      this.filterContent();
     },
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataList) {
         this.$refs.metadataList.setScrollPos(toPos);
       }
+    },
+    storeScroll(scrollY) {
+      this.$store.commit(SET_BROWSE_SCROLL_POSITION, scrollY);
+    },
+    resetScrollPos() {
+      this.storeScroll(0);
+      this.setScrollPos(0);
+    },
+    clearSearchResults() {
+      this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
+    },
+    metadataSearch(searchTerm, metadataConfig) {
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -332,7 +340,6 @@ export default {
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
-    searchTerm: '',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
     selectedTagNames: [],

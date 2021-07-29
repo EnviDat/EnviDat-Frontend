@@ -1,6 +1,6 @@
 import {
   getConfigFiles,
-  getGcnetStationsConfigs,
+  getConfigUrls,
 } from '@/factories/chartFactory';
 
 import dataset from '@/../public/testdata/testResoures';
@@ -12,7 +12,7 @@ describe('chartFactory - getConfigFiles()', () => {
     expect(resources).not.toBeNull();
     
     const configs = getConfigFiles(resources);
-    getGcnetStationsConfigs(configs);
+    getConfigUrls(configs);
 
     expect(resources[0].hideFromResourceList).toBeTruthy();
     expect(resources[1].hideFromResourceList).toBeTruthy();

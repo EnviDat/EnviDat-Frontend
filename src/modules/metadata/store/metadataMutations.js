@@ -55,8 +55,9 @@ import {
   enhanceMetadataEntry,
   enhanceTags,
   createLocation,
-  getCardBackgrounds,
 } from '@/factories/metaDataFactory';
+
+import globalMethods from '@/factories/globalMethods';
 
 import {
   METADATA_PUBLICATIONS_TITLE,
@@ -75,7 +76,7 @@ function enhanceMetadatas(store, datasets) {
 
   // const rootBGImgs = store.rootState?.getters?.cardBGImages;
   let cardBGImgs = store.state.cardBGImages; // || rootBGImgs;
-  cardBGImgs = cardBGImgs || getCardBackgrounds(checkWebpFeature());
+  cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
   const categoryCards = store.state.categoryCards;
   const enhancedContent = {};
 

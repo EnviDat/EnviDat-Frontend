@@ -16,7 +16,7 @@
         <img class="envidatIcon"
               :class="compactLayout ? 'small' : ''"
               :src="icon"
-              :alt="`${icon} icon`" >
+              :alt="iconTooltip ? iconTooltip : `${icon} icon`" >
       </v-col>
 
       <v-col v-if="icon && !iconTooltip"
@@ -27,7 +27,7 @@
           <img class="envidatIcon"
                 :class="compactLayout ? 'small' : ''"
                 :src="icon"
-                :alt="`${icon} icon`" >
+                :alt="label ? label : `${icon} icon`" >
         </div>
       </v-col>
 

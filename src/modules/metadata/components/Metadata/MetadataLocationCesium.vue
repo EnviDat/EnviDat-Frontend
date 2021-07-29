@@ -25,10 +25,8 @@
   import SceneMode from 'cesium/Scene/SceneMode';
   import HorizontalOrigin from 'cesium/Scene/HorizontalOrigin';
   import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
-  import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
   import Color from 'cesium/Core/Color';
-  // import Credit from 'cesium/Core/Credit';
-  // import CreditDisplay from 'cesium/Scene/CreditDisplay';
+  import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
   import Rectangle from 'cesium/Core/Rectangle';
   import 'cesium/Widgets/widgets.css';
 
@@ -58,7 +56,6 @@
       outlineWidth: Number,
     },
     mounted() {
-
       this.initCesium();
     },
     computed: {
@@ -107,7 +104,7 @@
             });
           });
 
-        this.zoomToGeometry();        
+        this.zoomToGeometry();
       },
       zoomIn() {
         this.viewer.camera.zoomIn();

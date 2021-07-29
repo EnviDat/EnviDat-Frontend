@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-24 11:26:19
+ * Last modified  : 2020-08-12 15:40:12
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -13,58 +13,38 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
-import TheNavigation from '@/components/Navigation/TheNavigation.vue';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
+import TheNavigation from '@/components/Navigation/TheNavigation';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
 
-export const methods = {
+import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+
+import {
+  navigationItems,
+  userMenuItems,
+} from '@/store/navigationState';
+
+const dominikHaas = {
+  fullname: 'Haas', apikey: 'a_secrect_thing', email: 'dominik.haas@wsl.ch', name: 'dominik', id: '929b0bc7-bfe7-4248-b90c-21f547ffe9d9',
+};
+
+const methods = {
   onMenuClick: action('clicked on menu'),
   onSearchClick: action('clicked on search'),
   onLoginClick: action('clicked on login'),
 };
 const appVersion = process.env.VUE_APP_VERSION;
 
-const navItems = [
-  {
-    title: 'Home', icon: 'envidat', tooltip: 'Back to the start page', active: false,
-  },
-  {
-    title: 'Explore', icon: 'search', tooltip: 'Explore research data', active: false,
-  },
-  {
-    title: 'Login', icon: 'person', tooltip: 'Login to upload data', active: false,
-  },
-  {
-    title: 'Organizations', icon: 'account_tree', tooltip: 'Explore research data', active: false,
-  },
-  {
-    title: 'Projects', icon: 'library_books', tooltip: 'Explore research data', active: false,
-  },
-  {
-    title: 'Guidelines',
-    icon: 'local_library',
-    tooltip: 'Guidlines about the creation of metadata',
-    active: false,
-  },
-  {
-    title: 'Policies', icon: 'policy', tooltip: 'The rules of EnviDat', active: false,
-  },
-  {
-    title: 'About', icon: 'info', tooltip: 'What is EnviDat? How is behind EnviDat?', active: false,
-  },
-  {
-    title: 'Contact', icon: 'contact_support', tooltip: 'Do you need support?', active: false,
-  },
-  { title: 'Menu', icon: 'menu', active: true },
-];
 
 storiesOf('5 Navigation / Redesigned Navigation', module)
   .add('Menu', () => ({
     components: { TheNavigation },
     template: `
     <v-container>
-      <the-navigation :navItems="navItems" :version="appVersion" />
+      <the-navigation :navigationItems="navigationItems"
+                      :version="appVersion" />
 
-      <p v-for="(item, index) in navItems" :key="index"
+      <p v-for="(item, index) in navigationItems"
+          :key="index"
           v-show="item.active"
           style="margin: 100px;" >
         {{ item.title }}
@@ -72,35 +52,54 @@ storiesOf('5 Navigation / Redesigned Navigation', module)
     </v-container>
   `,
   data: () => ({
-    navItems,
+    navigationItems,
     appVersion,
   }),
   methods,
 }))
-.add('Toolbar', () => ({
+.add('Toolbar with Mode', () => ({
   components: { TheNavigationToolbar },
   template: `
-      <the-navigation-toolbar
-                  labelText="Search for something"
-            v-on:menuClick="onMenuClick"
-            v-on:searchClick="onSearchClick"
-            v-on:loginClick="onLoginClick"
+      <the-navigation-toolbar :mode="SWISSFL_MODE"
+                              v-on:menuClick="onMenuClick"
+                              v-on:searchClick="onSearchClick"
+                              v-on:loginClick="onLoginClick"
             />`,
   methods,
+  data: () => ({
+    SWISSFL_MODE,
+  }),
+}))
+.add('Toolbar signed in', () => ({
+  components: { TheNavigationToolbar },
+  template: `
+    <the-navigation-toolbar :signedInUser="dominikHaas"
+                            :userNavigationItems="userMenuItems"
+                            v-on:menuClick="onMenuClick"
+                            v-on:searchClick="onSearchClick"
+                            v-on:loginClick="onLoginClick"
+          />`,
+  methods,
+  data: () => ({
+    dominikHaas,
+    userMenuItems,
+  }),
 }))
 .add('Menu & Toolbar', () => ({
   components: { TheNavigation, TheNavigationToolbar },
   template: `
-      <the-navigation
-        :navItems="navItems"
-      />
-      <the-navigation-toolbar
-                  labelText="Search for something"
-            @menuClick="onMenuClick"
-            @searchClick="onSearchClick"
-            @loginClick="onLoginClick"
-            />
+    <the-navigation :navigationItems="navigationItems" />
+
+    <the-navigation-toolbar :signedInUser="dominikHaas"
+                            :userNavigationItems="userMenuItems"
+                            v-on:menuClick="onMenuClick"
+                            v-on:searchClick="onSearchClick"
+                            v-on:loginClick="onLoginClick" />
   `,
-  data: () => ({ navItems }),
+  data: () => ({
+    dominikHaas,
+    navigationItems,
+    userMenuItems,
+  }),  
   methods,
 }));

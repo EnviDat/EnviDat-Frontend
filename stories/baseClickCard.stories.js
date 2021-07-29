@@ -14,7 +14,7 @@ import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 import globalMethods from '@/factories/globalMethods';
 
-import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
+import BaseClickCard from '@/components/BaseElements/BaseClickCard';
 import categoryCards from '@/store/categoryCards';
 
 const jpgAssetPaths = require.context('../src/assets/', true, /\.jpg$/);

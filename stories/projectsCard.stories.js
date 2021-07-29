@@ -14,8 +14,8 @@ import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
 import globalMethods from '@/factories/globalMethods';
-import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
-import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder';
 // get Project test data and enhance it
 import {
   enhanceSubprojectsFromExtras,

@@ -57,6 +57,8 @@
   /* eslint-disable new-cap */
   import { mapGetters } from 'vuex';
   /* eslint-disable no-unused-vars */
+  import 'leaflet/dist/leaflet.css';
+  import 'leaflet-bing-layer';
   import { METADATADETAIL_PAGENAME } from '@/router/routeConsts';
   import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
   import {
@@ -79,7 +81,7 @@
       layerSplit: null,
       splitScreen: false,
       geoConfig: null,
-      PageBGImage: 'app_b_browsepage',
+      PageBGImage: './app_b_browsepage.jpg',
       configFile: null,
       map: null,
     }),
@@ -104,12 +106,19 @@
         loadingCurrentMetadataContent: `${METADATA_NAMESPACE}/loadingCurrentMetadataContent`,
         currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
         detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
+        idRemapping: `${METADATA_NAMESPACE}/idRemapping`,
       }),
       /**
        * @returns {String} the metadataId from the route
        */
       metadataId() {
-        return this.$route.params.metadataid;
+        let id = this.$route.params.metadataid;
+
+        if (this.idRemapping.has(id)) {
+          id = this.idRemapping.get(id);
+        }
+
+        return id;
       },
       /**
        * @returns {Boolean} if the placeHolders should be shown be somethings are still loading

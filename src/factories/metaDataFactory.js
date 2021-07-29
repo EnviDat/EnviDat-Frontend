@@ -20,8 +20,6 @@ import {
   getAuthorsString,
 } from '@/factories/authorFactory';
 
-import globalMethods from '@/factories/globalMethods';
-
 import {
   FOREST,
   SNOW,
@@ -241,19 +239,21 @@ export function createCitation(dataset) {
     text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
   }
 
+  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+
   return {
     id: dataset.id,
     citationText: text,
-    citationXmlLink: `https://www.envidat.ch/dataset/${dataset.name}/export/datacite.xml`,
-    citationIsoXmlLink: `https://www.envidat.ch/dataset/${dataset.name}/export/iso19139.xml`,
-    citationGCMDXmlLink: `https://www.envidat.ch/dataset/${dataset.name}/export/gcmd_dif.xml`,
-    citationBibtexXmlLink: `https://www.envidat.ch/dataset/${dataset.name}/export/bibtex.bib`,
-    citationRisXmlLink: `https://www.envidat.ch/dataset/${dataset.name}/export/ris.ris`,
+    citationXmlLink: `${domain}/dataset/${dataset.name}/export/datacite.xml`,
+    citationIsoXmlLink: `${domain}/dataset/${dataset.name}/export/iso19139.xml`,
+    citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
+    citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
+    citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`,
   };
 }
 
-export function createResource(dataset) {
-  if (!dataset) {
+export function createResource(resource, datasetName) {
+  if (!resource) {
     return null;
   }
 
@@ -261,23 +261,23 @@ export function createResource(dataset) {
   let restrictedUsers;
   let restrictedObj = false;
 
-  if (dataset.restricted && typeof dataset.restricted === 'string'
-      && dataset.restricted.length > 0) {
+  if (resource.restricted && typeof resource.restricted === 'string'
+      && resource.restricted.length > 0) {
 
     try {
-      restrictedObj = JSON.parse(dataset.restricted);
+      restrictedObj = JSON.parse(resource.restricted);
       isProtected = restrictedObj.level !== 'public';
       restrictedUsers = restrictedObj.allowed_users !== '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
-      isProtected = !dataset.restricted.includes('public');
+      isProtected = !resource.restricted.includes('public');
     }
   }
 
-  let resURL = dataset.url;
+  let resURL = resource.url;
 
   if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
-    const splits = dataset.url.split('resource');
+    const splits = resource.url.split('resource');
     if (splits && splits.length > 0) {
       resURL = splits[0];
     } else {
@@ -285,33 +285,36 @@ export function createResource(dataset) {
     }
   }
 
-  let fileFormat = dataset.format ? dataset.format : '';
+  let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
 
-  const created = formatDate(dataset.created);
-  const modified = formatDate(dataset.last_modified);
+  const created = formatDate(resource.created);
+  const modified = formatDate(resource.last_modified);
+
+  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
   return {
     // "hash": "",
-    description: dataset.description,
+    description: resource.description,
     // "cache_last_updated": null,
-    metadataId: dataset.package_id,
+    metadataId: resource.package_id,
     // "mimetype_inner": null,
     // url_type: "upload",
-    id: dataset.id,
-    size: dataset.size ? dataset.size : 0,
-    mimetype: dataset.mimetype ? dataset.mimetype : '',
-    cacheUrl: dataset.cache_url ? dataset.cache_url : '',
-    doi: dataset.doi,
-    name: dataset.name,
+    id: resource.id,
+    size: resource.size ? resource.size : 0,
+    mimetype: resource.mimetype ? resource.mimetype : '',
+    cacheUrl: resource.cache_url ? resource.cache_url : '',
+    doi: resource.doi,
+    name: resource.name,
     url: resURL,
-    restricted: dataset.restricted ? dataset.restricted : '',
+    restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
+    restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
-    state: dataset.state ? dataset.state : '',
+    state: resource.state ? resource.state : '',
     created,
     lastModified: modified,
-    position: dataset.position ? dataset.position : '',
-    revisionId: dataset.revision_id ? dataset.revision_id : '',
+    position: resource.position ? resource.position : '',
+    revisionId: resource.revision_id ? resource.revision_id : '',
     isProtected,
   };
 
@@ -338,7 +341,7 @@ export function createResources(dataset) {
   if (dataset.resources) {
     dataset.resources.forEach((element) => {
 
-      const res = createResource(element);
+      const res = createResource(element, dataset.name);
       res.metadataContact = contactEmail;
 
       resources.push(res);
@@ -418,6 +421,10 @@ function getMultiPointArray(coordinates) {
   return points;
 }
 
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+
 export function createLocation(dataset) {
   if (!dataset) {
     return null;
@@ -437,12 +444,20 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-    const spatialJSON = JSON.parse(dataset.spatial);
+    
+    let spatialJSON = null;
+    try {
+      spatialJSON = JSON.parse(dataset.spatial);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(`MetaDataFactory: geojson parsing error ${error}`);
+    }
 
     if (spatialJSON) {
-      location.isPolygon = spatialJSON.type === 'Polygon';
-      location.isPoint = spatialJSON.type === 'Point';
-      location.isMultiPoint = spatialJSON.type === 'MultiPoint';
+      location.geoJSON = spatialJSON;
+      location.isPolygon = spatialJSON.type === LOCATION_TYPE_POLYGON;
+      location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
+      location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
@@ -583,27 +598,4 @@ export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
   }
 
   return metadatas;
-}
-
-
-export function getCardBackgrounds(useWebp = false) {
-  const bgs = {};
-
-  if (useWebp) {
-    bgs[LAND] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
-    bgs[FOREST] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
-    bgs[SNOW] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
-    bgs[DIVERSITY] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
-    bgs[HAZARD] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
-    bgs[METEO] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
-  } else {
-    bgs[LAND] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
-    bgs[FOREST] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
-    bgs[SNOW] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
-    bgs[DIVERSITY] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
-    bgs[HAZARD] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
-    bgs[METEO] = globalMethods.methods.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
-  }
-
-  return bgs;
 }

@@ -3,7 +3,7 @@
           :dark="dark"
           :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'white'"  >
 
-    <div v-bind="{['style'] : $vuetify.breakpoint.mdAndUp ? dynamicCardBackground : ''}" >
+    <div :style="$vuetify.breakpoint.mdAndUp ? dynamicCardBackground : ''" >
       <!-- this loads the background image -->
     </div>
 
@@ -53,7 +53,7 @@
       <v-col v-if="!metadataTitle && showPlaceholder"
               cols="12" >
         <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
-          <div class="bone bone-type-multiline bone-style-steps" />
+          <div class="bone bone-type-text bone-style-steps" />
         </div>
       </v-col>
     </v-row>
@@ -106,13 +106,27 @@
                   class="py-0"
                   id="authors_placeholder"
                   key="authors_placeholder" >
+
             <v-row no-gutters >
-              <v-col>
-                <tag-chip-placeholder v-for="n in 5"
-                                      :key="n"
-                                      class="headerTag" />
-              </v-col>                                
+
+              <v-col cols="12"
+                      class="pa-0"
+                      id="authors_placeholder_divier"
+                      key="authors_placeholder_divier" >
+                <v-divider :dark="dark"
+                          :class="{ 'my-1': $vuetify.breakpoint.xsOnly,
+                                    'my-2': $vuetify.breakpoint.smAndUp }" />
+              </v-col>
             </v-row>
+
+            <v-row no-gutters >
+              <v-col v-for="n in 5"
+                      :key="n"
+                      class="shrink mr-1" >
+                <tag-chip-placeholder class="headerTag" />
+              </v-col>
+            </v-row>
+
           </v-col>
         </v-row>
 
@@ -129,14 +143,16 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters
+        <v-row v-if="!showPlaceholder && metadataTitle"
+                no-gutters
                 id="headerinfos"
                 key="headerinfos"
                 style="position: relative; z-index: 1;">
 
           <v-col cols="12" sm="6" md="6" lg="3"
                 class="headerInfo py-0" >
-            <base-icon-label-view :text="contactName"
+            <BaseIconLabelView :text="contactName"
+                                  :label="licenseIcon ? '' : 'Main Contact:'"
                                   :icon="contactIcon"
                                   icon-tooltip="Main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -145,7 +161,8 @@
 
           <v-col cols="12" sm="6" md="6" lg="3"
                   class="headerInfo py-0" >
-            <base-icon-label-view :text="contactEmail"
+            <BaseIconLabelView :text="contactEmail"
+                                  :label="mailIcon ? '' : 'Contact Email:'"
                                   :icon="mailIcon"
                                   icon-tooltip="Email adress of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -155,7 +172,8 @@
 
           <v-col cols="12" sm="6" md="6" lg="3"
                   class="headerInfo py-0" >
-            <base-icon-label-view :text="doi"
+            <BaseIconLabelView :text="doi"
+                                  :label="doiIcon ? '' : 'DOI:'"
                                   :url="doiUrl"
                                   :icon="doiIcon"
                                   icon-tooltip="Data Object Identifier"
@@ -166,7 +184,8 @@
 
           <v-col cols="12" sm="6" md="6" lg="3"
                   class="headerInfo py-0" >
-            <base-icon-label-view :text="license"
+            <BaseIconLabelView :text="license"
+                                  :label="licenseIcon ? '' : 'License:'"
                                   :icon="licenseIcon"
                                   icon-tooltip="License for the data files"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -213,19 +232,19 @@
             </v-row>
           </v-col>
 
-          <v-col v-if="!tags && showPlaceholder"
+          <v-col v-if="showPlaceholder"
                   cols="12"
                   class="py-0"
                   id="tags_placeholder"
                   key="tags_placeholder" >
-            <v-row >
-              <v-col v-for="tag in slicedTags"
-                      :key="tag.name" >
-              <tag-chip-placeholder v-for="n in 5"
-                                    :key="n"
-                                    class="headerTag" />
+
+            <v-row no-gutters >
+              <v-col v-for="n in 5"
+                      :key="n"
+                      class="shrink mr-1" >
+                <tag-chip-placeholder class="headerTag" />
               </v-col>
-            </v-row>
+            </v-row >
           </v-col>
 
         </v-row>

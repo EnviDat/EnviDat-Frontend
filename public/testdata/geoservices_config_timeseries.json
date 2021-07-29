@@ -1,0 +1,1419 @@
+{
+  "baseURL": "http://map.wsl.ch/cgi-bin/envidat/map.fcgi",
+  "bbox": {
+    "minx": -180,
+    "miny": -90,
+    "maxx": 180,
+    "maxy": 90
+  },
+  "timeseries": true,
+  "layers": [
+    {
+      "name": "CHELSA_bio01__200_V_1_020191213102644554",
+      "title": "CHELSA_bio01_-200_V.1.0",
+      "visibility": true,
+      "timestamp": "2015-01-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__199_V_1_020191213102643060",
+      "title": "CHELSA_bio01_-199_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__198_V_1_020191213102641457",
+      "title": "CHELSA_bio01_-198_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__197_V_1_020191213102640021",
+      "title": "CHELSA_bio01_-197_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__196_V_1_020191213102638522",
+      "title": "CHELSA_bio01_-196_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__195_V_1_020191213102637130",
+      "title": "CHELSA_bio01_-195_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__194_V_1_020191213102635510",
+      "title": "CHELSA_bio01_-194_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__193_V_1_020191213102633964",
+      "title": "CHELSA_bio01_-193_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__192_V_1_020191213102632452",
+      "title": "CHELSA_bio01_-192_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__191_V_1_020191213102630917",
+      "title": "CHELSA_bio01_-191_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__190_V_1_020191213102629396",
+      "title": "CHELSA_bio01_-190_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__189_V_1_020191213102627870",
+      "title": "CHELSA_bio01_-189_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__188_V_1_020191213102626388",
+      "title": "CHELSA_bio01_-188_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__187_V_1_020191213102625049",
+      "title": "CHELSA_bio01_-187_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__186_V_1_020191213102623540",
+      "title": "CHELSA_bio01_-186_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__185_V_1_020191213102621955",
+      "title": "CHELSA_bio01_-185_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__184_V_1_020191213102620419",
+      "title": "CHELSA_bio01_-184_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__183_V_1_020191213102619109",
+      "title": "CHELSA_bio01_-183_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__182_V_1_020191213102617787",
+      "title": "CHELSA_bio01_-182_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__181_V_1_020191213102616359",
+      "title": "CHELSA_bio01_-181_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__180_V_1_020191213102614987",
+      "title": "CHELSA_bio01_-180_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__179_V_1_020191213102613480",
+      "title": "CHELSA_bio01_-179_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__178_V_1_020191213102612082",
+      "title": "CHELSA_bio01_-178_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__177_V_1_020191213102610647",
+      "title": "CHELSA_bio01_-177_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__176_V_1_020191213102609095",
+      "title": "CHELSA_bio01_-176_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__175_V_1_020191213102607658",
+      "title": "CHELSA_bio01_-175_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__174_V_1_020191213102606185",
+      "title": "CHELSA_bio01_-174_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__173_V_1_020191213102604776",
+      "title": "CHELSA_bio01_-173_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__172_V_1_020191213102603339",
+      "title": "CHELSA_bio01_-172_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-29",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__171_V_1_020191213102601649",
+      "title": "CHELSA_bio01_-171_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-30",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__170_V_1_020191213102600228",
+      "title": "CHELSA_bio01_-170_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-01-31",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__169_V_1_020191213102558683",
+      "title": "CHELSA_bio01_-169_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__168_V_1_020191213102557145",
+      "title": "CHELSA_bio01_-168_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__167_V_1_020191213102555546",
+      "title": "CHELSA_bio01_-167_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__166_V_1_020191213102553945",
+      "title": "CHELSA_bio01_-166_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__165_V_1_020191213102552622",
+      "title": "CHELSA_bio01_-165_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__164_V_1_020191213102551072",
+      "title": "CHELSA_bio01_-164_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__163_V_1_020191213102549540",
+      "title": "CHELSA_bio01_-163_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__162_V_1_020191213102548058",
+      "title": "CHELSA_bio01_-162_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__161_V_1_020191213102546732",
+      "title": "CHELSA_bio01_-161_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__160_V_1_020191213102545143",
+      "title": "CHELSA_bio01_-160_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__159_V_1_020191213102543616",
+      "title": "CHELSA_bio01_-159_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__158_V_1_020191213102542190",
+      "title": "CHELSA_bio01_-158_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__157_V_1_020191213102540808",
+      "title": "CHELSA_bio01_-157_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__156_V_1_020191213102539127",
+      "title": "CHELSA_bio01_-156_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__155_V_1_020191213102537585",
+      "title": "CHELSA_bio01_-155_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__154_V_1_020191213102535915",
+      "title": "CHELSA_bio01_-154_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__153_V_1_020191213102534577",
+      "title": "CHELSA_bio01_-153_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__152_V_1_020191213102533059",
+      "title": "CHELSA_bio01_-152_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__151_V_1_020191213102531445",
+      "title": "CHELSA_bio01_-151_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__150_V_1_020191213102529972",
+      "title": "CHELSA_bio01_-150_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__149_V_1_020191213102528383",
+      "title": "CHELSA_bio01_-149_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__148_V_1_020191213102526722",
+      "title": "CHELSA_bio01_-148_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__147_V_1_020191213102525318",
+      "title": "CHELSA_bio01_-147_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__146_V_1_020191213102523695",
+      "title": "CHELSA_bio01_-146_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__145_V_1_020191213102522071",
+      "title": "CHELSA_bio01_-145_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__144_V_1_020191213102520301",
+      "title": "CHELSA_bio01_-144_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__143_V_1_020191213102518092",
+      "title": "CHELSA_bio01_-143_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__142_V_1_020191213102516456",
+      "title": "CHELSA_bio01_-142_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-02-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__141_V_1_020191213102515103",
+      "title": "CHELSA_bio01_-141_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__140_V_1_020191213102513703",
+      "title": "CHELSA_bio01_-140_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__139_V_1_020191213102512200",
+      "title": "CHELSA_bio01_-139_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__138_V_1_020191213102510694",
+      "title": "CHELSA_bio01_-138_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__137_V_1_020191213102509291",
+      "title": "CHELSA_bio01_-137_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__136_V_1_020191213102507707",
+      "title": "CHELSA_bio01_-136_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__135_V_1_020191213102506233",
+      "title": "CHELSA_bio01_-135_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__134_V_1_020191213102504686",
+      "title": "CHELSA_bio01_-134_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__133_V_1_020191213102503148",
+      "title": "CHELSA_bio01_-133_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__132_V_1_020191213102501557",
+      "title": "CHELSA_bio01_-132_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__131_V_1_020191213102500178",
+      "title": "CHELSA_bio01_-131_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__130_V_1_020191213102458695",
+      "title": "CHELSA_bio01_-130_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__129_V_1_020191213102457159",
+      "title": "CHELSA_bio01_-129_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__128_V_1_020191213102455623",
+      "title": "CHELSA_bio01_-128_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__127_V_1_020191213102454159",
+      "title": "CHELSA_bio01_-127_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__126_V_1_020191213102452521",
+      "title": "CHELSA_bio01_-126_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__125_V_1_020191213102451154",
+      "title": "CHELSA_bio01_-125_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__124_V_1_020191213102449709",
+      "title": "CHELSA_bio01_-124_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__123_V_1_020191213102448186",
+      "title": "CHELSA_bio01_-123_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__122_V_1_020191213102446643",
+      "title": "CHELSA_bio01_-122_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__121_V_1_020191213102445148",
+      "title": "CHELSA_bio01_-121_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__120_V_1_020191213102443529",
+      "title": "CHELSA_bio01_-120_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__119_V_1_020191213102442045",
+      "title": "CHELSA_bio01_-119_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__118_V_1_020191213102440559",
+      "title": "CHELSA_bio01_-118_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__117_V_1_020191213102439293",
+      "title": "CHELSA_bio01_-117_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__116_V_1_020191213102437772",
+      "title": "CHELSA_bio01_-116_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__115_V_1_020191213102436462",
+      "title": "CHELSA_bio01_-115_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__114_V_1_020191213102434817",
+      "title": "CHELSA_bio01_-114_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__113_V_1_020191213102433045",
+      "title": "CHELSA_bio01_-113_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-29",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__112_V_1_020191213102431616",
+      "title": "CHELSA_bio01_-112_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-30",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__111_V_1_020191213102430114",
+      "title": "CHELSA_bio01_-111_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-03-31",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__110_V_1_020191213102428535",
+      "title": "CHELSA_bio01_-110_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__109_V_1_020191213102426973",
+      "title": "CHELSA_bio01_-109_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__108_V_1_020191213102425654",
+      "title": "CHELSA_bio01_-108_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__107_V_1_020191213102424236",
+      "title": "CHELSA_bio01_-107_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__106_V_1_020191213102422742",
+      "title": "CHELSA_bio01_-106_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__105_V_1_020191213102421433",
+      "title": "CHELSA_bio01_-105_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__104_V_1_020191213102419861",
+      "title": "CHELSA_bio01_-104_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__103_V_1_020191213102418395",
+      "title": "CHELSA_bio01_-103_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__102_V_1_020191213102416853",
+      "title": "CHELSA_bio01_-102_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__101_V_1_020191213102415351",
+      "title": "CHELSA_bio01_-101_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__100_V_1_020191213102413828",
+      "title": "CHELSA_bio01_-100_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__99_V_1_020191213102412403",
+      "title": "CHELSA_bio01_-99_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__98_V_1_020191213102411054",
+      "title": "CHELSA_bio01_-98_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__97_V_1_020191213102409579",
+      "title": "CHELSA_bio01_-97_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__96_V_1_020191213102408197",
+      "title": "CHELSA_bio01_-96_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__95_V_1_020191213102406720",
+      "title": "CHELSA_bio01_-95_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__94_V_1_020191213102405367",
+      "title": "CHELSA_bio01_-94_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__93_V_1_020191213102403935",
+      "title": "CHELSA_bio01_-93_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__92_V_1_020191213102402512",
+      "title": "CHELSA_bio01_-92_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__91_V_1_020191213102401043",
+      "title": "CHELSA_bio01_-91_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__90_V_1_020191213102359629",
+      "title": "CHELSA_bio01_-90_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__89_V_1_020191213102358109",
+      "title": "CHELSA_bio01_-89_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__88_V_1_020191213102356747",
+      "title": "CHELSA_bio01_-88_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__87_V_1_020191213102355184",
+      "title": "CHELSA_bio01_-87_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__86_V_1_020191213102353730",
+      "title": "CHELSA_bio01_-86_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__85_V_1_020191213102352312",
+      "title": "CHELSA_bio01_-85_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__84_V_1_020191213102350878",
+      "title": "CHELSA_bio01_-84_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__83_V_1_020191213102349602",
+      "title": "CHELSA_bio01_-83_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__82_V_1_020191213102348150",
+      "title": "CHELSA_bio01_-82_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-29",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__81_V_1_020191213102346649",
+      "title": "CHELSA_bio01_-81_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-04-30",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__80_V_1_020191213102345083",
+      "title": "CHELSA_bio01_-80_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__79_V_1_020191213102343663",
+      "title": "CHELSA_bio01_-79_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__78_V_1_020191213102342038",
+      "title": "CHELSA_bio01_-78_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__77_V_1_020191213102340510",
+      "title": "CHELSA_bio01_-77_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__76_V_1_020191213102339146",
+      "title": "CHELSA_bio01_-76_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__75_V_1_020191213102337714",
+      "title": "CHELSA_bio01_-75_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__74_V_1_020191213102336324",
+      "title": "CHELSA_bio01_-74_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__73_V_1_020191213102334929",
+      "title": "CHELSA_bio01_-73_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__72_V_1_020191213102333447",
+      "title": "CHELSA_bio01_-72_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__71_V_1_020191213102331930",
+      "title": "CHELSA_bio01_-71_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__70_V_1_020191213102330353",
+      "title": "CHELSA_bio01_-70_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__69_V_1_020191213102328825",
+      "title": "CHELSA_bio01_-69_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__68_V_1_020191213102327456",
+      "title": "CHELSA_bio01_-68_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__67_V_1_020191213102325980",
+      "title": "CHELSA_bio01_-67_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__66_V_1_020191213102324494",
+      "title": "CHELSA_bio01_-66_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__65_V_1_020191213102322946",
+      "title": "CHELSA_bio01_-65_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__64_V_1_020191213102321468",
+      "title": "CHELSA_bio01_-64_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__63_V_1_020191213102319929",
+      "title": "CHELSA_bio01_-63_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__62_V_1_020191213102318499",
+      "title": "CHELSA_bio01_-62_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__61_V_1_020191213102317096",
+      "title": "CHELSA_bio01_-61_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__60_V_1_020191213102315646",
+      "title": "CHELSA_bio01_-60_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__59_V_1_020191213102314075",
+      "title": "CHELSA_bio01_-59_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__58_V_1_020191213102312702",
+      "title": "CHELSA_bio01_-58_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__57_V_1_020191213102311109",
+      "title": "CHELSA_bio01_-57_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__56_V_1_020191213102309577",
+      "title": "CHELSA_bio01_-56_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__55_V_1_020191213102307995",
+      "title": "CHELSA_bio01_-55_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__54_V_1_020191213102306640",
+      "title": "CHELSA_bio01_-54_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__53_V_1_020191213102305116",
+      "title": "CHELSA_bio01_-53_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__52_V_1_020191213102303755",
+      "title": "CHELSA_bio01_-52_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-29",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__51_V_1_020191213102302395",
+      "title": "CHELSA_bio01_-51_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-30",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__50_V_1_020191213102300906",
+      "title": "CHELSA_bio01_-50_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-05-31",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__49_V_1_020191213102259539",
+      "title": "CHELSA_bio01_-49_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__48_V_1_020191213102258096",
+      "title": "CHELSA_bio01_-48_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__47_V_1_020191213102256639",
+      "title": "CHELSA_bio01_-47_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__46_V_1_020191213102255090",
+      "title": "CHELSA_bio01_-46_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__45_V_1_020191213102253676",
+      "title": "CHELSA_bio01_-45_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__44_V_1_020191213102252173",
+      "title": "CHELSA_bio01_-44_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__43_V_1_020191213102250783",
+      "title": "CHELSA_bio01_-43_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__42_V_1_020191213102249265",
+      "title": "CHELSA_bio01_-42_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__41_V_1_020191213102247844",
+      "title": "CHELSA_bio01_-41_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__40_V_1_020191213102246464",
+      "title": "CHELSA_bio01_-40_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__39_V_1_020191213102244977",
+      "title": "CHELSA_bio01_-39_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__38_V_1_020191213102243574",
+      "title": "CHELSA_bio01_-38_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__37_V_1_020191213102242164",
+      "title": "CHELSA_bio01_-37_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__36_V_1_020191213102240674",
+      "title": "CHELSA_bio01_-36_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__35_V_1_020191213102239095",
+      "title": "CHELSA_bio01_-35_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__34_V_1_020191213102237642",
+      "title": "CHELSA_bio01_-34_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__33_V_1_020191213102236135",
+      "title": "CHELSA_bio01_-33_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__32_V_1_020191213102234650",
+      "title": "CHELSA_bio01_-32_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__31_V_1_020191213102233213",
+      "title": "CHELSA_bio01_-31_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__30_V_1_020191213102231801",
+      "title": "CHELSA_bio01_-30_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-20",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__29_V_1_020191213102230400",
+      "title": "CHELSA_bio01_-29_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-21",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__28_V_1_020191213102228906",
+      "title": "CHELSA_bio01_-28_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-22",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__27_V_1_020191213102227360",
+      "title": "CHELSA_bio01_-27_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-23",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__26_V_1_020191213102225574",
+      "title": "CHELSA_bio01_-26_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-24",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__25_V_1_020191213102223989",
+      "title": "CHELSA_bio01_-25_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-25",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__24_V_1_020191213102222357",
+      "title": "CHELSA_bio01_-24_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-26",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__23_V_1_020191213102220870",
+      "title": "CHELSA_bio01_-23_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-27",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__22_V_1_020191213102219516",
+      "title": "CHELSA_bio01_-22_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-28",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__21_V_1_020191213102217999",
+      "title": "CHELSA_bio01_-21_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-29",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__20_V_1_020191213102216454",
+      "title": "CHELSA_bio01_-20_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-06-30",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__19_V_1_020191213102214758",
+      "title": "CHELSA_bio01_-19_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-01",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__18_V_1_020191213102213303",
+      "title": "CHELSA_bio01_-18_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-02",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__17_V_1_020191213102211891",
+      "title": "CHELSA_bio01_-17_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-03",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__16_V_1_020191213102210458",
+      "title": "CHELSA_bio01_-16_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-04",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__15_V_1_020191213102209016",
+      "title": "CHELSA_bio01_-15_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-05",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__14_V_1_020191213102207570",
+      "title": "CHELSA_bio01_-14_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-06",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__13_V_1_020191213102206144",
+      "title": "CHELSA_bio01_-13_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-07",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__12_V_1_020191213102204580",
+      "title": "CHELSA_bio01_-12_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-08",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__11_V_1_020191213102202950",
+      "title": "CHELSA_bio01_-11_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-09",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__10_V_1_020191213102201492",
+      "title": "CHELSA_bio01_-10_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-10",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__9_V_1_020191213102200062",
+      "title": "CHELSA_bio01_-9_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-11",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__8_V_1_020191213102158673",
+      "title": "CHELSA_bio01_-8_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-12",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__7_V_1_020191213102157357",
+      "title": "CHELSA_bio01_-7_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-13",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__6_V_1_020191213102155959",
+      "title": "CHELSA_bio01_-6_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-14",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__5_V_1_020191213102154481",
+      "title": "CHELSA_bio01_-5_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-15",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__4_V_1_020191213102153042",
+      "title": "CHELSA_bio01_-4_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-16",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__3_V_1_020191213102151584",
+      "title": "CHELSA_bio01_-3_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-17",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__2_V_1_020191213102150150",
+      "title": "CHELSA_bio01_-2_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-18",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01__1_V_1_020191213102148586",
+      "title": "CHELSA_bio01_-1_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-19",
+      "value": 1
+    },
+    {
+      "name": "CHELSA_bio01_0_V_1_020191213101004215",
+      "title": "CHELSA_bio01_0_V.1.0",
+      "visibility": false,
+      "timestamp": "2015-07-20",
+      "value": 1
+    }
+  ]
+}

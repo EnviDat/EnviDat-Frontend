@@ -94,10 +94,5 @@ export default {
 
 <style scoped>
 
-  .heightAndScroll {
-    max-height: 500px;
-    overflow-y: auto !important;
-    scrollbar-width: thin;
-  }
 
 </style>

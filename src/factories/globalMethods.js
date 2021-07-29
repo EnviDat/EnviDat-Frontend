@@ -15,6 +15,22 @@
 /* eslint-disable camelcase */
 import { Object } from 'core-js';
 
+import {
+  FOREST,
+  SNOW,
+  LAND,
+  HAZARD,
+  DIVERSITY,
+  METEO,
+} from '@/store/categoriesConsts';
+
+import {
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metaDataFactory';
+
+
 export default {
   methods: {
     mixinMethods_isTagSelected(tagName) {
@@ -24,8 +40,30 @@ export default {
 
       return this.selectedTagNames.indexOf(tagName) >= 0;
     },
+    mixinMethods_loadRouteTags(tags, selectedTagNames) {
+
+      if (tags && !(tags instanceof Array)) {
+        if (tags.includes(',')) {
+          tags = tags.split(',');
+        } else {
+          tags = [tags];
+        }
+      }
+
+      if (tags) {
+        for (let i = 0; i < tags.length; i++) {
+          tags[i] = tags[i].toUpperCase();
+        }
+
+        if (!this.mixinMethods_areArraysIdentical(selectedTagNames, tags)) {
+          return tags;
+        }
+      }
+
+      return false;
+    },    
     mixinMethods_areArraysIdentical(arr1, arr2) {
-      if (arr1.length !== arr2.length) return false;
+      if (arr1.length !== arr2.length) { return false; }
 
       for (let i = arr1.length; i >= 0; i--) {
         if (arr1[i] !== arr2[i]) return false;
@@ -168,6 +206,24 @@ export default {
 
       return imgCache;
     },
+    mixinMethods_getGeoJSONIcon(type) {
+      if (type) {
+
+        if (type === LOCATION_TYPE_POINT) {
+          return this.mixinMethods_getIcon('marker');
+        }
+
+        if (type === LOCATION_TYPE_MULTIPOINT) {
+          return this.mixinMethods_getIcon('markerMulti');
+        }
+        
+        if (type === LOCATION_TYPE_POLYGON) {
+          return this.mixinMethods_getIcon('polygons');
+        }
+      }
+
+      return null;
+    },
     mixinMethods_getGenericProp(propName, defaultValue = null) {
       if (!this.genericProps) {
         return defaultValue;
@@ -193,6 +249,27 @@ export default {
       const f = Math.floor(Math.log(a) / Math.log(c));
 
       return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
+    },
+    mixinMethods_getCardBackgrounds(useWebp = false) {
+      const bgs = {};
+    
+      if (useWebp) {
+        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
+        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
+        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
+        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
+        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
+      } else {
+        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
+        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
+        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
+        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
+        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
+      }
+    
+      return bgs;
     },
   },
 };

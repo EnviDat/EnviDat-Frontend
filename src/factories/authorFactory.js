@@ -139,7 +139,6 @@ export function createAuthors(dataset) {
 
   return authorObjs;
 }
-
 function overwriteDataCredit(author, existingAuthor) {
   const keys = Object.keys(author.data_credit);
 
@@ -276,4 +275,12 @@ export function getLevelProgress(dataCreditScore) {
   }
 
   return progress;
+}
+
+export function getNameInitials(userObject) {
+  if (!userObject || !userObject.name || !userObject.fullname) {
+    return '';
+  }
+
+  return `${userObject.name.substring(0, 1)}${userObject.fullname.substring(0, 1)}`.toUpperCase();
 }

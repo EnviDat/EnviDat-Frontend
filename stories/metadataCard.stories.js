@@ -13,8 +13,8 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
-import MetadataCard from '@/components/Cards/MetadataCard.vue';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import MetadataCard from '@/components/Cards/MetadataCard';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 import fileIcon from '@/assets/icons/file.png';
 import lockedIcon from '@/assets/icons/lockClosed.png';

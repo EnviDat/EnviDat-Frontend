@@ -44,8 +44,10 @@ import {
 } from '@/factories/stringFactory';
 
 export default {
+  name: 'TextPreviewCard',
   props: {
     url: String,
+    content: String,
     enableMarkdown: {
       type: Boolean,
       default: false,
@@ -91,16 +93,20 @@ export default {
     getFileContent() {
       this.loading = true;
 
-      axios.get(this.url)
-      .then((response) => {
+      if (this.url) {
+        axios.get(this.url)
+        .then((response) => {
+          this.loading = false;
+          this.fileContent = response.data;
+        })
+        .catch((reason) => {
+          this.loading = false;
+          this.fileError = reason;
+        });
+      } else {
+        this.fileContent = this.content;
         this.loading = false;
-        this.fileContent = response.data;
-      })
-      .catch((reason) => {
-        this.loading = false;
-        this.fileError = reason;
-      });
-
+      }
     },
   },
   data: () => ({

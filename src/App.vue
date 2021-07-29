@@ -27,7 +27,7 @@
       </div>
 
     <the-navigation :style="`z-index: ${NavigationZIndex}`"
-                    :navItems="navItems"
+                    :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
                     @itemClick="catchItemClicked" />
@@ -38,17 +38,23 @@
                             :style="`z-index: ${NavToolbarZIndex}`"
                             :loading="loading"
                             :mode="mode"
-                            :modeCloseCallback="catchModeClose" />
+                            :modeCloseCallback="catchModeClose"
+                            :signedInUser="user"
+                            :userNavigationItems="userMenuItems"
+                            @userMenuItemClick="catchItemClicked"
+                            @signinClick="catchSigninClicked"
+                            @homeClick="catchHomeClicked" />
 
     <v-main>
-
       <v-container class="pa-2 pa-sm-3 fill-height"
                     fluid
                     v-on:scroll="updateScroll()"
+                    id="appContainer"
                     ref="appContainer"
                     :style="pageStyle" >
 
-        <v-row v-if="maintaincanceBannerVisible"
+        <v-row v-if="maintenanceBannerVisible"
+                id="maintenanceBanner"
                 no-gutters
                 class="pb-2">
           <v-col>
@@ -58,14 +64,15 @@
           </v-col>
         </v-row>
 
-        <v-row class="fill-height" >
+        <v-row class="fill-height" 
+                id="maintenanceBanner" >
           <v-col class="mx-0 py-0"
                   cols="12" >
 
             <transition name="fade" mode="out-in">
               <router-view />
             </transition>
- 
+
           </v-col>
         </v-row>
       </v-container>
@@ -114,12 +121,8 @@ import {
   LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
-  PROJECTS_PATH,
-  PROJECTS_PAGENAME,
-  PROJECT_DETAIL_PAGENAME,
-  ABOUT_PATH,
-  ABOUT_PAGENAME,
   REPORT_PATH,
+  USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 import {
   METADATA_NAMESPACE,
@@ -134,6 +137,18 @@ import {
 
 import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
 import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
+import {
+  USER_NAMESPACE,
+  GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT,
+  FETCH_USER_DATA,
+} from '@/modules/user/store/userMutationsConsts';
+
+
+import {
+  navigationItems,
+  userMenuItems,
+} from '@/store/navigationState';
 
 import TheNavigation from '@/components/Navigation/TheNavigation';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
@@ -142,13 +157,14 @@ import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
 import TextBanner from '@/components/Layouts/TextBanner';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
-require('particles.js');
-
 export default {
   name: 'App',
   beforeCreate() {
     // check for the backend version
     this.$store.dispatch(SET_CONFIG);
+  },
+  created() {
+    this.checkUserSignedIn();
   },
   mounted() {
     this.startParticles();
@@ -208,24 +224,26 @@ export default {
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
-      for (let i = 0; i < this.navItems.length; i++) {
-        const item = this.navItems[i];
+      if (this.navigationItems) {
+        for (let i = 0; i < this.navigationItems.length; i++) {
+          const item = this.navigationItems[i];
 
-        if (item.icon !== 'menu') {
-          const isActive = this.currentPage === item.pageName;
+          if (item.icon !== 'menu') {
+            const isActive = this.currentPage === item.pageName;
 
-          if (item.subpages && item.subpages instanceof Array) {
-            let subIsActive = false;
+            if (item.subpages && item.subpages instanceof Array) {
+              let subIsActive = false;
 
-            item.subpages.forEach((sub) => {
-              if (!subIsActive) {
-                subIsActive = this.currentPage === sub;
-              }
-            });
+              item.subpages.forEach((sub) => {
+                if (!subIsActive) {
+                  subIsActive = this.currentPage === sub;
+                }
+              });
 
-            item.active = isActive || subIsActive;
-          } else {
-            item.active = isActive;
+              item.active = isActive || subIsActive;
+            } else {
+              item.active = isActive;
+            }
           }
         }
       }
@@ -242,15 +260,12 @@ export default {
         window.open(item.path, '_blank');
         return;
       }
-      if (this.$route.name === item.pageName) {
-        return;
-      }
 
       if (this.showSmallNavigation) {
         this.catchMenuClicked();
       }
 
-      this.$router.push({ path: item.path, query: '' });
+      this.navigateTo(item.path);
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -264,18 +279,18 @@ export default {
         path: BROWSE_PATH,
       });
     },
-    navigateTo(navItem) {
-      if (navItem.pageName === 'external') {
-        window.open(navItem.path, '_blank');
-      } else {
-        this.$router.push(navItem.path);
-      }
-
-      if (this.$route.name === navItem.pageName) {
+    navigateTo(path) {
+      if (this.$route.path === path) {
         return;
       }
 
-      this.$router.push({ path: navItem.path, query: '' });
+      this.$router.push({ path, query: '' },
+        (route) => {
+          console.log(`onComplete: ${route.name}`);
+        },
+        (route) => {
+          console.log(`onAbort: ${route.name}`);
+        });      
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -287,6 +302,12 @@ export default {
         return;
       }
       this.$router.push({ path: REPORT_PATH, query: index });
+    },
+    catchSigninClicked() {
+      this.navigateTo(USER_SIGNIN_PATH);
+    },
+    catchHomeClicked() {
+      this.navigateTo(LANDING_PATH);
     },
     reloadApp() {
       window.location.reload();
@@ -300,8 +321,8 @@ export default {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
-      for (let i = 0; i < this.navItems.length; i++) {
-        const item = this.navItems[i];
+      for (let i = 0; i < this.navigationItems.length; i++) {
+        const item = this.navigationItems[i];
         const title = item.title.toLowerCase();
 
         if (title === 'organizations'
@@ -310,6 +331,14 @@ export default {
         }
       }
     },
+    checkUserSignedIn() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });      
+    },
   },
   computed: {
     ...mapState([
@@ -317,20 +346,27 @@ export default {
       'config',
       'webpIsSupported',
     ]),
+    ...mapState(USER_NAMESPACE, ['user']),
+    ...mapGetters(
+      METADATA_NAMESPACE, [
+        'metadataIds',
+        'metadatasContent',
+        'metadatasContentSize',
+        'loadingMetadataIds',
+        'loadingMetadatasContent',
+        'loadingCurrentMetadataContent',
+        'searchingMetadatasContent',
+        'currentMetadataContent',
+        'filteredContent',
+        'isFilteringContent',
+      ],
+    ),
     ...mapGetters({
-      metadataIds: `${METADATA_NAMESPACE}/metadataIds`,
-      metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-      metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
-      loadingMetadataIds: `${METADATA_NAMESPACE}/loadingMetadataIds`,
-      loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
-      loadingCurrentMetadataContent: `${METADATA_NAMESPACE}/loadingCurrentMetadataContent`,
-      searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
-      currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
-      filteredContent: `${METADATA_NAMESPACE}/filteredContent`,
-      isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
       guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
       projectsLoading: `${PROJECTS_NAMESPACE}/loading`,
+    }),
+    ...mapGetters({
       currentPage: 'currentPage',
       appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
@@ -344,7 +380,7 @@ export default {
     maintenanceConfig() {
       return this.config?.maintenanceConfig || {};
     },
-    maintaincanceBannerVisible() {
+    maintenanceBannerVisible() {
       return this.maintenanceConfig && this.maintenanceConfig.messageActive && this.showMaintenanceBanner;
     },
     signinDisabled() {
@@ -372,15 +408,13 @@ export default {
     currentPageIsBrowsePage() {
       return this.currentPage === BROWSE_PAGENAME;
     },
-    currentPageIsHomePage() {
-      return this.currentPage === LANDING_PAGENAME;
-    },
     showToolbar() {
-      return this.currentPageIsBrowsePage && this.mode;
+      // return this.currentPageIsBrowsePage && this.mode;
+      return true;
     },
     pageStyle() {
       const heightStyle = this.showToolbar ? 'height: calc(100vh - 36px);' : 'height: 100vh;';
-      return this.currentPageIsBrowsePage ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; `;
+      return this.currentPageIsBrowsePage ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.breakpoint.smAndDown;
@@ -397,8 +431,10 @@ export default {
         return '';
       }
 
-      // const bgImg = this.appBGImages[imageKey];
       const bgImg = this.mixinMethods_getWebpImage(imageKey, this.$store.state);
+      if (!bgImg) {
+        return '';
+      }
 
       let bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
 
@@ -417,7 +453,7 @@ export default {
     },
     menuItem() {
       let menuItem = { active: true };
-      this.navItems.forEach((el) => {
+      this.navigationItems.forEach((el) => {
         if (el.icon === 'menu') {
           menuItem = el;
         }
@@ -455,7 +491,6 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    appBGImages: {},
     reloadDialogCanceled: false,
     appVersion: process.env.VUE_APP_VERSION,
     showMenu: true,
@@ -464,69 +499,8 @@ export default {
     NotificationZIndex: 1500,
     showMaintenanceBanner: true,
     currentParticles: null,
-    navItems: [
-      {
-        title: 'Home',
-        icon: 'envidat',
-        toolTip: 'Back to the start page',
-        active: false,
-        path: LANDING_PATH,
-        pageName: LANDING_PAGENAME, 
-        disabled: false,
-      },
-      {
-        title: 'Explore',
-        icon: 'search',
-        toolTip: 'Explore research data',
-        active: false,
-        path: BROWSE_PATH,
-        pageName: BROWSE_PAGENAME, 
-        disabled: false,
-      },
-      {
-        title: 'Projects',
-        icon: 'library_books',
-        toolTip: 'Overview of the research projects on envidat',
-        active: false,
-        path: PROJECTS_PATH,
-        pageName: PROJECTS_PAGENAME,
-        subpages: [PROJECT_DETAIL_PAGENAME], 
-        disabled: false,
-      },
-      {
-        title: 'Organizations',
-        icon: 'account_tree',
-        toolTip: 'Overview of the different organizations',
-        active: false,
-        path: 'https://www.envidat.ch/organization',
-        pageName: 'external', 
-        disabled: false,
-      },
-      {
-        title: 'Sign In',
-        icon: 'person',
-        toolTip: 'Sign in to management research data',
-        active: false,
-        path: 'https://www.envidat.ch/user/reset',
-        pageName: 'external', 
-        disabled: false,
-      },
-      {
-        title: 'About',
-        icon: 'info',
-        toolTip: 'What is EnviDat and who is behind it?',
-        active: false,
-        path: ABOUT_PATH,
-        pageName: ABOUT_PAGENAME,
-        disabled: false,
-      },
-      {
-        title: 'Menu',
-        icon: 'menu',
-        active: false,
-        disabled: false,
-      },
-    ],
+    navigationItems,
+    userMenuItems,
   }),
 };
 </script>
@@ -602,6 +576,10 @@ export default {
 
 .metadataInfoIcon {
   opacity: 0.7;
+}
+
+.metadataTitleIcons {
+  opacity: 0.5;
 }
 
 .envidatBadge span {

@@ -74,14 +74,15 @@ export default {
       this.modalContentComponent = null;
       eventBus.$emit(METADATA_CLOSE_MODAL);
     },
-    openClicked(modalContentComponent) {
-      this.modalContentComponent = modalContentComponent;
+    // openClicked(modalContentComponent) {
+      // this.modalContentComponent = modalContentComponent;
+    openClicked() {
       this.showDialog = true;
     },    
   },
   data: () => ({
     showDialog: false,
-    modalContentComponent: null,
+    // modalContentComponent: null,
   }),
 };
 </script>
