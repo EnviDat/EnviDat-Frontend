@@ -1,7 +1,8 @@
 <template>
-<v-card id="EditMetadataHeader">
+<v-card id="EditMetadataHeader" class="pa-4">
 
-  <v-container fluid>
+  <v-container fluid 
+                class="pa-0 fill-height" >
 
     <v-row>
 
@@ -20,18 +21,15 @@
 
     </v-row>
 
-
     <v-row>
-
       <v-col cols="6">     
         <v-text-field :label="lables.labelTitle"
                       outlined
                       :rules="rulesTitle"
                       required
                       :placeholder="lables.placeholderTitle"
-                      v-model="genericProps.inputTitle"
-                      @input="notifyChange" >
-        </v-text-field>
+                      v-model="metadataTitle" />
+                      
       </v-col>
 
       <v-col cols="6"> 
@@ -41,13 +39,11 @@
                       :rules="rulesEmail"
                       required
                       :placeholder="lables.placeholderContactEmail" 
-                      v-model="genericProps.inputContactEmail"
-                      @input="notifyChange">
-        </v-text-field>
+                      v-model="contactEmail" />
+
       </v-col>
 
     </v-row>
-
 
     <v-row>
       <v-col cols="6"> 
@@ -56,9 +52,8 @@
                       :rules="rulesGivenName"
                       required
                       :placeholder="lables.placeholderContactGivenName"
-                      v-model="genericProps.inputContactGivenName"
-                      @input="notifyChange">
-        </v-text-field>
+                      v-model="contactGivenName" />
+
       </v-col>
 
       <v-col cols="6"> 
@@ -67,9 +62,8 @@
                       :rules="rulesSurname"
                       required
                       :placeholder="lables.placeholderContactSurname"
-                      v-model="genericProps.inputContactSurname"
-                      @input="notifyChange">
-        </v-text-field>
+                      v-model="contactSurname" />
+
       </v-col>
     </v-row>
 
@@ -78,21 +72,19 @@
       <v-col cols="12"> 
         <div class="text-body-1">{{ lables.previewText }}</div>
       </v-col>
-
-      <v-col cols="12"> 
-        <div class="text-body-1"></div>
-      </v-col>
     </v-row>
 
-    <v-row no-gutters dense>
+    <v-row dense >
       <v-col cols="12">   
-        <MetadataHeader :metadataTitle="inputTitle || lables.placeholderHeaderTitle" 
+        <MetadataHeader :metadataTitle="metadataTitle || lables.placeholderHeaderTitle" 
+                        :mailIcon="iconMail"
+                        :showCloseButton="false"
                         :contactName="inputContactFullName" 
                         :contactIcon="iconName"
-                        :contactEmail="inputContactEmail"
-                        :mailIcon="iconMail"
-                        :showCloseButton="false" />    
-      </v-col>       
+                        :contactEmail="contactEmail"
+                         />
+      </v-col>
+      
     </v-row>
     
 
@@ -110,7 +102,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-07-28 17:28:02
+ * Last modified  : 2021-08-03 14:17:27
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -137,36 +129,61 @@ export default {
     genericProps: {
       type: Object,
       default: () => ({
-        inputTitle: '',
-        inputContactEmail: '',
-        inputContactGivenName: '',
-        inputContactSurname: '',
+        metadataTitle: '',
+        contactEmail: '',
+        contactGivenName: '',
+        contactSurname: '',
       }),
     },
     // genericProps: Object,
   },  
   computed: {
-    inputTitle() {
-      return this.mixinMethods_getGenericProp('inputTitle', '');
+    metadataTitle: {
+      get() {
+        return this.mixinMethods_getGenericProp('metadataTitle', '');
+      },
+      set(value) {
+        this.setHeaderInfo('metadataTitle', value);
+      },
     },
-    inputContactEmail() {
-      return this.mixinMethods_getGenericProp('inputContactEmail', '');
+    contactEmail: {
+      get() {
+        return this.mixinMethods_getGenericProp('contactEmail', '');
+      },
+      set(value) {
+        this.setHeaderInfo('contactEmail', value);
+      },
     },
-    inputContactGivenName() {
-      return this.mixinMethods_getGenericProp('inputContactGivenName', '');
+    contactGivenName: {
+      get() {
+        return this.mixinMethods_getGenericProp('contactGivenName', '');
+      },
+      set(value) {
+        this.setHeaderInfo('contactGivenName', value);
+      },
     },
-    inputContactSurname() {
-      return this.mixinMethods_getGenericProp('inputContactSurname', '');
+    contactSurname: {
+      get() {
+        return this.mixinMethods_getGenericProp('contactSurname', '');
+      },
+      set(value) {
+        this.setHeaderInfo('contactSurname', value);
+      },
     },
     inputContactFullName() {
-      return `${this.inputContactGivenName.trim()} ${this.inputContactSurname.trim()}`; 
+      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()}`; 
     },
   },
   methods: {
-    notifyChange() {
+    setHeaderInfo(property, value) {
+      const newHeaderInfo = {
+        ...this.genericProps,
+        [property]: value,
+      };
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
-        data: this.genericProps,
+        data: newHeaderInfo,
       });
     },
   },

@@ -1,12 +1,12 @@
 <template>
-  <v-container class="pa-0"
+  <v-container class="pa-0 fill-height"
                 fluid
                 id="MetadataEditPage"
                 tag="article"
                 >
 
     <NavigationStepper :steps="metadataCreationSteps"
-                        :initialStepTitle="steps[0].title"
+                        :initialStepTitle="metadataCreationSteps[0].title"
                         stepColor="success" />
     
   </v-container>
@@ -21,16 +21,13 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:49:30
- * Last modified  : 2021-07-28 18:02:34
+ * Last modified  : 2021-08-03 15:12:35
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -39,16 +36,18 @@ import {
   getStepToUpdate,
 } from '@/modules/user/components/MetadataCreationSteps';
 
-// import { mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import {
-  METADATAEDIT_PAGENAME,
-} from '@/router/routeConsts';
+  USER_NAMESPACE,
+  UPDATE_METADATA_EDITING,
+} from '@/modules/user/store/userMutationsConsts';
+import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import NavigationStepper from '@/src/components/NavigationStepper';
+import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
 
 export default {
@@ -68,21 +67,35 @@ export default {
   mounted() {
   },
   computed: {
-    // ...mapGetters({
-    // }),
+    ...mapState(USER_NAMESPACE, [
+      'metadataInEditing',
+    ]),
   },
   methods: {
-    getStepToUpdate,
     editComponentsChanged(updateObj) {
-      console.log(`got update on ${ JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
-      // this.editState[updateObj.object] = updateObj.data;
-      // console.log(`got update on ${this.editState}`);
+      // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
 
-      this.updateSteps(updateObj.object, updateObj.data);
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, updateObj);
+
+      this.updateSteps(updateObj.object);
     },
-    updateSteps(eventName, newGenericProps) {
-      const stepToUpdate = this.getStepToUpdate(eventName, this.steps);
-      stepToUpdate.genericProps = newGenericProps;
+    updateSteps(objectName) {
+      const steps = this.metadataCreationSteps;
+      const mKeys = Object.keys(this.metadataInEditing);
+
+      for (let i = 0; i < mKeys.length; i++) {
+        const key = mKeys[i];
+
+        if (objectName === key) {
+
+          const stepToUpdate = getStepToUpdate(key, steps);
+          if (stepToUpdate) {
+            stepToUpdate.genericProps = this.metadataInEditing[key];
+            // console.log(`updated step ${JSON.stringify(stepToUpdate)}`);
+            return;
+          }
+        }
+      }
     },
   },
   components: {

@@ -1,7 +1,9 @@
 <template>
-<v-card id="EditDescription">
+<v-card id="EditDescription"
+          class="pa-4">
 
-  <v-container fluid>
+  <v-container fluid
+                class="pa-0">
 
     <v-row>
       <v-col cols="12"> 
@@ -27,14 +29,13 @@
                       :rules="descriptionRules"
                       required
                       auto-grow
-                      v-model="bodyObject.body.text"
-                      @input="notifyChange"
+                      v-model="description"
                       >
         </v-textarea>
       </v-col>
 
       <v-col cols="6">     
-        <MetadataBody :genericProps="bodyObject"
+        <MetadataBody :genericProps="previewDescription"
                         :showPlaceholder="showPreviewPlaceholder"
                         />
 
@@ -55,7 +56,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-07-28 17:34:05
+ * Last modified  : 2021-08-03 15:22:03
 
  *
  * This file is subject to the terms and conditions defined in
@@ -85,28 +86,45 @@ export default {
       type: String, 
       default: 'Description',
     },
-    // genericProps: Object,
-    genericProps: {
-      type: Object,
-      default() {
-        return {
-          body: {
-            text: '',
-          },
-        };
-      },
-    },
+    genericProps: Object,
+    // genericProps: {
+    //   type: Object,
+    //   default() {
+    //     return {
+    //       body: {
+    //         text: '',
+    //       },
+    //     };
+    //   },
+    // },
   },
   computed: {
-    bodyObject() {
-      return this.genericProps;
+    description: {
+      get() {
+        return this.mixinMethods_getGenericProp('description', '');
+      },
+      set(value) {
+        const newGenericProps = {
+          ...this.genericProps,
+          description: value,
+        };
+
+        this.notifyChange(newGenericProps);
+      },
+    },
+    previewDescription() {
+      return {
+        body: {
+          text: this.description,
+        },
+      };
     },
   },
   methods: {
-    notifyChange() {
+    notifyChange(newGenericProps) {
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_DESCRIPTION,
-        data: this.genericProps,
+        data: newGenericProps,
       });
     },
   },

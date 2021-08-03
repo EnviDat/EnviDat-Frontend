@@ -1,7 +1,10 @@
 <template>
-  <v-card id="EditCustomFields" max-width="25%">
+  <v-card id="EditCustomFields"
+          class="pa-4"
+          max-width="50%">
 
-    <v-container fluid >
+    <v-container fluid
+                  class="pa-0" >
 
       <v-row>
 
@@ -58,7 +61,7 @@
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
  * Created at     : 2021-07-05
- * Last modified  : 2021-07-28 10:35:28
+ * Last modified  : 2021-08-03 16:39:05
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -126,6 +129,23 @@ export default {
   },
   computed: {
     customFieldsList() {
+      if (this.genericProps?.length === 0) {
+        return [
+          { 
+            field0: { 
+              fieldName: '', 
+              content: '',
+            },
+          },
+          {
+            field1: {
+              fieldName: '',
+              content: '',
+            },
+          },
+        ];
+      }
+
       return this.genericProps;
     },
   },

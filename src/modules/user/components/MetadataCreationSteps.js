@@ -2,6 +2,7 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 
+// eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 
 import {
@@ -15,11 +16,20 @@ export const mainDetailSteps = [
     title: 'Basic Info',
     completed: false,
     component: EditMetadataHeader,
+    genericProps: {
+      metadataTitle: '',
+      contactEmail: '',
+      contactGivenName: '',
+      contactSurname: '',
+    },
   },
   {
     title: 'Description',
     completed: false,
     component: EditDescription,
+    genericProps: {
+      description: '',
+    },
   },
   {
     title: 'Keywords',
@@ -93,4 +103,4 @@ export function getStepToUpdate(eventName, steps) {
   }
 
   return null;
-};
+}

@@ -2,7 +2,7 @@
 <template>
   <v-container id="NavigationStepper"
                 fluid
-                class="pa-0">
+                class="pa-0 fill-height" >
 
     <v-row no-gutters
             :style="`background-color: ${backgroundColor}`" >
@@ -16,28 +16,38 @@
 
       </v-col>
     </v-row>
-    <v-row no-gutters >
+    <v-row no-gutters
+            class="fill-height" >
       <v-col cols="12" 
               :style="`background-color: ${backgroundColor}`">
 
-        <v-card style="background-color: white;"
-                class="ma-1 pa-4">
+        <v-card class="ma-1 pa-4 ">
 
-          <v-row>
-            <v-col cols="12" >
-              
-              <div v-if="currentStep">
-                <component :is="currentStep.component"
-                            :steps="currentStep.detailSteps"
-                            :genericProps="currentStep.genericProps"
-                            stepColor="highlight" />
-              </div>
+          <component v-if="currentStep"
+                      :is="currentStep.component"
+                      :steps="currentStep.detailSteps"
+                      :genericProps="currentStep.genericProps"
+                      stepColor="highlight" />
+          
+          <div v-if="!currentStep"
+                  cols="12" >
+            Nothing selected, please select a step in the navigation!
+          </div>
 
-              <div v-if="!currentStep">
-                Nothing selected, please select a step in the navigation!
-              </div>
+          <!-- <v-row>
+            <v-col v-if="currentStep"
+                    cols="12" >
+              <component :is="currentStep.component"
+                          :steps="currentStep.detailSteps"
+                          :genericProps="currentStep.genericProps"
+                          stepColor="highlight" />
             </v-col>
-          </v-row>
+
+            <v-col v-if="!currentStep"
+                    cols="12" >
+              Nothing selected, please select a step in the navigation!
+            </v-col>
+          </v-row> -->
 
         </v-card>
       </v-col>
@@ -53,29 +63,21 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 17:29:54
+ * Last modified  : 2021-08-03 16:45:29
 
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
 
 export default {
   name: 'NavigationStepper',
   props: {
     steps: Array,
     initialStepTitle: String,
-    stepColor: {
-      type: String,
-      default: 'secondary',
-    },
+    stepColor: String,
   },
   beforeMount() {
 
@@ -106,16 +108,19 @@ export default {
 
       this.setCurrentStep(this.steps[nextIndex].title);
     },
+    // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
 
-      for (let i = 0; i < this.steps.length; i++) {
-        const s = this.steps[i];
-        s.active = s.title === stepTitle;
+      if (this.steps) {
+        for (let i = 0; i < this.steps.length; i++) {
+          const s = this.steps[i];
+          s.active = s.title === stepTitle;
 
-        if (s.active) {
-          this.currentStep = s;
-          this.currentStepIndex = i;
-          return;
+          if (s.active) {
+            this.currentStep = s;
+            this.currentStepIndex = i;
+            return;
+          }
         }
       }
 
@@ -129,7 +134,6 @@ export default {
   }),
   components: {
     StepperHeader,
-    BaseRectangleButton,
   },  
 };
 </script>

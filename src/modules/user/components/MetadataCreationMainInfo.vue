@@ -1,7 +1,7 @@
 <template>
   <v-container id="MetadataCreationMainInfo"
                 fluid
-                class="pa-0">
+                class="pa-0 fill-height">
 
     <v-row no-gutters >
       <v-col >
@@ -17,28 +17,21 @@
       </v-col>
     </v-row>
     
-    <v-row >
-      <v-col cols="12" >
-
-        <v-row>
-          <v-col cols="12" >
-            
-            <div v-if="currentStep">
-              <component :is="currentStep.component"
-                          :genericProps="currentStep.genericProps"
-                          />
-            </div>
-
-            <div v-if="!currentStep">
-              Nothing selected, please select a step in the navigation!
-            </div>              
-          </v-col>
-        </v-row>
-
+    <v-row class="fill-height">
+      <v-col v-if="currentStep"
+              cols="12" >
+        <component :is="currentStep.component"
+                    :genericProps="currentStep.genericProps"
+                    />
+      </v-col>
+      
+      <v-col v-if="!currentStep"
+              cols="12" >
+        Nothing selected, please select a step in the navigation!
       </v-col>
     </v-row>
 
-    <v-row justify="end" >
+    <v-row justify="end" align="end" >
       <v-col class="shrink">
         <BaseRectangleButton buttonText="Next Step"
                               @clicked="nextStep" />
@@ -55,7 +48,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-07-28 11:28:12
+ * Last modified  : 2021-08-03 15:20:34
 
  *
  * This file is subject to the terms and conditions defined in
@@ -63,17 +56,18 @@
 */
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton'
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'MetadataCreationMainInfo',
   props: {
     steps: Array,
     initialStepTitle: String,
-    stepColor: {
-      type: String,
-      default: 'secondary',
-    },
+    stepColor: String,
+    // stepColor: {
+    //   type: String,
+    //   default: 'secondary',
+    // },
   },
   beforeMount() {
 
@@ -100,16 +94,19 @@ export default {
 
       this.setCurrentStep(this.steps[nextIndex].title);
     },
+    // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
 
-      for (let i = 0; i < this.steps.length; i++) {
-        const s = this.steps[i];
-        s.active = s.title === stepTitle;
+      if (this.steps) {
+        for (let i = 0; i < this.steps.length; i++) {
+          const s = this.steps[i];
+          s.active = s.title === stepTitle;
 
-        if (s.active) {
-          this.currentStep = s;
-          this.currentStepIndex = i;
-          return;
+          if (s.active) {
+            this.currentStep = s;
+            this.currentStepIndex = i;
+            return;
+          }
         }
       }
 
