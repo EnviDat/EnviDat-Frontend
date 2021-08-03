@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-07-05 20:26:06
+ * Last modified  : 2021-08-03 16:41:57
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -13,6 +13,11 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 // import { action } from '@storybook/addon-actions';
+
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
@@ -61,7 +66,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditCustomFields />
+          <EditCustomFields :genericProps="emptyFirstGenericProps" />
         </v-col>
       </v-row>
 
@@ -71,52 +76,61 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditCustomFields :customFieldsList="customFields" />
+          <EditCustomFields :genericProps="genericProps" />
         </v-col>
       </v-row>
 
-    </v-col>
-    `,
-    props: {  
-      customFields: {
-        type: Array,
-        default: () => [
-          { 
-            field0: { 
-              fieldName: 'SubProject', 
-              content: 'Projectx',
-            },
-          },
-          {
-            field1: {
-              fieldName: 'Game',
-              content: 'Gloomhaven',
-            },
-          },
-          {
-            field2: {
-              fieldName: 'Drink',
-              content: 'Prosecco',
-            },
-          },
-          {
-            field3: {
-              fieldName: '',
-              content: '',
-            },
-          },
-          {
-            field4: {
-              fieldName: '',
-              content: '',
-            },
-          },
-        ],
-      },
-  },
+    </v-col> `,
+    created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
     methods: {
+      editComponentsChanged(updateObj) {
+        if (updateObj.data?.length === this.genericProps.length) {
+          this.genericProps = updateObj.data;
+        }
+        if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
+          this.emptyFirstGenericProps = updateObj.data;
+        }
+      },
     },
     data: () => ({
+      emptyFirstGenericProps: [],
+      genericProps: [
+        { 
+          field0: { 
+            fieldName: 'SubProject', 
+            content: 'Projectx',
+          },
+        },
+        {
+          field1: {
+            fieldName: 'Game',
+            content: 'Gloomhaven',
+          },
+        },
+        {
+          field2: {
+            fieldName: 'Drink',
+            content: 'Prosecco',
+          },
+        },
+        {
+          field3: {
+            fieldName: '',
+            content: '',
+          },
+        },
+        {
+          field4: {
+            fieldName: '',
+            content: '',
+          },
+        },
+      ],
     }),
   })).add('Edit Metadata Header', () => ({
     components: { EditMetadataHeader },
@@ -129,7 +143,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader />
+          <EditMetadataHeader :genericProps="emptyFirstGenericProps" />
         </v-col>
       </v-row>
 
@@ -140,15 +154,43 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader inputTitle="My Glorious Title" inputContactEmail="sarah@smith.com" inputContactGivenName="Sarah" inputContactSurname="Smith" />
+          <EditMetadataHeader :genericProps="genericProps" />
         </v-col>
       </v-row>
 
     </v-col>
     `,
-    methods: {
+    created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
+    beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+      editComponentsChanged(updateObj) {
+        if (updateObj.data.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+        }
+        if (updateObj.data.id === this.emptyFirstGenericProps.id) {
+          this.emptyFirstGenericProps = updateObj.data;
+        }
+      },
+    },  
     data: () => ({
+      emptyFirstGenericProps: {
+        id: '1',
+        metadataTitle: '',
+        contactEmail: '',
+        contactGivenName: '',
+        contactSurname: '',
+      },
+      genericProps: {
+        id: '2',
+        metadataTitle: 'My Glorious Title',
+        contactEmail: 'sarah@smith.com',
+        contactGivenName: 'Sarah',
+        contactSurname: 'Smith',
+      },
     }),
   })).add('Edit Metadata Description', () => ({
     components: { EditDescription },
@@ -161,7 +203,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription>
+          <EditDescription />
         </v-col>
       </v-row>
 
@@ -172,20 +214,17 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription :bodyObject="bodyObjectPlaceholder">
+          <EditDescription :genericProps="genericProps" />
         </v-col>
       </v-row>
 
 
     </v-col>
     `,
-    props: {
-      bodyObjectPlaceholder: {
-        type: Object,
-        default() {
-          return {
-            body: {
-              text: `# Why user stories?
+    computed: {
+      genericProps() {
+        return {
+          description: `# Why user stories?
 &nbsp;          
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -208,11 +247,8 @@ Define what functionality each user expects. How she’s going to interact with 
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product.
-                        `,
-            },
-          };
-        },
+contribute something to the general goal of your product. `,
+        };
       },
     },
 }));
