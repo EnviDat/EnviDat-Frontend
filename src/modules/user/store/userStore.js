@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 14:13:14
- * Last modified  : 2020-08-19 11:44:32
+ * Last modified  : 2021-07-29 16:16:35
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -35,6 +35,7 @@ const userState = {
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
+  metadataInEditing: {},
 };
 
 

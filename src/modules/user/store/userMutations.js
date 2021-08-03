@@ -6,7 +6,7 @@
 * @author Dominik Haas-Artho
 *
 * Created at     : 2020-07-14 16:51:52
- * Last modified  : 2020-10-08 17:26:21
+ * Last modified  : 2021-07-29 13:29:42
 *
 * This file is subject to the terms and conditions defined in
 * file 'LICENSE.txt', which is part of this source code package.
@@ -44,6 +44,8 @@ import {
   USER_GET_ORGANIZATIONS_DATASETS,
   USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_DATASETS_ERROR,
+  UPDATE_METADATA_EDITING,
+  CLEAR_METADATA_EDITING,
 } from './userMutationsConsts';
 
 
@@ -278,5 +280,11 @@ export default {
     state.userOrganizationLoading = false;
 
     extractError(this, reason, 'userRecentOrgaDatasetsError');
+  },
+  [UPDATE_METADATA_EDITING](state, payload) {
+    state.metadataInEditing[payload.object] = payload.data;
+  },
+  [CLEAR_METADATA_EDITING](state) {
+    state.metadataInEditing = {};
   },
 };
