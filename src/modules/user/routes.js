@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 14:20:05 
- * Last modified  : 2020-08-12 16:11:24
+ * Last modified  : 2021-07-29 09:41:31
  * 
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -16,6 +16,8 @@ import {
   USER_SIGNIN_PAGENAME,
   USER_DASHBOARD_PATH,
   USER_DASHBOARD_PAGENAME,
+  METADATAEDIT_PATH,
+  METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
 export const userRoutes = [
@@ -35,5 +37,10 @@ export const userRoutes = [
         component: () => import(/* webpackPrefetch: true, webpackChunkName: "dashboardPage" */ '@/modules/user/components/DashboardPage'),
       },
     ],
+  },
+  {
+    path: METADATAEDIT_PATH,
+    name: METADATAEDIT_PAGENAME,
+    component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
   },
 ];
