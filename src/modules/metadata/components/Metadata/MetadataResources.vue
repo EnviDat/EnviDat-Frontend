@@ -61,9 +61,10 @@
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
-                          :showGenericOpenButton="res.openPreviewEvent ? true : false"
-                          :openButtonTooltip="openButtonTooltip"
-                          @previewClicked="catchPreviewClick(res.openPreviewEvent, res.previewProperty)" />
+                          :showGenericOpenButton="res.openEvent ? true : false"
+                          :openButtonTooltip="res.openButtonTooltip"
+                          :openButtonIcon="res.openButtonIcon"
+                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
 
@@ -191,7 +192,7 @@ export default {
       this.strategyEvent = strategyEvent;
       this.strategyProperty = strategyProperty;
     },
-    catchPreviewClick(event, eventProperty) {
+    catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },
   },
@@ -201,7 +202,6 @@ export default {
     injectedComponentConfig: null,
     strategyEvent: null,
     strategyProperty: null,
-    openButtonTooltip: 'Click for a preview of this resource',
     showAllResources: false,
     emptyText: 'No resources found for this dataset',
     METADATA_RESOURCES_TITLE,

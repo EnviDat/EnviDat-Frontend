@@ -125,12 +125,12 @@
         <v-col v-if="showGenericOpenButton"
                 cols="12"
                 class="py-1">
-          <base-icon-button materialIconName="preview"
+          <base-icon-button :materialIconName="openButtonIcon"
                             iconColor="black"
                             color="accent"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
-                            @clicked="$emit('previewClicked')" />
+                            @clicked="$emit('openButtonClicked')" />
         </v-col>
 
         <v-col cols="12"
@@ -228,6 +228,10 @@ export default {
       default: false,
     },
     openButtonTooltip: String,
+    openButtonIcon: {
+      type: String,
+      default: 'preview',
+    },
   },
   data: () => ({
     maxDescriptionLength: 175,

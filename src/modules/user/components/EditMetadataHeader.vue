@@ -102,7 +102,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-03 14:17:27
+ * Last modified  : 2021-08-04 10:05:50
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -126,16 +126,7 @@ import imageMail from '@/assets/icons/mail.png';
 export default {
   name: 'EditMetadataHeader',
   props: {
-    genericProps: {
-      type: Object,
-      default: () => ({
-        metadataTitle: '',
-        contactEmail: '',
-        contactGivenName: '',
-        contactSurname: '',
-      }),
-    },
-    // genericProps: Object,
+    genericProps: Object,
   },  
   computed: {
     metadataTitle: {

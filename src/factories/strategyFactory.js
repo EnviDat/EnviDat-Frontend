@@ -1,16 +1,26 @@
 import {
   OPEN_TEXT_PREVIEW,
   INJECT_TEXT_PREVIEW,
+  SELECT_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
 
-export const strategies = [
+export const resourceClickStrategies = [
   {
     fileExtensions: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
     injectEvent: INJECT_TEXT_PREVIEW,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this resource',
+  },
+  {
+    fileExtensions: [SELECT_EDITING_RESOURCE_PROPERTY],
+    openEvent: SELECT_EDITING_RESOURCE,
+    icon: 'edit',
+    tooltip: 'Click to select this resource for editing',
   },
 ];
 
@@ -24,7 +34,7 @@ export function getPreviewStrategy(extensions) {
 
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i];
-      const filteredStrat = strategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
+      const filteredStrat = resourceClickStrategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
 
       if (filteredStrat.length > 0) {
         return filteredStrat[0];
@@ -55,7 +65,7 @@ export function getPreviewStrategyFromUrl(url) {
   return null;
 }
 
-export function enhanceResourcesStrategyEvents(resources) {
+export function enhanceResourcesStrategyEvents(resources, previewProperty = 'url') {
 
   if (!resources) {
     return null;
@@ -64,11 +74,18 @@ export function enhanceResourcesStrategyEvents(resources) {
   for (let i = 0; i < resources.length; i++) {
     const res = resources[i];
 
-    const strat = getPreviewStrategyFromUrl(res.url);
+    let strat = null;
+    if (previewProperty === 'url') {
+     strat = getPreviewStrategyFromUrl(res.url);
+    } else {
+      strat = getPreviewStrategy(previewProperty);
+    }
 
     if (strat) {
-      res.openPreviewEvent = strat.openEvent;
-      res.previewProperty = res.url;
+      res.openEvent = strat.openEvent;
+      res.openProperty = res[previewProperty];
+      res.openButtonIcon = strat.icon;
+      res.openButtonTooltip = strat.tooltip;
     }
   }
 

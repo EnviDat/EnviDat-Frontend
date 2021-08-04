@@ -24,3 +24,5 @@ export const METADATA_DETAILS_TITLE = 'Further Information';
 export const METADATA_FUNDING_TITLE = 'Funding Information';
 export const METADATA_LOCATION_TITLE = 'Location';
 export const METADATA_RESOURCES_TITLE = 'Data and resources';
+
+export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for editing';
