@@ -33,8 +33,7 @@
       </v-col>
 
       <v-col cols="6"> 
-        <v-text-field 
-                      :label="lables.labelContactEmail"
+        <v-text-field :label="lables.labelContactEmail"
                       outlined
                       :rules="rulesEmail"
                       required
