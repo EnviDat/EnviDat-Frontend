@@ -29,7 +29,8 @@
         </v-col>
       </v-row>
 
-      <v-row justify="end">
+      <v-row no-gutters
+              justify="end">
         <v-col class="shrink"> 
           <BaseRectangleButton :disabled="createButtonDisabled"
                                 :buttonText="labels.createButtonTextS"

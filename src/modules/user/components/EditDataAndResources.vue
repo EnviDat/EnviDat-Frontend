@@ -7,7 +7,7 @@
       <v-col cols="6" >
         <v-row v-if="selectedResource" >
           <v-col >
-            <EditResource />
+            <EditResource :genericProps="selectedResource" />
           </v-col>
         </v-row>
 
@@ -53,9 +53,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
-  SELECT_EDITING_RESOURCE,
+  // SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
-  eventBus,
+  // eventBus,
 } from '@/factories/eventBus';
 
 

@@ -58,7 +58,7 @@ export default {
   methods: {
   },
   data: () => ({
-    editingInstructions: 'Pick a resource from the list to edit it details',
+    editingInstructions: 'Pick a resource from the list to edit it\'s details',
     EDIT_METADATA_RESOURCES_TITLE,
   }),
 };
