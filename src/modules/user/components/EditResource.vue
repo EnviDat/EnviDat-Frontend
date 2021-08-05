@@ -19,6 +19,24 @@
 
       <v-row>
         <v-col cols="12">
+          <v-text-field :label="labels.resourceName"
+                        outlined
+                        required
+                        v-model="resourceName" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <v-text-field :label="labels.fileName"
+                        outlined
+                        readonly
+                        v-model="fileName" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
           <v-textarea :label="labels.description"
                         outlined
                         auto-grow
@@ -29,6 +47,7 @@
         </v-col>
       </v-row>
       
+
       <!-- <v-row>
         <v-col cols="12"> 
           <div class="text-body-1">{{ labels.subInstructions }}</div>
@@ -54,7 +73,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-05 10:21:02
+ * Last modified  : 2021-08-05 10:53:04
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -107,7 +126,10 @@ export default {
       instructions: 'Drag and drop a file here to create a new resource and upload it. For files with a file size < 5 GB.',
       subInstructions: 'For files larger then 5GB contact the envidat team.',
       createButtonText: 'Save Resource',
-      description: 'Resource Description',
+      description: 'Resource description',
+      resourceName: 'Name of the resource',
+      fileName: 'Name of the file',
+      url: 'Link',
     },
     files: [],
     createButtonDisabled: true,
