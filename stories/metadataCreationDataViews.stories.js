@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-04 11:14:59
+ * Last modified  : 2021-08-11 16:50:47
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -16,6 +16,10 @@ import { storiesOf } from '@storybook/vue';
 import {
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
+  CANCEL_EDITING_RESOURCE,
+  SAVE_EDITING_RESOURCE,
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -122,36 +126,79 @@ storiesOf('8 Metadata Creation Views / Data Info', module)
     </v-col>
     `,
     created() {
+      eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
       eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
+      eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
       eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+    },
+    computed: {
+      genericProps() {
+        return {
+          resources: this.resources,
+          selectionId: this.selectionId,
+          resourcesConfig: {
+            downloadActive: false,
+          },  
+        };
+      },
     },
     methods: {
       selectResource(id) {
-        const newGenerics = {
-          ...this.genericProps,
-          selectionId: id,
-        };
+        if (this.selectionId !== -1) {
+          this.cancelEditing();
+        }
+        
+        this.selectionId = id;
+        this.setSelected(this.selectionId, true);
+      },
+      cancelEditing() {
+        this.setSelected(this.selectionId, false);
+        this.selectionId = -1;
+      },
+      editComponentsChanged(updateObj) {
+        if (updateObj.object === EDITMETADATA_DATA_RESOURCES) {
 
-        this.genericProps = newGenerics;
+          this.updateResource(updateObj.data);
+        }
       },
-      // editComponentsChanged(updateObj) {
-      //   if (updateObj.data.id === this.genericProps.id) {
-      //     this.genericProps = updateObj.data;
-      //   }
-      //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-      //     this.emptyFirstGenericProps = updateObj.data;
-      //   }
-      // },
-    },  
+      updateResource(newRes) {
+        const res = this.resources;
+
+        for (let i = 0; i < res.length; i++) {
+          const r = res[i];
+          if (r.id === newRes.id) {
+            this.$set(res, i, newRes);
+            return;
+          }
+        }
+
+        res.unshift(newRes);
+      },
+      setSelected(id, selected) {
+        const res = this.resources;
+
+        for (let i = 0; i < res.length; i++) {
+          const r = res[i];
+          if (r.id === id) {
+            r.isSelected = selected;
+            return;
+          }
+        }
+      },
+      saveResource(newRes) {
+        newRes.existsOnlyLocal = false;
+        this.updateResource(newRes);
+        this.cancelEditing();
+      },
+    },
     data: () => ({
-      genericProps: {
-        resources: metadataCards[0].resources,
-        selectionId: -1,
-        resourcesConfig: {
-          downloadActive: false,
-        },
-      },
+      resources: metadataCards[0].resources,
+      selectionId: -1,
     }),
   }));
