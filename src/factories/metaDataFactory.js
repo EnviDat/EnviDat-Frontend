@@ -6,14 +6,14 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2020-11-04 09:10:17
+ * Last modified  : 2021-08-12 11:46:10
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import seedrandom from 'seedrandom';
-import { parse, format } from 'date-fns';
+import { parse, format, formatISO } from 'date-fns';
 
 import {
   getAuthorName,
@@ -117,6 +117,13 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   }
 
   return formatedDate;
+}
+
+export function getCurrentDate() {
+
+  const now = new Date();
+  const isoFormatted = formatISO(now);
+  return formatDate(isoFormatted);
 }
 
 export function createLicense(dataset) {
@@ -249,6 +256,94 @@ export function createCitation(dataset) {
     citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
     citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
     citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`,
+  };
+}
+
+export function getFileFormat(file) {
+  let fileFormat = '';
+  let fileName = '';
+
+  if (typeof file === 'object' && !!file.format) {
+    // if the input is a resource object
+    fileName = file.format ? file.format : '';
+  } else if (typeof file === 'object') {
+    fileName = file.name ? file.name : '';
+  } else if (typeof file === 'string') {
+    fileName = file;
+  }
+
+  const splits = fileName.split('.');
+  const last = splits[splits.length - 1];
+  if (last?.length > 4) {
+    fileFormat = 'url';
+  } else {
+    fileFormat = last;
+  }
+
+  fileFormat = fileFormat.toLowerCase();
+
+  return fileFormat;
+}
+
+let localResoureID = 0;
+
+export function initializeLocalResource(metadataId, file = null, url = '') {
+
+  const isLink = !!url;
+  const resourceFormat = getFileFormat(isLink ? url : file);
+  let resourceName = isLink ? url : file.name;
+  const fileName = isLink ? '' : file.name;
+
+  if (!isLink) {
+    const splits = resourceName.split('.');
+    resourceName = splits[0];
+  }
+
+  localResoureID++;
+
+  const now = getCurrentDate();
+
+  return {
+    metadataId,
+    name: resourceName,
+    fileName,
+    id: `resoureId_${localResoureID}`,
+    url_type: isLink ? '' : 'upload',
+    format: resourceFormat,
+    url,
+    existsOnlyLocal: true,
+    created: now,
+    lastModified: now,
+  };
+}
+
+export function createLocalResource(metadataId, name, description, file, fileFormat = '', size = 0, url = '', doi = '', restricted = false) {
+
+  const isLink = !!url;
+  const resourceFormat = isLink ? 'url' : fileFormat;
+
+  const created = getCurrentDate();
+
+  return {
+    description,
+    metadataId,
+    url_type: isLink ? '' : 'upload',
+    id: '',
+    size,
+    // mimetype: resource.mimetype ? resource.mimetype : '',
+    // cacheUrl: resource.cache_url ? resource.cache_url : '',
+    doi,
+    name,
+    url,
+    restricted,
+    format: resourceFormat,
+    existsOnlyLocal: true,
+    // state: resource.state ? resource.state : '',
+    created,
+    lastModified: created,
+    // position: resource.position ? resource.position : '',
+    // revisionId: resource.revision_id ? resource.revision_id : '',
+    isProtected: restricted,
   };
 }
 
