@@ -7,25 +7,20 @@
       <v-col cols="6" >
         <v-row v-if="selectedResource" >
           <v-col >
-            <EditResource :genericProps="selectedResource" />
+            <EditResource :genericProps="selectedResource"
+                          @closeClicked="catchEditResourceClose"
+                          @saveResource="catchSaveResourceClose" />
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row v-if="!selectedResource" >
           <v-col>
-            <EditDropResourceFiles @createResources="createResourceFromFiles" />
-          </v-col>
-        </v-row>
+            <v-card >
+              <EditDropResourceFiles @createResources="createResourceFromFiles" />
 
-        <v-row>
-          <v-col class="text-h5">
-            {{ spacerText }}
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col>
-            <EditPasteResourceUrl @createResources="createResourceFromUrl" />
+              <EditPasteResourceUrl @createResources="createResourceFromUrl" />
+            </v-card>
+            
           </v-col>
         </v-row>
       </v-col>
@@ -47,17 +42,24 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-04 16:55:23
+ * Last modified  : 2021-08-12 15:37:04
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
-  // SELECT_EDITING_RESOURCE,
+  CANCEL_EDITING_RESOURCE,
+  SAVE_EDITING_RESOURCE,
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_DATA_RESOURCES,
+  SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
-  // eventBus,
+  eventBus,
 } from '@/factories/eventBus';
 
+
+import { initializeLocalResource } from '@/factories/metaDataFactory';
+import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
@@ -65,7 +67,7 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
 import EditResource from '@/modules/user/components/EditResource';
 
-import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
+// import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
 
 
 export default {
@@ -80,21 +82,12 @@ export default {
     genericProps: Object,
   },
   computed: {
-    resources() {
-      const res = this.mixinMethods_getGenericProp('resources', []);
-
-      if (res.length > 0) {
-        enhanceResourcesStrategyEvents(res, SELECT_EDITING_RESOURCE_PROPERTY);
-      }
-
-      return res;
-    },
     selectedResource() {
       const id = this.mixinMethods_getGenericProp('selectionId', -1);
       let selectedRes = null;
 
       if (id !== -1) {
-        const res = this.resources;
+        const res = this.genericProps?.resources;
 
         if (res?.length > 0) {
           const selected = res.filter(r => r.id === id);
@@ -110,15 +103,53 @@ export default {
   },
   methods: {
     createResourceFromUrl(url) {
-      console.log(`createResourceFromUrl ${url}`);
+      // console.log(`createResourceFromUrl ${url}`);
+
+      const metadataId = this.getMetadataId();
+
+      this.initResource(metadataId, null, url);
     },
     createResourceFromFiles(files) {
-      console.log(`createResourceFromFiles ${files}`);
+      // console.log(`createResourceFromFiles ${files}`);
+      const metadataId = this.getMetadataId();
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        this.initResource(metadataId, file, null, i === files.length - 1);
+      }
+
+    },
+    getMetadataId() {
+      const metadataId = this.genericProps?.metadataId || `local_MetadataId_${this.localResCounter}`;
+      this.localResCounter++;
+      return metadataId;
+    },
+    catchEditResourceClose() {
+      eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
+    },
+    catchSaveResourceClose() {
+      eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
+    },
+    initResource(metadataId, file, url, autoSelect = true) {
+      const newRes = initializeLocalResource(metadataId, file, url);
+
+      enhanceResourcesStrategyEvents([newRes], SELECT_EDITING_RESOURCE_PROPERTY);
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_RESOURCES,
+        data: newRes,
+      });
+
+      if (autoSelect) {
+        eventBus.$emit(SELECT_EDITING_RESOURCE, newRes.id);
+      }
     },
   },
   data: () => ({
     spacerText: 'Or',
     EDIT_METADATA_RESOURCES_TITLE,
+    localResCounter: 0,
   }),
 };
 </script>

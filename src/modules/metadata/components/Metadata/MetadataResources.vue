@@ -55,6 +55,7 @@
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
+                          :key="res.id"
                           :doiIcon="doiIcon"
                           :fileSizeIcon="fileSizeIcon"
                           :dateCreatedIcon="dateCreatedIcon"
@@ -64,6 +65,7 @@
                           :showGenericOpenButton="res.openEvent ? true : false"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"
+                          :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"
                           @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
@@ -92,7 +94,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2020-11-04 11:12:21
+ * Last modified  : 2021-08-11 10:14:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

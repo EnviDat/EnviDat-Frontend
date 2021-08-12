@@ -1,6 +1,8 @@
 <template>
   <v-card id="EditPasteResourceUrl"
-            class="pa-4">
+            class="pa-4"
+            flat>
+
 
     <v-container fluid
                   class="pa-0">
@@ -50,7 +52,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-04 18:19:22
+ * Last modified  : 2021-08-11 15:59:14
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -80,6 +82,7 @@ export default {
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },
+    // eslint-disable-next-line no-useless-escape
     urlRegex: /^(http(s)?:\/\/.)?(ftp(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{0,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
     // rulesUrl: [
     //    v => !!v || 'Link is required',

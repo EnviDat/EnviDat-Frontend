@@ -1,11 +1,12 @@
 <template>
   <v-card :id="`resourceCard_${id}`"
-          color="primary"
+          :color="cardColor"
           class="metadataResourceCard"
+          :class="isSelected ? 'highlighted' : ''"
           style="height: 100%;" >
 
     <v-card-title class="headline resourceHeadline white--text">
-      {{ name }}
+      {{ name ? name : 'No name set' }}
     </v-card-title>
 
     <v-card-text class="pt-0 white--text"
@@ -179,7 +180,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-01-05 15:33:05
+ * Last modified  : 2021-08-11 15:18:51
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -232,6 +233,14 @@ export default {
       type: String,
       default: 'preview',
     },
+    cardColor: {
+      type: String,
+      default: 'primary',
+    },
+    isSelected: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     maxDescriptionLength: 175,
@@ -246,9 +255,17 @@ export default {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
     markdownText() {
+      if (!this.description) {
+        return '';
+      }
+
       return renderMarkdown(this.description.trim());
     },
     markdownTextTruncated() {
+      if (!this.description) {
+        return '';
+      }
+
       if (this.maxDescriptionLengthReached) {
         const strippedMarkdown = stripMarkdown(this.description.trim());
 
@@ -421,5 +438,9 @@ export default {
     font-size: 12px;
     overflow: hidden;
   }  
+
+  .highlighted {
+    box-shadow: #ffd740 0px 0px 5px 5px !important;
+  }
 
 </style>

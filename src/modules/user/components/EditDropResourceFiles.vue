@@ -1,6 +1,7 @@
 <template>
   <v-card id="EditDropResourceFiles"
-            class="pa-4">
+            class="pa-4"
+            flat>
 
     <v-container fluid
                   class="pa-0">
@@ -49,7 +50,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-04 16:56:14
+ * Last modified  : 2021-08-11 15:45:56
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

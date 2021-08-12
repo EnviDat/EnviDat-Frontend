@@ -1,5 +1,6 @@
 <template>
   <v-card id="EditResource"
+            :key="id"
             class="pa-4">
 
     <BaseIconButton id="EditResourceCloseButton"
@@ -10,7 +11,7 @@
                     icon-color="primary"
                     color="primary"
                     outlined
-                    tool-tip-text="Close Metadata"
+                    tool-tip-text="Cancel Resource Editing"
                     :tool-tip-bottom="true"
                     @clicked="$emit('closeClicked')" />
 
@@ -33,6 +34,7 @@
           <v-text-field :label="labels.resourceName"
                         outlined
                         required
+                        :rules="[ v => !!v || `${labels.resourceName} is required` ]"
                         v-model="resourceName" />
         </v-col>
       </v-row>
@@ -42,6 +44,7 @@
           <v-textarea :label="labels.description"
                         outlined
                         auto-grow
+                        :rules="[ v => !!v || `${labels.description} is required` ]"
                         v-model="description"
                         />
         </v-col>
@@ -52,8 +55,8 @@
         <v-col cols="12">
           <v-text-field :label="labels.url"
                         outlined
-                        readonly
                         prepend-icon="link"
+                        :rules="[ v => !!v || `${labels.url} is required` ]"
                         v-model="url" />
         </v-col>
       </v-row>
@@ -127,9 +130,9 @@
       <v-row no-gutters
               justify="end">
         <v-col class="shrink"> 
-          <BaseRectangleButton :disabled="createButtonDisabled"
+          <BaseRectangleButton :disabled="!createButtonEnabled"
                                 :buttonText="labels.createButtonText"
-                                @clicked="createButtonClick" />
+                                @clicked="saveResourceClick" />
         </v-col>
       </v-row>
 
@@ -144,12 +147,12 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-05 10:53:04
+ * Last modified  : 2021-08-12 15:37:47
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { formatDate } from '@/factories/metaDataFactory';
+import { getCurrentDate } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -159,7 +162,7 @@ import {
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
+// import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
 
@@ -168,12 +171,23 @@ export default {
   props: {  
     genericProps: Object,
   },
+  mounted() {
+    this.localName = this.resourceName;
+    this.localDescription = this.description;
+  },
   computed: {
+    id: {
+      get() {
+        return this.mixinMethods_getGenericProp('id', '');
+      },
+    },
     description: {
       get() {
-        return this.mixinMethods_getGenericProp('description', '');
+        return this.mixinMethods_getGenericProp('description', ''); // this.localDescription);
       },
       set(value) {
+        this.localDescription = value;
+        
         const newGenericProps = {
           ...this.genericProps,
           description: value,
@@ -184,9 +198,11 @@ export default {
     },
     resourceName: {
       get() {
-        return this.mixinMethods_getGenericProp('name', '');
+        return this.mixinMethods_getGenericProp('name', ''); // this.localName);
       },
       set(value) {
+        this.localName = value;
+
         const newGenericProps = {
           ...this.genericProps,
           name: value,
@@ -212,14 +228,14 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('url', '');
       },
-      // set(value) {
-      //   const newGenericProps = {
-      //     ...this.genericProps,
-      //     url: value,
-      //   };
+      set(value) {
+        const newGenericProps = {
+          ...this.genericProps,
+          url: value,
+        };
 
-      //   this.notifyChange(newGenericProps);
-      // },
+        this.notifyChange(newGenericProps);
+      },
     },
     urlType: {
       get() {
@@ -227,14 +243,14 @@ export default {
       },
     },
     isLink() {
-      return this.url && this.urlType !== 'upload';
+      return !!this.url && this.urlType !== 'upload';
     },
     lastModified: {
       get() {
         let date = this.mixinMethods_getGenericProp('lastModified', null);
 
         if (!date) {
-          date = formatDate(new Date().toISOString());
+          date = getCurrentDate();
         }
 
         return date;
@@ -245,7 +261,7 @@ export default {
         let date = this.mixinMethods_getGenericProp('created', null);
 
         if (!date) {
-          date = formatDate(new Date().toISOString());
+          date = getCurrentDate();
         }
 
         return date;
@@ -292,17 +308,30 @@ export default {
     },
   },
   methods: {
-    checkCreateButtonDisabled() {
-      this.createButtonDisabled = this.files?.length <= 0;
+    checkCreateButtonEnabled() {
+      const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
+      const enabled = !!this.localName && !!this.localDescription && !nameEqualsUrl;
+      this.createButtonEnabled = enabled;
     },
     notifyChange(newGenericProps) {
+
+      newGenericProps = {
+        ...newGenericProps,
+        lastModified: getCurrentDate(),
+      };
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_RESOURCES,
         data: newGenericProps,
       });
+
+      this.checkCreateButtonEnabled();
     },
     createButtonClick() {
       this.$emit('createResources', this.files);
+    },
+    saveResourceClick() {
+      this.$emit('saveResource');
     },
   },
   data: () => ({
@@ -321,13 +350,15 @@ export default {
       format: 'File format',
     },
     files: [],
-    createButtonDisabled: true,
+    createButtonEnabled: false,
     fileSizeIcon,
+    localDescription: '',
+    localName: '',
   }),
   components: {
     BaseRectangleButton,
     BaseIconButton,
-    BaseIconLabelView,
+    // BaseIconLabelView,
   },  
 };
 </script>
