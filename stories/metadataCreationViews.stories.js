@@ -22,6 +22,7 @@ import {
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 // import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -55,7 +56,84 @@ import EditCustomFields from '@/modules/user/components/EditCustomFields';
 // };
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Edit Custom Fields', () => ({
+  .add('Edit Publication Info', () => ({
+    components: { EditPublicationInfo },
+    template: `
+    <v-col>
+
+      <v-row>
+        Edit Publication Info fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditPublicationInfo :genericProps="emptyFirstGenericProps" />
+        </v-col>
+      </v-row>
+
+       <v-row>
+        Edit Publication Info fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditPublicationInfo :genericProps="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+    created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+      editComponentsChanged(updateObj) {
+        if (updateObj.data?.length === this.genericProps.length) {
+          this.genericProps = updateObj.data;
+        }
+        if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
+          this.emptyFirstGenericProps = updateObj.data;
+        }
+      },
+    },
+    data: () => ({
+      emptyFirstGenericProps: [],
+      genericProps: [
+        { 
+          field0: { 
+            fieldName: 'SubProject', 
+            content: 'Projectx',
+          },
+        },
+        {
+          field1: {
+            fieldName: 'Game',
+            content: 'Gloomhaven',
+          },
+        },
+        {
+          field2: {
+            fieldName: 'Drink',
+            content: 'Prosecco',
+          },
+        },
+        {
+          field3: {
+            fieldName: '',
+            content: '',
+          },
+        },
+        {
+          field4: {
+            fieldName: '',
+            content: '',
+          },
+        },
+      ],
+    }),
+  })).add('Edit Custom Fields', () => ({
     components: { EditCustomFields },
     template: `
     <v-col>
