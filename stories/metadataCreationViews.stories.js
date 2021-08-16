@@ -23,6 +23,7 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 // import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -56,7 +57,42 @@ import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 // };
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Edit Publication Info', () => ({
+  .add('Generic Textarea Preview Layout', () => ({
+    components: { GenericTextareaPreviewLayout },
+    template: `
+    <v-col>
+
+      <v-row>
+        Generic Textarea Preview Layout unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <GenericTextareaPreviewLayout  />
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+    // created() {
+    //   eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    // },
+    // beforeDestroy() {
+    //   eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    // },
+    methods: {
+      //   editComponentsChanged(updateObj) {
+      //     if (updateObj.data?.length === this.filledFunderList.length) {
+      //       this.filledFunderList = updateObj.data;
+      //     }
+      //     if (updateObj.data?.length === this.emptyFunderList.length) {
+      //       this.emptyFunderList = updateObj.data;
+      //     }
+      //   },
+      // },
+    },
+    data: () => ({      
+    }),
+  })).add('Edit Publication Info', () => ({
     components: { EditPublicationInfo },
     template: `
     <v-col>
