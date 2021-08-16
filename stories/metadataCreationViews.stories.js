@@ -67,7 +67,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditPublicationInfo :genericProps="emptyFirstGenericProps" />
+          <EditPublicationInfo :funderList="emptyFunderList" />
         </v-col>
       </v-row>
 
@@ -77,7 +77,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditPublicationInfo :genericProps="genericProps" />
+          <EditPublicationInfo :funderList="filledFunderList" />
         </v-col>
       </v-row>
 
@@ -90,49 +90,62 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
     },
     methods: {
       editComponentsChanged(updateObj) {
-        if (updateObj.data?.length === this.genericProps.length) {
-          this.genericProps = updateObj.data;
+        if (updateObj.data?.length === this.filledFunderList.length) {
+          this.filledFunderList = updateObj.data;
         }
-        if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
-          this.emptyFirstGenericProps = updateObj.data;
+        if (updateObj.data?.length === this.emptyFunderList.length) {
+          this.emptyFunderList = updateObj.data;
         }
       },
     },
     data: () => ({
-      emptyFirstGenericProps: [],
-      genericProps: [
-        { 
-          field0: { 
-            fieldName: 'SubProject', 
-            content: 'Projectx',
-          },
-        },
-        {
-          field1: {
-            fieldName: 'Game',
-            content: 'Gloomhaven',
-          },
-        },
-        {
-          field2: {
-            fieldName: 'Drink',
-            content: 'Prosecco',
-          },
-        },
-        {
-          field3: {
-            fieldName: '',
-            content: '',
-          },
-        },
-        {
-          field4: {
-            fieldName: '',
-            content: '',
-          },
-        },
-      ],
+      emptyFunderList: [],
+      filledFunderList: [
+            { 
+              funder0: { 
+                organization: 'WSL', 
+                grantNumber: 'XYZ',
+                link: 'https://www.wsl.ch',
+              },
+            },
+            {
+              funder1: {
+                organization: 'NSF',
+                grantNumber: 'ABC123',
+                link: 'https://nsf.org',
+              },
+            },
+            { 
+              funder2: { 
+                organization: 'Horizon Europe', 
+                grantNumber: 'XY678',
+                link: 'https://euhasmoney.org',
+              },
+            },
+            {
+              funder3: {
+                organization: '',
+                grantNumber: '',
+                link: '',
+              },
+            },
+            { 
+              funder4: { 
+                organization: '', 
+                grantNumber: '',
+                link: '',
+              },
+            },
+            {
+              funder5: {
+                organization: '',
+                grantNumber: '',
+                link: '',
+              },
+            },
+        ],
     }),
+ 
   })).add('Edit Custom Fields', () => ({
     components: { EditCustomFields },
     template: `
@@ -232,13 +245,14 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader :genericProps="genericProps" />
+         
         </v-col>
       </v-row>
 
     </v-col>
     `,
     created() {
+      //  <EditMetadataHeader :genericProps="genericProps" />
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
