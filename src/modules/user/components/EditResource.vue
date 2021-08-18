@@ -71,7 +71,33 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="!isLink"
+      <v-row v-if="!isLink && isImage"
+              no-gutters>
+        <v-col cols="12">
+          <v-text-field :label="labels.fileName"
+                        outlined
+                        readonly
+                        selele
+                        prepend-icon="insert_drive_file"
+                        value=" " >
+
+            <template v-slot:append
+                      style="justfiy-content: flex-end;">
+              <v-col >
+                <v-row no-gutters class="pb-2" >{{ fileName }}</v-row>
+                <v-row no-gutters>
+                  <img ref="filePreview"
+                        style="max-height: 100%; max-width: 100%;" />                  
+                </v-row>
+                
+              </v-col>
+            </template>
+
+          </v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="!isLink && !isImage"
               no-gutters>
         <v-col cols="12">
           <v-text-field :label="labels.fileName"
@@ -140,7 +166,7 @@
       <v-row no-gutters
               justify="end">
         <v-col class="shrink"> 
-          <BaseRectangleButton :disabled="!createButtonEnabled"
+          <BaseRectangleButton :disabled="!saveButtonEnabled"
                                 :loading="genericProps.loading"
                                 :buttonText="labels.createButtonText"
                                 @clicked="saveResourceClick" />
@@ -160,7 +186,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-18 11:40:56
+ * Last modified  : 2021-08-18 16:08:10
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -229,6 +255,18 @@ export default {
         return this.mixinMethods_getGenericProp('fileName', '');
       },
     },
+    file: {
+      get() {
+        const file = this.mixinMethods_getGenericProp('file', null);
+        if (file) {
+          this.loadImagePreview(file);
+        }
+        return file;
+      },
+    },
+    isImage() {
+      return this.file?.type.includes('image');
+    },
     url: {
       get() {
         return this.mixinMethods_getGenericProp('url', '');
@@ -279,7 +317,8 @@ export default {
     },
     size: {
       get() {
-        return this.mixinMethods_getGenericProp('size', 'unknown');
+        const size = this.mixinMethods_getGenericProp('size', 'unknown');
+        return this.mixinMethods_formatBytes(size);
       },
     },
     doi: {
@@ -289,7 +328,7 @@ export default {
     },
   },
   methods: {
-    checkCreateButtonEnabled() {
+    checkSaveButtonEnabled() {
       const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
       const enabled = !!this.localName && !!this.localDescription && !nameEqualsUrl;
 
@@ -298,7 +337,7 @@ export default {
         this.$refs.editResourceForm.validate();
       }
 
-      this.createButtonEnabled = enabled;
+      this.saveButtonEnabled = enabled;
     },
     notifyChange(newGenericProps) {
 
@@ -312,13 +351,24 @@ export default {
         data: newGenericProps,
       });
 
-      this.checkCreateButtonEnabled();
-    },
-    createButtonClick() {
-      this.$emit('createResources', this.files);
+      this.checkSaveButtonEnabled();
     },
     saveResourceClick() {
       this.$emit('saveResource');
+    },
+    loadImagePreview(file) {
+      const vm = this;
+      if (file.type.includes('image')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imageRefs = vm.$refs.filePreview;
+          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          imageRef.src = reader.result;
+        };
+
+        reader.readAsDataURL(file);
+      }
+
     },
   },
   data: () => ({
@@ -329,15 +379,14 @@ export default {
       createButtonText: 'Save Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
-      fileName: 'Name of the file',
+      fileName: 'File',
       url: 'Link',
       created: 'Create at',
       lastModified: 'Last modified time',
       size: 'File size',
       format: 'File format',
     },
-    files: [],
-    createButtonEnabled: false,
+    saveButtonEnabled: false,
     fileSizeIcon,
     localDescription: '',
     localName: '',
