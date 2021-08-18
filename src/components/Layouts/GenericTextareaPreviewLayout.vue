@@ -1,10 +1,11 @@
 <template>
 
+
   <div>
 
     <v-row>
 
-        <v-col cols="6">     
+        <v-col :cols="columns">  
           <v-textarea  :label="labelTextarea"
                         outlined
                         auto-grow
@@ -15,16 +16,30 @@
 
     </v-row>
 
+    <v-row>
+
+        <v-col :cols="columns"> 
+          <div class="text-subtitle-1">{{ subtitlePreview }}</div>
+        </v-col>
+
+    </v-row>
+
 
     <v-row>
 
-      <v-col cols="6">     
-         <ExpandableTextLayout :title="previewTitle"
-                          :text="textareaContent"
+      <v-col :cols="columns">     
+          <slot name="preview">
+            <metadata-publications />
+          </slot>
+      
+  
+          <!-- <ExpandableTextLayout :title="previewTitle"
+                          :text="textareaContentProxy"
                           :showPlaceholder="showPlaceholder"
                           :maxTextLength="body ? body.maxTextLength : undefined"
                           :emptyTextColor="emptyTextColor"
-                          :emptyText="emptyText" />
+                          :emptyText="emptyText" /> -->
+ 
 
         </v-col>
 
@@ -54,21 +69,40 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
 
 
 export default {
   name: 'GenericTextareaPreviewLayout',
+  data: () => ({
+    previewTitle: 'TEST TITLE',
+  }),
   props: {  
     genericProps: Object,
   },
   computed: {
+    columns: {
+      get() {
+        return this.mixinMethods_getGenericProp('columns', '');
+      },
+      set(value) {
+        this.setGenericTextarea('columns', value);
+      },
+    },
     textareaContent: {
       get() {
-        return this.mixinMethods_getGenericProp('textareaContent', 'WOW');
+        return this.mixinMethods_getGenericProp('textareaContent', '');
       },
       set(value) {
         this.setGenericTextarea('textareaContent', value);
+      },
+    },
+    subtitlePreview: {
+      get() {
+        return this.mixinMethods_getGenericProp('subtitlePreview', 'Preview');
+      },
+      set(value) {
+        this.setGenericTextarea('subtitlePreview', value);
       },
     },
     labelTextarea: {
@@ -76,28 +110,22 @@ export default {
         return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea Label');
       },
       set(value) {
-        this.setHeaderInfo('labelTextarea', value);
+        this.setGenericTextarea('labelTextarea', value);
       },
     },
-    previewTitle: {
-      get() {
-        return this.mixinMethods_getGenericProp('previewTitle', 'Related Publications');
-      },
-      set(value) {
-        this.setHeaderInfo('previewTitle', value);
-      },
-    },
+    // previewTitle: {
+    //   get() {
+    //     return this.mixinMethods_getGenericProp('previewTitle', 'Related Publications');
+    //   },
+    //   set(value) {
+    //     this.setGenericTextarea('previewTitle', value);
+    //   },
+    // },
   },
-  // created() {
-  //   eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  //   },
-  //   beforeDestroy() {
-  //     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  //   },
   methods: {
     setGenericTextarea(property, value) {
       const newGenericTextarea = {
-          ...this.genericprops,
+          ...this.genericProps,
           [property]: value,
       };
 
@@ -106,26 +134,9 @@ export default {
           data: newGenericTextarea,
         });
     },
-    // notifyChange(newGenericProps) {
-    //   eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-    //     object: EDITMETADATA_GENERIC_TEXTAREA_PREVIEW_LAYOUT,
-    //     data: newGenericProps,
-    //   });
-    // },
-    // editComponentsChanged(updateObj) {
-    //   this.textareaContent = updateObj.data;
-    //   // this.textareaContent.set(updateObj);
-    // //  this.previewTextarea();
-    //       //   if (updateObj.data?.length === this.filledFunderList.length) {
-    //       //   //   this.filledFunderList = updateObj.data;
-    //       //   // }
-    //       //   // if (updateObj.data?.length === this.emptyFunderList.length) {
-    //       //   //   this.emptyFunderList = updateObj.data;
-    //       //   // }
-    // },
   },
   components: {
-    ExpandableTextLayout,
+    MetadataPublications,
   },
 };
 

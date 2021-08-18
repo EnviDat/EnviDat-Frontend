@@ -24,6 +24,7 @@ import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 // import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 // import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -58,7 +59,7 @@ import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPr
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Generic Textarea Preview Layout', () => ({
-    components: { GenericTextareaPreviewLayout },
+    components: { GenericTextareaPreviewLayout, ExpandableTextLayout },
     template: `
     <v-col>
 
@@ -68,29 +69,94 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout  />
+          <GenericTextareaPreviewLayout  :genericProps="genericProps"  >
+        
+            <template v-slot:preview>
+            
+
+            
+            </template>
+                        
+          </GenericTextareaPreviewLayout>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        Generic Textarea Preview Layout filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <GenericTextareaPreviewLayout :genericProps="genericProps" />
         </v-col>
       </v-row>
 
     </v-col> `,
-    // created() {
-    //   eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    // },
-    // beforeDestroy() {
-    //   eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    // },
-    methods: {
-      //   editComponentsChanged(updateObj) {
-      //     if (updateObj.data?.length === this.filledFunderList.length) {
-      //       this.filledFunderList = updateObj.data;
-      //     }
-      //     if (updateObj.data?.length === this.emptyFunderList.length) {
-      //       this.emptyFunderList = updateObj.data;
-      //     }
-      //   },
-      // },
+     // <ExpandableTextLayout :title="genericProps.labelTextarea"
+      //                     :text="genericProps.textareaContent"
+      //                     :showPlaceholder="showPlaceholder"
+      //                     :maxTextLength="body ? body.maxTextLength : undefined"
+      //                     :emptyTextColor="emptyTextColor"
+      //                     :emptyText="emptyText" />,
+    created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    data: () => ({      
+    beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+      editComponentsChanged(updateObj) {
+        if (updateObj.data.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+        }
+        // if (updateObj.data.id === this.emptyFirstGenericProps.id) {
+        //   this.emptyFirstGenericProps = updateObj.data;
+        // }
+      },
+    },  
+    computed: {
+    },
+    data: () => ({
+      genericProps: {         
+                id: '1',
+                columns: '5',
+                labelTextarea: 'Related Publications',
+                textareaContent: '',
+                subtitlePreview: 'Preview',
+                showPlaceholder: false,
+                publications: {
+                  title: 'Related Publications',
+                  text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
+                    Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
+                    Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
+                    Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. A diam maecenas sed enim ut sem viverra. Ac felis donec et odio pellentesque diam volutpat commodo. Risus commodo viverra maecenas accumsan lacus vel facilisis. Vitae aliquet nec ullamcorper sit amet. Ullamcorper malesuada proin libero nunc consequat. Arcu vitae elementum curabitur vitae nunc sed velit dignissim sodales. Et tortor consequat id porta nibh venenatis. Lectus mauris ultrices eros in cursus. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Justo donec enim diam vulputate ut pharetra sit. Sit amet luctus venenatis lectus magna fringilla. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Orci dapibus ultrices in iaculis nunc sed augue lacus.
+                  `,
+                },
+                textareaFilled: `# Why user stories?
+&nbsp;          
+User Stories can help you to constantly improve the value of
+your product, estimate development efforts in an appropriate way and prioritize
+feature development during the MVP and post-MVP stages. 
+&nbsp;
+# How user stories
+&nbsp; 
+## 1. Step think about "Who" - type of user
+&nbsp;
+Try to omit using such a role as simply
+“the user”. It can be applied to any person - from your customers to admins -
+and, therefore, it doesn’t reflect the personality of particular target groups,
+the way they interact with the application. You can create personas. 
+&nbsp;
+## 2. Step think about the "What" - function, UI & UX 
+&nbsp;
+Define what functionality each user expects. How she’s going to interact with the app. 
+&nbsp;
+## 3. Step think about the "Why" - added value 
+&nbsp;
+It should either improve the UX, increase retention rates,
+shorten users’ journey to the issue solution or whatever. Each Story should
+contribute something to the general goal of your product. `,  
+      },
     }),
   })).add('Edit Publication Info', () => ({
     components: { EditPublicationInfo },
@@ -288,7 +354,6 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
     </v-col>
     `,
     created() {
-      //  <EditMetadataHeader :genericProps="genericProps" />
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
