@@ -27,6 +27,7 @@
                       :is="currentStep.component"
                       :steps="currentStep.detailSteps"
                       :genericProps="currentStep.genericProps"
+                      :initialStepTitle="currentStep.initialStepTitle"
                       stepColor="highlight" />
           
           <div v-if="!currentStep"

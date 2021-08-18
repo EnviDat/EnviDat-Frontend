@@ -4,11 +4,13 @@ import EditCustomFields from '@/modules/user/components/EditCustomFields';
 
 // eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 
 import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 export const mainDetailSteps = [
@@ -43,6 +45,26 @@ export const mainDetailSteps = [
   },
 ];
 
+export const dataDetailSteps = [
+  {
+    title: 'Data & Resources',
+    completed: false,
+    component: EditDataAndResources,
+    genericProps: {
+      resources: [],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
+      },
+    },
+  },
+  {
+    title: 'Data Info',
+    completed: false,
+    // component: EditDescription,
+  },
+];
+
 export const metadataCreationSteps = [
   {
     title: 'Main Info',
@@ -50,12 +72,15 @@ export const metadataCreationSteps = [
     color: 'secondary',
     component: MetadataCreationMainInfo,
     detailSteps: mainDetailSteps,
+    initialStepTitle: mainDetailSteps[0].title,
   },
   {
     title: 'Data Info',
     completed: false,
-    color: 'red',
-    component: EditDescription,
+    color: 'secondary',
+    component: MetadataCreationMainInfo,
+    detailSteps: dataDetailSteps,
+    initialStepTitle: dataDetailSteps[0].title,
   },
   {
     title: 'Related Info',
@@ -75,6 +100,7 @@ const componentToStateMapping = {
   [EDITMETADATA_MAIN_HEADER]: EditMetadataHeader,
   [EDITMETADATA_MAIN_DESCRIPTION]: EditDescription,
   [EDITMETADATA_CUSTOMFIELDS]: EditCustomFields,
+  [EDITMETADATA_DATA_RESOURCES]: EditDataAndResources,
 };
 
 export function getStepToUpdate(eventName, steps) {
@@ -97,7 +123,10 @@ export function getStepToUpdate(eventName, steps) {
       }
       
       if (s?.detailSteps) {
-        return getStepToUpdate(eventName, s.detailSteps);
+        const subStep = getStepToUpdate(eventName, s.detailSteps);
+        if (subStep) {
+          return subStep;
+        }
       }
     }
   }
