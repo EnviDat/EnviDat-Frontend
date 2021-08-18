@@ -6,6 +6,7 @@
     <template v-slot:activator="{ on }">
     <v-row v-on="on"
           no-gutters
+          style="min-height: 24px;"
           align="center" >
 
       <v-col v-if="icon && iconTooltip"
@@ -20,7 +21,7 @@
       </v-col>
 
       <v-col v-if="icon && !iconTooltip"
-              cols="2"
+              cols="3"
               style="max-width: 100%" >
 
         <div class="iconCentering">
@@ -32,7 +33,7 @@
       </v-col>
 
       <v-col v-if="label"
-              cols="4"
+              cols="3"
               :style="textStyle" >
         {{ label }}
       </v-col>
@@ -68,7 +69,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-02 11:24:00
- * Last modified  : 2019-11-28 16:15:58
+ * Last modified  : 2021-08-18 15:45:47
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -91,7 +92,7 @@ export default {
   computed: {
     alignClass() {
       return {
-        'col-2': !this.alignLeft,
+        'col-3': !this.alignLeft,
         'pl-1': !this.alignLeft,
         'px-1': this.alignLeft,
       };
