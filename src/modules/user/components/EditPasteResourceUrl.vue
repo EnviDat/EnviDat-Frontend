@@ -28,6 +28,8 @@
                                   ]"
                           ref="urlTextField"
                           prepend-icon="link"
+                          clearable
+                          clear-icon="close"
                           @input="checkCreateButtonDisabled"
                           />
         </v-col>
@@ -52,7 +54,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-11 15:59:14
+ * Last modified  : 2021-08-18 13:23:35
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

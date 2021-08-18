@@ -25,6 +25,8 @@
                         multiple
                         counter
                         show-size
+                        clearable
+                        clear-icon="close"
                         :label="labels.pickerLabel"
                         prepend-icon="attach_file"
                         @change="onChange"
@@ -63,7 +65,7 @@
  * @author Dominik Haas-Artho 
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-04 16:51:59
+ * Last modified  : 2021-08-18 13:23:01
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
