@@ -3,7 +3,13 @@
           :color="cardColor"
           class="metadataResourceCard"
           :class="isSelected ? 'highlighted' : ''"
-          style="height: 100%;" >
+          style="height: 100%;"
+          :loading="loading" >
+
+    <template slot="progress">
+      <v-progress-linear color="accent"
+                          indeterminate />
+    </template>
 
     <v-card-title class="headline resourceHeadline white--text">
       {{ name ? name : 'No name set' }}
@@ -180,7 +186,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-11 15:18:51
+ * Last modified  : 2021-08-18 10:46:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -241,6 +247,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    loading: Boolean,
   },
   data: () => ({
     maxDescriptionLength: 175,

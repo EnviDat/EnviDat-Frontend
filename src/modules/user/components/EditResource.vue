@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditResource"
             :key="id"
-            class="pa-4">
+            class="pa-4" >
 
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
@@ -15,6 +15,8 @@
                     :tool-tip-bottom="true"
                     @clicked="$emit('closeClicked')" />
 
+    <v-form ref="editResourceForm">
+      
     <v-container fluid
                   class="pa-0">
 
@@ -32,9 +34,13 @@
               class="pt-4">
         <v-col cols="12">
           <v-text-field :label="labels.resourceName"
+                        ref="resourceName"
                         outlined
                         required
-                        :rules="[ v => !!v || `${labels.resourceName} is required` ]"
+                        :disabled="genericProps.loading"
+                        :rules="[ v => !!v || `${labels.resourceName} is required`,
+                                  v => (isLink && resourceName !== url) || (!isLink && !url) || `${labels.resourceName} can't be the same as the ${labels.url}`,
+                                  ]"
                         v-model="resourceName" />
         </v-col>
       </v-row>
@@ -42,8 +48,10 @@
       <v-row no-gutters>
         <v-col cols="12">
           <v-textarea :label="labels.description"
+                        ref="description"
                         outlined
                         auto-grow
+                        :disabled="genericProps.loading"
                         :rules="[ v => !!v || `${labels.description} is required` ]"
                         v-model="description"
                         />
@@ -54,8 +62,10 @@
               no-gutters>
         <v-col cols="12">
           <v-text-field :label="labels.url"
+                        ref="url"
                         outlined
                         prepend-icon="link"
+                        :disabled="genericProps.loading"
                         :rules="[ v => !!v || `${labels.url} is required` ]"
                         v-model="url" />
         </v-col>
@@ -131,6 +141,7 @@
               justify="end">
         <v-col class="shrink"> 
           <BaseRectangleButton :disabled="!createButtonEnabled"
+                                :loading="genericProps.loading"
                                 :buttonText="labels.createButtonText"
                                 @clicked="saveResourceClick" />
         </v-col>
@@ -138,6 +149,8 @@
 
 
     </v-container>
+    </v-form>
+
   </v-card>  
 </template>
 
@@ -147,7 +160,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-12 15:37:47
+ * Last modified  : 2021-08-18 11:40:56
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -215,14 +228,6 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('fileName', '');
       },
-      // set(value) {
-      //   const newGenericProps = {
-      //     ...this.genericProps,
-      //     fileName: value,
-      //   };
-
-      //   this.notifyChange(newGenericProps);
-      // },
     },
     url: {
       get() {
@@ -271,46 +276,28 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('format', '');
       },
-      // set(value) {
-      //   const newGenericProps = {
-      //     ...this.genericProps,
-      //     format: value,
-      //   };
-
-      //   this.notifyChange(newGenericProps);
-      // },
     },
     size: {
       get() {
         return this.mixinMethods_getGenericProp('size', 'unknown');
       },
-      // set(value) {
-      //   const newGenericProps = {
-      //     ...this.genericProps,
-      //     size: value,
-      //   };
-
-      //   this.notifyChange(newGenericProps);
-      // },
     },
     doi: {
       get() {
         return this.mixinMethods_getGenericProp('doi', '');
       },
-      // set(value) {
-      //   const newGenericProps = {
-      //     ...this.genericProps,
-      //     doi: value,
-      //   };
-
-      //   this.notifyChange(newGenericProps);
-      // },
     },
   },
   methods: {
     checkCreateButtonEnabled() {
       const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
       const enabled = !!this.localName && !!this.localDescription && !nameEqualsUrl;
+
+      if (this.isLink) {
+      // validate the whole form to make sure it's 
+        this.$refs.editResourceForm.validate();
+      }
+
       this.createButtonEnabled = enabled;
     },
     notifyChange(newGenericProps) {
