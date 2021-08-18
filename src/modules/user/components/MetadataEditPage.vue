@@ -21,13 +21,17 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:49:30
- * Last modified  : 2021-08-03 15:12:35
+ * Last modified  : 2021-08-18 11:44:12
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
   EDITMETADATA_OBJECT_UPDATE,
+  SELECT_EDITING_RESOURCE,
+  SAVE_EDITING_RESOURCE,
+  CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -40,6 +44,7 @@ import { mapState } from 'vuex';
 import {
   USER_NAMESPACE,
   UPDATE_METADATA_EDITING,
+  METADATA_EDITING_SAVE_RESOURCE,
 } from '@/modules/user/store/userMutationsConsts';
 import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 import {
@@ -60,9 +65,15 @@ export default {
   },
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   mounted() {
   },
@@ -70,8 +81,41 @@ export default {
     ...mapState(USER_NAMESPACE, [
       'metadataInEditing',
     ]),
+    resources() {
+      return this.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+    },
   },
   methods: {
+    selectResource(id) {
+      if (this.selectionId !== -1) {
+        this.cancelEditing();
+      }
+      
+      this.selectionId = id;
+      this.setSelected(this.selectionId, true);
+    },
+    cancelEditing() {
+      this.setSelected(this.selectionId, false);
+      this.selectionId = -1;
+    },
+    setSelected(id, selected) {
+      const res = this.resources;
+
+      for (let i = 0; i < res.length; i++) {
+        const r = res[i];
+        if (r.id === id) {
+          r.isSelected = selected;
+          this.$set(res, i, r);
+          break;
+        }
+      }
+
+    },
+    saveResource(newRes) {
+      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+
+      // this.cancelEditing();
+    },
     editComponentsChanged(updateObj) {
       // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
 
@@ -103,6 +147,7 @@ export default {
   },
   data: () => ({
     metadataCreationSteps,
+    selectionId: -1,
   }),
 };
 </script>

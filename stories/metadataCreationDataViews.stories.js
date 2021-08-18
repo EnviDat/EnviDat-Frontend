@@ -133,9 +133,9 @@ storiesOf('8 Metadata Creation Views / Data Info', module)
     },
     beforeDestroy() {
       eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
       eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
       eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
       genericProps() {

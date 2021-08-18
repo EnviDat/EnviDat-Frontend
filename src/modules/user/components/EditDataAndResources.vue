@@ -42,7 +42,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-12 15:37:04
+ * Last modified  : 2021-08-17 16:19:08
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -83,18 +83,14 @@ export default {
   },
   computed: {
     selectedResource() {
-      const id = this.mixinMethods_getGenericProp('selectionId', -1);
       let selectedRes = null;
+      const res = this.genericProps?.resources;
 
-      if (id !== -1) {
-        const res = this.genericProps?.resources;
+      if (res?.length > 0) {
+        const selected = res.filter(r => r.isSelected);
 
-        if (res?.length > 0) {
-          const selected = res.filter(r => r.id === id);
-
-          if (selected?.length > 0) {
-            selectedRes = selected[0];
-          }
+        if (selected?.length > 0) {
+          selectedRes = selected[0];
         }
       }
 
@@ -142,7 +138,9 @@ export default {
       });
 
       if (autoSelect) {
-        eventBus.$emit(SELECT_EDITING_RESOURCE, newRes.id);
+        this.$nextTick(() => {
+          eventBus.$emit(SELECT_EDITING_RESOURCE, newRes.id);
+        });
       }
     },
   },
