@@ -128,11 +128,6 @@
         </v-col>
 
         <v-col cols="6" >
-          <!-- <div style="width: 24px; height: 24px;" >
-            <BaseIconLabelView :icon="fileSizeIcon"
-                                icon-tooltip="Filesize" />
-          </div> -->
-
           <v-text-field :label="labels.size"
                         outlined
                         readonly
@@ -186,7 +181,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-18 16:08:10
+ * Last modified  : 2021-08-18 16:09:39
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -201,7 +196,6 @@ import {
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-// import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
 
@@ -394,7 +388,6 @@ export default {
   components: {
     BaseRectangleButton,
     BaseIconButton,
-    // BaseIconLabelView,
   },  
 };
 </script>

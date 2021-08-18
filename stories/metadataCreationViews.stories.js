@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-03 16:41:57
+ * Last modified  : 2021-08-18 16:57:36
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -325,7 +325,8 @@ contribute something to the general goal of your product. `,
         },
       ],
     }),
-  })).add('Edit Metadata Header', () => ({
+  }))
+.add('Edit Metadata Header', () => ({
     components: { EditMetadataHeader },
     template: `
     <v-col>
@@ -385,7 +386,8 @@ contribute something to the general goal of your product. `,
         contactSurname: 'Smith',
       },
     }),
-  })).add('Edit Metadata Description', () => ({
+  }))
+.add('Edit Metadata Description', () => ({
     components: { EditDescription },
     template: `
      <v-col>
