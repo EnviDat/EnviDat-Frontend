@@ -41,7 +41,7 @@ export const mainDetailSteps = [
   {
     title: 'Authors',
     completed: false,
-    component: EditDescription,
+    // component: EditDescription,
   },
 ];
 
@@ -86,13 +86,13 @@ export const metadataCreationSteps = [
     title: 'Related Info',
     completed: false,
     color: 'green',
-    component: EditCustomFields,
+    // component: EditCustomFields,
   },
   {
     title: 'Publication Info',
     completed: false,
     color: 'orange',
-    component: EditDescription,
+    // component: EditDescription,
   },
 ];
 

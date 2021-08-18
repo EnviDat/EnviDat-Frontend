@@ -21,7 +21,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:49:30
- * Last modified  : 2021-08-18 11:44:12
+ * Last modified  : 2021-08-18 13:06:27
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -38,7 +38,7 @@ import {
 import {
   metadataCreationSteps,
   getStepToUpdate,
-} from '@/modules/user/components/MetadataCreationSteps';
+} from '@/modules/user/store/MetadataCreationSteps';
 
 import { mapState } from 'vuex';
 import {
