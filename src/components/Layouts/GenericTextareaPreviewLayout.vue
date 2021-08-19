@@ -29,18 +29,8 @@
 
       <v-col :cols="columns">     
           <slot name="preview">
-            <metadata-publications />
+            <metadata-publications :genericProps="genericProps" />
           </slot>
-      
-  
-          <!-- <ExpandableTextLayout :title="previewTitle"
-                          :text="textareaContentProxy"
-                          :showPlaceholder="showPlaceholder"
-                          :maxTextLength="body ? body.maxTextLength : undefined"
-                          :emptyTextColor="emptyTextColor"
-                          :emptyText="emptyText" /> -->
- 
-
         </v-col>
 
     </v-row>
@@ -57,7 +47,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2020-08-16
- * Last modified  : 2020-08-16
+ * Last modified  : 2020-08-19
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -113,14 +103,6 @@ export default {
         this.setGenericTextarea('labelTextarea', value);
       },
     },
-    // previewTitle: {
-    //   get() {
-    //     return this.mixinMethods_getGenericProp('previewTitle', 'Related Publications');
-    //   },
-    //   set(value) {
-    //     this.setGenericTextarea('previewTitle', value);
-    //   },
-    // },
   },
   methods: {
     setGenericTextarea(property, value) {
