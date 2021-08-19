@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-03 16:04:30
+ * Last modified  : 2021-08-18 13:06:31
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -23,7 +23,7 @@ import {
   metadataCreationSteps,
   mainDetailSteps,
   getStepToUpdate,
-} from '@/modules/user/components/MetadataCreationSteps';
+} from '@/modules/user/store/MetadataCreationSteps';
 
 
 storiesOf('5 Navigation / Navigation Stepper', module)

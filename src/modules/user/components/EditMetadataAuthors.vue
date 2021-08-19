@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditMetadataResources"
+  <v-card id="EditMetadataAuthors"
           class="pa-4" >
 
     <v-container fluid
@@ -7,7 +7,7 @@
       
       <v-row >
         <v-col class="text-h5" >
-          {{ EDIT_METADATA_RESOURCES_TITLE }}
+          {{ EDIT_METADATA_AUTHORS_TITLE }}
         </v-col>
       </v-row>
 
@@ -19,7 +19,7 @@
 
       <v-row >
         <v-col cols="12">
-          <MetadataResources :genericProps="genericProps" />
+          <MetadataAuthors :genericProps="genericProps" />
         </v-col>
       </v-row>
 
@@ -30,25 +30,25 @@
 
 <script>
 /**
- * EditMetadataResources.vue shows all the resources of a metadata entry in a list.
+ * EditMetadataAuthors.vue shows all the resources of a metadata entry in a list.
  *
  * @summary shows the resources the a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-18 17:07:21
+ * Last modified  : 2021-08-18 18:02:59
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources';
+import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
 
 
 export default {
-  name: 'EditMetadataResources',
+  name: 'EditMetadataAuthors',
   components: {
-    MetadataResources,
+    MetadataAuthors,
   },
   props: {
     genericProps: Object,
@@ -58,8 +58,8 @@ export default {
   methods: {
   },
   data: () => ({
-    editingInstructions: 'Pick a resource from the list to edit it\'s details',
-    EDIT_METADATA_RESOURCES_TITLE,
+    editingInstructions: 'Pick an author from the list to edit it\'s details',
+    EDIT_METADATA_AUTHORS_TITLE,
   }),
 };
 </script>

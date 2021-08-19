@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 16:51:52
- * Last modified  : 2020-10-08 16:09:15
+ * Last modified  : 2021-08-18 10:48:15
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -28,6 +28,8 @@ import {
   USER_GET_ORGANIZATIONS_DATASETS,
   USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_DATASETS_ERROR,
+  METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   ACTION_USER_ORGANIZATIONS_DATASETS,
 } from './userMutationsConsts';
 
@@ -41,6 +43,8 @@ if (!useTestdata) {
   API_BASE = '/api/action/';
   ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;  
 }
+
+const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 function extractBodyIntoUrl(url, body) {
   const keys = Object.keys(body);
@@ -189,4 +193,14 @@ export default {
       });
 
   },  
+  // eslint-disable-next-line no-unused-vars
+  async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
+    resource.loading = true;
+    commit(METADATA_EDITING_SAVE_RESOURCE, resource);
+
+    await sleep(2000);
+
+    resource.loading = false;
+    commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
+  },
 };

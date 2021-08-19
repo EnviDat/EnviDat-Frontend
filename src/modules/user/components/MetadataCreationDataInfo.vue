@@ -1,5 +1,5 @@
 <template>
-  <v-container id="MetadataCreationMainInfo"
+  <v-container id="MetadataCreationDataInfo"
                 fluid
                 class="pa-0 fill-height">
 
@@ -48,7 +48,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-08-12 17:33:21
+ * Last modified  : 2021-08-04 10:25:46
 
  *
  * This file is subject to the terms and conditions defined in
@@ -59,14 +59,26 @@ import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
-  name: 'MetadataCreationMainInfo',
+  name: 'MetadataCreationDataInfo',
   props: {
     steps: Array,
     initialStepTitle: String,
     stepColor: String,
+    // stepColor: {
+    //   type: String,
+    //   default: 'secondary',
+    // },
   },
   beforeMount() {
-    this.setInitialStep();
+
+    if (this.initialStepTitle) {
+      this.setCurrentStep(this.initialStepTitle);
+    } else {
+      const first = this.steps?.length > 0 ? this.steps[0] : null;
+
+      this.setCurrentStep(first?.title);
+    }
+
   },
   computed: {
   },
@@ -100,22 +112,6 @@ export default {
 
       this.currentStepIndex = -1;
       this.currentStep = null;
-    },
-    setInitialStep() {
-      if (this.initialStepTitle) {
-        this.setCurrentStep(this.initialStepTitle);
-      } else {
-        const first = this.steps?.length > 0 ? this.steps[0] : null;
-
-        this.setCurrentStep(first?.title);
-      }
-    },
-  },
-  watch: {
-    initialStepTitle() {
-      // used when navigating from a first detail step to another main step,
-      // to step on the initial detail step of the new main step
-      this.setInitialStep();
     },
   },
   data: () => ({

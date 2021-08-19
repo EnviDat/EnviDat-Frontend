@@ -5,7 +5,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-10-15 18:34:51
- * Last modified  : 2020-10-15 19:15:56
+ * Last modified  : 2021-08-18 18:02:53
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -25,4 +25,5 @@ export const METADATA_FUNDING_TITLE = 'Funding Information';
 export const METADATA_LOCATION_TITLE = 'Location';
 export const METADATA_RESOURCES_TITLE = 'Data and resources';
 
-export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for editing';
+export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
+export const EDIT_METADATA_AUTHORS_TITLE = 'Select an Author for Editing';

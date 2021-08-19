@@ -11,6 +11,7 @@
               :color="color"
               :disabled="disabled"
               :href="url"
+              :loading="loading"
               rel="noopener noreferrer"
               target="_blank"
               @click.stop="onClick" >
@@ -57,7 +58,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-02 11:24:00
- * Last modified  : 2020-11-17 15:37:44
+ * Last modified  : 2021-08-18 10:26:45
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -85,6 +86,7 @@ export default {
     url: String,
     marginClass: String,
     disabled: Boolean,
+    loading: Boolean,
   },
   methods: {
     onClick() {

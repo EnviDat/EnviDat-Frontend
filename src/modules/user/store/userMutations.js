@@ -6,7 +6,7 @@
 * @author Dominik Haas-Artho
 *
 * Created at     : 2020-07-14 16:51:52
- * Last modified  : 2021-07-29 13:29:42
+ * Last modified  : 2021-08-18 10:14:35
 *
 * This file is subject to the terms and conditions defined in
 * file 'LICENSE.txt', which is part of this source code package.
@@ -17,6 +17,10 @@
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import {
+  EDITMETADATA_DATA_RESOURCES,
+} from '@/factories/eventBus';
 
 import {
   GET_USER_CONTEXT,
@@ -44,6 +48,9 @@ import {
   USER_GET_ORGANIZATIONS_DATASETS,
   USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_DATASETS_ERROR,
+  METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
+  METADATA_EDITING_SAVE_RESOURCE_ERROR,
   UPDATE_METADATA_EDITING,
   CLEAR_METADATA_EDITING,
 } from './userMutationsConsts';
@@ -91,6 +98,33 @@ function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';
   state.errorField = '';
+}
+
+function updateResource(store, state, payload) {
+
+  if (!state.metadataInEditing[payload.object]) {
+    state.metadataInEditing[payload.object] = {
+      resources: [],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
+      },
+    };
+  }
+
+  const resources = state.metadataInEditing[payload.object].resources;
+  const newRes = payload.data;
+
+
+  for (let i = 0; i < resources.length; i++) {
+    const r = resources[i];
+    if (r.id === newRes.id) {
+      store._vm.$set(resources, i, newRes);
+      return;
+    }
+  }
+
+  resources.unshift(newRes);
 }
 
 export default {
@@ -282,7 +316,40 @@ export default {
     extractError(this, reason, 'userRecentOrgaDatasetsError');
   },
   [UPDATE_METADATA_EDITING](state, payload) {
-    state.metadataInEditing[payload.object] = payload.data;
+    if (payload.object === EDITMETADATA_DATA_RESOURCES) {
+      updateResource(this, state, payload);
+    } else {
+      state.metadataInEditing[payload.object] = payload.data;
+    }
+  },
+  [METADATA_EDITING_SAVE_RESOURCE](state, payload) {
+
+    const newRes = payload;
+    const updateObj = {
+      object: EDITMETADATA_DATA_RESOURCES,
+      data: newRes,
+    };
+
+    updateResource(this, state, updateObj);
+
+    resetErrorObject(state);
+  },
+  [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, payload) {
+
+    const newRes = payload;
+    newRes.existsOnlyLocal = false;
+    const updateObj = {
+      object: EDITMETADATA_DATA_RESOURCES,
+      data: newRes,
+    };
+
+    updateResource(this, state, updateObj);
+
+    resetErrorObject(state);
+  },
+  [METADATA_EDITING_SAVE_RESOURCE_ERROR](state, reason) {
+
+    extractError(this, reason);
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};

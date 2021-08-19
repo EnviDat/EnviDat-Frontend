@@ -3,7 +3,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 16:38:28
- * Last modified  : 2021-07-29 13:28:43
+ * Last modified  : 2021-08-18 09:42:39
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -113,5 +113,9 @@ export const USER_GET_ORGANIZATIONS_DATASETS_SUCCESS = 'USER_GET_ORGANIZATIONS_D
 export const LOAD_METADATA_ENTRY_INTO_EDITING = 'LOAD_METADATA_ENTRY_INTO_EDITING';
 export const UPDATE_METADATA_EDITING = 'UPDATE_METADATA_EDITING';
 export const CLEAR_METADATA_EDITING = 'CLEAR_METADATA_EDITING';
+
+export const METADATA_EDITING_SAVE_RESOURCE = 'METADATA_EDITING_SAVE_RESOURCE';
+export const METADATA_EDITING_SAVE_RESOURCE_ERROR = 'METADATA_EDITING_SAVE_RESOURCE_ERROR';
+export const METADATA_EDITING_SAVE_RESOURCE_SUCCESS = 'METADATA_EDITING_SAVE_RESOURCE_SUCCESS';
 
 export const USER_NAMESPACE = 'user';
