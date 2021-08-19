@@ -1,0 +1,24 @@
+{
+  "help": "https://www.envidat.ch/api/3/action/help_show?name=group_list",
+  "success": true,
+  "result": [
+      "aerosols-raclets",
+      "wbs-amphibian-breeding-sites-module",
+      "clouds-in-situ-raclets",
+      "gcw",
+      "intercantonal_forest_observation_programme",
+      "meteorology",
+      "miso",
+      "modeling",
+      "wbs",
+      "precipitation",
+      "raclets-field-campaign",
+      "remote-sensing-raclets",
+      "wbs-remote-sensing-module",
+      "sccer-biosweet",
+      "snow",
+      "swissforestlab",
+      "wbs-vegetation-module",
+      "weissfluhjoch-research-site"
+  ]
+}
