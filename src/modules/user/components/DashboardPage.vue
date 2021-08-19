@@ -328,13 +328,6 @@ export default {
       
       return filteredContent;
     },
-    contentFilteredByTags(value, selectedTagNames) {
-      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
-        return true;
-      }
-
-      return false;
-    },    
     publishedDatasets() {
       if (this.user.datasets) {
         return this.user.datasets.filter(dataset => !dataset.private);
@@ -413,6 +406,13 @@ export default {
     },
   },
   methods: {
+    contentFilteredByTags(value, selectedTagNames) {
+      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
+        return true;
+      }
+
+      return false;
+    },
     loadRouteTags() {
       const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedTagNames);
 
