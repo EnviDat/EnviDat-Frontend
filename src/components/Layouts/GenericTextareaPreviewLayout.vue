@@ -1,6 +1,5 @@
 <template>
 
-
   <div>
 
     <v-row>
@@ -16,6 +15,7 @@
 
     </v-row>
 
+
     <v-row>
 
         <v-col :cols="columns"> 
@@ -28,12 +28,11 @@
     <v-row>
 
       <v-col :cols="columns">     
-          <slot name="preview">
-            <metadata-publications :genericProps="genericProps" />
-          </slot>
-        </v-col>
+        <slot></slot>
+      </v-col>
 
     </v-row>
+
 
   </div>
 
@@ -59,13 +58,10 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
-
 
 export default {
   name: 'GenericTextareaPreviewLayout',
   data: () => ({
-    previewTitle: 'TEST TITLE',
   }),
   props: {  
     genericProps: Object,
@@ -97,7 +93,7 @@ export default {
     },
     labelTextarea: {
       get() {
-        return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea Label');
+        return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea label');
       },
       set(value) {
         this.setGenericTextarea('labelTextarea', value);
@@ -118,7 +114,6 @@ export default {
     },
   },
   components: {
-    MetadataPublications,
   },
 };
 

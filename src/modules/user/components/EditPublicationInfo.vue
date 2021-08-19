@@ -84,38 +84,41 @@
       </v-row>
 
 
-      <div v-for="(funder, index) in customFundersList" 
-            :key="`${funder}_${index}`">
+      <v-row v-for="(item, index) in customFundersList" 
+            :key="`${item}_${index}`">
 
-        <div v-if="showFunderRow(index)">
+        <!-- <div v-if="showFunderRow(index)"> -->
 
-          <v-row v-for="(item, itemIndex) in funder"
-                  :key="`${item}_${itemIndex}`">
+          <!-- <v-row v-for="(item, itemIndex) in funder"
+                  :key="`${item}_${itemIndex}`"> -->
 
             <v-col cols="4" >
               <v-text-field :label="labels.organization"
                             outlined
                             v-model="item.organization"
-                            @input="notifyChange" >
+                           @input="notifyChange($event, 'organization', index)" >
               </v-text-field>
             </v-col>
             <v-col cols="4" > 
               <v-text-field :label="labels.grantNumber" 
                             outlined 
                             v-model="item.grantNumber"
-                            @input="notifyChange" >
+                            @input="notifyChange($event, 'grantNumber', index)"
+ >
               </v-text-field>
             </v-col>
             <v-col cols="4"> 
               <v-text-field :label="labels.link" 
                             outlined 
                             v-model="item.link"
-                            @input="notifyChange" >
+                            @input="notifyChange($event, 'link', index)"
+ >
               </v-text-field>
             </v-col>
-          </v-row>
-        </div>
-      </div>   
+          <!-- </v-row> -->
+        <!-- </div> -->
+
+      </v-row>   
 
     </v-container>
   </v-card>  
@@ -163,54 +166,55 @@ export default {
     currentYear: '',
     yearList: [],
   }),
-  props: {  
-    funderList: {
-      type: Array,
-      default: () => [
-          { 
-            funder0: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            },
-          },
-          {
-            funder1: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
-          { 
-            funder2: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            },
-          },
-          {
-            funder3: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
-           { 
-            funder4: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            },
-          },
-          {
-            funder5: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
-        ],
-    },
+  props: {
+    genericProps: Object, 
+    // funderList: {
+    //   type: Array,
+    //   default: () => [
+    //       { 
+    //         funder0: { 
+    //           organization: '', 
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //       {
+    //         funder1: {
+    //           organization: '',
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //       { 
+    //         funder2: { 
+    //           organization: '', 
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //       {
+    //         funder3: {
+    //           organization: '',
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //        { 
+    //         funder4: { 
+    //           organization: '', 
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //       {
+    //         funder5: {
+    //           organization: '',
+    //           grantNumber: '',
+    //           link: '',
+    //         },
+    //       },
+    //     ],
+    // },
   },
   computed: {
     publicationState: {
@@ -247,7 +251,68 @@ export default {
         this.setPublicationInfo('publicationYear', value);
       },
     },  
-   customFundersList() {
+    funderList: {
+      get() { 
+        return this.mixinMethods_getGenericProp('funderList', this.funderListEmpty);
+      },
+      set(value) {
+        this.setPublicationInfo('funderList', value);
+      },
+    },
+    funderListEmpty() {
+      return [
+         { 
+            // funder0: { 
+              organization: '', 
+              grantNumber: '',
+              link: '',
+            // },
+          },
+          {
+            // funder1: {
+              organization: '',
+              grantNumber: '',
+              link: '',
+            // },
+          },
+          {
+            // funder1: {
+              organization: '',
+              grantNumber: '',
+              link: '',
+            // },
+          },
+          // { 
+          //   funder2: { 
+          //     organization: '', 
+          //     grantNumber: '',
+          //     link: '',
+          //   },
+          // },
+          // {
+          //   funder3: {
+          //     organization: '',
+          //     grantNumber: '',
+          //     link: '',
+          //   },
+          // },
+          //  { 
+          //   funder4: { 
+          //     organization: '', 
+          //     grantNumber: '',
+          //     link: '',
+          //   },
+          // },
+          // {
+          //   funder5: {
+          //     organization: '',
+          //     grantNumber: '',
+          //     link: '',
+          //   },
+          // },
+      ];
+    },
+    customFundersList() {
       if (this.funderList?.length === 0) {
         return [
           { 
@@ -315,7 +380,7 @@ export default {
       const funderObjGrantNum = funderObj[0].grantNumber;
       const funderObjLink = funderObj[0].link;
      
-      // If one field before current iteration is not empty show next field
+      // If one funder row before current iteration is not empty show next funder row
       if (funderObjOrganization !== '' && funderObjGrantNum !== '' && funderObjLink !== '') {
         return true;
       }
@@ -323,7 +388,17 @@ export default {
       // Else do not show field
       return false;
     },
-    notifyChange() {
+    notifyChange(value, property, index) {
+      // TODO 
+      // 1. move funderArray to data
+      // 2. initial funderList with one empty funder object
+      // 3. @notifyChange check if all properties filled out then add a new empty funder object to funderArray
+      // 4. check if index is smaller than funder maximum 5 (make sure to define as property) 
+      // 5. check if empty content at the end then add new row
+      // 6. only delete last row if empty
+      console.log(value);
+      console.log(property);
+      console.log(index);
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_CUSTOMFIELDS,
         data: this.funderList,
