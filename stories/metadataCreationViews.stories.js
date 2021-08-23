@@ -361,12 +361,12 @@ contribute something to the general goal of your product. `,
     <v-col>
 
       <v-row>
-        Edit Publication Info fields unfilled
+        Edit Publication Info fields unfilled (except for first default funder)
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditPublicationInfo :funderList="emptyFunderList" />
+          <EditPublicationInfo />
         </v-col>
       </v-row>
 
@@ -376,7 +376,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <EditPublicationInfo :funderList="filledFunderList" />
+          <EditPublicationInfo :genericProps="genericPropsFilled" />
         </v-col>
       </v-row>
 
@@ -388,104 +388,30 @@ contribute something to the general goal of your product. `,
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
+      // TODO find a way to have filled in example generate more rows
       editComponentsChanged(updateObj) {
-        if (updateObj.data?.length === this.filledFunderList.length) {
-          this.filledFunderList = updateObj.data;
-        }
-        if (updateObj.data?.length === this.emptyFunderList.length) {
-          this.emptyFunderList = updateObj.data;
+        if (updateObj.data.id === this.genericPropsFilled.id) {
+          this.genericPropsFilled = updateObj.data;
         }
       },
-    },
+    },  
     data: () => ({
-      filledFunderList: [
+      genericPropsFilled: {
+          id: 1,
+          funders: [
             { 
-              funder0: { 
-                organization: 'WSL', 
-                grantNumber: 'XYZ',
-                link: 'https://www.wsl.ch',
-              },
+              organization: 'WSL', 
+              grantNumber: 'XYZ',
+              link: 'https://www.wsl.ch',
             },
-            {
-              funder1: {
-                organization: 'NSF',
-                grantNumber: 'ABC123',
-                link: 'https://nsf.org',
-              },
-            },
-            { 
-              funder2: { 
-                organization: 'Horizon Europe', 
-                grantNumber: 'XY678',
-                link: 'https://euhasmoney.org',
-              },
-            },
-            {
-              funder3: {
-                organization: '',
-                grantNumber: '',
-                link: '',
-              },
-            },
-            { 
-              funder4: { 
-                organization: '', 
-                grantNumber: '',
-                link: '',
-              },
-            },
-            {
-              funder5: {
-                organization: '',
-                grantNumber: '',
-                link: '',
-              },
-            },
-      ],
-       emptyFunderList: [
-          { 
-            funder0: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            },
-          },
-          {
-            funder1: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
-          { 
-            funder2: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            },
-          },
-          {
-            funder3: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
            { 
-            funder4: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
+                organization: 'NSF', 
+                grantNumber: '123',
+                link: 'https://www.superduper.ch',
             },
-          },
-          {
-            funder5: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          },
-      ],
+            
+          ],
+      },    
     }), 
   }))
   .add('Edit Custom Fields', () => ({

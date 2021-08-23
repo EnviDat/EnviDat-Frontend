@@ -84,13 +84,8 @@
       </v-row>
 
 
-      <v-row v-for="(item, index) in customFundersList" 
+      <v-row v-for="(item, index) in funders"  
             :key="`${item}_${index}`">
-
-        <!-- <div v-if="showFunderRow(index)"> -->
-
-          <!-- <v-row v-for="(item, itemIndex) in funder"
-                  :key="`${item}_${itemIndex}`"> -->
 
             <v-col cols="4" >
               <v-text-field :label="labels.organization"
@@ -165,56 +160,23 @@ export default {
     rulesPublisher: [v => !!v || 'Publisher is required'], 
     currentYear: '',
     yearList: [],
+    addFunder: Boolean,
+    deleteFunder: Boolean,
+    funderArray: [
+      {
+        organization: 'WSL', 
+        grantNumber: 'XYZ',
+        link: 'https://www.wsl.ch/supergrant',
+      },
+      {
+        organization: '', 
+        grantNumber: '',
+        link: '',
+      },
+    ],
   }),
   props: {
     genericProps: Object, 
-    // funderList: {
-    //   type: Array,
-    //   default: () => [
-    //       { 
-    //         funder0: { 
-    //           organization: '', 
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //       {
-    //         funder1: {
-    //           organization: '',
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //       { 
-    //         funder2: { 
-    //           organization: '', 
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //       {
-    //         funder3: {
-    //           organization: '',
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //        { 
-    //         funder4: { 
-    //           organization: '', 
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //       {
-    //         funder5: {
-    //           organization: '',
-    //           grantNumber: '',
-    //           link: '',
-    //         },
-    //       },
-    //     ],
-    // },
   },
   computed: {
     publicationState: {
@@ -251,100 +213,16 @@ export default {
         this.setPublicationInfo('publicationYear', value);
       },
     },  
-    funderList: {
-      get() { 
-        return this.mixinMethods_getGenericProp('funderList', this.funderListEmpty);
+    funders: {
+      get() {
+        return this.mixinMethods_getGenericProp('funders', this.funderArray);
       },
       set(value) {
-        this.setPublicationInfo('funderList', value);
+        this.setPublicationInfo('funders', value);
       },
-    },
-    funderListEmpty() {
-      return [
-         { 
-            // funder0: { 
-              organization: '', 
-              grantNumber: '',
-              link: '',
-            // },
-          },
-          {
-            // funder1: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            // },
-          },
-          {
-            // funder1: {
-              organization: '',
-              grantNumber: '',
-              link: '',
-            // },
-          },
-          // { 
-          //   funder2: { 
-          //     organization: '', 
-          //     grantNumber: '',
-          //     link: '',
-          //   },
-          // },
-          // {
-          //   funder3: {
-          //     organization: '',
-          //     grantNumber: '',
-          //     link: '',
-          //   },
-          // },
-          //  { 
-          //   funder4: { 
-          //     organization: '', 
-          //     grantNumber: '',
-          //     link: '',
-          //   },
-          // },
-          // {
-          //   funder5: {
-          //     organization: '',
-          //     grantNumber: '',
-          //     link: '',
-          //   },
-          // },
-      ];
-    },
-    customFundersList() {
-      if (this.funderList?.length === 0) {
-        return [
-          { 
-            field0: { 
-              fieldName: '', 
-              content: '',
-            },
-          },
-          {
-            field1: {
-              fieldName: '',
-              content: '',
-            },
-          },
-        ];
-      }
-
-      return this.funderList;
-    },
+    },  
   },
   methods: {
-    setPublicationInfo(property, value) {
-      const newPublicationInfo = {
-          ...this.funderList,
-          [property]: value,
-      };
-
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_PUBLICATION_INFO,
-          data: newPublicationInfo,
-        });
-    },
     generateNewDoi() {
       // TODO write or import code to generate new DOI
     },
@@ -358,51 +236,90 @@ export default {
       const date = new Date();
       let year = date.getFullYear();
       
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 30; i++) {
         this.yearList[i] = year;
         this.yearList[i].toString();
         year--;
       }
     },
-    showFunderRow(index) {
+    addFunderObj() {
       
-      // Show first two field rows      
-      if (index < 2) {
-        return true;
-      }
-
-      // Assign funderObj with values for one funder before current iteration in this.customFundersList if index is not less than 2
-      const previousIndex = index - 1;
-      const funderObj = Object.values(this.customFundersList[previousIndex]);
-      
-      // Assign funderObj values to variables
-      const funderObjOrganization = funderObj[0].organization;
-      const funderObjGrantNum = funderObj[0].grantNumber;
-      const funderObjLink = funderObj[0].link;
+      // Assign lastFunder to last item in this.funderArray and assign lastFunderValue to values in lastFunder object
+      const lastFunder = this.funderArray[this.funderArray.length - 1];
+      const lastFunderValues = Object.values(lastFunder);
      
-      // If one funder row before current iteration is not empty show next funder row
-      if (funderObjOrganization !== '' && funderObjGrantNum !== '' && funderObjLink !== '') {
-        return true;
+      // If lastFunderValues has any empty strings assign this.addFunder to false
+      this.addFunder = true;
+      for (let i = 0; i < lastFunderValues.length; i++) {
+        if (lastFunderValues[i] === '') {
+          this.addFunder = false;
+        } 
       }
 
-      // Else do not show field
-      return false;
+      // If addFunder is true and length of funderArray is less than 5 then push new funder object to funderArray
+      if (this.addFunder && this.funderArray.length < 5) {
+        this.funderArray.push(
+          {
+            organization: '', 
+            grantNumber: '',
+            link: '',
+          },
+        );
+      }
+            
+    },
+    deleteFunderObj() {
+      
+      // Assign secondLastFunder to second last item in this.funderArray
+      const secondLastFunder = this.funderArray[this.funderArray.length - 2];
+      const secondLastFunderValues = Object.values(secondLastFunder);
+      
+      // If secondLastFunderValues has any empty strings assign this.deleteFunder to true
+      this.deleteFunder = false;
+      for (let j = 0; j < secondLastFunderValues.length; j++) {
+        if (secondLastFunderValues[j] === '') {
+          this.deleteFunder = true;
+        }
+      }
+
+      // If deleteFunder is true and length of funderArray is greater than 2 then pop last funder object from funderArray
+      if (this.deleteFunder && this.funderArray.length > 2) {
+        this.funderArray.pop();
+      }
+    },
+    setPublicationInfo(property, value) {
+      const newPublicationInfo = {
+          ...this.genericProps,
+          [property]: value,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_PUBLICATION_INFO,
+          data: newPublicationInfo,
+        });
     },
     notifyChange(value, property, index) {
       // TODO 
       // 1. move funderArray to data
-      // 2. initial funderList with one empty funder object
+      // 2. initial funderArray with one empty funder object
       // 3. @notifyChange check if all properties filled out then add a new empty funder object to funderArray
       // 4. check if index is smaller than funder maximum 5 (make sure to define as property) 
       // 5. check if empty content at the end then add new row
       // 6. only delete last row if empty
-      console.log(value);
-      console.log(property);
-      console.log(index);
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_CUSTOMFIELDS,
-        data: this.funderList,
-      });
+      
+      // console.log(value);
+      // console.log(property);
+      // console.log(index);
+      // this.setRequiredRule();
+
+      this.addFunderObj();
+      this.deleteFunderObj();
+
+      // TODO check if eventBus needs to be updated
+      // eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      //   object: EDITMETADATA_PUBLICATION_INFO,
+      //   data: this.funderArray,
+      // });
     },
   },
   components: {
