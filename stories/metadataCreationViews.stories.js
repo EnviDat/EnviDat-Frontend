@@ -361,7 +361,7 @@ contribute something to the general goal of your product. `,
     <v-col>
 
       <v-row>
-        Edit Publication Info fields unfilled (except for first default funder)
+        Edit Publication Info fields unfilled
       </v-row>
 
       <v-row class="py-3" >

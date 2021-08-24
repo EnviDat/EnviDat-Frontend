@@ -91,14 +91,14 @@
               <v-text-field :label="labels.organization"
                             outlined
                             v-model="item.organization"
-                           @input="notifyChange($event, 'organization', index)" >
+                           @input="notifyChange(index)" >
               </v-text-field>
             </v-col>
             <v-col cols="4" > 
               <v-text-field :label="labels.grantNumber" 
                             outlined 
                             v-model="item.grantNumber"
-                            @input="notifyChange($event, 'grantNumber', index)"
+                            @input="notifyChange(index)"
  >
               </v-text-field>
             </v-col>
@@ -106,13 +106,11 @@
               <v-text-field :label="labels.link" 
                             outlined 
                             v-model="item.link"
-                            @input="notifyChange($event, 'link', index)"
+                            @input="notifyChange(index)"
  >
               </v-text-field>
             </v-col>
-          <!-- </v-row> -->
-        <!-- </div> -->
-
+       
       </v-row>   
 
     </v-container>
@@ -133,7 +131,6 @@
 */
 import {
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_PUBLICATION_INFO,
   eventBus,
 } from '@/factories/eventBus';
@@ -160,14 +157,8 @@ export default {
     rulesPublisher: [v => !!v || 'Publisher is required'], 
     currentYear: '',
     yearList: [],
-    addFunder: Boolean,
-    deleteFunder: Boolean,
+    maxFunders: 5,
     funderArray: [
-      {
-        organization: 'WSL', 
-        grantNumber: 'XYZ',
-        link: 'https://www.wsl.ch/supergrant',
-      },
       {
         organization: '', 
         grantNumber: '',
@@ -244,20 +235,32 @@ export default {
     },
     addFunderObj() {
       
-      // Assign lastFunder to last item in this.funderArray and assign lastFunderValue to values in lastFunder object
+      // Assign lastFunder to last item in this.funderArray 
       const lastFunder = this.funderArray[this.funderArray.length - 1];
-      const lastFunderValues = Object.values(lastFunder);
-     
-      // If lastFunderValues has any empty strings assign this.addFunder to false
-      this.addFunder = true;
-      for (let i = 0; i < lastFunderValues.length; i++) {
-        if (lastFunderValues[i] === '') {
-          this.addFunder = false;
-        } 
+      
+      // Assign lastFunderValue to values in lastFunder object
+      // const lastFunderValues = Object.values(lastFunder);
+           
+      // If lastFunderValues has any empty strings then assign addFunder to false
+      // let addFunder = true;
+      // for (let i = 0; i < lastFunderValues.length; i++) {
+      //   if (lastFunderValues[i] === '') {
+      //     addFunder = false;
+      //     break;
+      //   } 
+      // }
+
+      // Assign lastFunderOrganization to value of organization key in lastFunder
+      const lastFunderOrganization = lastFunder.organization;
+
+      // If lastFunderOrganization is an empty string then assign addFunder to false
+      let addFunder = true;
+      if (lastFunderOrganization === '') {
+        addFunder = false;
       }
 
-      // If addFunder is true and length of funderArray is less than 5 then push new funder object to funderArray
-      if (this.addFunder && this.funderArray.length < 5) {
+      // If addFunder is true and length of funderArray is less than this.maxFunders then push new funder object to funderArray
+      if (addFunder && this.funderArray.length < this.maxFunders) {
         this.funderArray.push(
           {
             organization: '', 
@@ -268,24 +271,19 @@ export default {
       }
             
     },
-    deleteFunderObj() {
+    deleteEmptyFunderObj(index) {
+
+      // Assign funderObj to object currently receiving input in this.funderArray
+      const funderObj = this.funderArray[index];
       
-      // Assign secondLastFunder to second last item in this.funderArray
-      const secondLastFunder = this.funderArray[this.funderArray.length - 2];
-      const secondLastFunderValues = Object.values(secondLastFunder);
+      // Assign isEmpty to true if all values in funderObj are null or empty strings
+      const isEmpty = Object.values(funderObj).every(x => (x === null || x === ''));
       
-      // If secondLastFunderValues has any empty strings assign this.deleteFunder to true
-      this.deleteFunder = false;
-      for (let j = 0; j < secondLastFunderValues.length; j++) {
-        if (secondLastFunderValues[j] === '') {
-          this.deleteFunder = true;
-        }
+      // If isEmpty is true and this.funderArray has more than one item then remove item at current index
+      if (isEmpty && this.funderArray.length > 1) {
+        this.funderArray.splice(index, 1);
       }
 
-      // If deleteFunder is true and length of funderArray is greater than 2 then pop last funder object from funderArray
-      if (this.deleteFunder && this.funderArray.length > 2) {
-        this.funderArray.pop();
-      }
     },
     setPublicationInfo(property, value) {
       const newPublicationInfo = {
@@ -298,7 +296,7 @@ export default {
           data: newPublicationInfo,
         });
     },
-    notifyChange(value, property, index) {
+    notifyChange(index) {
       // TODO 
       // 1. move funderArray to data
       // 2. initial funderArray with one empty funder object
@@ -307,15 +305,15 @@ export default {
       // 5. check if empty content at the end then add new row
       // 6. only delete last row if empty
       
-      // console.log(value);
-      // console.log(property);
-      // console.log(index);
-      // this.setRequiredRule();
-
       this.addFunderObj();
-      this.deleteFunderObj();
+            
+      this.deleteEmptyFunderObj(index);
+      
+      this.addFunderObj();
+
 
       // TODO check if eventBus needs to be updated
+      // TODO send to eventBus a copy of this.funderArray that has at least a value for 'organization' key
       // eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
       //   object: EDITMETADATA_PUBLICATION_INFO,
       //   data: this.funderArray,
