@@ -9,6 +9,7 @@
                         outlined
                         auto-grow
                         v-model="textareaContent"
+                        @input="catchChangedText($event)"
                         >
           </v-textarea>
         </v-col>
@@ -79,9 +80,9 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('textareaContent', '');
       },
-      set(value) {
-        this.setGenericTextarea('textareaContent', value);
-      },
+      // set(value) {
+      //   this.setGenericTextarea('textareaContent', value);
+      // },
     },
     subtitlePreview: {
       get() {
@@ -101,6 +102,9 @@ export default {
     },
   },
   methods: {
+    catchChangedText(event) {
+      this.$emit('changedText', event);
+    },
     setGenericTextarea(property, value) {
       const newGenericTextarea = {
           ...this.genericProps,

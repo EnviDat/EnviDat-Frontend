@@ -1,6 +1,7 @@
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
+import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 
 // eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
@@ -11,6 +12,7 @@ import {
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
 export const mainDetailSteps = [
@@ -86,7 +88,15 @@ export const metadataCreationSteps = [
     title: 'Related Info',
     completed: false,
     color: 'green',
-    // component: EditCustomFields,
+    component: EditRelatedPublications,
+    genericProps: {
+      labelTextarea: 'Related Publications',
+      textareaContent: '',
+      subtitlePreview: 'Preview',
+      publications: {
+        text: '',
+      },
+    },
   },
   {
     title: 'Publication Info',
@@ -101,6 +111,7 @@ const componentToStateMapping = {
   [EDITMETADATA_MAIN_DESCRIPTION]: EditDescription,
   [EDITMETADATA_CUSTOMFIELDS]: EditCustomFields,
   [EDITMETADATA_DATA_RESOURCES]: EditDataAndResources,
+  [EDITMETADATA_RELATED_PUBLICATIONS]: EditRelatedPublications,
 };
 
 export function getStepToUpdate(eventName, steps) {

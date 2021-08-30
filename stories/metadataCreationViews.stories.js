@@ -58,6 +58,17 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 //   onTagClick: action('clicked on tag'),
 // };
 
+const relatedPublicationsGenericProps = {
+  id: '1',
+  labelTextarea: 'Related Publications',
+  textareaContent: '',
+  subtitlePreview: 'Preview',
+  showPlaceholder: false,
+  publications: {
+    text: '',
+  },
+};
+
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Edit Related Publications', () => ({
     components: { EditRelatedPublications },
@@ -100,25 +111,16 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
       editComponentsChanged(updateObj) {
         if (updateObj.data.id === this.genericProps.id) {
           this.genericProps = updateObj.data;
-          this.genericProps.publications.text = this.genericProps.textareaContent;
+         // this.genericProps.publications.text = this.genericProps.textareaContent;
         }
         if (updateObj.data.id === this.genericPropsFilled.id) {
           this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+        //  this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
         }
       },
     },  
     data: () => ({
-      genericProps: {         
-                id: '1',               
-                labelTextarea: 'Related Publications',
-                textareaContent: '',
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                publications: {
-                  text: '',
-                },
-      },
+      genericProps: relatedPublicationsGenericProps,
       genericPropsFilled: {         
                 id: '2',
                 labelTextarea: 'Related Publications',

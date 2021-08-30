@@ -26,8 +26,8 @@
     <v-row>
 
       <v-col :cols="columns">     
-        <generic-textarea-preview-layout :genericProps="genericProps" >
-          <metadata-publications :genericProps="genericProps" />
+        <generic-textarea-preview-layout :genericProps="genericProps" @changedText="catchChangedText($event)">
+          <metadata-publications :genericProps="publicationsObject" />
         </generic-textarea-preview-layout>
       </v-col>
 
@@ -71,6 +71,13 @@ export default {
     genericProps: Object,
   },
   computed: {
+    publicationsObject() {
+      return {
+        publications: {
+          text: this.genericProps.textareaContent,
+        },
+      };
+    },
     columns: {
       get() {
         return this.mixinMethods_getGenericProp('columns', '');
@@ -97,6 +104,9 @@ export default {
     },
   },
   methods: {
+    catchChangedText(event) {
+      this.setRelatedPublications('textareaContent', event);
+    },
     setRelatedPublications(property, value) {
       const newRelatedPublications = {
           ...this.genericProps,
