@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditPublicationInfo"
           class="pa-4"
-          max-width="50%">
+          max-width="100%">
 
     <v-container fluid
                   class="pa-0" >
@@ -111,7 +111,17 @@
               </v-text-field>
             </v-col>
        
-      </v-row>   
+      </v-row>
+
+
+      <v-row v-if="maxFundersReached">
+
+        <v-col cols="12"> 
+          <div class="text-subtitle-2"><span class="red--text">{{ this.maxFundersMessage }}</span></div>
+        </v-col>
+
+      </v-row>
+ 
 
     </v-container>
   </v-card>  
@@ -121,10 +131,10 @@
 <script>
 
 /**
- * @summary Shows the Publication Information (publication state, DOI, publisher, and funding information)
+ * @summary Shows Publication Information (publication state, DOI, publisher, and funding information)
  * @author Rebecca Kurup Buchholz
  * Created        : 2021-08-13
- * Last modified  : 2021-08-16
+ * Last modified  : 2021-08-30
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -158,6 +168,7 @@ export default {
     currentYear: '',
     yearList: [],
     maxFunders: 5,
+    maxFundersReached: false,
     funderArray: [
       {
         organization: '', 
@@ -165,6 +176,7 @@ export default {
         link: '',
       },
     ],
+    filledFunderArray: [],
   }),
   props: {
     genericProps: Object, 
@@ -197,7 +209,7 @@ export default {
     publicationYear: {
       get() {
         // TODO get this.currentYear to display in publicationYear dropdown
-        // TODO implement rules to make publicationYear required
+        // TODO maybe implement rules to make publicationYear required
         return this.mixinMethods_getGenericProp('publicationYear', this.currentYear);
       },
       set(value) {
@@ -212,6 +224,9 @@ export default {
         this.setPublicationInfo('funders', value);
       },
     },  
+    maxFundersMessage() {
+      return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`; 
+    },
   },
   methods: {
     generateNewDoi() {
@@ -238,28 +253,18 @@ export default {
       // Assign lastFunder to last item in this.funderArray 
       const lastFunder = this.funderArray[this.funderArray.length - 1];
       
-      // Assign lastFunderValue to values in lastFunder object
-      // const lastFunderValues = Object.values(lastFunder);
-           
-      // If lastFunderValues has any empty strings then assign addFunder to false
-      // let addFunder = true;
-      // for (let i = 0; i < lastFunderValues.length; i++) {
-      //   if (lastFunderValues[i] === '') {
-      //     addFunder = false;
-      //     break;
-      //   } 
-      // }
-
       // Assign lastFunderOrganization to value of organization key in lastFunder
       const lastFunderOrganization = lastFunder.organization;
-
+     
       // If lastFunderOrganization is an empty string then assign addFunder to false
       let addFunder = true;
       if (lastFunderOrganization === '') {
         addFunder = false;
       }
 
-      // If addFunder is true and length of funderArray is less than this.maxFunders then push new funder object to funderArray
+      // If addFunder is true and length of funderArray is less than maxFunders then push new funder object to funderArray
+      // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
+      // Else it funderArray is less than maxFunders then assign maxFundersReached to false
       if (addFunder && this.funderArray.length < this.maxFunders) {
         this.funderArray.push(
           {
@@ -268,8 +273,11 @@ export default {
             link: '',
           },
         );
-      }
-            
+      } else if (addFunder && this.funderArray.length >= this.maxFunders) {
+          this.maxFundersReached = true;
+      } else if (this.funderArray.length < this.maxFunders) {
+          this.maxFundersReached = false;
+      }        
     },
     deleteEmptyFunderObj(index) {
 
@@ -285,6 +293,26 @@ export default {
       }
 
     },
+    // Assign filledFunderArray to a copy of funderArray with last empty funder object removed
+    copyFunderArray() {
+
+       // Assign filledFunderArray to a copy of funderArry
+      this.filledFunderArray = [...this.funderArray];
+
+      const lastFunder = this.filledFunderArray[this.filledFunderArray.length - 1];
+
+       // Assign isEmpty to true if all values in lastFunder are null or empty strings
+      const isEmpty = Object.values(lastFunder).every(x => (x === null || x === ''));
+
+      // If isEmpty is true and filledFunderArray has more than one item then remove last element of array
+      if (isEmpty && this.filledFunderArray.length > 1) {
+        this.filledFunderArray.pop();
+      }
+
+      // Emit filledFunderArray to eventBus
+      this.setPublicationInfo('filledFunders', this.filledFunderArray);
+
+    },
     setPublicationInfo(property, value) {
       const newPublicationInfo = {
           ...this.genericProps,
@@ -297,13 +325,6 @@ export default {
         });
     },
     notifyChange(index) {
-      // TODO 
-      // 1. move funderArray to data
-      // 2. initial funderArray with one empty funder object
-      // 3. @notifyChange check if all properties filled out then add a new empty funder object to funderArray
-      // 4. check if index is smaller than funder maximum 5 (make sure to define as property) 
-      // 5. check if empty content at the end then add new row
-      // 6. only delete last row if empty
       
       this.addFunderObj();
             
@@ -311,13 +332,8 @@ export default {
       
       this.addFunderObj();
 
+      this.copyFunderArray();
 
-      // TODO check if eventBus needs to be updated
-      // TODO send to eventBus a copy of this.funderArray that has at least a value for 'organization' key
-      // eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-      //   object: EDITMETADATA_PUBLICATION_INFO,
-      //   data: this.funderArray,
-      // });
     },
   },
   components: {
