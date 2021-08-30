@@ -24,13 +24,15 @@
       </v-row>
 
 
-      <div v-for="(field, index) in customFieldsList" 
-            :key="`${field}_${index}`">
+      <!-- <div v-for="(field, index) in customFields" 
+            :key="`${field}_${index}`"> -->
 
-        <div v-if="showFieldRow(index)">
+        <!-- <div v-if="showFieldRow(index)"> -->
+<!-- 
+          TODO make customFields appear again -->
 
-          <v-row v-for="(item, itemIndex) in field"
-                  :key="`${item}_${itemIndex}`">
+          <v-row v-for="(item, index) in customFields"  
+              :key="`${item}_${index}`">
 
             <v-col cols="6" >
               <v-text-field :label="labelFieldName"
@@ -47,8 +49,8 @@
               </v-text-field>
             </v-col>
           </v-row>
-        </div>
-      </div>   
+        <!-- </div> -->
+      <!-- </div>    -->
 
     </v-container>
   </v-card>  
@@ -74,60 +76,94 @@ import {
 
 export default {
   name: 'EditCustomFields',
+
+  data: () => ({
+    customFieldsArray: [
+      {
+        fieldName: '', 
+        content: '',
+      },
+    ],
+  }),
   props: {  
-    cardTitle: { 
-      type: String, 
-      default: 'Custom Fields',
-    },  
-    cardInstructions: { 
-      type: String, 
-      default: 'Advance custom data fields',
-    },
-    labelFieldName: { 
-      type: String, 
-      default: 'Field Name',
-    },
-    labelContent: {
-      type: String,
-      default: 'Content',
-    },
-    genericProps: {
-      type: Array,
-      default: () => [
-        { 
-          field0: { 
-            fieldName: '', 
-            content: '',
-          },
-        },
-        {
-          field1: {
-            fieldName: '',
-            content: '',
-          },
-        },
-        {
-          field2: {
-            fieldName: '',
-            content: '',
-          },
-        },
-        {
-          field3: {
-            fieldName: '',
-            content: '',
-          },
-        },
-        {
-          field4: {
-            fieldName: '',
-            content: '',
-          },
-        },
-      ],
-    },
+    genericProps: Object,  
+    // genericProps: {
+    //   type: Array,
+    //   default: () => [
+    //     { 
+    //       field0: { 
+    //         fieldName: '', 
+    //         content: '',
+    //       },
+    //     },
+    //     {
+    //       field1: {
+    //         fieldName: '',
+    //         content: '',
+    //       },
+    //     },
+    //     {
+    //       field2: {
+    //         fieldName: '',
+    //         content: '',
+    //       },
+    //     },
+    //     {
+    //       field3: {
+    //         fieldName: '',
+    //         content: '',
+    //       },
+    //     },
+    //     {
+    //       field4: {
+    //         fieldName: '',
+    //         content: '',
+    //       },
+    //     },
+    //   ],
+    // },
   },
   computed: {
+    cardTitle: {
+      get() {
+        return this.mixinMethods_getGenericProp('cardTitle', 'Custom Fields');
+      },
+      set(value) {
+        this.setCustomFields('publicationState', value);
+      },
+    },
+    cardInstructions: {
+      get() {
+        return this.mixinMethods_getGenericProp('cardInstructions', 'Advance custom data fields');
+      },
+      set(value) {
+        this.setCustomFields('cardInstructions', value);
+      },
+    },
+    labelFieldName: {
+      get() {
+        return this.mixinMethods_getGenericProp('labelFieldName', 'Field Name');
+      },
+      set(value) {
+        this.setCustomFields('labelFieldName', value);
+      },
+    },
+    labelContent: {
+      get() {
+        return this.mixinMethods_getGenericProp('labelContent', 'Content');
+      },
+      set(value) {
+        this.setCustomFields('labelContent', value);
+      },
+    },
+    customFields: {
+      get() {
+        return this.mixinMethods_getGenericProp('customFields', this.customFieldsArray);
+      },
+      set(value) {
+        this.setCustomFields('customFields', value);
+      },
+    },
     customFieldsList() {
       if (this.genericProps?.length === 0) {
         return [
@@ -173,6 +209,19 @@ export default {
       // Else do not show field
       return false;
     },
+    // TODO test that this is really emitting to eventBus
+    setCustomFields(property, value) {
+      const newCustomFields = {
+          ...this.genericProps,
+          [property]: value,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_CUSTOMFIELDS,
+          data: newCustomFields,
+        });
+    },
+    // TODO look at notifyChabge
     notifyChange() {
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_CUSTOMFIELDS,
