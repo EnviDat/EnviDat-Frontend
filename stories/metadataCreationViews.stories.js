@@ -24,6 +24,8 @@ import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
+import GenericPlaceholder from '@/modules/user/components/GenericPlaceholder';
+import PlaceholderKeywords from '@/modules/user/components/PlaceholderKeywords';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 // import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
@@ -69,7 +71,34 @@ const relatedPublicationsGenericProps = {
   },
 };
 
+const placeholderKeywordsGenericProps = {
+  componentTitle: 'Metadata Keywords',
+  disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+};
+
+
 storiesOf('8 Metadata Creation Views / Main Info', module)
+  .add('Placeholder Keywords', () => ({
+    components: { PlaceholderKeywords },
+    template: `
+    <v-col>
+
+      <v-row>
+        Placeholder Keywords 
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <PlaceholderKeywords :genericProps="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+      data: () => ({
+        genericProps: placeholderKeywordsGenericProps,
+    }),
+  }))
   .add('Edit Related Publications', () => ({
     components: { EditRelatedPublications },
     template: `
@@ -115,7 +144,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         }
         if (updateObj.data.id === this.genericPropsFilled.id) {
           this.genericPropsFilled = updateObj.data;
-        //  this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+          this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
         }
       },
     },  
@@ -256,7 +285,37 @@ contribute something to the general goal of your product. `,
                 },
       },
     }),
-  })).add('Generic Textarea Preview Metadata Body', () => ({
+  }))
+  .add('Generic Placeholder', () => ({
+    components: { GenericPlaceholder },
+    template: `
+    <v-col>
+
+      <v-row>
+        Generic Placeholder 
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <GenericPlaceholder  :genericProps="genericProps"  >
+            This is the amazing screenshot slot!              
+          </GenericPlaceholder>
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+    methods: {
+    },  
+    computed: {
+    },
+    data: () => ({
+      genericProps: {         
+                componentTitle: 'Component Title',
+                disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+      },
+    }),
+  }))
+  .add('Generic Textarea Preview Metadata Body', () => ({
     components: { GenericTextareaPreviewLayout, MetadataBody },
     template: `
     <v-col>

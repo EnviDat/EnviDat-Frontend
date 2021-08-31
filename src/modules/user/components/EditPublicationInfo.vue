@@ -284,6 +284,7 @@ export default {
       // Assign funderObj to object currently receiving input in this.funderArray
       const funderObj = this.funderArray[index];
       
+      // TODO extract isEmpty to another function 
       // Assign isEmpty to true if all values in funderObj are null or empty strings
       const isEmpty = Object.values(funderObj).every(x => (x === null || x === ''));
       
