@@ -20,12 +20,15 @@
                   :open.sync="open"
                   dense
                   activatable
+                  rounded
+                  hoverable
                   >
 
         <template v-slot:prepend="{ item }">
-          <v-btn icon
+          <v-btn v-if="item.children && item.children.length > 0" 
+                  icon
                   @click.stop="catchOpenClick(item)">
-            <v-icon v-if="item.children" :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);' ">arrow_right</v-icon>
+            <v-icon :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);' ">arrow_right</v-icon>
           </v-btn>
         </template>
 
@@ -47,7 +50,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-08-19 16:09:39
- * Last modified  : 2021-08-26 18:12:35
+ * Last modified  : 2021-08-31 16:44:58
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -116,7 +119,14 @@ export default {
       }
     },
     catchOpenClick(item) {
-      if (!this.open.includes(item.id)) {
+      if (this.open.includes(item.id)) {
+        const index = this.open.indexOf(item.id);
+        if (index > -1) {
+          // this.open = this.open.splice(index, 1);
+          this.open.splice(index, 1);
+        }
+        // this.open = this.open.filter((id) => { id !== item.id; });
+      } else {
         this.open.push(item.id);
       }
     },
