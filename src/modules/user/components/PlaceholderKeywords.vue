@@ -11,7 +11,6 @@
       <v-col :cols="columns">     
         <generic-placeholder :genericProps="genericProps" >
            <v-img :src="keywordsScreenshot"
-                max-height="500"
                 style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;" />      
         </generic-placeholder>
       </v-col>
