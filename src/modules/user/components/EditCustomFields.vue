@@ -24,33 +24,34 @@
       </v-row>
 
 
-      <!-- <div v-for="(field, index) in customFields" 
-            :key="`${field}_${index}`"> -->
+      <v-row v-for="(item, index) in customFields"  
+          :key="`${item}_${index}`">
 
-        <!-- <div v-if="showFieldRow(index)"> -->
-<!-- 
-          TODO make customFields appear again -->
+        <v-col cols="6" >
+          <v-text-field :label="labelFieldName"
+                        outlined
+                        v-model="item.fieldName"
+                        @input="notifyChange(index)" >
+          </v-text-field>
+        </v-col>
+        <v-col cols="6" > 
+          <v-text-field :label="labelContent" 
+                        outlined 
+                        v-model="item.content"
+                        @input="notifyChange(index)" >
+          </v-text-field>
+        </v-col>
+      </v-row>
 
-          <v-row v-for="(item, index) in customFields"  
-              :key="`${item}_${index}`">
 
-            <v-col cols="6" >
-              <v-text-field :label="labelFieldName"
-                            outlined
-                            v-model="item.fieldName"
-                            @input="notifyChange" >
-              </v-text-field>
-            </v-col>
-            <v-col cols="6" > 
-              <v-text-field :label="labelContent" 
-                            outlined 
-                            v-model="item.content"
-                            @input="notifyChange" >
-              </v-text-field>
-            </v-col>
-          </v-row>
-        <!-- </div> -->
-      <!-- </div>    -->
+      <v-row v-if="maxCustomFieldsReached">
+
+        <v-col cols="12"> 
+          <div class="text-subtitle-2"><span class="red--text">{{ this.maxCustomFieldsMessage }}</span></div>
+        </v-col>
+
+      </v-row>
+
 
     </v-container>
   </v-card>  
@@ -63,7 +64,7 @@
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
  * Created at     : 2021-07-05
- * Last modified  : 2021-08-03 16:39:05
+ * Last modified  : 2021-08-31
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -76,52 +77,19 @@ import {
 
 export default {
   name: 'EditCustomFields',
-
   data: () => ({
+    maxCustomFields: 10,
+    maxCustomFieldsReached: false,
     customFieldsArray: [
       {
         fieldName: '', 
         content: '',
       },
     ],
+    filledCustomFieldsArray: [],
   }),
   props: {  
     genericProps: Object,  
-    // genericProps: {
-    //   type: Array,
-    //   default: () => [
-    //     { 
-    //       field0: { 
-    //         fieldName: '', 
-    //         content: '',
-    //       },
-    //     },
-    //     {
-    //       field1: {
-    //         fieldName: '',
-    //         content: '',
-    //       },
-    //     },
-    //     {
-    //       field2: {
-    //         fieldName: '',
-    //         content: '',
-    //       },
-    //     },
-    //     {
-    //       field3: {
-    //         fieldName: '',
-    //         content: '',
-    //       },
-    //     },
-    //     {
-    //       field4: {
-    //         fieldName: '',
-    //         content: '',
-    //       },
-    //     },
-    //   ],
-    // },
   },
   computed: {
     cardTitle: {
@@ -134,7 +102,7 @@ export default {
     },
     cardInstructions: {
       get() {
-        return this.mixinMethods_getGenericProp('cardInstructions', 'Advance custom data fields');
+        return this.mixinMethods_getGenericProp('cardInstructions', 'Advance custom data fields (optional)');
       },
       set(value) {
         this.setCustomFields('cardInstructions', value);
@@ -164,52 +132,76 @@ export default {
         this.setCustomFields('customFields', value);
       },
     },
-    customFieldsList() {
-      if (this.genericProps?.length === 0) {
-        return [
-          { 
-            field0: { 
-              fieldName: '', 
-              content: '',
-            },
-          },
-          {
-            field1: {
-              fieldName: '',
-              content: '',
-            },
-          },
-        ];
-      }
-
-      return this.genericProps;
+    maxCustomFieldsMessage() {
+      return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`; 
     },
   },
   methods: {
-    showFieldRow(index) {
-
-      // Show first two field rows      
-      if (index < 2) {
-        return true;
-      }
-
-      // Assign field object with values for one field before current iteration in this.customFieldsList if index is not less than 2
-      const previousIndex = index - 1;
-      const fieldObj = Object.values(this.customFieldsList[previousIndex]);
+     addCustomFieldObj() {
       
-      // Assign field object's fieldName and content to variables
-      const fieldObjName = fieldObj[0].fieldName;
-      const fieldObjContent = fieldObj[0].content;
+      // Assign lastCustomField to last item in customFieldsArray
+      const lastCustomFieldObj = this.customFieldsArray[this.customFieldsArray.length - 1];
+
+      // Assign variables to lastCustomFieldObj properties
+      const lastCustomFieldName = lastCustomFieldObj.fieldName;
+      const lastCustomFieldContent = lastCustomFieldObj.content;
      
-      // If one field before current iteration is not empty show next field
-      if (fieldObjName !== '' && fieldObjContent !== '') {
-        return true;
+      // If fieldName or content of lastCustomFieldObj are empty strings then assign addCustomField to false
+      let addCustomField = true;
+      if (lastCustomFieldName === '' || lastCustomFieldContent === '') {
+        addCustomField = false;
+      }
+      
+      // If addCustomField is true and length of customFieldsArray is less than maxCustomFields then push new custom field object to customFieldsArray
+      // Else if addCustomField is true and customFieldsArray is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
+      // Else if customFieldsArray is less than maxCustomFields then assign maxCustomFieldsReached to false
+      if (addCustomField && this.customFieldsArray.length < this.maxCustomFields) {
+        this.customFieldsArray.push(
+          {
+            fieldName: '', 
+            content: '',
+          },
+        );
+      } else if (addCustomField && this.customFieldsArray.length >= this.maxCustomFields) {
+          this.maxCustomFieldsReached = true;
+      } else if (this.customFieldsArray.length < this.maxCustomFields) {
+          this.maxCustomFieldsReached = false;
+      }        
+    },
+    deleteEmptyCustomFieldObj(index) {
+
+      // Assign customFieldObj to object currently receiving input in customFieldsArray
+      const customFieldObj = this.customFieldsArray[index];
+      
+      // Assign isEmpty to true if all values in customFieldObj are null or empty strings
+      const isEmpty = Object.values(customFieldObj).every(x => (x === null || x === ''));
+      
+      // If isEmpty is true and customFieldsArray has more than one item then remove item at current index
+      if (isEmpty && this.customFieldsArray.length > 1) {
+        this.customFieldsArray.splice(index, 1);
       }
 
-      // Else do not show field
-      return false;
     },
-    // TODO test that this is really emitting to eventBus
+     // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
+     // Emit filledCustomFieldsArray to eventBus
+    copyCustomFieldsArray() {
+
+       // Assign filledCustomFieldsArray to a copy of customFieldsArray
+      this.filledCustomFieldsArray = [...this.customFieldsArray];
+
+      const lastCustomField = this.filledCustomFieldsArray[this.filledCustomFieldsArray.length - 1];
+
+       // Assign isEmpty to true if all values in lastCustomField are null or empty strings
+      const isEmpty = Object.values(lastCustomField).every(x => (x === null || x === ''));
+
+      // If isEmpty is true and filledCustomFieldsArray has at least one item then remove last element of array
+      if (isEmpty && this.filledCustomFieldsArray.length > 0) {
+        this.filledCustomFieldsArray.pop();
+      }
+
+      this.setCustomFields('filledCustomFields', this.filledCustomFieldsArray);
+
+    },
     setCustomFields(property, value) {
       const newCustomFields = {
           ...this.genericProps,
@@ -221,16 +213,18 @@ export default {
           data: newCustomFields,
         });
     },
-    // TODO look at notifyChabge
-    notifyChange() {
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_CUSTOMFIELDS,
-        data: this.genericProps,
-      });
+    notifyChange(index) {
+    
+      this.addCustomFieldObj();
+          
+      this.deleteEmptyCustomFieldObj(index);
+    
+      this.addCustomFieldObj();
+
+      this.copyCustomFieldsArray();
+
     },
   },
-  data: () => ({
-   }),
   components: {
   },  
 };

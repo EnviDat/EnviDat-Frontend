@@ -304,8 +304,8 @@ export default {
        // Assign isEmpty to true if all values in lastFunder are null or empty strings
       const isEmpty = Object.values(lastFunder).every(x => (x === null || x === ''));
 
-      // If isEmpty is true and filledFunderArray has more than one item then remove last element of array
-      if (isEmpty && this.filledFunderArray.length > 1) {
+      // If isEmpty is true and filledFunderArray has at least one item then remove last element of array
+      if (isEmpty && this.filledFunderArray.length > 0) {
         this.filledFunderArray.pop();
       }
 
