@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-26 17:37:12
+ * Last modified  : 2021-08-30 07:25:42
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -41,7 +41,11 @@ function organizationMap(organizations) {
     }
     
   }
-  
+
+  for (let i = 0; i < topLevel.length; i++) {
+    const k = topLevel[i];
+    mainOrgas[k.name] = k;
+  }
 
   return mainOrgas;
 }
