@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 10:18:01
+ * Last modified  : 2021-09-01 10:48:06
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -26,7 +26,7 @@ import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
 import EditKeywords from '@/modules/user/components/EditKeywords';
-// import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 // import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
