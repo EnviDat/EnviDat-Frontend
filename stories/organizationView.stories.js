@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 09:05:17
+ * Last modified  : 2021-09-01 16:18:24
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -13,6 +13,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 
+import EditOrganization from '@/modules/user/components/EditOrganization';
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -23,7 +24,7 @@ import {
 import testOrganizations from './js/organizations';
 
 
-function organizationMap(organizations) {
+function getOrganizationMap(organizations) {
 
   const mainOrgas = {};
   const topLevel = [];
@@ -57,7 +58,7 @@ function organizationMap(organizations) {
   return mainOrgas;
 }
 
-const organizationsMap = organizationMap(testOrganizations);
+// const organizationsMap = getOrganizationMap(testOrganizations);
 
 storiesOf('8 Metadata Creation Views / Organization', module)
   .add('Organization Tree view', () => ({
@@ -66,7 +67,7 @@ storiesOf('8 Metadata Creation Views / Organization', module)
     <v-col>
 
       <v-row>
-      OrganizationTree
+        OrganizationTree
       </v-row>
 
       <v-row>
@@ -105,5 +106,45 @@ storiesOf('8 Metadata Creation Views / Organization', module)
         organizationsMap,
       },
       selectedOrga: '',
+    }),
+  }))
+  .add('Edit Organization component', () => ({
+    components: { EditOrganization },
+    template: `
+    <v-col>
+
+      <!-- v-row>
+        EditOrganization
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditOrganization />
+        </v-col>
+      </v-row -->
+
+      <v-row>
+        EditOrganization preselected and editing disabled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditOrganization :genericProps="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+    created() {
+    },
+    beforeDestroy() {
+    },
+    methods: {
+    },  
+    data: () => ({
+      genericProps: {
+        organization: 'community-ecology',
+        selectionDisabled: true,
+      },
     }),
   }));

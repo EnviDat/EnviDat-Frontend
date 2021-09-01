@@ -19,6 +19,7 @@
                   :search="search"
                   :open.sync="open"
                   :active.sync="active"
+                  item-disabled="locked"
                   dense
                   activatable
                   rounded
@@ -54,7 +55,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-08-19 16:09:39
- * Last modified  : 2021-09-01 10:03:55
+ * Last modified  : 2021-09-01 16:18:32
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -70,10 +71,11 @@ export default {
   props: {  
     preSelectedOrganization: String,
     organizationsMap: Object,
+    selectionDisabled: Boolean,
   },
   mounted() {
     if (this.preSelectedOrganization) {
-      this.setActiveItem(this.preSelectedOrganization);
+      this.setActiveItem(this.items, this.preSelectedOrganization);
     }
   },
   computed: {
@@ -95,6 +97,7 @@ export default {
             children.push({
               id: `${this.childIdPrefix}_${i}_${j}`,
               name: c.name,
+              locked: this.selectionDisabled,
             });
           }
 
@@ -102,6 +105,7 @@ export default {
             id: `${this.parentIdPrefix}_${i}`,
             name: mainOrg,
             children,
+            locked: this.selectionDisabled,
           });
           
         }
@@ -111,16 +115,34 @@ export default {
     },
   },
   methods: {
-    setActiveItem(name) {
-      if (this.items) {
-        for (let i = 0; i < this.items.length; i++) {
-          const item = this.items[i];
+    setActiveItem(items, name) {
+      if (items) {
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+
           if (item.name === name) {
-            this.catchOpenClick(item);
-            break;
+            // if (item.children?.length > 0) {
+            //   this.catchOpenClick(item);
+            // }
+
+            // this.catchActiveClick([item.id]);
+            if (!this.active.includes(item.id)) {
+              this.active.push(item.id);
+            }
+            
+            return true;
+          }
+          
+          if (item.children?.length > 0) {
+            const found = this.setActiveItem(item.children, name);
+            if (found) {
+              this.catchOpenClick(item);
+            }
           }
         }
       }
+
+      return false;
     },
     catchOpenClick(item) {
       if (this.open.includes(item.id)) {

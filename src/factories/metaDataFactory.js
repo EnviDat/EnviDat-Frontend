@@ -6,7 +6,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2021-08-18 15:30:09
+ * Last modified  : 2021-09-01 13:19:14
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -453,6 +453,40 @@ export function createResources(dataset) {
     doi: dataset.doi,
     resources,
   };
+}
+
+export function getOrganizationMap(organizations) {
+
+  const mainOrgas = {};
+  const topLevel = [];
+
+  for (let i = 0; i < organizations.length; i++) {
+    const orga = organizations[i];
+    let orgasSublist = null;
+
+    if (orga?.groups?.length > 0) {
+      const main = orga.groups[0].name;
+      if (main && !mainOrgas[main]) {
+        mainOrgas[main] = [];
+      }
+
+      orgasSublist = mainOrgas[main];
+    }
+
+    if (orgasSublist && !orgasSublist.includes(orga)) {
+      orgasSublist.push(orga);
+    } else {
+      topLevel.push(orga);
+    }
+    
+  }
+
+  for (let i = 0; i < topLevel.length; i++) {
+    const k = topLevel[i];
+    mainOrgas[k.name] = k;
+  }
+
+  return mainOrgas;
 }
 
 export function createDetails(dataset) {
