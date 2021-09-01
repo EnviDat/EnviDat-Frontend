@@ -1,24 +1,25 @@
 <template>
 
-<v-card id="PlaceholderKeywords" class="pa-4">
+<v-card id="EditKeywords"
+        class="pa-4">
 
-  <v-container fluid 
+  <!-- <v-container fluid 
                 class="pa-0 fill-height" >  
 
 
     <v-row>
 
-      <v-col :cols="columns">     
-        <generic-placeholder :genericProps="genericProps" >
-           <v-img :src="keywordsScreenshot"
-                style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;" />      
-        </generic-placeholder>
-      </v-col>
+      <v-col :cols="columns">      -->
+        <EditImgPlaceholder title="Edit Keywords"
+                            :disclaimer="disclaimer"
+                            :img="keywordsScreenshot"
+                            />
+      <!-- </v-col>
 
     </v-row>
 
 
- </v-container>
+ </v-container> -->
 </v-card>  
 
 </template>
@@ -33,19 +34,18 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-08-31
+ * Last modified  : 2021-09-01 10:44:52
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import GenericPlaceholder from '@/modules/user/components/GenericPlaceholder';
-
-import keywordsScreenshot from '@/modules/user/assets/placeholders/keywords.png';
+import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
+import keywordsScreenshot from '@/modules/user/assets/placeholders/keywords.jpg';
 
 
 export default {
-  name: 'PlaceholderKeywords',
+  name: 'EditKeywords',
   data: () => ({
     keywordsScreenshot,
   }),
@@ -53,11 +53,14 @@ export default {
     genericProps: Object,
   },
   computed: {
+    disclaimer() {
+      return 'Please note that the screenshot below will serve as a template for the future component.';
+    },
   },
   methods: {
   },
   components: {
-    GenericPlaceholder,
+    EditImgPlaceholder,
   },
 };
 

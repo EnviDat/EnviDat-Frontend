@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-18 16:57:36
+ * Last modified  : 2021-09-01 10:18:01
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -24,9 +24,9 @@ import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
-import GenericPlaceholder from '@/modules/user/components/GenericPlaceholder';
-import PlaceholderKeywords from '@/modules/user/components/PlaceholderKeywords';
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
+import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
+import EditKeywords from '@/modules/user/components/EditKeywords';
+// import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 // import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 // import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
@@ -79,7 +79,7 @@ const placeholderKeywordsGenericProps = {
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Placeholder Keywords', () => ({
-    components: { PlaceholderKeywords },
+    components: { EditKeywords },
     template: `
     <v-col>
 
@@ -89,7 +89,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
 
       <v-row class="py-3" >
         <v-col >
-          <PlaceholderKeywords :genericProps="genericProps" />
+          <EditKeywords :genericProps="genericProps" />
         </v-col>
       </v-row>
 
@@ -286,20 +286,21 @@ contribute something to the general goal of your product. `,
       },
     }),
   }))
-  .add('Generic Placeholder', () => ({
-    components: { GenericPlaceholder },
+  .add('Edit Image Placeholder', () => ({
+    components: { EditImgPlaceholder },
     template: `
     <v-col>
 
       <v-row>
-        Generic Placeholder 
+        Generic Placeholder without a given image, generic placeholder image should show up
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <GenericPlaceholder  :genericProps="genericProps"  >
-            This is the amazing screenshot slot!              
-          </GenericPlaceholder>
+          <EditImgPlaceholder :title="componentTitle"
+                              :disclaimer="disclaimer"
+                              />
+            
         </v-col>
       </v-row>
 
@@ -309,10 +310,8 @@ contribute something to the general goal of your product. `,
     computed: {
     },
     data: () => ({
-      genericProps: {         
-                componentTitle: 'Component Title',
-                disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
-      },
+      componentTitle: 'Test of the Edit Image Placeholder',
+      disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
     }),
   }))
   .add('Generic Textarea Preview Metadata Body', () => ({
