@@ -3,6 +3,12 @@ import EditDescription from '@/modules/user/components/EditDescription';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 
+import EditKeywords from '@/modules/user/components/EditKeywords';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
+import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo';
+import EditDataInfo from '@/modules/user/components/EditDataInfo';
+import EditPublications from '@/modules/user/components/EditPublications';
+
 // eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
@@ -38,12 +44,12 @@ export const mainDetailSteps = [
   {
     title: 'Keywords',
     completed: false,
-    component: EditCustomFields,
+    component: EditKeywords,
   },
   {
     title: 'Authors',
     completed: false,
-    // component: EditDescription,
+    component: EditMetadataAuthors,
   },
 ];
 
@@ -63,7 +69,7 @@ export const dataDetailSteps = [
   {
     title: 'Data Info',
     completed: false,
-    // component: EditDescription,
+    component: EditDataInfo,
   },
 ];
 
@@ -88,21 +94,21 @@ export const metadataCreationSteps = [
     title: 'Related Info',
     completed: false,
     color: 'green',
-    component: EditRelatedPublications,
-    genericProps: {
-      labelTextarea: 'Related Publications',
-      textareaContent: '',
-      subtitlePreview: 'Preview',
-      publications: {
-        text: '',
-      },
-    },
+    component: EditRelatedInfo,
+    // genericProps: {
+    //   labelTextarea: 'Related Publications',
+    //   textareaContent: '',
+    //   subtitlePreview: 'Preview',
+    //   publications: {
+    //     text: '',
+    //   },
+    // },
   },
   {
     title: 'Publication Info',
     completed: false,
     color: 'orange',
-    // component: EditDescription,
+    component: EditPublications,
   },
 ];
 

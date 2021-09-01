@@ -1,5 +1,10 @@
 <template>
-  <v-card id="EditMetadataAuthors"
+  <EditImgPlaceholder :title="EDIT_METADATA_AUTHORS_TITLE"
+                      :disclaimer="disclaimer"
+                      :img="authorsPlaceholder"
+                      />
+
+  <!-- <v-card id="EditMetadataAuthors"
           class="pa-4" >
 
     <v-container fluid
@@ -25,7 +30,7 @@
 
     </v-container>
 
-  </v-card>
+  </v-card> -->
 </template>
 
 <script>
@@ -36,19 +41,23 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-18 18:02:59
+ * Last modified  : 2021-09-01 11:00:41
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+// import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+
+import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
+import authorsPlaceholder from '@/modules/user/assets/placeholders/authors.jpg';
 
 
 export default {
   name: 'EditMetadataAuthors',
   components: {
-    MetadataAuthors,
+    // MetadataAuthors,
+    EditImgPlaceholder,
   },
   props: {
     genericProps: Object,
@@ -60,6 +69,10 @@ export default {
   data: () => ({
     editingInstructions: 'Pick an author from the list to edit it\'s details',
     EDIT_METADATA_AUTHORS_TITLE,
+    disclaimer: `The screenshot below serves as a preview of the future component.
+              Even if you can't interacte, please think about the information shown and if the grouping of the information to 
+              edit would make sense in the context of the steps and substeps.`,
+    authorsPlaceholder,
   }),
 };
 </script>

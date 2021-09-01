@@ -2,7 +2,7 @@
   <v-card class="pa-4"
           id="EditImgPlaceholder">
     
-    <v-row>
+    <v-row v-if="title">
       <v-col > 
         <div class="text-h5">{{ title }}</div>
       </v-col>
@@ -45,7 +45,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2020-08-31
- * Last modified  : 2021-09-01 10:41:50
+ * Last modified  : 2021-09-01 11:16:45
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -60,7 +60,10 @@ export default {
   }),
   props: {  
     title: String,
-    disclaimer: String,
+    disclaimer: {
+      type: String,
+      default: 'Please note that the screenshot below will serve as a preview for the future component.',
+    },
     img: String,
   },
   computed: {

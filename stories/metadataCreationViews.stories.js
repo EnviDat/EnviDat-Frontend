@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 10:48:06
+ * Last modified  : 2021-09-01 11:25:22
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -26,6 +26,9 @@ import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
 import EditKeywords from '@/modules/user/components/EditKeywords';
+import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo';
+
+import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 // import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
@@ -78,13 +81,13 @@ const placeholderKeywordsGenericProps = {
 
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Placeholder Keywords', () => ({
-    components: { EditKeywords },
+  .add('Editing Placeholder Images', () => ({
+    components: { EditKeywords, EditDataInfo, EditRelatedInfo },
     template: `
     <v-col>
 
       <v-row>
-        Placeholder Keywords 
+        EditKeywords with Placeholder
       </v-row>
 
       <v-row class="py-3" >
@@ -92,11 +95,31 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
           <EditKeywords :genericProps="genericProps" />
         </v-col>
       </v-row>
+      
+      <v-row>
+        EditDataInfo with Placeholder
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataInfo :genericProps="genericProps" />
+        </v-col>
+      </v-row>
+      
+      <v-row>
+        EditRelatedInfo with Placeholder
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditRelatedInfo :genericProps="genericProps" />
+        </v-col>
+      </v-row>      
 
     </v-col>
     `,
-      data: () => ({
-        genericProps: placeholderKeywordsGenericProps,
+    data: () => ({
+      genericProps: placeholderKeywordsGenericProps,
     }),
   }))
   .add('Edit Related Publications', () => ({

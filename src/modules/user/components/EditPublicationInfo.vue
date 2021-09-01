@@ -99,16 +99,14 @@
                             outlined 
                             v-model="item.grantNumber"
                             @input="notifyChange(index)"
- >
-              </v-text-field>
+                            />
             </v-col>
             <v-col cols="4"> 
               <v-text-field :label="labels.link" 
                             outlined 
                             v-model="item.link"
                             @input="notifyChange(index)"
- >
-              </v-text-field>
+                            />
             </v-col>
        
       </v-row>
@@ -134,7 +132,7 @@
  * @summary Shows Publication Information (publication state, DOI, publisher, and funding information)
  * @author Rebecca Kurup Buchholz
  * Created        : 2021-08-13
- * Last modified  : 2021-08-30
+ * Last modified  : 2021-09-01 16:53:36
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
