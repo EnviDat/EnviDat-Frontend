@@ -18,10 +18,12 @@
       <v-treeview :items="items"
                   :search="search"
                   :open.sync="open"
+                  :active.sync="active"
                   dense
                   activatable
                   rounded
                   hoverable
+                  @update:active="catchActiveClick"
                   >
 
         <template v-slot:prepend="{ item }">
@@ -32,9 +34,11 @@
           </v-btn>
         </template>
 
-        <template v-slot:label="{ item, active }">
-          <div @click="catchActiveClick(item)">
-            {{ active ? `${item.name} active` : item.name }}
+        <!-- <template v-slot:label="{ item, active }"> -->
+        <template v-slot:label="{ item }">
+          <!-- <div @click="catchActiveClick(item)"> -->
+          <div >
+            {{ item.name }}
           </div>
         </template>
 
@@ -50,16 +54,16 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-08-19 16:09:39
- * Last modified  : 2021-08-31 16:44:58
+ * Last modified  : 2021-09-01 10:03:55
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-// import {
-//   EDITMETADATA_OBJECT_UPDATE,
-//   EDITMETADATA_RELATED_PUBLICATIONS,
-//   eventBus,
-// } from '@/factories/eventBus';
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_ORGANIZATION,
+  eventBus,
+} from '@/factories/eventBus';
 
 export default {
   name: 'OrganizationTree',
@@ -89,13 +93,13 @@ export default {
           for (let j = 0; j < childs.length; j++) {
             const c = childs[j];
             children.push({
-              id: `child_${i}_${j}`,
+              id: `${this.childIdPrefix}_${i}_${j}`,
               name: c.name,
             });
           }
 
           orgItems.push({
-            id: `main_${i}`,
+            id: `${this.parentIdPrefix}_${i}`,
             name: mainOrg,
             children,
           });
@@ -122,33 +126,56 @@ export default {
       if (this.open.includes(item.id)) {
         const index = this.open.indexOf(item.id);
         if (index > -1) {
-          // this.open = this.open.splice(index, 1);
           this.open.splice(index, 1);
         }
-        // this.open = this.open.filter((id) => { id !== item.id; });
       } else {
         this.open.push(item.id);
       }
     },
-    catchActiveClick(item) {
-      console.log(item);
-    },
-    // notifyChangeSelectedOrganisation(property, value) {
-    //   const newRelatedPublications = {
-    //       ...this.genericProps,
-    //       [property]: value,
-    //   };
+    catchActiveClick(arrayActive) {
 
-    //   eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-    //       object: EDITMETADATA_RELATED_PUBLICATIONS,
-    //       data: newRelatedPublications,
-    //     });
-    // },
+      const activeId = arrayActive[0];
+      let activeItem = null;
+      if (activeId) {
+        activeItem = this.getItemFromId(activeId);
+      }
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_ORGANIZATION,
+        data: activeItem ? activeItem.name : '',
+      });
+    },
+    getItemFromId(activeId) {
+      const isChild = activeId.includes(this.childIdPrefix);
+      let itemId = activeId;
+
+      let activeItem = this.getItemById(this.items, itemId);
+
+      if (isChild) {
+        itemId = this.getParentIdFromChild(activeId);
+        const parentItem = this.getItemById(this.items, itemId);
+
+        activeItem = this.getItemById(parentItem.children, activeId);        
+      }
+
+      return activeItem;
+    },
+    getItemById(items, itemId) {
+      const itemSelection = items.filter(i => i.id === itemId);
+      return itemSelection[0];
+    },
+    getParentIdFromChild(childId) {
+      const splits = childId.split('_');
+      
+      return `${this.parentIdPrefix}_${splits[1]}`;
+    },
   },
   data: () => ({
     search: '',
     open: [],
-    selected: [],
+    active: [],
+    childIdPrefix: 'child',
+    parentIdPrefix: 'parent',
   }),
   components: {
   },  

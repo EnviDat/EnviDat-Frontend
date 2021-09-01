@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-30 07:25:42
+ * Last modified  : 2021-09-01 09:05:17
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -14,7 +14,14 @@
 import { storiesOf } from '@storybook/vue';
 
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_ORGANIZATION,
+  eventBus,
+} from '@/factories/eventBus';
+
 import testOrganizations from './js/organizations';
+
 
 function organizationMap(organizations) {
 
@@ -62,6 +69,15 @@ storiesOf('8 Metadata Creation Views / Organization', module)
       OrganizationTree
       </v-row>
 
+      <v-row>
+        <v-col>
+          Selection of the Organization Tree:
+        </v-col>
+        <v-col>
+          {{ selectedOrga }}
+        </v-col>
+      </v-row>
+
       <v-row class="py-3" >
         <v-col >
           <OrganizationTree :organizationsMap="genericProps.organizationsMap"
@@ -72,16 +88,22 @@ storiesOf('8 Metadata Creation Views / Organization', module)
     </v-col>
     `,
     created() {
-      // eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     beforeDestroy() {
-      // eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     methods: {
+      showSelectedOrga(updateObj) {
+        if (updateObj.object === EDITMETADATA_ORGANIZATION) {
+          this.selectedOrga = updateObj.data;
+        }
+      },
     },  
     data: () => ({
       genericProps: {
         organizationsMap,
       },
+      selectedOrga: '',
     }),
   }));
