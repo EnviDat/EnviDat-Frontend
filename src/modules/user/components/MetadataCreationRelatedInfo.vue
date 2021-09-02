@@ -5,7 +5,7 @@
           class="pa-4">
 
     <v-row>
-      <v-col cols="5">
+      <v-col cols="4">
         <EditRelatedPublications :genericProps="genericProps" />          
 
       </v-col>
@@ -16,7 +16,7 @@
                             />
       </v-col>
 
-      <v-col cols="2">
+      <v-col cols="3">
         <EditCustomFields :genericProps="genericProps" />
       </v-col>
 
