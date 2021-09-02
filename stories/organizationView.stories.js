@@ -58,7 +58,7 @@ function getOrganizationMap(organizations) {
   return mainOrgas;
 }
 
-// const organizationsMap = getOrganizationMap(testOrganizations);
+const organizationsMap = getOrganizationMap(testOrganizations);
 
 storiesOf('8 Metadata Creation Views / Organization', module)
   .add('Organization Tree view', () => ({
