@@ -7,61 +7,63 @@
 
       <v-row>
 
-          <v-col :cols="columns">  
-            <v-textarea  :label="labelTextarea"
-                          outlined
-                          auto-grow
-                          :value="textareaContent"
-                          @input="catchChangedText($event)"
-                          >
-            </v-textarea>
-          </v-col>
-
-      </v-row>
-
-
-      <v-row>
-
-          <v-col :cols="columns"> 
-            <div class="text-subtitle-1">{{ subtitlePreview }}</div>
-          </v-col>
-
-      </v-row>
-
-
-      <v-row>
-
-        <v-col :cols="columns">     
-          <slot></slot>
+        <v-col :cols="columns">  
+          <v-textarea  :label="labelTextarea"
+                        outlined
+                        auto-grow
+                        :value="textareaContent"
+                        @input="catchChangedText($event)"
+                        >
+          </v-textarea>
         </v-col>
 
       </v-row>
 
-    </div>
-
-
-    <div v-if="!isVerticalLayout">
 
       <v-row>
+        <v-col :cols="columns"
+                class="text-subtitle-1"> 
+          {{ subtitlePreview }}
+        </v-col>
+      </v-row>
 
-        <v-col >  
-            <v-textarea  :label="labelTextarea"
-                          outlined
-                          auto-grow
-                          :value="textareaContent"
-                          @input="catchChangedText($event)"
-                          >
-            </v-textarea>
-          </v-col>
 
-          <v-col > 
-            <div class="text-subtitle-1">{{ subtitlePreview }}</div>     
-            <slot></slot>
-          </v-col>
-
-        </v-row>
+      <v-row>
+        <v-col :cols="columns">     
+          <slot />
+        </v-col>
+      </v-row>
 
     </div>
+
+
+    <v-row v-if="!isVerticalLayout">
+
+      <v-col >  
+        <v-textarea  :label="labelTextarea"
+                      outlined
+                      auto-grow
+                      :value="textareaContent"
+                      @input="catchChangedText($event)"
+                      >
+        </v-textarea>
+      </v-col>
+
+      <v-col > 
+        <v-row>
+          <v-col class="text-subtitle-1"> 
+            {{ subtitlePreview }}
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col > 
+            <slot />
+          </v-col>
+        </v-row>
+      </v-col>
+
+      </v-row>
 
 
   </div>

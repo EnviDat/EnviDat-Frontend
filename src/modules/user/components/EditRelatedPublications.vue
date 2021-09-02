@@ -21,10 +21,10 @@
     <v-row>
       <v-col >
 
-        <generic-textarea-preview-layout :genericProps="genericTextAreaObject"
+        <GenericTextareaPreviewLayout :genericProps="genericTextAreaObject"
                                           @changedText="catchChangedText($event)">
-          <metadata-publications :genericProps="publicationsObject" />
-        </generic-textarea-preview-layout>
+          <MetadataPublications :genericProps="publicationsObject" />
+        </GenericTextareaPreviewLayout>
 
       </v-col>
     </v-row>
@@ -68,10 +68,10 @@ export default {
   computed: {
     genericTextAreaObject() {
       return {
-        // columns: this.genericProps.columns,
         subtitlePreview: this.genericProps.subtitlePreview,
         labelTextarea: this.genericProps.labelTextarea,
         textareaContent: this.genericProps.relatedPublicationsText,
+        isVerticalLayout: true,
       };
     },
     publicationsObject() {
