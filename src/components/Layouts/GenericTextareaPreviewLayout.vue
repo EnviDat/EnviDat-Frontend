@@ -2,37 +2,66 @@
 
   <div>
 
-    <v-row>
 
-        <v-col :cols="columns">  
-          <v-textarea  :label="labelTextarea"
-                        outlined
-                        auto-grow
-                        :value="textareaContent"
-                        @input="catchChangedText($event)"
-                        >
-          </v-textarea>
+    <div v-if="isVerticalLayout">
+
+      <v-row>
+
+          <v-col :cols="columns">  
+            <v-textarea  :label="labelTextarea"
+                          outlined
+                          auto-grow
+                          :value="textareaContent"
+                          @input="catchChangedText($event)"
+                          >
+            </v-textarea>
+          </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+          <v-col :cols="columns"> 
+            <div class="text-subtitle-1">{{ subtitlePreview }}</div>
+          </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col :cols="columns">     
+          <slot></slot>
         </v-col>
 
-    </v-row>
+      </v-row>
+
+    </div>
 
 
-    <v-row>
+    <div v-if="!isVerticalLayout">
 
-        <v-col :cols="columns"> 
-          <div class="text-subtitle-1">{{ subtitlePreview }}</div>
-        </v-col>
+      <v-row>
 
-    </v-row>
+        <v-col >  
+            <v-textarea  :label="labelTextarea"
+                          outlined
+                          auto-grow
+                          :value="textareaContent"
+                          @input="catchChangedText($event)"
+                          >
+            </v-textarea>
+          </v-col>
 
+          <v-col > 
+            <div class="text-subtitle-1">{{ subtitlePreview }}</div>     
+            <slot></slot>
+          </v-col>
 
-    <v-row>
+        </v-row>
 
-      <v-col :cols="columns">     
-        <slot></slot>
-      </v-col>
-
-    </v-row>
+    </div>
 
 
   </div>
@@ -61,6 +90,11 @@ export default {
     genericProps: Object,
   },
   computed: {
+    isVerticalLayout: {
+      get() {
+        return this.mixinMethods_getGenericProp('isVerticalLayout', false);
+      },
+    },
     columns: {
       get() {
         return this.mixinMethods_getGenericProp('columns', '');
@@ -86,6 +120,17 @@ export default {
     catchChangedText(event) {
       this.$emit('changedText', event);
     },
+  //   setGenericTextareaPreview(property, value) {
+  //   const newGenericTextareaPreview = {
+  //       ...this.genericProps,
+  //       [property]: value,
+  //   };
+
+  //   eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+  //       object: EDITMETADATA_CUSTOMFIELDS,
+  //       data: newCustomFields,
+  //     });
+  // },
   },
   components: {
   },

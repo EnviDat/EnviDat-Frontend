@@ -167,6 +167,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         relatedPublicationsText: '',
         subtitlePreview: 'Preview',
         showPlaceholder: false,
+        isVerticalLayout: true,
       },
       genericPropsFilled: {         
                 id: '2',
@@ -279,6 +280,7 @@ contribute something to the general goal of your product. `,
         labelTextarea: 'Related Publications',
         relatedPublicationsText: '',
         subtitlePreview: 'Preview',
+        isVerticalLayout: true,
       },
       genericPropsFilled: {         
                 id: '2',
