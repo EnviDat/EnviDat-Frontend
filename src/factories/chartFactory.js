@@ -173,7 +173,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
 
     // overwrite the local development config url for testing in development
     // geoConfigUrl = testGeoUrl;
-    geoConfigUrl = configs?.geoServicesConfig?.url ? testGeoUrl : null;
+    geoConfigUrl = configs.geoServicesConfig?.url ? testGeoUrl : null;
 
   } else {
 

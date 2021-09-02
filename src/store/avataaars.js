@@ -246,10 +246,15 @@ function getNextHashNumber(hash, index) {
   for (; i < hash.length; i++) {
     const char = hash[i];
 
-    number = Number.parseInt(char, 10);
+    try {
+      
+      number = Number.parseInt(char, 10);
 
-    if (typeof number === 'number' && !Number.isNaN(number)) {
-      return { index: i + 1, number };
+      if (typeof number === 'number' && !Number.isNaN(number)) {
+        return { index: i + 1, number };
+      }
+    } catch (error) {
+      console.error(`getNextHashNumber ${error}`);
     }
 
   }
