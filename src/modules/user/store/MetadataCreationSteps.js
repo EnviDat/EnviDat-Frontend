@@ -98,7 +98,7 @@ export const metadataCreationSteps = [
       relatedPublicationsInstructions: '',
       relatedPublicationsText: '',
       subtitlePreview: 'Preview',
-      customFields: null,
+      customFields: [],
     },
   },
   {
