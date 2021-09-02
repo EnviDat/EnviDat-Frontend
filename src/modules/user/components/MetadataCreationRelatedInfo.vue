@@ -1,8 +1,8 @@
 <template>
 
-  <v-card id="MetadataCreationRelatedInfo"
-          flat
-          class="pa-4">
+  <v-container id="MetadataCreationRelatedInfo"
+                fluid
+                class="pa-0">
 
     <v-row>
       <v-col cols="4">
@@ -19,12 +19,9 @@
       <v-col cols="3">
         <EditCustomFields :genericProps="genericProps" />
       </v-col>
-
-
     </v-row>
 
-
-  </v-card>  
+  </v-container>  
 
 </template>
 

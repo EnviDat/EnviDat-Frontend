@@ -5,7 +5,7 @@ import EditKeywords from '@/modules/user/components/EditKeywords';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
-import EditPublications from '@/modules/user/components/EditPublications';
+import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
 
 // eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
@@ -17,7 +17,14 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
+
+import { getOrganizationMap } from '@/factories/metaDataFactory';
+import testOrganizations from '@/../stories/js/organizations';
+
+const allOrganizations = getOrganizationMap(testOrganizations);
 
 export const mainDetailSteps = [
   {
@@ -78,7 +85,6 @@ export const metadataCreationSteps = [
   {
     title: 'Main Info',
     completed: false,
-    color: 'secondary',
     component: MetadataCreationMainInfo,
     detailSteps: mainDetailSteps,
     initialStepTitle: mainDetailSteps[0].title,
@@ -86,7 +92,6 @@ export const metadataCreationSteps = [
   {
     title: 'Data Info',
     completed: false,
-    color: 'secondary',
     component: MetadataCreationMainInfo,
     detailSteps: dataDetailSteps,
     initialStepTitle: dataDetailSteps[0].title,
@@ -94,7 +99,6 @@ export const metadataCreationSteps = [
   {
     title: 'Related Info',
     completed: false,
-    color: 'green',
     component: MetadataCreationRelatedInfo,
     genericProps: {
       labelTextarea: 'Related Publications',
@@ -107,17 +111,28 @@ export const metadataCreationSteps = [
   {
     title: 'Publication Info',
     completed: false,
-    color: 'orange',
-    component: EditPublications,
+    component: MetadataCreationPublicationInfo,
+    genericProps: {
+      organizationsMap: allOrganizations,
+      organization: '',
+      publicationState: '',
+      doi: '',
+      publisher: '',
+      publicationYear: '',
+      funders: [],
+    },
+    
   },
 ];
 
 const componentToStateMapping = {
   [EDITMETADATA_MAIN_HEADER]: EditMetadataHeader,
   [EDITMETADATA_MAIN_DESCRIPTION]: EditDescription,
-  [EDITMETADATA_CUSTOMFIELDS]: MetadataCreationRelatedInfo,
   [EDITMETADATA_DATA_RESOURCES]: EditDataAndResources,
   [EDITMETADATA_RELATED_PUBLICATIONS]: MetadataCreationRelatedInfo,
+  [EDITMETADATA_CUSTOMFIELDS]: MetadataCreationRelatedInfo,
+  [EDITMETADATA_PUBLICATION_INFO]: MetadataCreationPublicationInfo,
+  [EDITMETADATA_ORGANIZATION]: MetadataCreationPublicationInfo,
 };
 
 export function getStepToUpdate(eventName, steps) {
