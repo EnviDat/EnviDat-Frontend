@@ -26,7 +26,8 @@
     <v-row>
 
       <v-col :cols="columns">     
-        <generic-textarea-preview-layout :genericProps="genericProps" @changedText="catchChangedText($event)">
+        <generic-textarea-preview-layout :genericProps="genericProps"
+                                          @changedText="catchChangedText($event)">
           <metadata-publications :genericProps="publicationsObject" />
         </generic-textarea-preview-layout>
       </v-col>
@@ -82,41 +83,36 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('columns', '');
       },
-      set(value) {
-        this.setRelatedPublications('columns', value);
-      },
     },
     cardTitle: {
       get() {
         return this.mixinMethods_getGenericProp('columns', 'Related Publications');
-      },
-      set(value) {
-        this.setRelatedPublications('columns', value);
       },
     },
     cardInstructions: {
       get() {
         return this.mixinMethods_getGenericProp('columns', 'Add references to related publications to dataset(s)');
       },
-      set(value) {
-        this.setRelatedPublications('columns', value);
-      },
     },
   },
   methods: {
     catchChangedText(event) {
-      this.setRelatedPublications('textareaContent', event);
+      this.setRelatedPublicationsText(event);
     },
-    setRelatedPublications(property, value) {
+    setRelatedPublicationsText(value) {
+
       const newRelatedPublications = {
-          ...this.genericProps,
-          [property]: value,
+        ...this.genericProps,
+        textareaContent: value,
+        publications: {
+          text: value,
+        },
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_RELATED_PUBLICATIONS,
-          data: newRelatedPublications,
-        });
+        object: EDITMETADATA_RELATED_PUBLICATIONS,
+        data: newRelatedPublications,
+      });
     },
   },
   components: {

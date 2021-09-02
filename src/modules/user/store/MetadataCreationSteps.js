@@ -117,7 +117,7 @@ const componentToStateMapping = {
   [EDITMETADATA_MAIN_DESCRIPTION]: EditDescription,
   [EDITMETADATA_CUSTOMFIELDS]: EditCustomFields,
   [EDITMETADATA_DATA_RESOURCES]: EditDataAndResources,
-  [EDITMETADATA_RELATED_PUBLICATIONS]: EditRelatedPublications,
+  [EDITMETADATA_RELATED_PUBLICATIONS]: MetadataCreationRelatedInfo,
 };
 
 export function getStepToUpdate(eventName, steps) {

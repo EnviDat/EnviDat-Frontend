@@ -8,7 +8,7 @@
           <v-textarea  :label="labelTextarea"
                         outlined
                         auto-grow
-                        v-model="textareaContent"
+                        :value="textareaContent"
                         @input="catchChangedText($event)"
                         >
           </v-textarea>
@@ -53,13 +53,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_GENERIC_TEXTAREA_PREVIEW_LAYOUT,
-  eventBus,
-} from '@/factories/eventBus';
-
-
 export default {
   name: 'GenericTextareaPreviewLayout',
   data: () => ({
@@ -72,49 +65,26 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('columns', '');
       },
-      set(value) {
-        this.setGenericTextarea('columns', value);
-      },
     },
     textareaContent: {
       get() {
         return this.mixinMethods_getGenericProp('textareaContent', '');
       },
-      // set(value) {
-      //   this.setGenericTextarea('textareaContent', value);
-      // },
     },
     subtitlePreview: {
       get() {
         return this.mixinMethods_getGenericProp('subtitlePreview', 'Preview');
-      },
-      set(value) {
-        this.setGenericTextarea('subtitlePreview', value);
       },
     },
     labelTextarea: {
       get() {
         return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea label');
       },
-      set(value) {
-        this.setGenericTextarea('labelTextarea', value);
-      },
     },
   },
   methods: {
     catchChangedText(event) {
       this.$emit('changedText', event);
-    },
-    setGenericTextarea(property, value) {
-      const newGenericTextarea = {
-          ...this.genericProps,
-          [property]: value,
-      };
-
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_GENERIC_TEXTAREA_PREVIEW_LAYOUT,
-          data: newGenericTextarea,
-        });
     },
   },
   components: {

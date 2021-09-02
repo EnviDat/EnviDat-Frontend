@@ -49,25 +49,11 @@ import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
-import {
-  eventBus,
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-} from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationRelatedInfo',
   props: {  
     genericProps: Object,
-  },
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  // mounted() {
-  //   this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
-  // },
-  beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   computed: {
     disclaimer() {
@@ -75,12 +61,6 @@ export default {
     },
   },
   methods: {
-    editComponentsChanged(updateObj) {
-      if (updateObj.object === EDITMETADATA_RELATED_PUBLICATIONS) {
-        this.genericProps = updateObj.data;
-        this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
-      }
-    },
   },
   data: () => ({
     relatedDatasets,
