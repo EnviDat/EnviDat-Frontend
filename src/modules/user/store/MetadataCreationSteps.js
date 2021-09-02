@@ -36,6 +36,9 @@ export const mainDetailSteps = [
     completed: false,
     component: EditDescription,
     genericProps: {
+      labelTextarea: 'Metadata Description',
+      descriptionInstructions: 'Please enter a description for the research data.',
+      subtitlePreview: 'Description Preview',
       description: '',
     },
   },
@@ -95,9 +98,9 @@ export const metadataCreationSteps = [
     component: MetadataCreationRelatedInfo,
     genericProps: {
       labelTextarea: 'Related Publications',
-      relatedPublicationsInstructions: '',
+      relatedPublicationsInstructions: 'Add references to related publications to dataset(s)',
       relatedPublicationsText: '',
-      subtitlePreview: 'Preview',
+      subtitlePreview: 'Related Publications Preview',
       customFields: [],
     },
   },
