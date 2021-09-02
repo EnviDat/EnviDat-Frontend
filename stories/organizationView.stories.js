@@ -21,42 +21,8 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import { getOrganizationMap } from '@/factories/metaDataFactory';
 import testOrganizations from './js/organizations';
-
-
-function getOrganizationMap(organizations) {
-
-  const mainOrgas = {};
-  const topLevel = [];
-
-  for (let i = 0; i < organizations.length; i++) {
-    const orga = organizations[i];
-    let orgasSublist = null;
-
-    if (orga?.groups?.length > 0) {
-      const main = orga.groups[0].name;
-      if (main && !mainOrgas[main]) {
-        mainOrgas[main] = [];
-      }
-
-      orgasSublist = mainOrgas[main];
-    }
-
-    if (orgasSublist && !orgasSublist.includes(orga)) {
-      orgasSublist.push(orga);
-    } else {
-      topLevel.push(orga);
-    }
-    
-  }
-
-  for (let i = 0; i < topLevel.length; i++) {
-    const k = topLevel[i];
-    mainOrgas[k.name] = k;
-  }
-
-  return mainOrgas;
-}
 
 const organizationsMap = getOrganizationMap(testOrganizations);
 
@@ -143,6 +109,7 @@ storiesOf('8 Metadata Creation Views / Organization', module)
     },  
     data: () => ({
       genericProps: {
+        organizationsMap,
         organization: 'community-ecology',
         selectionDisabled: true,
       },

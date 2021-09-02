@@ -16,14 +16,15 @@
         <v-text-field readonly
                       outlined
                       label="Organization"
-                      :value="selectedOrganization"
+                      :value="organization"
                       />
       </v-col>
     </v-row>
 
-    <OrganizationTree :organizationsMap="allOrganizations"
-                      :preSelectedOrganization="preSelectedOrganization"
-                      :selectionDisabled="selectionDisabled" />
+    <OrganizationTree :organizationsMap="organizationsMap"
+                      :preSelectedOrganization="organization"
+                      :selectionDisabled="selectionDisabled"
+                      @organizationChanged="catchOrganizationChanged" />
 
   </v-card>  
 
@@ -46,9 +47,6 @@
 */
 
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
-import testOrganizations from '@/../stories/js/organizations';
-
-import { getOrganizationMap } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -63,17 +61,12 @@ export default {
   props: {  
     genericProps: Object,
   },
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
-  },
-  beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
-  },
   computed: {
-    allOrganizations() {
-      return getOrganizationMap(testOrganizations);
+    organizationsMap() {
+      return this.mixinMethods_getGenericProp('organizationsMap', {});
+      // return getOrganizationMap(testOrganizations);
     },
-    preSelectedOrganization() {
+    organization() {
       return this.mixinMethods_getGenericProp('organization', '');
     },
     selectionDisabled() {
@@ -81,14 +74,20 @@ export default {
     },
   },
   methods: {
-    showSelectedOrga(updateObj) {
-      if (updateObj.object === EDITMETADATA_ORGANIZATION) {
-        this.selectedOrganization = updateObj.data;
-      }
+    catchOrganizationChanged(organization) {
+
+      const newGenericProps = {
+        ...this.genericProps,
+        organization,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_ORGANIZATION,
+        data: newGenericProps,
+      });
     },
   },
   data: () => ({
-    selectedOrganization: '',
     EDIT_ORGANIZATION_TITLE,
   }),
   components: {

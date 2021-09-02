@@ -60,11 +60,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_ORGANIZATION,
-  eventBus,
-} from '@/factories/eventBus';
 
 export default {
   name: 'OrganizationTree',
@@ -162,10 +157,7 @@ export default {
         activeItem = this.getItemFromId(activeId);
       }
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_ORGANIZATION,
-        data: activeItem ? activeItem.name : '',
-      });
+      this.$emit('organizationChanged', activeItem ? activeItem.name : '');
     },
     getItemFromId(activeId) {
       const isChild = activeId.includes(this.childIdPrefix);
