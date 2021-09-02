@@ -1,12 +1,13 @@
 <template>
 
-  <v-card id="EditDataInfo"
-          class="pa-4">
+  <v-container id="EditDataInfo"
+                fluid
+                class="pa-0">
 
     <EditImgPlaceholder :disclaimer="disclaimer"
                         :img="dataInfo"
                         />
-  </v-card>  
+  </v-container>  
 
 </template>
 

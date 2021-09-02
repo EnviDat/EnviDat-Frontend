@@ -1,13 +1,11 @@
 <template>
 
-<v-card id="EditKeywords"
-        class="pa-4">
-
-  <!-- <v-container fluid 
-                class="pa-0 fill-height" >  
+  <v-container id="EditKeywords"
+                fluid 
+                class="pa-0" >  
 
 
-    <v-row>
+    <!-- <v-row>
 
       <v-col :cols="columns">      -->
         <EditImgPlaceholder title="Edit Keywords"
@@ -16,11 +14,9 @@
                             />
       <!-- </v-col>
 
-    </v-row>
+    </v-row> -->
 
-
- </v-container> -->
-</v-card>  
+  </v-container>
 
 </template>
 
