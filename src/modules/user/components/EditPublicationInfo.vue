@@ -33,7 +33,7 @@
         <v-col cols="6">     
           <v-text-field :label="labels.dataObjectIdentifier"
                         outlined
-                        v-model="dataObectIdentifier" />                        
+                        v-model="doi" />                        
         </v-col>
 
         <v-col cols="6">     
@@ -63,13 +63,12 @@
         </v-col>
 
         <v-col cols="6">     
-          <v-select
-            :items="yearList"
-            outlined
-            :label="labels.year"
-            required
-            v-model="publicationYear"
-          ></v-select>              
+          <v-select :items="yearList"
+                    outlined
+                    :label="labels.year"
+                    required
+                    v-model="publicationYear"
+                    />
         </v-col>
 
       </v-row>
@@ -167,14 +166,6 @@ export default {
     yearList: [],
     maxFunders: 5,
     maxFundersReached: false,
-    funderArray: [
-      {
-        organization: '', 
-        grantNumber: '',
-        link: '',
-      },
-    ],
-    filledFunderArray: [],
   }),
   props: {
     genericProps: Object, 
@@ -188,17 +179,17 @@ export default {
         this.setPublicationInfo('publicationState', value);
       },
     },
-    dataObectIdentifier: {
+    doi: {
       get() {
-        return this.mixinMethods_getGenericProp('dataObectIdentifier', '');
+        return this.mixinMethods_getGenericProp('doi', '');
       },
       set(value) {
-        this.setPublicationInfo('dataObectIdentifier', value);
+        this.setPublicationInfo('doi', value);
       },
     },
     publisher: {
       get() {
-        return this.mixinMethods_getGenericProp('publisher', 'WSL');
+        return this.mixinMethods_getGenericProp('publisher', '');
       },
       set(value) {
         this.setPublicationInfo('publisher', value);
@@ -216,11 +207,24 @@ export default {
     },  
     funders: {
       get() {
-        return this.mixinMethods_getGenericProp('funders', this.funderArray);
+        let funders = this.mixinMethods_getGenericProp('funders', []);
+
+        if (funders.length <= 0) {
+          funders = [{
+            organization: '', 
+            grantNumber: '',
+            link: '',
+          }];
+        } else {
+          this.addFunderObj(funders);
+        }
+
+        return funders;
+        // return this.mixinMethods_getGenericProp('funders', this.funderArray);
       },
-      set(value) {
-        this.setPublicationInfo('funders', value);
-      },
+      // set(value) {
+      //   this.setPublicationInfo('funders', value);
+      // },
     },  
     maxFundersMessage() {
       return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`; 
@@ -246,10 +250,10 @@ export default {
         year--;
       }
     },
-    addFunderObj() {
+    addFunderObj(localFunders) {
       
       // Assign lastFunder to last item in this.funderArray 
-      const lastFunder = this.funderArray[this.funderArray.length - 1];
+      const lastFunder = localFunders[localFunders.length - 1];
       
       // Assign lastFunderOrganization to value of organization key in lastFunder
       const lastFunderOrganization = lastFunder.organization;
@@ -263,76 +267,69 @@ export default {
       // If addFunder is true and length of funderArray is less than maxFunders then push new funder object to funderArray
       // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
       // Else it funderArray is less than maxFunders then assign maxFundersReached to false
-      if (addFunder && this.funderArray.length < this.maxFunders) {
-        this.funderArray.push(
+      if (addFunder && localFunders.length < this.maxFunders) {
+        localFunders.push(
           {
             organization: '', 
             grantNumber: '',
             link: '',
           },
         );
-      } else if (addFunder && this.funderArray.length >= this.maxFunders) {
+      } else if (addFunder && localFunders.length >= this.maxFunders) {
           this.maxFundersReached = true;
-      } else if (this.funderArray.length < this.maxFunders) {
+      } else if (localFunders.length < this.maxFunders) {
           this.maxFundersReached = false;
       }        
     },
-    deleteEmptyFunderObj(index) {
+    deleteEmptyFunderObj(index, localFunders) {
 
-      // Assign funderObj to object currently receiving input in this.funderArray
-      const funderObj = this.funderArray[index];
+      // Assign funderObj to object currently receiving input in localFunders
+      const funderObj = localFunders[index];
       
       // TODO extract isEmpty to another function 
       // Assign isEmpty to true if all values in funderObj are null or empty strings
       const isEmpty = Object.values(funderObj).every(x => (x === null || x === ''));
       
-      // If isEmpty is true and this.funderArray has more than one item then remove item at current index
-      if (isEmpty && this.funderArray.length > 1) {
-        this.funderArray.splice(index, 1);
+      // If isEmpty is true and localFunders has more than one item then remove item at current index
+      if (isEmpty && localFunders.length > 1) {
+        localFunders.splice(index, 1);
       }
 
     },
-    // Assign filledFunderArray to a copy of funderArray with last empty funder object removed
-    copyFunderArray() {
+    // Assign localFunders to a copy of funderArray with last empty funder object removed
+    copyFunderArray(localFunders) {
 
-       // Assign filledFunderArray to a copy of funderArry
-      this.filledFunderArray = [...this.funderArray];
-
-      const lastFunder = this.filledFunderArray[this.filledFunderArray.length - 1];
+      const lastFunder = localFunders[localFunders.length - 1];
 
        // Assign isEmpty to true if all values in lastFunder are null or empty strings
       const isEmpty = Object.values(lastFunder).every(x => (x === null || x === ''));
 
-      // If isEmpty is true and filledFunderArray has at least one item then remove last element of array
-      if (isEmpty && this.filledFunderArray.length > 0) {
-        this.filledFunderArray.pop();
+      // If isEmpty is true and localFunders has at least one item then remove last element of array
+      if (isEmpty && localFunders.length > 0) {
+        localFunders.pop();
       }
 
-      // Emit filledFunderArray to eventBus
-      this.setPublicationInfo('filledFunders', this.filledFunderArray);
+      // Emit localFunders to eventBus
+      this.setPublicationInfo('funders', localFunders);
 
     },
     setPublicationInfo(property, value) {
       const newPublicationInfo = {
-          ...this.genericProps,
-          [property]: value,
+        ...this.genericProps,
+        [property]: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_PUBLICATION_INFO,
-          data: newPublicationInfo,
-        });
+        object: EDITMETADATA_PUBLICATION_INFO,
+        data: newPublicationInfo,
+      });
     },
     notifyChange(index) {
-      
-      this.addFunderObj();
-            
-      this.deleteEmptyFunderObj(index);
-      
-      this.addFunderObj();
+      const localyCopy = [...this.funders];
 
-      this.copyFunderArray();
-
+      this.deleteEmptyFunderObj(index, localyCopy);
+      
+      this.copyFunderArray(localyCopy);
     },
   },
   components: {
