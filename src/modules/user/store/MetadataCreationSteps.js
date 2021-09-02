@@ -1,7 +1,5 @@
 import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
-import EditCustomFields from '@/modules/user/components/EditCustomFields';
-import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 
 import EditKeywords from '@/modules/user/components/EditKeywords';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -97,9 +95,10 @@ export const metadataCreationSteps = [
     component: MetadataCreationRelatedInfo,
     genericProps: {
       labelTextarea: 'Related Publications',
+      relatedPublicationsInstructions: '',
       relatedPublicationsText: '',
       subtitlePreview: 'Preview',
-      customFields: [],
+      customFields: null,
     },
   },
   {
@@ -113,7 +112,7 @@ export const metadataCreationSteps = [
 const componentToStateMapping = {
   [EDITMETADATA_MAIN_HEADER]: EditMetadataHeader,
   [EDITMETADATA_MAIN_DESCRIPTION]: EditDescription,
-  [EDITMETADATA_CUSTOMFIELDS]: EditCustomFields,
+  [EDITMETADATA_CUSTOMFIELDS]: MetadataCreationRelatedInfo,
   [EDITMETADATA_DATA_RESOURCES]: EditDataAndResources,
   [EDITMETADATA_RELATED_PUBLICATIONS]: MetadataCreationRelatedInfo,
 };

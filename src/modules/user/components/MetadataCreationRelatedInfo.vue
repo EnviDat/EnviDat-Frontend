@@ -17,7 +17,7 @@
       </v-col>
 
       <v-col cols="2">
-        <EditCustomFields />
+        <EditCustomFields :genericProps="genericProps" />
       </v-col>
 
 

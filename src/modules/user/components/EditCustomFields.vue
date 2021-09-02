@@ -23,6 +23,7 @@
         <v-col cols="6" >
           <v-text-field :label="labelFieldName"
                         outlined
+                        hide-details
                         v-model="item.fieldName"
                         @input="notifyChange(index)" >
           </v-text-field>
@@ -30,6 +31,7 @@
         <v-col cols="6" > 
           <v-text-field :label="labelContent" 
                         outlined 
+                        hide-details
                         v-model="item.content"
                         @input="notifyChange(index)" >
           </v-text-field>
@@ -69,56 +71,45 @@ export default {
   data: () => ({
     maxCustomFields: 10,
     maxCustomFieldsReached: false,
-    customFieldsArray: [
-      {
-        fieldName: '', 
-        content: '',
-      },
-    ],
-    filledCustomFieldsArray: [],
   }),
   props: {  
-    genericProps: Object,  
+    genericProps: Object,
   },
   computed: {
     cardTitle: {
       get() {
         return this.mixinMethods_getGenericProp('cardTitle', 'Custom Fields');
       },
-      set(value) {
-        this.setCustomFields('publicationState', value);
-      },
     },
     cardInstructions: {
       get() {
         return this.mixinMethods_getGenericProp('cardInstructions', 'Advance custom data fields (optional)');
-      },
-      set(value) {
-        this.setCustomFields('cardInstructions', value);
       },
     },
     labelFieldName: {
       get() {
         return this.mixinMethods_getGenericProp('labelFieldName', 'Field Name');
       },
-      set(value) {
-        this.setCustomFields('labelFieldName', value);
-      },
     },
     labelContent: {
       get() {
         return this.mixinMethods_getGenericProp('labelContent', 'Content');
       },
-      set(value) {
-        this.setCustomFields('labelContent', value);
-      },
     },
     customFields: {
       get() {
-        return this.mixinMethods_getGenericProp('customFields', this.customFieldsArray);
-      },
-      set(value) {
-        this.setCustomFields('customFields', value);
+        let fields = this.mixinMethods_getGenericProp('customFields', []);
+
+        if (fields.length <= 0) {
+          fields = [{
+            fieldName: '', 
+            content: '',
+          }];
+        } else {
+          this.addCustomFieldObj(fields);
+        }
+
+        return fields;
       },
     },
     maxCustomFieldsMessage() {
@@ -126,10 +117,10 @@ export default {
     },
   },
   methods: {
-     addCustomFieldObj() {
+     addCustomFieldObj(localFields) {
       
-      // Assign lastCustomField to last item in customFieldsArray
-      const lastCustomFieldObj = this.customFieldsArray[this.customFieldsArray.length - 1];
+      // Assign lastCustomField to last item in localFields
+      const lastCustomFieldObj = localFields[localFields.length - 1];
 
       // Assign variables to lastCustomFieldObj properties
       const lastCustomFieldName = lastCustomFieldObj.fieldName;
@@ -141,77 +132,68 @@ export default {
         addCustomField = false;
       }
       
-      // If addCustomField is true and length of customFieldsArray is less than maxCustomFields then push new custom field object to customFieldsArray
-      // Else if addCustomField is true and customFieldsArray is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
-      // Else if customFieldsArray is less than maxCustomFields then assign maxCustomFieldsReached to false
-      if (addCustomField && this.customFieldsArray.length < this.maxCustomFields) {
-        this.customFieldsArray.push(
-          {
-            fieldName: '', 
-            content: '',
-          },
-        );
-      } else if (addCustomField && this.customFieldsArray.length >= this.maxCustomFields) {
+      // If addCustomField is true and length of localFields is less than maxCustomFields then push new custom field object to customFieldsArray
+      // Else if addCustomField is true and localFields is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
+      // Else if localFields is less than maxCustomFields then assign maxCustomFieldsReached to false
+      if (addCustomField && localFields.length < this.maxCustomFields) {
+        localFields.push({
+          fieldName: '', 
+          content: '',
+        });
+      } else if (addCustomField && localFields.length >= this.maxCustomFields) {
           this.maxCustomFieldsReached = true;
-      } else if (this.customFieldsArray.length < this.maxCustomFields) {
+      } else if (localFields.length < this.maxCustomFields) {
           this.maxCustomFieldsReached = false;
       }        
     },
-    deleteEmptyCustomFieldObj(index) {
+    deleteEmptyCustomFieldObj(index, localFields) {
 
       // Assign customFieldObj to object currently receiving input in customFieldsArray
-      const customFieldObj = this.customFieldsArray[index];
+      const customFieldObj = localFields[index];
       
       // Assign isEmpty to true if all values in customFieldObj are null or empty strings
       const isEmpty = Object.values(customFieldObj).every(x => (x === null || x === ''));
       
       // If isEmpty is true and customFieldsArray has more than one item then remove item at current index
-      if (isEmpty && this.customFieldsArray.length > 1) {
-        this.customFieldsArray.splice(index, 1);
+      if (isEmpty && localFields.length > 1) {
+        localFields.splice(index, 1);
       }
 
     },
      // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
      // Emit filledCustomFieldsArray to eventBus
-    copyCustomFieldsArray() {
+    copyCustomFieldsArray(localFields) {
 
-       // Assign filledCustomFieldsArray to a copy of customFieldsArray
-      this.filledCustomFieldsArray = [...this.customFieldsArray];
-
-      const lastCustomField = this.filledCustomFieldsArray[this.filledCustomFieldsArray.length - 1];
+      const lastCustomField = localFields[localFields.length - 1];
 
        // Assign isEmpty to true if all values in lastCustomField are null or empty strings
       const isEmpty = Object.values(lastCustomField).every(x => (x === null || x === ''));
 
       // If isEmpty is true and filledCustomFieldsArray has at least one item then remove last element of array
-      if (isEmpty && this.filledCustomFieldsArray.length > 0) {
-        this.filledCustomFieldsArray.pop();
+      if (isEmpty && localFields.length > 0) {
+        localFields.pop();
       }
 
-      this.setCustomFields('filledCustomFields', this.filledCustomFieldsArray);
+      this.setCustomFields(localFields);
 
     },
-    setCustomFields(property, value) {
+    setCustomFields(value) {
       const newCustomFields = {
           ...this.genericProps,
-          [property]: value,
+          customFields: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_CUSTOMFIELDS,
-          data: newCustomFields,
-        });
+        object: EDITMETADATA_CUSTOMFIELDS,
+        data: newCustomFields,
+      });
     },
     notifyChange(index) {
+      const localyCopy = [...this.customFields];
     
-      this.addCustomFieldObj();
-          
-      this.deleteEmptyCustomFieldObj(index);
+      this.deleteEmptyCustomFieldObj(index, localyCopy);
     
-      this.addCustomFieldObj();
-
-      this.copyCustomFieldsArray();
-
+      this.copyCustomFieldsArray(localyCopy);
     },
   },
   components: {
