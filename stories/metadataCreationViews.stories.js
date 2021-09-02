@@ -63,17 +63,6 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 //   onTagClick: action('clicked on tag'),
 // };
 
-const relatedPublicationsGenericProps = {
-  id: '1',
-  labelTextarea: 'Related Publications',
-  textareaContent: '',
-  subtitlePreview: 'Preview',
-  showPlaceholder: false,
-  publications: {
-    text: '',
-  },
-};
-
 const placeholderKeywordsGenericProps = {
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
@@ -167,12 +156,18 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
         }
         if (updateObj.data.id === this.genericPropsFilled.id) {
           this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+          // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
         }
       },
     },  
     data: () => ({
-      genericProps: relatedPublicationsGenericProps,
+      genericProps: {
+        id: '1',
+        labelTextarea: 'Related Publications',
+        relatedPublicationsText: '',
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+      },
       genericPropsFilled: {         
                 id: '2',
                 labelTextarea: 'Related Publications',
@@ -219,8 +214,9 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout  :genericProps="genericProps"  >          
-            <metadata-publications :genericProps="genericProps" />              
+          <GenericTextareaPreviewLayout :genericProps="genericProps"
+                                        @changedText="catchChangedText($event)" >
+            <metadata-publications :genericProps="publicationsObject" />              
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -231,47 +227,58 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-         <GenericTextareaPreviewLayout  :genericProps="genericPropsFilled"  >           
-            <metadata-publications :genericProps="genericPropsFilled" />            
+         <GenericTextareaPreviewLayout :genericProps="genericPropsFilled"
+                                        @changedText="catchChangedFilledText($event)" >
+            <metadata-publications :genericProps="filledPublicationsObject" />            
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
 
     </v-col> `,
-    created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
     mounted() {
         this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
-    beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
     methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-          this.genericProps.publications.text = this.genericProps.textareaContent;
-        }
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
-        }
+      catchChangedText(value) {
+        const newRelatedPublications = {
+          ...this.genericProps,
+          relatedPublicationsText: value,
+        };
+
+        this.genericProps = newRelatedPublications;
+      },
+      catchChangedFilledText(value) {
+        const newRelatedPublications = {
+          ...this.genericPropsFilled,
+          relatedPublicationsText: value,
+        };
+
+        this.genericPropsFilled = newRelatedPublications;
       },
     },  
     computed: {
+      publicationsObject() {
+        return {
+          publications: {
+            text: this.genericProps.relatedPublicationsText,
+          },
+        };
+      },
+      filledPublicationsObject() {
+        return {
+          publications: {
+            text: this.genericPropsFilled.relatedPublicationsText,
+          },
+        };
+      },
     },
     data: () => ({
       genericProps: {         
-                id: '1',
-                columns: '',
-                labelTextarea: 'Related Publications',
-                textareaContent: '',
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                publications: {
-                  text: '',
-                },
+        id: '1',
+        columns: '',
+        labelTextarea: 'Related Publications',
+        relatedPublicationsText: '',
+        subtitlePreview: 'Preview',
       },
       genericPropsFilled: {         
                 id: '2',
@@ -302,7 +309,6 @@ It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,  
                 subtitlePreview: 'Preview',
-                showPlaceholder: false,
                 publications: {
                   text: '',
                 },

@@ -75,7 +75,7 @@ export default {
     publicationsObject() {
       return {
         publications: {
-          text: this.genericProps.textareaContent,
+          text: this.genericProps.relatedPublicationsText,
         },
       };
     },
@@ -103,10 +103,7 @@ export default {
 
       const newRelatedPublications = {
         ...this.genericProps,
-        textareaContent: value,
-        publications: {
-          text: value,
-        },
+        relatedPublicationsText: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {

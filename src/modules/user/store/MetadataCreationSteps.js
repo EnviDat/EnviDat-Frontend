@@ -97,11 +97,9 @@ export const metadataCreationSteps = [
     component: MetadataCreationRelatedInfo,
     genericProps: {
       labelTextarea: 'Related Publications',
-      textareaContent: '',
+      relatedPublicationsText: '',
       subtitlePreview: 'Preview',
-      publications: {
-        text: '',
-      },
+      customFields: [],
     },
   },
   {
