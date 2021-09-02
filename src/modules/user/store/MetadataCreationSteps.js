@@ -5,7 +5,7 @@ import EditRelatedPublications from '@/modules/user/components/EditRelatedPublic
 
 import EditKeywords from '@/modules/user/components/EditKeywords';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
-import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import EditPublications from '@/modules/user/components/EditPublications';
 
@@ -94,15 +94,15 @@ export const metadataCreationSteps = [
     title: 'Related Info',
     completed: false,
     color: 'green',
-    component: EditRelatedInfo,
-    // genericProps: {
-    //   labelTextarea: 'Related Publications',
-    //   textareaContent: '',
-    //   subtitlePreview: 'Preview',
-    //   publications: {
-    //     text: '',
-    //   },
-    // },
+    component: MetadataCreationRelatedInfo,
+    genericProps: {
+      labelTextarea: 'Related Publications',
+      textareaContent: '',
+      subtitlePreview: 'Preview',
+      publications: {
+        text: '',
+      },
+    },
   },
   {
     title: 'Publication Info',

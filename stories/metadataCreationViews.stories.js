@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 11:25:22
+ * Last modified  : 2021-09-01 17:47:50
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -26,7 +26,7 @@ import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
 import EditKeywords from '@/modules/user/components/EditKeywords';
-import EditRelatedInfo from '@/modules/user/components/EditRelatedInfo';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
 
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
@@ -82,7 +82,7 @@ const placeholderKeywordsGenericProps = {
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
   .add('Editing Placeholder Images', () => ({
-    components: { EditKeywords, EditDataInfo, EditRelatedInfo },
+    components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
     template: `
     <v-col>
 
@@ -107,12 +107,12 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
       </v-row>
       
       <v-row>
-        EditRelatedInfo with Placeholder
+        MetadataCreationRelatedInfo with Placeholder
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditRelatedInfo :genericProps="genericProps" />
+          <MetadataCreationRelatedInfo :genericProps="genericProps" />
         </v-col>
       </v-row>      
 
@@ -154,7 +154,7 @@ storiesOf('8 Metadata Creation Views / Main Info', module)
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
-        this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
     beforeDestroy() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);

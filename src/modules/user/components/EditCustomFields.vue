@@ -1,28 +1,21 @@
 <template>
   <v-card id="EditCustomFields"
-          class="pa-4"
-          max-width="50%">
+          class="pa-4" >
 
     <v-container fluid
                   class="pa-0" >
 
       <v-row>
-
         <v-col cols="12"> 
           <div class="text-h5">{{ cardTitle }}</div>
         </v-col>
-
       </v-row>  
 
-
       <v-row>
-
         <v-col cols="12"> 
           <div class="text-body-1">{{ cardInstructions }}</div>
         </v-col>
-
       </v-row>
-
 
       <v-row v-for="(item, index) in customFields"  
           :key="`${item}_${index}`">
@@ -43,15 +36,11 @@
         </v-col>
       </v-row>
 
-
       <v-row v-if="maxCustomFieldsReached">
-
         <v-col cols="12"> 
           <div class="text-subtitle-2"><span class="red--text">{{ this.maxCustomFieldsMessage }}</span></div>
         </v-col>
-
       </v-row>
-
 
     </v-container>
   </v-card>  
@@ -64,7 +53,7 @@
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
  * Created at     : 2021-07-05
- * Last modified  : 2021-08-31
+ * Last modified  : 2021-09-01 17:52:29
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
