@@ -176,7 +176,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-01-06 16:14:05
+ * Last modified  : 2021-09-06 15:29:46
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -308,16 +308,21 @@ export default {
       );
     },
     cardGridClass() {
-      const fullSize = {
+      if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
+        return { 'col-12': true };
+      }
+      
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+      const compactLayout = this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+
+      return {
         'col-12': true,
         'col-sm-6': true,
         'col-md-4': true,
-        'col-lg-3': true,
-        'col-xl-2': !this.isActiveControl(LISTCONTROL_MAP_ACTIVE)
-                    && this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE),
+        'col-lg-3': compactLayout || !mapActive,
+        'col-lg-4': mapActive && !compactLayout,
+        'col-xl-2': !mapActive && compactLayout,
       };
-
-      return fullSize;
     },
     contentSize() {
       return this.listContent !== undefined ? Object.keys(this.listContent).length : 0;
