@@ -30,7 +30,7 @@
       <v-row>
         
         <v-col > 
-          <v-autocomplete
+          <v-combobox
             chips
             deletable-chips
             multiple
@@ -38,8 +38,22 @@
             append-icon="arrow_drop_down"
             :label="keywordsLabel"
             :items="keywordsSource"
+            :search-input.sync="search"
             v-model="keywords"
-          ></v-autocomplete>
+          >
+
+       
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new keyword.
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>          
+
+          </v-combobox>
         </v-col>
 
         <v-col> 
@@ -81,10 +95,13 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import keywordsTags from '@/modules/metadata/store/metadataTags';
+
 
 export default {
   name: 'EditKeywords',
   data: () => ({
+    search: null,
     // keywordsScreenshot,
     // disclaimer: `The screenshot below serves as a preview of the future component.
     //           Even if you can't interacte, please think about the information shown and if the grouping of the information to 
@@ -95,7 +112,14 @@ export default {
   },
   computed: {
     keywordsSource() {
-      return ['foo', 'bar', 'fizz', 'buzz'];
+    
+      const keywordsArray = [];
+
+      for (let i = 0; i < keywordsTags.length; i++) {
+        keywordsArray.push(keywordsTags[i].name);
+      }
+
+      return keywordsArray;
     },
     cardTitle() {
       return this.mixinMethods_getGenericProp('cardTitle', 'Metadata Keywords');
@@ -114,7 +138,71 @@ export default {
         return this.mixinMethods_getGenericProp('keywords', '');
       },
       set(value) {
+     
+        // const valuesComparer = [];
+        // let isDuplicate = false;
+
+        for (let i = 0; i < value.length; i++) {
+          
+          // Convert lowercase strings to uppercase strings
+          value[i] = value[i].toUpperCase();
+
+        //  let isDuplicate = false;
+
+          // if (valuesComparer.indexOf(value[i]) !== -1) {
+          // if (valuesComparer.includes(value[i])) {
+          //   isDuplicate = true;
+          //   value = value.splice(i + 1, 1);
+          //   console.log(i);
+          //   console.log(value);
+          //   console.log(isDuplicate);
+          // }
+          // valuesComparer.push(value[i]);
+            
+          // } else {
+          // valuesComparer.push(value[i]);
+          // }
+
+         // const currentValues = [...value];
+       //   console.log(currentValues);
+
+          // console.log(valuesComparer);
+          // console.log(value);
+
+          // valueUpperCase = value[i];
+          
+          // valuesComparer.push(value[i]);
+          // console.log(valuesComparer);
+
+          // if (value[i] in valuesComparer) {
+          //   console.log('DUPLICATE!');
+          // }
+
+        }
+
+        // if (value.length > 2) {
+        //   value.pop();
+        // }
+
+        // Remove duplicate keywords
+        // value = [...new Set(value)];
+          const uniqueSet = new Set(value);
+      //    console.log(uniqueSet);
+          value = [...uniqueSet];
+       //   console.log(value);
+
+        
+        // const uniqueSet = [...new Set(value)];
+       
+
+        // console.log(uniqueSet);
+
+        // value = Array.from(uniqueSet);
+
+        // console.log(value);
+
         this.setKeywords('keywords', value);
+
       },
     },
   },
@@ -129,6 +217,8 @@ export default {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });
+
+      console.log(newKeywords);
     },
   },
   components: {
