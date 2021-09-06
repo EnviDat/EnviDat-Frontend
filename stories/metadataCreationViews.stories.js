@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 17:47:50
+ * Last modified  : 2021-09-06 15:11:15
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -30,14 +30,39 @@ import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreat
 
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-// import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
-// import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
-// import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
-// import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
-// import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding';
-// import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+
+import { getTagColor } from '@/factories/metaDataFactory';
+import { createTag, getPopularTags } from '@/factories/metadataFilterMethods';
+
+import categoryCards from '@/store/categoryCards';
+import metadataset from './js/metadata';
+
+for (let i = 0; i < metadataset.length; i++) {
+  const entry = metadataset[i];
+
+  if (entry?.tags?.length > 0) {
+    const tagList = [];
+
+    for (let j = 0; j < entry.tags.length; j++) {
+      const tagName = entry.tags[j];
+      tagList.push(createTag(tagName));
+    }
+
+    entry.tags = tagList;
+  }
+  
+}
+
+const tagsFromDatasets = getPopularTags(metadataset, '', 1);
+// import tags from '@/modules/metadata/store/metadataTags';
+
+for (let i = 0; i < tagsFromDatasets.length; i++) {
+  const tag = tagsFromDatasets[i];
+  tag.color = getTagColor(categoryCards, tag.name);
+}
+
 
 // import doiIcon from '@/assets/icons/doi.png';
 // import mailIcon from '@/assets/icons/mail.png';
@@ -64,13 +89,14 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 // };
 
 const placeholderKeywordsGenericProps = {
+  keywordsSource: tagsFromDatasets,
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
 
 
 storiesOf('8 Metadata Creation Views / Main Info', module)
-  .add('Editing Placeholder Images', () => ({
+  .add('Editing Keywords & Placeholder Images', () => ({
     components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
     template: `
     <v-col>
