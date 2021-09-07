@@ -137,71 +137,42 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('keywords', '');
       },
-      set(value) {
+      set(valuesArray) {
      
-        // const valuesComparer = [];
-        // let isDuplicate = false;
+        // Initialize arrays used to compare values and find duplicates
+        const valuesComparer = [];                
+        const indicesDuplicates = [];
 
-        for (let i = 0; i < value.length; i++) {
+        // Iterate through valuesArray
+        for (let i = 0; i < valuesArray.length; i++) {
           
           // Convert lowercase strings to uppercase strings
-          value[i] = value[i].toUpperCase();
+          valuesArray[i] = valuesArray[i].toUpperCase();
 
-        //  let isDuplicate = false;
+          // Push first element of valuesArray to valuesComparer
+          if (i === 0) {
+            valuesComparer.push(valuesArray[i]);
+          } 
 
-          // if (valuesComparer.indexOf(value[i]) !== -1) {
-          // if (valuesComparer.includes(value[i])) {
-          //   isDuplicate = true;
-          //   value = value.splice(i + 1, 1);
-          //   console.log(i);
-          //   console.log(value);
-          //   console.log(isDuplicate);
-          // }
-          // valuesComparer.push(value[i]);
-            
-          // } else {
-          // valuesComparer.push(value[i]);
-          // }
-
-         // const currentValues = [...value];
-       //   console.log(currentValues);
-
-          // console.log(valuesComparer);
-          // console.log(value);
-
-          // valueUpperCase = value[i];
-          
-          // valuesComparer.push(value[i]);
-          // console.log(valuesComparer);
-
-          // if (value[i] in valuesComparer) {
-          //   console.log('DUPLICATE!');
-          // }
+          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+          // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+          if (i > 0 && valuesComparer.includes(valuesArray[i])) {
+            indicesDuplicates.push(i);
+          } else if (i > 0) {
+            valuesComparer.push(valuesArray[i]);
+          }
 
         }
+    
+        // Remove items from valuesArray that are duplicates using indicesDuplicates
+        indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
+      
+        // Remove duplicate keywords from valuesArray using uniqueSet
+        const uniqueSet = new Set(valuesArray);
+        valuesArray = [...uniqueSet];
 
-        // if (value.length > 2) {
-        //   value.pop();
-        // }
-
-        // Remove duplicate keywords
-        // value = [...new Set(value)];
-          const uniqueSet = new Set(value);
-      //    console.log(uniqueSet);
-          value = [...uniqueSet];
-       //   console.log(value);
-
-        
-        // const uniqueSet = [...new Set(value)];
-       
-
-        // console.log(uniqueSet);
-
-        // value = Array.from(uniqueSet);
-
-        // console.log(value);
-
-        this.setKeywords('keywords', value);
+        // Pass {keywords: valuesArray} to genericProps and emit to eventBus
+        this.setKeywords('keywords', valuesArray);
 
       },
     },
