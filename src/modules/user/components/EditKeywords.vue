@@ -22,7 +22,8 @@
 
       <v-row>
         <v-col > 
-          <div class="text-body-1">{{ cardInstructions }}</div>
+          <div class="text-body-1">{{ cardInstructions1 }}</div>
+          <div class="text-body-1">{{ cardInstructions2 }}</div>
         </v-col>
       </v-row>
 
@@ -124,8 +125,11 @@ export default {
     cardTitle() {
       return this.mixinMethods_getGenericProp('cardTitle', 'Metadata Keywords');
     },
-    cardInstructions() {
-      return this.mixinMethods_getGenericProp('cardInstructions', 'Please enter keywords for your metadata entry.');
+    cardInstructions1() {
+      return this.mixinMethods_getGenericProp('cardInstructions1', 'Please enter keywords for your metadata entry.');
+    },
+    cardInstructions2() {
+      return this.mixinMethods_getGenericProp('cardInstructions2', 'To use a new keyword not in dropdown list type keyword and press enter.');
     },
     keywordsLabel() {
       return this.mixinMethods_getGenericProp('keywordsLabel', 'Keywords');
