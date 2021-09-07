@@ -167,10 +167,6 @@ export default {
         // Remove items from valuesArray that are duplicates using indicesDuplicates
         indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
       
-        // Remove duplicate keywords from valuesArray using uniqueSet
-        const uniqueSet = new Set(valuesArray);
-        valuesArray = [...uniqueSet];
-
         // Pass {keywords: valuesArray} to genericProps and emit to eventBus
         this.setKeywords('keywords', valuesArray);
 
