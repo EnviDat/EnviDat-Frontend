@@ -39,10 +39,19 @@
             append-icon="arrow_drop_down"
             :label="keywordsLabel"
             :items="keywordsSource"
+            item-text="name"
             :search-input.sync="search"
             v-model="keywords"
           >
 
+            <template v-slot:selection="{ item }">
+              <tag-chip 
+                :name="item.name" 
+                closeable
+                selectable
+                :color="item.color"
+              ></tag-chip>
+            </template>
        
             <template v-slot:no-data>
               <v-list-item>
@@ -59,7 +68,9 @@
 
         <v-col> 
           <div class="text-body-1">{{ previewText }}</div>
-            <!-- TODO insert MetadataCard Component here -->
+          <!-- TODO implement MetadataCard -->
+            <!-- <MetadataCard >
+            </MetadataCard> -->
         </v-col>
 
       </v-row>
@@ -81,7 +92,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-09-06
+ * Last modified  : 2021-09-07
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -97,6 +108,9 @@ import {
 } from '@/factories/eventBus';
 
 import keywordsTags from '@/modules/metadata/store/metadataTags';
+// import MetadataCard from '@/components/Cards/MetadataCard';
+import TagChip from '@/components/Cards/TagChip';
+import catCards from '@/store/categoryCards';
 
 
 export default {
@@ -114,10 +128,10 @@ export default {
   computed: {
     keywordsSource() {
     
-      const keywordsArray = [];
-
-      for (let i = 0; i < keywordsTags.length; i++) {
-        keywordsArray.push(keywordsTags[i].name);
+      const keywordsArray = [...keywordsTags];
+     
+      for (let i = 0; i < keywordsArray.length; i++) {
+        keywordsArray[i].color = this.getTagColor(catCards, keywordsArray[i].name);
       }
 
       return keywordsArray;
@@ -141,43 +155,61 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('keywords', '');
       },
-      set(valuesArray) {
+      // TODO update set method to use array of objects rather than an array of strings
+      // set(valuesArray) {
      
-        // Initialize arrays used to compare values and find duplicates
-        const valuesComparer = [];                
-        const indicesDuplicates = [];
+      //   // Initialize arrays used to compare values and find duplicates
+      //   const valuesComparer = [];                
+      //   const indicesDuplicates = [];
 
-        // Iterate through valuesArray
-        for (let i = 0; i < valuesArray.length; i++) {
+      //   // Iterate through valuesArray
+      //   for (let i = 0; i < valuesArray.length; i++) {
           
-          // Convert lowercase strings to uppercase strings
-          valuesArray[i] = valuesArray[i].toUpperCase();
+      //     // Convert lowercase strings to uppercase strings
+      //     valuesArray[i] = valuesArray[i].toUpperCase();
 
-          // Push first element of valuesArray to valuesComparer
-          if (i === 0) {
-            valuesComparer.push(valuesArray[i]);
-          } 
+      //     // Push first element of valuesArray to valuesComparer
+      //     if (i === 0) {
+      //       valuesComparer.push(valuesArray[i]);
+      //     } 
 
-          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-          // Else if index is greater than 0 then push current valuesArray element to valuesComparer
-          if (i > 0 && valuesComparer.includes(valuesArray[i])) {
-            indicesDuplicates.push(i);
-          } else if (i > 0) {
-            valuesComparer.push(valuesArray[i]);
-          }
+      //     // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+      //     // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+      //     if (i > 0 && valuesComparer.includes(valuesArray[i])) {
+      //       indicesDuplicates.push(i);
+      //     } else if (i > 0) {
+      //       valuesComparer.push(valuesArray[i]);
+      //     }
 
-        }
+      //   }
     
-        // Remove items from valuesArray that are duplicates using indicesDuplicates
-        indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
+      //   // Remove items from valuesArray that are duplicates using indicesDuplicates
+      //   indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
       
-        // Pass {keywords: valuesArray} to genericProps and emit to eventBus
-        this.setKeywords('keywords', valuesArray);
+      //   // Pass {keywords: valuesArray} to genericProps and emit to eventBus
+      //   this.setKeywords('keywords', valuesArray);
 
-      },
+      // },
     },
   },
   methods: {
+    getTagColor(categoryCards, tagName) {
+
+      if (!categoryCards || !tagName) {
+        return '';
+      }
+
+      for (let i = 0; i < categoryCards.length; i++) {
+        const cat = categoryCards[i];
+        const name = tagName.toLowerCase();
+
+        if (name.includes(cat.type) || cat.alias.includes(name)) {
+          return cat.darkColor;
+        }
+      }
+
+      return '#e0e0e0';
+    },
     setKeywords(property, value) {
       const newKeywords = {
         ...this.genericProps,
@@ -189,11 +221,12 @@ export default {
         data: newKeywords,
       });
 
-      console.log(newKeywords);
     },
   },
   components: {
  //   EditImgPlaceholder,
+ //   MetadataCard,
+    TagChip,
   },
 };
 
