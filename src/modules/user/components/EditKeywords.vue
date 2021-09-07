@@ -155,41 +155,53 @@ export default {
       get() {
         return this.mixinMethods_getGenericProp('keywords', '');
       },
-      // TODO update set method to use array of objects rather than an array of strings
-      // set(valuesArray) {
-     
-      //   // Initialize arrays used to compare values and find duplicates
-      //   const valuesComparer = [];                
-      //   const indicesDuplicates = [];
+      // TODO finish updating set method to use array of objects rather than an array of strings
+      set(valuesArray) {
 
-      //   // Iterate through valuesArray
-      //   for (let i = 0; i < valuesArray.length; i++) {
-          
-      //     // Convert lowercase strings to uppercase strings
-      //     valuesArray[i] = valuesArray[i].toUpperCase();
+        for (let i = 0; i < valuesArray.length; i++) {
+          if (typeof valuesArray[i] === 'string') {
+            valuesArray[i] = {
+              name: valuesArray[i],
+              color: this.getTagColor(catCards, valuesArray[i]),
+            };
+          }
+        }
 
-      //     // Push first element of valuesArray to valuesComparer
-      //     if (i === 0) {
-      //       valuesComparer.push(valuesArray[i]);
-      //     } 
-
-      //     // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-      //     // Else if index is greater than 0 then push current valuesArray element to valuesComparer
-      //     if (i > 0 && valuesComparer.includes(valuesArray[i])) {
-      //       indicesDuplicates.push(i);
-      //     } else if (i > 0) {
-      //       valuesComparer.push(valuesArray[i]);
-      //     }
-
-      //   }
-    
-      //   // Remove items from valuesArray that are duplicates using indicesDuplicates
-      //   indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
+        // console.log(valuesArray);
       
-      //   // Pass {keywords: valuesArray} to genericProps and emit to eventBus
-      //   this.setKeywords('keywords', valuesArray);
+        // ============= TODO Refactor from this point onwards this method =================================================
+        // // Initialize arrays used to compare values and find duplicates
+        // const valuesComparer = [];                
+        // const indicesDuplicates = [];
 
-      // },
+        // // Iterate through valuesArray
+        // for (let i = 0; i < valuesArray.length; i++) {
+          
+        //   // Convert lowercase strings to uppercase strings
+        //   valuesArray[i] = valuesArray[i].toUpperCase();
+
+        //   // Push first element of valuesArray to valuesComparer
+        //   if (i === 0) {
+        //     valuesComparer.push(valuesArray[i]);
+        //   } 
+
+        //   // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+        //   // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+        //   if (i > 0 && valuesComparer.includes(valuesArray[i])) {
+        //     indicesDuplicates.push(i);
+        //   } else if (i > 0) {
+        //     valuesComparer.push(valuesArray[i]);
+        //   }
+
+        // }
+    
+        // // Remove items from valuesArray that are duplicates using indicesDuplicates
+        // indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
+      
+        // // Pass {keywords: valuesArray} to genericProps and emit to eventBus
+        // this.setKeywords('keywords', valuesArray);
+
+      },
     },
   },
   methods: {
