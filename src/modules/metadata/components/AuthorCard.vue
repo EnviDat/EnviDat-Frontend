@@ -2,7 +2,8 @@
     <v-card class="authorCard pa-4"
             :class="dataCreditLevel > 2 ? 'accentLink' : ''"
             :style="dynamicCardBackground"
-            @click.native="cardClick" >
+            @click.native="cardClick"
+            :loading="loading" >
 
       <v-container fluid
                     class="pa-0" >
@@ -52,10 +53,10 @@
 
           <v-col cols="6"
                   :class="dark ? 'white--text' : 'black--text'" >
-            {{ dataCountLabel }} 
+            {{ dataCountLabel }}
           </v-col>
 
-          <v-col class="shrink py-0"                  
+          <v-col class="shrink py-0"
                   style="max-height: 36px;">
 
             <base-icon-button class="ma-0"
@@ -66,7 +67,7 @@
                               :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
                               @clicked="catchSearchAuthor(author.fullName)" />
 
-            <v-badge :color="dark ? 'white' : darkColor"                    
+            <v-badge :color="dark ? 'white' : darkColor"
                       overlap
                       style="top: -25px; right: -2px;">
               <span slot="badge"
@@ -92,7 +93,7 @@
                 justify="space-between"
                 align="center" >
 
-          <v-col class="grow" 
+          <v-col class="grow"
                   :class="dark ? 'white--text' : 'black--text'" >
             {{ dataScoreLabel }}
           </v-col>
@@ -153,13 +154,13 @@
                   class="pa-1"
                   cols="6" >
             <v-row no-gutters>
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfoLabel py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
                 {{ emailLabel }}
               </v-col>
 
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfo py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
                 <a :href="`mailto:${author.email}`" >
@@ -173,13 +174,13 @@
                   class="pa-1"
                   cols="6" >
             <v-row no-gutters>
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfoLabel py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
                 {{ author.id.type ? author.id.type : idLabel }}
               </v-col>
 
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfo py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
 
@@ -199,13 +200,13 @@
                   class="pa-1"
                   cols="6">
             <v-row no-gutters>
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfoLabel py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
                 {{ affiliationLabel }}
               </v-col>
 
-              <v-col cols="12" 
+              <v-col cols="12"
                       class="authorInfo py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
                 {{ author.affiliation }}
@@ -215,6 +216,24 @@
         </v-row>
 
       </v-container>
+
+      <v-container v-if="showGenericOpenButton"
+                   fluid
+                   class="ma-2 pa-0"
+                   style="position: absolute; top: 0px; right: 0px; width: 40px;">
+        <v-row >
+          <v-col cols="12" >
+            <base-icon-button :materialIconName="openButtonIcon"
+                              iconColor="black"
+                              color="accent"
+                              :isElevated="true"
+                              :tooltipText="openButtonTooltip"
+                              @clicked="$emit('openButtonClicked')" />
+          </v-col>
+        </v-row>
+
+      </v-container>
+
 
       <!-- <div id="wrapper"
             style="position: absolute; top: 0; right: 0;"
@@ -235,7 +254,7 @@
                 class="fill"
                 d="M723 314L543 625.77 183 625.77 3 314 183 2.23 543 2.23 723 314z">
           </path>
-          
+
           <text class="value"
                 style="fill: white;"
                 x="50%" y="73%">
@@ -281,9 +300,26 @@ export default {
       type: Object,
       default: () => ({
         showAuthorInfos: true,
-        showDatatCredits: true,
+        showDataCredits: true,
         showDataCreditScore: true,
       }),
+    },
+    showGenericOpenButton: {
+      type: Boolean,
+      default: false,
+    },
+    openButtonTooltip: String,
+    openButtonIcon: {
+      type: String,
+      default: 'preview',
+    },
+    isSelected: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted() {
@@ -302,6 +338,12 @@ export default {
 
     //   return 0;
     // },
+    cardClass() {
+      return {
+        accentLink: this.dataCreditLevel > 2,
+        highlighted: this.isSelected,
+      };
+    },
     dark() {
       return this.dataCreditLevel >= 6;
     },

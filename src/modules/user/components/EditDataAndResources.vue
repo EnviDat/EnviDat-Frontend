@@ -2,7 +2,7 @@
   <v-container fluid
                 class="pa-0"
                 id="EditDataAndResources" >
-    
+
     <v-row >
       <v-col cols="6" >
         <v-row v-if="selectedResource" >
@@ -15,12 +15,12 @@
 
         <v-row v-if="!selectedResource" >
           <v-col>
-            <v-card >
+            <v-card class="pa-4">
               <EditDropResourceFiles @createResources="createResourceFromFiles" />
 
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
             </v-card>
-            
+
           </v-col>
         </v-row>
       </v-col>
@@ -59,15 +59,13 @@ import {
 
 
 import { initializeLocalResource } from '@/factories/metaDataFactory';
-import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
 import EditResource from '@/modules/user/components/EditResource';
-
-// import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
 
 
 export default {
@@ -111,7 +109,7 @@ export default {
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        
+
         this.initResource(metadataId, file, null, i === files.length - 1);
       }
 
@@ -130,7 +128,7 @@ export default {
     initResource(metadataId, file, url, autoSelect = true) {
       const newRes = initializeLocalResource(metadataId, file, url);
 
-      enhanceResourcesStrategyEvents([newRes], SELECT_EDITING_RESOURCE_PROPERTY);
+      enhanceElementsWithStrategyEvents([newRes], SELECT_EDITING_RESOURCE_PROPERTY, true);
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_RESOURCES,
@@ -145,7 +143,6 @@ export default {
     },
   },
   data: () => ({
-    spacerText: 'Or',
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
   }),

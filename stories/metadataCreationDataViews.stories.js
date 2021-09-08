@@ -26,7 +26,7 @@ import {
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 import { createResources } from '@/factories/metaDataFactory';
-import { enhanceResourcesStrategyEvents } from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
 
 const apiFactory = require('@/factories/apiFactory');
@@ -42,7 +42,7 @@ unFormatedMetadataCards.forEach((el) => {
   // });
   // alert(typeof el.resources + ' resources: ' + el.resources.length + ' ' + el.resources instanceof Array);
   formatted = createResources(formatted);
-  enhanceResourcesStrategyEvents(formatted.resources, SELECT_EDITING_RESOURCE_PROPERTY);
+  enhanceElementsWithStrategyEvents(formatted.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(formatted);
 });
 
@@ -88,7 +88,7 @@ storiesOf('8 Metadata Creation Views / Data Info', module)
       //     this.emptyFirstGenericProps = updateObj.data;
       //   }
       // },
-    },  
+    },
     data: () => ({
       emptyFirstGenericProps: {
         id: '1',
@@ -144,7 +144,7 @@ storiesOf('8 Metadata Creation Views / Data Info', module)
           selectionId: this.selectionId,
           resourcesConfig: {
             downloadActive: false,
-          },  
+          },
         };
       },
     },
@@ -153,7 +153,7 @@ storiesOf('8 Metadata Creation Views / Data Info', module)
         if (this.selectionId !== -1) {
           this.cancelEditing();
         }
-        
+
         this.selectionId = id;
         this.setSelected(this.selectionId, true);
       },

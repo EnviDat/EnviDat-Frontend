@@ -39,7 +39,11 @@
             <author-card :author="author"
                           :authorDetailsConfig="authorDetailsConfig"
                           :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''" />
+                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                          :showGenericOpenButton="author.openEvent ? true : false"
+                          :openButtonTooltip="author.openButtonTooltip"
+                          :openButtonIcon="author.openButtonIcon"
+                          @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" />
 
           </v-col>
         </v-row>
@@ -75,6 +79,7 @@ import {
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
+import { eventBus } from '@/factories/eventBus';
 
 export default {
   name: 'MetadataAuthors',
@@ -100,7 +105,7 @@ export default {
   destroyed() {
     this.observer.disconnect();
     this.showAuthors = false;
-  },  
+  },
   data: () => ({
     showAuthors: false,
     checkedGenericProps: false,
@@ -134,6 +139,9 @@ export default {
     },
   },
   methods: {
+    catchOpenClick(event, eventProperty) {
+      eventBus.$emit(event, eventProperty);
+    },
   },
 };
 </script>

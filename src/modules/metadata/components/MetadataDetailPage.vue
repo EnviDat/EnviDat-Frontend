@@ -70,7 +70,7 @@
 
       <component :is="filePreviewComponent"
                   :url="filePreviewUrl" />
-                  
+
 
     </GenericModalPageLayout>
 
@@ -139,7 +139,7 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  enhanceResourcesStrategyEvents,
+  enhanceElementsWithStrategyEvents,
   getPreviewStrategyFromUrl,
 } from '@/factories/strategyFactory';
 
@@ -361,7 +361,7 @@ export default {
 
       if (wmsUrl) {
         this.fetchWmsConfig(wmsUrl);
-      } else { 
+      } else {
 
         this.geoServiceConfig = {
           site: location,
@@ -372,7 +372,7 @@ export default {
         const { components } = this.$options;
         this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
       }
-    },    
+    },
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
       this.geoServiceLayersError = null;
@@ -534,7 +534,7 @@ export default {
       if (this.resources?.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceResourcesStrategyEvents(this.resources.resources);
+        enhanceElementsWithStrategyEvents(this.resources.resources);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);

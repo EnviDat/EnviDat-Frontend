@@ -3,6 +3,8 @@ import {
   INJECT_TEXT_PREVIEW,
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
+  SELECT_EDITING_AUTHOR_PROPERTY,
+  SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
@@ -21,6 +23,12 @@ export const resourceClickStrategies = [
     openEvent: SELECT_EDITING_RESOURCE,
     icon: 'edit',
     tooltip: 'Click to select this resource for editing',
+  },
+  {
+    fileExtensions: [SELECT_EDITING_AUTHOR_PROPERTY],
+    openEvent: SELECT_EDITING_AUTHOR,
+    icon: 'edit',
+    tooltip: 'Click to select this author for editing',
   },
 ];
 
@@ -41,7 +49,7 @@ export function getPreviewStrategy(extensions) {
       }
     }
   }
-  
+
   return null;
 }
 
@@ -65,29 +73,29 @@ export function getPreviewStrategyFromUrl(url) {
   return null;
 }
 
-export function enhanceResourcesStrategyEvents(resources, previewProperty = 'url') {
+export function enhanceElementsWithStrategyEvents(elementList, previewProperty = 'url', entriesAreResources = false) {
 
-  if (!resources) {
+  if (!elementList) {
     return null;
   }
 
-  for (let i = 0; i < resources.length; i++) {
-    const res = resources[i];
+  for (let i = 0; i < elementList.length; i++) {
+    const entry = elementList[i];
 
     let strat = null;
-    if (previewProperty === 'url') {
-     strat = getPreviewStrategyFromUrl(res.url);
+    if (entriesAreResources && previewProperty === 'url') {
+     strat = getPreviewStrategyFromUrl(entry.url);
     } else {
       strat = getPreviewStrategy(previewProperty);
     }
 
     if (strat) {
-      res.openEvent = strat.openEvent;
-      res.openProperty = res[previewProperty];
-      res.openButtonIcon = strat.icon;
-      res.openButtonTooltip = strat.tooltip;
+      entry.openEvent = strat.openEvent;
+      entry.openProperty = entry[previewProperty];
+      entry.openButtonIcon = strat.icon;
+      entry.openButtonTooltip = strat.tooltip;
     }
   }
 
-  return resources;
+  return elementList;
 }
