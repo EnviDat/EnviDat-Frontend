@@ -6,7 +6,11 @@
             }"
           :style="{'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
           @click.stop="clicked"
-          small >
+          :small="isSmall"
+          close-icon="close"
+          :close="isCloseable"
+          @click:close="$emit('closeClicked', authorName)"
+  >
     <v-avatar left >
       <v-icon>account_circle</v-icon>
     </v-avatar>
@@ -46,6 +50,11 @@ export default {
     highlighted: Boolean,
     asciiDead: String,
     authorPassedInfo: String,
+    isSmall: {
+      type: Boolean,
+      default: true,
+    },
+    isCloseable: Boolean,
   },
   computed: {
     authorIsDead() {
