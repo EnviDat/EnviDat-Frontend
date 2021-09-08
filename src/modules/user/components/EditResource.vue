@@ -16,16 +16,16 @@
                     @clicked="$emit('closeClicked')" />
 
     <v-form ref="editResourceForm">
-      
+
     <v-container fluid
                   class="pa-0">
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
         </v-col>
 
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
@@ -87,9 +87,9 @@
                 <v-row no-gutters class="pb-2" >{{ fileName }}</v-row>
                 <v-row no-gutters>
                   <img ref="filePreview"
-                        style="max-height: 100%; max-width: 100%;" />                  
+                        style="max-height: 100%; max-width: 100%;" />
                 </v-row>
-                
+
               </v-col>
             </template>
 
@@ -153,14 +153,14 @@
       </v-row>
 
       <!-- <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.subInstructions }}</div>
         </v-col>
       </v-row> -->
 
       <v-row no-gutters
               justify="end">
-        <v-col class="shrink"> 
+        <v-col class="shrink">
           <BaseRectangleButton :disabled="!saveButtonEnabled"
                                 :loading="genericProps.loading"
                                 :buttonText="labels.createButtonText"
@@ -172,7 +172,7 @@
     </v-container>
     </v-form>
 
-  </v-card>  
+  </v-card>
 </template>
 
 <script>
@@ -201,7 +201,7 @@ import fileSizeIcon from '@/assets/icons/fileSize.png';
 
 export default {
   name: 'EditResource',
-  props: {  
+  props: {
     genericProps: Object,
   },
   mounted() {
@@ -220,7 +220,7 @@ export default {
       },
       set(value) {
         this.localDescription = value;
-        
+
         const newGenericProps = {
           ...this.genericProps,
           description: value,
@@ -388,7 +388,7 @@ export default {
   components: {
     BaseRectangleButton,
     BaseIconButton,
-  },  
+  },
 };
 </script>
 
