@@ -15,7 +15,7 @@
 
         <v-row v-if="!selectedResource" >
           <v-col>
-            <v-card class="pa-4">
+            <v-card class="pa-0">
               <EditDropResourceFiles @createResources="createResourceFromFiles" />
 
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
