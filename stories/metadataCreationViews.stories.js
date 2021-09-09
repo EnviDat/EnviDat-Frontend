@@ -38,6 +38,7 @@ import { createTag, getPopularTags } from '@/factories/metadataFilterMethods';
 
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
+import { METADATA_EDITING } from './storybookFolder';
 
 for (let i = 0; i < metadataset.length; i++) {
   const entry = metadataset[i];
@@ -94,8 +95,10 @@ const placeholderKeywordsGenericProps = {
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
 
+const storybookFolder = `${METADATA_EDITING} / Main Infos`;
 
-storiesOf('8 Metadata Creation Views / Main Info', module)
+
+storiesOf(storybookFolder, module)
   .add('Editing Keywords & Placeholder Images', () => ({
     components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
     template: `

@@ -28,6 +28,7 @@ import EditDataAndResources from '@/modules/user/components/EditDataAndResources
 import { createResources } from '@/factories/metaDataFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
+import { METADATA_EDITING } from './storybookFolder';
 
 const apiFactory = require('@/factories/apiFactory');
 
@@ -46,8 +47,10 @@ unFormatedMetadataCards.forEach((el) => {
   metadataCards.push(formatted);
 });
 
+const storybookFolder = `${METADATA_EDITING} / Data Infos`;
 
-storiesOf('8 Metadata Creation Views / Data Info', module)
+
+storiesOf(storybookFolder, module)
   .add('Edit Resources List', () => ({
     components: { EditMetadataResources },
     template: `

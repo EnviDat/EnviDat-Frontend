@@ -38,6 +38,7 @@ import {
   extractAuthorsMap,
 } from '@/factories/authorFactory';
 import unFormatedMetadataCards from './js/metadata';
+import { METADATA_EDITING } from './storybookFolder';
 
 const apiFactory = require('@/factories/apiFactory');
 
@@ -56,7 +57,9 @@ enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
 const preSelectedAuthors = authors.filter(value => value.fullName.includes('Fischer'));
 const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
 
-storiesOf('8 Metadata Creation Views / Main Info', module)
+const storybookFolder = `${METADATA_EDITING} / Main Infos`;
+
+storiesOf(storybookFolder, module)
   .add('User Picker', () => ({
     components: { BaseUserPicker },
     template: `

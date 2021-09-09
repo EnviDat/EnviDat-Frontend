@@ -23,10 +23,14 @@ import {
 
 import { getOrganizationMap } from '@/factories/metaDataFactory';
 import testOrganizations from './js/organizations';
+import { METADATA_EDITING } from './storybookFolder';
 
 const organizationsMap = getOrganizationMap(testOrganizations);
+const organizationsMap2 = { ...organizationsMap };
 
-storiesOf('8 Metadata Creation Views / Organization', module)
+const storybookFolder = `${METADATA_EDITING} / Organization`;
+
+storiesOf(storybookFolder, module)
   .add('Organization Tree view', () => ({
     components: { OrganizationTree },
     template: `
@@ -79,18 +83,8 @@ storiesOf('8 Metadata Creation Views / Organization', module)
     template: `
     <v-col>
 
-      <!-- v-row>
-        EditOrganization
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditOrganization />
-        </v-col>
-      </v-row -->
-
       <v-row>
-        EditOrganization preselected and editing disabled
+        EditOrganization
       </v-row>
 
       <v-row class="py-3" >
@@ -99,17 +93,41 @@ storiesOf('8 Metadata Creation Views / Organization', module)
         </v-col>
       </v-row>
 
+      <v-row>
+        EditOrganization preselected and editing disabled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditOrganization :genericProps="genericProps2" />
+        </v-col>
+      </v-row>
+
     </v-col>
     `,
     created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
+      updateOrga(updateObj) {
+        if (updateObj.object === EDITMETADATA_ORGANIZATION
+          && updateObj.data.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+        }
+      },
     },  
     data: () => ({
       genericProps: {
+        id: '1',
         organizationsMap,
+        organization: 'wabio',
+        selectionDisabled: false,
+      },
+      genericProps2: {
+        organizationsMap: organizationsMap2,
         organization: 'community-ecology',
         selectionDisabled: true,
       },
