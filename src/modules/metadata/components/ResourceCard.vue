@@ -120,25 +120,27 @@
 
     </v-card-actions>
 
-    <!-- <div class="ma-0 py-3"
-          style="position: absolute; bottom: 0px; right: 0px;" > -->
-    <!-- <v-card-actions class="ma-0 pa-0"
-                    style="position: absolute; bottom: 0px; right: 0px;" >
- -->
-      <v-container fluid class="pa-2" 
-                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
-        
-      <v-row v-if="!isProtected">
-        <v-col v-if="showGenericOpenButton"
-                cols="12"
-                class="py-1">
+
+      <v-container v-if="showGenericOpenButton"
+                   class="ma-2 pa-0"
+                   style="position: absolute; top: 0px; right: 0px; width: 40px;">
+        <v-row >
+          <v-col cols="12" >
           <base-icon-button :materialIconName="openButtonIcon"
                             iconColor="black"
                             color="accent"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
                             @clicked="$emit('openButtonClicked')" />
-        </v-col>
+          </v-col>
+        </v-row>
+
+      </v-container>
+
+      <v-container fluid class="pa-2" 
+                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
+        
+      <v-row v-if="!isProtected">
 
         <v-col cols="12"
                 class="pt-1">
@@ -170,9 +172,6 @@
       </v-row>
 
       </v-container>
-
-    <!-- </div> -->
-    <!-- </v-card-actions> -->
 
   </v-card>
 </template>

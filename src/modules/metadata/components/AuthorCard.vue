@@ -218,7 +218,6 @@
       </v-container>
 
       <v-container v-if="showGenericOpenButton"
-                   fluid
                    class="ma-2 pa-0"
                    style="position: absolute; top: 0px; right: 0px; width: 40px;">
         <v-row >
