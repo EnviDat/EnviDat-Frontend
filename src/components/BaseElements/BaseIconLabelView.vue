@@ -105,7 +105,7 @@ export default {
       }
 
       if (this.wordBreak) {
-        style += 'word-break: break-all;';
+        style += 'word-break: break-word;';
       }
 
       if (this.$vuetify.breakpoint.smAndDown) {
