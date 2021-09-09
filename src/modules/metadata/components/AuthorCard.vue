@@ -1,6 +1,6 @@
 <template>
     <v-card class="authorCard pa-4"
-            :class="dataCreditLevel > 2 ? 'accentLink' : ''"
+            :class="cardClass"
             :style="dynamicCardBackground"
             @click.native="cardClick"
             :loading="loading" >
@@ -551,6 +551,10 @@ export default {
   }
   .progress .value {
     font-size: 500px;
+  }
+
+  .highlighted {
+    box-shadow: #ffd740 0px 0px 5px 5px !important;
   }
 
 </style>
