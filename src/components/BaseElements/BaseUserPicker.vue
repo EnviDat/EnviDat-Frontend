@@ -1,6 +1,6 @@
 <template>
   <v-card id="BaseUserPicker"
-            class="pa-4"
+            :class="showAsCard ? 'pa-4' : 'pa-0'"
             :flat="!showAsCard" >
 
     <v-row v-if="instructions"

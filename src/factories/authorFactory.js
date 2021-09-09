@@ -165,7 +165,7 @@ function getAuthorKey(author) {
 
 // TODO try using different method and compare performance
 // make 1st loop over the datasets and store the authors on the authorMap
-// then 2nd loop over the authors and do the counting of the datasets and merging 
+// then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredits
 export function extractAuthorsMap(datasets) {
   if (!datasets) { return null; }
@@ -212,9 +212,9 @@ export function extractAuthorsMap(datasets) {
 }
 
 /**
- * 
- * @param {Object} authorMap 
- * @param {Array} dataset 
+ *
+ * @param {Object} authorMap
+ * @param {Array} dataset
  */
 export function getFullAuthorsFromDataset(authorMap, dataset) {
   if (!authorMap || !dataset) { return null; }
@@ -230,7 +230,7 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     if (fullAuthor) {
       fullAuthors.push(fullAuthor);
     }
-    
+
   }
 
   return fullAuthors;
@@ -283,4 +283,23 @@ export function getNameInitials(userObject) {
   }
 
   return `${userObject.name.substring(0, 1)}${userObject.fullname.substring(0, 1)}`.toUpperCase();
+}
+
+let localAuthorID = 0;
+
+export function initializeLocalAuthor() {
+  localAuthorID++;
+  return {
+    localId: `authorId_${localAuthorID}`,
+    firstName: 'unknown',
+    lastName: '',
+    affiliation: '',
+    id: {
+      type: '',
+      identifier: '',
+    },
+    email: '',
+    existsOnlyLocal: true,
+    loading: false,
+  };
 }
