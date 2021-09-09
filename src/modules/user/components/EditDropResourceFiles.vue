@@ -7,13 +7,13 @@
                   class="pa-0">
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
         </v-col>
-      </v-row>  
+      </v-row>
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
@@ -23,16 +23,15 @@
           <BaseFileDropField @filesChanged="catchFilesChanged" />
         </v-col>
       </v-row>
-      
+
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.subInstructions }}</div>
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              justify="end">
-        <v-col class="shrink"> 
+      <v-row justify="end">
+        <v-col class="shrink">
           <BaseRectangleButton :disabled="createButtonDisabled"
                                 :buttonText="labels.createButtonTextS"
                                 @clicked="createButtonClick" />
@@ -41,7 +40,7 @@
 
 
     </v-container>
-  </v-card>  
+  </v-card>
 </template>
 
 <script>
@@ -60,7 +59,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditDropResourceFiles',
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
@@ -91,7 +90,7 @@ export default {
   components: {
     BaseFileDropField,
     BaseRectangleButton,
-  },  
+  },
 };
 </script>
 
