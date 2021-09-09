@@ -5,13 +5,6 @@
 
     <v-container fluid
                 class="pa-0">
-
-   
-      <!-- <EditImgPlaceholder title="Edit Keywords"
-                          :disclaimer="disclaimer"
-                          :img="keywordsScreenshot"
-                          /> -->
-
     
       <v-row>
         <v-col > 
@@ -37,6 +30,7 @@
             multiple
             outlined
             append-icon="arrow_drop_down"
+            :rules="[rulesKeyword]"
             :label="keywordsLabel"
             :items="keywordsSource"
             item-text="name"
@@ -98,9 +92,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-// import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
-// import keywordsScreenshot from '@/modules/user/assets/placeholders/keywords.jpg';
-
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_KEYWORDS,
@@ -117,10 +108,6 @@ export default {
   name: 'EditKeywords',
   data: () => ({
     search: null,
-    // keywordsScreenshot,
-    // disclaimer: `The screenshot below serves as a preview of the future component.
-    //           Even if you can't interacte, please think about the information shown and if the grouping of the information to 
-    //           edit would make sense in the context of the steps and substeps.`,
   }),
   props: {  
     genericProps: Object,
@@ -143,7 +130,7 @@ export default {
       return this.mixinMethods_getGenericProp('cardInstructions1', 'Please enter keywords for your metadata entry.');
     },
     cardInstructions2() {
-      return this.mixinMethods_getGenericProp('cardInstructions2', 'To use a new keyword not in dropdown list type keyword and press enter.');
+      return this.mixinMethods_getGenericProp('cardInstructions2', 'To use a new keyword not in dropdown list please type keyword and press enter.');
     },
     keywordsLabel() {
       return this.mixinMethods_getGenericProp('keywordsLabel', 'Keywords');
@@ -158,14 +145,26 @@ export default {
       // TODO finish updating set method to use array of objects rather than an array of strings
       set(valuesArray) {
 
+        // TODO add check to make sure new value does not exceed two words
+
+        // Iterate through valuesArray
         for (let i = 0; i < valuesArray.length; i++) {
-          if (typeof valuesArray[i] === 'string') {
+
+          // If user enters keyword string then push keyword object with these key value pairs:   
+          //    name: <user string capitalized)
+          //    color: <dynamically assigned vie getTagColor()>   
+          if (typeof valuesArray[i] === 'string') {            
             valuesArray[i] = {
-              name: valuesArray[i],
+              name: valuesArray[i].toUpperCase(),
               color: this.getTagColor(catCards, valuesArray[i]),
             };
           }
         }
+
+        // console.log(valuesArray);
+
+        // Call valuesArrayNoDuplicates() to assign valuesArray to an array without objects with duplicate name keys
+        valuesArray = this.valuesArrayNoDuplicates(valuesArray);
 
         // console.log(valuesArray);
       
@@ -205,6 +204,53 @@ export default {
     },
   },
   methods: {
+    rulesKeyword(valuesArray) {
+     
+      let keywordValid = false;
+
+      // Iterate through valuesArray
+      for (let i = 0; i < valuesArray.length; i++) {
+
+        const nameSplit = valuesArray[i].name.split(' ');
+        
+        if (nameSplit.length <= 2) {
+          keywordValid = true;
+        } else {
+          keywordValid = false;
+        }
+      }
+
+      if (keywordValid) {
+        return true;
+      }
+      return 'Each keyword may not exceed two words.';
+    },
+    // Returns an array without objects with duplicate name keys
+    valuesArrayNoDuplicates(valuesArray) {
+
+        // Initialize arrays used to compare values and find duplicates
+        const valuesComparer = [];                
+        const indicesDuplicates = [];
+
+        // Iterate through valuesArray
+        for (let i = 0; i < valuesArray.length; i++) {
+
+          // Push first element of valuesArray to valuesComparer
+          if (i === 0) {
+            valuesComparer.push(valuesArray[i]);
+          } 
+
+          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+          // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+          if (i > 0 && valuesComparer.includes(valuesArray[i])) {
+            indicesDuplicates.push(i);
+          } else if (i > 0) {
+            valuesComparer.push(valuesArray[i]);
+          }
+
+        }
+
+    },
     getTagColor(categoryCards, tagName) {
 
       if (!categoryCards || !tagName) {
