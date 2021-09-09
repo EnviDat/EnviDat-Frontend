@@ -69,7 +69,7 @@ export default {
     labels: {
       title: 'Change Metadata Authors',
       instructions: 'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
-      userPickInstructions: 'Pick or remove EnviDat user as authors.',
+      userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
     },
   }),
   components: {

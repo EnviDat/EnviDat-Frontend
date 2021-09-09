@@ -21,6 +21,7 @@
                         :clearable="isClearable"
                         :search-input.sync="search"
                         :prepend-icon="prependIcon"
+                        item-text="fullName"
                         color="primary"
                         clear-icon="close"
                         @change="catchPicks"
@@ -37,8 +38,7 @@
           <template v-slot:item="{ item }">
             <TagChipAuthor v-if="item && item.fullName"
                            :name="item.fullName"
-                           :isSmall="false"
-            />
+                           :isSmall="false" />
           </template>
 
           <template v-slot:no-data>
