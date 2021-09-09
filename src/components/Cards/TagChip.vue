@@ -6,6 +6,7 @@
             }"
           v-bind="{ 'color': highlighted ? 'primary' : color }"
           :style="{ 'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+          small
           @click.stop="clicked"
           @input="clickedClose" >
     {{ name }}
@@ -43,10 +44,6 @@ export default {
     color: {
       type: String,
       default: '#e0e0e0',
-    },
-    size: {
-      type: String,
-      default: 'default',
     },
   },
   computed: {

@@ -52,7 +52,7 @@ export default {
     authorPassedInfo: String,
     isSmall: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     isCloseable: Boolean,
   },
