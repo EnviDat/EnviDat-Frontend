@@ -13,8 +13,7 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              justify="end">
+      <v-row justify="end">
         <v-col class="shrink">
           <BaseRectangleButton :buttonText="labels.createButtonText"
                                 @clicked="createAuthorClick" />

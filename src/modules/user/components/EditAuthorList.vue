@@ -34,40 +34,13 @@
 
   </v-container>
 
-<!--  <v-card id="EditMetadataAuthors"
-          class="pa-4" >
-
-    <v-container fluid
-                  class="pa-0">
-
-      <v-row >
-        <v-col class="text-h5" >
-          {{ EDIT_METADATA_AUTHORS_TITLE }}
-        </v-col>
-      </v-row>
-
-      <v-row >
-        <v-col class="text-body-1">
-          {{ editingInstructions }}
-        </v-col>
-      </v-row>
-
-      <v-row >
-        <v-col cols="12">
-          <MetadataAuthors :genericProps="genericProps" />
-        </v-col>
-      </v-row>
-
-    </v-container>
-
-  </v-card>-->
 </template>
 
 <script>
 /**
- * EditMetadataAuthors.vue shows all the resources of a metadata entry in a list.
+ * EditAuthorList.vue shows all the authors of a metadata entry in a list.
  *
- * @summary shows the resources the a metadata entry
+ * @summary shows the authors of a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
@@ -98,7 +71,7 @@ import {
 
 
 export default {
-  name: 'EditAuthors',
+  name: 'EditAuthorList',
   components: {
     EditMetadataAuthors,
     EditAuthor,

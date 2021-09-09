@@ -28,7 +28,7 @@ import {
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
-import EditAuthors from '@/modules/user/components/EditAuthors';
+import EditAuthorList from '@/modules/user/components/EditAuthorList';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
@@ -57,7 +57,7 @@ enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
 const preSelectedAuthors = authors.filter(value => value.fullName.includes('Fischer'));
 const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
 
-const storybookFolder = `${METADATA_EDITING} / Main Infos`;
+const storybookFolder = `${METADATA_EDITING} / Author Infos`;
 
 storiesOf(storybookFolder, module)
   .add('User Picker', () => ({
@@ -184,17 +184,17 @@ storiesOf(storybookFolder, module)
     }),
   }))
   .add('Full editing of Authors', () => ({
-    components: { EditAuthors },
+    components: { EditAuthorList },
     template: `
       <v-col>
 
       <v-row>
-        EditAuthors
+        EditAuthorList
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditAuthors :genericProps="genericProps" />
+          <EditAuthorList :genericProps="genericProps" />
         </v-col>
       </v-row>
 
