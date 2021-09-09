@@ -29,6 +29,9 @@ import {
   METEO,
 } from '@/store/categoriesConsts';
 
+import localIdProperty from '@/factories/strategyFactory';
+
+
 /**
  * Create a psyeudo random integer based on a given seed using the 'seedrandom' lib.
  *
@@ -311,6 +314,7 @@ export function initializeLocalResource(metadataId, file = null, url = '') {
     file,
     size,
     id: `resoureId_${localResoureID}`,
+    [localIdProperty]: `resoureId_${localResoureID}`,
     url_type: isLink ? '' : 'upload',
     format: resourceFormat,
     url,

@@ -27,8 +27,10 @@ import EditMetadataResources from '@/modules/user/components/EditMetadataResourc
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 import { createResources } from '@/factories/metaDataFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import localIdProperty from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
+
 
 const apiFactory = require('@/factories/apiFactory');
 
@@ -175,10 +177,20 @@ storiesOf(storybookFolder, module)
 
         for (let i = 0; i < res.length; i++) {
           const r = res[i];
-          if (r.id === newRes.id) {
+          // if (r.id === newRes.id) {
+          //   this.$set(res, i, newRes);
+          //   return;
+          // }
+
+          if (r[localIdProperty]) {
+            if (r[localIdProperty] === newRes.id) {
+              this.$set(res, i, newRes);
+              return;
+            }
+          } else if (r.id === newRes.id) {
             this.$set(res, i, newRes);
             return;
-          }
+          }                       
         }
 
         res.unshift(newRes);
@@ -188,10 +200,22 @@ storiesOf(storybookFolder, module)
 
         for (let i = 0; i < res.length; i++) {
           const r = res[i];
-          if (r.id === id) {
+          // if (r.id === id) {
+          //   r.isSelected = selected;
+          //   return;
+          // }
+
+          if (r[localIdProperty]) {
+            if (r[localIdProperty] === id) {
+              r.isSelected = selected;
+              this.$set(res, i, r);
+              return;
+            }
+          } else if (r.id === id) {
             r.isSelected = selected;
+            this.$set(res, i, r);
             return;
-          }
+          }                       
         }
       },
       saveResource(newRes) {

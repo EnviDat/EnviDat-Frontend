@@ -90,29 +90,3 @@ export default {
   },
 };
 </script>
-
-<style lang="sass" scoped>
-
-  @import "~vuetify/src/styles/settings/_variables.scss"
-  $gridPadding: $spacer * 4
-
-  .cardGrid
-    display: grid
-    justify-content: center
-    grid-template-columns: 100%
-
-  .subGrid 
-    align-content: end
-    display: grid
-    grid-template-columns: 1fr 1fr
-    column-gap: 5px
-    padding-right: $gridPadding
-    padding-left: $gridPadding
-    /* background-color: grey; */
-
-  .subGrid div 
-    place-self: center
-    word-break: break-all
-    align-content: end
-
-</style>

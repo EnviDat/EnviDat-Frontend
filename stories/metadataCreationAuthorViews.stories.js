@@ -39,6 +39,7 @@ import {
 } from '@/factories/authorFactory';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
+import localIdProperty from '@/factories/strategyFactory';
 
 const apiFactory = require('@/factories/apiFactory');
 
@@ -230,11 +231,23 @@ storiesOf(storybookFolder, module)
 
         for (let i = 0; i < auths.length; i++) {
           const r = auths[i];
-          if (r.email === id) {
+          // if (r.email === id) {
+          //   r.isSelected = selected;
+          //   this.$set(auths, i, r);
+          //   return;
+          // }
+
+          if (r[localIdProperty]) {
+            if (r[localIdProperty] === id) {
+              r.isSelected = selected;
+              this.$set(auths, i, r);
+              return;
+            }
+          } else if (r.email === id) {
             r.isSelected = selected;
             this.$set(auths, i, r);
             return;
-          }
+          }          
         }
       },
       saveAuthor(newAuthor) {

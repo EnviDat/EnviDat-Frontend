@@ -11,6 +11,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import localIdProperty from '@/factories/strategyFactory';
+
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
   { score: 80, lvl: 5 },
@@ -290,7 +292,7 @@ let localAuthorID = 0;
 export function initializeLocalAuthor() {
   localAuthorID++;
   return {
-    localId: `authorId_${localAuthorID}`,
+    [localIdProperty]: `authorId_${localAuthorID}`,
     firstName: 'unknown',
     lastName: '',
     affiliation: '',

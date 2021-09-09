@@ -43,6 +43,8 @@
                           :showGenericOpenButton="author.openEvent ? true : false"
                           :openButtonTooltip="author.openButtonTooltip"
                           :openButtonIcon="author.openButtonIcon"
+                          :isSelected="author.isSelected"
+                          :loading="author.loading"
                           @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" />
 
           </v-col>

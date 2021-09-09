@@ -9,6 +9,8 @@ import {
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
 
+export const localIdProperty = 'localId';
+
 export const resourceClickStrategies = [
   {
     fileExtensions: ['txt', 'md'],
@@ -17,18 +19,21 @@ export const resourceClickStrategies = [
     injectEvent: INJECT_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
+    fallbackProperty: '',
   },
   {
     fileExtensions: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
     icon: 'edit',
     tooltip: 'Click to select this resource for editing',
+    fallbackProperty: localIdProperty,
   },
   {
     fileExtensions: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
     icon: 'edit',
     tooltip: 'Click to select this author for editing',
+    fallbackProperty: localIdProperty,
   },
 ];
 
@@ -84,14 +89,15 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
     let strat = null;
     if (entriesAreResources && previewProperty === 'url') {
-     strat = getPreviewStrategyFromUrl(entry.url);
+      strat = getPreviewStrategyFromUrl(entry.url);
     } else {
       strat = getPreviewStrategy(previewProperty);
     }
 
     if (strat) {
       entry.openEvent = strat.openEvent;
-      entry.openProperty = entry[previewProperty];
+      const idValue = entry[previewProperty];
+      entry.openProperty = idValue || strat.fallbackProperty;
       entry.openButtonIcon = strat.icon;
       entry.openButtonTooltip = strat.tooltip;
     }
