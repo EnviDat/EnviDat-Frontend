@@ -48,17 +48,6 @@
                 @clicked="removeKeyword(item)"
               ></tag-chip>
             </template>
-
-            <!-- <template v-slot:selection="{ items }">
-              <tag-chip v-for="(item, index) in items" 
-               :key="`${item}_${index}`"
-                :name="item.name" 
-                closeable
-                selectable
-                :color="item.color"
-                @clickedClose="removeKeyword(keywords, item)"
-              ></tag-chip>
-            </template> -->
        
             <template v-slot:no-data>
               <v-list-item>
@@ -197,114 +186,30 @@ export default {
 
         // Remove items from valuesArray that are duplicates using indicesDuplicates
         indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
-       
-        // Pass {keywords: valuesArray } to genericProps and emit to eventBus
-        this.setKeywords('keywords', valuesArray);
 
+        // Update genericProps with valuesArray
         this.genericProps.keywords = valuesArray;
-        // console.log(this.genericProps);
-
+       
+        // Emit { keywords: valuesArray } to eventBus
+        this.setKeywords('keywords', valuesArray);
+      
       },
     },
   },
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateObjChanged);
-  },
-  beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateObjChanged);
-  },
   methods: {
-    updateObjChanged(updateObj) {
-
-      // console.log(updateObj);
-
-      // const keywordArr = updateObj.data.keywords;
-      // console.log(keywordArr);
-
-      // if ('removeKeyword' in updateObj.data) {
-        
-      //   const removeTag = updateObj.data.removeKeyword;
-      //   console.log(removeTag);
-
-      //   // const removeTagFunction = element => element === removeTag;
-
-      //   // const index = keywordArr.findIndex(removeTagFunction);
-      //   // console.log(index);
-        
-      //   // console.log(updateObj.data.keywords);
-
-      //   // const keywordsArr = updateObj.data.keywords;
-      //   // console.log(keywordsArr);
-       
-      // //  const index = updateObj.data.keywords.indexOf(removeTag);
-      // //  console.log(index);
-
-      //  // console.log(updateObj.data.keywords.indexOf(updateObj.data.removeKeyword));
-      // }
-
-      // if (updateObj.data.hasOwnProperty('removeKeyword')) {
-      //   console.log('TEST');
-      // }
-
-      // console.log(updateObj);
-
-      // if (this.keywordRemove !== null) {
-      //   console.log(this.keywordRemove);
-      // }
-
-      // console.log(this.keywordRemove);
-
-
-      // console.log(updateObj.data.keywords);
-
-      // if (updateObj.data.keywords.length > 1) {
-      //   updateObj.data.keywords.pop();
-
-      // }
-   
-
-      // console.log(updateObj.data.keywords);
-    },
     removeKeyword(item) {
 
-      // console.log(item);
-      // this.keywordRemove = item;
-      
-      // this.setKeywords('removeKeyword', item);
-
-     //  console.log(this.genericProps);
-
+      // Assign removeKeyword to keyword item that will be removed
       this.genericProps.removeKeyword = item;
 
-      const index = this.genericProps.keywords.indexOf(this.genericProps.removeKeyword);
-      // console.log(index);
-
-      this.genericProps.keywords.splice(index, 1);
-
-      this.setKeywords('keywords', this.genericProps.keywords);
-
-      // console.log(this.genericProps);
-
-      // console.log(this.genericProps);
-
-      // this.setKeywords('keywords', keywords);
-
-      // console.log(keywords);
-            
+      // Assign removeIndex keywords object that matched removeKeyword 
+      const removeIndex = this.genericProps.keywords.indexOf(this.genericProps.removeKeyword);
      
-      // console.log(this.keywords());
-      
-      // console.log(item);
-      
-      // item.displayChip = false;
+      // Remove object with index of removeIndex from keywords
+      this.genericProps.keywords.splice(removeIndex, 1);
 
-      // console.log(this.genericProps);
-
-      // this.genericProps.keywords.splice(this.genericProps.keywords.indexOf(item), 1);
-      // this.genericProps.keywords = [...this.genericProps.keywords];      
-      
-      // console.log(item);
-
+      // Emit { keywords: keywords } to eventBus 
+      this.setKeywords('keywords', this.genericProps.keywords);
     },
     // Sets keywordValid to true if search is less than or equal to two words (split by space ' '), else sets keywordValid to false
     isKeywordValid(search) {
