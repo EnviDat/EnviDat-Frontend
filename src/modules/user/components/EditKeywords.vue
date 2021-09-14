@@ -6,25 +6,35 @@
     <v-container fluid
                 class="pa-0">
     
+      
       <v-row>
+
         <v-col > 
           <div class="text-h5">{{ cardTitle }}</div>
         </v-col>
-      </v-row>
 
-
-      <v-row>
-        <v-col > 
-          <div class="text-body-1">{{ cardInstructions1 }}</div>
-          <div class="text-body-1">{{ cardInstructions2 }}</div>
-        </v-col>
       </v-row>
 
 
       <v-row>
         
-        <v-col > 
+        <v-col>
+          <div class="text-body-2">{{ cardInstructions1 }}</div>
+          <div class="text-body-2">{{ cardInstructions2 }}</div>
+        </v-col>
+
+        <v-col>
+          <div class="text-h6">{{ previewText }}</div>
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col>  
           <v-combobox
+            v-click-outside="onClick"
             chips
             deletable-chips
             multiple
@@ -40,6 +50,7 @@
 
             <template v-slot:selection="{ item }" >
               <tag-chip 
+                v-click-outside="onClick"
                 :name="item.name" 
                 closeable
                 selectable
@@ -67,10 +78,11 @@
           </v-combobox>
         </v-col>
 
-        <v-col> 
-          <div class="text-body-1">{{ previewText }}</div>
-            <!-- <MetadataCard :genericProps="genericMetadataCardObject">
-            </MetadataCard> -->
+        <v-col>          
+          <metadata-card
+            :tags="metadataCardTags"
+            :subtitle="metadataCardSubtitle"
+            :title="metadataCardTitle" />
         </v-col>
 
       </v-row>
@@ -84,15 +96,14 @@
 
 <script>
 /**
- * TODO update component description
- * EditKeywords.vue renders the Image Placeholder component with a screenshot image of the Metadata Keywords mockup used in the slot
+ * EditKeywords.vue renders Metadata Keywords combobox and a MetadataCard preview
  * 
  *
  * @summary shows the card for editing the keywords
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-09-13
+ * Last modified  : 2021-09-14
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -104,8 +115,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import keywordsTags from '@/modules/metadata/store/metadataTags';
-// import MetadataCard from '@/components/Cards/MetadataCard';
+import MetadataCard from '@/components/Cards/MetadataCard';
 import TagChip from '@/components/Cards/TagChip';
 import catCards from '@/store/categoryCards';
 
@@ -113,6 +123,7 @@ import catCards from '@/store/categoryCards';
 export default {
   name: 'EditKeywords',
   data: () => ({
+    tags: [],
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
@@ -121,15 +132,14 @@ export default {
     genericProps: Object,
   },
   computed: {
+    metadataCardTitle() {
+      return this.mixinMethods_getGenericProp('metadataCardTitle', '');
+    },
+    metadataCardSubtitle() {
+      return this.mixinMethods_getGenericProp('metadataCardSubtitle', '');
+    },
     keywordsSource() {
-    
-      const keywordsArray = [...keywordsTags];
-     
-      for (let i = 0; i < keywordsArray.length; i++) {
-        keywordsArray[i].color = this.getTagColor(catCards, keywordsArray[i].name);
-      }
-
-      return keywordsArray;
+      return this.mixinMethods_getGenericProp('keywordsSource', []);
     },
     cardTitle() {
       return this.mixinMethods_getGenericProp('cardTitle', 'Metadata Keywords');
@@ -145,6 +155,26 @@ export default {
     },
     previewText() {
       return this.mixinMethods_getGenericProp('previewText', 'Preview');
+    },
+    // metadataCardTags: {
+    //   get() {
+    //     return this.mixinMethods_getGenericProp('metadataCardTags', []);
+    //   },
+    //   set() {
+    //     return this.mixinMethods_getGenericProp('metadataCardTags', this.genericProps.keywords);
+    //   },
+    // },
+    metadataCardTags() {
+
+      if (typeof this.genericProps.keywords !== 'undefined' && this.genericProps.keywords.length > 0) {
+        this.setTags();
+        return this.tags;
+        
+        // return this.mixinMethods_getGenericProp('metadataCardTags', this.genericProps.keywords);
+      }
+
+      return this.tags;
+      // return this.mixinMethods_getGenericProp('metadataCardTags', []);
     },
     keywords: {
       get() {
@@ -207,6 +237,20 @@ export default {
     },
   },
   methods: {
+    setTags() {
+      this.tags = this.genericProps.keywords;
+      // this.genericProps.metadataCardTags = this.genericProps.keywords;
+
+    },
+    // Updates tags to keywords if keywords exists and have at least one value
+    onClick() {     
+      if (typeof this.genericProps.keywords !== 'undefined' && this.genericProps.keywords.length > 0) {
+        // this.genericProps.metadataCardTags = this.genericProps.keywords;
+        this.setTags();
+        // this.metadataCardTags();
+      }
+      // this.$emit('onClick', this.name);
+    },
     removeKeyword(item) {
 
       // Assign removeKeyword to keyword item that will be removed
@@ -224,6 +268,9 @@ export default {
     // Sets keyword validity variables
     // Returns true if keyword is valid, else returns false
     isKeywordValid(search) {
+
+      // Call onClick() to assign user input to preview keyword tags
+      this.onClick();
 
       if (search !== null) {
 
@@ -289,8 +336,7 @@ export default {
     },
   },
   components: {
- //   EditImgPlaceholder,
- //   MetadataCard,
+    MetadataCard,
     TagChip,
   },
 };
