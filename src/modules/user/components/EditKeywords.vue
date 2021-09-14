@@ -30,7 +30,6 @@
             multiple
             outlined
             append-icon="arrow_drop_down"
-            :rules="[rulesKeyword]"
             :label="keywordsLabel"
             :items="keywordsSource"
             item-text="name"
@@ -45,18 +44,21 @@
                 closeable
                 selectable
                 :color="item.color"
-                @clicked="removeKeyword(item)"
+                @clickedClose="removeKeyword(item)"
               ></tag-chip>
             </template>
        
             <template v-slot:no-data>
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title  v-if="keywordValid">
+                  <v-list-item-title  v-if="keywordValidConcise">
                     No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new keyword.
                   </v-list-item-title>
-                  <v-list-item-title v-else>
-                    <span class="red--text"> Each keyword tag may not exceed two words.</span>
+                  <v-list-item-title  v-if="!keywordValidMin3Characters">
+                     <span class="font-italic">Keyword must be at least three characters.</span>
+                  </v-list-item-title>
+                  <v-list-item-title v-if="!keywordValidConcise">
+                    <span class="red--text font-italic">Each keyword tag may not exceed two words.</span>
                   </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
@@ -67,8 +69,7 @@
 
         <v-col> 
           <div class="text-body-1">{{ previewText }}</div>
-          <!-- TODO implement MetadataCard -->
-            <!-- <MetadataCard >
+            <!-- <MetadataCard :genericProps="genericMetadataCardObject">
             </MetadataCard> -->
         </v-col>
 
@@ -113,7 +114,8 @@ export default {
   name: 'EditKeywords',
   data: () => ({
     search: null,
-    keywordValid: true,
+    keywordValidConcise: true,
+    keywordValidMin3Characters: true,
   }),
   props: {  
     genericProps: Object,
@@ -150,8 +152,6 @@ export default {
       },
       set(valuesArray) {
 
-        // TODO add check to make sure new value does not exceed two words? 
-
         // Initialize arrays used to compare values and find duplicates
         const valuesComparer = [];
         const indicesDuplicates = [];
@@ -159,15 +159,25 @@ export default {
         // Iterate through valuesArray
         for (let i = 0; i < valuesArray.length; i++) {
 
-          // If user enters keyword string then push keyword object with these key value pairs:   
+          // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:   
           //    name: <user string capitalized and white splace removed)
           //    color: <dynamically assigned vie getTagColor()>   
-          if (typeof valuesArray[i] === 'string') {            
+          if (typeof valuesArray[i] === 'string') {  
+            
+            // Check if keyword is valid, if not remove keyword entry from valuesArray and continue loop
+            const keywordValid = this.isKeywordValid(valuesArray[i]);
+
+            if (!keywordValid) {
+              valuesArray.splice(i, 1);
+              // eslint-disable-next-line no-continue
+              continue;
+            }
+
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase().trim(),
               color: this.getTagColor(catCards, valuesArray[i]),
             };
-          } 
+          }          
 
           // Push first element of valuesArray to valuesComparer
           if (i === 0) {
@@ -175,7 +185,7 @@ export default {
           }
 
           // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-         // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+        // Else if index is greater than 0 then push current valuesArray element to valuesComparer
           if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
             indicesDuplicates.push(i);
           } else {
@@ -186,7 +196,7 @@ export default {
 
         // Remove items from valuesArray that are duplicates using indicesDuplicates
         indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
-
+        
         // Update genericProps with valuesArray
         this.genericProps.keywords = valuesArray;
        
@@ -211,28 +221,43 @@ export default {
       // Emit { keywords: keywords } to eventBus 
       this.setKeywords('keywords', this.genericProps.keywords);
     },
-    // Sets keywordValid to true if search is less than or equal to two words (split by space ' '), else sets keywordValid to false
+    // Sets keyword validity variables
+    // Returns true if keyword is valid, else returns false
     isKeywordValid(search) {
 
       if (search !== null) {
-        
-        const inputSplit = search.split(' ');
 
-        if (inputSplit.length <= 2) {
-          this.keywordValid = true;
+        // Sets keywordValidMin3Characters to true is trimmed search has more than two characters
+        // Else sets keywordValidMin3Characters to false
+        if (search.trim().length > 2) {
+          this.keywordValidMin3Characters = true;
         } else {
-          this.keywordValid = false;
+          this.keywordValidMin3Characters = false;
+        }
+       
+        // Sets keywordValidConcise to true if trimmed search is less than or equal to two words (split by space ' ')
+        // Else sets keywordValidConcise to false
+        const inputSplit = search.trim().split(' ');
+        if (inputSplit.length <= 2) {
+          this.keywordValidConcise = true;
+        } else {
+          this.keywordValidConcise = false;
         }
       }
 
-    },
-    // Returns true if keywordValid is true, else returns warning string
-    rulesKeyword() {
-      if (this.keywordValid) {
+      if (this.keywordValidMin3Characters && this.keywordValidConcise) {
         return true;
-      }
-      return 'Each keyword tag may not exceed two words.';
+      } 
+      return false;
+
     },
+    // Returns true if keywordValidConcise is true, else returns warning string
+    // rulesKeyword() {
+    //   if (this.keywordValidConcise) {
+    //     return true;
+    //   }
+    //   return 'Each keyword tag may not exceed two words.';
+    // },
     getTagColor(categoryCards, tagName) {
 
       if (!categoryCards || !tagName) {
