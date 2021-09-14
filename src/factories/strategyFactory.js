@@ -97,7 +97,7 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
     if (strat) {
       entry.openEvent = strat.openEvent;
       const idValue = entry[previewProperty];
-      entry.openProperty = idValue || strat.fallbackProperty;
+      entry.openProperty = idValue || entry[strat.fallbackProperty];
       entry.openButtonIcon = strat.icon;
       entry.openButtonTooltip = strat.tooltip;
     }
