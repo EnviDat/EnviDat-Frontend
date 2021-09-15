@@ -50,6 +50,10 @@ import {
 import { urlRewrite } from '@/factories/apiFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
+import {
+  METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
 
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
@@ -125,14 +129,14 @@ function localSearch(searchTerm, datasets) {
     const match1 = dataset.title.includes(term1)
       || dataset.author.includes(term1)
       || dataset.notes.includes(term1);
-    
+
     let match2 = true;
     if (check2Terms) {
       match2 = dataset.title.includes(term2)
         || dataset.author.includes(term2)
         || dataset.notes.includes(term2);
     }
-    
+
     if (match1 && match2) {
       foundDatasets.push(dataset);
     }
@@ -227,6 +231,9 @@ export default {
         // commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.response.docs, showRestrictedContent);
         commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.result);
 
+        // make sure the existingAuthors list is up-2-date
+        dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_UPDATE_EXISTING_AUTHORS}`, null, { root: true });
+
         // for the case when loaded up on landingpage
         return dispatch(FILTER_METADATA, { selectedTagNames: [] });
       })
@@ -263,7 +270,7 @@ export default {
         } else {
           allWithExtras = metadataTags;
         }
-    
+
         const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
@@ -355,7 +362,7 @@ export default {
 
       commit(EXTRACT_IDS_FROM_TEXT);
 
-      try {       
+      try {
         const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
         const regEx = new RegExp(regExStr, 'gm');
         const hasValidIds = text.match(regEx) || [];

@@ -29,7 +29,7 @@ import {
   METEO,
 } from '@/store/categoriesConsts';
 
-import localIdProperty from '@/factories/strategyFactory';
+import { localIdProperty } from '@/factories/strategyFactory';
 
 
 /**
@@ -276,12 +276,15 @@ export function getFileFormat(file) {
   }
 
   const splits = fileName.split('.');
-  const last = splits[splits.length - 1];
+  fileFormat = splits[splits.length - 1];
+/*  const last = splits[splits.length - 1];
+
   if (last?.length > 4) {
     fileFormat = 'url';
   } else {
     fileFormat = last;
   }
+*/
 
   fileFormat = fileFormat.toLowerCase();
 
@@ -293,10 +296,10 @@ let localResoureID = 0;
 export function initializeLocalResource(metadataId, file = null, url = '') {
 
   const isLink = !!url;
-  const resourceFormat = getFileFormat(isLink ? url : file);
+  const resourceFormat = isLink ? 'url' : getFileFormat(file);
   let resourceName = isLink ? url : file.name;
   const fileName = isLink ? '' : file.name;
-  const size = !isLink ? file.size : '';
+  const size = !isLink ? file.size : 0;
 
   if (!isLink) {
     const splits = resourceName.split('.');
@@ -482,7 +485,7 @@ export function getOrganizationMap(organizations) {
     } else {
       topLevel.push(orga);
     }
-    
+
   }
 
   for (let i = 0; i < topLevel.length; i++) {
@@ -581,7 +584,7 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-    
+
     let spatialJSON = null;
     try {
       spatialJSON = JSON.parse(dataset.spatial);

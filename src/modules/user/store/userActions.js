@@ -12,8 +12,11 @@
  */
 
 import axios from 'axios';
-
 import { urlRewrite } from '@/factories/apiFactory';
+
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
   FETCH_USER_DATA,
@@ -31,6 +34,9 @@ import {
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   ACTION_USER_ORGANIZATIONS_DATASETS,
+  METADATA_EDITING_SAVE_AUTHOR,
+  METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
+  METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -41,7 +47,7 @@ const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;  
+  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
 }
 
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -130,12 +136,12 @@ export default {
        });
 
       url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-      
+
       if (useTestdata) {
         // ignore the parameters for testdata, because it's directly a file
         url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
       }
-  
+
       requests.push(axios.get(url));
     }
 
@@ -169,12 +175,12 @@ export default {
        });
 
       url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-      
+
       if (useTestdata) {
         // ignore the parameters for testdata, because it's directly a file
         url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
       }
-  
+
       requests.push(axios.get(url));
     }
 
@@ -192,15 +198,29 @@ export default {
         commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
       });
 
-  },  
+  },
   // eslint-disable-next-line no-unused-vars
   async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
-    resource.loading = true;
     commit(METADATA_EDITING_SAVE_RESOURCE, resource);
 
     await sleep(2000);
 
-    resource.loading = false;
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
+  },
+  async [METADATA_EDITING_SAVE_AUTHOR]({ commit }, author) {
+    commit(METADATA_EDITING_SAVE_AUTHOR, author);
+
+    await sleep(2000);
+
+    commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+  },
+  async [METADATA_EDITING_UPDATE_EXISTING_AUTHORS]({ commit }) {
+
+    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+    const existingAuthors = Object.values(authorsMap);
+
+    enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
+
+    commit(METADATA_EDITING_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },
 };

@@ -1,5 +1,5 @@
 /**
- * The stor of the user module
+ * The store of the user module
  *
  * @summary user module store
  * @author Dominik Haas-Artho
@@ -13,6 +13,10 @@
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 
+import {
+  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCES,
+} from '@/factories/eventBus';
 import actions from './userActions';
 import mutations from './userMutations';
 
@@ -28,14 +32,33 @@ const userState = {
   user: null,
   userLoading: false,
   userDatasetsError: null,
-  userOrganizationLoading: false, 
+  userOrganizationLoading: false,
   userOrganizationIds: [],
   userOrganizationNames: [],
   userOrganizations: {},
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
-  metadataInEditing: {},
+  metadataInEditing: {
+    [EDITMETADATA_DATA_RESOURCES]: {
+      resources: [],
+      resourcesConfig: {
+        downloadActive: false,
+      },
+    },
+    [EDITMETADATA_DATA_AUTHOR_LIST]: {
+      authors: [],
+      existingAuthors: [],
+      authorDetailsConfig: {
+        showDatasetCount: true,
+        showAuthorInfos: true,
+        showDataCredits: true,
+        showDataCreditScore: false,
+      },
+    },
+  },
+  selectedResourceId: '',
+  selectedAuthorId: '',
 };
 
 
@@ -43,6 +66,9 @@ export const user = {
   namespaced: true,
   state: userState,
   getters: {
+    resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
+    authors: state => state.metadataInEditing[EDITMETADATA_DATA_AUTHOR_LIST].authors,
+    existingAuthors: state => state.metadataInEditing[EDITMETADATA_DATA_AUTHOR_LIST]?.existingAuthors,
     userDatasets: (state) => {
       const userObj = state.user;
 

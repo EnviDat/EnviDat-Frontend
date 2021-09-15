@@ -11,48 +11,61 @@
 * This file is subject to the terms and conditions defined in
 * file 'LICENSE.txt', which is part of this source code package.
 */
-// import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
-
-// import { getSpecificApiError } from '@/factories/notificationFactory';
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
+  EDITMETADATA_DATA_AUTHOR,
+  EDITMETADATA_DATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import {
-  GET_USER_CONTEXT,
-  GET_USER_CONTEXT_SUCCESS,
-  GET_USER_CONTEXT_ERROR,
-  USER_SIGNIN,
-  USER_SIGNIN_SUCCESS,
-  USER_SIGNIN_ERROR,
-  REQUEST_TOKEN,
-  REQUEST_TOKEN_SUCCESS,
-  REQUEST_TOKEN_ERROR,
-  USER_SIGNOUT,
-  USER_SIGNOUT_SUCCESS,
-  USER_SIGNOUT_ERROR,
-  VALIDATION_ERROR,
-  USER_GET_DATASETS,
-  USER_GET_DATASETS_SUCCESS,
-  USER_GET_DATASETS_ERROR,
-  USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_GET_ORGANIZATIONS_ERROR,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATION_IDS_SUCCESS,
-  USER_GET_ORGANIZATION_IDS_ERROR,
-  USER_GET_ORGANIZATIONS_DATASETS,
-  USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
-  USER_GET_ORGANIZATIONS_DATASETS_ERROR,
-  METADATA_EDITING_SAVE_RESOURCE,
-  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
-  METADATA_EDITING_SAVE_RESOURCE_ERROR,
-  UPDATE_METADATA_EDITING,
+  selectForEditing, setSelected,
+  updateAuthors,
+  updateResource,
+} from '@/factories/userEditingFactory';
+
+import {
   CLEAR_METADATA_EDITING,
+  GET_USER_CONTEXT,
+  GET_USER_CONTEXT_ERROR,
+  GET_USER_CONTEXT_SUCCESS,
+  METADATA_CANCEL_AUTHOR_EDITING,
+  METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_SAVE_AUTHOR,
+  METADATA_EDITING_SAVE_AUTHOR_ERROR,
+  METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
+  METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_EDITING_SAVE_RESOURCE_ERROR,
+  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
+  METADATA_EDITING_SELECT_AUTHOR,
+  METADATA_EDITING_SELECT_RESOURCE, METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
+  REQUEST_TOKEN,
+  REQUEST_TOKEN_ERROR,
+  REQUEST_TOKEN_SUCCESS,
+  UPDATE_METADATA_EDITING,
+  USER_GET_DATASETS,
+  USER_GET_DATASETS_ERROR,
+  USER_GET_DATASETS_SUCCESS,
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATION_IDS_ERROR,
+  USER_GET_ORGANIZATION_IDS_SUCCESS,
+  USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_DATASETS,
+  USER_GET_ORGANIZATIONS_DATASETS_ERROR,
+  USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
+  USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_SUCCESS,
+  USER_NAMESPACE,
+  USER_SIGNIN,
+  USER_SIGNIN_ERROR,
+  USER_SIGNIN_SUCCESS,
+  USER_SIGNOUT,
+  USER_SIGNOUT_ERROR,
+  USER_SIGNOUT_SUCCESS,
+  VALIDATION_ERROR,
 } from './userMutationsConsts';
 
 
@@ -69,14 +82,14 @@ function extractError(store, reason, errorProperty = 'error') {
   }
 
   const error = reason?.response?.error || reason?.error || reason;
-  
+
   if (error) {
     type = error.__type;
-    
+
     switch (type) {
       case VALIDATION_ERROR: {
         const errKey = Object.keys(error)[1];
-        
+
         field = errKey;
         msg = error[errKey];
         break;
@@ -100,32 +113,6 @@ function resetErrorObject(state) {
   state.errorField = '';
 }
 
-function updateResource(store, state, payload) {
-
-  if (!state.metadataInEditing[payload.object]) {
-    state.metadataInEditing[payload.object] = {
-      resources: [],
-      selectionId: -1,
-      resourcesConfig: {
-        downloadActive: false,
-      },
-    };
-  }
-
-  const resources = state.metadataInEditing[payload.object].resources;
-  const newRes = payload.data;
-
-
-  for (let i = 0; i < resources.length; i++) {
-    const r = resources[i];
-    if (r.id === newRes.id) {
-      store._vm.$set(resources, i, newRes);
-      return;
-    }
-  }
-
-  resources.unshift(newRes);
-}
 
 export default {
   [GET_USER_CONTEXT](state) {
@@ -150,12 +137,12 @@ export default {
   [USER_SIGNIN_SUCCESS](state, payload) {
     state.signInLoading = false;
     state.signInSuccess = true;
-    state.user = payload.user;    
+    state.user = payload.user;
   },
   [USER_SIGNIN_ERROR](state, reason) {
     state.signInLoading = false;
     state.signInSuccess = false;
-    
+
     extractError(this, reason);
   },
   [REQUEST_TOKEN](state) {
@@ -173,7 +160,7 @@ export default {
   [REQUEST_TOKEN_ERROR](state, reason) {
     state.requestLoading = false;
     state.requestSuccess = false;
-    
+
     extractError(this, reason);
   },
   [USER_SIGNOUT](state) {
@@ -181,8 +168,8 @@ export default {
     state.signInSuccess = false;
     state.requestLoading = false;
     state.requestSuccess = false;
-    state.userLoading = true;    
-    state.user = null;    
+    state.userLoading = true;
+    state.user = null;
 
     resetErrorObject(state);
   },
@@ -211,7 +198,7 @@ export default {
 
     const enhancedDatasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
 
-    // use this._vm.$set() to make sure computed properties are recalulated
+    // use this._vm.$set() to make sure computed properties are recalculated
     this._vm.$set(state.user, 'datasets', enhancedDatasets);
 
     resetErrorObject(state);
@@ -268,7 +255,7 @@ export default {
       const { cardBGImages } = store.getters;
       const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
 
-      payload.packages = enhanceMetadatas(payload.packages, cardBGImages, categoryCards);      
+      payload.packages = enhanceMetadatas(payload.packages, cardBGImages, categoryCards);
     }
 
     this._vm.$set(state.userOrganizations, orgaId, payload);
@@ -318,29 +305,33 @@ export default {
   [UPDATE_METADATA_EDITING](state, payload) {
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
       updateResource(this, state, payload);
+    } else if (payload.object === EDITMETADATA_DATA_AUTHOR) {
+      updateAuthors(this, state, payload);
+    } else if (payload.object === EDITMETADATA_DATA_AUTHOR_LIST) {
+      state.metadataInEditing[payload.object] = payload.data;
     } else {
       state.metadataInEditing[payload.object] = payload.data;
     }
   },
-  [METADATA_EDITING_SAVE_RESOURCE](state, payload) {
+  [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
 
-    const newRes = payload;
+    resource.loading = true;
     const updateObj = {
       object: EDITMETADATA_DATA_RESOURCES,
-      data: newRes,
+      data: resource,
     };
 
     updateResource(this, state, updateObj);
 
     resetErrorObject(state);
   },
-  [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, payload) {
+  [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, resource) {
 
-    const newRes = payload;
-    newRes.existsOnlyLocal = false;
+    resource.loading = false;
+    resource.existsOnlyLocal = false;
     const updateObj = {
       object: EDITMETADATA_DATA_RESOURCES,
-      data: newRes,
+      data: resource,
     };
 
     updateResource(this, state, updateObj);
@@ -350,6 +341,61 @@ export default {
   [METADATA_EDITING_SAVE_RESOURCE_ERROR](state, reason) {
 
     extractError(this, reason);
+  },
+  [METADATA_EDITING_SELECT_RESOURCE](state, id) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+    selectForEditing(this, resources, id, state.selectedResourceId, 'id');
+    state.selectedResourceId = id;
+  },
+  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
+    state.selectedAuthorId = id;
+  },
+  [METADATA_CANCEL_RESOURCE_EDITING](state) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+    setSelected(this, resources, state.selectedResourceId, 'id', false);
+    state.selectedResourceId = '';
+  },
+  [METADATA_CANCEL_AUTHOR_EDITING](state) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+    setSelected(this, authors, state.selectedAuthorId, 'email', false);
+    state.selectedAuthorId = '';
+  },
+  [METADATA_EDITING_SAVE_AUTHOR](state, author) {
+
+    author.loading = true;
+
+    const updateObj = {
+      object: EDITMETADATA_DATA_AUTHOR,
+      data: author,
+    };
+
+    updateAuthors(this, state, updateObj);
+
+    resetErrorObject(state);
+  },
+  [METADATA_EDITING_SAVE_AUTHOR_SUCCESS](state, author) {
+
+    author.loading = false;
+    author.existsOnlyLocal = false;
+
+    const updateObj = {
+      object: EDITMETADATA_DATA_AUTHOR,
+      data: author,
+    };
+
+    updateAuthors(this, state, updateObj);
+
+
+    resetErrorObject(state);
+  },
+  [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
+
+    extractError(this, reason);
+  },
+  [METADATA_EDITING_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
+    state.metadataInEditing[EDITMETADATA_DATA_AUTHOR_LIST].existingAuthors = existingAuthors;
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
