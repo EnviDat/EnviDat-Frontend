@@ -27,37 +27,39 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
-  EDITMETADATA_OBJECT_UPDATE,
-  SELECT_EDITING_RESOURCE,
-  SAVE_EDITING_RESOURCE,
-  CANCEL_EDITING_RESOURCE,
-  SELECT_EDITING_AUTHOR,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR,
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
+  SAVE_EDITING_AUTHOR,
+  SAVE_EDITING_RESOURCE,
+  SELECT_EDITING_AUTHOR,
+  SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus';
 
 import {
+  getStepByName,
   metadataCreationSteps,
-  getStepToUpdate,
 } from '@/modules/user/store/MetadataCreationSteps';
 
 import {
-  mapState,
   mapGetters,
+  mapState,
 } from 'vuex';
 
 import {
-  USER_NAMESPACE,
-  UPDATE_METADATA_EDITING,
-  METADATA_EDITING_SAVE_RESOURCE,
-  METADATA_EDITING_SELECT_RESOURCE,
-  METADATA_EDITING_SELECT_AUTHOR,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_SAVE_AUTHOR,
-  // METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
+  METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_EDITING_SELECT_AUTHOR,
+  METADATA_EDITING_SELECT_RESOURCE,
+  UPDATE_METADATA_EDITING,
+  USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
@@ -87,9 +89,6 @@ export default {
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  beforeMount() {
-    // this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_UPDATE_EXISTING_AUTHORS}`);
-  },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -101,7 +100,7 @@ export default {
   },
   watch: {
     existingAuthors() {
-      this.updateSteps(EDITMETADATA_DATA_AUTHOR_LIST);
+      this.updateSteps(EDITMETADATA_AUTHOR_LIST);
     },
   },
   computed: {
@@ -111,10 +110,11 @@ export default {
     ...mapGetters(USER_NAMESPACE, [
       'resources',
       'authors',
-      'existingAuthors',
     ]),
     ...mapGetters(METADATA_NAMESPACE, [
       'authorsMap',
+      'existingAuthors',
+      'existingKeywords',
     ]),
   },
   methods: {
@@ -157,7 +157,7 @@ export default {
 
         if (objectName === key) {
 
-          const stepToUpdate = getStepToUpdate(key, steps);
+          const stepToUpdate = getStepByName(key, steps);
           if (stepToUpdate) {
             stepToUpdate.genericProps = this.metadataInEditing[key];
             // console.log(`updated step ${JSON.stringify(stepToUpdate)}`);
