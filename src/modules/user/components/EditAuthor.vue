@@ -1,6 +1,5 @@
 <template>
   <v-card id="EditAuthor"
-            :key="email"
             class="pa-4" >
 
     <BaseIconButton id="EditResourceCloseButton"
@@ -59,6 +58,7 @@
       <v-row no-gutters>
         <v-col cols="12">
           <v-text-field :label="labels.email"
+                        ref="email"
                         outlined
                         required
                         :rules="rulesEmail"
