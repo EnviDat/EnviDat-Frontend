@@ -2,57 +2,37 @@
 <template>
   <v-container id="NavigationStepper"
                 fluid
-                class="pa-0 fill-height" >
+                class="pa-0 fill-height stepperContentGrid" >
 
-    <v-row no-gutters
-            :style="`background-color: ${backgroundColor}`" >
-      <v-col cols="12">
-        <StepperHeader :steps="steps"
-                        activeColor="accent"
-                        inactiveColor="primary"
-                        :stepColor="stepColor"
-                        :initialStep="currentStepIndex"
-                        @stepClick="catchStepClick" />
+        <div class="stepper fill-height"
+             :style="`background-color: ${backgroundColor}`">
+          <StepperHeader :steps="steps"
+                          activeColor="accent"
+                          inactiveColor="primary"
+                          :stepColor="stepColor"
+                          :initialStep="currentStepIndex"
+                          @stepClick="catchStepClick" />
+        </div>
 
-      </v-col>
-    </v-row>
-    <v-row no-gutters
-            class="fill-height" >
-      <v-col cols="12" 
-              :style="`background-color: ${backgroundColor}`">
+        <div class="content fill-height pa-1 pt-0"
+             :style="`background-color: ${backgroundColor}`">
 
-        <v-card class="ma-1 pa-4 ">
+          <v-card class="fill-height pa-4 ">
 
-          <component v-if="currentStep"
-                      :is="currentStep.component"
-                      :steps="currentStep.detailSteps"
-                      :genericProps="currentStep.genericProps"
-                      :initialStepTitle="currentStep.initialStepTitle"
-                      stepColor="highlight" />
-          
-          <div v-if="!currentStep"
-                  cols="12" >
-            Nothing selected, please select a step in the navigation!
-          </div>
+            <component v-if="currentStep"
+                        :is="currentStep.component"
+                        :steps="currentStep.detailSteps"
+                        :genericProps="currentStep.genericProps"
+                        :initialStepTitle="currentStep.initialStepTitle"
+                        stepColor="highlight" />
 
-          <!-- <v-row>
-            <v-col v-if="currentStep"
-                    cols="12" >
-              <component :is="currentStep.component"
-                          :steps="currentStep.detailSteps"
-                          :genericProps="currentStep.genericProps"
-                          stepColor="highlight" />
-            </v-col>
-
-            <v-col v-if="!currentStep"
+            <div v-if="!currentStep"
                     cols="12" >
               Nothing selected, please select a step in the navigation!
-            </v-col>
-          </v-row> -->
+            </div>
 
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-card>
+        </div>
 
   </v-container>
 </template>
@@ -135,11 +115,22 @@ export default {
   }),
   components: {
     StepperHeader,
-  },  
+  },
 };
 </script>
 
 <style scoped>
 
+  .stepperContentGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.5fr 6fr;
+    gap: 0px 0px;
+    grid-template-areas:
+    "stepper"
+    "content";
+    width: 100%;
+    height: 100%;
+  }
 
 </style>

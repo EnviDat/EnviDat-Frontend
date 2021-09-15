@@ -4,7 +4,7 @@
     <v-stepper v-model="currentStep"
                 :value="initialStep"
                 style="background: transparent; box-shadow: unset !important;" >
-                
+
                 <!-- :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light.primary : ''}`" > -->
       <v-stepper-header>
 
@@ -21,11 +21,7 @@
                           class="py-0 px-3 ma-4 blackTextStepIcon"
                           style="border-radius: 4px;"
                           :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light[stepColor] : ''};`"
-                        >
-                        
-                          <!-- :style="`border: 1px solid ${step.active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.secondary};
-                                    background-color: ${$vuetify ? $vuetify.theme.themes.light.secondary : ''};`" -->
-                          <!-- :style="`background-color: ${step.color};`" -->
+                          >
             {{ step.title }}
           </v-stepper-step>
 
@@ -90,7 +86,7 @@ export default {
     currentStep: -1,
   }),
   components: {
-  },  
+  },
 };
 </script>
 
