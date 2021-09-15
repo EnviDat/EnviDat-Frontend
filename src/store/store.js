@@ -22,7 +22,6 @@ import { geoservices } from '@/modules/metadata/components/Geoservices/geoservic
 /* eslint-disable no-unused-vars */
 import { user } from '@/modules/user/store/userStore';
 
-
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
@@ -33,11 +32,18 @@ import {
   UPDATE_CATEGORYCARD_IMAGES,
 } from '@/store/mainMutationsConsts';
 
+import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 import { checkWebpFeatureAsync } from '@/factories/enhancementsFactory';
 
-import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 import globalMethods from '@/factories/globalMethods';
 import categoryCards from './categoryCards';
+
+const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
+const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+
+const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
+const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
+
 
 const errReport = process.env.VUE_APP_ERROR_REPORTING_ENABLED;
 // the check for 'NULL' is needed because simply nothing will not work
@@ -46,12 +52,6 @@ let errorReportingEnabled = false;
 if (typeof errReport === 'string') {
   errorReportingEnabled = errReport.toLowerCase() === 'true';
 }
-
-const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
-
-const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 Vue.use(Vuex);
 
@@ -92,6 +92,7 @@ const store = new Vuex.Store({
     cardBGImages: state => state.cardBGImages,
     iconImages: state => state.iconImages,
     aboutText: state => state.aboutText,
+    categoryCards: state => state.categoryCards,
     defaultControls: state => state.defaultControls,
     appScrollPosition: state => state.appScrollPosition,
     browseScrollPosition: state => state.browseScrollPosition,
