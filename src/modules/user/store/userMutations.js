@@ -17,7 +17,7 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
   EDITMETADATA_DATA_AUTHOR,
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
@@ -307,7 +307,7 @@ export default {
       updateResource(this, state, payload);
     } else if (payload.object === EDITMETADATA_DATA_AUTHOR) {
       updateAuthors(this, state, payload);
-    } else if (payload.object === EDITMETADATA_DATA_AUTHOR_LIST) {
+    } else if (payload.object === EDITMETADATA_AUTHOR_LIST) {
       state.metadataInEditing[payload.object] = payload.data;
     } else {
       state.metadataInEditing[payload.object] = payload.data;

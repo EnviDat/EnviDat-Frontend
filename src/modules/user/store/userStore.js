@@ -12,9 +12,10 @@
  */
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
 
 import {
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 import actions from './userActions';
@@ -39,24 +40,7 @@ const userState = {
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
-  metadataInEditing: {
-    [EDITMETADATA_DATA_RESOURCES]: {
-      resources: [],
-      resourcesConfig: {
-        downloadActive: false,
-      },
-    },
-    [EDITMETADATA_DATA_AUTHOR_LIST]: {
-      authors: [],
-      existingAuthors: [],
-      authorDetailsConfig: {
-        showDatasetCount: true,
-        showAuthorInfos: true,
-        showDataCredits: true,
-        showDataCreditScore: false,
-      },
-    },
-  },
+  metadataInEditing: getEmptyMetadataInEditingObject(),
   selectedResourceId: '',
   selectedAuthorId: '',
 };
@@ -67,7 +51,7 @@ export const user = {
   state: userState,
   getters: {
     resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
-    authors: state => state.metadataInEditing[EDITMETADATA_DATA_AUTHOR_LIST].authors,
+    authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
     userDatasets: (state) => {
       const userObj = state.user;
 

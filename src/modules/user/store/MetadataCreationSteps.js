@@ -19,7 +19,8 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_KEYWORDS,
 } from '@/factories/eventBus';
 
 import { getOrganizationMap } from '@/factories/metaDataFactory';
@@ -56,8 +57,7 @@ export const mainDetailSteps = [
     component: EditKeywords,
     genericProps: {
       keywordsSource: [],
-      componentTitle: 'Metadata Keywords',
-      disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+      keywords: [],
     },
   },
   {
@@ -148,10 +148,11 @@ const componentToStateMapping = {
   [EDITMETADATA_CUSTOMFIELDS]: MetadataCreationRelatedInfo,
   [EDITMETADATA_PUBLICATION_INFO]: MetadataCreationPublicationInfo,
   [EDITMETADATA_ORGANIZATION]: MetadataCreationPublicationInfo,
-  [EDITMETADATA_DATA_AUTHOR_LIST]: EditAuthorList,
+  [EDITMETADATA_AUTHOR_LIST]: EditAuthorList,
+  [EDITMETADATA_KEYWORDS]: EditKeywords,
 };
 
-export function getStepToUpdate(eventName, steps) {
+export function getStepByName(eventName, steps) {
   if (!steps) {
     return null;
   }
@@ -171,7 +172,7 @@ export function getStepToUpdate(eventName, steps) {
       }
 
       if (s?.detailSteps) {
-        const subStep = getStepToUpdate(eventName, s.detailSteps);
+        const subStep = getStepByName(eventName, s.detailSteps);
         if (subStep) {
           return subStep;
         }

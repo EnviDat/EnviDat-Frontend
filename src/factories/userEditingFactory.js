@@ -15,8 +15,11 @@
 
 import { localIdProperty } from '@/factories/strategyFactory';
 import {
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  EDITMETADATA_MAIN_HEADER,
 } from '@/factories/eventBus';
 
 export function updateEditingArray(store, elementList, newElement) {
@@ -42,7 +45,7 @@ export function updateResource(store, state, payload) {
 
 export function updateAuthors(store, state, payload) {
 
-  const authors = state.metadataInEditing[EDITMETADATA_DATA_AUTHOR_LIST].authors;
+  const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
   const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors);
@@ -84,6 +87,55 @@ export function selectForEditing(store, elementList, id, previousId, propertyToC
   setSelected(store, elementList, id, propertyToCompare, true);
 }
 
-export function loadExistingUsers() {
+const emptyMetadataInEditing = {
+  [EDITMETADATA_MAIN_HEADER]: {
+    metadataTitle: '',
+    contactEmail: '',
+    contactGivenName: '',
+    contactSurname: '',
+  },
+  [EDITMETADATA_MAIN_DESCRIPTION]: {
+    labelTextarea: 'Metadata Description',
+    descriptionInstructions: 'Please enter a description for the research data.',
+    subtitlePreview: 'Description Preview',
+    description: '',
+  },
+  [EDITMETADATA_KEYWORDS]: {
+    keywordsSource: [],
+    keywords: [],
+  },
+  [EDITMETADATA_AUTHOR_LIST]: {
+    authors: [],
+    existingAuthors: [],
+    authorDetailsConfig: {
+      showDatasetCount: true,
+      showAuthorInfos: true,
+      showDataCredits: true,
+      showDataCreditScore: false,
+    },
+  },
+  [EDITMETADATA_DATA_RESOURCES]: {
+    resources: [],
+      resourcesConfig: {
+      downloadActive: false,
+    },
+  },
+  [EDITMETADATA_AUTHOR_LIST]: {
+    authors: [],
+      existingAuthors: [],
+      authorDetailsConfig: {
+      showDatasetCount: true,
+        showAuthorInfos: true,
+        showDataCredits: true,
+        showDataCreditScore: false,
+    },
+  },
+  [EDITMETADATA_KEYWORDS]: {
+    keywordsSource: [],
+    keywords: [],
+  },
+};
 
+export function getEmptyMetadataInEditingObject() {
+  return JSON.parse(JSON.stringify(emptyMetadataInEditing));
 }

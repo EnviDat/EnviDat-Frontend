@@ -22,7 +22,7 @@ import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreation
 import {
   metadataCreationSteps,
   mainDetailSteps,
-  getStepToUpdate,
+  getStepByName,
 } from '@/modules/user/store/MetadataCreationSteps';
 
 
@@ -49,7 +49,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
-    getStepToUpdate,
+    getStepByName,
     editComponentsChanged(updateObj) {
       // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
       // this.editState[updateObj.object] = updateObj.data;
@@ -58,7 +58,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
       this.updateSteps(updateObj.object, updateObj.data);
     },
     updateSteps(eventName, newGenericProps) {
-      const stepToUpdate = this.getStepToUpdate(eventName, this.steps);
+      const stepToUpdate = this.getStepByName(eventName, this.steps);
       stepToUpdate.genericProps = newGenericProps;
     },
   },
@@ -89,7 +89,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
-    getStepToUpdate,
+    getStepByName,
     editComponentsChanged(updateObj) {
       // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
       // this.editState[updateObj.object] = updateObj.data;
@@ -98,7 +98,7 @@ storiesOf('5 Navigation / Navigation Stepper', module)
       this.updateSteps(updateObj.object, updateObj.data);
     },
     updateSteps(eventName, newGenericProps) {
-      const stepToUpdate = this.getStepToUpdate(eventName, this.steps);
+      const stepToUpdate = this.getStepByName(eventName, this.steps);
       stepToUpdate.genericProps = newGenericProps;
     },
   },
