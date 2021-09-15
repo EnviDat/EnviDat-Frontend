@@ -14,10 +14,6 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-
 import {
   FETCH_USER_DATA,
   USER_GET_ORGANIZATION_IDS,
@@ -36,7 +32,6 @@ import {
   ACTION_USER_ORGANIZATIONS_DATASETS,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
-  METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -213,14 +208,5 @@ export default {
     await sleep(2000);
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
-  },
-  async [METADATA_EDITING_UPDATE_EXISTING_AUTHORS]({ commit }) {
-
-    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-    const existingAuthors = Object.values(authorsMap);
-
-    enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
-
-    commit(METADATA_EDITING_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },
 };
