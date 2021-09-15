@@ -6,10 +6,10 @@
             }"
           v-bind="{ 'color': highlighted ? 'primary' : color }"
           :style="{ 'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
-          small
+          :small="isSmall"
           close-icon="close"
           @click.stop="clicked"
-          :close="closeable" 
+          :close="closeable"
           @click:close="$emit('clickedClose', name)" >
     {{ name }}
 
@@ -46,6 +46,10 @@ export default {
     color: {
       type: String,
       default: '#e0e0e0',
+    },
+    isSmall: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
