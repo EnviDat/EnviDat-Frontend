@@ -107,27 +107,11 @@ const emptyMetadataInEditing = {
   [EDITMETADATA_AUTHOR_LIST]: {
     authors: [],
     existingAuthors: [],
-    authorDetailsConfig: {
-      showDatasetCount: true,
-      showAuthorInfos: true,
-      showDataCredits: true,
-      showDataCreditScore: false,
-    },
   },
   [EDITMETADATA_DATA_RESOURCES]: {
     resources: [],
       resourcesConfig: {
       downloadActive: false,
-    },
-  },
-  [EDITMETADATA_AUTHOR_LIST]: {
-    authors: [],
-      existingAuthors: [],
-      authorDetailsConfig: {
-      showDatasetCount: true,
-        showAuthorInfos: true,
-        showDataCredits: true,
-        showDataCreditScore: false,
     },
   },
   [EDITMETADATA_KEYWORDS]: {
