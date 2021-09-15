@@ -3,7 +3,7 @@
           hover
           style="height: 100%;"
           @click.native="cardClick" >
-          
+
     <!-- <v-card-title primary-title class="pa-0"> -->
 
     <v-container fluid class="pa-0">
@@ -36,7 +36,7 @@
       </v-row>
     </v-container>
 
-    <v-card-text py-2 
+    <v-card-text py-2
                   :class="{['cardText'] : $vuetify.breakpoint.mdAndUp,
                         ['compactText'] : flatLayout || $vuetify.breakpoint.smAndDown,
                         ['pr-5'] : flatLayout,
@@ -76,13 +76,13 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-2 "
+    <v-card-actions class="ma-0 pa-1 "
                     style="position: absolute; bottom: 0px; right: 0px; background-color: white; border-radius: 10px;" >
 
-      <v-container fluid class="pa-0 cardIcons">        
-        <v-row >
-          <v-col v-if="modeData"
-                  class="py-2 px-3" >
+      <v-container class="pa-0 cardIcons">
+        <v-row v-if="modeData"
+                no-gutters>
+          <v-col class="pb-2 px-0" >
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -92,15 +92,16 @@
 
         </v-row>
 
-        <v-row >
-          <v-col class="py-2 px-3" >
+        <v-row no-gutters>
+          <v-col class="py-3 px-1" >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
         </v-row>
 
-        <v-row v-if="geoJSONIcon" >
-          <v-col class="py-2 px-3" >
+        <v-row v-if="geoJSONIcon"
+               no-gutters>
+          <v-col class="pt-1 px-1" >
             <BaseIconLabelView :icon="geoJSONIcon" />
 
           </v-col>
