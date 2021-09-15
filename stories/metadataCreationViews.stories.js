@@ -36,33 +36,10 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 import { getTagColor } from '@/factories/metaDataFactory';
 import { createTag, getPopularTags } from '@/factories/metadataFilterMethods';
 
+import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
-
-for (let i = 0; i < metadataset.length; i++) {
-  const entry = metadataset[i];
-
-  if (entry?.tags?.length > 0) {
-    const tagList = [];
-
-    for (let j = 0; j < entry.tags.length; j++) {
-      const tagName = entry.tags[j];
-      tagList.push(createTag(tagName));
-    }
-
-    entry.tags = tagList;
-  }
-  
-}
-
-const tagsFromDatasets = getPopularTags(metadataset, '', 1);
-// import tags from '@/modules/metadata/store/metadataTags';
-
-for (let i = 0; i < tagsFromDatasets.length; i++) {
-  const tag = tagsFromDatasets[i];
-  tag.color = getTagColor(categoryCards, tag.name);
-}
 
 
 // import doiIcon from '@/assets/icons/doi.png';
@@ -89,8 +66,52 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
 //   onTagClick: action('clicked on tag'),
 // };
 
+
+for (let i = 0; i < metadataset.length; i++) {
+  const entry = metadataset[i];
+
+  if (entry?.tags?.length > 0) {
+    const tagList = [];
+
+    for (let j = 0; j < entry.tags.length; j++) {
+      const tagName = entry.tags[j];
+      tagList.push(createTag(tagName));
+    }
+
+    entry.tags = tagList;
+  }
+  
+}
+
+const tagsFromDatasets = getPopularTags(metadataset, '', 1);
+// import tags from '@/modules/metadata/store/metadataTags';
+
+for (let i = 0; i < tagsFromDatasets.length; i++) {
+  const tag = tagsFromDatasets[i];
+  tag.color = getTagColor(categoryCards, tag.name);
+}
+
+
+function getKeywordsSource(tagsSource, catCards) {
+    
+  const keywordsArray = [...tagsSource];
+  
+  for (let i = 0; i < keywordsArray.length; i++) {
+    keywordsArray[i].color = getTagColor(catCards, keywordsArray[i].name);
+  }
+
+  return keywordsArray;
+}
+
+
+const keywordsTags = getKeywordsSource(storyTags, categoryCards);
+
+
 const placeholderKeywordsGenericProps = {
-  keywordsSource: tagsFromDatasets,
+  // keywordsSource: tagsFromDatasets,
+  metadataCardTitle: 'A Mostly Glorious Title',
+  metadataCardSubtitle: 'My metadata description is pleasant to read.',
+  keywordsSource: keywordsTags,
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
