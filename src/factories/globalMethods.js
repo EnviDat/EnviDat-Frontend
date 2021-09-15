@@ -5,7 +5,7 @@
  * @summary function factory for global methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2020-10-13 23:35:11
  *
  * This file is subject to the terms and conditions defined in
@@ -61,7 +61,7 @@ export default {
       }
 
       return false;
-    },    
+    },
     mixinMethods_areArraysIdentical(arr1, arr2) {
       if (arr1.length !== arr2.length) { return false; }
 
@@ -154,11 +154,11 @@ export default {
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
       const imageKey = `./${imageAssetPathName}.${state.webpIsSupported ? 'webp' : 'jpg'}`;
-      
+
       if (state.webpIsSupported) {
         return state.webpAssets[imageKey];
       }
-      
+
       return state.jpgAssets[imageKey];
     },
     /**
@@ -169,7 +169,7 @@ export default {
      */
     mixinMethods_getIcon(iconName) {
       const iconKey = `./${iconName}.png`;
-      return this.$store.getters.iconImages[iconKey];
+      return this.$store?.getters?.iconImages[iconKey] || null;
     },
     /**
      * Loads the path to the icon image representing a file extension
@@ -216,7 +216,7 @@ export default {
         if (type === LOCATION_TYPE_MULTIPOINT) {
           return this.mixinMethods_getIcon('markerMulti');
         }
-        
+
         if (type === LOCATION_TYPE_POLYGON) {
           return this.mixinMethods_getIcon('polygons');
         }
@@ -252,7 +252,7 @@ export default {
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};
-    
+
       if (useWebp) {
         bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
         bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
@@ -268,7 +268,7 @@ export default {
         bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
         bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
       }
-    
+
       return bgs;
     },
   },
