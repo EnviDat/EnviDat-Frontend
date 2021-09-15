@@ -37,7 +37,7 @@
                         ref="resourceName"
                         outlined
                         required
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.resourceName} is required`,
                                   v => (isLink && resourceName !== url) || (!isLink && !url) || `${labels.resourceName} can't be the same as the ${labels.url}`,
                                   ]"
@@ -51,7 +51,7 @@
                         ref="description"
                         outlined
                         auto-grow
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.description} is required` ]"
                         v-model="description"
                         />
@@ -65,7 +65,7 @@
                         ref="url"
                         outlined
                         prepend-icon="link"
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.url} is required` ]"
                         v-model="url" />
         </v-col>
@@ -162,7 +162,7 @@
               justify="end">
         <v-col class="shrink">
           <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                :loading="genericProps.loading"
+                                :loading="loading"
                                 :buttonText="labels.createButtonText"
                                 @clicked="saveResourceClick" />
         </v-col>
@@ -311,14 +311,23 @@ export default {
     },
     size: {
       get() {
-        const size = this.mixinMethods_getGenericProp('size', 'unknown');
-        return this.mixinMethods_formatBytes(size);
+        const size = this.mixinMethods_getGenericProp('size', 0);
+
+        let sizeNumber = 0;
+        if (size) {
+          sizeNumber = Number.parseInt(size, 10);
+        }
+
+        return this.mixinMethods_formatBytes(sizeNumber);
       },
     },
     doi: {
       get() {
         return this.mixinMethods_getGenericProp('doi', '');
       },
+    },
+    loading() {
+      return this.mixinMethods_getGenericProp('loading', false);
     },
   },
   methods: {
@@ -327,7 +336,7 @@ export default {
       const enabled = !!this.localName && !!this.localDescription && !nameEqualsUrl;
 
       if (this.isLink) {
-      // validate the whole form to make sure it's 
+      // validate the whole form to make sure it's
         this.$refs.editResourceForm.validate();
       }
 

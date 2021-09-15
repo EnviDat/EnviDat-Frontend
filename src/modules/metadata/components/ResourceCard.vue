@@ -70,28 +70,28 @@
                                   icon-tooltip="Data Object Identifier"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="format" 
+            <base-icon-label-view v-if="format"
                                   :text="format"
                                   :label="extensionIcon ? '' : 'File format:'"
                                   :icon="extensionIcon"
                                   icon-tooltip="Format of the file"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="size" 
+            <base-icon-label-view v-if="size"
                                   :text="formatedBytes"
                                   :label="fileSizeIcon ? '' : 'File size:'"
                                   :icon="fileSizeIcon"
                                   icon-tooltip="Filesize"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="created" 
+            <base-icon-label-view v-if="created"
                                   :text="created"
                                   :label="dateCreatedIcon ? '' : 'Created at:'"
                                   :icon="dateCreatedIcon"
                                   icon-tooltip="Date of file creation"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="lastModified" 
+            <base-icon-label-view v-if="lastModified"
                                   :text="lastModified"
                                   :label="lastModifiedIcon ? '' : 'Modified at:'"
                                   :icon="lastModifiedIcon"
@@ -137,9 +137,9 @@
 
       </v-container>
 
-      <v-container fluid class="pa-2" 
+      <v-container fluid class="pa-2"
                     style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
-        
+
       <v-row v-if="!isProtected">
 
         <v-col cols="12"
@@ -282,7 +282,7 @@ export default {
         return '';
       }
 
-      return this.description.trim();      
+      return this.description.trim();
     },
     formatedBytes() {
       if (!this.size) return '';
@@ -338,7 +338,7 @@ export default {
 
         return this.mixinMethods_getIcon('file');
       }
-      
+
       if (this.fileExtensionIcon) {
         return this.lookupExtensionIcon;
       }
@@ -359,7 +359,7 @@ export default {
 
       // console.log(`icon ${icon}`);
       return icon;
-    },    
+    },
   },
   methods: {
 
@@ -421,7 +421,7 @@ export default {
     border: 1px solid grey;
     border-radius: 50%;
     padding: 0 4px 4px 0;
-  }  
+  }
 
   .lockedText {
     display: none;
@@ -443,7 +443,7 @@ export default {
   .protectedLink {
     font-size: 12px;
     overflow: hidden;
-  }  
+  }
 
   .highlighted {
     box-shadow: #ffd740 0px 0px 5px 5px !important;

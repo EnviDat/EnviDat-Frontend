@@ -1,43 +1,43 @@
 <template>
 <v-card id="EditMetadataHeader" class="pa-4">
 
-  <v-container fluid 
+  <v-container fluid
                 class="pa-0 fill-height" >
 
     <v-row>
 
-      <v-col cols="12"> 
-        <div class="text-h5">{{ lables.cardTitle }}</div>
+      <v-col cols="12">
+        <div class="text-h5">{{ labels.cardTitle }}</div>
       </v-col>
 
-    </v-row>  
+    </v-row>
 
 
     <v-row>
 
-      <v-col cols="12"> 
-        <div class="text-body-1">{{ lables.instructions }}</div>
+      <v-col cols="12">
+        <div class="text-body-1">{{ labels.instructions }}</div>
       </v-col>
 
     </v-row>
 
     <v-row>
-      <v-col cols="6">     
-        <v-text-field :label="lables.labelTitle"
+      <v-col cols="6">
+        <v-text-field :label="labels.labelTitle"
                       outlined
                       :rules="rulesTitle"
                       required
-                      :placeholder="lables.placeholderTitle"
+                      :placeholder="labels.placeholderTitle"
                       v-model="metadataTitle" />
-                      
+
       </v-col>
 
-      <v-col cols="6"> 
-        <v-text-field :label="lables.labelContactEmail"
+      <v-col cols="6">
+        <v-text-field :label="labels.labelContactEmail"
                       outlined
                       :rules="rulesEmail"
                       required
-                      :placeholder="lables.placeholderContactEmail" 
+                      :placeholder="labels.placeholderContactEmail"
                       v-model="contactEmail" />
 
       </v-col>
@@ -45,22 +45,22 @@
     </v-row>
 
     <v-row>
-      <v-col cols="6"> 
-        <v-text-field :label="lables.labelContactGivenName"
+      <v-col cols="6">
+        <v-text-field :label="labels.labelContactGivenName"
                       outlined
                       :rules="rulesGivenName"
                       required
-                      :placeholder="lables.placeholderContactGivenName"
+                      :placeholder="labels.placeholderContactGivenName"
                       v-model="contactGivenName" />
 
       </v-col>
 
-      <v-col cols="6"> 
-        <v-text-field :label="lables.labelContactSurname"
+      <v-col cols="6">
+        <v-text-field :label="labels.labelContactSurname"
                       outlined
                       :rules="rulesSurname"
                       required
-                      :placeholder="lables.placeholderContactSurname"
+                      :placeholder="labels.placeholderContactSurname"
                       v-model="contactSurname" />
 
       </v-col>
@@ -68,33 +68,33 @@
 
 
     <v-row>
-      <v-col cols="12"> 
-        <div class="text-body-1">{{ lables.previewText }}</div>
+      <v-col cols="12">
+        <div class="text-body-1">{{ labels.previewText }}</div>
       </v-col>
     </v-row>
 
     <v-row dense >
-      <v-col cols="12">   
-        <MetadataHeader :metadataTitle="metadataTitle || lables.placeholderHeaderTitle" 
+      <v-col cols="12">
+        <MetadataHeader :metadataTitle="metadataTitle || labels.placeholderHeaderTitle"
                         :mailIcon="iconMail"
                         :showCloseButton="false"
-                        :contactName="inputContactFullName" 
+                        :contactName="inputContactFullName"
                         :contactIcon="iconName"
                         :contactEmail="contactEmail"
                          />
       </v-col>
-      
+
     </v-row>
-    
+
 
   </v-container>
-</v-card>  
+</v-card>
 
 </template>
 
 <script>
 /**
- * EditMetadataHeader.vue shows the title, main contact email, main contact given name, 
+ * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
  *
  * @summary shows the title, main contact information, and header preview
@@ -126,7 +126,7 @@ export default {
   name: 'EditMetadataHeader',
   props: {
     genericProps: Object,
-  },  
+  },
   computed: {
     metadataTitle: {
       get() {
@@ -161,7 +161,7 @@ export default {
       },
     },
     inputContactFullName() {
-      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()}`; 
+      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()}`;
     },
   },
   methods: {
@@ -178,7 +178,7 @@ export default {
     },
   },
   data: () => ({
-    lables: {
+    labels: {
       cardTitle: 'Metadata Basic Information',
       labelTitle: 'Metadata Entry Title',
       labelContactEmail: 'Contact Email',
@@ -191,7 +191,7 @@ export default {
       placeholderContactGivenName: 'Enter contact given (first) name here',
       placeholderContactSurname: 'Enter contact surname name here',
       previewText: 'Metadata Header Preview',
-    },    
+    },
     rulesTitle: [v => !!v || 'Title is required'],
     rulesGivenName: [v => !!v || 'Contact given (first) name is required'],
     rulesSurname: [v => !!v || 'Contact surname is required'],
@@ -204,7 +204,7 @@ export default {
    }),
   components: {
     MetadataHeader,
-  },  
+  },
 };
 </script>
 
