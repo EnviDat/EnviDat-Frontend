@@ -23,7 +23,12 @@ const authorDataCreditLevels = [
 ];
 
 export function getAuthorName(author) {
-  const fullName = `${author.given_name ? author.given_name.trim() : ''} ${author.name ? author.name.trim() : ''}`;
+  let fullName = author.fullName;
+
+  if (!fullName) {
+    fullName = `${author.given_name ? author.given_name.trim() : ''} ${author.name ? author.name.trim() : ''}`;
+  }
+
   return fullName.trim();
 }
 
