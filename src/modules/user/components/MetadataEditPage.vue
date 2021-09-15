@@ -144,6 +144,8 @@ export default {
 
       this.$nextTick(() => {
         this.updateSteps(updateObj.object);
+        this.enhanceKeywordsStep();
+        this.enhanceMetadataHeaderStep();
       });
     },
     updateSteps(objectName) {
@@ -163,6 +165,28 @@ export default {
           }
         }
       }
+    },
+    enhanceKeywordsStep() {
+      const keywordStep = getStepByName(EDITMETADATA_KEYWORDS, this.metadataCreationSteps);
+      const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, this.metadataCreationSteps);
+      const descStep = getStepByName(EDITMETADATA_MAIN_DESCRIPTION, this.metadataCreationSteps);
+
+      keywordStep.genericProps = {
+        ...keywordStep.genericProps,
+        metadataCardTitle: headerStep.genericProps.metadataTitle,
+        metadataCardSubtitle: descStep.genericProps.description,
+      };
+    },
+    enhanceMetadataHeaderStep() {
+      const keywordStep = getStepByName(EDITMETADATA_KEYWORDS, this.metadataCreationSteps);
+      const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, this.metadataCreationSteps);
+      const authorStep = getStepByName(EDITMETADATA_AUTHOR_LIST, this.metadataCreationSteps);
+
+      headerStep.genericProps = {
+        ...headerStep.genericProps,
+        keywords: keywordStep.genericProps.keywords,
+        authors: authorStep.genericProps.authors,
+      };
     },
   },
   components: {

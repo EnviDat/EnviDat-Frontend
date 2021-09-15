@@ -77,6 +77,7 @@ export default {
         labelTextarea: this.genericProps.labelTextarea,
         textareaContent: this.description,
         isVerticalLayout: false,
+        prependIcon: 'description',
       };
     },
     descriptionObject() {

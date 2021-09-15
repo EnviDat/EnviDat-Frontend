@@ -12,6 +12,7 @@
                         outlined
                         auto-grow
                         :value="textareaContent"
+                        :prepend-icon="prependIcon"
                         @input="catchChangedText($event)"
                         >
           </v-textarea>
@@ -112,10 +113,11 @@ export default {
         return this.mixinMethods_getGenericProp('subtitlePreview', '');
       },
     },
-    labelTextarea: {
-      get() {
-        return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea label');
-      },
+    labelTextarea() {
+      return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea label');
+    },
+    prependIcon() {
+      return this.mixinMethods_getGenericProp('prependIcon', '');
     },
   },
   methods: {

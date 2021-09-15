@@ -27,6 +27,7 @@
                       outlined
                       :rules="rulesTitle"
                       required
+                      prepend-icon="import_contacts"
                       :placeholder="labels.placeholderTitle"
                       v-model="metadataTitle" />
 
@@ -37,6 +38,7 @@
                       outlined
                       :rules="rulesEmail"
                       required
+                      prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       v-model="contactEmail" />
 
@@ -50,6 +52,7 @@
                       outlined
                       :rules="rulesGivenName"
                       required
+                      prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       v-model="contactGivenName" />
 
@@ -60,6 +63,7 @@
                       outlined
                       :rules="rulesSurname"
                       required
+                      prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       v-model="contactSurname" />
 
@@ -75,13 +79,7 @@
 
     <v-row dense >
       <v-col cols="12">
-        <MetadataHeader :metadataTitle="metadataTitle || labels.placeholderHeaderTitle"
-                        :mailIcon="iconMail"
-                        :showCloseButton="false"
-                        :contactName="inputContactFullName"
-                        :contactIcon="iconName"
-                        :contactEmail="contactEmail"
-                         />
+        <MetadataHeader v-bind="metadataPreviewEntry" />
       </v-col>
 
     </v-row>
@@ -120,6 +118,7 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
+import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 
 export default {
@@ -128,6 +127,35 @@ export default {
     genericProps: Object,
   },
   computed: {
+    metadataPreviewEntry() {
+
+      const doiIcon = this.mixinMethods_getIcon('doi') || '';
+      const contactIcon = this.mixinMethods_getIcon('contact2') || this.iconName;
+      const mailIcon = this.mixinMethods_getIcon('mail') || this.iconMail;
+      const licenseIcon = this.mixinMethods_getIcon('license') || '';
+
+      const previewEntry = {
+        metadataTitle: this.metadataTitle || this.labels.placeholderHeaderTitle,
+        title: this.metadataTitle || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
+        showCloseButton: false,
+        contactName: this.inputContactFullName,
+        contactIcon,
+        contactEmail: this.contactEmail,
+        mailIcon,
+        doiIcon,
+        licenseIcon,
+        tags: this.keywords,
+        authors: this.authors,
+      };
+
+      if (this.$store) {
+        const { categoryCards, cardBGImages } = this.$store.getters;
+        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
+      }
+
+      return previewEntry;
+    },
+
     metadataTitle: {
       get() {
         return this.mixinMethods_getGenericProp('metadataTitle', '');
@@ -162,6 +190,12 @@ export default {
     },
     inputContactFullName() {
       return `${this.contactGivenName.trim()} ${this.contactSurname.trim()}`;
+    },
+    keywords() {
+      return this.mixinMethods_getGenericProp('keywords', null);
+    },
+    authors() {
+      return this.mixinMethods_getGenericProp('authors', null);
     },
   },
   methods: {

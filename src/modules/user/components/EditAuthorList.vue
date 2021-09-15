@@ -18,7 +18,7 @@
           <v-col>
             <v-card class="pa-0">
 
-              <EditAddExistingAuthor :genericProps="genericProps" />
+              <EditAddExistingAuthor :genericProps="authorPickingGenericProps" />
 
               <EditAddAuthor @createAuthor="catchCreateAuthor" />
             </v-card>
@@ -63,14 +63,16 @@ import {
   localIdProperty,
 } from '@/factories/strategyFactory';
 import {
-  eventBus,
+  CANCEL_EDITING_AUTHOR,
   EDITMETADATA_DATA_AUTHOR,
   EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+  SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR_PROPERTY,
-  CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
+import { mapGetters } from 'vuex';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 
 export default {
@@ -85,6 +87,16 @@ export default {
     genericProps: Object,
   },
   computed: {
+    ...mapGetters(METADATA_NAMESPACE, [
+      'existingAuthors',
+    ]),
+    authorPickingGenericProps() {
+      return {
+        ...this.genericProps,
+        existingAuthors: this.existingAuthors,
+        isClearable: false,
+      };
+    },
     selectedAuthor() {
       let selectedAuthor = null;
       const authors = this.genericProps?.authors;

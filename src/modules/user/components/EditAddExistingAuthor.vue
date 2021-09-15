@@ -18,7 +18,7 @@
           <BaseUserPicker :users="existingEnviDatUsers"
                           :preSelected="authors"
                           :multiplePick="true"
-                          :isClearable="true"
+                          :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
@@ -42,7 +42,7 @@
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 import {
-  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
@@ -60,6 +60,9 @@ export default {
     },
     authors() {
       return this.mixinMethods_getGenericProp('authors', []);
+    },
+    isClearable() {
+      return this.mixinMethods_getGenericProp('isClearable', false);
     },
   },
   methods: {
@@ -85,7 +88,7 @@ export default {
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_AUTHOR_LIST,
+        object: EDITMETADATA_AUTHOR_LIST,
         data: newGenericProps,
       });
     },

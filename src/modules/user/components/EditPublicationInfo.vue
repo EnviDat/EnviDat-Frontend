@@ -8,21 +8,8 @@
 
       <v-row>
 
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ labels.cardTitle }}</div>
-        </v-col>
-
-      </v-row>  
-
-
-      <v-row>
-
-        <v-col cols="6">     
-          <v-text-field :label="labels.publicationState"
-                        outlined
-                        required
-                        readonly
-                        v-model="publicationState" />                        
         </v-col>
 
       </v-row>
@@ -30,17 +17,31 @@
 
       <v-row>
 
-        <v-col cols="6">     
-          <v-text-field :label="labels.dataObjectIdentifier"
+        <v-col cols="6">
+          <v-text-field :label="labels.publicationState"
                         outlined
-                        v-model="doi" />                        
+                        required
+                        readonly
+                        v-model="publicationState" />
         </v-col>
 
-        <v-col cols="6">     
+      </v-row>
+
+
+      <v-row>
+
+        <v-col cols="6">
+          <v-text-field :label="labels.dataObjectIdentifier"
+                        outlined
+                        prepend-icon="fingerprint"
+                        v-model="doi" />
+        </v-col>
+
+        <v-col cols="6">
           <v-btn        :label="labels.dataObjectIdentifier"
                         elevation="2"
-                        depressed  
-                        class="text-none"                   
+                        depressed
+                        class="text-none"
                         :color="buttonColor"
                         disabled
                         v-on:click="generateNewDoi"
@@ -54,15 +55,15 @@
 
       <v-row>
 
-        <v-col cols="6">     
+        <v-col cols="6">
           <v-text-field :label="labels.publisher"
                         outlined
                         required
                         :rules="rulesPublisher"
-                        v-model="publisher" />                        
+                        v-model="publisher" />
         </v-col>
 
-        <v-col cols="6">     
+        <v-col cols="6">
           <v-select :items="yearList"
                     outlined
                     :label="labels.year"
@@ -76,14 +77,14 @@
 
       <v-row>
 
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-subtitle-1">{{ labels.fundingInformation }}</div>
         </v-col>
 
       </v-row>
 
 
-      <v-row v-for="(item, index) in funders"  
+      <v-row v-for="(item, index) in funders"
             :key="`${item}_${index}`">
 
             <v-col cols="4" >
@@ -93,35 +94,35 @@
                            @input="notifyChange(index)" >
               </v-text-field>
             </v-col>
-            <v-col cols="4" > 
-              <v-text-field :label="labels.grantNumber" 
-                            outlined 
+            <v-col cols="4" >
+              <v-text-field :label="labels.grantNumber"
+                            outlined
                             v-model="item.grantNumber"
                             @input="notifyChange(index)"
                             />
             </v-col>
-            <v-col cols="4"> 
-              <v-text-field :label="labels.link" 
-                            outlined 
+            <v-col cols="4">
+              <v-text-field :label="labels.link"
+                            outlined
                             v-model="item.link"
                             @input="notifyChange(index)"
                             />
             </v-col>
-       
+
       </v-row>
 
 
       <v-row v-if="maxFundersReached">
 
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-subtitle-2"><span class="red--text">{{ this.maxFundersMessage }}</span></div>
         </v-col>
 
       </v-row>
- 
+
 
     </v-container>
-  </v-card>  
+  </v-card>
 
 </template>
 
@@ -160,15 +161,15 @@ export default {
       grantNumber: 'Grant Number',
       link: 'Link',
     },
-    buttonColor: '#269697',   
-    rulesPublisher: [v => !!v || 'Publisher is required'], 
+    buttonColor: '#269697',
+    rulesPublisher: [v => !!v || 'Publisher is required'],
     currentYear: '',
     yearList: [],
     maxFunders: 5,
     maxFundersReached: false,
   }),
   props: {
-    genericProps: Object, 
+    genericProps: Object,
   },
   computed: {
     publicationState: {
@@ -204,14 +205,14 @@ export default {
       set(value) {
         this.setPublicationInfo('publicationYear', value);
       },
-    },  
+    },
     funders: {
       get() {
         let funders = this.mixinMethods_getGenericProp('funders', []);
 
         if (funders.length <= 0) {
           funders = [{
-            organization: '', 
+            organization: '',
             grantNumber: '',
             link: '',
           }];
@@ -225,9 +226,9 @@ export default {
       // set(value) {
       //   this.setPublicationInfo('funders', value);
       // },
-    },  
+    },
     maxFundersMessage() {
-      return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`; 
+      return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`;
     },
   },
   methods: {
@@ -243,7 +244,7 @@ export default {
 
       const date = new Date();
       let year = date.getFullYear();
-      
+
       for (let i = 0; i < 30; i++) {
         this.yearList[i] = year;
         this.yearList[i].toString();
@@ -251,13 +252,13 @@ export default {
       }
     },
     addFunderObj(localFunders) {
-      
-      // Assign lastFunder to last item in this.funderArray 
+
+      // Assign lastFunder to last item in this.funderArray
       const lastFunder = localFunders[localFunders.length - 1];
-      
+
       // Assign lastFunderOrganization to value of organization key in lastFunder
       const lastFunderOrganization = lastFunder.organization;
-     
+
       // If lastFunderOrganization is an empty string then assign addFunder to false
       let addFunder = true;
       if (lastFunderOrganization === '') {
@@ -270,7 +271,7 @@ export default {
       if (addFunder && localFunders.length < this.maxFunders) {
         localFunders.push(
           {
-            organization: '', 
+            organization: '',
             grantNumber: '',
             link: '',
           },
@@ -279,17 +280,17 @@ export default {
           this.maxFundersReached = true;
       } else if (localFunders.length < this.maxFunders) {
           this.maxFundersReached = false;
-      }        
+      }
     },
     deleteEmptyFunderObj(index, localFunders) {
 
       // Assign funderObj to object currently receiving input in localFunders
       const funderObj = localFunders[index];
-      
-      // TODO extract isEmpty to another function 
+
+      // TODO extract isEmpty to another function
       // Assign isEmpty to true if all values in funderObj are null or empty strings
       const isEmpty = Object.values(funderObj).every(x => (x === null || x === ''));
-      
+
       // If isEmpty is true and localFunders has more than one item then remove item at current index
       if (isEmpty && localFunders.length > 1) {
         localFunders.splice(index, 1);
@@ -328,12 +329,12 @@ export default {
       const localyCopy = [...this.funders];
 
       this.deleteEmptyFunderObj(index, localyCopy);
-      
+
       this.copyFunderArray(localyCopy);
     },
   },
   components: {
-  },  
+  },
 };
 </script>
 
