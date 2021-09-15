@@ -9,6 +9,8 @@ import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataC
 
 // eslint-disable-next-line no-unused-vars
 import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+import MetadataCreationDataInfo from '@/modules/user/components/MetadataCreationDataInfo';
+
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 
 import {
@@ -101,7 +103,7 @@ export const metadataCreationSteps = [
   {
     title: 'Data Info',
     completed: false,
-    component: MetadataCreationMainInfo,
+    component: MetadataCreationDataInfo,
     detailSteps: dataDetailSteps,
     initialStepTitle: dataDetailSteps[0].title,
   },

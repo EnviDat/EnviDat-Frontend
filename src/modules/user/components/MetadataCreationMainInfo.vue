@@ -1,22 +1,22 @@
 <template>
   <v-container id="MetadataCreationMainInfo"
                 fluid
-                class="pa-0 fill-height">
+                class="pa-0">
 
     <v-row no-gutters >
-      <v-col >
-        <v-card class="mx-15">
+      <v-col offset="1" cols="10">
+<!--        <v-card >-->
           <StepperHeader :steps="steps"
                           activeColor="accent"
                           inactiveColor="primary"
                           :stepColor="stepColor"
                           :initialStep="currentStepIndex"
                           @stepClick="catchStepClick" />
-          
-        </v-card>
+
+<!--        </v-card>-->
       </v-col>
     </v-row>
-    
+
     <v-row class="fill-height">
       <v-col v-if="currentStep"
               cols="12" >
@@ -24,7 +24,7 @@
                     :genericProps="currentStep.genericProps"
                     />
       </v-col>
-      
+
       <v-col v-if="!currentStep"
               cols="12" >
         Nothing selected, please select a step in the navigation!
@@ -125,7 +125,7 @@ export default {
   components: {
     StepperHeader,
     BaseRectangleButton,
-  },  
+  },
 };
 </script>
 
