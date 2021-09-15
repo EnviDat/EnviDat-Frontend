@@ -42,6 +42,8 @@ import {
   EXTRACT_IDS_FROM_TEXT,
   EXTRACT_IDS_FROM_TEXT_SUCCESS,
   EXTRACT_IDS_FROM_TEXT_ERROR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -239,7 +241,7 @@ export default {
           publicationsResolvedIds[id] = text;
         }
       });
-    }  
+    }
 
     state.publicationsResolvedIds = publicationsResolvedIds;
   },
@@ -263,5 +265,10 @@ export default {
     const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
-  
+  [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
+    state.existingAuthors = existingAuthors;
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS](state, existingKeywords) {
+    state.existingKeywords = existingKeywords;
+  },
 };

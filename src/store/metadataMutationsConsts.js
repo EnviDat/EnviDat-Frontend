@@ -2,7 +2,7 @@
  * @summary metadata store mutations constants
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2020-10-20 14:15:14
  *
  * This file is subject to the terms and conditions defined in
@@ -51,3 +51,6 @@ export const PUBLICATIONS_RESOLVE_IDS_ERROR = 'PUBLICATIONS_RESOLVE_IDS_ERROR';
 export const EXTRACT_IDS_FROM_TEXT = 'EXTRACT_IDS_FROM_TEXT';
 export const EXTRACT_IDS_FROM_TEXT_SUCCESS = 'EXTRACT_IDS_FROM_TEXT_SUCCESS';
 export const EXTRACT_IDS_FROM_TEXT_ERROR = 'EXTRACT_IDS_FROM_TEXT_ERROR';
+
+export const METADATA_UPDATE_EXISTING_AUTHORS = 'METADATA_UPDATE_EXISTING_AUTHORS';
+export const METADATA_UPDATE_EXISTING_KEYWORDS = 'METADATA_UPDATE_EXISTING_KEYWORDS';

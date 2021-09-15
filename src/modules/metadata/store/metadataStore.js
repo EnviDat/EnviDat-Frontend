@@ -97,6 +97,8 @@ const initialState = {
   publicationsResolvedIds: {},
   extractingIds: false,
   idsToResolve: [],
+  existingAuthors: [],
+  existingKeywords: [],
 };
 
 export const metadata = {
@@ -135,6 +137,8 @@ export const metadata = {
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
     publicationsResolvedIdsSize: state => (state.publicationsResolvedIds !== null ? Object.keys(state.publicationsResolvedIds).length : 0),
+    existingAuthors: state => state.existingAuthors,
+    existingKeywords: state => state.existingKeywords,
   },
   mutations,
   actions,

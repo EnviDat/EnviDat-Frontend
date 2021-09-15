@@ -36,6 +36,8 @@ import {
   EXTRACT_IDS_FROM_TEXT,
   EXTRACT_IDS_FROM_TEXT_SUCCESS,
   EXTRACT_IDS_FROM_TEXT_ERROR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -50,10 +52,8 @@ import {
 import { urlRewrite } from '@/factories/apiFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
-import {
-  METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
@@ -232,7 +232,10 @@ export default {
         commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.result);
 
         // make sure the existingAuthors list is up-2-date
-        dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_UPDATE_EXISTING_AUTHORS}`, null, { root: true });
+        dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
+
+        // make sure the existingKeywords list is up-2-date
+        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS);
 
         // for the case when loaded up on landingpage
         return dispatch(FILTER_METADATA, { selectedTagNames: [] });
@@ -385,5 +388,22 @@ export default {
         commit(EXTRACT_IDS_FROM_TEXT_ERROR, e);
       }
     }
+  },
+  async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
+
+    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+    const existingAuthors = Object.values(authorsMap);
+
+    enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
+
+    commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
+  },
+  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }) {
+
+    const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
+
+    // TODO: extract keywords from existing datasets
+
+    commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
   },
 };
