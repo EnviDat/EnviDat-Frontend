@@ -5,91 +5,75 @@
 
     <v-container fluid
                 class="pa-0">
-    
-      
+
       <v-row>
-
-        <v-col > 
-          <div class="text-h5">{{ cardTitle }}</div>
+        <v-col class="text-h5">
+          {{ labels.title }}
         </v-col>
-
       </v-row>
 
 
       <v-row>
-        
-        <v-col>
-          <div class="text-body-2">{{ cardInstructions1 }}</div>
-          <div class="text-body-2">{{ cardInstructions2 }}</div>
+        <v-col class="text-body-2">
+          <div >{{ cardInstructions1 }}</div>
+          <div >{{ cardInstructions2 }}</div>
         </v-col>
 
-        <v-col>
-          <div class="text-h6">{{ previewText }}</div>
+        <v-col class="text-subtitle-1">
+          {{ previewText }}
         </v-col>
-
       </v-row>
 
 
       <v-row>
+        <v-col>
 
-        <v-col>  
-          <v-combobox
-            v-click-outside="onClick"
-            chips
-            deletable-chips
-            multiple
-            outlined
-            append-icon="arrow_drop_down"
-            :label="keywordsLabel"
-            :items="keywordsSource"
-            item-text="name"
-            :search-input.sync="search"
-            v-model="keywords"
-            @update:search-input="isKeywordValid(search)"
-          >
+          <v-combobox v-model="keywords"
+                      :items="existingKeywords"
+                      item-text="name"
+                      chips
+                      deletable-chips
+                      multiple
+                      outlined
+                      append-icon="arrow_drop_down"
+                      prepend-icon="label"
+                      :label="labels.keywordsLabel"
+                      :search-input.sync="search"
+                      @update:search-input="isKeywordValid(search)"
+                      >
 
             <template v-slot:selection="{ item }" >
-              <tag-chip 
-                v-click-outside="onClick"
-                :name="item.name" 
-                closeable
-                selectable
-                :color="item.color"
-                @clickedClose="removeKeyword(item)"
-              ></tag-chip>
+              <TagChip :name="item.name"
+                        closeable
+                        :color="item.color"
+                        @clickedClose="removeKeyword(item)"
+                        :isSmall="false"
+                        />
             </template>
-       
+
+            <template v-slot:item="{ item }">
+              <TagChip v-if="item && item.name"
+                       :name="item.name"
+                       :color="item.color"
+                       :isSmall="false" />
+            </template>
+
             <template v-slot:no-data>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title  v-if="keywordValidConcise">
-                    No results matching "<strong>{{ search }}</strong>". Press <kbd>enter</kbd> to create a new keyword.
-                  </v-list-item-title>
-                  <v-list-item-title  v-if="!keywordValidMin3Characters">
-                     <span class="font-italic">Keyword must be at least three characters.</span>
-                  </v-list-item-title>
-                  <v-list-item-title v-if="!keywordValidConcise">
-                    <span class="red--text font-italic">Each keyword tag may not exceed two words.</span>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </template>          
+              <v-list-item v-html="autocompleteHint" />
+            </template>
 
           </v-combobox>
         </v-col>
 
-        <v-col>          
-          <metadata-card
-            :tags="metadataCardTags"
-            :subtitle="metadataCardSubtitle"
-            :title="metadataCardTitle" />
+        <v-col>
+          <MetadataCard v-bind="metadataPreviewEntry" />
         </v-col>
 
       </v-row>
 
-    
+
     </v-container>
-  </v-card>  
+  </v-card>
 
 </template>
 
@@ -97,7 +81,7 @@
 <script>
 /**
  * EditKeywords.vue renders Metadata Keywords combobox and a MetadataCard preview
- * 
+ *
  *
  * @summary shows the card for editing the keywords
  * @author Rebecca Kurup Buchholz
@@ -118,28 +102,75 @@ import {
 import MetadataCard from '@/components/Cards/MetadataCard';
 import TagChip from '@/components/Cards/TagChip';
 import catCards from '@/store/categoryCards';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import {
+  enhanceTitleImg,
+  getTagColor,
+} from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditKeywords',
   data: () => ({
-    tags: [],
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
+    labels: {
+      title: 'Edit Metadata Keywords',
+      keywordsLabel: 'Click here to pick Keywords',
+    },
   }),
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
+    metadataPreviewEntry() {
+
+      const previewEntry = {
+        title: this.metadataCardTitle,
+        tags: this.keywords,
+        subtitle: this.metadataCardSubtitle,
+        fileIconString: this.mixinMethods_getIcon('file'),
+      };
+
+      if (this.$store) {
+        const { categoryCards, cardBGImages } = this.$store.getters;
+        enhanceTitleImg(previewEntry, cardBGImages, categoryCards);
+      }
+
+      return previewEntry;
+    },
+    autocompleteHint() {
+      if (!this.keywordValidConcise) {
+        return '<span class="red--text font-italic">Each keyword tag may not exceed two words.</span> ';
+      }
+
+      let hint = '';
+
+      if (!this.keywordValidMin3Characters) {
+        hint += '<span class="font-italic">Keyword must be at least three characters.</span> ';
+      }
+
+      if (this.search) {
+        hint += ` No results matching "<strong>${this.search}</strong>". Press <kbd>enter</kbd> to create a new keyword.`;
+      } else {
+        hint += 'Start typing for keyword autocompletion.';
+      }
+
+      return hint;
+    },
+    existingKeywords() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
+      }
+
+      return this.mixinMethods_getGenericProp('existingKeywords', []);
+    },
     metadataCardTitle() {
       return this.mixinMethods_getGenericProp('metadataCardTitle', '');
     },
     metadataCardSubtitle() {
       return this.mixinMethods_getGenericProp('metadataCardSubtitle', '');
-    },
-    keywordsSource() {
-      return this.mixinMethods_getGenericProp('keywordsSource', []);
     },
     cardTitle() {
       return this.mixinMethods_getGenericProp('cardTitle', 'Metadata Keywords');
@@ -150,35 +181,12 @@ export default {
     cardInstructions2() {
       return this.mixinMethods_getGenericProp('cardInstructions2', 'To use a new keyword not in dropdown list please type keyword and press enter.');
     },
-    keywordsLabel() {
-      return this.mixinMethods_getGenericProp('keywordsLabel', 'Keywords');
-    },
     previewText() {
-      return this.mixinMethods_getGenericProp('previewText', 'Preview');
-    },
-    // metadataCardTags: {
-    //   get() {
-    //     return this.mixinMethods_getGenericProp('metadataCardTags', []);
-    //   },
-    //   set() {
-    //     return this.mixinMethods_getGenericProp('metadataCardTags', this.genericProps.keywords);
-    //   },
-    // },
-    metadataCardTags() {
-
-      if (typeof this.genericProps.keywords !== 'undefined' && this.genericProps.keywords.length > 0) {
-        this.setTags();
-        return this.tags;
-        
-        // return this.mixinMethods_getGenericProp('metadataCardTags', this.genericProps.keywords);
-      }
-
-      return this.tags;
-      // return this.mixinMethods_getGenericProp('metadataCardTags', []);
+      return this.mixinMethods_getGenericProp('previewText', 'Metadata card preview');
     },
     keywords: {
       get() {
-        return this.mixinMethods_getGenericProp('keywords', '');
+        return this.mixinMethods_getGenericProp('keywords', []);
       },
       set(valuesArray) {
 
@@ -189,11 +197,11 @@ export default {
         // Iterate through valuesArray
         for (let i = 0; i < valuesArray.length; i++) {
 
-          // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:   
+          // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:
           //    name: <user string capitalized and white splace removed)
-          //    color: <dynamically assigned vie getTagColor()>   
-          if (typeof valuesArray[i] === 'string') {  
-            
+          //    color: <dynamically assigned vie getTagColor()>
+          if (typeof valuesArray[i] === 'string') {
+
             // Check if keyword is valid, if not remove keyword entry from valuesArray and continue loop
             const keywordValid = this.isKeywordValid(valuesArray[i]);
 
@@ -205,9 +213,9 @@ export default {
 
             valuesArray[i] = {
               name: valuesArray[i].toUpperCase().trim(),
-              color: this.getTagColor(catCards, valuesArray[i]),
+              color: getTagColor(catCards, valuesArray[i]),
             };
-          }          
+          }
 
           // Push first element of valuesArray to valuesComparer
           if (i === 0) {
@@ -226,106 +234,49 @@ export default {
 
         // Remove items from valuesArray that are duplicates using indicesDuplicates
         indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
-        
-        // Update genericProps with valuesArray
-        this.genericProps.keywords = valuesArray;
-       
+
         // Emit { keywords: valuesArray } to eventBus
-        this.setKeywords('keywords', valuesArray);
-      
+        this.setKeywords(valuesArray);
       },
     },
   },
   methods: {
-    setTags() {
-      this.tags = this.genericProps.keywords;
-      // this.genericProps.metadataCardTags = this.genericProps.keywords;
-
-    },
-    // Updates tags to keywords if keywords exists and have at least one value
-    onClick() {     
-      if (typeof this.genericProps.keywords !== 'undefined' && this.genericProps.keywords.length > 0) {
-        // this.genericProps.metadataCardTags = this.genericProps.keywords;
-        this.setTags();
-        // this.metadataCardTags();
-      }
-      // this.$emit('onClick', this.name);
-    },
     removeKeyword(item) {
 
       // Assign removeKeyword to keyword item that will be removed
       this.genericProps.removeKeyword = item;
 
-      // Assign removeIndex keywords object that matched removeKeyword 
+      // Assign removeIndex keywords object that matched removeKeyword
       const removeIndex = this.genericProps.keywords.indexOf(this.genericProps.removeKeyword);
-     
+
       // Remove object with index of removeIndex from keywords
       this.genericProps.keywords.splice(removeIndex, 1);
 
-      // Emit { keywords: keywords } to eventBus 
-      this.setKeywords('keywords', this.genericProps.keywords);
+      // Emit { keywords: keywords } to eventBus
+      this.setKeywords(this.genericProps.keywords);
     },
     // Sets keyword validity variables
     // Returns true if keyword is valid, else returns false
     isKeywordValid(search) {
 
-      // Call onClick() to assign user input to preview keyword tags
-      this.onClick();
-
       if (search !== null) {
 
         // Sets keywordValidMin3Characters to true is trimmed search has more than two characters
         // Else sets keywordValidMin3Characters to false
-        if (search.trim().length > 2) {
-          this.keywordValidMin3Characters = true;
-        } else {
-          this.keywordValidMin3Characters = false;
-        }
-       
+        this.keywordValidMin3Characters = search.trim().length > 2;
+
         // Sets keywordValidConcise to true if trimmed search is less than or equal to two words (split by space ' ')
         // Else sets keywordValidConcise to false
         const inputSplit = search.trim().split(' ');
-        if (inputSplit.length <= 2) {
-          this.keywordValidConcise = true;
-        } else {
-          this.keywordValidConcise = false;
-        }
+        this.keywordValidConcise = inputSplit.length <= 2;
       }
 
-      if (this.keywordValidMin3Characters && this.keywordValidConcise) {
-        return true;
-      } 
-      return false;
-
+      return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
-    // Returns true if keywordValidConcise is true, else returns warning string
-    // rulesKeyword() {
-    //   if (this.keywordValidConcise) {
-    //     return true;
-    //   }
-    //   return 'Each keyword tag may not exceed two words.';
-    // },
-    getTagColor(categoryCards, tagName) {
-
-      if (!categoryCards || !tagName) {
-        return '';
-      }
-
-      for (let i = 0; i < categoryCards.length; i++) {
-        const cat = categoryCards[i];
-        const name = tagName.toLowerCase();
-
-        if (name.includes(cat.type) || cat.alias.includes(name)) {
-          return cat.darkColor;
-        }
-      }
-
-      return '#e0e0e0';
-    },
-    setKeywords(property, value) {
+    setKeywords(value) {
       const newKeywords = {
         ...this.genericProps,
-        [property]: value,
+        keywords: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
