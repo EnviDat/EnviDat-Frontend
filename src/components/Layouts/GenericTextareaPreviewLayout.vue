@@ -7,7 +7,7 @@
 
       <v-row>
 
-        <v-col :cols="columns">  
+        <v-col :cols="columns">
           <v-textarea  :label="labelTextarea"
                         outlined
                         auto-grow
@@ -20,16 +20,16 @@
       </v-row>
 
 
-      <v-row>
+      <v-row v-if="subtitlePreview" >
         <v-col :cols="columns"
-                class="text-subtitle-1"> 
+                class="text-subtitle-1">
           {{ subtitlePreview }}
         </v-col>
       </v-row>
 
 
       <v-row>
-        <v-col :cols="columns">     
+        <v-col :cols="columns">
           <slot />
         </v-col>
       </v-row>
@@ -39,7 +39,7 @@
 
     <v-row v-if="!isVerticalLayout">
 
-      <v-col >  
+      <v-col >
         <v-textarea  :label="labelTextarea"
                       outlined
                       auto-grow
@@ -49,15 +49,15 @@
         </v-textarea>
       </v-col>
 
-      <v-col > 
-        <v-row>
-          <v-col class="text-subtitle-1"> 
+      <v-col >
+        <v-row v-if="subtitlePreview">
+          <v-col class="text-subtitle-1">
             {{ subtitlePreview }}
           </v-col>
         </v-row>
 
         <v-row>
-          <v-col > 
+          <v-col >
             <slot />
           </v-col>
         </v-row>
@@ -88,7 +88,7 @@ export default {
   name: 'GenericTextareaPreviewLayout',
   data: () => ({
   }),
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
@@ -109,7 +109,7 @@ export default {
     },
     subtitlePreview: {
       get() {
-        return this.mixinMethods_getGenericProp('subtitlePreview', 'Preview');
+        return this.mixinMethods_getGenericProp('subtitlePreview', '');
       },
     },
     labelTextarea: {

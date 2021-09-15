@@ -6,14 +6,17 @@
                   class="pa-0">
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ cardTitle }}</div>
         </v-col>
-      </v-row>  
+      </v-row>
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="6">
           <div class="text-body-1">{{ cardInstructions }}</div>
+        </v-col>
+        <v-col cols="6">
+          <div class="text-subtitle-1">{{ subtitlePreview }}</div>
         </v-col>
       </v-row>
 
@@ -26,10 +29,10 @@
           </GenericTextareaPreviewLayout>
 
         </v-col>
-      </v-row>      
+      </v-row>
 
     </v-container>
-  </v-card>  
+  </v-card>
 
 </template>
 
@@ -57,13 +60,13 @@ import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 
 export default {
   name: 'EditDescription',
-  props: {  
-    cardTitle: { 
-      type: String, 
+  props: {
+    cardTitle: {
+      type: String,
       default: 'Metadata Description',
-    },  
-    labelDescription: { 
-      type: String, 
+    },
+    labelDescription: {
+      type: String,
       default: 'Description',
     },
     genericProps: Object,
@@ -71,7 +74,6 @@ export default {
   computed: {
     genericTextAreaObject() {
       return {
-        subtitlePreview: this.genericProps.subtitlePreview,
         labelTextarea: this.genericProps.labelTextarea,
         textareaContent: this.description,
         isVerticalLayout: false,
@@ -89,6 +91,9 @@ export default {
     },
     cardInstructions() {
       return this.mixinMethods_getGenericProp('descriptionInstructions', 'Enter a description');
+    },
+    subtitlePreview() {
+      return this.mixinMethods_getGenericProp('subtitlePreview', 'Preview');
     },
   },
   methods: {
@@ -113,7 +118,7 @@ export default {
   components: {
     MetadataBody,
     GenericTextareaPreviewLayout,
-  },  
+  },
 };
 </script>
 

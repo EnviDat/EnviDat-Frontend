@@ -14,15 +14,14 @@
       <v-col>
         <v-autocomplete v-model="pickedUsers"
                         :items="users"
+                        item-text="fullName"
                         outlined
                         append-icon="arrow_drop_down"
+                        :prepend-icon="prependIcon"
                         :label="pickerLabel"
                         :multiple="multiplePick"
                         :clearable="isClearable"
                         :search-input.sync="search"
-                        :prepend-icon="prependIcon"
-                        item-text="fullName"
-                        color="primary"
                         clear-icon="close"
                         @change="catchPicks"
                         >
@@ -42,9 +41,7 @@
           </template>
 
           <template v-slot:no-data>
-            <v-list-item>
-              No results matching "<strong>{{ search }}</strong>".
-            </v-list-item>
+            <v-list-item v-html="autocompleteHint" />
           </template>
 
         </v-autocomplete>
@@ -109,6 +106,14 @@ export default {
     }
   },
   computed: {
+    autocompleteHint() {
+      if (!this.search) {
+        return 'Start typing for author autocompletion.';
+      }
+
+      return `No author name matching "<strong>${this.search}</strong>".`;
+    },
+
   },
   methods: {
     catchCloseClicked(authorName) {
