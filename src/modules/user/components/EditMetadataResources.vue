@@ -4,7 +4,7 @@
 
     <v-container fluid
                   class="pa-0">
-      
+
       <v-row >
         <v-col class="text-h5" >
           {{ EDIT_METADATA_RESOURCES_TITLE }}
@@ -19,7 +19,7 @@
 
       <v-row >
         <v-col cols="12">
-          <MetadataResources :genericProps="genericProps" />
+          <MetadataResources :genericProps="metadataResourcesGenericProps" />
         </v-col>
       </v-row>
 
@@ -53,13 +53,44 @@ export default {
   props: {
     genericProps: Object,
   },
+  mounted() {
+    this.doiIcon = this.mixinMethods_getIcon('doi') || '';
+    this.fileSizeIcon = this.mixinMethods_getIcon('fileSize') || '';
+    this.fileIcon = this.mixinMethods_getIcon('file') || '';
+    this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated') || '';
+    this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified') || '';
+    this.contactIcon = this.mixinMethods_getIcon('contact2') || '';
+    this.mailIcon = this.mixinMethods_getIcon('mail') || '';
+    this.licenseIcon = this.mixinMethods_getIcon('license') || '';
+  },
   computed: {
+    metadataResourcesGenericProps() {
+      return {
+        ...this.genericProps,
+        doiIcon: this.doiIcon,
+        fileSizeIcon: this.fileSizeIcon,
+        fileIcon: this.fileIcon,
+        dateCreatedIcon: this.dateCreatedIcon,
+        lastModifiedIcon: this.lastModifiedIcon,
+        contactIcon: this.contactIcon,
+        mailIcon: this.mailIcon,
+        licenseIcon: this.licenseIcon,
+      };
+    },
   },
   methods: {
   },
   data: () => ({
     editingInstructions: 'Pick a resource from the list to edit it\'s details',
     EDIT_METADATA_RESOURCES_TITLE,
+    doiIcon: null,
+    fileSizeIcon: null,
+    fileIcon: null,
+    dateCreatedIcon: null,
+    lastModifiedIcon: null,
+    contactIcon: null,
+    mailIcon: null,
+    licenseIcon: null,
   }),
 };
 </script>

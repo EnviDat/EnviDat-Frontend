@@ -60,6 +60,7 @@
                         outlined
                         required
                         :rules="rulesPublisher"
+                        prepend-icon="public"
                         v-model="publisher" />
         </v-col>
 
@@ -68,6 +69,7 @@
                     outlined
                     :label="labels.year"
                     required
+                    prepend-icon="date_range"
                     v-model="publicationYear"
                     />
         </v-col>
