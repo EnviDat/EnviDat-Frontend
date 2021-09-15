@@ -41,6 +41,11 @@
 */
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import {
+  EDITMETADATA_DATA_AUTHOR_LIST,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -59,10 +64,35 @@ export default {
   },
   methods: {
     catchRemovedUsers(pickedUsers) {
-      this.$emit('removedUsers', pickedUsers);
+      this.notifyChange(pickedUsers);
     },
     catchPickedUsers(pickedUsers) {
-      this.$emit('pickedUsers', pickedUsers);
+      this.notifyChange(pickedUsers);
+    },
+    notifyChange(authorsNames) {
+
+      const authors = [];
+      authorsNames.forEach((name) => {
+        const author = this.getAuthorByName(name);
+        if (author) {
+          authors.push(author);
+        }
+      });
+
+      const newGenericProps = {
+        ...this.genericProps,
+        authors,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_AUTHOR_LIST,
+        data: newGenericProps,
+      });
+    },
+    getAuthorByName(fullName) {
+      const authors = this.existingEnviDatUsers;
+      const found = authors.filter(auth => auth.fullName === fullName);
+      return found?.length > 0 ? found[0] : null;
     },
   },
   data: () => ({

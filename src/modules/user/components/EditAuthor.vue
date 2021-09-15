@@ -37,7 +37,7 @@
                         ref="firstName"
                         outlined
                         required
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.firstName} is required` ]"
                         v-model="firstName" />
         </v-col>
@@ -49,7 +49,7 @@
                         ref="lastName"
                         outlined
                         required
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.lastName} is required` ]"
                         v-model="lastName"
                         />
@@ -59,11 +59,10 @@
       <v-row no-gutters>
         <v-col cols="12">
           <v-text-field :label="labels.email"
-                        ref="email"
                         outlined
                         required
                         :rules="rulesEmail"
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         v-model="email" />
         </v-col>
       </v-row>
@@ -76,7 +75,7 @@
                         ref="affiliation"
                         outlined
                         required
-                        :disabled="genericProps.loading"
+                        :disabled="loading"
                         :rules="[ v => !!v || `${labels.affiliation} is required` ]"
                         v-model="affiliation" />
         </v-col>
@@ -88,10 +87,10 @@
                         ref="identifier"
                         outlined
                         required
-                        :disabled="genericProps.loading"
-                        :rules="[ v => !!v || `${labels.identifier} is required` ]"
+                        :disabled="loading"
                         v-model="identifier"
           />
+<!--          :rules="[ v => !!v || `${labels.identifier} is required` ]"-->
         </v-col>
       </v-row>
 
@@ -99,7 +98,7 @@
               justify="end">
         <v-col class="shrink">
           <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                :loading="genericProps.loading"
+                                :loading="loading"
                                 :buttonText="labels.createButtonText"
                                 @clicked="saveAuthorClick" />
         </v-col>
@@ -140,8 +139,6 @@ export default {
     genericProps: Object,
   },
   mounted() {
-    this.localName = this.resourceName;
-    this.localDescription = this.description;
   },
   computed: {
     firstName: {
@@ -184,13 +181,19 @@ export default {
         this.notifyChange('identifier', value);
       },
     },
+    loading() {
+      return this.mixinMethods_getGenericProp('loading', false);
+    },
   },
   methods: {
     checkSaveButtonEnabled() {
       this.saveButtonEnabled = this.$refs.editAuthorForm.validate();
     },
+    // eslint-disable-next-line no-unused-vars
     notifyChange(property, value) {
+      this.checkSaveButtonEnabled();
 
+      // eslint-disable-next-line no-unused-vars
       const newGenericProps = {
         ...this.genericProps,
         [property]: value,
@@ -200,8 +203,6 @@ export default {
         object: EDITMETADATA_DATA_AUTHOR,
         data: newGenericProps,
       });
-
-      this.checkSaveButtonEnabled();
     },
     saveAuthorClick() {
       this.$emit('saveAuthor');

@@ -26,8 +26,10 @@ import {
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 import { createResources } from '@/factories/metaDataFactory';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import localIdProperty from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  localIdProperty,
+} from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
@@ -190,7 +192,7 @@ storiesOf(storybookFolder, module)
           } else if (r.id === newRes.id) {
             this.$set(res, i, newRes);
             return;
-          }                       
+          }
         }
 
         res.unshift(newRes);
@@ -215,7 +217,7 @@ storiesOf(storybookFolder, module)
             r.isSelected = selected;
             this.$set(res, i, r);
             return;
-          }                       
+          }
         }
       },
       saveResource(newRes) {

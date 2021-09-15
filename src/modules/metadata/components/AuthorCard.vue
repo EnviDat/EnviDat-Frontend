@@ -1,12 +1,17 @@
 <template>
-    <v-card class="authorCard pa-4"
+    <v-card class="authorCard pa-0"
             :class="cardClass"
             :style="dynamicCardBackground"
             @click.native="cardClick"
             :loading="loading" >
 
       <v-container fluid
-                    class="pa-0" >
+                    class="pa-4" >
+
+        <template slot="progress">
+          <v-progress-linear color="primary"
+                             indeterminate />
+        </template>
 
         <v-row no-gutters
                 class="pb-3">
@@ -46,7 +51,8 @@
 
         </v-row>
 
-        <v-row no-gutters
+        <v-row v-if="authorDetailsConfig.showDatasetCount"
+                no-gutters
                 class="py-1 readableText"
                 align="center"
                 justify="space-between" >

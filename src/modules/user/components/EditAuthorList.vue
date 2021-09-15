@@ -49,7 +49,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
+
 import EditAuthor from '@/modules/user/components/EditAuthor';
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
@@ -58,7 +58,10 @@ import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
 
 import { initializeLocalAuthor } from '@/factories/authorFactory';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  localIdProperty,
+} from '@/factories/strategyFactory';
 import {
   eventBus,
   EDITMETADATA_DATA_AUTHOR,
@@ -110,15 +113,9 @@ export default {
 
       if (autoSelect) {
         this.$nextTick(() => {
-          eventBus.$emit(SELECT_EDITING_AUTHOR, newAuthor.email);
+          eventBus.$emit(SELECT_EDITING_AUTHOR, newAuthor[localIdProperty]);
         });
       }
-    },
-    catchRemovedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
-    },
-    catchPickedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
     },
     catchEditAuthorClose() {
       eventBus.$emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor);
@@ -129,24 +126,8 @@ export default {
     catchCreateAuthor() {
       this.initAuthor();
     },
-    notifyChange(authors) {
-      const newGenericProps = {
-        ...this.genericProps,
-        authors,
-      };
-
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_AUTHOR,
-        data: newGenericProps,
-      });
-    },
   },
   data: () => ({
-    editingInstructions: 'Pick an author from the list to edit its details',
-    EDIT_METADATA_AUTHORS_TITLE,
-    disclaimer: `The screenshot below serves as a preview of the future component.
-              Even if you can't interact, please think about the information shown and if the grouping of the information to
-              edit would make sense in the context of the steps and substeps.`,
   }),
 };
 </script>

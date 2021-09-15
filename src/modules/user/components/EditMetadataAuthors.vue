@@ -59,7 +59,7 @@ export default {
   methods: {
   },
   data: () => ({
-    editingInstructions: 'Pick an author from the list to edit it\'s details',
+    editingInstructions: 'Select an author from the list to edit it\'s details',
     EDIT_METADATA_AUTHORS_TITLE,
   }),
 };

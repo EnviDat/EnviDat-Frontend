@@ -2,7 +2,7 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
 import EditDescription from '@/modules/user/components/EditDescription';
 
 import EditKeywords from '@/modules/user/components/EditKeywords';
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
+import EditAuthorList from '@/modules/user/components/EditAuthorList';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
@@ -19,6 +19,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_DATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import { getOrganizationMap } from '@/factories/metaDataFactory';
@@ -53,11 +54,26 @@ export const mainDetailSteps = [
     title: 'Keywords',
     completed: false,
     component: EditKeywords,
+    genericProps: {
+      keywordsSource: [],
+      componentTitle: 'Metadata Keywords',
+      disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+    },
   },
   {
     title: 'Authors',
     completed: false,
-    component: EditMetadataAuthors,
+    component: EditAuthorList,
+    genericProps: {
+      authors: [],
+      existingAuthors: [],
+      authorDetailsConfig: {
+        showDatasetCount: true,
+        showAuthorInfos: true,
+        showDataCredits: true,
+        showDataCreditScore: false,
+      },
+    },
   },
 ];
 
@@ -68,7 +84,6 @@ export const dataDetailSteps = [
     component: EditDataAndResources,
     genericProps: {
       resources: [],
-      selectionId: -1,
       resourcesConfig: {
         downloadActive: false,
       },
@@ -121,7 +136,7 @@ export const metadataCreationSteps = [
       publicationYear: '',
       funders: [],
     },
-    
+
   },
 ];
 
@@ -133,6 +148,7 @@ const componentToStateMapping = {
   [EDITMETADATA_CUSTOMFIELDS]: MetadataCreationRelatedInfo,
   [EDITMETADATA_PUBLICATION_INFO]: MetadataCreationPublicationInfo,
   [EDITMETADATA_ORGANIZATION]: MetadataCreationPublicationInfo,
+  [EDITMETADATA_DATA_AUTHOR_LIST]: EditAuthorList,
 };
 
 export function getStepToUpdate(eventName, steps) {
@@ -153,7 +169,7 @@ export function getStepToUpdate(eventName, steps) {
       if (s?.component?.name === comp?.name) {
         return s;
       }
-      
+
       if (s?.detailSteps) {
         const subStep = getStepToUpdate(eventName, s.detailSteps);
         if (subStep) {

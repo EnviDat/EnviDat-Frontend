@@ -92,7 +92,18 @@ export default {
   },
   mounted() {
     if (this.preSelected?.length > 0) {
-      this.pickedUsers = this.multiplePick ? this.preSelected : this.preSelected[0];
+
+      if (this.multiplePick) {
+        this.preSelected.forEach((author) => {
+          // if (typeof author === 'object') {
+            this.pickedUsers.push(author.fullName);
+          // } else {
+          //   this.pickedUsers.push(author);
+          // }
+        });
+      } else {
+        this.pickedUsers = this.preSelected[0].fullName;
+      }
     } else {
       this.pickedUsers = this.multiplePick ? [] : null;
     }
@@ -103,7 +114,7 @@ export default {
     catchCloseClicked(authorName) {
       if (this.multiplePick) {
 
-        const remains = this.pickedUsers.filter(value => value.fullName !== authorName);
+        const remains = this.pickedUsers.filter(value => value !== authorName);
 
         if (remains?.length > 0) {
           this.pickedUsers = remains;

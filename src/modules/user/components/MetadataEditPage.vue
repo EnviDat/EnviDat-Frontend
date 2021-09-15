@@ -8,13 +8,13 @@
     <NavigationStepper :steps="metadataCreationSteps"
                         :initialStepTitle="metadataCreationSteps[0].title"
                         stepColor="success" />
-    
+
   </v-container>
 </template>
 
 <script>
 /**
- * The MetadataEditPage shows a workflow to create and Edit 
+ * The MetadataEditPage shows a workflow to create and Edit
  * metadata and data & resources
  *
  * @summary metadata detail page
@@ -31,7 +31,10 @@ import {
   SELECT_EDITING_RESOURCE,
   SAVE_EDITING_RESOURCE,
   CANCEL_EDITING_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
+  SELECT_EDITING_AUTHOR,
+  CANCEL_EDITING_AUTHOR,
+  SAVE_EDITING_AUTHOR,
+  EDITMETADATA_DATA_AUTHOR_LIST,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -40,12 +43,23 @@ import {
   getStepToUpdate,
 } from '@/modules/user/store/MetadataCreationSteps';
 
-import { mapState } from 'vuex';
+import {
+  mapState,
+  mapGetters,
+} from 'vuex';
+
 import {
   USER_NAMESPACE,
   UPDATE_METADATA_EDITING,
   METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_EDITING_SELECT_RESOURCE,
+  METADATA_EDITING_SELECT_AUTHOR,
+  METADATA_CANCEL_AUTHOR_EDITING,
+  METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_SAVE_AUTHOR,
+  // METADATA_EDITING_UPDATE_EXISTING_AUTHORS,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 import {
   SET_APP_BACKGROUND,
@@ -54,6 +68,7 @@ import {
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'MetadataEditPage',
@@ -66,62 +81,70 @@ export default {
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
-    eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
     eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
+    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+  },
+  beforeMount() {
+    // this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_UPDATE_EXISTING_AUTHORS}`);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-    eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+    eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
     eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
+    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  mounted() {
+  watch: {
+    existingAuthors() {
+      this.updateSteps(EDITMETADATA_DATA_AUTHOR_LIST);
+    },
   },
   computed: {
     ...mapState(USER_NAMESPACE, [
       'metadataInEditing',
     ]),
-    resources() {
-      return this.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
-    },
+    ...mapGetters(USER_NAMESPACE, [
+      'resources',
+      'authors',
+      'existingAuthors',
+    ]),
+    ...mapGetters(METADATA_NAMESPACE, [
+      'authorsMap',
+    ]),
   },
   methods: {
     selectResource(id) {
-      if (this.selectionId !== -1) {
-        this.cancelEditing();
-      }
-      
-      this.selectionId = id;
-      this.setSelected(this.selectionId, true);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
-    cancelEditing() {
-      this.setSelected(this.selectionId, false);
-      this.selectionId = -1;
+    selectAuthor(id) {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
     },
-    setSelected(id, selected) {
-      const res = this.resources;
-
-      for (let i = 0; i < res.length; i++) {
-        const r = res[i];
-        if (r.id === id) {
-          r.isSelected = selected;
-          this.$set(res, i, r);
-          break;
-        }
-      }
-
+    cancelEditingResource() {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
+    },
+    cancelEditingAuthor() {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
     },
     saveResource(newRes) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
-
-      // this.cancelEditing();
+    },
+    // eslint-disable-next-line no-unused-vars
+    saveAuthor(newAuthor) {
+      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
       // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
 
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, updateObj);
 
-      this.updateSteps(updateObj.object);
+      this.$nextTick(() => {
+        this.updateSteps(updateObj.object);
+      });
     },
     updateSteps(objectName) {
       const steps = this.metadataCreationSteps;
@@ -147,7 +170,6 @@ export default {
   },
   data: () => ({
     metadataCreationSteps,
-    selectionId: -1,
   }),
 };
 </script>

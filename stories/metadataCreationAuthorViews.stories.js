@@ -31,15 +31,18 @@ import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 import EditAuthorList from '@/modules/user/components/EditAuthorList';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  localIdProperty,
+} from '@/factories/strategyFactory';
 import {
   createAuthors,
   getFullAuthorsFromDataset,
   extractAuthorsMap,
 } from '@/factories/authorFactory';
+
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
-import localIdProperty from '@/factories/strategyFactory';
 
 const apiFactory = require('@/factories/apiFactory');
 
@@ -247,7 +250,7 @@ storiesOf(storybookFolder, module)
             r.isSelected = selected;
             this.$set(auths, i, r);
             return;
-          }          
+          }
         }
       },
       saveAuthor(newAuthor) {
