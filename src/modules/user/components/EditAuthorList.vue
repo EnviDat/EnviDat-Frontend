@@ -28,7 +28,7 @@
       </v-col>
 
       <v-col cols="6" >
-        <EditMetadataAuthors :genericProps="genericProps" />
+        <EditMetadataAuthors :genericProps="authorListingGenericProps" />
       </v-col>
     </v-row>
 
@@ -71,7 +71,7 @@ import {
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR_PROPERTY,
 } from '@/factories/eventBus';
-import { mapGetters } from 'vuex';
+
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 
@@ -87,14 +87,30 @@ export default {
     genericProps: Object,
   },
   computed: {
-    ...mapGetters(METADATA_NAMESPACE, [
-      'existingAuthors',
-    ]),
+    existingAuthors() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
+      }
+
+      return this.mixinMethods_getGenericProp('existingAuthors', []);
+    },
     authorPickingGenericProps() {
       return {
         ...this.genericProps,
         existingAuthors: this.existingAuthors,
         isClearable: false,
+      };
+    },
+    authorListingGenericProps() {
+      return {
+        ...this.genericProps,
+        existingAuthors: this.existingAuthors,
+        authorDetailsConfig: {
+          showDatasetCount: false,
+          showAuthorInfos: true,
+          showDataCredits: true,
+          showDataCreditScore: false,
+        },
       };
     },
     selectedAuthor() {

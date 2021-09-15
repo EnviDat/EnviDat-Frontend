@@ -67,12 +67,6 @@ export const mainDetailSteps = [
     genericProps: {
       authors: [],
       existingAuthors: [],
-      authorDetailsConfig: {
-        showDatasetCount: true,
-        showAuthorInfos: true,
-        showDataCredits: true,
-        showDataCreditScore: false,
-      },
     },
   },
 ];
