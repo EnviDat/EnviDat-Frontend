@@ -1,17 +1,32 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
-  <v-container id="NavigationStepper"
-                fluid
+  <div id="NavigationStepper"
                 class="pa-0 fill-height stepperContentGrid" >
 
-        <div class="stepper fill-height"
+        <div class="stepper fill-height px-10"
              :style="`background-color: ${backgroundColor}`">
+<!--
+          <v-container fluid class="pa-0">
+            <v-row no-gutters>
+              <v-col cols="1">
+              </v-col>
+              <v-col cols="10">
+-->
+
           <StepperHeader :steps="steps"
                           activeColor="accent"
                           inactiveColor="primary"
                           :stepColor="stepColor"
                           :initialStep="currentStepIndex"
                           @stepClick="catchStepClick" />
+<!--              </v-col>
+
+              <v-col cols="1">
+              </v-col>
+
+            </v-row>
+          </v-container>-->
+
         </div>
 
         <div class="content fill-height pa-1 pt-0"
@@ -34,7 +49,7 @@
           </v-card>
         </div>
 
-  </v-container>
+  </div>
 </template>
 
 <script>
