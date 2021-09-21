@@ -66,6 +66,12 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import {
+  isObjectEmpty,
+  deleteEmptyObject,
+  isMaxLength,
+} from '@/factories/userEditingFactory';
+
 export default {
   name: 'EditCustomFields',
   data: () => ({
@@ -140,34 +146,33 @@ export default {
           fieldName: '', 
           content: '',
         });
-      } else if (addCustomField && localFields.length >= this.maxCustomFields) {
-          this.maxCustomFieldsReached = true;
-      } else if (localFields.length < this.maxCustomFields) {
-          this.maxCustomFieldsReached = false;
-      }        
+      } // else if (addCustomField && localFields.length >= this.maxCustomFields) {
+      //     this.maxCustomFieldsReached = true;
+      // } else if (localFields.length < this.maxCustomFields) {
+      //     this.maxCustomFieldsReached = false;
+      // }        
     },
-    deleteEmptyCustomFieldObj(index, localFields) {
+    // deleteEmptyCustomFieldObj(index, localFields) {
 
-      // Assign customFieldObj to object currently receiving input in customFieldsArray
-      const customFieldObj = localFields[index];
+    //   // Assign customFieldObj to object currently receiving input in customFieldsArray
+    //   const customFieldObj = localFields[index];
       
-      // Assign isEmpty to true if all values in customFieldObj are null or empty strings
-      const isEmpty = Object.values(customFieldObj).every(x => (x === null || x === ''));
+    //   // Assign isEmpty to true if all values in customFieldObj are null or empty strings, else assign isEmpty to false
+    //   const isEmpty = isObjectEmpty(customFieldObj);
       
-      // If isEmpty is true and customFieldsArray has more than one item then remove item at current index
-      if (isEmpty && localFields.length > 1) {
-        localFields.splice(index, 1);
-      }
-
-    },
+    //   // If isEmpty is true and customFieldsArray has more than one item then remove item at current index
+    //   if (isEmpty && localFields.length > 1) {
+    //     localFields.splice(index, 1);
+    //   }
+    // },
      // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
      // Emit filledCustomFieldsArray to eventBus
     copyCustomFieldsArray(localFields) {
 
       const lastCustomField = localFields[localFields.length - 1];
 
-       // Assign isEmpty to true if all values in lastCustomField are null or empty strings
-      const isEmpty = Object.values(lastCustomField).every(x => (x === null || x === ''));
+       // Assign isEmpty to true if all values in lastCustomField are null or empty strings, else assign isEmpty to false
+      const isEmpty = isObjectEmpty(lastCustomField);
 
       // If isEmpty is true and filledCustomFieldsArray has at least one item then remove last element of array
       if (isEmpty && localFields.length > 0) {
@@ -189,11 +194,15 @@ export default {
       });
     },
     notifyChange(index) {
+
       const localyCopy = [...this.customFields];
     
-      this.deleteEmptyCustomFieldObj(index, localyCopy);
+      deleteEmptyObject(index, localyCopy);
     
       this.copyCustomFieldsArray(localyCopy);
+
+      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
+
     },
   },
   components: {

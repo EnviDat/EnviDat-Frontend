@@ -598,7 +598,7 @@ contribute something to the general goal of your product. `,
       },
     },
     data: () => ({
-      emptyFirstGenericProps: [],
+      emptyFirstGenericProps: {},
       genericProps: [
         {
           field0: {

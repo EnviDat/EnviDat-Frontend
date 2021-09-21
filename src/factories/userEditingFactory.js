@@ -123,3 +123,31 @@ const emptyMetadataInEditing = {
 export function getEmptyMetadataInEditingObject() {
   return JSON.parse(JSON.stringify(emptyMetadataInEditing));
 }
+
+// Returns true if all values in obj are null or empty strings, else returns false
+export function isObjectEmpty(obj) {
+  return Object.values(obj).every(x => (x === null || x === ''));
+}
+
+export function deleteEmptyObject(index, localObjects) {
+
+  // Assign currentObj to object with pased index in localObjects
+  const currentObj = localObjects[index];
+
+  // Assign isEmpty to true if all values in currentObj are null or empty strings, else assign isEmpty to false
+  const isEmpty = isObjectEmpty(currentObj);
+
+  // If isEmpty is true and localObjects has more than one item then remove item at current index
+  if (isEmpty && localObjects.length > 1) {
+    localObjects.splice(index, 1);
+  }
+}
+
+export function isMaxLength(maximum, localObjects) {
+
+  if (localObjects.length >= maximum) {
+    return true;
+  }
+  return false;
+
+}
