@@ -37,6 +37,7 @@
           <template v-slot:item="{ item }">
             <TagChipAuthor v-if="item && item.fullName"
                            :name="item.fullName"
+                           @clicked="catchPickClicked"
                            :isSmall="false" />
           </template>
 
@@ -131,6 +132,13 @@ export default {
       }
 
       this.$emit('removedUsers', this.pickedUsers);
+    },
+    catchPickClicked(pickedItem) {
+      if (!this.pickedUsers.includes(pickedItem)) {
+        this.pickedUsers.push(pickedItem);
+      }
+
+      this.$emit('pickedUsers', this.pickedUsers);
     },
     catchPicks(picks) {
       this.$emit('pickedUsers', picks);
