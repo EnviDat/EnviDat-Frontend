@@ -51,19 +51,22 @@ export default {
   name: 'EditAddExistingAuthor',
   props: {
     genericProps: Object,
+    existingEnviDatUsers: {
+      type: Array,
+      default: () => [],
+    },
+    authors: {
+      type: Array,
+      default: () => [],
+    },
+    isClearable: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
   },
   computed: {
-    existingEnviDatUsers() {
-      return this.mixinMethods_getGenericProp('existingAuthors', []);
-    },
-    authors() {
-      return this.mixinMethods_getGenericProp('authors', []);
-    },
-    isClearable() {
-      return this.mixinMethods_getGenericProp('isClearable', false);
-    },
   },
   methods: {
     catchRemovedUsers(pickedUsers) {

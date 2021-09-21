@@ -18,7 +18,7 @@
           <v-col>
             <v-card class="pa-0">
 
-              <EditAddExistingAuthor :genericProps="authorPickingGenericProps" />
+              <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
 
               <EditAddAuthor @createAuthor="catchCreateAuthor" />
             </v-card>
@@ -94,16 +94,25 @@ export default {
 
       return this.mixinMethods_getGenericProp('existingAuthors', []);
     },
+    authors() {
+/*
+      if (this.$store) {
+        return
+      }
+*/
+
+      return this.mixinMethods_getGenericProp('authors', []);
+    },
     authorPickingGenericProps() {
       return {
-        ...this.genericProps,
-        existingAuthors: this.existingAuthors,
+        authors: this.authors,
+        existingEnviDatUsers: this.existingAuthors,
         isClearable: false,
       };
     },
     authorListingGenericProps() {
       return {
-        ...this.genericProps,
+        authors: this.authors,
         existingAuthors: this.existingAuthors,
         authorDetailsConfig: {
           showDatasetCount: false,

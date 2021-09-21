@@ -38,7 +38,7 @@
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.firstName} is required` ]"
-                        v-model="firstName" />
+                        v-model="firstNameField" />
         </v-col>
 
         <v-col cols="6"
@@ -50,7 +50,7 @@
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.lastName} is required` ]"
-                        v-model="lastName"
+                        v-model="lastNameField"
                         />
         </v-col>
       </v-row>
@@ -63,7 +63,7 @@
                         required
                         :rules="rulesEmail"
                         :disabled="loading"
-                        v-model="email" />
+                        v-model="emailField" />
         </v-col>
       </v-row>
 
@@ -77,7 +77,7 @@
                         required
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.affiliation} is required` ]"
-                        v-model="affiliation" />
+                        v-model="affiliationField" />
         </v-col>
 
         <v-col cols="6"
@@ -88,7 +88,7 @@
                         outlined
                         required
                         :disabled="loading"
-                        v-model="identifier"
+                        v-model="identifierField"
           />
 <!--          :rules="[ v => !!v || `${labels.identifier} is required` ]"-->
         </v-col>
@@ -137,52 +137,73 @@ export default {
   name: 'EditAuthor',
   props: {
     genericProps: Object,
+    firstName: {
+      type: String,
+      default: '',
+    },
+    lastName: {
+      type: String,
+      default: '',
+    },
+    email: {
+      type: String,
+      default: '',
+    },
+    affiliation: {
+      type: String,
+      default: '',
+    },
+    identifier: {
+      type: String,
+      default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   mounted() {
   },
   computed: {
-    firstName: {
+    firstNameField: {
       get() {
-        return this.mixinMethods_getGenericProp('firstName', '');
+        return this.$props.firstName;
       },
       set(value) {
         this.notifyChange('firstName', value);
       },
     },
-    lastName: {
+    lastNameField: {
       get() {
-        return this.mixinMethods_getGenericProp('lastName', '');
+        return this.$props.lastName;
       },
       set(value) {
         this.notifyChange('lastName', value);
       },
     },
-    email: {
+    emailField: {
       get() {
-        return this.mixinMethods_getGenericProp('email', '');
+        return this.$props.email;
       },
       set(value) {
         this.notifyChange('email', value);
       },
     },
-    affiliation: {
+    affiliationField: {
       get() {
-        return this.mixinMethods_getGenericProp('affiliation', '');
+        return this.$props.affiliation;
       },
       set(value) {
         this.notifyChange('affiliation', value);
       },
     },
-    identifier: {
+    identifierField: {
       get() {
-        return this.mixinMethods_getGenericProp('identifier', '');
+        return this.$props.identifier;
       },
       set(value) {
         this.notifyChange('identifier', value);
       },
-    },
-    loading() {
-      return this.mixinMethods_getGenericProp('loading', false);
     },
   },
   methods: {
