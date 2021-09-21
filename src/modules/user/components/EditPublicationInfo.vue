@@ -145,6 +145,15 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import {
+  isObjectEmpty,
+  deleteEmptyObject,
+  isMaxLength,
+} from '@/factories/userEditingFactory';
+
+// import { mapState } from 'vuex';
+
+
 export default {
   name: 'EditPublicationInfo',
   created() {
@@ -174,6 +183,12 @@ export default {
     genericProps: Object,
   },
   computed: {
+    //  ...mapState([
+    //   'config',
+    // ]),
+    // test() {
+    //   return this.config.userEditMetadataConfig.numberYearsList;
+    // },
     publicationState: {
       get() {
         return this.mixinMethods_getGenericProp('publicationState', 'Draft');
@@ -278,35 +293,16 @@ export default {
             link: '',
           },
         );
-      } else if (addFunder && localFunders.length >= this.maxFunders) {
-          this.maxFundersReached = true;
-      } else if (localFunders.length < this.maxFunders) {
-          this.maxFundersReached = false;
-      }
-    },
-    deleteEmptyFunderObj(index, localFunders) {
-
-      // Assign funderObj to object currently receiving input in localFunders
-      const funderObj = localFunders[index];
-
-      // TODO extract isEmpty to another function
-      // Assign isEmpty to true if all values in funderObj are null or empty strings
-      const isEmpty = Object.values(funderObj).every(x => (x === null || x === ''));
-
-      // If isEmpty is true and localFunders has more than one item then remove item at current index
-      if (isEmpty && localFunders.length > 1) {
-        localFunders.splice(index, 1);
-      }
-
+      }            
     },
     // Assign localFunders to a copy of funderArray with last empty funder object removed
     copyFunderArray(localFunders) {
 
       const lastFunder = localFunders[localFunders.length - 1];
-
-       // Assign isEmpty to true if all values in lastFunder are null or empty strings
-      const isEmpty = Object.values(lastFunder).every(x => (x === null || x === ''));
-
+    
+       // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
+      const isEmpty = isObjectEmpty(lastFunder);     
+   
       // If isEmpty is true and localFunders has at least one item then remove last element of array
       if (isEmpty && localFunders.length > 0) {
         localFunders.pop();
@@ -328,16 +324,21 @@ export default {
       });
     },
     notifyChange(index) {
+
       const localyCopy = [...this.funders];
 
-      this.deleteEmptyFunderObj(index, localyCopy);
+      deleteEmptyObject(index, localyCopy);
 
       this.copyFunderArray(localyCopy);
+
+      this.maxFundersReached = isMaxLength(this.maxFunders, localyCopy);
+
     },
   },
   components: {
   },
 };
+
 </script>
 
 <style scoped>
