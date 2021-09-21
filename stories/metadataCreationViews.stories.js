@@ -80,7 +80,7 @@ for (let i = 0; i < metadataset.length; i++) {
 
     entry.tags = tagList;
   }
-  
+
 }
 
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
@@ -93,9 +93,9 @@ for (let i = 0; i < tagsFromDatasets.length; i++) {
 
 
 function getKeywordsSource(tagsSource, catCards) {
-    
+
   const keywordsArray = [...tagsSource];
-  
+
   for (let i = 0; i < keywordsArray.length; i++) {
     keywordsArray[i].color = getTagColor(catCards, keywordsArray[i].name);
   }
@@ -111,7 +111,7 @@ const placeholderKeywordsGenericProps = {
   // keywordsSource: tagsFromDatasets,
   metadataCardTitle: 'A Mostly Glorious Title',
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
-  keywordsSource: keywordsTags,
+  existingKeywords: keywordsTags,
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
@@ -134,7 +134,7 @@ storiesOf(storybookFolder, module)
           <EditKeywords :genericProps="genericProps" />
         </v-col>
       </v-row>
-      
+
       <v-row>
         EditDataInfo with Placeholder
       </v-row>
@@ -144,7 +144,7 @@ storiesOf(storybookFolder, module)
           <EditDataInfo :genericProps="genericProps" />
         </v-col>
       </v-row>
-      
+
       <v-row>
         MetadataCreationRelatedInfo with Placeholder
       </v-row>
@@ -153,7 +153,7 @@ storiesOf(storybookFolder, module)
         <v-col >
           <MetadataCreationRelatedInfo :genericProps="genericProps" />
         </v-col>
-      </v-row>      
+      </v-row>
 
     </v-col>
     `,
@@ -167,7 +167,7 @@ storiesOf(storybookFolder, module)
     <v-col>
 
       <v-row>
-        Edit Related Publications fields unfilled 
+        Edit Related Publications fields unfilled
       </v-row>
 
       <v-row class="py-3" >
@@ -209,7 +209,7 @@ storiesOf(storybookFolder, module)
           // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
         }
       },
-    },  
+    },
     data: () => ({
       genericProps: {
         id: '1',
@@ -219,33 +219,33 @@ storiesOf(storybookFolder, module)
         showPlaceholder: false,
         isVerticalLayout: true,
       },
-      genericPropsFilled: {         
+      genericPropsFilled: {
                 id: '2',
                 labelTextarea: 'Related Publications',
                 textareaContent: `# Why user stories?
-&nbsp;          
+&nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages. 
+feature development during the MVP and post-MVP stages.
 &nbsp;
 # How user stories
-&nbsp; 
+&nbsp;
 ## 1. Step think about "Who" - type of user
 &nbsp;
 Try to omit using such a role as simply
 “the user”. It can be applied to any person - from your customers to admins -
 and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas. 
+the way they interact with the application. You can create personas.
 &nbsp;
-## 2. Step think about the "What" - function, UI & UX 
+## 2. Step think about the "What" - function, UI & UX
 &nbsp;
-Define what functionality each user expects. How she’s going to interact with the app. 
+Define what functionality each user expects. How she’s going to interact with the app.
 &nbsp;
-## 3. Step think about the "Why" - added value 
+## 3. Step think about the "Why" - added value
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,  
+contribute something to the general goal of your product. `,
                 subtitlePreview: 'Preview',
                 showPlaceholder: false,
                 publications: {
@@ -267,7 +267,7 @@ contribute something to the general goal of your product. `,
         <v-col >
           <GenericTextareaPreviewLayout :genericProps="genericProps"
                                         @changedText="catchChangedText($event)" >
-            <metadata-publications :genericProps="publicationsObject" />              
+            <metadata-publications :genericProps="publicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -280,7 +280,7 @@ contribute something to the general goal of your product. `,
         <v-col >
          <GenericTextareaPreviewLayout :genericProps="genericPropsFilled"
                                         @changedText="catchChangedFilledText($event)" >
-            <metadata-publications :genericProps="filledPublicationsObject" />            
+            <metadata-publications :genericProps="filledPublicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -306,7 +306,7 @@ contribute something to the general goal of your product. `,
 
         this.genericPropsFilled = newRelatedPublications;
       },
-    },  
+    },
     computed: {
       publicationsObject() {
         return {
@@ -324,7 +324,7 @@ contribute something to the general goal of your product. `,
       },
     },
     data: () => ({
-      genericProps: {         
+      genericProps: {
         id: '1',
         columns: '',
         labelTextarea: 'Related Publications',
@@ -332,34 +332,34 @@ contribute something to the general goal of your product. `,
         subtitlePreview: 'Preview',
         isVerticalLayout: true,
       },
-      genericPropsFilled: {         
+      genericPropsFilled: {
                 id: '2',
                 columns: '',
                 labelTextarea: 'Related Publications',
                 textareaContent: `# Why user stories?
-&nbsp;          
+&nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages. 
+feature development during the MVP and post-MVP stages.
 &nbsp;
 # How user stories
-&nbsp; 
+&nbsp;
 ## 1. Step think about "Who" - type of user
 &nbsp;
 Try to omit using such a role as simply
 “the user”. It can be applied to any person - from your customers to admins -
 and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas. 
+the way they interact with the application. You can create personas.
 &nbsp;
-## 2. Step think about the "What" - function, UI & UX 
+## 2. Step think about the "What" - function, UI & UX
 &nbsp;
-Define what functionality each user expects. How she’s going to interact with the app. 
+Define what functionality each user expects. How she’s going to interact with the app.
 &nbsp;
-## 3. Step think about the "Why" - added value 
+## 3. Step think about the "Why" - added value
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,  
+contribute something to the general goal of your product. `,
                 subtitlePreview: 'Preview',
                 publications: {
                   text: '',
@@ -381,13 +381,13 @@ contribute something to the general goal of your product. `,
           <EditImgPlaceholder :title="componentTitle"
                               :disclaimer="disclaimer"
                               />
-            
+
         </v-col>
       </v-row>
 
     </v-col> `,
     methods: {
-    },  
+    },
     computed: {
     },
     data: () => ({
@@ -406,8 +406,8 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout  :genericProps="genericProps"  >          
-            <metadata-body :genericProps="genericProps" />              
+          <GenericTextareaPreviewLayout  :genericProps="genericProps"  >
+            <metadata-body :genericProps="genericProps" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -418,8 +418,8 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-         <GenericTextareaPreviewLayout  :genericProps="genericPropsFilled"  >           
-            <metadata-body :genericProps="genericPropsFilled" />            
+         <GenericTextareaPreviewLayout  :genericProps="genericPropsFilled"  >
+            <metadata-body :genericProps="genericPropsFilled" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -445,11 +445,11 @@ contribute something to the general goal of your product. `,
           this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
         }
       },
-    },  
+    },
     computed: {
     },
     data: () => ({
-      genericProps: {         
+      genericProps: {
                 id: '1',
                 columns: '',
                 labelTextarea: 'Larry Label',
@@ -460,34 +460,34 @@ contribute something to the general goal of your product. `,
                   text: '',
                 },
       },
-      genericPropsFilled: {         
+      genericPropsFilled: {
                 id: '2',
                 columns: '',
                 labelTextarea: 'Larry Label',
                 textareaContent: `# Why user stories?
-&nbsp;          
+&nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages. 
+feature development during the MVP and post-MVP stages.
 &nbsp;
 # How user stories
-&nbsp; 
+&nbsp;
 ## 1. Step think about "Who" - type of user
 &nbsp;
 Try to omit using such a role as simply
 “the user”. It can be applied to any person - from your customers to admins -
 and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas. 
+the way they interact with the application. You can create personas.
 &nbsp;
-## 2. Step think about the "What" - function, UI & UX 
+## 2. Step think about the "What" - function, UI & UX
 &nbsp;
-Define what functionality each user expects. How she’s going to interact with the app. 
+Define what functionality each user expects. How she’s going to interact with the app.
 &nbsp;
-## 3. Step think about the "Why" - added value 
+## 3. Step think about the "Why" - added value
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,  
+contribute something to the general goal of your product. `,
                 subtitlePreview: 'Preview',
                 showPlaceholder: false,
                 body: {
@@ -535,25 +535,25 @@ contribute something to the general goal of your product. `,
           this.genericPropsFilled = updateObj.data;
         }
       },
-    },  
+    },
     data: () => ({
       genericPropsFilled: {
           id: 1,
           funders: [
-            { 
-              organization: 'WSL', 
+            {
+              organization: 'WSL',
               grantNumber: 'XYZ',
               link: 'https://www.wsl.ch',
             },
-           { 
-                organization: 'NSF', 
+           {
+                organization: 'NSF',
                 grantNumber: '123',
                 link: 'https://www.superduper.ch',
             },
-            
+
           ],
-      },    
-    }), 
+      },
+    }),
   }))
   .add('Edit Custom Fields', () => ({
     components: { EditCustomFields },
@@ -600,9 +600,9 @@ contribute something to the general goal of your product. `,
     data: () => ({
       emptyFirstGenericProps: [],
       genericProps: [
-        { 
-          field0: { 
-            fieldName: 'SubProject', 
+        {
+          field0: {
+            fieldName: 'SubProject',
             content: 'Projectx',
           },
         },
@@ -655,7 +655,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-         
+
         </v-col>
       </v-row>
 
@@ -676,7 +676,7 @@ contribute something to the general goal of your product. `,
           this.emptyFirstGenericProps = updateObj.data;
         }
       },
-    },  
+    },
     data: () => ({
       emptyFirstGenericProps: {
         id: '1',
@@ -698,7 +698,7 @@ contribute something to the general goal of your product. `,
     components: { EditDescription },
     template: `
      <v-col>
-     
+
       <v-row>
         Edit Description textarea unfilled
       </v-row>
@@ -711,7 +711,7 @@ contribute something to the general goal of your product. `,
 
 
       <v-row>
-        Edit Description textarea filled 
+        Edit Description textarea filled
       </v-row>
 
       <v-row class="py-3" >
@@ -727,25 +727,25 @@ contribute something to the general goal of your product. `,
       genericProps() {
         return {
           description: `# Why user stories?
-&nbsp;          
+&nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages. 
+feature development during the MVP and post-MVP stages.
 &nbsp;
 # How user stories
-&nbsp; 
+&nbsp;
 ## 1. Step think about "Who" - type of user
 &nbsp;
 Try to omit using such a role as simply
 “the user”. It can be applied to any person - from your customers to admins -
 and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas. 
+the way they interact with the application. You can create personas.
 &nbsp;
-## 2. Step think about the "What" - function, UI & UX 
+## 2. Step think about the "What" - function, UI & UX
 &nbsp;
-Define what functionality each user expects. How she’s going to interact with the app. 
+Define what functionality each user expects. How she’s going to interact with the app.
 &nbsp;
-## 3. Step think about the "Why" - added value 
+## 3. Step think about the "Why" - added value
 &nbsp;
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
