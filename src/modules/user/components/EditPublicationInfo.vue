@@ -293,27 +293,8 @@ export default {
             link: '',
           },
         );
-      } // else if (localFunders.length >= this.maxFunders) {
-      //     this.maxFundersReached = true;
-      // } else if (localFunders.length < this.maxFunders) {
-      //     this.maxFundersReached = false;
-      // }
-           
+      }            
     },
-    // deleteEmptyFunderObj(index, localFunders) {
-
-    //   // Assign funderObj to object currently receiving input in localFunders
-    //   const funderObj = localFunders[index];
-
-    //   // Assign isEmpty to true if all values in funderObj are null or empty strings, else assign isEmpty to false
-    //   const isEmpty = isObjectEmpty(funderObj);
-
-    //   // If isEmpty is true and localFunders has more than one item then remove item at current index
-    //   if (isEmpty && localFunders.length > 1) {
-    //     localFunders.splice(index, 1);
-    //   }
-
-    // },
     // Assign localFunders to a copy of funderArray with last empty funder object removed
     copyFunderArray(localFunders) {
 
