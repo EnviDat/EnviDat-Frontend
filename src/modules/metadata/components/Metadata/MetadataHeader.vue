@@ -164,7 +164,7 @@
             <BaseIconLabelView :text="contactEmail"
                                   :label="mailIcon ? '' : 'Contact Email:'"
                                   :icon="mailIcon"
-                                  icon-tooltip="Email adress of the main contact"
+                                  icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
                                   :word-break="true"
                                   :align-left="$vuetify.breakpoint.smAndUp" />
@@ -252,7 +252,7 @@
       </v-col>
     </v-row>
     </v-expand-transition>
-    
+
     </v-container>
 
     <v-card-actions v-show="expanded"
