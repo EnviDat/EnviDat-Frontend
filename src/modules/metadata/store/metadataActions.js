@@ -40,6 +40,8 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS,
 } from '@/store/metadataMutationsConsts';
 
+import catCards from '@/store/categoryCards';
+
 import {
   tagsIncludedInSelectedTags,
   getEnabledTags,
@@ -50,10 +52,12 @@ import {
   getSelectedTagsMergedWithHidden,
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
+import { getTagColor } from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
+
 
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
@@ -143,6 +147,28 @@ function localSearch(searchTerm, datasets) {
   }
 
   return foundDatasets;
+}
+
+// Returns array with strings that are both only maxWords or less and do not start with a number 
+function getfilteredArray(arr, maxWords) {
+  return arr.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
+}
+
+// Return array with each element converted to object with name and assigned color
+function getKeywordObjects(arr) {  
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = {
+              name: arr[i],
+              color: getTagColor(catCards, arr[i]),
+            };
+  }
+  return arr;
+}
+
+// Returns array of objects in ascending order by 'name' key 
+// Name values converted to upper case so that comparisons are case insensitive
+function sortArrayObjectsAsending(arrObjects) {
+  return arrObjects.sort((a, b) => ((a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : -1));
 }
 
 export default {
@@ -401,9 +427,30 @@ export default {
   async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }) {
 
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
+    
+    // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    // TODO: extract keywords from existing datasets
+    const url = urlRewrite('tag_list', API_BASE, PROXY);
+   
+    await axios.get(url).then((response) => {
+      
+      const tags = response.data.result;
 
-    commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
+      // console.log(this.maxCustomFields);
+
+      const filteredTags = getfilteredArray(tags, 2);
+     
+      const keywordObjects = getKeywordObjects(filteredTags);
+      
+      const mergedKeywords = existingKeywords.concat(keywordObjects);
+    
+      const sortedKeywords = sortArrayObjectsAsending(mergedKeywords);
+    
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS, sortedKeywords);
+      
+    });// TODO write catch block // .catch((reason) => {
+    //   commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
+    // });
+
   },
 };
