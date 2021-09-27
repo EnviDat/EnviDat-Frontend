@@ -72,16 +72,24 @@ import {
   isMaxLength,
 } from '@/factories/userEditingFactory';
 
+import { mapState } from 'vuex';
+
+
 export default {
   name: 'EditCustomFields',
   data: () => ({
-    maxCustomFields: 10,
     maxCustomFieldsReached: false,
   }),
   props: {  
     genericProps: Object,
   },
   computed: {
+     ...mapState([
+      'config',
+    ]),
+    maxCustomFields() {
+      return this.config.userEditMetadataConfig.customFieldsMax;
+    },
     cardTitle: {
       get() {
         return this.mixinMethods_getGenericProp('cardTitle', 'Custom Fields');
