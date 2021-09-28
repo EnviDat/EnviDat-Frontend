@@ -6,18 +6,18 @@
                   class="pa-0" >
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ cardTitle }}</div>
         </v-col>
-      </v-row>  
+      </v-row>
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ cardInstructions }}</div>
         </v-col>
       </v-row>
 
-      <v-row v-for="(item, index) in customFields"  
+      <v-row v-for="(item, index) in customFields"
           :key="`${item}_${index}`">
 
         <v-col cols="6" >
@@ -28,9 +28,9 @@
                         @input="notifyChange(index)" >
           </v-text-field>
         </v-col>
-        <v-col cols="6" > 
-          <v-text-field :label="labelContent" 
-                        outlined 
+        <v-col cols="6" >
+          <v-text-field :label="labelContent"
+                        outlined
                         hide-details
                         v-model="item.content"
                         @input="notifyChange(index)" >
@@ -39,13 +39,13 @@
       </v-row>
 
       <v-row v-if="maxCustomFieldsReached">
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-subtitle-2"><span class="red--text">{{ this.maxCustomFieldsMessage }}</span></div>
         </v-col>
       </v-row>
 
     </v-container>
-  </v-card>  
+  </v-card>
 
 </template>
 
@@ -79,8 +79,11 @@ export default {
   name: 'EditCustomFields',
   data: () => ({
     maxCustomFieldsReached: false,
+    defaultUserEditMetadataConfig: {
+      customFieldsMax: 10
+    }
   }),
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
@@ -88,7 +91,7 @@ export default {
       'config',
     ]),
     maxCustomFields() {
-      return this.config.userEditMetadataConfig.customFieldsMax;
+      return this.config?.userEditMetadataConfig.customFieldsMax || this.defaultUserEditMetadataConfig.customFieldsMax;
     },
     cardTitle: {
       get() {
@@ -116,7 +119,7 @@ export default {
 
         if (fields.length <= 0) {
           fields = [{
-            fieldName: '', 
+            fieldName: '',
             content: '',
           }];
         } else {
@@ -127,34 +130,34 @@ export default {
       },
     },
     maxCustomFieldsMessage() {
-      return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`; 
+      return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`;
     },
   },
   methods: {
      addCustomFieldObj(localFields) {
-      
+
       // Assign lastCustomField to last item in localFields
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
       // Assign variables to lastCustomFieldObj properties
       const lastCustomFieldName = lastCustomFieldObj.fieldName;
       const lastCustomFieldContent = lastCustomFieldObj.content;
-     
+
       // If fieldName or content of lastCustomFieldObj are empty strings then assign addCustomField to false
       let addCustomField = true;
       if (lastCustomFieldName === '' || lastCustomFieldContent === '') {
         addCustomField = false;
       }
-      
+
       // If addCustomField is true and length of localFields is less than maxCustomFields then push new custom field object to customFieldsArray
       // Else if addCustomField is true and localFields is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
       // Else if localFields is less than maxCustomFields then assign maxCustomFieldsReached to false
       if (addCustomField && localFields.length < this.maxCustomFields) {
         localFields.push({
-          fieldName: '', 
+          fieldName: '',
           content: '',
         });
-      }   
+      }
     },
      // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
      // Emit filledCustomFieldsArray to eventBus
@@ -187,9 +190,9 @@ export default {
     notifyChange(index) {
 
       const localyCopy = [...this.customFields];
-    
+
       deleteEmptyObject(index, localyCopy);
-    
+
       this.copyCustomFieldsArray(localyCopy);
 
       this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
@@ -197,7 +200,7 @@ export default {
     },
   },
   components: {
-  },  
+  },
 };
 </script>
 

@@ -177,6 +177,10 @@ export default {
     currentYear: '',
     yearList: [],
     maxFundersReached: false,
+    defaultUserEditMetadataConfig: {
+      publicationMaxFunders: 5,
+      publicationYearsList: 30
+    }
   }),
   props: {
     genericProps: Object,
@@ -186,10 +190,10 @@ export default {
       'config',
     ]),
     maxFunders() {
-      return this.config.userEditMetadataConfig.publicationMaxFunders;
+      return this.config?.userEditMetadataConfig.publicationMaxFunders || this.defaultUserEditMetadataConfig.publicationMaxFunders;
     },
     maxYears() {
-      return this.config.userEditMetadataConfig.publicationYearsList; 
+      return this.config?.userEditMetadataConfig.publicationYearsList || this.defaultUserEditMetadataConfig.publicationYearsList;
     },
     publicationState: {
       get() {
@@ -295,16 +299,16 @@ export default {
             link: '',
           },
         );
-      }            
+      }
     },
     // Assign localFunders to a copy of funderArray with last empty funder object removed
     copyFunderArray(localFunders) {
 
       const lastFunder = localFunders[localFunders.length - 1];
-    
+
        // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
-      const isEmpty = isObjectEmpty(lastFunder);     
-   
+      const isEmpty = isObjectEmpty(lastFunder);
+
       // If isEmpty is true and localFunders has at least one item then remove last element of array
       if (isEmpty && localFunders.length > 0) {
         localFunders.pop();
