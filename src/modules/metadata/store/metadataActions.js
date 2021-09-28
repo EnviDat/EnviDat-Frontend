@@ -149,13 +149,13 @@ function localSearch(searchTerm, datasets) {
   return foundDatasets;
 }
 
-// Returns array with strings that are both only maxWords or less and do not start with a number 
+// Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
   return arr.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
 }
 
 // Return array with each element converted to object with name and assigned color
-function getKeywordObjects(arr) {  
+function getKeywordObjects(arr) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = {
               name: arr[i],
@@ -165,7 +165,7 @@ function getKeywordObjects(arr) {
   return arr;
 }
 
-// Returns array of objects in ascending order by 'name' key 
+// Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
 function sortArrayObjectsAsending(arrObjects) {
   return arrObjects.sort((a, b) => ((a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : -1));
@@ -235,8 +235,10 @@ export default {
       commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
     });
   },
-  async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, metadataConfig = {}) {
+  async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
     commit(BULK_LOAD_METADATAS_CONTENT);
+
+    const metadataConfig = config.metadataConfig || {};
 
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
                 API_BASE, PROXY);
@@ -261,7 +263,7 @@ export default {
         dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
 
         // make sure the existingKeywords list is up-2-date
-        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS);
+        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
 
         // for the case when loaded up on landingpage
         return dispatch(FILTER_METADATA, { selectedTagNames: [] });
@@ -424,30 +426,28 @@ export default {
 
     commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },
-  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }) {
+  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }, userEditMetadataConfig = {}) {
 
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
-    
-    // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
+    commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
     const url = urlRewrite('tag_list', API_BASE, PROXY);
-   
+
     await axios.get(url).then((response) => {
-      
+
       const tags = response.data.result;
 
-      // console.log(this.maxCustomFields);
+      const keywordsListWordMax = userEditMetadataConfig.keywordsListWordMax || 2;
+      const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
-      const filteredTags = getfilteredArray(tags, 2);
-     
       const keywordObjects = getKeywordObjects(filteredTags);
-      
+
       const mergedKeywords = existingKeywords.concat(keywordObjects);
-    
+
       const sortedKeywords = sortArrayObjectsAsending(mergedKeywords);
-    
+
       commit(METADATA_UPDATE_EXISTING_KEYWORDS, sortedKeywords);
-      
+
     });// TODO write catch block // .catch((reason) => {
     //   commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
     // });

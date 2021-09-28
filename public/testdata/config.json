@@ -73,6 +73,8 @@
   "userEditMetadataConfig": {
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
-    "customFieldsMax": 10
+    "customFieldsMax": 10,
+    "keywordsListWordMax": 2,
+    "keywordsCountMin": 5
   }
 }
