@@ -87,56 +87,36 @@
 
 export default {
   name: 'GenericTextareaPreviewLayout',
-  data: () => ({
-  }),
   props: {
-    genericProps: Object,
-  },
-  computed: {
     isVerticalLayout: {
-      get() {
-        return this.mixinMethods_getGenericProp('isVerticalLayout', false);
-      },
+      type: Boolean,
+      default: false,
     },
     columns: {
-      get() {
-        return this.mixinMethods_getGenericProp('columns', '');
-      },
+      type: String,
+      default: '',
     },
     textareaContent: {
-      get() {
-        return this.mixinMethods_getGenericProp('textareaContent', '');
-      },
+      type: String,
+      default: '',
     },
     subtitlePreview: {
-      get() {
-        return this.mixinMethods_getGenericProp('subtitlePreview', '');
-      },
+      type: String,
+      default: '',
     },
-    labelTextarea() {
-      return this.mixinMethods_getGenericProp('labelTextarea', 'Textarea label');
+    labelTextarea: {
+      type: String,
+      default: '',
     },
-    prependIcon() {
-      return this.mixinMethods_getGenericProp('prependIcon', '');
+    prependIcon: {
+      type: String,
+      default: '',
     },
   },
   methods: {
     catchChangedText(event) {
       this.$emit('changedText', event);
     },
-  //   setGenericTextareaPreview(property, value) {
-  //   const newGenericTextareaPreview = {
-  //       ...this.genericProps,
-  //       [property]: value,
-  //   };
-
-  //   eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-  //       object: EDITMETADATA_CUSTOMFIELDS,
-  //       data: newCustomFields,
-  //     });
-  // },
-  },
-  components: {
   },
 };
 

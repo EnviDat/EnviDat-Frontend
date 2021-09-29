@@ -84,14 +84,12 @@ export default {
         }
       });
 
-      const newGenericProps = {
-        ...this.genericProps,
-        authors,
-      };
-
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR_LIST,
-        data: newGenericProps,
+        data: {
+          ...this.$props,
+          authors,
+        },
       });
     },
     getAuthorByName(fullName) {

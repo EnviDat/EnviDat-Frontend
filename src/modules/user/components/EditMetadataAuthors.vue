@@ -19,7 +19,7 @@
 
       <v-row >
         <v-col cols="12">
-          <MetadataAuthors :genericProps="genericProps" />
+          <MetadataAuthors :genericProps="metadataAuthorsObject" />
         </v-col>
       </v-row>
 
@@ -52,9 +52,29 @@ export default {
     MetadataAuthors,
   },
   props: {
-    genericProps: Object,
+    authors: {
+      type: Array,
+      default: () => [],
+    },
+    authorDetailsConfig: {
+      type: Object,
+      default: () => {},
+    },
+    authorDeadInfo: {
+      type: Object,
+      default: () => {},
+    },
   },
   computed: {
+    metadataAuthorsObject() {
+      return {
+        authors: this.authors,
+        authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
+        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
+        emptyTextColor: 'grey',
+      };
+    },
   },
   methods: {
   },

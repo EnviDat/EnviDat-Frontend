@@ -7,7 +7,7 @@
     <EditImgPlaceholder :disclaimer="disclaimer"
                         :img="dataInfo"
                         />
-  </v-container>  
+  </v-container>
 
 </template>
 
@@ -15,9 +15,9 @@
 <script>
 /**
  * EditDataInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
- * 
  *
- * @summary shows a screenshot placeholder of the editing the Data Info 
+ *
+ * @summary shows a screenshot placeholder of the editing the Data Info
  * @author Dominik Haas-Artho
  *
  * Created        : 2021-08-31
@@ -36,8 +36,7 @@ export default {
   data: () => ({
     dataInfo,
   }),
-  props: {  
-    genericProps: Object,
+  props: {
   },
   computed: {
     disclaimer() {

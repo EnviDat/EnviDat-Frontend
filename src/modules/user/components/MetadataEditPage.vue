@@ -99,11 +99,6 @@ export default {
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  watch: {
-    existingAuthors() {
-      this.updateSteps(EDITMETADATA_AUTHOR_LIST);
-    },
-  },
   computed: {
     ...mapState(USER_NAMESPACE, [
       'metadataInEditing',
@@ -144,31 +139,12 @@ export default {
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, updateObj);
 
       this.$nextTick(() => {
-        this.updateSteps(updateObj.object);
         this.enhanceKeywordsStep(updateObj.object);
         this.enhanceMetadataHeaderStep(updateObj.object);
       });
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
-    },
-    updateSteps(objectName) {
-      const steps = this.metadataCreationSteps;
-      const mKeys = Object.keys(this.metadataInEditing);
-
-      for (let i = 0; i < mKeys.length; i++) {
-        const key = mKeys[i];
-
-        if (objectName === key) {
-
-          const stepToUpdate = getStepByName(key, steps);
-          if (stepToUpdate) {
-            stepToUpdate.genericProps = this.metadataInEditing[key];
-            // console.log(`updated step ${JSON.stringify(stepToUpdate)}`);
-            return;
-          }
-        }
-      }
     },
     enhanceKeywordsStep(updatedKey) {
 

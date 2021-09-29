@@ -13,7 +13,7 @@
 
     <v-row>
       <v-col >
-        <div class="text-subtitle-1">{{ cardInstructions }}</div>
+        <div class="text-subtitle-1">{{ labels.cardInstructions }}</div>
       </v-col>
     </v-row>
 
@@ -21,7 +21,7 @@
     <v-row>
       <v-col >
 
-        <GenericTextareaPreviewLayout :genericProps="genericTextAreaObject"
+        <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                           @changedText="catchChangedText($event)">
           <MetadataPublications :genericProps="publicationsObject" />
         </GenericTextareaPreviewLayout>
@@ -84,9 +84,6 @@ export default {
         },
       };
     },
-    cardInstructions() {
-      return this.mixinMethods_getGenericProp('relatedPublicationsInstructions', 'Add references to related publications to dataset(s)');
-    },
   },
   methods: {
     catchChangedText(event) {
@@ -104,8 +101,8 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      descriptionInstructions: 'Add references to related publications to dataset(s)',
-      subtitlePreview: 'Related Publications Preview\'',
+      cardInstructions: 'Add references to other related publications',
+      subtitlePreview: 'Related Publications Preview',
     },
 
   }),

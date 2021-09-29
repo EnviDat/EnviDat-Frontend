@@ -58,19 +58,19 @@ export default {
   },
   computed: {
     relatedPublicationsText() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
     },
     customFields() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS).customFields;
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
     },
     editRelatedPublicationsProps() {
       return {
-        relatedPublicationsText: this.relatedPublicationsText,
+        ...this.relatedPublicationsText,
       };
     },
     editCustomFieldsProps() {
       return {
-        customFields: this.customFields,
+        ...this.customFields,
       };
     },
   },

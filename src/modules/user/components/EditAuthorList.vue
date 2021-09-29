@@ -28,7 +28,7 @@
       </v-col>
 
       <v-col cols="6" >
-        <EditMetadataAuthors :genericProps="authorListingGenericProps" />
+        <EditMetadataAuthors v-bind="authorListingGenericProps" />
       </v-col>
     </v-row>
 
@@ -65,6 +65,7 @@ import {
 import {
   CANCEL_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_AUTHOR,
@@ -73,6 +74,7 @@ import {
 } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 
 export default {
@@ -101,16 +103,23 @@ export default {
 
       return this.existingAuthors;
     },
+    authorsWrap() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST).authors;
+      }
+
+      return this.authors;
+    },
     authorPickingGenericProps() {
       return {
-        authors: this.authors,
+        authors: this.authorsWrap,
         existingEnviDatUsers: this.existingAuthorsWrap,
         isClearable: false,
       };
     },
     authorListingGenericProps() {
       return {
-        authors: this.authors,
+        authors: this.authorsWrap,
         existingAuthors: this.existingAuthorsWrap,
         authorDetailsConfig: {
           showDatasetCount: false,

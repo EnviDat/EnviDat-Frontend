@@ -37,7 +37,7 @@
             <component v-if="currentStep"
                         :is="currentStep.component"
                         :steps="currentStep.detailSteps"
-                        :genericProps="currentStep.genericProps"
+                        v-bind="currentStep.genericProps"
                         :initialStepTitle="currentStep.initialStepTitle"
                         stepColor="highlight" />
 

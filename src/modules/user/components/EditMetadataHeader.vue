@@ -110,11 +110,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-// import TagChip from '@/components/Cards/TagChip';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
-
-// import { getAuthorName } from '@/factories/authorFactory';
-// import TagChipAuthor from '../TagChipAuthor';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';

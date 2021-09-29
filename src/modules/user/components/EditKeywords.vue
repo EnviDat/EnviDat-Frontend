@@ -29,14 +29,14 @@
         <v-col>
 
           <v-combobox v-model="keywordItems"
-                      :items="existingKeywords"
+                      :items="existingKeywordItems"
                       item-text="name"
                       chips
                       deletable-chips
                       multiple
                       outlined
                       append-icon="arrow_drop_down"
-                      prepend-icon="label"
+                      prepend-icon="style"
                       :label="labels.keywordsLabel"
                       :search-input.sync="search"
                       @update:search-input="isKeywordValid(search)"
@@ -100,7 +100,7 @@ import {
 } from '@/factories/eventBus';
 
 import MetadataCard from '@/components/Cards/MetadataCard';
-import TagChip from '@/components/Cards/TagChip';
+import TagChip from '@/components/Chips/TagChip';
 import catCards from '@/store/categoryCards';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
@@ -135,6 +135,10 @@ export default {
   }),
   props: {
     keywords: {
+      type: Array,
+      default: () => [],
+    },
+    existingKeywords: {
       type: Array,
       default: () => [],
     },
@@ -185,19 +189,19 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press <kbd>enter</kbd> to create a new keyword.`;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press  <kbd>enter</kbd>  to create a new keyword.`;
       } else {
-        hint += 'Start typing for keyword autocompletion.';
+        hint += ' Start typing for keyword autocompletion.';
       }
 
-      return hint;
+      return hint.trim();
     },
-    existingKeywords() {
+    existingKeywordItems() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingKeywords`];
       }
 
-      return this.mixinMethods_getGenericProp('existingKeywords', []);
+      return this.existingKeywords;
     },
     keywordItems: {
       get() {

@@ -23,7 +23,7 @@
       <v-row>
         <v-col >
 
-          <GenericTextareaPreviewLayout :genericProps="genericTextAreaObject"
+          <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                           @changedText="catchChangedText($event)">
             <MetadataBody :genericProps="descriptionObject" />
           </GenericTextareaPreviewLayout>

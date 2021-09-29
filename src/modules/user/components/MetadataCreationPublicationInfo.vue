@@ -46,7 +46,6 @@ import {
 export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
-    genericProps: Object,
   },
   computed: {
     publicationsInfo() {
