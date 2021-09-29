@@ -166,8 +166,13 @@ function overwriteDataCredit(author, existingAuthor) {
   }
 }
 
-function getAuthorKey(author) {
-  return author.email || author.fullName ? author.fullName.trim().toLowerCase() : null;
+export function getAuthorKey(author) {
+
+  if (author?.email) {
+    return author.email.trim();
+  }
+
+  return author?.fullName?.trim().toLowerCase() || null;
 }
 
 // TODO try using different method and compare performance

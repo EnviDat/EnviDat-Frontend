@@ -213,16 +213,20 @@ export default {
     notifyChange(property, value) {
       this.checkSaveButtonEnabled();
 
+      // if any changes the name was made make sure the changes are part of the fullName
+      const fistN = property === 'firstName' ? value : this.firstNameField;
+      const lastN = property === 'lastName' ? value : this.lastNameField;
+
       // eslint-disable-next-line no-unused-vars
-      const newGenericProps = {
+      const newAuthor = {
         ...this.$props,
         [property]: value,
-        fullName: `${this.firstNameField} ${this.lastNameField}`,
+        fullName: `${fistN.trim()} ${lastN.trim()}`,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,
-        data: newGenericProps,
+        data: newAuthor,
       });
     },
     saveAuthorClick() {

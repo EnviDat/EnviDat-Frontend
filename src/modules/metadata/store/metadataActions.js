@@ -58,7 +58,6 @@ import metadataTags from '@/modules/metadata/store/metadataTags';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 
-
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
 const API_BASE = process.env.VUE_APP_API_BASE_URL || '/api/action/';
@@ -422,6 +421,7 @@ export default {
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
     const existingAuthors = Object.values(authorsMap);
 
+    // enhance the entries that the selection button shows up on the resourceCard
     enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
 
     commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);

@@ -44,6 +44,8 @@ import {
   EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_AN_EXISTING_AUTHOR,
+  METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -264,6 +266,40 @@ export default {
 
     const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
+  },
+  [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
+
+    let authorToUpdate = null;
+    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+
+    let key = modifiedAuthor.email;
+
+    if (key) {
+      authorToUpdate = authorsMap[key];
+    }
+
+    if (!authorToUpdate) {
+      const existingAuthors = Object.values(authorsMap);
+      const subSelection = existingAuthors.filter(a => a.fullName === modifiedAuthor.fullName);
+
+      if (subSelection.length > 0) {
+        key = modifiedAuthor.email;
+        authorToUpdate = subSelection[0];
+
+        // if the key isn't correct, the old one needs to be deleted on the map object
+        delete authorsMap[authorToUpdate.email];
+      }
+    }
+
+    if (authorToUpdate) {
+      // use $set to overwrite the entry and make sure the update event of
+      // vue is triggered
+      this._vm.$set(authorsMap, key,
+        {
+          ...authorToUpdate,
+          ...modifiedAuthor,
+        });
+    }
   },
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
     state.existingAuthors = existingAuthors;

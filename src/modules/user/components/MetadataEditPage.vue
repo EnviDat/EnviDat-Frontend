@@ -29,6 +29,7 @@
 import {
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -41,11 +42,7 @@ import {
   SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus';
 
-import {
-  getStepByName,
-  metadataCreationSteps,
-  // initializeSteps,
-} from '@/factories/userEditingFactory';
+import { metadataCreationSteps } from '@/factories/userEditingFactory';
 
 import {
   mapGetters,
@@ -71,7 +68,10 @@ import {
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {
+  METADATA_NAMESPACE,
+  METADATA_UPDATE_AN_EXISTING_AUTHOR,
+} from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'MetadataEditPage',
@@ -141,10 +141,17 @@ export default {
       this.$nextTick(() => {
         this.enhanceKeywordsStep(updateObj.object);
         this.enhanceMetadataHeaderStep(updateObj.object);
+
+        if (updateObj.object === EDITMETADATA_AUTHOR) {
+          this.updateExistingAuthors(updateObj);
+        }
       });
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
+    },
+    updateExistingAuthors(updateObj) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, updateObj.data);
     },
     enhanceKeywordsStep(updatedKey) {
 
