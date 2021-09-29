@@ -644,7 +644,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataHeader :genericProps="emptyFirstGenericProps" />
+          <EditMetadataHeader v-bind="emptyFirstGenericProps" />
         </v-col>
       </v-row>
 

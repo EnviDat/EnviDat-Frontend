@@ -51,7 +51,10 @@ export default {
     MetadataResources,
   },
   props: {
-    genericProps: Object,
+    resources: {
+      type: Array,
+      default: () => [],
+    },
   },
   mounted() {
     this.doiIcon = this.mixinMethods_getIcon('doi') || '';
@@ -66,7 +69,7 @@ export default {
   computed: {
     metadataResourcesGenericProps() {
       return {
-        ...this.genericProps,
+        resources: this.resources,
         doiIcon: this.doiIcon,
         fileSizeIcon: this.fileSizeIcon,
         fileIcon: this.fileIcon,

@@ -52,6 +52,7 @@ export const user = {
   getters: {
     resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
     authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
+    getMetadataEditingObject: state => key => state.metadataInEditing[key],
     userDatasets: (state) => {
       const userObj = state.user;
 

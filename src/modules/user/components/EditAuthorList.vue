@@ -8,7 +8,7 @@
       <v-col cols="6" >
         <v-row v-if="selectedAuthor" >
           <v-col >
-            <EditAuthor :genericProps="selectedAuthor"
+            <EditAuthor v-bind="selectedAuthor"
                         @closeClicked="catchEditAuthorClose"
                         @saveAuthor="catchSaveAuthorClose"/>
           </v-col>
@@ -64,7 +64,7 @@ import {
 } from '@/factories/strategyFactory';
 import {
   CANCEL_EDITING_AUTHOR,
-  EDITMETADATA_DATA_AUTHOR,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_AUTHOR,
@@ -84,36 +84,34 @@ export default {
     EditAddExistingAuthor,
   },
   props: {
-    genericProps: Object,
+    existingAuthors: {
+      type: Array,
+      default: () => [],
+    },
+    authors: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
-    existingAuthors() {
+    existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
       }
 
-      return this.mixinMethods_getGenericProp('existingAuthors', []);
-    },
-    authors() {
-/*
-      if (this.$store) {
-        return
-      }
-*/
-
-      return this.mixinMethods_getGenericProp('authors', []);
+      return this.existingAuthors;
     },
     authorPickingGenericProps() {
       return {
         authors: this.authors,
-        existingEnviDatUsers: this.existingAuthors,
+        existingEnviDatUsers: this.existingAuthorsWrap,
         isClearable: false,
       };
     },
     authorListingGenericProps() {
       return {
         authors: this.authors,
-        existingAuthors: this.existingAuthors,
+        existingAuthors: this.existingAuthorsWrap,
         authorDetailsConfig: {
           showDatasetCount: false,
           showAuthorInfos: true,
@@ -124,7 +122,7 @@ export default {
     },
     selectedAuthor() {
       let selectedAuthor = null;
-      const authors = this.genericProps?.authors;
+      const authors = this.authors;
 
       if (authors?.length > 0) {
         const selected = authors.filter(r => r.isSelected);
@@ -144,7 +142,7 @@ export default {
       enhanceElementsWithStrategyEvents([newAuthor], SELECT_EDITING_AUTHOR_PROPERTY);
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_AUTHOR,
+        object: EDITMETADATA_AUTHOR,
         data: newAuthor,
       });
 

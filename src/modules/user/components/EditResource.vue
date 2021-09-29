@@ -41,7 +41,7 @@
                         :rules="[ v => !!v || `${labels.resourceName} is required`,
                                   v => (isLink && resourceName !== url) || (!isLink && !url) || `${labels.resourceName} can't be the same as the ${labels.url}`,
                                   ]"
-                        v-model="resourceName" />
+                        v-model="resourceNameField" />
         </v-col>
       </v-row>
 
@@ -53,7 +53,7 @@
                         auto-grow
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.description} is required` ]"
-                        v-model="description"
+                        v-model="descriptionField"
                         />
         </v-col>
       </v-row>
@@ -67,7 +67,7 @@
                         prepend-icon="link"
                         :disabled="loading"
                         :rules="[ v => !!v || `${labels.url} is required` ]"
-                        v-model="url" />
+                        v-model="urlField" />
         </v-col>
       </v-row>
 
@@ -84,7 +84,7 @@
             <template v-slot:append
                       style="justfiy-content: flex-end;">
               <v-col >
-                <v-row no-gutters class="pb-2" >{{ fileName }}</v-row>
+                <v-row no-gutters class="pb-2" >{{ fileNameField }}</v-row>
                 <v-row no-gutters>
                   <img ref="filePreview"
                         style="max-height: 100%; max-width: 100%;" />
@@ -104,7 +104,7 @@
                         outlined
                         readonly
                         prepend-icon="insert_drive_file"
-                        v-model="fileName" />
+                        v-model="fileNameField" />
         </v-col>
       </v-row>
 
@@ -131,7 +131,7 @@
           <v-text-field :label="labels.size"
                         outlined
                         readonly
-                        v-model="size" />
+                        v-model="sizeField" />
         </v-col>
       </v-row>
 
@@ -202,68 +202,98 @@ import fileSizeIcon from '@/assets/icons/fileSize.png';
 export default {
   name: 'EditResource',
   props: {
-    genericProps: Object,
-  },
-  mounted() {
-    this.localName = this.resourceName;
-    this.localDescription = this.description;
-  },
-  computed: {
     id: {
-      get() {
-        return this.mixinMethods_getGenericProp('id', '');
-      },
+      type: String,
+      default: '',
     },
     description: {
+      type: String,
+      default: '',
+    },
+    name: {
+      type: String,
+      default: '',
+    },
+    fileName: {
+      type: String,
+      default: '',
+    },
+    file: {
+      type: File,
+      default: null,
+    },
+    url_type: {
+      type: String,
+      default: null,
+    },
+    created: {
+      type: String,
+      default: getCurrentDate(),
+    },
+    lastModified: {
+      type: String,
+      default: getCurrentDate(),
+    },
+    format: {
+      type: String,
+      default: '',
+    },
+    url: {
+      type: String,
+      default: '',
+    },
+    doi: {
+      type: String,
+      default: '',
+    },
+    size: {
+      type: Number,
+      default: 0,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  mounted() {
+    this.localName = this.resourceNameField;
+    this.localDescription = this.descriptionField;
+  },
+  computed: {
+    descriptionField: {
       get() {
-        return this.mixinMethods_getGenericProp('description', ''); // this.localDescription);
+        return this.description;
       },
       set(value) {
         this.localDescription = value;
 
-        const newGenericProps = {
-          ...this.genericProps,
-          description: value,
-        };
-
-        this.notifyChange(newGenericProps);
+        this.notifyChange('description', value);
       },
     },
-    resourceName: {
+    resourceNameField: {
       get() {
-        return this.mixinMethods_getGenericProp('name', ''); // this.localName);
+        return this.name;
       },
       set(value) {
         this.localName = value;
 
-        const newGenericProps = {
-          ...this.genericProps,
-          name: value,
-        };
-
-        this.notifyChange(newGenericProps);
+        this.notifyChange('name', value);
       },
     },
-    fileName: {
+    fileNameField: {
       get() {
-        return this.mixinMethods_getGenericProp('fileName', '');
-      },
-    },
-    file: {
-      get() {
-        const file = this.mixinMethods_getGenericProp('file', null);
-        if (file) {
-          this.loadImagePreview(file);
+        if (this.file) {
+          this.loadImagePreview(this.file);
         }
-        return file;
+        return this.fileName;
       },
     },
     isImage() {
       return this.file?.type.includes('image');
     },
-    url: {
+    urlField: {
       get() {
-        return this.mixinMethods_getGenericProp('url', '');
+        return this.url;
       },
       set(value) {
         const newGenericProps = {
@@ -274,44 +304,12 @@ export default {
         this.notifyChange(newGenericProps);
       },
     },
-    urlType: {
-      get() {
-        return this.mixinMethods_getGenericProp('url_type', null);
-      },
-    },
     isLink() {
       return !!this.url && this.urlType !== 'upload';
     },
-    lastModified: {
+    sizeField: {
       get() {
-        let date = this.mixinMethods_getGenericProp('lastModified', null);
-
-        if (!date) {
-          date = getCurrentDate();
-        }
-
-        return date;
-      },
-    },
-    created: {
-      get() {
-        let date = this.mixinMethods_getGenericProp('created', null);
-
-        if (!date) {
-          date = getCurrentDate();
-        }
-
-        return date;
-      },
-    },
-    format: {
-      get() {
-        return this.mixinMethods_getGenericProp('format', '');
-      },
-    },
-    size: {
-      get() {
-        const size = this.mixinMethods_getGenericProp('size', 0);
+        const size = this.size;
 
         let sizeNumber = 0;
         if (size) {
@@ -320,14 +318,6 @@ export default {
 
         return this.mixinMethods_formatBytes(sizeNumber);
       },
-    },
-    doi: {
-      get() {
-        return this.mixinMethods_getGenericProp('doi', '');
-      },
-    },
-    loading() {
-      return this.mixinMethods_getGenericProp('loading', false);
     },
   },
   methods: {
@@ -342,10 +332,11 @@ export default {
 
       this.saveButtonEnabled = enabled;
     },
-    notifyChange(newGenericProps) {
+    notifyChange(property, value) {
 
-      newGenericProps = {
-        ...newGenericProps,
+      const newGenericProps = {
+        ...this.$props,
+        property: value,
         lastModified: getCurrentDate(),
       };
 

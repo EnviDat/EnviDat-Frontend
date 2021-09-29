@@ -16,13 +16,14 @@ import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
-  EDITMETADATA_DATA_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_CUSTOMFIELDS,
 } from '@/factories/eventBus';
 
 import {
-  selectForEditing, setSelected,
+  selectForEditing,
+  setSelected,
   updateAuthors,
   updateResource,
 } from '@/factories/userEditingFactory';
@@ -75,7 +76,7 @@ function extractError(store, reason, errorProperty = 'error') {
   let field = '';
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
-  if (reason?.response?.status !== 200) {
+  if (reason?.response && reason.response.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText} url: ${reason.response.config?.url}`;
     store._vm.$set(store.state.user, errorProperty, msg);
     return;
@@ -112,7 +113,6 @@ function resetErrorObject(state) {
   state.errorType = '';
   state.errorField = '';
 }
-
 
 export default {
   [GET_USER_CONTEXT](state) {
@@ -305,10 +305,15 @@ export default {
   [UPDATE_METADATA_EDITING](state, payload) {
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
       updateResource(this, state, payload);
-    } else if (payload.object === EDITMETADATA_DATA_AUTHOR) {
+    } else if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload);
-    } else if (payload.object === EDITMETADATA_AUTHOR_LIST) {
-      state.metadataInEditing[payload.object] = payload.data;
+    } else if (payload.object === EDITMETADATA_CUSTOMFIELDS) {
+
+      // $set() is used here to make sure any changes of the values with in the array are
+      // updated
+      this._vm.$set(state.metadataInEditing, EDITMETADATA_CUSTOMFIELDS, payload.data);
+
+
     } else {
       state.metadataInEditing[payload.object] = payload.data;
     }
@@ -367,7 +372,7 @@ export default {
     author.loading = true;
 
     const updateObj = {
-      object: EDITMETADATA_DATA_AUTHOR,
+      object: EDITMETADATA_AUTHOR,
       data: author,
     };
 
@@ -381,7 +386,7 @@ export default {
     author.existsOnlyLocal = false;
 
     const updateObj = {
-      object: EDITMETADATA_DATA_AUTHOR,
+      object: EDITMETADATA_AUTHOR,
       data: author,
     };
 

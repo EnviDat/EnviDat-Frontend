@@ -237,18 +237,17 @@ export default {
      * @param {*} a
      * @param {*} b
      */
-    mixinMethods_formatBytes(a, b) {
+    mixinMethods_formatBytes(a, b = 2) {
       /* eslint-disable prefer-template */
       /* eslint-disable no-restricted-properties */
       if (a === 0) return '0 Bytes';
 
       const c = 1024;
-      const d = b || 2;
 
       const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       const f = Math.floor(Math.log(a) / Math.log(c));
 
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
+      return parseFloat((a / Math.pow(c, f)).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};

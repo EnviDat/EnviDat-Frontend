@@ -44,7 +44,8 @@ import {
 import {
   getStepByName,
   metadataCreationSteps,
-} from '@/modules/user/store/MetadataCreationSteps';
+  // initializeSteps,
+} from '@/factories/userEditingFactory';
 
 import {
   mapGetters,
@@ -144,9 +145,12 @@ export default {
 
       this.$nextTick(() => {
         this.updateSteps(updateObj.object);
-        this.enhanceKeywordsStep();
-        this.enhanceMetadataHeaderStep();
+        this.enhanceKeywordsStep(updateObj.object);
+        this.enhanceMetadataHeaderStep(updateObj.object);
       });
+    },
+    getGenericPropsForStep(key) {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
     },
     updateSteps(objectName) {
       const steps = this.metadataCreationSteps;
@@ -166,27 +170,47 @@ export default {
         }
       }
     },
-    enhanceKeywordsStep() {
-      const keywordStep = getStepByName(EDITMETADATA_KEYWORDS, this.metadataCreationSteps);
-      const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, this.metadataCreationSteps);
-      const descStep = getStepByName(EDITMETADATA_MAIN_DESCRIPTION, this.metadataCreationSteps);
+    enhanceKeywordsStep(updatedKey) {
 
-      keywordStep.genericProps = {
-        ...keywordStep.genericProps,
-        metadataCardTitle: headerStep.genericProps.metadataTitle,
-        metadataCardSubtitle: descStep.genericProps.description,
-      };
+      if (updatedKey === EDITMETADATA_MAIN_HEADER || updatedKey === EDITMETADATA_MAIN_DESCRIPTION) {
+
+        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
+        const headerProps = this.getGenericPropsForStep(EDITMETADATA_MAIN_HEADER);
+        const descProps = this.getGenericPropsForStep(EDITMETADATA_MAIN_DESCRIPTION);
+
+        const newKeywordProps = {
+          ...keywordProps,
+          metadataCardTitle: headerProps.metadataTitle,
+          metadataCardSubtitle: descProps.description,
+        };
+
+        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+          object: EDITMETADATA_KEYWORDS,
+          data: newKeywordProps,
+        });
+
+      }
     },
-    enhanceMetadataHeaderStep() {
-      const keywordStep = getStepByName(EDITMETADATA_KEYWORDS, this.metadataCreationSteps);
-      const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, this.metadataCreationSteps);
-      const authorStep = getStepByName(EDITMETADATA_AUTHOR_LIST, this.metadataCreationSteps);
+    enhanceMetadataHeaderStep(updatedKey) {
 
-      headerStep.genericProps = {
-        ...headerStep.genericProps,
-        keywords: keywordStep.genericProps.keywords,
-        authors: authorStep.genericProps.authors,
-      };
+      if (updatedKey === EDITMETADATA_KEYWORDS || updatedKey === EDITMETADATA_AUTHOR_LIST) {
+
+        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
+        const headerProps = this.getGenericPropsForStep(EDITMETADATA_MAIN_HEADER);
+        const authorProps = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST);
+
+        const newHeaderProps = {
+          ...headerProps,
+          keywords: keywordProps.keywords,
+          authors: authorProps.authors,
+        };
+
+        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+          object: EDITMETADATA_MAIN_HEADER,
+          data: newHeaderProps,
+        });
+
+      }
     },
   },
   components: {

@@ -6,46 +6,46 @@
                   class="pa-0" >
 
       <v-row>
-        <v-col cols="12"> 
-          <div class="text-h5">{{ cardTitle }}</div>
-        </v-col>
-      </v-row>  
-
-      <v-row>
-        <v-col cols="12"> 
-          <div class="text-body-1">{{ cardInstructions }}</div>
+        <v-col cols="12">
+          <div class="text-h5">{{ labels.cardTitle }}</div>
         </v-col>
       </v-row>
 
-      <v-row v-for="(item, index) in customFields"  
+      <v-row>
+        <v-col cols="12">
+          <div class="text-body-1">{{ labels.cardInstructions }}</div>
+        </v-col>
+      </v-row>
+
+      <v-row v-for="(item, index) in customFieldsProp"
           :key="`${item}_${index}`">
 
         <v-col cols="6" >
-          <v-text-field :label="labelFieldName"
+          <v-text-field :label="labels.labelFieldName"
                         outlined
                         hide-details
-                        v-model="item.fieldName"
-                        @input="notifyChange(index)" >
-          </v-text-field>
+                        :value="item.fieldName"
+                        @input="notifyChange(index, 'fieldName', $event)"
+                        />
         </v-col>
-        <v-col cols="6" > 
-          <v-text-field :label="labelContent" 
-                        outlined 
+        <v-col cols="6" >
+          <v-text-field :label="labels.labelContent"
+                        outlined
                         hide-details
-                        v-model="item.content"
-                        @input="notifyChange(index)" >
-          </v-text-field>
+                        :value="item.content"
+                        @input="notifyChange(index, 'content', $event)"
+                        />
         </v-col>
       </v-row>
 
       <v-row v-if="maxCustomFieldsReached">
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-subtitle-2"><span class="red--text">{{ this.maxCustomFieldsMessage }}</span></div>
         </v-col>
       </v-row>
 
     </v-container>
-  </v-card>  
+  </v-card>
 
 </template>
 
@@ -59,17 +59,17 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import {
-  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
 
 import {
-  isObjectEmpty,
   deleteEmptyObject,
   isMaxLength,
+  isObjectEmpty,
 } from '@/factories/userEditingFactory';
 
 export default {
@@ -77,80 +77,69 @@ export default {
   data: () => ({
     maxCustomFields: 10,
     maxCustomFieldsReached: false,
+    labels: {
+      cardTitle: 'Custom Fields',
+      cardInstructions: 'Advance custom data fields (optional)',
+      labelFieldName: 'Field Name',
+      labelContent: 'Content',
+    },
   }),
-  props: {  
-    genericProps: Object,
+  props: {
+    customFields: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
-    cardTitle: {
+    customFieldsProp: {
       get() {
-        return this.mixinMethods_getGenericProp('cardTitle', 'Custom Fields');
-      },
-    },
-    cardInstructions: {
-      get() {
-        return this.mixinMethods_getGenericProp('cardInstructions', 'Advance custom data fields (optional)');
-      },
-    },
-    labelFieldName: {
-      get() {
-        return this.mixinMethods_getGenericProp('labelFieldName', 'Field Name');
-      },
-    },
-    labelContent: {
-      get() {
-        return this.mixinMethods_getGenericProp('labelContent', 'Content');
-      },
-    },
-    customFields: {
-      get() {
-        let fields = this.mixinMethods_getGenericProp('customFields', []);
+        let fields = [...this.customFields];
 
         if (fields.length <= 0) {
           fields = [{
-            fieldName: '', 
+            fieldName: '',
             content: '',
           }];
         } else {
-          this.addCustomFieldObj(fields);
+          this.addEmptyFieldObj(fields);
         }
 
         return fields;
       },
     },
     maxCustomFieldsMessage() {
-      return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`; 
+      return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`;
     },
   },
   methods: {
-     addCustomFieldObj(localFields) {
-      
+     addEmptyFieldObj(localFields) {
+
       // Assign lastCustomField to last item in localFields
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
       // Assign variables to lastCustomFieldObj properties
-      const lastCustomFieldName = lastCustomFieldObj.fieldName;
-      const lastCustomFieldContent = lastCustomFieldObj.content;
-     
+      const lastCustomFieldName = lastCustomFieldObj?.fieldName;
+      const lastCustomFieldContent = lastCustomFieldObj?.content;
+
       // If fieldName or content of lastCustomFieldObj are empty strings then assign addCustomField to false
       let addCustomField = true;
       if (lastCustomFieldName === '' || lastCustomFieldContent === '') {
         addCustomField = false;
       }
-      
+
       // If addCustomField is true and length of localFields is less than maxCustomFields then push new custom field object to customFieldsArray
       // Else if addCustomField is true and localFields is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
       // Else if localFields is less than maxCustomFields then assign maxCustomFieldsReached to false
       if (addCustomField && localFields.length < this.maxCustomFields) {
         localFields.push({
-          fieldName: '', 
+          fieldName: '',
           content: '',
         });
-      }   
+      }
     },
      // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
      // Emit filledCustomFieldsArray to eventBus
-    copyCustomFieldsArray(localFields) {
+    checkEnoughEntries(localFields) {
 
       const lastCustomField = localFields[localFields.length - 1];
 
@@ -161,35 +150,44 @@ export default {
       if (isEmpty && localFields.length > 0) {
         localFields.pop();
       }
+    },
+    editEntry(array, index, property, value) {
+      if (array.length <= index) {
+        return;
+      }
 
-      this.setCustomFields(localFields);
-
+      const currentEntry = array[index];
+      array[index] = {
+        ...currentEntry,
+        [property]: value,
+      };
     },
     setCustomFields(value) {
-      const newCustomFields = {
-          ...this.genericProps,
-          customFields: value,
-      };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_CUSTOMFIELDS,
-        data: newCustomFields,
+        data: { customFields: value },
       });
     },
-    notifyChange(index) {
+    // eslint-disable-next-line no-unused-vars
+    notifyChange(index, property, value) {
 
-      const localyCopy = [...this.customFields];
-    
+      const localyCopy = [...this.customFieldsProp];
+
+      this.editEntry(localyCopy, index, property, value);
+
       deleteEmptyObject(index, localyCopy);
-    
-      this.copyCustomFieldsArray(localyCopy);
+
+      this.checkEnoughEntries(localyCopy);
+
+      this.setCustomFields(localyCopy);
 
       this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
 
     },
   },
   components: {
-  },  
+  },
 };
 </script>
 

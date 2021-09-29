@@ -29,7 +29,7 @@
                       required
                       prepend-icon="import_contacts"
                       :placeholder="labels.placeholderTitle"
-                      v-model="metadataTitle" />
+                      v-model="metadataTitleField" />
 
       </v-col>
 
@@ -40,7 +40,7 @@
                       required
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
-                      v-model="contactEmail" />
+                      v-model="contactEmailField" />
 
       </v-col>
 
@@ -54,7 +54,7 @@
                       required
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
-                      v-model="contactGivenName" />
+                      v-model="contactGivenNameField" />
 
       </v-col>
 
@@ -65,7 +65,7 @@
                       required
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
-                      v-model="contactSurname" />
+                      v-model="contactSurnameField" />
 
       </v-col>
     </v-row>
@@ -124,7 +124,30 @@ import { enhanceTitleImg } from '@/factories/metaDataFactory';
 export default {
   name: 'EditMetadataHeader',
   props: {
-    genericProps: Object,
+    metadataTitle: {
+      type: String,
+      default: '',
+    },
+    contactEmail: {
+      type: String,
+      default: '',
+    },
+    contactGivenName: {
+      type: String,
+      default: '',
+    },
+    contactSurname: {
+      type: String,
+      default: '',
+    },
+    keywords: {
+      type: Array,
+      default: null,
+    },
+    authors: {
+      type: Array,
+      default: null,
+    },
   },
   computed: {
     metadataPreviewEntry() {
@@ -135,12 +158,12 @@ export default {
       const licenseIcon = this.mixinMethods_getIcon('license') || '';
 
       const previewEntry = {
-        metadataTitle: this.metadataTitle || this.labels.placeholderHeaderTitle,
-        title: this.metadataTitle || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
+        metadataTitle: this.metadataTitleField || this.labels.placeholderHeaderTitle,
+        title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: this.inputContactFullName,
         contactIcon,
-        contactEmail: this.contactEmail,
+        contactEmail: this.contactEmailField,
         mailIcon,
         doiIcon,
         licenseIcon,
@@ -156,52 +179,46 @@ export default {
       return previewEntry;
     },
 
-    metadataTitle: {
+    metadataTitleField: {
       get() {
-        return this.mixinMethods_getGenericProp('metadataTitle', '');
+        return this.metadataTitle;
       },
       set(value) {
         this.setHeaderInfo('metadataTitle', value);
       },
     },
-    contactEmail: {
+    contactEmailField: {
       get() {
-        return this.mixinMethods_getGenericProp('contactEmail', '');
+        return this.contactEmail;
       },
       set(value) {
         this.setHeaderInfo('contactEmail', value);
       },
     },
-    contactGivenName: {
+    contactGivenNameField: {
       get() {
-        return this.mixinMethods_getGenericProp('contactGivenName', '');
+        return this.contactGivenName;
       },
       set(value) {
         this.setHeaderInfo('contactGivenName', value);
       },
     },
-    contactSurname: {
+    contactSurnameField: {
       get() {
-        return this.mixinMethods_getGenericProp('contactSurname', '');
+        return this.contactSurname;
       },
       set(value) {
         this.setHeaderInfo('contactSurname', value);
       },
     },
     inputContactFullName() {
-      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()}`;
-    },
-    keywords() {
-      return this.mixinMethods_getGenericProp('keywords', null);
-    },
-    authors() {
-      return this.mixinMethods_getGenericProp('authors', null);
+      return `${this.contactGivenNameField.trim()} ${this.contactSurnameField.trim()}`;
     },
   },
   methods: {
     setHeaderInfo(property, value) {
       const newHeaderInfo = {
-        ...this.genericProps,
+        ...this.$props,
         [property]: value,
       };
 

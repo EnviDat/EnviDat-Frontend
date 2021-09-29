@@ -6,7 +6,7 @@
 
     <v-row>
       <v-col cols="4">
-        <EditRelatedPublications :genericProps="genericProps" />          
+        <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
 
       </v-col>
 
@@ -17,11 +17,11 @@
       </v-col>
 
       <v-col cols="3">
-        <EditCustomFields :genericProps="genericProps" />
+        <EditCustomFields v-bind="editCustomFieldsProps" />
       </v-col>
     </v-row>
 
-  </v-container>  
+  </v-container>
 
 </template>
 
@@ -29,9 +29,9 @@
 <script>
 /**
  * EditDataInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
- * 
  *
- * @summary shows a screenshot placeholder of the editing the Related Info 
+ *
+ * @summary shows a screenshot placeholder of the editing the Related Info
  * @author Dominik Haas-Artho
  *
  * Created        : 2021-08-31
@@ -46,21 +46,39 @@ import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import {
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+} from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationRelatedInfo',
-  props: {  
-    genericProps: Object,
+  props: {
   },
   computed: {
-    disclaimer() {
-      return 'Please note that the screenshot below will serve as a template for the future component.';
+    relatedPublicationsText() {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
+    },
+    customFields() {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS).customFields;
+    },
+    editRelatedPublicationsProps() {
+      return {
+        relatedPublicationsText: this.relatedPublicationsText,
+      };
+    },
+    editCustomFieldsProps() {
+      return {
+        customFields: this.customFields,
+      };
     },
   },
   methods: {
   },
   data: () => ({
     relatedDatasets,
+    disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
   }),
   components: {
     EditImgPlaceholder,

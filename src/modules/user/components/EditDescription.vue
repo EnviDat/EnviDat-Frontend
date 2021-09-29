@@ -7,16 +7,16 @@
 
       <v-row>
         <v-col cols="12">
-          <div class="text-h5">{{ cardTitle }}</div>
+          <div class="text-h5">{{ labels.cardTitle }}</div>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="6">
-          <div class="text-body-1">{{ cardInstructions }}</div>
+          <div class="text-body-1">{{ labels.descriptionInstructions }}</div>
         </v-col>
         <v-col cols="6">
-          <div class="text-subtitle-1">{{ subtitlePreview }}</div>
+          <div class="text-subtitle-1">{{ labels.subtitlePreview }}</div>
         </v-col>
       </v-row>
 
@@ -61,20 +61,15 @@ import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 export default {
   name: 'EditDescription',
   props: {
-    cardTitle: {
+    description: {
       type: String,
-      default: 'Metadata Description',
+      default: '',
     },
-    labelDescription: {
-      type: String,
-      default: 'Description',
-    },
-    genericProps: Object,
   },
   computed: {
     genericTextAreaObject() {
       return {
-        labelTextarea: this.genericProps.labelTextarea,
+        labelTextarea: this.labels.labelTextarea,
         textareaContent: this.description,
         isVerticalLayout: false,
         prependIcon: 'description',
@@ -87,15 +82,6 @@ export default {
         },
       };
     },
-    description() {
-      return this.mixinMethods_getGenericProp('description', '');
-    },
-    cardInstructions() {
-      return this.mixinMethods_getGenericProp('descriptionInstructions', 'Enter a description');
-    },
-    subtitlePreview() {
-      return this.mixinMethods_getGenericProp('subtitlePreview', 'Preview');
-    },
   },
   methods: {
     catchChangedText(event) {
@@ -104,7 +90,6 @@ export default {
     setDescriptionText(value) {
 
       const newDescription = {
-        ...this.genericProps,
         description: value,
       };
 
@@ -115,6 +100,12 @@ export default {
     },
   },
   data: () => ({
+    labels: {
+      cardTitle: 'Metadata Description',
+      labelTextarea: 'Metadata Description',
+      descriptionInstructions: 'Please enter a description for the research data.',
+      subtitlePreview: 'Description Preview',
+    },
   }),
   components: {
     MetadataBody,

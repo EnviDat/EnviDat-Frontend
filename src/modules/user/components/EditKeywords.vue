@@ -15,12 +15,12 @@
 
       <v-row>
         <v-col class="text-body-2">
-          <div >{{ cardInstructions1 }}</div>
-          <div >{{ cardInstructions2 }}</div>
+          <div >{{ labels.cardInstructions1 }}</div>
+          <div >{{ labels.cardInstructions2 }}</div>
         </v-col>
 
         <v-col class="text-subtitle-1">
-          {{ previewText }}
+          {{ labels.previewText }}
         </v-col>
       </v-row>
 
@@ -28,7 +28,7 @@
       <v-row>
         <v-col>
 
-          <v-combobox v-model="keywords"
+          <v-combobox v-model="keywordItems"
                       :items="existingKeywords"
                       item-text="name"
                       chips
@@ -118,10 +118,24 @@ export default {
     labels: {
       title: 'Edit Metadata Keywords',
       keywordsLabel: 'Click here to pick Keywords',
+      cardInstructions1: 'Please enter keywords for your metadata entry.',
+      cardInstructions2: 'To use a new keyword not in dropdown list please type keyword and press enter.',
+      previewText: 'Metadata card preview',
     },
   }),
   props: {
-    genericProps: Object,
+    keywords: {
+      type: Array,
+      default: () => [],
+    },
+    metadataCardTitle: {
+      type: String,
+      default: '',
+    },
+    metadataCardSubtitle: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     metadataPreviewEntry() {
@@ -166,94 +180,73 @@ export default {
 
       return this.mixinMethods_getGenericProp('existingKeywords', []);
     },
-    metadataCardTitle() {
-      return this.mixinMethods_getGenericProp('metadataCardTitle', '');
-    },
-    metadataCardSubtitle() {
-      return this.mixinMethods_getGenericProp('metadataCardSubtitle', '');
-    },
-    cardTitle() {
-      return this.mixinMethods_getGenericProp('cardTitle', 'Metadata Keywords');
-    },
-    cardInstructions1() {
-      return this.mixinMethods_getGenericProp('cardInstructions1', 'Please enter keywords for your metadata entry.');
-    },
-    cardInstructions2() {
-      return this.mixinMethods_getGenericProp('cardInstructions2', 'To use a new keyword not in dropdown list please type keyword and press enter.');
-    },
-    previewText() {
-      return this.mixinMethods_getGenericProp('previewText', 'Metadata card preview');
-    },
-    keywords: {
+    keywordItems: {
       get() {
-        return this.mixinMethods_getGenericProp('keywords', []);
+        return this.keywords;
       },
       set(valuesArray) {
+        this.removeDuplicates(valuesArray);
 
-        // Initialize arrays used to compare values and find duplicates
-        const valuesComparer = [];
-        const indicesDuplicates = [];
-
-        // Iterate through valuesArray
-        for (let i = 0; i < valuesArray.length; i++) {
-
-          // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:
-          //    name: <user string capitalized and white splace removed)
-          //    color: <dynamically assigned vie getTagColor()>
-          if (typeof valuesArray[i] === 'string') {
-
-            // Check if keyword is valid, if not remove keyword entry from valuesArray and continue loop
-            const keywordValid = this.isKeywordValid(valuesArray[i]);
-
-            if (!keywordValid) {
-              valuesArray.splice(i, 1);
-              // eslint-disable-next-line no-continue
-              continue;
-            }
-
-            valuesArray[i] = {
-              name: valuesArray[i].toUpperCase().trim(),
-              color: getTagColor(catCards, valuesArray[i]),
-            };
-          }
-
-          // Push first element of valuesArray to valuesComparer
-          if (i === 0) {
-            valuesComparer.push(valuesArray[i].name);
-          }
-
-          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-        // Else if index is greater than 0 then push current valuesArray element to valuesComparer
-          if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
-            indicesDuplicates.push(i);
-          } else {
-            valuesComparer.push(valuesArray[i].name);
-          }
-
-        }
-
-        // Remove items from valuesArray that are duplicates using indicesDuplicates
-        indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
-
-        // Emit { keywords: valuesArray } to eventBus
         this.setKeywords(valuesArray);
       },
     },
   },
   methods: {
+    removeDuplicates(valuesArray) {
+      // Initialize arrays used to compare values and find duplicates
+      const valuesComparer = [];
+      const indicesDuplicates = [];
+
+      // Iterate through valuesArray
+      for (let i = 0; i < valuesArray.length; i++) {
+
+        // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:
+        //    name: <user string capitalized and white splace removed)
+        //    color: <dynamically assigned vie getTagColor()>
+        if (typeof valuesArray[i] === 'string') {
+
+          // Check if keyword is valid, if not remove keyword entry from valuesArray and continue loop
+          const keywordValid = this.isKeywordValid(valuesArray[i]);
+
+          if (!keywordValid) {
+            valuesArray.splice(i, 1);
+            // eslint-disable-next-line no-continue
+            continue;
+          }
+
+          valuesArray[i] = {
+            name: valuesArray[i].toUpperCase().trim(),
+            color: getTagColor(catCards, valuesArray[i]),
+          };
+        }
+
+        // Push first element of valuesArray to valuesComparer
+        if (i === 0) {
+          valuesComparer.push(valuesArray[i].name);
+        }
+
+        // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+        // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+        if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
+          indicesDuplicates.push(i);
+        } else {
+          valuesComparer.push(valuesArray[i].name);
+        }
+
+      }
+
+      // Remove items from valuesArray that are duplicates using indicesDuplicates
+      indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
+    },
     removeKeyword(item) {
 
-      // Assign removeKeyword to keyword item that will be removed
-      this.genericProps.removeKeyword = item;
-
       // Assign removeIndex keywords object that matched removeKeyword
-      const removeIndex = this.genericProps.keywords.indexOf(this.genericProps.removeKeyword);
+      const removeIndex = this.keywords.indexOf(item);
 
       // Remove object with index of removeIndex from keywords
-      this.genericProps.keywords.splice(removeIndex, 1);
+      this.keywords.splice(removeIndex, 1);
 
-      // Emit { keywords: keywords } to eventBus
-      this.setKeywords(this.genericProps.keywords);
+      this.setKeywords(this.keywords);
     },
     // Sets keyword validity variables
     // Returns true if keyword is valid, else returns false
@@ -275,7 +268,7 @@ export default {
     },
     setKeywords(value) {
       const newKeywords = {
-        ...this.genericProps,
+        ...this.$props,
         keywords: value,
       };
 

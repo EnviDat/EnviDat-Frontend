@@ -21,7 +21,7 @@
       <v-col v-if="currentStep"
               cols="12" >
         <component :is="currentStep.component"
-                    :genericProps="currentStep.genericProps"
+                    v-bind="getGenericPropsForStep(currentStep)"
                     />
       </v-col>
 
@@ -57,6 +57,7 @@
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
   name: 'MetadataCreationMainInfo',
@@ -71,6 +72,9 @@ export default {
   computed: {
   },
   methods: {
+    getGenericPropsForStep(step) {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+    },
     catchStepClick(stepTitle) {
       this.setCurrentStep(stepTitle);
     },

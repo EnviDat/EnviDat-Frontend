@@ -122,6 +122,9 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
+/**
+ * @returns {String} ISO Formated Date String from now
+ */
 export function getCurrentDate() {
 
   const now = new Date();

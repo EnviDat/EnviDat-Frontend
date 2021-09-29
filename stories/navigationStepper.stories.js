@@ -23,7 +23,7 @@ import {
   metadataCreationSteps,
   mainDetailSteps,
   getStepByName,
-} from '@/modules/user/store/MetadataCreationSteps';
+} from '@/factories/userEditingFactory';
 
 
 storiesOf('5 Navigation / Navigation Stepper', module)

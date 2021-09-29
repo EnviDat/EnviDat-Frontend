@@ -22,7 +22,7 @@
                         outlined
                         required
                         readonly
-                        v-model="publicationState" />
+                        v-model="publicationStateField" />
         </v-col>
 
       </v-row>
@@ -34,7 +34,7 @@
           <v-text-field :label="labels.dataObjectIdentifier"
                         outlined
                         prepend-icon="fingerprint"
-                        v-model="doi" />
+                        v-model="doiField" />
         </v-col>
 
         <v-col cols="6">
@@ -61,7 +61,7 @@
                         required
                         :rules="rulesPublisher"
                         prepend-icon="public"
-                        v-model="publisher" />
+                        v-model="publisherField" />
         </v-col>
 
         <v-col cols="6">
@@ -70,7 +70,7 @@
                     :label="labels.year"
                     required
                     prepend-icon="date_range"
-                    v-model="publicationYear"
+                    v-model="publicationYearField"
                     />
         </v-col>
 
@@ -86,29 +86,27 @@
       </v-row>
 
 
-      <v-row v-for="(item, index) in funders"
+      <v-row v-for="(item, index) in fundersField"
             :key="`${item}_${index}`">
 
             <v-col cols="4" >
               <v-text-field :label="labels.organization"
                             outlined
-                            v-model="item.organization"
-                           @input="notifyChange(index)" >
-              </v-text-field>
+                            :value="item.organization"
+                            @input="notifyChange(index, 'organization', $event)" />
+
             </v-col>
             <v-col cols="4" >
               <v-text-field :label="labels.grantNumber"
                             outlined
-                            v-model="item.grantNumber"
-                            @input="notifyChange(index)"
-                            />
+                            :value="item.grantNumber"
+                            @input="notifyChange(index, 'grantNumber', $event)" />
             </v-col>
             <v-col cols="4">
               <v-text-field :label="labels.link"
                             outlined
-                            v-model="item.link"
-                            @input="notifyChange(index)"
-                            />
+                            :value="item.link"
+                            @input="notifyChange(index, 'link', $event)" />
             </v-col>
 
       </v-row>
@@ -180,7 +178,26 @@ export default {
     maxFundersReached: false,
   }),
   props: {
-    genericProps: Object,
+    publicationState: {
+      type: String,
+      default: '',
+    },
+    doi: {
+      type: String,
+      default: '',
+    },
+    publisher: {
+      type: String,
+      default: '',
+    },
+    publicationYear: {
+      type: String,
+      default: '',
+    },
+    funders: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     //  ...mapState([
@@ -189,43 +206,43 @@ export default {
     // test() {
     //   return this.config.userEditMetadataConfig.numberYearsList;
     // },
-    publicationState: {
+    publicationStateField: {
       get() {
-        return this.mixinMethods_getGenericProp('publicationState', 'Draft');
+        return this.publicationState;
       },
       set(value) {
         this.setPublicationInfo('publicationState', value);
       },
     },
-    doi: {
+    doiField: {
       get() {
-        return this.mixinMethods_getGenericProp('doi', '');
+        return this.doi;
       },
       set(value) {
         this.setPublicationInfo('doi', value);
       },
     },
-    publisher: {
+    publisherField: {
       get() {
-        return this.mixinMethods_getGenericProp('publisher', '');
+        return this.publisher;
       },
       set(value) {
         this.setPublicationInfo('publisher', value);
       },
     },
-    publicationYear: {
+    publicationYearField: {
       get() {
         // TODO get this.currentYear to display in publicationYear dropdown
         // TODO maybe implement rules to make publicationYear required
-        return this.mixinMethods_getGenericProp('publicationYear', this.currentYear);
+        return this.publicationYear;
       },
       set(value) {
         this.setPublicationInfo('publicationYear', value);
       },
     },
-    funders: {
+    fundersField: {
       get() {
-        let funders = this.mixinMethods_getGenericProp('funders', []);
+        let funders = [...this.funders];
 
         if (funders.length <= 0) {
           funders = [{
@@ -263,8 +280,7 @@ export default {
       let year = date.getFullYear();
 
       for (let i = 0; i < 30; i++) {
-        this.yearList[i] = year;
-        this.yearList[i].toString();
+        this.yearList[i] = year.toString();
         year--;
       }
     },
@@ -293,28 +309,36 @@ export default {
             link: '',
           },
         );
-      }            
+      }
     },
     // Assign localFunders to a copy of funderArray with last empty funder object removed
     copyFunderArray(localFunders) {
 
       const lastFunder = localFunders[localFunders.length - 1];
-    
+
        // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
-      const isEmpty = isObjectEmpty(lastFunder);     
-   
+      const isEmpty = isObjectEmpty(lastFunder);
+
       // If isEmpty is true and localFunders has at least one item then remove last element of array
       if (isEmpty && localFunders.length > 0) {
         localFunders.pop();
       }
+    },
+    editEntry(array, index, property, value) {
+      if (array.length <= index) {
+        return;
+      }
 
-      // Emit localFunders to eventBus
-      this.setPublicationInfo('funders', localFunders);
-
+      const currentEntry = array[index];
+      array[index] = {
+        ...currentEntry,
+        [property]: value,
+      };
     },
     setPublicationInfo(property, value) {
+
       const newPublicationInfo = {
-        ...this.genericProps,
+        ...this.$props,
         [property]: value,
       };
 
@@ -323,13 +347,17 @@ export default {
         data: newPublicationInfo,
       });
     },
-    notifyChange(index) {
+    notifyChange(index, property, value) {
 
-      const localyCopy = [...this.funders];
+      const localyCopy = [...this.fundersField];
+
+      this.editEntry(localyCopy, index, property, value);
 
       deleteEmptyObject(index, localyCopy);
 
       this.copyFunderArray(localyCopy);
+
+      this.setPublicationInfo('funders', localyCopy);
 
       this.maxFundersReached = isMaxLength(this.maxFunders, localyCopy);
 

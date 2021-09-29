@@ -50,7 +50,6 @@ import {
 export default {
   name: 'EditAddExistingAuthor',
   props: {
-    genericProps: Object,
     existingEnviDatUsers: {
       type: Array,
       default: () => [],

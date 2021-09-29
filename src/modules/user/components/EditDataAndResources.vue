@@ -7,7 +7,7 @@
       <v-col cols="6" >
         <v-row v-if="selectedResource" >
           <v-col >
-            <EditResource :genericProps="selectedResource"
+            <EditResource v-bind="selectedResource"
                           @closeClicked="catchEditResourceClose"
                           @saveResource="catchSaveResourceClose" />
           </v-col>
@@ -26,7 +26,7 @@
       </v-col>
 
       <v-col cols="6" >
-        <EditMetadataResources :genericProps="genericProps" />
+        <EditMetadataResources v-bind="metadataResourcesGenericProps" />
       </v-col>
     </v-row>
 
@@ -77,12 +77,27 @@ export default {
     EditResource,
   },
   props: {
-    genericProps: Object,
+    resources: {
+      type: Array,
+      default: () => [],
+    },
+    metadataId: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
+    metadataResourcesGenericProps() {
+      return {
+        resources: this.resources,
+        resourcesConfig: {
+          downloadActive: false,
+        },
+      };
+    },
     selectedResource() {
       let selectedRes = null;
-      const res = this.genericProps?.resources;
+      const res = this.resources;
 
       if (res?.length > 0) {
         const selected = res.filter(r => r.isSelected);
@@ -115,7 +130,7 @@ export default {
 
     },
     getMetadataId() {
-      const metadataId = this.genericProps?.metadataId || `local_MetadataId_${this.localResCounter}`;
+      const metadataId = this.metadataId || `local_MetadataId_${this.localResCounter}`;
       this.localResCounter++;
       return metadataId;
     },

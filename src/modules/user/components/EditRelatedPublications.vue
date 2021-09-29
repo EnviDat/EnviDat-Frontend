@@ -2,8 +2,8 @@
 
 <v-card id="EditRelatedPublications" class="pa-4">
 
-  <v-container fluid 
-                class="pa-0 fill-height" >  
+  <v-container fluid
+                class="pa-0 fill-height" >
 
     <v-row>
       <v-col >
@@ -30,14 +30,14 @@
     </v-row>
 
  </v-container>
-</v-card>  
+</v-card>
 
 </template>
 
 
 <script>
 /**
- * EditRelatedpublications.vue shows the Related Publications textarea and Preview, 
+ * EditRelatedpublications.vue shows the Related Publications textarea and Preview,
  * main contact surname, and metadata header preview.
  *
  * @summary shows the related publications textarea and preview
@@ -62,22 +62,25 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 
 export default {
   name: 'EditRelatedPublications',
-  props: {  
-    genericProps: Object,
+  props: {
+    relatedPublicationsText: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     genericTextAreaObject() {
       return {
-        subtitlePreview: this.genericProps.subtitlePreview,
-        labelTextarea: this.genericProps.labelTextarea,
-        textareaContent: this.genericProps.relatedPublicationsText,
+        subtitlePreview: this.labels.subtitlePreview,
+        labelTextarea: this.labels.labelTextarea,
+        textareaContent: this.relatedPublicationsText,
         isVerticalLayout: true,
       };
     },
     publicationsObject() {
       return {
         publications: {
-          text: this.genericProps.relatedPublicationsText,
+          text: this.relatedPublicationsText,
         },
       };
     },
@@ -91,19 +94,20 @@ export default {
     },
     setRelatedPublicationsText(value) {
 
-      const newRelatedPublications = {
-        ...this.genericProps,
-        relatedPublicationsText: value,
-      };
-
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
-        data: newRelatedPublications,
+        data: { relatedPublicationsText: value },
       });
     },
   },
   data: () => ({
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
+    labels: {
+      labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
+      descriptionInstructions: 'Add references to related publications to dataset(s)',
+      subtitlePreview: 'Related Publications Preview\'',
+    },
+
   }),
   components: {
     GenericTextareaPreviewLayout,

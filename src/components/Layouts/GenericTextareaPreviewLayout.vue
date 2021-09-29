@@ -11,8 +11,8 @@
           <v-textarea  :label="labelTextarea"
                         outlined
                         auto-grow
-                        :value="textareaContent"
                         :prepend-icon="prependIcon"
+                        :value="textareaContent"
                         @input="catchChangedText($event)"
                         >
           </v-textarea>

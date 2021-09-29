@@ -124,7 +124,7 @@
 */
 
 import {
-  EDITMETADATA_DATA_AUTHOR,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
@@ -136,7 +136,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 export default {
   name: 'EditAuthor',
   props: {
-    genericProps: Object,
     firstName: {
       type: String,
       default: '',
@@ -167,7 +166,7 @@ export default {
   computed: {
     firstNameField: {
       get() {
-        return this.$props.firstName;
+        return this.firstName;
       },
       set(value) {
         this.notifyChange('firstName', value);
@@ -175,7 +174,7 @@ export default {
     },
     lastNameField: {
       get() {
-        return this.$props.lastName;
+        return this.lastName;
       },
       set(value) {
         this.notifyChange('lastName', value);
@@ -183,7 +182,7 @@ export default {
     },
     emailField: {
       get() {
-        return this.$props.email;
+        return this.email;
       },
       set(value) {
         this.notifyChange('email', value);
@@ -191,7 +190,7 @@ export default {
     },
     affiliationField: {
       get() {
-        return this.$props.affiliation;
+        return this.affiliation;
       },
       set(value) {
         this.notifyChange('affiliation', value);
@@ -199,7 +198,7 @@ export default {
     },
     identifierField: {
       get() {
-        return this.$props.identifier;
+        return this.identifier;
       },
       set(value) {
         this.notifyChange('identifier', value);
@@ -216,12 +215,13 @@ export default {
 
       // eslint-disable-next-line no-unused-vars
       const newGenericProps = {
-        ...this.genericProps,
+        ...this.$props,
         [property]: value,
+        fullName: `${this.firstNameField} ${this.lastNameField}`,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_AUTHOR,
+        object: EDITMETADATA_AUTHOR,
         data: newGenericProps,
       });
     },

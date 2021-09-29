@@ -6,12 +6,12 @@
 
     <v-row>
       <v-col cols="6">
-        <EditPublicationInfo :genericProps="genericProps" />          
+        <EditPublicationInfo v-bind="editPublicationsProps" />
 
       </v-col>
 
       <v-col cols="6">
-        <EditOrganization :genericProps="genericProps" />
+        <EditOrganization v-bind="editOrganizationProps" />
       </v-col>
 
     </v-row>
@@ -23,9 +23,9 @@
 <script>
 /**
  * MetadataCreationPublicationInfo.vue renders the GenericPlaceholder component with a screenshot image of the Metadata Keywords mockup used in the slot
- * 
  *
- * @summary shows a screenshot placeholder of the editing the Related Info 
+ *
+ * @summary shows a screenshot placeholder of the editing the Related Info
  * @author Dominik Haas-Artho
  *
  * Created        : 2021-08-31
@@ -37,13 +37,31 @@
 
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import EditOrganization from '@/modules/user/components/EditOrganization';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import {
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+} from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
+    publicationsInfo() {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+    },
+    organizationsInfo() {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+    },
+    editPublicationsProps() {
+      return this.publicationsInfo;
+    },
+    editOrganizationProps() {
+      return this.organizationsInfo;
+    },
+
   },
   methods: {
   },

@@ -22,7 +22,7 @@ import {
   // EDITMETADATA_DATA_RESOURCES,
   eventBus,
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_DATA_AUTHOR,
+  EDITMETADATA_AUTHOR,
   CANCEL_EDITING_AUTHOR,
   SAVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -277,7 +277,7 @@ storiesOf(storybookFolder, module)
         auths.unshift(newAuthor);
       },
       changeAuthors(updateObj) {
-        if (updateObj.object === EDITMETADATA_DATA_AUTHOR) {
+        if (updateObj.object === EDITMETADATA_AUTHOR) {
 
           this.updateAuthors(updateObj.data);
         }
