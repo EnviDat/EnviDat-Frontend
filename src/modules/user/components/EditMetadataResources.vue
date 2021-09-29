@@ -78,6 +78,8 @@ export default {
         contactIcon: this.contactIcon,
         mailIcon: this.mailIcon,
         licenseIcon: this.licenseIcon,
+        emptyText: 'No resources has been added yet. Upload a file or provide a link to a resource.',
+        emptyTextColor: 'grey',
       };
     },
   },

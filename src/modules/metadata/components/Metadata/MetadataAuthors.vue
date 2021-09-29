@@ -54,7 +54,7 @@
 
     <v-card-text v-if="!showPlaceholder && !hasAuthors"
                   :style="`color: ${emptyTextColor};`"
-                  class="pa-4 pt-0 readableText" >
+                  class="pa-4 pt-0" >
       {{ emptyText }}
     </v-card-text>
 
