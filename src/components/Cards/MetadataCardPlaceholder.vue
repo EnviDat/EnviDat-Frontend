@@ -29,7 +29,7 @@
         <div class="bone bone-type-multiline bone-style-paragraph" />
       </div>
 
-      <v-row class="fill-height" 
+      <v-row class="fill-height"
               align="end"
               no-gutters >
         <v-col v-for="n in 3"
@@ -46,7 +46,7 @@
 
 
 <script>
-import TagChipPlaceholder from '@/components/Cards/TagChipPlaceholder';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

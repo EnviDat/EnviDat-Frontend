@@ -13,8 +13,8 @@
 import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
-import TagChip from '@/components/Cards/TagChip.vue';
-import TagChipPlaceholder from '@/components/Cards/TagChipPlaceholder.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
 export const methods = {
   onClick: action('clicked'),
@@ -35,15 +35,15 @@ storiesOf('4 Filtering / Keyword Tag', module)
       </v-col>
 
       <v-col>
-        <tag-chip name="some very long tag name" />       
+        <tag-chip name="some very long tag name" />
       </v-col>
 
       <v-col>
-        <tag-chip name="CLOSEABLE" closeable />       
+        <tag-chip name="CLOSEABLE" closeable />
       </v-col>
 
       <v-col>
-        <tag-chip name="closeable & selectable" closeable selectable />       
+        <tag-chip name="closeable & selectable" closeable selectable />
       </v-col>
 
       <v-col>
@@ -51,7 +51,7 @@ storiesOf('4 Filtering / Keyword Tag', module)
       </v-col>
 
       <v-col>
-        <tag-chip name="count='5'" selectable :count="5" />       
+        <tag-chip name="count='5'" selectable :count="5" />
       </v-col>
 
     </v-row>`,

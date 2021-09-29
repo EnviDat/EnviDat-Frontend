@@ -128,7 +128,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import TagChip from '@/components/Cards/TagChip';
+import TagChip from '@/components/Chips/TagChip';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';

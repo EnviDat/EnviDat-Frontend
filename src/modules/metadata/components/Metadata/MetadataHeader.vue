@@ -286,13 +286,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import TagChip from '@/components/Cards/TagChip';
-import TagChipPlaceholder from '@/components/Cards/TagChipPlaceholder';
+import TagChip from '@/components/Chips/TagChip';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import { getAuthorName } from '@/factories/authorFactory';
-import TagChipAuthor from '../TagChipAuthor';
+import TagChipAuthor from '../../../../components/Chips/TagChipAuthor';
 
 export default {
   name: 'MetadataHeader',

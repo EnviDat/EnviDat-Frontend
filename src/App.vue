@@ -64,7 +64,7 @@
           </v-col>
         </v-row>
 
-        <v-row class="fill-height" 
+        <v-row class="fill-height"
                 id="mainPageRow" >
           <v-col class="mx-0 py-0"
                   cols="12" >
@@ -109,7 +109,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { 
+import {
   mapState,
   mapGetters,
 } from 'vuex';
@@ -181,11 +181,11 @@ export default {
           this.stopParticles();
         }
       }
-    },    
+    },
     stopParticles(fullClean = true) {
-      
+
       try {
-       
+
         if (this.currentParticles) {
           this.currentParticles.particles.move.enable = false;
           this.currentParticles.particles.opcacity.anim.enable = false;
@@ -290,7 +290,7 @@ export default {
         },
         (route) => {
           console.log(`onAbort: ${route.name}`);
-        });      
+        });
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -337,7 +337,7 @@ export default {
           action: ACTION_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
-        });      
+        });
     },
   },
   computed: {
@@ -448,7 +448,7 @@ export default {
         bgStyle += `background-position: center top !important;
                       background-repeat: repeat !important; `;
       }
-      
+
       return bgStyle;
     },
     menuItem() {
@@ -507,7 +507,7 @@ export default {
 
 
 <style >
- 
+
 .envidatNavbar {
   position: -webkit-sticky;
   position: sticky;
@@ -574,8 +574,10 @@ export default {
   letter-spacing: 0em !important;
 }
 
-.metadataInfoIcon {
-  opacity: 0.7;
+.metadataInfoIcon,
+.metadataInfoIcon .v-icon,
+.metadataInfoIcon .v-image {
+  opacity: 0.8;
 }
 
 .metadataTitleIcons {

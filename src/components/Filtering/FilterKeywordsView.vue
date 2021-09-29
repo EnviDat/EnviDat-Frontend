@@ -18,7 +18,7 @@
           <v-row >
 
             <v-col class="metadataInfoIcon shrink" >
-              <v-img :src="tagsIcon" height="24" width="24" />
+              <v-icon size="24px" color="black !important">style</v-icon>
             </v-col>
 
             <v-col v-if="showPlaceholder"
@@ -104,8 +104,8 @@
 import { createTag } from '@/factories/metadataFilterMethods';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import TagChip from '@/components/Cards/TagChip';
-import TagChipPlaceholder from '@/components/Cards/TagChipPlaceholder';
+import TagChip from '@/components/Chips/TagChip';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 
 export default {
   name: 'FilterKeywordsView',

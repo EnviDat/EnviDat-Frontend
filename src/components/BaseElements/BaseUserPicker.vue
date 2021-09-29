@@ -65,7 +65,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import TagChipAuthor from '@/modules/metadata/components/TagChipAuthor';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor';
 
 export default {
   name: 'BaseUserPicker',
