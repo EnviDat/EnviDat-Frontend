@@ -149,7 +149,7 @@ import {
   isMaxLength,
 } from '@/factories/userEditingFactory';
 
-// import { mapState } from 'vuex';
+import { mapState } from 'vuex';
 
 
 export default {
@@ -174,8 +174,11 @@ export default {
     rulesPublisher: [v => !!v || 'Publisher is required'],
     currentYear: '',
     yearList: [],
-    maxFunders: 5,
     maxFundersReached: false,
+    defaultUserEditMetadataConfig: {
+      publicationMaxFunders: 5,
+      publicationYearsList: 30,
+    },
   }),
   props: {
     publicationState: {
@@ -200,12 +203,15 @@ export default {
     },
   },
   computed: {
-    //  ...mapState([
-    //   'config',
-    // ]),
-    // test() {
-    //   return this.config.userEditMetadataConfig.numberYearsList;
-    // },
+      ...mapState([
+      'config',
+    ]),
+    maxFunders() {
+      return this.config?.userEditMetadataConfig.publicationMaxFunders || this.defaultUserEditMetadataConfig.publicationMaxFunders;
+    },
+    maxYears() {
+      return this.config?.userEditMetadataConfig.publicationYearsList || this.defaultUserEditMetadataConfig.publicationYearsList;
+    },
     publicationStateField: {
       get() {
         return this.publicationState;

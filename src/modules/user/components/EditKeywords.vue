@@ -40,12 +40,13 @@
                       :label="labels.keywordsLabel"
                       :search-input.sync="search"
                       @update:search-input="isKeywordValid(search)"
+                      @blur="isEnoughKeywords()"
+                      :rules="rulesKeywords"
                       >
 
             <template v-slot:selection="{ item }" >
               <TagChip :name="item.name"
                         closeable
-                        :color="item.color"
                         @clickedClose="removeKeyword(item)"
                         :isSmall="false"
                         />
@@ -54,7 +55,6 @@
             <template v-slot:item="{ item }">
               <TagChip v-if="item && item.name"
                        :name="item.name"
-                       :color="item.color"
                        :isSmall="false" />
             </template>
 
@@ -109,18 +109,28 @@ import {
   getTagColor,
 } from '@/factories/metaDataFactory';
 
+import { mapState } from 'vuex';
+
+
 export default {
   name: 'EditKeywords',
   data: () => ({
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
+    keywordCount: 0,
+    keywordCountEnough: true,
+    rulesKeywords: [],
     labels: {
       title: 'Edit Metadata Keywords',
       keywordsLabel: 'Click here to pick Keywords',
       cardInstructions1: 'Please enter keywords for your metadata entry.',
       cardInstructions2: 'To use a new keyword not in dropdown list please type keyword and press enter.',
       previewText: 'Metadata card preview',
+    },
+    defaultUserEditMetadataConfig: {
+      keywordsListWordMax: 2,
+      keywordsCountMin: 5,
     },
   }),
   props: {
@@ -138,6 +148,15 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
+    userEditMetadataConfig() {
+      return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
+    },
+    keywordsCountMin() {
+      return this.config?.userEditMetadataConfig.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
+    },
     metadataPreviewEntry() {
 
       const previewEntry = {
@@ -156,13 +175,13 @@ export default {
     },
     autocompleteHint() {
       if (!this.keywordValidConcise) {
-        return '<span class="red--text font-italic">Each keyword tag may not exceed two words.</span> ';
+        return '<span class="red--text font-italic">Each keyword tag may not exceed two words</span> ';
       }
 
       let hint = '';
 
       if (!this.keywordValidMin3Characters) {
-        hint += '<span class="font-italic">Keyword must be at least three characters.</span> ';
+        hint += '<span class="font-italic">Keyword must be at least three characters. </span> ';
       }
 
       if (this.search) {
@@ -220,10 +239,13 @@ export default {
           };
         }
 
-        // Push first element of valuesArray to valuesComparer
-        if (i === 0) {
-          valuesComparer.push(valuesArray[i].name);
-        }
+          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
+          // Else if index is greater than 0 then push current valuesArray element to valuesComparer
+          if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
+            indicesDuplicates.push(i);
+          } else {
+            valuesComparer.push(valuesArray[i].name);
+          }
 
         // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
         // Else if index is greater than 0 then push current valuesArray element to valuesComparer
@@ -235,9 +257,15 @@ export default {
 
       }
 
-      // Remove items from valuesArray that are duplicates using indicesDuplicates
-      indicesDuplicates.forEach(index => valuesArray.splice(index, 1));
-    },
+        // Assign keywordCount to length of valuesArray
+        this.keywordCount = valuesArray.length;
+
+        // Call isEnoughKeywords()
+        this.isEnoughKeywords();
+
+        // Emit { keywords: valuesArray } to eventBus
+        this.setKeywords(valuesArray);
+      },
     removeKeyword(item) {
 
       // Assign removeIndex keywords object that matched removeKeyword
@@ -246,7 +274,28 @@ export default {
       // Remove object with index of removeIndex from keywords
       this.keywords.splice(removeIndex, 1);
 
+      // Assign keywordCount to length of this.genericProps.keywords
+      this.keywordCount = this.keywords.length;
+
+      // Call isEnoughKeywords()
+      this.isEnoughKeywords();
+
+      // Emit { keywords: keywords } to eventBus
       this.setKeywords(this.keywords);
+    },
+    // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
+    // Else assigns keywordCountEnough to false
+    // Call setRulesKeyword()
+    isEnoughKeywords() {
+      this.keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
+      this.setRulesKeyword();
+    },
+    setRulesKeyword() {
+      if (!this.keywordCountEnough) {
+        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keyword entries.`];
+      } else {
+        this.rulesKeywords = [true];
+      }
     },
     // Sets keyword validity variables
     // Returns true if keyword is valid, else returns false
@@ -284,6 +333,5 @@ export default {
     TagChip,
   },
 };
-
 
 </script>

@@ -72,16 +72,21 @@ import {
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
 
+import { mapState } from 'vuex';
+
+
 export default {
   name: 'EditCustomFields',
   data: () => ({
-    maxCustomFields: 10,
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
       cardInstructions: 'Advance custom data fields (optional)',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
+    },
+    defaultUserEditMetadataConfig: {
+      customFieldsMax: 10,
     },
   }),
   props: {
@@ -91,6 +96,12 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
+    maxCustomFields() {
+      return this.config?.userEditMetadataConfig.customFieldsMax || this.defaultUserEditMetadataConfig.customFieldsMax;
+    },
     customFieldsProp: {
       get() {
         let fields = [...this.customFields];
