@@ -199,7 +199,7 @@ export default {
                 background-size: cover; background-repeat: initial; `;
       }
 
-      return `background-color: ${this.categoryColor}`;
+      return `background-color: ${this.categoryColor}; `;
     },
     maxTagsReached() {
       return this.tags && this.tags.length > this.maxTagNumber;
