@@ -38,6 +38,8 @@ import {
   EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
 } from '@/store/metadataMutationsConsts';
 
 import catCards from '@/store/categoryCards';
@@ -428,8 +430,10 @@ export default {
   },
   async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }, userEditMetadataConfig = {}) {
 
+    commit(METADATA_UPDATE_EXISTING_KEYWORDS);
+
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
-    commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
+    // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
     const url = urlRewrite('tag_list', API_BASE, PROXY);
 
@@ -446,11 +450,10 @@ export default {
 
       const sortedKeywords = sortArrayObjectsAsending(mergedKeywords);
 
-      commit(METADATA_UPDATE_EXISTING_KEYWORDS, sortedKeywords);
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
 
-    });// TODO write catch block // .catch((reason) => {
-    //   commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
-    // });
-
+    }).catch((reason) => {
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
+    });
   },
 };

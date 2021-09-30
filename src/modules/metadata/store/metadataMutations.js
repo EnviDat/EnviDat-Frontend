@@ -44,6 +44,8 @@ import {
   EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
@@ -65,6 +67,7 @@ import globalMethods from '@/factories/globalMethods';
 
 import {
   METADATA_PUBLICATIONS_TITLE,
+  METADATA_KEYWORDS_TITLE,
 } from '@/factories/metadataConsts';
 
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
@@ -304,7 +307,14 @@ export default {
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
     state.existingAuthors = existingAuthors;
   },
-  [METADATA_UPDATE_EXISTING_KEYWORDS](state, existingKeywords) {
-    state.existingKeywords = existingKeywords;
+  [METADATA_UPDATE_EXISTING_KEYWORDS](state) {
+    state.existingKeywords = [];
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS](state, payload) {
+    state.existingKeywords = payload;
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
+    const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
+    this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 };
