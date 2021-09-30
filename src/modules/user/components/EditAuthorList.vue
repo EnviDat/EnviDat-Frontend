@@ -20,7 +20,8 @@
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
 
-              <EditAddAuthor @createAuthor="catchCreateAuthor" />
+<!--              disabled Author creation for a first "editing only" version -->
+<!--              <EditAddAuthor @createAuthor="catchCreateAuthor" />-->
             </v-card>
 
           </v-col>
@@ -51,7 +52,7 @@
 */
 
 import EditAuthor from '@/modules/user/components/EditAuthor';
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+// import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -59,7 +60,7 @@ import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
 import { initializeLocalAuthor } from '@/factories/authorFactory';
 import {
-  enhanceElementsWithStrategyEvents,
+  // enhanceElementsWithStrategyEvents,
   localIdProperty,
 } from '@/factories/strategyFactory';
 import {
@@ -70,7 +71,7 @@ import {
   eventBus,
   SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_AUTHOR_PROPERTY,
+  // SELECT_EDITING_AUTHOR_PROPERTY,
 } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
@@ -82,7 +83,7 @@ export default {
   components: {
     EditMetadataAuthors,
     EditAuthor,
-    EditAddAuthor,
+//    EditAddAuthor,
     EditAddExistingAuthor,
   },
   props: {
@@ -148,7 +149,8 @@ export default {
     initAuthor(autoSelect = true) {
       const newAuthor = initializeLocalAuthor();
 
-      enhanceElementsWithStrategyEvents([newAuthor], SELECT_EDITING_AUTHOR_PROPERTY);
+      // don't do it for now to disable Author Editing
+      // enhanceElementsWithStrategyEvents([newAuthor], SELECT_EDITING_AUTHOR_PROPERTY);
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,

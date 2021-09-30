@@ -270,9 +270,14 @@ export default {
     const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
+/*
+  [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
+
+  },
+*/
   [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
 
-    let authorToUpdate = null;
+    let authorToUpdate = {};
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
     let key = modifiedAuthor.email;

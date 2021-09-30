@@ -92,6 +92,24 @@ export function updateAuthors(store, state, payload) {
   updateEditingArray(store, authors, newAuthors, 'email');
 }
 
+/*
+export function updateAuthors(store, state, payload) {
+
+  const wrappedAuthors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
+  const newAuthor = payload.data;
+
+  store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, newAuthor);
+
+  // call metadata mutation for editing an author
+  // get the reference key
+
+  const authorsMap = store.getters[`${METADATA_NAMESPACE}/authorsMap`];
+
+  // updated any wrapped infos if needed
+
+}
+*/
+
 export function setSelected(store, elementList, id, propertyToCompare, selected) {
 
   for (let i = 0; i < elementList.length; i++) {

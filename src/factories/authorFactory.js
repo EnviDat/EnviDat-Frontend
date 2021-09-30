@@ -319,3 +319,17 @@ export function initializeLocalAuthor() {
 
   return newAuthor;
 }
+
+export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
+  const authorWithFullInfos = [];
+
+  wrappedAuthors.forEach((wAuthor) => {
+    const author = authorsMap[wAuthor.key];
+    authorWithFullInfos.push({
+      ...author,
+      ...wAuthor,
+    });
+  });
+
+  return authorWithFullInfos;
+}

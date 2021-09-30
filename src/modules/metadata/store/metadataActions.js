@@ -57,8 +57,10 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { getTagColor } from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
+/*
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
+*/
 
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
@@ -424,7 +426,8 @@ export default {
     const existingAuthors = Object.values(authorsMap);
 
     // enhance the entries that the selection button shows up on the resourceCard
-    enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
+    // don't do it for now to disable Author Editing
+    // enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
 
     commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },

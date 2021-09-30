@@ -56,7 +56,8 @@ unFormatedMetadataCards.forEach((el) => {
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
-enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
+// don't do it for now to disable Author Editing
+// enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
 
 const preSelectedAuthors = authors.filter(value => value.fullName.includes('Fischer'));
 const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
