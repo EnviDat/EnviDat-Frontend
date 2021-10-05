@@ -28,7 +28,8 @@
       <v-row>
         <v-col>
 
-          <v-combobox v-model="keywordItems"
+          <v-combobox  @input="notifyChange('keywords', $event)"
+                      :value="keywords"
                       :items="existingKeywordItems"
                       item-text="name"
                       chips
@@ -45,7 +46,8 @@
                       >
 
             <template v-slot:selection="{ item }" >
-              <TagChip :name="item.name"
+              <TagChip  :name="item.name"
+                        selectable
                         closeable
                         @clickedClose="removeKeyword(item)"
                         :isSmall="false"
@@ -55,6 +57,8 @@
             <template v-slot:item="{ item }">
               <TagChip v-if="item && item.name"
                        :name="item.name"
+                       selectable
+                       @clicked="catchKeywordClicked"
                        :isSmall="false" />
             </template>
 
@@ -79,6 +83,7 @@
 
 
 <script>
+
 /**
  * EditKeywords.vue renders Metadata Keywords combobox and a MetadataCard preview
  *
@@ -87,7 +92,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-09-14
+ * Last modified  : 2021-10-06
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -115,6 +120,7 @@ import { mapState } from 'vuex';
 export default {
   name: 'EditKeywords',
   data: () => ({
+    keywords: [],
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
@@ -134,10 +140,6 @@ export default {
     },
   }),
   props: {
-    keywords: {
-      type: Array,
-      default: () => [],
-    },
     existingKeywords: {
       type: Array,
       default: () => [],
@@ -161,6 +163,9 @@ export default {
     keywordsCountMin() {
       return this.config?.userEditMetadataConfig.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
     },
+    keywordsListWordMax() {
+      return this.config?.userEditMetadataConfig.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
+    },
     metadataPreviewEntry() {
 
       const previewEntry = {
@@ -179,7 +184,8 @@ export default {
     },
     autocompleteHint() {
       if (!this.keywordValidConcise) {
-        return '<span class="red--text font-italic">Each keyword tag may not exceed two words</span> ';
+        const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
+        return `<span class="red--text font-italic">${wordMaxHint}</span>`;
       }
 
       let hint = '';
@@ -203,28 +209,30 @@ export default {
 
       return this.existingKeywords;
     },
-    keywordItems: {
-      get() {
-        return this.keywords;
-      },
-      set(valuesArray) {
-        this.removeDuplicates(valuesArray);
-
-        this.setKeywords(valuesArray);
-      },
-    },
   },
   methods: {
-    removeDuplicates(valuesArray) {
-      // Initialize arrays used to compare values and find duplicates
-      const valuesComparer = [];
-      const indicesDuplicates = [];
+    catchKeywordClicked(pickedKeyword) {
+
+      // Use pickedKeyword to create pickedKeywordObj
+      const pickedKeywordObj = {
+        name: pickedKeyword.toUpperCase().trim(),
+        color: getTagColor(catCards, pickedKeyword),
+      };
+
+      // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
+      const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
+
+      // Process and emit selectedKeywords to eventBus
+      this.notifyChange('keywords', selectedKeywords);
+
+    },
+    processValues(valuesArray) {
 
       // Iterate through valuesArray
       for (let i = 0; i < valuesArray.length; i++) {
 
         // If user enters keyword string and keyword is valid then push keyword object with these key value pairs:
-        //    name: <user string capitalized and white splace removed)
+        //    name: <user string capitalized and white space removed)
         //    color: <dynamically assigned vie getTagColor()>
         if (typeof valuesArray[i] === 'string') {
 
@@ -243,49 +251,34 @@ export default {
           };
         }
 
-          // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-          // Else if index is greater than 0 then push current valuesArray element to valuesComparer
-          if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
-            indicesDuplicates.push(i);
-          } else {
-            valuesComparer.push(valuesArray[i].name);
-          }
-
-        // If index is greater than 0 AND valuesComparer includes valuesArray element then push current index to indicesDuplicates
-        // Else if index is greater than 0 then push current valuesArray element to valuesComparer
-        if (i > 0 && valuesComparer.includes(valuesArray[i].name)) {
-          indicesDuplicates.push(i);
-        } else {
-          valuesComparer.push(valuesArray[i].name);
-        }
-
       }
 
-        // Assign keywordCount to length of valuesArray
-        this.keywordCount = valuesArray.length;
+      // Remove duplicates from valuesArray
+      valuesArray = [...new Set(valuesArray.map(a => JSON.stringify(a)))].map(a => JSON.parse(a));
 
-        // Call isEnoughKeywords()
-        this.isEnoughKeywords();
-
-        // Emit { keywords: valuesArray } to eventBus
-        this.setKeywords(valuesArray);
-      },
-    removeKeyword(item) {
-
-      // Assign removeIndex keywords object that matched removeKeyword
-      const removeIndex = this.keywords.indexOf(item);
-
-      // Remove object with index of removeIndex from keywords
-      this.keywords.splice(removeIndex, 1);
-
-      // Assign keywordCount to length of this.genericProps.keywords
-      this.keywordCount = this.keywords.length;
+      // Assign keywordCount to length of valuesArray
+      this.keywordCount = valuesArray.length;
 
       // Call isEnoughKeywords()
       this.isEnoughKeywords();
 
-      // Emit { keywords: keywords } to eventBus
-      this.setKeywords(this.keywords);
+      return valuesArray;
+
+      },
+    removeKeyword(item) {
+
+      // Assign removeIndex to index of keywords object that match item
+      const removeIndex = this.keywords.indexOf(item);
+
+      // Assign localKeywords to copy of keywords
+      const localKeywords = [...this.keywords];
+
+      // Remove object with index of removeIndex from localKeywords
+      localKeywords.splice(removeIndex, 1);
+
+      // Process and emit localKeywords to eventBus
+      this.notifyChange('keywords', localKeywords);
+
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
@@ -307,14 +300,14 @@ export default {
 
       if (search !== null) {
 
-        // Sets keywordValidMin3Characters to true is trimmed search has more than two characters
+        // Sets keywordValidMin3Characters to true if trimmed search has more than two characters
         // Else sets keywordValidMin3Characters to false
         this.keywordValidMin3Characters = search.trim().length > 2;
 
-        // Sets keywordValidConcise to true if trimmed search is less than or equal to two words (split by space ' ')
+        // Sets keywordValidConcise to true if trimmed search is less than or equal to keywordsListWordMax words (split by space ' ')
         // Else sets keywordValidConcise to false
         const inputSplit = search.trim().split(' ');
-        this.keywordValidConcise = inputSplit.length <= 2;
+        this.keywordValidConcise = inputSplit.length <= this.keywordsListWordMax;
       }
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
@@ -329,6 +322,15 @@ export default {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });
+
+    },
+    notifyChange(property, value) {
+
+      // Assign keywords to keywords returned from processValues(value)
+      this.keywords = this.processValues(value);
+
+      // Pass keywords to setKeywords() to emit keywords to eventBus
+      this.setKeywords(this.keywords);
 
     },
   },
