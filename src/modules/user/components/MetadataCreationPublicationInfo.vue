@@ -11,7 +11,7 @@
       </v-col>
 
       <v-col cols="6">
-        <EditOrganization v-bind="editOrganizationProps" />
+        <EditOrganizationTree v-bind="editOrganizationProps" />
       </v-col>
 
     </v-row>
@@ -29,14 +29,14 @@
  * @author Dominik Haas-Artho
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-09-01 17:54:02
+ * Last modified  : 2021-10-07 13:12:25
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
-import EditOrganization from '@/modules/user/components/EditOrganization';
+import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_ORGANIZATION,
@@ -67,7 +67,7 @@ export default {
   data: () => ({
   }),
   components: {
-    EditOrganization,
+    EditOrganizationTree,
     EditPublicationInfo,
   },
 };
