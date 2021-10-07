@@ -4,7 +4,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-09-01 16:18:24
+ * Last modified  : 2021-10-07 13:12:18
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -13,7 +13,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 
-import EditOrganization from '@/modules/user/components/EditOrganization';
+import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -79,27 +79,27 @@ storiesOf(storybookFolder, module)
     }),
   }))
   .add('Edit Organization component', () => ({
-    components: { EditOrganization },
+    components: { EditOrganizationTree },
     template: `
     <v-col>
 
       <v-row>
-        EditOrganization
+        EditOrganizationTree
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditOrganization :genericProps="genericProps" />
+          <EditOrganizationTree :genericProps="genericProps" />
         </v-col>
       </v-row>
 
       <v-row>
-        EditOrganization preselected and editing disabled
+        EditOrganizationTree preselected and editing disabled
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditOrganization :genericProps="genericProps2" />
+          <EditOrganizationTree :genericProps="genericProps2" />
         </v-col>
       </v-row>
 

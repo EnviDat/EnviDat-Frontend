@@ -1,6 +1,6 @@
 <template>
 
-  <v-card id="EditOrganization"
+  <v-card id="EditOrganizationTree"
           class="pa-4">
 
     <v-row>
@@ -40,7 +40,7 @@
  * @author Dominik Haas-Artho
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-09-01 15:24:55
+ * Last modified  : 2021-10-07 13:11:38
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -57,7 +57,7 @@ import {
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 
 export default {
-  name: 'EditOrganization',
+  name: 'EditOrganizationTree',
   props: {
     organization: {
       type: String,
