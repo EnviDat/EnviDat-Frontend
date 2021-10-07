@@ -36,10 +36,17 @@ import MetadataPublications from '@/modules/metadata/components/Metadata/Metadat
 import { getTagColor } from '@/factories/metaDataFactory';
 import { createTag, getPopularTags } from '@/factories/metadataFilterMethods';
 
+import {
+  createAuthors,
+  getFullAuthorsFromDataset,
+  extractAuthorsMap,
+} from '@/factories/authorFactory';
+
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
+import unFormatedMetadataCards from "./js/metadata";
 
 
 // import doiIcon from '@/assets/icons/doi.png';
@@ -115,6 +122,22 @@ const placeholderKeywordsGenericProps = {
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
+
+
+// Variables used to fill authors in "Edit Metadata Headers"
+const apiFactory = require('@/factories/apiFactory');
+
+const metadataCards = [];
+
+unFormatedMetadataCards.forEach((el) => {
+  const formatted = apiFactory.solrResultToCKANJSON(el);
+  formatted.authors = createAuthors(formatted);
+  metadataCards.push(formatted);
+});
+
+const authorsMap = extractAuthorsMap(metadataCards);
+const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
+
 
 const storybookFolder = `${METADATA_EDITING} / Main Infos`;
 
@@ -669,12 +692,7 @@ contribute something to the general goal of your product. `,
     },
     methods: {
       editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-        }
-        if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-          this.emptyFirstGenericProps = updateObj.data;
-        }
+        this.emptyFirstGenericProps = updateObj.data;
       },
     },
     data: () => ({
@@ -684,6 +702,7 @@ contribute something to the general goal of your product. `,
         contactEmail: '',
         contactGivenName: '',
         contactSurname: '',
+        existingEnviDatUsers: authors,
       },
       genericProps: {
         id: '2',

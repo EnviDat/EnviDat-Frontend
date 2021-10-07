@@ -14,7 +14,6 @@
       <v-col>
         <v-autocomplete v-model="pickedUsers"
                         :items="users"
-                        item-text="fullName"
                         outlined
                         append-icon="arrow_drop_down"
                         :prepend-icon="prependIcon"
@@ -28,15 +27,15 @@
 
           <template v-slot:selection="{ item }">
             <TagChipAuthor v-if="item"
-                           :name="item.fullName"
+                           :name="item"
                            :isSmall="false"
                            :isCloseable="authorsCloseable"
                            @closeClicked="catchCloseClicked"/>
           </template>
 
           <template v-slot:item="{ item }">
-            <TagChipAuthor v-if="item && item.fullName"
-                           :name="item.fullName"
+            <TagChipAuthor v-if="item"
+                           :name="item"
                            @clicked="catchPickClicked"
                            :isSmall="false" />
           </template>
@@ -103,7 +102,7 @@ export default {
         this.pickedUsers = this.preSelected[0].fullName;
       }
     } else {
-      this.pickedUsers = this.multiplePick ? [] : null;
+      this.pickedUsers = this.multiplePick ? [] : '';
     }
   },
   computed: {
@@ -128,14 +127,21 @@ export default {
           this.pickedUsers = [];
         }
       } else {
-        this.pickedUsers = null;
+        this.pickedUsers = '';
       }
 
       this.$emit('removedUsers', this.pickedUsers);
     },
     catchPickClicked(pickedItem) {
-      if (!this.pickedUsers.includes(pickedItem)) {
-        this.pickedUsers.push(pickedItem);
+
+      if (this.multiplePick) {
+        if (!this.pickedUsers?.includes(pickedItem)) {
+          this.pickedUsers.push(pickedItem);
+        } else {
+          this.pickedUsers = [];
+        }
+      } else {
+        this.pickedUsers = pickedItem;
       }
 
       this.$emit('pickedUsers', this.pickedUsers);
