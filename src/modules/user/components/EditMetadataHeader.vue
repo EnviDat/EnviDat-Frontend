@@ -6,7 +6,7 @@
 
     <v-row>
 
-      <v-col cols="12">
+      <v-col>
         <div class="text-h5">{{ labels.cardTitle }}</div>
       </v-col>
 
@@ -15,14 +15,15 @@
 
     <v-row>
 
-      <v-col cols="12">
+      <v-col>
         <div class="text-body-1">{{ labels.instructions }}</div>
       </v-col>
 
     </v-row>
 
     <v-row>
-      <v-col cols="6">
+
+      <v-col cols="8">
         <v-text-field :label="labels.labelTitle"
                       outlined
                       :rules="rulesTitle"
@@ -33,21 +34,29 @@
 
       </v-col>
 
-      <v-col cols="6">
-        <v-text-field :label="labels.labelContactEmail"
-                      outlined
-                      :rules="rulesEmail"
-                      required
-                      prepend-icon="email"
-                      :placeholder="labels.placeholderContactEmail"
-                      v-model="contactEmailField" />
+    </v-row>
 
+
+    <v-row>
+
+      <v-col>
+        <div class="text-body-1">{{ labels.authorInstructions }}</div>
       </v-col>
 
     </v-row>
 
+
     <v-row>
-      <v-col cols="6">
+
+      <v-col >
+        <BaseUserPicker v-bind="baseUserPickerObject"
+                        @removedUsers="catchRemovedUsers"
+                        @pickedUsers="catchPickedUsers"/>
+      </v-col>
+
+
+      <v-col>
+
         <v-text-field :label="labels.labelContactGivenName"
                       outlined
                       :rules="rulesGivenName"
@@ -56,9 +65,6 @@
                       :placeholder="labels.placeholderContactGivenName"
                       v-model="contactGivenNameField" />
 
-      </v-col>
-
-      <v-col cols="6">
         <v-text-field :label="labels.labelContactSurname"
                       outlined
                       :rules="rulesSurname"
@@ -67,7 +73,18 @@
                       :placeholder="labels.placeholderContactSurname"
                       v-model="contactSurnameField" />
 
+        <v-text-field :label="labels.labelContactEmail"
+                      outlined
+                      :rules="rulesEmail"
+                      required
+                      prepend-icon="email"
+                      :placeholder="labels.placeholderContactEmail"
+                      v-model="contactEmailField" />
+
+
       </v-col>
+
+
     </v-row>
 
 
@@ -91,6 +108,10 @@
 </template>
 
 <script>
+
+// TODO get and implement existingAuthors from store, see EditAuthorList component, see computed property existingAuthorsWrap()
+// TODO if not existing in store then get from properties
+
 /**
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
@@ -107,10 +128,12 @@
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_AUTHOR_LIST,
   eventBus,
 } from '@/factories/eventBus';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -144,8 +167,26 @@ export default {
       type: Array,
       default: null,
     },
+    existingEnviDatUsers: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
+    baseUserPickerObject() {
+      return {
+        users: this.fullNameUsers(this.existingEnviDatUsers),
+      };
+    },
+    metadataAuthorsObject() {
+      return {
+        authors: this.authors,
+        authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
+        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
+        emptyTextColor: 'grey',
+      };
+    },
     metadataPreviewEntry() {
 
       const doiIcon = this.mixinMethods_getIcon('doi') || '';
@@ -212,7 +253,52 @@ export default {
     },
   },
   methods: {
+    fullNameUsers(userObjects) {
+
+      const fullNameArray = [];
+
+      userObjects.forEach((user) => {
+        if (user.fullName) {
+          fullNameArray.push(user.fullName);
+        } else {
+          // TODO test generating error
+          console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
+        }
+      });
+
+      return fullNameArray;
+    },
+    catchRemovedUsers(pickedUsers) {
+      this.notifyChange(pickedUsers);
+    },
+    catchPickedUsers(pickedUsers) {
+      this.notifyChange(pickedUsers);
+    },
+    getAuthorByName(fullName) {
+      const authors = this.existingEnviDatUsers;
+      const found = authors.filter(auth => auth.fullName === fullName);
+      return found?.length > 0 ? found[0] : null;
+    },
+    notifyChange(authorName) {
+
+      const author = this.getAuthorByName(authorName);
+
+      // Call setContactDetails to automatically assign and clear contact details variables
+      this.setContactDetails(author);
+
+    },
+    // Sets contact details variables if there is only one author in authors array and authors[0] is not null
+    // Else clears contact details variables
+    // TODO add given and surname fields to this function
+    setContactDetails(author) {
+      if (author) {
+        this.contactEmailField = author.email;
+      } else {
+        this.contactEmailField = '';
+      }
+    },
     setHeaderInfo(property, value) {
+
       const newHeaderInfo = {
         ...this.$props,
         [property]: value,
@@ -231,7 +317,8 @@ export default {
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
-      instructions: 'Enter research data title and authors. Please make sure that title is meaningful and specific.',
+      instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
+      authorInstructions: 'Please choose main contact author from dropdown list or enter author\'s details.',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',
@@ -251,6 +338,7 @@ export default {
    }),
   components: {
     MetadataHeader,
+    BaseUserPicker,
   },
 };
 </script>

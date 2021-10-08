@@ -50,6 +50,7 @@ import {
 export default {
   name: 'EditAddExistingAuthor',
   props: {
+    // TODO modify this to send only fullName to baseUserPicker
     existingEnviDatUsers: {
       type: Array,
       default: () => [],
@@ -77,6 +78,7 @@ export default {
     notifyChange(authorsNames) {
 
       const authors = [];
+      // TODO modify this to handle strings like EditMetadataHeader.vue
       authorsNames.forEach((name) => {
         const author = this.getAuthorByName(name);
         if (author) {
