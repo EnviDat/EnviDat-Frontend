@@ -1,5 +1,5 @@
 <template>
-  <div :id="mapDivId"
+  <div :id="mapDivId" ref="map"
         :style="`height: ${height === 0 ? '100%' : height + 'px' };`">
 
     <div  v-if="map">
@@ -68,7 +68,7 @@ export default {
       'config',
     ]),
     layerConfig() {
-      return this.$store.state.geoservices.layerConfig;
+      return this.$store?.state.geoservices.layerConfig || null;
     },
     streets() {
       return L.tileLayer(
@@ -215,17 +215,23 @@ export default {
     },
     setupMap() {
 
+/*
       const defaultMaxBound = [
-        [-90, -180],
-        [90, 180],
+        [-45, -90],
+        [45, 90],
       ];
+*/
 
-      this.map = new L.Map(this.mapDivId, {
+      this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
+        center: [46.943961, 8.199240],
+        zoom: 7,
+/*
         maxBounds: defaultMaxBound,
-        maxBoundsViscosity: 0.5,
+        maxBoundsViscosity: 1,
+*/
       });
-        
+
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
