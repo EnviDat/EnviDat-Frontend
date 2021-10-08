@@ -27,8 +27,10 @@
       </v-row>
     </v-card-title>
 
+    <!-- Optional show new features description -->
     <v-card-text class="py-1 text-caption readableText"
-                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" >
+                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" 
+                  v-show="newFeaturesMessage">
       Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison.
       The Swisstopo WMS layers are being loaded for testing. Be aware there might be bugs, please report them to envidat@wsl.ch
     </v-card-text>
@@ -74,6 +76,14 @@
     },
     props: {
       genericProps: Object,
+      newFeaturesMessage: {
+        type: Boolean,
+        default: true,
+      },
+      editable: {
+        type: Boolean,
+        default: false,
+      },
     },
     mounted() {
 

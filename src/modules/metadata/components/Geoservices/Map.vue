@@ -1,5 +1,5 @@
 <template>
-  <v-container id="MapComponet"
+  <v-container id="MapComponent"
                 fluid
                 class="fill-height pa-0" >
 
@@ -28,11 +28,11 @@
                     :baseMapLayerName="currentBaseMapLayer"
                     :wmsLayer="selectedLayer"
                     :map-div-id="mapDivId"
-                    :featureInfoPts="featureinfo"
                     :opacity="opacity"
                     :site="site"
                     :max-extent="maxExtent" 
                     :height="height" >
+                    <!-- :featureInfoPts="featureinfo" -->
         </map-cesium>
 
         <map-leaflet v-if="!mapIn3D"
@@ -40,10 +40,10 @@
                       :wmsLayer="selectedLayer"
                       :max-extent="maxExtent"
                       :map-div-id="mapDivId"
-                      :featureInfoPts="featureinfo"
                       :opacity="opacity"
                       :site="site"
                       :height="height" >
+                      <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
 
       </v-col>

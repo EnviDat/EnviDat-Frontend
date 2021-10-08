@@ -13,34 +13,27 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 
+import EditDataGeo from '@/modules/user/components/EditDataGeo';
+
 import { METADATA_EDITING } from './storybookFolder';
+
 
 const storybookFolder = `${METADATA_EDITING} / Data Infos`;
 
 
 storiesOf(storybookFolder, module)
   .add('Edit Geo Information', () => ({
-    // components: { EditGeoInfo },
+    components: { EditDataGeo },
     template: `
     <v-col>
 
       <v-row>
-        EditGeoInfo Empty
+        EditDataGeo with spatial info
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditGeoInfo />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditGeoInfo with spatial info
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditGeoInfo v-bind="genericProps" />
+          <EditDataGeo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -59,7 +52,15 @@ storiesOf(storybookFolder, module)
     },
     data: () => ({
       genericProps: {
-
+        basemap: 'streets',
+        layerConfig: null,
+        selectedLayer: null,
+        splitLayer: null,
+        splitScreen: false,
+        show3d: false,
+        show3dSplit: false,
+        timeseries: [],
+        site: null,
       },
     }),
   }));

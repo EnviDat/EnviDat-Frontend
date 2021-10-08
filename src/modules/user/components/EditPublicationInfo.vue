@@ -57,6 +57,7 @@
 
         <v-col cols="6">
           <v-text-field :label="labels.publisher"
+                        readonly
                         outlined
                         required
                         :rules="rulesPublisher"

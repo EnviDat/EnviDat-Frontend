@@ -7,10 +7,10 @@ import vuetify from './vuetify_storybook';
 // eslint-disable-next-line no-unused-vars
 import App from '../src/App.vue';
 
-// import Vue from 'vue';
-// import globalMethods from '../src/factories/globalMethods';
+import Vue from 'vue';
+import globalMethods from '../src/factories/globalMethods';
 
-// Vue.mixin(globalMethods);
+Vue.mixin(globalMethods);
 
 export const parameters = {};
 

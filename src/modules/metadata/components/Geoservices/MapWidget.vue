@@ -228,8 +228,20 @@
     },
     methods: {
       loadBaseMapImages() {
-        this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
-        this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
+        if (this.$store) {
+          this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
+          this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
+        } else {
+          // Fallback import .png
+          import('@/assets/map/baseMap-satellite-icon.png')
+          .then((imgImport) => {
+            this.baseMapSatelliteImg = imgImport.default;
+          });
+          import('@/assets/map/baseMap-streets-icon.png')
+          .then((imgImport) => {
+            this.baseMapStreetsImg = imgImport.default;
+          });
+        }
       },
       changeOpacity(value) {
         this.$emit('changeOpacity', value);

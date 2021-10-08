@@ -20,6 +20,7 @@ import EditKeywords from '@/modules/user/components/EditKeywords';
 import EditAuthorList from '@/modules/user/components/EditAuthorList';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
 import EditDataInfo from '@/modules/user/components/EditDataInfo';
+import EditDataGeo from '@/modules/user/components/EditDataGeo';
 import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
 
 // eslint-disable-next-line no-unused-vars
@@ -33,6 +34,7 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -158,6 +160,9 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_INFO]: {
   },
+  [EDITMETADATA_DATA_GEO]: {
+    geometries: [],
+  },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',
   },
@@ -216,6 +221,12 @@ const dataDetailSteps = [
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
+  },
+  {
+    title: 'Data Location',
+    completed: false,
+    key: EDITMETADATA_DATA_GEO,
+    component: EditDataGeo,
   },
 ];
 
