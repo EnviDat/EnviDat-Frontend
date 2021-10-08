@@ -91,15 +91,15 @@ export default {
     if (this.preSelected?.length > 0) {
 
       if (this.multiplePick) {
-        this.preSelected.forEach((author) => {
+        this.preSelected.forEach((authorName) => {
           // if (typeof author === 'object') {
-            this.pickedUsers.push(author.fullName);
+            this.pickedUsers.push(authorName);
           // } else {
           //   this.pickedUsers.push(author);
           // }
         });
       } else {
-        this.pickedUsers = this.preSelected[0].fullName;
+        this.pickedUsers = this.preSelected[0];
       }
     } else {
       this.pickedUsers = this.multiplePick ? [] : '';

@@ -49,12 +49,18 @@ unFormatedMetadataCards.forEach((el) => {
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);
-const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
+const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 // don't do it for now to disable Author Editing
 // enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
 
-const preSelectedAuthors = authors.filter(value => value.fullName.includes('Fischer'));
-const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
+// extract the names of the authors into a plain array of string for the baseUserPicker
+const authors = [];
+authorsObjs.forEach((author) => {
+  authors.push(author.fullName);
+});
+
+const preSelectedAuthor = authors.filter(value => value.includes('Fischer'));
+const preSelectedAuthors2 = authors.filter(value => value.includes('A'));
 
 const storybookFolder = `${METADATA_EDITING} / Author Infos`;
 
@@ -81,7 +87,7 @@ storiesOf(storybookFolder, module)
       <v-row class="py-3" >
         <v-col >
           <BaseUserPicker :users="authors"
-                          :preSelected="preSelectedAuthors" />
+                          :preSelected="preSelectedAuthor" />
         </v-col>
       </v-row>
 
@@ -118,7 +124,7 @@ storiesOf(storybookFolder, module)
     },
     data: () => ({
       authors,
-      preSelectedAuthors,
+      preSelectedAuthor,
       preSelectedAuthors2,
     }),
   }))
