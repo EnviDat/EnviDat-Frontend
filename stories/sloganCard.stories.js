@@ -19,7 +19,6 @@ storiesOf('3 Cards / Slogan Cards', module)
         <slogan-card
             @click="onClick"
             :slogan="'Random Slogan'"
-            :sloganImg="fingertips"
             :subSlogan="'Subslogan normally longer than the slogan'"
             :buttonText="'Fun button'"
             :buttonCallback="onClick"
