@@ -51,8 +51,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <OrganizationTree :organizationsMap="genericProps.organizationsMap"
-                            :preSelectedOrganization="'wsl'" />
+          <OrganizationTree v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -70,12 +69,13 @@ storiesOf(storybookFolder, module)
           this.selectedOrga = updateObj.data;
         }
       },
-    },  
+    },
     data: () => ({
       genericProps: {
         organizationsMap,
       },
       selectedOrga: '',
+      preSelectedOrganization: 'wsl',
     }),
   }))
   .add('Edit Organization component', () => ({
@@ -89,7 +89,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditOrganizationTree :genericProps="genericProps" />
+          <EditOrganizationTree v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -99,7 +99,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditOrganizationTree :genericProps="genericProps2" />
+          <EditOrganizationTree v-bind="genericProps2" />
         </v-col>
       </v-row>
 
@@ -118,7 +118,7 @@ storiesOf(storybookFolder, module)
           this.genericProps = updateObj.data;
         }
       },
-    },  
+    },
     data: () => ({
       genericProps: {
         id: '1',
