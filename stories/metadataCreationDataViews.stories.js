@@ -14,13 +14,13 @@
 import { storiesOf } from '@storybook/vue';
 
 import {
+  CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+  SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
-  CANCEL_EDITING_RESOURCE,
-  SAVE_EDITING_RESOURCE,
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_DATA_RESOURCES,
-  eventBus,
 } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
@@ -66,7 +66,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataResources :genericProps="emptyFirstGenericProps" />
+          <EditMetadataResources v-bind="emptyFirstGenericProps" />
         </v-col>
       </v-row>
 
@@ -80,12 +80,10 @@ storiesOf(storybookFolder, module)
     },
     methods: {
       selectResource(id) {
-        const newGenerics = {
+        this.emptyFirstGenericProps = {
           ...this.emptyFirstGenericProps,
           selectionId: id,
         };
-
-        this.emptyFirstGenericProps = newGenerics;
       },
       // editComponentsChanged(updateObj) {
       //   if (updateObj.data.id === this.genericProps.id) {

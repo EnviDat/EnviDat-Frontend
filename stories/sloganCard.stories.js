@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 import SloganCard from '@/modules/home/components/SloganCard';
 
-import fingertips from '@/assets/cards/slogan/fingertips_small.webp';
+import fingertips from '../src/assets/cards/slogan/fingertips_small.webp';
 
 export const methods = {
   onClick: action('clicked'),

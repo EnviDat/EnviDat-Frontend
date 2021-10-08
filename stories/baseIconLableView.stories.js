@@ -13,8 +13,8 @@
 import { storiesOf } from '@storybook/vue';
 
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import fileIcon from '@/assets/icons/fileAudio.png';
-import contact2Icon from '@/assets/icons/contact2.png';
+import fileIcon from '../src/assets/icons/fileAudio.png';
+import contact2Icon from '../src/assets/icons/contact2.png';
 
 
 storiesOf('1 Lables / IconLabel Collection', module).add('different labels', () => ({

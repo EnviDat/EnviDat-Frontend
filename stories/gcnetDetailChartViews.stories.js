@@ -16,11 +16,11 @@ import { storiesOf } from '@storybook/vue';
 // import { defaultSeriesSettings } from '@/factories/chartFactory';
 // const seriesSettings = defaultSeriesSettings;
 
-import stationParameters from '@/../public/testdata/stationParameters.json';
-import stationsConfig from '@/../public/testdata/stationsConfig.json';
+import stationParameters from '../public/testdata/stationParameters.json';
+import stationsConfig from '../public/testdata/stationsConfig.json';
 
 // import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
+import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList';
 
 const stations = stationsConfig;
 const fileObjects = stationParameters.fileObjects;
@@ -37,7 +37,7 @@ storiesOf('7 GC-Net Views / Charts', module)
   //   components: { DetailChart },
   //   template: `
   //   <v-col>
-     
+
   //     <v-row>
   //       Station 1 DetailChart
   //     </v-row>
@@ -118,7 +118,7 @@ storiesOf('7 GC-Net Views / Charts', module)
   //     },
   //     stationId() {
   //       return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
-  //     },      
+  //     },
   //   },
   //   data: () => ({
   //     stations,
@@ -131,7 +131,7 @@ storiesOf('7 GC-Net Views / Charts', module)
     components: { DetailChartsList },
     template: `
     <v-col>
-      
+
       <v-row class="py-3"
               >
         Station 1 DetailChartsList

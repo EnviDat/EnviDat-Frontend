@@ -24,13 +24,6 @@ import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFund
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources';
 
-import doiIcon from '@/assets/icons/doi.png';
-import mailIcon from '@/assets/icons/mail.png';
-import contactIcon from '@/assets/icons/contact2.png';
-import licenseIcon from '@/assets/icons/license.png';
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import fileIcon from '@/assets/icons/file.png';
-
 import {
   createHeader,
   createCitation,
@@ -40,7 +33,16 @@ import {
   createLocation,
   createResources,
 } from '@/factories/metaDataFactory';
+
 import { createAuthors } from '@/factories/authorFactory';
+
+import doiIcon from '../src/assets/icons/doi.png';
+import mailIcon from '../src/assets/icons/mail.png';
+import contactIcon from '../src/assets/icons/contact2.png';
+import licenseIcon from '../src/assets/icons/license.png';
+import fileSizeIcon from '../src/assets/icons/fileSize.png';
+import fileIcon from '../src/assets/icons/file.png';
+
 
 // const iconFiles = getIcons();
 
@@ -50,7 +52,7 @@ import metadata from './js/metadata';
 // function getIcons() {
 //   const icons = new Map();
 
-//   const imgPaths = require.context('@/assets/icons/', false, /\.png$/);
+//   const imgPaths = require.context('../src/assets/icons/', false, /\.png$/);
 
 //   imgPaths.keys().forEach((iconFileName) => {
 //     const splits = iconFileName.split('/');
@@ -200,7 +202,7 @@ storiesOf('6 Detail Views / Metadata', module)
             :licenseIcon="licenseIcon"
           />
         </v-col>
-      </v-row>        
+      </v-row>
 
       <v-row class="py-2" >
         <v-col >
@@ -218,7 +220,7 @@ storiesOf('6 Detail Views / Metadata', module)
             :licenseIcon="licenseIcon"
           />
         </v-col>
-      </v-row>        
+      </v-row>
 
       <v-row class="py-2" >
         <v-col >
@@ -232,7 +234,7 @@ storiesOf('6 Detail Views / Metadata', module)
             v-bind="largeHeader"
           />
         </v-col>
-      </v-row>          
+      </v-row>
     </v-col>
     `,
     methods,
@@ -266,7 +268,7 @@ storiesOf('6 Detail Views / Metadata', module)
         <metadata-body :genericProps="genericPropsBodyLongDesc" />
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     methods,
     data: () => ({
@@ -307,7 +309,7 @@ storiesOf('6 Detail Views / Metadata', module)
         <metadata-citation :genericProps="genericProps2" />
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     updated() {
       this.$children.forEach((child) => {
@@ -345,7 +347,7 @@ storiesOf('6 Detail Views / Metadata', module)
         <metadata-details :genericProps="genericProps3" />
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     updated() {
       this.$children.forEach((child) => {
@@ -379,7 +381,7 @@ storiesOf('6 Detail Views / Metadata', module)
                             :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     updated() {
       this.$children.forEach((child) => {
@@ -419,7 +421,7 @@ storiesOf('6 Detail Views / Metadata', module)
       <v-col cols="8" class="py-3">
         <metadata-publications :genericProps="genericPropsPublications" />
       </v-col>
-      
+
     </v-row>
     `,
     updated() {
@@ -465,7 +467,7 @@ storiesOf('6 Detail Views / Metadata', module)
         <metadata-funding :genericProps="genericPropsPlaceholder"
                           :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
       </v-col>
-    
+
       <v-col cols="4" class="py-3">
         <metadata-funding :genericProps="genericProps2"
                             :showPlaceholder="genericProps2.showPlaceholder"/>
@@ -476,7 +478,7 @@ storiesOf('6 Detail Views / Metadata', module)
                           :showPlaceholder="genericProps2.showPlaceholder"/>
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     updated() {
     },
@@ -568,7 +570,7 @@ storiesOf('6 Detail Views / Metadata', module)
         <metadata-authors :genericProps="genericProps5" />
       </v-col>
 
-    </v-row>        
+    </v-row>
     `,
     methods: {
     },

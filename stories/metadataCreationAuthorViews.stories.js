@@ -15,11 +15,6 @@ import { storiesOf } from '@storybook/vue';
 
 import {
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_AUTHOR_PROPERTY,
-  // CANCEL_EDITING_RESOURCE,
-  // SAVE_EDITING_RESOURCE,
-  // EDITMETADATA_OBJECT_UPDATE,
-  // EDITMETADATA_DATA_RESOURCES,
   eventBus,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_AUTHOR,
@@ -32,7 +27,6 @@ import EditAuthorList from '@/modules/user/components/EditAuthorList';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import {
-  enhanceElementsWithStrategyEvents,
   localIdProperty,
 } from '@/factories/strategyFactory';
 import {
@@ -139,7 +133,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditMetadataAuthors :genericProps="genericProps" />
+          <EditMetadataAuthors v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -199,7 +193,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditAuthorList :genericProps="genericProps" />
+          <EditAuthorList v-bind="genericProps" />
         </v-col>
       </v-row>
 

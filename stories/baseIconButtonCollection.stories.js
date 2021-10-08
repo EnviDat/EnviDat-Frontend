@@ -15,8 +15,8 @@ import { action } from '@storybook/addon-actions';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import fileIcon from '@/assets/icons/file.png';
-import contact2Icon from '@/assets/icons/contact2.png';
+import fileIcon from '../src/assets/icons/file.png';
+import contact2Icon from '../src/assets/icons/contact2.png';
 
 export const methods = {
   onClick: action('clicked'),

@@ -17,11 +17,10 @@ import {
 } from '@/factories/eventBus';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
-import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
 
 import {
   metadataCreationSteps,
-  mainDetailSteps,
   getStepByName,
 } from '@/factories/userEditingFactory';
 
@@ -64,45 +63,5 @@ storiesOf('5 Navigation / Navigation Stepper', module)
   },
   data: () => ({
     steps: metadataCreationSteps,
-  }),
-}))
-.add('Main Info Stepper', () => ({
-  components: {
-    MetadataCreationMainInfo,
-  },
-  template: `
-  <v-row>
-    <v-col cols="12">
-      <MetadataCreationMainInfo :steps="steps"
-                                :initialStepTitle="steps[0].title"
-                                stepColor="highlight" />
-
-
-    </v-col>
-
-  </v-row>
-  `,
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  methods: {
-    getStepByName,
-    editComponentsChanged(updateObj) {
-      // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
-      // this.editState[updateObj.object] = updateObj.data;
-      // console.log(`got update on ${this.editState}`);
-
-      this.updateSteps(updateObj.object, updateObj.data);
-    },
-    updateSteps(eventName, newGenericProps) {
-      const stepToUpdate = this.getStepByName(eventName, this.steps);
-      stepToUpdate.genericProps = newGenericProps;
-    },
-  },
-  data: () => ({
-    steps: mainDetailSteps,
   }),
 }));

@@ -13,7 +13,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
 // import { action } from '@storybook/addon-actions';
-
 import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -42,10 +41,10 @@ import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
 
-// import doiIcon from '@/assets/icons/doi.png';
-// import mailIcon from '@/assets/icons/mail.png';
-// import contactIcon from '@/assets/icons/contact2.png';
-// import licenseIcon from '@/assets/icons/license.png';
+// import doiIcon from '../src/assets/icons/doi.png';
+// import mailIcon from '../src/assets/icons/mail.png';
+// import contactIcon from '../src/assets/icons/contact2.png';
+// import licenseIcon from '../src/assets/icons/license.png';
 
 // import {
 //   createHeader,
@@ -291,20 +290,16 @@ contribute something to the general goal of your product. `,
     },
     methods: {
       catchChangedText(value) {
-        const newRelatedPublications = {
+        this.genericProps = {
           ...this.genericProps,
           relatedPublicationsText: value,
         };
-
-        this.genericProps = newRelatedPublications;
       },
       catchChangedFilledText(value) {
-        const newRelatedPublications = {
+        this.genericPropsFilled = {
           ...this.genericPropsFilled,
           relatedPublicationsText: value,
         };
-
-        this.genericPropsFilled = newRelatedPublications;
       },
     },
     computed: {
