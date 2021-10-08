@@ -4,7 +4,7 @@
     <v-container class="pa-0" >
       <v-row no-gutters >
 
-        <v-col class="py-0 pr-sm-0"        
+        <v-col class="py-0 pr-sm-0"
                 cols="12"
                 sm="5"
                 style="cursor: pointer;"
@@ -90,7 +90,15 @@ export default {
   },
   components: { BaseRectangleButton },
   beforeMount() {
-    this.fallbackImg = this.mixinMethods_getWebpImage('cards/slogan/fingertips_small', this.$store.state);
+    if (this.$store) {
+      this.fallbackImg = this.mixinMethods_getWebpImage('cards/slogan/fingertips_small', this.$store.state);
+    } else {
+      // use the import() for lazy loading a fallback incase there is not $store (storybook stories usually)
+      import('@/assets/cards/slogan/fingertips_small.jpg')
+      .then((imgImport) => {
+        this.fallbackImg = imgImport.default;
+      });
+    }
   },
   data: () => ({
     fallbackImg: '',
