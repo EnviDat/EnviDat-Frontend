@@ -21,13 +21,14 @@
 
     </v-row>
 
-    <v-row>
+    <v-row dense>
 
       <v-col cols="8">
         <v-text-field :label="labels.labelTitle"
                       outlined
                       :rules="rulesTitle"
                       required
+                      dense
                       prepend-icon="import_contacts"
                       :placeholder="labels.placeholderTitle"
                       v-model="metadataTitleField" />
@@ -37,7 +38,7 @@
     </v-row>
 
 
-    <v-row>
+    <v-row dense>
 
       <v-col>
         <div class="text-body-1">{{ labels.authorInstructions }}</div>
@@ -46,7 +47,7 @@
     </v-row>
 
 
-    <v-row>
+    <v-row dense>
 
       <v-col >
         <BaseUserPicker v-bind="baseUserPickerObject"
@@ -61,6 +62,7 @@
                       outlined
                       :rules="rulesGivenName"
                       required
+                      dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       v-model="contactGivenNameField" />
@@ -69,6 +71,7 @@
                       outlined
                       :rules="rulesSurname"
                       required
+                      dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       v-model="contactSurnameField" />
@@ -77,6 +80,7 @@
                       outlined
                       :rules="rulesEmail"
                       required
+                      dense
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       v-model="contactEmailField" />
@@ -88,7 +92,7 @@
     </v-row>
 
 
-    <v-row>
+    <v-row dense>
       <v-col cols="12">
         <div class="text-body-1">{{ labels.previewText }}</div>
       </v-col>
@@ -109,9 +113,6 @@
 
 <script>
 
-// TODO get and implement existingAuthors from store, see EditAuthorList component, see computed property existingAuthorsWrap()
-// TODO if not existing in store then get from properties
-
 /**
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
@@ -120,7 +121,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-04 10:05:50
+ * Last modified  : 2021-10-11 10:05:50
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -128,9 +129,10 @@
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_AUTHOR_LIST,
   eventBus,
 } from '@/factories/eventBus';
+
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
@@ -147,18 +149,6 @@ export default {
       type: String,
       default: '',
     },
-    contactEmail: {
-      type: String,
-      default: '',
-    },
-    contactGivenName: {
-      type: String,
-      default: '',
-    },
-    contactSurname: {
-      type: String,
-      default: '',
-    },
     keywords: {
       type: Array,
       default: null,
@@ -171,20 +161,22 @@ export default {
       type: Array,
       default: () => [],
     },
+    existingAuthors: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
+    existingAuthorsWrap() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
+      }
+
+      return this.existingAuthors;
+    },
     baseUserPickerObject() {
       return {
-        users: this.fullNameUsers(this.existingEnviDatUsers),
-      };
-    },
-    metadataAuthorsObject() {
-      return {
-        authors: this.authors,
-        authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
-        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
-        emptyTextColor: 'grey',
+        users: this.fullNameUsers(this.existingAuthorsWrap),
       };
     },
     metadataPreviewEntry() {
@@ -224,20 +216,13 @@ export default {
         this.setHeaderInfo('metadataTitle', value);
       },
     },
-    contactEmailField: {
-      get() {
-        return this.contactEmail;
-      },
-      set(value) {
-        this.setHeaderInfo('contactEmail', value);
-      },
-    },
     contactGivenNameField: {
       get() {
         return this.contactGivenName;
       },
       set(value) {
-        this.setHeaderInfo('contactGivenName', value);
+        this.contactGivenName = value;
+        this.setContactAuthor();
       },
     },
     contactSurnameField: {
@@ -245,7 +230,17 @@ export default {
         return this.contactSurname;
       },
       set(value) {
-        this.setHeaderInfo('contactSurname', value);
+        this.contactSurname = value;
+        this.setContactAuthor();
+      },
+    },
+    contactEmailField: {
+      get() {
+        return this.contactEmail;
+      },
+      set(value) {
+        this.contactEmail = value;
+        this.setContactAuthor();
       },
     },
     inputContactFullName() {
@@ -253,6 +248,14 @@ export default {
     },
   },
   methods: {
+    setContactAuthor() {
+      const contAuthor = {
+        contactGivenName: this.contactGivenName,
+        contactSurname: this.contactSurname,
+        contactEmail: this.contactEmail,
+      };
+      this.setHeaderInfo('contactAuthor', contAuthor);
+    },
     fullNameUsers(userObjects) {
 
       const fullNameArray = [];
@@ -261,7 +264,6 @@ export default {
         if (user.fullName) {
           fullNameArray.push(user.fullName);
         } else {
-          // TODO test generating error
           console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
         }
       });
@@ -275,7 +277,7 @@ export default {
       this.notifyChange(pickedUsers);
     },
     getAuthorByName(fullName) {
-      const authors = this.existingEnviDatUsers;
+      const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
       return found?.length > 0 ? found[0] : null;
     },
@@ -286,16 +288,24 @@ export default {
       // Call setContactDetails to automatically assign and clear contact details variables
       this.setContactDetails(author);
 
+      this.setContactAuthor();
+
     },
-    // Sets contact details variables if there is only one author in authors array and authors[0] is not null
+    // Sets contact details variables if author is not null
     // Else clears contact details variables
-    // TODO add given and surname fields to this function
     setContactDetails(author) {
+
       if (author) {
+        this.contactGivenNameField = author.firstName;
+        this.contactSurnameField = author.lastName;
         this.contactEmailField = author.email;
-      } else {
+      }
+      else {
+        this.contactGivenNameField = '';
+        this.contactSurnameField = '';
         this.contactEmailField = '';
       }
+
     },
     setHeaderInfo(property, value) {
 
@@ -303,7 +313,7 @@ export default {
         ...this.$props,
         [property]: value,
       };
-
+      
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
@@ -335,6 +345,9 @@ export default {
       ],
     iconName: imageContact,
     iconMail: imageMail,
+    contactGivenName: '',
+    contactSurname: '',
+    contactEmail: '',
    }),
   components: {
     MetadataHeader,

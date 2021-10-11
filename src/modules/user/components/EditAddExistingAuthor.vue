@@ -15,7 +15,7 @@
 
       <v-row >
         <v-col >
-          <BaseUserPicker :users="existingEnviDatUsers"
+          <BaseUserPicker :users="baseUserPickerObject"
                           :preSelected="authors"
                           :multiplePick="true"
                           :isClearable="isClearable"
@@ -50,7 +50,6 @@ import {
 export default {
   name: 'EditAddExistingAuthor',
   props: {
-    // TODO modify this to send only fullName to baseUserPicker
     existingEnviDatUsers: {
       type: Array,
       default: () => [],
@@ -67,8 +66,25 @@ export default {
   mounted() {
   },
   computed: {
+    baseUserPickerObject() {
+      return this.fullNameUsers(this.existingEnviDatUsers);
+    },
   },
   methods: {
+    fullNameUsers(userObjects) {
+
+      const fullNameArray = [];
+
+      userObjects.forEach((user) => {
+        if (user.fullName) {
+          fullNameArray.push(user.fullName);
+        } else {
+            console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
+        }
+      });
+
+      return fullNameArray;
+    },
     catchRemovedUsers(pickedUsers) {
       this.notifyChange(pickedUsers);
     },
@@ -78,7 +94,7 @@ export default {
     notifyChange(authorsNames) {
 
       const authors = [];
-      // TODO modify this to handle strings like EditMetadataHeader.vue
+
       authorsNames.forEach((name) => {
         const author = this.getAuthorByName(name);
         if (author) {
