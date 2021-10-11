@@ -7,12 +7,12 @@
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
-    "categoryText": "Have a look at one of theses research categories or sign in to upload data. Uploading and pubilshing data is currently restricted to WSL employees and their collaborators."
+    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators."
   },
   "aboutInfo": [
     {
       "title": "Contact",
-      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, quesitons or feedback."
+      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, questions or feedback."
     },
     {
       "title": "Concept",
