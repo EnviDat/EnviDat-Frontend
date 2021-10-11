@@ -248,6 +248,7 @@ export default {
     },
   },
   methods: {
+    // Creates contact author object and emits to eventBus
     setContactAuthor() {
       const contAuthor = {
         contactGivenName: this.contactGivenName,
@@ -283,11 +284,13 @@ export default {
     },
     notifyChange(authorName) {
 
+      // Get author object
       const author = this.getAuthorByName(authorName);
 
       // Call setContactDetails to automatically assign and clear contact details variables
       this.setContactDetails(author);
 
+      // Call setContactAuthor() to create author object and emit to eventBus
       this.setContactAuthor();
 
     },
@@ -313,7 +316,7 @@ export default {
         ...this.$props,
         [property]: value,
       };
-      
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
