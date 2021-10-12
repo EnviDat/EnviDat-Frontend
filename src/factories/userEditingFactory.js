@@ -159,6 +159,10 @@ const emptyMetadataInEditing = {
     resources: [],
   },
   [EDITMETADATA_DATA_INFO]: {
+    creationYear: '',
+    collectionYear: '',
+    publicationYear: '',
+    dataLicense: '',
   },
   [EDITMETADATA_DATA_GEO]: {
     geometries: [],

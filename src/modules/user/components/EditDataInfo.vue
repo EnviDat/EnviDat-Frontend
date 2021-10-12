@@ -4,30 +4,76 @@
                 fluid
                 class="pa-0">
 
-    <v-row >
-      <v-col >
+    <v-row>
 
-        <v-card id="EditDataInfoForm"
-                class="pa-4" >
+        <v-col cols="12">
+          <div class="text-h5">{{ labels.cardTitle }}</div>
+        </v-col>
 
-            <v-row>
-              <v-col>
-                <div class="text-h5">{{ infoCardTitle }}</div>
-              </v-col>
-            </v-row>
+      </v-row>
 
-            <v-row >
-              <v-col >
-                <EditImgPlaceholder :disclaimer="disclaimer"
-                                    :img="dataInfo"
-                                    />
-              </v-col>
-            </v-row>
 
-         </v-card>
+      <v-row>
 
-      </v-col>
-    </v-row>
+        <v-col >
+          <v-select :items="yearsList"
+                    outlined
+                    :label="labels.creationDate"
+                    required
+                    prepend-icon="date_range"
+                    append-icon="arrow_drop_down"
+                    :value="addInfoFields.creationYear"
+                    @input="notifyChange('creationYear', $event)"
+          />
+        </v-col>
+
+        <v-col >
+          <v-select :items="yearsList"
+                    outlined
+                    :label="labels.collectionDate"
+                    required
+                    prepend-icon="date_range"
+                    append-icon="arrow_drop_down"
+                    :value="addInfoFields.collectionYear"
+                    @input="notifyChange('collectionYear', $event)"
+          />
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col cols="6">
+          <v-select :items="yearsList"
+                    outlined
+                    :label="labels.publicationDate"
+                    required
+                    readonly
+                    prepend-icon="date_range"
+                    append-icon="arrow_drop_down"
+                    :value="addInfoFields.publicationYear"
+                    @input="notifyChange('publicationYear', $event)"
+          />
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col >
+          <v-select :items="dataLicenses"
+                    outlined
+                    :label="labels.dataLicense"
+                    required
+                    append-icon="arrow_drop_down"
+                    :value="addInfoFields.dataLicense"
+                    @input="notifyChange('dataLicense', $event)"
+          />
+        </v-col>
+
+      </v-row>
 
   </v-container>
 
@@ -36,14 +82,14 @@
 
 <script>
 /**
- * EditDataInfo.vue shows information for the data attached to a metadata entry.
+ * EditDataInfo.vue shows Additional Information
  *
  *
- * @summary shows info for data attached to a metadata entry
- * @author Sam Woodcock
+ * @summary Shows Additional Information (creation, collection and publication dates, data license and summary)
+ * @author Sam Woodcock and Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-10-07 17:19:00
+ * Last modified  : 2021-10-12
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -54,30 +100,92 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
-import dataInfo from '@/modules/user/assets/placeholders/dataInfo.jpg';
+// import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
+// import dataInfo from '@/modules/user/assets/placeholders/dataInfo.jpg';
+// import EditAdditionalInfo from "./EditAdditionalInfo";
+// import EditAdditionalInfo from './EditAdditionalInfo';
 
 
 export default {
   name: 'EditDataInfo',
   props: {
   },
+  // created() {
+  //   this.setDataInfo('test', 'bah');
+  // },
   data: () => ({
-    dataInfo,
-    infoCardTitle: 'Additional Information about the Resource',
+    labels: {
+      cardTitle: 'Additional Information about the Resources',
+      creationDate: 'Creation Date',
+      collectionDate: 'Collection Date',
+      publicationDate: 'Publication Date',
+      dataLicense: 'Data License',
+    },
+    maxYears: 30,
+    dataLicenses: ['foo', 'boo'],
   }),
   computed: {
-    disclaimer() {
-      return 'Please note that the screenshot below will serve as a template for the future component.';
+    addInfoFields: {
+      get() {
+        let addInfoObject = { ...this.addInfoObj };
+
+        if (Object.keys(addInfoObject).length === 0) {
+          addInfoObject = {
+            creationYear: '',
+            collectionYear: '',
+            publicationYear: '',
+            dataLicense: '',
+          };
+        }
+        // console.log(addInfoObject);
+        return addInfoObject;
+      },
+    },
+    yearsList() {
+
+      const date = new Date();
+      let year = date.getFullYear();
+      const yearList = [];
+
+      for (let i = 0; i < this.maxYears; i++) {
+        yearList[i] = year.toString();
+        year--;
+      }
+
+      return yearList;
     },
   },
   methods: {
+    editEntry(addInfoObject, property, value) {
+      // addInfoObject[property] = value;
+      // return addInfoObject;
+      addInfoObject[property] = value;
+    },
+    notifyChange(property, value) {
+
+      // const addInfoCopy = { ...this.addInfoFields };
+      const addInfoCopy = { ...this.addInfoObj };
+      // console.log(addInfoCopy);
+
+      this.editEntry(addInfoCopy, property, value);
+
+      // const addInfoCopy = { ...this.addInfoFields, property: value };
+
+      // addInfoCopy = this.editEntry(addInfoCopy, property, value);
+      // addInfoCopy[property] = value;
+      // console.log(addInfoCopy);
+
+      // this.setAdditionalInfo('addInfoObj', addInfoCopy);
+      this.setDataInfo('addInfoObj', addInfoCopy);
+      // console.log(this.addInfoObj);
+
+    },
     setDataInfo(property, value) {
       const newDataInfo = {
         ...this.$props,
         [property]: value,
       };
-
+      // console.log(newDataInfo);
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_INFO,
         data: newDataInfo,
@@ -85,7 +193,8 @@ export default {
     },
   },
   components: {
-    EditImgPlaceholder,
+   // EditAdditionalInfo,
+   // EditImgPlaceholder,
   },
 };
 
