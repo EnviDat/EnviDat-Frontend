@@ -100,19 +100,15 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-// import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
-// import dataInfo from '@/modules/user/assets/placeholders/dataInfo.jpg';
-// import EditAdditionalInfo from "./EditAdditionalInfo";
-// import EditAdditionalInfo from './EditAdditionalInfo';
-
 
 export default {
   name: 'EditDataInfo',
   props: {
+    addInfoObj: {
+      type: Object,
+      default: () => {},
+    },
   },
-  // created() {
-  //   this.setDataInfo('test', 'bah');
-  // },
   data: () => ({
     labels: {
       cardTitle: 'Additional Information about the Resources',
@@ -137,7 +133,7 @@ export default {
             dataLicense: '',
           };
         }
-        // console.log(addInfoObject);
+
         return addInfoObject;
       },
     },
@@ -157,27 +153,15 @@ export default {
   },
   methods: {
     editEntry(addInfoObject, property, value) {
-      // addInfoObject[property] = value;
-      // return addInfoObject;
       addInfoObject[property] = value;
     },
     notifyChange(property, value) {
 
-      // const addInfoCopy = { ...this.addInfoFields };
       const addInfoCopy = { ...this.addInfoObj };
-      // console.log(addInfoCopy);
 
       this.editEntry(addInfoCopy, property, value);
 
-      // const addInfoCopy = { ...this.addInfoFields, property: value };
-
-      // addInfoCopy = this.editEntry(addInfoCopy, property, value);
-      // addInfoCopy[property] = value;
-      // console.log(addInfoCopy);
-
-      // this.setAdditionalInfo('addInfoObj', addInfoCopy);
       this.setDataInfo('addInfoObj', addInfoCopy);
-      // console.log(this.addInfoObj);
 
     },
     setDataInfo(property, value) {
@@ -193,8 +177,6 @@ export default {
     },
   },
   components: {
-   // EditAdditionalInfo,
-   // EditImgPlaceholder,
   },
 };
 
