@@ -51,8 +51,8 @@
 
       <v-col >
         <BaseUserPicker v-bind="baseUserPickerObject"
-                        @removedUsers="catchRemovedUsers"
-                        @pickedUsers="catchPickedUsers"/>
+                        @removedUsers="catchAuthorChange"
+                        @pickedUsers="catchAuthorChange"/>
       </v-col>
 
 
@@ -65,7 +65,8 @@
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
-                      v-model="contactGivenNameField" />
+                      :value="contactAuthorField.contactGivenName"
+                      @input="notifyChange('contactGivenName', $event)" />
 
         <v-text-field :label="labels.labelContactSurname"
                       outlined
@@ -74,7 +75,8 @@
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
-                      v-model="contactSurnameField" />
+                      :value="contactAuthorField.contactSurname"
+                      @input="notifyChange('contactSurname', $event)" />
 
         <v-text-field :label="labels.labelContactEmail"
                       outlined
@@ -83,7 +85,8 @@
                       dense
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
-                      v-model="contactEmailField" />
+                      :value="contactAuthorField.contactEmail"
+                      @input="notifyChange('contactEmail', $event)"/>
 
 
       </v-col>
@@ -165,8 +168,27 @@ export default {
       type: Array,
       default: () => [],
     },
+    contactAuthor: {
+      type: Object,
+      default: () => {},
+    },
   },
   computed: {
+    contactAuthorField: {
+      get() {
+        let contactAuthor = { ...this.contactAuthor };
+
+        if (Object.keys(contactAuthor).length === 0) {
+          contactAuthor = {
+            contactGivenName: '',
+            contactSurname: '',
+            contactEmail: '',
+          };
+        }
+
+        return contactAuthor;
+      },
+    },
     existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
@@ -192,7 +214,7 @@ export default {
         showCloseButton: false,
         contactName: this.inputContactFullName,
         contactIcon,
-        contactEmail: this.contactEmailField,
+        contactEmail: this.inputContactEmail,
         mailIcon,
         doiIcon,
         licenseIcon,
@@ -207,7 +229,6 @@ export default {
 
       return previewEntry;
     },
-
     metadataTitleField: {
       get() {
         return this.metadataTitle;
@@ -216,35 +237,19 @@ export default {
         this.setHeaderInfo('metadataTitle', value);
       },
     },
-    contactGivenNameField: {
-      get() {
-        return this.contactGivenName;
-      },
-      set(value) {
-        this.contactGivenName = value;
-        this.setContactAuthor();
-      },
-    },
-    contactSurnameField: {
-      get() {
-        return this.contactSurname;
-      },
-      set(value) {
-        this.contactSurname = value;
-        this.setContactAuthor();
-      },
-    },
-    contactEmailField: {
-      get() {
-        return this.contactEmail;
-      },
-      set(value) {
-        this.contactEmail = value;
-        this.setContactAuthor();
-      },
-    },
     inputContactFullName() {
-      return `${this.contactGivenNameField.trim()} ${this.contactSurnameField.trim()}`;
+      // eslint-disable-next-line no-prototype-builtins
+      if (this.contactAuthor && this.contactAuthor.hasOwnProperty('contactGivenName') && this.contactAuthor.hasOwnProperty('contactSurname')) {
+        return `${this.contactAuthor.contactGivenName.trim()} ${this.contactAuthor.contactSurname.trim()}`;
+      }
+      return '';
+    },
+    inputContactEmail() {
+      // eslint-disable-next-line no-prototype-builtins
+      if (this.contactAuthor && this.contactAuthor.hasOwnProperty('contactEmail')) {
+        return `${this.contactAuthor.contactEmail.trim()}`;
+      }
+      return '';
     },
   },
   methods: {
@@ -257,6 +262,7 @@ export default {
       };
       this.setHeaderInfo('contactAuthor', contAuthor);
     },
+    // Returns array of fullName strings extracted from userObjects
     fullNameUsers(userObjects) {
 
       const fullNameArray = [];
@@ -271,43 +277,51 @@ export default {
 
       return fullNameArray;
     },
-    catchRemovedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
-    },
-    catchPickedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
+    catchAuthorChange(pickedAuthor) {
+
+      // Get author object
+      const author = this.getAuthorByName(pickedAuthor);
+
+      // Call setContactDetails to assign authorObject values
+      const authorObject = this.getAuthorObject(author);
+
+      // Call setHeaderInfo to emit authorObject to eventBus
+      this.setHeaderInfo('contactAuthor', authorObject);
+
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
       return found?.length > 0 ? found[0] : null;
     },
-    notifyChange(authorName) {
-
-      // Get author object
-      const author = this.getAuthorByName(authorName);
-
-      // Call setContactDetails to automatically assign and clear contact details variables
-      this.setContactDetails(author);
-
-      // Call setContactAuthor() to create author object and emit to eventBus
-      this.setContactAuthor();
-
-    },
-    // Sets contact details variables if author is not null
-    // Else clears contact details variables
-    setContactDetails(author) {
+    // Returns object with contact details if author is not null
+    // Else returns object with contact details values assigned to empty strings
+    getAuthorObject(author) {
 
       if (author) {
-        this.contactGivenNameField = author.firstName;
-        this.contactSurnameField = author.lastName;
-        this.contactEmailField = author.email;
+        return {
+          contactGivenName: author.firstName,
+          contactSurname: author.lastName,
+          contactEmail: author.email,
+        };
       }
-      else {
-        this.contactGivenNameField = '';
-        this.contactSurnameField = '';
-        this.contactEmailField = '';
-      }
+      return {
+        contactGivenName: '',
+        contactSurname: '',
+        contactEmail: '',
+      };
+
+    },
+    editEntry(contactAuthorObject, property, value) {
+      contactAuthorObject[property] = value;
+    },
+    notifyChange(property, value) {
+
+      const contactAuthorCopy = { ...this.contactAuthorField };
+
+      this.editEntry(contactAuthorCopy, property, value);
+
+      this.setHeaderInfo('contactAuthor', contactAuthorCopy);
 
     },
     setHeaderInfo(property, value) {
@@ -348,9 +362,6 @@ export default {
       ],
     iconName: imageContact,
     iconMail: imageMail,
-    contactGivenName: '',
-    contactSurname: '',
-    contactEmail: '',
    }),
   components: {
     MetadataHeader,
