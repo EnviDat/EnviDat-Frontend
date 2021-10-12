@@ -142,9 +142,11 @@ export function selectForEditing(store, elementList, id, previousId, propertyToC
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
     metadataTitle: '',
-    contactEmail: '',
-    contactGivenName: '',
-    contactSurname: '',
+    contactAuthor: {
+      contactEmail: '',
+      contactGivenName: '',
+      contactSurname: '',
+    },
   },
   [EDITMETADATA_MAIN_DESCRIPTION]: {
     description: '',
@@ -159,10 +161,12 @@ const emptyMetadataInEditing = {
     resources: [],
   },
   [EDITMETADATA_DATA_INFO]: {
-    creationYear: '',
-    collectionYear: '',
-    publicationYear: '',
-    dataLicense: '',
+    addInfoObj: {
+      creationYear: '',
+      collectionYear: '',
+      publicationYear: '',
+      dataLicense: '',
+    },
   },
   [EDITMETADATA_DATA_GEO]: {
     geometries: [],
