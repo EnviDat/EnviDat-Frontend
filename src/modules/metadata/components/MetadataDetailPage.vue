@@ -352,7 +352,6 @@ export default {
   },
   methods: {
     setGeoServiceLayers(location, layerConfig, wmsUrl) {
-
       try {
         location = location ? tRewind(location.geoJSON) : null;
       } catch (error) {
@@ -362,16 +361,21 @@ export default {
       if (wmsUrl) {
         this.fetchWmsConfig(wmsUrl);
       } else {
-
         this.geoServiceConfig = {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
         };
-
-        const { components } = this.$options;
-        this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
       }
+
+      this.geoServiceConfig = {
+        ...this.geoServiceConfig,
+        mapHeight: this.mapHeight,
+        mapEditable: this.mapEditable,
+        mapDivId: this.mapDivId,
+      };
+      const { components } = this.$options;
+      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
     },
     loadGeoServiceLayers(url) {
       this.geoServiceLayers = null;
@@ -401,7 +405,6 @@ export default {
       });
     },
     loadParameterJson(url) {
-
       this.fileObjects = null;
       this.graphStyling = null;
 
@@ -434,8 +437,8 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
+    
     showFilePreviewModal(url) {
-
       const strat = getPreviewStrategyFromUrl(url);
 
       this.filePreviewComponent = strat.component;
@@ -835,6 +838,9 @@ export default {
     secondCol: [],
     singleCol: [],
     keyHash: '',
+    mapEditable: false,
+    mapHeight: 450,
+    mapDivId: 'metadata-map-small',
   }),
 };
 </script>

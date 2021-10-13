@@ -12,7 +12,11 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: ['@vue/airbnb', 'plugin:vue/essential'],
+  extends: [
+    '@vue/airbnb',
+    'plugin:vue/essential',
+    "prettier"
+  ],
 
   // // required to lint *.vue files
   plugins: [
