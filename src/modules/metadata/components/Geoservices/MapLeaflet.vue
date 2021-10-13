@@ -1,38 +1,45 @@
 <template>
-  <div :id="mapDivId" ref="map"
-        :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px' };`">
-
-    <div  v-if="map">
-      <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
-                        @remove="removePoint"></map-leaflet-point>
+  <div
+    :id="mapDivId"
+    ref="map"
+    :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px'};`"
+  >
+    <div v-if="map">
+      <map-leaflet-point
+        v-for="(point, key) in featureInfoPts"
+        :key="key"
+        :data="point"
+        @add="addPoint"
+        @remove="removePoint"
+      ></map-leaflet-point>
     </div>
   </div>
 </template>
 
 <script>
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import 'leaflet-bing-layer';
-import '@geoman-io/leaflet-geoman-free';  
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
-import axios from 'axios';
-import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafletPoint';
-import markerIcon from '@/assets/map/marker-icon.png';
-import markerIcon2x from '@/assets/map/marker-icon-2x.png';
-import markerIconShadow from '@/assets/map/marker-shadow.png';
-import { mapState } from 'vuex';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-bing-layer";
+import "@geoman-io/leaflet-geoman-free";
+import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
+import axios from "axios";
+import MapLeafletPoint from "@/modules/metadata/components/Geoservices/MapLeafletPoint";
+import markerIcon from "@/assets/map/marker-icon.png";
+import markerIcon2x from "@/assets/map/marker-icon-2x.png";
+import markerIconShadow from "@/assets/map/marker-shadow.png";
+import { mapState } from "vuex";
 import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
   MAP_ZOOM_CENTER,
   eventBus,
-} from '@/factories/eventBus';
+} from "@/factories/eventBus";
 // import { leafletLayer } from './layer-leaflet';
 
 /* eslint-disable vue/no-unused-components */
 
 export default {
-  name: 'MapLeaflet',
+  name: "MapLeaflet",
   components: {
     MapLeafletPoint,
   },
@@ -44,8 +51,8 @@ export default {
     maxExtent: Object,
     opacity: Number,
     mapDivId: {
-      type: String, 
-      default: 'map-small'
+      type: String,
+      default: "map-small",
     },
     mapHeight: {
       type: Number,
@@ -64,7 +71,7 @@ export default {
     this.setupMap();
 
     if (this.mapEditable) {
-      // this.map.pm.addControls();
+      this.map.pm.addControls({ position: "topright" });
     }
   },
   beforeDestroy() {
@@ -77,25 +84,21 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(["config"]),
     layerConfig() {
       return this.$store?.state.geoservices.layerConfig || null;
     },
     streets() {
-      return L.tileLayer(
-        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          noWrap: true,
-        },
-      );
+      return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        noWrap: true,
+      });
     },
     satellite() {
       return L.tileLayer.bing({
         bingMapsKey: this.config?.apiKeys?.bing || null,
-        imagerySet: 'AerialWithLabels',
+        imagerySet: "AerialWithLabels",
         noWrap: true,
       });
     },
@@ -117,30 +120,27 @@ export default {
 
       const polygonColor = this.$vuetify.theme.themes.light.accent;
       const dataOrigin = {
-          type: 'Feature',
-          properties: {
-            name: 'Data site',
-            describtion: 'Data origin',
-          },
-          geometry: geoJson,
-        };
-
-      this.siteLayer = L.geoJSON(
-        [dataOrigin],
-        {
-          pointToLayer(feature, latlng) {
-            return L.marker(latlng, {
-              icon,
-              opacity: 0.65,
-              riseOnHover: true,
-            });
-          },
-          style: {
-            color: polygonColor,
-            // fillOpacity: 0.5, opacity: 1, weight: 1,
-          },
+        type: "Feature",
+        properties: {
+          name: "Data site",
+          describtion: "Data origin",
         },
-      );
+        geometry: geoJson,
+      };
+
+      this.siteLayer = L.geoJSON([dataOrigin], {
+        pointToLayer(feature, latlng) {
+          return L.marker(latlng, {
+            icon,
+            opacity: 0.65,
+            riseOnHover: true,
+          });
+        },
+        style: {
+          color: polygonColor,
+          // fillOpacity: 0.5, opacity: 1, weight: 1,
+        },
+      });
 
       // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
 
@@ -157,28 +157,27 @@ export default {
 
       while (start < this.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
-        const promise = axios.get(url)
-          .then((res) => {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(res.data, 'text/xml');
-            const layers = xmlDoc.getElementsByTagName('Layer');
-            layers.forEach((layer) => {
-              featureinfo.push({
-                name: layer.attributes.name.nodeValue,
-                value: Number(layer.childNodes[1].attributes.value.nodeValue),
-              });
+        const promise = axios.get(url).then((res) => {
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(res.data, "text/xml");
+          const layers = xmlDoc.getElementsByTagName("Layer");
+          layers.forEach((layer) => {
+            featureinfo.push({
+              name: layer.attributes.name.nodeValue,
+              value: Number(layer.childNodes[1].attributes.value.nodeValue),
             });
           });
+        });
         promises.push(promise);
         start += 50;
       }
 
-      Promise.all(promises)
-      .then(() => this.$store.commit('addTimeSeries',
-        {
+      Promise.all(promises).then(() =>
+        this.$store.commit("addTimeSeries", {
           values: featureinfo,
           coords: latlng,
-        }));
+        })
+      );
     },
     getFeatureInfoUrl(latlng, start, stop) {
       // Construct a GetFeatureInfo request URL given a point
@@ -187,21 +186,26 @@ export default {
       let bbox = this.map.getBounds(); // bbox in WGS coordinates
       // eslint-disable-next-line no-underscore-dangle
       bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
-      const layers = this.layerConfig.layers.map(layer => layer.name).slice(start, stop);
+      const layers = this.layerConfig.layers
+        .map((layer) => layer.name)
+        .slice(start, stop);
       const params = {
-        request: 'GetFeatureInfo',
-        service: 'WMS',
-        srs: 'EPSG:4326',
-        version: '1.3.0',
+        request: "GetFeatureInfo",
+        service: "WMS",
+        srs: "EPSG:4326",
+        version: "1.3.0",
         bbox,
         height: size.y,
         width: size.x,
         query_layers: layers,
-        info_format: 'text/xml',
+        info_format: "text/xml",
         i: point.x,
         j: point.y,
       };
-      return this.layerConfig.baseURL + L.Util.getParamString(params, this.layerConfig.baseURL, true);
+      return (
+        this.layerConfig.baseURL +
+        L.Util.getParamString(params, this.layerConfig.baseURL, true)
+      );
     },
     zoomIn(mapId) {
       if (this.mapDivId !== mapId) {
@@ -227,7 +231,7 @@ export default {
       }
     },
     setupMap() {
-/*
+      /*
       const defaultMaxBound = [
         [-45, -90],
         [45, 90],
@@ -235,9 +239,9 @@ export default {
 */
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
-        center: [46.943961, 8.199240],
+        center: [46.943961, 8.19924],
         zoom: 7,
-/*
+        /*
         maxBounds: defaultMaxBound,
         maxBoundsViscosity: 1,
 */
@@ -247,7 +251,7 @@ export default {
       this.replaceBasemap();
 
       if (this.layerConfig && this.layerConfig.timeseries) {
-        this.map.on('click', e => this.getFeatureInfo(e.latlng));
+        this.map.on("click", (e) => this.getFeatureInfo(e.latlng));
       }
 
       if (this.site) {
@@ -282,15 +286,16 @@ export default {
       return new L.tileLayer.wms(config.baseURL, {
         layers: config.name,
         transparent: true,
-        format: 'image/png',
+        format: "image/png",
         noWrap: true,
-      });      
+      });
     },
     replaceBasemap() {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer =
+        this.baseMapLayerName === "streets" ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -298,17 +303,19 @@ export default {
       const marker = L.circle(data.coords, {
         id: data.id,
         color: data.color,
-        fillColor: '#f03',
+        fillColor: "#f03",
         fillOpacity: 0.5,
         radius: 1000,
       }).addTo(this.map);
-      marker.bindPopup(`${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`);
+      marker.bindPopup(
+        `${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`
+      );
       this.markers.push(marker);
     },
     removePoint(id) {
-      const marker = this.markers.find(m => m.options.id === id);
+      const marker = this.markers.find((m) => m.options.id === id);
       this.map.removeLayer(marker);
-      this.markers = this.markers.filter(m => m.options.id !== id);
+      this.markers = this.markers.filter((m) => m.options.id !== id);
     },
   },
   watch: {
@@ -359,5 +366,4 @@ export default {
   right: 8px;
   z-index: 10000;
 }
-
 </style>
