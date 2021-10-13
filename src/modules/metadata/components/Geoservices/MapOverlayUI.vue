@@ -1,5 +1,5 @@
 <template>
-    <div id="MapWidget" 
+    <div id="MapOverlayUI" 
           class="pa-2 overlayInteraction">
 
     <v-row no-gutters >
@@ -174,7 +174,7 @@
   import FeatureInfo from './FeatureInfo';
 
   export default {
-    name: 'MapWidget',
+    name: 'MapOverlayUI',
     components: {
       FeatureInfo,
       // Timeslider,

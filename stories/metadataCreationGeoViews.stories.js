@@ -11,56 +11,94 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
+import { storiesOf } from "@storybook/vue";
 
-import EditDataGeo from '@/modules/user/components/EditDataGeo';
+import EditDataGeo from "@/modules/user/components/EditDataGeo";
+import MapLeaflet from "@/modules/metadata/components/Geoservices/MapLeaflet";
 
-import { METADATA_EDITING } from './storybookFolder';
-
+import { METADATA_EDITING } from "./storybookFolder";
 
 const storybookFolder = `${METADATA_EDITING} / Data Infos`;
 
-
-storiesOf(storybookFolder, module)
-  .add('Edit Geo Information', () => ({
-    components: { EditDataGeo },
-    template: `
+storiesOf(storybookFolder, module).add("Edit Geo Information", () => ({
+  components: {
+    EditDataGeo,
+    MapLeaflet
+  },
+  template: `
     <v-col>
 
       <v-row>
-        EditDataGeo with spatial info
+        EditDataGeo with Point
       </v-row>
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataGeo v-bind="genericProps" />
+          <EditDataGeo :genericProps="genericPropsPoint" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditDataGeo with Polygon
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataGeo :genericProps="genericPropsPolygon" />
         </v-col>
       </v-row>
 
     </v-col>
     `,
-    created() {
-//      eventBus.$on(SELECT_EDITING_RESOURCE, this.editComponentsChanged);
+  data: () => ({
+    genericPropsPoint: {
+      mapDivId: "point-map-small",
+      error: null,
+      layerConfig: null,
+      mapHeight: 450,
+      mapEditable: true,
+      site: {
+        type: "Point",
+        coordinates: [9.870043694972992, 46.80772203292321]
+      }
     },
-    beforeDestroy() {
-//      eventBus.$off(SELECT_EDITING_RESOURCE, this.editComponentsChanged);
+    genericPropsPolygon: {
+      mapDivId: "polygon-map-small",
+      error: null,
+      layerConfig: null,
+      mapHeight: 450,
+      mapEditable: true,
+      site: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [8.7451171875, 46.89073198488606],
+            [17.4462890625, 51.971796908939176],
+            [28.388671875, 57.42208294734931],
+            [23.73046875, 59.086490948368436],
+            [4.658203125, 52.24170452760525],
+            [0.2197265625, 48.80734571355101],
+            [8.7451171875, 46.89073198488606]
+          ]
+        ]
+      }
+    }
+  }),
+  created() {
+    //      eventBus.$on(SELECT_EDITING_RESOURCE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    //      eventBus.$off(SELECT_EDITING_RESOURCE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      this.genericProps = updateObj.data;
     },
-    methods: {
-      editComponentsChanged(updateObj) {
-         this.genericProps = updateObj.data;
-      },
+    changeOpacity(value) {
+      this.opacity = value;
     },
-    data: () => ({
-      genericProps: {
-        basemap: 'streets',
-        layerConfig: null,
-        selectedLayer: null,
-        splitLayer: null,
-        splitScreen: false,
-        show3d: false,
-        show3dSplit: false,
-        timeseries: [],
-        site: null,
-      },
-    }),
-  }));
+    changeLayer(layerName) {
+      this.$emit("changeLayer", layerName, this.mapDivId);
+    }
+  }
+}));

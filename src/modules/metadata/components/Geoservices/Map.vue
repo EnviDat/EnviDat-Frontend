@@ -3,7 +3,7 @@
                 fluid
                 class="fill-height pa-0" >
 
-    <MapWidget :style="`position: absolute; top: 16px;
+    <MapOverlayUI :style="`position: absolute; top: 16px;
                         z-index: 1000;
                         width: ${showMapSplitCloseButton ? '50' : '95'}%;
                         height: 95%; `"
@@ -42,7 +42,8 @@
                       :map-div-id="mapDivId"
                       :opacity="opacity"
                       :site="site"
-                      :height="height" >
+                      :mapHeight="mapHeight" 
+                      :mapEditable="mapEditable" >
                       <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
 
@@ -70,28 +71,35 @@
   } from '@/factories/metaDataFactory';
 
   import MapLeaflet from './MapLeaflet';
-  import MapCesium from './MapCesium';
-  import MapWidget from './MapWidget';
+  // import MapCesium from './MapCesium';
+  import MapOverlayUI from './MapOverlayUI';
 
   export default {
     name: 'Map',
     components: {
-      MapCesium,
+      // MapCesium,
       MapLeaflet,
-      MapWidget,
+      MapOverlayUI,
     },
     props: {
       baseMapLayer: String,
       layerConfig: Object,
       site: Object,
-      mapDivId: { type: String, required: true },
+      mapDivId: {
+        type: String, 
+        default: 'map-small'
+      },
       selectedLayerName: { type: String },
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
       showFullscreenButton: Boolean,
-      height: {
+      mapHeight: {
         type: Number,
         default: 0,
+      },
+      mapEditable: {
+        type: Boolean,
+        default: false,
       },
       webpIsSupported: Boolean,
     },

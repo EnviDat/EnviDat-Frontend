@@ -64,7 +64,7 @@ import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MetadataLocationCatalog from './MetadataLocationCatalog';
 import { createWmsCatalog } from '../GeoservicesMVP/catalogWms';
 
-const MetadataLocationCesium = () => import('./MetadataLocationCesium');
+// const MetadataLocationCesium = () => import('./MetadataLocationCesium');
 const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
 
 
@@ -73,7 +73,7 @@ export default {
   components: {
     MetadataLocationCatalog,
     MetadataLocationLeaflet,
-    MetadataLocationCesium,
+    // MetadataLocationCesium,
   },
   props: {
     genericProps: Object,

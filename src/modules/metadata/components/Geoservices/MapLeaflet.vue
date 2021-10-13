@@ -1,6 +1,6 @@
 <template>
   <div :id="mapDivId" ref="map"
-        :style="`height: ${height === 0 ? '100%' : height + 'px' };`">
+        :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px' };`">
 
     <div  v-if="map">
       <map-leaflet-point v-for="(point, key) in featureInfoPts" :key="key" :data="point" @add="addPoint"
@@ -13,6 +13,8 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-bing-layer';
+import '@geoman-io/leaflet-geoman-free';  
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import axios from 'axios';
 import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafletPoint';
 import markerIcon from '@/assets/map/marker-icon.png';
@@ -41,10 +43,17 @@ export default {
     featureInfoPts: Array,
     maxExtent: Object,
     opacity: Number,
-    mapDivId: String,
-    height: {
+    mapDivId: {
+      type: String, 
+      default: 'map-small'
+    },
+    mapHeight: {
       type: Number,
       default: 0,
+    },
+    mapEditable: {
+      type: Boolean,
+      default: false,
     },
   },
   mounted() {
@@ -53,6 +62,10 @@ export default {
     eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
 
     this.setupMap();
+
+    if (this.mapEditable) {
+      // this.map.pm.addControls();
+    }
   },
   beforeDestroy() {
     eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
@@ -214,14 +227,12 @@ export default {
       }
     },
     setupMap() {
-
 /*
       const defaultMaxBound = [
         [-45, -90],
         [45, 90],
       ];
 */
-
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
         center: [46.943961, 8.199240],
