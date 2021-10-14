@@ -29,7 +29,7 @@
         <v-col>
 
           <v-combobox  @input="notifyChange('keywords', $event)"
-                      :value="keywords"
+                      :value="keywordsField"
                       :items="existingKeywordItems"
                       item-text="name"
                       chips
@@ -98,29 +98,22 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_KEYWORDS,
-  eventBus,
-} from '@/factories/eventBus';
+import {EDITMETADATA_KEYWORDS, EDITMETADATA_OBJECT_UPDATE, eventBus,} from '@/factories/eventBus';
 
 import MetadataCard from '@/components/Cards/MetadataCard';
 import TagChip from '@/components/Chips/TagChip';
 import catCards from '@/store/categoryCards';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
 
-import {
-  enhanceTitleImg,
-  getTagColor,
-} from '@/factories/metaDataFactory';
+import {enhanceTitleImg, getTagColor,} from '@/factories/metaDataFactory';
 
-import { mapState } from 'vuex';
+import {mapState} from 'vuex';
 
 
 export default {
   name: 'EditKeywords',
   data: () => ({
-    keywords: [],
+    // keywords: [],
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
@@ -130,7 +123,7 @@ export default {
     labels: {
       title: 'Edit Metadata Keywords',
       keywordsLabel: 'Click here to pick Keywords',
-      cardInstructions1: 'Please enter keywords for your metadata entry.',
+      cardInstructions1: 'Please enter at least 5 keywords for your metadata entry.',
       cardInstructions2: 'To use a new keyword not in dropdown list please type keyword and press enter.',
       previewText: 'Metadata card preview',
     },
@@ -152,6 +145,13 @@ export default {
       type: String,
       default: '',
     },
+
+
+    // TEST
+    keywords: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState([
@@ -166,6 +166,16 @@ export default {
     keywordsListWordMax() {
       return this.config?.userEditMetadataConfig.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
+
+
+    // TEST
+    keywordsField: {
+      get() {
+        return [...this.keywords];
+      },
+    },
+
+
     metadataPreviewEntry() {
 
       const previewEntry = {
@@ -269,15 +279,19 @@ export default {
 
       // Assign removeIndex to index of keywords object that match item
       const removeIndex = this.keywords.indexOf(item);
+      // console.log(removeIndex);
 
       // Assign localKeywords to copy of keywords
       const localKeywords = [...this.keywords];
 
       // Remove object with index of removeIndex from localKeywords
       localKeywords.splice(removeIndex, 1);
+      // console.log(localKeywords);
 
       // Process and emit localKeywords to eventBus
-      this.notifyChange('keywords', localKeywords);
+      // this.notifyChange('keywords', localKeywords);
+
+      this.setKeywords('keywords', this.processValues(localKeywords));
 
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
@@ -312,25 +326,48 @@ export default {
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
-    setKeywords(value) {
+    setKeywords(property, value) {
       const newKeywords = {
         ...this.$props,
-        keywords: value,
+        [property]: value,
       };
-
+      // console.log(newKeywords);
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });
 
     },
+    // notifyChange(property, value) {
+    //
+    //   // Assign keywords to keywords returned from processValues(value)
+    //   this.keywords = this.processValues(value);
+    //
+    //   // Pass keywords to setKeywords() to emit keywords to eventBus
+    //   this.setKeywords(this.keywords);
+    //
+    // },
     notifyChange(property, value) {
 
-      // Assign keywords to keywords returned from processValues(value)
-      this.keywords = this.processValues(value);
+      // console.log(value);
 
-      // Pass keywords to setKeywords() to emit keywords to eventBus
-      this.setKeywords(this.keywords);
+      // Assign keywords to keywords returned from processValues(value)
+      // this.keywords = this.processValues(value);
+
+      // const newKeywordsField = [ ...this.keywordsField, ...this.processValues(value)];
+      // console.log(newKeywordsField);
+
+      const mergedKeywordsField = [ ...this.keywordsField, ...value];
+      // console.log(mergedKeywordsField);
+
+      const cleanedKeywordsField = this.processValues(mergedKeywordsField);
+      // console.log(cleanedKeywordsField);
+
+      this.setKeywords(property, cleanedKeywordsField);
+
+      //
+      // // Pass keywords to setKeywords() to emit keywords to eventBus
+      // this.setKeywords(this.keywords);
 
     },
   },
