@@ -113,7 +113,6 @@ import {mapState} from 'vuex';
 export default {
   name: 'EditKeywords',
   data: () => ({
-    // keywords: [],
     search: null,
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
@@ -145,9 +144,6 @@ export default {
       type: String,
       default: '',
     },
-
-
-    // TEST
     keywords: {
       type: Array,
       default: () => [],
@@ -166,16 +162,11 @@ export default {
     keywordsListWordMax() {
       return this.config?.userEditMetadataConfig.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
-
-
-    // TEST
     keywordsField: {
       get() {
         return [...this.keywords];
       },
     },
-
-
     metadataPreviewEntry() {
 
       const previewEntry = {
@@ -286,11 +277,8 @@ export default {
 
       // Remove object with index of removeIndex from localKeywords
       localKeywords.splice(removeIndex, 1);
-      // console.log(localKeywords);
 
       // Process and emit localKeywords to eventBus
-      // this.notifyChange('keywords', localKeywords);
-
       this.setKeywords('keywords', this.processValues(localKeywords));
 
     },
@@ -331,43 +319,20 @@ export default {
         ...this.$props,
         [property]: value,
       };
-      // console.log(newKeywords);
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });
 
     },
-    // notifyChange(property, value) {
-    //
-    //   // Assign keywords to keywords returned from processValues(value)
-    //   this.keywords = this.processValues(value);
-    //
-    //   // Pass keywords to setKeywords() to emit keywords to eventBus
-    //   this.setKeywords(this.keywords);
-    //
-    // },
     notifyChange(property, value) {
 
-      // console.log(value);
-
-      // Assign keywords to keywords returned from processValues(value)
-      // this.keywords = this.processValues(value);
-
-      // const newKeywordsField = [ ...this.keywordsField, ...this.processValues(value)];
-      // console.log(newKeywordsField);
-
       const mergedKeywordsField = [ ...this.keywordsField, ...value];
-      // console.log(mergedKeywordsField);
 
       const cleanedKeywordsField = this.processValues(mergedKeywordsField);
-      // console.log(cleanedKeywordsField);
 
       this.setKeywords(property, cleanedKeywordsField);
-
-      //
-      // // Pass keywords to setKeywords() to emit keywords to eventBus
-      // this.setKeywords(this.keywords);
 
     },
   },
