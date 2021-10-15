@@ -193,7 +193,10 @@
       mapIs3D: Boolean,
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
-      showFullscreenButton: Boolean,
+      showFullscreenButton: {
+        type: Boolean,
+        default: true,
+      },
     },
     created() {
       // console.log(this.showMapSplitButton);

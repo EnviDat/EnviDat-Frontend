@@ -92,7 +92,10 @@
       selectedLayerName: { type: String },
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
-      showFullscreenButton: Boolean,
+      showFullscreenButton: {
+        type: Boolean,
+        default: true,
+      },
       mapHeight: {
         type: Number,
         default: 0,

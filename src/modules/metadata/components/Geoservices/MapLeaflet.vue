@@ -23,6 +23,7 @@ import "leaflet-bing-layer";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import axios from "axios";
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import MapLeafletPoint from "@/modules/metadata/components/Geoservices/MapLeafletPoint";
 import markerIcon from "@/assets/map/marker-icon.png";
 import markerIcon2x from "@/assets/map/marker-icon-2x.png";
@@ -32,9 +33,15 @@ import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
   MAP_ZOOM_CENTER,
+  INJECT_MAP_FULLSCREEN,
+  METADATA_OPEN_MODAL,
+  METADATA_CLOSE_MODAL,
+  MAP_ADD_NEW_GEOM,
+  MAP_EDIT_EXISTING_GEOM,
   eventBus,
 } from "@/factories/eventBus";
 // import { leafletLayer } from './layer-leaflet';
+import MetadataMapFullscreen from './MetadataMapFullscreen';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -67,17 +74,30 @@ export default {
     eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
     eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
     eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
 
     this.setupMap();
 
     if (this.mapEditable) {
-      this.map.pm.addControls({ position: "topright" });
+      this.setupEditing();
+      this.map.on('pm:create', (e) => {
+        const geomGeoJSON = e.layer.toGeoJSON();
+        eventBus.$emit(MAP_ADD_NEW_GEOM, geomGeoJSON.geometry);
+      });
+      this.map.on('pm:edit', (e) => {
+        const geomGeoJSON = e.layer.toGeoJSON();
+        eventBus.$emit(MAP_EDIT_EXISTING_GEOM, geomGeoJSON.geometry);
+      });
     }
+
   },
   beforeDestroy() {
     eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
     eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
     eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
 
     if (this.map) {
       this.map.remove();
@@ -317,6 +337,69 @@ export default {
       this.map.removeLayer(marker);
       this.markers = this.markers.filter((m) => m.options.id !== id);
     },
+    setupEditing() {
+
+      // Set styles for markers and polygons
+      const editMarkerIcon = L.icon({
+        iconUrl: this.markerIcon,
+        iconRetinaUrl: this.markerIcon2x,
+        shadowUrl: this.markerIconShadow
+      });
+      this.map.pm.setGlobalOptions({
+        markerStyle: {
+          icon: editMarkerIcon
+        },
+        pathOptions: {
+          color: this.$vuetify.theme.themes.light.accent
+        }
+      });
+
+      // Check current geom type on map
+      let geomType = null
+      this.map.eachLayer((layer) => {
+        geomType = layer.feature ? layer.feature.geometry.type : geomType;
+      });
+      const markerEditButtons = (geomType === "Point" || geomType === "MultiPoint");
+      const polyEditButtons = (geomType === "Polygon" || geomType === "MultiPolygon");
+      // Add controls based on what type of geom editing
+      this.map.pm.addControls({
+        drawMarker: markerEditButtons,
+        drawPolygon: polyEditButtons,
+        drawRectangle: polyEditButtons,
+        editMode: polyEditButtons,
+        position: "topright",
+        drawPolyline: false,
+        drawCircle: false,
+        drawCircleMarker: false,
+        cutPolygon: false,
+        rotateMode: false,
+      });
+
+      // // Add custom toolbar
+      // this.map.pm.Toolbar.createCustomControl({
+      //   name: "add_global_geom",
+      //   block: "custom",
+      //   title: "Add Global Geometry",
+      //   className: "marker-icon marker-icon-middle material-icons language",
+      //   onClick: this.tempFunction,
+      //   toggle: false,
+      // });
+
+
+    },
+  // tempFunction() {
+  //   const geoms = this.map.pm.getGeomanLayers()
+  //   console.log(geoms);
+  //   console.log(geoms[0].feature.geometry.coordinates);
+  // },
+  showFullscreenMapModal() {
+    this.fullScreenComponent = MetadataMapFullscreen;
+    eventBus.$emit(METADATA_OPEN_MODAL);
+  },
+  closeModal() {
+    this.fullScreenComponent = null;
+    eventBus.$emit(METADATA_CLOSE_MODAL);
+  },
   },
   watch: {
     opacity() {

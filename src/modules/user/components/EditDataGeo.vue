@@ -1,23 +1,17 @@
 <template>
-
-  <v-container id="EditDataGeo"
-                fluid
-                class="pa-0">
-
-    <v-row >
-      <v-col >
-        <MetadataGeo  :genericProps="genericProps" />
+  <v-container id="EditDataGeo" fluid class="pa-0">
+    <v-row>
+      <v-col>
+        <MetadataGeo :genericProps="genericProps" />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
 
 
 <script>
 /**
- * EditDataGeo.vue is wrapper around MetadataGeo.vue for modify geospatial information in the Edit workflow.
+ * EditDataGeo.vue is a wrapper around MetadataGeo.vue for modify geospatial information in the Edit workflow.
  *
  *
  * @summary wrapper for geospatial metadata editing
@@ -28,72 +22,98 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import axios from 'axios';
-import { rewind as tRewind } from '@turf/turf';
+ */
+// import { mapState } from "vuex";
+import axios from "axios";
+
+import { mergeGeomsToMultiGeoms } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_DATA_GEO,
+  MAP_ADD_NEW_GEOM,
+  MAP_EDIT_EXISTING_GEOM,
   eventBus,
-} from '@/factories/eventBus';
+} from "@/factories/eventBus";
+// import { METADATA_NAMESPACE } from "@/store/metadataMutationsConsts";
 
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
-// import { createLocation } from '@/factories/metaDataFactory';
-import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
-
+import MetadataGeo from "@/modules/metadata/components/Geoservices/MetadataGeo";
 
 export default {
-  name: 'EditDataGeo',
+  name: "EditDataGeo",
   props: {
-    genericProps: Object,
+    initialMapDivId: {
+      type: String,
+      default: "map-small",
+    },
+    initialMapHeight: {
+      type: Number,
+      default: 450,
+    },
+    initialGeoJSON: {
+      type: Object,
+      default: null,
+    },
   },
   data: () => ({
+    // Used to update EDITMETADATA_DATA_GEO
+    geometries: {
+      type: Object,
+      default: null,
+    },
   }),
+  mounted() {
+    this.geometries = this.initialGeoJSON;
+    eventBus.$on(MAP_ADD_NEW_GEOM, this.triggerGeometryUpdate);
+    eventBus.$on(MAP_EDIT_EXISTING_GEOM, this.triggerGeometryUpdate);
+  },
+  beforeDestroy() {
+    eventBus.$off(MAP_ADD_NEW_GEOM, this.triggerGeometryUpdate);
+    eventBus.$off(MAP_EDIT_EXISTING_GEOM, this.triggerGeometryUpdate);
+  },
   computed: {
+    genericProps() {
+      const props = {
+        mapDivId: this.initialMapDivId,
+        site: this.initialGeoJSON,
+        layerConfig: null,
+        error: null,
+        mapHeight: this.initialMapHeight,
+        mapEditable: true,
+      };
+      return props;
+    },
   },
   methods: {
-    updateGeospatialInfo(property, value) {
-      const newGeospatialInfo = {
+    setGeometriesOnRecord(property, value) {
+      const geometries = {
         ...this.$props,
         [property]: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
-        data: newGeospatialInfo,
+        data: geometries,
       });
     },
-    setGeoServiceLayers(location, layerConfig, wmsUrl) {
-      try {
-        location = location ? tRewind(location.geoJSON) : null;
-      } catch (error) {
-        this.geoServiceLayersError = error;
-      }
-
-      if (wmsUrl) {
-        this.fetchWmsConfig(wmsUrl);
-      } else {
-        this.geoServiceConfig = {
-          site: location,
-          layerConfig,
-          error: this.geoServiceLayersError,
-        };
-      }
-
-      this.geoServiceConfig = {
-        ...this.geoServiceConfig,
-        mapHeight: this.mapHeight,
-        mapEditable: this.mapEditable,
-      };
-      const { components } = this.$options;
-      this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
+    removeGeometryFromRecord(item) {
+      const removeIndex = this.newGeometries.indexOf(item);
+      const geometriesCopy = this.newGeometries;
+      geometriesCopy.splice(removeIndex, 1);
+      // console.log(localKeywords);
+      // Process and emit localKeywords to eventBus
+      // this.notifyChange('keywords', localKeywords);
+      this.setGeometriesOnRecord(
+        "geometries",
+        this.processValues(geometriesCopy)
+      );
     },
-    fetchWmsConfig(url) {
-      createWmsCatalog(url)
-        .then((res) => {
-          this.setGeoServiceLayers(this.location, res, null);
-        });
+    triggerGeometryUpdate(geomJSONFromMap) {
+      // Re-calculate genericProps property, adding additional geoms (for MetadataGeo.vue)
+
+      const combined = mergeGeomsToMultiGeoms(this.geometries, geomJSONFromMap);
+      this.geometries = combined;
+
     },
     // createMetadataContent() {
     //   const currentContent = this.currentMetadataContent;
@@ -123,7 +143,6 @@ export default {
     //     enhanceElementsWithStrategyEvents(this.resources.resources);
     //   }
 
-
     //   if (this.configInfos?.geoConfigUrl) {
     //     // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
     //     this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
@@ -136,18 +155,22 @@ export default {
       this.geoServiceLayersError = null;
 
       axios
-      .get(url)
-      .then((response) => {
-        this.geoServiceLayers = response.data;
-      })
-      .catch((error) => {
-        this.geoServiceLayersError = error;
-      });
+        .get(url)
+        .then((response) => {
+          this.geoServiceLayers = response.data;
+        })
+        .catch((error) => {
+          this.geoServiceLayersError = error;
+        });
     },
   },
   watch: {
     geoServiceLayers() {
-      this.setGeoServiceLayers(this.location, this.geoServiceLayers, this.geoServiceLayers?.wmsUrl);
+      this.setGeoServiceLayers(
+        this.location,
+        this.geoServiceLayers,
+        this.geoServiceLayers?.wmsUrl
+      );
     },
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {
@@ -185,5 +208,4 @@ export default {
     MetadataGeo,
   },
 };
-
 </script>

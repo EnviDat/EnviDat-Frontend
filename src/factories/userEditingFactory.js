@@ -169,7 +169,7 @@ const emptyMetadataInEditing = {
     },
   },
   [EDITMETADATA_DATA_GEO]: {
-    geometries: [],
+    geometries: null,
   },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',

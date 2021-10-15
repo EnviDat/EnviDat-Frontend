@@ -5,10 +5,19 @@
       <v-row justify="end"
               align="center"
               no-gutters>
+
         <v-col class="title metadata_title grow"
                 align-self="start">
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
+
+        <v-col class="shrink pl-2">
+          <BaseIconButton materialIconName="zoom_out_map"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerFullscreen" />
+        </v-col>
+
       </v-row>
     </v-card-title>
 
@@ -19,12 +28,12 @@
     </v-card-text>
 
     <v-card-text style="position: relative;" >
-      <Map :layer-config="layerConfig"
+      <Map  :layer-config="layerConfig"
             :mapDivId="mapDivId"
             :selectedLayerName="selectedLayerName"
             @changeLayer="selectLayer"
             :site="site"
-            :showFullscreenButton="true"
+            :showFullscreenButton="showFullscreenButton"
             :mapHeight="mapHeight"
             :mapEditable="mapEditable" />
     </v-card-text>
@@ -38,29 +47,21 @@ import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
 import {
   INJECT_MAP_FULLSCREEN,
-  METADATA_OPEN_MODAL,
-  METADATA_CLOSE_MODAL,
   eventBus,
 } from '@/factories/eventBus';
 
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+
 import Map from './Map';
-import MetadataMapFullscreen from './MetadataMapFullscreen';
 
 export default {
   name: 'MetadataGeo',
   components: {
     Map,
+    BaseIconButton,
   },
   props: {
     genericProps: Object,
-  },
-  created() {
-    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-    eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
-  },
-  beforeDestroy() {
-    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-    eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
   },
   computed: {
     error() {
@@ -81,6 +82,9 @@ export default {
     mapDivId() {
       return this.genericProps?.mapDivId;
     },
+    showFullscreenButton() {
+      return this.genericProps?.showFullscreenButton;
+    },
   },
   methods: {
     triggerFullscreen() {
@@ -89,13 +93,6 @@ export default {
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;
-    },
-    showFullscreenMapModal() {
-      this.fullScreenComponent = MetadataMapFullscreen;
-      eventBus.$emit(METADATA_OPEN_MODAL);
-    },
-    closeModal() {
-      this.fullScreenComponent = null;
     },
   },
   data: () => ({

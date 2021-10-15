@@ -373,6 +373,7 @@ export default {
         mapHeight: this.mapHeight,
         mapEditable: this.mapEditable,
         mapDivId: this.mapDivId,
+        showFullscreenButton: this.showFullscreenButton,
       };
       const { components } = this.$options;
       this.$set(components.MetadataGeo, 'genericProps', this.geoServiceConfig);
@@ -841,6 +842,7 @@ export default {
     mapEditable: false,
     mapHeight: 450,
     mapDivId: 'metadata-map-small',
+    showFullscreenButton: true,
   }),
 };
 </script>
