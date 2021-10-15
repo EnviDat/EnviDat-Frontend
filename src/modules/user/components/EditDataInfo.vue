@@ -21,6 +21,7 @@
                     outlined
                     :label="labels.creationDate"
                     required
+                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.creationYear"
@@ -33,6 +34,7 @@
                     outlined
                     :label="labels.collectionDate"
                     required
+                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.collectionYear"
@@ -51,6 +53,7 @@
                     :label="labels.publicationDate"
                     required
                     readonly
+                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.publicationYear"
@@ -68,6 +71,7 @@
                     outlined
                     :label="labels.dataLicense"
                     required
+                    prepend-icon="data_usage"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.dataLicense"
                     @input="notifyChange('dataLicense', $event)"
@@ -80,15 +84,16 @@
 
         <v-col >
 
-          <v-expansion-panels>
+          <v-expansion-panels focusable>
 
             <v-expansion-panel>
               <v-expansion-panel-header expand-icon="arrow_drop_down">{{ this.labels.dataLicenseSummary }}</v-expansion-panel-header>
-              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>
+<!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
+              <v-expansion-panel-content><div v-html="getDataLicenseSummary" /></v-expansion-panel-content>
             </v-expansion-panel>
 
             <v-expansion-panel>
-              <v-expansion-panel-header expand-icon="arrow_drop_down">{{ this.labels.dataLicenseEmail }}</v-expansion-panel-header>
+              <v-expansion-panel-header prepend-icon="data_usage" expand-icon="arrow_drop_down">{{ this.labels.dataLicenseEmail }}</v-expansion-panel-header>
               <v-expansion-panel-content v-if="!this.addInfoObj.dataLicense">{{ this.getDataLicenseLink }}</v-expansion-panel-content>
               <v-expansion-panel-content v-if="this.addInfoObj.dataLicense"><a v-bind:href="this.getDataLicenseLink" target="_blank">{{ this.getDataLicenseLink }}</a></v-expansion-panel-content>
             </v-expansion-panel>
@@ -98,6 +103,7 @@
         </v-col>
 
       </v-row>
+
 
     </v-container>
   </v-card>
@@ -111,7 +117,7 @@
  *
  *
  * @summary Shows Additional Information (creation, collection and publication dates, data license and summary)
- * @author Sam Woodcock and Rebecca Kurup Buchholz
+ * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
  * Last modified  : 2021-10-12
@@ -120,6 +126,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { EDITMETADATA_DATA_INFO, EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import { renderMarkdown } from '@/factories/stringFactory';
 
 
 export default {
@@ -191,7 +198,7 @@ export default {
 
       for (let i = 0; i < this.dataLicenses.length; i++) {
         if (currentLicense === this.dataLicenses[i].name) {
-          return this.dataLicenses[i].summary;
+          return this.markdownText(this.dataLicenses[i].summary);
         }
       }
 
@@ -199,6 +206,9 @@ export default {
     },
   },
   methods: {
+    markdownText(mdText) {
+      return renderMarkdown(mdText);
+    },
     editEntry(addInfoObject, property, value) {
       addInfoObject[property] = value;
     },
@@ -217,6 +227,7 @@ export default {
         [property]: value,
       };
       // console.log(newDataInfo);
+      // console.log(this.getDataLicenseSummary);
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_INFO,
         data: newDataInfo,
@@ -236,7 +247,6 @@ export default {
       dataLicenseEmail: 'Link for more detailed information about Data License',
     },
     maxYears: 30,
-    // TODO write dataLicenses summary values in markdown
     // TODO finish adding other dataLicense objects
     dataLicenses: [
       {
@@ -245,23 +255,40 @@ export default {
           + '\n'
           + 'You are free:\n'
           + '\n'
-          + 'To share: To copy, distribute and use the database.\n'
-          + 'To create: To produce works from the database.\n'
-          + 'To adapt: To modify, transform and build upon the database.\n'
+          + '-*To share*: To copy, distribute and use the database.\n'
+          + '\n'
+          + '-*To create*: To produce works from the database.\n'
+          + '\n'
+          + '-*To adapt*: To modify, transform and build upon the database.\n'
+          + '\n'
           + 'As long as you:\n'
           + '\n'
-          + 'Attribute: You must attribute any public use of the database, or works produced from the database, in the manner specified in the ODbL. For any use or redistribution of the database, or works produced from it, you must make clear to others the license of the database and keep intact any notices on the original database.\n'
-          + 'Share-Alike: If you publicly use any adapted version of this database, or works produced from an adapted database, you must also offer that adapted database under the ODbL.\n'
-          + 'Keep open: If you redistribute the database, or an adapted version of it, then you may use technological measures that restrict the work (such as DRM) as long as you also redistribute a version without such measures.\n'
-          + 'Disclaimer\n'
+          + '*-Attribute*: You must attribute any public use of the database, or works produced from the database, in the manner specified in the ODbL. For any use or redistribution of the database, or works produced from it, you must make clear to others the license of the database and keep intact any notices on the original database.\n'
           + '\n'
-          + 'This is not a license. It is simply a handy reference for understanding the ODbL 1.0 — it is a human-readable expression of some of its key terms. This document has no legal value, and its contents do not appear in the actual license. Read the full ODbL 1.0 license text for the exact terms that apply.',
+          + '*-Share-Alike*: If you publicly use any adapted version of this database, or works produced from an adapted database, you must also offer that adapted database under the ODbL.\n'
+          + '\n'
+          + '-*Keep open*: If you redistribute the database, or an adapted version of it, then you may use technological measures that restrict the work (such as DRM) as long as you also redistribute a version without such measures.\n'
+          + '\n'
+          + '**Disclaimer**\n'
+          + '\n'
+          + 'This is not a license. It is simply a handy reference for understanding the ODbL 1.0 — it is a human-readable expression of some of its key terms. This document has no legal value, and its contents do not appear in the actual license. Read the full ODbL 1.0 license text (see link below) for the exact terms that apply.',
         link: 'https://opendatacommons.org/licenses/odbl/1-0/',
       },
       {
-        name: 'boo',
-        summary: 'rere rerer',
-        link: 'www.rer.com',
+        name: 'WSL Data Policy',
+        summary: 'The WSL Data Policy kindly asks data users to attribute and precludes data redistribution unless otherwise agreed with data originators.\n'
+          + '\n'
+          + 'Users may not share WSL research data or place them in data repositories that are accessible to third parties without the prior consent of the WSL data producers. \n'
+          + '\n'
+          + 'Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents.\n'
+          + '\n'
+          + 'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
+        link: 'https://www.envidat.ch/#/about/policies',
+      },
+      {
+        name: 'Creative Commons Attribution Share-Alike (CC-BY-SA)',
+        summary: 'TODO',
+        link: 'TODO',
       },
     ],
   }),
