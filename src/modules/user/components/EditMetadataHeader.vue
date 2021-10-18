@@ -50,9 +50,32 @@
     <v-row dense>
 
       <v-col >
-        <BaseUserPicker v-bind="baseUserPickerObject"
-                        @removedUsers="catchAuthorChange"
-                        @pickedUsers="catchAuthorChange"/>
+<!--        <BaseUserPicker :users="fullNameUsers"-->
+<!--                        :value="contactAuthorFullName"-->
+<!--                        @removedUsers="catchAuthorChange"-->
+<!--                        @pickedUsers="catchAuthorChange"/>-->
+
+        <v-combobox      @input="catchAuthorChange($event)"
+                         :value="contactAuthorField"
+                         :items="fullNameUsers"
+                         chips
+                         outlined
+                         dense
+                         append-icon="arrow_drop_down"
+                         prepend-icon="account_box"
+                         :label="labels.authorDropdown">
+
+          <template v-slot:selection="{ item }" >
+            <TagChip  v-if="item && item.contactGivenName"
+                      :name="getFullName(item)"
+                      selectable
+                      closeable
+                      @clickedClose="catchAuthorChange(item)"
+                      :isSmall="false"
+            />
+          </template>
+
+        </v-combobox>
       </v-col>
 
 
@@ -138,7 +161,8 @@ import {
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import TagChip from '@/components/Chips/TagChip';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -196,10 +220,8 @@ export default {
 
       return this.existingAuthors;
     },
-    baseUserPickerObject() {
-      return {
-        users: this.fullNameUsers(this.existingAuthorsWrap),
-      };
+    fullNameUsers() {
+      return this.getFullNameUsers(this.existingAuthorsWrap);
     },
     metadataPreviewEntry() {
 
@@ -253,19 +275,12 @@ export default {
     },
   },
   methods: {
-    // Creates contact author object and emits to eventBus
-    setContactAuthor() {
-      const contAuthor = {
-        contactGivenName: this.contactGivenName,
-        contactSurname: this.contactSurname,
-        contactEmail: this.contactEmail,
-      };
-      this.setHeaderInfo('contactAuthor', contAuthor);
-    },
-    // Returns array of fullName strings extracted from userObjects
-    fullNameUsers(userObjects) {
+    // Returns array of fullName strings extracted from userObjects sorted by last name
+    getFullNameUsers(userObjects) {
 
       const fullNameArray = [];
+
+      userObjects.sort((a, b) => ((a.lastName.toUpperCase() > b.lastName.toUpperCase()) ? 1 : -1));
 
       userObjects.forEach((user) => {
         if (user.fullName) {
@@ -275,14 +290,19 @@ export default {
         }
       });
 
+
+
       return fullNameArray;
+    },
+    getFullName(authorObj) {
+       return `${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`;
     },
     catchAuthorChange(pickedAuthor) {
 
       // Get author object
       const author = this.getAuthorByName(pickedAuthor);
 
-      // Call setContactDetails to assign authorObject values
+      // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
 
       // Call setHeaderInfo to emit authorObject to eventBus
@@ -352,6 +372,7 @@ export default {
       placeholderContactGivenName: 'Enter contact given (first) name here',
       placeholderContactSurname: 'Enter contact surname name here',
       previewText: 'Metadata Header Preview',
+      authorDropdown: 'Click here and start typing to select an existing EnviDat author',
     },
     rulesTitle: [v => !!v || 'Title is required'],
     rulesGivenName: [v => !!v || 'Contact given (first) name is required'],
@@ -365,7 +386,8 @@ export default {
    }),
   components: {
     MetadataHeader,
-    BaseUserPicker,
+   // BaseUserPicker,
+    TagChip,
   },
 };
 </script>
