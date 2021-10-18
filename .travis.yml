@@ -5,8 +5,8 @@ branches:
   - master
   - develop
 node_js:
-  - "16.11.1"
-before_install:
+  - lts/*
+before_script:
   - npm i -g node-gyp
   - npm i
 script:
