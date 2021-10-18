@@ -16,12 +16,12 @@ import { action } from '@storybook/addon-actions';
 import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
-import fileIcon from '@/assets/icons/file.png';
-import lockedIcon from '@/assets/icons/lockClosed.png';
-import unlockedIcon from '@/assets/icons/lockOpen.png';
-import pinIcon from '@/assets/icons/marker.png';
-import multiPinIcon from '@/assets/icons/markerMulti.png';
-import polygonIcon from '@/assets/icons/polygons.png';
+import fileIcon from '../src/assets/icons/file.png';
+import lockedIcon from '../src/assets/icons/lockClosed.png';
+import unlockedIcon from '../src/assets/icons/lockOpen.png';
+import pinIcon from '../src/assets/icons/marker.png';
+import multiPinIcon from '../src/assets/icons/markerMulti.png';
+import polygonIcon from '../src/assets/icons/polygons.png';
 
 
 // metadata gets enhance in the storybook config
@@ -35,7 +35,7 @@ export const methods = {
 
     for (let i = 0; i < metadata.resources.length; i++) {
       const res = metadata.resources[i];
-      
+
       if (res.restricted !== undefined
         && (res.restricted.allowed_users !== undefined
         || (res.restricted.level !== undefined

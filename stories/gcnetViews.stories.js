@@ -94,7 +94,7 @@ storiesOf('7 GC-Net Views / Charts', module)
         <BaseStatusLabelView />
       </v-col>
     </v-row>
-    
+
     <v-row>
       Loading BaseStatusLabelView
     </v-row>
@@ -290,13 +290,13 @@ storiesOf('7 GC-Net Views / Charts', module)
       },
     },
     beforeMount() {
-      // const imgs = require.context('@/assets/stations/small', false, /\.jpg$/);
+      // const imgs = require.context('../src/assets/stations/small', false, /\.jpg$/);
       // const imgCache = {};
-  
+
       // imgs.keys().forEach((key) => {
       //   imgCache[key] = imgs(key);
       // });
-  
+
       // this.cardImgs = imgCache;
     },
     methods: {

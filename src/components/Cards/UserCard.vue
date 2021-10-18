@@ -12,11 +12,11 @@
                 style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
                 :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`" />
       </div>
-      
+
       <div class="title black--text mx-auto pt-8">
         {{ userName }}
       </div>
-      
+
       <div class="subGrid pb-4" >
         <div class="body-2">Datasets</div>
 
@@ -26,7 +26,7 @@
 
         <div class="caption">{{ email }}</div>
       </div>
-    
+
     </div>
 
     <div style="position: absolute; right: 37.5%; border-radius: 50%;"
@@ -91,28 +91,28 @@ export default {
 };
 </script>
 
-<style lang="sass" scoped>
+<style scoped>
 
-  @import "~vuetify/src/styles/settings/_variables.scss"
-  $gridPadding: $spacer * 4
+  .cardGrid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 100%;
+  }
 
-  .cardGrid
-    display: grid
-    justify-content: center
-    grid-template-columns: 100%
-
-  .subGrid 
-    align-content: end
-    display: grid
-    grid-template-columns: 1fr 1fr
-    column-gap: 5px
-    padding-right: $gridPadding
-    padding-left: $gridPadding
+  .subGrid {
+    align-content: end;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5px;
+    padding-right: 16px;
+    padding-left: 16px;
     /* background-color: grey; */
+  }
 
-  .subGrid div 
-    place-self: center
-    word-break: break-all
-    align-content: end
+  .subGrid div {
+    place-self: center;
+    word-break: break-all;
+    align-content: end;
+  }
 
 </style>

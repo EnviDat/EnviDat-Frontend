@@ -4,15 +4,15 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 
 import globalMethods from '@/factories/globalMethods';
+import { createResources } from '@/factories/metaDataFactory';
 
 import ResourceCard from '@/modules/metadata/components/ResourceCard';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder';
 
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import doiIcon from '@/assets/icons/doi.png';
-import dateCreatedIcon from '@/assets/icons/dateCreated.png';
-import lastModifiedIcon from '@/assets/icons/dateModified.png';
-import { createResources } from '@/factories/metaDataFactory';
+import fileSizeIcon from '../src/assets/icons/fileSize.png';
+import doiIcon from '../src/assets/icons/doi.png';
+import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
+import lastModifiedIcon from '../src/assets/icons/dateModified.png';
 import unFormatedMetadataCards from './js/metadata';
 
 
@@ -23,7 +23,7 @@ const apiFactory = require('@/factories/apiFactory');
 function getIcons() {
   const icons = new Map();
 
-  const imgPaths = require.context('@/assets/icons/', false, /\.png$/);
+  const imgPaths = require.context('../src/assets/icons/', false, /\.png$/);
 
   imgPaths.keys().forEach((iconFileName) => {
     const splits = iconFileName.split('/');
