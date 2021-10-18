@@ -7,7 +7,6 @@ branches:
 node_js:
   - "16.11.1"
 before_install:
-  - npm i -g npm
   - npm i
 script:
   - npm run test:unit
