@@ -12,3 +12,10 @@ before_install:
 script:
   - npm run test:unit
   - npm run build
+
+
+jobs:
+  include:
+    # 👇 Adds Chromatic as a job
+    - name: 'Publish to Chromatic'
+      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN}

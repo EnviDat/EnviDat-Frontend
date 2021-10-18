@@ -72,6 +72,7 @@
     "babel-plugin-require-context-hook": "^1.0.0",
     "babel-preset-vue": "^2.0.2",
     "cesium": "^1.64.0",
+    "chromatic": "^6.0.4",
     "copy-webpack-plugin": "^6.0.2",
     "eslint": "^5.16.0",
     "eslint-import-resolver-babel-module": "^5.1.2",
