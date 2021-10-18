@@ -158,6 +158,9 @@ storiesOf('7 GC-Net Views / Charts', module)
 }))
 .add('MicroChart', () => ({
     components: { MicroChart },
+    parameters: {
+      chromatic: { disableSnapshot: false },
+    },
     template: `
     <v-col>
     <!--
