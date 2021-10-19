@@ -13,7 +13,7 @@ before_script:
 jobs:
   include:
     - name: 'Publish to Chromatic'
-      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --exit-once-uploaded
+      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
     - name: 'run unit tests'
       script: npm run test:unit
     - name: 'test creating a build'
