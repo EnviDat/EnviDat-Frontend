@@ -94,7 +94,7 @@ export const EmptyMicroChart = () => ({
 export const BaseStatusLabelViews = () => ({
   components: { BaseStatusLabelView },
   template: `
-  <v-col>
+  <v-col >
 
     <v-row >
       Empty BaseStatusLabelView
@@ -169,8 +169,13 @@ export const BaseStatusLabelViews = () => ({
 
 export const MicroChartViews = () => ({
   components: { MicroChart },
+  parameters: {
+    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // will change almost everytime
+    chromatic: { disableSnapshot: false },
+  },
   template: `
-    <v-col>
+    <v-col class="chromatic-ignore">
       <v-row>
         Station 1 MicroChart with test image
       </v-row>

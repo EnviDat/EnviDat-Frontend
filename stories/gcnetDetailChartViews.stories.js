@@ -40,14 +40,19 @@ export default {
 
 export const DetailChartViews = () => ({
   components: { DetailChart },
-    template: `
+  parameters: {
+    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // will change almost everytime
+    chromatic: { disableSnapshot: false },
+  },
+  template: `
 <!--
       <script src="https://www.wsl.ch/gcnet/amcharts/amcharts.js"></script>
       <script src="https://www.wsl.ch/gcnet/amcharts/serial.js"></script>
       <script src="https://www.wsl.ch/gcnet/amcharts/plugins/responsive/responsive.min.js"></script>
 -->
 
-    <v-col>
+    <v-col >
 
       <v-row>
         Station 1 DetailChart
@@ -141,8 +146,13 @@ export const DetailChartViews = () => ({
 
 export const DetailChartsListViews = () => ({
   components: { DetailChartsList },
+  parameters: {
+    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // will change almost everytime
+    chromatic: { disableSnapshot: false },
+  },
   template: `
-    <v-col>
+    <v-col class="chromatic-ignore">
 
       <v-row class="py-3" >
         Station 1 DetailChartsList
