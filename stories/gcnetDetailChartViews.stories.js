@@ -52,7 +52,7 @@ export const DetailChartViews = () => ({
       <script src="https://www.wsl.ch/gcnet/amcharts/plugins/responsive/responsive.min.js"></script>
 -->
 
-    <v-col >
+    <v-col class="chromatic-ignore">
 
       <v-row>
         Station 1 DetailChart

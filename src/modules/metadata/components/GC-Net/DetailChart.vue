@@ -1,7 +1,7 @@
 <template>
 
   <v-card >
-    <v-container class="pa-2" fluid >
+    <v-container class="pa-4" fluid >
 
       <v-row no-gutters
               justify="space-between">
