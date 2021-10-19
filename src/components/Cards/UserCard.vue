@@ -100,7 +100,6 @@ export default {
   }
 
   .subGrid {
-    align-content: end;
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 5px;

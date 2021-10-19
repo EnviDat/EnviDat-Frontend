@@ -3,19 +3,19 @@
             :size="size"
             style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
 
-    <!-- <v-img v-if="showGravatar"
-          :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${defaultGavatar}&r=g`"
-          @error="imageError" /> -->
+     <v-img v-if="showGravatar"
+          :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGavatar ? defaultGavatar : 'somethingWhichThrowsAnError' }&r=g`"
+          @error="imageError" />
 
-    <v-img v-if="showGravatar"
+    <v-img v-if="showAvaaatarIcons"
           :src="avataaarUrl"
           @error="imageError" />
 
-    <span v-if="!showGravatar && nameInitials"
+    <span v-if="showInitials"
           class="white--text"
           :class="initialsTextClass" >{{ nameInitials }}</span>
 
-    <v-icon v-if="!showGravatar && !nameInitials"
+    <v-icon v-if="showFallbackAccountIcon"
             color="black"
             :small="size <= 20"
             :large="size > 40 && size < 128"
@@ -47,7 +47,8 @@ export default {
     emailHash: String,
     defaultGavatar: {
       type: String,
-      default: 'identicon',
+      default: '',
+//      default: 'identicon',
     },
     size: {
       type: Number,
@@ -66,14 +67,23 @@ export default {
     showGravatar() {
       return !this.gravatarNotLoaded;
     },
+    showAvaaatarIcons() {
+      return this.emailHash && !this.showGravatar;
+    },
+    showInitials() {
+      return !this.emailHash && !this.showGravatar && this.nameInitials;
+    },
+    showFallbackAccountIcon() {
+      return !this.emailHash && !this.showGravatar && !this.nameInitials;
+    },
     initialsTextClass() {
       if (this.size >= 128) {
         return 'display-2';
-      } 
+      }
 
       if (this.size > 48) {
         return 'display-1';
-      } 
+      }
 
       if (this.size <= 32) {
         return 'subtitle-1';
