@@ -1,4 +1,3 @@
-/* eslint-disable object-property-newline */
 /**
  * @summary story of all the MetadataDetailViews for sandbox testing
  * @author Dominik Haas-Artho
@@ -10,12 +9,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
+/* eslint-disable object-property-newline */
+// noinspection JSUnusedGlobalSymbols
 
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 
 const stations = [
   {
@@ -74,23 +73,36 @@ const stations = [
   },
 ];
 
-// export const methods = {
-//   onCardClick: action('clicked on card'),
-//   onTagClick: action('clicked on tag'),
-// };
+export default {
+  title: '7 GC-Net Views / Charts ',
+  component: MicroChart,
+  decorators: [],
+  parameters: {
+    // disable the snapshots for the MicroCharts because they pull in recent data and
+    // will change almost everytime
+    chromatic: { disableSnapshot: false },
+  },
+};
 
-storiesOf('7 GC-Net Views / Charts', module)
-.add('BaseStatusLabelView', () => ({
+/*
+export const EmptyMicroChart = () => ({
+  components: { MicroChart },
+  template: '<MicroChart />',
+});
+*/
+
+export const BaseStatusLabelViews = () => ({
   components: { BaseStatusLabelView },
   template: `
   <v-col>
 
-    <v-row>
+    <v-row >
       Empty BaseStatusLabelView
     </v-row>
 
-    <v-row no-gutters class="py-1">
-      <v-col style="border: solid 1px;" >
+    <v-row class="py-1">
+      <v-col class="pa-0"
+             style="border: solid 1px;" >
         <BaseStatusLabelView />
       </v-col>
     </v-row>
@@ -99,8 +111,9 @@ storiesOf('7 GC-Net Views / Charts', module)
       Loading BaseStatusLabelView
     </v-row>
 
-    <v-row no-gutters class="py-1">
-      <v-col style="border: solid 1px;" >
+    <v-row class="py-1">
+      <v-col class="pa-0"
+             style="border: solid 1px;" >
         <BaseStatusLabelView :loading="true" />
       </v-col>
     </v-row>
@@ -109,8 +122,9 @@ storiesOf('7 GC-Net Views / Charts', module)
       Info BaseStatusLabelView
     </v-row>
 
-    <v-row no-gutters class="py-1">
-      <v-col style="border: solid 1px;" >
+    <v-row class="py-1">
+      <v-col class="pa-0"
+             style="border: solid 1px;" >
         <BaseStatusLabelView :loading="false"
                               statusIcon="info"
                               statusColor="info"
@@ -123,8 +137,9 @@ storiesOf('7 GC-Net Views / Charts', module)
       Warning BaseStatusLabelView
     </v-row>
 
-    <v-row no-gutters class="py-1">
-      <v-col style="border: solid 1px;" >
+    <v-row class="py-1">
+      <v-col class="pa-0"
+             style="border: solid 1px;" >
         <BaseStatusLabelView :loading="false"
                               statusIcon="warning"
                               statusColor="warning"
@@ -137,8 +152,9 @@ storiesOf('7 GC-Net Views / Charts', module)
       Error BaseStatusLabelView
     </v-row>
 
-    <v-row no-gutters class="py-1">
-      <v-col style="border: solid 1px;" >
+    <v-row class="py-1">
+      <v-col class="pa-0"
+             style="border: solid 1px;" >
         <BaseStatusLabelView :loading="false"
                               statusIcon="error"
                               statusColor="error"
@@ -149,32 +165,12 @@ storiesOf('7 GC-Net Views / Charts', module)
 
   </v-col>
   `,
-  computed: {
-  },
-  methods: {
-  },
-  data: () => ({
-  }),
-}))
-.add('MicroChart', () => ({
-    components: { MicroChart },
-    parameters: {
-      chromatic: { disableSnapshot: false },
-    },
-    template: `
+});
+
+export const MicroChartViews = () => ({
+  components: { MicroChart },
+  template: `
     <v-col>
-    <!--
-      <v-row>
-        Empty MicroChart
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <MicroChart />
-        </v-col>
-      </v-row>
-      -->
-
       <v-row>
         Station 1 MicroChart with test image
       </v-row>
@@ -281,33 +277,33 @@ storiesOf('7 GC-Net Views / Charts', module)
 
     </v-col>
     `,
-    computed: {
-      station1() {
-        return this.stations[0];
-      },
-      station2() {
-        return this.stations[1];
-      },
-      station3() {
-        return this.stations[2];
-      },
+  computed: {
+    station1() {
+      return this.stations[0];
     },
-    beforeMount() {
-      // const imgs = require.context('../src/assets/stations/small', false, /\.jpg$/);
-      // const imgCache = {};
+    station2() {
+      return this.stations[1];
+    },
+    station3() {
+      return this.stations[2];
+    },
+  },
+  beforeMount() {
+    // const imgs = require.context('../src/assets/stations/small', false, /\.jpg$/);
+    // const imgCache = {};
 
-      // imgs.keys().forEach((key) => {
-      //   imgCache[key] = imgs(key);
-      // });
+    // imgs.keys().forEach((key) => {
+    //   imgCache[key] = imgs(key);
+    // });
 
-      // this.cardImgs = imgCache;
-    },
-    methods: {
-      // stationImg(alias) {
-      //   return this.cardImgs[`./${alias}.jpg`];
-      // },
-    },
-    data: () => ({
-      stations,
-    }),
-  }));
+    // this.cardImgs = imgCache;
+  },
+  methods: {
+    // stationImg(alias) {
+    //   return this.cardImgs[`./${alias}.jpg`];
+    // },
+  },
+  data: () => ({
+    stations,
+  }),
+});
