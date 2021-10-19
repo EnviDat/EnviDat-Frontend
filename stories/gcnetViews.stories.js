@@ -74,7 +74,7 @@ const stations = [
 ];
 
 export default {
-  title: '7 GC-Net Views / Charts ',
+  title: '7 GC-Net Views / Micro Charts ',
   component: MicroChart,
   decorators: [],
   parameters: {
