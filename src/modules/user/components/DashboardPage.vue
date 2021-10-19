@@ -7,7 +7,7 @@
     <div v-if="!user"
           class="notSignedinGrid">
 
-    <NotFoundCard v-bind="notSignedInInfos" 
+    <NotFoundCard v-bind="notSignedInInfos"
                   :height="notFoundCardHeight"
                   :actionButtonCallback="catchSigninClick" />
    </div>
@@ -40,14 +40,14 @@
 
     <div class="topBoard" >
 
-      <WelcomeCard :userName="user.fullname"
+      <WelcomeCard :userName="user.fullName"
                     :publishedDatasetCount="publishedDatasets.length"
-                    :unpublishedDatasetCount="unpublishedDatasets.length" 
+                    :unpublishedDatasetCount="unpublishedDatasets.length"
                     :editingDatasetCount="editingDatasets.length" />
 
       <UserCard :height="userCardHeight"
                 :width="userCardWidth"
-                :userName="user.fullname"
+                :userName="user.fullName"
                 :email="user.email"
                 :emailHash="user.email_hash"
                 :nameInitials="nameInitials"
@@ -102,7 +102,7 @@
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
                   :clickCallback="catchRefreshOrgaClick" />
-      
+
       <div v-if="userOrganizationLoading"
             class="orgaDatasets" >
 
@@ -118,7 +118,7 @@
 
         <MetadataCard v-for="(metadata, index) in userRecentOrgaDatasets"
                       class="mx-2"
-                      :style="`height: 300px; width: ${previewWidth}px;`"          
+                      :style="`height: 300px; width: ${previewWidth}px;`"
                       :key="index"
                       :id="metadata.id"
                       :title="metadata.title"
@@ -147,7 +147,7 @@
     </div>
 
    </div>
-   
+
 <!--
     <v-row>
       <v-col>
@@ -165,7 +165,7 @@
           <v-card>
             dialog thingy
           </v-card>
-          
+
         </v-dialog>
       </v-col>
     </v-row> -->
@@ -181,7 +181,7 @@
  * @summary Dashboard page
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-07-14 14:18:32 
+ * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-10-13 12:49:34
  */
 
@@ -258,7 +258,7 @@ export default {
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
-    
+
     this.loadRouteTags();
 
     if (this.user) {
@@ -325,7 +325,7 @@ export default {
           filteredContent.push(entry);
         }
       }
-      
+
       return filteredContent;
     },
     publishedDatasets() {
@@ -354,7 +354,7 @@ export default {
       if (keys?.length > 0) {
         return Object.values(this.userOrganizations);
       }
-      
+
       return null;
     },
     usersOrganisationTitle() {
@@ -371,7 +371,7 @@ export default {
       const list = this.userOrganizationsList;
 
       if (list?.length > 0) {
-        
+
         const datasets = [];
 
         for (let i = 0; i < list.length; i++) {

@@ -24,7 +24,7 @@
 
       </v-row>
     </v-container>
-    
+
   </v-card>
 </template>
 
@@ -35,12 +35,12 @@
  * @summary Dashboard Header
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-07-14 14:18:32 
+ * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-20 08:52:03
  */
 import UserAvatar from '@/components/Layouts/UserAvatar';
 
-import { USER_SIGNOUT_PATH } from '@/router/routeConsts'; 
+import { USER_SIGNOUT_PATH } from '@/router/routeConsts';
 import {
   USER_NAMESPACE,
   FETCH_USER_DATA,
@@ -62,13 +62,6 @@ export default {
     title() {
       return `Welcome ${this.userName} to your Dashboard`;
     },
-    // nameInitials() {
-    //   if (!this.userObject || !this.userObject.name || !this.userObject.fullname) {
-    //     return '';
-    //   }
-
-    //   return `${this.userObject.name.substring(0, 1)}${this.userObject.fullname.substring(0, 1)}`.toUpperCase();
-    // },
   },
   methods: {
     menuClick(item) {

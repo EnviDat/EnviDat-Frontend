@@ -83,8 +83,9 @@
           <v-row align="center"
                   justify="end" >
 
-            <v-col class="shrink">
-              {{ signedInUser.fullname }}
+            <v-col v-show="signedInUser.lastName"
+                   class="shrink">
+              {{ signedInUser.lastName }}
             </v-col>
 
             <v-col cols="3">
@@ -103,7 +104,7 @@
 
             <v-col class="shrink"
                     @click="catchSigninClicked" >
-                      
+
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon

@@ -282,8 +282,8 @@ export function getNameInitials(userObject) {
     return '';
   }
 
-  if (userObject.fullname) {
-    const splits = userObject.fullname.split(' ');
+  if (userObject.fullName) {
+    const splits = userObject.fullName.split(' ');
     if (splits.length > 1) {
       return `${splits[0].substring(0, 1)}${splits[splits.length - 1].substring(0, 1)}`.toUpperCase();
     }

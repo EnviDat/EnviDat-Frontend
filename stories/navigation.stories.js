@@ -24,7 +24,12 @@ import {
 } from '@/store/navigationState';
 
 const dominikHaas = {
-  fullname: 'Haas', apikey: 'a_secrect_thing', email: 'dominik.haas@wsl.ch', name: 'dominik', id: '929b0bc7-bfe7-4248-b90c-21f547ffe9d9',
+  fullName: 'Dominik Haas',
+  apikey: 'a_secrect_thing',
+  email: 'dominik.haas@wsl.ch',
+  firstName: 'dominik',
+  lastName: 'Haas',
+  id: '929b0bc7-bfe7-4248-b90c-21f547ffe9d9',
 };
 
 const methods = {
@@ -100,6 +105,6 @@ storiesOf('5 Navigation / Redesigned Navigation', module)
     dominikHaas,
     navigationItems,
     userMenuItems,
-  }),  
+  }),
   methods,
 }));
