@@ -12,11 +12,11 @@
           {{ stationName }}
         </v-col>
       </v-row>
-          
+
       <v-row no-gutters >
         <v-col v-if="chartIsLoading && preloading"
                 :style="`height: ${ $vuetify.breakpoint.xsOnly ? 300 : 350 }px;`" >
-                
+
           <v-row class="fill-height"
                   justify="center"
                   align="center">
@@ -24,7 +24,7 @@
               <v-progress-circular :size="50"
                                     color="primary"
                                     indeterminate />
-              
+
             </v-col>
           </v-row>
         </v-col>
@@ -39,7 +39,7 @@
                 class="title"
                 :style="`color: ${ $vuetify.theme.error };`" >
           {{ dataError }}
-        </v-col> 
+        </v-col>
 
         <v-col v-if="!preloading"
                 :style="`height: ${ $vuetify.breakpoint.xsOnly ? 300 : 350 }px;`" >
@@ -51,9 +51,9 @@
             <v-col class="shrink" >
               Historical datasets can be very large and take a while to load, therefore aren't loaded by default.
             </v-col>
-            <v-col class="shrink pt-3" 
+            <v-col class="shrink pt-3"
                     >
-              
+
               <BaseRectangleButton buttonText="Load historical data"
                                       materialIconName="refresh"
                                       @clicked="preloading = true; intersected = true; chartIsLoading = true; loadChart();"
@@ -70,7 +70,7 @@
         <v-col v-show="showChart" >
           <div :id="chartId"
                 :style="`height: ${ $vuetify.breakpoint.xsOnly ? 300 : 350 }px;`" >
-          </div>            
+          </div>
         </v-col>
 
       </v-row>
@@ -125,7 +125,7 @@ export default {
         numberFormat: '##  °C',
         dateFormatTime: true,
         preload: true,
-        showDisclaimer: false, 
+        showDisclaimer: false,
       }),
     },
     delay: {
@@ -220,6 +220,10 @@ export default {
         this.records = response.data;
 
         this.dataAvailable = hasData(this.records, this.fileObject.parameters[0]);
+        if (!this.dataAvailable && this.fileObject.parameters.length > 1) {
+          this.dataAvailable = hasData(this.records, this.fileObject.parameters[1]);
+        }
+
         this.chartIsLoading = this.dataAvailable;
 
         if (fallback && !this.dataAvailable) {
@@ -248,7 +252,7 @@ export default {
       // this.$vuetify.breakpoint.smAndDown ? this.seriesSettings.lineStrokeWidth = 4 : this.seriesSettings.lineStrokeWidth = 3;
       this.seriesSettings.showLegend = this.$vuetify.breakpoint.smAndUp;
       this.seriesSettings.numberFormat = this.fileObject.seriesNumberFormat ? this.fileObject.seriesNumberFormat : this.seriesSettings.numberFormat;
-    
+
       const splits = this.fileObject.numberFormat.split(' ');
       const unit = splits.length > 0 ? splits[splits.length - 1] : '';
 
@@ -304,7 +308,7 @@ export default {
     clearChart() {
       if (this.detailChart) {
         // console.log('dispose via DetailChart');
-        // this.detailChart.dispose(); 
+        // this.detailChart.dispose();
         // console.log('delete via DetailChart');
         this.detailChart = null;
         // delete this.detailChart;
