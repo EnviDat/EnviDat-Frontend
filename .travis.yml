@@ -1,5 +1,5 @@
 language: node_js
-# safelist
+
 branches:
   only:
   - master
@@ -9,13 +9,12 @@ node_js:
 before_script:
   - npm i -g node-gyp
   - npm i
-script:
-  - npm run test:unit
-  - npm run build
-
 
 jobs:
   include:
-    # 👇 Adds Chromatic as a job
     - name: 'Publish to Chromatic'
-      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --exit-once-uploaded
+    - name: 'run unit tests'
+      script: npm run test:unit
+    - name: 'test creating a build'
+      script: npm run build
