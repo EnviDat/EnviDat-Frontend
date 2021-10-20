@@ -16,12 +16,11 @@
 
       <v-row dense>
 
-        <v-col >
+        <v-col class="pr-4">
           <v-select :items="yearsList"
                     outlined
                     :label="labels.creationDate"
                     required
-                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.creationYear"
@@ -34,7 +33,6 @@
                     outlined
                     :label="labels.collectionDate"
                     required
-                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.collectionYear"
@@ -47,13 +45,13 @@
 
       <v-row dense>
 
-        <v-col cols="6">
+        <v-col cols="6"
+               class="pr-4">
           <v-select :items="yearsList"
                     outlined
                     :label="labels.publicationDate"
                     required
                     readonly
-                    dense
                     prepend-icon="date_range"
                     append-icon="arrow_drop_down"
                     :value="addInfoFields.publicationYear"
