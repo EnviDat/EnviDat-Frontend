@@ -37,20 +37,21 @@
 
             <v-text-field v-model="email"
                           :error-messages="emailErrors"
-                          label="E-mail"
+                          label="Email"
                           required
-                          @input="$v.email.$touch()"
-                          @blur="$v.email.$touch()" />
+                          @change="$v.email.$touch()"
+                          tabindex="0" />
           </v-col>
 
-          <v-col v-if="!signedIn && email && emailErrors.length <= 0"
+          <v-col v-if="emailAddressIsValid"
                   cols="12"
                   md="3"
                   id="tokenButton" >
 
             <v-btn color="primary"
-                    :loading="requestLoading"
-                    @click="catchRequestToken">
+                    :loading="tokenRequestLoading"
+                    @click="catchRequestToken"
+                    tabindex="0" >
               {{ tokenButtonText }}
             </v-btn>
             <!-- <v-row no-gutters >
@@ -75,7 +76,8 @@
 
         </v-row>
 
-        <v-row v-if="requestSuccess" >
+        <v-row v-if="requestSuccess"
+                no-gutters>
           <v-col cols="12"
                   class="caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
@@ -83,14 +85,14 @@
         </v-row>
 
 
-        <v-row v-if="email && emailErrors.length <= 0"
+        <v-row v-if="emailAddressIsValid"
                 id="tokenRow"
                 align="center"
-                justify="space-between"                
+                justify="space-between"
                 class="pt-4" >
 
           <v-col cols="12"
-                  md="3"
+                  md="4"
                   class="shrink text-h6" >
             {{ requestTokenText }}
           </v-col>
@@ -105,8 +107,8 @@
                           required
                           clearable
                           clear-icon="clear"
-                          @input="$v.key.$touch()"
-                          @blur="$v.key.$touch()" />
+                          @blur="$v.key.$touch()"
+                          tabindex="0"/>
           </v-col>
 
           <v-col cols="12"
@@ -114,8 +116,9 @@
 
             <v-btn v-show="!signedIn && !$v.$invalid"
                     color="primary"
-                    :loading="signInLoading && !signInSuccess"
-                    @click="catchSignIn">
+                    :loading="signInRequestLoading"
+                    @click="catchSignIn"
+                   tabindex="0" >
               {{ signinButtonText}}
             </v-btn>
           </v-col>
@@ -123,7 +126,7 @@
 
         <v-row v-if="formInvalid || showError"
                 id="errorTextRow"
-                :style="`background-color: ${errorColor};`"                
+                :style="`background-color: ${errorColor};`"
                 class="mt-4" >
           <v-col cols="12"
                   class="body-1">
@@ -164,7 +167,8 @@
 
           <v-col v-if="signedIn">
             <v-btn color="secondary"
-                    @click="catchSignOut">
+                    @click="catchSignOut"
+                   tabindex="0" >
               {{ signoutButtonText }}
             </v-btn>
           </v-col>
@@ -205,7 +209,7 @@ import {
  email,
  required,
  minLength,
- maxLength, 
+ maxLength,
 } from 'vuelidate/lib/validators';
 
 import signInPic from '@/modules/user/assets/signin.jpg';
@@ -242,6 +246,15 @@ export default {
     this.key = this.prefilledKey;
   },
   computed: {
+    emailAddressIsValid() {
+      return !this.signedIn && !this.$v.email.$invalid && this.emailErrors.length <= 0;
+    },
+    tokenRequestLoading() {
+      return this.requestLoading || this.signInRequestLoading;
+    },
+    signInRequestLoading() {
+      return this.signInLoading && !this.signInSuccess;
+    },
     emailErrors() {
       const backendErr = this.backendErrors.email;
       const errors = backendErr ? [backendErr] : [];
@@ -249,10 +262,10 @@ export default {
       if (!this.$v.email.$dirty) return errors;
 
       if (!this.$v.email.email) {
-        errors.push('Must be valid e-mail');
+        errors.push('Must be valid email');
       }
       if (!this.$v.email.required) {
-        errors.push('E-mail is required');
+        errors.push('Email is required');
       }
 
       return errors;
@@ -266,11 +279,11 @@ export default {
       if (!this.$v.key.minLength || !this.$v.key.maxLength) {
         errors.push(`Token must be ${this.keyLength} characters long`);
       }
-      
+
       if (!this.$v.key.required) {
         errors.push('Token is required.');
       }
-      
+
       return errors;
     },
     tokenButtonText() {
@@ -284,7 +297,7 @@ export default {
 
       if (!this.formInvalid) {
         this.$emit('requestToken', this.email);
-      }      
+      }
     },
     catchSignIn() {
       this.$v.$touch();
@@ -292,7 +305,7 @@ export default {
 
       if (!this.formInvalid) {
         this.$emit('signIn', this.email, this.key);
-      }      
+      }
     },
     catchSignOut() {
       this.$emit('signOut');
@@ -311,17 +324,17 @@ export default {
     email: '',
     backendErrors: {
       email: '',
-      key: '',      
+      key: '',
     },
     key: '',
     formInvalid: false,
     keyLength,
     requestTokenText: 'Do you have a token to sign in?',
     requestSentText: 'The token was sent to ',
-    requestSentText2: 'Please check your e-mail address.',
+    requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
-    instructionsText: 'Sign into EnviDat with your e-mail address and the token which will be sent by e-mail.',
+    instructionsText: 'Sign into EnviDat with your email address and the token which will be sent by email.',
     signInPic,
   }),
   validations: {
@@ -334,7 +347,7 @@ export default {
       minLength: minLength(keyLength),
       maxLength: maxLength(keyLength),
     },
-  },  
+  },
   mixins: [validationMixin],
 };
 </script>

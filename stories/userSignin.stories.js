@@ -125,11 +125,11 @@ storiesOf('7 User / SignIn', module)
       </v-col>
 
       <v-col cols="12">
-        <Signin-view requestLoading />
+        <Signin-view prefilledEmail="dominik.haas@wsl.ch" requestLoading />
       </v-col>
 
       <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" requestSuccess />
+        <Signin-view prefilledEmail="dominik.haas@wsl.ch" :requestSuccess="true" />
       </v-col>
 
       <v-col cols="12">
