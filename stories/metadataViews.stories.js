@@ -32,6 +32,7 @@ import {
   createBody,
   createLocation,
   createResources,
+  convertTags,
 } from '@/factories/metaDataFactory';
 
 import { createAuthors } from '@/factories/authorFactory';
@@ -63,6 +64,8 @@ import metadata from './js/metadata';
 
 //   return icons;
 // }
+
+metadata[0].tags = convertTags(metadata[0].tags, false);
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -252,7 +255,7 @@ storiesOf('6 Detail Views / Metadata', module)
     <v-row>
 
       <v-col cols="6" class="py-3">
-        <metadata-body :genericProps="genericPropsPlaceholder" />
+        <metadata-body />
       </v-col>
 
       <v-col cols="6" class="py-3">
@@ -274,9 +277,6 @@ storiesOf('6 Detail Views / Metadata', module)
     data: () => ({
       genericPropsPlaceholder: {
         showPlaceholder: true,
-        body: {
-          title: 'Description',
-        },
       },
       genericPropsBody: {
         showPlaceholder: false,
