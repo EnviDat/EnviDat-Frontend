@@ -9,7 +9,8 @@ module.exports = {
 
   "addons": [
     "@storybook/addon-links",
-    "@storybook/addon-essentials"
+    "@storybook/addon-essentials",
+    "@storybook/addon-storysource"
   ],
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
@@ -34,7 +35,7 @@ module.exports = {
         alias: {
           '@': path.resolve(__dirname, '../src'),
           vue: 'vue/dist/vue.js',
-          'vue$': 'vue/dist/vue.esm.js',          
+          'vue$': 'vue/dist/vue.esm.js',
           cesium: path.resolve(__dirname, '../node_modules/cesium/Source'),
         },
       },
