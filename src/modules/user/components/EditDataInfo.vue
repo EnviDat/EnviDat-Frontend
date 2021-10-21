@@ -5,7 +5,7 @@
     <v-container fluid
                  class="pa-0 fill-height" >
 
-    <v-row>
+      <v-row>
 
         <v-col cols="12">
           <div class="text-h5">{{ labels.cardTitle }}</div>
@@ -90,14 +90,19 @@
               <v-expansion-panel-content><div v-html="getDataLicenseSummary" /></v-expansion-panel-content>
             </v-expansion-panel>
 
-            <v-expansion-panel>
-              <v-expansion-panel-header prepend-icon="data_usage" expand-icon="arrow_drop_down">{{ this.labels.dataLicenseEmail }}</v-expansion-panel-header>
-              <v-expansion-panel-content v-if="!this.addInfoObj.dataLicense">{{ this.getDataLicenseLink }}</v-expansion-panel-content>
-              <v-expansion-panel-content v-if="this.addInfoObj.dataLicense"><a v-bind:href="this.getDataLicenseLink" target="_blank">{{ this.getDataLicenseLink }}</a></v-expansion-panel-content>
-            </v-expansion-panel>
-
           </v-expansion-panels>
 
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col >
+          <div v-if="!this.addInfoObj.dataLicense" class="text-body-3">{{ this.getDataLicenseLink }}</div>
+          <div v-if="this.addInfoObj.dataLicense && this.dataLicenseLinkExists()" class="text-body-3">{{ this.labels.dataLicenseEmail }}</div>
+          <div v-if="this.addInfoObj.dataLicense && this.dataLicenseLinkExists()" class="text-body-3"><a v-bind:href="this.getDataLicenseLink" target="_blank">{{ this.getDataLicenseLink }}</a></div>
         </v-col>
 
       </v-row>
@@ -179,7 +184,6 @@ export default {
       for (let i = 0; i < this.dataLicenses.length; i++) {
         if (currentLicense === this.dataLicenses[i].name) {
           return this.dataLicenses[i].link;
-          // return '<a v-bind:href="this.getDataLicenseLink" target="_blank">this.dataLicenses[i].link</a>';
         }
       }
 
@@ -204,6 +208,18 @@ export default {
     },
   },
   methods: {
+    dataLicenseLinkExists() {
+
+      const currentLicense = this.addInfoObj.dataLicense;
+
+      for (let i = 0; i < this.dataLicenses.length; i++) {
+        if (currentLicense === this.dataLicenses[i].name && 'link' in this.dataLicenses[i]) {
+          return true;
+        }
+      }
+      return false;
+
+    },
     markdownText(mdText) {
       return renderMarkdown(mdText);
     },
@@ -242,7 +258,7 @@ export default {
       publicationDate: 'Publication Date',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Data License Summary',
-      dataLicenseEmail: 'Link for more detailed information about Data License',
+      dataLicenseEmail: 'Link for more detailed information about Data License:',
     },
     maxYears: 30,
     // TODO finish adding other dataLicense objects
@@ -285,8 +301,53 @@ export default {
       },
       {
         name: 'Creative Commons Attribution Share-Alike (CC-BY-SA)',
-        summary: 'TODO',
-        link: 'TODO',
+        summary: 'This is a human-readable summary of (and not a substitute for) the license.\n'
+          + '\n'
+          + '**You are free to:**\n'
+          + '\n'
+          + '*Share*: copy and redistribute the material in any medium or format\n'
+          + '\n'
+          + '*Adapt*: remix, transform, and build upon the material for any purpose, even commercially.\n'
+          + '\n'
+          + 'The licensor cannot revoke these freedoms as long as you follow the license terms.\n'
+          + '\n'
+          + '**Under the following terms:**\n'
+          + '\n'
+          + '*Attribution*: You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.\n'
+          + '\n'
+          + '*ShareAlike*: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.\n'
+          + '\n'
+          + '*No additional restrictions*: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.\n'
+          + '\n'
+          + '**Notices:**\n'
+          + '\n'
+          + 'You do not have to comply with the license for elements of the material in the public domain or where your use is permitted by an applicable exception or limitation.\n'
+          + '\n'
+          + 'No warranties are given. The license may not give you all of the permissions necessary for your intended use. For example, other rights such as publicity, privacy, or moral rights may limit how you use the material.',
+        link: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
+      },
+      {
+        name: 'Creative Commons Universal - No Rights Reserved (CC0 1.0)',
+        summary: 'This is a human-readable summary of (and not a substitute for) the license.\n'
+          + '\n'
+          + '**No Copyright**\n'
+          + '\n'
+          + 'The person who associated a work with this deed has dedicated the work to the public domain by waiving all of his or her rights to the work worldwide under copyright law, including all related and neighboring rights, to the extent allowed by law.\n'
+          + '\n'
+          + 'You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission. See Other Information below.\n'
+          + '\n'
+          + '**Other Information**\n'
+          + '\n'
+          + '- In no way are the patent or trademark rights of any person affected by CC0, nor are the rights that other persons may have in the work or in how the work is used, such as publicity or privacy rights.\n'
+          + '\n'
+          + '- Unless expressly stated otherwise, the person who associated a work with this deed makes no warranties about the work, and disclaims liability for all uses of the work, to the fullest extent permitted by applicable law.\n'
+          + '\n'
+          + '- When using or citing the work, you should not imply endorsement by the author or the affirmer.\n',
+        link: 'https://creativecommons.org/publicdomain/zero/1.0/legalcode',
+      },
+      {
+        name: 'Other (specified in the description)',
+        summary: 'Select Other in order to specify your own license in the description of the dataset.\n',
       },
     ],
   }),
