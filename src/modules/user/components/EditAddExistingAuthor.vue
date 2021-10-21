@@ -16,7 +16,7 @@
       <v-row >
         <v-col >
           <BaseUserPicker :users="baseUserPickerObject"
-                          :preSelected="authors"
+                          :preSelected="preselectAuthorNames"
                           :multiplePick="true"
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
@@ -69,6 +69,9 @@ export default {
     baseUserPickerObject() {
       return this.fullNameUsers(this.existingEnviDatUsers);
     },
+    preselectAuthorNames() {
+      return this.fullNameUsers(this.authors);
+    },
   },
   methods: {
     fullNameUsers(userObjects) {
@@ -79,7 +82,7 @@ export default {
         if (user.fullName) {
           fullNameArray.push(user.fullName);
         } else {
-            console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
+          console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
         }
       });
 
