@@ -50,32 +50,10 @@
     <v-row dense>
 
       <v-col >
-<!--        <BaseUserPicker :users="fullNameUsers"-->
-<!--                        :value="contactAuthorFullName"-->
-<!--                        @removedUsers="catchAuthorChange"-->
-<!--                        @pickedUsers="catchAuthorChange"/>-->
-
-        <v-combobox      @input="catchAuthorChange($event)"
-                         :value="contactAuthorField"
-                         :items="fullNameUsers"
-                         chips
-                         outlined
-                         dense
-                         append-icon="arrow_drop_down"
-                         prepend-icon="account_box"
-                         :label="labels.authorDropdown">
-
-          <template v-slot:selection="{ item }" >
-            <TagChip  v-if="item && item.contactGivenName"
-                      :name="getFullName(item)"
-                      selectable
-                      closeable
-                      @clickedClose="catchAuthorChange(item)"
-                      :isSmall="false"
-            />
-          </template>
-
-        </v-combobox>
+        <BaseUserPicker :users="fullNameUsers"
+                        :preSelected="preselectAuthorName"
+                        @removedUsers="catchAuthorChange"
+                        @pickedUsers="catchAuthorChange"/>
       </v-col>
 
 
@@ -161,7 +139,7 @@ import {
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
-// import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 import TagChip from '@/components/Chips/TagChip';
 
 import imageContact from '@/assets/icons/contact.png';
@@ -182,7 +160,7 @@ export default {
     },
     authors: {
       type: Array,
-      default: null,
+      default: () => [],
     },
     existingEnviDatUsers: {
       type: Array,
@@ -212,6 +190,9 @@ export default {
 
         return contactAuthor;
       },
+    },
+    preselectAuthorName() {
+      return this.getFullName(this.contactAuthor);
     },
     existingAuthorsWrap() {
       if (this.$store) {
@@ -290,12 +271,10 @@ export default {
         }
       });
 
-
-
       return fullNameArray;
     },
     getFullName(authorObj) {
-       return `${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`;
+       return [`${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`];
     },
     catchAuthorChange(pickedAuthor) {
 
@@ -386,7 +365,7 @@ export default {
    }),
   components: {
     MetadataHeader,
-   // BaseUserPicker,
+    BaseUserPicker,
     TagChip,
   },
 };
