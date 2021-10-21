@@ -140,7 +140,6 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
-import TagChip from '@/components/Chips/TagChip';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -366,7 +365,6 @@ export default {
   components: {
     MetadataHeader,
     BaseUserPicker,
-    TagChip,
   },
 };
 </script>
