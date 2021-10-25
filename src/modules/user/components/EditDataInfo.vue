@@ -23,7 +23,7 @@
       </v-row>
 
 
-      <v-row dense >
+      <v-row >
 
         <v-col>
           <div class="text-body-2">{{ labels.instructionsCollection }}</div>
@@ -34,18 +34,17 @@
 
       <v-row dense>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10" cols="2">
           <v-text-field
-                    outlined
                     dense
-                    :label="labels.dateType"
                     readonly
+                    outlined
                     prepend-icon="category"
                     :value="labels.collectionDate"
           />
         </v-col>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10">
           <template>
               <v-menu>
                 <template v-slot:activator="{ on }">
@@ -98,7 +97,7 @@
       <v-row dense >
 
         <v-col>
-          <div class="text-body-2">{{ labels.instructionsCreation }}</div>
+          <div class="text-body-2" >{{ labels.instructionsCreation }}</div>
         </v-col>
 
       </v-row>
@@ -106,18 +105,17 @@
 
       <v-row dense>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10" cols="2">
           <v-text-field
-            outlined
             dense
-            :label="labels.dateType"
             readonly
+            outlined
             prepend-icon="category"
             :value="labels.creationDate"
           />
         </v-col>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10">
           <template>
             <v-menu>
               <template v-slot:activator="{ on }">
@@ -169,18 +167,17 @@
 
       <v-row dense>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10" cols="2">
           <v-text-field
-            outlined
-            :label="labels.dateType"
             readonly
             dense
+            outlined
             prepend-icon="category"
             :value="labels.publicationDate"
           />
         </v-col>
 
-        <v-col class="pr-4">
+        <v-col class="pr-4 mr-10">
           <template>
             <v-menu>
               <template v-slot:activator="{ on }">
