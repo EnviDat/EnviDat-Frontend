@@ -4,9 +4,9 @@
  * @summary routes of user module
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-07-14 14:20:05 
+ * Created at     : 2020-07-14 14:20:05
  * Last modified  : 2021-07-29 09:41:31
- * 
+ *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -42,5 +42,12 @@ export const userRoutes = [
     path: METADATAEDIT_PATH,
     name: METADATAEDIT_PAGENAME,
     component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
+    children: [
+      {
+        path: `${METADATAEDIT_PATH}/:metadataid`,
+        name: METADATAEDIT_PAGENAME,
+        component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/metadata/components/MetadataDetailPage'),
+      },
+    ],
   },
 ];

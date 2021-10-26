@@ -99,6 +99,22 @@ export default {
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
+  mounted() {
+
+    // use getMetadataContent with metdataId
+    // something like this.$route.parameters.metadataId
+    // check the metadataDetailPage for reference
+    // use the "creation functions" from metadataFactory.js to create each "object"
+    // 
+
+/*
+    eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      object: key,
+      data,
+    });
+*/
+
+  },
   computed: {
     ...mapState(USER_NAMESPACE, [
       'metadataInEditing',

@@ -112,6 +112,24 @@ export const metadata = {
     loadingMetadatasContent: state => state.loadingMetadatasContent,
     metadataIds: state => state.metadataIds,
     metadatasContent: state => state.metadatasContent,
+    getMetadataContent: state => metadataId => () =>
+    {
+      const metadataEntry = state.metadatasContent[metadataId];
+
+      if (!metadataEntry) {
+        const keys = Object.keys(state.metadatasContent);
+
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i];
+          const entry = state.metadatasContent[key];
+          if (entry.name === metadataId) {
+            return entry;
+          }
+        }
+      }
+
+      return metadataEntry;
+    },
     allMetadatas: state => Object.values(state.metadatasContent),
     metadatasContentSize: state => (state.metadatasContent !== undefined ? Object.keys(state.metadatasContent).length : 0),
     authorsMap: state => state.authorsMap,
