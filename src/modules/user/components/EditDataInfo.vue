@@ -23,7 +23,7 @@
       </v-row>
 
 
-      <v-row dense >
+      <v-row >
 
         <v-col>
           <div class="text-body-2">{{ labels.instructionsCollection }}</div>
@@ -32,53 +32,42 @@
       </v-row>
 
 
-      <v-row dense >
+      <v-row dense>
 
-        <v-col>
-          <div class="text-body-2">{{ labels.instructionsCreation }}</div>
-        </v-col>
-
-      </v-row>
-
-
-      <v-row v-for="(item, index) in addInfoDateFields"
-             :key="`${item}_${index}`">
-
-        <v-col class="pr-4">
-          <v-select :items="dateTypes"
+        <v-col class="pr-4 mr-10" cols="2">
+          <v-text-field
+                    dense
+                    readonly
                     outlined
-                    :label="labels.dateType"
-                    required
                     prepend-icon="category"
-                    append-icon="arrow_drop_down"
-                    :value="item.dateType"
-                    @input="notifyChange(index, 'dateType', $event)"
+                    :value="labels.collectionDate"
           />
         </v-col>
 
-        <v-col>
+        <v-col class="pr-4 mr-10">
           <template>
               <v-menu>
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     :label="labels.startDate"
+                    dense
                     prepend-icon="date_range"
                     readonly
                     outlined
-                    :value="item.date"
+                    :value="collectionDateStartField"
                     v-on="on"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  @input="notifyChange(index, 'date', $event)"
+                  @input="setDataInfo('collectionDateStart', $event)"
                   no-title
                 ></v-date-picker>
               </v-menu>
           </template>
         </v-col>
 
-        <v-col>
+        <v-col class="pr-4">
           <template>
             <v-menu>
               <template v-slot:activator="{ on }">
@@ -86,16 +75,17 @@
                   :label="labels.endDate"
                   prepend-icon="date_range"
                   readonly
+                  dense
                   outlined
-                  :value="item.dateEnd"
+                  :value="collectionDateEndField"
                   v-on="on"
                 ></v-text-field>
               </template>
               <v-date-picker
                 locale="en-in"
-                @input="notifyChange(index, 'dateEnd', $event)"
+                :min="collectionDateStartField"
+                @input="setDataInfo('collectionDateEnd', $event)"
                 no-title
-                :min="item.date"
               ></v-date-picker>
             </v-menu>
           </template>
@@ -104,98 +94,194 @@
       </v-row>
 
 
-<!--      <v-row >-->
+      <v-row dense >
 
-<!--        <v-col class="pr-4">-->
-<!--          <v-select :items="yearsList"-->
-<!--                    outlined-->
-<!--                    :label="labels.creationDate"-->
-<!--                    required-->
-<!--                    prepend-icon="date_range"-->
-<!--                    append-icon="arrow_drop_down"-->
-<!--                    :value="addInfoFields.creationYear"-->
-<!--                    @input="notifyChange('creationYear', $event)"-->
-<!--          />-->
-<!--        </v-col>-->
+        <v-col>
+          <div class="text-body-2" >{{ labels.instructionsCreation }}</div>
+        </v-col>
 
-<!--        <v-col >-->
-<!--          <v-select :items="yearsList"-->
-<!--                    outlined-->
-<!--                    :label="labels.collectionDate"-->
-<!--                    required-->
-<!--                    prepend-icon="date_range"-->
-<!--                    append-icon="arrow_drop_down"-->
-<!--                    :value="addInfoFields.collectionYear"-->
-<!--                    @input="notifyChange('collectionYear', $event)"-->
-<!--          />-->
-<!--        </v-col>-->
-
-<!--      </v-row>-->
+      </v-row>
 
 
-<!--      <v-row dense>-->
+      <v-row dense>
 
-<!--        <v-col cols="6"-->
-<!--               class="pr-4">-->
-<!--          <v-select :items="yearsList"-->
-<!--                    outlined-->
-<!--                    :label="labels.publicationDate"-->
-<!--                    required-->
-<!--                    readonly-->
-<!--                    prepend-icon="date_range"-->
-<!--                    append-icon="arrow_drop_down"-->
-<!--                    :value="addInfoFields.publicationYear"-->
-<!--                    @input="notifyChange('publicationYear', $event)"-->
-<!--          />-->
-<!--        </v-col>-->
+        <v-col class="pr-4 mr-10" cols="2">
+          <v-text-field
+            dense
+            readonly
+            outlined
+            prepend-icon="category"
+            :value="labels.creationDate"
+          />
+        </v-col>
 
-<!--      </v-row>-->
+        <v-col class="pr-4 mr-10">
+          <template>
+            <v-menu>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :label="labels.startDate"
+                  prepend-icon="date_range"
+                  readonly
+                  dense
+                  outlined
+                  :value="creationDateStartField"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="en-in"
+                @input="setDataInfo('creationDateStart', $event)"
+                no-title
+              ></v-date-picker>
+            </v-menu>
+          </template>
+        </v-col>
+
+        <v-col class="pr-4">
+          <template>
+            <v-menu>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :label="labels.endDate"
+                  prepend-icon="date_range"
+                  readonly
+                  dense
+                  outlined
+                  :value="creationDateEndField"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="en-in"
+                :min="creationDateStartField"
+                @input="setDataInfo('creationDateEnd', $event)"
+                no-title
+              ></v-date-picker>
+            </v-menu>
+          </template>
+        </v-col>
+
+      </v-row>
 
 
-<!--      <v-row dense>-->
+      <v-row dense>
 
-<!--        <v-col >-->
-<!--          <v-select :items="dataLicensesNameList"-->
-<!--                    outlined-->
-<!--                    :label="labels.dataLicense"-->
-<!--                    required-->
-<!--                    prepend-icon="data_usage"-->
-<!--                    append-icon="arrow_drop_down"-->
-<!--                    :value="addInfoFields.dataLicense"-->
-<!--                    @input="notifyChange('dataLicense', $event)"-->
-<!--          />-->
-<!--        </v-col>-->
+        <v-col class="pr-4 mr-10" cols="2">
+          <v-text-field
+            readonly
+            dense
+            outlined
+            prepend-icon="category"
+            :value="labels.publicationDate"
+          />
+        </v-col>
 
-<!--      </v-row>-->
+        <v-col class="pr-4 mr-10">
+          <template>
+            <v-menu>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :label="labels.startDate"
+                  prepend-icon="date_range"
+                  readonly
+                  dense
+                  outlined
+                  :value="publicationDateStartField"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="en-in"
+                disabled
+                @input="setDataInfo('publicationDateStart', $event)"
+                no-title
+              ></v-date-picker>
+            </v-menu>
+          </template>
+        </v-col>
 
-<!--      <v-row dense>-->
+        <v-col class="pr-4">
+          <template>
+            <v-menu>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :label="labels.endDate"
+                  prepend-icon="date_range"
+                  readonly
+                  dense
+                  outlined
+                  :value="publicationDateEndField"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                locale="en-in"
+                disabled
+                :min="publicationDateStartField"
+                @input="setDataInfo('publicationDateEnd', $event)"
+                no-title
+              ></v-date-picker>
+            </v-menu>
+          </template>
+        </v-col>
 
-<!--        <v-col >-->
-
-<!--          <v-expansion-panels focusable>-->
-
-<!--            <v-expansion-panel>-->
-<!--              <v-expansion-panel-header expand-icon="arrow_drop_down">{{ this.labels.dataLicenseSummary }}</v-expansion-panel-header>-->
-<!--&lt;!&ndash;              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>&ndash;&gt;-->
-<!--              <v-expansion-panel-content><div v-html="getDataLicenseSummary" /></v-expansion-panel-content>-->
-<!--            </v-expansion-panel>-->
-
-<!--          </v-expansion-panels>-->
-
-<!--        </v-col>-->
-
-<!--      </v-row>-->
+      </v-row>
 
 
-<!--      <v-row>-->
+      <v-row>
 
-<!--        <v-col >-->
-<!--          <div v-if="!this.addInfoObj.dataLicense" class="text-body-3">{{ this.getDataLicenseLink }}</div>-->
-<!--          <div v-if="this.addInfoObj.dataLicense && this.dataLicenseLinkExists()" class="text-body-3">{{ this.labels.dataLicenseEmail }}</div>-->
-<!--          <div v-if="this.addInfoObj.dataLicense && this.dataLicenseLinkExists()" class="text-body-3"><a v-bind:href="this.getDataLicenseLink" target="_blank">{{ this.getDataLicenseLink }}</a></div>-->
-<!--        </v-col>-->
+        <v-col>
+          <div class="text-body-1">{{ labels.instructionsLicense }}</div>
+        </v-col>
 
-<!--      </v-row>-->
+      </v-row>
+
+
+      <v-row dense>
+
+        <v-col >
+          <v-select :items="dataLicensesNameList"
+                    outlined
+                    :label="labels.dataLicense"
+                    required
+                    prepend-icon="data_usage"
+                    append-icon="arrow_drop_down"
+                    :value="dataLicenseField"
+                    @input="setDataInfo('dataLicense', $event)"
+          />
+        </v-col>
+
+      </v-row>
+
+      <v-row dense>
+
+        <v-col >
+
+          <v-expansion-panels focusable>
+
+            <v-expansion-panel>
+              <v-expansion-panel-header expand-icon="arrow_drop_down">{{ this.labels.dataLicenseSummary }}</v-expansion-panel-header>
+<!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
+              <v-expansion-panel-content><div v-html="getDataLicenseSummary" /></v-expansion-panel-content>
+            </v-expansion-panel>
+
+          </v-expansion-panels>
+
+        </v-col>
+
+      </v-row>
+
+
+      <v-row>
+
+        <v-col >
+          <div v-if="!this.dataLicense" class="text-body-3">{{ this.getDataLicenseLink }}</div>
+          <div v-if="this.dataLicense && this.dataLicenseLinkExists()" class="text-body-3">{{ this.labels.dataLicenseEmail }}</div>
+          <div v-if="this.dataLicense && this.dataLicenseLinkExists()" class="text-body-3"><a v-bind:href="this.getDataLicenseLink" target="_blank">{{ this.getDataLicenseLink }}</a></div>
+        </v-col>
+
+      </v-row>
 
 
     </v-container>
@@ -218,77 +304,84 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { EDITMETADATA_DATA_INFO, EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
-import { renderMarkdown } from '@/factories/stringFactory';
+import {EDITMETADATA_DATA_INFO, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
+import {renderMarkdown} from '@/factories/stringFactory';
 
 
 export default {
   name: 'EditDataInfo',
   props: {
-    addInfoObj: {
-      type: Object,
-      default: () => {},
+    collectionDateStart: {
+      type: String,
+      default: () => '',
     },
-
-
-    addInfoDates: {
-      type: Array,
-      default: () => [],
+    collectionDateEnd: {
+      type: String,
+      default: () => '',
+    },
+    creationDateStart: {
+      type: String,
+      default: () => '',
+    },
+    creationDateEnd: {
+      type: String,
+      default: () => '',
+    },
+    publicationDateStart: {
+      type: String,
+      default: () => '',
+    },
+    publicationDateEnd: {
+      type: String,
+      default: () => '',
+    },
+    dataLicense: {
+      type: String,
+      default: () => '',
     },
   },
   computed: {
-    addInfoDateFields: {
+    collectionDateStartField: {
       get() {
-        let addInfoDates = [...this.addInfoDates];
-
-        if (addInfoDates.length <= 0) {
-          addInfoDates = [{
-            dateType: '',
-            date: '',
-            dateEnd: '',
-          }]
-        }
-
-        return addInfoDates;
-      },
-    },
-
-
-    addInfoFields: {
-      get() {
-        let addInfoObject = { ...this.addInfoObj };
-
-        if (Object.keys(addInfoObject).length === 0) {
-          addInfoObject = {
-            creationYear: '',
-            collectionYear: '',
-            publicationYear: '',
-            dataLicense: '',
-          };
-        }
-
-        return addInfoObject;
-      },
-    },
-    yearsList() {
-
-      const date = new Date();
-      let year = date.getFullYear();
-      const yearList = [];
-
-      for (let i = 0; i < this.maxYears; i++) {
-        yearList[i] = year.toString();
-        year--;
+        return this.collectionDateStart.slice();
       }
-
-      return yearList;
+    },
+    collectionDateEndField: {
+      get() {
+        return this.collectionDateEnd.slice();
+      }
+    },
+    creationDateStartField: {
+      get() {
+        return this.creationDateStart.slice();
+      }
+    },
+    creationDateEndField: {
+      get() {
+        return this.creationDateEnd.slice();
+      }
+    },
+    publicationDateStartField: {
+      get() {
+        return this.publicationDateStart.slice();
+      }
+    },
+    publicationDateEndField: {
+      get() {
+        return this.publicationDateEnd.slice();
+      }
+    },
+    dataLicenseField: {
+      get() {
+        return this.dataLicense.slice();
+      }
     },
     dataLicensesNameList() {
       return this.dataLicenses.map(element => element.name);
     },
     getDataLicenseLink() {
 
-      const currentLicense = this.addInfoObj.dataLicense;
+      const currentLicense = this.dataLicense;
 
       if (currentLicense === '') {
         return 'Please select a data license above to view link for more detailed information.';
@@ -305,7 +398,7 @@ export default {
     },
     getDataLicenseSummary() {
 
-      const currentLicense = this.addInfoObj.dataLicense;
+      const currentLicense = this.dataLicense;
 
       if (currentLicense === '') {
         return 'Please select a data license above to view data license summary.';
@@ -323,7 +416,7 @@ export default {
   methods: {
     dataLicenseLinkExists() {
 
-      const currentLicense = this.addInfoObj.dataLicense;
+      const currentLicense = this.dataLicense;
 
       for (let i = 0; i < this.dataLicenses.length; i++) {
         if (currentLicense === this.dataLicenses[i].name && 'link' in this.dataLicenses[i]) {
@@ -336,36 +429,12 @@ export default {
     markdownText(mdText) {
       return renderMarkdown(mdText);
     },
-    // editEntry(addInfoObject, property, value) {
-    //   addInfoObject[property] = value;
-    // },
-    editEntry(array, index, property, value) {
-      if (array.length <= index) {
-        return;
-      }
-
-      const currentEntry = array[index];
-      array[index] = {
-        ...currentEntry,
-        [property]: value,
-      };
-    },
-    notifyChange(index, property, value) {
-
-      // const addInfoCopy = { ...this.addInfoObj };
-      const datesCopy = [ ...this.addInfoDateFields ];
-
-      this.editEntry(datesCopy, index, property, value);
-
-      this.setDataInfo('addInfoDates', datesCopy);
-
-    },
     setDataInfo(property, value) {
       const newDataInfo = {
         ...this.$props,
         [property]: value,
       };
-      // console.log(newDataInfo);
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_INFO,
         data: newDataInfo,
@@ -377,19 +446,19 @@ export default {
   data: () => ({
     labels: {
       cardTitle: 'Additional Information about the Resources',
-      instructions: 'Please select date type from dropdown list.',
+      instructions: 'Please select dates for collection and/or creation dates.',
       instructionsCollection: '"Collection Date" should be used for data collected from the field.',
       instructionsCreation: '"Creation Date" should be used for data created from models or other sources.',
       dateType: 'Date Type',
       startDate: 'Start Date',
       endDate: 'End Date',
-
+      instructionsLicense: 'Please select a data license from the dropdown list.',
       creationDate: 'Creation Date',
       collectionDate: 'Collection Date',
       publicationDate: 'Publication Date',
       dataLicense: 'Click here to select a data license',
-      dataLicenseSummary: 'Data License Summary',
-      dataLicenseEmail: 'Link for more detailed information about Data License:',
+      dataLicenseSummary: 'Click here to view Data License Summary',
+      dataLicenseEmail: 'Link for more detailed information about selected Data License:',
     },
     dateTypes: ['Collection Date', 'Creation Date'],
     maxYears: 30,
