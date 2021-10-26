@@ -14,6 +14,7 @@
 import { storiesOf } from '@storybook/vue';
 
 import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+import EditOrganization from '@/modules/user/components/EditOrganization';
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -76,6 +77,58 @@ storiesOf(storybookFolder, module)
       },
       selectedOrga: '',
       preSelectedOrganization: 'wsl',
+    }),
+  }))
+  .add('Edit Organization', () => ({
+    components: { EditOrganization },
+    template: `
+      <v-col>
+
+      <v-row>
+        EditOrganization
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditOrganization v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditOrganization preselected
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditOrganization v-bind="genericProps2" />
+        </v-col>
+      </v-row>
+
+      </v-col>
+    `,
+    created() {
+      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+    },
+    beforeDestroy() {
+      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+    },
+    methods: {
+      updateOrga(updateObj) {
+        if (updateObj.object === EDITMETADATA_ORGANIZATION
+          && updateObj.data.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+        }
+      },
+    },
+    data: () => ({
+      genericProps: {
+        id: '1',
+        organizationsInfo: testOrganizations,
+      },
+      genericProps2: {
+        organizationsInfo: testOrganizations,
+        preselectedOrganization: 'Community Ecology',
+      },
     }),
   }))
   .add('Edit Organization component', () => ({
