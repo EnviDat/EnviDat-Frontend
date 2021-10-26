@@ -1,6 +1,6 @@
 <template>
 
-  <v-card id="EditOrganizationTree"
+  <v-card id="EditOrganization"
           class="pa-4">
 
     <v-row>
