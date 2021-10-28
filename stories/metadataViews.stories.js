@@ -66,6 +66,7 @@ import metadata from './js/metadata';
 // }
 
 metadata[0].tags = convertTags(metadata[0].tags, false);
+metadata[2].tags = convertTags(metadata[2].tags, false);
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
