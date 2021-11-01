@@ -138,7 +138,8 @@ export default {
         if (!this.pickedUsers?.includes(pickedItem)) {
           this.pickedUsers.push(pickedItem);
         } else {
-          this.pickedUsers = [];
+          const index = this.pickedUsers.indexOf(pickedItem);
+          this.pickedUsers.splice(index, 1);
         }
       } else {
         this.pickedUsers = pickedItem;

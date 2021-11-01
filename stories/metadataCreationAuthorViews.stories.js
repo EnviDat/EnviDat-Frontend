@@ -55,12 +55,15 @@ const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
 // extract the names of the authors into a plain array of string for the baseUserPicker
 const authors = [];
+const authorsStrings = [];
 authorsObjs.forEach((author) => {
-  authors.push(author.fullName);
+  authors.push(author);
+  authorsStrings.push(author.fullName);
 });
 
-const preSelectedAuthor = authors.filter(value => value.includes('Fischer'));
-const preSelectedAuthors2 = authors.filter(value => value.includes('A'));
+const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
+const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
+const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 const storybookFolder = `${METADATA_EDITING} / Author Infos`;
 
@@ -113,7 +116,7 @@ storiesOf(storybookFolder, module)
         <v-col >
           <BaseUserPicker :users="authors"
                           :multiplePick="true"
-                          :preSelected="preSelectedAuthors2"
+                          :preSelected="preSelectedAuthors3"
                           :isClearable="true" />
         </v-col>
       </v-row>
@@ -123,9 +126,9 @@ storiesOf(storybookFolder, module)
     methods: {
     },
     data: () => ({
-      authors,
+      authors: authorsStrings,
       preSelectedAuthor,
-      preSelectedAuthors2,
+      preSelectedAuthors3,
     }),
   }))
   .add('Edit Authors list', () => ({
@@ -217,6 +220,15 @@ storiesOf(storybookFolder, module)
       eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
     },
+    computed: {
+      genericProps() {
+        return {
+          selectionId: '',
+          authors: this.preSelectedAuthors2,
+          existingAuthors: this.authors,
+        };
+      },
+    },
     methods: {
       selectAuthor(id) {
         if (this.selectionId !== '') {
@@ -285,11 +297,7 @@ storiesOf(storybookFolder, module)
       },
     },
     data: () => ({
-      genericProps: {
-        selectionId: '',
-        authors: preSelectedAuthors2,
-        existingAuthors: authors,
-      },
-      selectionId: '',
+      preSelectedAuthors2,
+      authors,
     }),
   }));
