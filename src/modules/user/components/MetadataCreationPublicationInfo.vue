@@ -11,7 +11,8 @@
       </v-col>
 
       <v-col cols="6">
-        <EditOrganizationTree v-bind="editOrganizationProps" />
+<!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
+        <EditOrganization v-bind="editOrganizationProps" :organizationsInfo="testOrganizations"></EditOrganization>
       </v-col>
 
     </v-row>
@@ -35,13 +36,21 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+
+import EditOrganization from '@/modules/user/components/EditOrganization';
+
+
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
-import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
+
+
+import testOrganizations from 'C:/Users/kurup/Documents/EnviDat-Frontend-2021/stories/js/organizations';
+
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -61,14 +70,23 @@ export default {
       return this.organizationsInfo;
     },
 
+
+    testOrganizations() {
+      return testOrganizations;
+    }
+
   },
   methods: {
   },
   data: () => ({
   }),
   components: {
-    EditOrganizationTree,
+  //  EditOrganizationTree,
     EditPublicationInfo,
+
+
+    EditOrganization
+
   },
 };
 

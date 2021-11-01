@@ -28,5 +28,5 @@ export const METADATA_RESOURCES_TITLE = 'Data and resources';
 
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORS_TITLE = 'Select an Author for Editing';
-export const EDIT_ORGANIZATION_TITLE = 'Choose the Organization for this Dataset';
+export const EDIT_ORGANIZATION_TITLE = 'Choose the Organization(s) for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';

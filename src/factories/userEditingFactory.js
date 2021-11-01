@@ -180,6 +180,7 @@ const emptyMetadataInEditing = {
   [EDITMETADATA_ORGANIZATION]: {
     organizationsMap: allOrganizations,
     organization: '',
+    organizations: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
     publicationState: 'Draft',

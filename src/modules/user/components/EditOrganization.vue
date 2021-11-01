@@ -22,8 +22,9 @@
          </v-text-field>
 
         <v-select     v-else
-                      :value="selectedOrganizationsDisplay"
-                      :items="organizations"
+                      @input="setOrganization('organizations', $event)"
+                      :value="organizationsField"
+                      :items="organizationsList"
                       outlined
                       chips
                       deletable-chips
@@ -37,6 +38,7 @@
           <TagChip  :name="item"
                     selectable
                     closeable
+                    @clickedClose="removeOrganization(item)"
                     :isSmall="false"
           />
         </template>
@@ -45,6 +47,7 @@
           <TagChip v-if="item"
                    :name="item"
                    selectable
+                   @clicked="catchOrganizationClicked"
                    :isSmall="false" />
         </template>
 
@@ -93,7 +96,7 @@ export default {
      type: String,
      default: null
    },
-    selectedOrganizations: {
+    organizations: {
       type: Array,
       default: () => [],
      },
@@ -109,12 +112,12 @@ export default {
   mounted() {
   },
   computed: {
-    selectedOrganizationsDisplay: {
+    organizationsField: {
       get() {
-        return [...this.selectedOrganizations];
+        return [...this.organizations];
       },
     },
-    organizations() {
+    organizationsList() {
 
       const orgNames = [];
 
@@ -127,6 +130,7 @@ export default {
       // Remove duplicates from orgNames
       // orgNames = [...new Set(orgNames.map(a => JSON.stringify(a)))].map(a => JSON.parse(a));
 
+      // Sort orgNames in alphabetical order
       orgNames.sort();
 
       return orgNames;
@@ -134,16 +138,40 @@ export default {
     },
   },
   methods: {
-    catchOrganizationChanged(organization) {
+    catchOrganizationClicked(pickedOrganization) {
 
-      const newGenericProps = {
+      // Assign localOrgs to organizations concatenated with pickedOrganization
+      const localOrgs = this.organizations.concat([pickedOrganization]);
+
+      // Emit localOrgs to eventBus
+      this.setOrganization('organizations', localOrgs);
+
+    },
+    removeOrganization(item) {
+
+      // Assign removeIndex to index of organizations element that matches item
+      const removeIndex = this.organizations.indexOf(item);
+
+      // Assign localOrgs to copy of organizations
+      const localOrgs = [...this.organizations];
+
+      // Remove object with index of removeIndex from localKeywords
+      localOrgs.splice(removeIndex, 1);
+
+      // Emit localOrgs to eventBus
+      this.setOrganization('organizations', localOrgs);
+
+    },
+    setOrganization(property, value) {
+
+      const newOrganizations = {
         ...this.$props,
-        organization,
+        [property]: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_ORGANIZATION,
-        data: newGenericProps,
+        data: newOrganizations,
       });
     },
   },
