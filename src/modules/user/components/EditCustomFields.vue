@@ -23,16 +23,18 @@
         <v-col cols="6" >
           <v-text-field :label="labels.labelFieldName"
                         outlined
-                        hide-details
+                        dense
                         :value="item.fieldName"
+                        :error-messages="validationErrors[index].fieldName"
                         @input="notifyChange(index, 'fieldName', $event)"
                         />
         </v-col>
         <v-col cols="6" >
           <v-text-field :label="labels.labelContent"
                         outlined
-                        hide-details
+                        dense
                         :value="item.content"
+                        :error-messages="validationErrors[index].content"
                         @input="notifyChange(index, 'content', $event)"
                         />
         </v-col>
@@ -68,6 +70,8 @@ import {
 
 import {
   deleteEmptyObject,
+  getValidationMetadataEditingObject,
+  isArrayValid,
   isMaxLength,
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
@@ -85,8 +89,16 @@ export default {
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
+    validationErrors: [{
+      fieldName: '',
+      content: '',
+    }],
     defaultUserEditMetadataConfig: {
       customFieldsMax: 10,
+    },
+    emptyEntry: {
+      fieldName: '',
+      content: '',
     },
   }),
   props: {
@@ -107,10 +119,7 @@ export default {
         let fields = [...this.customFields];
 
         if (fields.length <= 0) {
-          fields = [{
-            fieldName: '',
-            content: '',
-          }];
+          fields = [{...this.emptyEntry}];
         } else {
           this.addEmptyFieldObj(fields);
         }
@@ -121,18 +130,18 @@ export default {
     maxCustomFieldsMessage() {
       return `Maximum number of custom fields: ${this.maxCustomFields}. Please contact the EnviDat support team if you need additional custom fields.`;
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_CUSTOMFIELDS);
+    },
   },
   methods: {
      addEmptyFieldObj(localFields) {
 
-      // Assign lastCustomField to last item in localFields
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
-      // Assign variables to lastCustomFieldObj properties
       const lastCustomFieldName = lastCustomFieldObj?.fieldName;
       const lastCustomFieldContent = lastCustomFieldObj?.content;
 
-      // If fieldName or content of lastCustomFieldObj are empty strings then assign addCustomField to false
       let addCustomField = true;
       if (lastCustomFieldName === '' || lastCustomFieldContent === '') {
         addCustomField = false;
@@ -142,10 +151,13 @@ export default {
       // Else if addCustomField is true and localFields is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
       // Else if localFields is less than maxCustomFields then assign maxCustomFieldsReached to false
       if (addCustomField && localFields.length < this.maxCustomFields) {
-        localFields.push({
-          fieldName: '',
-          content: '',
-        });
+        localFields.push({...this.emptyEntry});
+
+        const sizeDiff = localFields.length - this.validationErrors.length;
+
+        for (let i = 0; i < sizeDiff; i++) {
+          this.validationErrors.push({...this.emptyEntry});
+        }
       }
     },
      // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
@@ -184,17 +196,23 @@ export default {
     notifyChange(index, property, value) {
 
       const localyCopy = [...this.customFieldsProp];
+      const errorArray = this.validationErrors;
 
       this.editEntry(localyCopy, index, property, value);
 
-      deleteEmptyObject(index, localyCopy);
+      const deleted = deleteEmptyObject(index, localyCopy);
+      if (deleted) {
+        // delete also from the errorArray to keep the arrays in sync
+        deleteEmptyObject(index, errorArray);
+      }
 
       this.checkEnoughEntries(localyCopy);
 
-      this.setCustomFields(localyCopy);
+      if (deleted || !deleted && isArrayValid(localyCopy, 'customFields', index, property, this.validations, errorArray)) {
+        this.setCustomFields(localyCopy);
+      }
 
       this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
-
     },
   },
   components: {

@@ -172,7 +172,6 @@ import {
 
 import { mapState } from 'vuex';
 // import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-// import { validatorBus } from '@/factories/validatorBus';
 
 
 export default {
@@ -265,17 +264,12 @@ export default {
         let funders = [...this.funders];
 
         if (funders.length <= 0) {
-          funders = [{
-            organization: '',
-            grantNumber: '',
-            link: '',
-          }];
+          // const emptyCopy = {...this.emptyEntry};
+          funders = [{...this.emptyEntry}];
+
+          // const errorsEmptyCopy = {...this.emptyEntry};
           // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-          this.validationErrors.funders = [{
-            organization: '',
-            grantNumber: '',
-            link: '',
-          }];
+          this.validationErrors.funders = [{...this.emptyEntry}];
         } else {
           this.addFunderObj(funders);
         }
@@ -343,26 +337,16 @@ export default {
       // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
       // Else it funderArray is less than maxFunders then assign maxFundersReached to false
       if (addFunder && localFunders.length < this.maxFunders) {
-        localFunders.push({
-            organization: '',
-            grantNumber: '',
-            link: '',
-          },
-        );
+        localFunders.push({...this.emptyEntry});
+
         const sizeDiff = localFunders.length - this.validationErrors.funders.length;
 
         for (let i = 0; i < sizeDiff; i++) {
-          this.validationErrors.funders.push({
-              organization: '',
-              grantNumber: '',
-              link: '',
-            },
-          );
+          this.validationErrors.funders.push({...this.emptyEntry});
         }
       }
     },
-    // Assign localFunders to a copy of funderArray with last empty funder object removed
-    removeUsedEntry(localFunders) {
+    removeUnusedEntry(localFunders) {
 
       const lastFunder = localFunders[localFunders.length - 1];
 
@@ -411,7 +395,8 @@ export default {
         deleteEmptyObject(index, errorArray);
       }
 
-      this.removeUsedEntry(localyCopy);
+      // the last entry is always unused, removed it before saving
+      this.removeUnusedEntry(localyCopy);
 
       if (deleted || !deleted && isArrayValid(localyCopy, 'funders', index, property, this.validations, errorArray)) {
         this.setPublicationInfo('funders', localyCopy);
@@ -423,6 +408,11 @@ export default {
     },
   },
   data: () => ({
+    emptyEntry: {
+      organization: '',
+      grantNumber: '',
+      link: '',
+    },
     labels: {
       cardTitle: 'Publication Info',
       publicationState: 'Publication State',
