@@ -45,7 +45,6 @@
                         class="text-none"
                         :color="buttonColor"
                         disabled
-                        v-on:click="generateNewDoi"
                        >
           Generate New DOI
           </v-btn>
@@ -125,6 +124,20 @@
 
       </v-row>
 
+<!--
+      <v-row >
+
+        <v-col cols="3">
+          <div :style="`border-radius: 50%; width: 30px; height: 30px; background-color: ${ dataIsValid ? 'green' : 'red' };`"
+                />
+        </v-col>
+        <v-col cols="3">
+          <v-btn @click="validateData()">validate</v-btn>
+        </v-col>
+
+      </v-row>
+-->
+
 
     </v-container>
   </v-card>
@@ -152,16 +165,14 @@ import {
   isObjectEmpty,
   deleteEmptyObject,
   isMaxLength,
+  isArrayValid,
+  isFieldValid,
+  getValidationMetadataEditingObject,
 } from '@/factories/userEditingFactory';
 
-import { validationMixin } from 'vuelidate';
-import {
-  required,
-  minLength,
-  url,
-} from 'vuelidate/lib/validators';
-
 import { mapState } from 'vuex';
+// import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+// import { validatorBus } from '@/factories/validatorBus';
 
 
 export default {
@@ -217,16 +228,10 @@ export default {
       set(value) {
         const property = 'doi';
 
-        if (!this.isFieldValid(property, value, this.propertyValidationSuffix)) {
-          if (this.$v[`${property}${this.propertyValidationSuffix}`].minLength === false) {
-            this.validationErrors[property] = `${property} must have at least ${this.$v[`${property}${this.propertyValidationSuffix}`].$params.minLength.min}`;
-          }
-          return;
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setPublicationInfo(property, value);
         }
 
-        this.validationErrors[property] = '';
-
-        this.setPublicationInfo(property, value);
       },
     },
     publisherField: {
@@ -236,16 +241,9 @@ export default {
       set(value) {
         const property = 'publisher';
 
-        if (!this.isFieldValid(property, value, this.propertyValidationSuffix)) {
-          if (!this.$v[`${property}${this.propertyValidationSuffix}`].minLength === false) {
-            this.validationErrors[property] = `${property} must have at least ${this.$v[`${property}${this.propertyValidationSuffix}`].$params.minLength.min}`;
-          }
-          return;
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setPublicationInfo(property, value);
         }
-
-        this.validationErrors[property] = '';
-
-        this.setPublicationInfo(property, value);
       },
     },
     publicationYearField: {
@@ -255,7 +253,11 @@ export default {
         return this.publicationYear;
       },
       set(value) {
-        this.setPublicationInfo('publicationYear', value);
+        const property = 'publicationYear';
+
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setPublicationInfo(property, value);
+        }
       },
     },
     fundersField: {
@@ -268,25 +270,46 @@ export default {
             grantNumber: '',
             link: '',
           }];
+          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+          this.validationErrors.funders = [{
+            organization: '',
+            grantNumber: '',
+            link: '',
+          }];
         } else {
           this.addFunderObj(funders);
         }
 
         return funders;
-        // return this.mixinMethods_getGenericProp('funders', this.funderArray);
       },
-      // set(value) {
-      //   this.setPublicationInfo('funders', value);
-      // },
     },
     maxFundersMessage() {
       return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`;
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_PUBLICATION_INFO);
+    },
   },
   methods: {
-    generateNewDoi() {
-      // TODO write or import code to generate new DOI
+/*
+    validateData() {
+      try {
+
+        const validateData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+
+        this.validations.validateSync(validateData);
+
+      } catch (e) {
+        console.error(`Got validation Error ${e}`);
+
+        this.validationErrors[e.params.path] = e.message;
+        this.dataIsValid = false;
+        return;
+      }
+
+      this.dataIsValid = true;
     },
+*/
     getCurrentYear() {
       const date = new Date();
       const year = date.getFullYear();
@@ -320,20 +343,22 @@ export default {
       // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
       // Else it funderArray is less than maxFunders then assign maxFundersReached to false
       if (addFunder && localFunders.length < this.maxFunders) {
-        localFunders.push(
-          {
+        localFunders.push({
             organization: '',
             grantNumber: '',
             link: '',
           },
         );
-        this.validationErrors.funders.push(
-          {
-            organization: '',
-            grantNumber: '',
-            link: '',
-          },
-        );
+        const sizeDiff = localFunders.length - this.validationErrors.funders.length;
+
+        for (let i = 0; i < sizeDiff; i++) {
+          this.validationErrors.funders.push({
+              organization: '',
+              grantNumber: '',
+              link: '',
+            },
+          );
+        }
       }
     },
     // Assign localFunders to a copy of funderArray with last empty funder object removed
@@ -347,6 +372,7 @@ export default {
       // If isEmpty is true and localFunders has at least one item then remove last element of array
       if (isEmpty && localFunders.length > 0) {
         localFunders.pop();
+        this.validationErrors.funders.pop();
       }
     },
     editEntry(array, index, property, value) {
@@ -359,59 +385,6 @@ export default {
         ...currentEntry,
         [property]: value,
       };
-    },
-    isArrayValid(array, arrayProperty, index, valueProptery, propertyValidationSuffix = 'Validation') {
-      const propertyString = `${arrayProperty}${propertyValidationSuffix}`;
-
-      this.$set(this, propertyString, array);
-
-      const vuelidateObj = this.$v[propertyString];
-
-      vuelidateObj.$touch();
-
-      if (vuelidateObj.$error && !vuelidateObj.minLength) {
-        this.validationErrors.fundersArray = `At least ${this.$v[`${arrayProperty}${this.propertyValidationSuffix}`].$params.minLength.min} of funders has to be defined`;
-        return false;
-      }
-
-      this.validationErrors.fundersArray = null;
-
-      const vuelidateValueObj = this.$v[propertyString].$each[index][valueProptery];
-
-      let errorMsg = '';
-      if (vuelidateValueObj.$error) {
-        if (vuelidateValueObj.required === false) {
-        errorMsg = `${valueProptery} is required`;
-        }
-
-        if (vuelidateValueObj.minLength === false) {
-          errorMsg = `${valueProptery} must have at least ${vuelidateValueObj.$params.minLength.min}`;
-        }
-
-        if (vuelidateValueObj.url === false) {
-          errorMsg = `${valueProptery} must be a url`;
-        }
-      }
-
-      const errorArray = this.validationErrors[arrayProperty];
-      if (errorArray[index] !== null){
-        errorArray[index][valueProptery] = errorMsg;
-      }
-
-      this.$set(this.validationErrors, arrayProperty, errorArray);
-
-      return !vuelidateObj.$invalid;
-    },
-    isFieldValid(property, value, propertyValidationSuffix = 'Validation', checkRequired = true) {
-      const propertyString = `${property}${propertyValidationSuffix}`;
-      this[propertyString] = value;
-      this.$v[propertyString].$touch();
-
-      if (checkRequired && this.$v[propertyString].$error && !this.$v[propertyString].required) {
-        this.validationErrors[property] = `${property} is required`;
-      }
-
-      return !this.$v[propertyString].$invalid;
     },
     setPublicationInfo(property, value) {
 
@@ -428,52 +401,25 @@ export default {
     notifyChange(index, property, value) {
 
       const localyCopy = [...this.fundersField];
+      const errorArray = this.validationErrors.funders;
 
       this.editEntry(localyCopy, index, property, value);
 
-      deleteEmptyObject(index, localyCopy);
+      const deleted = deleteEmptyObject(index, localyCopy);
+      if (deleted) {
+        // delete also from the errorArray to keep the arrays in sync
+        deleteEmptyObject(index, errorArray);
+      }
 
       this.removeUsedEntry(localyCopy);
 
-      if (this.isArrayValid(localyCopy, 'funders', index, property)) {
+      if (deleted || !deleted && isArrayValid(localyCopy, 'funders', index, property, this.validations, errorArray)) {
         this.setPublicationInfo('funders', localyCopy);
       }
 
       if (isMaxLength(this.maxFunders, localyCopy)) {
         this.validationErrors.fundersArray = this.maxFundersMessage;
       }
-    },
-  },
-  validations: {
-    publicationStateValidation: {
-      required,
-    },
-    doiValidation: {
-      required,
-      minLength: minLength(3),
-    },
-    publisherValidation: {
-      required,
-      minLength: minLength(3),
-    },
-    publicationYearValidation: {
-      required,
-    },
-    fundersValidation: {
-      required,
-      minLength: minLength(1),
-      $each: {
-        organization: {
-          required,
-          minLength: minLength(3),
-        },
-        grantNumber: {
-          minLength: minLength(3),
-        },
-        link: {
-          url,
-        },
-      },
     },
   },
   data: () => ({
@@ -488,10 +434,6 @@ export default {
       grantNumber: 'Grant Number',
       link: 'Link',
     },
-    publicationStateValidation: '',
-    doiValidation: '',
-    publisherValidation: '',
-    publicationYearValidation: '',
     fundersValidation: '',
     propertyValidationSuffix: 'Validation',
     validationErrors: {
@@ -506,6 +448,7 @@ export default {
       }],
       fundersArray: null,
     },
+    dataIsValid: true,
     buttonColor: '#269697',
     rulesPublisher: [v => !!v || 'Publisher is required'],
     currentYear: '',
@@ -515,7 +458,6 @@ export default {
       publicationYearsList: 30,
     },
   }),
-  mixins: [validationMixin],
   components: {
   },
 };

@@ -47,6 +47,7 @@ import {
 import { localIdProperty } from '@/factories/strategyFactory';
 import { getOrganizationMap } from '@/factories/metaDataFactory';
 import testOrganizations from '@/../stories/js/organizations';
+import * as yup from 'yup';
 
 const allOrganizations = getOrganizationMap(testOrganizations);
 
@@ -332,7 +333,7 @@ export function deleteEmptyObject(index, localObjects) {
   const currentObj = localObjects[index];
 
   if (!currentObj) {
-    return;
+    return false;
   }
 
   // Assign isEmpty to true if all values in currentObj are null or empty strings, else assign isEmpty to false
@@ -341,7 +342,10 @@ export function deleteEmptyObject(index, localObjects) {
   // If isEmpty is true and localObjects has more than one item then remove item at current index
   if (isEmpty && localObjects.length > 1) {
     localObjects.splice(index, 1);
+    return true;
   }
+
+  return false;
 }
 
 export function isMaxLength(maximum, localObjects) {
@@ -351,4 +355,115 @@ export function isMaxLength(maximum, localObjects) {
   }
   return false;
 
+}
+
+const metadataInEditingValidations = {
+  /*
+    [EDITMETADATA_MAIN_HEADER]: {
+      metadataTitle: '',
+      contactAuthor: {
+        contactEmail: '',
+        contactGivenName: '',
+        contactSurname: '',
+      },
+    },
+    [EDITMETADATA_MAIN_DESCRIPTION]: {
+      description: '',
+    },
+    [EDITMETADATA_KEYWORDS]: {
+      keywords: [],
+    },
+    [EDITMETADATA_AUTHOR_LIST]: {
+      authors: [],
+    },
+    [EDITMETADATA_DATA_RESOURCES]: {
+      resources: [],
+    },
+    [EDITMETADATA_DATA_INFO]: {
+      addInfoObj: {
+        creationYear: '',
+        collectionYear: '',
+        publicationYear: '',
+        dataLicense: '',
+      },
+    },
+    [EDITMETADATA_DATA_GEO]: {
+      geometries: null,
+    },
+    [EDITMETADATA_RELATED_PUBLICATIONS]: {
+      relatedPublicationsText: '',
+    },
+    [EDITMETADATA_CUSTOMFIELDS]: {
+      customFields: [],
+    },
+    [EDITMETADATA_ORGANIZATION]: {
+      organizationsMap: allOrganizations,
+      organization: '',
+    },
+  */
+  [EDITMETADATA_PUBLICATION_INFO]: () =>
+    yup.object().shape({
+      publicationState: yup.string().required(),
+      doi: yup.string().required().min(3),
+      publisher: yup.string().required().min(3),
+      publicationYear: yup.string().required(),
+      funders: yup.array().min(1).of(
+        yup.object({
+          organization: yup.string().required().min(3),
+          grantNumber: yup.string(),
+          link: yup.string().url(),
+        }),
+      ),
+    }),
+};
+
+
+export function getValidationMetadataEditingObject(key) {
+  return metadataInEditingValidations[key]();
+}
+
+export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray = null) {
+
+  const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
+
+  try {
+    validations.validateSyncAt(arrayPrefix, { [arrayProperty]: array });
+
+  } catch (e) {
+    if (!errorArray) {
+      // return the full error is there isn't an array given,
+      // so the error can be handled differently
+      return e;
+    }
+
+    let msg = e.message;
+    msg = msg.replace(arrayPrefix, valueProperty);
+
+    errorArray[index][valueProperty] = msg;
+    return false;
+  }
+
+  errorArray[index][valueProperty] = '';
+
+  return true;
+}
+
+export function isFieldValid(property, value, validations, errorObject = null) {
+  try {
+    validations.validateSyncAt(property, { [property]: value });
+
+  } catch (e) {
+    if (!errorObject) {
+      // return the full error is there isn't an array given,
+      // so the error can be handled differently
+      return e;
+    }
+
+    errorObject[property] = e.message;
+    return false;
+  }
+
+  errorObject[property] = '';
+
+  return true;
 }
