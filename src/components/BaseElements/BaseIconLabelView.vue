@@ -1,18 +1,18 @@
 <template>
   <v-tooltip bottom
-              id="BaseIconLabelView"
               :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip" >
 
     <template v-slot:activator="{ on }">
     <v-row v-on="on"
-          no-gutters
-          style="min-height: 24px;"
-          align="center" >
+            id="BaseIconLabelView"
+            no-gutters
+            style="min-height: 24px;"
+            align="center" >
 
       <v-col v-if="icon && iconTooltip"
             :class="alignClass"
             class="iconCentering shrink"
-            style="position: relative: top: 2px; max-width: 100%" >
+            style="position: relative; top: 2px; max-width: 100%" >
 
         <img class="envidatIcon"
               :class="compactLayout ? 'small' : ''"
@@ -92,9 +92,11 @@ export default {
   computed: {
     alignClass() {
       return {
-        'col-3': !this.alignLeft,
+        'col-2': !this.alignLeft,
+        'col-sm-3': !this.alignLeft,
         'pl-1': !this.alignLeft,
         'px-1': this.alignLeft,
+//        'pr-2 pr-sm-1': this.alignLeft,
       };
     },
     textStyle() {

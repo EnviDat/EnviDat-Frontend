@@ -11,7 +11,7 @@
               style="z-index: 1; left: 0; "
               :style="headerStyle" >
 
-        <metadata-header v-bind="header"
+        <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
                           :showPlaceholder="showPlaceholder"
                           :doiIcon="doiIcon"
@@ -438,7 +438,7 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
-    
+
     showFilePreviewModal(url) {
       const strat = getPreviewStrategyFromUrl(url);
 

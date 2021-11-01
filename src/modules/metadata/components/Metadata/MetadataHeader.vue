@@ -1,9 +1,10 @@
 <template>
   <v-card id="MetadataHeader"
           :dark="dark"
-          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'white'"  >
+          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'transparent'"  >
 
-    <div :style="$vuetify.breakpoint.mdAndUp ? dynamicCardBackground : ''" >
+    <div id="headerBackground"
+         :style="dynamicCardBackground" >
       <!-- this loads the background image -->
     </div>
 
@@ -11,7 +12,7 @@
                       v-if="showCloseButton"
                       class="ma-2"
                       :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                      style="position: absolute; top: 0px; right: 0px; z-index: 2;"
+                      style="position: absolute; top: 0; right: 0; z-index: 2;"
                       material-icon-name="close"
                       icon-color="primary"
                       color="primary"
@@ -28,8 +29,9 @@
       <v-col v-if="metadataTitle"
               cols="12" >
         <div class="headerTitle"
+              :style="`line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`"
               :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
-                        'display-2': $vuetify.breakpoint.xlAndUp,
+                        'display-2': $vuetify.breakpoint.xlOnly,
                         'display-1': $vuetify.breakpoint.mdAndUp,
                         'headline': $vuetify.breakpoint.smOnly,
                         'subtitle-1': $vuetify.breakpoint.xsOnly,
@@ -149,17 +151,17 @@
                 key="headerinfos"
                 style="position: relative; z-index: 1;">
 
-          <v-col cols="12" sm="6" md="6" lg="3"
+          <v-col cols="6" lg="3"
                 class="headerInfo py-0" >
             <BaseIconLabelView :text="contactName"
                                   :label="licenseIcon ? '' : 'Main Contact:'"
                                   :icon="contactIcon"
                                   icon-tooltip="Main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
-                                  :align-left="$vuetify.breakpoint.smAndUp" />
+                                  :align-left="true" />
           </v-col>
 
-          <v-col cols="12" sm="6" md="6" lg="3"
+          <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="contactEmail"
                                   :label="mailIcon ? '' : 'Contact Email:'"
@@ -167,10 +169,10 @@
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
                                   :word-break="true"
-                                  :align-left="$vuetify.breakpoint.smAndUp" />
+                                  :align-left="true" />
           </v-col>
 
-          <v-col cols="12" sm="6" md="6" lg="3"
+          <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="doi"
                                   :label="doiIcon ? '' : 'DOI:'"
@@ -179,17 +181,17 @@
                                   icon-tooltip="Data Object Identifier"
                                   :compactLayout="$vuetify.breakpoint.xs"
                                   :word-break="true"
-                                  :align-left="$vuetify.breakpoint.smAndUp" />
+                                  :align-left="true" />
           </v-col>
 
-          <v-col cols="12" sm="6" md="6" lg="3"
+          <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="license"
                                   :label="licenseIcon ? '' : 'License:'"
                                   :icon="licenseIcon"
                                   icon-tooltip="License for the data files"
                                   :compactLayout="$vuetify.breakpoint.xs"
-                                  :align-left="$vuetify.breakpoint.smAndUp" />
+                                  :align-left="true" />
           </v-col>
         </v-row>
 
@@ -331,6 +333,7 @@ export default {
       type: Boolean,
       default: true,
     },
+    categoryColor: String,
   },
   data: () => ({
     showTagsExpanded: false,
@@ -376,6 +379,8 @@ export default {
       if (this.titleImg) {
         style += `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
         filter: blur(2px);`;
+      } else {
+        style += `background-color: ${this.cateoryColor};`;
       }
 
       return style;

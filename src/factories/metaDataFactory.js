@@ -165,7 +165,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
     authors,
-    authorDeadInfo
+    authorDeadInfo,
+    categoryColor: dataset.categoryColor,
   };
 }
 
@@ -555,7 +556,7 @@ function getPolygonPointArray(coordinates) {
 function getMultiPolygonPointArray(coordinates) {
   // Return a multipolygon array with swapped point coordinates, accepts holes
   const multiPolyArray = []
-  coordinates.forEach((polygon) => {  
+  coordinates.forEach((polygon) => {
     const polygonArray = []
     polygon.forEach((outerArray) => {
       const pointArray = []
@@ -659,8 +660,8 @@ export function mergeGeomsToMultiGeoms (origGeom, newGeom) {
   if (newGeom.type === LOCATION_TYPE_MULTIPOINT || newGeom.type === LOCATION_TYPE_MULTIPOLYGON) {
     // Not possible to draw a multipoint or multipolygon in one event, error
     combiCoordArray = null;
-  } 
-  
+  }
+
   if (origGeom.type === LOCATION_TYPE_POINT) {
     // I.e. combine single points to multipoint
     combiCoordArray = [origGeomArray, newGeomArray];
