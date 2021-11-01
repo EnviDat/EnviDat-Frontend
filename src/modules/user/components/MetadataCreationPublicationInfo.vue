@@ -12,7 +12,7 @@
 
       <v-col cols="6">
 <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
-        <EditOrganization v-bind="editOrganizationProps" :organizationsInfo="testOrganizations"></EditOrganization>
+        <EditOrganization v-bind="editOrganizationProps" ></EditOrganization>
       </v-col>
 
     </v-row>
@@ -48,10 +48,6 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
-
-import testOrganizations from 'C:/Users/kurup/Documents/EnviDat-Frontend-2021/stories/js/organizations';
-
-
 export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
@@ -69,12 +65,6 @@ export default {
     editOrganizationProps() {
       return this.organizationsInfo;
     },
-
-
-    testOrganizations() {
-      return testOrganizations;
-    }
-
   },
   methods: {
   },
