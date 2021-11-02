@@ -205,7 +205,11 @@ export default {
       return this.existingAuthors;
     },
     fullNameUsers() {
-      return this.getFullNameUsers(this.existingAuthorsWrap);
+
+      const localAuthors = [...this.existingAuthorsWrap];
+
+      return this.getFullNameUsers(localAuthors);
+      
     },
     metadataPreviewEntry() {
 
