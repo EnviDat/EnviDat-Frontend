@@ -18,9 +18,12 @@
       </v-row>
 
       <v-row v-for="(item, index) in customFieldsProp"
-          :key="`${item}_${index}`">
+          :key="`${item}_${index}`"
+           no-gutters
+          :class="index === 0 ? 'pt-4' : 'py-1'" >
 
-        <v-col cols="6" >
+        <v-col cols="6"
+                class="pr-2" >
           <v-text-field :label="labels.labelFieldName"
                         outlined
                         dense
@@ -29,7 +32,8 @@
                         @input="notifyChange(index, 'fieldName', $event)"
                         />
         </v-col>
-        <v-col cols="6" >
+        <v-col cols="6"
+               class="pl-2" >
           <v-text-field :label="labels.labelContent"
                         outlined
                         dense
