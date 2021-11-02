@@ -41,23 +41,20 @@ import {
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
-} from "@/factories/eventBus";
+} from '@/factories/eventBus';
 
 import {
-  createHeader,
   createBody,
+  createHeader,
   createLocation,
+  createPublications,
   createResources,
   extractDataInfoDates,
-  // createPublishingInfo,
-  // createFunding,
-  createPublications,
-  // getOrganizationMap,
-} from "@/factories/metaDataFactory";
+} from '@/factories/metaDataFactory';
 
-import { metadataCreationSteps } from "@/factories/userEditingFactory";
+import { metadataCreationSteps } from '@/factories/userEditingFactory';
 
-import { mapGetters, mapState } from "vuex";
+import { mapGetters, mapState } from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -68,24 +65,21 @@ import {
   METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
-} from "@/modules/user/store/userMutationsConsts";
+} from '@/modules/user/store/userMutationsConsts';
 
-import { METADATAEDIT_PAGENAME } from "@/router/routeConsts";
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from "@/store/mainMutationsConsts";
+import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import { SET_APP_BACKGROUND, SET_CURRENT_PAGE, } from '@/store/mainMutationsConsts';
 
-import NavigationStepper from "@/components/Navigation/NavigationStepper";
+import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
 import {
+  LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
-  LOAD_METADATA_CONTENT_BY_ID,
-} from "@/store/metadataMutationsConsts";
+} from '@/store/metadataMutationsConsts';
 
 export default {
-  name: "MetadataEditPage",
+  name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
@@ -117,13 +111,13 @@ export default {
     window.scrollTo(0, 0);
   },
   computed: {
-    ...mapState(USER_NAMESPACE, ["metadataInEditing"]),
-    ...mapGetters(USER_NAMESPACE, ["resources", "authors"]),
+    ...mapState(USER_NAMESPACE, ['metadataInEditing']),
+    ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
-      "currentMetadataContent",
-      "authorsMap",
-      "existingAuthors",
-      "existingKeywords",
+      'currentMetadataContent',
+      'authorsMap',
+      'existingAuthors',
+      'existingKeywords',
     ]),
     /**
      * @returns {String} the metadataId from the route
@@ -265,7 +259,7 @@ export default {
         metadataRecord,
         this.$vuetify.breakpoint.smAndDown
       );
-      const splitName = headerFull.contactName.split(" ");
+      const splitName = headerFull.contactName.split(' ');
       // headerFull.fullName = headerFull.contactName;
       const basicInfo = {
         metadataTitle: headerFull.metadataTitle,
@@ -279,11 +273,11 @@ export default {
         metadataRecord,
         this.$vuetify.breakpoint.smAndDown
       );
-      this.emitEditObjUpdateEvent("EDITMETADATA_MAIN_HEADER", basicInfo);
-      this.emitEditObjUpdateEvent("EDITMETADATA_MAIN_DESCRIPTION", {
+      this.emitEditObjUpdateEvent('EDITMETADATA_MAIN_HEADER', basicInfo);
+      this.emitEditObjUpdateEvent('EDITMETADATA_MAIN_DESCRIPTION', {
         description: descriptionFull.text,
       });
-      this.emitEditObjUpdateEvent("EDITMETADATA_KEYWORDS", {
+      this.emitEditObjUpdateEvent('EDITMETADATA_KEYWORDS', {
         keywords: headerFull.tags,
       });
       // this.emitEditObjUpdateEvent("EDITMETADATA_AUTHOR_LIST", {
@@ -303,11 +297,11 @@ export default {
       // collection date / year not in metadata - where stored?
       const location = createLocation(metadataRecord);
       this.emitEditObjUpdateEvent(
-        "EDITMETADATA_DATA_RESOURCES",
+        'EDITMETADATA_DATA_RESOURCES',
         resourcesFull.resources
       );
-      this.emitEditObjUpdateEvent("EDITMETADATA_DATA_INFO", dataInfo);
-      this.emitEditObjUpdateEvent("EDITMETADATA_DATA_GEO", {
+      this.emitEditObjUpdateEvent('EDITMETADATA_DATA_INFO', dataInfo);
+      this.emitEditObjUpdateEvent('EDITMETADATA_DATA_GEO', {
         location,
       });
 
@@ -319,10 +313,10 @@ export default {
       //   idDelimiter: this.publicationsConfig?.idDelimiter,
       //   idPrefix: this.publicationsConfig?.idPrefix,
       // });
-      this.emitEditObjUpdateEvent("EDITMETADATA_RELATED_PUBLICATIONS", {
+      this.emitEditObjUpdateEvent('EDITMETADATA_RELATED_PUBLICATIONS', {
         relatedPublicationsText: relatedPublications.text,
       });
-      this.emitEditObjUpdateEvent("EDITMETADATA_CUSTOMFIELDS", {
+      this.emitEditObjUpdateEvent('EDITMETADATA_CUSTOMFIELDS', {
         customFields: metadataRecord.extras,
       });
 
