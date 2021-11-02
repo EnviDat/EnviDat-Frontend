@@ -352,15 +352,11 @@ export function isMaxLength(maximum, localObjects) {
 }
 
 const metadataInEditingValidations = {
+  [EDITMETADATA_MAIN_HEADER]: () =>
+    yup.object().shape({
+      metadataTitle: yup.string().required().min(5),
+    }),
   /*
-    [EDITMETADATA_MAIN_HEADER]: {
-      metadataTitle: '',
-      contactAuthor: {
-        contactEmail: '',
-        contactGivenName: '',
-        contactSurname: '',
-      },
-    },
     [EDITMETADATA_MAIN_DESCRIPTION]: {
       description: '',
     },

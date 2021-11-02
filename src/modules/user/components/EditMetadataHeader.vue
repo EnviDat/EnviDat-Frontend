@@ -26,10 +26,9 @@
       <v-col cols="8">
         <v-text-field :label="labels.labelTitle"
                       outlined
-                      :rules="rulesTitle"
-                      required
                       dense
                       prepend-icon="import_contacts"
+                      :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
                       v-model="metadataTitleField" />
 
@@ -144,6 +143,11 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
 
 
 export default {
@@ -236,7 +240,12 @@ export default {
         return this.metadataTitle;
       },
       set(value) {
-        this.setHeaderInfo('metadataTitle', value);
+        const property = 'metadataTitle';
+
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setHeaderInfo(property, value);
+        }
+
       },
     },
     inputContactFullName() {
@@ -252,6 +261,9 @@ export default {
         return `${this.contactAuthor.contactEmail.trim()}`;
       }
       return '';
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
   },
   methods: {
@@ -352,7 +364,9 @@ export default {
       previewText: 'Metadata Header Preview',
       authorDropdown: 'Click here and start typing to select an existing EnviDat author',
     },
-    rulesTitle: [v => !!v || 'Title is required'],
+    validationErrors: {
+      metadataTitle: null,
+    },
     rulesGivenName: [v => !!v || 'Contact given (first) name is required'],
     rulesSurname: [v => !!v || 'Contact surname is required'],
     rulesEmail: [
