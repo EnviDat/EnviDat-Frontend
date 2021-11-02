@@ -1,3 +1,6 @@
+// noinspection JSUnusedGlobalSymbols
+/* eslint-disable object-property-newline */
+/* eslint-disable import/no-extraneous-dependencies */
 /**
  * @summary story of all the Navigation components for sandbox testing
  * @author Dominik Haas-Artho
@@ -10,7 +13,6 @@
  */
 
 // /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -24,22 +26,26 @@ import {
   getStepByName,
 } from '@/factories/userEditingFactory';
 
+export default {
+  title: '5 Navigation / Navigation Stepper',
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf('5 Navigation / Navigation Stepper', module)
-  .add('Navigation Stepper', () => ({
-    components: {
-      NavigationStepper,
-    },
-    template: `
-    <v-row>
-      <v-col cols="12">
-        <NavigationStepper :steps="steps"
-                            :initialStepTitle="steps[0].title"
-                            stepColor="success" />
+export const NavigationStepperViews = () => ({
+  components: {
+    NavigationStepper,
+  },
+  template: `
+  <v-row>
+    <v-col cols="12">
+      <NavigationStepper :steps="steps"
+                          :initialStepTitle="steps[0].title"
+                          stepColor="success" />
 
-      </v-col>
+    </v-col>
 
-    </v-row>
+  </v-row>
   `,
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -64,4 +70,4 @@ storiesOf('5 Navigation / Navigation Stepper', module)
   data: () => ({
     steps: metadataCreationSteps,
   }),
-}));
+});

@@ -4,16 +4,15 @@
                 class="pa-0">
 
     <v-row no-gutters >
-      <v-col offset="3" cols="6">
-<!--        <v-card flat >-->
-          <StepperHeader :steps="steps"
+      <v-col offset="2" cols="8">
+
+         <StepperHeader :steps="steps"
                           activeColor="accent"
                           inactiveColor="primary"
                           :stepColor="stepColor"
                           :initialStep="currentStepIndex"
                           @stepClick="catchStepClick" />
 
-<!--        </v-card>-->
       </v-col>
     </v-row>
 
@@ -85,7 +84,11 @@ export default {
   },
   methods: {
     getGenericPropsForStep(step) {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+      }
+
+      return step.genericProps;
     },
     catchStepClick(stepTitle) {
       this.setCurrentStep(stepTitle);
