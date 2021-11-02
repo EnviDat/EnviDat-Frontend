@@ -285,7 +285,11 @@ export default {
       return fullNameArray;
     },
     getFullName(authorObj) {
-       return [`${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`];
+      if (!authorObj) {
+        return [];
+      }
+
+      return [`${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`];
     },
     catchAuthorChange(pickedAuthor) {
 
