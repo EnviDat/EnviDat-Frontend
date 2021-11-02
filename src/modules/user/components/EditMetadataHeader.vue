@@ -60,7 +60,7 @@
 
         <v-text-field :label="labels.labelContactGivenName"
                       outlined
-                      :rules="rulesGivenName"
+                      :error-messages="validationErrors.contactGivenName"
                       required
                       dense
                       prepend-icon="person"
@@ -70,7 +70,7 @@
 
         <v-text-field :label="labels.labelContactSurname"
                       outlined
-                      :rules="rulesSurname"
+                      :error-messages="validationErrors.contactSurname"
                       required
                       dense
                       prepend-icon="person"
@@ -80,7 +80,7 @@
 
         <v-text-field :label="labels.labelContactEmail"
                       outlined
-                      :rules="rulesEmail"
+                      :error-messages="validationErrors.contactEmail"
                       required
                       dense
                       prepend-icon="email"
@@ -244,14 +244,6 @@ export default {
       get() {
         return this.metadataTitle;
       },
-      set(value) {
-        const property = 'metadataTitle';
-
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-          this.setHeaderInfo(property, value);
-        }
-
-      },
     },
     inputContactFullName() {
       // eslint-disable-next-line no-prototype-builtins
@@ -286,6 +278,13 @@ export default {
 
       // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
+
+      // Iterate through entries of authorObject
+      // If a value is not valid then a error message will be displayed by the corresponding element
+      Object.entries(authorObject).forEach(entry => {
+        const [key, value] = entry;
+        isFieldValid(key, value, this.validations, this.validationErrors);
+      });
 
       // Call setHeaderInfo to emit authorObject to eventBus
       this.setHeaderInfo('contactAuthor', authorObject);
@@ -323,8 +322,13 @@ export default {
 
       this.editEntry(contactAuthorCopy, property, value);
 
-      this.setHeaderInfo('contactAuthor', contactAuthorCopy);
+      // this.setHeaderInfo('contactAuthor', contactAuthorCopy);
 
+      // Emit contact author to eventBus if the value is valid
+      // If a value is not valid then a error message will be displayed by the corresponding element
+      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        this.setHeaderInfo('contactAuthor', contactAuthorCopy);
+      }
     },
     setHeaderInfo(property, value) {
 
@@ -342,7 +346,7 @@ export default {
   data: () => ({
     labels: {
       cardTitle: 'Metadata Basic Information',
-      labelTitle: 'Metadata Entry Title',
+      labelTitle: 'Metadata Title',
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
@@ -358,13 +362,10 @@ export default {
     },
     validationErrors: {
       metadataTitle: null,
+      contactGivenName: null,
+      contactSurname: null,
+      contactEmail: null,
     },
-    rulesGivenName: [v => !!v || 'Contact given (first) name is required'],
-    rulesSurname: [v => !!v || 'Contact surname is required'],
-    rulesEmail: [
-       v => !!v || 'Contact Email is required',
-       v => /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Please enter valid email address',
-      ],
     iconName: imageContact,
     iconMail: imageMail,
    }),
