@@ -105,7 +105,9 @@ export default {
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   mounted() {
-    this.initMetadataUsingId(this.metadataId);
+    if (this.metadataId) {
+      this.initMetadataUsingId(this.metadataId);
+    }
 
     // reset the scrolling to the top
     window.scrollTo(0, 0);
