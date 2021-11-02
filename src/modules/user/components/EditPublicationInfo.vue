@@ -39,15 +39,8 @@
         </v-col>
 
         <v-col cols="6">
-          <v-btn        :label="labels.dataObjectIdentifier"
-                        elevation="2"
-                        depressed
-                        class="text-none"
-                        :color="buttonColor"
-                        disabled
-                       >
-          Generate New DOI
-          </v-btn>
+          <BaseRectangleButton buttonText="Generate New DOI"
+                               :disabled="true" />
         </v-col>
 
       </v-row>
@@ -99,18 +92,18 @@
 
             </v-col>
             <v-col cols="4" >
-              <v-text-field :label="labels.grant_number"
+              <v-text-field :label="labels.grantNumber"
                             outlined
-                            :value="item.grant_number"
-                            :error-messages="validationErrors.funders[index].grant_number"
-                            @input="notifyChange(index, 'grant_number', $event)" />
+                            :value="item.grantNumber"
+                            :error-messages="validationErrors.funders[index].grantNumber"
+                            @input="notifyChange(index, 'grantNumber', $event)" />
             </v-col>
             <v-col cols="4">
-              <v-text-field :label="labels.institution_url"
+              <v-text-field :label="labels.institutionUrl"
                             outlined
-                            :value="item.institution_url"
-                            :error-messages="validationErrors.funders[index].institution_url"
-                            @input="notifyChange(index, 'institution_url', $event)" />
+                            :value="item.institutionUrl"
+                            :error-messages="validationErrors.funders[index].institutionUrl"
+                            @input="notifyChange(index, 'institutionUrl', $event)" />
             </v-col>
 
       </v-row>
@@ -171,8 +164,7 @@ import {
 } from '@/factories/userEditingFactory';
 
 import { mapState } from 'vuex';
-// import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditPublicationInfo',
@@ -409,9 +401,9 @@ export default {
   },
   data: () => ({
     emptyEntry: {
-      organization: '',
+      institution: '',
       grantNumber: '',
-      link: '',
+      institutionUrl: '',
     },
     labels: {
       cardTitle: 'Publication Info',
@@ -420,9 +412,9 @@ export default {
       publisher: 'Publisher',
       year: 'Year',
       fundingInformation: 'Funding Information',
-      institution: 'Organization',
-      grant_number: 'Grant Number',
-      institution_url: 'Link',
+      institution: 'Institution',
+      grantNumber: 'Grant Number',
+      institutionUrl: 'Link',
     },
     fundersValidation: '',
     propertyValidationSuffix: 'Validation',
@@ -433,14 +425,13 @@ export default {
       publicationYear: null,
       funders: [{
         institution: '',
-        grant_number: '',
-        institution_url: '',
+        grantNumber: '',
+        institutionUrl: '',
       }],
       fundersArray: null,
     },
     dataIsValid: true,
     buttonColor: '#269697',
-    rulesPublisher: [v => !!v || 'Publisher is required'],
     currentYear: '',
     yearList: [],
     defaultUserEditMetadataConfig: {
@@ -449,6 +440,7 @@ export default {
     },
   }),
   components: {
+    BaseRectangleButton,
   },
 };
 

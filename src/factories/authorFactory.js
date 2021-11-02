@@ -32,6 +32,24 @@ export function getAuthorName(author) {
   return fullName.trim();
 }
 
+/**
+ *
+ * @param userObjects {Array}
+ * @returns {String[]}
+ */
+export function getArrayOfFullNames(userObjects) {
+  if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
+    return [];
+  }
+  const fullNameArray = [];
+
+  userObjects.forEach((user) => {
+    fullNameArray.push(getAuthorName(user));
+  });
+
+  return fullNameArray;
+}
+
 export function getAuthorsString(dataset) {
   if (!dataset) {
     return null;
@@ -112,8 +130,8 @@ export function createAuthors(dataset) {
 
     const fullName = getAuthorName(author);
     // const nameSplits = fullName.split(' ');
-    const firstName = author.given_name;
-    const lastName = author.name;
+    const firstName = author.given_name.trim();
+    const lastName = author.name.trim();
 
     // if (nameSplits.length > 0) {
     //   if (nameSplits.length === 1) {

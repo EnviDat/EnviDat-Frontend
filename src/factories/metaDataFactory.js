@@ -201,7 +201,19 @@ export function createFunding(dataset) {
 
   if (typeof dataset.funding === "string") {
     try {
-      const funding = JSON.parse(dataset.funding);
+      const fundingArray = JSON.parse(dataset.funding);
+
+      const funding = [];
+
+      for (let i = 0; i < fundingArray.length; i++) {
+        const fund = fundingArray[i];
+        funding.push({
+          institution: fund.institution,
+          grantNumber: fund.grant_number,
+          institutionUrl: fund.institution_url,
+        });
+      }
+
       return funding;
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -261,7 +273,7 @@ export function createPublishingInfo(dataset) {
 
   let { publication } = dataset;
 
-  if (typeof dataset.publication === "string") {
+  if (typeof publication === "string") {
     publication = JSON.parse(dataset.publication);
   }
 

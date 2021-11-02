@@ -32,10 +32,16 @@ import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
@@ -45,16 +51,23 @@ import {
 
 import {
   createBody,
+  createFunding,
   createHeader,
   createLocation,
   createPublications,
+  createPublishingInfo,
   createResources,
   extractDataInfoDates,
 } from '@/factories/metaDataFactory';
 
+import { createAuthors } from '@/factories/authorFactory';
+
 import { metadataCreationSteps } from '@/factories/userEditingFactory';
 
-import { mapGetters, mapState } from 'vuex';
+import {
+  mapGetters,
+  mapState,
+} from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -68,7 +81,10 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE, } from '@/store/mainMutationsConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
@@ -77,6 +93,7 @@ import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
+
 
 export default {
   name: 'MetadataEditPage',
@@ -271,23 +288,33 @@ export default {
           contactSurname: splitName[1],
         },
       };
+      this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_HEADER, basicInfo);
+
       const descriptionFull = createBody(
         metadataRecord,
         this.$vuetify.breakpoint.smAndDown
       );
-      this.emitEditObjUpdateEvent('EDITMETADATA_MAIN_HEADER', basicInfo);
-      this.emitEditObjUpdateEvent('EDITMETADATA_MAIN_DESCRIPTION', {
+      this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_DESCRIPTION, {
         description: descriptionFull.text,
       });
-      this.emitEditObjUpdateEvent('EDITMETADATA_KEYWORDS', {
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_KEYWORDS, {
         keywords: headerFull.tags,
       });
-      // this.emitEditObjUpdateEvent("EDITMETADATA_AUTHOR_LIST", {
-      //   authors: headerFull.authors,
-      // });
+
+      const authors = createAuthors(metadataRecord);
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_AUTHOR_LIST, {
+        authors,
+      });
 
       // Stepper 2: Data Resources, Info, Location
       const resourcesFull = createResources(metadataRecord);
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_RESOURCES,
+        resourcesFull.resources
+      );
+
       const metadataDates = extractDataInfoDates(metadataRecord);
       const dataInfo = {
         collectionDateStart: metadataDates.collection?.dateStart,
@@ -296,14 +323,13 @@ export default {
         creationDateEnd: metadataDates.creation?.dateEnd,
         dataLicense: metadataRecord.license_title,
       };
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_INFO, dataInfo);
+
       // collection date / year not in metadata - where stored?
       const location = createLocation(metadataRecord);
-      this.emitEditObjUpdateEvent(
-        'EDITMETADATA_DATA_RESOURCES',
-        resourcesFull.resources
-      );
-      this.emitEditObjUpdateEvent('EDITMETADATA_DATA_INFO', dataInfo);
-      this.emitEditObjUpdateEvent('EDITMETADATA_DATA_GEO', {
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_GEO, {
         location,
       });
 
@@ -315,23 +341,26 @@ export default {
       //   idDelimiter: this.publicationsConfig?.idDelimiter,
       //   idPrefix: this.publicationsConfig?.idPrefix,
       // });
-      this.emitEditObjUpdateEvent('EDITMETADATA_RELATED_PUBLICATIONS', {
+      this.emitEditObjUpdateEvent(EDITMETADATA_RELATED_PUBLICATIONS, {
         relatedPublicationsText: relatedPublications.text,
       });
-      this.emitEditObjUpdateEvent('EDITMETADATA_CUSTOMFIELDS', {
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_CUSTOMFIELDS, {
         customFields: metadataRecord.extras,
       });
 
       // Stepper 4: Publication Info, Organization
-      // const publicationInfoFull = createPublishingInfo(metadataRecord);
-      // const funding = createFunding(metadataRecord);
-      // const publicationInfo = {
-      //   publicationState: publicationInfoFull.publication_state,
-      //   doi: publicationInfoFull.doi,
-      //   publicationYear: publicationInfoFull.publicationYear,
-      //   publisher: publicationInfoFull.publisher,
-      //   funders: funding,
-      // };
+      const publicationInfoFull = createPublishingInfo(metadataRecord);
+      const funding = createFunding(metadataRecord);
+      const publicationInfo = {
+        ...publicationInfoFull,
+        funders: funding,
+      };
+
+      this.emitEditObjUpdateEvent(EDITMETADATA_PUBLICATION_INFO, {
+        ...publicationInfo,
+      });
+
       // // // Failing in EditPublicationInfo?
       // // // "Cannot read property 'institution' of undefined"
       // this.emitEditObjUpdateEvent(
