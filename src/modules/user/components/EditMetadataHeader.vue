@@ -148,6 +148,10 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingFactory';
+import {
+  getArrayOfFullNames,
+  getAuthorName,
+} from '@/factories/authorFactory';
 
 
 export default {
@@ -195,7 +199,7 @@ export default {
       },
     },
     preselectAuthorName() {
-      return this.getFullName(this.contactAuthor);
+      return [this.getFullName(this.contactAuthor)];
     },
     existingAuthorsWrap() {
       if (this.$store) {
@@ -205,11 +209,8 @@ export default {
       return this.existingAuthors;
     },
     fullNameUsers() {
-
       const localAuthors = [...this.existingAuthorsWrap];
-
-      return this.getFullNameUsers(localAuthors);
-      
+      return getArrayOfFullNames(localAuthors);
     },
     metadataPreviewEntry() {
 
@@ -271,29 +272,12 @@ export default {
     },
   },
   methods: {
-    getFullNameUsers(userObjects) {
-      // Returns array of fullName strings extracted from userObjects sorted by last name
-
-      const fullNameArray = [];
-
-      userObjects.sort((a, b) => ((a.lastName.toUpperCase() > b.lastName.toUpperCase()) ? 1 : -1));
-
-      userObjects.forEach((user) => {
-        if (user.fullName) {
-          fullNameArray.push(user.fullName);
-        } else {
-          console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
-        }
-      });
-
-      return fullNameArray;
-    },
     getFullName(authorObj) {
       if (!authorObj) {
         return [];
       }
 
-      return [`${authorObj.contactGivenName.trim()} ${authorObj.contactSurname.trim()}`];
+      return getAuthorName(authorObj);
     },
     catchAuthorChange(pickedAuthor) {
 

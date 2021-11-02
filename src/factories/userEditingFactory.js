@@ -162,11 +162,11 @@ const emptyMetadataInEditing = {
     resources: [],
   },
   [EDITMETADATA_DATA_INFO]: {
-    collectionDateStart: "",
-    collectionDateEnd: "",
-    creationDateStart: "",
-    creationDateEnd: "",
-    dataLicense: ""
+    collectionDateStart: '',
+    collectionDateEnd: '',
+    creationDateStart: '',
+    creationDateEnd: '',
+    dataLicense: '',
   },
   [EDITMETADATA_DATA_GEO]: {
     location: null,

@@ -46,6 +46,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+import { getArrayOfFullNames } from '@/factories/authorFactory';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -67,27 +68,13 @@ export default {
   },
   computed: {
     baseUserPickerObject() {
-      return this.fullNameUsers(this.existingEnviDatUsers);
+      return getArrayOfFullNames(this.existingEnviDatUsers);
     },
     preselectAuthorNames() {
-      return this.fullNameUsers(this.authors);
+      return getArrayOfFullNames(this.authors);
     },
   },
   methods: {
-    fullNameUsers(userObjects) {
-
-      const fullNameArray = [];
-
-      userObjects.forEach((user) => {
-        if (user.fullName) {
-          fullNameArray.push(user.fullName);
-        } else {
-          console.error(`fullNameUsers(userObjects) object ${user} missing fullName key`);
-        }
-      });
-
-      return fullNameArray;
-    },
     catchRemovedUsers(pickedUsers) {
       this.notifyChange(pickedUsers);
     },

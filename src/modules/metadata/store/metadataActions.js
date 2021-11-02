@@ -54,7 +54,10 @@ import {
   getSelectedTagsMergedWithHidden,
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
-import { getTagColor } from '@/factories/metaDataFactory';
+import {
+  getTagColor,
+  sortObjectArray,
+} from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
 /*
@@ -170,9 +173,6 @@ function getKeywordObjects(arr) {
 
 // Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
-function sortArrayObjectsAsending(arrObjects) {
-  return arrObjects.sort((a, b) => ((a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : -1));
-}
 
 export default {
   async [SEARCH_METADATA]({ commit }, {
@@ -423,7 +423,9 @@ export default {
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
 
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-    const existingAuthors = Object.values(authorsMap);
+    let existingAuthors = Object.values(authorsMap);
+
+    existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
     // enhance the entries that the selection button shows up on the resourceCard
     // don't do it for now to disable Author Editing
@@ -451,7 +453,7 @@ export default {
 
       const mergedKeywords = existingKeywords.concat(keywordObjects);
 
-      const sortedKeywords = sortArrayObjectsAsending(mergedKeywords);
+      const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
 
       commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
 

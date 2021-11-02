@@ -873,3 +873,12 @@ export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
 
   return metadatas;
 }
+
+export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
+  if (sort === 'ASC') {
+    return arrOfObjects.sort((a, b) => ((a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase()) ? 1 : -1));
+  }
+
+  return arrOfObjects.sort((a, b) => ((b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase()) ? 1 : -1));
+}
+
