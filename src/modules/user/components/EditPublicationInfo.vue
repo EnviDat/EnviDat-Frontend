@@ -81,26 +81,34 @@
 
 
       <v-row v-for="(item, index) in fundersField"
-            :key="`${item}_${index}`">
+            :key="`${item}_${index}`"
+             :class="index === 0 ? 'pt-4' : 'py-1'"
+            no-gutters>
 
-            <v-col cols="4" >
+            <v-col cols="4"
+                   class="pr-2" >
               <v-text-field :label="labels.institution"
                             outlined
+                            dense
                             :value="item.institution"
                             :error-messages="validationErrors.funders[index].institution"
                             @input="notifyChange(index, 'institution', $event)" />
 
             </v-col>
-            <v-col cols="4" >
+            <v-col cols="4"
+                   class="px-2" >
               <v-text-field :label="labels.grantNumber"
                             outlined
+                            dense
                             :value="item.grantNumber"
                             :error-messages="validationErrors.funders[index].grantNumber"
                             @input="notifyChange(index, 'grantNumber', $event)" />
             </v-col>
-            <v-col cols="4">
+            <v-col cols="4"
+                   class="pl-2">
               <v-text-field :label="labels.institutionUrl"
                             outlined
+                            dense
                             :value="item.institutionUrl"
                             :error-messages="validationErrors.funders[index].institutionUrl"
                             @input="notifyChange(index, 'institutionUrl', $event)" />
