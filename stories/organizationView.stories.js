@@ -95,7 +95,7 @@ storiesOf(storybookFolder, module)
       </v-row>
 
       <v-row>
-        EditOrganization preselected
+        EditOrganization with only one existing organization
       </v-row>
 
       <v-row class="py-3" >
@@ -123,11 +123,10 @@ storiesOf(storybookFolder, module)
     data: () => ({
       genericProps: {
         id: '1',
-        organizationsInfo: testOrganizations,
+        existingOrganizations: ['test1', 'test2', 'test3'],
       },
       genericProps2: {
-        organizationsInfo: testOrganizations,
-        preselectedOrganization: 'Community Ecology',
+        existingOrganizations: ['test1'],
       },
     }),
   }))

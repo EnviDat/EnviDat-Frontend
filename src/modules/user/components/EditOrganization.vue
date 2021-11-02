@@ -14,8 +14,8 @@
     <v-row>
       <v-col>
 
-        <v-text-field v-if="preselectedOrganization"
-                      :value="preselectedOrganization"
+        <v-text-field v-if="existingOrganizations.length === 1"
+                      :value="existingOrganizations[0]"
                       outlined
                       readonly
                       >
@@ -24,7 +24,7 @@
         <v-select     v-else
                       @input="setOrganization('organizations', $event)"
                       :value="organizationsField"
-                      :items="organizationsList"
+                      :items="existingOrganizations"
                       outlined
                       chips
                       deletable-chips
@@ -92,6 +92,10 @@ import TagChip from '@/components/Chips/TagChip';
 export default {
   name: 'EditOrganization',
   props: {
+   existingOrganizations: {
+      type: Array,
+      default: () => [],
+   },
    preselectedOrganization: {
      type: String,
      default: null
@@ -100,10 +104,6 @@ export default {
       type: Array,
       default: () => [],
      },
-    organizationsInfo: {
-      type: Array,
-      default: () => [],
-    },
     readonly: {
       type: Boolean,
       default: false,
@@ -116,25 +116,6 @@ export default {
       get() {
         return [...this.organizations];
       },
-    },
-    organizationsList() {
-
-      const orgNames = [];
-
-      this.organizationsInfo.forEach(organization => {
-        if ('display_name' in organization) {
-          orgNames.push(organization.display_name);
-        }
-      })
-
-      // Remove duplicates from orgNames
-      // orgNames = [...new Set(orgNames.map(a => JSON.stringify(a)))].map(a => JSON.parse(a));
-
-      // Sort orgNames in alphabetical order
-      orgNames.sort();
-
-      return orgNames;
-
     },
   },
   methods: {
