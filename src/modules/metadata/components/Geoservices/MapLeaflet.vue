@@ -23,7 +23,7 @@ import "leaflet-bing-layer";
 import "@geoman-io/leaflet-geoman-free";
 import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
 import axios from "axios";
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 import MapLeafletPoint from "@/modules/metadata/components/Geoservices/MapLeafletPoint";
 import markerIcon from "@/assets/map/marker-icon.png";
 import markerIcon2x from "@/assets/map/marker-icon-2x.png";
@@ -36,12 +36,11 @@ import {
   INJECT_MAP_FULLSCREEN,
   METADATA_OPEN_MODAL,
   METADATA_CLOSE_MODAL,
-  MAP_ADD_NEW_GEOM,
-  MAP_EDIT_EXISTING_GEOM,
+  MAP_GEOMETRY_MODIFIED,
   eventBus,
 } from "@/factories/eventBus";
 // import { leafletLayer } from './layer-leaflet';
-import MetadataMapFullscreen from './MetadataMapFullscreen';
+import MetadataMapFullscreen from "./MetadataMapFullscreen";
 
 /* eslint-disable vue/no-unused-components */
 
@@ -81,16 +80,7 @@ export default {
 
     if (this.mapEditable) {
       this.setupEditing();
-      this.map.on('pm:create', (e) => {
-        const geomGeoJSON = e.layer.toGeoJSON();
-        eventBus.$emit(MAP_ADD_NEW_GEOM, geomGeoJSON.geometry);
-      });
-      this.map.on('pm:edit', (e) => {
-        const geomGeoJSON = e.layer.toGeoJSON();
-        eventBus.$emit(MAP_EDIT_EXISTING_GEOM, geomGeoJSON.geometry);
-      });
     }
-
   },
   beforeDestroy() {
     eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
@@ -139,14 +129,16 @@ export default {
       const icon = L.icon(iconOptions);
 
       const polygonColor = this.$vuetify.theme.themes.light.accent;
-      const dataOrigin = {
-        type: "Feature",
-        properties: {
-          name: "Data site",
-          describtion: "Data origin",
-        },
-        geometry: geoJson,
-      };
+      // TODO Implement Feature handling below, with appended properties
+      // const dataOrigin = {
+      //   type: "Feature",
+      //   properties: {
+      //     name: "Data site",
+      //     describtion: "Data origin",
+      //   },
+      //   geometry: geoJson,
+      // };
+      const dataOrigin = geoJson;
 
       this.siteLayer = L.geoJSON([dataOrigin], {
         pointToLayer(feature, latlng) {
@@ -274,6 +266,7 @@ export default {
         this.map.on("click", (e) => this.getFeatureInfo(e.latlng));
       }
 
+      // Add site & handle MultiPolygons
       if (this.site) {
         this.addSite(this.site);
       }
@@ -338,29 +331,30 @@ export default {
       this.markers = this.markers.filter((m) => m.options.id !== id);
     },
     setupEditing() {
-
       // Set styles for markers and polygons
       const editMarkerIcon = L.icon({
         iconUrl: this.markerIcon,
         iconRetinaUrl: this.markerIcon2x,
-        shadowUrl: this.markerIconShadow
+        shadowUrl: this.markerIconShadow,
       });
       this.map.pm.setGlobalOptions({
         markerStyle: {
-          icon: editMarkerIcon
+          icon: editMarkerIcon,
         },
         pathOptions: {
-          color: this.$vuetify.theme.themes.light.accent
-        }
+          color: this.$vuetify.theme.themes.light.accent,
+        },
       });
 
       // Check current geom type on map
-      let geomType = null
+      let geomType = null;
       this.map.eachLayer((layer) => {
         geomType = layer.feature ? layer.feature.geometry.type : geomType;
       });
-      const markerEditButtons = (geomType === "Point" || geomType === "MultiPoint");
-      const polyEditButtons = (geomType === "Polygon" || geomType === "MultiPolygon");
+      const markerEditButtons =
+        geomType === "Point" || geomType === "MultiPoint";
+      const polyEditButtons =
+        geomType === "Polygon" || geomType === "MultiPolygon";
       // Add controls based on what type of geom editing
       this.map.pm.addControls({
         drawMarker: markerEditButtons,
@@ -375,6 +369,53 @@ export default {
         rotateMode: false,
       });
 
+      // Event watchers
+      this.map.on("pm:create", (mapEditEvent) => {
+        // Nested event listeners for catching layer edits
+        mapEditEvent.layer.on("pm:update", (nestedMapEditEvent) => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, nestedMapEditEvent);
+        });
+        mapEditEvent.layer.on("pm:dragend", (nestedMapEditEvent) => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, nestedMapEditEvent);
+        });
+        eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+      });
+      this.map.on("pm:remove", (mapEditEvent) => {
+        // Turn off nested event listener for catching layer edits
+        mapEditEvent.layer.off("pm:update");
+        mapEditEvent.layer.off("pm:dragend");
+        eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+      });
+
+      const allLayers = this.map.pm.getGeomanLayers();
+      allLayers.forEach((editableLayer) => {
+        editableLayer.on("pm:update", (mapEditEvent) => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+        });
+        editableLayer.on("pm:dragend", (mapEditEvent) => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+        });
+      });
+
+      // // Require MultiPolygon as GeometryCollection for individual editing
+      // if (geomType === "MultiPolygon") {
+      //   const geomCollection = {
+      //     type: "GeometryCollection",
+      //     geometries: [],
+      //   };
+      //   this.site.coordinates.forEach((polygon) => {
+      //     geomCollection.geometries = [
+      //       ...geomCollection.geometries,
+      //       {
+      //         type: "Polygon",
+      //         coordinates: polygon,
+      //       },
+      //     ];
+      //   });
+      //   this.site = geomCollection;
+      //   console.log(this.site);
+      // }
+
       // // Add custom toolbar
       // this.map.pm.Toolbar.createCustomControl({
       //   name: "add_global_geom",
@@ -384,22 +425,20 @@ export default {
       //   onClick: this.tempFunction,
       //   toggle: false,
       // });
-
-
     },
-  // tempFunction() {
-  //   const geoms = this.map.pm.getGeomanLayers()
-  //   console.log(geoms);
-  //   console.log(geoms[0].feature.geometry.coordinates);
-  // },
-  showFullscreenMapModal() {
-    this.fullScreenComponent = MetadataMapFullscreen;
-    eventBus.$emit(METADATA_OPEN_MODAL);
-  },
-  closeModal() {
-    this.fullScreenComponent = null;
-    eventBus.$emit(METADATA_CLOSE_MODAL);
-  },
+    // tempFunction() {
+    //   const geoms = this.map.pm.getGeomanLayers()
+    //   console.log(geoms);
+    //   console.log(geoms[0].feature.geometry.coordinates);
+    // },
+    showFullscreenMapModal() {
+      this.fullScreenComponent = MetadataMapFullscreen;
+      eventBus.$emit(METADATA_OPEN_MODAL);
+    },
+    closeModal() {
+      this.fullScreenComponent = null;
+      eventBus.$emit(METADATA_CLOSE_MODAL);
+    },
   },
   watch: {
     opacity() {

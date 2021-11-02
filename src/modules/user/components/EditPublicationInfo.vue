@@ -91,26 +91,26 @@
             :key="`${item}_${index}`">
 
             <v-col cols="4" >
-              <v-text-field :label="labels.organization"
+              <v-text-field :label="labels.institution"
                             outlined
-                            :value="item.organization"
-                            :error-messages="validationErrors.funders[index].organization"
-                            @input="notifyChange(index, 'organization', $event)" />
+                            :value="item.institution"
+                            :error-messages="validationErrors.funders[index].institution"
+                            @input="notifyChange(index, 'institution', $event)" />
 
             </v-col>
             <v-col cols="4" >
-              <v-text-field :label="labels.grantNumber"
+              <v-text-field :label="labels.grant_number"
                             outlined
-                            :value="item.grantNumber"
-                            :error-messages="validationErrors.funders[index].grantNumber"
-                            @input="notifyChange(index, 'grantNumber', $event)" />
+                            :value="item.grant_number"
+                            :error-messages="validationErrors.funders[index].grant_number"
+                            @input="notifyChange(index, 'grant_number', $event)" />
             </v-col>
             <v-col cols="4">
-              <v-text-field :label="labels.link"
+              <v-text-field :label="labels.institution_url"
                             outlined
-                            :value="item.link"
-                            :error-messages="validationErrors.funders[index].link"
-                            @input="notifyChange(index, 'link', $event)" />
+                            :value="item.institution_url"
+                            :error-messages="validationErrors.funders[index].institution_url"
+                            @input="notifyChange(index, 'institution_url', $event)" />
             </v-col>
 
       </v-row>
@@ -324,12 +324,12 @@ export default {
       // Assign lastFunder to last item in this.funderArray
       const lastFunder = localFunders[localFunders.length - 1];
 
-      // Assign lastFunderOrganization to value of organization key in lastFunder
-      const lastFunderOrganization = lastFunder.organization;
+      // Assign lastFunderInstitution to value of institution key in lastFunder
+      const lastFunderInstitution = lastFunder.institution;
 
-      // If lastFunderOrganization is an empty string then assign addFunder to false
+      // If lastFunderInstitution is an empty string then assign addFunder to false
       let addFunder = true;
-      if (lastFunderOrganization === '') {
+      if (lastFunderInstitution === '') {
         addFunder = false;
       }
 
@@ -420,9 +420,9 @@ export default {
       publisher: 'Publisher',
       year: 'Year',
       fundingInformation: 'Funding Information',
-      organization: 'Organization',
-      grantNumber: 'Grant Number',
-      link: 'Link',
+      institution: 'Organization',
+      grant_number: 'Grant Number',
+      institution_url: 'Link',
     },
     fundersValidation: '',
     propertyValidationSuffix: 'Validation',
@@ -432,9 +432,9 @@ export default {
       publisher: null,
       publicationYear: null,
       funders: [{
-        organization: '',
-        grantNumber: '',
-        link: '',
+        institution: '',
+        grant_number: '',
+        institution_url: '',
       }],
       fundersArray: null,
     },

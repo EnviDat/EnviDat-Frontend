@@ -71,13 +71,13 @@
   } from '@/factories/metaDataFactory';
 
   import MapLeaflet from './MapLeaflet';
-  // import MapCesium from './MapCesium';
+  import MapCesium from './MapCesium';
   import MapOverlayUI from './MapOverlayUI';
 
   export default {
     name: 'Map',
     components: {
-      // MapCesium,
+      MapCesium,
       MapLeaflet,
       MapOverlayUI,
     },

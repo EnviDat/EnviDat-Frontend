@@ -162,15 +162,14 @@ const emptyMetadataInEditing = {
     resources: [],
   },
   [EDITMETADATA_DATA_INFO]: {
-    addInfoObj: {
-      creationYear: '',
-      collectionYear: '',
-      publicationYear: '',
-      dataLicense: '',
-    },
+    collectionDateStart: "",
+    collectionDateEnd: "",
+    creationDateStart: "",
+    creationDateEnd: "",
+    dataLicense: ""
   },
   [EDITMETADATA_DATA_GEO]: {
-    geometries: null,
+    location: null,
   },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',

@@ -90,7 +90,7 @@ export function formatDate(date, inputFormat = "yyyy-MM-dd") {
 
   if (date) {
     const split = date.split("T");
-    if (split.length > 0) {
+    if (split.length > 1) {
       const dateOnly = split[0];
       const parsedDate = parse(dateOnly, inputFormat, new Date(date));
       const newDate = format(parsedDate, "d. MMM yyyy");
@@ -204,7 +204,8 @@ export function createFunding(dataset) {
       const funding = JSON.parse(dataset.funding);
       return funding;
     } catch (e) {
-      console.log(`Error JSON Parse of Funding: ${e}`);
+      // eslint-disable-next-line no-console
+      console.error(`Error JSON Parse of Funding: ${e}`);
     }
   }
 
@@ -250,6 +251,25 @@ export function createCitation(dataset) {
     citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
     citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
     citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`
+  };
+}
+
+export function createPublishingInfo(dataset) {
+  if (!dataset) {
+    return null;
+  }
+
+  let { publication } = dataset;
+
+  if (typeof dataset.publication === "string") {
+    publication = JSON.parse(dataset.publication);
+  }
+
+  return  {
+    publisher: publication.publisher,
+    publicationYear: publication.publication_year,
+    publicationState: dataset.publication_state,
+    doi: dataset.doi,
   };
 }
 
@@ -527,6 +547,37 @@ export function createDetails(dataset) {
   return details;
 }
 
+export function extractDataInfoDates(dataset) {
+  // Get creation and collection date for data in queryable json format
+
+  let dates = []
+  if (typeof dataset.date === "string") {
+    dates = JSON.parse(dataset.date);
+  }
+  let creationDate = null;
+  let collectionDate = null;
+
+  dates.forEach((dateEntry) => {
+    if (dateEntry.date_type === 'collected') {
+      collectionDate = {
+        dateStart: formatDate(dateEntry.date),
+        dateEnd: formatDate(dateEntry.end_date),
+      };
+    }
+    if (dateEntry.date_type === 'created') {
+      creationDate = {
+        dateStart: formatDate(dateEntry.date),
+        dateEnd: formatDate(dateEntry.end_date),
+      };
+    }
+  });
+
+  return {
+    creation: creationDate,
+    collection: collectionDate,
+  };
+}
+
 function getMultiPointArray(coordinates) {
   // Return a multipoint array with swapped point coordinates
   const pointArray = []
@@ -582,6 +633,7 @@ export function createLocation(dataset) {
     return null;
   }
 
+  // If already GeoJSON return, else WKT
   if (typeof dataset.location === "object") {
     return dataset.location;
   }
@@ -610,6 +662,7 @@ export function createLocation(dataset) {
       location.isPolygon = spatialJSON.type === LOCATION_TYPE_POLYGON;
       location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
       location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
+      location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
@@ -620,6 +673,8 @@ export function createLocation(dataset) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
+      } else if (location.isMultiPolygon) {
+        location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
       }
     }
   }
@@ -627,68 +682,59 @@ export function createLocation(dataset) {
   return location;
 }
 
-export function extractGeoJSONToPointArray(geomJSON) {
-// Extract GeoJSON coordinates as an array of points, with flipped coordinates
-// Compatability layer for database --> leaflet
-
-    let pointArray = [];
-
-    if (geomJSON.type === LOCATION_TYPE_POINT) {
-      // Swap geoJSON lngLat to Leaflet latLng
-      pointArray = [geomJSON.coordinates[1], geomJSON.coordinates[0]];
-    } else if (geomJSON.type === LOCATION_TYPE_POLYGON) {
-      pointArray = getPolygonPointArray(geomJSON.coordinates);
-    } else if (geomJSON.type === LOCATION_TYPE_MULTIPOINT) {
-      pointArray = getMultiPointArray(geomJSON.coordinates);
-    } else if (geomJSON.type === LOCATION_TYPE_MULTIPOLYGON) {
-      pointArray = getMultiPolygonPointArray(geomJSON.coordinates);
-    }
-
-    return pointArray;
-
-}
+// export function extractMultiPolygonToGeometryCollection(multiPolygon) {
+//   // Extract all individual Polygons from a MultiPolygon array into a GeometeryCollection
+//   multiPolygonPointArray.forEach(function(shapeCoords, i) {
+//     var polygon = {type:"Polygon", coordinates: shapeCoords};
+//     L.geoJson(polygon, {
+//       onEachFeature: function (feature, layer) {
+//         featureGroup.addLayer(layer);
+//       }
+//     });
+//   });
+// }
 
 export function mergeGeomsToMultiGeoms (origGeom, newGeom) {
-// Append a single geometry type (point, polygon), into a multi geometry type
-// Geometries must be of same based type: point --> multipoint, polygon --> multipolygon
+// Merge geometries of same type (point, polygon), into respective multigeometry
 
-  const origGeomArray = origGeom.coordinates;
+  const origGeomArray = origGeom.geoJSON.coordinates;
   const newGeomArray = newGeom.coordinates;
   let combiCoordArray = []
-  const combiJSON = {}
+  let combiJSON = {}
 
-  if (newGeom.type === LOCATION_TYPE_MULTIPOINT || newGeom.type === LOCATION_TYPE_MULTIPOLYGON) {
-    // Not possible to draw a multipoint or multipolygon in one event, error
+  if (newGeom.isMultiPoint || newGeom.isMultiPolygon) {
     combiCoordArray = null;
+    // eslint-disable-next-line no-console
+    console.error("mergeGeomsToMultiGeoms: not possible to draw a multigeometry in one event.");
   }
 
-  if (origGeom.type === LOCATION_TYPE_POINT) {
+  if (origGeom.isPoint) {
     // I.e. combine single points to multipoint
     combiCoordArray = [origGeomArray, newGeomArray];
     combiJSON.type = "MultiPoint";
     combiJSON.coordinates = combiCoordArray
-  }
 
-  if (origGeom.type === LOCATION_TYPE_POLYGON) {
+  } else if (origGeom.isPolygon) {
     // I.e. combine single polygons to multipolygon
     combiCoordArray = [origGeomArray, newGeomArray];
     combiJSON.type = "MultiPolygon";
     combiJSON.coordinates = combiCoordArray
-  }
 
-  if (origGeom.type === LOCATION_TYPE_MULTIPOINT) {
+  } else if (origGeom.isMultiPoint) {
     // I.e. combine multipoints
     combiCoordArray = [...origGeomArray, newGeomArray];
     combiJSON.type = "MultiPoint"
     combiJSON.coordinates = combiCoordArray
-  }
 
-  if (origGeom.type === LOCATION_TYPE_MULTIPOLYGON) {
+  } else if (origGeom.isMultiPolygon) {
     // I.e. combine multipolygons
     combiCoordArray = [...origGeomArray, newGeomArray];
     combiJSON.type = "MultiPolygon"
     combiJSON.coordinates = combiCoordArray
   }
+
+  // Vue.js specific remover of observer __obs__
+  combiJSON = JSON.parse(JSON.stringify(combiJSON))
 
   return combiJSON
 }

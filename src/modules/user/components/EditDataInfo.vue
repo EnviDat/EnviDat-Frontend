@@ -165,70 +165,6 @@
       </v-row>
 
 
-      <v-row dense>
-
-        <v-col class="pr-4 mr-10" cols="2">
-          <v-text-field
-            readonly
-            dense
-            outlined
-            prepend-icon="category"
-            :value="labels.publicationDate"
-          />
-        </v-col>
-
-        <v-col class="pr-4 mr-10">
-          <template>
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.startDate"
-                  prepend-icon="date_range"
-                  readonly
-                  dense
-                  outlined
-                  :value="publicationDateStartField"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="en-in"
-                disabled
-                @input="setDataInfo('publicationDateStart', $event)"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </template>
-        </v-col>
-
-        <v-col class="pr-4">
-          <template>
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.endDate"
-                  prepend-icon="date_range"
-                  readonly
-                  dense
-                  outlined
-                  :value="publicationDateEndField"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="en-in"
-                disabled
-                :min="publicationDateStartField"
-                @input="setDataInfo('publicationDateEnd', $event)"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </template>
-        </v-col>
-
-      </v-row>
-
-
       <v-row>
 
         <v-col>
@@ -295,11 +231,11 @@
  * EditDataInfo.vue shows Additional Information
  *
  *
- * @summary Shows Additional Information (creation, collection and publication dates, data license and summary)
+ * @summary Shows Additional Information (creation & collection dates, data license and summary)
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-10-12
+ * Last modified  : 2021-11-01
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -327,14 +263,6 @@ export default {
       type: String,
       default: () => '',
     },
-    publicationDateStart: {
-      type: String,
-      default: () => '',
-    },
-    publicationDateEnd: {
-      type: String,
-      default: () => '',
-    },
     dataLicense: {
       type: String,
       default: () => '',
@@ -359,16 +287,6 @@ export default {
     creationDateEndField: {
       get() {
         return this.creationDateEnd.slice();
-      }
-    },
-    publicationDateStartField: {
-      get() {
-        return this.publicationDateStart.slice();
-      }
-    },
-    publicationDateEndField: {
-      get() {
-        return this.publicationDateEnd.slice();
       }
     },
     dataLicenseField: {
@@ -455,7 +373,6 @@ export default {
       instructionsLicense: 'Please select a data license from the dropdown list.',
       creationDate: 'Creation Date',
       collectionDate: 'Collection Date',
-      publicationDate: 'Publication Date',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Click here to view Data License Summary',
       dataLicenseEmail: 'Link for more detailed information about selected Data License:',
@@ -464,7 +381,7 @@ export default {
     maxYears: 30,
     dataLicenses: [
       {
-        name: 'Open Data Commons Open Database License (ODbL)',
+        name: 'ODbL with Database Contents License (DbCL)',
         summary: 'This is a human-readable summary of the ODbL 1.0 license. Please see the disclaimer below.\n'
           + '\n'
           + 'You are free:\n'

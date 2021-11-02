@@ -255,8 +255,8 @@ export default {
     },
   },
   methods: {
-    // Returns array of fullName strings extracted from userObjects sorted by last name
     getFullNameUsers(userObjects) {
+      // Returns array of fullName strings extracted from userObjects sorted by last name
 
       const fullNameArray = [];
 

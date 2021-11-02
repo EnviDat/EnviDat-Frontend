@@ -157,7 +157,7 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
     state.loadingCurrentMetadataContent = false;
 
-    const errObj = getSpecificApiError('For this entry no Metadata cloud not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError('For this entry no Metadata could be loaded, please report if the error persists!', reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -180,7 +180,7 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError('Metadata can not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
