@@ -464,16 +464,22 @@ export const MetadataRelatedDatasetsViews = () => ({
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <MetadataRelatedDatasets :relatedDatasetsText="text" />
+      <MetadataRelatedDatasets :genericProps="genericProps" />
     </v-col>
     
     <v-col cols="8" class="py-3">
-      <MetadataRelatedDatasets :relatedDatasetsText="text" />
+      <MetadataRelatedDatasets :genericProps="genericProps" />
     </v-col>
 
   </v-row>
   `,
-  updated() {
+  computed: {
+    genericProps() {
+      return {
+        text: this.text,
+        showPlaceholder: false,
+      };
+    },
   },
   data: () => ({
     text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.

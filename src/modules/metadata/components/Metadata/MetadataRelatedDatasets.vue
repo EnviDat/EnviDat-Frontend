@@ -1,10 +1,11 @@
-<template  id="MetadataRelatedDatasets">
-  <expandable-text-layout :title="METADATA_DATASETS_TITLE"
-                          :text="relatedDatasetsText"
+<template >
+  <expandable-text-layout  id="MetadataRelatedDatasets"
+                           :title="METADATA_DATASETS_TITLE"
+                           v-bind="genericProps"
                           :showPlaceholder="showPlaceholder"
                           :emptyTextColor="emptyTextColor"
                           :emptyText="emptyText"
-                          class="relatedPubList"/>
+                          class="relatedPubList" />
 </template>
 
 <script>
@@ -30,21 +31,16 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    relatedDatasetsText: {
-      type: String,
-      default: '',
-    },
-    emptyText: {
-      type: String,
-      default: 'No related datasets available for this dataset.',
-    },
-    emptyTextColor: {
-      type: String,
-      default: 'grey',
-    },
+    genericProps: Object,
     showPlaceholder: Boolean,
   },
   computed: {
+    emptyTextColor() {
+      return this.mixinMethods_getGenericProp('emptyTextColor', 'grey');
+    },
+    emptyText() {
+      return this.mixinMethods_getGenericProp('emptyText', 'No related datasets available for this dataset.');
+    },
   },
   methods: {
   },

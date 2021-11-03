@@ -119,6 +119,7 @@ import {
   createDetails,
   createFunding,
   createPublications,
+  createRelatedDatasets,
 } from '@/factories/metaDataFactory';
 import {
   getFullAuthorsFromDataset,
@@ -152,6 +153,7 @@ import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList'
 import { rewind as tRewind } from '@turf/turf';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
 import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
 import MetadataHeader from './Metadata/MetadataHeader';
 import MetadataBody from './Metadata/MetadataBody';
 import MetadataResources from './Metadata/MetadataResources';
@@ -496,6 +498,7 @@ export default {
       this.location = null;
       this.details = null;
       this.publications = null;
+      this.relatedDatasets = null;
       this.funding = null;
       this.authors = null;
 
@@ -520,6 +523,8 @@ export default {
 
         this.publications = createPublications(currentContent);
         this.startExtractingIds();
+
+        this.relatedDatasets = createRelatedDatasets(currentContent);
 
         this.funding = createFunding(currentContent);
 
@@ -584,12 +589,19 @@ export default {
         publicationsResolvingIds: this.publicationsResolvingIds,
       });
 
-      this.$set(components.MetadataFunding, 'genericProps', { funding: this.funding });
+      this.$set(components.MetadataRelatedDatasets, 'genericProps', {
+        ...this.relatedDatasets,
+      });
+
+      this.$set(components.MetadataFunding, 'genericProps',{
+        funding: this.funding,
+      });
 
       this.firstCol = [
         components.MetadataBody,
         components.MetadataCitation,
         components.MetadataPublications,
+        components.MetadataRelatedDatasets,
         components.MetadataFunding,
         components.MetadataAuthors,
       ];
@@ -604,6 +616,7 @@ export default {
         components.MetadataBody,
         components.MetadataCitation,
         components.MetadataPublications,
+        components.MetadataRelatedDatasets,
         components.MetadataResources,
         components.MetadataFunding,
         components.MetadataGeo,
@@ -787,6 +800,7 @@ export default {
     MetadataDetails,
     MetadataCitation,
     MetadataPublications,
+    MetadataRelatedDatasets,
     MetadataFunding,
     TwoColumnLayout,
     MetadataAuthors,
@@ -816,6 +830,7 @@ export default {
     location: null,
     details: null,
     publications: null,
+    relatedDatasets: null,
     funding: null,
     authors: null,
     amountOfResourcesToShowDetailsLeft: 4,

@@ -195,6 +195,17 @@ export function createPublications(dataset) {
   };
 }
 
+export function createRelatedDatasets(dataset) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    text: dataset.related_datasets,
+    maxTextLength: 500,
+  };
+}
+
 export function createFunding(dataset) {
   if (!dataset) {
     return null;
