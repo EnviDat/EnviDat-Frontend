@@ -14,6 +14,7 @@
 export const METADATA_BODY_TITLE = 'Description';
 export const METADATA_CITATION_TITLE = 'Citation';
 export const METADATA_PUBLICATIONS_TITLE = 'Related Publications';
+export const METADATA_DATASETS_TITLE = 'Related Datasets';
 export const METADATA_KEYWORDS_TITLE = 'Keywords';
 
 export const METADATA_AUTHORS_TITLE = 'Author Details';
