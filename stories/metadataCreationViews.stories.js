@@ -33,7 +33,7 @@ import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
 
 import { getTagColor } from '@/factories/metaDataFactory';
-import { createTag, getPopularTags } from '@/factories/metadataFilterMethods';
+import { getPopularTags } from '@/factories/metadataFilterMethods';
 
 import {
   createAuthors,
@@ -61,33 +61,6 @@ import unFormatedMetadataCards from "./js/metadata";
 // metadata gets enhance in the storybook config
 // import metadata from './js/metadata';
 
-// const smallHeader = createHeader(metadata[0], true);
-// const largeHeader = createHeader(metadata[1], false);
-
-// const body1 = createBody(metadata[0]);
-// const body2 = createBody(metadata[1]);
-
-// export const methods = {
-//   onCardClick: action('clicked on card'),
-//   onTagClick: action('clicked on tag'),
-// };
-
-
-for (let i = 0; i < metadataset.length; i++) {
-  const entry = metadataset[i];
-
-  if (entry?.tags?.length > 0) {
-    const tagList = [];
-
-    for (let j = 0; j < entry.tags.length; j++) {
-      const tagName = entry.tags[j];
-      tagList.push(createTag(tagName));
-    }
-
-    entry.tags = tagList;
-  }
-
-}
 
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 // import tags from '@/modules/metadata/store/metadataTags';
@@ -123,15 +96,11 @@ const placeholderKeywordsGenericProps = {
 };
 
 
-// Variables used to fill authors in "Edit Metadata Headers"
-const apiFactory = require('@/factories/apiFactory');
-
 const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
-  const formatted = apiFactory.solrResultToCKANJSON(el);
-  formatted.authors = createAuthors(formatted);
-  metadataCards.push(formatted);
+  el.author = createAuthors(el);
+  metadataCards.push(el);
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);

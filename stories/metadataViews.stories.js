@@ -1,5 +1,5 @@
 // noinspection JSUnusedGlobalSymbols
-/* eslint-disable object-property-newline */
+/* eslint-disable */
 /* eslint-disable import/no-extraneous-dependencies */
 
 /**
@@ -16,6 +16,7 @@
 import { action } from '@storybook/addon-actions';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
@@ -115,18 +116,12 @@ const funding2 = [
 const resources1 = createResources(metadata[1]);
 const resources2 = createResources(metadata[2]);
 
-const resDataDict = JSON.parse(metadata[1].data_dict);
-resources1.resources = resDataDict.resources;
-const resDataDict2 = JSON.parse(metadata[2].data_dict);
-resources2.resources = resDataDict2.resources;
-
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
 const authorDeadInfo = {
   asciiDead: '&#8224;',
   authorPassedInfo: 'Sadly this author has passed away.',
 };
-
 
 const genericProps3 = {
   showPlaceholder: false,
@@ -155,14 +150,9 @@ const genericProps5 = {
   authors,
 };
 
-const methods = {
-  onCardClick: action('clicked on card'),
-  onTagClick: action('clicked on tag'),
-};
 
 export default {
   title: '6 Detail Views / Metadata',
-  component: MetadataHeader,
   decorators: [],
   parameters: {},
 };
@@ -244,7 +234,6 @@ export const MetadataHeaderViews = () => ({
     </v-row>
   </v-col>
   `,
-  methods,
   data: () => ({
     smallHeader,
     largeHeader,
@@ -279,7 +268,6 @@ export const MetadataBodyViews = () => ({
 
   </v-row>
   `,
-  methods,
   data: () => ({
     genericPropsPlaceholder: {
       showPlaceholder: true,
@@ -327,8 +315,6 @@ export const MetadataCitationViews = () => ({
       child.$forceUpdate();
     });
   },
-  methods: {
-  },
   data: () => ({
     genericProps1,
     genericProps2,
@@ -366,8 +352,6 @@ export const MetadataDetailsViews = () => ({
       child.$forceUpdate();
     });
   },
-  methods: {
-  },
   data: () => ({
     genericProps3,
     genericProps2,
@@ -400,8 +384,6 @@ export const MetadataLocationViews = () => ({
     this.$children.forEach((child) => {
       child.$forceUpdate();
     });
-  },
-  methods: {
   },
   data: () => ({
     genericProps4,
@@ -439,8 +421,6 @@ export const MetadataPublicationsViews = () => ({
   </v-row>
   `,
   updated() {
-  },
-  methods: {
   },
   data: () => ({
     genericProp: {
@@ -498,8 +478,6 @@ export const MetadataFundingViews = () => ({
   `,
   updated() {
   },
-  methods: {
-  },
   data: () => ({
     genericProp: {
       funding: funding1,
@@ -539,8 +517,6 @@ export const MetadataResourcesViews = () => ({
   </v-row>
   `,
   updated() {
-  },
-  methods: {
   },
   data: () => ({
     genericProp: {
@@ -590,8 +566,6 @@ export const MetadataAuthorsViews = () => ({
 
   </v-row>
   `,
-  methods: {
-  },
   data: () => ({
     genericProps5,
     genericPropsPlaceholder: {

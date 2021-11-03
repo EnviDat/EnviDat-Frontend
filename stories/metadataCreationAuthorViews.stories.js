@@ -38,14 +38,11 @@ import {
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
-const apiFactory = require('@/factories/apiFactory');
-
 const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
-  const formatted = apiFactory.solrResultToCKANJSON(el);
-  formatted.authors = createAuthors(formatted);
-  metadataCards.push(formatted);
+  el.author = createAuthors(el);
+  metadataCards.push(el);
 });
 
 const authorsMap = extractAuthorsMap(metadataCards);

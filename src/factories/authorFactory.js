@@ -117,6 +117,8 @@ export function createAuthors(dataset) {
 
   if (typeof dataset.author === 'string') {
     authors = JSON.parse(dataset.author);
+  } else {
+    authors = dataset.author;
   }
 
   if (!authors || !(authors instanceof Array)) {
@@ -130,8 +132,8 @@ export function createAuthors(dataset) {
 
     const fullName = getAuthorName(author);
     // const nameSplits = fullName.split(' ');
-    const firstName = author.given_name.trim();
-    const lastName = author.name.trim();
+    const firstName = author.given_name || author.firstName || '';
+    const lastName = author.name || author.lastName || '';
 
     // if (nameSplits.length > 0) {
     //   if (nameSplits.length === 1) {
@@ -148,8 +150,8 @@ export function createAuthors(dataset) {
     const dataCredit = getDataCredit(author);
 
     authorObjs.push({
-      firstName,
-      lastName,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       fullName,
       datasetCount: 1,
       affiliation: author.affiliation,
