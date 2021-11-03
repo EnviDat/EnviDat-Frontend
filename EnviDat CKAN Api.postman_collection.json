@@ -1,32 +1,66 @@
 {
-	"info": {
-		"_postman_id": "8e090a92-c942-456f-b35d-f13711fae7ff",
-		"name": "EnviDat CKAN Api",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-	},
-	"item": [
-		{
-			"name": "Sign In",
-			"item": [
-				{
-					"name": "UserShow",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": null
-					},
-					"response": []
-				},
-				{
-					"name": "UserSignin",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": null
-					},
-					"response": []
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "8e090a92-c942-456f-b35d-f13711fae7ff",
+    "name": "EnviDat CKAN API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "User List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://www.envidat.ch/api/action/user_list",
+              "protocol": "https",
+              "host": ["www", "envidat", "ch"],
+              "path": ["api", "action", "user_list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UserSignin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": null
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Metadata",
+      "item": [
+        {
+          "name": "Metadata List (1000)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://www.envidat.ch/api/action/current_package_list_with_resources?limit=1000&offset=0",
+              "protocol": "https",
+              "host": ["www", "envidat", "ch"],
+              "path": ["api", "action", "current_package_list_with_resources"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "1000"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
 }
