@@ -24,10 +24,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
-  mergeGeomsToMultiGeoms,
-} from "@/factories/metaDataFactory";
-
-import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_DATA_GEO,
   MAP_GEOMETRY_MODIFIED,
@@ -69,6 +65,7 @@ export default {
     },
   },
   mounted() {
+    this.localGeoms = this.location.geomCollection;
     eventBus.$on(MAP_GEOMETRY_MODIFIED, this.triggerGeometryUpdate);
   },
   beforeDestroy() {
@@ -83,7 +80,8 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
         error: this.error,
-        site: this.location.geoJSON,
+        site: this.location.geomCollection,
+        // site: thislocalGeoms,
       };
     },
   },
@@ -94,23 +92,14 @@ export default {
         data: updatedGeometries,
       });
     },
-    triggerGeometryUpdate(mapEditEvent) {
+    triggerGeometryUpdate(updatedGeometries) {
       // Re-calculate genericProps property, adding additional geoms (for MetadataGeo.vue)
-
-      const editEventType = mapEditEvent.type;
-
-      if (editEventType === "pm:create") {
-        const editorGeoJSON = mapEditEvent.layer.toGeoJSON();
-        const combinedGeoms = mergeGeomsToMultiGeoms(this.location, editorGeoJSON.geometry);
-        this.setGeometriesOnRecord(combinedGeoms);
-      } else if (editEventType === "pm:dragend" || editEventType === "pm:update") {
-        console.log(mapEditEvent);
-        // const editedGeom = handleGeometryEdits(this.location, mapEditEvent.layer);
-        // this.setGeometriesOnRecord(editedGeom);
-      } else if (editEventType === "pm:remove") {
-        // logic to delete passed geometry id from site.location
-        // this.setGeometriesOnRecord(combined);
-      }
+      // this.location.geomCollection = updatedGeometries;
+      console.log(updatedGeometries);
+      // updatedGeometries.forEach( (geometry) => {
+      //   console.log(geometry.toGeoJSON());
+      // })
+      // this.setGeometriesOnRecord(updatedGeometries);
     },
   },
   watch: {
@@ -118,6 +107,11 @@ export default {
   components: {
     MetadataGeo,
   },
-  data: () => ({}),
+  data: () => ({
+    localGeoms: {
+      type: Object,
+      default: null,
+    },
+  }),
 };
 </script>

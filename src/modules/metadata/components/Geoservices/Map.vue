@@ -135,15 +135,15 @@
 
           // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
           // const bbox = tEnvelope(this.site);
-          let enve = tBuffer(this.site, zoomDist, { units: 'kilometers' });
-          enve = tEnvelope(enve);
+          let envelope = tBuffer(this.site, zoomDist, { units: 'kilometers' });
+          envelope = tEnvelope(envelope);
 
           // Convert from geometry to extent object
           extent = {
-            minx: enve.geometry.coordinates[0][0][0],
-            miny: enve.geometry.coordinates[0][0][1],
-            maxx: enve.geometry.coordinates[0][2][0],
-            maxy: enve.geometry.coordinates[0][2][1],
+            minx: envelope.geometry.coordinates[0][0][0],
+            miny: envelope.geometry.coordinates[0][0][1],
+            maxx: envelope.geometry.coordinates[0][2][0],
+            maxy: envelope.geometry.coordinates[0][2][1],
           };
         } else if (this.layerConfig) {
           extent = this.layerConfig.bbox;

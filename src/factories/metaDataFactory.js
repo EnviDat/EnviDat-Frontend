@@ -635,10 +635,65 @@ function getMultiPolygonPointArray(coordinates) {
   return multiPolyArray
 }
 
+function parseAsGeomCollection(geometries) {
+  // Parse geometries into GeometryCollection GeoJSON format
+
+  return {
+    "type": "GeometryCollection",
+    "geometries": geometries,
+  }
+}
+
+function extractGeomsFromMultiGeoms(multiGeom) {
+  // Extract each geometry individually from a multipoint or multipolygon
+  
+  let geomType = ''
+  if (multiGeom.isMultiPoint) {
+    geomType = 'Point';
+  } else if (multiGeom.isMultiPolygon) {
+    geomType = 'Polygon';
+  }
+  
+  const geomArray = [];
+  multiGeom.geoJSON.coordinates.forEach((geomCoords) => {
+    const formattedGeom = {
+      "type": geomType,
+      "coordinates": geomCoords
+    };
+    geomArray.push(formattedGeom);
+  });
+
+  return geomArray
+}
+
 export const LOCATION_TYPE_POINT = "Point";
 export const LOCATION_TYPE_MULTIPOINT = "MultiPoint";
 export const LOCATION_TYPE_POLYGON = "Polygon";
 export const LOCATION_TYPE_MULTIPOLYGON = "MultiPolygon";
+export const LOCATION_TYPE_GEOMCOLLECTION = "GeometryCollection";
+
+function getGeomCollectionPointArray(geometries) {
+  // Return an array of coordinate arrays with swapped point coordinates for each geom
+
+  let pointArray = [];
+  const geomCollectionArray = [];
+
+  geometries.forEach((geometry) => {
+    if (geometry.type === LOCATION_TYPE_POINT) {
+      pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
+    } else if (geometry.type === LOCATION_TYPE_POLYGON) {
+      pointArray = getPolygonPointArray(geometry.coordinates);
+    } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
+      pointArray = getMultiPointArray(geometry.coordinates);
+    } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
+      pointArray = getMultiPolygonPointArray(geometry.coordinates);
+    }
+    geomCollectionArray.push(pointArray);
+  });
+
+  return geomCollectionArray
+
+}
 
 export function createLocation(dataset) {
   if (!dataset) {
@@ -675,36 +730,34 @@ export function createLocation(dataset) {
       location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
       location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
       location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
+      location.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
       if (location.isPoint) {
         // swap coords for the leaflet map
         location.pointArray = [spatialJSON.coordinates[1], spatialJSON.coordinates[0]];
+        location.geomCollection = parseAsGeomCollection([spatialJSON]);
       } else if (location.isPolygon) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
+        location.geomCollection = parseAsGeomCollection([spatialJSON]);
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
+        const extractedGeoms = extractGeomsFromMultiGeoms(location);
+        location.geomCollection = parseAsGeomCollection(extractedGeoms);
       } else if (location.isMultiPolygon) {
         location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
+        const extractedGeoms = extractGeomsFromMultiGeoms(location);
+        location.geomCollection = parseAsGeomCollection(extractedGeoms);
+      } else if (location.isGeomCollection) {
+        location.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
+        location.geomCollection = location.geoJSON;
       }
     }
   }
 
   return location;
 }
-
-// export function extractMultiPolygonToGeometryCollection(multiPolygon) {
-//   // Extract all individual Polygons from a MultiPolygon array into a GeometeryCollection
-//   multiPolygonPointArray.forEach(function(shapeCoords, i) {
-//     var polygon = {type:"Polygon", coordinates: shapeCoords};
-//     L.geoJson(polygon, {
-//       onEachFeature: function (feature, layer) {
-//         featureGroup.addLayer(layer);
-//       }
-//     });
-//   });
-// }
 
 export function mergeGeomsToMultiGeoms (origGeom, newGeom) {
 // Merge geometries of same type (point, polygon), into respective multigeometry
@@ -724,29 +777,29 @@ export function mergeGeomsToMultiGeoms (origGeom, newGeom) {
     // I.e. combine single points to multipoint
     combiCoordArray = [origGeomArray, newGeomArray];
     combiJSON.type = "MultiPoint";
-    combiJSON.coordinates = combiCoordArray
+    combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isPolygon) {
     // I.e. combine single polygons to multipolygon
     combiCoordArray = [origGeomArray, newGeomArray];
     combiJSON.type = "MultiPolygon";
-    combiJSON.coordinates = combiCoordArray
+    combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isMultiPoint) {
     // I.e. combine multipoints
     combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPoint"
-    combiJSON.coordinates = combiCoordArray
+    combiJSON.type = "MultiPoint";
+    combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isMultiPolygon) {
     // I.e. combine multipolygons
     combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPolygon"
-    combiJSON.coordinates = combiCoordArray
+    combiJSON.type = "MultiPolygon";
+    combiJSON.coordinates = combiCoordArray;
   }
 
   // Vue.js specific remover of observer __obs__
-  combiJSON = JSON.parse(JSON.stringify(combiJSON))
+  combiJSON = JSON.parse(JSON.stringify(combiJSON));
 
   return combiJSON
 }

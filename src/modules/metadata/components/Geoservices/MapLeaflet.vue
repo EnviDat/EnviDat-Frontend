@@ -354,7 +354,7 @@ export default {
       const markerEditButtons =
         geomType === "Point" || geomType === "MultiPoint";
       const polyEditButtons =
-        geomType === "Polygon" || geomType === "MultiPolygon";
+        geomType === "Polygon" || geomType === "MultiPolygon" || geomType === "GeometryCollection";
       // Add controls based on what type of geom editing
       this.map.pm.addControls({
         drawMarker: markerEditButtons,
@@ -369,52 +369,33 @@ export default {
         rotateMode: false,
       });
 
-      // Event watchers
+      // Event Watchers
       this.map.on("pm:create", (mapEditEvent) => {
-        // Nested event listeners for catching layer edits
-        mapEditEvent.layer.on("pm:update", (nestedMapEditEvent) => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, nestedMapEditEvent);
+        // Nested event listeners for catching new layer edits
+        mapEditEvent.layer.on("pm:update", () => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
         });
-        mapEditEvent.layer.on("pm:dragend", (nestedMapEditEvent) => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, nestedMapEditEvent);
+        mapEditEvent.layer.on("pm:dragend", () => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
         });
-        eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+        eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
       });
       this.map.on("pm:remove", (mapEditEvent) => {
-        // Turn off nested event listener for catching layer edits
+        // Turn off nested event listener deleted layer
         mapEditEvent.layer.off("pm:update");
         mapEditEvent.layer.off("pm:dragend");
-        eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+        eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
       });
 
-      const allLayers = this.map.pm.getGeomanLayers();
-      allLayers.forEach((editableLayer) => {
-        editableLayer.on("pm:update", (mapEditEvent) => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+      const initialLayers = this.map.pm.getGeomanLayers();
+      initialLayers.forEach((editableLayer) => {
+        editableLayer.on("pm:update", () => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
         });
-        editableLayer.on("pm:dragend", (mapEditEvent) => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, mapEditEvent);
+        editableLayer.on("pm:dragend", () => {
+          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
         });
       });
-
-      // // Require MultiPolygon as GeometryCollection for individual editing
-      // if (geomType === "MultiPolygon") {
-      //   const geomCollection = {
-      //     type: "GeometryCollection",
-      //     geometries: [],
-      //   };
-      //   this.site.coordinates.forEach((polygon) => {
-      //     geomCollection.geometries = [
-      //       ...geomCollection.geometries,
-      //       {
-      //         type: "Polygon",
-      //         coordinates: polygon,
-      //       },
-      //     ];
-      //   });
-      //   this.site = geomCollection;
-      //   console.log(this.site);
-      // }
 
       // // Add custom toolbar
       // this.map.pm.Toolbar.createCustomControl({
