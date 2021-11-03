@@ -1,0 +1,39 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+        exclude_types:
+          - csv
+          - svg
+          - png
+          - webp
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-yaml
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.4.1
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - 'prettier@2.4.1'
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.1.0
+    hooks:
+      - id: eslint
+        files: '\.vue'
+        types: [file]
+        additional_dependencies:
+          - 'eslint@8.1.0'
+          - 'babel-eslint@10.1.0'
+          - '@vue/cli-plugin-eslint@4.5.15'
+          - '@vue/eslint-config-airbnb@5.3.0'
+          - 'eslint-config-prettier@8.3.0'
+          - 'eslint-import-resolver-babel-module@5.3.1'
+          - 'eslint-import-resolver-webpack@0.13.2'
+          - 'eslint-plugin-import@2.25.2'
+          - 'eslint-plugin-vue@8.0.3'
+          - 'eslint-plugin-vuetify@1.1.0'
