@@ -8,7 +8,7 @@
     <NavigationStepper
       :steps="metadataCreationSteps"
       :initialStepTitle="metadataCreationSteps[0].title"
-      stepColor="success"
+      stepColor="highlight"
     />
   </v-container>
 </template>
@@ -62,7 +62,11 @@ import {
 
 import { createAuthors } from '@/factories/authorFactory';
 
-import { metadataCreationSteps } from '@/factories/userEditingFactory';
+import {
+  getStepByName,
+  getValidationMetadataEditingObject,
+  metadataCreationSteps,
+} from '@/factories/userEditingFactory';
 
 import {
   mapGetters,
@@ -201,6 +205,8 @@ export default {
         if (updateObj.object === EDITMETADATA_AUTHOR) {
           this.updateExistingAuthors(updateObj);
         }
+
+        this.updateStepStatus(updateObj.object);
       });
     },
     getGenericPropsForStep(key) {
@@ -269,6 +275,51 @@ export default {
         object: eventName,
         data: dataObj,
       });
+    },
+    updateStepStatus(stepKey) {
+
+      const step = getStepByName(stepKey, this.metadataCreationSteps);
+
+      if (!step) {
+        return;
+      }
+
+      this.updateStepCompleted(step);
+      this.updateStepValidation(step);
+    },
+    updateStepCompleted(step) {
+      const stepData = this.getGenericPropsForStep(step.key);
+      const values = Object.values(stepData);
+
+      let isComplete = true;
+      for (let i = 0; i < values.length; i++) {
+        const value = values[i];
+
+        if (value === undefined || value === null || value === '') {
+          isComplete = false;
+          break;
+        }
+      }
+
+      step.completed = isComplete;
+    },
+    updateStepValidation(step) {
+      const stepValidation = getValidationMetadataEditingObject(step.key);
+      if (!stepValidation) {
+        return
+      }
+      const stepData = this.getGenericPropsForStep(step.key);
+
+      try {
+        stepValidation.validateSync(stepData);
+      } catch (e) {
+        console.error(`updateStepValidation validation Error ${e}`);
+
+        step.error = e.message;
+        return;
+      }
+
+      step.error = null;
     },
     populateEditingComponents(metadataRecord) {
       // ** Populate the editing form with existing metadata **

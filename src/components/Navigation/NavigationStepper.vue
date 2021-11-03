@@ -5,27 +5,14 @@
 
         <div class="stepper fill-height px-10"
              :style="`background-color: ${backgroundColor}`">
-<!--
-          <v-container fluid class="pa-0">
-            <v-row no-gutters>
-              <v-col cols="1">
-              </v-col>
-              <v-col cols="10">
--->
 
-          <StepperHeader :steps="steps"
+          <StepperHeader class="py-4"
+                          :steps="steps"
                           activeColor="accent"
-                          inactiveColor="primary"
+                          inactiveColor="secondary"
                           :stepColor="stepColor"
                           :initialStep="currentStepIndex"
                           @stepClick="catchStepClick" />
-<!--              </v-col>
-
-              <v-col cols="1">
-              </v-col>
-
-            </v-row>
-          </v-container>-->
 
         </div>
 
@@ -39,7 +26,7 @@
                         :steps="currentStep.detailSteps"
                         v-bind="currentStep.genericProps"
                         :initialStepTitle="currentStep.initialStepTitle"
-                        stepColor="highlight" />
+                        :stepColor="currentStep.color" />
 
             <div v-if="!currentStep"
                     cols="12" >
@@ -140,7 +127,7 @@ export default {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 0.5fr 6fr;
-    gap: 0px 0px;
+    gap: 0;
     grid-template-areas:
     "stepper"
     "content";

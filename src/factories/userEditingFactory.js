@@ -247,6 +247,7 @@ export const metadataCreationSteps = [
     key: EDITMETADATA_MAIN,
     detailSteps: mainDetailSteps,
     initialStepTitle: mainDetailSteps[0].title,
+    color: 'white',
   },
   {
     title: 'Data Info',
@@ -255,6 +256,7 @@ export const metadataCreationSteps = [
     key: EDITMETADATA_DATA,
     detailSteps: dataDetailSteps,
     initialStepTitle: dataDetailSteps[0].title,
+    color: 'white',
   },
   {
     title: 'Related Info',
@@ -320,6 +322,7 @@ export function getEmptyMetadataInEditingObject() {
   initializeSteps(metadataCreationSteps, emptyEditingObject);
   return emptyEditingObject;
 }
+
 
 // Returns true if all values in obj are null or empty strings, else returns false
 export function isObjectEmpty(obj) {
@@ -408,7 +411,7 @@ const metadataInEditingValidations = {
       publicationYear: yup.string().required(),
       funders: yup.array().min(1).of(
         yup.object({
-          organization: yup.string().required().min(3),
+          institution: yup.string().required().min(3),
           grantNumber: yup.string(),
           link: yup.string().url(),
         }),
@@ -418,7 +421,8 @@ const metadataInEditingValidations = {
 
 
 export function getValidationMetadataEditingObject(key) {
-  return metadataInEditingValidations[key]();
+  const validationEntry = metadataInEditingValidations[key];
+  return validationEntry ? validationEntry() : null;
 }
 
 export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray = null) {

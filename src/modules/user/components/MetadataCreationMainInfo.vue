@@ -8,7 +8,7 @@
 
           <StepperHeader :steps="steps"
                           activeColor="accent"
-                          inactiveColor="primary"
+                          inactiveColor="secondary"
                           :stepColor="stepColor"
                           :initialStep="currentStepIndex"
                           @stepClick="catchStepClick" />

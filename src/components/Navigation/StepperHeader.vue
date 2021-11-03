@@ -3,24 +3,27 @@
 
     <v-stepper v-model="currentStep"
                 :value="initialStep"
+               :height="height"
                 style="background: transparent; box-shadow: unset !important;" >
 
-                <!-- :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light.primary : ''}`" > -->
-      <v-stepper-header>
+      <v-stepper-header :style="`height: ${height}px; `">
 
         <template v-for="(step, index) in steps">
 
           <v-stepper-step :key="`step-${index}`"
                           :id="`step-${index}`"
-                          :color="currentStep === (index + 1) ? activeColor : inactiveColor"
+                          :color="getStepIconColor(step, index)"
                           editable
+                          edit-icon="check"
+                          error-icon="error"
                           :complete="step.completed"
-                          complete-icon="check_circle"
                           :step="(index + 1)"
-                          @click="catchStepClick(step)"
-                          class="py-0 px-3 ma-4 blackTextStepIcon"
+                          :rules="[() => !step.error]"
+                          class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
                           style="border-radius: 4px;"
-                          :style="`background-color: ${$vuetify ? $vuetify.theme.themes.light[stepColor] : ''};`"
+                          :style="`background-color: ${getStepBackgroundColor(index)};
+                                   border: solid black ${stepColor === 'white' ? 1 : 0}px;`"
+                          @click="catchStepClick(step)"
                           >
             {{ step.title }}
           </v-stepper-step>
@@ -67,6 +70,10 @@ export default {
       type: String,
       default: 'white',
     },
+    height: {
+      type: Number,
+      default: 40,
+    },
   },
   created() {
     // +1 so that the steps icons are beginning with 1 not 0
@@ -77,9 +84,29 @@ export default {
       this.currentStep = this.initialStep + 1;
     },
   },
+  computed: {
+  },
   methods: {
     catchStepClick(step) {
       this.$emit('stepClick', step.title);
+    },
+    getStepIconColor(step, index) {
+      if (this.currentStep === (index + 1)) {
+        return this.activeColor;
+      }
+
+      if (step.completed) {
+        return this.$vuetify.theme.themes.light.success;
+      }
+
+      if (step.error) {
+        return this.$vuetify.theme.themes.light.error;
+      }
+
+      return this.inactiveColor;
+    },
+    getStepBackgroundColor() {
+      return this.$vuetify.theme.themes.light[this.stepColor];
     },
   },
   data: () => ({
