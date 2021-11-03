@@ -58,10 +58,18 @@ export default {
   },
   computed: {
     relatedPublicationsText() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
+      }
+
+      return '';
     },
     customFields() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
+      }
+
+      return [];
     },
     editRelatedPublicationsProps() {
       return {

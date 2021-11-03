@@ -54,10 +54,18 @@ export default {
   },
   computed: {
     publicationsInfo() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+      }
+
+      return {};
     },
     organizationsInfo() {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      }
+
+      return {};
     },
     editPublicationsProps() {
       return this.publicationsInfo;
@@ -73,10 +81,7 @@ export default {
   components: {
   //  EditOrganizationTree,
     EditPublicationInfo,
-
-
-    EditOrganization
-
+    EditOrganization,
   },
 };
 
