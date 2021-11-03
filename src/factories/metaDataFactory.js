@@ -12,23 +12,23 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import seedrandom from "seedrandom";
-import { parse, format, formatISO } from "date-fns";
+import seedrandom from 'seedrandom';
+import { format, formatISO, parse } from 'date-fns';
 
-import { getAuthorName, getAuthorsString } from "@/factories/authorFactory";
+import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
-import { FOREST, SNOW, LAND, HAZARD, DIVERSITY, METEO } from "@/store/categoriesConsts";
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
-import { localIdProperty } from "@/factories/strategyFactory";
+import { localIdProperty } from '@/factories/strategyFactory';
 
 /**
- * Create a psyeudo random integer based on a given seed using the 'seedrandom' lib.
+ * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
  *
  * @param {Number} min
  * @param {Number} max
  * @param {String} seed
  */
-export function randomInt(min, max, seed = "For the Horde!") {
+export function randomInt(min, max, seed = 'For the Horde!') {
   const rng = seedrandom(seed);
   const r = Math.floor(rng() * 10);
 
@@ -57,21 +57,21 @@ export function guessTagCategory(tags) {
     const name = element.name;
 
     switch (true) {
-      case name.includes("HAZARD"):
-      case name.includes("ACCIDENTS"):
-      case name.includes("FATALITIES"):
+      case name.includes('HAZARD'):
+      case name.includes('ACCIDENTS'):
+      case name.includes('FATALITIES'):
         return HAZARD;
-      case name.includes("DIVERSITY"):
+      case name.includes('DIVERSITY'):
         return DIVERSITY;
-      case name.includes("FOREST"):
+      case name.includes('FOREST'):
         return FOREST;
-      case name.includes("SNOW"):
-      case name.includes("AVALANCHE"):
+      case name.includes('SNOW'):
+      case name.includes('AVALANCHE'):
         return SNOW;
-      case name.includes("METEO"):
-      case name.includes("CLIMATE"):
+      case name.includes('METEO'):
+      case name.includes('CLIMATE'):
         return METEO;
-      case name.includes("LAND"):
+      case name.includes('LAND'):
         return LAND;
       default:
     }
@@ -82,21 +82,22 @@ export function guessTagCategory(tags) {
 
 /**
  * @param {String} date expecting a format like 2017-08-15T15:25:45.175790
+ * @param {String} inputFormat, it's optional
  * @return {String} Returns a date string containing the date and hours:minutes:seconds
  */
-export function formatDate(date, inputFormat = "yyyy-MM-dd") {
+export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   // expecting a format like 2017-08-15T15:25:45.175790
-  let formatedDate = "";
+  let formatedDate = '';
 
   if (date) {
-    const split = date.split("T");
+    const split = date.split('T');
     if (split.length > 1) {
       const dateOnly = split[0];
       const parsedDate = parse(dateOnly, inputFormat, new Date(date));
-      const newDate = format(parsedDate, "d. MMM yyyy");
+      const newDate = format(parsedDate, 'd. MMM yyyy');
 
       const timeOnly = split[1];
-      const timeSplit = timeOnly.split(".");
+      const timeSplit = timeOnly.split('.');
       let timeToMinutes = timeSplit[0];
       timeToMinutes = timeToMinutes.substr(0, 5);
 
@@ -127,7 +128,7 @@ export function createLicense(dataset) {
   return {
     id: dataset.license_id,
     title: dataset.license_title,
-    url: dataset.license_url
+    url: dataset.license_url,
   };
 }
 
@@ -138,27 +139,27 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
 
   let { maintainer } = dataset;
 
-  if (typeof dataset.maintainer === "string") {
+  if (typeof dataset.maintainer === 'string') {
     maintainer = JSON.parse(dataset.maintainer);
   }
 
   let contactEmail = dataset.maintainer_email;
   if (!dataset.maintainer_email && maintainer) {
-    contactEmail = maintainer.email ? maintainer.email : "";
+    contactEmail = maintainer.email ? maintainer.email : '';
   }
 
   const license = createLicense(dataset);
 
   let authors = null;
 
-  if (typeof dataset.author === "string") {
+  if (typeof dataset.author === 'string') {
     authors = JSON.parse(dataset.author);
   }
 
   return {
     metadataTitle: dataset.title,
     doi: dataset.doi,
-    contactName: maintainer ? getAuthorName(maintainer) : "",
+    contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
     license: license.title,
     tags: dataset.tags,
@@ -179,7 +180,7 @@ export function createBody(dataset, smallScreen = false) {
     // id: dataset.id,
     // doi: dataset.doi,
     text: dataset.notes,
-    maxTextLength: smallScreen ? 900 : 1000
+    maxTextLength: smallScreen ? 900 : 1000,
   };
 }
 
@@ -190,7 +191,7 @@ export function createPublications(dataset) {
 
   return {
     text: dataset.related_publications,
-    maxTextLength: 500
+    maxTextLength: 500,
   };
 }
 
@@ -199,7 +200,7 @@ export function createFunding(dataset) {
     return null;
   }
 
-  if (typeof dataset.funding === "string") {
+  if (typeof dataset.funding === 'string') {
     try {
       const fundingArray = JSON.parse(dataset.funding);
 
@@ -233,7 +234,7 @@ export function createCitation(dataset) {
 
   let { publication } = dataset;
 
-  if (typeof dataset.publication === "string") {
+  if (typeof dataset.publication === 'string') {
     publication = JSON.parse(dataset.publication);
   }
 
@@ -262,7 +263,7 @@ export function createCitation(dataset) {
     citationIsoXmlLink: `${domain}/dataset/${dataset.name}/export/iso19139.xml`,
     citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
     citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
-    citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`
+    citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`,
   };
 }
 
@@ -273,11 +274,11 @@ export function createPublishingInfo(dataset) {
 
   let { publication } = dataset;
 
-  if (typeof publication === "string") {
+  if (typeof publication === 'string') {
     publication = JSON.parse(dataset.publication);
   }
 
-  return  {
+  return {
     publisher: publication.publisher,
     publicationYear: publication.publication_year,
     publicationState: dataset.publication_state,
@@ -286,19 +287,19 @@ export function createPublishingInfo(dataset) {
 }
 
 export function getFileFormat(file) {
-  let fileFormat = "";
-  let fileName = "";
+  let fileFormat = '';
+  let fileName = '';
 
-  if (typeof file === "object" && !!file.format) {
+  if (typeof file === 'object' && !!file.format) {
     // if the input is a resource object
-    fileName = file.format ? file.format : "";
-  } else if (typeof file === "object") {
-    fileName = file.name ? file.name : "";
-  } else if (typeof file === "string") {
+    fileName = file.format ? file.format : '';
+  } else if (typeof file === 'object') {
+    fileName = file.name ? file.name : '';
+  } else if (typeof file === 'string') {
     fileName = file;
   }
 
-  const splits = fileName.split(".");
+  const splits = fileName.split('.');
   fileFormat = splits[splits.length - 1];
   /*  const last = splits[splits.length - 1];
 
@@ -316,15 +317,15 @@ export function getFileFormat(file) {
 
 let localResoureID = 0;
 
-export function initializeLocalResource(metadataId, file = null, url = "") {
+export function initializeLocalResource(metadataId, file = null, url = '') {
   const isLink = !!url;
-  const resourceFormat = isLink ? "url" : getFileFormat(file);
+  const resourceFormat = isLink ? 'url' : getFileFormat(file);
   let resourceName = isLink ? url : file.name;
-  const fileName = isLink ? "" : file.name;
+  const fileName = isLink ? '' : file.name;
   const size = !isLink ? file.size : 0;
 
   if (!isLink) {
-    const splits = resourceName.split(".");
+    const splits = resourceName.split('.');
     resourceName = splits[0];
   }
 
@@ -340,13 +341,13 @@ export function initializeLocalResource(metadataId, file = null, url = "") {
     size,
     id: `resoureId_${localResoureID}`,
     [localIdProperty]: `resoureId_${localResoureID}`,
-    url_type: isLink ? "" : "upload",
+    url_type: isLink ? '' : 'upload',
     format: resourceFormat,
     url,
     existsOnlyLocal: true,
     created: now,
     lastModified: now,
-    loading: false
+    loading: false,
   };
 }
 
@@ -355,22 +356,22 @@ export function createLocalResource(
   name,
   description,
   file,
-  fileFormat = "",
+  fileFormat = '',
   size = 0,
-  url = "",
-  doi = "",
+  url = '',
+  doi = '',
   restricted = false
 ) {
   const isLink = !!url;
-  const resourceFormat = isLink ? "url" : fileFormat;
+  const resourceFormat = isLink ? 'url' : fileFormat;
 
   const created = getCurrentDate();
 
   return {
     description,
     metadataId,
-    url_type: isLink ? "" : "upload",
-    id: "",
+    url_type: isLink ? '' : 'upload',
+    id: '',
     size,
     // mimetype: resource.mimetype ? resource.mimetype : '',
     // cacheUrl: resource.cache_url ? resource.cache_url : '',
@@ -385,7 +386,7 @@ export function createLocalResource(
     lastModified: created,
     // position: resource.position ? resource.position : '',
     // revisionId: resource.revision_id ? resource.revision_id : '',
-    isProtected: restricted
+    isProtected: restricted,
   };
 }
 
@@ -400,32 +401,33 @@ export function createResource(resource, datasetName) {
 
   if (
     resource.restricted &&
-    typeof resource.restricted === "string" &&
+    typeof resource.restricted === 'string' &&
     resource.restricted.length > 0
   ) {
     try {
       restrictedObj = JSON.parse(resource.restricted);
-      isProtected = restrictedObj.level !== "public";
-      restrictedUsers = restrictedObj.allowed_users !== "";
+      isProtected = restrictedObj.level !== 'public';
+      restrictedUsers = restrictedObj.allowed_users !== '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
-      isProtected = !resource.restricted.includes("public");
+      isProtected = !resource.restricted.includes('public');
     }
   }
 
   let resURL = resource.url;
 
-  if (isProtected || (typeof restrictedUsers === "boolean" && restrictedUsers === true)) {
-    const splits = resource.url.split("resource");
+  if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
+    const splits = resource.url.split('resource');
     if (splits && splits.length > 0) {
       resURL = splits[0];
     } else {
-      resURL = "";
+      resURL = '';
     }
   }
 
-  let fileFormat = resource.format ? resource.format : "";
-  fileFormat = fileFormat.replace(".", "").toLowerCase();
+  let fileFormat = resource.format ? resource.format : '';
+  fileFormat = fileFormat.replace('.', '')
+    .toLowerCase();
 
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
@@ -441,20 +443,20 @@ export function createResource(resource, datasetName) {
     // url_type: "upload",
     id: resource.id,
     size: resource.size ? resource.size : 0,
-    mimetype: resource.mimetype ? resource.mimetype : "",
-    cacheUrl: resource.cache_url ? resource.cache_url : "",
+    mimetype: resource.mimetype ? resource.mimetype : '',
+    cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
     name: resource.name,
     url: resURL,
     restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
-    restricted: resource.restricted ? resource.restricted : "",
+    restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
-    state: resource.state ? resource.state : "",
+    state: resource.state ? resource.state : '',
     created,
     lastModified: modified,
-    position: resource.position ? resource.position : "",
-    revisionId: resource.revision_id ? resource.revision_id : "",
-    isProtected
+    position: resource.position ? resource.position : '',
+    revisionId: resource.revision_id ? resource.revision_id : '',
+    isProtected,
   };
 }
 
@@ -467,13 +469,13 @@ export function createResources(dataset) {
 
   let { maintainer } = dataset;
 
-  if (typeof dataset.maintainer === "string") {
+  if (typeof dataset.maintainer === 'string') {
     maintainer = JSON.parse(dataset.maintainer);
   }
 
   let contactEmail = dataset.maintainer_email;
   if (!dataset.maintainer_email && maintainer) {
-    contactEmail = maintainer.email ? maintainer.email : "";
+    contactEmail = maintainer.email ? maintainer.email : '';
   }
 
   if (dataset.resources) {
@@ -489,7 +491,7 @@ export function createResources(dataset) {
     metadataId: dataset.id,
     metadataTitle: dataset.title,
     doi: dataset.doi,
-    resources
+    resources,
   };
 }
 
@@ -532,28 +534,54 @@ export function createDetails(dataset) {
 
   const details = [];
 
-  details.push({ label: "Title", text: dataset.title });
+  details.push({
+    label: 'Title',
+    text: dataset.title,
+  });
 
   const authors = getAuthorsString(dataset);
-  details.push({ label: "Authors", text: authors });
+  details.push({
+    label: 'Authors',
+    text: authors,
+  });
 
   // TODO DataCRedit
 
-  details.push({ label: "DOI", text: dataset.doi, url: `https://doi.org/${dataset.doi}` });
+  details.push({
+    label: 'DOI',
+    text: dataset.doi,
+    url: `https://doi.org/${dataset.doi}`,
+  });
 
   const created = formatDate(dataset.metadata_created);
-  details.push({ label: "Created", text: created });
+  details.push({
+    label: 'Created',
+    text: created,
+  });
 
   const modified = formatDate(dataset.metadata_modified);
-  details.push({ label: "Last Modified", text: modified });
+  details.push({
+    label: 'Last Modified',
+    text: modified,
+  });
 
   const license = createLicense(dataset);
-  details.push({ label: "License", text: license.title, url: license.url });
+  details.push({
+    label: 'License',
+    text: license.title,
+    url: license.url,
+  });
 
-  details.push({ label: "MetadataId", text: dataset.id });
+  details.push({
+    label: 'MetadataId',
+    text: dataset.id,
+  });
 
   if (dataset.swissFL_type) {
-    details.push({ label: "swissFL_type", text: dataset.swissFL_type });
+    details.push({
+      label: 'swissFL_type',
+      text: dataset.swissFL_type,
+    });
   }
 
   return details;
@@ -562,8 +590,8 @@ export function createDetails(dataset) {
 export function extractDataInfoDates(dataset) {
   // Get creation and collection date for data in queryable json format
 
-  let dates = []
-  if (typeof dataset.date === "string") {
+  let dates = [];
+  if (typeof dataset.date === 'string') {
     dates = JSON.parse(dataset.date);
   }
   let creationDate = null;
@@ -592,20 +620,20 @@ export function extractDataInfoDates(dataset) {
 
 function getMultiPointArray(coordinates) {
   // Return a multipoint array with swapped point coordinates
-  const pointArray = []
+  const pointArray = [];
   coordinates.forEach((coord) => {
     const swappedCoord = [coord[1], coord[0]];
     pointArray.push(swappedCoord);
   });
 
-  return pointArray
+  return pointArray;
 }
 
 function getPolygonPointArray(coordinates) {
   // Return a polygon array with swapped point coordinates, accepts holes
-  const polygonArray = []
+  const polygonArray = [];
   coordinates.forEach((outerArray) => {
-    const pointArray = []
+    const pointArray = [];
     outerArray.forEach((coord) => {
       const swappedCoord = [coord[1], coord[0]];
       pointArray.push(swappedCoord);
@@ -613,16 +641,16 @@ function getPolygonPointArray(coordinates) {
     polygonArray.push(pointArray);
   });
 
-  return polygonArray
+  return polygonArray;
 }
 
 function getMultiPolygonPointArray(coordinates) {
   // Return a multipolygon array with swapped point coordinates, accepts holes
-  const multiPolyArray = []
+  const multiPolyArray = [];
   coordinates.forEach((polygon) => {
-    const polygonArray = []
+    const polygonArray = [];
     polygon.forEach((outerArray) => {
-      const pointArray = []
+      const pointArray = [];
       outerArray.forEach((coord) => {
         const swappedCoord = [coord[1], coord[0]];
         pointArray.push(swappedCoord);
@@ -632,45 +660,45 @@ function getMultiPolygonPointArray(coordinates) {
     multiPolyArray.push(polygonArray);
   });
 
-  return multiPolyArray
+  return multiPolyArray;
 }
 
 function parseAsGeomCollection(geometries) {
   // Parse geometries into GeometryCollection GeoJSON format
 
   return {
-    "type": "GeometryCollection",
-    "geometries": geometries,
-  }
+    'type': 'GeometryCollection',
+    'geometries': geometries,
+  };
 }
 
 function extractGeomsFromMultiGeoms(multiGeom) {
   // Extract each geometry individually from a multipoint or multipolygon
-  
-  let geomType = ''
+
+  let geomType = '';
   if (multiGeom.isMultiPoint) {
     geomType = 'Point';
   } else if (multiGeom.isMultiPolygon) {
     geomType = 'Polygon';
   }
-  
+
   const geomArray = [];
   multiGeom.geoJSON.coordinates.forEach((geomCoords) => {
     const formattedGeom = {
-      "type": geomType,
-      "coordinates": geomCoords
+      'type': geomType,
+      'coordinates': geomCoords,
     };
     geomArray.push(formattedGeom);
   });
 
-  return geomArray
+  return geomArray;
 }
 
-export const LOCATION_TYPE_POINT = "Point";
-export const LOCATION_TYPE_MULTIPOINT = "MultiPoint";
-export const LOCATION_TYPE_POLYGON = "Polygon";
-export const LOCATION_TYPE_MULTIPOLYGON = "MultiPolygon";
-export const LOCATION_TYPE_GEOMCOLLECTION = "GeometryCollection";
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
+export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 
 function getGeomCollectionPointArray(geometries) {
   // Return an array of coordinate arrays with swapped point coordinates for each geom
@@ -691,7 +719,7 @@ function getGeomCollectionPointArray(geometries) {
     geomCollectionArray.push(pointArray);
   });
 
-  return geomCollectionArray
+  return geomCollectionArray;
 
 }
 
@@ -701,14 +729,14 @@ export function createLocation(dataset) {
   }
 
   // If already GeoJSON return, else WKT
-  if (typeof dataset.location === "object") {
+  if (typeof dataset.location === 'object') {
     return dataset.location;
   }
 
   const location = {
     id: dataset.id,
     name: dataset.name,
-    title: dataset.title
+    title: dataset.title,
   };
 
   if (dataset.spatial) {
@@ -759,56 +787,59 @@ export function createLocation(dataset) {
   return location;
 }
 
-export function mergeGeomsToMultiGeoms (origGeom, newGeom) {
+export function mergeGeomsToMultiGeoms(origGeom, newGeom) {
 // Merge geometries of same type (point, polygon), into respective multigeometry
 
   const origGeomArray = origGeom.geoJSON.coordinates;
   const newGeomArray = newGeom.coordinates;
-  let combiCoordArray = []
-  let combiJSON = {}
+  let combiCoordArray = [];
+  let combiJSON = {};
 
   if (newGeom.isMultiPoint || newGeom.isMultiPolygon) {
     combiCoordArray = null;
     // eslint-disable-next-line no-console
-    console.error("mergeGeomsToMultiGeoms: not possible to draw a multigeometry in one event.");
+    console.error('mergeGeomsToMultiGeoms: not possible to draw a multigeometry in one event.');
   }
 
   if (origGeom.isPoint) {
     // I.e. combine single points to multipoint
     combiCoordArray = [origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPoint";
+    combiJSON.type = 'MultiPoint';
     combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isPolygon) {
     // I.e. combine single polygons to multipolygon
     combiCoordArray = [origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPolygon";
+    combiJSON.type = 'MultiPolygon';
     combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isMultiPoint) {
     // I.e. combine multipoints
     combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPoint";
+    combiJSON.type = 'MultiPoint';
     combiJSON.coordinates = combiCoordArray;
 
   } else if (origGeom.isMultiPolygon) {
     // I.e. combine multipolygons
     combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = "MultiPolygon";
+    combiJSON.type = 'MultiPolygon';
     combiJSON.coordinates = combiCoordArray;
   }
 
   // Vue.js specific remover of observer __obs__
   combiJSON = JSON.parse(JSON.stringify(combiJSON));
 
-  return combiJSON
+  return combiJSON;
 }
 
 export function convertTags(tagsStringArray, tagsEnabled) {
   const tagObjs = [];
 
   tagsStringArray.forEach(element => {
-    tagObjs.push({ name: element, enabled: tagsEnabled });
+    tagObjs.push({
+      name: element,
+      enabled: tagsEnabled,
+    });
   });
 
   return tagObjs;
@@ -827,7 +858,7 @@ export function getCategoryColor(categoryCards, categoryName) {
 
 export function getTagColor(categoryCards, tagName) {
   if (!categoryCards || !tagName) {
-    return "";
+    return '';
   }
 
   for (let i = 0; i < categoryCards.length; i++) {
@@ -839,7 +870,7 @@ export function getTagColor(categoryCards, tagName) {
     }
   }
 
-  return "#e0e0e0";
+  return '#e0e0e0';
 }
 
 export function enhanceTags(dataset, categoryCards) {
@@ -857,10 +888,15 @@ export function enhanceTags(dataset, categoryCards) {
   return dataset;
 }
 
+let lastCategory = '';
+let tempImgKeys = [];
+let tempImgValues = [];
+
 /**
  * @param {Object} metadata
- * @param {Array} cardBGImages
+ * @param {Object<String, String>} cardBGImages, it's an object of key value pairs paths to images
  *
+ * @param {Array<Object>} categoryCards
  * @return {Object} metadata entry enhanced with a title image based on its tags
  */
 export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
@@ -872,12 +908,17 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
   const category = guessTagCategory(metadata.tags);
 
   if (cardBGImages) {
-    const categoryImgs = cardBGImages[category];
-    const max = Object.keys(categoryImgs).length - 1;
-    const randomIndex = randomInt(0, max, metadata.title);
-    const cardImg = randomIndex >= 0 ? Object.values(categoryImgs)[randomIndex] : 0;
+    if (category !== lastCategory) {
+      const categoryImages = cardBGImages[category];
+      tempImgKeys = Object.keys(categoryImages);
+      tempImgValues = Object.values(categoryImages);
+      lastCategory = category;
+    }
 
-    metadata.titleImg = cardImg;
+    const max = tempImgKeys.length - 1;
+    const randomIndex = randomInt(0, max, metadata.title);
+
+    metadata.titleImg = randomIndex >= 0 ? tempImgValues[randomIndex] : 0;
   }
 
   metadata.categoryColor = getCategoryColor(categoryCards, category);

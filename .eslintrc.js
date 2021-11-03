@@ -43,24 +43,27 @@ module.exports = {
       },
     ],
     // allow optionalDependencies
-    'import/no-extraneous-dependencies': 'off',
+    'import/no-extraneous-dependencies': 0,
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'import/prefer-default-export': 'off',
-    'no-plusplus': 'off',
-    'max-len': 'off',
-    'prefer-destructuring': 'off',
-    'no-param-reassign': 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'import/prefer-default-export': 0,
+    'no-plusplus': 0,
+    'max-len': 0,
+    'prefer-destructuring': 0,
+    'no-param-reassign': 0,
     'linebreak-style': 0,
-    'padded-blocks': 'off',
-    indent: 'off',
-    'no-trailing-spaces': 'off',
+    'padded-blocks': 0,
+    'indent': 0,
+    'no-trailing-spaces': 1,
+    'comma-dangle': [2, 'always-multiline'],
+    'jsx-quotes': [2, 'prefer-single'],
+    'quotes': [2, 'single', { avoidEscape: true }],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
-    'vuetify/no-deprecated-classes': 'error',
-    'vuetify/grid-unknown-attributes': 'error',
-    'vuetify/no-legacy-grid': 'error',
+    'vuetify/no-deprecated-classes': 2,
+    'vuetify/grid-unknown-attributes': 2,
+    'vuetify/no-legacy-grid': 2,
   },
 
   overrides: [
