@@ -54,7 +54,7 @@ module.exports = {
     'linebreak-style': 0,
     'padded-blocks': 0,
     'indent': 0,
-    'no-trailing-spaces': 1,
+    'no-trailing-spaces': 0,
     'comma-dangle': [2, 'always-multiline'],
     'jsx-quotes': [2, 'prefer-single'],
     'quotes': [2, 'single', { avoidEscape: true }],
