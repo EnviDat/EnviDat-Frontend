@@ -244,6 +244,14 @@ export default {
       get() {
         return this.metadataTitle;
       },
+      set(value){
+        const property = 'metadataTitle';
+
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setHeaderInfo(property, value);
+        }
+
+      },
     },
     inputContactFullName() {
       // eslint-disable-next-line no-prototype-builtins
