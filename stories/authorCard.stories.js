@@ -63,7 +63,7 @@ storiesOf('3 Cards / Author Cards', module)
         </v-col>
 
         <v-col cols="12" md="4" pt-5 >
-          <author-card :author="authorFromCollection2" />
+          <author-card :author="authorFromCollection2" :loading="true" />
         </v-col>
 
         <v-col cols="12" md="4" pt-5 >
