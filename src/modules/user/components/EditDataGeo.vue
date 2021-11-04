@@ -8,7 +8,6 @@
   </v-container>
 </template>
 
-
 <script>
 /**
  * EditDataGeo.vue is a wrapper around MetadataGeo.vue for modify geospatial information in the Edit workflow.
@@ -28,16 +27,18 @@ import {
   EDITMETADATA_DATA_GEO,
   MAP_GEOMETRY_MODIFIED,
   eventBus,
-} from "@/factories/eventBus";
+} from '@/factories/eventBus';
 
-import MetadataGeo from "@/modules/metadata/components/Geoservices/MetadataGeo";
+import { parseAsGeomCollection } from '@/factories/metaDataFactory';
+
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
 
 export default {
-  name: "EditDataGeo",
+  name: 'EditDataGeo',
   props: {
     mapDivId: {
       type: String,
-      default: "map-small",
+      default: 'map-small',
     },
     mapHeight: {
       type: Number,
@@ -65,11 +66,10 @@ export default {
     },
   },
   mounted() {
-    this.localGeoms = this.location.geomCollection;
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.triggerGeometryUpdate);
+    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.notifyChange);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.triggerGeometryUpdate);
+    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.notifyChange);
   },
   computed: {
     genericProps() {
@@ -86,32 +86,31 @@ export default {
     },
   },
   methods: {
-    setGeometriesOnRecord(updatedGeometries) {
+    notifyChange(geomArray) {
+      // Parse updated geometries, add to existing props, update via event bus
+
+      const updatedGeometries = parseAsGeomCollection(
+        this.location.name,
+        geomArray,
+      );
+      const updatedLocation = {
+        ...this.location,
+        geomCollection: updatedGeometries,
+      };
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
-        data: updatedGeometries,
+        data: {
+          ...this.$props,
+          location: updatedLocation,
+        },
       });
     },
-    triggerGeometryUpdate(updatedGeometries) {
-      // Re-calculate genericProps property, adding additional geoms (for MetadataGeo.vue)
-      // this.location.geomCollection = updatedGeometries;
-      console.log(updatedGeometries);
-      // updatedGeometries.forEach( (geometry) => {
-      //   console.log(geometry.toGeoJSON());
-      // })
-      // this.setGeometriesOnRecord(updatedGeometries);
-    },
   },
-  watch: {
-  },
+  watch: {},
   components: {
     MetadataGeo,
   },
-  data: () => ({
-    localGeoms: {
-      type: Object,
-      default: null,
-    },
-  }),
+  data: () => ({}),
 };
 </script>

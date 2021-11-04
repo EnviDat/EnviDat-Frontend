@@ -17,7 +17,14 @@ import { format, formatISO, parse } from 'date-fns';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import {
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  METEO,
+  SNOW,
+} from '@/store/categoriesConsts';
 
 import { localIdProperty } from '@/factories/strategyFactory';
 
@@ -371,7 +378,7 @@ export function createLocalResource(
   size = 0,
   url = '',
   doi = '',
-  restricted = false
+  restricted = false,
 ) {
   const isLink = !!url;
   const resourceFormat = isLink ? 'url' : fileFormat;
@@ -427,7 +434,10 @@ export function createResource(resource, datasetName) {
 
   let resURL = resource.url;
 
-  if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
+  if (
+    isProtected ||
+    (typeof restrictedUsers === 'boolean' && restrictedUsers === true)
+  ) {
     const splits = resource.url.split('resource');
     if (splits && splits.length > 0) {
       resURL = splits[0];
@@ -437,8 +447,7 @@ export function createResource(resource, datasetName) {
   }
 
   let fileFormat = resource.format ? resource.format : '';
-  fileFormat = fileFormat.replace('.', '')
-    .toLowerCase();
+  fileFormat = fileFormat.replace('.', '').toLowerCase();
 
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
@@ -490,7 +499,7 @@ export function createResources(dataset) {
   }
 
   if (dataset.resources) {
-    dataset.resources.forEach(element => {
+    dataset.resources.forEach((element) => {
       const res = createResource(element, dataset.name);
       res.metadataContact = contactEmail;
 
@@ -674,15 +683,6 @@ function getMultiPolygonPointArray(coordinates) {
   return multiPolyArray;
 }
 
-function parseAsGeomCollection(geometries) {
-  // Parse geometries into GeometryCollection GeoJSON format
-
-  return {
-    'type': 'GeometryCollection',
-    'geometries': geometries,
-  };
-}
-
 function extractGeomsFromMultiGeoms(multiGeom) {
   // Extract each geometry individually from a multipoint or multipolygon
 
@@ -696,8 +696,8 @@ function extractGeomsFromMultiGeoms(multiGeom) {
   const geomArray = [];
   multiGeom.geoJSON.coordinates.forEach((geomCoords) => {
     const formattedGeom = {
-      'type': geomType,
-      'coordinates': geomCoords,
+      type: geomType,
+      coordinates: geomCoords,
     };
     geomArray.push(formattedGeom);
   });
@@ -731,7 +731,22 @@ function getGeomCollectionPointArray(geometries) {
   });
 
   return geomCollectionArray;
+}
 
+export function parseAsGeomCollection(metadataName, geomArray) {
+  // Parse geometries into GeometryCollection GeoJSON format
+
+  if (!geomArray) {
+    return null;
+  }
+
+  return {
+    type: 'GeometryCollection',
+    geometries: geomArray,
+    properties: {
+      name: metadataName,
+    },
+  };
 }
 
 export function createLocation(dataset) {
@@ -769,28 +784,50 @@ export function createLocation(dataset) {
       location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
       location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
       location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
-      location.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
+      location.isGeomCollection =
+        spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
       if (location.isPoint) {
         // swap coords for the leaflet map
-        location.pointArray = [spatialJSON.coordinates[1], spatialJSON.coordinates[0]];
-        location.geomCollection = parseAsGeomCollection([spatialJSON]);
+        location.pointArray = [
+          spatialJSON.coordinates[1],
+          spatialJSON.coordinates[0],
+        ];
+        location.geomCollection = parseAsGeomCollection(location.name, [
+          spatialJSON,
+        ]);
       } else if (location.isPolygon) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
-        location.geomCollection = parseAsGeomCollection([spatialJSON]);
+        location.geomCollection = parseAsGeomCollection(location.name, [
+          spatialJSON,
+        ]);
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
         const extractedGeoms = extractGeomsFromMultiGeoms(location);
         location.geomCollection = parseAsGeomCollection(extractedGeoms);
+        location.geomCollection = parseAsGeomCollection(
+          location.name,
+          extractedGeoms,
+        );
       } else if (location.isMultiPolygon) {
-        location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
+        location.pointArray = getMultiPolygonPointArray(
+          spatialJSON.coordinates,
+        );
         const extractedGeoms = extractGeomsFromMultiGeoms(location);
-        location.geomCollection = parseAsGeomCollection(extractedGeoms);
+        location.geomCollection = parseAsGeomCollection(
+          location.name,
+          extractedGeoms,
+        );
       } else if (location.isGeomCollection) {
-        location.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
-        location.geomCollection = location.geoJSON;
+        location.pointArray = getGeomCollectionPointArray(
+          spatialJSON.geometries,
+        );
+        location.geomCollection = parseAsGeomCollection(
+          location.name,
+          spatialJSON.geometries,
+        );
       }
     }
   }
@@ -798,55 +835,10 @@ export function createLocation(dataset) {
   return location;
 }
 
-export function mergeGeomsToMultiGeoms(origGeom, newGeom) {
-// Merge geometries of same type (point, polygon), into respective multigeometry
-
-  const origGeomArray = origGeom.geoJSON.coordinates;
-  const newGeomArray = newGeom.coordinates;
-  let combiCoordArray = [];
-  let combiJSON = {};
-
-  if (newGeom.isMultiPoint || newGeom.isMultiPolygon) {
-    combiCoordArray = null;
-    // eslint-disable-next-line no-console
-    console.error('mergeGeomsToMultiGeoms: not possible to draw a multigeometry in one event.');
-  }
-
-  if (origGeom.isPoint) {
-    // I.e. combine single points to multipoint
-    combiCoordArray = [origGeomArray, newGeomArray];
-    combiJSON.type = 'MultiPoint';
-    combiJSON.coordinates = combiCoordArray;
-
-  } else if (origGeom.isPolygon) {
-    // I.e. combine single polygons to multipolygon
-    combiCoordArray = [origGeomArray, newGeomArray];
-    combiJSON.type = 'MultiPolygon';
-    combiJSON.coordinates = combiCoordArray;
-
-  } else if (origGeom.isMultiPoint) {
-    // I.e. combine multipoints
-    combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = 'MultiPoint';
-    combiJSON.coordinates = combiCoordArray;
-
-  } else if (origGeom.isMultiPolygon) {
-    // I.e. combine multipolygons
-    combiCoordArray = [...origGeomArray, newGeomArray];
-    combiJSON.type = 'MultiPolygon';
-    combiJSON.coordinates = combiCoordArray;
-  }
-
-  // Vue.js specific remover of observer __obs__
-  combiJSON = JSON.parse(JSON.stringify(combiJSON));
-
-  return combiJSON;
-}
-
 export function convertTags(tagsStringArray, tagsEnabled) {
   const tagObjs = [];
 
-  tagsStringArray.forEach(element => {
+  tagsStringArray.forEach((element) => {
     tagObjs.push({
       name: element,
       enabled: tagsEnabled,
@@ -943,7 +935,11 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(metadataEntry, cardBGImages, categoryCards) {
+export function enhanceMetadataEntry(
+  metadataEntry,
+  cardBGImages,
+  categoryCards,
+) {
   if (!metadataEntry || !cardBGImages || !categoryCards) {
     return null;
   }
@@ -981,9 +977,12 @@ export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
 
 export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
   if (sort === 'ASC') {
-    return arrOfObjects.sort((a, b) => ((a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase()) ? 1 : -1));
+    return arrOfObjects.sort((a, b) =>
+      a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1,
+    );
   }
 
-  return arrOfObjects.sort((a, b) => ((b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase()) ? 1 : -1));
+  return arrOfObjects.sort((a, b) =>
+    b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
+  );
 }
-
