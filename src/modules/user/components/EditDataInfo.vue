@@ -23,146 +23,87 @@
       </v-row>
 
 
-      <v-row >
+<!--      <v-row >-->
 
-        <v-col>
-          <div class="text-body-2">{{ labels.instructionsCollection }}</div>
-        </v-col>
+<!--        <v-col>-->
+<!--          <div class="text-body-2">{{ labels.instructionsCollection }}</div>-->
+<!--        </v-col>-->
 
-      </v-row>
+<!--      </v-row>-->
 
 
-      <v-row dense>
+<!--      <v-row dense>-->
 
-        <v-col class="pr-4 mr-10" cols="2">
-          <v-text-field
-                    dense
-                    readonly
-                    outlined
-                    prepend-icon="category"
-                    :value="labels.collectionDate"
-          />
-        </v-col>
 
-        <v-col class="pr-4 mr-10">
-          <template>
+<!--      <div class="heightAndScroll">-->
+      <div>
+
+
+        <v-row v-for="(item, index) in datesField"
+               :key="`${item}_${index}`"
+             >
+
+          <v-col class="pr-4 mr-10" cols="3">
+            <v-text-field
+                      dense
+                      readonly
+                      outlined
+                      prepend-icon="category"
+                      :value="item.dateType"
+            />
+          </v-col>
+
+          <v-col class="pr-4 mr-10">
+            <template>
+                <v-menu>
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      :label="labels.startDate"
+                      dense
+                      prepend-icon="date_range"
+                      readonly
+                      outlined
+                      :value="item.date"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    locale="en-in"
+                    @input="notifyChange(index, 'date', $event)"
+                    no-title
+                  ></v-date-picker>
+                </v-menu>
+            </template>
+          </v-col>
+
+          <v-col class="pr-4">
+            <template>
               <v-menu>
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    :label="labels.startDate"
-                    dense
+                    :label="labels.endDate"
                     prepend-icon="date_range"
                     readonly
+                    dense
                     outlined
-                    :value="collectionDateStartField"
+                    :value="item.endDate"
                     v-on="on"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  @input="setDataInfo('collectionDateStart', $event)"
+                  :min="item.date"
+                  @input="notifyChange(index, 'endDate', $event)"
                   no-title
                 ></v-date-picker>
               </v-menu>
-          </template>
-        </v-col>
+            </template>
+          </v-col>
 
-        <v-col class="pr-4">
-          <template>
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.endDate"
-                  prepend-icon="date_range"
-                  readonly
-                  dense
-                  outlined
-                  :value="collectionDateEndField"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="en-in"
-                :min="collectionDateStartField"
-                @input="setDataInfo('collectionDateEnd', $event)"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </template>
-        </v-col>
-
-      </v-row>
+        </v-row>
 
 
-      <v-row dense >
-
-        <v-col>
-          <div class="text-body-2" >{{ labels.instructionsCreation }}</div>
-        </v-col>
-
-      </v-row>
-
-
-      <v-row dense>
-
-        <v-col class="pr-4 mr-10" cols="2">
-          <v-text-field
-            dense
-            readonly
-            outlined
-            prepend-icon="category"
-            :value="labels.creationDate"
-          />
-        </v-col>
-
-        <v-col class="pr-4 mr-10">
-          <template>
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.startDate"
-                  prepend-icon="date_range"
-                  readonly
-                  dense
-                  outlined
-                  :value="creationDateStartField"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="en-in"
-                @input="setDataInfo('creationDateStart', $event)"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </template>
-        </v-col>
-
-        <v-col class="pr-4">
-          <template>
-            <v-menu>
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.endDate"
-                  prepend-icon="date_range"
-                  readonly
-                  dense
-                  outlined
-                  :value="creationDateEndField"
-                  v-on="on"
-                ></v-text-field>
-              </template>
-              <v-date-picker
-                locale="en-in"
-                :min="creationDateStartField"
-                @input="setDataInfo('creationDateEnd', $event)"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </template>
-        </v-col>
-
-      </v-row>
+      </div>
 
 
       <v-row>
@@ -235,7 +176,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-11-01
+ * Last modified  : 2021-11-04
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -247,52 +188,32 @@ import {renderMarkdown} from '@/factories/stringFactory';
 export default {
   name: 'EditDataInfo',
   props: {
-    collectionDateStart: {
-      type: String,
-      default: () => '',
-    },
-    collectionDateEnd: {
-      type: String,
-      default: () => '',
-    },
-    creationDateStart: {
-      type: String,
-      default: () => '',
-    },
-    creationDateEnd: {
-      type: String,
-      default: () => '',
-    },
     dataLicense: {
       type: String,
       default: () => '',
     },
+    dates: {
+      type: Array,
+      default: () => [],
+    },
+    //   default: () => [{
+    //     dateType: 'collected',
+    //     date: '01.08.2006',
+    //     endDate: '6.09.2007',
+    //   },
+    //     {
+    //       dateType: 'collected',
+    //       date: '01.08.2006',
+    //       endDate: '6.09.2007',
+    //     },
+    //   ],
+    // },
   },
   computed: {
-    collectionDateStartField: {
-      get() {
-        return this.collectionDateStart.slice();
-      }
-    },
-    collectionDateEndField: {
-      get() {
-        return this.collectionDateEnd.slice();
-      }
-    },
-    creationDateStartField: {
-      get() {
-        return this.creationDateStart.slice();
-      }
-    },
-    creationDateEndField: {
-      get() {
-        return this.creationDateEnd.slice();
-      }
-    },
     dataLicenseField: {
       get() {
         return this.dataLicense.slice();
-      }
+      },
     },
     dataLicensesNameList() {
       return this.dataLicenses.map(element => element.name);
@@ -330,6 +251,20 @@ export default {
 
       return 'Data summary information unavailable.';
     },
+    datesField: {
+      get() {
+        // let dates = [...this.dates];
+
+
+        // if (dates.length <= 0) {
+        //   dates = [{...this.emptyDate}];
+        // }
+
+        // return dates;
+
+        return [...this.dates];
+      },
+    },
   },
   methods: {
     dataLicenseLinkExists() {
@@ -358,6 +293,32 @@ export default {
         data: newDataInfo,
       });
     },
+    notifyChange(index, property, value) {
+
+      const localCopy = [...this.datesField];
+
+      this.editEntry(localCopy, index, property, value);
+
+      this.setDataInfo('dates', localCopy);
+
+    },
+    editEntry(array, index, property, value) {
+
+      if (array.length <= index) {
+        return;
+      }
+
+      // console.log(property);
+      // console.log(value);
+
+      // TODO implement a function that changes the date formats to the CKAN date format
+
+      const currentEntry = array[index];
+      array[index] = {
+        ...currentEntry,
+        [property]: value,
+      };
+    },
   },
   components: {
   },
@@ -379,6 +340,11 @@ export default {
     },
     dateTypes: ['Collection Date', 'Creation Date'],
     maxYears: 30,
+    emptyDate: {
+      dateType: '',
+      date: '',
+      endDate: '',
+    },
     dataLicenses: [
       {
         name: 'ODbL with Database Contents License (DbCL)',
@@ -404,17 +370,6 @@ export default {
           + '\n'
           + 'This is not a license. It is simply a handy reference for understanding the ODbL 1.0 — it is a human-readable expression of some of its key terms. This document has no legal value, and its contents do not appear in the actual license. Read the full ODbL 1.0 license text (see link below) for the exact terms that apply.',
         link: 'https://opendatacommons.org/licenses/odbl/1-0/',
-      },
-      {
-        name: 'WSL Data Policy',
-        summary: 'The WSL Data Policy kindly asks data users to attribute and precludes data redistribution unless otherwise agreed with data originators.\n'
-          + '\n'
-          + 'Users may not share WSL research data or place them in data repositories that are accessible to third parties without the prior consent of the WSL data producers. \n'
-          + '\n'
-          + 'Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents.\n'
-          + '\n'
-          + 'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
-        link: 'https://www.envidat.ch/#/about/policies',
       },
       {
         name: 'Creative Commons Attribution Share-Alike (CC-BY-SA)',
@@ -463,6 +418,17 @@ export default {
         link: 'https://creativecommons.org/publicdomain/zero/1.0/legalcode',
       },
       {
+        name: 'WSL Data Policy',
+        summary: 'The WSL Data Policy kindly asks data users to attribute and precludes data redistribution unless otherwise agreed with data originators.\n'
+            + '\n'
+            + 'Users may not share WSL research data or place them in data repositories that are accessible to third parties without the prior consent of the WSL data producers. \n'
+            + '\n'
+            + 'Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents.\n'
+            + '\n'
+            + 'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
+        link: 'https://www.envidat.ch/#/about/policies',
+      },
+      {
         name: 'Other (specified in the description)',
         summary: 'Select Other in order to specify your own license in the description of the dataset.\n',
       },
@@ -470,5 +436,15 @@ export default {
   }),
 };
 
-
 </script>
+
+<style scoped>
+
+  .heightAndScroll {
+    max-height: 500px;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+  }
+
+</style>
