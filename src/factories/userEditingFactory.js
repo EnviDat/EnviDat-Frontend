@@ -396,27 +396,27 @@ const metadataInEditingValidations = {
       authors: [],
     },
   */
-  [EDITMETADATA_DATA_RESOURCES]: () =>
-    yup.object().shape({
-      isLink: yup.boolean(),
-      name: yup
-        .string()
-        .required('Resource name is required')
-        .min(5, 'Resource name must be at least 5 characters')
-        .notOneOf(
-          [yup.ref('url')],
-          'Title cannot be the same as the resource url',
-        ),
-      description: yup.string(),
-      url: yup.string().when('isLink', {
-        is: true,
-        then: yup
-          .string()
-          .url('Resource url must be valid')
-          .required('Resource url is required'),
-        otherwise: yup.string().notRequired(),
-      }),
-    }),
+  // [EDITMETADATA_DATA_RESOURCES]: () =>
+  //   yup.object().shape({
+  //     isLink: yup.boolean(),
+  //     name: yup
+  //       .string()
+  //       .required('Resource name is required')
+  //       .min(5, 'Resource name must be at least 5 characters')
+  //       .notOneOf(
+  //         [yup.ref('url')],
+  //         'Title cannot be the same as the resource url',
+  //       ),
+  //     description: yup.string(),
+  //     url: yup.string().when('isLink', {
+  //       is: true,
+  //       then: yup
+  //         .string()
+  //         .url('Resource url must be valid')
+  //         .required('Resource url is required'),
+  //       otherwise: yup.string().notRequired(),
+  //     }),
+  //   }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       dates: yup.array().of(
