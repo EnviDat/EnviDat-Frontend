@@ -1,25 +1,19 @@
 <template>
-
-  <v-container id="MetadataCreationPublicationInfo"
-              fluid
-              class="pa-0">
-
+  <v-container id="MetadataCreationPublicationInfo" fluid class="pa-0">
     <v-row>
       <v-col cols="6">
+        <!-- prettier-ignore -->
         <EditPublicationInfo v-bind="editPublicationsProps" />
-
       </v-col>
 
       <v-col cols="6">
-<!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
-        <EditOrganization v-bind="editOrganizationProps" ></EditOrganization>
+        <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
+        <!-- prettier-ignore -->
+        <EditOrganization v-bind="editOrganizationProps" />
       </v-col>
-
     </v-row>
   </v-container>
-
 </template>
-
 
 <script>
 /**
@@ -34,11 +28,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-
+ */
 
 import EditOrganization from '@/modules/user/components/EditOrganization';
-
 
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 // import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
@@ -50,19 +42,22 @@ import {
 
 export default {
   name: 'MetadataCreationPublicationInfo',
-  props: {
-  },
+  props: {},
   computed: {
     publicationsInfo() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_PUBLICATION_INFO);
       }
 
       return {};
     },
     organizationsInfo() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_ORGANIZATION);
       }
 
       return {};
@@ -74,16 +69,12 @@ export default {
       return this.organizationsInfo;
     },
   },
-  methods: {
-  },
-  data: () => ({
-  }),
+  methods: {},
+  data: () => ({}),
   components: {
-  //  EditOrganizationTree,
+    //  EditOrganizationTree,
     EditPublicationInfo,
     EditOrganization,
   },
 };
-
-
 </script>

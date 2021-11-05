@@ -1,30 +1,24 @@
 <template>
-
-  <v-container id="MetadataCreationRelatedInfo"
-                fluid
-                class="pa-0">
-
+  <v-container id="MetadataCreationRelatedInfo" fluid class="pa-0">
     <v-row>
       <v-col cols="4">
+        <!-- prettier-ignore -->
         <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
-
       </v-col>
 
       <v-col cols="5">
+        <!-- prettier-ignore -->
         <EditImgPlaceholder :disclaimer="disclaimer"
-                            :img="relatedDatasets"
-                            />
+                            :img="relatedDatasets" />
       </v-col>
 
       <v-col cols="3">
+        <!-- prettier-ignore -->
         <EditCustomFields v-bind="editCustomFieldsProps" />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
-
 
 <script>
 /**
@@ -39,7 +33,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
@@ -54,19 +48,22 @@ import {
 
 export default {
   name: 'MetadataCreationRelatedInfo',
-  props: {
-  },
+  props: {},
   computed: {
     relatedPublicationsText() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_RELATED_PUBLICATIONS);
       }
 
       return '';
     },
     customFields() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_CUSTOMFIELDS);
       }
 
       return [];
@@ -82,11 +79,11 @@ export default {
       };
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     relatedDatasets,
-    disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+    disclaimer:
+      'Please note that the screenshot below will serve as a template for the future component.',
   }),
   components: {
     EditImgPlaceholder,
@@ -94,6 +91,4 @@ export default {
     EditCustomFields,
   },
 };
-
-
 </script>

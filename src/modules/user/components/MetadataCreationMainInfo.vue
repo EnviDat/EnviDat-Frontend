@@ -1,42 +1,37 @@
 <template>
-  <v-container id="MetadataCreationMainInfo"
-                fluid
-                class="pa-0">
-
-    <v-row no-gutters >
+  <v-container id="MetadataCreationMainInfo" fluid class="pa-0">
+    <v-row no-gutters>
       <v-col offset="1" cols="10">
-
-          <StepperHeader :steps="steps"
-                          activeColor="accent"
-                          inactiveColor="secondary"
-                          :stepColor="stepColor"
-                          :initialStep="currentStepIndex"
-                          @stepClick="catchStepClick" />
-
+        <!-- prettier-ignore -->
+        <StepperHeader  :steps="steps"
+                        activeColor="accent"
+                        inactiveColor="secondary"
+                        :stepColor="stepColor"
+                        :initialStep="currentStepIndex"
+                        @stepClick="catchStepClick" />
       </v-col>
     </v-row>
 
     <v-row class="fill-height">
-      <v-col v-if="currentStep"
-              cols="12" >
-        <component :is="currentStep.component"
-                    v-bind="getGenericPropsForStep(currentStep)"
-                    />
+      <v-col v-if="currentStep" cols="12">
+        <component
+          :is="currentStep.component"
+          v-bind="getGenericPropsForStep(currentStep)"
+        />
       </v-col>
 
-      <v-col v-if="!currentStep"
-              cols="12" >
+      <v-col v-if="!currentStep" cols="12">
         Nothing selected, please select a step in the navigation!
       </v-col>
     </v-row>
 
-    <v-row justify="end" align="end" >
+    <v-row justify="end" align="end">
       <v-col class="shrink">
+        <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Next Step"
-                              @clicked="nextStep" />
+                             @clicked="nextStep" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -68,12 +63,13 @@ export default {
   beforeMount() {
     this.setInitialStep();
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     getGenericPropsForStep(step) {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](step.key);
       }
 
       return step.genericProps;
@@ -91,7 +87,6 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
-
       if (this.steps) {
         for (let i = 0; i < this.steps.length; i++) {
           const s = this.steps[i];
@@ -136,7 +131,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
