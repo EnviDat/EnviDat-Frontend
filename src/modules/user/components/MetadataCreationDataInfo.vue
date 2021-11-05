@@ -49,6 +49,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
+
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -88,9 +90,9 @@ export default {
       this.setCurrentStep(stepTitle);
     },
     nextStep() {
-      let nextIndex = this.currentStepIndex + 1;
+      const nextIndex = this.currentStepIndex + 1;
       if (nextIndex > this.steps.length - 1) {
-        nextIndex = 0;
+        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, 'Related Info');
       }
 
       this.setCurrentStep(this.steps[nextIndex].title);

@@ -12,6 +12,15 @@
         <EditOrganization v-bind="editOrganizationProps" />
       </v-col>
     </v-row>
+
+    <v-row justify="end" align="end">
+      <v-col class="shrink">
+        <!-- prettier-ignore -->
+        <BaseRectangleButton buttonText="Finish"
+                             color='success'
+                             @clicked="submitEdittedMetadata" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -34,6 +43,7 @@ import EditOrganization from '@/modules/user/components/EditOrganization';
 
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 // import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_ORGANIZATION,
@@ -69,12 +79,18 @@ export default {
       return this.organizationsInfo;
     },
   },
-  methods: {},
+  methods: {
+    submitEdittedMetadata() {
+      // eslint-disable-next-line no-console
+      console.log('todo');
+    },
+  },
   data: () => ({}),
   components: {
     //  EditOrganizationTree,
     EditPublicationInfo,
     EditOrganization,
+    BaseRectangleButton,
   },
 };
 </script>

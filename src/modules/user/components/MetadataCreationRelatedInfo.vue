@@ -17,6 +17,14 @@
         <EditCustomFields v-bind="editCustomFieldsProps" />
       </v-col>
     </v-row>
+
+    <v-row justify="end" align="end">
+      <v-col class="shrink">
+        <!-- prettier-ignore -->
+        <BaseRectangleButton buttonText="Next Step"
+                             @clicked="nextStep" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -40,10 +48,13 @@ import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_NEXT_MAJOR_STEP,
+  eventBus,
 } from '@/factories/eventBus';
 
 export default {
@@ -79,7 +90,11 @@ export default {
       };
     },
   },
-  methods: {},
+  methods: {
+    nextStep() {
+      eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, 'Publication Info');
+    },
+  },
   data: () => ({
     relatedDatasets,
     disclaimer:
@@ -89,6 +104,7 @@ export default {
     EditImgPlaceholder,
     EditRelatedPublications,
     EditCustomFields,
+    BaseRectangleButton,
   },
 };
 </script>

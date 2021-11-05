@@ -1,41 +1,38 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
-  <div id="NavigationStepper"
-                class="pa-0 fill-height stepperContentGrid" >
+  <div id="NavigationStepper" class="pa-0 fill-height stepperContentGrid">
+    <div
+      class="stepper fill-height px-10"
+      :style="`background-color: ${backgroundColor}`"
+    >
+      <!-- prettier-ignore -->
+      <StepperHeader class="py-4"
+                         :steps="steps"
+                         activeColor="accent"
+                         inactiveColor="secondary"
+                         :stepColor="stepColor"
+                         :initialStep="currentStepIndex"
+                         @stepClick="catchStepClick" />
+    </div>
 
-        <div class="stepper fill-height px-10"
-             :style="`background-color: ${backgroundColor}`">
+    <div
+      class="content fill-height pa-1 pt-0"
+      :style="`background-color: ${backgroundColor}`"
+    >
+      <v-card class="fill-height pa-4">
+        <!-- prettier-ignore -->
+        <component v-if="currentStep"
+                       :is="currentStep.component"
+                       :steps="currentStep.detailSteps"
+                       v-bind="currentStep.genericProps"
+                       :initialStepTitle="currentStep.initialStepTitle"
+                       :stepColor="currentStep.color" />
 
-          <StepperHeader class="py-4"
-                          :steps="steps"
-                          activeColor="accent"
-                          inactiveColor="secondary"
-                          :stepColor="stepColor"
-                          :initialStep="currentStepIndex"
-                          @stepClick="catchStepClick" />
-
+        <div v-if="!currentStep" cols="12">
+          Nothing selected, please select a step in the navigation!
         </div>
-
-        <div class="content fill-height pa-1 pt-0"
-             :style="`background-color: ${backgroundColor}`">
-
-          <v-card class="fill-height pa-4 ">
-
-            <component v-if="currentStep"
-                        :is="currentStep.component"
-                        :steps="currentStep.detailSteps"
-                        v-bind="currentStep.genericProps"
-                        :initialStepTitle="currentStep.initialStepTitle"
-                        :stepColor="currentStep.color" />
-
-            <div v-if="!currentStep"
-                    cols="12" >
-              Nothing selected, please select a step in the navigation!
-            </div>
-
-          </v-card>
-        </div>
-
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -53,6 +50,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
+
 import StepperHeader from '@/components/Navigation/StepperHeader';
 
 export default {
@@ -63,7 +62,6 @@ export default {
     stepColor: String,
   },
   beforeMount() {
-
     if (this.initialStepTitle) {
       this.setCurrentStep(this.initialStepTitle);
     } else {
@@ -71,7 +69,9 @@ export default {
 
       this.setCurrentStep(first?.title);
     }
-
+  },
+  mounted() {
+    eventBus.$on(EDITMETADATA_NEXT_MAJOR_STEP, this.setCurrentStep);
   },
   computed: {
     backgroundColor() {
@@ -81,7 +81,6 @@ export default {
   methods: {
     catchStepClick(stepTitle) {
       this.setCurrentStep(stepTitle);
-      // this.$emit('stepClick', step);
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -93,7 +92,6 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
-
       if (this.steps) {
         for (let i = 0; i < this.steps.length; i++) {
           const s = this.steps[i];
@@ -122,17 +120,15 @@ export default {
 </script>
 
 <style scoped>
-
-  .stepperContentGrid {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 0.5fr 6fr;
-    gap: 0;
-    grid-template-areas:
-    "stepper"
-    "content";
-    width: 100%;
-    height: 100%;
-  }
-
+.stepperContentGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.5fr 6fr;
+  gap: 0;
+  grid-template-areas:
+    'stepper'
+    'content';
+  width: 100%;
+  height: 100%;
+}
 </style>

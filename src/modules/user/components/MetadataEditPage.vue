@@ -5,11 +5,10 @@
     id="MetadataEditPage"
     tag="article"
   >
-    <NavigationStepper
-      :steps="metadataCreationSteps"
-      :initialStepTitle="metadataCreationSteps[0].title"
-      stepColor="highlight"
-    />
+    <!-- prettier-ignore -->
+    <NavigationStepper :steps="metadataCreationSteps"
+                       :initialStepTitle="metadataCreationSteps[0].title"
+                       stepColor="highlight" />
   </v-container>
 </template>
 
