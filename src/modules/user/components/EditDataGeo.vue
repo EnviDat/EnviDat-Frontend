@@ -2,7 +2,10 @@
   <v-container id="EditDataGeo" fluid class="pa-0">
     <v-row>
       <v-col>
-        <MetadataGeo :genericProps="genericProps" />
+        <MetadataGeo
+          :genericProps="genericProps"
+          :editErrorMessage="editErrorMessage"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -30,6 +33,11 @@ import {
 } from '@/factories/eventBus';
 
 import { parseAsGeomCollection } from '@/factories/metaDataFactory';
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
 
@@ -84,33 +92,51 @@ export default {
         // site: thislocalGeoms,
       };
     },
+    editErrorMessage() {
+      return this.validationErrors.geometries;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO);
+    },
   },
   methods: {
     notifyChange(geomArray) {
       // Parse updated geometries, add to existing props, update via event bus
 
-      const updatedGeometries = parseAsGeomCollection(
-        this.location.name,
-        geomArray,
-      );
-      const updatedLocation = {
-        ...this.location,
-        geomCollection: updatedGeometries,
-      };
+      if (
+        isFieldValid(
+          'geometries',
+          geomArray,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
+        const updatedGeometries = parseAsGeomCollection(
+          this.location.name,
+          geomArray,
+        );
+        const updatedLocation = {
+          ...this.location,
+          geomCollection: updatedGeometries,
+        };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_GEO,
-        data: {
-          ...this.$props,
-          location: updatedLocation,
-        },
-      });
+        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_DATA_GEO,
+          data: {
+            ...this.$props,
+            location: updatedLocation,
+          },
+        });
+      }
     },
   },
-  watch: {},
   components: {
     MetadataGeo,
   },
-  data: () => ({}),
+  data: () => ({
+    validationErrors: {
+      geometries: null,
+    },
+  }),
 };
 </script>

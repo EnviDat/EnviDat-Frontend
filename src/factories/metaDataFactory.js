@@ -191,6 +191,35 @@ export function createBody(dataset, smallScreen = false) {
   };
 }
 
+export function createDates(dataset) {
+  // Return an array of formatted dates for the record
+
+  if (!dataset) {
+    return null;
+  }
+
+  const datesArr =
+    typeof dataset.date === 'string' ? JSON.parse(dataset.date) : null;
+  if (!datesArr) {
+    return null;
+  }
+
+  const formattedDatesArr = [];
+  datesArr.forEach((dateEntry) => {
+    const dateStart = dateEntry.date !== '' ? formatDate(dateEntry.date) : null;
+    const dateEnd =
+      dateEntry.end_date !== '' ? formatDate(dateEntry.end_date) : null;
+    const formattedDateEntry = {
+      dateStart: formatDate(dateStart),
+      dateEnd: formatDate(dateEnd),
+      dateType: dateEntry?.date_type,
+    };
+    formattedDatesArr.push(formattedDateEntry);
+  });
+
+  return { dates: formattedDatesArr };
+}
+
 export function createPublications(dataset) {
   if (!dataset) {
     return null;
@@ -338,7 +367,7 @@ let localResoureID = 0;
 export function initializeLocalResource(metadataId, file = null, url = '') {
   const isLink = !!url;
   const resourceFormat = isLink ? 'url' : getFileFormat(file);
-  let resourceName = isLink ? url : file.name;
+  let resourceName = isLink ? '' : file.name;
   const fileName = isLink ? '' : file.name;
   const size = !isLink ? file.size : 0;
 
@@ -605,37 +634,6 @@ export function createDetails(dataset) {
   }
 
   return details;
-}
-
-export function extractDataInfoDates(dataset) {
-  // Get creation and collection date for data in queryable json format
-
-  let dates = [];
-  if (typeof dataset.date === 'string') {
-    dates = JSON.parse(dataset.date);
-  }
-  let creationDate = null;
-  let collectionDate = null;
-
-  dates.forEach((dateEntry) => {
-    if (dateEntry.date_type === 'collected') {
-      collectionDate = {
-        dateStart: formatDate(dateEntry.date),
-        dateEnd: formatDate(dateEntry.end_date),
-      };
-    }
-    if (dateEntry.date_type === 'created') {
-      creationDate = {
-        dateStart: formatDate(dateEntry.date),
-        dateEnd: formatDate(dateEntry.end_date),
-      };
-    }
-  });
-
-  return {
-    creation: creationDate,
-    collection: collectionDate,
-  };
 }
 
 function getMultiPointArray(coordinates) {

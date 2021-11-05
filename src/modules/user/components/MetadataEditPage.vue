@@ -53,11 +53,11 @@ import {
   createBody,
   createFunding,
   createHeader,
+  createDates,
   createLocation,
   createPublications,
   createPublishingInfo,
   createResources,
-  extractDataInfoDates,
 } from '@/factories/metaDataFactory';
 
 import { createAuthors } from '@/factories/authorFactory';
@@ -68,10 +68,7 @@ import {
   metadataCreationSteps,
 } from '@/factories/userEditingFactory';
 
-import {
-  mapGetters,
-  mapState,
-} from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -97,7 +94,6 @@ import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
-
 
 export default {
   name: 'MetadataEditPage',
@@ -153,25 +149,25 @@ export default {
     async initMetadataUsingId() {
       await this.$store.dispatch(
         `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-        this.metadataId
+        this.metadataId,
       );
       this.populateEditingComponents(this.currentMetadataContent);
     },
     selectResource(id) {
       this.$store.commit(
         `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
-        id
+        id,
       );
     },
     selectAuthor(id) {
       this.$store.commit(
         `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`,
-        id
+        id,
       );
     },
     cancelEditingResource() {
       this.$store.commit(
-        `${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`
+        `${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`,
       );
     },
     cancelEditingAuthor() {
@@ -180,14 +176,14 @@ export default {
     saveResource(newRes) {
       this.$store.dispatch(
         `${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`,
-        newRes
+        newRes,
       );
     },
     // eslint-disable-next-line no-unused-vars
     saveAuthor(newAuthor) {
       this.$store.dispatch(
         `${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`,
-        newAuthor
+        newAuthor,
       );
     },
     editComponentsChanged(updateObj) {
@@ -195,7 +191,7 @@ export default {
 
       this.$store.commit(
         `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        updateObj
+        updateObj,
       );
 
       this.$nextTick(() => {
@@ -211,13 +207,13 @@ export default {
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-        key
+        key,
       );
     },
     updateExistingAuthors(updateObj) {
       this.$store.commit(
         `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
-        updateObj.data
+        updateObj.data,
       );
     },
     enhanceKeywordsStep(updatedKey) {
@@ -227,10 +223,10 @@ export default {
       ) {
         const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
         const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER
+          EDITMETADATA_MAIN_HEADER,
         );
         const descProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_DESCRIPTION
+          EDITMETADATA_MAIN_DESCRIPTION,
         );
 
         const newKeywordProps = {
@@ -252,10 +248,10 @@ export default {
       ) {
         const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
         const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER
+          EDITMETADATA_MAIN_HEADER,
         );
         const authorProps = this.getGenericPropsForStep(
-          EDITMETADATA_AUTHOR_LIST
+          EDITMETADATA_AUTHOR_LIST,
         );
 
         const newHeaderProps = {
@@ -277,7 +273,6 @@ export default {
       });
     },
     updateStepStatus(stepKey) {
-
       const step = getStepByName(stepKey, this.metadataCreationSteps);
 
       if (!step) {
@@ -306,7 +301,7 @@ export default {
     updateStepValidation(step) {
       const stepValidation = getValidationMetadataEditingObject(step.key);
       if (!stepValidation) {
-        return
+        return;
       }
       const stepData = this.getGenericPropsForStep(step.key);
 
@@ -327,7 +322,7 @@ export default {
       // Stepper 1: Header, Description, Keywords, Authors
       const headerFull = createHeader(
         metadataRecord,
-        this.$vuetify.breakpoint.smAndDown
+        this.$vuetify.breakpoint.smAndDown,
       );
       const splitName = headerFull.contactName.split(' ');
       // headerFull.fullName = headerFull.contactName;
@@ -339,11 +334,12 @@ export default {
           contactSurname: splitName[1],
         },
       };
+
       this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_HEADER, basicInfo);
 
       const descriptionFull = createBody(
         metadataRecord,
-        this.$vuetify.breakpoint.smAndDown
+        this.$vuetify.breakpoint.smAndDown,
       );
       this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_DESCRIPTION, {
         description: descriptionFull.text,
@@ -362,22 +358,20 @@ export default {
       // Stepper 2: Data Resources, Info, Location
       const resourcesFull = createResources(metadataRecord);
 
-      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_RESOURCES,
-        resourcesFull.resources
+      this.emitEditObjUpdateEvent(
+        EDITMETADATA_DATA_RESOURCES,
+        resourcesFull.resources,
       );
 
-      const metadataDates = extractDataInfoDates(metadataRecord);
+      const metadataDates = createDates(metadataRecord);
+
       const dataInfo = {
-        collectionDateStart: metadataDates.collection?.dateStart,
-        collectionDateEnd: metadataDates.collection?.dateEnd,
-        creationDateStart: metadataDates.creation?.dateStart,
-        creationDateEnd: metadataDates.creation?.dateEnd,
+        dates: metadataDates.dates,
         dataLicense: metadataRecord.license_title,
       };
 
       this.emitEditObjUpdateEvent(EDITMETADATA_DATA_INFO, dataInfo);
 
-      // collection date / year not in metadata - where stored?
       const location = createLocation(metadataRecord);
 
       this.emitEditObjUpdateEvent(EDITMETADATA_DATA_GEO, {
@@ -432,5 +426,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
