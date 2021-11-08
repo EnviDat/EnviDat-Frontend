@@ -157,7 +157,7 @@
  * @author Rebecca Kurup Buchholz
  *
  * Created        : 2021-08-31
- * Last modified  : 2021-11-04
+ * Last modified  : 2021-11-08
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -180,25 +180,26 @@ export default {
         dateType: '',
         date: '',
         dateEnd: '',
-       },
+      },
       ],
-      // default: () => [{
-      //       dateType: 'collected',
-      //       date: '01.08.2006',
-      //       dateEnd: '6.09.2007',
-      //     },
-      //       {
-      //         dateType: 'collected',
-      //         date: '01.08.2006',
-      //         dateEnd: '6.09.2007',
-      //       },
-      //   {
-      //     dateType: 'collected',
-      //     date: '01.08.2006',
-      //     dateEnd: '6.09.2007',
-      //   },
-      // ],
     },
+    //   default: () => [{
+    //         dateType: 'collected',
+    //         date: '01.08.2006',
+    //         dateEnd: '6.09.2007',
+    //       },
+    //         {
+    //           dateType: 'collected',
+    //           date: '01.08.2006',
+    //           dateEnd: '6.09.2007',
+    //         },
+    //     {
+    //       dateType: 'collected',
+    //       date: '01.08.2006',
+    //       dateEnd: '6.09.2007',
+    //     },
+    //   ],
+    // },
   },
   computed: {
     dataLicenseField: {
@@ -245,14 +246,15 @@ export default {
       },
     },
     // validationErrors() {
-    //   return {
-    //     dates: Array(this.datesArray.length).fill({
+    //   const validationFields = {
+    //     dates: Array(this.dates.length).fill({
     //       dateType: null,
     //       dateStart: null,
     //       dateEnd: null,
     //     }),
     //     dataLicence: null,
     //   };
+    //   return validationFields;
     // },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
@@ -289,19 +291,22 @@ export default {
     notifyChange(index, property, value) {
       const localCopy = [...this.datesField];
 
-      if (
-        isArrayValid(
-          localCopy,
-          property,
-          index,
-          value,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
-        this.editEntry(localCopy, index, property, value);
-        this.setDataInfo('datesArray', localCopy);
-      }
+      // if (
+      //   isArrayValid(
+      //     localCopy,
+      //     property,
+      //     index,
+      //     value,
+      //     this.validations,
+      //     this.validationErrors.datesArray,
+      //   )
+      // ) {
+      //   this.editEntry(localCopy, index, property, value);
+      //   this.setDataInfo('datesArray', localCopy);
+      // }
+
+      this.editEntry(localCopy, index, property, value);
+      this.setDataInfo('datesArray', localCopy);
     },
     editEntry(array, index, property, value) {
       if (array.length <= index) {
@@ -338,6 +343,12 @@ export default {
   },
   components: {},
   data: () => ({
+    validationErrors: {
+      datesArray: [{
+        date: '',
+        dateEnd: '',
+      }],
+    },
     labels: {
       cardTitle: 'Additional Information about the Resources',
       instructions: 'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
