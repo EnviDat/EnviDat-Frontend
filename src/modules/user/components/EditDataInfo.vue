@@ -13,6 +13,7 @@
         </v-col>
       </v-row>
 
+
       <!--      <v-row >-->
 
       <!--        <v-col>-->
@@ -23,9 +24,9 @@
 
       <!--      <v-row dense>-->
 
-      <!--      <div class="heightAndScroll">-->
-      <div>
-        <v-row v-for="(item, index) in datesField" :key="`${item}_${index}`">
+            <div class="heightAndScroll">
+<!--      <div>-->
+        <v-row v-for="(item, index) in datesArray" :key="`${item}_${index}`" dense>
           <v-col class="pr-4 mr-10" cols="3">
             <v-text-field
               dense
@@ -46,13 +47,13 @@
                     prepend-icon="date_range"
                     readonly
                     outlined
-                    :value="item.dateStart"
+                    :value="item.date"
                     v-on="on"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  @input="notifyChange(index, 'dateStart', $event)"
+                  @input="notifyChange(index, 'date', $event)"
                   no-title
                 ></v-date-picker>
               </v-menu>
@@ -75,7 +76,7 @@
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  :min="item.date"
+                  :min="reformatDate(item.date)"
                   @input="notifyChange(index, 'dateEnd', $event)"
                   no-title
                 ></v-date-picker>
@@ -161,17 +162,10 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
+import {EDITMETADATA_DATA_INFO, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
 // eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-  isArrayValid,
-} from '@/factories/userEditingFactory';
-import { renderMarkdown } from '@/factories/stringFactory';
+import {getValidationMetadataEditingObject, isArrayValid} from '@/factories/userEditingFactory';
+import {renderMarkdown} from '@/factories/stringFactory';
 
 export default {
   name: 'EditDataInfo',
@@ -180,22 +174,31 @@ export default {
       type: String,
       default: () => '',
     },
-    dates: {
+    datesArray: {
       type: Array,
-      default: () => [],
+      default: () => [{
+        dateType: '',
+        date: '',
+        dateEnd: '',
+       },
+      ],
+      // default: () => [{
+      //       dateType: 'collected',
+      //       date: '01.08.2006',
+      //       dateEnd: '6.09.2007',
+      //     },
+      //       {
+      //         dateType: 'collected',
+      //         date: '01.08.2006',
+      //         dateEnd: '6.09.2007',
+      //       },
+      //   {
+      //     dateType: 'collected',
+      //     date: '01.08.2006',
+      //     dateEnd: '6.09.2007',
+      //   },
+      // ],
     },
-    //   default: () => [{
-    //     dateType: 'collected',
-    //     date: '01.08.2006',
-    //     dateEnd: '6.09.2007',
-    //   },
-    //     {
-    //       dateType: 'collected',
-    //       date: '01.08.2006',
-    //       dateEnd: '6.09.2007',
-    //     },
-    //   ],
-    // },
   },
   computed: {
     dataLicenseField: {
@@ -238,20 +241,19 @@ export default {
     },
     datesField: {
       get() {
-        return this.dates;
+        return [...this.datesArray];
       },
     },
-    validationErrors() {
-      const validationFields = {
-        dates: Array(this.dates.length).fill({
-          dateType: null,
-          dateStart: null,
-          dateEnd: null,
-        }),
-        dataLicence: null,
-      };
-      return validationFields;
-    },
+    // validationErrors() {
+    //   return {
+    //     dates: Array(this.datesArray.length).fill({
+    //       dateType: null,
+    //       dateStart: null,
+    //       dateEnd: null,
+    //     }),
+    //     dataLicence: null,
+    //   };
+    // },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
     },
@@ -298,7 +300,7 @@ export default {
         )
       ) {
         this.editEntry(localCopy, index, property, value);
-        this.setDataInfo('dates', localCopy);
+        this.setDataInfo('datesArray', localCopy);
       }
     },
     editEntry(array, index, property, value) {
@@ -306,10 +308,10 @@ export default {
         return;
       }
 
-      // console.log(property);
-      // console.log(value);
-
-      // TODO implement a function that changes the date formats to the CKAN date format
+      // Format dates to CKAN format "MM.DD.YYYY"
+      if (property === 'date' || property === 'dateEnd') {
+        value = this.formatDate(value);
+      }
 
       const currentEntry = array[index];
       array[index] = {
@@ -317,12 +319,28 @@ export default {
         [property]: value,
       };
     },
+    formatDate(date) {
+      if (!date) {
+        return null;
+      }
+      const [year, month, day] = date.split('-')
+      return `${day}.${month}.${year}`;
+    },
+    // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
+    reformatDate(date) {
+      if (!date) {
+        return null;
+      }
+
+      const [day, month, year] = date.split('.')
+      return `${year}-${month}-${day}`;
+    },
   },
   components: {},
   data: () => ({
     labels: {
       cardTitle: 'Additional Information about the Resources',
-      instructions: 'Please select dates for collection and/or creation dates.',
+      instructions: 'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
@@ -445,8 +463,8 @@ export default {
 
 <style scoped>
 .heightAndScroll {
-  max-height: 500px;
-  overflow-y: auto !important;
+  max-height: 120px;
+  overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
 }
