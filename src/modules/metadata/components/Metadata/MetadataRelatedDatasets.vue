@@ -1,7 +1,7 @@
 <template >
   <expandable-text-layout  id="MetadataRelatedDatasets"
                            :title="METADATA_DATASETS_TITLE"
-                           v-bind="genericProps"
+                           v-bind="datasets"
                           :showPlaceholder="showPlaceholder"
                           :emptyTextColor="emptyTextColor"
                           :emptyText="emptyText"
@@ -40,6 +40,9 @@ export default {
     },
     emptyText() {
       return this.mixinMethods_getGenericProp('emptyText', 'No related datasets available for this dataset.');
+    },
+    datasets() {
+      return this.mixinMethods_getGenericProp('datasets');
     },
   },
   methods: {

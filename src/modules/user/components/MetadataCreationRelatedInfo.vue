@@ -1,15 +1,13 @@
 <template>
   <v-container id="MetadataCreationRelatedInfo" fluid class="pa-0">
     <v-row>
-      <v-col cols="4">
+      <v-col cols="4.5">
         <!-- prettier-ignore -->
         <EditRelatedPublications v-bind="editRelatedPublicationsProps" />
       </v-col>
 
-      <v-col cols="5">
-        <!-- prettier-ignore -->
-        <EditImgPlaceholder :disclaimer="disclaimer"
-                            :img="relatedDatasets" />
+      <v-col cols="4.5">
+        <EditRelatedDatasets v-bind="editRelatedDatasetsProps"/>
       </v-col>
 
       <v-col cols="3">
@@ -43,10 +41,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
+import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets';
 import EditCustomFields from '@/modules/user/components/EditCustomFields';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
@@ -54,6 +52,7 @@ import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_RELATED_PUBLICATIONS,
   EDITMETADATA_NEXT_MAJOR_STEP,
+  EDITMETADATA_RELATED_DATASETS,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -70,6 +69,15 @@ export default {
 
       return '';
     },
+    relatedDatasetsText() {
+      if (this.$store) {
+        return this.$store.getters[
+            `${USER_NAMESPACE}/getMetadataEditingObject`
+            ](EDITMETADATA_RELATED_DATASETS);
+      }
+
+      return '';
+    },
     customFields() {
       if (this.$store) {
         return this.$store.getters[
@@ -82,6 +90,11 @@ export default {
     editRelatedPublicationsProps() {
       return {
         ...this.relatedPublicationsText,
+      };
+    },
+    editRelatedDatasetsProps() {
+      return {
+        ...this.relatedDatasetsText,
       };
     },
     editCustomFieldsProps() {
@@ -101,7 +114,7 @@ export default {
       'Please note that the screenshot below will serve as a template for the future component.',
   }),
   components: {
-    EditImgPlaceholder,
+    EditRelatedDatasets,
     EditRelatedPublications,
     EditCustomFields,
     BaseRectangleButton,

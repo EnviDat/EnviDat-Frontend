@@ -41,6 +41,7 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_ORGANIZATION,
 } from '@/factories/eventBus';
@@ -185,6 +186,9 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',
+  },
+  [EDITMETADATA_RELATED_DATASETS]: {
+    relatedDatasetsText: '',
   },
   [EDITMETADATA_CUSTOMFIELDS]: {
     customFields: [],
