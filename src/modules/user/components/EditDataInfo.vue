@@ -183,23 +183,6 @@ export default {
       },
       ],
     },
-    //   default: () => [{
-    //         dateType: 'collected',
-    //         date: '01.08.2006',
-    //         dateEnd: '6.09.2007',
-    //       },
-    //         {
-    //           dateType: 'collected',
-    //           date: '01.08.2006',
-    //           dateEnd: '6.09.2007',
-    //         },
-    //     {
-    //       dateType: 'collected',
-    //       date: '01.08.2006',
-    //       dateEnd: '6.09.2007',
-    //     },
-    //   ],
-    // },
   },
   computed: {
     dataLicenseField: {

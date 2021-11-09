@@ -16,6 +16,7 @@ import { storiesOf } from '@storybook/vue';
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
@@ -25,6 +26,7 @@ import {
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
+import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
@@ -111,6 +113,64 @@ storiesOf(storybookFolder, module)
           downloadActive: false,
         },
       },
+    }),
+  }))
+  .add('Edit Data Info', () => ({
+  components: { EditDataInfo },
+  template: `
+    <v-col>
+
+      <v-row>
+        EditDataInfo Component Unfilled Dates
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataInfo :datesArray="datesArrayEmpty" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditDataInfo Component Prefilled Dates
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataInfo :datesArray="datesArrayFilled" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+  computed: {
+  },
+  methods: {
+  },
+    data: () => ({
+      datesArrayEmpty: [
+        {
+          dateType: '',
+          date: '',
+          dateEnd: '',
+        },
+      ],
+      datesArrayFilled: [
+        {
+          dateType: 'collected',
+          date: '01.08.2006',
+          dateEnd: '6.09.2007',
+        },
+        {
+          dateType: 'collected',
+          date: '01.08.2006',
+          dateEnd: '6.09.2007',
+        },
+        {
+          dateType: 'collected',
+          date: '01.08.2006',
+          dateEnd: '6.09.2007',
+        },
+      ],
     }),
   }))
   .add('Edit Data And Resources List', () => ({
