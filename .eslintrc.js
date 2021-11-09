@@ -48,6 +48,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'import/prefer-default-export': 0,
     'no-plusplus': 0,
+    'no-unused-vars': 1,
     'max-len': 0,
     'prefer-destructuring': 0,
     'no-param-reassign': 0,
