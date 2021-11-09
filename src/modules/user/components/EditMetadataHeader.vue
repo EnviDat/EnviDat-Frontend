@@ -58,6 +58,16 @@
 
       <v-col>
 
+        <v-text-field :label="labels.labelContactEmail"
+                      outlined
+                      :error-messages="validationErrors.contactEmail"
+                      required
+                      dense
+                      prepend-icon="email"
+                      :placeholder="labels.placeholderContactEmail"
+                      :value="contactEmailField"
+                      @input="notifyChange('contactEmail', $event)"/>
+
         <v-text-field :label="labels.labelContactGivenName"
                       outlined
                       :error-messages="validationErrors.contactGivenName"
@@ -65,7 +75,7 @@
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
-                      :value="contactAuthorField.contactGivenName"
+                      :value="contactGivenNameField"
                       @input="notifyChange('contactGivenName', $event)" />
 
         <v-text-field :label="labels.labelContactSurname"
@@ -75,19 +85,8 @@
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
-                      :value="contactAuthorField.contactSurname"
+                      :value="contactSurnameField"
                       @input="notifyChange('contactSurname', $event)" />
-
-        <v-text-field :label="labels.labelContactEmail"
-                      outlined
-                      :error-messages="validationErrors.contactEmail"
-                      required
-                      dense
-                      prepend-icon="email"
-                      :placeholder="labels.placeholderContactEmail"
-                      :value="contactAuthorField.contactEmail"
-                      @input="notifyChange('contactEmail', $event)"/>
-
 
       </v-col>
 
@@ -120,11 +119,13 @@
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
  *
+ * // TODO implement validation
+ *
  * @summary shows the title, main contact information, and header preview
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-10-11 10:05:50
+ * Last modified  : 2021-11-09
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -157,10 +158,6 @@ import {
 export default {
   name: 'EditMetadataHeader',
   props: {
-    metadataTitle: {
-      type: String,
-      default: '',
-    },
     keywords: {
       type: Array,
       default: null,
@@ -177,25 +174,80 @@ export default {
       type: Array,
       default: () => [],
     },
-    contactAuthor: {
-      type: Object,
-      default: () => {},
+    metadataTitle: {
+      type: String,
+      default: '',
+    },
+    contactGivenName: {
+      type: String,
+      default: '',
+    },
+    contactSurname: {
+      type: String,
+      default: '',
+    },
+    contactEmail: {
+      type: String,
+      default: '',
     },
   },
   computed: {
-    contactAuthorField: {
+    metadataTitleField: {
       get() {
-        let contactAuthor = { ...this.contactAuthor };
+        return this.metadataTitle;
+      },
+      set(value) {
+        const property = 'metadataTitle';
 
-        if (Object.keys(contactAuthor).length === 0) {
-          contactAuthor = {
-            contactGivenName: '',
-            contactSurname: '',
-            contactEmail: '',
-          };
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          this.setHeaderInfo(property, value);
         }
 
-        return contactAuthor;
+      },
+    },
+    contactGivenNameField: {
+      get() {
+        return this.contactGivenName;
+      },
+      set(value) {
+        const property = 'contactGivenName';
+
+        this.setHeaderInfo(property, value);
+
+        // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        //   this.setHeaderInfo(property, value);
+        // }
+
+      },
+    },
+      contactSurnameField: {
+        get() {
+          return this.contactSurname;
+        },
+        set(value) {
+          const property = 'contactSurname';
+
+          this.setHeaderInfo(property, value);
+
+          // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+          //   this.setHeaderInfo(property, value);
+          // }
+
+        },
+    },
+    contactEmailField: {
+      get() {
+        return this.contactEmail;
+      },
+      set(value) {
+        const property = 'contactEmail';
+
+        this.setHeaderInfo(property, value);
+
+        // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        //   this.setHeaderInfo(property, value);
+        // }
+
       },
     },
     preselectAuthorName() {
@@ -225,7 +277,7 @@ export default {
         showCloseButton: false,
         contactName: this.inputContactFullName,
         contactIcon,
-        contactEmail: this.inputContactEmail,
+        contactEmail: this.contactEmail,
         mailIcon,
         doiIcon,
         licenseIcon,
@@ -240,25 +292,8 @@ export default {
 
       return previewEntry;
     },
-    metadataTitleField: {
-      get() {
-        return this.metadataTitle;
-      },
-      set(value){
-        const property = 'metadataTitle';
-
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-          this.setHeaderInfo(property, value);
-        }
-
-      },
-    },
     inputContactFullName() {
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.contactAuthor && this.contactAuthor.hasOwnProperty('contactGivenName') && this.contactAuthor.hasOwnProperty('contactSurname')) {
-        return `${this.contactAuthor.contactGivenName.trim()} ${this.contactAuthor.contactSurname.trim()}`;
-      }
-      return '';
+      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()} `;
     },
     inputContactEmail() {
       // eslint-disable-next-line no-prototype-builtins
@@ -287,20 +322,31 @@ export default {
       // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
 
-      // Iterate through entries of authorObject
-      // If a value is not valid then a error message will be displayed by the corresponding element
-      Object.entries(authorObject).forEach(entry => {
-        const [key, value] = entry;
-        isFieldValid(key, value, this.validations, this.validationErrors);
-      });
+      // Call setContact to emit authorObject values to eventBus
+      // this.setContact(authorObject);
 
-      // Call setHeaderInfo to emit authorObject to eventBus
-      this.setHeaderInfo('contactAuthor', authorObject);
-
+      if (authorObject) {
+        // Call setContact to emit authorObject values to eventBus
+        this.setContact(authorObject);
+      }
+      //
+      // // Iterate through entries of authorObject
+      // // If a value is not valid then a error message will be displayed by the corresponding element
+      // Object.entries(authorObject).forEach((entry) => {
+      //   const [key, value] = entry;
+      //   // isFieldValid(key, value, this.validations, this.validationErrors);
+      //   this.setHeaderInfo(key, value);
+      // });
+      //
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
+      return found?.length > 0 ? found[0] : null;
+    },
+    getAuthorByEmail(email) {
+      const authors = this.existingAuthorsWrap;
+      const found = authors.filter(auth => auth.email === email);
       return found?.length > 0 ? found[0] : null;
     },
     // Returns object with contact details if author is not null
@@ -319,6 +365,19 @@ export default {
         contactSurname: '',
         contactEmail: '',
       };
+    },
+    // Returns object with contact details if author is not null
+    // Else returns null
+    getAuthorOrNull(author) {
+
+      if (author) {
+        return {
+          contactGivenName: author.firstName,
+          contactSurname: author.lastName,
+          contactEmail: author.email,
+        };
+      }
+      return null;
 
     },
     editEntry(contactAuthorObject, property, value) {
@@ -326,17 +385,49 @@ export default {
     },
     notifyChange(property, value) {
 
-      const contactAuthorCopy = { ...this.contactAuthorField };
-
-      this.editEntry(contactAuthorCopy, property, value);
+      // const contactAuthorCopy = { ...this.contactAuthorField };
+      //
+      // this.editEntry(contactAuthorCopy, property, value);
 
       // this.setHeaderInfo('contactAuthor', contactAuthorCopy);
 
-      // Emit contact author to eventBus if the value is valid
+      // Emit property to eventBus if the value is valid
       // If a value is not valid then a error message will be displayed by the corresponding element
-      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-        this.setHeaderInfo('contactAuthor', contactAuthorCopy);
+      // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+      //   this.setHeaderInfo(property, value);
+      // }
+
+      // If user already exists emit user email, given name and surname to eventBus
+      // This will autocomplete the given name and surname fields
+      if (property === 'contactEmail') {
+
+        const selectedUser = this.getAuthorByEmail(value);
+
+        const authorObject = this.getAuthorOrNull(selectedUser);
+
+        if (authorObject) {
+          // Call setContact to emit authorObject values to eventBus
+          this.setContact(authorObject);
+        } else {
+          this.setHeaderInfo(property, value);
+        }
+      } else {
+        this.setHeaderInfo(property, value);
       }
+
+      // this.setHeaderInfo(property, value);
+    },
+    setContact(authorObject) {
+
+      const newHeaderInfo = {
+        ...this.$props,
+        ...authorObject,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_MAIN_HEADER,
+        data: newHeaderInfo,
+      });
     },
     setHeaderInfo(property, value) {
 
