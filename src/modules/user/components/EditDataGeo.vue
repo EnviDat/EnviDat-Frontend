@@ -2,12 +2,14 @@
   <v-container id="EditDataGeo" fluid class="pa-0">
     <v-row>
       <v-col>
-        <MetadataGeo :genericProps="genericProps" />
+        <MetadataGeo
+          :genericProps="genericProps"
+          :editErrorMessage="editErrorMessage"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
-
 
 <script>
 /**
@@ -28,16 +30,23 @@ import {
   EDITMETADATA_DATA_GEO,
   MAP_GEOMETRY_MODIFIED,
   eventBus,
-} from "@/factories/eventBus";
+} from '@/factories/eventBus';
 
-import MetadataGeo from "@/modules/metadata/components/Geoservices/MetadataGeo";
+import { parseAsGeomCollection } from '@/factories/metaDataFactory';
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
+
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
 
 export default {
-  name: "EditDataGeo",
+  name: 'EditDataGeo',
   props: {
     mapDivId: {
       type: String,
-      default: "map-small",
+      default: 'map-small',
     },
     mapHeight: {
       type: Number,
@@ -65,11 +74,10 @@ export default {
     },
   },
   mounted() {
-    this.localGeoms = this.location.geomCollection;
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.triggerGeometryUpdate);
+    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.notifyChange);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.triggerGeometryUpdate);
+    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.notifyChange);
   },
   computed: {
     genericProps() {
@@ -84,33 +92,50 @@ export default {
         // site: thislocalGeoms,
       };
     },
+    editErrorMessage() {
+      return this.validationErrors.geometries;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO);
+    },
   },
   methods: {
-    setGeometriesOnRecord(updatedGeometries) {
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_GEO,
-        data: updatedGeometries,
-      });
+    notifyChange(geomArray) {
+      // Parse updated geometries, add to existing props, update via event bus
+
+      if (
+        isFieldValid(
+          'geometries',
+          geomArray,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
+        const updatedGeometries = parseAsGeomCollection(
+          this.location.name,
+          geomArray,
+        );
+        const updatedLocation = {
+          ...this.location,
+          geomCollection: updatedGeometries,
+        };
+
+        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_DATA_GEO,
+          data: {
+            ...this.$props,
+            location: updatedLocation,
+          },
+        });
+      }
     },
-    triggerGeometryUpdate(updatedGeometries) {
-      // Re-calculate genericProps property, adding additional geoms (for MetadataGeo.vue)
-      // this.location.geomCollection = updatedGeometries;
-      console.log(updatedGeometries);
-      // updatedGeometries.forEach( (geometry) => {
-      //   console.log(geometry.toGeoJSON());
-      // })
-      // this.setGeometriesOnRecord(updatedGeometries);
-    },
-  },
-  watch: {
   },
   components: {
     MetadataGeo,
   },
   data: () => ({
-    localGeoms: {
-      type: Object,
-      default: null,
+    validationErrors: {
+      geometries: null,
     },
   }),
 };

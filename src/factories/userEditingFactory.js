@@ -1,15 +1,15 @@
 /**
-* collection of editing functionalities
-*
-* @summary editing functions
-* @author Dominik Haas-Artho
-*
-* Created at     : 2021-09-14 14:25:52
-* Last modified  : 2021-09-14 14:25:52
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
+ * collection of editing functionalities
+ *
+ * @summary editing functions
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2021-09-14 14:25:52
+ * Last modified  : 2021-09-14 14:25:52
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 /* eslint-disable no-underscore-dangle */
 
@@ -41,7 +41,9 @@ import {
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_PUBLICATIONS,
-  EDITMETADATA_CUSTOMFIELDS, EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_RELATED_DATASETS,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_ORGANIZATION,
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
@@ -51,15 +53,20 @@ import * as yup from 'yup';
 
 const allOrganizations = getOrganizationMap(testOrganizations);
 
-
-export function updateEditingArray(store, elementList, newElement, propertyToCompare) {
+export function updateEditingArray(
+  store,
+  elementList,
+  newElement,
+  propertyToCompare,
+) {
   for (let i = 0; i < elementList.length; i++) {
     const el = elementList[i];
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[localIdProperty] === newElement[localIdProperty]
-                  || el[propertyToCompare] === newElement[propertyToCompare];
+    const match =
+      el[localIdProperty] === newElement[localIdProperty] ||
+      el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -80,15 +87,14 @@ export function updateEditingArray(store, elementList, newElement, propertyToCom
 }
 
 export function updateResource(store, state, payload) {
-
-  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+  const resources =
+    state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
   const newRes = payload.data;
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
 export function updateAuthors(store, state, payload) {
-
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
   const newAuthors = payload.data;
 
@@ -113,15 +119,20 @@ export function updateAuthors(store, state, payload) {
 }
 */
 
-export function setSelected(store, elementList, id, propertyToCompare, selected) {
-
+export function setSelected(
+  store,
+  elementList,
+  id,
+  propertyToCompare,
+  selected,
+) {
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
 
     // check for newly created entries (local only)
     // with the localIdProperty first
-    const match = element[localIdProperty] === id
-      || element[propertyToCompare] === id;
+    const match =
+      element[localIdProperty] === id || element[propertyToCompare] === id;
 
     if (match) {
       element.isSelected = selected;
@@ -131,8 +142,13 @@ export function setSelected(store, elementList, id, propertyToCompare, selected)
   }
 }
 
-export function selectForEditing(store, elementList, id, previousId, propertyToCompare) {
-
+export function selectForEditing(
+  store,
+  elementList,
+  id,
+  previousId,
+  propertyToCompare,
+) {
   if (previousId !== '') {
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
@@ -162,10 +178,7 @@ const emptyMetadataInEditing = {
     resources: [],
   },
   [EDITMETADATA_DATA_INFO]: {
-    collectionDateStart: '',
-    collectionDateEnd: '',
-    creationDateStart: '',
-    creationDateEnd: '',
+    dates: [],
     dataLicense: '',
   },
   [EDITMETADATA_DATA_GEO]: {
@@ -173,6 +186,9 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',
+  },
+  [EDITMETADATA_RELATED_DATASETS]: {
+    relatedDatasetsText: '',
   },
   [EDITMETADATA_CUSTOMFIELDS]: {
     customFields: [],
@@ -278,7 +294,7 @@ export function initializeSteps(steps, editingState) {
   for (let i = 0; i < steps.length; i++) {
     const s = steps[i];
 
-    const filteredKeys = editingKeys.filter(k => k === s.key);
+    const filteredKeys = editingKeys.filter((k) => k === s.key);
     const editStateKey = filteredKeys[0] || null;
 
     if (editStateKey) {
@@ -289,7 +305,6 @@ export function initializeSteps(steps, editingState) {
       initializeSteps(s.detailSteps, editingState);
     }
   }
-
 }
 
 export function getStepByName(eventName, steps) {
@@ -323,14 +338,12 @@ export function getEmptyMetadataInEditingObject() {
   return emptyEditingObject;
 }
 
-
 // Returns true if all values in obj are null or empty strings, else returns false
 export function isObjectEmpty(obj) {
-  return Object.values(obj).every(x => (x === null || x === ''));
+  return Object.values(obj).every((x) => x === null || x === '');
 }
 
 export function deleteEmptyObject(index, localObjects) {
-
   // Assign currentObj to object with pased index in localObjects
   const currentObj = localObjects[index];
 
@@ -357,11 +370,23 @@ export function isMaxLength(maximum, localObjects) {
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
-      metadataTitle: yup.string().required('Metadata Title is required').min(5, 'Metadata Title must be at least 5 characters'),
+      metadataTitle: yup
+        .string()
+        .required('Metadata Title is required')
+        .min(5, 'Metadata Title must be at least 5 characters'),
       contactAuthor: yup.object({
-        contactGivenName: yup.string().required('Contact given (first) name is required').min(3, 'Contact given (first) name must be at least 3 characters'),
-        contactSurname: yup.string().required('Contact surname is required').min(3, 'Contact surname must be at least 3 characters'),
-        contactEmail: yup.string().email('Contact email must be a valid email address').required('Contact email is required'),
+        contactGivenName: yup
+          .string()
+          .required('Contact given (first) name is required')
+          .min(3, 'Contact given (first) name must be at least 3 characters'),
+        contactSurname: yup
+          .string()
+          .required('Contact surname is required')
+          .min(3, 'Contact surname must be at least 3 characters'),
+        contactEmail: yup
+          .string()
+          .email('Contact email must be a valid email address')
+          .required('Contact email is required'),
       }),
     }),
   /*
@@ -374,20 +399,48 @@ const metadataInEditingValidations = {
     [EDITMETADATA_AUTHOR_LIST]: {
       authors: [],
     },
-    [EDITMETADATA_DATA_RESOURCES]: {
-      resources: [],
-    },
-    [EDITMETADATA_DATA_INFO]: {
-      addInfoObj: {
-        creationYear: '',
-        collectionYear: '',
-        publicationYear: '',
-        dataLicense: '',
-      },
-    },
-    [EDITMETADATA_DATA_GEO]: {
-      geometries: null,
-    },
+  */
+  // [EDITMETADATA_DATA_RESOURCES]: () =>
+  //   yup.object().shape({
+  //     isLink: yup.boolean(),
+  //     name: yup
+  //       .string()
+  //       .required('Resource name is required')
+  //       .min(5, 'Resource name must be at least 5 characters')
+  //       .notOneOf(
+  //         [yup.ref('url')],
+  //         'Title cannot be the same as the resource url',
+  //       ),
+  //     description: yup.string(),
+  //     url: yup.string().when('isLink', {
+  //       is: true,
+  //       then: yup
+  //         .string()
+  //         .url('Resource url must be valid')
+  //         .required('Resource url is required'),
+  //       otherwise: yup.string().notRequired(),
+  //     }),
+  //   }),
+  [EDITMETADATA_DATA_INFO]: () =>
+    yup.object().shape({
+      dates: yup.array().of(
+        yup.object().shape({
+          dateType: yup.string('Date type must be a string'),
+          dateStart: yup.date('Start date must be a valid date'),
+          dateEnd: yup
+            .date('End date must be a valid date')
+            .min(yup.ref('dateStart'), "End date can't be before start date"),
+        }),
+      ),
+      dataLicense: yup.string(),
+    }),
+  [EDITMETADATA_DATA_GEO]: () =>
+    yup.object().shape({
+      geometries: yup
+        .array()
+        .min(1, 'Editting Error: a geometry is required to be set'),
+    }),
+  /*
     [EDITMETADATA_RELATED_PUBLICATIONS]: {
       relatedPublicationsText: '',
     },
@@ -411,29 +464,36 @@ const metadataInEditingValidations = {
       doi: yup.string().required().min(3),
       publisher: yup.string().required().min(3),
       publicationYear: yup.string().required(),
-      funders: yup.array().min(1).of(
-        yup.object({
-          institution: yup.string().required().min(3),
-          grantNumber: yup.string(),
-          link: yup.string().url(),
-        }),
-      ),
+      funders: yup
+        .array()
+        .min(1)
+        .of(
+          yup.object({
+            institution: yup.string().required().min(3),
+            grantNumber: yup.string(),
+            link: yup.string().url(),
+          }),
+        ),
     }),
 };
-
 
 export function getValidationMetadataEditingObject(key) {
   const validationEntry = metadataInEditingValidations[key];
   return validationEntry ? validationEntry() : null;
 }
 
-export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray = null) {
-
+export function isArrayValid(
+  array,
+  arrayProperty,
+  index,
+  valueProperty,
+  validations,
+  errorArray = null,
+) {
   const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
 
   try {
     validations.validateSyncAt(arrayPrefix, { [arrayProperty]: array });
-
   } catch (e) {
     if (!errorArray) {
       // return the full error is there isn't an array given,
@@ -456,7 +516,6 @@ export function isArrayValid(array, arrayProperty, index, valueProperty, validat
 export function isFieldValid(property, value, validations, errorObject = null) {
   try {
     validations.validateSyncAt(property, { [property]: value });
-
   } catch (e) {
     if (!errorObject) {
       // return the full error is there isn't an array given,

@@ -17,18 +17,18 @@
 </template>
 
 <script>
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import "leaflet-bing-layer";
-import "@geoman-io/leaflet-geoman-free";
-import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
-import axios from "axios";
-import "material-design-icons-iconfont/dist/material-design-icons.css";
-import MapLeafletPoint from "@/modules/metadata/components/Geoservices/MapLeafletPoint";
-import markerIcon from "@/assets/map/marker-icon.png";
-import markerIcon2x from "@/assets/map/marker-icon-2x.png";
-import markerIconShadow from "@/assets/map/marker-shadow.png";
-import { mapState } from "vuex";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-bing-layer';
+import '@geoman-io/leaflet-geoman-free';
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+import axios from 'axios';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafletPoint';
+import markerIcon from '@/assets/map/marker-icon.png';
+import markerIcon2x from '@/assets/map/marker-icon-2x.png';
+import markerIconShadow from '@/assets/map/marker-shadow.png';
+import { mapState } from 'vuex';
 import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
@@ -38,14 +38,14 @@ import {
   METADATA_CLOSE_MODAL,
   MAP_GEOMETRY_MODIFIED,
   eventBus,
-} from "@/factories/eventBus";
+} from '@/factories/eventBus';
 // import { leafletLayer } from './layer-leaflet';
-import MetadataMapFullscreen from "./MetadataMapFullscreen";
+import MetadataMapFullscreen from './MetadataMapFullscreen';
 
 /* eslint-disable vue/no-unused-components */
 
 export default {
-  name: "MapLeaflet",
+  name: 'MapLeaflet',
   components: {
     MapLeafletPoint,
   },
@@ -58,7 +58,7 @@ export default {
     opacity: Number,
     mapDivId: {
       type: String,
-      default: "map-small",
+      default: 'map-small',
     },
     mapHeight: {
       type: Number,
@@ -94,12 +94,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(["config"]),
+    ...mapState(['config']),
     layerConfig() {
       return this.$store?.state.geoservices.layerConfig || null;
     },
     streets() {
-      return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         noWrap: true,
@@ -108,7 +108,7 @@ export default {
     satellite() {
       return L.tileLayer.bing({
         bingMapsKey: this.config?.apiKeys?.bing || null,
-        imagerySet: "AerialWithLabels",
+        imagerySet: 'AerialWithLabels',
         noWrap: true,
       });
     },
@@ -119,8 +119,19 @@ export default {
         this.map.removeLayer(this.siteLayer);
         this.siteLayer = null;
       }
+      if (this.mapEditable) {
+        const layerArray = this.map.pm.getGeomanLayers();
+        layerArray.forEach((layer) => {
+          this.map.removeLayer(layer);
+        });
+      }
     },
     addSite(geoJson) {
+      if (!geoJson) {
+        this.siteLayer = null;
+        return;
+      }
+
       // Set marker icon
       const iconOptions = L.Icon.Default.prototype.options;
       iconOptions.iconUrl = this.markerIcon;
@@ -129,19 +140,19 @@ export default {
       const icon = L.icon(iconOptions);
 
       const polygonColor = this.$vuetify.theme.themes.light.accent;
-      // TODO Implement Feature handling below, with appended properties
-      // const dataOrigin = {
-      //   type: "Feature",
-      //   properties: {
-      //     name: "Data site",
-      //     describtion: "Data origin",
-      //   },
-      //   geometry: geoJson,
-      // };
-      const dataOrigin = geoJson;
 
-      this.siteLayer = L.geoJSON([dataOrigin], {
-        pointToLayer(feature, latlng) {
+      let geoJsonArray = [];
+      if (geoJson.type === 'GeometryCollection') {
+        // Split geometries for individual features
+        geoJson.geometries.forEach((geometry) => {
+          geoJsonArray.push(geometry);
+        });
+      } else {
+        geoJsonArray = [geoJson];
+      }
+
+      this.siteLayer = L.geoJSON(geoJsonArray, {
+        pointToLayer(geoJsonPoint, latlng) {
           return L.marker(latlng, {
             icon,
             opacity: 0.65,
@@ -157,6 +168,19 @@ export default {
       // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
 
       this.map.addLayer(this.siteLayer);
+
+      // Editing event listeners on map layers
+      if (this.mapEditable) {
+        const allLayers = this.map.pm.getGeomanLayers();
+        allLayers.forEach((editableLayer) => {
+          editableLayer.on('pm:update', () => {
+            this.triggerGeometryEditEvent();
+          });
+          editableLayer.on('pm:dragend', () => {
+            this.triggerGeometryEditEvent();
+          });
+        });
+      }
     },
     getFeatureInfo(latlng) {
       if (Math.abs(latlng[0]) > 90 || Math.abs(latlng[1]) > 180) {
@@ -171,8 +195,8 @@ export default {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
         const promise = axios.get(url).then((res) => {
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(res.data, "text/xml");
-          const layers = xmlDoc.getElementsByTagName("Layer");
+          const xmlDoc = parser.parseFromString(res.data, 'text/xml');
+          const layers = xmlDoc.getElementsByTagName('Layer');
           layers.forEach((layer) => {
             featureinfo.push({
               name: layer.attributes.name.nodeValue,
@@ -185,10 +209,10 @@ export default {
       }
 
       Promise.all(promises).then(() =>
-        this.$store.commit("addTimeSeries", {
+        this.$store.commit('addTimeSeries', {
           values: featureinfo,
           coords: latlng,
-        })
+        }),
       );
     },
     getFeatureInfoUrl(latlng, start, stop) {
@@ -202,15 +226,15 @@ export default {
         .map((layer) => layer.name)
         .slice(start, stop);
       const params = {
-        request: "GetFeatureInfo",
-        service: "WMS",
-        srs: "EPSG:4326",
-        version: "1.3.0",
+        request: 'GetFeatureInfo',
+        service: 'WMS',
+        srs: 'EPSG:4326',
+        version: '1.3.0',
         bbox,
         height: size.y,
         width: size.x,
         query_layers: layers,
-        info_format: "text/xml",
+        info_format: 'text/xml',
         i: point.x,
         j: point.y,
       };
@@ -263,7 +287,7 @@ export default {
       this.replaceBasemap();
 
       if (this.layerConfig && this.layerConfig.timeseries) {
-        this.map.on("click", (e) => this.getFeatureInfo(e.latlng));
+        this.map.on('click', (e) => this.getFeatureInfo(e.latlng));
       }
 
       // Add site & handle MultiPolygons
@@ -299,7 +323,7 @@ export default {
       return new L.tileLayer.wms(config.baseURL, {
         layers: config.name,
         transparent: true,
-        format: "image/png",
+        format: 'image/png',
         noWrap: true,
       });
     },
@@ -308,7 +332,7 @@ export default {
         this.map.removeLayer(this.basemapLayer);
       }
       this.basemapLayer =
-        this.baseMapLayerName === "streets" ? this.streets : this.satellite;
+        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -316,12 +340,12 @@ export default {
       const marker = L.circle(data.coords, {
         id: data.id,
         color: data.color,
-        fillColor: "#f03",
+        fillColor: '#f03',
         fillOpacity: 0.5,
         radius: 1000,
       }).addTo(this.map);
       marker.bindPopup(
-        `${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`
+        `${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`,
       );
       this.markers.push(marker);
     },
@@ -330,8 +354,30 @@ export default {
       this.map.removeLayer(marker);
       this.markers = this.markers.filter((m) => m.options.id !== id);
     },
+    geomanGeomsToGeoJSON(layerArray) {
+      // Convert leaflet-geoman editing layers into GeoJSON for Leaflet
+
+      const geoJSONArray = [];
+
+      if (layerArray.length !== 0) {
+        layerArray.forEach((geometry) => {
+          const geoJSON = geometry.toGeoJSON();
+          geoJSONArray.push(geoJSON.geometry);
+        });
+      }
+
+      return geoJSONArray;
+    },
+    triggerGeometryEditEvent() {
+      // Collect edited geometries and pass to event bus
+
+      const layerArray = this.map.pm.getGeomanLayers();
+      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+      eventBus.$emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
+    },
     setupEditing() {
       // Set styles for markers and polygons
+
       const editMarkerIcon = L.icon({
         iconUrl: this.markerIcon,
         iconRetinaUrl: this.markerIcon2x,
@@ -346,22 +392,12 @@ export default {
         },
       });
 
-      // Check current geom type on map
-      let geomType = null;
-      this.map.eachLayer((layer) => {
-        geomType = layer.feature ? layer.feature.geometry.type : geomType;
-      });
-      const markerEditButtons =
-        geomType === "Point" || geomType === "MultiPoint";
-      const polyEditButtons =
-        geomType === "Polygon" || geomType === "MultiPolygon" || geomType === "GeometryCollection";
-      // Add controls based on what type of geom editing
       this.map.pm.addControls({
-        drawMarker: markerEditButtons,
-        drawPolygon: polyEditButtons,
-        drawRectangle: polyEditButtons,
-        editMode: polyEditButtons,
-        position: "topright",
+        drawMarker: true,
+        drawPolygon: true,
+        drawRectangle: true,
+        editMode: true,
+        position: 'topright',
         drawPolyline: false,
         drawCircle: false,
         drawCircleMarker: false,
@@ -369,32 +405,12 @@ export default {
         rotateMode: false,
       });
 
-      // Event Watchers
-      this.map.on("pm:create", (mapEditEvent) => {
-        // Nested event listeners for catching new layer edits
-        mapEditEvent.layer.on("pm:update", () => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
-        });
-        mapEditEvent.layer.on("pm:dragend", () => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
-        });
-        eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
+      // Editing event listeners on this.map element
+      this.map.on('pm:create', () => {
+        this.triggerGeometryEditEvent();
       });
-      this.map.on("pm:remove", (mapEditEvent) => {
-        // Turn off nested event listener deleted layer
-        mapEditEvent.layer.off("pm:update");
-        mapEditEvent.layer.off("pm:dragend");
-        eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
-      });
-
-      const initialLayers = this.map.pm.getGeomanLayers();
-      initialLayers.forEach((editableLayer) => {
-        editableLayer.on("pm:update", () => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
-        });
-        editableLayer.on("pm:dragend", () => {
-          eventBus.$emit(MAP_GEOMETRY_MODIFIED, this.map.pm.getGeomanLayers());
-        });
+      this.map.on('pm:remove', () => {
+        this.triggerGeometryEditEvent();
       });
 
       // // Add custom toolbar
@@ -433,11 +449,6 @@ export default {
     },
     baseMapLayerName() {
       this.replaceBasemap();
-    },
-    maxExtent() {
-      if (this.map) {
-        this.triggerCenter(this.mapDivId);
-      }
     },
     site() {
       this.removeSite();

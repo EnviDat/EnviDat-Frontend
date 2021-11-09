@@ -1,49 +1,44 @@
 <template>
-  <v-container id="MetadataCreationMainInfo"
-                fluid
-                class="pa-0">
-
-    <v-row no-gutters >
+  <v-container id="MetadataCreationMainInfo" fluid class="pa-0">
+    <v-row no-gutters>
       <v-col offset="1" cols="10">
-
-          <StepperHeader :steps="steps"
-                          activeColor="accent"
-                          inactiveColor="secondary"
-                          :stepColor="stepColor"
-                          :initialStep="currentStepIndex"
-                          @stepClick="catchStepClick" />
-
+        <!-- prettier-ignore -->
+        <StepperHeader  :steps="steps"
+                        activeColor="accent"
+                        inactiveColor="secondary"
+                        :stepColor="stepColor"
+                        :initialStep="currentStepIndex"
+                        @stepClick="catchStepClick" />
       </v-col>
     </v-row>
 
     <v-row class="fill-height">
-      <v-col v-if="currentStep"
-              cols="12" >
-        <component :is="currentStep.component"
-                    v-bind="getGenericPropsForStep(currentStep)"
-                    />
+      <v-col v-if="currentStep" cols="12">
+        <component
+          :is="currentStep.component"
+          v-bind="getGenericPropsForStep(currentStep)"
+        />
       </v-col>
 
-      <v-col v-if="!currentStep"
-              cols="12" >
+      <v-col v-if="!currentStep" cols="12">
         Nothing selected, please select a step in the navigation!
       </v-col>
     </v-row>
 
-    <v-row justify="end" align="end" >
+    <v-row justify="end" align="end">
       <v-col class="shrink">
+        <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Next Step"
-                              @clicked="nextStep" />
+                             @clicked="nextStep" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
 <script>
 /**
 
- * @summary MetadataCreationMainInfo provides the different steps for editing the main info a metadata entry
+ * @summary MetadataCreationMainInfo provides the different steps for editing the main info for a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
@@ -53,6 +48,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+
+import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
@@ -68,12 +65,13 @@ export default {
   beforeMount() {
     this.setInitialStep();
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     getGenericPropsForStep(step) {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](step.key);
       }
 
       return step.genericProps;
@@ -82,16 +80,15 @@ export default {
       this.setCurrentStep(stepTitle);
     },
     nextStep() {
-      let nextIndex = this.currentStepIndex + 1;
+      const nextIndex = this.currentStepIndex + 1;
       if (nextIndex > this.steps.length - 1) {
-        nextIndex = 0;
+        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, 'Data Info');
       }
 
       this.setCurrentStep(this.steps[nextIndex].title);
     },
     // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
-
       if (this.steps) {
         for (let i = 0; i < this.steps.length; i++) {
           const s = this.steps[i];
@@ -136,7 +133,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>
