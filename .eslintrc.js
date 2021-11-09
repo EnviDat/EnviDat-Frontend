@@ -15,7 +15,7 @@ module.exports = {
   extends: [
     '@vue/airbnb',
     'plugin:vue/essential',
-    "prettier"
+    'prettier/vue',
   ],
 
   // // required to lint *.vue files
