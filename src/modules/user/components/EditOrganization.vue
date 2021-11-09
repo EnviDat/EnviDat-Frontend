@@ -98,7 +98,7 @@ export default {
    },
    preselectedOrganization: {
      type: String,
-     default: null
+     default: null,
    },
     organizations: {
       type: Array,
