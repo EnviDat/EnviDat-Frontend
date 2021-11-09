@@ -53,6 +53,72 @@ import * as yup from 'yup';
 
 const allOrganizations = getOrganizationMap(testOrganizations);
 
+/**
+ * Code from https://stackoverflow.com/questions/54246477/how-to-convert-camelcase-to-snake-case-in-javascript
+ * @param {String} inputString camelCaseString
+ * @returns {String} snake_case_string
+ */
+export function toSnakeCase(inputString) {
+  return inputString.split('').map((character) => {
+    if (character === character.toUpperCase()) {
+      return `_${character.toLowerCase()}`;
+    }
+
+    return character;
+  }).join('');
+}
+
+/**
+ * Code from https://stackoverflow.com/a/61375162/2733509
+ * @param {String} snake_case_string
+ * @returns {String} camelCaseString
+ */
+// eslint-disable-next-line camelcase
+export function toCamelCase (snake_case_string) {
+  return snake_case_string.toLowerCase()
+    .replace(/([-_][a-z])/g, group =>
+      group
+        .toUpperCase()
+//        .replace('-', '')
+        .replace('_', '')
+    );
+}
+
+export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
+  const properties = Object.keys(fromCaseObject);
+  const toCaseObject = { };
+
+  for (let i = 0; i < properties.length; i++) {
+    const fromCaseProp = properties[i];
+    const otherCaseProp = caseConversionFunc(fromCaseProp);
+
+    let value = fromCaseObject[fromCaseProp];
+
+    if (value instanceof Array) {
+      // eslint-disable-next-line no-use-before-define
+      value = getArrayInOtherCase(value, caseConversionFunc);
+    }
+
+    toCaseObject[otherCaseProp] = value;
+  }
+
+  return toCaseObject;
+}
+
+export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
+  if (fromCaseArray.length <= 0 || typeof fromCaseArray[0] !== 'object') {
+    return fromCaseArray;
+  }
+
+  const otherCaseArray = [];
+  for (let i = 0; i < fromCaseArray.length; i++) {
+    const obj = fromCaseArray[i];
+    otherCaseArray[i] = getObjectInOtherCase(obj, caseConversionFunc);
+  }
+  
+  return otherCaseArray;
+}
+
 export function updateEditingArray(
   store,
   elementList,
