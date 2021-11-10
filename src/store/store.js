@@ -13,29 +13,36 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import createPersist from 'vuex-localstorage';
+import VuexPersist from 'vuex-persist';
+
+import {
+  decryptString,
+  encryptString,
+  GetEncryptedKeyFromCookie,
+} from '@/factories/stringFactory';
 
 import { about } from '@/modules/about/store/aboutStore';
 import { projects } from '@/modules/projects/store/projectsStore';
 import { metadata } from '@/modules/metadata/store/metadataStore';
 import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
-/* eslint-disable no-unused-vars */
 import { user } from '@/modules/user/store/userStore';
+import { userSignIn } from '@/modules/user/store/userSignInStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
-import {
-  SET_WEBP_SUPPORT,
-  SET_WEBP_ASSETS,
-  SET_CARD_IMAGES,
-  UPDATE_CATEGORYCARD_IMAGES,
-} from '@/store/mainMutationsConsts';
 
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
-import { checkWebpFeatureAsync } from '@/factories/enhancementsFactory';
+import {
+  checkWebpFeatureAsync,
+  loadImages,
+} from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
+import {
+  ENVIDAT_USER_SIGNIN_COOKIE,
+  ENVIDAT_USER_SIGNIN_MODULE,
+} from '@/store/storeConsts';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
@@ -83,6 +90,42 @@ const initialState = {
   maxNotifications: 6,
 };
 
+
+const cookieName = ENVIDAT_USER_SIGNIN_COOKIE;
+const storageKey = ENVIDAT_USER_SIGNIN_MODULE;
+const encryptedKey = GetEncryptedKeyFromCookie(cookieName);
+
+// define the localStorage methods
+const vuexLocal = new VuexPersist({
+  storage: {
+    getItem: () => {
+      // Get the store from local storage.
+      const store = window.localStorage.getItem(storageKey);
+
+      if (store) {
+        try {
+          // Decrypt the store retrieved from local storage
+          return decryptString(store, encryptedKey);
+        } catch (e) {
+          // The store will be reset if decryption fails.
+          window.localStorage.removeItem(storageKey);
+        }
+      }
+
+      return null;
+    },
+    setItem: (key, value) => {
+      // Encrypt the store using our encryption token stored in cookies.
+      const store = encryptString(value, encryptedKey);
+
+      // Save the encrypted store in local storage.
+      return window.localStorage.setItem(storageKey, store);
+    },
+    removeItem: () => window.localStorage.removeItem(storageKey),
+  },
+  modules: ['userSignIn'],
+});
+
 const store = new Vuex.Store({
   strict: true,
   state: initialState,
@@ -110,48 +153,18 @@ const store = new Vuex.Store({
     projects,
     geoservices,
     user,
+    userSignIn,
   },
+  plugins: [vuexLocal.plugin],
 });
 
-function loadImages(isSupported = false) {
-
-  store.commit(SET_WEBP_SUPPORT, isSupported);
-
-  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
-
-  if (cardBGImages) {
-    store.commit(SET_CARD_IMAGES, cardBGImages);
-  }
-
-  const webpAssetPaths = isSupported ? require.context('../assets/', true, /\.webp$/) : null;
-  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths) : null;
-  if (webpAssets) {
-    store.commit(SET_WEBP_ASSETS, webpAssets);
-  }
-
-  store.commit(UPDATE_CATEGORYCARD_IMAGES);
-
-}
 
 if (process.env.NODE_ENV === 'test') {
-  loadImages();
+  loadImages(store);
 } else {
   checkWebpFeatureAsync('lossy', (feature, isSupported) => {
-    loadImages(isSupported);
+    loadImages(store, isSupported);
   });
-
-  const persistPlugin = createPersist({
-    namespace: 'metadata',
-    // using this.state seems to prevent a double allocation of the metadata.state
-    // but the whole state is part of the localStorage (sessionStorage)
-    initialState: store.state.metadata,
-    // use sessionStorage which expires once the browser is closed
-    provider: sessionStorage,
-    // ONE_WEEK
-    // expires: 7 * 24 * 60 * 60 * 1e3,
-  });
-
-  store.plugins = [persistPlugin];
 }
 
 

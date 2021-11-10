@@ -11,6 +11,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import {
+  SET_WEBP_SUPPORT,
+  SET_WEBP_ASSETS,
+  SET_CARD_IMAGES,
+  UPDATE_CATEGORYCARD_IMAGES,
+} from '@/store/mainMutationsConsts';
+
+import globalMethods from '@/factories/globalMethods';
+
 /**
  * Return a string image path with .webp
  *
@@ -134,9 +143,29 @@ function getFilesWithPrefix(path, prefix = '') {
   return foundFiles;
 }
 
+function loadImages(store, isSupported = false) {
+
+  store.commit(SET_WEBP_SUPPORT, isSupported);
+
+  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
+
+  if (cardBGImages) {
+    store.commit(SET_CARD_IMAGES, cardBGImages);
+  }
+
+  const webpAssetPaths = isSupported ? require.context('../assets/', true, /\.webp$/) : null;
+  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths, false) : null;
+  if (webpAssets) {
+    store.commit(SET_WEBP_ASSETS, webpAssets);
+  }
+
+  store.commit(UPDATE_CATEGORYCARD_IMAGES);
+}
+
 module.exports = {
   getWebpImagePathWithFallback,
   checkWebpFeature,
   checkWebpFeatureAsync,
   getFilesWithPrefix,
+  loadImages,
 };

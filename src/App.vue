@@ -138,7 +138,7 @@ import {
 import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
 import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
 import {
-  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
   FETCH_USER_DATA,
@@ -332,7 +332,7 @@ export default {
       }
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_GET_USER_CONTEXT,
           commit: true,
@@ -346,7 +346,7 @@ export default {
       'config',
       'webpIsSupported',
     ]),
-    ...mapState(USER_NAMESPACE, ['user']),
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapGetters(
       METADATA_NAMESPACE, [
         'metadataIds',

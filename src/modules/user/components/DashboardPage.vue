@@ -192,6 +192,7 @@ import {
 
 import {
   USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
   FETCH_USER_DATA,
   ACTION_USER_SHOW,
   USER_GET_DATASETS,
@@ -267,9 +268,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(USER_NAMESPACE, [
+    ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
       'userLoading',
+    ]),
+    ...mapState(USER_NAMESPACE, [
       'userOrganizationLoading',
       'userOrganizations',
       'userRecentOrgaDatasets',
@@ -421,7 +424,7 @@ export default {
       }
     },
     fetchUserDatasets() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SHOW,
           body: {

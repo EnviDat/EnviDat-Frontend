@@ -17,8 +17,8 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
   EDITMETADATA_AUTHOR,
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import {
@@ -30,11 +30,11 @@ import {
 
 import {
   CLEAR_METADATA_EDITING,
-  GET_USER_CONTEXT,
-  GET_USER_CONTEXT_ERROR,
-  GET_USER_CONTEXT_SUCCESS,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_PATCH_DATASET,
+  METADATA_EDITING_PATCH_DATASET_ERROR,
+  METADATA_EDITING_PATCH_DATASET_SUCCESS,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -43,9 +43,6 @@ import {
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
-  REQUEST_TOKEN,
-  REQUEST_TOKEN_ERROR,
-  REQUEST_TOKEN_SUCCESS,
   UPDATE_METADATA_EDITING,
   USER_GET_DATASETS,
   USER_GET_DATASETS_ERROR,
@@ -60,12 +57,6 @@ import {
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE,
-  USER_SIGNIN,
-  USER_SIGNIN_ERROR,
-  USER_SIGNIN_SUCCESS,
-  USER_SIGNOUT,
-  USER_SIGNOUT_ERROR,
-  USER_SIGNOUT_SUCCESS,
   VALIDATION_ERROR,
 } from './userMutationsConsts';
 
@@ -77,7 +68,8 @@ function extractError(store, reason, errorProperty = 'error') {
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
   if (reason?.response && reason.response.status !== 200) {
-    msg = `${reason.response.status} ${reason.response.statusText} url: ${reason.response.config?.url}`;
+    msg = `${reason.response.status} ${reason.response.statusText}
+          url: ${reason.response.config?.url} Message: ${reason.response.data?.error?.message} type: ${reason.response.data?.error?.__type}`;
     store._vm.$set(store.state.user, errorProperty, msg);
     return;
   }
@@ -108,6 +100,19 @@ function extractError(store, reason, errorProperty = 'error') {
   store._vm.$set(store.state.user, errorProperty, msg);
 }
 
+function createErrorMessage(reason) {
+  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+
+  if (reason?.response) {
+    msg = 'Saving failed ';
+    msg += reason.response.status === 403 ? ' your are not authorized' : reason.response.statusText;
+  } else if (reason?.message) {
+    msg = reason.message;
+  }
+
+    return msg;
+}
+
 function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';
@@ -115,82 +120,14 @@ function resetErrorObject(state) {
 }
 
 export default {
-  [GET_USER_CONTEXT](state) {
-    state.userLoading = true;
-
-    resetErrorObject(state);
-  },
-  [GET_USER_CONTEXT_SUCCESS](state, payload) {
-    state.userLoading = false;
-    state.user = payload?.user || null;
-  },
-  [GET_USER_CONTEXT_ERROR](state, reason) {
-    state.userLoading = false;
-
-    extractError(this, reason);
-  },
-  [USER_SIGNIN](state) {
-    state.signInLoading = true;
-
-    resetErrorObject(state);
-  },
-  [USER_SIGNIN_SUCCESS](state, payload) {
-    state.signInLoading = false;
-    state.signInSuccess = true;
-    state.user = payload.user;
-  },
-  [USER_SIGNIN_ERROR](state, reason) {
-    state.signInLoading = false;
-    state.signInSuccess = false;
-
-    extractError(this, reason);
-  },
-  [REQUEST_TOKEN](state) {
-    state.requestLoading = true;
-    state.requestSuccess = false;
-    state.signInLoading = false;
-    state.signInSuccess = false;
-
-    resetErrorObject(state);
-  },
-  [REQUEST_TOKEN_SUCCESS](state, payload) {
-    state.requestLoading = false;
-    state.requestSuccess = payload && payload.includes('successful');
-  },
-  [REQUEST_TOKEN_ERROR](state, reason) {
-    state.requestLoading = false;
-    state.requestSuccess = false;
-
-    extractError(this, reason);
-  },
-  [USER_SIGNOUT](state) {
-    state.signInLoading = false;
-    state.signInSuccess = false;
-    state.requestLoading = false;
-    state.requestSuccess = false;
-    state.userLoading = true;
-    state.user = null;
-
-    resetErrorObject(state);
-  },
-  [USER_SIGNOUT_SUCCESS](state) {
-    state.user = null;
-
-    resetErrorObject(state);
-  },
-  [USER_SIGNOUT_ERROR](state, reason) {
-    state.user = null;
-
-    extractError(this, reason);
-  },
   [USER_GET_DATASETS](state) {
-    state.userLoading = true;
+    state.userDatasetsLoading = true;
     state.userDatasetsError = null;
 
     resetErrorObject(state);
   },
   [USER_GET_DATASETS_SUCCESS](state, payload) {
-    state.userLoading = false;
+    state.userDatasetsLoading = false;
 
     const store = this;
     const { cardBGImages } = store.getters;
@@ -204,7 +141,7 @@ export default {
     resetErrorObject(state);
   },
   [USER_GET_DATASETS_ERROR](state, reason) {
-    state.userLoading = false;
+    state.userDatasetsLoading = false;
 
     extractError(this, reason, 'userDatasetsError');
   },
@@ -282,15 +219,14 @@ export default {
 
       const store = this;
       const { cardBGImages } = store.getters;
-      const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
+      const categoryCards = store.getters.categoryCards;
 
       recentDatasets = enhanceMetadatas(payload.results, cardBGImages, categoryCards);
     }
 
     if (state.userRecentOrgaDatasets?.length > 0) {
       const mergedDatasets = [...state.userRecentOrgaDatasets, ...recentDatasets];
-      const uniqueArrayOfDatasets = mergedDatasets.filter((item, pos, self) => self.findIndex(v => v.id === item.id) === pos);
-      recentDatasets = uniqueArrayOfDatasets;
+      recentDatasets = mergedDatasets.filter((item, pos, self) => self.findIndex(v => v.id === item.id) === pos);
     }
 
     this._vm.$set(state, 'userRecentOrgaDatasets', recentDatasets);
@@ -396,10 +332,39 @@ export default {
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
-
     extractError(this, reason);
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
+  },
+  [METADATA_EDITING_PATCH_DATASET](state, stepKey) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = true;
+  },
+  [METADATA_EDITING_PATCH_DATASET_SUCCESS](state, { stepKey, message }) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = false;
+    editingObject.message = message;
+
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+    }, state.metadataSavingMessageTimeoutTime);
+  },
+  [METADATA_EDITING_PATCH_DATASET_ERROR](state, { stepKey, reason }) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = false;
+    editingObject.error = createErrorMessage(reason);
+
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
+    }, state.metadataSavingErrorTimeoutTime);
+  },
+  resetMessage(state, stepKey) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.message = null;
+  },
+  resetError(state, stepKey) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.error = null;
   },
 };

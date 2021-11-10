@@ -15,6 +15,9 @@ import remark from 'remark';
 import stripMarkdownLib from 'strip-markdown';
 import htmlLib from 'remark-html';
 import remarkStripHtmlLib from 'remark-strip-html';
+import Crypto from 'crypto-js';
+import Cookie from 'js-cookie';
+import uuid from 'uuid';
 
 export function renderMarkdown(markdownString) {
   if (!markdownString || markdownString.length <= 0) {
@@ -47,4 +50,49 @@ export function stripMarkdown(markdownString, stripHtml = false) {
   }
 
   return strippedString;
+}
+
+export function extractBodyIntoUrl(url, body) {
+  const keys = Object.keys(body);
+
+  if (keys.length > 0) {
+    url += '?';
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (i > 0) {
+        url += '&';
+      }
+      url += `${key}=${body[key]}`;
+    }
+  }
+
+  return url;
+}
+
+export function encryptString(string, encryptionKey) {
+  const encrypted = Crypto.AES.encrypt(string, encryptionKey);
+  return encrypted.toString();
+}
+
+/**
+ *
+ * @param string
+ * @param encryptionKey
+ * @returns {any}
+ * @throws SyntaxError
+ */
+export function decryptString(string, encryptionKey) {
+  const bytes = Crypto.AES.decrypt(string, encryptionKey);
+
+  return JSON.parse(bytes.toString(Crypto.enc.Utf8));
+}
+
+export function GetEncryptedKeyFromCookie(cookieName) {
+  // Get the encryption token from cookie or generate a new one.
+  const encryptionToken = Cookie.get(cookieName) || uuid.v4();
+
+  // Store the encryption token in a secure cookie.
+  Cookie.set(cookieName, encryptionToken, { secure: true, expires: 1 });
+
+  return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();
 }

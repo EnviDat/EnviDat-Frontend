@@ -55,7 +55,10 @@ if (isProd) {
 console.log(`starting ${version} with use of testdata '${process.env.VUE_APP_USE_TESTDATA}' on ${process.env.NODE_ENV}`);
 
 module.exports = {
-  transpileDependencies: ['vuetify'],
+  transpileDependencies: [
+    'vuetify',
+    'vuex-persist',
+  ],
   publicPath: './',
   assetsDir: './static',
   runtimeCompiler: true,
