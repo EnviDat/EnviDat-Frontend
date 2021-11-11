@@ -12,7 +12,7 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: ['@vue/airbnb', 'plugin:vue/essential', 'prettier/vue'],
+  extends: ['@vue/airbnb', 'plugin:vue/essential', 'prettier/vue', 'prettier'],
 
   // // required to lint *.vue files
   plugins: [
@@ -52,7 +52,6 @@ module.exports = {
     'padded-blocks': 'off',
     'indent': 'off',
     'no-trailing-spaces': 'off',
-    'operator-linebreak': ['error', 'after'],
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
     'quotes': ['error', 'single', { avoidEscape: true }],
