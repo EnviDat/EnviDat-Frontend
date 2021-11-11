@@ -46,7 +46,7 @@
 import { mapState } from 'vuex';
 
 import {
-  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
   FETCH_USER_DATA,
@@ -84,8 +84,7 @@ export default {
   },
   computed: {
     ...mapState(
-      USER_NAMESPACE,
-      [
+      USER_SIGNIN_NAMESPACE, [
         'userLoading',
         'signInLoading',
         'signInSuccess',
@@ -123,7 +122,7 @@ export default {
       return null;
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_GET_USER_CONTEXT,
           commit: true,
@@ -131,7 +130,7 @@ export default {
         });
     },
     catchSignIn(email, key) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SIGNIN,
           body: { email, key },
@@ -140,7 +139,7 @@ export default {
         });
     },
     catchRequestToken(email) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_REQUEST_TOKEN,
           body: { email },
@@ -149,7 +148,7 @@ export default {
         });
     },
     catchSignOut() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SIGNOUT,
           commit: true,

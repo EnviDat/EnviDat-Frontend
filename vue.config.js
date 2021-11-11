@@ -19,7 +19,7 @@ const webpack = require('webpack');
 const cesiumSource = 'node_modules/cesium/Source';
 const cesiumWorkers = '../Build/Cesium/Workers';
 const CopywebpackPlugin = require('copy-webpack-plugin');
-const getFilesWithPrefix = require('./src/factories/enhancementsFactory').getFilesWithPrefix;
+const getFilesWithPrefix = require('./src/factories/enhancementsFactoryNode').getFilesWithPrefix;
 
 dotenv.config();
 process.env.VUE_APP_VERSION = require('./package.json').version;
@@ -55,7 +55,10 @@ if (isProd) {
 console.log(`starting ${version} with use of testdata '${process.env.VUE_APP_USE_TESTDATA}' on ${process.env.NODE_ENV}`);
 
 module.exports = {
-  transpileDependencies: ['vuetify'],
+  transpileDependencies: [
+    'vuetify',
+    'vuex-persist',
+  ],
   publicPath: './',
   assetsDir: './static',
   runtimeCompiler: true,

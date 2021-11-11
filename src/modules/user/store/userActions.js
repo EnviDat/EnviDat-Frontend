@@ -14,8 +14,36 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
+import { getObjectInOtherCase, toCamelCase, toSnakeCase } from '@/factories/userEditingFactory';
+import { extractBodyIntoUrl } from '@/factories/stringFactory';
+
 import {
-  FETCH_USER_DATA,
+  createBody,
+  createDates, createFunding,
+  createHeader,
+  createLocation,
+  createPublications,
+  createPublishingInfo,
+  createResources,
+} from '@/factories/metaDataFactory';
+
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  EDITMETADATA_MAIN_HEADER, EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+} from '@/factories/eventBus';
+
+import { createAuthors } from '@/factories/authorFactory';
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import {
+  USER_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATION_IDS_ERROR,
@@ -32,7 +60,14 @@ import {
   ACTION_USER_ORGANIZATIONS_DATASETS,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
+  ACTION_METADATA_EDITING_PATCH_DATASET,
+  METADATA_EDITING_PATCH_DATASET,
+  METADATA_EDITING_PATCH_DATASET_SUCCESS,
+  METADATA_EDITING_PATCH_DATASET_ERROR,
+  METADATA_EDITING_LOAD_DATASET,
+  UPDATE_METADATA_EDITING,
 } from './userMutationsConsts';
+
 
 // don't use an api base url or proxy when using testdata
 let API_BASE = '';
@@ -47,49 +82,110 @@ if (!useTestdata) {
 
 const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
-function extractBodyIntoUrl(url, body) {
-  const keys = Object.keys(body);
-
-  if (keys.length > 0) {
-    url += '?';
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      if (i > 0) {
-        url += '&';
-      }
-      url += `${key}=${body[key]}`;
-    }
-  }
-
-  return url;
+function commitEditingData(commit, eventName, data) {
+  commit(
+    `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+      object: eventName,
+      data,
+    },
+    { root: true },
+  );
 }
 
+function populateEditingComponents(commit, metadataRecord) {
+  // ** Populate the editing form with existing metadata **
+
+  // Stepper 1: Header, Description, Keywords, Authors
+  const headerFull = createHeader(metadataRecord);
+  const splitName = headerFull.contactName.split(' ');
+  // headerFull.fullName = headerFull.contactName;
+  const basicInfo = {
+    metadataTitle: headerFull.metadataTitle,
+    contactAuthor: {
+      contactEmail: headerFull.contactEmail,
+      contactGivenName: splitName[0],
+      contactSurname: splitName[1],
+    },
+  };
+
+  commitEditingData(commit, EDITMETADATA_MAIN_HEADER, basicInfo);
+
+  const descriptionFull = createBody(metadataRecord);
+  commitEditingData(commit, EDITMETADATA_MAIN_DESCRIPTION, {
+    description: descriptionFull.text,
+  });
+
+  commitEditingData(commit, EDITMETADATA_KEYWORDS, {
+    keywords: headerFull.tags,
+  });
+
+  const authors = createAuthors(metadataRecord);
+
+  commitEditingData(commit, EDITMETADATA_AUTHOR_LIST, {
+    authors,
+  });
+
+  // Stepper 2: Data Resources, Info, Location
+  const resourcesFull = createResources(metadataRecord);
+
+  commitEditingData(commit, EDITMETADATA_DATA_RESOURCES, resourcesFull.resources);
+
+  const metadataDates = createDates(metadataRecord);
+
+  const dataInfo = {
+    dates: metadataDates.dates,
+    dataLicense: metadataRecord.license_title,
+  };
+
+  commitEditingData(commit, EDITMETADATA_DATA_INFO, dataInfo);
+
+  const location = createLocation(metadataRecord);
+
+  commitEditingData(commit, EDITMETADATA_DATA_GEO, {
+    location,
+  });
+
+  // Stepper 3: Related Info, Custom Fields
+  const relatedPublications = createPublications(metadataRecord);
+  // To extract publication IDs from text use:
+  // this.$store.dispatch(`${METADATA_NAMESPACE}/${EXTRACT_IDS_FROM_TEXT}`, {
+  //   text: this.publications?.text,
+  //   idDelimiter: this.publicationsConfig?.idDelimiter,
+  //   idPrefix: this.publicationsConfig?.idPrefix,
+  // });
+  commitEditingData(commit, EDITMETADATA_RELATED_PUBLICATIONS, {
+    relatedPublicationsText: relatedPublications.text,
+  });
+
+  commitEditingData(commit, EDITMETADATA_CUSTOMFIELDS, {
+    customFields: metadataRecord.extras,
+  });
+
+  // Stepper 4: Publication Info, Organization
+  const publicationInfoFull = createPublishingInfo(metadataRecord);
+  const funding = createFunding(metadataRecord);
+  const publicationInfo = {
+    ...publicationInfoFull,
+    funders: funding,
+  };
+
+  commitEditingData(commit, EDITMETADATA_PUBLICATION_INFO, {
+    ...publicationInfo,
+  });
+
+  // // // Failing in EditPublicationInfo?
+  // // // "Cannot read property 'institution' of undefined"
+  // this.emitEditObjUpdateEvent(
+  //   "EDITMETADATA_PUBLICATION_INFO",
+  //   publicationInfo
+  // );
+  // this.emitEditObjUpdateEvent("EDITMETADATA_ORGANIZATION",
+  //   {organization: metadataRecord.organization.name}
+  // );
+}
+
+
 export default {
-  async [FETCH_USER_DATA]({ commit }, payload) {
-    commit(payload.mutation);
-
-    const body = payload.body || {};
-
-    // unpack the action because it might be wrapped to provide a test url
-    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
-
-    let url = extractBodyIntoUrl(actionUrl, body);
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    // if the url is directly to a file it has to be a get call
-    // const method = url.includes('.json') ? 'get' : 'post';
-
-    await axios.get(url)
-    // await axios({ method, url, body })
-      .then((response) => {
-        if (payload.commit) {
-          commit(`${payload.mutation}_SUCCESS`, response.data.result);
-        }
-      })
-    .catch((error) => {
-      commit(`${payload.mutation}_ERROR`, error);
-    });
-  },
   async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {
     commit(USER_GET_ORGANIZATION_IDS);
 
@@ -208,5 +304,150 @@ export default {
     await sleep(2000);
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+  },
+  async [METADATA_EDITING_LOAD_DATASET]({ commit, dispatch }, metadataId) {
+
+    await dispatch(
+      `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+      metadataId,
+      { root: true },
+    );
+
+    const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
+
+    populateEditingComponents(commit, currentEntry);
+  },
+  /*
+    async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
+
+      commit(METADATA_EDITING_PATCH_DATASET, stepKey);
+
+      // eslint-disable-next-line no-unreachable
+      const apiKey = this.state.userSignIn.user?.apikey || null;
+
+      const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
+      let url = actionUrl;
+      url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+      if (useTestdata) {
+        // ignore the parameters for testdata, because it's directly a file
+        url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+      }
+      const snakeCaseProperty = toSnakeCase(property);
+
+      await axios.post(url, {
+        id,
+        [snakeCaseProperty]: value,
+        },
+        {
+          headers: {
+            Authorization: apiKey,
+          },
+        })
+        .then((response) => {
+          commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
+            stepKey,
+            message: `${property} saved ${response.data.result[property]}`,
+          });
+          // commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, stepKey, response.data.result);
+        })
+        .catch((reason) => {
+          commit(METADATA_EDITING_PATCH_DATASET_ERROR, {
+            stepKey,
+            reason,
+          });
+        });
+    },
+  */
+  async [METADATA_EDITING_PATCH_DATASET]({ commit }, { stepKey, id }) {
+
+    commit(METADATA_EDITING_PATCH_DATASET, stepKey);
+
+    const stepData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+
+    /*    commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
+          stepKey,
+          message: `${property} saved`,
+        });
+
+    return;
+    */
+
+    // eslint-disable-next-line no-unreachable
+    const apiKey = this.state.userSignIn.user?.apikey || null;
+
+    /*
+        if (apiKey === null) {
+          commit(METADATA_EDITING_PATCH_DATASET_ERROR, { stepKey,
+            reason: {
+              response: {
+                status: 'Not SignedIn',
+                statusText:'Make sure you are signed in',
+              },
+            },
+          });
+          return;
+        }
+    */
+
+    /*
+        commit(METADATA_EDITING_PATCH_DATASET, stepKey);
+
+        const data = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
+    */
+
+
+    /*
+        const metadataConfig = config.metadataConfig || {};
+
+        let url = urlRewrite('package_patch?limit=1000&offset=0',
+            API_BASE, PROXY);
+
+        if (process.env.NODE_ENV === 'development' && useTestdata) {
+          url = './testdata/packagelist.json';
+        }
+    */
+
+    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
+    let url = actionUrl;
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    if (useTestdata) {
+      // ignore the parameters for testdata, because it's directly a file
+      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    }
+
+    const postData = getObjectInOtherCase(stepData, toSnakeCase);
+    postData.id = id;
+
+/*
+    console.log('step to post');
+    console.log(postData);
+
+    const camelData = getObjectInOtherCase(postData, toCamelCase);
+
+    console.log('post to camelData');
+    console.log(camelData);
+*/
+
+    await axios.post(url, postData,
+        {
+          headers: {
+            Authorization: apiKey,
+          },
+        })
+        .then(() => {
+          commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
+            stepKey,
+            message: `Saved ${stepKey} data for ${id}`,
+          });
+          // commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, stepKey, response.data.result);
+        })
+        .catch((reason) => {
+          commit(METADATA_EDITING_PATCH_DATASET_ERROR, {
+            stepKey,
+            reason,
+          });
+        });
   },
 };

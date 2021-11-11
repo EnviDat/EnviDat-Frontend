@@ -98,16 +98,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {EDITMETADATA_KEYWORDS, EDITMETADATA_OBJECT_UPDATE, eventBus,} from '@/factories/eventBus';
+import { EDITMETADATA_KEYWORDS, EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 import MetadataCard from '@/components/Cards/MetadataCard';
 import TagChip from '@/components/Chips/TagChip';
 import catCards from '@/store/categoryCards';
-import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
-import {enhanceTitleImg, getTagColor,} from '@/factories/metaDataFactory';
+import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
-import {mapState} from 'vuex';
+import { mapState } from 'vuex';
 
 
 export default {
@@ -328,7 +328,7 @@ export default {
     },
     notifyChange(property, value) {
 
-      const mergedKeywordsField = [ ...this.keywordsField, ...value];
+      const mergedKeywordsField = [...this.keywordsField, ...value];
 
       const cleanedKeywordsField = this.processValues(mergedKeywordsField);
 

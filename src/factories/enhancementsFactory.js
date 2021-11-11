@@ -11,6 +11,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import {
+  SET_WEBP_SUPPORT,
+  SET_CARD_IMAGES,
+  SET_WEBP_ASSETS,
+  UPDATE_CATEGORYCARD_IMAGES,
+} from '@/store/mainMutationsConsts';
+
+import globalMethods from '@/factories/globalMethods';
+
 /**
  * Return a string image path with .webp
  *
@@ -19,7 +28,7 @@
  * @param {boolean} [webpIsSupported=false]
  * @param {string} [fallbackExtension='jpg']
  */
-function getWebpImagePathWithFallback(imagePath, webpIsSupported = false, fallbackExtension = 'jpg') {
+export function getWebpImagePathWithFallback(imagePath, webpIsSupported = false, fallbackExtension = 'jpg') {
   if (!imagePath) {
     return null;
   }
@@ -59,7 +68,7 @@ function getWebpImagePathWithFallback(imagePath, webpIsSupported = false, fallba
 //   'feature' can be one of 'lossy', 'lossless', 'alpha' or 'animation'.
 //   'callback(feature, result)' will be passed back the detection result (in an asynchronous way!)
 // according to: https://developers.google.com/speed/webp/faq#how_can_i_detect_browser_support_for_webp
-function checkWebpFeatureAsync(feature, callback) {
+export function checkWebpFeatureAsync(feature, callback) {
   const kTestImages = {
     lossy: 'UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA',
     lossless: 'UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==',
@@ -80,7 +89,7 @@ function checkWebpFeatureAsync(feature, callback) {
 let webpOk = null;
 
 // accoring to https://stackoverflow.com/questions/5573096/detecting-webp-support
-function checkWebpFeature() {
+export function checkWebpFeature() {
 
   if (webpOk === null && document) {
     // simplified version in the comments, doesn't work for Firefox version 65
@@ -97,46 +106,24 @@ function checkWebpFeature() {
   return webpOk || false;
 }
 
-/**
- * Get all files in a folder with a specific prefix. This function only works in the
- * node.js environment!
- *
- * @export
- * @param {string} path
- * @param {string} [prefix='']
- * @returns {Array} founfFiles
- */
-function getFilesWithPrefix(path, prefix = '') {
-  // eslint-disable-next-line global-require
-  const fs = require('fs');
 
-  const foundFiles = [];
+export function loadImages(store, isSupported = false) {
 
-  try {
-    const files = fs.readdirSync(path);
+  store.commit(SET_WEBP_SUPPORT, isSupported);
 
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const f = files[i];
-        if (prefix) {
-          if (f.includes(prefix)) {
-            foundFiles.push(f);
-          }
-        } else {
-          foundFiles.push(f);
-        }
-      }
-    }  
-  } catch (err) {
-    console.log(`Couldn't read path: ${path}. Error: ${err}`);
+  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
+
+  if (cardBGImages) {
+    store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  return foundFiles;
+  const webpAssetPaths = isSupported ? require.context('../assets/', true, /\.webp$/) : null;
+  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths, false) : null;
+  if (webpAssets) {
+    store.commit(SET_WEBP_ASSETS, webpAssets);
+  }
+
+  store.commit(UPDATE_CATEGORYCARD_IMAGES);
+
 }
 
-module.exports = {
-  getWebpImagePathWithFallback,
-  checkWebpFeature,
-  checkWebpFeatureAsync,
-  getFilesWithPrefix,
-};

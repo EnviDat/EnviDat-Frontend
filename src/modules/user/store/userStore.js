@@ -18,20 +18,17 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
+
+
 import actions from './userActions';
 import mutations from './userMutations';
 
 const userState = {
-  signInLoading: false,
-  signInSuccess: false,
-  requestLoading: false,
-  requestSuccess: false,
   error: null,
   errorType: '',
   errorField: '',
   filteringTagNames: [],
-  user: null,
-  userLoading: false,
+  userDatasetsLoading: false,
   userDatasetsError: null,
   userOrganizationLoading: false,
   userOrganizationIds: [],
@@ -40,6 +37,8 @@ const userState = {
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
+  metadataSavingMessageTimeoutTime: 1500,
+  metadataSavingErrorTimeoutTime: 3000,
   metadataInEditing: getEmptyMetadataInEditingObject(),
   selectedResourceId: '',
   selectedAuthorId: '',

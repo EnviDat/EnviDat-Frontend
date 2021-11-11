@@ -72,6 +72,8 @@ import { mapGetters, mapState } from 'vuex';
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_LOAD_DATASET,
+  METADATA_EDITING_PATCH_DATASET,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -89,7 +91,6 @@ import {
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 
 import {
-  LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
@@ -147,10 +148,10 @@ export default {
   methods: {
     async initMetadataUsingId() {
       await this.$store.dispatch(
-        `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+        `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
         this.metadataId,
       );
-      this.populateEditingComponents(this.currentMetadataContent);
+
     },
     selectResource(id) {
       this.$store.commit(
@@ -188,9 +189,19 @@ export default {
     editComponentsChanged(updateObj) {
       // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
 
+/*
       this.$store.commit(
         `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
         updateObj,
+      );
+*/
+
+      this.$store.dispatch(
+        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET}`,
+        {
+          stepKey: updateObj.object,
+          id: this.$route.params.metadataid,
+        }
       );
 
       this.$nextTick(() => {
@@ -216,10 +227,8 @@ export default {
       );
     },
     enhanceKeywordsStep(updatedKey) {
-      if (
-        updatedKey === EDITMETADATA_MAIN_HEADER ||
-        updatedKey === EDITMETADATA_MAIN_DESCRIPTION
-      ) {
+      if (updatedKey === EDITMETADATA_MAIN_HEADER || updatedKey === EDITMETADATA_MAIN_DESCRIPTION) {
+
         const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
         const headerProps = this.getGenericPropsForStep(
           EDITMETADATA_MAIN_HEADER,
@@ -234,6 +243,7 @@ export default {
           metadataCardSubtitle: descProps.description,
         };
 
+        // directly call the mutation and NOT the eventBus to avoid a loop!
         this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
           object: EDITMETADATA_KEYWORDS,
           data: newKeywordProps,
@@ -241,10 +251,8 @@ export default {
       }
     },
     enhanceMetadataHeaderStep(updatedKey) {
-      if (
-        updatedKey === EDITMETADATA_KEYWORDS ||
-        updatedKey === EDITMETADATA_AUTHOR_LIST
-      ) {
+      if (updatedKey === EDITMETADATA_KEYWORDS || updatedKey === EDITMETADATA_AUTHOR_LIST) {
+
         const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
         const headerProps = this.getGenericPropsForStep(
           EDITMETADATA_MAIN_HEADER,
@@ -259,6 +267,7 @@ export default {
           authors: authorProps.authors,
         };
 
+        // directly call the mutation and NOT the eventBus to avoid a loop!
         this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
           object: EDITMETADATA_MAIN_HEADER,
           data: newHeaderProps,
@@ -278,11 +287,13 @@ export default {
         return;
       }
 
-      this.updateStepCompleted(step);
-      this.updateStepValidation(step);
-    },
-    updateStepCompleted(step) {
       const stepData = this.getGenericPropsForStep(step.key);
+
+      if (this.updateStepValidation(step, stepData)) {
+        this.updateStepCompleted(step, stepData);
+      }
+    },
+    updateStepCompleted(step, stepData) {
       const values = Object.values(stepData);
 
       let isComplete = true;
@@ -297,12 +308,11 @@ export default {
 
       step.completed = isComplete;
     },
-    updateStepValidation(step) {
+    updateStepValidation(step, stepData) {
       const stepValidation = getValidationMetadataEditingObject(step.key);
       if (!stepValidation) {
-        return;
+        return true;
       }
-      const stepData = this.getGenericPropsForStep(step.key);
 
       try {
         stepValidation.validateSync(stepData);
@@ -310,10 +320,11 @@ export default {
         console.error(`updateStepValidation validation Error ${e}`);
 
         step.error = e.message;
-        return;
+        return false;
       }
 
       step.error = null;
+      return true;
     },
     populateEditingComponents(metadataRecord) {
       // ** Populate the editing form with existing metadata **
