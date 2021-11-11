@@ -1,12 +1,10 @@
 <template>
-  <v-card id="EditResource"
-            :key="id"
-            class="pa-4" >
-
+  <v-card id="EditResource" :key="id" class="pa-4">
+    <!-- prettier-ignore -->
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0px; right: 0px; z-index: 2;"
+                    :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
+                    style="position: absolute; top: 0px; right: 0px; z-index: 2"
                     material-icon-name="close"
                     icon-color="primary"
                     color="primary"
@@ -16,162 +14,165 @@
                     @clicked="$emit('closeClicked')" />
 
     <v-form ref="editResourceForm">
+      <v-container fluid class="pa-0">
+        <v-row>
+          <v-col cols="12">
+            <div class="text-h5">{{ labels.title }}</div>
+          </v-col>
 
-    <v-container fluid
-                  class="pa-0">
+          <v-col cols="12">
+            <div class="text-body-1">{{ labels.instructions }}</div>
+          </v-col>
+        </v-row>
 
-      <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.title }}</div>
-        </v-col>
+        <v-row no-gutters class="pt-4">
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.resourceName"
+              ref="resourceName"
+              outlined
+              required
+              :disabled="loading"
+              v-model="resourceNameField"
+              :error-messages="validationErrors.name"
+            />
+          </v-col>
+        </v-row>
 
-        <v-col cols="12">
-          <div class="text-body-1">{{ labels.instructions }}</div>
-        </v-col>
-      </v-row>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-textarea
+              :label="labels.description"
+              ref="description"
+              outlined
+              auto-grow
+              :disabled="loading"
+              v-model="descriptionField"
+              :error-messages="validationErrors.description"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row no-gutters
-              class="pt-4">
-        <v-col cols="12">
-          <v-text-field :label="labels.resourceName"
-                        ref="resourceName"
-                        outlined
-                        required
-                        :disabled="loading"
-                        :rules="[ v => !!v || `${labels.resourceName} is required`,
-                                  v => (isLink && resourceName !== url) || (!isLink && !url) || `${labels.resourceName} can't be the same as the ${labels.url}`,
-                                  ]"
-                        v-model="resourceNameField" />
-        </v-col>
-      </v-row>
+        <v-row v-if="isLink" no-gutters>
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.url"
+              ref="url"
+              outlined
+              prepend-icon="link"
+              :disabled="loading"
+              v-model="urlField"
+              :error-messages="validationErrors.url"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row no-gutters>
-        <v-col cols="12">
-          <v-textarea :label="labels.description"
-                        ref="description"
-                        outlined
-                        auto-grow
-                        :disabled="loading"
-                        :rules="[ v => !!v || `${labels.description} is required` ]"
-                        v-model="descriptionField"
-                        />
-        </v-col>
-      </v-row>
+        <v-row v-if="!isLink && isImage" no-gutters>
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.fileName"
+              outlined
+              readonly
+              selele
+              prepend-icon="insert_drive_file"
+              value=" "
+            >
+              <template v-slot:append style="justfiy-content: flex-end">
+                <v-col>
+                  <v-row no-gutters class="pb-2">{{ fileNameField }}</v-row>
+                  <v-row no-gutters>
+                    <img
+                      ref="filePreview"
+                      style="max-height: 100%; max-width: 100%"
+                    />
+                  </v-row>
+                </v-col>
+              </template>
+            </v-text-field>
+          </v-col>
+        </v-row>
 
-      <v-row v-if="isLink"
-              no-gutters>
-        <v-col cols="12">
-          <v-text-field :label="labels.url"
-                        ref="url"
-                        outlined
-                        prepend-icon="link"
-                        :disabled="loading"
-                        :rules="[ v => !!v || `${labels.url} is required` ]"
-                        v-model="urlField" />
-        </v-col>
-      </v-row>
+        <v-row v-if="!isLink && !isImage" no-gutters>
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.fileName"
+              outlined
+              readonly
+              prepend-icon="insert_drive_file"
+              v-model="fileNameField"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row v-if="!isLink && isImage"
-              no-gutters>
-        <v-col cols="12">
-          <v-text-field :label="labels.fileName"
-                        outlined
-                        readonly
-                        selele
-                        prepend-icon="insert_drive_file"
-                        value=" " >
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-text-field
+              :label="labels.doi"
+              outlined
+              readonly
+              prepend-icon="fingerprint"
+              v-model="doi"
+            />
+          </v-col>
+        </v-row>
 
-            <template v-slot:append
-                      style="justfiy-content: flex-end;">
-              <v-col >
-                <v-row no-gutters class="pb-2" >{{ fileNameField }}</v-row>
-                <v-row no-gutters>
-                  <img ref="filePreview"
-                        style="max-height: 100%; max-width: 100%;" />
-                </v-row>
+        <v-row no-gutters>
+          <v-col cols="6" class="pr-4">
+            <v-text-field
+              :label="labels.format"
+              outlined
+              readonly
+              v-model="format"
+            />
+          </v-col>
 
-              </v-col>
-            </template>
+          <v-col cols="6">
+            <v-text-field
+              :label="labels.size"
+              outlined
+              readonly
+              v-model="sizeField"
+            />
+          </v-col>
+        </v-row>
 
-          </v-text-field>
-        </v-col>
-      </v-row>
+        <v-row no-gutters>
+          <v-col cols="6" class="pr-4">
+            <v-text-field
+              :label="labels.created"
+              outlined
+              readonly
+              v-model="created"
+            />
+          </v-col>
 
-      <v-row v-if="!isLink && !isImage"
-              no-gutters>
-        <v-col cols="12">
-          <v-text-field :label="labels.fileName"
-                        outlined
-                        readonly
-                        prepend-icon="insert_drive_file"
-                        v-model="fileNameField" />
-        </v-col>
-      </v-row>
+          <v-col cols="6">
+            <v-text-field
+              :label="labels.lastModified"
+              outlined
+              readonly
+              v-model="lastModified"
+            />
+          </v-col>
+        </v-row>
 
-      <v-row no-gutters>
-        <v-col cols="12">
-          <v-text-field :label="labels.doi"
-                        outlined
-                        readonly
-                        prepend-icon="fingerprint"
-                        v-model="doi" />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters>
-        <v-col cols="6"
-                class="pr-4">
-          <v-text-field :label="labels.format"
-                        outlined
-                        readonly
-                        v-model="format" />
-        </v-col>
-
-        <v-col cols="6" >
-          <v-text-field :label="labels.size"
-                        outlined
-                        readonly
-                        v-model="sizeField" />
-        </v-col>
-      </v-row>
-
-      <v-row no-gutters>
-        <v-col cols="6"
-                class="pr-4">
-          <v-text-field :label="labels.created"
-                        outlined
-                        readonly
-                        v-model="created" />
-        </v-col>
-
-        <v-col cols="6">
-          <v-text-field :label="labels.lastModified"
-                        outlined
-                        readonly
-                        v-model="lastModified" />
-        </v-col>
-      </v-row>
-
-      <!-- <v-row>
+        <!-- <v-row>
         <v-col cols="12">
           <div class="text-body-1">{{ labels.subInstructions }}</div>
         </v-col>
       </v-row> -->
 
-      <v-row no-gutters
-              justify="end">
-        <v-col class="shrink">
-          <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                :loading="loading"
-                                :buttonText="labels.createButtonText"
-                                @clicked="saveResourceClick" />
-        </v-col>
-      </v-row>
-
-
-    </v-container>
+        <v-row no-gutters justify="end">
+          <v-col class="shrink">
+            <!-- prettier-ignore -->
+            <BaseRectangleButton :disabled="!saveButtonEnabled"
+                                 :loading="loading"
+                                 :buttonText="labels.createButtonText"
+                                 @clicked="saveResourceClick" />
+          </v-col>
+        </v-row>
+      </v-container>
     </v-form>
-
   </v-card>
 </template>
 
@@ -185,7 +186,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { getCurrentDate } from '@/factories/metaDataFactory';
 
 import {
@@ -254,6 +255,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    validationErrors: {
+      type: Object,
+      default: () => ({
+        name: null,
+        description: null,
+        url: null,
+      }),
+    },
   },
   mounted() {
     this.localName = this.resourceNameField;
@@ -267,7 +276,11 @@ export default {
       set(value) {
         this.localDescription = value;
 
-        this.notifyChange('description', value);
+        this.checkFieldIsValid('description', value);
+
+        if (!this.validationErrors.description) {
+          this.notifyChange('description', value);
+        }
       },
     },
     resourceNameField: {
@@ -277,7 +290,23 @@ export default {
       set(value) {
         this.localName = value;
 
-        this.notifyChange('name', value);
+        this.checkFieldIsValid('name', value);
+
+        if (!this.validationErrors.name) {
+          this.notifyChange('name', value);
+        }
+      },
+    },
+    urlField: {
+      get() {
+        return this.url;
+      },
+      set(value) {
+        this.checkFieldIsValid('url', value);
+
+        if (!this.validationErrors.url) {
+          this.notifyChange('url', value);
+        }
       },
     },
     fileNameField: {
@@ -290,19 +319,6 @@ export default {
     },
     isImage() {
       return this.file?.type.includes('image');
-    },
-    urlField: {
-      get() {
-        return this.url;
-      },
-      set(value) {
-        const newGenericProps = {
-          ...this.genericProps,
-          url: value,
-        };
-
-        this.notifyChange(newGenericProps);
-      },
     },
     isLink() {
       return !!this.url && this.urlType !== 'upload';
@@ -323,17 +339,17 @@ export default {
   methods: {
     checkSaveButtonEnabled() {
       const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
-      const enabled = !!this.localName && !!this.localDescription && !nameEqualsUrl;
+      const enabled =
+        !!this.localName && !!this.localDescription && !nameEqualsUrl;
 
       if (this.isLink) {
-      // validate the whole form to make sure it's
+        // validate the whole form to make sure it's
         this.$refs.editResourceForm.validate();
       }
 
       this.saveButtonEnabled = enabled;
     },
     notifyChange(property, value) {
-
       const newGenericProps = {
         ...this.$props,
         property: value,
@@ -356,19 +372,26 @@ export default {
         const reader = new FileReader();
         reader.onload = () => {
           const imageRefs = vm.$refs.filePreview;
-          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          const imageRef =
+            imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.src = reader.result;
         };
 
         reader.readAsDataURL(file);
       }
-
+    },
+    checkFieldIsValid(property, value) {
+      this.$emit('triggerValidateField', {
+        property,
+        value,
+      });
     },
   },
   data: () => ({
     labels: {
       title: 'Edit Selected Resource',
-      instructions: 'Change information about this resource, make sure to describe all the details so others know about this resource contains.',
+      instructions:
+        'Change information about this resource, make sure to describe all the details so others know about this resource contains.',
       subInstructions: 'For files larger then 5GB contact the envidat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',
@@ -392,7 +415,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

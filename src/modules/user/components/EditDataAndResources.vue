@@ -1,37 +1,80 @@
 <template>
-  <v-container fluid
-                class="pa-0"
-                id="EditDataAndResources" >
+  <v-container fluid class="pa-0" id="EditDataAndResources">
+    <v-row>
+      <v-col cols="6">
+        <v-row v-if="selectedResource">
+          <v-col>
+            <!-- prettier-ignore -->
+            <!-- <EditResource v-bind="selectedResource"
+                               @closeClicked="catchEditResourceClose"
+                               @saveResource="catchSaveResourceClose"
+                               @triggerValidateField="validateField"
+                               :validationErrors="validationErrors" /> -->
 
-    <v-row >
-      <v-col cols="6" >
-        <v-row v-if="selectedResource" >
-          <v-col >
-            <EditResource v-bind="selectedResource"
-                          @closeClicked="catchEditResourceClose"
-                          @saveResource="catchSaveResourceClose" />
+            <!-- TEMPORARY PLACEHOLDER START -->
+            <v-card class="pa-4">
+              <v-container fluid class="pa-0">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="text-h5">Edit Selected Resource</div>
+                  </v-col>
+                </v-row>
+
+                <v-row no-gutters class="pt-6 justify-center">
+                  <v-btn
+                    large
+                    color="secondary"
+                    :href="linkEditResourceCKAN"
+                    target="_blank"
+                  >
+                    Edit Resource in CKAN
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-card>
+            <!-- TEMPORARY PLACEHOLDER END -->
           </v-col>
         </v-row>
 
-        <v-row v-if="!selectedResource" >
+        <v-row v-if="!selectedResource">
           <v-col>
-            <v-card class="pa-0">
+            <!-- <v-card class="pa-0">
               <EditDropResourceFiles @createResources="createResourceFromFiles" />
 
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-            </v-card>
+            </v-card> -->
 
+            <!-- TEMPORARY PLACEHOLDER START -->
+            <v-card class="pa-4">
+              <v-container fluid class="pa-0">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="text-h5">Add New Resource</div>
+                  </v-col>
+                </v-row>
+
+                <v-row no-gutters class="pt-6 justify-center">
+                  <v-btn
+                    large
+                    color="secondary"
+                    :href="linkAddNewResourcesCKAN"
+                    target="_blank"
+                  >
+                    Add Resources in CKAN
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-card>
+            <!-- TEMPORARY PLACEHOLDER END -->
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col cols="6" >
+      <v-col cols="6">
         <EditMetadataResources v-bind="metadataResourcesGenericProps" />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
 
 <script>
@@ -39,14 +82,11 @@
  * EditDataAndResources.vue shows all the resources of a metadata entry in a list.
  *
  * @summary shows the resources for a metadata entry
- * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-08-17 16:19:08
+ * @author Dominik Haas-Artho & Sam Woodcock
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import {
   CANCEL_EDITING_RESOURCE,
   SAVE_EDITING_RESOURCE,
@@ -57,36 +97,55 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-
 import { initializeLocalResource } from '@/factories/metaDataFactory';
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
-import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
-import EditResource from '@/modules/user/components/EditResource';
-
+// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
+// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
+// import EditResource from '@/modules/user/components/EditResource';
 
 export default {
   name: 'EditDataAndResources',
   components: {
     EditMetadataResources,
-    EditDropResourceFiles,
-    EditPasteResourceUrl,
-    EditResource,
+    // EditDropResourceFiles,
+    // EditPasteResourceUrl,
+    // EditResource,
   },
   props: {
     resources: {
       type: Array,
       default: () => [],
     },
-    metadataId: {
-      type: String,
-      default: '',
-    },
   },
+  mounted() {
+    // Add editing button to resource card
+    if (this.resources !== []) {
+      enhanceElementsWithStrategyEvents(
+        this.resources,
+        SELECT_EDITING_RESOURCE_PROPERTY,
+        true,
+      );
+    }
+  },
+  beforeDestroy() {},
   computed: {
+    selectedName() {
+      return this.selectedResource.name;
+    },
+    selectedDescription() {
+      return this.selectedResource.name;
+    },
+    selectedUrl() {
+      return this.selectedResource.name;
+    },
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
@@ -100,7 +159,7 @@ export default {
       const res = this.resources;
 
       if (res?.length > 0) {
-        const selected = res.filter(r => r.isSelected);
+        const selected = res.filter((r) => r.isSelected);
 
         if (selected?.length > 0) {
           selectedRes = selected[0];
@@ -108,6 +167,21 @@ export default {
       }
 
       return selectedRes;
+    },
+    /**
+     * @returns {String} the metadataId from the route
+     */
+    metadataId() {
+      return this.$route.params.metadataid;
+    },
+    linkAddNewResourcesCKAN() {
+      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
+    },
+    linkEditResourceCKAN() {
+      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource[0].id}/edit`;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCES);
     },
   },
   methods: {
@@ -127,23 +201,21 @@ export default {
 
         this.initResource(metadataId, file, null, i === files.length - 1);
       }
-
     },
     getMetadataId() {
-      const metadataId = this.metadataId || `local_MetadataId_${this.localResCounter}`;
+      const metadataId =
+        this.metadataId || `local_MetadataId_${this.localResCounter}`;
       this.localResCounter++;
       return metadataId;
-    },
-    catchEditResourceClose() {
-      eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
-    },
-    catchSaveResourceClose() {
-      eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
     },
     initResource(metadataId, file, url, autoSelect = true) {
       const newRes = initializeLocalResource(metadataId, file, url);
 
-      enhanceElementsWithStrategyEvents([newRes], SELECT_EDITING_RESOURCE_PROPERTY, true);
+      enhanceElementsWithStrategyEvents(
+        [newRes],
+        SELECT_EDITING_RESOURCE_PROPERTY,
+        true,
+      );
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_RESOURCES,
@@ -156,14 +228,33 @@ export default {
         });
       }
     },
+    catchEditResourceClose() {
+      eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
+    },
+    catchSaveResourceClose() {
+      eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
+    },
+    openCKANEditPage() {},
+    validateField(field) {
+      isFieldValid(
+        field.property,
+        field.value,
+        this.validations,
+        this.validationErrors,
+      );
+    },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
+    validationErrors: {
+      name: null,
+      description: null,
+      url: null,
+    },
+    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
   }),
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

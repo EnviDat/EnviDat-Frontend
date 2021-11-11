@@ -59,13 +59,16 @@ const allOrganizations = getOrganizationMap(testOrganizations);
  * @returns {String} snake_case_string
  */
 export function toSnakeCase(inputString) {
-  return inputString.split('').map((character) => {
-    if (character === character.toUpperCase()) {
-      return `_${character.toLowerCase()}`;
-    }
+  return inputString
+    .split('')
+    .map((character) => {
+      if (character === character.toUpperCase()) {
+        return `_${character.toLowerCase()}`;
+      }
 
-    return character;
-  }).join('');
+      return character;
+    })
+    .join('');
 }
 
 /**
@@ -74,19 +77,18 @@ export function toSnakeCase(inputString) {
  * @returns {String} camelCaseString
  */
 // eslint-disable-next-line camelcase
-export function toCamelCase (snake_case_string) {
-  return snake_case_string.toLowerCase()
-    .replace(/([-_][a-z])/g, group =>
-      group
-        .toUpperCase()
-//        .replace('-', '')
-        .replace('_', '')
-    );
+export function toCamelCase(snake_case_string) {
+  return snake_case_string.toLowerCase().replace(/([-_][a-z])/g, (group) =>
+    group
+      .toUpperCase()
+      //        .replace('-', '')
+      .replace('_', ''),
+  );
 }
 
 export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
   const properties = Object.keys(fromCaseObject);
-  const toCaseObject = { };
+  const toCaseObject = {};
 
   for (let i = 0; i < properties.length; i++) {
     const fromCaseProp = properties[i];
@@ -115,7 +117,7 @@ export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
     const obj = fromCaseArray[i];
     otherCaseArray[i] = getObjectInOtherCase(obj, caseConversionFunc);
   }
-  
+
   return otherCaseArray;
 }
 
@@ -466,27 +468,27 @@ const metadataInEditingValidations = {
       authors: [],
     },
   */
-  // [EDITMETADATA_DATA_RESOURCES]: () =>
-  //   yup.object().shape({
-  //     isLink: yup.boolean(),
-  //     name: yup
+  [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
+  // yup.object().shape({
+  //   isLink: yup.boolean(),
+  //   name: yup
+  //     .string()
+  //     .required('Resource name is required')
+  //     .min(5, 'Resource name must be at least 5 characters')
+  //     .notOneOf(
+  //       [yup.ref('url')],
+  //       'Title cannot be the same as the resource url',
+  //     ),
+  //   description: yup.string(),
+  //   url: yup.string().when('isLink', {
+  //     is: true,
+  //     then: yup
   //       .string()
-  //       .required('Resource name is required')
-  //       .min(5, 'Resource name must be at least 5 characters')
-  //       .notOneOf(
-  //         [yup.ref('url')],
-  //         'Title cannot be the same as the resource url',
-  //       ),
-  //     description: yup.string(),
-  //     url: yup.string().when('isLink', {
-  //       is: true,
-  //       then: yup
-  //         .string()
-  //         .url('Resource url must be valid')
-  //         .required('Resource url is required'),
-  //       otherwise: yup.string().notRequired(),
-  //     }),
+  //       .url('Resource url must be valid')
+  //       .required('Resource url is required'),
+  //     otherwise: yup.string().notRequired(),
   //   }),
+  // }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       dates: yup.array().of(

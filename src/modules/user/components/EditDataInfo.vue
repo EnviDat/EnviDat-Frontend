@@ -13,7 +13,6 @@
         </v-col>
       </v-row>
 
-
       <!--      <v-row >-->
 
       <!--        <v-col>-->
@@ -24,9 +23,13 @@
 
       <!--      <v-row dense>-->
 
-            <div class="heightAndScroll">
-<!--      <div>-->
-        <v-row v-for="(item, index) in datesArray" :key="`${item}_${index}`" dense>
+      <div class="heightAndScroll">
+        <!--      <div>-->
+        <v-row
+          v-for="(item, index) in datesArray"
+          :key="`${item}_${index}`"
+          dense
+        >
           <v-col class="pr-4 mr-10" cols="3">
             <v-text-field
               dense
@@ -162,10 +165,17 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {EDITMETADATA_DATA_INFO, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
+import {
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 // eslint-disable-next-line import/no-cycle
-import {getValidationMetadataEditingObject, isArrayValid} from '@/factories/userEditingFactory';
-import {renderMarkdown} from '@/factories/stringFactory';
+import {
+  getValidationMetadataEditingObject,
+  // isArrayValid
+} from '@/factories/userEditingFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: 'EditDataInfo',
@@ -176,11 +186,12 @@ export default {
     },
     datesArray: {
       type: Array,
-      default: () => [{
-        dateType: '',
-        date: '',
-        dateEnd: '',
-      },
+      default: () => [
+        {
+          dateType: '',
+          date: '',
+          dateEnd: '',
+        },
       ],
     },
     //   default: () => [{
@@ -328,7 +339,7 @@ export default {
       if (!date) {
         return null;
       }
-      const [year, month, day] = date.split('-')
+      const [year, month, day] = date.split('-');
       return `${day}.${month}.${year}`;
     },
     // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
@@ -337,21 +348,24 @@ export default {
         return null;
       }
 
-      const [day, month, year] = date.split('.')
+      const [day, month, year] = date.split('.');
       return `${year}-${month}-${day}`;
     },
   },
   components: {},
   data: () => ({
     validationErrors: {
-      datesArray: [{
-        date: '',
-        dateEnd: '',
-      }],
+      datesArray: [
+        {
+          date: '',
+          dateEnd: '',
+        },
+      ],
     },
     labels: {
       cardTitle: 'Additional Information about the Resources',
-      instructions: 'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
+      instructions:
+        'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
