@@ -12,11 +12,7 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: [
-    '@vue/airbnb',
-    'plugin:vue/essential',
-    'prettier/vue',
-  ],
+  extends: ['@vue/airbnb', 'plugin:vue/essential', 'prettier/vue'],
 
   // // required to lint *.vue files
   plugins: [
@@ -54,11 +50,12 @@ module.exports = {
     'no-param-reassign': 0,
     'linebreak-style': 0,
     'padded-blocks': 0,
-    'indent': 0,
+    indent: 0,
     'no-trailing-spaces': 0,
+    'operator-linebreak': 'after',
     'comma-dangle': [2, 'always-multiline'],
     'jsx-quotes': [2, 'prefer-single'],
-    'quotes': [2, 'single', { avoidEscape: true }],
+    quotes: [2, 'single', { avoidEscape: true }],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
