@@ -135,13 +135,10 @@ function populateEditingComponents(commit, metadataRecord) {
   });
 
   // Stepper 2: Data Resources, Info, Location
-  const resourcesFull = createResources(metadataRecord);
-
-  commitEditingData(
-    commit,
-    EDITMETADATA_DATA_RESOURCES,
-    resourcesFull.resources,
-  );
+  const resources = createResources(metadataRecord).resources;
+  commitEditingData(commit, EDITMETADATA_DATA_RESOURCES, {
+    resources,
+  });
 
   const metadataDates = createDates(metadataRecord);
 
