@@ -14,12 +14,16 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import { getObjectInOtherCase, toCamelCase, toSnakeCase } from '@/factories/userEditingFactory';
+import {
+  getObjectInOtherCase,
+  toSnakeCase,
+} from '@/factories/userEditingFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
   createBody,
-  createDates, createFunding,
+  createDates,
+  createFunding,
   createHeader,
   createLocation,
   createPublications,
@@ -35,12 +39,16 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER, EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
 import { createAuthors } from '@/factories/authorFactory';
-import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {
+  LOAD_METADATA_CONTENT_BY_ID,
+  METADATA_NAMESPACE,
+} from '@/store/metadataMutationsConsts';
 
 import {
   USER_NAMESPACE,
@@ -68,7 +76,6 @@ import {
   UPDATE_METADATA_EDITING,
 } from './userMutationsConsts';
 
-
 // don't use an api base url or proxy when using testdata
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
@@ -80,11 +87,13 @@ if (!useTestdata) {
   ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
 }
 
-const sleep = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+const sleep = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 function commitEditingData(commit, eventName, data) {
   commit(
-    `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
+    `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+    {
       object: eventName,
       data,
     },
@@ -128,7 +137,11 @@ function populateEditingComponents(commit, metadataRecord) {
   // Stepper 2: Data Resources, Info, Location
   const resourcesFull = createResources(metadataRecord);
 
-  commitEditingData(commit, EDITMETADATA_DATA_RESOURCES, resourcesFull.resources);
+  commitEditingData(
+    commit,
+    EDITMETADATA_DATA_RESOURCES,
+    resourcesFull.resources,
+  );
 
   const metadataDates = createDates(metadataRecord);
 
@@ -184,7 +197,6 @@ function populateEditingComponents(commit, metadataRecord) {
   // );
 }
 
-
 export default {
   async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {
     commit(USER_GET_ORGANIZATION_IDS);
@@ -198,7 +210,8 @@ export default {
       url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
     }
 
-    await axios.get(url)
+    await axios
+      .get(url)
       .then((response) => {
         commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
 
@@ -224,7 +237,7 @@ export default {
         id,
         include_datasets: true,
         include_tags: true,
-       });
+      });
 
       url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
@@ -246,7 +259,6 @@ export default {
       .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
-
   },
   async [USER_GET_ORGANIZATIONS_DATASETS]({ commit }, organizations) {
     commit(USER_GET_ORGANIZATIONS_DATASETS);
@@ -263,7 +275,7 @@ export default {
         include_private: true,
         include_drafts: true,
         rows: limit,
-       });
+      });
 
       url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
@@ -288,7 +300,6 @@ export default {
       .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
       });
-
   },
   // eslint-disable-next-line no-unused-vars
   async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
@@ -306,14 +317,14 @@ export default {
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
   },
   async [METADATA_EDITING_LOAD_DATASET]({ commit, dispatch }, metadataId) {
-
     await dispatch(
       `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
       metadataId,
       { root: true },
     );
 
-    const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
+    const currentEntry =
+      this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
 
     populateEditingComponents(commit, currentEntry);
   },
@@ -360,10 +371,10 @@ export default {
     },
   */
   async [METADATA_EDITING_PATCH_DATASET]({ commit }, { stepKey, id }) {
-
     commit(METADATA_EDITING_PATCH_DATASET, stepKey);
 
-    const stepData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const stepData =
+      this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
 
     /*    commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
           stepKey,
@@ -396,7 +407,6 @@ export default {
         const data = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
     */
 
-
     /*
         const metadataConfig = config.metadataConfig || {};
 
@@ -420,7 +430,7 @@ export default {
     const postData = getObjectInOtherCase(stepData, toSnakeCase);
     postData.id = id;
 
-/*
+    /*
     console.log('step to post');
     console.log(postData);
 
@@ -430,24 +440,24 @@ export default {
     console.log(camelData);
 */
 
-    await axios.post(url, postData,
-        {
-          headers: {
-            Authorization: apiKey,
-          },
-        })
-        .then(() => {
-          commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
-            stepKey,
-            message: `Saved ${stepKey} data for ${id}`,
-          });
-          // commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, stepKey, response.data.result);
-        })
-        .catch((reason) => {
-          commit(METADATA_EDITING_PATCH_DATASET_ERROR, {
-            stepKey,
-            reason,
-          });
+    await axios
+      .post(url, postData, {
+        headers: {
+          Authorization: apiKey,
+        },
+      })
+      .then(() => {
+        commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, {
+          stepKey,
+          message: `Saved ${stepKey} data for ${id}`,
         });
+        // commit(METADATA_EDITING_PATCH_DATASET_SUCCESS, stepKey, response.data.result);
+      })
+      .catch((reason) => {
+        commit(METADATA_EDITING_PATCH_DATASET_ERROR, {
+          stepKey,
+          reason,
+        });
+      });
   },
 };
