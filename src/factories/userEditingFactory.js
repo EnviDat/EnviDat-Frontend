@@ -442,20 +442,18 @@ const metadataInEditingValidations = {
         .string()
         .required('Metadata Title is required')
         .min(5, 'Metadata Title must be at least 5 characters'),
-      contactAuthor: yup.object({
-        contactGivenName: yup
-          .string()
-          .required('Contact given (first) name is required')
-          .min(3, 'Contact given (first) name must be at least 3 characters'),
-        contactSurname: yup
-          .string()
-          .required('Contact surname is required')
-          .min(3, 'Contact surname must be at least 3 characters'),
-        contactEmail: yup
-          .string()
-          .email('Contact email must be a valid email address')
-          .required('Contact email is required'),
-      }),
+      contactGivenName: yup
+        .string()
+        .required('Contact given (first) name is required')
+        .min(3, 'Contact given (first) name must be at least 3 characters'),
+      contactSurname: yup
+        .string()
+        .required('Contact surname is required')
+        .min(3, 'Contact surname must be at least 3 characters'),
+      contactEmail: yup
+        .string()
+        .email('Contact email must be a valid email address')
+        .required('Contact email is required'),
     }),
   /*
     [EDITMETADATA_MAIN_DESCRIPTION]: {

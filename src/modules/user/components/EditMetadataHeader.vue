@@ -119,13 +119,12 @@
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
  *
- * // TODO implement validation
  *
  * @summary shows the title, main contact information, and header preview
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-09
+ * Last modified  : 2021-11-15
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -190,6 +189,10 @@ export default {
       type: String,
       default: '',
     },
+    pickedUser: {
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
     metadataTitleField: {
@@ -209,47 +212,18 @@ export default {
       get() {
         return this.contactGivenName;
       },
-      set(value) {
-        const property = 'contactGivenName';
-
-        this.setHeaderInfo(property, value);
-
-        // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-        //   this.setHeaderInfo(property, value);
-        // }
-
-      },
     },
       contactSurnameField: {
         get() {
           return this.contactSurname;
-        },
-        set(value) {
-          const property = 'contactSurname';
-
-          this.setHeaderInfo(property, value);
-
-          // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-          //   this.setHeaderInfo(property, value);
-          // }
-
         },
     },
     contactEmailField: {
       get() {
         return this.contactEmail;
       },
-      set(value) {
-        const property = 'contactEmail';
-
-        this.setHeaderInfo(property, value);
-
-        // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-        //   this.setHeaderInfo(property, value);
-        // }
-
-      },
     },
+    // TODO fix this to longer use contactAuthor object
     preselectAuthorName() {
       return [this.getFullName(this.contactAuthor)];
     },
@@ -295,13 +269,6 @@ export default {
     inputContactFullName() {
       return `${this.contactGivenName.trim()} ${this.contactSurname.trim()} `;
     },
-    inputContactEmail() {
-      // eslint-disable-next-line no-prototype-builtins
-      if (this.contactAuthor && this.contactAuthor.hasOwnProperty('contactEmail')) {
-        return `${this.contactAuthor.contactEmail.trim()}`;
-      }
-      return '';
-    },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
@@ -311,7 +278,6 @@ export default {
       if (!authorObj) {
         return [];
       }
-
       return getAuthorName(authorObj);
     },
     catchAuthorChange(pickedAuthor) {
@@ -322,22 +288,17 @@ export default {
       // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
 
-      // Call setContact to emit authorObject values to eventBus
-      // this.setContact(authorObject);
+      // Validate contact author properties
+      this.validateAuthor(authorObject);
 
-      if (authorObject) {
-        // Call setContact to emit authorObject values to eventBus
-        this.setContact(authorObject);
-      }
-      //
-      // // Iterate through entries of authorObject
-      // // If a value is not valid then a error message will be displayed by the corresponding element
-      // Object.entries(authorObject).forEach((entry) => {
-      //   const [key, value] = entry;
-      //   // isFieldValid(key, value, this.validations, this.validationErrors);
-      //   this.setHeaderInfo(key, value);
-      // });
-      //
+      // Call setContact to emit authorObject values to eventBus
+      this.setContact(authorObject);
+
+    },
+    // Validate contact author properties by calling isFieldValid()
+    validateAuthor(authorObject) {
+      const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
+      properties.forEach(prop => isFieldValid(prop, authorObject[prop], this.validations, this.validationErrors));
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
@@ -348,6 +309,23 @@ export default {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.email === email);
       return found?.length > 0 ? found[0] : null;
+    },
+    getAuthorByNameProp(property, value) {
+
+      const authors = this.existingAuthorsWrap;
+
+      if (property === 'contactGivenName') {
+        const found = authors.filter(auth => auth.firstName === value);
+        return found?.length > 0 ? found[0] : null;
+      }
+
+      if (property === 'contactSurname') {
+        const found = authors.filter(auth => auth.lastName === value);
+        return found?.length > 0 ? found[0] : null;
+      }
+
+      return null;
+
     },
     // Returns object with contact details if author is not null
     // Else returns object with contact details values assigned to empty strings
@@ -380,42 +358,36 @@ export default {
       return null;
 
     },
-    editEntry(contactAuthorObject, property, value) {
-      contactAuthorObject[property] = value;
-    },
     notifyChange(property, value) {
 
-      // const contactAuthorCopy = { ...this.contactAuthorField };
-      //
-      // this.editEntry(contactAuthorCopy, property, value);
+      // Check if property is valid
+      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
-      // this.setHeaderInfo('contactAuthor', contactAuthorCopy);
+        // If user already exists emit user email, given name and surname to eventBus
+        // This will autocomplete the given name and surname fields
+        if (property === 'contactEmail') {
 
-      // Emit property to eventBus if the value is valid
-      // If a value is not valid then a error message will be displayed by the corresponding element
-      // if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-      //   this.setHeaderInfo(property, value);
-      // }
+          const selectedUser = this.getAuthorByEmail(value);
 
-      // If user already exists emit user email, given name and surname to eventBus
-      // This will autocomplete the given name and surname fields
-      if (property === 'contactEmail') {
+          const authorObject = this.getAuthorOrNull(selectedUser);
 
-        const selectedUser = this.getAuthorByEmail(value);
-
-        const authorObject = this.getAuthorOrNull(selectedUser);
-
-        if (authorObject) {
-          // Call setContact to emit authorObject values to eventBus
-          this.setContact(authorObject);
-        } else {
+          // If authorObject exists emit to eventBus
+          // Else emit property to eventBus
+          if (authorObject) {
+            this.setContact(authorObject);
+            // Validate new author properties
+            this.validateAuthor(authorObject);
+          }
+          else {
+            this.setHeaderInfo(property, value);
+          }
+        }
+        // Else emit property to eventBus
+        else {
           this.setHeaderInfo(property, value);
         }
-      } else {
-        this.setHeaderInfo(property, value);
-      }
 
-      // this.setHeaderInfo(property, value);
+      }
     },
     setContact(authorObject) {
 
