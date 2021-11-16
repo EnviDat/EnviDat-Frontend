@@ -204,25 +204,34 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
 
 function cleanAuthorsForBackend(authors) {
 
+  const bAuthors = [];
   for (let i = 0; i < authors.length; i++) {
     const author = authors[i];
 
-    const keys = Object.keys(author.dataCredits);
+    if (author.dataCredit) {
+      const keys = Object.keys(author.dataCredit);
 
-    const dataCreditsArray = [];
+      const dataCreditsArray = [];
 
-    for (let j = 0; j < keys.length; j++) {
-      const key = keys[j];
-      dataCreditsArray.push(key);
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
+        dataCreditsArray.push(key);
+      }
+
+      author.dataCredit = dataCreditsArray;
     }
 
-    author.dataCredits = dataCreditsArray;
+    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
 
+    bAuthors.push(bAuthor);
   }
+
+  return bAuthors;
 }
 
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_PUBLICATION_INFO,
@@ -231,7 +240,7 @@ const dataNeedsStringify = [
 function mapBackendData(stepKey, frontendData) {
 
   if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    cleanAuthorsForBackend(frontendData);
+    frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
   }
 
   let backendData = getBackendJSON(stepKey, frontendData);

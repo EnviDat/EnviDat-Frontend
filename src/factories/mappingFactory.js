@@ -52,9 +52,12 @@ const JSONFrontendBackendRules = {
     ['dataCredit','data_credit'],
     ['id.type','identifier_scheme'],
     ['id.identifier','identifier'],
+    ['affiliation','affiliation'],
+/*
     ['affiliations.affiliation1','affiliation'],
     ['affiliations.affiliation2','affiliation_02'],
     ['affiliations.affiliation3','affiliation_03'],
+*/
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
