@@ -40,7 +40,12 @@
                         outlined
                         readonly
                         :error-messages="validationErrors.publicationState"
-                        v-model="publicationStateField" />
+                        :value="publicationStateField" />
+
+<!--          @change="publicationStateField = $event"
+          @input="validateProperty('publicationState', $event)"
+          :value="publicationStateField" />
+          -->
         </v-col>
 
       </v-row>

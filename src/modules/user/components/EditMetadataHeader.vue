@@ -13,58 +13,50 @@
 <!--    </v-row>-->
 
 
-      <v-row dense>
-
-        <v-col>
-          <div class="text-h6">{{ labels.title }}</div>
+      <v-row >
+        <v-col class="text-h6">
+          {{ labels.title }}
         </v-col>
-
       </v-row>
 
 
-    <v-row dense>
-
-      <v-col>
-        <div class="text-body-1 compact-form">{{ labels.instructions }}</div>
+    <v-row >
+      <v-col class="text-body-1">
+        {{ labels.instructions }}
       </v-col>
-
     </v-row>
 
-    <v-row dense class="compact-form">
+    <v-row >
+      <v-col cols="8" class="pb-0">
 
-      <v-col cols="8">
         <v-text-field :label="labels.labelTitle"
                       outlined
                       dense
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
-                      v-model="metadataTitleField" />
+                      @change="metadataTitleField = $event"
+                      @input="validateProperty('metadataTitle', $event)"
+                      :value="metadataTitleField" />
 
       </v-col>
-
     </v-row>
 
-    <v-row dense>
-
-      <v-col>
-        <div class="text-h6">{{ labels.contactPerson }}</div>
+    <v-row >
+      <v-col class="text-h6 pb-0">
+        {{ labels.contactPerson }}
       </v-col>
-
-    </v-row>
-
-
-    <v-row dense>
-
-      <v-col>
-        <div class="text-body-1 compact-form">{{ labels.authorInstructions }}</div>
-      </v-col>
-
     </v-row>
 
 
-    <v-row dense class="compact-form">
+    <v-row >
+      <v-col class="text-body-1">
+        {{ labels.authorInstructions }}
+      </v-col>
+    </v-row>
 
+
+    <v-row >
       <v-col>
 
         <v-text-field :label="labels.labelContactEmail"
@@ -75,7 +67,8 @@
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
-                      @input="notifyChange('contactEmail', $event)" />
+                      @input="validateProperty('contactEmail', $event)"
+                      @change="notifyChange('contactEmail', $event)" />
 
         <v-text-field :label="labels.labelContactGivenName"
                       outlined
@@ -85,7 +78,8 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       :value="contactGivenNameField"
-                      @input="notifyChange('contactGivenName', $event)" />
+                      @input="validateProperty('contactGivenName', $event)"
+                      @change="notifyChange('contactGivenName', $event)" />
 
         <v-text-field :label="labels.labelContactSurname"
                       outlined
@@ -95,12 +89,13 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       :value="contactSurnameField"
-                      @input="notifyChange('contactSurname', $event)" />
+                      @input="validateProperty('contactSurname', $event)"
+                      @change="notifyChange('contactSurname', $event)" />
 
       </v-col>
 
-
       <v-col cols="4" class="pl-16" >
+
         <BaseUserPicker :users="fullNameUsers"
                         :preSelected="preselectAuthorName"
                         @removedUsers="catchAuthorChange"
@@ -108,17 +103,16 @@
         />
       </v-col>
 
-
     </v-row>
 
 
     <v-row dense>
-      <v-col cols="12">
-        <div class="text-body-1">{{ labels.previewText }}</div>
+      <v-col cols="12" class="text-body-1">
+        {{ labels.previewText }}
       </v-col>
     </v-row>
 
-    <v-row dense >
+    <v-row >
       <v-col cols="12">
         <MetadataHeader v-bind="metadataPreviewEntry" />
       </v-col>
@@ -170,6 +164,7 @@ import {
   getArrayOfFullNames,
   getAuthorName,
 } from '@/factories/authorFactory';
+import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -220,7 +215,7 @@ export default {
       set(value) {
         const property = 'metadataTitle';
 
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        if (this.validateProperty(property, value)) {
           this.setHeaderInfo(property, value);
         }
 
@@ -231,19 +226,23 @@ export default {
         return this.contactGivenName;
       },
     },
-      contactSurnameField: {
-        get() {
-          return this.contactSurname;
-        },
+    contactSurnameField: {
+      get() {
+        return this.contactSurname;
+      },
     },
     contactEmailField: {
       get() {
         return this.contactEmail;
       },
     },
-    // TODO fix this to longer use contactAuthor object
     preselectAuthorName() {
-      return [this.getFullName(this.contactAuthor)];
+      const fullName = this.getFullName({
+        given_name: this.contactGivenName,
+        name: this.contactSurname,
+      });
+
+      return fullName ? [fullName] : [];
     },
     existingAuthorsWrap() {
       if (this.$store) {
@@ -263,11 +262,16 @@ export default {
       const mailIcon = this.mixinMethods_getIcon('mail') || this.iconMail;
       const licenseIcon = this.mixinMethods_getIcon('license') || '';
 
+      const fullName = this.getFullName({
+        given_name: this.contactGivenName,
+        name: this.contactSurname,
+      });
+
       const previewEntry = {
         metadataTitle: this.metadataTitleField || this.labels.placeholderHeaderTitle,
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
-        contactName: this.inputContactFullName,
+        contactName: fullName,
         contactIcon,
         contactEmail: this.contactEmail,
         mailIcon,
@@ -284,14 +288,14 @@ export default {
 
       return previewEntry;
     },
-    inputContactFullName() {
-      return `${this.contactGivenName.trim()} ${this.contactSurname.trim()} `;
-    },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
   },
   methods: {
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
     getFullName(authorObj) {
       if (!authorObj) {
         return [];
@@ -434,8 +438,7 @@ export default {
   },
   data: () => ({
     labels: {
-      // cardTitle: 'Metadata Basic Information',
-      title: 'Title',
+      title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
       labelTitle: 'Research Dataset Title',
       labelContactEmail: 'Contact Email',

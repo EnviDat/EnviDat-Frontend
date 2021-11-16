@@ -198,7 +198,7 @@ export default {
   computed: {
     dataLicenseField: {
       get() {
-        return this.dataLicense.slice();
+        return this.dataLicense;
       },
     },
     dataLicensesNameList() {

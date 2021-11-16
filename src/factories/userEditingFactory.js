@@ -156,11 +156,9 @@ export function selectForEditing(
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
     metadataTitle: '',
-    contactAuthor: {
-      contactEmail: '',
-      contactGivenName: '',
-      contactSurname: '',
-    },
+    contactEmail: '',
+    contactGivenName: '',
+    contactSurname: '',
   },
   [EDITMETADATA_MAIN_DESCRIPTION]: {
     description: '',
@@ -389,10 +387,14 @@ const metadataInEditingValidations = {
         .email('Contact email must be a valid email address')
         .required('Contact email is required'),
     }),
+  [EDITMETADATA_MAIN_DESCRIPTION]: () =>
+    yup.object().shape({
+      description: yup
+          .string()
+          .required('Description is required')
+          .min(30, 'Please write at least a minimal description with 30 characters.'),
+    }),
   /*
-    [EDITMETADATA_MAIN_DESCRIPTION]: {
-      description: '',
-    },
     [EDITMETADATA_KEYWORDS]: {
       keywords: [],
     },

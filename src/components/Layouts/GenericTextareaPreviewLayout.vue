@@ -13,7 +13,8 @@
                         auto-grow
                         :prepend-icon="prependIcon"
                         :value="textareaContent"
-                        @input="catchChangedText($event)"
+                         @input="catchInputedText($event)"
+                         @change="catchChangedText($event)"
                         >
           </v-textarea>
         </v-col>
@@ -45,7 +46,8 @@
                       outlined
                       auto-grow
                       :value="textareaContent"
-                      @input="catchChangedText($event)"
+                       @input="catchInputedText($event)"
+                       @change="catchChangedText($event)"
                       >
         </v-textarea>
       </v-col>
@@ -114,6 +116,9 @@ export default {
     },
   },
   methods: {
+    catchInputedText(event) {
+      this.$emit('inputedText', event);
+    },
     catchChangedText(event) {
       this.$emit('changedText', event);
     },

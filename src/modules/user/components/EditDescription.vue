@@ -24,6 +24,7 @@
         <v-col >
 
           <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
+                                          @inputedText="catchInputedText($event)"
                                           @changedText="catchChangedText($event)">
             <MetadataBody :genericProps="descriptionObject" />
           </GenericTextareaPreviewLayout>
@@ -54,6 +55,12 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
+
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 
@@ -82,10 +89,21 @@ export default {
         },
       };
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_MAIN_DESCRIPTION);
+    },
   },
   methods: {
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
+    catchInputedText(event) {
+      this.validateProperty('description', event);
+    },
     catchChangedText(event) {
-      this.setDescriptionText(event);
+      if (this.validateProperty('description', event)) {
+        this.setDescriptionText(event);
+      }
     },
     setDescriptionText(value) {
 
@@ -105,6 +123,9 @@ export default {
       labelTextarea: 'Metadata Description',
       descriptionInstructions: 'Please enter a description for the research data.',
       subtitlePreview: 'Description Preview',
+    },
+    validationErrors: {
+      description: null,
     },
   }),
   components: {
