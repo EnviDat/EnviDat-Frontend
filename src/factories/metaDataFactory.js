@@ -791,10 +791,11 @@ export function createLocation(dataset) {
       location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
       location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
       location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
-      location.isGeomCollection =
-        spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
+      location.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
+
+      let geomCollection = [spatialJSON];
 
       if (location.isPoint) {
         // swap coords for the leaflet map
@@ -802,40 +803,26 @@ export function createLocation(dataset) {
           spatialJSON.coordinates[1],
           spatialJSON.coordinates[0],
         ];
-        location.geomCollection = parseAsGeomCollection(location.name, [
-          spatialJSON,
-        ]);
+
       } else if (location.isPolygon) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
-        location.geomCollection = parseAsGeomCollection(location.name, [
-          spatialJSON,
-        ]);
+
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
-        const extractedGeoms = extractGeomsFromMultiGeoms(location);
-        location.geomCollection = parseAsGeomCollection(extractedGeoms);
-        location.geomCollection = parseAsGeomCollection(
-          location.name,
-          extractedGeoms,
-        );
+        geomCollection = extractGeomsFromMultiGeoms(location);
+
       } else if (location.isMultiPolygon) {
-        location.pointArray = getMultiPolygonPointArray(
-          spatialJSON.coordinates,
-        );
-        const extractedGeoms = extractGeomsFromMultiGeoms(location);
-        location.geomCollection = parseAsGeomCollection(
-          location.name,
-          extractedGeoms,
-        );
+        location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
+        geomCollection = extractGeomsFromMultiGeoms(location);
+
       } else if (location.isGeomCollection) {
-        location.pointArray = getGeomCollectionPointArray(
-          spatialJSON.geometries,
-        );
-        location.geomCollection = parseAsGeomCollection(
-          location.name,
-          spatialJSON.geometries,
-        );
+        location.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
+        geomCollection = spatialJSON.geometries;
+
       }
+
+      location.geomCollection = parseAsGeomCollection(location.name, geomCollection);
+
     }
   }
 
