@@ -440,8 +440,8 @@ const metadataInEditingValidations = {
     yup.object().shape({
       metadataTitle: yup
         .string()
-        .required('Metadata Title is required')
-        .min(5, 'Metadata Title must be at least 5 characters'),
+        .required('Dataset title is required')
+        .min(5, 'Dataset title must be at least 5 characters'),
       contactGivenName: yup
         .string()
         .required('Contact given (first) name is required')

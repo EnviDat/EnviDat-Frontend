@@ -152,7 +152,7 @@ export default {
     },
   },
   data: () => ({
-    pickerLabel: 'Click here to pick a EnviDat User',
+    pickerLabel: 'Click here to pick an EnviDat author',
     pickedUsers: [],
     search: '',
   }),
