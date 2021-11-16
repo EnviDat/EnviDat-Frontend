@@ -28,8 +28,7 @@
       <v-row>
         <v-col>
 
-          <v-combobox  @input="notifyChange('keywords', $event)"
-                      :value="keywordsField"
+          <v-combobox :value="keywordsField"
                       :items="existingKeywordItems"
                       item-text="name"
                       chips
@@ -42,6 +41,7 @@
                       :search-input.sync="search"
                       @update:search-input="isKeywordValid(search)"
                       @blur="isEnoughKeywords()"
+                      @change="notifyChange('keywords', $event)"
                       :rules="rulesKeywords"
                       >
 

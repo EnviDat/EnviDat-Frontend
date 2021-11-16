@@ -364,11 +364,11 @@ export default {
     state.metadataInEditing = {};
   },
   [METADATA_EDITING_PATCH_DATASET_PROPERTY](state, stepKey) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
   },
   [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](state, { stepKey, message }) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     editingObject.message = message;
 
@@ -377,7 +377,7 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR](state, { stepKey, reason }) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     const errorObj = createErrorMessage(reason);
     editingObject.error = errorObj.message;
@@ -388,7 +388,7 @@ export default {
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
     editingObject.message = null;
     editingObject.messageDetails = null;
@@ -396,7 +396,8 @@ export default {
     editingObject.errorDetails = null;
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     editingObject.message = message;
 
@@ -405,7 +406,7 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     const errorObj = createErrorMessage(reason);
     editingObject.error = errorObj.message;
@@ -418,11 +419,11 @@ export default {
 */
   },
   resetMessage(state, stepKey) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.message = null;
   },
   resetError(state, stepKey) {
-    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    const editingObject = state.metadataInEditing[stepKey];
     editingObject.error = null;
   },
 };
