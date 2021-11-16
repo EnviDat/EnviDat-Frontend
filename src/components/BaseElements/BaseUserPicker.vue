@@ -88,22 +88,12 @@ export default {
     },
   },
   mounted() {
-    if (this.preSelected?.length > 0) {
-
-      if (this.multiplePick) {
-        this.preSelected.forEach((authorName) => {
-          // if (typeof author === 'object') {
-            this.pickedUsers.push(authorName);
-          // } else {
-          //   this.pickedUsers.push(author);
-          // }
-        });
-      } else {
-        this.pickedUsers = this.preSelected[0];
-      }
-    } else {
-      this.pickedUsers = this.multiplePick ? [] : '';
-    }
+    this.updatePreselection();
+  },
+  watch: {
+    preSelected() {
+      this.updatePreselection();
+    },
   },
   computed: {
     autocompleteHint() {
@@ -116,6 +106,26 @@ export default {
 
   },
   methods: {
+    updatePreselection() {
+      if (this.preSelected?.length > 0) {
+
+        if (this.multiplePick) {
+          this.pickedUsers = [];
+
+          this.preSelected.forEach((authorName) => {
+            // if (typeof author === 'object') {
+            this.pickedUsers.push(authorName);
+            // } else {
+            //   this.pickedUsers.push(author);
+            // }
+          });
+        } else {
+          this.pickedUsers = this.preSelected[0];
+        }
+      } else {
+        this.pickedUsers = this.multiplePick ? [] : '';
+      }
+    },
     catchCloseClicked(authorName) {
       if (this.multiplePick) {
 
