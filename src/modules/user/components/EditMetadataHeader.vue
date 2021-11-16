@@ -4,24 +4,33 @@
   <v-container fluid
                 class="pa-0 fill-height" >
 
-    <v-row>
+<!--    <v-row>-->
 
-      <v-col>
-        <div class="text-h5">{{ labels.cardTitle }}</div>
-      </v-col>
+<!--      <v-col>-->
+<!--        <div class="text-h5">{{ labels.cardTitle }}</div>-->
+<!--      </v-col>-->
 
-    </v-row>
+<!--    </v-row>-->
 
 
-    <v-row>
+      <v-row dense>
 
-      <v-col>
-        <div class="text-body-1">{{ labels.instructions }}</div>
-      </v-col>
+        <v-col>
+          <div class="text-h6">{{ labels.title }}</div>
+        </v-col>
 
-    </v-row>
+      </v-row>
+
 
     <v-row dense>
+
+      <v-col>
+        <div class="text-body-1 compact-form">{{ labels.instructions }}</div>
+      </v-col>
+
+    </v-row>
+
+    <v-row dense class="compact-form">
 
       <v-col cols="8">
         <v-text-field :label="labels.labelTitle"
@@ -36,11 +45,10 @@
 
     </v-row>
 
-
     <v-row dense>
 
       <v-col>
-        <div class="text-body-1">{{ labels.authorInstructions }}</div>
+        <div class="text-h6">{{ labels.contactPerson }}</div>
       </v-col>
 
     </v-row>
@@ -48,13 +56,14 @@
 
     <v-row dense>
 
-      <v-col >
-        <BaseUserPicker :users="fullNameUsers"
-                        :preSelected="preselectAuthorName"
-                        @removedUsers="catchAuthorChange"
-                        @pickedUsers="catchAuthorChange"/>
+      <v-col>
+        <div class="text-body-1 compact-form">{{ labels.authorInstructions }}</div>
       </v-col>
 
+    </v-row>
+
+
+    <v-row dense class="compact-form">
 
       <v-col>
 
@@ -66,7 +75,7 @@
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
-                      @input="notifyChange('contactEmail', $event)"/>
+                      @input="notifyChange('contactEmail', $event)" />
 
         <v-text-field :label="labels.labelContactGivenName"
                       outlined
@@ -88,6 +97,15 @@
                       :value="contactSurnameField"
                       @input="notifyChange('contactSurname', $event)" />
 
+      </v-col>
+
+
+      <v-col cols="4" class="pl-16" >
+        <BaseUserPicker :users="fullNameUsers"
+                        :preSelected="preselectAuthorName"
+                        @removedUsers="catchAuthorChange"
+                        @pickedUsers="catchAuthorChange"
+        />
       </v-col>
 
 
@@ -416,13 +434,15 @@ export default {
   },
   data: () => ({
     labels: {
-      cardTitle: 'Metadata Basic Information',
-      labelTitle: 'Metadata Title',
+      // cardTitle: 'Metadata Basic Information',
+      title: 'Title',
+      contactPerson: 'Contact Person',
+      labelTitle: 'Research Dataset Title',
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Please choose main contact author from dropdown list or enter author\'s details.',
+      authorInstructions: 'Please enter contact person\'s details or chose from dropdown list on the right.',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',
@@ -448,4 +468,10 @@ export default {
 </script>
 
 <style scoped>
+
+  .compact-form {
+    transform: scale(0.875);
+    transform-origin: left;
+  }
+
 </style>
