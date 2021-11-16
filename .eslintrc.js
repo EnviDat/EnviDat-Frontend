@@ -12,11 +12,7 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: [
-    '@vue/airbnb',
-    'plugin:vue/essential',
-    'prettier/vue',
-  ],
+  extends: ['@vue/airbnb', 'plugin:vue/essential', 'prettier/vue', 'prettier'],
 
   // // required to lint *.vue files
   plugins: [
@@ -43,28 +39,29 @@ module.exports = {
       },
     ],
     // allow optionalDependencies
-    'import/no-extraneous-dependencies': 0,
+    'import/no-extraneous-dependencies': 'off',
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'import/prefer-default-export': 0,
-    'no-plusplus': 0,
-    'no-unused-vars': 1,
-    'max-len': 0,
-    'prefer-destructuring': 0,
-    'no-param-reassign': 0,
-    'linebreak-style': 0,
-    'padded-blocks': 0,
-    'indent': 0,
-    'no-trailing-spaces': 0,
-    'comma-dangle': [2, 'always-multiline'],
-    'jsx-quotes': [2, 'prefer-single'],
-    'quotes': [2, 'single', { avoidEscape: true }],
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'import/prefer-default-export': 'off',
+    'no-plusplus': 'off',
+    'no-unused-vars': 'warn',
+    'max-len': 'off',
+    'prefer-destructuring': 'off',
+    'no-param-reassign': 'off',
+    'linebreak-style': 'off',
+    'padded-blocks': 'off',
+    'indent': 'off',
+    'no-trailing-spaces': 'off',
+    'comma-dangle': ['error', 'always-multiline'],
+    'jsx-quotes': ['error', 'prefer-single'],
+    'quotes': ['error', 'single', { avoidEscape: true }],
+    'operator-linebreak': ['warn', 'after'],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
-    'vuetify/no-deprecated-classes': 2,
-    'vuetify/grid-unknown-attributes': 2,
-    'vuetify/no-legacy-grid': 2,
+    'vuetify/no-deprecated-classes': 'error',
+    'vuetify/grid-unknown-attributes': 'error',
+    'vuetify/no-legacy-grid': 'error',
   },
 
   overrides: [
