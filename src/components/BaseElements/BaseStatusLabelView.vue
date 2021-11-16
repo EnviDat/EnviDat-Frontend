@@ -1,7 +1,8 @@
 <template>
   <v-container fluid
                 :id="`BaseStatusLabelView_${statusIcon}`"
-                class="py-1 px-0"
+                class="px-0"
+                :class="expanded ? 'py-1' : 'py-0'"
                 :style="expanded ? `border: solid 1px ${statusTextColor};` : ''" >
 
     <v-row no-gutters
@@ -16,27 +17,27 @@
         </div>
       </v-col>
 
+      <v-col v-show="loading"
+             class="shrink pr-2">
+        <div class='skeleton skeleton-animation-shimmer' >
+          <div style="width: 100%; height: 30px;"
+               class='bone bone-type-image'></div>
+        </div>
+      </v-col>
+
       <v-col v-show="!loading"
               class="shrink pr-2" >
         <v-icon :color="statusColor"
-                @click="expanded = !expanded" >
+                v-on="expandedText ? { click: () => { expanded = !expanded } } : {}" >
           {{ statusIcon }}
         </v-icon>
-      </v-col>
-
-      <v-col v-show="loading"
-              class="shrink pr-2">
-        <div class='skeleton skeleton-animation-shimmer' >
-          <div style="width: 100%; height: 30px;"
-                class='bone bone-type-image'></div>
-        </div>
       </v-col>
 
       <v-col v-show="!loading"
               class="grow pr-2"
               :class="textCssClass"
-              style="cursor: pointer;"
-              @click="expanded = !expanded">
+              :style="expandedText ? 'cursor: pointer;' : ''"
+             v-on="expandedText ? { click: () => { expanded = !expanded } } : {}" >
         {{ statusText }}
       </v-col>
 
@@ -55,7 +56,7 @@
 
     <!-- <v-expand-y-transition v-show="expanded"
                             transition="scroll-y-transition" > -->
-    <v-row v-show="expanded"
+    <v-row v-show="expanded && expandedText"
             no-gutters
             justify="start"
             class="align-center pa-1"             

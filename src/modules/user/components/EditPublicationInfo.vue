@@ -1,19 +1,37 @@
 <template>
   <v-card id="EditPublicationInfo"
-          class="pa-4"
-          max-width="100%">
+          class="pa-0"
+          max-width="100%"
+          :loading="loading">
+
 
     <v-container fluid
-                  class="pa-0" >
+                  class="pa-4" >
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row>
-
-        <v-col cols="12">
+        <v-col cols="6">
           <div class="text-h5">{{ labels.cardTitle }}</div>
         </v-col>
 
-      </v-row>
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
 
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+      </v-row>
 
       <v-row>
 
@@ -35,7 +53,9 @@
                         outlined
                         :error-messages="validationErrors.doi"
                         prepend-icon="fingerprint"
-                        v-model="doiField" />
+                        @change="doiField = $event"
+                        @input="validateProperty('doi', $event)"
+                        :value="doiField" />
         </v-col>
 
         <v-col cols="6">
@@ -54,7 +74,9 @@
                         required
                         :error-messages="validationErrors.publisher"
                         prepend-icon="public"
-                        v-model="publisherField" />
+                        @change="publisherField = $event"
+                        @input="validateProperty('publisher', $event)"
+                        :value="publisherField" />
         </v-col>
 
         <v-col cols="6">
@@ -64,8 +86,9 @@
                     :error-messages="validationErrors.publicationYear"
                     required
                     prepend-icon="date_range"
-                    v-model="publicationYearField"
-                    />
+                    @change="publicationYearField = $event"
+                    @input="validateProperty('publicationYear', $event)"
+                    :value="publicationYearField" />
         </v-col>
 
       </v-row>
@@ -133,12 +156,11 @@
                 />
         </v-col>
         <v-col cols="3">
-          <v-btn @click="validateData()">validate</v-btn>
+          <v-btn @click="saveData()">save</v-btn>
         </v-col>
 
       </v-row>
 -->
-
 
     </v-container>
   </v-card>
@@ -173,6 +195,13 @@ import {
 
 import { mapState } from 'vuex';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+/*
+import {
+  METADATA_EDITING_PATCH_DATASET,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+*/
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 export default {
   name: 'EditPublicationInfo',
@@ -201,6 +230,26 @@ export default {
       type: Array,
       default: () => [],
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     ...mapState([
@@ -217,7 +266,12 @@ export default {
         return this.publicationState;
       },
       set(value) {
-        this.setPublicationInfo('publicationState', value);
+        const property = 'publicationState';
+
+        if (this.validateProperty(property, value)) {
+          this.setPublicationInfo(property, value);
+        }
+
       },
     },
     doiField: {
@@ -227,7 +281,7 @@ export default {
       set(value) {
         const property = 'doi';
 
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        if (this.validateProperty(property, value)) {
           this.setPublicationInfo(property, value);
         }
 
@@ -240,21 +294,19 @@ export default {
       set(value) {
         const property = 'publisher';
 
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        if (this.validateProperty(property, value)) {
           this.setPublicationInfo(property, value);
         }
       },
     },
     publicationYearField: {
       get() {
-        // TODO get this.currentYear to display in publicationYear dropdown
-        // TODO maybe implement rules to make publicationYear required
         return this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
 
-        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        if (this.validateProperty(property, value)) {
           this.setPublicationInfo(property, value);
         }
       },
@@ -281,27 +333,23 @@ export default {
       return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`;
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_PUBLICATION_INFO);
+      return getValidationMetadataEditingObject(this.stepKey);
     },
   },
   methods: {
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
 /*
-    validateData() {
-      try {
+    saveData() {
 
-        const validateData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+      this.$store.dispatch(
+          `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET}`,
+          {
+            id : this.$route.params.metadataid,
+            stepKey: this.stepKey,
+          });
 
-        this.validations.validateSync(validateData);
-
-      } catch (e) {
-        console.error(`Got validation Error ${e}`);
-
-        this.validationErrors[e.params.path] = e.message;
-        this.dataIsValid = false;
-        return;
-      }
-
-      this.dataIsValid = true;
     },
 */
     getCurrentYear() {
@@ -319,10 +367,10 @@ export default {
         year--;
       }
     },
-    addFunderObj(localFunders) {
+    addFunderObj(localfunders) {
 
       // Assign lastFunder to last item in this.funderArray
-      const lastFunder = localFunders[localFunders.length - 1];
+      const lastFunder = localfunders[localfunders.length - 1];
 
       // Assign lastFunderInstitution to value of institution key in lastFunder
       const lastFunderInstitution = lastFunder.institution;
@@ -336,26 +384,26 @@ export default {
       // If addFunder is true and length of funderArray is less than maxFunders then push new funder object to funderArray
       // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
       // Else it funderArray is less than maxFunders then assign maxFundersReached to false
-      if (addFunder && localFunders.length < this.maxFunders) {
-        localFunders.push({...this.emptyEntry});
+      if (addFunder && localfunders.length < this.maxFunders) {
+        localfunders.push({...this.emptyEntry});
 
-        const sizeDiff = localFunders.length - this.validationErrors.funders.length;
+        const sizeDiff = localfunders.length - this.validationErrors.funders.length;
 
         for (let i = 0; i < sizeDiff; i++) {
           this.validationErrors.funders.push({...this.emptyEntry});
         }
       }
     },
-    removeUnusedEntry(localFunders) {
+    removeUnusedEntry(localfunders) {
 
-      const lastFunder = localFunders[localFunders.length - 1];
+      const lastFunder = localfunders[localfunders.length - 1];
 
        // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
       const isEmpty = isObjectEmpty(lastFunder);
 
-      // If isEmpty is true and localFunders has at least one item then remove last element of array
-      if (isEmpty && localFunders.length > 0) {
-        localFunders.pop();
+      // If isEmpty is true and localfunders has at least one item then remove last element of array
+      if (isEmpty && localfunders.length > 0) {
+        localfunders.pop();
         this.validationErrors.funders.pop();
       }
     },
@@ -378,8 +426,9 @@ export default {
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_PUBLICATION_INFO,
+        object: this.stepKey,
         data: newPublicationInfo,
+        property: property.toString(),
       });
     },
     notifyChange(index, property, value) {
@@ -446,9 +495,11 @@ export default {
       publicationMaxFunders: 5,
       publicationYearsList: 30,
     },
+    stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
     BaseRectangleButton,
+    BaseStatusLabelView,
   },
 };
 
