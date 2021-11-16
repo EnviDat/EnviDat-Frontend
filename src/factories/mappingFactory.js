@@ -50,12 +50,12 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
-    ['licenseId','license_id'],
-    ['licenseTitle','license_title'],
-    ['licenseUrl','license_url'],
+    ['dataLicenseId','license_id'],
+    ['dataLicenseTitle','license_title'],
+    ['dataLicenseUrl','license_url'],
   ],
   [EDITMETADATA_DATA_GEO]: [
-    ['geoJSON','spatial'],
+    ['location','spatial'],
   ],
   [EDITMETADATA_RELATED_PUBLICATIONS]: [
     ['relatedPublicationsText', 'related_publications'],
@@ -67,7 +67,7 @@ const JSONFrontendBackendRules = {
     ['customFields', 'extras'],
   ],
   [EDITMETADATA_ORGANIZATION]: [
-    ['', ''],
+    ['organization', 'organization'],
   ],
   [EDITMETADATA_PUBLICATION_INFO]: [
     ['publicationState','publication_state'],

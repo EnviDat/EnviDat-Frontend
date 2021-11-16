@@ -177,6 +177,11 @@ const emptyMetadataInEditing = {
   [EDITMETADATA_DATA_INFO]: {
     dates: [],
     dataLicense: '',
+/*
+    dataLicenseId: '',
+    dataLicenseTitle: '',
+    dataLicenseUrl: '',
+*/
   },
   [EDITMETADATA_DATA_GEO]: {
     location: null,

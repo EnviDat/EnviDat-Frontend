@@ -17,10 +17,13 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER, EDITMETADATA_ORGANIZATION, EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
+import { populateEditingComponents } from '@/modules/user/store/userActions';
 
 const mappingTestData = require('@/../public/testdata/mappingTestData.json');
 
@@ -128,9 +131,9 @@ describe('getFrontendJSON', () => {
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const dataInfoData = getFrontendJSON(EDITMETADATA_DATA_INFO, snakeCaseJSON)
 
-    expect(dataInfoData.licenseId).toBe(snakeCaseJSON.license_id);
-    expect(dataInfoData.licenseTitle).toBe(snakeCaseJSON.license_title);
-    expect(dataInfoData.licenseUrl).toBe(snakeCaseJSON.license_url);
+    expect(dataInfoData.dataLicenseId).toBe(snakeCaseJSON.license_id);
+    expect(dataInfoData.dataLicenseTitle).toBe(snakeCaseJSON.license_title);
+    expect(dataInfoData.dataLicenseUrl).toBe(snakeCaseJSON.license_url);
 
     const array = dataInfoData.dates;
     expect(array).toBeInstanceOf(Array);
@@ -155,8 +158,8 @@ describe('getFrontendJSON', () => {
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const geoData = getFrontendJSON(EDITMETADATA_DATA_GEO, snakeCaseJSON)
 
-    expect(geoData.geoJSON.type).toBe(snakeCaseJSON.spatial.type);
-    expect(geoData.geoJSON.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
+    expect(geoData.location.type).toBe(snakeCaseJSON.spatial.type);
+    expect(geoData.location.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
 
   });
 
@@ -197,7 +200,26 @@ describe('getFrontendJSON', () => {
   });
 
 
-  // EDITMETADATA_ORGANIZATION
+
+  it(EDITMETADATA_ORGANIZATION, () => {
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const organizationData = getFrontendJSON(EDITMETADATA_ORGANIZATION, snakeCaseJSON)
+
+    const frontendOrganization = organizationData.organization;
+    const backendOrganization = mappingTestData.organization;
+
+    expect(frontendOrganization.id).toBe(backendOrganization.id);
+    expect(frontendOrganization.name).toBe(backendOrganization.name);
+    expect(frontendOrganization.title).toBe(backendOrganization.title);
+    expect(frontendOrganization.type).toBe(backendOrganization.type);
+    expect(frontendOrganization.description).toBe(backendOrganization.description);
+
+    expect(frontendOrganization.imageUrl).toBe(backendOrganization.image_url);
+    expect(frontendOrganization.created).toBe(backendOrganization.created);
+    expect(frontendOrganization.isOrganization).toBe(backendOrganization.is_organization);
+    expect(frontendOrganization.approvalStatus).toBe(backendOrganization.approval_status);
+    expect(frontendOrganization.state).toBe(backendOrganization.state);
+  });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
 
@@ -207,7 +229,7 @@ describe('getFrontendJSON', () => {
     expect(publicationData.publicationState).toBe(mappingTestData.publication_state);
     expect(publicationData.doi).toBe(mappingTestData.doi);
 
-    const publication = convertJSON(snakeCaseJSON.publication);
+    const publication = snakeCaseJSON.publication;
 
     expect(publicationData.publisher).toBe(publication.publisher);
     expect(publicationData.publicationYear).toBe(publication.publication_year);
@@ -370,18 +392,18 @@ describe('getBackendJSON', () => {
 
     const frontendJSON = {
       dates,
-      licenseId: mappingTestData.license_id,
-      licenseTitle: mappingTestData.license_title,
-      licenseUrl: mappingTestData.license_url,
+      dataLicenseId: mappingTestData.license_id,
+      dataLicenseTitle: mappingTestData.license_title,
+      dataLicenseUrl: mappingTestData.license_url,
     }
 
     const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
     const dataInfoData = getBackendJSON(EDITMETADATA_DATA_INFO, frontendDataInfo)
 
-    expect(dataInfoData.license_id).toBe(frontendDataInfo.licenseId);
-    expect(dataInfoData.license_title).toBe(frontendDataInfo.licenseTitle);
-    expect(dataInfoData.license_url).toBe(frontendDataInfo.licenseUrl);
+    expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
+    expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
+    expect(dataInfoData.license_url).toBe(frontendDataInfo.dataLicenseUrl);
 
     const array = dataInfoData.date;
     expect(array).toBeInstanceOf(Array);
@@ -410,20 +432,20 @@ describe('getBackendJSON', () => {
     const spatial = JSON.parse(mappingTestData.spatial);
 
     const frontendJSON = {
-      geoJSON: spatial,
+      location: spatial,
     }
 
     const frontendGeoInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
     const geoData = getBackendJSON(EDITMETADATA_DATA_GEO, frontendGeoInfo)
 
-    expect(geoData.spatial.type).toBe(frontendJSON.geoJSON.type);
-    expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.geoJSON.coordinates);
+    expect(geoData.spatial.type).toBe(frontendJSON.location.type);
+    expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.location.coordinates);
 
     const flatJSON = convertJSON(geoData, true);
 
     expect(flatJSON.spatial.includes('type')).toBeTruthy();
     expect(flatJSON.spatial.includes('coordinates')).toBeTruthy();
-    expect(flatJSON.spatial.includes(frontendJSON.geoJSON.type)).toBeTruthy();
+    expect(flatJSON.spatial.includes(frontendJSON.location.type)).toBeTruthy();
 
   });
 
@@ -476,7 +498,29 @@ describe('getBackendJSON', () => {
 
   });
 
-  // EDITMETADATA_ORGANIZATION
+  it(EDITMETADATA_ORGANIZATION, () => {
+
+    const frontendOrganizationInfo = getObjectInOtherCase({
+      organization: mappingTestData.organization,
+    }, toCamelCase);
+
+    const organizationData = getBackendJSON(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo)
+
+    const backendOrganization = organizationData.organization;
+    const frontendOrganization = frontendOrganizationInfo.organization;
+
+    expect(frontendOrganization.id).toBe(backendOrganization.id);
+    expect(frontendOrganization.name).toBe(backendOrganization.name);
+    expect(frontendOrganization.title).toBe(backendOrganization.title);
+    expect(frontendOrganization.type).toBe(backendOrganization.type);
+    expect(frontendOrganization.description).toBe(backendOrganization.description);
+
+    expect(frontendOrganization.imageUrl).toBe(backendOrganization.image_url);
+    expect(frontendOrganization.created).toBe(backendOrganization.created);
+    expect(frontendOrganization.isOrganization).toBe(backendOrganization.is_organization);
+    expect(frontendOrganization.approvalStatus).toBe(backendOrganization.approval_status);
+    expect(frontendOrganization.state).toBe(backendOrganization.state);
+  });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
 
@@ -522,6 +566,25 @@ describe('getBackendJSON', () => {
     expect(flatJSON.publication.includes('publisher')).toBeTruthy();
     expect(flatJSON.publication.includes('publication_year')).toBeTruthy();
 
+  });
+
+});
+
+describe('populateEditingComponents', () => {
+
+  const mockCommit = (mutationName, payload, options) => {
+    // console.log(`Received mutation for ${payload.object} with data: ${JSON.stringify(payload.data)} and options: ${JSON.stringify(options)}`);
+
+    const keys = Object.keys(payload.data);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const strValue = payload.data[key].toString();
+      expect(key.includes('_')).toBeFalsy();
+    }
+  }
+
+  it('with mock commit', () => {
+    populateEditingComponents(mockCommit, mappingTestData);
   });
 
 });

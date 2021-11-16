@@ -32,9 +32,12 @@ import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
-  METADATA_EDITING_PATCH_DATASET,
-  METADATA_EDITING_PATCH_DATASET_ERROR,
-  METADATA_EDITING_PATCH_DATASET_SUCCESS,
+  METADATA_EDITING_PATCH_DATASET_OBJECT,
+  METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
+  METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
+  METADATA_EDITING_PATCH_DATASET_PROPERTY,
+  METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
+  METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -102,15 +105,38 @@ function extractError(store, reason, errorProperty = 'error') {
 
 function createErrorMessage(reason) {
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let details = '';
 
   if (reason?.response) {
     msg = 'Saving failed ';
-    msg += reason.response.status === 403 ? ' your are not authorized' : reason.response.statusText;
+    if (reason.response.status === 403) {
+      msg += ' you are not authorized';
+    }
+    const errorObj =reason.response?.data?.error || null;
+
+    if (errorObj) {
+
+      if (errorObj.__junk && errorObj.__type) {
+        details += `${errorObj.__type} ${errorObj.__junk}`;
+      } else {
+        const errKeys = Object.keys(errorObj);
+        for (let i = 0; i < errKeys; i++) {
+          const key = errKeys[i];
+          details += `${key} ${errorObj[key]}`;
+        }
+      }
+
+    } else {
+      details += reason.response.statusText;
+    }
   } else if (reason?.message) {
-    msg = reason.message;
+    details = reason.message;
   }
 
-    return msg;
+  return {
+    message: msg,
+    details,
+  };
 }
 
 function resetErrorObject(state) {
@@ -337,11 +363,11 @@ export default {
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
   },
-  [METADATA_EDITING_PATCH_DATASET](state, stepKey) {
+  [METADATA_EDITING_PATCH_DATASET_PROPERTY](state, stepKey) {
     const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
     editingObject.loading = true;
   },
-  [METADATA_EDITING_PATCH_DATASET_SUCCESS](state, { stepKey, message }) {
+  [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](state, { stepKey, message }) {
     const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
     editingObject.loading = false;
     editingObject.message = message;
@@ -350,14 +376,46 @@ export default {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
   },
-  [METADATA_EDITING_PATCH_DATASET_ERROR](state, { stepKey, reason }) {
+  [METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR](state, { stepKey, reason }) {
     const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
     editingObject.loading = false;
-    editingObject.error = createErrorMessage(reason);
+    const errorObj = createErrorMessage(reason);
+    editingObject.error = errorObj.message;
+    editingObject.errorDetails = errorObj.details;
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
+  },
+  [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = true;
+    editingObject.message = null;
+    editingObject.messageDetails = null;
+    editingObject.error = null;
+    editingObject.errorDetails = null;
+  },
+  [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = false;
+    editingObject.message = message;
+
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+    }, state.metadataSavingMessageTimeoutTime);
+  },
+  [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
+    const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
+    editingObject.loading = false;
+    const errorObj = createErrorMessage(reason);
+    editingObject.error = errorObj.message;
+    editingObject.errorDetails = errorObj.details;
+
+/*
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
+    }, state.metadataSavingErrorTimeoutTime);
+*/
   },
   resetMessage(state, stepKey) {
     const editingObject = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);

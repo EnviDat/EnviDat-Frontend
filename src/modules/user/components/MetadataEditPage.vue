@@ -29,18 +29,11 @@
 import {
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
-  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
@@ -48,18 +41,6 @@ import {
   SELECT_EDITING_RESOURCE,
 } from '@/factories/eventBus';
 
-import {
-  createBody,
-  createFunding,
-  createHeader,
-  createDates,
-  createLocation,
-  createPublications,
-  createPublishingInfo,
-  createResources,
-} from '@/factories/metaDataFactory';
-
-import { createAuthors } from '@/factories/authorFactory';
 
 import {
   getStepByName,
@@ -73,7 +54,7 @@ import {
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LOAD_DATASET,
-  METADATA_EDITING_PATCH_DATASET,
+  METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -131,10 +112,13 @@ export default {
   },
   computed: {
     ...mapState(USER_NAMESPACE, ['metadataInEditing']),
+    ...mapState(METADATA_NAMESPACE,[
+      'authorsMap',
+      'currentMetadataContent',
+    ]),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
       'currentMetadataContent',
-      'authorsMap',
       'existingAuthors',
       'existingKeywords',
     ]),
@@ -143,6 +127,35 @@ export default {
      */
     metadataId() {
       return this.$route.params.metadataid;
+    },
+  },
+  watch: {
+    authorsMap() {
+
+/*
+      const backendJson = convertJSON(this.currentMetadataContent, false);
+
+      const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
+      const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
+*/
+
+/*      this.editComponentsChanged({
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: authors,
+      })
+      */
+
+/*
+      this.$store.commit(
+        `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+        {
+          object: EDITMETADATA_AUTHOR_LIST,
+          data: authors,
+        },
+      );
+
+      this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
+*/
     },
   },
   methods: {
@@ -187,8 +200,8 @@ export default {
       );
     },
     editComponentsChanged(updateObj) {
-      // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
 
+      // save the data in the (frontend) vuex store
 /*
       this.$store.commit(
         `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
@@ -196,34 +209,51 @@ export default {
       );
 */
 
+      // save the full dataObject it in the backend
       this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET}`,
+        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_OBJECT}`,
         {
           stepKey: updateObj.object,
+          data: updateObj.data,
           id: this.$route.params.metadataid,
         }
       );
 
+/*
+      this.$store.dispatch(
+        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_PROPERTY}`,
+        {
+          stepKey: updateObj.object,
+          id: this.$route.params.metadataid,
+          property: updateObj.property,
+          value: updateObj.data[updateObj.property],
+        }
+      );
+*/
+
+/*
       this.$nextTick(() => {
         this.enhanceKeywordsStep(updateObj.object);
         this.enhanceMetadataHeaderStep(updateObj.object);
 
-        if (updateObj.object === EDITMETADATA_AUTHOR) {
-          this.updateExistingAuthors(updateObj);
-        }
+        // if (updateObj.object === EDITMETADATA_AUTHOR) {
+        //  this.updateExistingAuthors(updateObj.data);
+        // }
 
         this.updateStepStatus(updateObj.object);
       });
+*/
+
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
         key,
       );
     },
-    updateExistingAuthors(updateObj) {
+    updateExistingAuthors(data) {
       this.$store.commit(
         `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
-        updateObj.data,
+        data,
       );
     },
     enhanceKeywordsStep(updatedKey) {
@@ -274,12 +304,6 @@ export default {
         });
       }
     },
-    emitEditObjUpdateEvent(eventName, dataObj) {
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: eventName,
-        data: dataObj,
-      });
-    },
     updateStepStatus(stepKey) {
       const step = getStepByName(stepKey, this.metadataCreationSteps);
 
@@ -325,106 +349,6 @@ export default {
 
       step.error = null;
       return true;
-    },
-    populateEditingComponents(metadataRecord) {
-      // ** Populate the editing form with existing metadata **
-
-      // Stepper 1: Header, Description, Keywords, Authors
-      const headerFull = createHeader(
-        metadataRecord,
-        this.$vuetify.breakpoint.smAndDown,
-      );
-      const splitName = headerFull.contactName.split(' ');
-      // headerFull.fullName = headerFull.contactName;
-      const basicInfo = {
-        metadataTitle: headerFull.metadataTitle,
-        contactAuthor: {
-          contactEmail: headerFull.contactEmail,
-          contactGivenName: splitName[0],
-          contactSurname: splitName[1],
-        },
-      };
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_HEADER, basicInfo);
-
-      const descriptionFull = createBody(
-        metadataRecord,
-        this.$vuetify.breakpoint.smAndDown,
-      );
-      this.emitEditObjUpdateEvent(EDITMETADATA_MAIN_DESCRIPTION, {
-        description: descriptionFull.text,
-      });
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_KEYWORDS, {
-        keywords: headerFull.tags,
-      });
-
-      const authors = createAuthors(metadataRecord);
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_AUTHOR_LIST, {
-        authors,
-      });
-
-      // Stepper 2: Data Resources, Info, Location
-      const resourcesFull = createResources(metadataRecord);
-
-      this.emitEditObjUpdateEvent(
-        EDITMETADATA_DATA_RESOURCES,
-        resourcesFull.resources,
-      );
-
-      const metadataDates = createDates(metadataRecord);
-
-      const dataInfo = {
-        dates: metadataDates.dates,
-        dataLicense: metadataRecord.license_title,
-      };
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_INFO, dataInfo);
-
-      const location = createLocation(metadataRecord);
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_DATA_GEO, {
-        location,
-      });
-
-      // Stepper 3: Related Info, Custom Fields
-      const relatedPublications = createPublications(metadataRecord);
-      // To extract publication IDs from text use:
-      // this.$store.dispatch(`${METADATA_NAMESPACE}/${EXTRACT_IDS_FROM_TEXT}`, {
-      //   text: this.publications?.text,
-      //   idDelimiter: this.publicationsConfig?.idDelimiter,
-      //   idPrefix: this.publicationsConfig?.idPrefix,
-      // });
-      this.emitEditObjUpdateEvent(EDITMETADATA_RELATED_PUBLICATIONS, {
-        relatedPublicationsText: relatedPublications.text,
-      });
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_CUSTOMFIELDS, {
-        customFields: metadataRecord.extras,
-      });
-
-      // Stepper 4: Publication Info, Organization
-      const publicationInfoFull = createPublishingInfo(metadataRecord);
-      const funding = createFunding(metadataRecord);
-      const publicationInfo = {
-        ...publicationInfoFull,
-        funders: funding,
-      };
-
-      this.emitEditObjUpdateEvent(EDITMETADATA_PUBLICATION_INFO, {
-        ...publicationInfo,
-      });
-
-      // // // Failing in EditPublicationInfo?
-      // // // "Cannot read property 'institution' of undefined"
-      // this.emitEditObjUpdateEvent(
-      //   "EDITMETADATA_PUBLICATION_INFO",
-      //   publicationInfo
-      // );
-      // this.emitEditObjUpdateEvent("EDITMETADATA_ORGANIZATION",
-      //   {organization: metadataRecord.organization.name}
-      // );
     },
   },
   components: {
