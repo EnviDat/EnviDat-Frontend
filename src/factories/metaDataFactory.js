@@ -195,23 +195,32 @@ export function createDates(dataset) {
     return null;
   }
 
-  const datesArr =
-    typeof dataset.date === 'string' ? JSON.parse(dataset.date) : null;
+  const datesArr = typeof dataset.date === 'string' ?
+                    JSON.parse(dataset.date) :
+                    dataset.date;
+  
   if (!datesArr) {
     return null;
   }
 
   const formattedDatesArr = [];
   datesArr.forEach((dateEntry) => {
-    const dateStart = dateEntry.date !== '' ? formatDate(dateEntry.date) : null;
-    const dateEnd =
-      dateEntry.end_date !== '' ? formatDate(dateEntry.end_date) : null;
-    const formattedDateEntry = {
-      dateStart: formatDate(dateStart),
-      dateEnd: formatDate(dateEnd),
-      dateType: dateEntry?.date_type,
-    };
-    formattedDatesArr.push(formattedDateEntry);
+    const dateStart = dateEntry.date || null;
+    const dateEnd = dateEntry.end_date || dateEntry.endDate || null;
+    const type = dateEntry.date_type || dateEntry.dateType || null;
+
+    const start = formatDate(dateStart) || '';
+    const end = formatDate(dateEnd) || '';
+
+    if (type === null) {
+      throw Error(`dateType of Dates array should never be null! ${JSON.stringify(dateEntry)}`);
+    }
+
+    formattedDatesArr.push({
+      dateStart: start,
+      dateEnd: end,
+      dateType: type,
+    });
   });
 
   return { dates: formattedDatesArr };
@@ -765,12 +774,15 @@ export function createLocation(dataset) {
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
 
-    let spatialJSON = null;
-    try {
-      spatialJSON = JSON.parse(dataset.spatial);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(`MetaDataFactory: geojson parsing error ${error}`);
+    let spatialJSON = dataset.spatial;
+
+    if (typeof dataset.spatial === 'string') {
+      try {
+        spatialJSON = JSON.parse(dataset.spatial);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(`MetaDataFactory: geojson parsing error ${error}`);
+      }
     }
 
     if (spatialJSON) {
