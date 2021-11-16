@@ -27,6 +27,7 @@ export const METADATA_FUNDING_TITLE = 'Funding Information';
 export const METADATA_LOCATION_TITLE = 'Geospatial Information';
 export const METADATA_RESOURCES_TITLE = 'Data and resources';
 
+export const EDIT_METADATA_MAIN_TITLE = 'Metadata Main Information';
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORS_TITLE = 'Select an Author for Editing';
 export const EDIT_ORGANIZATION_TITLE = 'Choose the Organization(s) for this Dataset';

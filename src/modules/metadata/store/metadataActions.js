@@ -427,7 +427,7 @@ export default {
 
     existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-    // enhance the entries that the selection button shows up on the resourceCard
+    // enhance the entries that the selection button shows up on the authorCard
     // don't do it for now to disable Author Editing
     // enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
 

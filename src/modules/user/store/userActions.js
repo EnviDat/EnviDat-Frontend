@@ -29,6 +29,7 @@ import {
 } from '@/factories/metaDataFactory';
 
 import {
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -36,13 +37,14 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER, EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import { createAuthors } from '@/factories/authorFactory';
+import { getDataCredit } from '@/factories/authorFactory';
 import {
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
@@ -121,8 +123,17 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
   commitEditingData(commit, stepKey, keywordsData);
 
   stepKey = EDITMETADATA_AUTHOR_LIST;
-  const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON)
-  const authors = createAuthors({ author: backendAuthors.authors });
+  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON)
+
+  const authors = []
+  snakeCaseJSON.author.forEach((bAuthor) => {
+
+    const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+    author.dataCredit = getDataCredit(bAuthor);
+
+    authors.push(author);
+  })
+  // const authors = createAuthors({ author: backendAuthors.authors });
   // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors })
 
   commitEditingData(commit, stepKey, {
@@ -191,6 +202,25 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
 
 }
 
+function cleanAuthorsForBackend(authors) {
+
+  for (let i = 0; i < authors.length; i++) {
+    const author = authors[i];
+
+    const keys = Object.keys(author.dataCredits);
+
+    const dataCreditsArray = [];
+
+    for (let j = 0; j < keys.length; j++) {
+      const key = keys[j];
+      dataCreditsArray.push(key);
+    }
+
+    author.dataCredits = dataCreditsArray;
+
+  }
+}
+
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_DATA_INFO,
@@ -200,6 +230,10 @@ const dataNeedsStringify = [
 
 function mapBackendData(stepKey, frontendData) {
 
+  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    cleanAuthorsForBackend(frontendData);
+  }
+
   let backendData = getBackendJSON(stepKey, frontendData);
 
   if (dataNeedsStringify.includes(stepKey)) {
@@ -208,6 +242,7 @@ function mapBackendData(stepKey, frontendData) {
 
   return backendData;
 }
+
 
 /*
 function mapFrontendData(stepKey, backendData) {

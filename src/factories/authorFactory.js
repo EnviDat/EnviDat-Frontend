@@ -26,7 +26,10 @@ export function getAuthorName(author) {
   let fullName = author.fullName;
 
   if (!fullName) {
-    fullName = `${author.given_name ? author.given_name.trim() : ''} ${author.name ? author.name.trim() : ''}`;
+    const firstName = author.given_name || author.firstName || '';
+    const lastName = author.name || author.lastName || '';
+
+    fullName = `${firstName.trim()} ${lastName.trim()}`;
   }
 
   return fullName.trim();
@@ -101,8 +104,8 @@ export function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredits[author.data_credit] = 1;
   } else {
-    // console.log(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
-    throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
+    console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
+    // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
   return dataCredits;

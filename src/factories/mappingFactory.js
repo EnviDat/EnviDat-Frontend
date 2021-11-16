@@ -12,6 +12,7 @@
 */
 
 import {
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -19,7 +20,8 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER, EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
@@ -27,6 +29,7 @@ import {
 
 /**
  * Json conversion rules from frontend to backend and vise versa
+ * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
 const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_HEADER]: [
@@ -41,6 +44,17 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_KEYWORDS]: [
     ['keywords','tags'],
+  ],
+  [EDITMETADATA_AUTHOR]: [
+    ['firstName','given_name'],
+    ['lastName','name'],
+    ['email','email'],
+    ['dataCredit','data_credit'],
+    ['id.type','identifier_scheme'],
+    ['id.identifier','identifier'],
+    ['affiliations.affiliation1','affiliation'],
+    ['affiliations.affiliation2','affiliation_02'],
+    ['affiliations.affiliation3','affiliation_03'],
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
