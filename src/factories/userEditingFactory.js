@@ -30,20 +30,20 @@ import MetadataCreationDataInfo from '@/modules/user/components/MetadataCreation
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 
 import {
-  EDITMETADATA_MAIN,
-  EDITMETADATA_DATA,
   EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_RELATED_DATASETS,
+  EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
@@ -52,74 +52,6 @@ import testOrganizations from '@/../stories/js/organizations';
 import * as yup from 'yup';
 
 const allOrganizations = getOrganizationMap(testOrganizations);
-
-/**
- * Code from https://stackoverflow.com/questions/54246477/how-to-convert-camelcase-to-snake-case-in-javascript
- * @param {String} inputString camelCaseString
- * @returns {String} snake_case_string
- */
-export function toSnakeCase(inputString) {
-  return inputString
-    .split('')
-    .map((character) => {
-      if (character === character.toUpperCase()) {
-        return `_${character.toLowerCase()}`;
-      }
-
-      return character;
-    })
-    .join('');
-}
-
-/**
- * Code from https://stackoverflow.com/a/61375162/2733509
- * @param {String} snake_case_string
- * @returns {String} camelCaseString
- */
-// eslint-disable-next-line camelcase
-export function toCamelCase(snake_case_string) {
-  return snake_case_string.toLowerCase().replace(/([-_][a-z])/g, (group) =>
-    group
-      .toUpperCase()
-      //        .replace('-', '')
-      .replace('_', ''),
-  );
-}
-
-export function getObjectInOtherCase(fromCaseObject, caseConversionFunc) {
-  const properties = Object.keys(fromCaseObject);
-  const toCaseObject = {};
-
-  for (let i = 0; i < properties.length; i++) {
-    const fromCaseProp = properties[i];
-    const otherCaseProp = caseConversionFunc(fromCaseProp);
-
-    let value = fromCaseObject[fromCaseProp];
-
-    if (value instanceof Array) {
-      // eslint-disable-next-line no-use-before-define
-      value = getArrayInOtherCase(value, caseConversionFunc);
-    }
-
-    toCaseObject[otherCaseProp] = value;
-  }
-
-  return toCaseObject;
-}
-
-export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
-  if (fromCaseArray.length <= 0 || typeof fromCaseArray[0] !== 'object') {
-    return fromCaseArray;
-  }
-
-  const otherCaseArray = [];
-  for (let i = 0; i < fromCaseArray.length; i++) {
-    const obj = fromCaseArray[i];
-    otherCaseArray[i] = getObjectInOtherCase(obj, caseConversionFunc);
-  }
-
-  return otherCaseArray;
-}
 
 export function updateEditingArray(
   store,
@@ -132,9 +64,8 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match =
-      el[localIdProperty] === newElement[localIdProperty] ||
-      el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[localIdProperty] === newElement[localIdProperty]
+                || el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -155,8 +86,7 @@ export function updateEditingArray(
 }
 
 export function updateResource(store, state, payload) {
-  const resources =
-    state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
   const newRes = payload.data;
 
   updateEditingArray(store, resources, newRes, 'id');
@@ -199,8 +129,7 @@ export function setSelected(
 
     // check for newly created entries (local only)
     // with the localIdProperty first
-    const match =
-      element[localIdProperty] === id || element[propertyToCompare] === id;
+    const match = element[localIdProperty] === id || element[propertyToCompare] === id;
 
     if (match) {
       element.isSelected = selected;
@@ -362,7 +291,7 @@ export function initializeSteps(steps, editingState) {
   for (let i = 0; i < steps.length; i++) {
     const s = steps[i];
 
-    const filteredKeys = editingKeys.filter((k) => k === s.key);
+    const filteredKeys = editingKeys.filter(k => k === s.key);
     const editStateKey = filteredKeys[0] || null;
 
     if (editStateKey) {
@@ -408,7 +337,7 @@ export function getEmptyMetadataInEditingObject() {
 
 // Returns true if all values in obj are null or empty strings, else returns false
 export function isObjectEmpty(obj) {
-  return Object.values(obj).every((x) => x === null || x === '');
+  return Object.values(obj).every(x => x === null || x === '');
 }
 
 export function deleteEmptyObject(index, localObjects) {
