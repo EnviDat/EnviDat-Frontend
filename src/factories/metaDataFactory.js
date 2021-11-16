@@ -150,10 +150,7 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     maintainer = JSON.parse(dataset.maintainer);
   }
 
-  let contactEmail = dataset.maintainer_email;
-  if (!dataset.maintainer_email && maintainer) {
-    contactEmail = maintainer.email ? maintainer.email : '';
-  }
+  const contactEmail = maintainer.email ? maintainer.email : '';
 
   const license = createLicense(dataset);
 

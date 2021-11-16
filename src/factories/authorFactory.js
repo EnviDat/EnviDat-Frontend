@@ -166,14 +166,15 @@ export function createAuthors(dataset) {
 
   return authorObjs;
 }
+
 function overwriteDataCredit(author, existingAuthor) {
-  const keys = Object.keys(author.data_credit);
+  const keys = Object.keys(author.dataCredit);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    const value = author.data_credit[key];
+    const value = author.dataCredit[key];
 
-    let existingValue = existingAuthor.data_credit[key];
+    let existingValue = existingAuthor.dataCredit[key];
 
     if (existingValue) {
       existingValue += value;
@@ -182,7 +183,7 @@ function overwriteDataCredit(author, existingAuthor) {
     }
 
     // console.log('for ' + author.name + ' set ' + key + ' ' + existingValue);
-    existingAuthor.data_credit[key] = existingValue;
+    existingAuthor.dataCredit[key] = existingValue;
   }
 }
 
@@ -199,6 +200,8 @@ export function getAuthorKey(author) {
 // make 1st loop over the datasets and store the authors on the authorMap
 // then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredits
+let noDataCredit = 0;
+
 export function extractAuthorsMap(datasets) {
   if (!datasets) { return null; }
 
@@ -219,12 +222,22 @@ export function extractAuthorsMap(datasets) {
       if (existingAuthor) {
         existingAuthor.datasetCount += author.datasetCount;
 
-        if (author.data_credit) {
-          if (existingAuthor.data_credit) {
+        if (author.dataCredit) {
+          if (existingAuthor.dataCredit) {
             overwriteDataCredit(author, existingAuthor);
           } else {
-            existingAuthor.data_credit = author.data_credit;
+            existingAuthor.dataCredit = author.dataCredit;
           }
+        } else {
+          noDataCredit++;
+        }
+
+        if (author.id.identifier && author.id.identifier !== existingAuthor.id.identifier) {
+          existingAuthor.id.identifier = author.id.identifier;
+        }
+
+        if (author.id.type && author.id.type !== existingAuthor.id.type) {
+          existingAuthor.id.type = author.id.type;
         }
 
         // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
@@ -240,6 +253,7 @@ export function extractAuthorsMap(datasets) {
     // console.log(`extracted ${authorCount} authors`);
   }
 
+  console.log(`counted noDataCredit ${noDataCredit} of ${Object.keys(authorMap).length}`)
   return authorMap;
 }
 

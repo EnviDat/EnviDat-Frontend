@@ -1,0 +1,527 @@
+// noinspection DuplicatedCode
+
+import {
+  getBackendJSON,
+  getFrontendJSON,
+  convertJSON,
+  getObjectInOtherCase,
+  toSnakeCase,
+  toCamelCase,
+} from '@/factories/mappingFactory';
+
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  EDITMETADATA_MAIN_HEADER, EDITMETADATA_ORGANIZATION, EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_RELATED_DATASETS,
+  EDITMETADATA_RELATED_PUBLICATIONS,
+} from '@/factories/eventBus';
+
+const mappingTestData = require('@/../public/testdata/mappingTestData.json');
+
+describe('getFrontendJSON', () => {
+
+  it(EDITMETADATA_MAIN_HEADER, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const headerData = getFrontendJSON(EDITMETADATA_MAIN_HEADER, snakeCaseJSON)
+
+    expect(headerData.metadataTitle).not.toBeNull();
+    expect(headerData.contactEmail).not.toBeNull();
+    expect(headerData.contactGivenName).not.toBeNull();
+    expect(headerData.contactSurname).not.toBeNull();
+    expect(headerData.license).not.toBeNull();
+
+    const maintainer = JSON.parse(mappingTestData.maintainer);
+
+    expect(headerData.metadataTitle).toBe(mappingTestData.title);
+    expect(headerData.contactEmail).toBe(maintainer.email);
+    expect(headerData.contactGivenName).toBe(maintainer.given_name);
+    expect(headerData.contactSurname).toBe(maintainer.name);
+    expect(headerData.license).toBe(mappingTestData.license_title);
+
+  });
+
+  it(EDITMETADATA_MAIN_DESCRIPTION, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const descData = getFrontendJSON(EDITMETADATA_MAIN_DESCRIPTION, snakeCaseJSON)
+
+    expect(descData.description).not.toBeNull();
+    expect(descData.description).toBe(snakeCaseJSON.notes);
+
+  });
+
+  it(EDITMETADATA_KEYWORDS, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const keywordsData = getFrontendJSON(EDITMETADATA_KEYWORDS, snakeCaseJSON)
+
+    expect(keywordsData.keywords).toBeInstanceOf(Array);
+
+    for (let i = 0; i < keywordsData.keywords.length; i++) {
+      const tag = keywordsData.keywords[i];
+      const backendTag = snakeCaseJSON.tags[i];
+
+      expect(tag.id).toBe(backendTag.id);
+      expect(tag.display_name).toBe(backendTag.displayName);
+      expect(tag.name).toBe(backendTag.name);
+      expect(tag.state).toBe(backendTag.state);
+      expect(tag.vocabulary_id).toBe(backendTag.vocabularyId);
+    }
+
+  });
+
+  it(EDITMETADATA_AUTHOR_LIST, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const authorsData = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, snakeCaseJSON)
+
+    expect(authorsData.authors).toBeInstanceOf(Array);
+
+    for (let i = 0; i < authorsData.authors.length; i++) {
+      const author = authorsData.authors[i];
+      expect(author.firstName).not.toBeNull();
+      expect(author.lastName).not.toBeNull();
+      expect(author.fullName).not.toBeNull();
+
+      expect(author.datasetCount > 0).toBeTruthy();
+      expect(author.affiliation).not.toBeNull();
+      expect(author.email).not.toBeNull();
+
+      expect(typeof author.dataCredit === 'string' || author.dataCredit instanceof Array).toBeTruthy();
+    }
+
+  });
+
+  it(EDITMETADATA_DATA_RESOURCES, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const resourceData = getFrontendJSON(EDITMETADATA_DATA_RESOURCES, snakeCaseJSON)
+
+    const array = resourceData.resources;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const res = array[i];
+      const backendRes = snakeCaseJSON.resources[i];
+
+      expect(res.id).toBe(backendRes.id);
+      expect(res.packageId).toBe(backendRes.package_id);
+      expect(res.name).toBe(backendRes.name);
+      expect(res.size).toBe(backendRes.size);
+      expect(res.lastModified).toBe(backendRes.last_modified);
+      expect(res.created).toBe(backendRes.created);
+      expect(res.url).toBe(backendRes.url);
+      expect(res.format).toBe(backendRes.format);
+    }
+
+  });
+
+  it(EDITMETADATA_DATA_INFO, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const dataInfoData = getFrontendJSON(EDITMETADATA_DATA_INFO, snakeCaseJSON)
+
+    expect(dataInfoData.licenseId).toBe(snakeCaseJSON.license_id);
+    expect(dataInfoData.licenseTitle).toBe(snakeCaseJSON.license_title);
+    expect(dataInfoData.licenseUrl).toBe(snakeCaseJSON.license_url);
+
+    const array = dataInfoData.dates;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const date = array[i];
+      const backendDate = snakeCaseJSON.date[i];
+
+      expect(mappingTestData.date.includes(date.date)).toBeTruthy()
+      expect(mappingTestData.date.includes(date.dateType)).toBeTruthy()
+      expect(mappingTestData.date.includes(date.endDate)).toBeTruthy()
+
+      expect(date.date).toBe(backendDate.date);
+      expect(date.dateType).toBe(backendDate.date_type);
+      expect(date.endDate).toBe(backendDate.end_date);
+    }
+
+  });
+
+  it(EDITMETADATA_DATA_GEO, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const geoData = getFrontendJSON(EDITMETADATA_DATA_GEO, snakeCaseJSON)
+
+    expect(geoData.geoJSON.type).toBe(snakeCaseJSON.spatial.type);
+    expect(geoData.geoJSON.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
+
+  });
+
+  it(EDITMETADATA_RELATED_PUBLICATIONS, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const relatedPubData = getFrontendJSON(EDITMETADATA_RELATED_PUBLICATIONS, snakeCaseJSON)
+
+    expect(relatedPubData.relatedPublicationsText).toBe(snakeCaseJSON.related_publications);
+
+  });
+
+  it(EDITMETADATA_RELATED_DATASETS, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const relatedDatasetsData = getFrontendJSON(EDITMETADATA_RELATED_DATASETS, snakeCaseJSON)
+
+    expect(relatedDatasetsData.relatedDatasetsText).toBe(snakeCaseJSON.related_datasets);
+
+  });
+
+  it(EDITMETADATA_CUSTOMFIELDS, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const customFieldsData = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS, snakeCaseJSON)
+
+    const array = customFieldsData.customFields;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const fields = array[i];
+      const backendFields = snakeCaseJSON.extras[i];
+
+      expect(fields.key).toBe(backendFields.key);
+      expect(fields.value).toBe(backendFields.value);
+    }
+
+  });
+
+
+  // EDITMETADATA_ORGANIZATION
+
+  it(EDITMETADATA_PUBLICATION_INFO, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const publicationData = getFrontendJSON(EDITMETADATA_PUBLICATION_INFO, snakeCaseJSON)
+
+    expect(publicationData.publicationState).toBe(mappingTestData.publication_state);
+    expect(publicationData.doi).toBe(mappingTestData.doi);
+
+    const publication = convertJSON(snakeCaseJSON.publication);
+
+    expect(publicationData.publisher).toBe(publication.publisher);
+    expect(publicationData.publicationYear).toBe(publication.publication_year);
+    expect(publicationData.funders).toBeInstanceOf(Array);
+
+    const array = publicationData.funders;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const funder = array[i];
+      const backendFunder = snakeCaseJSON.funding[i];
+
+      expect(funder.institution).toBe(backendFunder.institution);
+      expect(funder.institutionUrl).toBe(backendFunder.institution_url);
+      expect(funder.grantNumber).toBe(backendFunder.grant_number);
+    }
+
+  });
+
+});
+
+describe('getBackendJSON', () => {
+
+  it(EDITMETADATA_MAIN_HEADER, () => {
+
+    const inputMaintainer = JSON.parse(mappingTestData.maintainer);
+
+    const frontEndJSON = {
+      metadataTitle: mappingTestData.title,
+      contactEmail: inputMaintainer.email,
+      contactGivenName: inputMaintainer.given_name,
+      contactSurname: inputMaintainer.name,
+      license: mappingTestData.license_title,
+    }
+
+    const headerData = getBackendJSON(EDITMETADATA_MAIN_HEADER, frontEndJSON)
+
+    expect(headerData.title).not.toBeNull();
+    expect(headerData.maintainer).not.toBeNull();
+    expect(headerData.license_title).not.toBeNull();
+
+    expect(headerData.title).toBe(frontEndJSON.metadataTitle);
+    expect(headerData.maintainer.email).toBe(frontEndJSON.contactEmail);
+    expect(headerData.maintainer.given_name).toBe(frontEndJSON.contactGivenName);
+    expect(headerData.maintainer.name).toBe(frontEndJSON.contactSurname);
+    expect(headerData.license_title).toBe(frontEndJSON.license);
+
+    const flatJSON = convertJSON(headerData, true);
+
+    expect(flatJSON.title).toBe(frontEndJSON.metadataTitle);
+
+    expect(flatJSON.maintainer).not.toBeNull();
+    expect(typeof flatJSON.maintainer === 'string').toBeTruthy()
+    expect(flatJSON.maintainer.includes('given_name')).toBeTruthy()
+    expect(flatJSON.maintainer.includes('name')).toBeTruthy()
+    expect(flatJSON.maintainer.includes('email')).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON.contactEmail)).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON.contactGivenName)).toBeTruthy()
+    expect(flatJSON.maintainer.includes(frontEndJSON.contactSurname)).toBeTruthy()
+
+    expect(flatJSON.license_title).toBe(frontEndJSON.license);
+
+  });
+
+  it(EDITMETADATA_MAIN_DESCRIPTION, () => {
+
+    const frontendJSON = {
+      description: mappingTestData.notes,
+    }
+
+    const descData = getBackendJSON(EDITMETADATA_MAIN_DESCRIPTION, frontendJSON)
+
+    expect(descData.notes).not.toBeNull();
+    expect(descData.notes).toBe(frontendJSON.description);
+
+  });
+
+  it(EDITMETADATA_KEYWORDS, () => {
+
+    const frontendJSON = {
+      keywords: mappingTestData.tags,
+    }
+
+    const frontendKeywords = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const backEndKeywords = getBackendJSON(EDITMETADATA_KEYWORDS, frontendKeywords)
+
+    expect(backEndKeywords.tags).toBeInstanceOf(Array);
+
+    for (let i = 0; i < backEndKeywords.tags.length; i++) {
+      const tag = backEndKeywords.tags[i];
+      const frontendTag = frontendKeywords.keywords[i];
+
+      expect(tag.id).toBe(frontendTag.id);
+      expect(tag.display_name).toBe(frontendTag.displayName);
+      expect(tag.name).toBe(frontendTag.name);
+      expect(tag.state).toBe(frontendTag.state);
+      expect(tag.vocabulary_id).toBe(frontendTag.vocabularyId);
+    }
+
+  });
+
+  it(EDITMETADATA_AUTHOR_LIST, () => {
+
+    const authorArray = JSON.parse(mappingTestData.author);
+
+    const frontendAuthors = getObjectInOtherCase({ authors: authorArray }, toCamelCase);
+
+    const backEndAuthors = getBackendJSON(EDITMETADATA_AUTHOR_LIST, frontendAuthors)
+
+    expect(backEndAuthors.author).toBeInstanceOf(Array);
+
+    for (let i = 0; i < backEndAuthors.author.length; i++) {
+      const author = backEndAuthors.author[i];
+      expect(author.first_name).not.toBeUndefined();
+      expect(author.last_name).not.toBeUndefined();
+      expect(author.full_name).toBeUndefined();
+
+      expect(author.dataset_count > 0).toBeTruthy();
+      expect(author.affiliation).not.toBeUndefined();
+      expect(author.email).not.toBeUndefined();
+
+      expect(typeof author.data_credit === 'string' || author.data_credit instanceof Array).toBeTruthy();
+    }
+
+  });
+
+  it(EDITMETADATA_DATA_RESOURCES, () => {
+
+    const frontendJSON = {
+      resources: mappingTestData.resources,
+    }
+
+    const frontendResources = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const resourceData = getBackendJSON(EDITMETADATA_DATA_RESOURCES, frontendResources)
+
+    const array = resourceData.resources;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const res = array[i];
+      const frontendRes = frontendResources.resources[i];
+
+      expect(res.id).toBe(frontendRes.id);
+      expect(res.package_id).toBe(frontendRes.packageId);
+      expect(res.name).toBe(frontendRes.name);
+      expect(res.size).toBe(frontendRes.size);
+      expect(res.last_modified).toBe(frontendRes.lastModified);
+      expect(res.created).toBe(frontendRes.created);
+      expect(res.url).toBe(frontendRes.url);
+      expect(res.format).toBe(frontendRes.format);
+    }
+
+  });
+
+  it(EDITMETADATA_DATA_INFO, () => {
+
+    const dates = JSON.parse(mappingTestData.date);
+
+    const frontendJSON = {
+      dates,
+      licenseId: mappingTestData.license_id,
+      licenseTitle: mappingTestData.license_title,
+      licenseUrl: mappingTestData.license_url,
+    }
+
+    const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const dataInfoData = getBackendJSON(EDITMETADATA_DATA_INFO, frontendDataInfo)
+
+    expect(dataInfoData.license_id).toBe(frontendDataInfo.licenseId);
+    expect(dataInfoData.license_title).toBe(frontendDataInfo.licenseTitle);
+    expect(dataInfoData.license_url).toBe(frontendDataInfo.licenseUrl);
+
+    const array = dataInfoData.date;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const date = array[i];
+      const frontendDate = frontendDataInfo.dates[i];
+
+      expect(date.date).toBe(frontendDate.date);
+      expect(date.date_type).toBe(frontendDate.dateType);
+      expect(date.end_date).toBe(frontendDate.endDate);
+    }
+
+
+    const flatJSON = convertJSON(dataInfoData, true);
+
+    expect(flatJSON.date).not.toBeNull();
+    expect(typeof flatJSON.date === 'string').toBeTruthy()
+    expect(flatJSON.date.includes('date')).toBeTruthy()
+    expect(flatJSON.date.includes('date_type')).toBeTruthy()
+    expect(flatJSON.date.includes('end_date')).toBeTruthy()
+  });
+
+  it(EDITMETADATA_DATA_GEO, () => {
+
+    const spatial = JSON.parse(mappingTestData.spatial);
+
+    const frontendJSON = {
+      geoJSON: spatial,
+    }
+
+    const frontendGeoInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
+    const geoData = getBackendJSON(EDITMETADATA_DATA_GEO, frontendGeoInfo)
+
+    expect(geoData.spatial.type).toBe(frontendJSON.geoJSON.type);
+    expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.geoJSON.coordinates);
+
+    const flatJSON = convertJSON(geoData, true);
+
+    expect(flatJSON.spatial.includes('type')).toBeTruthy();
+    expect(flatJSON.spatial.includes('coordinates')).toBeTruthy();
+    expect(flatJSON.spatial.includes(frontendJSON.geoJSON.type)).toBeTruthy();
+
+  });
+
+  it(EDITMETADATA_RELATED_PUBLICATIONS, () => {
+
+    const frontendJSON = {
+      relatedPublicationsText: mappingTestData.related_publications,
+    }
+
+    const backendData = getBackendJSON(EDITMETADATA_RELATED_PUBLICATIONS, frontendJSON)
+
+    expect(backendData.related_publications).not.toBeNull();
+    expect(backendData.related_publications).toBe(frontendJSON.relatedPublicationsText);
+
+  });
+
+  it(EDITMETADATA_RELATED_DATASETS, () => {
+
+    const frontendJSON = {
+      relatedDatasetsText: mappingTestData.related_datasets,
+    }
+
+    const backendData = getBackendJSON(EDITMETADATA_RELATED_DATASETS, frontendJSON)
+
+    expect(backendData.related_datasets).not.toBeNull();
+    expect(backendData.related_datasets).toBe(frontendJSON.relatedDatasetsText);
+
+  });
+
+  it(EDITMETADATA_CUSTOMFIELDS, () => {
+
+    const frontendJSON = {
+      customFields: mappingTestData.extras,
+    }
+
+    const frontendCustomFields = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const extrasData = getBackendJSON(EDITMETADATA_CUSTOMFIELDS, frontendCustomFields)
+
+    const array = extrasData.extras;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const extra = array[i];
+      const frontendExtra = frontendCustomFields.customFields[i];
+
+      expect(extra.key).toBe(frontendExtra.key);
+      expect(extra.value).toBe(frontendExtra.value);
+    }
+
+  });
+
+  // EDITMETADATA_ORGANIZATION
+
+  it(EDITMETADATA_PUBLICATION_INFO, () => {
+
+    const publication = JSON.parse(mappingTestData.publication);
+    const funding = JSON.parse(mappingTestData.funding);
+
+    const frontendJSON = {
+      publicationState: mappingTestData.publication_state,
+      doi: mappingTestData.doi,
+      publisher: publication.publisher,
+      publicationYear: publication.publication_year,
+      funders: funding,
+    }
+
+    const frontendPublicationInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const publicationData = getBackendJSON(EDITMETADATA_PUBLICATION_INFO, frontendPublicationInfo)
+
+    expect(publicationData.publication_state).toBe(frontendJSON.publicationState);
+    expect(publicationData.doi).toBe(frontendJSON.doi);
+
+    expect(publicationData.publication.publisher).toBe(frontendJSON.publisher);
+    expect(publicationData.publication.publication_year).toBe(frontendJSON.publicationYear);
+
+    const array = publicationData.funding;
+    expect(array).toBeInstanceOf(Array);
+
+    for (let i = 0; i < array.length; i++) {
+      const funder = array[i];
+      const frontendFunder = frontendPublicationInfo.funders[i];
+
+      expect(funder.institution).toBe(frontendFunder.institution);
+      expect(funder.institution_url).toBe(frontendFunder.institutionUrl);
+      expect(funder.grant_number).toBe(frontendFunder.grantNumber);
+    }
+
+    const flatJSON = convertJSON(publicationData, true);
+
+    expect(flatJSON.funding.includes('institution')).toBeTruthy();
+    expect(flatJSON.funding.includes('institution_url')).toBeTruthy();
+    expect(flatJSON.funding.includes('grant_number')).toBeTruthy();
+
+    expect(flatJSON.publication.includes('publisher')).toBeTruthy();
+    expect(flatJSON.publication.includes('publication_year')).toBeTruthy();
+
+  });
+
+});
