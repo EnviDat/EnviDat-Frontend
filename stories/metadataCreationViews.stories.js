@@ -642,7 +642,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-
+          <EditMetadataHeader v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -656,7 +656,13 @@ contribute something to the general goal of your product. `,
     },
     methods: {
       editComponentsChanged(updateObj) {
-        this.emptyFirstGenericProps = updateObj.data;
+        // this.emptyFirstGenericProps = updateObj.data;
+        if (updateObj.data?.id === this.emptyFirstGenericProps.id) {
+          this.emptyFirstGenericProps = updateObj.data;
+        }
+        if (updateObj.data?.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+        }
       },
     },
     data: () => ({
@@ -673,7 +679,7 @@ contribute something to the general goal of your product. `,
         metadataTitle: 'My Glorious Title',
         contactEmail: 'sarah@smith.com',
         contactGivenName: 'Sarah',
-        contactSurname: 'Smith',
+        contactSurname: 'Miller',
       },
     }),
   }))
