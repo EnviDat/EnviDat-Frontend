@@ -265,9 +265,13 @@ export default {
     extractError(this, reason, 'userRecentOrgaDatasetsError');
   },
   [UPDATE_METADATA_EDITING](state, payload) {
+/*
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
       updateResource(this, state, payload);
-    } else if (payload.object === EDITMETADATA_AUTHOR) {
+    } else
+*/
+
+    if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload);
     } else if (payload.object === EDITMETADATA_CUSTOMFIELDS) {
 
@@ -277,7 +281,12 @@ export default {
 
 
     } else {
-      state.metadataInEditing[payload.object] = payload.data;
+      const current = state.metadataInEditing[payload.object];
+
+      state.metadataInEditing[payload.object] = {
+        ...current,
+        ...payload.data,
+      };
     }
   },
   [METADATA_EDITING_SAVE_RESOURCE](state, resource) {

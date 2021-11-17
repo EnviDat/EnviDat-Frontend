@@ -471,7 +471,8 @@ export default {
       .then((response) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
           stepKey,
-          message: `Saved ${stepKey} data for ${id}`,
+          message: 'Changes saved',
+          // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
         populateEditingComponents(commit, response.data.result)

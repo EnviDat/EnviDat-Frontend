@@ -1,14 +1,36 @@
 <template>
 
-<v-card id="EditRelatedDatasets" class="pa-4">
+<v-card id="EditRelatedDatasets"
+        class="pa-0"
+        :loading="loading">
 
   <v-container fluid
-                class="pa-0 fill-height" >
+                class="pa-4 fill-height" >
+
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
     <v-row>
-      <v-col >
-        <div class="text-h5">{{ EDIT_METADATA_RELATED_DATASETS_TITLE }}</div>
+      <v-col cols="6" class="text-h5">
+        {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
       </v-col>
+
+      <v-col v-if="message" >
+        <BaseStatusLabelView statusIcon="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error"  >
+
+        <BaseStatusLabelView statusIcon="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
     </v-row>
 
     <v-row>
@@ -22,7 +44,9 @@
       <v-col >
 
         <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                          @changedText="catchChangedText($event)">
+                                      :validationError="validationErrors[editingProperty]"
+                                      @inputedText="catchInputedText($event)"
+                                      @changedText="catchChangedText($event)">
           <MetadataRelatedDatasets :genericProps="datasetObject" />
         </GenericTextareaPreviewLayout>
 
@@ -54,10 +78,13 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
 
 export default {
   name: 'EditRelatedDatasets',
@@ -65,6 +92,26 @@ export default {
     relatedDatasetsText: {
       type: String,
       default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -79,39 +126,62 @@ export default {
     datasetObject() {
       return {
         datasets: {
-          text: this.relatedDatasetsText,
+          text: this.previewRelatedDatasetsText,
         },
       };
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_DATASETS);
+    },
+    previewRelatedDatasetsText() {
+      return this.previewText || this.relatedDatasetsText;
+    },
+  },
+  watch: {
+    loading() {
+      if (!this.loading && this.message) {
+        this.previewText = '';
+      }
+    },
   },
   methods: {
-    catchChangedText(event) {
-      this.setRelatedDatasetsText(event);
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
+    catchInputedText(value) {
+      this.previewText = value;
+      this.validateProperty(this.editingProperty, value);
+    },
+    catchChangedText(value) {
+      if (this.validateProperty(this.editingProperty, value)) {
+        this.setRelatedDatasetsText(value);
+      }
     },
     setRelatedDatasetsText(value) {
 
-      const newDataset = {
-        relatedDatasetsText: value,
-      };
-
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_DATASETS,
-        data: newDataset,
+        data: { [this.editingProperty]: value },
       });
     },
   },
   data: () => ({
+    previewText: '',
+    editingProperty: 'relatedDatasetsText',
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
       cardInstructions: 'Add references to other related datasets',
       subtitlePreview: 'Related Datasets Preview',
     },
-
+    validationErrors: {
+      relatedDatasetsText: null,
+    },
   }),
   components: {
     MetadataRelatedDatasets,
     GenericTextareaPreviewLayout,
+    BaseStatusLabelView,
   },
 };
 

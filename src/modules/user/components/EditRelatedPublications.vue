@@ -1,14 +1,36 @@
 <template>
 
-<v-card id="EditRelatedPublications" class="pa-4">
+<v-card id="EditRelatedPublications"
+        class="pa-0"
+        :loading="loading">
 
   <v-container fluid
-                class="pa-0 fill-height" >
+                class="pa-4 fill-height" >
+
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
     <v-row>
-      <v-col >
-        <div class="text-h5">{{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}</div>
+      <v-col cols="6" class="text-h5">
+        {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
       </v-col>
+
+      <v-col v-if="message" >
+        <BaseStatusLabelView statusIcon="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error"  >
+
+        <BaseStatusLabelView statusIcon="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
     </v-row>
 
     <v-row>
@@ -22,7 +44,9 @@
       <v-col >
 
         <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                          @changedText="catchChangedText($event)">
+                                      :validationError="validationErrors[editingProperty]"
+                                      @inputedText="catchInputedText($event)"
+                                      @changedText="catchChangedText($event)">
           <MetadataPublications :genericProps="publicationsObject" />
         </GenericTextareaPreviewLayout>
 
@@ -55,10 +79,13 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
 
 export default {
   name: 'EditRelatedPublications',
@@ -66,6 +93,26 @@ export default {
     relatedPublicationsText: {
       type: String,
       default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -80,35 +127,62 @@ export default {
     publicationsObject() {
       return {
         publications: {
-          text: this.relatedPublicationsText,
+          text: this.previewPublicationsText,
         },
       };
     },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
+    },
+    previewPublicationsText() {
+      return this.previewText || this.relatedPublicationsText;
+    },
+  },
+  watch: {
+    loading() {
+      if (!this.loading && this.message) {
+        this.previewText = '';
+      }
+    },
   },
   methods: {
-    catchChangedText(event) {
-      this.setRelatedPublicationsText(event);
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
+    catchInputedText(value) {
+      this.previewText = value;
+      this.validateProperty(this.editingProperty, value);
+    },
+    catchChangedText(value) {
+      if (this.validateProperty(this.editingProperty, value)) {
+        this.setRelatedPublicationsText(value);
+      }
     },
     setRelatedPublicationsText(value) {
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
-        data: { relatedPublicationsText: value },
+        data: { [this.editingProperty]: value },
       });
     },
   },
   data: () => ({
+    previewText: '',
+    editingProperty: 'relatedPublicationsText',
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
       cardInstructions: 'Add references to other related publications',
       subtitlePreview: 'Related Publications Preview',
     },
-
+    validationErrors: {
+      relatedPublicationsText: null,
+    },
   }),
   components: {
     GenericTextareaPreviewLayout,
     MetadataPublications,
+    BaseStatusLabelView,
   },
 };
 

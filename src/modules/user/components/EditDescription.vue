@@ -1,14 +1,35 @@
 <template>
   <v-card id="EditDescription"
-            class="pa-4">
+          class="pa-0"
+          :loading="loading">
 
     <v-container fluid
-                  class="pa-0">
+                  class="pa-4">
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.cardTitle }}</div>
+        <v-col cols="6" class="text-h5">
+          {{ labels.cardTitle }}
         </v-col>
+
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+
       </v-row>
 
       <v-row>
@@ -24,6 +45,7 @@
         <v-col >
 
           <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
+                                        :validationError="validationErrors[editingProperty]"
                                           @inputedText="catchInputedText($event)"
                                           @changedText="catchChangedText($event)">
             <MetadataBody :genericProps="descriptionObject" />
@@ -61,6 +83,8 @@ import {
   isFieldValid,
 } from '@/factories/userEditingFactory';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 
@@ -71,6 +95,26 @@ export default {
     description: {
       type: String,
       default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -85,30 +129,41 @@ export default {
     descriptionObject() {
       return {
         body: {
-          text: this.description,
+          text: this.previewDescription,
         },
       };
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_DESCRIPTION);
     },
+    previewDescription() {
+      return this.previewText || this.description;
+    },
+  },
+  watch: {
+    loading() {
+      if (!this.loading && this.message) {
+        this.previewText = '';
+      }
+    },
   },
   methods: {
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
-    catchInputedText(event) {
-      this.validateProperty('description', event);
+    catchInputedText(value) {
+      this.previewText = value;
+      this.validateProperty(this.editingProperty, value);
     },
-    catchChangedText(event) {
-      if (this.validateProperty('description', event)) {
-        this.setDescriptionText(event);
+    catchChangedText(value) {
+      if (this.validateProperty(this.editingProperty, value)) {
+        this.setDescriptionText(value);
       }
     },
     setDescriptionText(value) {
 
       const newDescription = {
-        description: value,
+        [this.editingProperty]: value,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
@@ -118,6 +173,8 @@ export default {
     },
   },
   data: () => ({
+    editingProperty: 'description',
+    previewText: '',
     labels: {
       cardTitle: 'Metadata Description',
       labelTextarea: 'Metadata Description',
@@ -131,12 +188,11 @@ export default {
   components: {
     MetadataBody,
     GenericTextareaPreviewLayout,
+    BaseStatusLabelView,
   },
 };
 </script>
 
 <style scoped>
-
-.preview >>> fieldset {border-width: thick; border-color: #E7E7E7 }
 
 </style>

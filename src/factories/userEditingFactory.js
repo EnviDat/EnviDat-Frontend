@@ -334,7 +334,21 @@ export function getEmptyMetadataInEditingObject() {
   // use the JSON.parse and JSON.stringify to disconnect it from this file
   // meaning it won't connect with the reactivity of vue.js
   const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
-  initializeSteps(metadataCreationSteps, emptyEditingObject);
+  // initializeSteps(metadataCreationSteps, emptyEditingObject);
+
+  // initialize every object with some basic attributes
+  // for loading indication, error and success messages
+  const stepKeys = Object.keys(emptyEditingObject);
+  for (let i = 0; i < stepKeys.length; i++) {
+    const key = stepKeys[i];
+    const stepObj = emptyEditingObject[key];
+    stepObj.loading = false;
+    stepObj.message = null;
+    stepObj.messageDetails = null;
+    stepObj.error = null;
+    stepObj.errorDetails = null;
+  }
+
   return emptyEditingObject;
 }
 
@@ -438,14 +452,17 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({
-      geometries: yup
-        .array()
-        .min(1, 'Editting Error: a geometry is required to be set'),
+      geometries: yup.array().min(1, 'Editing Error: a geometry is required to be set'),
+    }),
+  [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
+    yup.object().shape({
+      relatedPublicationsText: yup.string().min(20, 'Please use at least 20 characters to describe the related publications.'),
+    }),
+  [EDITMETADATA_RELATED_DATASETS]: () =>
+    yup.object().shape({
+      relatedDatasetsText: yup.string().min(20, 'Please use at least 20 characters to describe the related datasets.'),
     }),
   /*
-    [EDITMETADATA_RELATED_PUBLICATIONS]: {
-      relatedPublicationsText: '',
-    },
     [EDITMETADATA_ORGANIZATION]: {
       organizationsMap: allOrganizations,
       organization: '',

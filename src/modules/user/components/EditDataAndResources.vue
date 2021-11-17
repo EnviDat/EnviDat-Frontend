@@ -175,10 +175,12 @@ export default {
       return this.$route.params.metadataid;
     },
     linkAddNewResourcesCKAN() {
-      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
+//      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
+      return `${this.envidatDomain}/dataset/${this.metadataId}`;
     },
     linkEditResourceCKAN() {
-      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource[0].id}/edit`;
+//      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
+      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCES);

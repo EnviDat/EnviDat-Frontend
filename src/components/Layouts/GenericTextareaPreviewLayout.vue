@@ -12,6 +12,7 @@
                         outlined
                         auto-grow
                         :prepend-icon="prependIcon"
+                        :error-messages="validationError"
                         :value="textareaContent"
                          @input="catchInputedText($event)"
                          @change="catchChangedText($event)"
@@ -45,6 +46,7 @@
         <v-textarea  :label="labelTextarea"
                       outlined
                       auto-grow
+                      :error-messages="validationError"
                       :value="textareaContent"
                        @input="catchInputedText($event)"
                        @change="catchChangedText($event)"
@@ -111,6 +113,10 @@ export default {
       default: '',
     },
     prependIcon: {
+      type: String,
+      default: '',
+    },
+    validationError: {
       type: String,
       default: '',
     },

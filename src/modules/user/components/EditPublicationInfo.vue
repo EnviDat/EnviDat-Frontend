@@ -14,8 +14,8 @@
       </template>
 
       <v-row>
-        <v-col cols="6">
-          <div class="text-h5">{{ labels.cardTitle }}</div>
+        <v-col cols="6" class="text-h5">
+          {{ labels.cardTitle }}
         </v-col>
 
         <v-col v-if="message" >
