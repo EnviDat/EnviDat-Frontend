@@ -42,9 +42,9 @@ import UserAvatar from '@/components/Layouts/UserAvatar';
 
 import { getNameInitials } from '@/factories/authorFactory';
 
-import { USER_SIGNOUT_PATH } from '@/router/routeConsts'; 
+import { USER_SIGNOUT_PATH } from '@/router/routeConsts';
 import {
-  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
   FETCH_USER_DATA,
   USER_SIGNOUT,
   ACTION_USER_SIGNOUT,
@@ -67,7 +67,7 @@ export default {
   methods: {
     menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
           {
             action: ACTION_USER_SIGNOUT,
             commit: true,
