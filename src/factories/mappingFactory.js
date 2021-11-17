@@ -16,6 +16,7 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
@@ -72,7 +73,11 @@ const JSONFrontendBackendRules = {
     ['dataLicenseUrl','license_url'],
   ],
   [EDITMETADATA_DATA_GEO]: [
-    ['location','spatial'],
+    ['location.geoJSON','spatial'],
+  ],
+  [EDITMETADATA_DATA_GEO_SPATIAL]: [
+    ['type','type'],
+    ['coordinates','coordinates'],
   ],
   [EDITMETADATA_RELATED_PUBLICATIONS]: [
     ['relatedPublicationsText', 'related_publications'],
@@ -309,3 +314,14 @@ export function getFrontendJSON(stepKey, data) {
 
   return frontEndJson;
 }
+
+export function cleanSpatialInfo(spatial) {
+  const rules = JSONFrontendBackendRules[EDITMETADATA_DATA_GEO_SPATIAL];
+
+  const backEndJson = {};
+
+  rules.forEach(x => convertPut(backEndJson, x[1], convertGet(spatial, x[0])));
+  
+  return backEndJson;
+}
+

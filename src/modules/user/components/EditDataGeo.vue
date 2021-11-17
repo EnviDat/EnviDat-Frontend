@@ -1,14 +1,49 @@
 <template>
-  <v-container id="EditDataGeo" fluid class="pa-0">
-    <v-row>
-      <v-col>
-        <MetadataGeo
-          :genericProps="genericProps"
-          :editErrorMessage="editErrorMessage"
-        />
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-card id="EditDataGeo"
+          class="pa-0"
+          :loading="loading">
+
+    <v-container fluid
+                 class="pa-4">
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
+
+      <v-row>
+        <v-col cols="6" class="text-h5">
+          {{ labels.cardTitle }}
+        </v-col>
+
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col class="text-subtitle-1">
+          {{ labels.cardInstructions }}
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <MetadataGeo :genericProps="genericProps" />
+        </v-col>
+      </v-row>
+    </v-container>
+
+  </v-card>
 </template>
 
 <script>
@@ -39,7 +74,10 @@ import {
   isFieldValid,
 } from '@/factories/userEditingFactory';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
+import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
 
 export default {
   name: 'EditDataGeo',
@@ -64,12 +102,34 @@ export default {
       type: Object,
       default: null,
     },
+/*
     error: {
       type: Object,
       default: null,
     },
+*/
     location: {
       type: Object,
+      default: null,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
       default: null,
     },
   },
@@ -87,7 +147,7 @@ export default {
         mapEditable: this.mapEditable,
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
-        error: this.error,
+        error: this.editErrorMessage,
         site: this.location.geomCollection,
         // site: thislocalGeoms,
       };
@@ -103,27 +163,21 @@ export default {
     notifyChange(geomArray) {
       // Parse updated geometries, add to existing props, update via event bus
 
-      if (
-        isFieldValid(
-          'geometries',
-          geomArray,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
+      if (isFieldValid( 'geometries', geomArray, this.validations, this.validationErrors)) {
+/*
         const updatedGeometries = parseAsGeomCollection(
           this.location.name,
           geomArray,
         );
+*/
         const updatedLocation = {
           ...this.location,
-          geomCollection: updatedGeometries,
+          geoJSON: geomArray,
         };
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_DATA_GEO,
           data: {
-            ...this.$props,
             location: updatedLocation,
           },
         });
@@ -132,8 +186,13 @@ export default {
   },
   components: {
     MetadataGeo,
+    BaseStatusLabelView,
   },
   data: () => ({
+    labels: {
+      cardTitle: EDIT_METADATA_GEODATA_TITLE,
+      cardInstructions: 'Choose the location(s) where the data was collected.',
+    },
     validationErrors: {
       geometries: null,
     },

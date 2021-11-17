@@ -33,3 +33,4 @@ export const EDIT_METADATA_AUTHORS_TITLE = 'Select an Author for Editing';
 export const EDIT_ORGANIZATION_TITLE = 'Choose the Organization(s) for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
+export const EDIT_METADATA_GEODATA_TITLE = 'Editing Geospatial Information';

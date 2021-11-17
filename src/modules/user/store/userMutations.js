@@ -112,7 +112,7 @@ function createErrorMessage(reason) {
     if (reason.response.status === 403) {
       msg += ' you are not authorized';
     }
-    const errorObj =reason.response?.data?.error || null;
+    const errorObj = reason.response?.data?.error || reason.response?.error || null;
 
     if (errorObj) {
 
@@ -120,9 +120,9 @@ function createErrorMessage(reason) {
         details += `${errorObj.__type} ${errorObj.__junk}`;
       } else {
         const errKeys = Object.keys(errorObj);
-        for (let i = 0; i < errKeys; i++) {
+        for (let i = 0; i < errKeys.length; i++) {
           const key = errKeys[i];
-          details += `${key} ${errorObj[key]}`;
+          details += `${key} ${errorObj[key]} `;
         }
       }
 

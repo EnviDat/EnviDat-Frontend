@@ -1,7 +1,7 @@
 <template>
   <v-container id="MapComponent" fluid class="fill-height pa-0">
     <MapOverlayUI
-      :style="`position: absolute; top: 16px;
+      :style="`position: absolute; top: 0;
                         z-index: 1000;
                         width: ${showMapSplitCloseButton ? '50' : '95'}%;
                         height: 95%; `"
