@@ -223,17 +223,17 @@ export default {
     },
     contactGivenNameField: {
       get() {
-        return this.contactGivenName;
+        return this.previewContactGivenName || this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        return this.contactSurname;
+        return this.previewContactSurname || this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        return this.contactEmail;
+        return this.previewContactEmail || this.contactEmail;
       },
     },
     preselectAuthorName() {
@@ -290,6 +290,15 @@ export default {
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
+    },
+  },
+  watch: {
+    loading() {
+      if (!this.loading && this.message) {
+        this.previewContactEmail = '';
+        this.previewContactGivenName = '';
+        this.previewContactSurname = '';
+      }
     },
   },
   methods: {
@@ -437,6 +446,9 @@ export default {
     },
   },
   data: () => ({
+    previewContactEmail: '',
+    previewContactGivenName: '',
+    previewContactSurname: '',
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
