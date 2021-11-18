@@ -13,18 +13,7 @@
         </v-col>
       </v-row>
 
-      <!--      <v-row >-->
-
-      <!--        <v-col>-->
-      <!--          <div class="text-body-2">{{ labels.instructionsCollection }}</div>-->
-      <!--        </v-col>-->
-
-      <!--      </v-row>-->
-
-      <!--      <v-row dense>-->
-
-      <div class="heightAndScroll">
-        <!--      <div>-->
+      <v-row class="pt-2 heightAndScroll">
         <v-row
           v-for="(item, index) in datesArray"
           :key="`${item}_${index}`"
@@ -87,7 +76,7 @@
             </template>
           </v-col>
         </v-row>
-      </div>
+      </v-row>
 
       <v-row>
         <v-col>
