@@ -20,7 +20,23 @@
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters class="pt-6 justify-center">
+                <v-row no-gutters align="center" style="pt-6">
+                  <v-col cols="1">
+                    <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                  </v-col>
+
+                  <v-col class="text-h5" cols="11">
+                    Coming Soon!
+                  </v-col>
+
+                  <v-col class="pt-2 text-body-1">
+                    This section is still under construction.
+                    <br>
+                    Please edit resources by following the link below and logging in.
+                  </v-col>
+                </v-row>
+
+                <v-row no-gutters class="pt-6">
                   <v-btn
                     large
                     color="secondary"
@@ -53,7 +69,23 @@
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters class="pt-6 justify-center">
+                <v-row no-gutters align="center" class="pt-6">
+                  <v-col cols="1">
+                    <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                  </v-col>
+
+                  <v-col class="text-h5" cols="11">
+                    Coming Soon!
+                  </v-col>
+
+                  <v-col class="pt-2 text-body-1">
+                    This section is still under construction.
+                    <br>
+                    Please edit resources by following the link below and logging in.
+                  </v-col>
+                </v-row>
+
+                <v-row no-gutters class="pt-6">
                   <v-btn
                     large
                     color="secondary"
