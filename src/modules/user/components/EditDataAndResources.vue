@@ -20,7 +20,7 @@
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters align="center" style="pt-6">
+                <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
                     <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
@@ -37,14 +37,25 @@
                 </v-row>
 
                 <v-row no-gutters class="pt-6">
-                  <v-btn
-                    large
-                    color="secondary"
-                    :href="linkEditResourceCKAN"
-                    target="_blank"
-                  >
-                    Edit Resource in CKAN
-                  </v-btn>
+                  <v-col class="pr-2 text-left">
+                    <v-btn
+                      large
+                      color="secondary"
+                      :href="linkEditResourceCKAN"
+                      target="_blank"
+                    >
+                      Add Resources in CKAN
+                    </v-btn>
+                  </v-col>
+                  <v-col class="pr-2 text-right">
+                    <v-btn
+                      large
+                      color="error"
+                      @click="catchEditResourceClose"
+                    >
+                      Close
+                    </v-btn>
+                  </v-col>
                 </v-row>
               </v-container>
             </v-card>
@@ -92,7 +103,7 @@
                     :href="linkAddNewResourcesCKAN"
                     target="_blank"
                   >
-                    Add Resources in CKAN
+                    Edit Resource in CKAN
                   </v-btn>
                 </v-row>
               </v-container>
