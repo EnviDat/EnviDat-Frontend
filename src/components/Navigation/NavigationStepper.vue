@@ -11,7 +11,7 @@
                          activeColor="accent"
                          inactiveColor="secondary"
                          :stepColor="stepColor"
-                         :initialStep="currentStepIndex"
+                         :stepNumber="currentStepIndex"
                          @stepClick="catchStepClick" />
     </div>
 
@@ -25,8 +25,9 @@
                        :is="currentStep.component"
                        :steps="currentStep.detailSteps"
                        v-bind="currentStep.genericProps"
-                       :initialStepTitle="currentStep.initialStepTitle"
-                       :stepColor="currentStep.color" />
+                       :stepTitle="subStep || currentStep.stepTitle"
+                       :stepColor="currentStep.color"
+                       :nextMajorStep="getNextMajorStepTitle()" />
 
         <div v-if="!currentStep" cols="12">
           Nothing selected, please select a step in the navigation!
@@ -58,29 +59,51 @@ export default {
   name: 'NavigationStepper',
   props: {
     steps: Array,
-    initialStepTitle: String,
+    step: String,
+    subStep: String,
     stepColor: String,
+    nextMajorStep: String,
   },
   beforeMount() {
-    if (this.initialStepTitle) {
-      this.setCurrentStep(this.initialStepTitle);
-    } else {
-      const first = this.steps?.length > 0 ? this.steps[0] : null;
-
-      this.setCurrentStep(first?.title);
-    }
+    this.setupSteps();
   },
   mounted() {
-    eventBus.$on(EDITMETADATA_NEXT_MAJOR_STEP, this.setCurrentStep);
+    eventBus.$on(EDITMETADATA_NEXT_MAJOR_STEP, this.catchStepClick);
   },
   computed: {
     backgroundColor() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
     },
   },
+  watch: {
+    step() {
+      this.setupSteps();
+    },
+  },
   methods: {
+    getNextMajorStepTitle() {
+      const nextMajorIndex = this.currentStepIndex + 1;
+
+      if (nextMajorIndex > this.steps.length - 1) {
+        return this.steps[0].title;
+      }
+
+      return this.steps[nextMajorIndex].title;
+    },
+    setupSteps() {
+      if (this.step) {
+        this.setCurrentStep(this.step);
+      } else {
+        const first = this.steps?.length > 0 ? this.steps[0] : null;
+
+        this.setCurrentStep(first?.title);
+      }
+    },
     catchStepClick(stepTitle) {
-      this.setCurrentStep(stepTitle);
+      this.$router.push({ params: {
+        step: stepTitle,
+        substep: undefined,
+      }});
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -88,7 +111,9 @@ export default {
         nextIndex = 0;
       }
 
-      this.setCurrentStep(this.steps[nextIndex].title);
+      this.$router.push({ params: {
+        step: this.steps[nextIndex].title,
+      }});
     },
     // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {

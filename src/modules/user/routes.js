@@ -44,7 +44,7 @@ export const userRoutes = [
     component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
     children: [
       {
-        path: `${METADATAEDIT_PATH}/:metadataid`,
+        path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
         component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/metadata/components/MetadataDetailPage'),
       },

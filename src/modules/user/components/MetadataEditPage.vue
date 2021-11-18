@@ -7,8 +7,10 @@
   >
     <!-- prettier-ignore -->
     <NavigationStepper :steps="metadataCreationSteps"
-                       :initialStepTitle="metadataCreationSteps[0].title"
+                       :step="routeStep"
+                       :subStep="routeSubStep"
                        stepColor="highlight" />
+
   </v-container>
 </template>
 
@@ -84,6 +86,11 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
+/*  async beforeRouteUpdate(to, from) {
+    // react to route changes...
+    this.userData = await fetchUser(to.params.id)
+  },
+    */
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -127,6 +134,21 @@ export default {
      */
     metadataId() {
       return this.$route.params.metadataid;
+    },
+    routeStep() {
+      const fallbackStep = this.metadataCreationSteps[0].title;
+      let stepFromRoute = this.$route?.params?.step;
+
+      if (stepFromRoute instanceof Array) {
+        stepFromRoute = stepFromRoute[0];
+      }
+      
+      return stepFromRoute || fallbackStep;
+    },
+    routeSubStep() {
+      const subStep = this.$route?.params?.substep;
+
+      return subStep || '';
     },
   },
   watch: {

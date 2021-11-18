@@ -1,23 +1,24 @@
 <template>
-  <v-container id="MetadataCreationDataInfo" fluid class="pa-0">
+  <v-container id="MetadataGenericSubStepper"
+               fluid
+               class="pa-0">
+
     <v-row no-gutters>
-      <v-col offset="2" cols="8">
+      <v-col offset="1" cols="10">
         <!-- prettier-ignore -->
-        <StepperHeader :steps="steps"
-                       activeColor="accent"
-                       inactiveColor="secondary"
-                       :stepColor="stepColor"
-                       :initialStep="currentStepIndex"
-                       @stepClick="catchStepClick" />
+        <StepperHeader  :steps="steps"
+                        activeColor="accent"
+                        inactiveColor="secondary"
+                        :stepColor="stepColor"
+                        :stepNumber="currentStepIndex"
+                        @stepClick="catchStepClick" />
       </v-col>
     </v-row>
 
     <v-row class="fill-height">
       <v-col v-if="currentStep" cols="12">
-        <component
-          :is="currentStep.component"
-          v-bind="getGenericPropsForStep(currentStep)"
-        />
+        <component :is="currentStep.component"
+                    v-bind="getGenericPropsForStep(currentStep)" />
       </v-col>
 
       <v-col v-if="!currentStep" cols="12">
@@ -38,11 +39,11 @@
 <script>
 /**
 
- * @summary MetadataCreationMainInfo provides the different steps for editing the main info a metadata entry
+ * @summary MetadataGenericSubStepper provides the different steps for editing the main info for a metadata entry
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
- * Last modified  : 2021-08-04 10:25:46
+ * Last modified  : 2021-08-12 17:33:21
 
  *
  * This file is subject to the terms and conditions defined in
@@ -56,24 +57,15 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
-  name: 'MetadataCreationDataInfo',
+  name: 'MetadataGenericSubStepper',
   props: {
     steps: Array,
-    initialStepTitle: String,
+    stepTitle: String,
     stepColor: String,
-    // stepColor: {
-    //   type: String,
-    //   default: 'secondary',
-    // },
+    nextMajorStep: String,
   },
   beforeMount() {
-    if (this.initialStepTitle) {
-      this.setCurrentStep(this.initialStepTitle);
-    } else {
-      const first = this.steps?.length > 0 ? this.steps[0] : null;
-
-      this.setCurrentStep(first?.title);
-    }
+    this.setupStep();
   },
   computed: {},
   methods: {
@@ -87,17 +79,24 @@ export default {
       return step.genericProps;
     },
     catchStepClick(stepTitle) {
-      this.setCurrentStep(stepTitle);
+      const params = this.$route.params;
+      params.substep = stepTitle;
+
+      this.$router.push({ params });
     },
     nextStep() {
       const nextIndex = this.currentStepIndex + 1;
+
       if (nextIndex > this.steps.length - 1) {
-        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, 'Related Info');
+        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
+        return;
       }
 
-      this.setCurrentStep(this.steps[nextIndex].title);
+      const params = this.$route.params;
+      params.substep = this.steps[nextIndex].title;
+
+      this.$router.push({ params });
     },
-    // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
       if (this.steps) {
         for (let i = 0; i < this.steps.length; i++) {
@@ -114,6 +113,22 @@ export default {
 
       this.currentStepIndex = -1;
       this.currentStep = null;
+    },
+    setupStep() {
+      if (this.stepTitle) {
+        this.setCurrentStep(this.stepTitle);
+      } else {
+        const first = this.steps?.length > 0 ? this.steps[0] : null;
+
+        this.setCurrentStep(first?.title);
+      }
+    },
+  },
+  watch: {
+    stepTitle() {
+      // used when navigating from a first detail step to another main step,
+      // to step on the initial detail step of the new main step
+      this.setupStep();
     },
   },
   data: () => ({

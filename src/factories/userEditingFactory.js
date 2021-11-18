@@ -23,9 +23,7 @@ import EditDataInfo from '@/modules/user/components/EditDataInfo';
 import EditDataGeo from '@/modules/user/components/EditDataGeo';
 import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
 
-// eslint-disable-next-line no-unused-vars
-import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
-import MetadataCreationDataInfo from '@/modules/user/components/MetadataCreationDataInfo';
+import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper';
 
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
 
@@ -259,19 +257,19 @@ export const metadataCreationSteps = [
   {
     title: 'Main Info',
     completed: false,
-    component: MetadataCreationMainInfo,
+    component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
     detailSteps: mainDetailSteps,
-    initialStepTitle: mainDetailSteps[0].title,
+    stepTitle: mainDetailSteps[0].title,
     color: 'white',
   },
   {
     title: 'Data Info',
     completed: false,
-    component: MetadataCreationDataInfo,
+    component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
     detailSteps: dataDetailSteps,
-    initialStepTitle: dataDetailSteps[0].title,
+    stepTitle: dataDetailSteps[0].title,
     color: 'white',
   },
   {

@@ -2,7 +2,7 @@
   <div id="StepperHeader">
 
     <v-stepper v-model="currentStep"
-                :value="initialStep"
+                :value="stepNumber"
                :height="height"
                 style="background: transparent; box-shadow: unset !important;" >
 
@@ -57,7 +57,7 @@ export default {
   name: 'StepperHeader',
   props: {
     steps: Array,
-    initialStep: Number,
+    stepNumber: Number,
     activeColor: {
       type: String,
       default: 'primary',
@@ -77,11 +77,11 @@ export default {
   },
   created() {
     // +1 so that the steps icons are beginning with 1 not 0
-    this.currentStep = this.initialStep + 1;
+    this.currentStep = this.stepNumber + 1;
   },
   watch: {
-    initialStep() {
-      this.currentStep = this.initialStep + 1;
+    stepNumber() {
+      this.currentStep = this.stepNumber + 1;
     },
   },
   computed: {
