@@ -35,7 +35,7 @@
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
-                      @change="metadataTitleField = $event"
+                      @change="catchTitleChange"
                       @input="validateProperty('metadataTitle', $event)"
                       :value="metadataTitleField" />
 
@@ -200,13 +200,10 @@ export default {
   computed: {
     metadataTitleField: {
       get() {
-        return this.metadataTitle;
-      },
-      set(value) {
-        const property = 'metadataTitle';
-        if (this.validateProperty(property, value)) {
-          this.setHeaderInfo(property, value);
+        if (this.showPreviewTitle) {
+          return this.previewTitle;
         }
+        return this.metadataTitle;
       },
     },
     contactGivenNameField: {
@@ -290,8 +287,12 @@ export default {
     },
   },
   watch: {
+    // Assign metadataTitle preview Boolean to false
+    metadataTitle() {
+      this.showPreviewTitle = false;
+    },
     // Assign contact author preview Boolean variables to false
-    contactGivenName () {
+    contactGivenName() {
       this.showPreviewGivenName = false;
     },
     contactSurname() {
@@ -300,13 +301,6 @@ export default {
     contactEmail() {
       this.showPreviewEmail = false;
     },
-    // loading() {
-    //   if (!this.loading && this.message) {
-    //     // this.previewContactEmail = '';
-    //     // this.previewContactGivenName = '';
-    //     // this.previewContactSurname = '';
-    //   }
-    // },
   },
   methods: {
     validateProperty(property, value){
@@ -317,6 +311,20 @@ export default {
         return [];
       }
       return getAuthorName(authorObj);
+    },
+    catchTitleChange(value) {
+
+      // Assign previewTitle
+      this.previewTitle = value;
+
+      // Assign showPreviewTitle to true
+      this.showPreviewTitle = true;
+
+      // If valid pass metadataTitle to eventBus
+      const property = 'metadataTitle';
+      if (this.validateProperty(property, value)) {
+        this.setHeaderInfo(property, value);
+      }
     },
     catchAuthorChange(pickedAuthor) {
 
@@ -332,30 +340,27 @@ export default {
       // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
 
-      // Validate contact author properties,
-      this.validateAuthor(authorObject);
+      // Validate contact author properties
+      const authorObj = this.validateAuthor(authorObject);
 
-      // Call setContact to emit authorObject values to eventBus
-      this.setContact(authorObject);
+      // Call setContact to emit authorObj values to eventBus
+      this.setContact(authorObj);
 
     },
     // Validate contact author properties by calling isFieldValid()
-    // Returns true if all properties are valid, else returns false
+    // Returns authorObj only with key-value pairs that have valid values
     validateAuthor(authorObject) {
 
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
-      properties.forEach(prop => isFieldValid(prop, authorObject[prop], this.validations, this.validationErrors));
 
-      // const propertiesValidity = [];
-      //
-      // for (let i = 0; i < properties.length; i++) {
-      //   const valid = isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
-      //   propertiesValidity.push(valid);
-      // }
-      //
-      // console.log(propertiesValidity);
+      for (let i = 0; i < properties.length; i++) {
+        const valid = isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
+        if (!valid) {
+          delete authorObject[properties[i]];
+        }
+      }
 
-      // return propertiesValidity.every(v => v === true)
+      return authorObject;
 
     },
     getAuthorByName(fullName) {
@@ -498,6 +503,8 @@ export default {
     showPreviewGivenName: false,
     showPreviewSurname: false,
     showPreviewEmail: false,
+    previewTitle: '',
+    showPreviewTitle: false,
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
