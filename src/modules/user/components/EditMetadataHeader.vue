@@ -136,35 +136,25 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-15
+ * Last modified  : 2021-11-22
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_MAIN_HEADER,
-  eventBus,
-} from '@/factories/eventBus';
+ */
+import {EDITMETADATA_MAIN_HEADER, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
 
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
-import { enhanceTitleImg } from '@/factories/metaDataFactory';
+import {enhanceTitleImg} from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingFactory';
-import {
-  getArrayOfFullNames,
-  getAuthorName,
-} from '@/factories/authorFactory';
-import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
+import {getValidationMetadataEditingObject, isFieldValid} from '@/factories/userEditingFactory';
+import {getArrayOfFullNames, getAuthorName} from '@/factories/authorFactory';
+import {EDIT_METADATA_MAIN_TITLE} from '@/factories/metadataConsts';
 
 
 export default {
@@ -214,26 +204,33 @@ export default {
       },
       set(value) {
         const property = 'metadataTitle';
-
         if (this.validateProperty(property, value)) {
           this.setHeaderInfo(property, value);
         }
-
       },
     },
     contactGivenNameField: {
       get() {
-        return this.previewContactGivenName || this.contactGivenName;
+        if (this.showPreviewGivenName) {
+          return this.previewContactGivenName;
+        }
+        return this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        return this.previewContactSurname || this.contactSurname;
+        if (this.showPreviewSurname) {
+          return this.previewContactSurname;
+        }
+        return this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        return this.previewContactEmail || this.contactEmail;
+        if (this.showPreviewEmail) {
+          return this.previewContactEmail;
+        }
+        return this.contactEmail;
       },
     },
     preselectAuthorName() {
@@ -293,13 +290,23 @@ export default {
     },
   },
   watch: {
-    loading() {
-      if (!this.loading && this.message) {
-        this.previewContactEmail = '';
-        this.previewContactGivenName = '';
-        this.previewContactSurname = '';
-      }
+    // Assign contact author preview Boolean variables to false
+    contactGivenName () {
+      this.showPreviewGivenName = false;
     },
+    contactSurname() {
+      this.showPreviewSurname = false;
+    },
+    contactEmail() {
+      this.showPreviewEmail = false;
+    },
+    // loading() {
+    //   if (!this.loading && this.message) {
+    //     // this.previewContactEmail = '';
+    //     // this.previewContactGivenName = '';
+    //     // this.previewContactSurname = '';
+    //   }
+    // },
   },
   methods: {
     validateProperty(property, value){
@@ -316,10 +323,16 @@ export default {
       // Get author object
       const author = this.getAuthorByName(pickedAuthor);
 
+      // Assign preview contact variables
+      this.setPreviewContact(author);
+
+      // Reset show preview Boolean variables to true
+      this.showPreview();
+
       // Call getAuthorObject to assign authorObject values
       const authorObject = this.getAuthorObject(author);
 
-      // Validate contact author properties
+      // Validate contact author properties,
       this.validateAuthor(authorObject);
 
       // Call setContact to emit authorObject values to eventBus
@@ -327,9 +340,23 @@ export default {
 
     },
     // Validate contact author properties by calling isFieldValid()
+    // Returns true if all properties are valid, else returns false
     validateAuthor(authorObject) {
+
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
       properties.forEach(prop => isFieldValid(prop, authorObject[prop], this.validations, this.validationErrors));
+
+      // const propertiesValidity = [];
+      //
+      // for (let i = 0; i < properties.length; i++) {
+      //   const valid = isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
+      //   propertiesValidity.push(valid);
+      // }
+      //
+      // console.log(propertiesValidity);
+
+      // return propertiesValidity.every(v => v === true)
+
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
@@ -358,15 +385,34 @@ export default {
       return null;
 
     },
+    // Assigns show contact preview Boolean variables to true
+    showPreview() {
+      this.showPreviewGivenName = true;
+      this.showPreviewSurname = true;
+      this.showPreviewEmail = true;
+    },
+    // Assigns contact preview string variables
+    // If author is null assigns preview string variables to empty strings
+    setPreviewContact(author) {
+      if (author) {
+        this.previewContactGivenName = author.firstName.trim();
+        this.previewContactSurname = author.lastName.trim();
+        this.previewContactEmail = author.email.trim();
+      } else {
+        this.previewContactGivenName = '';
+        this.previewContactSurname = '';
+        this.previewContactEmail = '';
+      }
+    },
     // Returns object with contact details if author is not null
     // Else returns object with contact details values assigned to empty strings
     getAuthorObject(author) {
 
       if (author) {
         return {
-          contactGivenName: author.firstName,
-          contactSurname: author.lastName,
-          contactEmail: author.email,
+          contactGivenName: author.firstName.trim(),
+          contactSurname: author.lastName.trim(),
+          contactEmail: author.email.trim(),
         };
       }
       return {
@@ -446,9 +492,12 @@ export default {
     },
   },
   data: () => ({
-    previewContactEmail: '',
     previewContactGivenName: '',
     previewContactSurname: '',
+    previewContactEmail: '',
+    showPreviewGivenName: false,
+    showPreviewSurname: false,
+    showPreviewEmail: false,
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
