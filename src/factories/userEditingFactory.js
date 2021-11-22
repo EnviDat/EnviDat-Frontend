@@ -45,11 +45,8 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
-import { getOrganizationMap } from '@/factories/metaDataFactory';
-import testOrganizations from '@/../stories/js/organizations';
 import * as yup from 'yup';
 
-const allOrganizations = getOrganizationMap(testOrganizations);
 
 export function updateEditingArray(
   store,
@@ -192,9 +189,7 @@ const emptyMetadataInEditing = {
     customFields: [],
   },
   [EDITMETADATA_ORGANIZATION]: {
-    organizationsMap: allOrganizations,
-    organization: '',
-    organizations: [],
+    organization: {},
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
     publicationState: 'Draft',
@@ -460,12 +455,16 @@ const metadataInEditingValidations = {
     yup.object().shape({
       relatedDatasetsText: yup.string().min(20, 'Please use at least 20 characters to describe the related datasets.'),
     }),
-  /*
-    [EDITMETADATA_ORGANIZATION]: {
-      organizationsMap: allOrganizations,
-      organization: '',
-    },
-  */
+  [EDITMETADATA_ORGANIZATION]: () =>
+    yup.object().shape({
+      organization: yup
+      .string('Organization must be a string.')
+      .test(
+        'empty-check',
+        'An organization must be selected.',
+        organization => organization !== '',
+      ),
+    }),
   [EDITMETADATA_CUSTOMFIELDS]: () =>
     yup.object().shape({
       customFields: yup.array().of(

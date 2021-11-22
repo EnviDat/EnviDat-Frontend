@@ -123,10 +123,12 @@ storiesOf(storybookFolder, module)
     data: () => ({
       genericProps: {
         id: '1',
-        existingOrganizations: ['test1', 'test2', 'test3'],
+        organization: 'test1',
+        userOrganizationsList: ['test1', 'test2', 'test3'],
       },
       genericProps2: {
-        existingOrganizations: ['test1'],
+        organization: 'test1',
+        userOrganizationsList: ['test1'],
       },
     }),
   }))

@@ -183,18 +183,21 @@ export default {
 
     const orgaIds = [];
     const orgaNames = [];
+    const orgaList = [];
 
     if (payload?.length > 0 && payload instanceof Array) {
       for (let i = 0; i < payload.length; i++) {
         const orga = payload[i];
         orgaIds.push(orga.id);
         orgaNames.push(orga.name);
+        orgaList.push(orga);
       }
     }
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizationIds', orgaIds);
     this._vm.$set(state, 'userOrganizationNames', orgaNames);
+    this._vm.$set(state, 'userOrganizationsList', orgaList);
 
     resetErrorObject(state);
   },

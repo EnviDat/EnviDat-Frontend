@@ -14,48 +14,30 @@
     <v-row>
       <v-col>
 
-        <v-text-field v-if="existingOrganizations.length === 1"
-                      :value="existingOrganizations[0]"
+        <v-text-field v-if="userOrganizationsNameList.length === 1"
+                      :value="userOrganizationsNameList[0]"
                       outlined
                       readonly
+                      :error-messages="validationErrors.organization"
                       >
          </v-text-field>
 
         <v-select     v-else
-                      @input="setOrganization('organizations', $event)"
-                      :value="organizationsField"
-                      :items="existingOrganizations"
+                      @input="setOrganization('organization', $event)"
+                      :value="organizationField"
+                      :items="userOrganizationsNameList"
                       outlined
                       chips
-                      deletable-chips
                       append-icon="arrow_drop_down"
                       :readonly="readonly"
                       label="Organization"
-                      multiple
+                      :error-messages="validationErrors.organization"
                       >
-
-        <template v-slot:selection="{ item }" >
-          <TagChip  :name="item"
-                    selectable
-                    closeable
-                    @clickedClose="removeOrganization(item)"
-                    :isSmall="false"
-          />
-        </template>
-
-        <template v-slot:item="{ item }">
-          <TagChip v-if="item"
-                   :name="item"
-                   selectable
-                   @clicked="catchOrganizationClicked"
-                   :isSmall="false" />
-        </template>
 
        </v-select>
 
       </v-col>
     </v-row>
-
 
   </v-card>
 
@@ -64,14 +46,15 @@
 
 <script>
 /**
- * EditOrganization.vue renders the a dropdown list with a user's organizations(s)
+ * EditOrganization.vue renders the a dropdown list with a user's organizations(s).
+ * The dataset organization can be edited from a selection in the list.
  *
  *
  * @summary renders the a dropdown list with a user's organizations(s)
- * @authorRebecca Kurup Buchholz
+ * @author Rebecca Kurup Buchholz & Sam Woodcock
  *
  * Created        : 2021-10-26
- * Last modified  : 2021-10-26
+ * Last modified  : 2021-11-18
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -80,87 +63,92 @@
 // TODO add organization remove methods, emit methods, etc.
 
 import {
+  mapState,
+} from 'vuex';
+
+import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
 } from '@/factories/eventBus';
 
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingFactory';
+import {
+  getObjectInOtherCase,
+  toCamelCase,
+} from '@/factories/mappingFactory';
+
+import {
+  USER_SIGNIN_NAMESPACE,
+  USER_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+} from '@/modules/user/store/userMutationsConsts';
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
-import TagChip from '@/components/Chips/TagChip';
 
 
 export default {
   name: 'EditOrganization',
   props: {
-   existingOrganizations: {
-      type: Array,
-      default: () => [],
-   },
-   preselectedOrganization: {
-     type: String,
-     default: null,
-   },
-    organizations: {
-      type: Array,
-      default: () => [],
-     },
+    organization: {
+      type: Object,
+      default: () => {},
+      },
     readonly: {
       type: Boolean,
       default: false,
     },
   },
-  mounted() {
+  beforeMount() {
+    if (this.user) {
+      this.fetchUserOrganisationData();
+    }
   },
   computed: {
-    organizationsField: {
-      get() {
-        return [...this.organizations];
-      },
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
+    ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
+    organizationField () {
+      return this.organization.title
+    },
+    userOrganizationsNameList () {
+      if (this.userOrganizationsList) {
+        return this.userOrganizationsList.map(org => org.title);
+      }
+      return []
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_ORGANIZATION);
     },
   },
   methods: {
-    catchOrganizationClicked(pickedOrganization) {
-
-      // Assign localOrgs to organizations concatenated with pickedOrganization
-      const localOrgs = this.organizations.concat([pickedOrganization]);
-
-      // Emit localOrgs to eventBus
-      this.setOrganization('organizations', localOrgs);
-
-    },
-    removeOrganization(item) {
-
-      // Assign removeIndex to index of organizations element that matches item
-      const removeIndex = this.organizations.indexOf(item);
-
-      // Assign localOrgs to copy of organizations
-      const localOrgs = [...this.organizations];
-
-      // Remove object with index of removeIndex from localKeywords
-      localOrgs.splice(removeIndex, 1);
-
-      // Emit localOrgs to eventBus
-      this.setOrganization('organizations', localOrgs);
-
-    },
     setOrganization(property, value) {
 
-      const newOrganizations = {
-        ...this.$props,
-        [property]: value,
-      };
+      let selectedOrg = this.userOrganizationsList.filter(x => x.title === value);
+      selectedOrg = getObjectInOtherCase(selectedOrg, toCamelCase);
+      // Remove unused properties
+      const { capacity, displayName, imageDisplayUrl, ...updatedOrg } = selectedOrg[0];
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_ORGANIZATION,
-        data: newOrganizations,
+        data: {property: updatedOrg},
       });
+    },
+    fetchUserOrganisationData() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+    },
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
     },
   },
   data: () => ({
     EDIT_ORGANIZATION_TITLE,
+    validationErrors: {
+      organization: null,
+    },
   }),
   components: {
-    TagChip,
   },
 };
 
