@@ -1,0 +1,6803 @@
+{
+	"info": {
+		"_postman_id": "2edbe13a-f687-408a-842f-f96a7dd616da",
+		"name": "EnviDat CKAN API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "extensions",
+			"item": [
+				{
+					"name": "DataStore",
+					"item": [
+						{
+							"name": "datastore_create",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/datastore_create",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datastore_create"
+									]
+								},
+								"description": "Adds a new table to the DataStore.\n\nThe datastore_create action allows you to post JSON data to be stored against a resource. This endpoint also supports altering tables, aliases and indexes and bulk insertion. This endpoint can be called multiple times to initially insert more data, add fields, change the aliases or indexes as well as the primary keys.\n\nTo create an empty datastore resource and a CKAN resource at the same time, provide resource with a valid package_id and omit the resource_id.\n\nIf you want to create a datastore resource from the content of a file, provide resource with a valid url."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "group",
+			"item": [
+				{
+					"name": "organization_list_for_user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_list_for_user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_list_for_user"
+							],
+							"query": [
+								{
+									"key": "permission",
+									"value": "",
+									"description": "(string) – the permission the user has against the returned organizations, for example \"read\" or \"create_dataset\" (optional, default: \"edit_group\")",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_list"
+							],
+							"query": [
+								{
+									"key": "order_by",
+									"value": null,
+									"description": "(string) – the field to sort the list by, must be 'name' or 'packages' (optional, default: 'name') Deprecated use sort.",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": null,
+									"description": "(string) – sorting of the search results. Optional. Default: “name asc” string of field name and sort-order. The allowed fields are ‘name’, ‘package_count’ and ‘title’",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "(int) – if given, the list of organizations will be broken into pages of at most limit organizations per page and only one page will be returned at a time (optional)",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – when limit is given, the offset to start returning organizations from",
+									"disabled": true
+								},
+								{
+									"key": "organizations",
+									"value": null,
+									"description": "(list of strings) – a list of names of the groups to return, if given only groups whose names are in this list will be returned (optional)",
+									"disabled": true
+								},
+								{
+									"key": "all_fields",
+									"value": null,
+									"description": "(boolean) – return group dictionaries instead of just names. Only core fields are returned - get some more using the include_* options. Returning a list of packages is too expensive, so the packages property for each group is deprecated, but there is a count of the packages in the package_count property. (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_extras",
+									"value": null,
+									"description": "(boolean) – if all_fields, include the organization extra fields (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_tags",
+									"value": null,
+									"description": "if all_fields, include the organization tags (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_groups",
+									"value": null,
+									"description": "if all_fields, include the organizations the organizations are in (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_users",
+									"value": null,
+									"description": "(boolean) – if all_fields, include the organization users (optional, default: False)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "group_list_authz",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/group_list_authz?available_only&am_member",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"group_list_authz"
+							],
+							"query": [
+								{
+									"key": "available_only",
+									"value": null,
+									"description": "(boolean) – remove the existing groups in the package (optional, default: False)"
+								},
+								{
+									"key": "am_member",
+									"value": null,
+									"description": "if True return only the groups the logged-in user is a member of, otherwise return all groups that the user is authorized to edit (for example, sysadmin users are authorized to edit all groups) (optional, default: False)"
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "group_revision_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/group_revision_list?id=proj-0",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"group_revision_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "proj-0",
+									"description": "REQUIRED (string) – the name or id of the group"
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_revision_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_revision_list?id=proj-0",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_revision_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "proj-0",
+									"description": "REQUIRED (string) – the name or id of the group"
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "group_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/group_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"group_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(boolean) – the id or name of the group",
+									"disabled": true
+								},
+								{
+									"key": "include_datasets",
+									"value": null,
+									"description": "include a list of the group’s datasets (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_extras",
+									"value": null,
+									"description": "include the group’s extra fields (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_users",
+									"value": null,
+									"description": "include the group’s users (optional, default: True",
+									"disabled": true
+								},
+								{
+									"key": "include_groups",
+									"value": null,
+									"description": "include the group’s sub groups (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_tags",
+									"value": null,
+									"description": "include the group’s tags (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_followers",
+									"value": null,
+									"description": "include the group’s number of followers (optional, default: True)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "group_package_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/group_package_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"group_package_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the group",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of datasets to return (optional)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(boolean) – the id or name of the organization",
+									"disabled": true
+								},
+								{
+									"key": "include_datasets",
+									"value": null,
+									"description": "include a list of the organization's datasets (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_extras",
+									"value": null,
+									"description": "include the organization's extra fields (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_users",
+									"value": null,
+									"description": "include the organization's users (optional, default: True",
+									"disabled": true
+								},
+								{
+									"key": "include_groups",
+									"value": null,
+									"description": "include the organization's sub groups (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_tags",
+									"value": null,
+									"description": "include the organization's tags (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_followers",
+									"value": null,
+									"description": "include the organization's number of followers (optional, default: True)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "project_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/project_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"project_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(boolean) – the id or name of the organization",
+									"disabled": true
+								},
+								{
+									"key": "include_datasets",
+									"value": null,
+									"description": "include a list of the organization's datasets (optional, default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_extras",
+									"value": null,
+									"description": "include the organization's extra fields (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_users",
+									"value": null,
+									"description": "include the organization's users (optional, default: True",
+									"disabled": true
+								},
+								{
+									"key": "include_groups",
+									"value": null,
+									"description": "include the organization's sub groups (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_tags",
+									"value": null,
+									"description": "include the organization's tags (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_followers",
+									"value": null,
+									"description": "include the organization's number of followers (optional, default: True)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_autocomplete",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_autocomplete"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – the string to search for",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of organizations to return (optional, default: 20)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/organization_show?id={{project-no-role}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{project-no-role}}"
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/organization_activity_list_html?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the organization"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_activity_list_html?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the group"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/organization_activity_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_activity_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "REQUIRED (string) – the id or name of the organization"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_activity_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_activity_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "REQUIRED (string) – the id or name of the group"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "am_following_group",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/am_following_group?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"am_following_group"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the group"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_followee_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_followee_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_followee_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_followee_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/organization_followee_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_followee_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_followee_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_followee_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_followee_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": " (string) – the id of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_follower_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_follower_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_follower_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the group"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_follower_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/group_follower_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_follower_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the group"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_follower_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/organization_follower_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_follower_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the organization"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_follower_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/organization_follower_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_follower_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the organization"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"a-pending-project-2\",\n  \"approval_status\": \"Pending\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/action/organization_update?id=a-pending-project-2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"organization_update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "a-pending-project-2"
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "organization_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – the name of the organization, a string between 2 and 100 characters long, containing only lowercase alphanumeric characters, - and _",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the organization (optional)",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "",
+									"description": "(string) – the title of the organization (optional)",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "(string) – the description of the organization (optional)",
+									"type": "text"
+								},
+								{
+									"key": "image_url",
+									"value": "",
+									"description": "(string) – the URL to an image to be displayed on the organization’s page (optional)",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "",
+									"description": "(string) – the current state of the organization, e.g. 'active' or 'deleted', only active organizations show up in search results and other lists of organizations, this parameter will be ignored if you are not authorized to change the state of the organization (optional, default: 'active')",
+									"type": "text"
+								},
+								{
+									"key": "approval_status",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text"
+								},
+								{
+									"key": "extras",
+									"value": "",
+									"description": "(list of dataset extra dictionaries) – the organization’s extras (optional), extras are arbitrary (key: value) metadata items that can be added to organizations, each extra dictionary should have keys 'key' (a string), 'value' (a string), and optionally 'deleted'",
+									"type": "text"
+								},
+								{
+									"key": "packages",
+									"value": "",
+									"description": "(list of dictionaries) – the datasets (packages) that belong to the organization, a list of dictionaries each with keys 'name' (string, the id or name of the dataset) and optionally 'title' (string, the title of the dataset)",
+									"type": "text"
+								},
+								{
+									"key": "users",
+									"value": "",
+									"description": "(list of dictionaries) – the users that belong to the organization, a list of dictionaries each with key 'name' (string, the id or name of the user) and optionally 'capacity' (string, the capacity in which the user is a member of the organization)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfollow_group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group to stop following",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/unfollow_group",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"unfollow_group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_member_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the organization",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "",
+									"description": "(string) – name or id of the user to be removed",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_member_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_member_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_member_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "",
+									"description": "(string) – name or id of the user to be removed",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_member_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_member_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_purge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the group to be purged",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_purge",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_purge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the group",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "member_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the group",
+									"type": "text"
+								},
+								{
+									"key": "object",
+									"value": "",
+									"description": "(string) – the id or name of the object to be removed",
+									"type": "text"
+								},
+								{
+									"key": "object_type",
+									"value": "",
+									"description": "(string) – the type of the object to be removed, e.g. package or user",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/member_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"member_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_patch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_patch",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_patch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_patch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_patch",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_patch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the organization to update",
+									"type": "text"
+								},
+								{
+									"key": "packages",
+									"value": "",
+									"description": "ignored. use package_owner_org_update() to change package ownership",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the group to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow_group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group to follow, e.g. 'roger'",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/follow_group",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"follow_group"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_member_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the organization",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "",
+									"description": "(string) – name or id of the user to be made member of the organization",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "(string) – role of the user in the organization. One of member, editor, or admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_member_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_member_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_member_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "",
+									"description": "(string) – name or id of the user to be made member of the group",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "(string) – role of the user in the group. One of member, editor, or admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_member_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_member_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "group_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – the name of the group, a string between 2 and 100 characters long, containing only lowercase alphanumeric characters, - and _",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the group (optional)",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "",
+									"description": "(string) – the title of the group (optional)",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "(string) – the description of the group (optional)",
+									"type": "text"
+								},
+								{
+									"key": "image_url",
+									"value": "",
+									"description": "(string) – the URL to an image to be displayed on the group’s page (optional)",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "(string) – the type of the group (optional), IGroupForm plugins associate themselves with different group types and provide custom group handling behaviour for these types Cannot be ‘organization’",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "",
+									"description": "(string) – the current state of the group, e.g. 'active' or 'deleted', only active groups show up in search results and other lists of groups, this parameter will be ignored if you are not authorized to change the state of the group (optional, default: 'active')",
+									"type": "text"
+								},
+								{
+									"key": "approval_status",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text"
+								},
+								{
+									"key": "extras",
+									"value": "",
+									"description": "(list of dataset extra dictionaries) – the group’s extras (optional), extras are arbitrary (key: value) metadata items that can be added to groups, each extra dictionary should have keys 'key' (a string), 'value' (a string), and optionally 'deleted'",
+									"type": "text"
+								},
+								{
+									"key": "packages",
+									"value": "",
+									"description": "(list of dictionaries) – the datasets (packages) that belong to the group, a list of dictionaries each with keys 'name' (string, the id or name of the dataset) and optionally 'title' (string, the title of the dataset)",
+									"type": "text"
+								},
+								{
+									"key": "groups",
+									"value": "",
+									"description": "(list of dictionaries) – the groups that belong to the group, a list of dictionaries each with key 'name' (string, the id or name of the group) and optionally 'capacity' (string, the capacity in which the group is a member of the group)",
+									"type": "text"
+								},
+								{
+									"key": "users",
+									"value": "",
+									"description": "(list of dictionaries) – the users that belong to the group, a list of dictionaries each with key 'name' (string, the id or name of the user) and optionally 'capacity' (string, the capacity in which the user is a member of the group)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/group_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"group_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "member_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the group to add the object to",
+									"type": "text"
+								},
+								{
+									"key": "object",
+									"value": "",
+									"description": "(string) – the id or name of the object to add",
+									"type": "text"
+								},
+								{
+									"key": "object_type",
+									"value": "",
+									"description": "(string) – the type of the object being added, e.g. 'package' or 'user'",
+									"type": "text"
+								},
+								{
+									"key": "capacity",
+									"value": "",
+									"description": "(string) – the capacity of the membership",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/member_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"member_create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "metadata",
+			"item": [
+				{
+					"name": "package_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_show?id=t_files",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "t_files",
+									"description": "(string) – the id or name of the dataset"
+								},
+								{
+									"key": "use_default_schema",
+									"value": null,
+									"description": "(bool) – use default package schema instead of a custom schema defined with an IDatasetForm plugin (default: False)",
+									"disabled": true
+								},
+								{
+									"key": "include_tracking",
+									"value": null,
+									"description": "(bool) – add tracking information to dataset and resources (default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_autocomplete",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_autocomplete"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "the string to search for",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of resource formats to return (optional, default: 10)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_create",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_show?id=metadata-test-4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "metadata-test-4"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_list"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – if given, the list of datasets will be broken into pages of at most limit datasets per page and only one page will be returned at a time (optional)",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "(int) – when limit is given, the offset to start returning packages from",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "current_package_list_with_resources",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/current_package_list_with_resources",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"current_package_list_with_resources"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": null,
+									"description": "if given, the list of datasets will be broken into pages of at most limit datasets per page and only one page will be returned at a time (optional)",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "when limit is given, the offset to start returning packages from",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_revision_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_revision_list?id={{test-package-id}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_revision_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{test-package-id}}",
+									"description": "REQUIRED (string) – the id or name of the dataset"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "site_read copy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_list"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – if given, the list of datasets will be broken into pages of at most limit datasets per page and only one page will be returned at a time (optional)",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "",
+									"description": "(int) – when limit is given, the offset to start returning packages from",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_relationships_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_relationships_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_relationships_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "REQUIRED (string) – the id or name of the first package",
+									"disabled": true
+								},
+								{
+									"key": "id2",
+									"value": null,
+									"description": "the id or name of the second package",
+									"disabled": true
+								},
+								{
+									"key": "rel",
+									"value": null,
+									"description": "relationship as string see package_relationship_create() for the relationship types (optional)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "package_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/package_activity_list?id=6e29a235-5a8b-451e-a229-54faab70761a",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_activity_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6e29a235-5a8b-451e-a229-54faab70761a",
+									"description": "REQUIRED (string) – the id or name of the package"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "recently_changed_packages_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/recently_changed_packages_activity_list_html",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"recently_changed_packages_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/package_activity_list_html?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the package"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recently_changed_packages_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/recently_changed_packages_activity_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"recently_changed_packages_activity_list"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "am_following_dataset",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/am_following_dataset?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"am_following_dataset"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the dataset"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset_followee_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dataset_followee_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dataset_followee_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset_followee_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dataset_followee_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dataset_followee_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": " (string) – the id of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset_follower_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dataset_follower_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dataset_follower_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the dataset"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset_follower_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dataset_follower_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dataset_follower_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the dataset"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "postman-test-3",
+									"description": "(string) – the name of the new dataset, must be between 2 and 100 characters long and contain only lowercase alphanumeric characters, - and _, e.g. 'warandpeace'",
+									"type": "text"
+								},
+								{
+									"key": "owner_org",
+									"value": "{{project-admin}}",
+									"description": "(string) – the id of the dataset’s owning organization, see organization_list() or organization_list_for_user() for available values (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "owner_org",
+									"value": "{{project-editor}}",
+									"type": "text"
+								},
+								{
+									"key": "owner_org",
+									"value": "{{project-member}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "owner_org",
+									"value": "{{project-no-role}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "",
+									"description": "(string) – the title of the dataset (optional, default: same as name)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "author",
+									"value": "",
+									"description": "(string) – the name of the dataset’s author (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "author_email",
+									"value": "",
+									"description": "(string) – the email address of the dataset’s author (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "maintainer",
+									"value": "",
+									"description": "(string) – the name of the dataset’s maintainer (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "maintainer_email",
+									"value": "",
+									"description": "(string) – the email address of the dataset’s maintainer (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "license_id",
+									"value": "",
+									"description": "(license id string) – the id of the dataset’s license, see license_list() for available values (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"description": "(string) – a description of the dataset (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "url",
+									"value": "",
+									"description": "(string) – a URL for the dataset’s source (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "version",
+									"value": "",
+									"description": "(string, no longer than 100 characters) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "",
+									"description": "(string) – the current state of the dataset, e.g. 'active' or 'deleted', only active datasets show up in search results and other lists of datasets, this parameter will be ignored if you are not authorized to change the state of the dataset (optional, default: 'active')",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "(string) – the type of the dataset (optional), IDatasetForm plugins associate themselves with different dataset types and provide custom dataset handling behaviour for these types",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resources",
+									"value": "",
+									"description": "(list of resource dictionaries) – the dataset’s resources, see resource_create() for the format of resource dictionaries (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "tags",
+									"value": "",
+									"description": "(list of tag dictionaries) – the dataset’s tags, see tag_create() for the format of tag dictionaries (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "extras",
+									"value": "",
+									"description": "(list of dataset extra dictionaries) – the dataset’s extras (optional), extras are arbitrary (key: value) metadata items that can be added to datasets, each extra dictionary should have keys 'key' (a string), 'value' (a string)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "relationships_as_object",
+									"value": "",
+									"description": "(list of relationship dictionaries) – see package_relationship_create() for the format of relationship dictionaries (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "relationships_as_subject",
+									"value": "",
+									"description": "(list of relationship dictionaries) – see package_relationship_create() for the format of relationship dictionaries (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "groups",
+									"value": "",
+									"description": "(list of dictionaries) – the groups to which the dataset belongs (optional), each group dictionary should have one or more of the following keys which identify an existing group: 'id' (the id of the group, string), or 'name' (the name of the group, string), to see which groups exist call group_list()",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"a464c77a-0f4b-4e7d-a429-59d61cb3bfc6\",\n  \"name\": \"test0-e\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/action/package_update",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"package_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/package_search",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – the solr query. Optional. Default: \"*:*\"",
+									"disabled": true
+								},
+								{
+									"key": "fq",
+									"value": null,
+									"description": "(string) – any filter queries to apply. Note: +site_id:{ckan_site_id} is added to this string prior to the query being executed",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": null,
+									"description": "(string) – sorting of the search results. Optional. Default: 'relevance asc, metadata_modified desc'. As per the solr documentation, this is a comma-separated string of field names and sort-orderings",
+									"disabled": true
+								},
+								{
+									"key": "rows",
+									"value": null,
+									"description": "(int) – the number of matching rows to return. There is a hard limit of 1000 datasets per query",
+									"disabled": true
+								},
+								{
+									"key": "start",
+									"value": null,
+									"description": "(int) – the offset in the complete result for where the set of returned datasets should begin",
+									"disabled": true
+								},
+								{
+									"key": "facet",
+									"value": null,
+									"description": "(string) – whether to enable faceted results. Default: True",
+									"disabled": true
+								},
+								{
+									"key": "facet.mincount",
+									"value": null,
+									"description": "(int) – the minimum counts for facet fields should be included in the results",
+									"disabled": true
+								},
+								{
+									"key": "facet.limit",
+									"value": null,
+									"description": "(int) – the maximum number of values the facet fields return. A negative value means unlimited. This can be set instance-wide with the search.facets.limit config option. Default is 50",
+									"disabled": true
+								},
+								{
+									"key": "facet.field",
+									"value": null,
+									"description": "(list of strings) – the fields to facet upon. Default empty. If empty, then the returned facet information is empty",
+									"disabled": true
+								},
+								{
+									"key": "include_drafts",
+									"value": null,
+									"description": "(boolean) – if True, draft datasets will be included in the results. A user will only be returned their own draft datasets, and a sysadmin will be returned all draft datasets. Optional, the default is False",
+									"disabled": true
+								},
+								{
+									"key": "include_private",
+									"value": null,
+									"description": " if True, private datasets will be included in the results. Only private datasets from the user’s organizations will be returned and sysadmins will be returned all private datasets. Optional, the default is False",
+									"disabled": true
+								},
+								{
+									"key": "use_default_schema",
+									"value": null,
+									"description": "(bool) – use default package schema instead of a custom schema defined with an IDatasetForm plugin (default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfollow_dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the dataset to stop following",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/unfollow_dataset",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"unfollow_dataset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "organization_purge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the organization to be purged",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/organization_purge",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"organization_purge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_relationship_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "subject",
+									"value": "",
+									"description": "(string) – the id or name of the dataset that is the subject of the relationship",
+									"type": "text"
+								},
+								{
+									"key": "object",
+									"value": "",
+									"description": "(string) – the id or name of the dataset that is the object of the relationship",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "(string) – the type of the relationship",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_relationship_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_relationship_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bulk_update_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "datasets",
+									"value": "",
+									"description": "(list of strings) – list of ids of the datasets to update",
+									"type": "text"
+								},
+								{
+									"key": "org_id",
+									"value": "",
+									"description": "(int) – id of the owning organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/bulk_update_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"bulk_update_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bulk_update_public",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "datasets",
+									"value": "",
+									"description": "(list of strings) – list of ids of the datasets to update",
+									"type": "text"
+								},
+								{
+									"key": "org_id",
+									"value": "",
+									"description": "(int) – id of the owning organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/bulk_update_public",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"bulk_update_public"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "bulk_update_private",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "datasets",
+									"value": "",
+									"description": "(list of strings) – list of ids of the datasets to update",
+									"type": "text"
+								},
+								{
+									"key": "org_id",
+									"value": "",
+									"description": "(int) – id of the owning organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/bulk_update_private",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"bulk_update_private"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_owner_org_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the dataset to update",
+									"type": "text"
+								},
+								{
+									"key": "organization_id",
+									"value": "",
+									"description": "the name or id of the owning organization",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_owner_org_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_owner_org_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_relationship_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "subject",
+									"value": "",
+									"description": "(string) – the name or id of the dataset that is the subject of the relationship",
+									"type": "text"
+								},
+								{
+									"key": "object",
+									"value": "",
+									"description": "the name or id of the dataset that is the object of the relationship",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "(string) – the type of the relationship, one of 'depends_on', 'dependency_of', 'derives_from', 'has_derivation', 'links_to', 'linked_from', 'child_of' or 'parent_of'",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "",
+									"description": "(string) – a comment about the relationship (optional)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_relationship_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_relationship_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_resource_reorder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the package to update",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "",
+									"description": "a list of resource ids in the order needed",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_resource_reorder",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_resource_reorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "6e4bccfd-0228-4569-aafa-583b4e3cbbee",
+									"description": "(string) – the name or id of the dataset to update",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "postman-test-0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "postman-update-0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "private",
+									"value": "False",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "active",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_patch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "6e4bccfd-0228-4569-aafa-583b4e3cbbee",
+									"description": "(string) – the name or id of the dataset to update",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "postman-test-0",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "postman-patch",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "private",
+									"value": "true",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "organization",
+									"value": "3baef195-cad5-40ef-94f2-9ead2dd992f6",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "state",
+									"value": "active",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_patch",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_patch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "6e4bccfd-0228-4569-aafa-583b4e3cbbee",
+									"description": "(string) – the name or id of the dataset to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dataset_purge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "6e4bccfd-0228-4569-aafa-583b4e3cbbee",
+									"description": "(string) – the name or id of the dataset to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/dataset_purge",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dataset_purge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow_dataset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the dataset to follow, e.g. 'warandpeace'",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/follow_dataset",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"follow_dataset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_relationship_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "subject",
+									"value": "",
+									"description": "(string) – the id or name of the dataset that is the subject of the relationship",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "object",
+									"value": "",
+									"description": "the id or name of the dataset that is the object of the relationship",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "type",
+									"value": "",
+									"description": "(string) – the type of the relationship, one of 'depends_on', 'dependency_of', 'derives_from', 'has_derivation', 'links_to', 'linked_from', 'child_of' or 'parent_of'",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "comment",
+									"value": "",
+									"description": "(string) – a comment about the relationship (optional)",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_relationship_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_relationship_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "package_create_default_resource_views",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "package",
+									"value": "",
+									"description": "(dict) – full dataset dict (ie the one obtained calling package_show())",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "create_datastore_views",
+									"value": "",
+									"description": "(bool) – whether to create views that rely on data being on the DataStore (optional, defaults to False)",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/package_create_default_resource_views",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"package_create_default_resource_views"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "resource",
+			"item": [
+				{
+					"name": "resource_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/resource_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"resource_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the resource",
+									"disabled": true
+								},
+								{
+									"key": "include_tracking",
+									"value": null,
+									"description": "(bool) – add tracking information to dataset and resources (default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "format_autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/format_autocomplete",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"format_autocomplete"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – the string to search for",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of resource formats to return (optional, default: 5)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/resource_view_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"resource_view_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the resource",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/resource_view_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"resource_view_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the resource",
+									"disabled": true
+								},
+								{
+									"key": "include_tracking",
+									"value": null,
+									"description": "(bool) – add tracking information to dataset and resources (default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_status_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/resource_status_show",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"resource_status_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the resource",
+									"disabled": true
+								},
+								{
+									"key": "include_tracking",
+									"value": null,
+									"description": "(bool) – add tracking information to dataset and resources (default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/resource_search",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "",
+									"description": "(string or list of strings of the form {field}:{term1}) – The search criteria. See above for description.",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": null,
+									"description": "(dict of fields to search terms.) – Deprecated",
+									"disabled": true
+								},
+								{
+									"key": "order_by",
+									"value": null,
+									"description": "(string) – A field on the Resource model that orders the results.",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – Apply an offset to the query.",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – Apply a limit to the query.",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "package_id",
+									"value": "{{package-admin}}",
+									"description": "REQUIRED (string) – id of package that the resource should be added to.",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "package_id",
+									"value": "{{package-editor}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "package_id",
+									"value": "{{package-member}}",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "package_id",
+									"value": "{{package-no-role}}",
+									"type": "text"
+								},
+								{
+									"key": "url",
+									"value": "postman-test-resource-0",
+									"description": "REQUIRED (string) – url of resource",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "revision_id",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "format",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "hash",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "resource_type",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "mimetype",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "mimetype_inner",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cache_url",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "size",
+									"value": "",
+									"description": "(int) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "created",
+									"value": "",
+									"description": "(iso date string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "last_modified",
+									"value": "",
+									"description": "(iso date string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "cache_last_updated",
+									"value": "",
+									"description": "(iso date string) – (optional)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "upload",
+									"value": "",
+									"description": "(FieldStorage (optional) needs multipart/form-data) – (optional)",
+									"type": "file",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_clear",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "view_types",
+									"value": "",
+									"description": "(list) – specific types to delete (optional)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_view_clear",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_view_clear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource_view",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_view_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_view_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_patch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_patch",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_patch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_reorder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource",
+									"type": "text"
+								},
+								{
+									"key": "order",
+									"value": "",
+									"description": "(list of strings) – the list of id of the resource to update the order of the views",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_view_reorder",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_view_reorder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource_view to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_view_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_view_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the resource to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_create_default_resource_views",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "resource",
+									"value": "",
+									"description": "(dict) – full resource dict",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "package",
+									"value": "",
+									"description": "(dict) – full dataset dict (optional, if not provided package_show() will be called)",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "create_datastore_views",
+									"value": "",
+									"description": "(bool) – whether to create views that rely on data being on the DataStore (optional, defaults to False)",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_create_default_resource_views",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_create_default_resource_views"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resource_view_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "resource_id",
+									"value": "",
+									"description": "(string) – id of the resource",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "",
+									"description": "(string) – the title of the view",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "",
+									"description": "(string) – a description of the view (optional)",
+									"type": "text"
+								},
+								{
+									"key": "view_type",
+									"value": "",
+									"description": "(string) – type of view",
+									"type": "text"
+								},
+								{
+									"key": "config",
+									"value": "",
+									"description": "(JSON string) – options necessary to recreate a view state (optional)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/resource_view_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"resource_view_create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tag",
+			"item": [
+				{
+					"name": "tag_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Example\",\n\t\"vocabulary_id\": \"742a34e3-9be3-4a7d-8ffe-d418642fbb1a\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/action/tag_create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"tag_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/tag_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"tag_list"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": null,
+									"description": "(string) – a tag name query to search for, if given only tags whose names contain this string will be returned (optional)",
+									"disabled": true
+								},
+								{
+									"key": "vocabulary_id",
+									"value": null,
+									"description": "(string) – the id or name of a vocabulary, if give only tags that belong to this vocabulary will be returned (optional)",
+									"disabled": true
+								},
+								{
+									"key": "all_fields",
+									"value": null,
+									"description": "(boolean) – return full tag dictionaries instead of just names (optional, default: False)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "tag_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/tag_show?id=color",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"tag_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "color",
+									"description": "(string) – the name or id of the tag"
+								},
+								{
+									"key": "vocabulary_id",
+									"value": null,
+									"description": "(string) – the id or name of the tag vocabulary that the tag is in - if it is not specified it will assume it is a free tag. (optional)",
+									"disabled": true
+								},
+								{
+									"key": "include_datasets",
+									"value": null,
+									"description": "(bool) – include a list of the tag’s datasets. (Up to a limit of 1000 - for more flexibility, use package_search - see package_search() for an example.) (optional, default: False)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "tag_autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/tag_autocomplete?query=te",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tag_autocomplete"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "te",
+									"description": "(string) – the string to search for"
+								},
+								{
+									"key": "vocabulary_id",
+									"value": null,
+									"description": "(string) – the id or name of the tag vocabulary to search in (optional)",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": null,
+									"description": "(dictionary) – deprecated",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of tags to return",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – when limit is given, the offset to start returning tags from",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag_search",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/tag_search?query=test",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tag_search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "test",
+									"description": "(string or list of strings) – the string(s) to search for"
+								},
+								{
+									"key": "vocabulary_id",
+									"value": null,
+									"description": "(string) – the id or name of the tag vocabulary to search in (optional)",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": null,
+									"description": "(dictionary) – deprecated",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of tags to return",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – when limit is given, the offset to start returning tags from",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the tag",
+									"type": "text"
+								},
+								{
+									"key": "vocabulary_id",
+									"value": "",
+									"description": "(string) – the id or name of the vocabulary that the tag belongs to (optional, default: None)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/tag_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tag_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "tag_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – the name for the new tag, a string between 2 and 100 characters long containing only alphanumeric characters and -, _ and ., e.g. 'Jazz'",
+									"type": "text"
+								},
+								{
+									"key": "vocabulary_id",
+									"value": "",
+									"description": "(string) – the id of the vocabulary that the new tag should be added to, e.g. the id of vocabulary 'Genre'",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/tag_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"tag_create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "user_create",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/user_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/user_show?id=default",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "default",
+									"description": "(string) – the id or name of the user (optional)"
+								},
+								{
+									"key": "user_obj",
+									"value": null,
+									"description": "(user dictionary) – the user dictionary of the user (optional)",
+									"disabled": true
+								},
+								{
+									"key": "include_datasets",
+									"value": null,
+									"description": "(boolean) – Include a list of datasets the user has created. If it is the same user or a sysadmin requesting, it includes datasets that are draft or private. (optional, default:False, limit:50)",
+									"disabled": true
+								},
+								{
+									"key": "include_num_followers",
+									"value": null,
+									"description": "(boolean) – Include the number of followers the user has (optional, default:False)",
+									"disabled": true
+								},
+								{
+									"key": "include_password_hash",
+									"value": null,
+									"description": "(boolean) – Include the stored password hash (sysadmin only, optional, default:False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"ec1285a1-55e8-496d-9d0b-10e9f2d33d17\",\n\t\"state\": \"active\",\n\t\"email\": \"default@ckan-sandbox.nrelcloud.org\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/action/user_update",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/user_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_list"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – restrict the users returned to those whose names contain a string (optional)",
+									"disabled": true
+								},
+								{
+									"key": "order_by",
+									"value": null,
+									"description": "(string) – which field to sort the list by (optional, default: 'name'). Can be any user field or edits (i.e. number_of_edits)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "user_autocomplete",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/user_autocomplete",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_autocomplete"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – the string to search for",
+									"disabled": true
+								},
+								{
+									"key": "order_by",
+									"value": null,
+									"description": "(int) – the maximum number of user names to return (optional, default: 20)",
+									"disabled": true
+								}
+							]
+						},
+						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
+					},
+					"response": []
+				},
+				{
+					"name": "user_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/action/user_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"user_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/user_activity_list?id=de9e46bb-abd0-4c10-8e28-7eb8829ba0ae",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_activity_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "de9e46bb-abd0-4c10-8e28-7eb8829ba0ae",
+									"description": "REQUIRED (string) – the id or name of the user"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/user_activity_list_html?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – The id or name of the user"
+								},
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "am_following_user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/am_following_user?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"am_following_user"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_followee_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/user_followee_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_followee_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_followee_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/user_followee_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_followee_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_follower_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/user_follower_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_follower_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id or name of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard_new_activities_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dashboard_new_activities_count",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dashboard_new_activities_count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_site_user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/get_site_user",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"get_site_user"
+							],
+							"query": [
+								{
+									"key": "defer_commit",
+									"value": null,
+									"description": "(boolean) – by default (or if set to false) get_site_user will commit and clean up the current transaction. If set to true, caller is responsible for commiting transaction after get_site_user is called. Leaving open connections can cause cli commands to hang! (optional, default: False)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard_activity_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dashboard_activity_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dashboard_activity_list"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard_activity_list_html",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dashboard_activity_list_html",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dashboard_activity_list_html"
+							],
+							"query": [
+								{
+									"key": "offset",
+									"value": null,
+									"description": "(int) – where to start getting activity items from (optional, default: 0)",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": null,
+									"description": "(int) – the maximum number of activities to return (optional, default: 31, the default value is configurable via the ckan.activity_list_limit setting)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "followee_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/followee_list?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"followee_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the user"
+								},
+								{
+									"key": "q",
+									"value": null,
+									"description": "(string) – a query string to limit results by, only objects whose display name begins with the given string (case-insensitive) wil be returned (optional)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "followee_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/followee_count?id",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"followee_count"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the user"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unfollow_user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the user to stop following",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/unfollow_user",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"unfollow_user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or usernamename of the user to delete",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/user_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send_email_notifications",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/send_email_notifications",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"send_email_notifications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dashboard_mark_activities_old",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/dashboard_mark_activities_old",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"dashboard_mark_activities_old"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_generate_apikey",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the user whose key needs to be updated",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/user_generate_apikey",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_generate_apikey"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the name or id of the user to update",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/user_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "follow_user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id or name of the user to follow, e.g. 'joeuser'",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/follow_user",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"follow_user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_invite",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "",
+									"description": "(string) – the email of the user to be invited to the group",
+									"type": "text"
+								},
+								{
+									"key": "group_id",
+									"value": "",
+									"description": "(string) – the id or name of the group",
+									"type": "text"
+								},
+								{
+									"key": "role",
+									"value": "",
+									"description": "(string) – role of the user in the group. One of member, editor, or admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/user_invite",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_invite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – the name of the new user, a string between 2 and 100 characters in length, containing only lowercase alphanumeric characters, - and _",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "",
+									"description": "(string) – the email address for the new user",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"description": "(string) – the password of the new user, a string of at least 4 characters",
+									"type": "text"
+								},
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the new user (optional)",
+									"type": "text"
+								},
+								{
+									"key": "fullname",
+									"value": "",
+									"description": "(string) – the full name of the new user (optional)",
+									"type": "text"
+								},
+								{
+									"key": "about",
+									"value": "",
+									"description": "(string) – a description of the new user (optional)",
+									"type": "text"
+								},
+								{
+									"key": "openid",
+									"value": "",
+									"description": "(string) – (optional)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/user_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"user_create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vocabulary",
+			"item": [
+				{
+					"name": "vocabulary_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/vocabulary_show?id=a6ef1367-c1e5-46db-a35d-28444f400f32",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"vocabulary_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "a6ef1367-c1e5-46db-a35d-28444f400f32",
+									"description": "(string) – the id or name of the vocabulary"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vocabulary_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/vocabulary_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"vocabulary_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vocabulary_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"a6ef1367-c1e5-46db-a35d-28444f400f32\",\n\t\"tags\": [\n            {\n                \"vocabulary_id\": \"a6ef1367-c1e5-46db-a35d-28444f400f32\",\n                \"display_name\": \"Postman Update\",\n                \"id\": \"5bae6820-dd04-4f30-a0fd-ebb2b197accd\",\n                \"name\": \"postman-update\"\n            },\n            {\n                \"display_name\": \"postman-update-create\",\n                \"name\": \"postman-update-create\"\n            }\n        ]\n}"
+						},
+						"url": {
+							"raw": "{{base-url}}/vocabulary_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"vocabulary_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vocabulary_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – the name of the new vocabulary, e.g. 'Genre'",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "",
+									"description": "(list of tag dictionaries) – the new tags to add to the new vocabulary, for the format of tag dictionaries see tag_create()",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/vocabulary_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"vocabulary_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vocabulary_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the vocabulary",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/vocabulary_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"vocabulary_delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "misc",
+			"item": [
+				{
+					"name": "site_read",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/site_read",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"site_read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "license_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/license_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"license_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revision_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/revision_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"revision_list"
+							],
+							"query": [
+								{
+									"key": "since_id",
+									"value": null,
+									"description": "the revision ID after which you want the revision",
+									"disabled": true
+								},
+								{
+									"key": "since_time",
+									"value": null,
+									"description": "the timestamp after which you want the revisions",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": null,
+									"description": "(string) – the order to sort the related items in, possible values are ‘time_asc’, ‘time_desc’ (default). (optional)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revision_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/revision_show",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"revision_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": null,
+									"description": "(string) – the id of the revision",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task_status_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/task_status_show",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"task_status_show"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the task status (optional)",
+									"disabled": true
+								},
+								{
+									"key": "entity_id",
+									"value": null,
+									"description": "(string) – the entity_id of the task status (optional)",
+									"disabled": true
+								},
+								{
+									"key": "task_type",
+									"value": null,
+									"description": "the task_type of the task status (optional)",
+									"disabled": true
+								},
+								{
+									"key": "key",
+									"value": null,
+									"description": "(string) – the key of the task status (optional)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "term_translation_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/term_translation_show?terms=Russian, romantic novel&lang_codes=fr",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"term_translation_show"
+							],
+							"query": [
+								{
+									"key": "terms",
+									"value": "Russian, romantic novel",
+									"description": "(list of strings) – the terms to search for translations of, e.g. 'Russian', 'romantic novel'"
+								},
+								{
+									"key": "lang_codes",
+									"value": "fr",
+									"description": "(list of language code strings) – the language codes of the languages to search for translations into, e.g. 'en', 'de' (optional, default is to search for translations into any language)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/status_show",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"status_show"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activity_detail_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/activity_detail_list?id=4e1c98c5-3714-4007-a8e8-5b12009aee04",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"activity_detail_list"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "4e1c98c5-3714-4007-a8e8-5b12009aee04",
+									"description": "(string) – the id of the activity"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config_option_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/config_option_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"config_option_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config_option_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/config_option_show?key",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"config_option_show"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": null,
+									"description": "(string) – The configuration option key"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "help_show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/help_show?name=user_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"help_show"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "user_create",
+									"description": "Action function name (eg user_create, package_search)"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "member_roles_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"url": {
+							"raw": "{{base-url}}/member_roles_list",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"member_roles_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_cancel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – The ID of the background job",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/job_cancel",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"job_cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "job_clear",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "queues",
+									"value": "",
+									"description": "(list) – The queues to clear. If not given then ALL queues are cleared",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/job_clear",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"job_clear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task_status_delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the task status to delete",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/task_status_delete",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"task_status_delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config_option_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "key",
+									"value": "",
+									"description": "a configuration option key (eg ckan.site_title). It must be present on the update_configuration_schema",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/config_option_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"config_option_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task_status_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "(string) – the id of the task status to update",
+									"type": "text"
+								},
+								{
+									"key": "entity_id",
+									"value": "",
+									"description": "(string) –",
+									"type": "text"
+								},
+								{
+									"key": "entity_type",
+									"value": "",
+									"description": "(string) –",
+									"type": "text"
+								},
+								{
+									"key": "task_type",
+									"value": "",
+									"description": "(string) –",
+									"type": "text"
+								},
+								{
+									"key": "key",
+									"value": "",
+									"description": "(string) –",
+									"type": "text"
+								},
+								{
+									"key": "value",
+									"value": "",
+									"description": "(optional)",
+									"type": "text"
+								},
+								{
+									"key": "state",
+									"value": "",
+									"description": "(optional)",
+									"type": "text"
+								},
+								{
+									"key": "last_updated",
+									"value": "",
+									"description": "(optional)",
+									"type": "text"
+								},
+								{
+									"key": "error",
+									"value": "",
+									"description": "(optional)",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/task_status_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"task_status_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "task_status_update_many",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data",
+									"value": "",
+									"description": "(list of dictionaries) – the task_status dictionaries to update, for the format of task status dictionaries see task_status_update()",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/task_status_update_many",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"task_status_update_many"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "term_translation_update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "term",
+									"value": "",
+									"description": "(string) – the term to be translated, in the original language, e.g. 'romantic novel'",
+									"type": "text"
+								},
+								{
+									"key": "term_translation",
+									"value": "",
+									"description": "(string) – the translation of the term, e.g. 'Liebesroman'",
+									"type": "text"
+								},
+								{
+									"key": "lang_code",
+									"value": "",
+									"description": "(string) – the language code of the translation, e.g. 'de'",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/term_translation_update",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"term_translation_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "term_translation_update_many",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "data",
+									"value": "",
+									"description": "(list of dictionaries) – the term translation dictionaries to create or update, for the format of term translation dictionaries see term_translation_update()",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/term_translation_update_many",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"term_translation_update_many"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activity_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "",
+									"description": "(string) – the name or id of the user who carried out the activity, e.g. 'seanh'",
+									"type": "text"
+								},
+								{
+									"key": "object_id",
+									"value": "",
+									"description": "the name or id of the object of the activity, e.g. 'my_dataset'",
+									"type": "text"
+								},
+								{
+									"key": "activity_type",
+									"value": "",
+									"description": "(string) – the type of the activity, this must be an activity type that CKAN knows how to render, e.g. 'new package', 'changed user', 'deleted group' etc",
+									"type": "text"
+								},
+								{
+									"key": "data",
+									"value": "",
+									"description": "(dictionary) – any additional data about the activity",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/activity_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"activity_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rating_create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{api-key}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "package",
+									"value": "",
+									"description": "(string) – the name or id of the dataset to rate",
+									"type": "text"
+								},
+								{
+									"key": "rating",
+									"value": "",
+									"description": "(int) – the rating to give to the dataset, an integer between 1 and 5",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base-url}}/rating_create",
+							"host": [
+								"{{base-url}}"
+							],
+							"path": [
+								"rating_create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://envidat.ch"
+		}
+	]
+}
