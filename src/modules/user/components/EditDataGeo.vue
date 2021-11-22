@@ -67,7 +67,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
@@ -164,12 +163,7 @@ export default {
       // Parse updated geometries, add to existing props, update via event bus
 
       if (isFieldValid( 'geometries', geomArray, this.validations, this.validationErrors)) {
-/*
-        const updatedGeometries = parseAsGeomCollection(
-          this.location.name,
-          geomArray,
-        );
-*/
+
         const updatedLocation = {
           ...this.location,
           geoJSON: geomArray,
