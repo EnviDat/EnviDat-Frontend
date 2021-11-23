@@ -391,8 +391,10 @@ export default {
 
     const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-
-    populateEditingComponents(commit, currentEntry, authorsMap);
+    
+    if (currentEntry) {
+      populateEditingComponents(commit, currentEntry, authorsMap);
+    }
   },
   async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
 
