@@ -499,7 +499,7 @@ export default {
   data: () => ({
     fileIconString: '',
     title: 'Dashboard',
-    PageBGImage: './app_b_dashboardpage.jpg',
+    PageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,
