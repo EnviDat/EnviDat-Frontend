@@ -109,11 +109,28 @@ export default {
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
+  beforeMount() {
+    const initialStep = this.metadataCreationSteps[0]?.title || '';
+    const initialSubStep = this.metadataCreationSteps[0]?.detailSteps[0]?.title || '';
+
+    const currentStep = this.routeStep
+    const currentSubStep = this.routeSubStep
+    const params = {}
+
+    if (!currentStep && !currentSubStep) {
+      // when no parameter are given in the url, fallback the first ones
+      // but add them to the url
+      params.step = initialStep;
+      params.substep = initialSubStep;
+
+      this.$router.push({ params });
+    }
+  },
   mounted() {
     if (this.metadataId) {
       this.initMetadataUsingId(this.metadataId);
     }
-
+    
     // reset the scrolling to the top
     window.scrollTo(0, 0);
   },
@@ -136,14 +153,13 @@ export default {
       return this.$route.params.metadataid;
     },
     routeStep() {
-      const fallbackStep = this.metadataCreationSteps[0].title;
       let stepFromRoute = this.$route?.params?.step;
 
       if (stepFromRoute instanceof Array) {
         stepFromRoute = stepFromRoute[0];
       }
       
-      return stepFromRoute || fallbackStep;
+      return stepFromRoute || '';
     },
     routeSubStep() {
       const subStep = this.$route?.params?.substep;
