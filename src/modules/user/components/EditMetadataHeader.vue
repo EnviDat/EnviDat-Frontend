@@ -4,29 +4,41 @@
   <v-container fluid
                 class="pa-0 fill-height" >
 
-<!--    <v-row>-->
 
-<!--      <v-col>-->
-<!--        <div class="text-h5">{{ labels.cardTitle }}</div>-->
-<!--      </v-col>-->
+    <v-row >
 
-<!--    </v-row>-->
+      <v-col class="text-h5" cols="8">
+        {{ labels.title }}
+      </v-col>
 
+      <v-col v-if="message" cols="4" class="pl-16">
+        <BaseStatusLabelView statusIcon="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error" cols="4" class="pl-16">
 
-      <v-row >
-        <v-col class="text-h5">
-          {{ labels.title }}
-        </v-col>
-      </v-row>
+        <BaseStatusLabelView statusIcon="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
+    </v-row>
 
 
     <v-row >
+
       <v-col class="text-body-1">
         {{ labels.instructions }}
       </v-col>
+
     </v-row>
 
+
     <v-row >
+
       <v-col cols="8" class="pb-0">
 
         <v-text-field :label="labels.labelTitle"
@@ -35,12 +47,14 @@
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
-                      @change="catchTitleChange"
-                      @input="validateProperty('metadataTitle', $event)"
+                      @input="catchTitleChange"
+                      @change="notifyChange('metadataTitle', $event)"
                       :value="metadataTitleField" />
 
       </v-col>
+
     </v-row>
+
 
     <v-row >
       <v-col class="text-h6 pb-0">
@@ -67,7 +81,7 @@
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
-                      @input="validateProperty('contactEmail', $event)"
+                      @input="catchEmailChange"
                       @change="notifyChange('contactEmail', $event)" />
 
         <v-text-field :label="labels.labelContactGivenName"
@@ -78,7 +92,7 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       :value="contactGivenNameField"
-                      @input="validateProperty('contactGivenName', $event)"
+                      @input="catchGivenNameChange"
                       @change="notifyChange('contactGivenName', $event)" />
 
         <v-text-field :label="labels.labelContactSurname"
@@ -89,7 +103,7 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       :value="contactSurnameField"
-                      @input="validateProperty('contactSurname', $event)"
+                      @input="catchSurnameChange"
                       @change="notifyChange('contactSurname', $event)" />
 
       </v-col>
@@ -136,7 +150,7 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-22
+ * Last modified  : 2021-11-23
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -147,6 +161,7 @@ import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -195,6 +210,22 @@ export default {
     pickedUser: {
       type: Array,
       default: () => [],
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -257,8 +288,8 @@ export default {
       const licenseIcon = this.mixinMethods_getIcon('license') || '';
 
       const fullName = this.getFullName({
-        given_name: this.contactGivenName,
-        name: this.contactSurname,
+        given_name: this.contactGivenNameField,
+        name: this.contactSurnameField,
       });
 
       const previewEntry = {
@@ -267,7 +298,7 @@ export default {
         showCloseButton: false,
         contactName: fullName,
         contactIcon,
-        contactEmail: this.contactEmail,
+        contactEmail: this.contactEmailField,
         mailIcon,
         doiIcon,
         licenseIcon,
@@ -313,18 +344,24 @@ export default {
       return getAuthorName(authorObj);
     },
     catchTitleChange(value) {
-
-      // Assign previewTitle
       this.previewTitle = value;
-
-      // Assign showPreviewTitle to true
       this.showPreviewTitle = true;
-
-      // If valid pass metadataTitle to eventBus
-      const property = 'metadataTitle';
-      if (this.validateProperty(property, value)) {
-        this.setHeaderInfo(property, value);
-      }
+      this.validateProperty('metadataTitle', value);
+    },
+    catchEmailChange(value) {
+      this.previewContactEmail = value;
+      this.showPreviewEmail = true;
+      this.validateProperty('contactEmail', value);
+    },
+    catchGivenNameChange(value) {
+      this.previewContactGivenName = value;
+      this.showPreviewGivenName = true;
+      this.validateProperty('contactGivenName', value);
+    },
+    catchSurnameChange(value) {
+      this.previewContactSurname = value;
+      this.showPreviewSurname = true;
+      this.validateProperty('contactSurname', value);
     },
     catchAuthorChange(pickedAuthor) {
 
@@ -350,15 +387,17 @@ export default {
 
     },
     // Validate contact author properties by calling isFieldValid()
-    // Returns authorObj only with key-value pairs that have valid values
+    // Returns true if all properties are valid, else returns false
     validateAuthor(authorObject) {
 
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
 
+      // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
         isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
       }
 
+      // Return false if any of the properties have a validation error
       for (let i = 0; i < properties.length; i++) {
         const prop = properties[i];
          if (this.validationErrors[prop]) {
@@ -539,6 +578,7 @@ export default {
   components: {
     MetadataHeader,
     BaseUserPicker,
+    BaseStatusLabelView,
   },
 };
 </script>
