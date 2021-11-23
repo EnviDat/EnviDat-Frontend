@@ -17,6 +17,7 @@
                       :selectedTagNames="selectedTagNames"
                       @clickedTagClose="$emit('clickedTagClose', $event)"
                       @clickedClear="$emit('clickedClear', $event)"
+                      @clickedCard="catchMetadataClicked"
                       :defaultListControls="defaultListControls"
                       :enabledControls="enabledControls"
                       :minMapHeight="mapFilterHeight"
@@ -71,6 +72,9 @@ export default {
   computed: {
   },
   methods: {
+    catchMetadataClicked(datasetName) {
+      this.$emit('clickedCard', datasetName);
+    },
   },
   data: () => ({
     projectDatasetsTitle: 'Related Datasets',

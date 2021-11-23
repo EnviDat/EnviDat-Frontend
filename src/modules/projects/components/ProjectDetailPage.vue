@@ -59,6 +59,7 @@
                           :selectedTagNames="selectedTagNames"
                           @clickedTagClose="catchTagCloseClicked"
                           @clickedClear="catchTagCleared"
+                          @clickedCard="catchMetadataClicked"
                           :defaultListControls="defaultControls"
                           :enabledControls="enabledControls"
                           :topFilteringLayout="true"
@@ -89,7 +90,13 @@ import {
   mapState,
   mapGetters,
 } from 'vuex';
-import { PROJECTS_PATH, PROJECT_DETAIL_PAGENAME } from '@/router/routeConsts';
+
+import {
+  PROJECTS_PATH,
+  PROJECT_DETAIL_PAGENAME,
+  METADATADETAIL_PAGENAME,
+} from '@/router/routeConsts';
+
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
@@ -99,6 +106,7 @@ import {
   METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
+  SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -288,6 +296,16 @@ export default {
     },
   },
   methods: {
+    catchMetadataClicked(datasetname) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+
+      this.$router.push({
+        name: METADATADETAIL_PAGENAME,
+        params: {
+          metadataid: datasetname,
+        },
+      });
+    },
     loadProjects() {
       if (this.projects.length <= 0) {
         this.$store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, this.projectsConfig);

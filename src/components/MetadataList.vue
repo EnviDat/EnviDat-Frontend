@@ -106,24 +106,28 @@
                 class="pa-2" >
 
           <metadata-card :id="metadata.id"
-                        :ref="metadata.id"
-                        :title="metadata.title"
-                        :name="metadata.name"
-                        :subtitle="metadata.notes"
-                        :tags="metadata.tags"
-                        :titleImg="metadata.titleImg"
-                        :restricted="hasRestrictedResources(metadata)"
-                        :resourceCount="metadata.num_resources"
-                        :mode="mode"
-                        :flatLayout="listView"
-                        :compactLayout="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-                        :fileIconString="fileIconString"
-                        :lockedIconString="lockedIconString"
-                        :unlockedIconString="unlockedIconString"
-                        :geoJSONIcon="getGeoJSONIcon(metadata.location)"
-                        :categoryColor="metadata.categoryColor"
-                        @clickedEvent="metaDataClicked"
-                        @clickedTag="catchTagClicked" />
+                          :ref="metadata.id"
+                          :title="metadata.title"
+                          :name="metadata.name"
+                          :subtitle="metadata.notes"
+                          :tags="metadata.tags"
+                          :titleImg="metadata.titleImg"
+                          :restricted="hasRestrictedResources(metadata)"
+                          :resourceCount="metadata.num_resources"
+                          :mode="mode"
+                          :flatLayout="listView"
+                          :compactLayout="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+                          :fileIconString="fileIconString"
+                          :lockedIconString="lockedIconString"
+                          :unlockedIconString="unlockedIconString"
+                          :geoJSONIcon="getGeoJSONIcon(metadata.location)"
+                          :categoryColor="metadata.categoryColor"
+                          @clickedEvent="metaDataClicked"
+                          @clickedTag="catchTagClicked"
+                          :showGenericOpenButton="metadata.openEvent ? true : false"
+                          :openButtonTooltip="metadata.openButtonTooltip"
+                          :openButtonIcon="metadata.openButtonIcon"
+                          @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
         </v-col>
 
         <v-col class="mx-2"
@@ -205,6 +209,7 @@ import {
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import MetadataListLayout from '@/components/MetadataListLayout';
+import { eventBus } from '@/factories/eventBus';
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
 export default {
@@ -329,6 +334,9 @@ export default {
     },
   },
   methods: {
+    catchOpenClick(event, eventProperty) {
+      eventBus.$emit(event, eventProperty);
+    },
     getGeoJSONIcon(location) {
       return this.mixinMethods_getGeoJSONIcon(location?.geoJSON?.type);
     },
@@ -405,15 +413,8 @@ export default {
     redirectToDashboard() {
       window.open('https://www.envidat.ch/user/reset', '_blank');
     },
-    metaDataClicked(datasetname) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
-
-      this.$router.push({
-        name: METADATADETAIL_PAGENAME,
-        params: {
-          metadataid: datasetname,
-        },
-      });
+    metaDataClicked(datasetName) {
+      this.$emit('clickedCard', datasetName);
     },
     catchPointClicked(id) {
       // bring to top

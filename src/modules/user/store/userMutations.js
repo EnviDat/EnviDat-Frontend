@@ -18,6 +18,7 @@ import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_RESOURCES,
+  SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
@@ -27,6 +28,7 @@ import {
   updateResource,
 } from '@/factories/userEditingFactory';
 
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -158,7 +160,11 @@ export default {
     const { cardBGImages } = store.getters;
     const categoryCards = store.getters.categoryCards;
 
-    state.userDatasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
+    const datasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
+
+    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
+
+    state.userDatasets = datasets;
 
     resetErrorObject(state);
   },

@@ -70,6 +70,7 @@
                       :loading="loading"
                       :placeHolderAmount="placeHolderAmount"
                       @clickedTag="catchTagClicked"
+                      @clickedCard="catchMetadataClicked"
                       :selectedTagNames="selectedTagNames"
                       :allTags="allUserdataTags"
                       :showPlaceholder="updatingTags"
@@ -212,6 +213,7 @@ import {
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -238,6 +240,12 @@ import UserCard from '@/components/Cards/UserCard';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+  SELECT_EDITING_AUTHOR,
+  SELECT_EDITING_DATASET,
+} from '@/factories/eventBus';
 
 export default {
   name: 'DashboardPage',
@@ -256,6 +264,12 @@ export default {
     UserCard,
     MetadataCard,
     MetadataCardPlaceholder,
+  },
+  created() {
+    eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
+  },
+  beforeDestroy() {
+    eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -461,9 +475,23 @@ export default {
       console.log('clicked show unpublished dataset');
       // this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
-    catchEditingClick() {
-      console.log('clicked editing dataset');
-      // this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
+    catchEditingClick(selectedDataset) {
+      this.$router.push({
+        name: METADATAEDIT_PAGENAME,
+        params: {
+          metadataid: selectedDataset,
+        },
+      })
+    },
+    catchMetadataClicked(datasetname) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+
+      this.$router.push({
+        name: METADATADETAIL_PAGENAME,
+        params: {
+          metadataid: datasetname,
+        },
+      });
     },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {
