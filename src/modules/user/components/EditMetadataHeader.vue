@@ -14,7 +14,7 @@
 
 
       <v-row >
-        <v-col class="text-h6">
+        <v-col class="text-h5">
           {{ labels.title }}
         </v-col>
       </v-row>
@@ -341,10 +341,12 @@ export default {
       const authorObject = this.getAuthorObject(author);
 
       // Validate contact author properties
-      const authorObj = this.validateAuthor(authorObject);
+      const allPropertiesValid = this.validateAuthor(authorObject);
 
       // Call setContact to emit authorObj values to eventBus
-      this.setContact(authorObj);
+      if (allPropertiesValid) {
+        this.setContact(authorObject);
+      }
 
     },
     // Validate contact author properties by calling isFieldValid()
@@ -354,14 +356,17 @@ export default {
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
 
       for (let i = 0; i < properties.length; i++) {
-        const valid = isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
-        if (!valid) {
-          delete authorObject[properties[i]];
-        }
+        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
       }
 
-      return authorObject;
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+         if (this.validationErrors[prop]) {
+           return false;
+         }
+      }
 
+      return true;
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
