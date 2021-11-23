@@ -277,9 +277,10 @@ export default {
       'userOrganizations',
       'userRecentOrgaDatasets',
       'userRecentOrgaDatasetsError',
+      'userDatasets',
+      'userDatasetsLoading',
       'userDatasetsError',
     ]),
-    ...mapGetters(USER_NAMESPACE, ['userDatasets']),
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
       'updatingTags',
@@ -424,13 +425,12 @@ export default {
       }
     },
     fetchUserDatasets() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SHOW,
           body: {
             id: this.user.id,
             include_datasets: true,
-            key: this.user.apikey,
           },
           commit: true,
           mutation: USER_GET_DATASETS,

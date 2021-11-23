@@ -30,6 +30,7 @@ const userState = {
   filteringTagNames: [],
   userDatasetsLoading: false,
   userDatasetsError: null,
+  userDatasets: [],
   userOrganizationLoading: false,
   userOrganizationIds: [],
   userOrganizationNames: [],
@@ -52,15 +53,6 @@ export const user = {
     resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
     authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
     getMetadataEditingObject: state => key => state.metadataInEditing[key],
-    userDatasets: (state) => {
-      const userObj = state.user;
-
-      if (userObj && userObj.datasets && userObj.datasets.length > 0) {
-        return state.user.datasets;
-      }
-
-      return null;
-    },
     filteredDatasets: (state, getters) => {
       const filteredContent = [];
       const content = getters.userDatasets;

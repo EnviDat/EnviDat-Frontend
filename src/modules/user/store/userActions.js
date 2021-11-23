@@ -54,7 +54,7 @@ import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
-  ACTION_USER_ORGANIZATIONS_DATASETS,
+  ACTION_USER_ORGANIZATIONS_DATASETS, FETCH_USER_DATA,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
@@ -264,6 +264,31 @@ function mapFrontendData(stepKey, backendData) {
 */
 
 export default {
+  async [FETCH_USER_DATA]({ commit }, payload) {
+    commit(payload.mutation);
+
+    const body = payload.body || {};
+
+    // unpack the action because it might be wrapped to provide a test url
+    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
+
+    let url = extractBodyIntoUrl(actionUrl, body);
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    // if the url is directly to a file it has to be a get call
+    // const method = url.includes('.json') ? 'get' : 'post';
+
+    await axios.get(url)
+      // await axios({ method, url, body })
+      .then((response) => {
+        if (payload.commit) {
+          commit(`${payload.mutation}_SUCCESS`, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(`${payload.mutation}_ERROR`, error);
+      });
+  },
   async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {
     commit(USER_GET_ORGANIZATION_IDS);
 
@@ -391,7 +416,7 @@ export default {
 
     const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-    
+
     if (currentEntry) {
       populateEditingComponents(commit, currentEntry, authorsMap);
     }

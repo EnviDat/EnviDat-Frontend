@@ -13,7 +13,6 @@
 */
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -157,12 +156,9 @@ export default {
 
     const store = this;
     const { cardBGImages } = store.getters;
-    const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
+    const categoryCards = store.getters.categoryCards;
 
-    const enhancedDatasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
-
-    // use this._vm.$set() to make sure computed properties are recalculated
-    this._vm.$set(state.user, 'datasets', enhancedDatasets);
+    state.userDatasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
 
     resetErrorObject(state);
   },
@@ -219,7 +215,7 @@ export default {
 
       const store = this;
       const { cardBGImages } = store.getters;
-      const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
+      const categoryCards = store.getters.categoryCards;
 
       payload.packages = enhanceMetadatas(payload.packages, cardBGImages, categoryCards);
     }
