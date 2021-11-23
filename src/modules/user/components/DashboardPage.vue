@@ -322,23 +322,20 @@ export default {
         return filteredContent;
       }
 
+      if (!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+        return this.userDatasets;
+      }
+
       for (let i = 0; i < this.userDatasets.length; i++) {
         const entry = this.userDatasets[i];
 
-        if (this.contentFilteredByTags(entry, this.selectedTagNames)) {
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedTagNames)) {
           filteredContent.push(entry);
         }
       }
       
       return filteredContent;
     },
-    contentFilteredByTags(value, selectedTagNames) {
-      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
-        return true;
-      }
-
-      return false;
-    },    
     publishedDatasets() {
       if (this.user.datasets) {
         return this.user.datasets.filter(dataset => !dataset.private);
@@ -407,7 +404,11 @@ export default {
       return null;
     },
     allUserdataTags() {
-      let allTags = getPopularTags(this.filteredUserDatasets);
+      let allTags = getPopularTags(this.userDatasets);
+
+      if (allTags.length <= 0) {
+        allTags = getPopularTags(this.userDatasets, '', 1);
+      }
 
       if (allTags.length > this.maxFilterTags) {
         allTags = allTags.splice(this.maxFilterTags, allTags.length - this.maxFilterTags);

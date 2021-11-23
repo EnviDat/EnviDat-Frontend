@@ -159,7 +159,7 @@ export default {
 
       if (state.webpIsSupported) {
         const webpImg = state.webpAssets[imageKey];
-        
+
         if (webpImg) {
           return webpImg;
         }
