@@ -15,7 +15,9 @@
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 import {
+  eventBus,
   EDITMETADATA_AUTHOR,
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_RESOURCES,
   SELECT_EDITING_DATASET_PROPERTY,
@@ -415,6 +417,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
+    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
@@ -422,9 +426,12 @@ export default {
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
+
     const errorObj = createErrorMessage(reason);
     editingObject.error = errorObj.message;
     editingObject.errorDetails = errorObj.details;
+
+    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
 
 /*
     setTimeout(() => {

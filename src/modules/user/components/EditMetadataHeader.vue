@@ -155,7 +155,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {EDITMETADATA_MAIN_HEADER, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
 
@@ -228,37 +233,31 @@ export default {
       default: null,
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     metadataTitleField: {
       get() {
-        if (this.showPreviewTitle) {
-          return this.previewTitle;
-        }
-        return this.metadataTitle;
+        return this.previewTitle || this.metadataTitle;
       },
     },
     contactGivenNameField: {
       get() {
-        if (this.showPreviewGivenName) {
-          return this.previewContactGivenName;
-        }
-        return this.contactGivenName;
+        return this.previewContactGivenName || this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        if (this.showPreviewSurname) {
-          return this.previewContactSurname;
-        }
-        return this.contactSurname;
+        return this.previewContactSurname || this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        if (this.showPreviewEmail) {
-          return this.previewContactEmail;
-        }
-        return this.contactEmail;
+        return this.previewContactEmail || this.contactEmail;
       },
     },
     preselectAuthorName() {
@@ -317,23 +316,13 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
   },
-  watch: {
-    // Assign metadataTitle preview Boolean to false
-    metadataTitle() {
-      this.showPreviewTitle = false;
-    },
-    // Assign contact author preview Boolean variables to false
-    contactGivenName() {
-      this.showPreviewGivenName = false;
-    },
-    contactSurname() {
-      this.showPreviewSurname = false;
-    },
-    contactEmail() {
-      this.showPreviewEmail = false;
-    },
-  },
   methods: {
+    clearPreviews() {
+      this.previewContactGivenName = '';
+      this.previewContactSurname = '';
+      this.previewContactEmail = '';
+      this.previewTitle = '';
+    },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
@@ -345,22 +334,18 @@ export default {
     },
     catchTitleChange(value) {
       this.previewTitle = value;
-      this.showPreviewTitle = true;
       this.validateProperty('metadataTitle', value);
     },
     catchEmailChange(value) {
       this.previewContactEmail = value;
-      this.showPreviewEmail = true;
       this.validateProperty('contactEmail', value);
     },
     catchGivenNameChange(value) {
       this.previewContactGivenName = value;
-      this.showPreviewGivenName = true;
       this.validateProperty('contactGivenName', value);
     },
     catchSurnameChange(value) {
       this.previewContactSurname = value;
-      this.showPreviewSurname = true;
       this.validateProperty('contactSurname', value);
     },
     catchAuthorChange(pickedAuthor) {
@@ -544,11 +529,7 @@ export default {
     previewContactGivenName: '',
     previewContactSurname: '',
     previewContactEmail: '',
-    showPreviewGivenName: false,
-    showPreviewSurname: false,
-    showPreviewEmail: false,
     previewTitle: '',
-    showPreviewTitle: false,
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',

@@ -74,6 +74,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
@@ -115,6 +116,12 @@ export default {
       default: null,
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   computed: {
     genericTextAreaObject() {
       return {
@@ -138,14 +145,10 @@ export default {
       return this.previewText || this.relatedPublicationsText;
     },
   },
-  watch: {
-    loading() {
-      if (!this.loading && this.message) {
-        this.previewText = '';
-      }
-    },
-  },
   methods: {
+    clearPreview() {
+      this.previewText = '';
+    },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
