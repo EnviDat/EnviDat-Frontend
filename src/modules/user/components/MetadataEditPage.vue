@@ -29,15 +29,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
+  eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
-  eventBus,
+  EDITMETADATA_PUBLICATION_INFO,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
@@ -263,18 +265,13 @@ export default {
       // save the full dataObject it in the backend
       this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
 
-/*
       this.$nextTick(() => {
-        this.enhanceKeywordsStep(updateObj.object);
-        this.enhanceMetadataHeaderStep(updateObj.object);
-
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
         this.updateStepStatus(updateObj.object);
       });
-*/
 
     },
     getGenericPropsForStep(key) {
@@ -285,54 +282,6 @@ export default {
         `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
         data,
       );
-    },
-    enhanceKeywordsStep(updatedKey) {
-      if (updatedKey === EDITMETADATA_MAIN_HEADER || updatedKey === EDITMETADATA_MAIN_DESCRIPTION) {
-
-        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
-        const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER,
-        );
-        const descProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_DESCRIPTION,
-        );
-
-        const newKeywordProps = {
-          ...keywordProps,
-          metadataCardTitle: headerProps.metadataTitle,
-          metadataCardSubtitle: descProps.description,
-        };
-
-        // directly call the mutation and NOT the eventBus to avoid a loop!
-        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
-          object: EDITMETADATA_KEYWORDS,
-          data: newKeywordProps,
-        });
-      }
-    },
-    enhanceMetadataHeaderStep(updatedKey) {
-      if (updatedKey === EDITMETADATA_KEYWORDS || updatedKey === EDITMETADATA_AUTHOR_LIST) {
-
-        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
-        const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER,
-        );
-        const authorProps = this.getGenericPropsForStep(
-          EDITMETADATA_AUTHOR_LIST,
-        );
-
-        const newHeaderProps = {
-          ...headerProps,
-          keywords: keywordProps.keywords,
-          authors: authorProps.authors,
-        };
-
-        // directly call the mutation and NOT the eventBus to avoid a loop!
-        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
-          object: EDITMETADATA_MAIN_HEADER,
-          data: newHeaderProps,
-        });
-      }
     },
     updateStepStatus(stepKey) {
       const step = getStepByName(stepKey, this.metadataCreationSteps);

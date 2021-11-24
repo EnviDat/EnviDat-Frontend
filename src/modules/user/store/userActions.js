@@ -111,11 +111,8 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  // Stepper 1: Header, Description, Keywords, Authors
-
   let stepKey = EDITMETADATA_MAIN_HEADER;
   const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, headerData);
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
@@ -124,9 +121,14 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
   const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
-  commitEditingData(commit, stepKey, keywordsData);
 
-
+  const enhancedKeywords = {
+    ...keywordsData,
+    metadataCardTitle: headerData.metadataTitle,
+    metadataCardSubtitle: descriptionData.description,
+  }
+  commitEditingData(commit, stepKey, enhancedKeywords);
+  
   stepKey = EDITMETADATA_AUTHOR_LIST;
   // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -182,7 +184,6 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
     location,
   });
 
-  // Stepper 3: Related Info, Custom Fields
   stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
   const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, rPublicationData);
@@ -196,7 +197,6 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   commitEditingData(commit, stepKey, customFieldsData);
 
 
-  // Stepper 4: Publication Info, Organization
   stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, publicationData);
@@ -205,6 +205,19 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, organizationData);
 
+
+  stepKey = EDITMETADATA_MAIN_HEADER;
+
+  const enhanceHeader = {
+    ...headerData,
+    keywords: keywordsData.keywords,
+    authors,
+    dataLicense: dateInfoData.dataLicenseTitle,
+    doi: publicationData.doi,
+  };
+
+  commitEditingData(commit, stepKey, enhanceHeader);
+  
 }
 
 function cleanAuthorsForBackend(authors) {

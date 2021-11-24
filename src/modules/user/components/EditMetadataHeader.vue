@@ -222,6 +222,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    dataLicense: {
+      type: String,
+      default: () => '',
+    },
+    doi: {
+      type: String,
+      default: '',
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -309,7 +317,9 @@ export default {
         contactIcon,
         contactEmail: this.contactEmailField,
         mailIcon,
+        doi: this.doi,
         doiIcon,
+        license: this.dataLicense,
         licenseIcon,
         tags: this.keywords,
         authors: this.authors,
