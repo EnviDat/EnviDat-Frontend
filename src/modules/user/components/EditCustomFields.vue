@@ -1,14 +1,36 @@
 <template>
   <v-card id="EditCustomFields"
-          class="pa-4" >
+          class="pa-0"
+          :loading="loading" >
 
     <v-container fluid
-                  class="pa-0" >
+                  class="pa-4" >
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.cardTitle }}</div>
+        <v-col cols="6"
+               class="text-h5">
+          {{ labels.cardTitle }}
         </v-col>
+
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+
       </v-row>
 
       <v-row>
@@ -66,6 +88,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mapState } from 'vuex';
+
 import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_OBJECT_UPDATE,
@@ -80,8 +104,7 @@ import {
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
 
-import { mapState } from 'vuex';
-
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 export default {
   name: 'EditCustomFields',
@@ -109,6 +132,26 @@ export default {
     customFields: {
       type: Array,
       default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -220,6 +263,7 @@ export default {
     },
   },
   components: {
+    BaseStatusLabelView,
   },
 };
 </script>

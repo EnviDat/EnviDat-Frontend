@@ -1,15 +1,37 @@
 <template>
 
   <v-card id="EditKeywords"
-          class="pa-4">
+          class="pa-0"
+          :loading="loading">
 
     <v-container fluid
-                class="pa-0">
+                class="pa-4">
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row>
-        <v-col class="text-h5">
+        <v-col cols="6"
+               class="text-h5">
           {{ labels.title }}
         </v-col>
+
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+
       </v-row>
 
 
@@ -147,6 +169,26 @@ export default {
     keywords: {
       type: Array,
       default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -314,6 +356,19 @@ export default {
 
       return this.keywordValidMin3Characters && this.keywordValidConcise;
     },
+    notifyChange(property, value) {
+
+      const mergedKeywordsField = [...this.keywordsField, ...value];
+
+      const cleanedKeywordsField = this.processValues(mergedKeywordsField);
+
+      this.previewKeywords = cleanedKeywordsField;
+
+      if (this.validateProperty('keywords', cleanedKeywordsField)) {
+        this.setKeywords(property, cleanedKeywordsField);
+      }
+
+    },
     setKeywords(property, value) {
       const newKeywords = {
         ...this.$props,
@@ -326,19 +381,11 @@ export default {
       });
 
     },
-    notifyChange(property, value) {
-
-      const mergedKeywordsField = [...this.keywordsField, ...value];
-
-      const cleanedKeywordsField = this.processValues(mergedKeywordsField);
-
-      this.setKeywords(property, cleanedKeywordsField);
-
-    },
   },
   components: {
     MetadataCard,
     TagChip,
+    BaseStatusLabelView,
   },
 };
 

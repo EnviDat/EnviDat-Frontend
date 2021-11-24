@@ -5,13 +5,15 @@
 
     <v-container fluid
                  class="pa-4">
+
       <template slot="progress">
         <v-progress-linear color="primary"
                            indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="6"
+               class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 

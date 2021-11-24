@@ -12,7 +12,8 @@
       </template>
 
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="8"
+               class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 

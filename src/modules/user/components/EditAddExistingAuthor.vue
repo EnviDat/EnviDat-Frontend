@@ -1,15 +1,42 @@
 <template>
   <v-card id="EditAddExistingAuthor"
           flat
-          class="pa-4" >
+          class="pa-0"
+          :loading="loading" >
+
+    <v-container fluid
+                 class="pa-4" >
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.title }}</div>
+        <v-col cols="6"
+               class="text-h5">
+          {{ labels.title }}
         </v-col>
 
-        <v-col cols="12">
-          <div class="text-body-1">{{ labels.instructions }}</div>
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+
+      </v-row>
+
+      <v-row>
+        <v-col class="text-body-1">
+          {{ labels.instructions }}
         </v-col>
       </v-row>
 
@@ -25,6 +52,7 @@
         </v-col>
       </v-row>
 
+    </v-container>
   </v-card>
 </template>
 
@@ -41,12 +69,15 @@
 */
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
 import { getArrayOfFullNames } from '@/factories/authorFactory';
+
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -62,6 +93,26 @@ export default {
     isClearable: {
       type: Boolean,
       default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   mounted() {
@@ -115,6 +166,7 @@ export default {
   }),
   components: {
     BaseUserPicker,
+    BaseStatusLabelView,
   },
 };
 </script>
