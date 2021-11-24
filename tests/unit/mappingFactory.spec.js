@@ -24,6 +24,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 import { populateEditingComponents } from '@/modules/user/store/userActions';
+import categoryCards from '@/store/categoryCards';
 
 const mappingTestData = require('@/../public/testdata/mappingTestData.json');
 
@@ -584,7 +585,7 @@ describe('populateEditingComponents', () => {
   }
 
   it('with mock commit', () => {
-    populateEditingComponents(mockCommit, mappingTestData);
+    populateEditingComponents(mockCommit, mappingTestData, null, categoryCards);
   });
 
 });

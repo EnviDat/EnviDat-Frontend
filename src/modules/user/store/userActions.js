@@ -26,6 +26,7 @@ import { extractBodyIntoUrl } from '@/factories/stringFactory';
 import {
   createDates,
   createLocation,
+  enhanceTags,
 } from '@/factories/metaDataFactory';
 
 import {
@@ -104,26 +105,28 @@ function commitEditingData(commit, eventName, data) {
   );
 }
 
-export function populateEditingComponents(commit, metadataRecord, authorsMap) {
+export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
   // Stepper 1: Header, Description, Keywords, Authors
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, headerData);
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, descriptionData);
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const keywordsData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
+  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
   commitEditingData(commit, stepKey, keywordsData);
 
+
   stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON)
+  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
@@ -134,7 +137,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
     authors.push(author);
   })
   // const authors = createAuthors({ author: backendAuthors.authors });
-  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors })
+  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
 
   commitEditingData(commit, stepKey, {
     authors,
@@ -145,11 +148,11 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
   // const resources = createResources(metadataRecord).resources;
 
   stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, resourceData);
 
   stepKey = EDITMETADATA_DATA_INFO;
-  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const metadataDates = createDates({ date: dateInfoData.dates });
 
@@ -164,7 +167,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
 
 
   stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const location = createLocation({
     ...snakeCaseJSON,
@@ -179,25 +182,25 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
 
   // Stepper 3: Related Info, Custom Fields
   stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, rPublicationData);
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, rDatasetsData);
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, customFieldsData);
 
 
   // Stepper 4: Publication Info, Organization
   stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, publicationData);
 
   stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, organizationData);
 
 }
@@ -417,10 +420,12 @@ export default {
     );
 
     const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
-    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
     if (currentEntry) {
-      populateEditingComponents(commit, currentEntry, authorsMap);
+      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      const categoryCards = this.state.categoryCards;
+
+      populateEditingComponents(commit, currentEntry, authorsMap, categoryCards);
     }
   },
   async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
@@ -469,6 +474,7 @@ export default {
     // const stepData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
 
     const apiKey = this.state.userSignIn.user?.apikey || null;
+    const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
     let url = actionUrl;
@@ -481,16 +487,6 @@ export default {
 
     const postData = mapBackendData(stepKey, data);
     postData.id = id;
-
-    /*
-    console.log('step to post');
-    console.log(postData);
-
-    const camelData = getObjectInOtherCase(postData, toCamelCase);
-
-    console.log('post to camelData');
-    console.log(camelData);
-*/
 
     await axios.post(url, postData,
       {
@@ -505,7 +501,7 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result)
+        populateEditingComponents(commit, response.data.result, null, categoryCards);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
