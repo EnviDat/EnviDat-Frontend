@@ -53,17 +53,17 @@
           <v-combobox :value="keywordsField"
                       :items="existingKeywordItems"
                       item-text="name"
-                      chips
-                      deletable-chips
                       multiple
                       outlined
                       append-icon="arrow_drop_down"
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
                       :search-input.sync="search"
+                      :error-messages="validationErrors.keywords"
                       @update:search-input="isKeywordValid(search)"
-                      @blur="isEnoughKeywords()"
+                      @input="isEnoughKeywords()"
                       @change="notifyChange('keywords', $event)"
+                      @keydown="catchKeywordEntered($event)"
                       :rules="rulesKeywords"
                       >
 
@@ -119,8 +119,14 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { mapState } from 'vuex';
 
-import { EDITMETADATA_KEYWORDS, EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import MetadataCard from '@/components/Cards/MetadataCard';
 import TagChip from '@/components/Chips/TagChip';
@@ -129,7 +135,10 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
-import { mapState } from 'vuex';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
+// eslint-disable-next-line import/no-cycle
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
 
 
 export default {
@@ -139,7 +148,6 @@ export default {
     keywordValidConcise: true,
     keywordValidMin3Characters: true,
     keywordCount: 0,
-    keywordCountEnough: true,
     rulesKeywords: [],
     labels: {
       title: 'Edit Metadata Keywords',
@@ -152,6 +160,11 @@ export default {
       keywordsListWordMax: 2,
       keywordsCountMin: 5,
     },
+    validationErrors: {
+      keywords: '',
+    },
+    previewKeywords: [],
+    stepKey: EDITMETADATA_KEYWORDS,
   }),
   props: {
     existingKeywords: {
@@ -191,6 +204,12 @@ export default {
       default: null,
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     ...mapState([
       'config',
@@ -206,7 +225,7 @@ export default {
     },
     keywordsField: {
       get() {
-        return [...this.keywords];
+        return this.previewKeywords?.length > 0 ? this.previewKeywords : this.keywords;
       },
     },
     metadataPreviewEntry() {
@@ -226,6 +245,7 @@ export default {
       return previewEntry;
     },
     autocompleteHint() {
+
       if (!this.keywordValidConcise) {
         const wordMaxHint = `Each keyword tag may not exceed ${this.keywordsListWordMax} words.`;
         return `<span class="red--text font-italic">${wordMaxHint}</span>`;
@@ -238,7 +258,7 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press  <kbd>enter</kbd>  to create a new keyword.`;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press   <kbd>enter</kbd>   to create a new keyword.`;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -252,8 +272,28 @@ export default {
 
       return this.existingKeywords;
     },
+    validations() {
+      return getValidationMetadataEditingObject(this.stepKey);
+    },
   },
   methods: {
+    clearPreviews() {
+      this.previewKeywords = [];
+    },
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
+    },
+    catchKeywordEntered(event) {
+      
+      if (event.key === 'Enter') {
+        const enteredKeyword = event.target.value;
+
+        if (this.isKeywordValid(enteredKeyword)) {
+          this.catchKeywordClicked(enteredKeyword);
+          this.search = null;
+        }
+      }
+    },
     catchKeywordClicked(pickedKeyword) {
 
       // Use pickedKeyword to create pickedKeywordObj
@@ -307,7 +347,7 @@ export default {
 
       return valuesArray;
 
-      },
+    },
     removeKeyword(item) {
 
       // Assign removeIndex to index of keywords object that match item
@@ -321,18 +361,23 @@ export default {
       localKeywords.splice(removeIndex, 1);
 
       // Process and emit localKeywords to eventBus
-      this.setKeywords('keywords', this.processValues(localKeywords));
+      const cleanedKeywords = this.processValues(localKeywords);
 
+      this.previewKeywords = cleanedKeywords;
+
+      if (this.validateProperty('keywords', cleanedKeywords)) {
+        this.setKeywords('keywords', cleanedKeywords);
+      } else {
+        // clear the preview immediately to show the existing keywords
+        this.previewKeywords = [];
+      }
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
-    // Call setRulesKeyword()
     isEnoughKeywords() {
-      this.keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
-      this.setRulesKeyword();
-    },
-    setRulesKeyword() {
-      if (!this.keywordCountEnough) {
+      const keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
+
+      if (!keywordCountEnough) {
         this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keyword entries.`];
       } else {
         this.rulesKeywords = [true];
@@ -358,13 +403,16 @@ export default {
     },
     notifyChange(property, value) {
 
+      const keywordsAmount = value.length;
+
       const mergedKeywordsField = [...this.keywordsField, ...value];
 
       const cleanedKeywordsField = this.processValues(mergedKeywordsField);
+      const cleanedAmount = cleanedKeywordsField.length;
 
       this.previewKeywords = cleanedKeywordsField;
 
-      if (this.validateProperty('keywords', cleanedKeywordsField)) {
+      if (cleanedAmount >= keywordsAmount && this.validateProperty('keywords', cleanedKeywordsField)) {
         this.setKeywords(property, cleanedKeywordsField);
       }
 
