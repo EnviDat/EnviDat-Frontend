@@ -1,9 +1,15 @@
 <template>
-<v-card id="EditMetadataHeader" class="pa-4">
+<v-card id="EditMetadataHeader"
+        class="pa-0"
+        :loading="loading" >
 
   <v-container fluid
-                class="pa-0 fill-height" >
+                class="pa-4 fill-height" >
 
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
     <v-row >
 
@@ -215,6 +221,10 @@ export default {
     pickedUser: {
       type: Array,
       default: () => [],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
     message: {
       type: String,

@@ -167,6 +167,26 @@ export default {
       type: Array,
       default: () => [],
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
   },
   mounted() {
     // Add editing button to resource card

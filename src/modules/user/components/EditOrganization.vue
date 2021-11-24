@@ -1,44 +1,68 @@
 <template>
 
   <v-card id="EditOrganization"
-          class="pa-4">
+          class="pa-0"
+          :loading="loading" >
 
-    <v-row>
-      <v-col cols="12">
-        <div class="text-h5">
-          {{ EDIT_ORGANIZATION_TITLE }}
-        </div>
-      </v-col>
-    </v-row>
+    <v-container fluid
+                 class="pa-4" >
 
-    <v-row>
-      <v-col>
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
-        <v-text-field v-if="userOrganizationsNameList.length === 1"
-                      :value="userOrganizationsNameList[0]"
-                      outlined
-                      readonly
-                      :error-messages="validationErrors.organization"
-                      >
-         </v-text-field>
+      <v-row>
+        <v-col cols="6"
+               class="text-h5">
+            {{ EDIT_ORGANIZATION_TITLE }}
+        </v-col>
 
-        <v-select     v-else
-                      @input="setOrganization('organization', $event)"
-                      :value="organizationField"
-                      :items="userOrganizationsNameList"
-                      outlined
-                      chips
-                      append-icon="arrow_drop_down"
-                      :readonly="readonly"
-                      label="Organization"
-                      :error-messages="validationErrors.organization"
-                      >
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
 
-       </v-select>
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
 
-      </v-col>
-    </v-row>
+      </v-row>
 
+      <v-row>
+        <v-col>
+
+          <v-text-field v-if="userOrganizationsNameList.length === 1"
+                        :value="userOrganizationsNameList[0]"
+                        outlined
+                        readonly
+                        :error-messages="validationErrors.organization"
+                        >
+           </v-text-field>
+
+          <v-select     v-else
+                        @input="setOrganization('organization', $event)"
+                        :value="organizationField"
+                        :items="userOrganizationsNameList"
+                        outlined
+                        chips
+                        append-icon="arrow_drop_down"
+                        :readonly="readonly"
+                        label="Organization"
+                        :error-messages="validationErrors.organization"
+                        >
+
+         </v-select>
+
+        </v-col>
+      </v-row>
+
+    </v-container>
   </v-card>
 
 </template>
@@ -88,6 +112,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 export default {
   name: 'EditOrganization',
@@ -99,6 +124,26 @@ export default {
     readonly: {
       type: Boolean,
       default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   beforeMount() {
@@ -149,6 +194,7 @@ export default {
     },
   }),
   components: {
+    BaseStatusLabelView,
   },
 };
 
