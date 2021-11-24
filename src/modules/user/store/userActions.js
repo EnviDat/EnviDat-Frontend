@@ -206,7 +206,9 @@ function cleanAuthorsForBackend(authors) {
 
   const bAuthors = [];
   for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
+
+    // work with local copy here to avoid to changing the vuex state directly
+    const author = { ...authors[i] };
 
     if (author.dataCredit) {
       const keys = Object.keys(author.dataCredit);
