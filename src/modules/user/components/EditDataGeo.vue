@@ -149,7 +149,7 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
         error: this.editErrorMessage,
-        site: this.location.geomCollection,
+        site: this.location?.geomCollection,
         // site: thislocalGeoms,
       };
     },
