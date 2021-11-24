@@ -284,7 +284,7 @@ export default {
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchKeywordEntered(event) {
-      
+
       if (event.key === 'Enter') {
         const enteredKeyword = event.target.value;
 

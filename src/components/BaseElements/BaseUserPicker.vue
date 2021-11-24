@@ -21,6 +21,7 @@
                         :multiple="multiplePick"
                         :clearable="isClearable"
                         :search-input.sync="search"
+                        :error-messages="errorMessages"
                         clear-icon="close"
                         @change="catchPicks"
                         >
@@ -85,6 +86,10 @@ export default {
     authorsCloseable: {
       type: Boolean,
       default: true,
+    },
+    errorMessages: {
+      type: String,
+      default: '',
     },
   },
   mounted() {

@@ -396,16 +396,16 @@ const metadataInEditingValidations = {
         .required('Description is required')
         .min(30, 'Please write at least a minimal description with 30 characters.'),
     }),
-    [EDITMETADATA_KEYWORDS]: () =>
-      yup.object().shape({
-        keywords: yup.array()
-          .min(5, 'Please enter at least 5 keywords.'),
+  [EDITMETADATA_KEYWORDS]: () =>
+    yup.object().shape({
+      keywords: yup.array()
+        .min(5, 'Please enter at least 5 keywords.'),
     }),
-  /*
-    [EDITMETADATA_AUTHOR_LIST]: {
-      authors: [],
-    },
-  */
+  [EDITMETADATA_AUTHOR_LIST]: () =>
+    yup.object().shape({
+      authors: yup.array()
+        .min(1, 'Please enter at least one author.'),
+    }),
   // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
   // yup.object().shape({
   //   isLink: yup.boolean(),

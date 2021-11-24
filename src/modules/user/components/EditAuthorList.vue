@@ -95,6 +95,26 @@ export default {
       type: Array,
       default: () => [],
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
   },
   computed: {
     existingAuthorsWrap() {
@@ -116,6 +136,11 @@ export default {
         authors: this.authorsWrap,
         existingEnviDatUsers: this.existingAuthorsWrap,
         isClearable: false,
+        loading: this.loading,
+        message: this.message,
+        messageDetails: this.messageDetails,
+        error: this.error,
+        errorDetails: this.errorDetails,
       };
     },
     authorListingGenericProps() {
