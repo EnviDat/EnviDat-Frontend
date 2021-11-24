@@ -36,6 +36,7 @@ import {
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_ORGANIZATION,
   eventBus,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
@@ -57,6 +58,7 @@ import {
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
+  METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -167,35 +169,31 @@ export default {
       return subStep || '';
     },
   },
-  watch: {
-    authorsMap() {
-
 /*
-      const backendJson = convertJSON(this.currentMetadataContent, false);
+    watch: {
+      authorsMap() {
 
-      const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
-      const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
-*/
+        const backendJson = convertJSON(this.currentMetadataContent, false);
 
-/*      this.editComponentsChanged({
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: authors,
-      })
-      */
+        const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
+        const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
 
-/*
-      this.$store.commit(
-        `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        {
+        this.editComponentsChanged({
           object: EDITMETADATA_AUTHOR_LIST,
           data: authors,
-        },
-      );
+        })
+        this.$store.commit(
+          `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+          {
+            object: EDITMETADATA_AUTHOR_LIST,
+            data: authors,
+          },
+        );
 
-      this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
-*/
+        this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
+      },
     },
-  },
+  */
   methods: {
     async initMetadataUsingId() {
       await this.$store.dispatch(
@@ -247,27 +245,23 @@ export default {
       );
 */
 
-      // save the full dataObject it in the backend
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_OBJECT}`,
-        {
-          stepKey: updateObj.object,
-          data: updateObj.data,
-          id: this.$route.params.metadataid,
-        }
-      );
+      let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
+      const payload = {
+        stepKey: updateObj.object,
+        data: updateObj.data,
+        id: this.$route.params.metadataid,
+      }
 
-/*
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_PROPERTY}`,
-        {
-          stepKey: updateObj.object,
-          id: this.$route.params.metadataid,
-          property: updateObj.property,
-          value: updateObj.data[updateObj.property],
-        }
-      );
-*/
+      if (updateObj.object === EDITMETADATA_ORGANIZATION) {
+        // overwrite the action and the payload to fit the specific
+        // backend call to change the ownership of a dataset
+        action = METADATA_EDITING_PATCH_DATASET_ORGANIZATION;
+        payload.data = undefined;
+        payload.organizationId = updateObj.data;
+      }
+
+      // save the full dataObject it in the backend
+      this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
 
 /*
       this.$nextTick(() => {
@@ -284,9 +278,7 @@ export default {
 
     },
     getGenericPropsForStep(key) {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-        key,
-      );
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(

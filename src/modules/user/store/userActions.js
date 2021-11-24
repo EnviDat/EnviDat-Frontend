@@ -53,6 +53,7 @@ import {
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
+  ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
   ACTION_USER_ORGANIZATIONS_DATASETS, FETCH_USER_DATA,
@@ -60,6 +61,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
+  METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
@@ -471,19 +473,11 @@ export default {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
-    // const stepData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
-
     const apiKey = this.state.userSignIn.user?.apikey || null;
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    let url = actionUrl;
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    if (useTestdata) {
-      // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-    }
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
     const postData = mapBackendData(stepKey, data);
     postData.id = id;
@@ -498,6 +492,43 @@ export default {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
           stepKey,
           message: 'Changes saved',
+          // details: `Changes saved ${stepKey} data for ${id}`,
+        });
+
+        populateEditingComponents(commit, response.data.result, null, categoryCards);
+      })
+      .catch((reason) => {
+        commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
+          stepKey,
+          reason,
+        });
+      });
+  },
+  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, organizationId }) {
+
+    commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
+
+    const apiKey = this.state.userSignIn.user?.apikey || null;
+    const categoryCards = this.state.categoryCards;
+
+    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION();
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+    const postData = {
+      id,
+      organization_id: organizationId,
+    };
+
+    await axios.post(url, postData,
+      {
+        headers: {
+          Authorization: apiKey,
+        },
+      })
+      .then((response) => {
+        commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
+          stepKey,
+          message: 'Organization changed',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
