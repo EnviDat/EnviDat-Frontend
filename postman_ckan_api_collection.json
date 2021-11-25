@@ -614,9 +614,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/organization_activity_list_html?id",
+							"raw": "{{host}}/api/action/organization_activity_list_html?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_activity_list_html"
@@ -647,9 +647,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_activity_list_html?id",
+							"raw": "{{host}}/api/action/group_activity_list_html?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_activity_list_html"
@@ -692,9 +692,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/organization_activity_list?id",
+							"raw": "{{host}}/api/action/organization_activity_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_activity_list"
@@ -725,9 +725,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_activity_list?id",
+							"raw": "{{host}}/api/action/group_activity_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_activity_list"
@@ -770,9 +770,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/am_following_group?id",
+							"raw": "{{host}}/api/action/am_following_group?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"am_following_group"
@@ -803,9 +803,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_followee_list?id",
+							"raw": "{{host}}/api/action/group_followee_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_followee_list"
@@ -836,9 +836,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/organization_followee_list?id",
+							"raw": "{{host}}/api/action/organization_followee_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_followee_list"
@@ -869,9 +869,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_followee_count?id",
+							"raw": "{{host}}/api/action/group_followee_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_followee_count"
@@ -902,9 +902,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_follower_count?id",
+							"raw": "{{host}}/api/action/group_follower_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_follower_count"
@@ -935,9 +935,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/group_follower_list?id",
+							"raw": "{{host}}/api/action/group_follower_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_follower_list"
@@ -968,9 +968,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/organization_follower_count?id",
+							"raw": "{{host}}/api/action/organization_follower_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_follower_count"
@@ -1001,9 +1001,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/organization_follower_list?id",
+							"raw": "{{host}}/api/action/organization_follower_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_follower_list"
@@ -1138,9 +1138,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_create",
+							"raw": "{{host}}/api/action/organization_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_create"
@@ -1175,9 +1175,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/unfollow_group",
+							"raw": "{{host}}/api/action/unfollow_group",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"unfollow_group"
@@ -1218,9 +1218,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_member_delete",
+							"raw": "{{host}}/api/action/organization_member_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_member_delete"
@@ -1261,9 +1261,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_member_delete",
+							"raw": "{{host}}/api/action/group_member_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_member_delete"
@@ -1298,9 +1298,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_purge",
+							"raw": "{{host}}/api/action/group_purge",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_purge"
@@ -1335,9 +1335,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_delete",
+							"raw": "{{host}}/api/action/organization_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_delete"
@@ -1372,9 +1372,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_delete",
+							"raw": "{{host}}/api/action/group_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_delete"
@@ -1421,9 +1421,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/member_delete",
+							"raw": "{{host}}/api/action/member_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"member_delete"
@@ -1458,9 +1458,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_patch",
+							"raw": "{{host}}/api/action/organization_patch",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_patch"
@@ -1495,9 +1495,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_patch",
+							"raw": "{{host}}/api/action/group_patch",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_patch"
@@ -1538,9 +1538,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_update",
+							"raw": "{{host}}/api/action/organization_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_update"
@@ -1575,9 +1575,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_update",
+							"raw": "{{host}}/api/action/group_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_update"
@@ -1612,9 +1612,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/follow_group",
+							"raw": "{{host}}/api/action/follow_group",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"follow_group"
@@ -1661,9 +1661,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_member_create",
+							"raw": "{{host}}/api/action/organization_member_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_member_create"
@@ -1710,9 +1710,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_member_create",
+							"raw": "{{host}}/api/action/group_member_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_member_create"
@@ -1813,9 +1813,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/group_create",
+							"raw": "{{host}}/api/action/group_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"group_create"
@@ -1868,9 +1868,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/member_create",
+							"raw": "{{host}}/api/action/member_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"member_create"
@@ -2272,9 +2272,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/recently_changed_packages_activity_list_html",
+							"raw": "{{host}}/api/action/recently_changed_packages_activity_list_html",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"recently_changed_packages_activity_list_html"
@@ -2312,9 +2312,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/package_activity_list_html?id",
+							"raw": "{{host}}/api/action/package_activity_list_html?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_activity_list_html"
@@ -2357,9 +2357,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/recently_changed_packages_activity_list",
+							"raw": "{{host}}/api/action/recently_changed_packages_activity_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"recently_changed_packages_activity_list"
@@ -2397,9 +2397,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/am_following_dataset?id",
+							"raw": "{{host}}/api/action/am_following_dataset?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"am_following_dataset"
@@ -2430,9 +2430,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dataset_followee_list?id",
+							"raw": "{{host}}/api/action/dataset_followee_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dataset_followee_list"
@@ -2463,9 +2463,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dataset_followee_count?id",
+							"raw": "{{host}}/api/action/dataset_followee_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dataset_followee_count"
@@ -2496,9 +2496,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dataset_follower_count?id",
+							"raw": "{{host}}/api/action/dataset_follower_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dataset_follower_count"
@@ -2529,9 +2529,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dataset_follower_list?id",
+							"raw": "{{host}}/api/action/dataset_follower_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dataset_follower_list"
@@ -2716,9 +2716,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_create",
+							"raw": "{{host}}/api/action/package_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_create"
@@ -2766,9 +2766,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/package_search",
+							"raw": "{{host}}/api/action/package_search",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_search"
@@ -2877,9 +2877,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/unfollow_dataset",
+							"raw": "{{host}}/api/action/unfollow_dataset",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"unfollow_dataset"
@@ -2914,9 +2914,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/organization_purge",
+							"raw": "{{host}}/api/action/organization_purge",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"organization_purge"
@@ -2963,9 +2963,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_relationship_delete",
+							"raw": "{{host}}/api/action/package_relationship_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_relationship_delete"
@@ -3006,9 +3006,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/bulk_update_delete",
+							"raw": "{{host}}/api/action/bulk_update_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"bulk_update_delete"
@@ -3049,9 +3049,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/bulk_update_public",
+							"raw": "{{host}}/api/action/bulk_update_public",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"bulk_update_public"
@@ -3092,9 +3092,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/bulk_update_private",
+							"raw": "{{host}}/api/action/bulk_update_private",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"bulk_update_private"
@@ -3135,9 +3135,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_owner_org_update",
+							"raw": "{{host}}/api/action/package_owner_org_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_owner_org_update"
@@ -3190,9 +3190,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_relationship_update",
+							"raw": "{{host}}/api/action/package_relationship_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_relationship_update"
@@ -3233,9 +3233,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_resource_reorder",
+							"raw": "{{host}}/api/action/package_resource_reorder",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_resource_reorder"
@@ -3293,9 +3293,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_update",
+							"raw": "{{host}}/api/action/package_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_update"
@@ -3359,9 +3359,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_patch",
+							"raw": "{{host}}/api/action/package_patch",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_patch"
@@ -3396,9 +3396,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_delete",
+							"raw": "{{host}}/api/action/package_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_delete"
@@ -3433,9 +3433,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/dataset_purge",
+							"raw": "{{host}}/api/action/dataset_purge",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dataset_purge"
@@ -3470,9 +3470,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/follow_dataset",
+							"raw": "{{host}}/api/action/follow_dataset",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"follow_dataset"
@@ -3529,9 +3529,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_relationship_create",
+							"raw": "{{host}}/api/action/package_relationship_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_relationship_create"
@@ -3574,9 +3574,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/package_create_default_resource_views",
+							"raw": "{{host}}/api/action/package_create_default_resource_views",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"package_create_default_resource_views"
@@ -3809,9 +3809,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/resource_search",
+							"raw": "{{host}}/api/action/resource_search",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_search"
@@ -4001,9 +4001,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_create",
+							"raw": "{{host}}/api/action/resource_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_create"
@@ -4038,9 +4038,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_view_clear",
+							"raw": "{{host}}/api/action/resource_view_clear",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_view_clear"
@@ -4075,9 +4075,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_view_delete",
+							"raw": "{{host}}/api/action/resource_view_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_view_delete"
@@ -4112,9 +4112,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_delete",
+							"raw": "{{host}}/api/action/resource_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_delete"
@@ -4149,9 +4149,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_patch",
+							"raw": "{{host}}/api/action/resource_patch",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_patch"
@@ -4192,9 +4192,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_view_reorder",
+							"raw": "{{host}}/api/action/resource_view_reorder",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_view_reorder"
@@ -4229,9 +4229,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_view_update",
+							"raw": "{{host}}/api/action/resource_view_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_view_update"
@@ -4266,9 +4266,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_update",
+							"raw": "{{host}}/api/action/resource_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_update"
@@ -4318,9 +4318,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_create_default_resource_views",
+							"raw": "{{host}}/api/action/resource_create_default_resource_views",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_create_default_resource_views"
@@ -4379,9 +4379,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/resource_view_create",
+							"raw": "{{host}}/api/action/resource_view_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"resource_view_create"
@@ -4535,9 +4535,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/tag_autocomplete?query=te",
+							"raw": "{{host}}/api/action/tag_autocomplete?query=te",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"tag_autocomplete"
@@ -4592,9 +4592,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/tag_search?query=test",
+							"raw": "{{host}}/api/action/tag_search?query=test",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"tag_search"
@@ -4666,9 +4666,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/tag_delete",
+							"raw": "{{host}}/api/action/tag_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"tag_delete"
@@ -4709,9 +4709,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/tag_create",
+							"raw": "{{host}}/api/action/tag_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"tag_create"
@@ -4961,9 +4961,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/user_activity_list?id=de9e46bb-abd0-4c10-8e28-7eb8829ba0ae",
+							"raw": "{{host}}/api/action/user_activity_list?id=de9e46bb-abd0-4c10-8e28-7eb8829ba0ae",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_activity_list"
@@ -5006,9 +5006,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/user_activity_list_html?id",
+							"raw": "{{host}}/api/action/user_activity_list_html?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_activity_list_html"
@@ -5051,9 +5051,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/am_following_user?id",
+							"raw": "{{host}}/api/action/am_following_user?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"am_following_user"
@@ -5084,9 +5084,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/user_followee_list?id",
+							"raw": "{{host}}/api/action/user_followee_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_followee_list"
@@ -5117,9 +5117,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/user_followee_count?id",
+							"raw": "{{host}}/api/action/user_followee_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_followee_count"
@@ -5150,9 +5150,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/user_follower_list?id",
+							"raw": "{{host}}/api/action/user_follower_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_follower_list"
@@ -5183,9 +5183,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dashboard_new_activities_count",
+							"raw": "{{host}}/api/action/dashboard_new_activities_count",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dashboard_new_activities_count"
@@ -5209,9 +5209,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/get_site_user",
+							"raw": "{{host}}/api/action/get_site_user",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"get_site_user"
@@ -5243,9 +5243,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dashboard_activity_list",
+							"raw": "{{host}}/api/action/dashboard_activity_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dashboard_activity_list"
@@ -5283,9 +5283,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dashboard_activity_list_html",
+							"raw": "{{host}}/api/action/dashboard_activity_list_html",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dashboard_activity_list_html"
@@ -5323,9 +5323,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/followee_list?id",
+							"raw": "{{host}}/api/action/followee_list?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"followee_list"
@@ -5362,9 +5362,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/followee_count?id",
+							"raw": "{{host}}/api/action/followee_count?id",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"followee_count"
@@ -5406,9 +5406,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/unfollow_user",
+							"raw": "{{host}}/api/action/unfollow_user",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"unfollow_user"
@@ -5443,9 +5443,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/user_delete",
+							"raw": "{{host}}/api/action/user_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_delete"
@@ -5469,9 +5469,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/send_email_notifications",
+							"raw": "{{host}}/api/action/send_email_notifications",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"send_email_notifications"
@@ -5495,9 +5495,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/dashboard_mark_activities_old",
+							"raw": "{{host}}/api/action/dashboard_mark_activities_old",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"dashboard_mark_activities_old"
@@ -5532,9 +5532,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/user_generate_apikey",
+							"raw": "{{host}}/api/action/user_generate_apikey",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_generate_apikey"
@@ -5569,9 +5569,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/user_update",
+							"raw": "{{host}}/api/action/user_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_update"
@@ -5606,9 +5606,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/follow_user",
+							"raw": "{{host}}/api/action/follow_user",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"follow_user"
@@ -5655,9 +5655,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/user_invite",
+							"raw": "{{host}}/api/action/user_invite",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_invite"
@@ -5728,9 +5728,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/user_create",
+							"raw": "{{host}}/api/action/user_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"user_create"
@@ -5759,9 +5759,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/vocabulary_show?id=a6ef1367-c1e5-46db-a35d-28444f400f32",
+							"raw": "{{host}}/api/action/vocabulary_show?id=a6ef1367-c1e5-46db-a35d-28444f400f32",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"vocabulary_show"
@@ -5792,9 +5792,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/vocabulary_list",
+							"raw": "{{host}}/api/action/vocabulary_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"vocabulary_list"
@@ -5822,9 +5822,9 @@
 							"raw": "{\n\t\"id\": \"a6ef1367-c1e5-46db-a35d-28444f400f32\",\n\t\"tags\": [\n            {\n                \"vocabulary_id\": \"a6ef1367-c1e5-46db-a35d-28444f400f32\",\n                \"display_name\": \"Postman Update\",\n                \"id\": \"5bae6820-dd04-4f30-a0fd-ebb2b197accd\",\n                \"name\": \"postman-update\"\n            },\n            {\n                \"display_name\": \"postman-update-create\",\n                \"name\": \"postman-update-create\"\n            }\n        ]\n}"
 						},
 						"url": {
-							"raw": "{{base-url}}/vocabulary_update",
+							"raw": "{{host}}/api/action/vocabulary_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"vocabulary_update"
@@ -5865,9 +5865,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/vocabulary_create",
+							"raw": "{{host}}/api/action/vocabulary_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"vocabulary_create"
@@ -5902,9 +5902,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/vocabulary_delete",
+							"raw": "{{host}}/api/action/vocabulary_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"vocabulary_delete"
@@ -5933,9 +5933,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/site_read",
+							"raw": "{{host}}/api/action/site_read",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"site_read"
@@ -5959,9 +5959,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/license_list",
+							"raw": "{{host}}/api/action/license_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"license_list"
@@ -5985,9 +5985,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/revision_list",
+							"raw": "{{host}}/api/action/revision_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"revision_list"
@@ -6031,9 +6031,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/revision_show",
+							"raw": "{{host}}/api/action/revision_show",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"revision_show"
@@ -6065,9 +6065,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/task_status_show",
+							"raw": "{{host}}/api/action/task_status_show",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"task_status_show"
@@ -6117,9 +6117,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/term_translation_show?terms=Russian, romantic novel&lang_codes=fr",
+							"raw": "{{host}}/api/action/term_translation_show?terms=Russian, romantic novel&lang_codes=fr",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"term_translation_show"
@@ -6155,9 +6155,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/status_show",
+							"raw": "{{host}}/api/action/status_show",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"status_show"
@@ -6181,9 +6181,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/activity_detail_list?id=4e1c98c5-3714-4007-a8e8-5b12009aee04",
+							"raw": "{{host}}/api/action/activity_detail_list?id=4e1c98c5-3714-4007-a8e8-5b12009aee04",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"activity_detail_list"
@@ -6214,9 +6214,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/config_option_list",
+							"raw": "{{host}}/api/action/config_option_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"config_option_list"
@@ -6240,9 +6240,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/config_option_show?key",
+							"raw": "{{host}}/api/action/config_option_show?key",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"config_option_show"
@@ -6273,9 +6273,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/help_show?name=user_create",
+							"raw": "{{host}}/api/action/help_show?name=user_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"help_show"
@@ -6306,9 +6306,9 @@
 							}
 						],
 						"url": {
-							"raw": "{{base-url}}/member_roles_list",
+							"raw": "{{host}}/api/action/member_roles_list",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"member_roles_list"
@@ -6343,9 +6343,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/job_cancel",
+							"raw": "{{host}}/api/action/job_cancel",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"job_cancel"
@@ -6380,9 +6380,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/job_clear",
+							"raw": "{{host}}/api/action/job_clear",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"job_clear"
@@ -6417,9 +6417,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/task_status_delete",
+							"raw": "{{host}}/api/action/task_status_delete",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"task_status_delete"
@@ -6454,9 +6454,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/config_option_update",
+							"raw": "{{host}}/api/action/config_option_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"config_option_update"
@@ -6539,9 +6539,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/task_status_update",
+							"raw": "{{host}}/api/action/task_status_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"task_status_update"
@@ -6576,9 +6576,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/task_status_update_many",
+							"raw": "{{host}}/api/action/task_status_update_many",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"task_status_update_many"
@@ -6625,9 +6625,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/term_translation_update",
+							"raw": "{{host}}/api/action/term_translation_update",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"term_translation_update"
@@ -6662,9 +6662,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/term_translation_update_many",
+							"raw": "{{host}}/api/action/term_translation_update_many",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"term_translation_update_many"
@@ -6717,9 +6717,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/activity_create",
+							"raw": "{{host}}/api/action/activity_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"activity_create"
@@ -6760,9 +6760,9 @@
 							]
 						},
 						"url": {
-							"raw": "{{base-url}}/rating_create",
+							"raw": "{{host}}/api/action/rating_create",
 							"host": [
-								"{{base-url}}"
+								"{{host}}/api/action"
 							],
 							"path": [
 								"rating_create"
