@@ -388,39 +388,36 @@ function parseDateString(value, originalValue) {
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
-      metadataTitle: yup
-        .string()
+      metadataTitle: yup.string()
         .required('Dataset title is required')
         .min(5, 'Dataset title must be at least 5 characters'),
-      contactGivenName: yup
-        .string()
+      contactGivenName: yup.string()
         .required('Contact given (first) name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
-      contactSurname: yup
-        .string()
+      contactSurname: yup.string()
         .required('Contact surname is required')
         .min(3, 'Contact surname must be at least 3 characters'),
-      contactEmail: yup
-        .string()
+      contactEmail: yup.string()
         .email('Contact email must be a valid email address')
         .required('Contact email is required'),
     }),
   [EDITMETADATA_MAIN_DESCRIPTION]: () =>
     yup.object().shape({
-      description: yup
-          .string()
-          .required('Description is required')
-          .min(30, 'Please write at least a minimal description with 30 characters.'),
+      description: yup.string()
+        .required('Description is required')
+        .min(30, 'Please write at least a minimal description with 30 characters.'),
     }),
-  /*
-    [EDITMETADATA_KEYWORDS]: {
-      keywords: [],
-    },
-    [EDITMETADATA_AUTHOR_LIST]: {
-      authors: [],
-    },
-  */
-  [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
+  [EDITMETADATA_KEYWORDS]: () =>
+    yup.object().shape({
+      keywords: yup.array()
+        .min(5, 'Please enter at least 5 keywords.'),
+    }),
+  [EDITMETADATA_AUTHOR_LIST]: () =>
+    yup.object().shape({
+      authors: yup.array()
+        .min(1, 'Please enter at least one author.'),
+    }),
+  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
   // yup.object().shape({
   //   isLink: yup.boolean(),
   //   name: yup

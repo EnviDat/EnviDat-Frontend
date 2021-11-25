@@ -142,6 +142,16 @@ export const ACTION_METADATA_EDITING_PATCH_DATASET = () => {
   return 'package_patch';
 };
 
+export const METADATA_EDITING_PATCH_DATASET_ORGANIZATION = 'METADATA_EDITING_PATCH_DATASET_ORGANIZATION';
+
+export const ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION = () => {
+  if (process.env.NODE_ENV === 'development' && useTestdata) {
+    return './testdata/package_owner_org_update.json';
+  }
+
+  return 'package_owner_org_update';
+};
+
 export const METADATA_EDITING_LOAD_DATASET = 'METADATA_EDITING_LOAD_DATASET';
 
 export const USER_NAMESPACE = 'user';

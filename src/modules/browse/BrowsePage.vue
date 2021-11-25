@@ -13,6 +13,7 @@
                     @clickedExpand="catchFilterExpandClicked"
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
+                    @clickedCard="catchMetadataClicked"
                     :mode="mode"
                     :defaultListControls="defaultControls"
                     :enabledControls="enabledControls"
@@ -53,6 +54,7 @@ import {
 import {
   BROWSE_PAGENAME,
   BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
 import {
   SEARCH_METADATA,
@@ -62,6 +64,7 @@ import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+  SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 import {
   SET_APP_BACKGROUND,
@@ -97,6 +100,16 @@ export default {
       }
 
       return false;
+    },
+    catchMetadataClicked(datasetname) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+
+      this.$router.push({
+        name: METADATADETAIL_PAGENAME,
+        params: {
+          metadataid: datasetname,
+        },
+      });
     },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {

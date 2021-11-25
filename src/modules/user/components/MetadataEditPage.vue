@@ -29,14 +29,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
+  eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
+  EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
@@ -57,6 +60,7 @@ import {
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
+  METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -109,11 +113,28 @@ export default {
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
+  beforeMount() {
+    const initialStep = this.metadataCreationSteps[0]?.title || '';
+    const initialSubStep = this.metadataCreationSteps[0]?.detailSteps[0]?.title || '';
+
+    const currentStep = this.routeStep
+    const currentSubStep = this.routeSubStep
+    const params = {}
+
+    if (!currentStep && !currentSubStep) {
+      // when no parameter are given in the url, fallback the first ones
+      // but add them to the url
+      params.step = initialStep;
+      params.substep = initialSubStep;
+
+      this.$router.push({ params });
+    }
+  },
   mounted() {
     if (this.metadataId) {
       this.initMetadataUsingId(this.metadataId);
     }
-
+    
     // reset the scrolling to the top
     window.scrollTo(0, 0);
   },
@@ -136,14 +157,13 @@ export default {
       return this.$route.params.metadataid;
     },
     routeStep() {
-      const fallbackStep = this.metadataCreationSteps[0].title;
       let stepFromRoute = this.$route?.params?.step;
 
       if (stepFromRoute instanceof Array) {
         stepFromRoute = stepFromRoute[0];
       }
       
-      return stepFromRoute || fallbackStep;
+      return stepFromRoute || '';
     },
     routeSubStep() {
       const subStep = this.$route?.params?.substep;
@@ -151,35 +171,31 @@ export default {
       return subStep || '';
     },
   },
-  watch: {
-    authorsMap() {
-
 /*
-      const backendJson = convertJSON(this.currentMetadataContent, false);
+    watch: {
+      authorsMap() {
 
-      const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
-      const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
-*/
+        const backendJson = convertJSON(this.currentMetadataContent, false);
 
-/*      this.editComponentsChanged({
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: authors,
-      })
-      */
+        const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
+        const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
 
-/*
-      this.$store.commit(
-        `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        {
+        this.editComponentsChanged({
           object: EDITMETADATA_AUTHOR_LIST,
           data: authors,
-        },
-      );
+        })
+        this.$store.commit(
+          `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+          {
+            object: EDITMETADATA_AUTHOR_LIST,
+            data: authors,
+          },
+        );
 
-      this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
-*/
+        this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
+      },
     },
-  },
+  */
   methods: {
     async initMetadataUsingId() {
       await this.$store.dispatch(
@@ -231,100 +247,41 @@ export default {
       );
 */
 
+      let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
+      const payload = {
+        stepKey: updateObj.object,
+        data: updateObj.data,
+        id: this.$route.params.metadataid,
+      }
+
+      if (updateObj.object === EDITMETADATA_ORGANIZATION) {
+        // overwrite the action and the payload to fit the specific
+        // backend call to change the ownership of a dataset
+        action = METADATA_EDITING_PATCH_DATASET_ORGANIZATION;
+        payload.data = undefined;
+        payload.organizationId = updateObj.data;
+      }
+
       // save the full dataObject it in the backend
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_OBJECT}`,
-        {
-          stepKey: updateObj.object,
-          data: updateObj.data,
-          id: this.$route.params.metadataid,
-        }
-      );
+      this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
 
-/*
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET_PROPERTY}`,
-        {
-          stepKey: updateObj.object,
-          id: this.$route.params.metadataid,
-          property: updateObj.property,
-          value: updateObj.data[updateObj.property],
-        }
-      );
-*/
-
-/*
       this.$nextTick(() => {
-        this.enhanceKeywordsStep(updateObj.object);
-        this.enhanceMetadataHeaderStep(updateObj.object);
-
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
         this.updateStepStatus(updateObj.object);
       });
-*/
 
     },
     getGenericPropsForStep(key) {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](
-        key,
-      );
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(
         `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
         data,
       );
-    },
-    enhanceKeywordsStep(updatedKey) {
-      if (updatedKey === EDITMETADATA_MAIN_HEADER || updatedKey === EDITMETADATA_MAIN_DESCRIPTION) {
-
-        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
-        const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER,
-        );
-        const descProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_DESCRIPTION,
-        );
-
-        const newKeywordProps = {
-          ...keywordProps,
-          metadataCardTitle: headerProps.metadataTitle,
-          metadataCardSubtitle: descProps.description,
-        };
-
-        // directly call the mutation and NOT the eventBus to avoid a loop!
-        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
-          object: EDITMETADATA_KEYWORDS,
-          data: newKeywordProps,
-        });
-      }
-    },
-    enhanceMetadataHeaderStep(updatedKey) {
-      if (updatedKey === EDITMETADATA_KEYWORDS || updatedKey === EDITMETADATA_AUTHOR_LIST) {
-
-        const keywordProps = this.getGenericPropsForStep(EDITMETADATA_KEYWORDS);
-        const headerProps = this.getGenericPropsForStep(
-          EDITMETADATA_MAIN_HEADER,
-        );
-        const authorProps = this.getGenericPropsForStep(
-          EDITMETADATA_AUTHOR_LIST,
-        );
-
-        const newHeaderProps = {
-          ...headerProps,
-          keywords: keywordProps.keywords,
-          authors: authorProps.authors,
-        };
-
-        // directly call the mutation and NOT the eventBus to avoid a loop!
-        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`, {
-          object: EDITMETADATA_MAIN_HEADER,
-          data: newHeaderProps,
-        });
-      }
     },
     updateStepStatus(stepKey) {
       const step = getStepByName(stepKey, this.metadataCreationSteps);

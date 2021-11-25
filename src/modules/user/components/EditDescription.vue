@@ -12,7 +12,8 @@
       </template>
 
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="8"
+               class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
@@ -74,7 +75,7 @@
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_MAIN_DESCRIPTION,
-  eventBus,
+  eventBus, EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
 
 // eslint-disable-next-line import/no-cycle
@@ -117,6 +118,12 @@ export default {
       default: null,
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   computed: {
     genericTextAreaObject() {
       return {
@@ -140,14 +147,10 @@ export default {
       return this.previewText || this.description;
     },
   },
-  watch: {
-    loading() {
-      if (!this.loading && this.message) {
-        this.previewText = '';
-      }
-    },
-  },
   methods: {
+    clearPreview() {
+      this.previewText = '';
+    },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },

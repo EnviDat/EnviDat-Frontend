@@ -13,12 +13,14 @@
 */
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
+  eventBus,
   EDITMETADATA_AUTHOR,
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_RESOURCES,
+  SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
@@ -28,6 +30,7 @@ import {
   updateResource,
 } from '@/factories/userEditingFactory';
 
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -157,12 +160,13 @@ export default {
 
     const store = this;
     const { cardBGImages } = store.getters;
-    const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
+    const categoryCards = store.getters.categoryCards;
 
-    const enhancedDatasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
+    const datasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
 
-    // use this._vm.$set() to make sure computed properties are recalculated
-    this._vm.$set(state.user, 'datasets', enhancedDatasets);
+    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
+
+    state.userDatasets = datasets;
 
     resetErrorObject(state);
   },
@@ -219,7 +223,7 @@ export default {
 
       const store = this;
       const { cardBGImages } = store.getters;
-      const categoryCards = store.getters[`${METADATA_NAMESPACE}/categoryCards`];
+      const categoryCards = store.getters.categoryCards;
 
       payload.packages = enhanceMetadatas(payload.packages, cardBGImages, categoryCards);
     }
@@ -413,6 +417,8 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
+    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
@@ -420,9 +426,12 @@ export default {
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
+
     const errorObj = createErrorMessage(reason);
     editingObject.error = errorObj.message;
     editingObject.errorDetails = errorObj.details;
+
+    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
 
 /*
     setTimeout(() => {

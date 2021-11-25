@@ -110,6 +110,24 @@
       </v-container>
 
     </v-card-actions>
+
+    <v-container v-if="showGenericOpenButton"
+                 class="ma-2 pa-0"
+                 style="position: absolute; top: 0; right: 0; width: 30px;">
+      <v-row >
+        <v-col cols="12" >
+          <base-icon-button :materialIconName="openButtonIcon"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :isSmall="true"
+                            :tooltipText="openButtonTooltip"
+                            @clicked="$emit('openButtonClicked')" />
+        </v-col>
+      </v-row>
+
+    </v-container>
+
   </v-card>
 </template>
 
@@ -182,6 +200,15 @@ export default {
     geoJSONIcon: String,
     categoryColor: String,
     mode: String,
+    showGenericOpenButton: {
+      type: Boolean,
+      default: false,
+    },
+    openButtonTooltip: String,
+    openButtonIcon: {
+      type: String,
+      default: 'preview',
+    },
   },
   computed: {
     headerImageStyle() {

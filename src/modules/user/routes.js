@@ -27,16 +27,9 @@ export const userRoutes = [
     component: () => import(/* webpackPrefetch: true, webpackChunkName: "signinPage" */ '@/modules/user/components/SigninPage'),
   },
   {
-    path: '/user/:id',
-    name: 'user',
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "userModule" */ '@/modules/user/UserModule'),
-    children: [
-      {
-        path: USER_DASHBOARD_PATH,
-        name: USER_DASHBOARD_PAGENAME,
-        component: () => import(/* webpackPrefetch: true, webpackChunkName: "dashboardPage" */ '@/modules/user/components/DashboardPage'),
-      },
-    ],
+    path: USER_DASHBOARD_PATH,
+    name: USER_DASHBOARD_PAGENAME,
+    component: () => import(/* webpackPrefetch: true, webpackChunkName: "dashboardPage" */ '@/modules/user/components/DashboardPage'),
   },
   {
     path: METADATAEDIT_PATH,
@@ -46,7 +39,7 @@ export const userRoutes = [
       {
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
-        component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/metadata/components/MetadataDetailPage'),
+        component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
       },
     ],
   },

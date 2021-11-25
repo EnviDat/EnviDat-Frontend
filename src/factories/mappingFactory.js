@@ -71,7 +71,7 @@ const JSONFrontendBackendRules = {
     ['dataLicenseId','license_id'],
   ],
   [EDITMETADATA_DATA_GEO]: [
-    ['location.geoJSON','spatial'],
+    ['location.geomCollection','spatial'],
   ],
   [EDITMETADATA_DATA_GEO_SPATIAL]: [
     ['type','type'],

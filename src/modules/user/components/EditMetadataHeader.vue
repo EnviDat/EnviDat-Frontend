@@ -1,32 +1,50 @@
 <template>
-<v-card id="EditMetadataHeader" class="pa-4">
+<v-card id="EditMetadataHeader"
+        class="pa-0"
+        :loading="loading" >
 
   <v-container fluid
-                class="pa-0 fill-height" >
+                class="pa-4 fill-height" >
 
-<!--    <v-row>-->
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
-<!--      <v-col>-->
-<!--        <div class="text-h5">{{ labels.cardTitle }}</div>-->
-<!--      </v-col>-->
+    <v-row >
 
-<!--    </v-row>-->
+      <v-col class="text-h5" cols="8">
+        {{ labels.title }}
+      </v-col>
 
+      <v-col v-if="message" cols="4" class="pl-16">
+        <BaseStatusLabelView statusIcon="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error" cols="4" class="pl-16">
 
-      <v-row >
-        <v-col class="text-h6">
-          {{ labels.title }}
-        </v-col>
-      </v-row>
+        <BaseStatusLabelView statusIcon="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
+    </v-row>
 
 
     <v-row >
+
       <v-col class="text-body-1">
         {{ labels.instructions }}
       </v-col>
+
     </v-row>
 
+
     <v-row >
+
       <v-col cols="8" class="pb-0">
 
         <v-text-field :label="labels.labelTitle"
@@ -35,12 +53,14 @@
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
-                      @change="catchTitleChange"
-                      @input="validateProperty('metadataTitle', $event)"
+                      @input="catchTitleChange"
+                      @change="notifyChange('metadataTitle', $event)"
                       :value="metadataTitleField" />
 
       </v-col>
+
     </v-row>
+
 
     <v-row >
       <v-col class="text-h6 pb-0">
@@ -67,7 +87,7 @@
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
-                      @input="validateProperty('contactEmail', $event)"
+                      @input="catchEmailChange"
                       @change="notifyChange('contactEmail', $event)" />
 
         <v-text-field :label="labels.labelContactGivenName"
@@ -78,7 +98,7 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       :value="contactGivenNameField"
-                      @input="validateProperty('contactGivenName', $event)"
+                      @input="catchGivenNameChange"
                       @change="notifyChange('contactGivenName', $event)" />
 
         <v-text-field :label="labels.labelContactSurname"
@@ -89,7 +109,7 @@
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       :value="contactSurnameField"
-                      @input="validateProperty('contactSurname', $event)"
+                      @input="catchSurnameChange"
                       @change="notifyChange('contactSurname', $event)" />
 
       </v-col>
@@ -136,17 +156,23 @@
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-22
+ * Last modified  : 2021-11-23
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import {EDITMETADATA_MAIN_HEADER, EDITMETADATA_OBJECT_UPDATE, eventBus} from '@/factories/eventBus';
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -196,38 +222,60 @@ export default {
       type: Array,
       default: () => [],
     },
+    dataLicense: {
+      type: String,
+      default: () => '',
+    },
+    doi: {
+      type: String,
+      default: '',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
+  },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     metadataTitleField: {
       get() {
-        if (this.showPreviewTitle) {
-          return this.previewTitle;
-        }
-        return this.metadataTitle;
+        return this.previewTitle || this.metadataTitle;
       },
     },
     contactGivenNameField: {
       get() {
-        if (this.showPreviewGivenName) {
-          return this.previewContactGivenName;
-        }
-        return this.contactGivenName;
+        return this.previewContactGivenName || this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        if (this.showPreviewSurname) {
-          return this.previewContactSurname;
-        }
-        return this.contactSurname;
+        return this.previewContactSurname || this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        if (this.showPreviewEmail) {
-          return this.previewContactEmail;
-        }
-        return this.contactEmail;
+        return this.previewContactEmail || this.contactEmail;
       },
     },
     preselectAuthorName() {
@@ -257,8 +305,8 @@ export default {
       const licenseIcon = this.mixinMethods_getIcon('license') || '';
 
       const fullName = this.getFullName({
-        given_name: this.contactGivenName,
-        name: this.contactSurname,
+        given_name: this.contactGivenNameField,
+        name: this.contactSurnameField,
       });
 
       const previewEntry = {
@@ -267,9 +315,11 @@ export default {
         showCloseButton: false,
         contactName: fullName,
         contactIcon,
-        contactEmail: this.contactEmail,
+        contactEmail: this.contactEmailField,
         mailIcon,
+        doi: this.doi,
         doiIcon,
+        license: this.dataLicense,
         licenseIcon,
         tags: this.keywords,
         authors: this.authors,
@@ -286,23 +336,13 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
   },
-  watch: {
-    // Assign metadataTitle preview Boolean to false
-    metadataTitle() {
-      this.showPreviewTitle = false;
-    },
-    // Assign contact author preview Boolean variables to false
-    contactGivenName() {
-      this.showPreviewGivenName = false;
-    },
-    contactSurname() {
-      this.showPreviewSurname = false;
-    },
-    contactEmail() {
-      this.showPreviewEmail = false;
-    },
-  },
   methods: {
+    clearPreviews() {
+      this.previewContactGivenName = '';
+      this.previewContactSurname = '';
+      this.previewContactEmail = '';
+      this.previewTitle = '';
+    },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
@@ -313,18 +353,20 @@ export default {
       return getAuthorName(authorObj);
     },
     catchTitleChange(value) {
-
-      // Assign previewTitle
       this.previewTitle = value;
-
-      // Assign showPreviewTitle to true
-      this.showPreviewTitle = true;
-
-      // If valid pass metadataTitle to eventBus
-      const property = 'metadataTitle';
-      if (this.validateProperty(property, value)) {
-        this.setHeaderInfo(property, value);
-      }
+      this.validateProperty('metadataTitle', value);
+    },
+    catchEmailChange(value) {
+      this.previewContactEmail = value;
+      this.validateProperty('contactEmail', value);
+    },
+    catchGivenNameChange(value) {
+      this.previewContactGivenName = value;
+      this.validateProperty('contactGivenName', value);
+    },
+    catchSurnameChange(value) {
+      this.previewContactSurname = value;
+      this.validateProperty('contactSurname', value);
     },
     catchAuthorChange(pickedAuthor) {
 
@@ -341,27 +383,34 @@ export default {
       const authorObject = this.getAuthorObject(author);
 
       // Validate contact author properties
-      const authorObj = this.validateAuthor(authorObject);
+      const allPropertiesValid = this.validateAuthor(authorObject);
 
       // Call setContact to emit authorObj values to eventBus
-      this.setContact(authorObj);
+      if (allPropertiesValid) {
+        this.setContact(authorObject);
+      }
 
     },
     // Validate contact author properties by calling isFieldValid()
-    // Returns authorObj only with key-value pairs that have valid values
+    // Returns true if all properties are valid, else returns false
     validateAuthor(authorObject) {
 
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
 
+      // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
-        const valid = isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
-        if (!valid) {
-          delete authorObject[properties[i]];
-        }
+        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
       }
 
-      return authorObject;
+      // Return false if any of the properties have a validation error
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+         if (this.validationErrors[prop]) {
+           return false;
+         }
+      }
 
+      return true;
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
@@ -500,11 +549,7 @@ export default {
     previewContactGivenName: '',
     previewContactSurname: '',
     previewContactEmail: '',
-    showPreviewGivenName: false,
-    showPreviewSurname: false,
-    showPreviewEmail: false,
     previewTitle: '',
-    showPreviewTitle: false,
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
@@ -534,6 +579,7 @@ export default {
   components: {
     MetadataHeader,
     BaseUserPicker,
+    BaseStatusLabelView,
   },
 };
 </script>

@@ -41,7 +41,7 @@
                             :modeCloseCallback="catchModeClose"
                             :signedInUser="user"
                             :userNavigationItems="userMenuItems"
-                            @userMenuItemClick="catchItemClicked"
+                            @userMenuItemClick="catchUserItemClicked"
                             @signinClick="catchSigninClicked"
                             @homeClick="catchHomeClicked" />
 
@@ -267,6 +267,9 @@ export default {
 
       this.navigateTo(item.path);
     },
+    catchUserItemClicked(item) {
+      this.$router.push({ name: item.pageName });
+    },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
     },
@@ -284,13 +287,7 @@ export default {
         return;
       }
 
-      this.$router.push({ path, query: '' },
-        (route) => {
-          console.log(`onComplete: ${route.name}`);
-        },
-        (route) => {
-          console.log(`onAbort: ${route.name}`);
-        });
+      this.$router.push({ path, query: '' });
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -436,20 +433,19 @@ export default {
         return '';
       }
 
-      let bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
+      let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
 
-      bgStyle += `background-position: center top !important;
-                    background-repeat: no-repeat !important;
-                    background-size: cover !important; `;
+      const bgStyle = `background-position: center top !important;
+                        background-repeat: repeat !important; `;
+/*
+      background-size: cover !important; `;
+*/
 
       if (bgImg.includes('browsepage')) {
-        bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
-
-        bgStyle += `background-position: center top !important;
-                      background-repeat: repeat !important; `;
+        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
       }
 
-      return bgStyle;
+      return gradient + bgStyle;
     },
     menuItem() {
       let menuItem = { active: true };

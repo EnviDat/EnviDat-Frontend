@@ -66,7 +66,7 @@ const initialState = {
    * currentMetadataContent is set when clicking on a MetadataCard / entry
    * it's used by the MetadataDetailPage
    */
-  currentMetadataContent: {},
+  currentMetadataContent: null,
   /**
    * virtual List properties for MetaDataCards of the BrowsePage via MetadataListLayout
    */

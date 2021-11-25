@@ -26,6 +26,7 @@ import { extractBodyIntoUrl } from '@/factories/stringFactory';
 import {
   createDates,
   createLocation,
+  enhanceTags,
 } from '@/factories/metaDataFactory';
 
 import {
@@ -52,13 +53,15 @@ import {
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
+  ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
-  ACTION_USER_ORGANIZATIONS_DATASETS,
+  ACTION_USER_ORGANIZATIONS_DATASETS, FETCH_USER_DATA,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
+  METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
@@ -104,26 +107,30 @@ function commitEditingData(commit, eventName, data) {
   );
 }
 
-export function populateEditingComponents(commit, metadataRecord, authorsMap) {
+export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  // Stepper 1: Header, Description, Keywords, Authors
-
   let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSON(stepKey, snakeCaseJSON)
-  commitEditingData(commit, stepKey, headerData);
+  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, descriptionData);
 
   stepKey = EDITMETADATA_KEYWORDS;
-  const keywordsData = getFrontendJSON(stepKey, snakeCaseJSON)
-  commitEditingData(commit, stepKey, keywordsData);
+  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
+  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
+
+  const enhancedKeywords = {
+    ...keywordsData,
+    metadataCardTitle: headerData.metadataTitle,
+    metadataCardSubtitle: descriptionData.description,
+  }
+  commitEditingData(commit, stepKey, enhancedKeywords);
 
   stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON)
+  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
@@ -134,7 +141,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
     authors.push(author);
   })
   // const authors = createAuthors({ author: backendAuthors.authors });
-  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors })
+  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
 
   commitEditingData(commit, stepKey, {
     authors,
@@ -145,11 +152,11 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
   // const resources = createResources(metadataRecord).resources;
 
   stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, resourceData);
 
   stepKey = EDITMETADATA_DATA_INFO;
-  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const metadataDates = createDates({ date: dateInfoData.dates });
 
@@ -164,41 +171,52 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
 
 
   stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const location = createLocation({
     ...snakeCaseJSON,
     // don't pass location directly as property because it would be
     // returned without the parsing of geo spatial infos
-    spatial: geoData.location.geoJSON,
+    spatial: geoData.location.geomCollection,
   });
 
   commitEditingData(commit, stepKey, {
     location,
   });
 
-  // Stepper 3: Related Info, Custom Fields
   stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, rPublicationData);
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, rDatasetsData);
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, customFieldsData);
 
 
-  // Stepper 4: Publication Info, Organization
   stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, publicationData);
 
   stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON)
+  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
   commitEditingData(commit, stepKey, organizationData);
+
+
+  stepKey = EDITMETADATA_MAIN_HEADER;
+
+  const enhanceHeader = {
+    ...headerData,
+    keywords: keywordsData.keywords,
+    authors,
+    dataLicense: dateInfoData.dataLicenseTitle,
+    doi: publicationData.doi,
+  };
+
+  commitEditingData(commit, stepKey, enhanceHeader);
 
 }
 
@@ -206,7 +224,9 @@ function cleanAuthorsForBackend(authors) {
 
   const bAuthors = [];
   for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
+
+    // work with local copy here to avoid to changing the vuex state directly
+    const author = { ...authors[i] };
 
     if (author.dataCredit) {
       const keys = Object.keys(author.dataCredit);
@@ -264,6 +284,31 @@ function mapFrontendData(stepKey, backendData) {
 */
 
 export default {
+  async [FETCH_USER_DATA]({ commit }, payload) {
+    commit(payload.mutation);
+
+    const body = payload.body || {};
+
+    // unpack the action because it might be wrapped to provide a test url
+    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
+
+    let url = extractBodyIntoUrl(actionUrl, body);
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    // if the url is directly to a file it has to be a get call
+    // const method = url.includes('.json') ? 'get' : 'post';
+
+    await axios.get(url)
+      // await axios({ method, url, body })
+      .then((response) => {
+        if (payload.commit) {
+          commit(`${payload.mutation}_SUCCESS`, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(`${payload.mutation}_ERROR`, error);
+      });
+  },
   async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {
     commit(USER_GET_ORGANIZATION_IDS);
 
@@ -390,9 +435,13 @@ export default {
     );
 
     const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
-    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
-    populateEditingComponents(commit, currentEntry, authorsMap);
+    if (currentEntry) {
+      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      const categoryCards = this.state.categoryCards;
+
+      populateEditingComponents(commit, currentEntry, authorsMap, categoryCards);
+    }
   },
   async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
 
@@ -437,31 +486,14 @@ export default {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
-    // const stepData = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](stepKey);
-
     const apiKey = this.state.userSignIn.user?.apikey || null;
+    const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    let url = actionUrl;
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    if (useTestdata) {
-      // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-    }
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
     const postData = mapBackendData(stepKey, data);
     postData.id = id;
-
-    /*
-    console.log('step to post');
-    console.log(postData);
-
-    const camelData = getObjectInOtherCase(postData, toCamelCase);
-
-    console.log('post to camelData');
-    console.log(camelData);
-*/
 
     await axios.post(url, postData,
       {
@@ -476,7 +508,44 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result)
+        populateEditingComponents(commit, response.data.result, null, categoryCards);
+      })
+      .catch((reason) => {
+        commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
+          stepKey,
+          reason,
+        });
+      });
+  },
+  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, organizationId }) {
+
+    commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
+
+    const apiKey = this.state.userSignIn.user?.apikey || null;
+    const categoryCards = this.state.categoryCards;
+
+    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION();
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+    const postData = {
+      id,
+      organization_id: organizationId,
+    };
+
+    await axios.post(url, postData,
+      {
+        headers: {
+          Authorization: apiKey,
+        },
+      })
+      .then((response) => {
+        commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
+          stepKey,
+          message: 'Organization changed',
+          // details: `Changes saved ${stepKey} data for ${id}`,
+        });
+
+        populateEditingComponents(commit, response.data.result, null, categoryCards);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {

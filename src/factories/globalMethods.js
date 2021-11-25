@@ -158,7 +158,11 @@ export default {
       const imageKey = `./${imageAssetPathName}.${state.webpIsSupported ? 'webp' : 'jpg'}`;
 
       if (state.webpIsSupported) {
-        return state.webpAssets[imageKey];
+        const webpImg = state.webpAssets[imageKey];
+
+        if (webpImg) {
+          return webpImg;
+        }
       }
 
       return state.jpgAssets[imageKey];

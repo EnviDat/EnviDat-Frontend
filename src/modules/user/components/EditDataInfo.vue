@@ -1,10 +1,36 @@
 <template>
-  <v-card id="EditDataInfo" class="pa-4">
-    <v-container fluid class="pa-0 fill-height">
+  <v-card id="EditDataInfo"
+          class="pa-0"
+          :loading="loading">
+
+    <v-container fluid
+                 class="pa-4 fill-height">
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
+
       <v-row>
-        <v-col cols="12">
-          <div class="text-h5">{{ labels.cardTitle }}</div>
+        <v-col cols="8"
+               class="text-h5">
+          {{ labels.cardTitle }}
         </v-col>
+
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
+        </v-col>
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
+        </v-col>
+
       </v-row>
 
       <v-row>
@@ -172,7 +198,9 @@ import {
   isFieldValid,
   isArrayValid,
 } from '@/factories/userEditingFactory';
+
 import { renderMarkdown } from '@/factories/stringFactory';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 export default {
   name: 'EditDataInfo',
@@ -190,6 +218,26 @@ export default {
           dateEnd: '',
         },
       ],
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   computed: {
@@ -326,7 +374,9 @@ export default {
       return `${year}-${month}-${day}`;
     },
   },
-  components: {},
+  components: {
+    BaseStatusLabelView,
+  },
   data: () => ({
     validationErrors: {
       dataLicense: null,

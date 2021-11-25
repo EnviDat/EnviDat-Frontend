@@ -146,8 +146,7 @@ export default {
   },
   [LOAD_METADATA_CONTENT_BY_ID](state) {
     state.loadingCurrentMetadataContent = true;
-    state.currentMetadataContent = {};
-    // this._vm.$set(state.currentMetadataContent, {});
+    state.currentMetadataContent = null;
   },
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;

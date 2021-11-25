@@ -129,14 +129,16 @@ export default {
           mutation: GET_USER_CONTEXT,
         });
     },
-    catchSignIn(email, key) {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+    async catchSignIn(email, key) {
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SIGNIN,
           body: { email, key },
           commit: true,
           mutation: USER_SIGNIN,
         });
+
+      this.checkUserSignedIn();
     },
     catchRequestToken(email) {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,

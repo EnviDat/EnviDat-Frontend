@@ -20,6 +20,7 @@ import {
   REQUEST_TOKEN,
   REQUEST_TOKEN_ERROR,
   REQUEST_TOKEN_SUCCESS,
+  USER_SIGNIN_NAMESPACE,
   USER_SIGNIN,
   USER_SIGNIN_ERROR,
   USER_SIGNIN_SUCCESS,
@@ -36,21 +37,14 @@ function extractError(store, reason, errorProperty = 'error') {
   let field = '';
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
-  if (reason?.response && reason.response.status !== 200) {
-    msg = `${reason.response.status} ${reason.response.statusText}
-          url: ${reason.response.config?.url} Message: ${reason.response.data?.error?.message} type: ${reason.response.data?.error?.__type}`;
-    store._vm.$set(store.state.user, errorProperty, msg);
-    return;
-  }
-
-  const error = reason?.response?.error || reason?.error || reason;
+  const error = reason?.response?.data?.error || reason?.error || reason;
 
   if (error) {
     type = error.__type;
 
     switch (type) {
       case VALIDATION_ERROR: {
-        const errKey = Object.keys(error)[1];
+        const errKey = Object.keys(error)[0];
 
         field = errKey;
         msg = error[errKey];
@@ -61,12 +55,18 @@ function extractError(store, reason, errorProperty = 'error') {
         break;
       }
     }
+  } else if (reason?.response && reason.response.status !== 200) {
+    msg = `${reason.response.status} ${reason.response.statusText}
+          url: ${reason.response.config?.url} Message: ${reason.response.data?.error?.message} type: ${reason.response.data?.error?.__type}`;
+    store._vm.$set(store.state.user, errorProperty, msg);
+    return;
   }
 
-  store.state.user.errorField = field;
-  store.state.user.errorType = type;
+  store.state[USER_SIGNIN_NAMESPACE].errorField = field;
+  store.state[USER_SIGNIN_NAMESPACE].errorType = type;
+  store.state[USER_SIGNIN_NAMESPACE][errorProperty] = msg;
 
-  store._vm.$set(store.state.user, errorProperty, msg);
+  // store._vm.$set(store.state[USER_SIGNIN_NAMESPACE], errorProperty, msg);
 }
 
 
@@ -84,9 +84,7 @@ export default {
   },
   [GET_USER_CONTEXT_SUCCESS](state, payload) {
     state.userLoading = false;
-    if (payload?.user) {
-      state.user = payload?.user;
-    }
+    state.user = payload?.user || null;
   },
   [GET_USER_CONTEXT_ERROR](state, reason) {
     state.userLoading = false;

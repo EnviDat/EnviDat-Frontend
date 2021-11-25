@@ -1,3 +1,5 @@
+import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
+
 import {
   OPEN_TEXT_PREVIEW,
   INJECT_TEXT_PREVIEW,
@@ -5,13 +7,13 @@ import {
   SELECT_EDITING_RESOURCE_PROPERTY,
   SELECT_EDITING_AUTHOR_PROPERTY,
   SELECT_EDITING_AUTHOR,
-} from '@/factories/eventBus';
-
-import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
+  SELECT_EDITING_DATASET,
+  SELECT_EDITING_DATASET_PROPERTY,
+} from './eventBus';
 
 export const localIdProperty = 'localId';
 
-export const resourceClickStrategies = [
+export const clickStrategies = [
   {
     fileExtensions: ['txt', 'md'],
     component: TextPreviewCard,
@@ -35,6 +37,13 @@ export const resourceClickStrategies = [
     tooltip: 'Click to select this author for editing',
     fallbackProperty: localIdProperty,
   },
+  {
+    fileExtensions: [SELECT_EDITING_DATASET_PROPERTY],
+    openEvent: SELECT_EDITING_DATASET,
+    icon: 'edit',
+    tooltip: 'Click to edit this dataset',
+    fallbackProperty: localIdProperty,
+  },
 ];
 
 export function getPreviewStrategy(extensions) {
@@ -47,7 +56,7 @@ export function getPreviewStrategy(extensions) {
 
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i];
-      const filteredStrat = resourceClickStrategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
+      const filteredStrat = clickStrategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
 
       if (filteredStrat.length > 0) {
         return filteredStrat[0];

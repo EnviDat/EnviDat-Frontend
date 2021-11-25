@@ -70,6 +70,7 @@
                       :loading="loading"
                       :placeHolderAmount="placeHolderAmount"
                       @clickedTag="catchTagClicked"
+                      @clickedCard="catchMetadataClicked"
                       :selectedTagNames="selectedTagNames"
                       :allTags="allUserdataTags"
                       :showPlaceholder="updatingTags"
@@ -212,6 +213,7 @@ import {
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -238,6 +240,12 @@ import UserCard from '@/components/Cards/UserCard';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+  SELECT_EDITING_AUTHOR,
+  SELECT_EDITING_DATASET,
+} from '@/factories/eventBus';
 
 export default {
   name: 'DashboardPage',
@@ -256,6 +264,12 @@ export default {
     UserCard,
     MetadataCard,
     MetadataCardPlaceholder,
+  },
+  created() {
+    eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
+  },
+  beforeDestroy() {
+    eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -277,9 +291,10 @@ export default {
       'userOrganizations',
       'userRecentOrgaDatasets',
       'userRecentOrgaDatasetsError',
+      'userDatasets',
+      'userDatasetsLoading',
       'userDatasetsError',
     ]),
-    ...mapGetters(USER_NAMESPACE, ['userDatasets']),
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
       'updatingTags',
@@ -321,23 +336,20 @@ export default {
         return filteredContent;
       }
 
+      if (!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+        return this.userDatasets;
+      }
+
       for (let i = 0; i < this.userDatasets.length; i++) {
         const entry = this.userDatasets[i];
 
-        if (this.contentFilteredByTags(entry, this.selectedTagNames)) {
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedTagNames)) {
           filteredContent.push(entry);
         }
       }
       
       return filteredContent;
     },
-    contentFilteredByTags(value, selectedTagNames) {
-      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
-        return true;
-      }
-
-      return false;
-    },    
     publishedDatasets() {
       if (this.user.datasets) {
         return this.user.datasets.filter(dataset => !dataset.private);
@@ -406,7 +418,11 @@ export default {
       return null;
     },
     allUserdataTags() {
-      let allTags = getPopularTags(this.filteredUserDatasets);
+      let allTags = getPopularTags(this.userDatasets);
+
+      if (allTags.length <= 0) {
+        allTags = getPopularTags(this.userDatasets, '', 1);
+      }
 
       if (allTags.length > this.maxFilterTags) {
         allTags = allTags.splice(this.maxFilterTags, allTags.length - this.maxFilterTags);
@@ -424,13 +440,12 @@ export default {
       }
     },
     fetchUserDatasets() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SHOW,
           body: {
             id: this.user.id,
             include_datasets: true,
-            key: this.user.apikey,
           },
           commit: true,
           mutation: USER_GET_DATASETS,
@@ -460,9 +475,23 @@ export default {
       console.log('clicked show unpublished dataset');
       // this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
-    catchEditingClick() {
-      console.log('clicked editing dataset');
-      // this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
+    catchEditingClick(selectedDataset) {
+      this.$router.push({
+        name: METADATAEDIT_PAGENAME,
+        params: {
+          metadataid: selectedDataset,
+        },
+      })
+    },
+    catchMetadataClicked(datasetname) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+
+      this.$router.push({
+        name: METADATADETAIL_PAGENAME,
+        params: {
+          metadataid: datasetname,
+        },
+      });
     },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {
@@ -499,7 +528,7 @@ export default {
   data: () => ({
     fileIconString: '',
     title: 'Dashboard',
-    PageBGImage: './app_b_dashboardpage.jpg',
+    PageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,
