@@ -517,7 +517,7 @@ export default {
         });
       });
   },
-  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, organizationId }) {
+  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, data }) {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
@@ -529,7 +529,7 @@ export default {
 
     const postData = {
       id,
-      organization_id: organizationId,
+      organization_id: data.organizationId,
     };
 
     await axios.post(url, postData,

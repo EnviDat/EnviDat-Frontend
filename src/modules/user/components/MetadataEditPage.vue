@@ -258,8 +258,6 @@ export default {
         // overwrite the action and the payload to fit the specific
         // backend call to change the ownership of a dataset
         action = METADATA_EDITING_PATCH_DATASET_ORGANIZATION;
-        payload.data = undefined;
-        payload.organizationId = updateObj.data;
       }
 
       // save the full dataObject it in the backend
