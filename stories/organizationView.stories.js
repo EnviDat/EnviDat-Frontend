@@ -50,9 +50,9 @@ storiesOf(storybookFolder, module)
         </v-col>
       </v-row>
 
-      <v-row class="py-3" >
+      <v-row class='py-3' >
         <v-col >
-          <OrganizationTree v-bind="genericProps" />
+          <OrganizationTree v-bind='genericProps' />
         </v-col>
       </v-row>
 
@@ -79,7 +79,7 @@ storiesOf(storybookFolder, module)
       preSelectedOrganization: 'wsl',
     }),
   }))
-  .add('Edit Organization', () => ({
+  .add('Edit Dataset Organization', () => ({
     components: { EditOrganization },
     template: `
       <v-col>
@@ -88,9 +88,9 @@ storiesOf(storybookFolder, module)
         EditOrganization
       </v-row>
 
-      <v-row class="py-3" >
+      <v-row class='py-3' >
         <v-col >
-          <EditOrganization v-bind="genericProps" />
+          <EditOrganization v-bind='genericProps' />
         </v-col>
       </v-row>
 
@@ -98,9 +98,9 @@ storiesOf(storybookFolder, module)
         EditOrganization with only one existing organization
       </v-row>
 
-      <v-row class="py-3" >
+      <v-row class='py-3' >
         <v-col >
-          <EditOrganization v-bind="genericProps2" />
+          <EditOrganization v-bind='genericProps2' />
         </v-col>
       </v-row>
 
@@ -123,12 +123,74 @@ storiesOf(storybookFolder, module)
     data: () => ({
       genericProps: {
         id: '1',
-        organization: 'test1',
-        userOrganizationsList: ['test1', 'test2', 'test3'],
+        organizationId: '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
+        userOrganizations: [
+          {
+              'id': '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
+              'name': 'epfl',
+              'title': 'EPFL',
+              'type': 'organization',
+              'description': 'EPFL is Europe’s most cosmopolitan technical university with students, professors and staff from over 120 nations. A dynamic environment, open to Switzerland and the world, EPFL is centered on its three missions: teaching, research and technology transfer. EPFL works together with an extensive network of partners including other universities and institutes of technology, developing and emerging countries, secondary schools and colleges, industry and economy, political circles and the general public, to bring about real impact for society.\r\n\r\nMore information: http://www.epfl.ch/',
+              'image_url': '2021-04-04-210008.435647index.png',
+              'created': '2016-11-02T11:15:27.444553',
+              'is_organization': true,
+              'approval_status': 'approved',
+              'state': 'active',
+              'capacity': 'editor',
+              'display_name': 'EPFL',
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+          },
+          {
+              'id': 'bd536a0f-d6ac-400e-923c-9dd351cb05fa',
+              'name': 'trusted',
+              'title': 'Trusted Users Organization',
+              'type': 'organization',
+              'description': 'Administrator Approved Users',
+              'image_url': '2021-04-04-210008.435647index.png',
+              'created': '2016-10-19T10:46:53.557869',
+              'is_organization': true,
+              'approval_status': 'approved',
+              'state': 'active',
+              'capacity': 'editor',
+              'display_name': 'Trusted Users Organization',
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+          },
+      ],
       },
       genericProps2: {
-        organization: 'test1',
-        userOrganizationsList: ['test1'],
+        organizationId: '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
+        userOrganizations: [
+          {
+              'id': '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
+              'name': 'epfl',
+              'title': 'EPFL',
+              'type': 'organization',
+              'description': 'EPFL is Europe’s most cosmopolitan technical university with students, professors and staff from over 120 nations. A dynamic environment, open to Switzerland and the world, EPFL is centered on its three missions: teaching, research and technology transfer. EPFL works together with an extensive network of partners including other universities and institutes of technology, developing and emerging countries, secondary schools and colleges, industry and economy, political circles and the general public, to bring about real impact for society.\r\n\r\nMore information: http://www.epfl.ch/',
+              'image_url': '2021-04-04-210008.435647index.png',
+              'created': '2016-11-02T11:15:27.444553',
+              'is_organization': true,
+              'approval_status': 'approved',
+              'state': 'active',
+              'capacity': 'editor',
+              'display_name': 'EPFL',
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+          },
+          {
+              'id': 'bd536a0f-d6ac-400e-923c-9dd351cb05fa',
+              'name': 'trusted',
+              'title': 'Trusted Users Organization',
+              'type': 'organization',
+              'description': 'Administrator Approved Users',
+              'image_url': '2021-04-04-210008.435647index.png',
+              'created': '2016-10-19T10:46:53.557869',
+              'is_organization': true,
+              'approval_status': 'approved',
+              'state': 'active',
+              'capacity': 'editor',
+              'display_name': 'Trusted Users Organization',
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+          },
+      ],
       },
     }),
   }))
@@ -141,9 +203,9 @@ storiesOf(storybookFolder, module)
         EditOrganizationTree
       </v-row>
 
-      <v-row class="py-3" >
+      <v-row class='py-3' >
         <v-col >
-          <EditOrganizationTree v-bind="genericProps" />
+          <EditOrganizationTree v-bind='genericProps' />
         </v-col>
       </v-row>
 
@@ -151,9 +213,9 @@ storiesOf(storybookFolder, module)
         EditOrganizationTree preselected and editing disabled
       </v-row>
 
-      <v-row class="py-3" >
+      <v-row class='py-3' >
         <v-col >
-          <EditOrganizationTree v-bind="genericProps2" />
+          <EditOrganizationTree v-bind='genericProps2' />
         </v-col>
       </v-row>
 
