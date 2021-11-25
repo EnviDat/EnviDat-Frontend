@@ -14,24 +14,26 @@
     <v-row>
       <v-col>
 
-        <v-text-field v-if="userOrganizationsNameList.length === 1"
-                      :value="userOrganizationsNameList[0]"
+        <v-text-field v-if="userOrganizationsListItems.length === 1"
+                      :value="userOrganizationsListItems[0]"
                       outlined
                       readonly
-                      :error-messages="validationErrors.organization"
+                      :error-messages="validationErrors.organizationId"
                       >
          </v-text-field>
 
         <v-select     v-else
-                      @input="setOrganization('organization', $event)"
-                      :value="organizationField"
-                      :items="userOrganizationsNameList"
+                      @input="setOrganization($event)"
+                      :value="selectedOrganization"
+                      :items="userOrganizationsListItems"
+                      item-text="title"
+                      item-value="id"
                       outlined
                       chips
                       append-icon="arrow_drop_down"
                       :readonly="readonly"
                       label="Organization"
-                      :error-messages="validationErrors.organization"
+                      :error-messages="validationErrors.organizationId"
                       >
 
        </v-select>
@@ -60,8 +62,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-// TODO add organization remove methods, emit methods, etc.
-
 import {
   mapState,
 } from 'vuex';
@@ -76,10 +76,6 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingFactory';
-import {
-  getObjectInOtherCase,
-  toCamelCase,
-} from '@/factories/mappingFactory';
 
 import {
   USER_SIGNIN_NAMESPACE,
@@ -92,10 +88,14 @@ import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 export default {
   name: 'EditOrganization',
   props: {
-    organization: {
-      type: Object,
-      default: () => {},
-      },
+    organizationId: {
+      type: String,
+      default: '',
+    },
+    userOrganizations: {
+      type: Array,
+      default: () => [],
+    },
     readonly: {
       type: Boolean,
       default: false,
@@ -109,43 +109,65 @@ export default {
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
-    organizationField () {
-      return this.organization.title
-    },
-    userOrganizationsNameList () {
-      if (this.userOrganizationsList) {
-        return this.userOrganizationsList.map(org => org.title);
+    selectedOrganization () {
+      // Get organization title, filtering userOrganizationsList by organizationId prop
+
+      const userOrg = this.userOrganizationsList.filter(x => x.id === this.organizationId)[0];
+
+      if (!userOrg) {
+        return this.emptySelection
       }
-      return []
+
+      return {
+        id: userOrg.id,
+        title: userOrg.title,
+      };
+    },
+    userOrganizationsListItems () {
+      // Return formatted list of organizations user is member of, with id/title
+
+      if (this.userOrganizationsList) {
+        return this.userOrganizationsList.map(org => ({
+          id: org.id,
+          title: org.title,
+        }));
+      }
+
+      return [this.emptySelection]
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_ORGANIZATION);
     },
   },
   methods: {
-    setOrganization(property, value) {
+    setOrganization(orgId) {
+      // Select organization based on picked item and pass via event bus
+      console.log(this.validationErrors)
+      if (isFieldValid('organizationId', orgId, this.validations, this.validationErrors)) {
 
-      let selectedOrg = this.userOrganizationsList.filter(x => x.title === value);
-      selectedOrg = getObjectInOtherCase(selectedOrg, toCamelCase);
-      // Remove unused properties
-      const { capacity, displayName, imageDisplayUrl, ...updatedOrg } = selectedOrg[0];
+        const newOrgId = this.userOrganizationsList.filter(x => x.id === orgId)[0].id;
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_ORGANIZATION,
-        data: {property: updatedOrg},
-      });
+        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_ORGANIZATION,
+          data: {organizationId: newOrgId},
+        });
+      }
     },
     fetchUserOrganisationData() {
       this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
     },
-    validateProperty(property, value){
+    validateProperty(property, value) {
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
   },
   data: () => ({
     EDIT_ORGANIZATION_TITLE,
     validationErrors: {
-      organization: null,
+      organizationId: null,
+    },
+    emptySelection: {
+      'id': '',
+      'title': '',
     },
   }),
   components: {

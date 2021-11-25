@@ -69,8 +69,6 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
     ['dataLicenseId','license_id'],
-    ['dataLicenseTitle','license_title'],
-    ['dataLicenseUrl','license_url'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -89,7 +87,7 @@ const JSONFrontendBackendRules = {
     ['customFields', 'extras'],
   ],
   [EDITMETADATA_ORGANIZATION]: [
-    ['organization', 'organization'],
+    ['organizationId', 'organization.id'],
   ],
   [EDITMETADATA_PUBLICATION_INFO]: [
     ['publicationState','publication_state'],
@@ -321,7 +319,6 @@ export function cleanSpatialInfo(spatial) {
   const backEndJson = {};
 
   rules.forEach(x => convertPut(backEndJson, x[1], convertGet(spatial, x[0])));
-  
+
   return backEndJson;
 }
-

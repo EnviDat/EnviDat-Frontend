@@ -45,6 +45,8 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
+
+import { parse, isDate } from 'date-fns';
 import * as yup from 'yup';
 
 
@@ -169,12 +171,7 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_INFO]: {
     dates: [],
-    dataLicense: '',
-/*
     dataLicenseId: '',
-    dataLicenseTitle: '',
-    dataLicenseUrl: '',
-*/
   },
   [EDITMETADATA_DATA_GEO]: {
     location: null,
@@ -189,7 +186,8 @@ const emptyMetadataInEditing = {
     customFields: [],
   },
   [EDITMETADATA_ORGANIZATION]: {
-    organization: {},
+    organization: '',
+    userOrganizationsList: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
     publicationState: 'Draft',
@@ -374,6 +372,19 @@ export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
 }
 
+function parseDateString(value, originalValue) {
+  // Helper function for yup date string validation
+  if (originalValue === '') {
+    return null
+  }
+
+  const parsedDate = isDate(originalValue) ?
+    originalValue :
+    parse(originalValue, 'dd.MM.yyyy', new Date());
+
+  return parsedDate;
+}
+
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
@@ -434,14 +445,24 @@ const metadataInEditingValidations = {
     yup.object().shape({
       dates: yup.array().of(
         yup.object().shape({
-          dateType: yup.string('Date type must be a string'),
-          dateStart: yup.date('Start date must be a valid date'),
+          dateType: yup.string('Date type must be a string.'),
+          dateStart: yup
+            .date('Start date must be a valid date.')
+            .transform(parseDateString),
           dateEnd: yup
-            .date('End date must be a valid date')
-            .min(yup.ref('dateStart'), "End date can't be before start date"),
+            .date('End date must be a valid date.')
+            .transform(parseDateString)
+            .min(yup.ref('dateStart'), "End date can't be before start date.")
+            .nullable(),
         }),
       ),
-      dataLicense: yup.string(),
+      dataLicenseId: yup
+      .string()
+      .test(
+        'empty-check',
+        'An data licence must be selected.',
+        dataLicenseId => dataLicenseId !== '',
+      ),
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({
@@ -457,12 +478,13 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
-      organization: yup
-      .string('Organization must be a string.')
+      organizationId: yup
+      .string('organizationId must be a string.')
       .test(
         'empty-check',
         'An organization must be selected.',
-        organization => organization !== '',
+        organizationId => organizationId !== '',
+        // Add validation - one of items in list
       ),
     }),
   [EDITMETADATA_CUSTOMFIELDS]: () =>

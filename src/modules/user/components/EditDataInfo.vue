@@ -15,7 +15,7 @@
 
       <v-row class="pt-2 heightAndScroll">
         <v-row
-          v-for="(item, index) in datesArray"
+          v-for="(item, index) in datesField"
           :key="`${item}_${index}`"
           dense
         >
@@ -26,6 +26,7 @@
               outlined
               prepend-icon="category"
               :value="item.dateType"
+              :error-messages="validationErrors.dates[index].dateType"
             />
           </v-col>
 
@@ -39,13 +40,14 @@
                     prepend-icon="date_range"
                     readonly
                     outlined
-                    :value="item.date"
+                    :value="item.dateStart"
                     v-on="on"
+                    :error-messages="validationErrors.dates[index].dateStart"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  @input="notifyChange(index, 'date', $event)"
+                  @input="dateChanged(index, 'dateStart', $event)"
                   no-title
                 ></v-date-picker>
               </v-menu>
@@ -64,12 +66,13 @@
                     outlined
                     :value="item.dateEnd"
                     v-on="on"
+                    :error-messages="validationErrors.dates[index].dateEnd"
                   ></v-text-field>
                 </template>
                 <v-date-picker
                   locale="en-in"
-                  :min="reformatDate(item.date)"
-                  @input="notifyChange(index, 'dateEnd', $event)"
+                  :min="reformatDate(item.dateStart)"
+                  @input="dateChanged(index, 'dateEnd', $event)"
                   no-title
                 ></v-date-picker>
               </v-menu>
@@ -87,14 +90,17 @@
       <v-row dense>
         <v-col>
           <v-select
-            :items="dataLicensesNameList"
+            :items="dataLicenses"
+            item-value="id"
+            item-text="title"
             outlined
             :label="labels.dataLicense"
             required
             prepend-icon="data_usage"
             append-icon="arrow_drop_down"
-            :value="dataLicenseField"
-            @input="setDataInfo('dataLicense', $event)"
+            :value="selectedLicence"
+            @input="notifyChange('dataLicenseId', $event)"
+            :error-messages="validationErrors.dataLicense"
           />
         </v-col>
       </v-row>
@@ -117,17 +123,17 @@
 
       <v-row>
         <v-col>
-          <div v-if="!this.dataLicense" class="text-body-3">
+          <div v-if="!this.selectedLicence" class="text-body-3">
             {{ this.getDataLicenseLink }}
           </div>
           <div
-            v-if="this.dataLicense && this.dataLicenseLinkExists()"
+            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
             class="text-body-3"
           >
             {{ this.labels.dataLicenseEmail }}
           </div>
           <div
-            v-if="this.dataLicense && this.dataLicenseLinkExists()"
+            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
             class="text-body-3"
           >
             <a v-bind:href="this.getDataLicenseLink" target="_blank">{{
@@ -154,6 +160,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
 import {
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
@@ -162,46 +169,59 @@ import {
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  // isArrayValid
+  isFieldValid,
+  isArrayValid,
 } from '@/factories/userEditingFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: 'EditDataInfo',
   props: {
-    dataLicense: {
+    dataLicenseId: {
       type: String,
-      default: () => '',
+      default: '',
     },
-    datesArray: {
+    dates: {
       type: Array,
       default: () => [
         {
           dateType: '',
-          date: '',
+          dateStart: '',
           dateEnd: '',
         },
       ],
     },
   },
   computed: {
-    dataLicenseField: {
+    selectedLicence: {
       get() {
-        return this.dataLicense;
+
+        if (this.dataLicenseId === '') {
+          return ''
+        }
+
+        const dataLicense = this.dataLicenses.filter(x => x.id === this.dataLicenseId)[0]
+        return {
+          id: dataLicense.id,
+          title: dataLicense.title,
+        }
       },
     },
-    dataLicensesNameList() {
-      return this.dataLicenses.map((element) => element.name);
+    datesField: {
+      get() {
+        console.log('current dates :', this.dates)
+        return this.dates;
+      },
     },
     getDataLicenseLink() {
-      const currentLicense = this.dataLicense;
+      const currentLicense = this.dataLicenseId;
 
       if (currentLicense === '') {
         return 'Please select a data license above to view link for more detailed information.';
       }
 
       for (let i = 0; i < this.dataLicenses.length; i++) {
-        if (currentLicense === this.dataLicenses[i].name) {
+        if (currentLicense === this.dataLicenses[i].id) {
           return this.dataLicenses[i].link;
         }
       }
@@ -209,47 +229,31 @@ export default {
       return 'Data license information unavailable.';
     },
     getDataLicenseSummary() {
-      const currentLicense = this.dataLicense;
+      const currentLicense = this.dataLicenseId;
 
       if (currentLicense === '') {
         return 'Please select a data license above to view data license summary.';
       }
 
       for (let i = 0; i < this.dataLicenses.length; i++) {
-        if (currentLicense === this.dataLicenses[i].name) {
+        if (currentLicense === this.dataLicenses[i].id) {
           return this.markdownText(this.dataLicenses[i].summary);
         }
       }
 
       return 'Data summary information unavailable.';
     },
-    datesField: {
-      get() {
-        return [...this.datesArray];
-      },
-    },
-    // validationErrors() {
-    //   const validationFields = {
-    //     dates: Array(this.dates.length).fill({
-    //       dateType: null,
-    //       dateStart: null,
-    //       dateEnd: null,
-    //     }),
-    //     dataLicence: null,
-    //   };
-    //   return validationFields;
-    // },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
     },
   },
   methods: {
     dataLicenseLinkExists() {
-      const currentLicense = this.dataLicense;
+      const currentLicense = this.dataLicenseId;
 
       for (let i = 0; i < this.dataLicenses.length; i++) {
         if (
-          currentLicense === this.dataLicenses[i].name &&
+          currentLicense === this.dataLicenses[i].id &&
           'link' in this.dataLicenses[i]
         ) {
           return true;
@@ -261,43 +265,39 @@ export default {
       return renderMarkdown(mdText);
     },
     setDataInfo(property, value) {
+
       const newDataInfo = {
         ...this.$props,
         [property]: value,
       };
+      console.log('new data: ', newDataInfo)
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_INFO,
         data: newDataInfo,
       });
     },
-    notifyChange(index, property, value) {
-      const localCopy = [...this.datesField];
+    notifyChange(property, value) {
 
-      // if (
-      //   isArrayValid(
-      //     localCopy,
-      //     property,
-      //     index,
-      //     value,
-      //     this.validations,
-      //     this.validationErrors.datesArray,
-      //   )
-      // ) {
-      //   this.editEntry(localCopy, index, property, value);
-      //   this.setDataInfo('datesArray', localCopy);
-      // }
-
-      this.editEntry(localCopy, index, property, value);
-      this.setDataInfo('datesArray', localCopy);
+      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+        this.setDataInfo(property, value);
+      }
     },
-    editEntry(array, index, property, value) {
-      if (array.length <= index) {
-        return;
+    dateChanged(index, property, value) {
+      // Update indexed object in array, with updated dates
+
+      const newDates = this.updateDatesArray(this.datesField, index, property, value);
+      const errorArray = this.validationErrors.dates;
+      console.log('validation errors: ', this.validationErrors)
+      if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
+        this.setDataInfo('dates', newDates);
       }
 
+    },
+    updateDatesArray(array, index, property, value) {
+
       // Format dates to CKAN format "MM.DD.YYYY"
-      if (property === 'date' || property === 'dateEnd') {
+      if (property === 'dateStart' || property === 'dateEnd') {
         value = this.formatDate(value);
       }
 
@@ -306,20 +306,22 @@ export default {
         ...currentEntry,
         [property]: value,
       };
+
+      return array
     },
     formatDate(date) {
+      // Change Vuetify date format "YYYY-MM-DD" to CKAN date format "DD.MM.YYYY"
       if (!date) {
         return null;
       }
       const [year, month, day] = date.split('-');
       return `${day}.${month}.${year}`;
     },
-    // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
     reformatDate(date) {
+      // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
       if (!date) {
         return null;
       }
-
       const [day, month, year] = date.split('.');
       return `${year}-${month}-${day}`;
     },
@@ -327,12 +329,12 @@ export default {
   components: {},
   data: () => ({
     validationErrors: {
-      datesArray: [
-        {
-          date: '',
-          dateEnd: '',
-        },
-      ],
+      dataLicense: null,
+      dates: [{
+        dateType: null,
+        dateStart: null,
+        dateEnd: null,
+      }],
     },
     labels: {
       cardTitle: 'Additional Information about the Resources',
@@ -356,14 +358,10 @@ export default {
     },
     dateTypes: ['Collection Date', 'Creation Date'],
     maxYears: 30,
-    emptyDate: {
-      dateType: '',
-      dateStart: '',
-      dateEnd: '',
-    },
     dataLicenses: [
       {
-        name: 'ODbL with Database Contents License (DbCL)',
+        id: 'odc-odbl',
+        title: 'ODbL with Database Contents License (DbCL)',
         summary:
           'This is a human-readable summary of the ODbL 1.0 license. Please see the disclaimer below.\n' +
           '\n' +
@@ -389,7 +387,8 @@ export default {
         link: 'https://opendatacommons.org/licenses/odbl/1-0/',
       },
       {
-        name: 'Creative Commons Attribution Share-Alike (CC-BY-SA)',
+        id: 'cc-by-sa',
+        title: 'Creative Commons Attribution Share-Alike (CC-BY-SA)',
         summary:
           'This is a human-readable summary of (and not a substitute for) the license.\n' +
           '\n' +
@@ -417,7 +416,8 @@ export default {
         link: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
       },
       {
-        name: 'Creative Commons Universal - No Rights Reserved (CC0 1.0)',
+        id: 'CC0-1.0',
+        title: 'Creative Commons Zero - No Rights Reserved (CC0 1.0)',
         summary:
           'This is a human-readable summary of (and not a substitute for) the license.\n' +
           '\n' +
@@ -437,7 +437,8 @@ export default {
         link: 'https://creativecommons.org/publicdomain/zero/1.0/legalcode',
       },
       {
-        name: 'WSL Data Policy',
+        id: 'wsl-data',
+        title: 'WSL Data Policy',
         summary:
           'The WSL Data Policy kindly asks data users to attribute and precludes data redistribution unless otherwise agreed with data originators.\n' +
           '\n' +
@@ -447,11 +448,6 @@ export default {
           '\n' +
           'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
         link: 'https://www.envidat.ch/#/about/policies',
-      },
-      {
-        name: 'Other (specified in the description)',
-        summary:
-          'Select Other in order to specify your own license in the description of the dataset.\n',
       },
     ],
   }),

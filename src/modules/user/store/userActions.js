@@ -156,7 +156,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap) {
   const dataInfo = {
     // for now only use the title, check how to choose it in the
     // edit component
-    dataLicense: dateInfoData.dataLicenseTitle,
+    dataLicenseId: dateInfoData.dataLicenseId,
     ...metadataDates,
   };
 
