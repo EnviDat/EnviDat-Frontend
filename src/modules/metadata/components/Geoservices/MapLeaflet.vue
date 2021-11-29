@@ -290,7 +290,13 @@ export default {
         this.map.on('click', (e) => this.getFeatureInfo(e.latlng));
       }
 
-      // Add site & handle MultiPolygons
+
+      this.addSiteIfAvailable();
+    },
+    addSiteIfAvailable() {
+
+      this.removeSite();
+
       if (this.site) {
         this.addSite(this.site);
       }
@@ -451,11 +457,7 @@ export default {
       this.replaceBasemap();
     },
     site() {
-      this.removeSite();
-
-      if (this.site) {
-        this.addSite(this.site);
-      }
+      this.addSiteIfAvailable();
     },
   },
   data: () => ({

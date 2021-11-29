@@ -257,7 +257,6 @@ export default {
     },
     datesField: {
       get() {
-        console.log('current dates :', this.dates)
         return this.dates;
       },
     },
@@ -318,7 +317,6 @@ export default {
         ...this.$props,
         [property]: value,
       };
-      console.log('new data: ', newDataInfo)
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_INFO,
@@ -336,7 +334,7 @@ export default {
 
       const newDates = this.updateDatesArray(this.datesField, index, property, value);
       const errorArray = this.validationErrors.dates;
-      console.log('validation errors: ', this.validationErrors)
+
       if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
         this.setDataInfo('dates', newDates);
       }

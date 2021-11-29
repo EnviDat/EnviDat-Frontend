@@ -103,12 +103,6 @@ export default {
       type: Object,
       default: null,
     },
-/*
-    error: {
-      type: Object,
-      default: null,
-    },
-*/
     location: {
       type: Object,
       default: null,
@@ -150,7 +144,6 @@ export default {
         layerConfig: this.layerConfig,
         error: this.editErrorMessage,
         site: this.location?.geomCollection,
-        // site: thislocalGeoms,
       };
     },
     editErrorMessage() {

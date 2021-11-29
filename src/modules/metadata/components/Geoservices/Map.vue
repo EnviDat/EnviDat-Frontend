@@ -29,7 +29,7 @@
           :opacity="opacity"
           :site="site"
           :max-extent="maxExtent"
-          :height="height"
+          :mapHeight="mapHeight"
         >
           <!-- :featureInfoPts="featureinfo" -->
         </map-cesium>

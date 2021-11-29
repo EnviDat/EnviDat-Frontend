@@ -1,6 +1,6 @@
 <template>
   <div :id="mapDivId"
-        :style="`height: ${height === 0 ? '100%' : height + 'px' };`"
+        :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px' };`"
         class="cesiumContainer">
 
     <div id="credits">
@@ -70,7 +70,7 @@
         mapDivId: String,
         maxExtent: Object,
         site: Object,
-        height: {
+        mapHeight: {
           type: Number,
           default: 0,
         },
@@ -112,7 +112,7 @@
       methods: {
         setupMap() {
           this.viewer = this.setupCesiumViewer(this.mapDivId);
-          
+
           // Hide default credits from all existing cesium maps
           const cesiumWidgets = document.getElementsByClassName('cesium-widget-credits');
           cesiumWidgets.forEach((w) => { w.style.display = 'none'; });
@@ -133,8 +133,8 @@
 
             if (selectedLocation) {
               const wgs = Ellipsoid.WGS84.cartesianToCartographic(selectedLocation);
-              console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
-              console.log(viewer.scene);
+              // console.log(CesiumMath.toDegrees(wgs.latitude), CesiumMath.toDegrees(wgs.longitude));
+              // console.log(viewer.scene);
 
 
               const posUL = viewer.camera.pickEllipsoid(new Cartesian2(0, 0), Ellipsoid.WGS84);
@@ -151,7 +151,7 @@
               const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
               const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
 
-              console.log(maxLat, maxLon, minLat, minLon);
+              // console.log(maxLat, maxLon, minLat, minLon);
             } else {
               console.log('could not resolve selected Location');
             }
@@ -412,7 +412,7 @@
     padding: 8px 6px 10px 6px;
     z-index: 999;
     background-color: aliceblue;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;    
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
   }
 
   .basemap-toggle {
