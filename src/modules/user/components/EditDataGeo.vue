@@ -135,6 +135,9 @@ export default {
     eventBus.$on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   beforeDestroy() {
+    if (this.saveButtonEnabled) {
+      this.updateGeometriesInMetadata();
+    }
     eventBus.$off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   computed: {
