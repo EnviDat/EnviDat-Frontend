@@ -256,7 +256,7 @@ export function extractAuthorsMap(datasets) {
     // console.log(`extracted ${authorCount} authors`);
   }
 
-  console.log(`counted noDataCredit ${noDataCredit} of ${Object.keys(authorMap).length}`)
+  // console.log(`counted noDataCredit ${noDataCredit} of ${Object.keys(authorMap).length}`)
   return authorMap;
 }
 

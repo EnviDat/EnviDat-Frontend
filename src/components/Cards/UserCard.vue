@@ -90,3 +90,28 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+  .cardGrid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 100%;
+  }
+
+  .subGrid {
+    align-content: end;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .subGrid div {
+    place-self: center;
+    word-break: break-all;
+    align-content: end;
+  }
+
+</style>

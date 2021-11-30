@@ -56,7 +56,8 @@ import {
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
-  ACTION_USER_ORGANIZATIONS_DATASETS, FETCH_USER_DATA,
+  ACTION_USER_ORGANIZATIONS_DATASETS,
+  FETCH_USER_DATA,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
@@ -70,6 +71,9 @@ import {
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   UPDATE_METADATA_EDITING,
+  USER_GET_COLLABORATOR_DATASETS,
+  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
+  USER_GET_COLLABORATOR_DATASETS_ERROR,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
@@ -79,7 +83,7 @@ import {
   USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_NAMESPACE,
+  USER_NAMESPACE, ACTION_USER_COLLABORATOR_DATASETS,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -307,6 +311,47 @@ export default {
       })
       .catch((error) => {
         commit(`${payload.mutation}_ERROR`, error);
+      });
+  },
+  async [USER_GET_COLLABORATOR_DATASETS]({ commit }, datasetIds) {
+    commit(USER_GET_COLLABORATOR_DATASETS);
+
+    const actionUrl = ACTION_USER_COLLABORATOR_DATASETS();
+    const limit = this.state.user.collaboratorDatasetsLimit;
+
+    const requests = [];
+    for (let i = 0; i < datasetIds.length; i++) {
+      const id = datasetIds[i];
+
+      let url = extractBodyIntoUrl(actionUrl, {
+        q: `id:${id}`,
+        include_private: true,
+        include_drafts: true,
+        rows: limit,
+      });
+
+      url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+      if (useTestdata) {
+        // ignore the parameters for testdata, because it's directly a file
+        url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+      }
+
+      requests.push(axios.get(url));
+    }
+
+    await Promise.all(requests)
+      .then((responses) => {
+        for (let i = 0; i < responses.length; i++) {
+          const response = responses[i];
+          if (useTestdata && typeof response.data === 'string') {
+            response.data = JSON.parse(response.data);
+          }
+          commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);
       });
   },
   async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {

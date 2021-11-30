@@ -35,6 +35,7 @@ import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
@@ -53,6 +54,9 @@ import {
   USER_GET_DATASETS,
   USER_GET_DATASETS_ERROR,
   USER_GET_DATASETS_SUCCESS,
+  USER_GET_COLLABORATOR_DATASETS,
+  USER_GET_COLLABORATOR_DATASETS_ERROR,
+  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
@@ -64,6 +68,9 @@ import {
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE,
   VALIDATION_ERROR,
+  USER_GET_COLLABORATOR_DATASET_IDS,
+  USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS,
+  USER_GET_COLLABORATOR_DATASET_IDS_ERROR,
 } from './userMutationsConsts';
 
 
@@ -174,6 +181,57 @@ export default {
     state.userDatasetsLoading = false;
 
     extractError(this, reason, 'userDatasetsError');
+  },
+  [USER_GET_COLLABORATOR_DATASET_IDS](state) {
+    state.collaboratorDatasetIdsLoading = true;
+    // state.userDatasetsError = null;
+
+    resetErrorObject(state);
+  },
+  [USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS](state, payload) {
+    state.collaboratorDatasetIdsLoading = false;
+
+    const listOfPackageIds = payload;
+    const datasetIds = [];
+
+    for (let i = 0; i < listOfPackageIds.length; i++) {
+      const entry = listOfPackageIds[i];
+      datasetIds.push(entry.package_id);
+    }
+
+    state.collaboratorDatasetIds = datasetIds;
+  },
+  [USER_GET_COLLABORATOR_DATASET_IDS_ERROR](state, reason) {
+    state.collaboratorDatasetIdsLoading = false;
+
+    extractError(this, reason);
+  },
+  [USER_GET_COLLABORATOR_DATASETS](state, payload) {
+    state.collaboratorDatasetsLoading = false;
+    state.collaboratorDatasets = [];
+
+    resetErrorObject(state);
+  },
+  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, payload) {
+    state.collaboratorDatasetsLoading = false;
+
+    const store = this;
+    const { cardBGImages } = store.getters;
+    const categoryCards = store.getters.categoryCards;
+
+    const datasets = enhanceMetadatas(payload.results, cardBGImages, categoryCards);
+
+    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
+
+    state.collaboratorDatasets = [
+      ...state.collaboratorDatasets,
+      ...datasets,
+    ];
+  },
+  [USER_GET_COLLABORATOR_DATASETS_ERROR](state, reason) {
+    state.collaboratorDatasetsLoading = false;
+
+    extractError(this, reason);
   },
   [USER_GET_ORGANIZATION_IDS](state) {
     state.userOrganizationLoading = true;
@@ -446,5 +504,10 @@ export default {
   resetError(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.error = null;
+  },
+  [METADATA_EDITING_LAST_DATASET](state, payload) {
+    state.lastEditedDataset = payload.name;
+    state.lastEditedDatasetPath = payload.path;
+    state.lastEditedBackPath = payload.backPath;
   },
 };

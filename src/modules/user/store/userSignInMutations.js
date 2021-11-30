@@ -51,7 +51,7 @@ function extractError(store, reason, errorProperty = 'error') {
         break;
       }
       default: {
-        msg = error;
+        msg = error.message;
         break;
       }
     }
@@ -64,7 +64,8 @@ function extractError(store, reason, errorProperty = 'error') {
 
   store.state[USER_SIGNIN_NAMESPACE].errorField = field;
   store.state[USER_SIGNIN_NAMESPACE].errorType = type;
-  store.state[USER_SIGNIN_NAMESPACE][errorProperty] = msg;
+  store.state[USER_SIGNIN_NAMESPACE].errorFieldText = msg;
+  // store.state[USER_SIGNIN_NAMESPACE][errorProperty] = msg;
 
   // store._vm.$set(store.state[USER_SIGNIN_NAMESPACE], errorProperty, msg);
 }
@@ -74,6 +75,7 @@ function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';
   state.errorField = '';
+  state.errorFieldText = '';
 }
 
 export default {

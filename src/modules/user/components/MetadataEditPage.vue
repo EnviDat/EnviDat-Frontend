@@ -9,7 +9,8 @@
     <NavigationStepper :steps="metadataCreationSteps"
                        :step="routeStep"
                        :subStep="routeSubStep"
-                       stepColor="highlight" />
+                       stepColor="highlight"
+                       @clickedClose="catchBackClicked" />
 
   </v-container>
 </template>
@@ -32,14 +33,8 @@ import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_KEYWORDS,
-  EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
@@ -57,7 +52,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
-  METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_CANCEL_RESOURCE_EDITING, METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
@@ -65,11 +60,14 @@ import {
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
-  UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import {
+  USER_DASHBOARD_PAGENAME,
+  METADATAEDIT_PAGENAME,
+} from '@/router/routeConsts';
+
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
@@ -82,19 +80,23 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
+
 export default {
   name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
+
+      // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
   },
-/*  async beforeRouteUpdate(to, from) {
+  beforeRouteUpdate(to, from, next) {
     // react to route changes...
-    this.userData = await fetchUser(to.params.id)
+    next((vm) => {
+      // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
+    });
   },
-    */
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -127,19 +129,26 @@ export default {
       params.step = initialStep;
       params.substep = initialSubStep;
 
-      this.$router.push({ params });
+      this.$router.push({
+        params,
+        query: this.$route.query,
+      });
     }
   },
   mounted() {
+    // reset the scrolling to the top
+    window.scrollTo(0, 0);
+
     if (this.metadataId) {
       this.initMetadataUsingId(this.metadataId);
     }
-    
-    // reset the scrolling to the top
-    window.scrollTo(0, 0);
+
   },
   computed: {
-    ...mapState(USER_NAMESPACE, ['metadataInEditing']),
+    ...mapState(USER_NAMESPACE, [
+      'metadataInEditing',
+      'lastEditedBackPath',
+    ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
       'currentMetadataContent',
@@ -197,45 +206,35 @@ export default {
     },
   */
   methods: {
-    async initMetadataUsingId() {
-      await this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
-        this.metadataId,
-      );
+    async initMetadataUsingId(id) {
+      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
 
+      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+    },
+    updateLastEditingDataset(name, path, backPath) {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
+    },
+    catchBackClicked() {
+      this.$router.push({ path: this.lastEditedBackPath });
     },
     selectResource(id) {
-      this.$store.commit(
-        `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`,
-        id,
-      );
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
     selectAuthor(id) {
-      this.$store.commit(
-        `${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`,
-        id,
-      );
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
     },
     cancelEditingResource() {
-      this.$store.commit(
-        `${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`,
-      );
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
     },
     cancelEditingAuthor() {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
     },
     saveResource(newRes) {
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`,
-        newRes,
-      );
+      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
     },
     // eslint-disable-next-line no-unused-vars
     saveAuthor(newAuthor) {
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`,
-        newAuthor,
-      );
+      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
 
@@ -276,10 +275,7 @@ export default {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
     },
     updateExistingAuthors(data) {
-      this.$store.commit(
-        `${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`,
-        data,
-      );
+      this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
     },
     updateStepStatus(stepKey) {
       const step = getStepByName(stepKey, this.metadataCreationSteps);
@@ -326,6 +322,11 @@ export default {
 
       step.error = null;
       return true;
+    },
+  },
+  watch: {
+    $route(){
+      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
     },
   },
   components: {

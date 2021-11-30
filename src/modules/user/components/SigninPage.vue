@@ -18,8 +18,7 @@
                     :requestLoading="requestLoading"
                     :requestSuccess="requestSuccess"
                     :formErrorText="errorText()"
-                    :errorFieldText="error"
-                    :showError="error !== null"
+                    :errorFieldText="errorFieldText"
                     :errorField="errorField"
                     :errorColor="$vuetify.theme.themes.light.errorHighlight"
                     @requestToken="catchRequestToken"
@@ -94,6 +93,7 @@ export default {
         'error',
         'errorType',
         'errorField',
+        'errorFieldText',
       ],
     ),
     prefilledEmail() {

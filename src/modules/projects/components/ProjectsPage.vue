@@ -1,8 +1,13 @@
 <template>
-  <v-container class="pa-0" tag="article" fluid>
-    <v-row >
+  <v-container id="ProjectsPage"
+               tag="article"
+               fluid
+               class="pa-0" >
 
-      <v-col cols="12" lg="10" offset-lg="1">
+    <v-row >
+      <v-col cols="12"
+             lg="10"
+             offset-lg="1">
         <img-and-text-layout :img="missionImg"
                               :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
                               title="Research Projects" />
@@ -87,7 +92,7 @@ import {
 } from '../store/projectsMutationsConsts';
 
 export default {
-  name: 'ProjectPage',
+  name: 'ProjectsPage',
   /**
    * @description beforeRouteEnter is used to change background image of this page.
    * It's called via vue-router.

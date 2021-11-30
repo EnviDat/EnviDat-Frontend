@@ -1,5 +1,5 @@
 <template>
-  <div :style="`height: ${height}px;`"
+  <div :style="`height: ${height}px; `"
         @mouseover="hoverBadge = true"
         @mouseleave="hoverBadge = false">
 
@@ -8,7 +8,7 @@
 
       <template v-slot:activator="{ on }">
         <v-btn v-on="on"
-               :style="{ backgroundColor: fillColor ? fillColor : '' }"
+               :style="{ height: `${height}px`, width: `${height}px`, backgroundColor: fillColor ? fillColor : '' }"
                 style="margin: 0 !important;"
                 :icon="!isElevated"
                 :fab="isElevated"

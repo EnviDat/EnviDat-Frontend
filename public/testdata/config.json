@@ -76,5 +76,10 @@
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
+  },
+  "userDashboardConfig": {
+    "introText": "Welcome to your dashboard, manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
+    "feedbackText": "However we would be glad if you <a href=\"${this.feedbackUrl}\" target=\"_blank\">let us know about it.</a> <br/>",
+    "showOldDashboardUrl": true
   }
 }
