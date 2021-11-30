@@ -74,6 +74,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingFactory';
+import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
@@ -129,10 +130,10 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.notifyChange);
+    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.updateGeometriesInMetadata);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.notifyChange);
+    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.updateGeometriesInMetadata);
   },
   computed: {
     genericProps() {
@@ -154,14 +155,21 @@ export default {
     },
   },
   methods: {
-    notifyChange(geomArray) {
-      // Parse updated geometries, add to existing props, update via event bus
+    /**
+     * Parse updated geometries, add to existing props, update metadata via event bus
+     *
+     * @param {Array} geomArray array of valid GeoJSON geometries
+     */
+    updateGeometriesInMetadata(geomArray) {
 
       if (isFieldValid( 'geometries', geomArray, this.validations, this.validationErrors)) {
 
+        const geomCollection = parseAsGeomCollection(geomArray, {
+          name: this.location.name,
+        });
         const updatedLocation = {
           ...this.location,
-          geoJSON: geomArray,
+          geoJSON: geomCollection,
         };
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
