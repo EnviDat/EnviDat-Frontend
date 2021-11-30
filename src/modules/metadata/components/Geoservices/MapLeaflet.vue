@@ -4,15 +4,6 @@
     ref="map"
     :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px'};`"
   >
-    <div v-if="map">
-      <map-leaflet-point
-        v-for="(point, key) in featureInfoPts"
-        :key="key"
-        :data="point"
-        @add="addPoint"
-        @remove="removePoint"
-      ></map-leaflet-point>
-    </div>
   </div>
 </template>
 
@@ -24,7 +15,6 @@ import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import axios from 'axios';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
-import MapLeafletPoint from '@/modules/metadata/components/Geoservices/MapLeafletPoint';
 import markerIcon from '@/assets/map/marker-icon.png';
 import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
@@ -47,13 +37,11 @@ import MetadataMapFullscreen from './MetadataMapFullscreen';
 export default {
   name: 'MapLeaflet',
   components: {
-    MapLeafletPoint,
   },
   props: {
     baseMapLayerName: String,
     wmsLayer: Object,
     site: Object,
-    featureInfoPts: Array,
     maxExtent: Object,
     opacity: Number,
     mapDivId: {
@@ -132,15 +120,6 @@ export default {
         return;
       }
 
-      // Set marker icon
-      const iconOptions = L.Icon.Default.prototype.options;
-      iconOptions.iconUrl = this.markerIcon;
-      iconOptions.iconRetinaUrl = this.markerIcon2x;
-      iconOptions.shadowUrl = this.markerIconShadow;
-      const icon = L.icon(iconOptions);
-
-      const polygonColor = this.$vuetify.theme.themes.light.accent;
-
       let geoJsonArray = [];
       if (geoJson.type === 'GeometryCollection') {
         // Split geometries for individual features
@@ -151,18 +130,13 @@ export default {
         geoJsonArray = [geoJson];
       }
 
+      const styleObj = this.getCustomLeafletStyle();
+
       this.siteLayer = L.geoJSON(geoJsonArray, {
         pointToLayer(geoJsonPoint, latlng) {
-          return L.marker(latlng, {
-            icon,
-            opacity: 0.65,
-            riseOnHover: true,
-          });
+          return L.marker(latlng, styleObj.customPointStyle);
         },
-        style: {
-          color: polygonColor,
-          // fillOpacity: 0.5, opacity: 1, weight: 1,
-        },
+        style: styleObj.customPolygonStyle,
       });
 
       // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
@@ -267,21 +241,23 @@ export default {
       }
     },
     setupMap() {
-      /*
-      const defaultMaxBound = [
-        [-45, -90],
-        [45, 90],
-      ];
-*/
+
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
         center: [46.943961, 8.19924],
         zoom: 7,
-        /*
-        maxBounds: defaultMaxBound,
+        maxBounds: [
+          [-90, -180],
+          [90, 180],
+        ],
         maxBoundsViscosity: 1,
-*/
       });
+
+      // Lock zoom to bounds
+      this.map.setMinZoom(Math.ceil(Math.log2(Math.max(
+        this.$refs.map.clientWidth,
+        this.$refs.map.clientHeight,
+      ) / 256)));
 
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
@@ -289,7 +265,6 @@ export default {
       if (this.layerConfig && this.layerConfig.timeseries) {
         this.map.on('click', (e) => this.getFeatureInfo(e.latlng));
       }
-
 
       this.addSiteIfAvailable();
     },
@@ -342,24 +317,6 @@ export default {
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
-    addPoint(data) {
-      const marker = L.circle(data.coords, {
-        id: data.id,
-        color: data.color,
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 1000,
-      }).addTo(this.map);
-      marker.bindPopup(
-        `${data.id} Coords: ${data.coords.lat} / ${data.coords.lng}`,
-      );
-      this.markers.push(marker);
-    },
-    removePoint(id) {
-      const marker = this.markers.find((m) => m.options.id === id);
-      this.map.removeLayer(marker);
-      this.markers = this.markers.filter((m) => m.options.id !== id);
-    },
     geomanGeomsToGeoJSON(layerArray) {
       // Convert leaflet-geoman editing layers into GeoJSON for Leaflet
 
@@ -381,21 +338,33 @@ export default {
       const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
       eventBus.$emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
     },
-    setupEditing() {
-      // Set styles for markers and polygons
-
-      const editMarkerIcon = L.icon({
-        iconUrl: this.markerIcon,
-        iconRetinaUrl: this.markerIcon2x,
-        shadowUrl: this.markerIconShadow,
-      });
-      this.map.pm.setGlobalOptions({
-        markerStyle: {
-          icon: editMarkerIcon,
+    getCustomLeafletStyle() {
+      const iconOptions = L.Icon.Default.prototype.options;
+      iconOptions.iconUrl = this.markerIcon;
+      iconOptions.iconRetinaUrl = this.markerIcon2x;
+      iconOptions.shadowUrl = this.markerIconShadow;
+      const icon = L.icon(iconOptions);
+      return {
+        customPointStyle: {
+          icon,
+          opacity: 0.65,
+          riseOnHover: true,
         },
-        pathOptions: {
+        customPolygonStyle: {
           color: this.$vuetify.theme.themes.light.accent,
+          // fillOpacity: 0.5,
+          // opacity: 1,
+          // weight: 1,
         },
+      }
+    },
+    setupEditing() {
+
+      // Set styles for markers and polygons
+      const styleObj = this.getCustomLeafletStyle();
+      this.map.pm.setGlobalOptions({
+        markerStyle: styleObj.customPointStyle,
+        pathOptions: styleObj.customPolygonStyle,
       });
 
       this.map.pm.addControls({
