@@ -121,7 +121,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formInvalid || showError"
+        <v-row v-if="formInvalid || errorField"
                 id="errorTextRow"
                 :style="`background-color: ${errorColor};`"                
                 class="mt-4" >
@@ -229,7 +229,6 @@ export default {
     requestLoading: Boolean,
     requestSuccess: Boolean,
     formErrorText: String,
-    showError: Boolean,
     errorField: String,
     errorFieldText: String,
     errorColor: {
@@ -300,7 +299,7 @@ export default {
   },
   watch: {
     errorField() {
-      if (this.showError && this.errorField) {
+      if (this.errorField) {
         this.backendErrors[this.errorField] = this.errorFieldText;
       }
     },

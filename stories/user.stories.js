@@ -51,6 +51,7 @@ storiesOf('7 User / SignIn', module)
 
       <v-col cols="6">
         <WelcomeCard :userName="userName"
+                     :welcomeText="welcomeText"
                       :publishedDatasetCount="123" />
       </v-col>
 
@@ -69,6 +70,7 @@ storiesOf('7 User / SignIn', module)
 
       <v-col cols="12">
         <WelcomeCard :userName="userName"
+                     :welcomeText="welcomeText"
                       :publishedDatasetCount="123"
                       :unpublishedDatasetCount="2" 
                       :editingDatasetCount="1" />
@@ -80,6 +82,7 @@ storiesOf('7 User / SignIn', module)
       nameInitials: 'DH',
       emailHash: null,
       userName: 'Dominik Haas',
+      welcomeText: 'Welcome to your Dashboard, here you can see all your datasets.',
     }),
     methods,
   }))
