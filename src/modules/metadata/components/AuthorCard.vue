@@ -504,10 +504,6 @@ export default {
     line-height: 1rem;
   }
 
-  .accentLink a {
-    color: #FFD740;
-  }
-
   .authorTitle {
     margin: 0;
     padding: 0;

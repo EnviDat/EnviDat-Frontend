@@ -545,6 +545,10 @@ export default {
   max-width: 100%;
 }
 
+.accentLink a {
+  color: #FFD740;
+}
+
 .imagezoom,
 .imagezoom .v-image__image {
   transition: all 0.2s;
