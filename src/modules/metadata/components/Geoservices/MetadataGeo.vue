@@ -10,10 +10,20 @@
           <BaseRectangleButton
             v-if="mapEditable"
             :color="$vuetify.theme.themes.light.accent"
+            :disabled="!undoButtonEnabled"
+            buttonText="Undo"
+            @clicked="$emit('undoSaveGeometries')"
+          />
+        </v-col>
+
+        <v-col class="shrink pl-2">
+          <BaseRectangleButton
+            v-if="mapEditable"
+            :color="$vuetify.theme.themes.light.accent"
             :disabled="!saveButtonEnabled"
             :loading="saveButtonInProgress"
             buttonText="Save Geometries"
-            @clicked="triggerSaveGeometries"
+            @clicked="$emit('saveGeometries')"
           />
         </v-col>
 
@@ -104,6 +114,9 @@ export default {
     saveButtonInProgress() {
       return this.genericProps?.saveButtonInProgress;
     },
+    undoButtonEnabled() {
+      return this.genericProps?.undoButtonEnabled;
+    },
     mapDivId() {
       return this.genericProps?.mapDivId;
     },
@@ -117,9 +130,6 @@ export default {
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;
-    },
-    triggerSaveGeometries() {
-      this.$emit('saveGeometries');
     },
   },
   data: () => ({

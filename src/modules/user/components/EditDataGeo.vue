@@ -41,7 +41,8 @@
       <v-row>
         <v-col>
           <MetadataGeo :genericProps="genericProps"
-                        @saveGeometries="updateGeometriesInMetadata" />
+                        @saveGeometries="updateGeometriesInMetadata"
+                        @undoSaveGeometries="revertGeometriesInMetadata" />
         </v-col>
       </v-row>
     </v-container>
@@ -144,6 +145,7 @@ export default {
         mapEditable: this.mapEditable,
         saveButtonEnabled: this.saveButtonEnabled,
         saveButtonInProgress: this.saveButtonInProgress,
+        undoButtonEnabled: this.undoButtonEnabled,
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
         error: this.editErrorMessage,
@@ -184,14 +186,31 @@ export default {
       }
     },
     /**
-     * Merge locally saved geometries with existing props, update metadata via event bus
+     * Merge locally saved geometries with existing props, trigger update event
      */
     updateGeometriesInMetadata() {
+
+      this.previousLocation = {...this.location};
 
       const updatedLocation = {
         ...this.location,
         geoJSON: this.localGeomCollection,
       };
+      this.commitGeometries(updatedLocation)
+
+      this.undoButtonEnabled = true;
+    },
+    /**
+     * Revert to initial geometry, trigger update event
+     */
+    revertGeometriesInMetadata() {
+      this.commitGeometries(this.previousLocation);
+      this.undoButtonEnabled = false;
+    },
+    /**
+     * Update spatial metadata via event bus
+     */
+    commitGeometries(updatedLocation) {
 
       this.saveButtonInProgress = true;
 
@@ -217,9 +236,11 @@ export default {
     validationErrors: {
       geometries: null,
     },
+    previousLocation: null,
     localGeomCollection: null,
     saveButtonEnabled: false,
     saveButtonInProgress: false,
+    undoButtonEnabled: false,
   }),
 };
 </script>
