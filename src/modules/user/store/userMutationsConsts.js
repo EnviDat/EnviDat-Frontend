@@ -61,6 +61,30 @@ export const NOT_AUTHORIZED_ERROR = 'NotAuthorized';
 
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
 
+export const ACTION_COLLABORATOR_DATASET_IDS = () => {
+  if (process.env.NODE_ENV === 'development' && useTestdata) {
+    return './testdata/package_collaborator_list_for_user.json';
+  }
+
+  return 'package_collaborator_list_for_user';
+};
+
+export const USER_GET_COLLABORATOR_DATASET_IDS = 'USER_GET_COLLABORATOR_DATASET_IDS';
+export const USER_GET_COLLABORATOR_DATASET_IDS_ERROR = 'USER_GET_COLLABORATOR_DATASET_IDS_ERROR';
+export const USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS = 'USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS';
+
+export const ACTION_USER_COLLABORATOR_DATASETS = () => {
+  if (process.env.NODE_ENV === 'development' && useTestdata) {
+    return './testdata/collaborator_search.json';
+  }
+
+  return 'package_search';
+};
+
+export const USER_GET_COLLABORATOR_DATASETS = 'USER_GET_COLLABORATOR_DATASETS';
+export const USER_GET_COLLABORATOR_DATASETS_ERROR = 'USER_GET_COLLABORATOR_DATASETS_ERROR';
+export const USER_GET_COLLABORATOR_DATASETS_SUCCESS = 'USER_GET_COLLABORATOR_DATASETS_SUCCESS';
+
 export const ACTION_USER_SHOW = () => {
   if (process.env.NODE_ENV === 'development' && useTestdata) {
     return './testdata/user_show.json';

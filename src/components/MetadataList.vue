@@ -124,7 +124,7 @@
                           :categoryColor="metadata.categoryColor"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked"
-                          :showGenericOpenButton="metadata.openEvent ? true : false"
+                          :showGenericOpenButton="!!metadata.openEvent"
                           :openButtonTooltip="metadata.openButtonTooltip"
                           :openButtonIcon="metadata.openButtonIcon"
                           @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
