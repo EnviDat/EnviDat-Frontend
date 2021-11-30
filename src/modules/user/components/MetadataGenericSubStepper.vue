@@ -82,7 +82,10 @@ export default {
       const params = this.$route.params;
       params.substep = stepTitle;
 
-      this.$router.push({ params });
+      this.$router.push({
+        params,
+        query: this.$route.query,
+      });
     },
     nextStep() {
       const nextIndex = this.currentStepIndex + 1;

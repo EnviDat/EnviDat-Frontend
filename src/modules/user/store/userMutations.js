@@ -35,6 +35,7 @@ import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
@@ -446,5 +447,10 @@ export default {
   resetError(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.error = null;
+  },
+  [METADATA_EDITING_LAST_DATASET](state, payload) {
+    state.lastEditedDataset = payload.name;
+    state.lastEditedDatasetPath = payload.path;
+    state.lastEditedBackPath = payload.backPath;
   },
 };

@@ -83,11 +83,25 @@
           <v-row align="center"
                   justify="end" >
 
+            <v-col v-if="editingDatasetName"
+                   class="shrink">
+              <BaseIconButton id="EditButtonNavigationToolbar"
+                              material-icon-name="edit"
+                              :fillColor="$vuetify.theme.themes.light.accent"
+                              iconColor="black"
+                              color="accent"
+                              :isSmall="true"
+                              :isElevated="true"
+                              :tooltipText="`Continue editing ${editingDatasetName}`"
+                              :tooltipBottom="true"
+                              @clicked="catchContinueClick" />
+            </v-col>
+
             <v-col class="shrink">
               {{ signedInUser.fullname }}
             </v-col>
 
-            <v-col cols="3">
+            <v-col class="shrink pl-2 pr-4">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
@@ -137,19 +151,20 @@
 import ModeView from '@/components/Layouts/ModeView';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'TheNavigationToolbar',
-  components: {
-    ModeView,
-    UserMenu,
-  },
   props: {
     loading: Boolean,
     mode: String,
     modeCloseCallback: Function,
     signedInUser: Object,
     userNavigationItems: Array,
+    editingDatasetName: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     compact() {
@@ -169,6 +184,9 @@ export default {
     catchHomeClicked() {
       this.$emit('homeClick');
     },
+    catchContinueClick() {
+      this.$emit('continueClick');
+    },
   },
   data: () => ({
     EnviDatLogo,
@@ -178,5 +196,10 @@ export default {
     tooltipText: 'You are in a specific view which shows data for',
     tooltipSignIn: 'Click to sign in into EnviDat',
   }),
+  components: {
+    ModeView,
+    UserMenu,
+    BaseIconButton,
+  },
 };
 </script>

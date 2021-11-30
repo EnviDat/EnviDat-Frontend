@@ -41,9 +41,11 @@
                             :modeCloseCallback="catchModeClose"
                             :signedInUser="user"
                             :userNavigationItems="userMenuItems"
+                            :editingDatasetName="lastEditedDataset"
                             @userMenuItemClick="catchUserItemClicked"
                             @signinClick="catchSigninClicked"
-                            @homeClick="catchHomeClicked" />
+                            @homeClick="catchHomeClicked"
+                            @continueClick="catchContinueClick" />
 
     <v-main>
       <v-container class="pa-2 pa-sm-3 fill-height"
@@ -141,7 +143,7 @@ import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA,
+  FETCH_USER_DATA, USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -252,6 +254,11 @@ export default {
       const notis = Object.values(this.notifications);
       return notis.filter(n => n.show);
     },
+    catchContinueClick() {
+      if (this.lastEditedDatasetPath) {
+        this.$router.push({ path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}` });
+      }
+    },
     catchMenuClicked() {
       this.menuItem.active = !this.menuItem.active;
     },
@@ -344,6 +351,10 @@ export default {
       'webpIsSupported',
     ]),
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
+    ...mapState(USER_NAMESPACE, [
+      'lastEditedDataset',
+      'lastEditedDatasetPath',
+    ]),
     ...mapGetters(
       METADATA_NAMESPACE, [
         'metadataIds',

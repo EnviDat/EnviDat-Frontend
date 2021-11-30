@@ -1,10 +1,10 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
   <div id="NavigationStepper" class="pa-0 fill-height stepperContentGrid">
-    <div
-      class="stepper fill-height px-10"
-      :style="`background-color: ${backgroundColor}`"
-    >
+
+    <div class="stepper fill-height pl-10 headerContentGrid"
+          :style="`background-color: ${backgroundColor}`" >
+
       <!-- prettier-ignore -->
       <StepperHeader class="py-4"
                          :steps="steps"
@@ -13,8 +13,19 @@
                          :stepColor="stepColor"
                          :stepNumber="currentStepIndex"
                          @stepClick="catchStepClick" />
-    </div>
 
+      <BaseIconButton id="MetadataEditCloseButton"
+                      class="ma-auto px-4"
+                      material-icon-name="close"
+                      icon-color="white"
+                      color="white"
+                      outlined
+                      tooltipText="Close metadata editing"
+                      :tooltipBottom="true"
+                      @clicked="catchCloseClick" />
+
+    </div>
+    
     <div
       class="content fill-height pa-1 pt-0"
       :style="`background-color: ${backgroundColor}`"
@@ -54,6 +65,7 @@
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'NavigationStepper',
@@ -100,10 +112,13 @@ export default {
       }
     },
     catchStepClick(stepTitle) {
-      this.$router.push({ params: {
-        step: stepTitle,
-        substep: undefined,
-      }});
+      this.$router.push({
+        params: {
+          step: stepTitle,
+          substep: undefined,
+        },
+        query: this.$route.query,
+      });
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -133,6 +148,9 @@ export default {
       this.currentStepIndex = -1;
       this.currentStep = null;
     },
+    catchCloseClick() {
+      this.$emit('clickedClose')
+    },
   },
   data: () => ({
     currentStep: null,
@@ -140,6 +158,7 @@ export default {
   }),
   components: {
     StepperHeader,
+    BaseIconButton,
   },
 };
 </script>
@@ -153,6 +172,14 @@ export default {
   grid-template-areas:
     'stepper'
     'content';
+  width: 100%;
+  height: 100%;
+}
+
+.headerContentGrid {
+  display: grid;
+  grid-template-columns: 11fr auto;
+  gap: 0;
   width: 100%;
   height: 100%;
 }
