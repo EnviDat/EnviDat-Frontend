@@ -546,7 +546,7 @@ export default {
 }
 
 .accentLink a {
-  color: #FFD740;
+  color: #FFD740 !important;
 }
 
 .imagezoom,
