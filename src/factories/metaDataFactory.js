@@ -198,7 +198,7 @@ export function createDates(dataset) {
   const datesArr = typeof dataset.date === 'string' ?
                     JSON.parse(dataset.date) :
                     dataset.date;
-  
+
   if (!datesArr) {
     return null;
   }
@@ -687,8 +687,13 @@ function getMultiPolygonPointArray(coordinates) {
   return multiPolyArray;
 }
 
+/**
+ * Extract each geometry individually from a multipoint or multipolygon
+ *
+ * @param {Object} multiGeom valid MultiPoint or MultiPolygon GeoJSON
+ * @returns {Array} array of single GeoJSON geometries (Point or Polygon)
+ */
 function extractGeomsFromMultiGeoms(multiGeom) {
-  // Extract each geometry individually from a multipoint or multipolygon
 
   let geomType = '';
   if (multiGeom.isMultiPoint) {
@@ -715,6 +720,12 @@ export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
 
+/**
+ * Extract an array of coordinate arrays with swapped point coordinates for each geom
+ *
+ * @param {Array} geometries array of GeoJSON objects from GeometryCollection (.geometries)
+ * @returns {Array} array of geometry arrays, with swapped coordinates
+ */
 function getGeomCollectionPointArray(geometries) {
   // Return an array of coordinate arrays with swapped point coordinates for each geom
 
@@ -737,8 +748,15 @@ function getGeomCollectionPointArray(geometries) {
   return geomCollectionArray;
 }
 
-export function parseAsGeomCollection(metadataName, geomArray) {
-  // Parse geometries into GeometryCollection GeoJSON format
+/**
+ * Parse geometries into GeometryCollection GeoJSON format
+ *
+ * @export
+ * @param {Array} geomArray array of valid GeoJSON geometries
+ * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
+ * @returns {Object} GeoJSON of GeometryCollection type
+ */
+export function parseAsGeomCollection(geomArray, propertiesObj={}) {
 
   if (!geomArray) {
     return null;
@@ -747,12 +765,17 @@ export function parseAsGeomCollection(metadataName, geomArray) {
   return {
     type: 'GeometryCollection',
     geometries: geomArray,
-    properties: {
-      name: metadataName,
-    },
+    properties: propertiesObj,
   };
 }
 
+/**
+ * Create location object containing geometries for geospatial components
+ *
+ * @export
+ * @param {Object} dataset CKAN metadata entry object
+ * @returns {Object} extracted and transformed spatial field prop for geospatial components
+ */
 export function createLocation(dataset) {
   if (!dataset) {
     return null;
@@ -821,7 +844,7 @@ export function createLocation(dataset) {
 
       }
 
-      location.geomCollection = parseAsGeomCollection(location.name, geomCollection);
+      location.geomCollection = parseAsGeomCollection(geomCollection, location.name);
 
     }
   }

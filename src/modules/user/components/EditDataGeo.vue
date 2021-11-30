@@ -40,7 +40,8 @@
 
       <v-row>
         <v-col>
-          <MetadataGeo :genericProps="genericProps" />
+          <MetadataGeo :genericProps="genericProps"
+                        @saveGeometries="updateGeometriesInMetadata" />
         </v-col>
       </v-row>
     </v-container>
@@ -74,6 +75,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingFactory';
+import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
@@ -97,7 +99,7 @@ export default {
     },
     showFullscreenButton: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     layerConfig: {
       type: Object,
@@ -129,10 +131,10 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.notifyChange);
+    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.notifyChange);
+    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   computed: {
     genericProps() {
@@ -140,6 +142,8 @@ export default {
         mapDivId: this.mapDivId,
         mapHeight: this.mapHeight,
         mapEditable: this.mapEditable,
+        saveButtonEnabled: this.saveButtonEnabled,
+        saveButtonInProgress: this.saveButtonInProgress,
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
         error: this.editErrorMessage,
@@ -153,24 +157,52 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO);
     },
   },
+  watch: {
+    location() {
+      this.saveButtonInProgress = false;
+    },
+  },
   methods: {
-    notifyChange(geomArray) {
-      // Parse updated geometries, add to existing props, update via event bus
+    /**
+     * Parse updated geometries, validate, and store in local variable
+     *
+     * @param {Array} geomArray array of valid GeoJSON geometries
+     */
+    parseAndStoreUpdatedGeometries(geomArray) {
 
       if (isFieldValid( 'geometries', geomArray, this.validations, this.validationErrors)) {
 
-        const updatedLocation = {
-          ...this.location,
-          geoJSON: geomArray,
-        };
-
-        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_DATA_GEO,
-          data: {
-            location: updatedLocation,
-          },
+        this.localGeomCollection = parseAsGeomCollection(geomArray, {
+          name: this.location.name,
         });
+
+        this.saveButtonEnabled = true;
+
+      } else {
+
+        this.saveButtonEnabled = false;
       }
+    },
+    /**
+     * Merge locally saved geometries with existing props, update metadata via event bus
+     */
+    updateGeometriesInMetadata() {
+
+      const updatedLocation = {
+        ...this.location,
+        geoJSON: this.localGeomCollection,
+      };
+
+      this.saveButtonInProgress = true;
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_GEO,
+        data: {
+          location: updatedLocation,
+        },
+      });
+
+      this.saveButtonEnabled = false;
     },
   },
   components: {
@@ -185,6 +217,9 @@ export default {
     validationErrors: {
       geometries: null,
     },
+    localGeomCollection: null,
+    saveButtonEnabled: false,
+    saveButtonInProgress: false,
   }),
 };
 </script>

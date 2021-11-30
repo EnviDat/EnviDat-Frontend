@@ -177,7 +177,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
     ...snakeCaseJSON,
     // don't pass location directly as property because it would be
     // returned without the parsing of geo spatial infos
-    spatial: geoData.location.geomCollection,
+    spatial: geoData.location.geoJSON,
   });
 
   commitEditingData(commit, stepKey, {
