@@ -1,5 +1,5 @@
 <template>
-    <div id="MapOverlayUI" 
+    <div id="MapOverlayUI"
           class="pa-2 overlayInteraction">
 
     <v-row no-gutters >
@@ -75,12 +75,12 @@
 
 
     </v-row>
-    
+
     <v-row  v-if="layerConfig"
               class="d-flex flex-column"
               no-gutters >
 
-      <v-col v-if="site" 
+      <v-col v-if="site"
               cols="1"
               class="py-2 shrink" >
         <BaseIconButton materialIconName="location_on"
@@ -137,7 +137,7 @@
                       :selectedLayerName="selectedLayerName" />
 
           <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
-          
+
       </v-col>
     </v-row>
 
@@ -193,10 +193,6 @@
       mapIs3D: Boolean,
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
-      showFullscreenButton: {
-        type: Boolean,
-        default: true,
-      },
     },
     created() {
       // console.log(this.showMapSplitButton);

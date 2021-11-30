@@ -7,7 +7,19 @@
         </v-col>
 
         <v-col class="shrink pl-2">
+          <BaseRectangleButton
+            v-if="mapEditable"
+            :color="$vuetify.theme.themes.light.accent"
+            :disabled="!saveButtonEnabled"
+            :loading="saveButtonInProgress"
+            buttonText="Save Geometries"
+            @clicked="triggerSaveGeometries"
+          />
+        </v-col>
+
+        <v-col class="shrink pl-2">
           <BaseIconButton
+            v-if="showFullscreenButton"
             materialIconName="zoom_out_map"
             iconColor="black"
             :fillColor="$vuetify.theme.themes.light.accent"
@@ -32,7 +44,6 @@
         :selectedLayerName="selectedLayerName"
         @changeLayer="selectLayer"
         :site="site"
-        :showFullscreenButton="showFullscreenButton"
         :mapHeight="mapHeight"
         :mapEditable="mapEditable"
       />
@@ -56,6 +67,7 @@ import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import { INJECT_MAP_FULLSCREEN, eventBus } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 import Map from './Map';
 
@@ -64,6 +76,7 @@ export default {
   components: {
     Map,
     BaseIconButton,
+    BaseRectangleButton,
   },
   props: {
     genericProps: Object,
@@ -85,6 +98,12 @@ export default {
     mapEditable() {
       return this.genericProps?.mapEditable;
     },
+    saveButtonEnabled() {
+      return this.genericProps?.saveButtonEnabled;
+    },
+    saveButtonInProgress() {
+      return this.genericProps?.saveButtonInProgress;
+    },
     mapDivId() {
       return this.genericProps?.mapDivId;
     },
@@ -94,11 +113,13 @@ export default {
   },
   methods: {
     triggerFullscreen() {
-      // console.log(`triggerFullscreenEvent ${this.layerConfig}`);
       eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;
+    },
+    triggerSaveGeometries() {
+      this.$emit('saveGeometries');
     },
   },
   data: () => ({

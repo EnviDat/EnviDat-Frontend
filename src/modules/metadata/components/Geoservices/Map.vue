@@ -12,7 +12,6 @@
       :selectedLayerName="selectedLayerName"
       :mapIs3D="mapIn3D"
       :showMapSplitButton="showMapSplitButton"
-      :showFullscreenButton="showFullscreenButton"
       :showMapSplitCloseButton="showMapSplitCloseButton"
       @changeLayer="changeLayer"
       @changeOpacity="changeOpacity"
@@ -89,10 +88,6 @@ export default {
     selectedLayerName: { type: String },
     showMapSplitButton: Boolean,
     showMapSplitCloseButton: Boolean,
-    showFullscreenButton: {
-      type: Boolean,
-      default: true,
-    },
     mapHeight: {
       type: Number,
       default: 0,
