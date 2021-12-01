@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom
+  <v-tooltip  v-bind="{ [tooltipPosition]: true}"
               :disabled="$vuetify.breakpoint.smAndDown || !tooltipText">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on"
@@ -87,6 +87,10 @@ export default {
     marginClass: String,
     disabled: Boolean,
     loading: Boolean,
+    tooltipPosition: {
+      type: String,
+      default: 'bottom',
+    },
   },
   methods: {
     onClick() {

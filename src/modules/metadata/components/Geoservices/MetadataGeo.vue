@@ -12,6 +12,8 @@
             :color="$vuetify.theme.themes.light.accent"
             :disabled="!undoButtonEnabled"
             buttonText="Undo"
+            tooltipText="Reset to original geometry"
+            tooltipPosition="left"
             @clicked="$emit('undoSaveGeometries')"
           />
         </v-col>
@@ -154,7 +156,6 @@ export default {
   padding: 3px;
   z-index: 9999;
 }
-
 .selected {
   background-color: cadetblue;
 }
