@@ -133,9 +133,11 @@ export default {
           mutation: USER_SIGNIN,
         });
 
+/*
       if (!this.errorField) {
         this.checkUserSignedIn();
       }
+*/
     },
     catchRequestToken(email) {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,

@@ -13,6 +13,8 @@
 */
 
 
+import { md5Hash } from '@/factories/stringFactory';
+
 import {
   GET_USER_CONTEXT,
   GET_USER_CONTEXT_ERROR,
@@ -20,9 +22,9 @@ import {
   REQUEST_TOKEN,
   REQUEST_TOKEN_ERROR,
   REQUEST_TOKEN_SUCCESS,
-  USER_SIGNIN_NAMESPACE,
   USER_SIGNIN,
   USER_SIGNIN_ERROR,
+  USER_SIGNIN_NAMESPACE,
   USER_SIGNIN_SUCCESS,
   USER_SIGNOUT,
   USER_SIGNOUT_ERROR,
@@ -77,6 +79,15 @@ function resetErrorObject(state) {
   state.errorFieldText = '';
 }
 
+function enhanceUserObject(user) {
+  const email = user?.email || null;
+  if (email) {
+    user.emailHash = md5Hash(email);
+  }
+  
+  return user;
+}
+
 export default {
   [GET_USER_CONTEXT](state) {
     state.userLoading = true;
@@ -85,7 +96,8 @@ export default {
   },
   [GET_USER_CONTEXT_SUCCESS](state, payload) {
     state.userLoading = false;
-    state.user = payload?.user || null;
+    const user = payload.user || null;
+    state.user = enhanceUserObject(user);
   },
   [GET_USER_CONTEXT_ERROR](state, reason) {
     state.userLoading = false;
@@ -100,7 +112,8 @@ export default {
   [USER_SIGNIN_SUCCESS](state, payload) {
     state.signInLoading = false;
     state.signInSuccess = true;
-    state.user = payload.user;
+    const user = payload.user;
+    state.user = enhanceUserObject(user);
   },
   [USER_SIGNIN_ERROR](state, reason) {
     state.signInLoading = false;

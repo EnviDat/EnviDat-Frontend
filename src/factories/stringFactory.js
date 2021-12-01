@@ -92,7 +92,11 @@ export function GetEncryptedKeyFromCookie(cookieName) {
   const encryptionToken = Cookie.get(cookieName) || uuid.v4();
 
   // Store the encryption token in a secure cookie.
-  Cookie.set(cookieName, encryptionToken, { secure: true, expires: 1 });
+  Cookie.set(cookieName, encryptionToken, { secure: true, expires: 7 });
 
   return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();
+}
+
+export function md5Hash(string) {
+  return Crypto.MD5(string).toString();
 }

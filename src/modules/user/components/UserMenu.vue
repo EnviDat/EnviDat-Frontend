@@ -10,7 +10,7 @@
             v-on="on" >
         <UserAvatar :size="28"
                     :nameInitials="nameInitials"
-                    :emailHash="userObject ? userObject.email_hash : null" />
+                    :emailHash="userObject ? userObject.emailHash : null" />
       </div>                    
 
     </template>

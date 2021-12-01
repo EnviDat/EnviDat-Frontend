@@ -19,7 +19,6 @@ const userSignInState = {
   signInSuccess: false,
   requestLoading: false,
   requestSuccess: false,
-  error: null,
   errorType: '',
   errorField: '',
   user: null,

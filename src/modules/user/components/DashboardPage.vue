@@ -35,7 +35,7 @@
                 :width="userCardWidth"
                 :userName="user.fullname"
                 :email="user.email"
-                :emailHash="user.email_hash"
+                :emailHash="user.emailHash"
                 :nameInitials="nameInitials"
                 :datasetCount="publishedDatasets.length"  />
 
