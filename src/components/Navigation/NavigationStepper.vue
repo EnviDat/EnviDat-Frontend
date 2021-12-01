@@ -38,9 +38,11 @@
                        v-bind="currentStep.genericProps"
                        :stepTitle="subStep || currentStep.stepTitle"
                        :stepColor="currentStep.color"
+                       :readOnlyFields="currentStep.readOnlyFields"
+                       :readOnlyExplanation="currentStep.readOnlyExplanation"
                        :nextMajorStep="getNextMajorStepTitle()" />
 
-        <div v-if="!currentStep" cols="12">
+        <div v-if="!currentStep" >
           Nothing selected, please select a step in the navigation!
         </div>
       </v-card>

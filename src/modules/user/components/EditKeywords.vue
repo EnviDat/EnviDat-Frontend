@@ -59,6 +59,8 @@
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
                       :search-input.sync="search"
+                      :readonly="mixinMethods_isFieldReadOnly('keywords')"
+                      :hint="mixinMethods_readOnlyHint('keywords')"
                       :error-messages="validationErrors.keywords"
                       @update:search-input="isKeywordValid(search)"
                       @input="isEnoughKeywords()"
@@ -202,6 +204,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   created() {

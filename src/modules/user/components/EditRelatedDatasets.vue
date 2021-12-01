@@ -45,6 +45,8 @@
 
         <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                       :validationError="validationErrors[editingProperty]"
+                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
+                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
           <MetadataRelatedDatasets :genericProps="datasetObject" />
@@ -113,6 +115,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   created() {

@@ -64,6 +64,14 @@ export default {
       type: Object,
       default: () => {},
     },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     metadataAuthorsObject() {

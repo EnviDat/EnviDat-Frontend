@@ -9,7 +9,7 @@
                 sm="5"
                 :style="buttonCallback ? 'cursor: pointer;' : ''"
                 @click="buttonCallback ? buttonCallback : ''">
-          
+
           <v-img class="imagezoom"
                   :src="sloganImg ? sloganImg : fallbackImg"
                   style="min-height: 100%; border-top-left-radius: 4px;"

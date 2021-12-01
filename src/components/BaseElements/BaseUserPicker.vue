@@ -16,6 +16,8 @@
                         :items="users"
                         outlined
                         append-icon="arrow_drop_down"
+                        :readonly="readonly"
+                        :hint="hint"
                         :prepend-icon="prependIcon"
                         :label="pickerLabel"
                         :multiple="multiplePick"
@@ -88,6 +90,14 @@ export default {
       default: true,
     },
     errorMessages: {
+      type: String,
+      default: '',
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    hint: {
       type: String,
       default: '',
     },

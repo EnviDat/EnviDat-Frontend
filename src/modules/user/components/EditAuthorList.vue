@@ -115,6 +115,14 @@ export default {
       type: String,
       default: null,
     },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     existingAuthorsWrap() {
@@ -141,6 +149,8 @@ export default {
         messageDetails: this.messageDetails,
         error: this.error,
         errorDetails: this.errorDetails,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     authorListingGenericProps() {

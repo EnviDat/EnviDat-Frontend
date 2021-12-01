@@ -101,8 +101,7 @@ const sleep = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 function commitEditingData(commit, eventName, data) {
-  commit(
-    `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+  commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
     {
       object: eventName,
       data,

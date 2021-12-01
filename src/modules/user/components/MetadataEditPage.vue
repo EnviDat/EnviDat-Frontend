@@ -6,7 +6,7 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="metadataCreationSteps"
+    <NavigationStepper :steps="creationSteps"
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
@@ -38,13 +38,14 @@ import {
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE, EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
 
 import {
   getStepByName,
   getValidationMetadataEditingObject,
+  initializeSteps,
   metadataCreationSteps,
 } from '@/factories/userEditingFactory';
 
@@ -64,7 +65,6 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
-  USER_DASHBOARD_PAGENAME,
   METADATAEDIT_PAGENAME,
 } from '@/router/routeConsts';
 
@@ -79,6 +79,10 @@ import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
+
+import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+
+const creationSteps = initializeSteps(metadataCreationSteps);
 
 
 export default {
@@ -105,6 +109,7 @@ export default {
     eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -116,24 +121,7 @@ export default {
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   beforeMount() {
-    const initialStep = this.metadataCreationSteps[0]?.title || '';
-    const initialSubStep = this.metadataCreationSteps[0]?.detailSteps[0]?.title || '';
-
-    const currentStep = this.routeStep
-    const currentSubStep = this.routeSubStep
-    const params = {}
-
-    if (!currentStep && !currentSubStep) {
-      // when no parameter are given in the url, fallback the first ones
-      // but add them to the url
-      params.step = initialStep;
-      params.substep = initialSubStep;
-
-      this.$router.push({
-        params,
-        query: this.$route.query,
-      });
-    }
+    this.initializeStepsInUrl();
   },
   mounted() {
     // reset the scrolling to the top
@@ -180,39 +168,55 @@ export default {
       return subStep || '';
     },
   },
-/*
-    watch: {
-      authorsMap() {
-
-        const backendJson = convertJSON(this.currentMetadataContent, false);
-
-        const backendAuthors = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, backendJson, false)
-        const authors = getFullAuthorsFromDataset(this.authorsMap,{ author: backendAuthors.authors })
-
-        this.editComponentsChanged({
-          object: EDITMETADATA_AUTHOR_LIST,
-          data: authors,
-        })
-        this.$store.commit(
-          `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-          {
-            object: EDITMETADATA_AUTHOR_LIST,
-            data: authors,
-          },
-        );
-
-        this.enhanceMetadataHeaderStep(EDITMETADATA_AUTHOR_LIST)
-      },
-    },
-  */
   methods: {
     async initMetadataUsingId(id) {
       await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+
+      const publicationData = this.getGenericPropsForStep(EDITMETADATA_PUBLICATION_INFO)
+      const publicationState = publicationData.publicationState;
+      const readOnlyObj = getReadOnlyFieldsObject(publicationState);
+
+      if (readOnlyObj) {
+        this.updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
+      }
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
+    },
+    initializeStepsInUrl() {
+      const initialStep = this.creationSteps[0]?.title || '';
+      const initialSubStep = this.creationSteps[0]?.detailSteps[0]?.title || '';
+
+      const currentStep = this.routeStep
+      const currentSubStep = this.routeSubStep
+      const params = {}
+
+      if (!currentStep && !currentSubStep) {
+        // when no parameter are given in the url, fallback the first ones
+        // but add them to the url
+        params.step = initialStep;
+        params.substep = initialSubStep;
+
+        this.$router.push({
+          params,
+          query: this.$route.query,
+        });
+      }
+    },
+    updateStepsWithReadOnlyFields(steps, readOnlyObj) {
+
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
+
+        if (step.detailSteps) {
+          this.updateStepsWithReadOnlyFields(step.detailSteps, readOnlyObj);
+        } else {
+          step.readOnlyFields = readOnlyObj.readOnlyFields;
+          step.readOnlyExplanation = readOnlyObj.explanation;
+        }
+      }
     },
     catchBackClicked() {
       this.$router.push({ path: this.lastEditedBackPath });
@@ -278,7 +282,7 @@ export default {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
     },
     updateStepStatus(stepKey) {
-      const step = getStepByName(stepKey, this.metadataCreationSteps);
+      const step = getStepByName(stepKey, this.creationSteps);
 
       if (!step) {
         return;
@@ -333,7 +337,7 @@ export default {
     NavigationStepper,
   },
   data: () => ({
-    metadataCreationSteps,
+    creationSteps,
   }),
 };
 </script>

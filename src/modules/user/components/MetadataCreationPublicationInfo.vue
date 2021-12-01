@@ -52,7 +52,16 @@ import {
 
 export default {
   name: 'MetadataCreationPublicationInfo',
-  props: {},
+  props: {
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     publicationsInfo() {
       if (this.$store) {
@@ -69,10 +78,18 @@ export default {
       return {};
     },
     editPublicationsProps() {
-      return this.publicationsInfo;
+      return {
+        ...this.publicationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
     },
     editOrganizationProps() {
-      return this.organizationsInfo;
+      return {
+        ...this.organizationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
     },
   },
   methods: {

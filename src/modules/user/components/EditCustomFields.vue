@@ -49,6 +49,8 @@
           <v-text-field :label="labels.labelFieldName"
                         outlined
                         dense
+                        :readonly="mixinMethods_isFieldReadOnly('fieldName')"
+                        :hint="mixinMethods_readOnlyHint('fieldName')"
                         :value="item.fieldName"
                         :error-messages="validationErrors[index].fieldName"
                         @input="notifyChange(index, 'fieldName', $event)"
@@ -59,6 +61,8 @@
           <v-text-field :label="labels.labelContent"
                         outlined
                         dense
+                        :readonly="mixinMethods_isFieldReadOnly('content')"
+                        :hint="mixinMethods_readOnlyHint('content')"
                         :value="item.content"
                         :error-messages="validationErrors[index].content"
                         @input="notifyChange(index, 'content', $event)"
@@ -152,6 +156,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   computed: {

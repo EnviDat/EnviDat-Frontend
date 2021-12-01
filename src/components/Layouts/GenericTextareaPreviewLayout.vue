@@ -11,6 +11,8 @@
           <v-textarea  :label="labelTextarea"
                         outlined
                         auto-grow
+                        :readonly="readonly"
+                        :hint="hint"
                         :prepend-icon="prependIcon"
                         :error-messages="validationError"
                         :value="textareaContent"
@@ -117,6 +119,14 @@ export default {
       default: '',
     },
     validationError: {
+      type: String,
+      default: '',
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    hint: {
       type: String,
       default: '',
     },

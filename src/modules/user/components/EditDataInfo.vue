@@ -64,7 +64,8 @@
                     :label="labels.dateStart"
                     dense
                     prepend-icon="date_range"
-                    readonly
+                    :readonly="mixinMethods_isFieldReadOnly('dateStart')"
+                    :hint="mixinMethods_readOnlyHint('dateStart')"
                     outlined
                     :value="item.dateStart"
                     v-on="on"
@@ -73,6 +74,8 @@
                 </template>
                 <v-date-picker
                   locale="en-in"
+                  :readonly="mixinMethods_isFieldReadOnly('dateStart')"
+                  :hint="mixinMethods_readOnlyHint('dateStart')"
                   @input="dateChanged(index, 'dateStart', $event)"
                   no-title
                 ></v-date-picker>
@@ -87,7 +90,8 @@
                   <v-text-field
                     :label="labels.dateEnd"
                     prepend-icon="date_range"
-                    readonly
+                    :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
+                    :hint="mixinMethods_readOnlyHint('dateEnd')"
                     dense
                     outlined
                     :value="item.dateEnd"
@@ -97,6 +101,8 @@
                 </template>
                 <v-date-picker
                   locale="en-in"
+                  :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
+                  :hint="mixinMethods_readOnlyHint('dateEnd')"
                   :min="reformatDate(item.dateStart)"
                   @input="dateChanged(index, 'dateEnd', $event)"
                   no-title
@@ -121,7 +127,8 @@
             item-text="title"
             outlined
             :label="labels.dataLicense"
-            required
+            :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
+            :hint="mixinMethods_readOnlyHint('dataLicenseId')"
             prepend-icon="data_usage"
             append-icon="arrow_drop_down"
             :value="selectedLicence"
@@ -135,13 +142,15 @@
         <v-col>
           <v-expansion-panels focusable>
             <v-expansion-panel>
-              <v-expansion-panel-header expand-icon="arrow_drop_down">{{
-                this.labels.dataLicenseSummary
-              }}</v-expansion-panel-header>
+
+              <v-expansion-panel-header expand-icon="arrow_drop_down">
+                {{ this.labels.dataLicenseSummary }}
+              </v-expansion-panel-header>
               <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
-              <v-expansion-panel-content
-                ><div v-html="getDataLicenseSummary"
-              /></v-expansion-panel-content>
+              <v-expansion-panel-content>
+                <div v-html="getDataLicenseSummary" />
+              </v-expansion-panel-content>
+
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
@@ -238,6 +247,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   computed: {

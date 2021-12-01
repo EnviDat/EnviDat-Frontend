@@ -322,3 +322,43 @@ export function cleanSpatialInfo(spatial) {
 
   return backEndJson;
 }
+
+const readOnlyMappingRules = [
+  {
+    triggerRule: ['published', 'approved', 'publication pending', 'publication requested'],
+    explanation: 'This field is "readonly" because the publication state is : "published", "approved", "publication pending" or "publication requested"',
+    readOnlyFields: [
+      // EditMetadataHeader
+      'metadataTitle',
+      // EditAuthorList
+      'authors',
+      // EditPublicationInfo
+      'publicationYear',
+      'publisher',
+      'doi',
+      // not implemented yet
+      'metadataUrl',
+    ],
+  },
+/*
+  {
+    triggerRule: 'admin',
+    readOnlyFields: [],
+  },
+*/
+];
+
+export function getReadOnlyFieldsObject(trigger) {
+
+  const lowCaseTrigger = trigger?.toLowerCase() || '';
+
+  for (let i = 0; i < readOnlyMappingRules.length; i++) {
+    const mappingObj = readOnlyMappingRules[i];
+
+    if (mappingObj.triggerRule.includes(lowCaseTrigger)) {
+      return mappingObj;
+    }
+  }
+
+  return null;
+}

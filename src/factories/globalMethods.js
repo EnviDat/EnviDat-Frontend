@@ -33,6 +33,23 @@ import {
 
 export default {
   methods: {
+    mixinMethods_isFieldReadOnly(property) {
+
+      if (this.readOnlyFields?.length > 0) {
+        return this.readOnlyFields.includes(property);
+      }
+
+      return false;
+    },
+    mixinMethods_readOnlyHint(property) {
+      let hint = '';
+
+      if (this.mixinMethods_isFieldReadOnly(property)) {
+        hint = this.readOnlyExplanation || '';
+      }
+
+      return hint;
+    },
     mixinMethods_isTagSelected(tagName) {
       if (!tagName || this.selectedTagNames === undefined) {
         return false;

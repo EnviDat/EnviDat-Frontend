@@ -279,23 +279,20 @@ export const metadataCreationSteps = [
   },
 ];
 
-export function initializeSteps(steps, editingState) {
-  const editingKeys = Object.keys(editingState);
+export function initializeSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
-    const s = steps[i];
+    const step = steps[i];
 
-    const filteredKeys = editingKeys.filter(k => k === s.key);
-    const editStateKey = filteredKeys[0] || null;
+    step.readOnlyFields = null;
+    step.readOnlyExplanation = null;
 
-    if (editStateKey) {
-      s.genericProps = editingState[editStateKey];
-    }
-
-    if (s?.detailSteps) {
-      initializeSteps(s.detailSteps, editingState);
+    if (step?.detailSteps) {
+      step.detailSteps = initializeSteps(step.detailSteps);
     }
   }
+
+  return steps;
 }
 
 export function getStepByName(eventName, steps) {
@@ -325,13 +322,13 @@ export function getEmptyMetadataInEditingObject() {
   // use the JSON.parse and JSON.stringify to disconnect it from this file
   // meaning it won't connect with the reactivity of vue.js
   const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
-  // initializeSteps(metadataCreationSteps, emptyEditingObject);
 
   // initialize every object with some basic attributes
   // for loading indication, error and success messages
   const stepKeys = Object.keys(emptyEditingObject);
   for (let i = 0; i < stepKeys.length; i++) {
     const key = stepKeys[i];
+
     const stepObj = emptyEditingObject[key];
     stepObj.loading = false;
     stepObj.message = null;

@@ -41,6 +41,7 @@
                         :value="userOrganizationsListItems[0]"
                         outlined
                         readonly
+                        hint='This field is "readonly" because you belong to only one organization.'
                         :error-messages="validationErrors.organizationId"
                         >
           </v-text-field>
@@ -54,7 +55,8 @@
                         outlined
                         chips
                         append-icon="arrow_drop_down"
-                        :readonly="readonly"
+                        :readonly="mixinMethods_isFieldReadOnly('organization')"
+                        :hint="mixinMethods_readOnlyHint('organization')"
                         label="Organization"
                         :error-messages="validationErrors.organizationId"
                         >
@@ -121,10 +123,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    readonly: {
-      type: Boolean,
-      default: false,
-    },
     loading: {
       type: Boolean,
       default: false,
@@ -144,6 +142,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   beforeMount() {

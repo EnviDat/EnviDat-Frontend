@@ -18,7 +18,9 @@
     <v-row class="fill-height">
       <v-col v-if="currentStep" cols="12">
         <component :is="currentStep.component"
-                    v-bind="getGenericPropsForStep(currentStep)" />
+                    v-bind="getGenericPropsForStep(currentStep)"
+                    :readOnlyFields="currentStep.readOnlyFields"
+                    :readOnlyExplanation="currentStep.readOnlyExplanation" />
       </v-col>
 
       <v-col v-if="!currentStep" cols="12">
@@ -71,9 +73,7 @@ export default {
   methods: {
     getGenericPropsForStep(step) {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](step.key);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
       }
 
       return step.genericProps;

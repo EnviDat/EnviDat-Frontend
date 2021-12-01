@@ -47,9 +47,12 @@
 
       <v-col cols="8" class="pb-0">
 
-        <v-text-field :label="labels.labelTitle"
+        <v-text-field ref="metadataTitle"
+                      :label="labels.labelTitle"
                       outlined
                       dense
+                      :readonly="mixinMethods_isFieldReadOnly('metadataTitle')"
+                      :hint="mixinMethods_readOnlyHint('metadataTitle')"
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
@@ -79,10 +82,12 @@
     <v-row >
       <v-col>
 
-        <v-text-field :label="labels.labelContactEmail"
+        <v-text-field ref="contactEmail"
+                      :label="labels.labelContactEmail"
                       outlined
                       :error-messages="validationErrors.contactEmail"
-                      required
+                      :readonly="mixinMethods_isFieldReadOnly('contactEmail')"
+                      :hint="mixinMethods_readOnlyHint('contactEmail')"
                       dense
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
@@ -90,10 +95,12 @@
                       @input="catchEmailChange"
                       @change="notifyChange('contactEmail', $event)" />
 
-        <v-text-field :label="labels.labelContactGivenName"
+        <v-text-field ref="contactGivenName"
+                      :label="labels.labelContactGivenName"
                       outlined
                       :error-messages="validationErrors.contactGivenName"
-                      required
+                      :readonly="mixinMethods_isFieldReadOnly('contactGivenName')"
+                      :hint="mixinMethods_readOnlyHint('contactGivenName')"
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
@@ -101,10 +108,12 @@
                       @input="catchGivenNameChange"
                       @change="notifyChange('contactGivenName', $event)" />
 
-        <v-text-field :label="labels.labelContactSurname"
+        <v-text-field ref="contactSurname"
+                      :label="labels.labelContactSurname"
                       outlined
                       :error-messages="validationErrors.contactSurname"
-                      required
+                      :readonly="mixinMethods_isFieldReadOnly('contactSurname')"
+                      :hint="mixinMethods_readOnlyHint('contactSurname')"
                       dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
@@ -249,6 +258,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   created() {

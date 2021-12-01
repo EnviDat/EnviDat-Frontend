@@ -38,7 +38,8 @@
         <v-col cols="6">
           <v-text-field :label="labels.publicationState"
                         outlined
-                        readonly
+                        :readonly="mixinMethods_isFieldReadOnly('publicationState')"
+                        :hint="mixinMethods_readOnlyHint('publicationState')"
                         :error-messages="validationErrors.publicationState"
                         :value="publicationStateField" />
 
@@ -56,6 +57,8 @@
         <v-col cols="6">
           <v-text-field :label="labels.dataObjectIdentifier"
                         outlined
+                        :readonly="mixinMethods_isFieldReadOnly('doi')"
+                        :hint="mixinMethods_readOnlyHint('doi')"
                         :error-messages="validationErrors.doi"
                         prepend-icon="fingerprint"
                         @change="doiField = $event"
@@ -76,7 +79,8 @@
         <v-col cols="6">
           <v-text-field :label="labels.publisher"
                         outlined
-                        required
+                        :readonly="mixinMethods_isFieldReadOnly('publisher')"
+                        :hint="mixinMethods_readOnlyHint('publisher')"
                         :error-messages="validationErrors.publisher"
                         prepend-icon="public"
                         @change="publisherField = $event"
@@ -89,7 +93,8 @@
                     outlined
                     :label="labels.year"
                     :error-messages="validationErrors.publicationYear"
-                    required
+                    :readonly="mixinMethods_isFieldReadOnly('publicationYear')"
+                    :hint="mixinMethods_readOnlyHint('publicationYear')"
                     prepend-icon="date_range"
                     @change="publicationYearField = $event"
                     @input="validateProperty('publicationYear', $event)"
@@ -118,6 +123,8 @@
               <v-text-field :label="labels.institution"
                             outlined
                             dense
+                            :readonly="mixinMethods_isFieldReadOnly('institution')"
+                            :hint="mixinMethods_readOnlyHint('institution')"
                             :value="item.institution"
                             :error-messages="validationErrors.funders[index].institution"
                             @input="notifyChange(index, 'institution', $event)" />
@@ -128,6 +135,8 @@
               <v-text-field :label="labels.grantNumber"
                             outlined
                             dense
+                            :readonly="mixinMethods_isFieldReadOnly('grantNumber')"
+                            :hint="mixinMethods_readOnlyHint('grantNumber')"
                             :value="item.grantNumber"
                             :error-messages="validationErrors.funders[index].grantNumber"
                             @input="notifyChange(index, 'grantNumber', $event)" />
@@ -137,6 +146,8 @@
               <v-text-field :label="labels.institutionUrl"
                             outlined
                             dense
+                            :readonly="mixinMethods_isFieldReadOnly('institutionUrl')"
+                            :hint="mixinMethods_readOnlyHint('institutionUrl')"
                             :value="item.institutionUrl"
                             :error-messages="validationErrors.funders[index].institutionUrl"
                             @input="notifyChange(index, 'institutionUrl', $event)" />
@@ -254,6 +265,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   computed: {

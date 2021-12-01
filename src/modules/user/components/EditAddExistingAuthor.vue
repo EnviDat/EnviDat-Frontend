@@ -48,6 +48,8 @@
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
                           :errorMessages="baseUserErrorMessages"
+                          :readonly="mixinMethods_isFieldReadOnly('authors')"
+                          :hint="mixinMethods_readOnlyHint('authors')"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
         </v-col>
@@ -116,6 +118,14 @@ export default {
     errorDetails: {
       type: String,
       default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   created() {

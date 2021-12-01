@@ -187,6 +187,14 @@ export default {
       type: String,
       default: null,
     },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
   },
   mounted() {
     // Add editing button to resource card
@@ -215,6 +223,8 @@ export default {
         resourcesConfig: {
           downloadActive: false,
         },
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     selectedResource() {

@@ -58,31 +58,34 @@ import {
 
 export default {
   name: 'MetadataCreationRelatedInfo',
-  props: {},
+  props: {
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
+    },
+  },
   computed: {
     relatedPublicationsText() {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_PUBLICATIONS);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
       }
 
       return '';
     },
     relatedDatasetsText() {
       if (this.$store) {
-        return this.$store.getters[
-            `${USER_NAMESPACE}/getMetadataEditingObject`
-            ](EDITMETADATA_RELATED_DATASETS);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS);
       }
 
       return '';
     },
     customFields() {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_CUSTOMFIELDS);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
       }
 
       return [];
@@ -90,16 +93,22 @@ export default {
     editRelatedPublicationsProps() {
       return {
         ...this.relatedPublicationsText,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editRelatedDatasetsProps() {
       return {
         ...this.relatedDatasetsText,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editCustomFieldsProps() {
       return {
         ...this.customFields,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
   },
