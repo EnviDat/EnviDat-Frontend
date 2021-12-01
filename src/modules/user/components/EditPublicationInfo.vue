@@ -37,6 +37,7 @@
 
         <v-col cols="6">
 
+<!--
           <v-select :items="possiblePublicationStates"
                     :label="labels.publicationState"
                     outlined
@@ -49,6 +50,14 @@
                     @change="publicationStateField = $event"
                     @input="validateProperty('publicationState', $event)"
                     :value="publicationStateField" />
+-->
+
+          <v-text-field :label="labels.publicationState"
+                        outlined
+                        readonly
+                        hint="Only editable for the organization administrator"
+                        :error-messages="validationErrors.publicationState"
+                        :value="publicationStateField" />
 
         </v-col>
       </v-row>
