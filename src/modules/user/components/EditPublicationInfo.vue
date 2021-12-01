@@ -295,10 +295,10 @@ export default {
       'config',
     ]),
     maxFunders() {
-      return this.config?.userEditMetadataConfig.publicationMaxFunders || this.defaultUserEditMetadataConfig.publicationMaxFunders;
+      return this.config?.userEditMetadataConfig?.publicationMaxFunders || this.defaultUserEditMetadataConfig.publicationMaxFunders;
     },
     maxYears() {
-      return this.config?.userEditMetadataConfig.publicationYearsList || this.defaultUserEditMetadataConfig.publicationYearsList;
+      return this.config?.userEditMetadataConfig?.publicationYearsList || this.defaultUserEditMetadataConfig.publicationYearsList;
     },
     publicationStateField: {
       get() {
