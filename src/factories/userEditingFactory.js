@@ -377,18 +377,45 @@ export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
 }
 
-function parseDateString(value, originalValue) {
-  // Helper function for yup date string validation
-  if (originalValue === '') {
-    return null
-  }
+// eslint-disable-next-line func-names
+yup.addMethod(yup.date, 'parseDateString', function (dateStringFormat='dd.MM.yyyy') {
+  // Helper function for yup date string parsing
+  // eslint-disable-next-line func-names
+  return this.transform(function (value, originalValue) {
+    if (originalValue === '') {
+      return null
+    }
+    if (this.isType(value)) return value;
 
-  const parsedDate = isDate(originalValue) ?
-    originalValue :
-    parse(originalValue, 'dd.MM.yyyy', new Date());
+    value = parse(originalValue, dateStringFormat, new Date());
 
-  return parsedDate;
-}
+    return isDate(value) ? value : originalValue;
+  });
+});
+
+// eslint-disable-next-line func-names
+yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndField) {
+  // Helper function for yup date range validation
+  return this.test(
+    'validate-date-range',
+    'End date can\'t be before start date.',
+    // eslint-disable-next-line func-names, prefer-arrow-callback
+    function (_value, options) {
+      const dateStart = options.parent[dateStartField]
+      const parsedStart = isDate(dateStart) ?
+      dateStart : parse(dateStart, 'dd.MM.yyyy', new Date());
+
+      const dateEnd = options.parent[dateEndField]
+      const parsedEnd = isDate(dateEnd) ?
+      dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
+
+      if (parsedEnd < parsedStart) {
+        return false;
+      }
+      return true;
+    }
+  );
+});
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -450,11 +477,12 @@ const metadataInEditingValidations = {
           dateType: yup.string('Date type must be a string.'),
           dateStart: yup
             .date('Start date must be a valid date.')
-            .transform(parseDateString),
+            .parseDateString()
+            .validateDateRange('dateStart', 'dateEnd'),
           dateEnd: yup
             .date('End date must be a valid date.')
-            .transform(parseDateString)
-            .min(yup.ref('dateStart'), "End date can't be before start date.")
+            .parseDateString()
+            .validateDateRange('dateStart', 'dateEnd')
             .nullable(),
         }),
       ),

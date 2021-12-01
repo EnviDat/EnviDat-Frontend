@@ -58,7 +58,12 @@
 
           <v-col class="pr-4 mr-10">
             <template>
-              <v-menu>
+              <v-menu v-model="dateStartPickerOpen"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="auto">
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     :label="labels.dateStart"
@@ -78,6 +83,9 @@
                   :hint="mixinMethods_readOnlyHint('dateStart')"
                   @input="dateChanged(index, 'dateStart', $event)"
                   no-title
+                  scrollable
+                  next-icon="skip_next"
+                  prev-icon="skip_previous"
                 ></v-date-picker>
               </v-menu>
             </template>
@@ -85,7 +93,12 @@
 
           <v-col class="pr-4">
             <template>
-              <v-menu>
+              <v-menu v-model="dateEndPickerOpen"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="auto">
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     :label="labels.dateEnd"
@@ -106,6 +119,9 @@
                   :min="reformatDate(item.dateStart)"
                   @input="dateChanged(index, 'dateEnd', $event)"
                   no-title
+                  scrollable
+                  next-icon="skip_next"
+                  prev-icon="skip_previous"
                 ></v-date-picker>
               </v-menu>
             </template>
@@ -349,11 +365,25 @@ export default {
     dateChanged(index, property, value) {
       // Update indexed object in array, with updated dates
 
+      // Close datepickers
+      this.dateStartPickerOpen = false;
+      this.dateEndPickerOpen = false;
+
       const newDates = this.updateDatesArray(this.datesField, index, property, value);
       const errorArray = this.validationErrors.dates;
 
       if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
-        this.setDataInfo('dates', newDates);
+        // Rename date variables for CKAN
+        const remappedDates = newDates.map(({
+          dateType,
+          dateStart,
+          dateEnd,
+        }) => ({
+          dateType,
+          date: dateStart,
+          ...(dateEnd && {endDate: dateEnd}),
+        }));
+        this.setDataInfo('dates', remappedDates);
       }
 
     },
@@ -421,8 +451,8 @@ export default {
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
     },
-    dateTypes: ['Collection Date', 'Creation Date'],
-    maxYears: 30,
+    dateStartPickerOpen: false,
+    dateEndPickerOpen: false,
     dataLicenses: [
       {
         id: 'odc-odbl',
