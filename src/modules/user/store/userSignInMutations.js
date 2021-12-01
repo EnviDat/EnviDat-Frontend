@@ -72,7 +72,6 @@ function extractError(store, reason, errorProperty = 'error') {
 
 
 function resetErrorObject(state) {
-  state.error = null;
   state.errorType = '';
   state.errorField = '';
   state.errorFieldText = '';

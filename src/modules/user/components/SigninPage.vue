@@ -17,7 +17,7 @@
                     :signedInEmail="user ? user.email : null"
                     :requestLoading="requestLoading"
                     :requestSuccess="requestSuccess"
-                    :formErrorText="errorText()"
+                    :formErrorText="errorText"
                     :errorFieldText="errorFieldText"
                     :errorField="errorField"
                     :errorColor="$vuetify.theme.themes.light.errorHighlight"
@@ -90,7 +90,6 @@ export default {
         'requestLoading',
         'requestSuccess',
         'user',
-        'error',
         'errorType',
         'errorField',
         'errorFieldText',
@@ -102,25 +101,21 @@ export default {
     prefilledKey() {
       return this.$route.query.key;
     },
-  },
-  methods: {
     errorText() {
-      // let errMsg = 'Please make sure everything is filled correctly';
 
-      if (this.error) {
-        if (typeof this.error === 'string') {
-          return this.error;
-        } 
-        
+      if (this.errorFieldText) {
+
         if (this.errorType === VALIDATION_ERROR) {
-          return `A field was filled incorrectly: ${this.error}`;
-        } 
-        
-        return `Error: ${this.error.message} for backend call ${this.error.config?.url}`;
+          return `A field was filled incorrectly: ${this.errorFieldText}`;
+        }
+
+        return `Error: ${this.errorFieldText}. If you're unable to sign in please contact the EnviDat team.`;
       }
 
-      return null;
+      return '';
     },
+  },
+  methods: {
     checkUserSignedIn() {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
@@ -138,7 +133,9 @@ export default {
           mutation: USER_SIGNIN,
         });
 
-      this.checkUserSignedIn();
+      if (!this.errorField) {
+        this.checkUserSignedIn();
+      }
     },
     catchRequestToken(email) {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,

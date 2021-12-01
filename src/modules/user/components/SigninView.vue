@@ -29,7 +29,8 @@
         </v-col>
       </v-row>
 
-      <form class="enviDatForm">
+      <form v-if="!signedIn"
+            class="enviDatForm">
         <v-row id="emailRow"
                 align="center" >
           <v-col cols="12"
@@ -43,7 +44,7 @@
                           @blur="$v.email.$touch()" />
           </v-col>
 
-          <v-col v-if="!signedIn && email && emailErrors.length <= 0"
+          <v-col v-if="email && emailErrors.length <= 0"
                   cols="12"
                   md="3"
                   id="tokenButton" >
@@ -53,29 +54,11 @@
                     @click="catchRequestToken">
               {{ tokenButtonText }}
             </v-btn>
-            <!-- <v-row no-gutters >
-              <v-col v-if="requestSuccess"
-                      cols="12"
-                      class="caption" >
-                {{ `${requestSentText} ${email}. ${requestSentText2}` }}
-              </v-col>
-
-              <v-col v-if="!key || !keyErrors"
-                      cols="12"
-                      :class="requestSuccess ? 'pt-3' : ''" >
-                <v-btn color="primary"
-                        :loading="requestLoading"
-                        @click="catchRequestToken">
-                  {{ tokenButtonText }}
-                </v-btn>
-              </v-col>
-
-            </v-row> -->
           </v-col>
 
         </v-row>
 
-        <v-row v-if="requestSuccess" >
+        <v-row v-if="requestSuccess && email" >
           <v-col cols="12"
                   class="caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
@@ -112,7 +95,7 @@
           <v-col cols="12"
                   md="3" >
 
-            <v-btn v-show="!signedIn && !$v.$invalid"
+            <v-btn v-show="!$v.$invalid"
                     color="primary"
                     :loading="signInLoading && !signInSuccess"
                     @click="catchSignIn">
@@ -159,26 +142,20 @@
 
         </v-row> -->
 
-        <v-row v-if="signedIn"
-                id="signinButtonRow" >
-
-          <v-col v-if="signedIn">
-            <v-btn color="secondary"
-                    @click="catchSignOut">
-              {{ signoutButtonText }}
-            </v-btn>
-          </v-col>
-
-          <!-- <v-col v-if="!signedIn && !$v.$invalid">
-            <v-btn color="primary"
-                    :loading="signInLoading && !signInSuccess"
-                    @click="catchSignIn">
-              {{ signinButtonText}}
-            </v-btn>
-          </v-col> -->
-
-        </v-row>
       </form>
+
+      <v-row v-if="signedIn"
+             id="signinButtonRow" >
+
+        <v-col >
+          <v-btn color="secondary"
+                 outlined
+                 @click="catchSignOut">
+            {{ signoutButtonText }}
+          </v-btn>
+        </v-col>
+
+      </v-row>
 
     </v-container>
 
