@@ -325,8 +325,8 @@ export function cleanSpatialInfo(spatial) {
 
 const readOnlyMappingRules = [
   {
-    triggerRule: ['published', 'approved', 'publication pending', 'publication requested'],
-    explanation: 'This field is "readonly" because the publication state is : "published", "approved", "publication pending" or "publication requested"',
+    triggerRule: ['published'],
+    explanation: 'This field is "readonly" because the publication state is : "published".',
     readOnlyFields: [
       // EditMetadataHeader
       'metadataTitle',

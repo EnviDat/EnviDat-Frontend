@@ -36,19 +36,21 @@
       <v-row>
 
         <v-col cols="6">
-          <v-text-field :label="labels.publicationState"
-                        outlined
-                        :readonly="mixinMethods_isFieldReadOnly('publicationState')"
-                        :hint="mixinMethods_readOnlyHint('publicationState')"
-                        :error-messages="validationErrors.publicationState"
-                        :value="publicationStateField" />
 
-<!--          @change="publicationStateField = $event"
-          @input="validateProperty('publicationState', $event)"
-          :value="publicationStateField" />
-          -->
+          <v-select :items="possiblePublicationStates"
+                    :label="labels.publicationState"
+                    outlined
+                    chips
+                    small-chips
+                    append-icon="arrow_drop_down"
+                    readonly
+                    hint="Only editable for the organization administrator"
+                    :error-messages="validationErrors.publicationState"
+                    @change="publicationStateField = $event"
+                    @input="validateProperty('publicationState', $event)"
+                    :value="publicationStateField" />
+
         </v-col>
-
       </v-row>
 
 
@@ -226,6 +228,10 @@ export default {
     this.getYearslist();
   },
   props: {
+    possiblePublicationStates: {
+      type: Array,
+      default: () => [],
+    },
     publicationState: {
       type: String,
       default: '',

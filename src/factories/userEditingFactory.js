@@ -190,7 +190,15 @@ const emptyMetadataInEditing = {
     userOrganizationsList: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
-    publicationState: 'Draft',
+    possiblePublicationStates: [
+      '',
+      'reserved',
+      'publication requested',
+      'publication pending',
+      'approved',
+      'published',
+    ],
+    publicationState: '',
     doi: '',
     publisher: '',
     publicationYear: '',
