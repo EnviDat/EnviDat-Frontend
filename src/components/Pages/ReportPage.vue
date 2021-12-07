@@ -38,7 +38,7 @@
                             required />
 
               <v-text-field v-model="email"
-                            label="E-mail"
+                            label="Email"
                             required />
 
               <v-text-field v-if="error"

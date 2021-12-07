@@ -38,7 +38,7 @@
 
             <v-text-field v-model="email"
                           :error-messages="emailErrors"
-                          label="E-mail"
+                          label="Email"
                           required
                           @input="$v.email.$touch()"
                           @blur="$v.email.$touch()" />
@@ -225,10 +225,10 @@ export default {
       if (!this.$v.email.$dirty) return errors;
 
       if (!this.$v.email.email) {
-        errors.push('Must be valid e-mail');
+        errors.push('Must be valid email');
       }
       if (!this.$v.email.required) {
-        errors.push('E-mail is required');
+        errors.push('Email is required');
       }
 
       return errors;
@@ -294,10 +294,10 @@ export default {
     keyLength,
     requestTokenText: 'Do you have a token to sign in?',
     requestSentText: 'The token was sent to ',
-    requestSentText2: 'Please check your e-mail address.',
+    requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
-    instructionsText: 'Sign into EnviDat with your e-mail address and the token which will be sent by e-mail.',
+    instructionsText: 'Sign into EnviDat with your email address and the token which will be sent by email.',
     signInPic,
   }),
   validations: {
