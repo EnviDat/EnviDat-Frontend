@@ -50,7 +50,6 @@
         <v-text-field ref="metadataTitle"
                       :label="labels.labelTitle"
                       outlined
-                      dense
                       :readonly="mixinMethods_isFieldReadOnly('metadataTitle')"
                       :hint="mixinMethods_readOnlyHint('metadataTitle')"
                       prepend-icon="import_contacts"
@@ -79,8 +78,21 @@
     </v-row>
 
 
-    <v-row >
-      <v-col>
+    <v-row dense
+           class="pt-4">
+
+      <v-col cols="4" >
+
+        <BaseUserPicker :users="fullNameUsers"
+                        :preSelected="preselectAuthorName"
+                        @removedUsers="catchAuthorChange"
+                        @pickedUsers="catchAuthorChange" />
+      </v-col>
+
+    </v-row>
+
+    <v-row dense >
+      <v-col >
 
         <v-text-field ref="contactEmail"
                       :label="labels.labelContactEmail"
@@ -88,12 +100,15 @@
                       :error-messages="validationErrors.contactEmail"
                       :readonly="mixinMethods_isFieldReadOnly('contactEmail')"
                       :hint="mixinMethods_readOnlyHint('contactEmail')"
-                      dense
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
                       @input="catchEmailChange"
                       @change="notifyChange('contactEmail', $event)" />
+
+      </v-col>
+
+      <v-col >
 
         <v-text-field ref="contactGivenName"
                       :label="labels.labelContactGivenName"
@@ -101,12 +116,14 @@
                       :error-messages="validationErrors.contactGivenName"
                       :readonly="mixinMethods_isFieldReadOnly('contactGivenName')"
                       :hint="mixinMethods_readOnlyHint('contactGivenName')"
-                      dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       :value="contactGivenNameField"
                       @input="catchGivenNameChange"
                       @change="notifyChange('contactGivenName', $event)" />
+      </v-col>
+
+      <v-col >
 
         <v-text-field ref="contactSurname"
                       :label="labels.labelContactSurname"
@@ -114,7 +131,6 @@
                       :error-messages="validationErrors.contactSurname"
                       :readonly="mixinMethods_isFieldReadOnly('contactSurname')"
                       :hint="mixinMethods_readOnlyHint('contactSurname')"
-                      dense
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       :value="contactSurnameField"
@@ -123,20 +139,11 @@
 
       </v-col>
 
-      <v-col cols="4" class="pl-16" >
-
-        <BaseUserPicker :users="fullNameUsers"
-                        :preSelected="preselectAuthorName"
-                        @removedUsers="catchAuthorChange"
-                        @pickedUsers="catchAuthorChange"
-        />
-      </v-col>
-
     </v-row>
 
 
-    <v-row dense>
-      <v-col cols="12" class="text-body-1">
+    <v-row >
+      <v-col cols="12" class="text-subtitle-1">
         {{ labels.previewText }}
       </v-col>
     </v-row>
@@ -575,7 +582,7 @@ export default {
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Please enter contact person\'s details or chose from dropdown list on the right.',
+      authorInstructions: 'Please chose a contact person from the dropdown list or enter it\'s details.',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',

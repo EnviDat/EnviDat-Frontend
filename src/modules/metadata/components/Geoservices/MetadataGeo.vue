@@ -7,29 +7,6 @@
         </v-col>
 
         <v-col class="shrink pl-2">
-          <BaseRectangleButton
-            v-if="mapEditable"
-            :color="$vuetify.theme.themes.light.accent"
-            :disabled="!undoButtonEnabled"
-            buttonText="Undo"
-            tooltipText="Reset to original geometry"
-            tooltipPosition="left"
-            @clicked="$emit('undoSaveGeometries')"
-          />
-        </v-col>
-
-        <v-col class="shrink pl-2">
-          <BaseRectangleButton
-            v-if="mapEditable"
-            :color="$vuetify.theme.themes.light.accent"
-            :disabled="!saveButtonEnabled"
-            :loading="saveButtonInProgress"
-            buttonText="Save Geometries"
-            @clicked="$emit('saveGeometries')"
-          />
-        </v-col>
-
-        <v-col class="shrink pl-2">
           <BaseIconButton
             v-if="showFullscreenButton"
             materialIconName="zoom_out_map"
@@ -41,11 +18,9 @@
       </v-row>
     </v-card-title>
 
-    <v-card-text
-      v-if="error"
-      class="py-1 text-caption readableText"
-      :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`"
-    >
+    <v-card-text v-if="error"
+                  class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`" >
       {{ error }}
     </v-card-text>
 
@@ -61,7 +36,11 @@
       />
     </v-card-text>
 
-    <v-row v-if="editErrorMessage" justify="end" align="center" no-gutters>
+    <v-row v-if="editErrorMessage"
+           justify="end"
+           align="center"
+           no-gutters>
+
       <v-card-text
         class="text-caption readableText"
         align="center"
@@ -70,6 +49,33 @@
         {{ editErrorMessage }}
       </v-card-text>
     </v-row>
+
+    <v-card-text >
+
+      <v-row justify="end">
+        <v-col class="shrink">
+          <BaseRectangleButton v-if="mapEditable"
+                              :color="$vuetify.theme.themes.light.accent"
+                              :disabled="!undoButtonEnabled"
+                              buttonText="Undo"
+                              tooltipText="Reset to original geometry"
+                              tooltipPosition="left"
+                              @clicked="$emit('undoSaveGeometries')" />
+        </v-col>
+
+        <v-col class="shrink">
+
+          <BaseRectangleButton v-if="mapEditable"
+                                :color="$vuetify.theme.themes.light.accent"
+                                :disabled="!saveButtonEnabled"
+                                :loading="saveButtonInProgress"
+                                buttonText="Save Geometries"
+                                @clicked="$emit('saveGeometries')" />
+        </v-col>
+      </v-row>
+
+    </v-card-text>
+
   </v-card>
 </template>
 

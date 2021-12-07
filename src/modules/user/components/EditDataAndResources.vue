@@ -22,7 +22,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -32,20 +32,17 @@
                   <v-col class="pt-2 text-body-1">
                     This section is still under construction.
                     <br>
-                    Please edit resources by following the link below and logging in.
+                    Please add resources via the legacy website by clicking on the button below and logging in.
                   </v-col>
                 </v-row>
 
                 <v-row no-gutters class="pt-6">
                   <v-col class="pr-2 text-left">
-                    <v-btn
-                      large
-                      color="secondary"
-                      :href="linkEditResourceCKAN"
-                      target="_blank"
-                    >
-                      Add Resources in CKAN
-                    </v-btn>
+
+                    <BaseRectangleButton buttonText="Edit Resources"
+                                         color="secondary"
+                                         :url="linkEditResourceCKAN" />
+
                   </v-col>
                   <v-col class="pr-2 text-right">
                     <v-btn
@@ -82,7 +79,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -92,19 +89,16 @@
                   <v-col class="pt-2 text-body-1">
                     This section is still under construction.
                     <br>
-                    Please edit resources by following the link below and logging in.
+                    Please edit resources via the legacy website by clicking on the button below and logging in.
                   </v-col>
                 </v-row>
 
                 <v-row no-gutters class="pt-6">
-                  <v-btn
-                    large
-                    color="secondary"
-                    :href="linkAddNewResourcesCKAN"
-                    target="_blank"
-                  >
-                    Edit Resource in CKAN
-                  </v-btn>
+
+                  <BaseRectangleButton buttonText="Add Resources"
+                                       color="secondary"
+                                       :url="linkAddNewResourcesCKAN" />
+
                 </v-row>
               </v-container>
             </v-card>
@@ -140,7 +134,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { initializeLocalResource } from '@/factories/metaDataFactory';
+// import { initializeLocalResource } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
@@ -150,6 +144,7 @@ import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 // import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
 // import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
 // import EditResource from '@/modules/user/components/EditResource';
@@ -161,6 +156,7 @@ export default {
     // EditDropResourceFiles,
     // EditPasteResourceUrl,
     // EditResource,
+    BaseRectangleButton,
   },
   props: {
     resources: {
@@ -258,6 +254,7 @@ export default {
     },
   },
   methods: {
+/*
     createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
@@ -301,20 +298,15 @@ export default {
         });
       }
     },
+ */
     catchEditResourceClose() {
       eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
     catchSaveResourceClose() {
       eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
     },
-    openCKANEditPage() {},
     validateField(field) {
-      isFieldValid(
-        field.property,
-        field.value,
-        this.validations,
-        this.validationErrors,
-      );
+      isFieldValid(field.property,field.value,this.validations,this.validationErrors);
     },
   },
   data: () => ({

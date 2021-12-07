@@ -39,13 +39,13 @@
         </v-col>
       </v-row>
 
-      <v-row class="pt-2 heightAndScroll">
-        <v-row
-          v-for="(item, index) in datesField"
-          :key="`${item}_${index}`"
-          dense
-        >
-          <v-col class="pr-4 mr-10" cols="3">
+      <v-row >
+        <v-container fluid class="py-2 px-4 heightAndScroll">
+
+        <v-row v-for="(item, index) in datesField"
+                :key="`${item}_${index}`"
+                dense >
+          <v-col cols="3">
             <v-text-field
               dense
               readonly
@@ -56,7 +56,7 @@
             />
           </v-col>
 
-          <v-col class="pr-4 mr-10">
+          <v-col class="pl-4">
             <template>
               <v-menu v-model="dateStartPickerOpen"
                       :close-on-content-click="false"
@@ -64,6 +64,7 @@
                       offset-y
                       max-width="290px"
                       min-width="auto">
+
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     :label="labels.dateStart"
@@ -75,8 +76,9 @@
                     :value="item.dateStart"
                     v-on="on"
                     :error-messages="validationErrors.dates[index].dateStart"
-                  ></v-text-field>
+                  />
                 </template>
+
                 <v-date-picker
                   locale="en-in"
                   :readonly="mixinMethods_isFieldReadOnly('dateStart')"
@@ -86,12 +88,13 @@
                   scrollable
                   next-icon="skip_next"
                   prev-icon="skip_previous"
-                ></v-date-picker>
+                  />
+
               </v-menu>
             </template>
           </v-col>
 
-          <v-col class="pr-4">
+          <v-col class="pl-4">
             <template>
               <v-menu v-model="dateEndPickerOpen"
                       :close-on-content-click="false"
@@ -99,6 +102,7 @@
                       offset-y
                       max-width="290px"
                       min-width="auto">
+
                 <template v-slot:activator="{ on }">
                   <v-text-field
                     :label="labels.dateEnd"
@@ -112,6 +116,7 @@
                     :error-messages="validationErrors.dates[index].dateEnd"
                   ></v-text-field>
                 </template>
+
                 <v-date-picker
                   locale="en-in"
                   :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
@@ -122,11 +127,14 @@
                   scrollable
                   next-icon="skip_next"
                   prev-icon="skip_previous"
-                ></v-date-picker>
+                />
+
               </v-menu>
             </template>
           </v-col>
         </v-row>
+
+        </v-container>
       </v-row>
 
       <v-row>
@@ -135,7 +143,7 @@
         </v-col>
       </v-row>
 
-      <v-row dense>
+      <v-row >
         <v-col>
           <v-select
             :items="dataLicenses"
@@ -154,8 +162,8 @@
         </v-col>
       </v-row>
 
-      <v-row dense>
-        <v-col>
+      <v-row >
+        <v-col class="pt-0">
           <v-expansion-panels focusable>
             <v-expansion-panel>
 
@@ -177,10 +185,9 @@
           <div v-if="!this.selectedLicence" class="text-body-3">
             {{ this.getDataLicenseLink }}
           </div>
-          <div
-            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
-            class="text-body-3"
-          >
+
+          <div v-if="this.selectedLicence && this.dataLicenseLinkExists()"
+                class="text-body-3" >
             {{ this.labels.dataLicenseEmail }}
           </div>
           <div
@@ -551,7 +558,7 @@ export default {
 
 <style scoped>
 .heightAndScroll {
-  max-height: 120px;
+  max-height: 160px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;

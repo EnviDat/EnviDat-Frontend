@@ -93,7 +93,10 @@ export default {
     statusColor: String,
     statusText: String,
     textCssClass: String,
-    showExpandIcon: Boolean,
+    showExpandIcon: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     statusTextColor() {
