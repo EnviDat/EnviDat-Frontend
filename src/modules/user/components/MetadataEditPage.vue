@@ -38,7 +38,8 @@ import {
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_RESOURCE, EDITMETADATA_PUBLICATION_INFO,
+  SELECT_EDITING_RESOURCE,
+  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
 
@@ -53,7 +54,8 @@ import { mapGetters, mapState } from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
-  METADATA_CANCEL_RESOURCE_EDITING, METADATA_EDITING_LAST_DATASET,
+  METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
@@ -66,6 +68,7 @@ import {
 
 import {
   METADATAEDIT_PAGENAME,
+  USER_DASHBOARD_PATH,
 } from '@/router/routeConsts';
 
 import {
@@ -219,7 +222,8 @@ export default {
       }
     },
     catchBackClicked() {
-      this.$router.push({ path: this.lastEditedBackPath });
+      const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
+      this.$router.push({ path });
     },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
