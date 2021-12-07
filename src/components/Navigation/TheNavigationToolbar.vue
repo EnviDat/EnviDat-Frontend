@@ -31,10 +31,10 @@
               align="center"
               justify="space-between" >
 
-        <v-col class="shrink pl-2">
+        <v-col cols="1">
           <v-row no-gutters>
 
-            <v-col cols="6" >
+            <v-col class="shrink px-2" >
               <v-btn icon
                       class="ma-0 pt-1"
                       small
@@ -45,17 +45,8 @@
               </v-btn>
             </v-col>
 
-            <v-col cols="6" >
-              <v-row no-gutters>
-                <v-col class="headline envidatNavbarTitleSmall py-0">
-                  {{ logoText }}
-                </v-col>
-                <!-- <v-col v-if="version"
-                        class="py-0"
-                        style="font-size: 8px; position: relative; left: 2px;">
-                  Version {{ version }}
-                </v-col> -->
-              </v-row>
+            <v-col class="headline envidatNavbarTitleSmall py-0">
+              {{ logoText }}
             </v-col>
           </v-row>
 
@@ -110,10 +101,26 @@
         </v-col>
 
         <v-col v-else
-                class="shrink" >
+                cols="1" >
 
           <v-row align="center"
                   justify="end" >
+
+            <v-col @click="catchSigninClicked"
+                    style="cursor: pointer;">
+
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs"
+                        v-on="on">
+                    {{ signInText }}
+                  </div>
+                </template>
+
+                <span>{{ tooltipSignIn }}</span>
+              </v-tooltip>
+
+            </v-col>
 
             <v-col class="shrink"
                     @click="catchSigninClicked" >
@@ -193,6 +200,7 @@ export default {
     logoText: 'EnviDat',
     expanded: false,
     modeInfoPrefix: 'Special View',
+    signInText: 'Sign In Here',
     tooltipText: 'You are in a specific view which shows data for',
     tooltipSignIn: 'Click to sign in into EnviDat',
   }),
