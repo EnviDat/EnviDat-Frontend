@@ -19,6 +19,7 @@
       <v-col v-if="currentStep" cols="12">
         <component :is="currentStep.component"
                     v-bind="getGenericPropsForStep(currentStep)"
+                    :metadataId="metadataId"
                     :readOnlyFields="currentStep.readOnlyFields"
                     :readOnlyExplanation="currentStep.readOnlyExplanation" />
       </v-col>
@@ -69,7 +70,11 @@ export default {
   beforeMount() {
     this.setupStep();
   },
-  computed: {},
+  computed: {
+    metadataId() {
+      return this.$route.params.metadataid;
+    },
+  },
   methods: {
     getGenericPropsForStep(step) {
       if (this.$store) {

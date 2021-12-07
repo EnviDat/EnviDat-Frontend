@@ -167,6 +167,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    metadataId: {
+      type: String,
+      default: '',
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -240,12 +244,6 @@ export default {
       }
 
       return selectedRes;
-    },
-    /**
-     * @returns {String} the metadataId from the route
-     */
-    metadataId() {
-      return this.$route.params.metadataid;
     },
     linkAddNewResourcesCKAN() {
 //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
