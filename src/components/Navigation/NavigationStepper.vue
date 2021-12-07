@@ -169,7 +169,7 @@ export default {
 .stepperContentGrid {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 0.5fr 6fr;
+  grid-template-rows: 72px auto;
   gap: 0;
   grid-template-areas:
     'stepper'
