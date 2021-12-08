@@ -1,3 +1,6 @@
+// noinspection JSUnusedGlobalSymbols
+/* eslint-disable object-property-newline */
+/* eslint-disable import/no-extraneous-dependencies */
 /**
  * @summary story of all the Navigation components for sandbox testing
  * @author Dominik Haas-Artho
@@ -10,7 +13,6 @@
  */
 
 // /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 import { action } from '@storybook/addon-actions';
 
 import TheNavigation from '@/components/Navigation/TheNavigation';
@@ -39,30 +41,35 @@ const methods = {
 };
 const appVersion = process.env.VUE_APP_VERSION;
 
+export default {
+  title: '5 Navigation / Redesigned Navigation',
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf('5 Navigation / Redesigned Navigation', module)
-  .add('Menu', () => ({
-    components: { TheNavigation },
-    template: `
-    <v-container>
-      <the-navigation :navigationItems="navigationItems"
-                      :version="appVersion" />
+export const Menu = () => ({
+  components: { TheNavigation },
+  template: `
+  <v-container>
+    <the-navigation :navigationItems="navigationItems"
+                    :version="appVersion" />
 
-      <p v-for="(item, index) in navigationItems"
-          :key="index"
-          v-show="item.active"
-          style="margin: 100px;" >
-        {{ item.title }}
-      </p>
-    </v-container>
+    <p v-for="(item, index) in navigationItems"
+        :key="index"
+        v-show="item.active"
+        style="margin: 100px;" >
+      {{ item.title }}
+    </p>
+  </v-container>
   `,
   data: () => ({
     navigationItems,
     appVersion,
   }),
   methods,
-}))
-.add('Toolbar with Mode', () => ({
+});
+
+export const ToolbarwithMode = () => ({
   components: { TheNavigationToolbar },
   template: `
       <the-navigation-toolbar :mode="SWISSFL_MODE"
@@ -74,8 +81,9 @@ storiesOf('5 Navigation / Redesigned Navigation', module)
   data: () => ({
     SWISSFL_MODE,
   }),
-}))
-.add('Toolbar signed in', () => ({
+});
+
+export const ToolbarSignedin = () => ({
   components: { TheNavigationToolbar },
   template: `
     <the-navigation-toolbar :signedInUser="dominikHaas"
@@ -89,8 +97,9 @@ storiesOf('5 Navigation / Redesigned Navigation', module)
     dominikHaas,
     userMenuItems,
   }),
-}))
-.add('Menu & Toolbar', () => ({
+});
+
+export const MenuAndToolbar = () => ({
   components: { TheNavigation, TheNavigationToolbar },
   template: `
     <the-navigation :navigationItems="navigationItems" />
@@ -107,4 +116,4 @@ storiesOf('5 Navigation / Redesigned Navigation', module)
     userMenuItems,
   }),
   methods,
-}));
+});

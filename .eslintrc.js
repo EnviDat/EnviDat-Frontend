@@ -12,7 +12,12 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: ['@vue/airbnb', 'plugin:vue/essential'],
+  extends: [
+    '@vue/airbnb',
+    'plugin:vue/essential',
+    'prettier/vue',
+    'prettier',
+  ],
 
   // // required to lint *.vue files
   plugins: [
@@ -44,19 +49,25 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'import/prefer-default-export': 'off',
     'no-plusplus': 'off',
+    'no-unused-vars': 'warn',
     'max-len': 'off',
     'prefer-destructuring': 'off',
     'no-param-reassign': 'off',
-    'linebreak-style': 0,
+    'linebreak-style': 'off',
     'padded-blocks': 'off',
-    indent: 'off',
+    'indent': 'off',
     'no-trailing-spaces': 'off',
+    'comma-dangle': ['error', 'always-multiline'],
+    'jsx-quotes': ['error', 'prefer-single'],
+    'quotes': ['error', 'single', { avoidEscape: true }],
+    'operator-linebreak': ['off', 'before'],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',
     'vuetify/no-legacy-grid': 'error',
+    'implicit-arrow-linebreak': 0,
   },
 
   overrides: [

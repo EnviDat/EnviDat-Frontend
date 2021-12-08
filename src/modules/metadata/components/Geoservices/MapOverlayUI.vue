@@ -1,5 +1,5 @@
 <template>
-    <div id="MapWidget" 
+    <div id="MapOverlayUI"
           class="pa-2 overlayInteraction">
 
     <v-row no-gutters >
@@ -75,12 +75,12 @@
 
 
     </v-row>
-    
+
     <v-row  v-if="layerConfig"
               class="d-flex flex-column"
               no-gutters >
 
-      <v-col v-if="site" 
+      <v-col v-if="site"
               cols="1"
               class="py-2 shrink" >
         <BaseIconButton materialIconName="location_on"
@@ -137,7 +137,7 @@
                       :selectedLayerName="selectedLayerName" />
 
           <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
-          
+
       </v-col>
     </v-row>
 
@@ -174,7 +174,7 @@
   import FeatureInfo from './FeatureInfo';
 
   export default {
-    name: 'MapWidget',
+    name: 'MapOverlayUI',
     components: {
       FeatureInfo,
       // Timeslider,
@@ -193,7 +193,6 @@
       mapIs3D: Boolean,
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
-      showFullscreenButton: Boolean,
     },
     created() {
       // console.log(this.showMapSplitButton);
@@ -228,8 +227,20 @@
     },
     methods: {
       loadBaseMapImages() {
-        this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
-        this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
+        if (this.$store) {
+          this.baseMapSatelliteImg = this.mixinMethods_getWebpImage('map/baseMap-satellite-icon', this.$store.state);
+          this.baseMapStreetsImg = this.mixinMethods_getWebpImage('map/baseMap-streets-icon', this.$store.state);
+        } else {
+          // Fallback import .png
+          import('@/assets/map/baseMap-satellite-icon.png')
+          .then((imgImport) => {
+            this.baseMapSatelliteImg = imgImport.default;
+          });
+          import('@/assets/map/baseMap-streets-icon.png')
+          .then((imgImport) => {
+            this.baseMapStreetsImg = imgImport.default;
+          });
+        }
       },
       changeOpacity(value) {
         this.$emit('changeOpacity', value);

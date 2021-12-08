@@ -18,7 +18,7 @@
     </v-card-title>
 
     <v-card-text class="pb-0">
-      <div :style="`overflow: hidden scroll; ${height ? 'height: 60px;': 'max-height: 150px;'}`"
+      <div :style="height ? 'overflow: hidden auto; ': 'height: 100%;'"
             class="caption">
         {{ notification.details }}
         <br />

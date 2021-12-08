@@ -1,130 +1,168 @@
 <template>
-  <v-card id="MetadataGeo" >
-
-    <v-card-title >
-      <v-row justify="end"
-              align="center"
-              no-gutters>
-
-        <v-col class="title metadata_title grow"
-                align-self="start">
+  <v-card id="MetadataGeo">
+    <v-card-title>
+      <v-row justify="end" align="center" no-gutters>
+        <v-col class="title metadata_title grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
-        <v-col class="shrink metadataTitleIcons" >
-          <BaseIconLabelView :icon="getGeoJSONIcon()" />
-        </v-col>
-
         <v-col class="shrink pl-2">
-
-          <BaseIconButton materialIconName="zoom_out_map"
-                          iconColor="black"
-                          :fillColor="$vuetify.theme.themes.light.accent"
-                          @clicked="triggerFullscreen" />
-
+          <BaseIconButton
+            v-if="showFullscreenButton"
+            materialIconName="zoom_out_map"
+            iconColor="black"
+            :fillColor="$vuetify.theme.themes.light.accent"
+            @clicked="triggerFullscreen"
+          />
         </v-col>
-
       </v-row>
     </v-card-title>
 
-    <v-card-text class="py-1 text-caption readableText"
-                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.accent };`" >
-      Checkout the new experimental Geoservice Features: 3D Map, Fullscreen with map comparison.
-      The Swisstopo WMS layers are being loaded for testing. Be aware there might be bugs, please report them to envidat@wsl.ch
-    </v-card-text>
-
     <v-card-text v-if="error"
                   class="py-1 text-caption readableText"
-                  :style="`line-height: 1rem; background-color: ${ $vuetify.theme.themes.light.error };`" >
+                  :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`" >
       {{ error }}
     </v-card-text>
 
-    <v-card-text style="position: relative;" >
+    <v-card-text style="position: relative">
+      <Map
+        :layer-config="layerConfig"
+        :mapDivId="mapDivId"
+        :selectedLayerName="selectedLayerName"
+        @changeLayer="selectLayer"
+        :site="site"
+        :mapHeight="mapHeight"
+        :mapEditable="mapEditable"
+      />
+    </v-card-text>
 
-      <Map :layer-config="layerConfig"
-            :mapDivId="'map-small'"
-            :selectedLayerName="selectedLayerName"
-            @changeLayer="selectLayer"
-            :site="site"
-            :showFullscreenButton="true"
-            :height="450" />
+    <v-row v-if="editErrorMessage"
+           justify="end"
+           align="center"
+           no-gutters>
+
+      <v-card-text
+        class="text-caption readableText"
+        align="center"
+        :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`"
+      >
+        {{ editErrorMessage }}
+      </v-card-text>
+    </v-row>
+
+    <v-card-text >
+
+      <v-row justify="end">
+        <v-col class="shrink">
+          <BaseRectangleButton v-if="mapEditable"
+                              :color="$vuetify.theme.themes.light.accent"
+                              :disabled="!undoButtonEnabled"
+                              buttonText="Undo"
+                              tooltipText="Reset to original geometry"
+                              tooltipPosition="left"
+                              @clicked="$emit('undoSaveGeometries')" />
+        </v-col>
+
+        <v-col class="shrink">
+
+          <BaseRectangleButton v-if="mapEditable"
+                                :color="$vuetify.theme.themes.light.accent"
+                                :disabled="!saveButtonEnabled"
+                                :loading="saveButtonInProgress"
+                                buttonText="Save Geometries"
+                                @clicked="$emit('saveGeometries')" />
+        </v-col>
+      </v-row>
+
     </v-card-text>
 
   </v-card>
 </template>
 
 <script>
-  import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
+import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
-  import {
-    INJECT_MAP_FULLSCREEN,
-    eventBus,
-  } from '@/factories/eventBus';
+import { INJECT_MAP_FULLSCREEN, eventBus } from '@/factories/eventBus';
 
-  import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-  import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
-  import Map from './Map';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
-  export default {
-    name: 'MetadataGeo',
-    components: {
-      Map,
-      BaseIconButton,
-      BaseIconLabelView,
-    },
-    props: {
-      genericProps: Object,
-    },
-    mounted() {
+import Map from './Map';
 
+export default {
+  name: 'MetadataGeo',
+  components: {
+    Map,
+    BaseIconButton,
+    BaseRectangleButton,
+  },
+  props: {
+    genericProps: Object,
+    editErrorMessage: String,
+  },
+  computed: {
+    error() {
+      return this.genericProps?.error;
     },
-    computed: {
-      error() {
-        return this.genericProps?.error;
-      },
-      site() {
-        return this.genericProps?.site;
-      },
-
-      layerConfig() {
-        return this.genericProps?.layerConfig;
-      },
+    site() {
+      return this.genericProps?.site;
     },
-    methods: {
-      triggerFullscreen() {
-        // console.log(`triggerFullscreenEvent ${this.layerConfig}`);
-        eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
-      },
-      selectLayer(layerName) {
-        this.selectedLayerName = layerName;
-      },
-      getGeoJSONIcon() {
-        return this.mixinMethods_getGeoJSONIcon(this.site?.type);
-      },
+    layerConfig() {
+      return this.genericProps?.layerConfig;
     },
-    data: () => ({
-      ready: false,
-      map: null,
-      smallSize: 300,
-      mediumSize: 500,
-      largeSize: 725,
-      fullWidthSize: 875,
-      fullscreen: false,
-      METADATA_LOCATION_TITLE,
-      selectedLayerName: '',
-    }),    
-  };
+    mapHeight() {
+      return this.genericProps?.mapHeight;
+    },
+    mapEditable() {
+      return this.genericProps?.mapEditable;
+    },
+    saveButtonEnabled() {
+      return this.genericProps?.saveButtonEnabled;
+    },
+    saveButtonInProgress() {
+      return this.genericProps?.saveButtonInProgress;
+    },
+    undoButtonEnabled() {
+      return this.genericProps?.undoButtonEnabled;
+    },
+    mapDivId() {
+      return this.genericProps?.mapDivId;
+    },
+    showFullscreenButton() {
+      return this.genericProps?.showFullscreenButton;
+    },
+  },
+  methods: {
+    triggerFullscreen() {
+      eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
+    },
+    selectLayer(layerName) {
+      this.selectedLayerName = layerName;
+    },
+  },
+  data: () => ({
+    ready: false,
+    map: null,
+    smallSize: 300,
+    mediumSize: 500,
+    largeSize: 725,
+    fullWidthSize: 875,
+    fullscreen: false,
+    METADATA_LOCATION_TITLE,
+    selectedLayerName: '',
+  }),
+};
 </script>
-<style scoped>
-  .layers {
-    position: absolute;
-    top: 70px;
-    right: 5px;
-    padding: 3px;
-    z-index: 9999;
-  }
 
-  .selected {
-    background-color: cadetblue;
-  }
+<style scoped>
+.layers {
+  position: absolute;
+  top: 70px;
+  right: 5px;
+  padding: 3px;
+  z-index: 9999;
+}
+.selected {
+  background-color: cadetblue;
+}
 </style>

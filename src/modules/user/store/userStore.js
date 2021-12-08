@@ -1,40 +1,56 @@
 /**
- * The stor of the user module
+ * The store of the user module
  *
  * @summary user module store
  * @author Dominik Haas-Artho
  *
  * Created at     : 2020-07-14 14:13:14
- * Last modified  : 2020-08-19 11:44:32
+ * Last modified  : 2021-07-29 16:16:35
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
+
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCES,
+} from '@/factories/eventBus';
+
 
 import actions from './userActions';
 import mutations from './userMutations';
 
 const userState = {
-  signInLoading: false,
-  signInSuccess: false,
-  requestLoading: false,
-  requestSuccess: false,
   error: null,
   errorType: '',
   errorField: '',
   filteringTagNames: [],
-  user: null,
-  userLoading: false,
+  userDatasetsLoading: false,
   userDatasetsError: null,
-  userOrganizationLoading: false, 
+  userDatasets: [],
+  collaboratorDatasetIdsLoading: false,
+  collaboratorDatasetIds: [],
+  collaboratorDatasetsLoading: false,
+  collaboratorDatasets: [],
+  collaboratorDatasetsLimit: 1000,
+  userOrganizationLoading: false,
   userOrganizationIds: [],
   userOrganizationNames: [],
   userOrganizations: {},
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
+  metadataSavingMessageTimeoutTime: 2500,
+  metadataSavingErrorTimeoutTime: 5000,
+  lastEditedDataset: '',
+  lastEditedDatasetPath: '',
+  lastEditedBackPath: '',
+  metadataInEditing: getEmptyMetadataInEditingObject(),
+  selectedResourceId: '',
+  selectedAuthorId: '',
 };
 
 
@@ -42,15 +58,9 @@ export const user = {
   namespaced: true,
   state: userState,
   getters: {
-    userDatasets: (state) => {
-      const userObj = state.user;
-
-      if (userObj && userObj.datasets && userObj.datasets.length > 0) {
-        return state.user.datasets;
-      }
-
-      return null;
-    },
+    resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
+    authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
+    getMetadataEditingObject: state => key => state.metadataInEditing[key],
     filteredDatasets: (state, getters) => {
       const filteredContent = [];
       const content = getters.userDatasets;

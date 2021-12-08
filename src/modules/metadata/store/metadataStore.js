@@ -66,7 +66,7 @@ const initialState = {
    * currentMetadataContent is set when clicking on a MetadataCard / entry
    * it's used by the MetadataDetailPage
    */
-  currentMetadataContent: {},
+  currentMetadataContent: null,
   /**
    * virtual List properties for MetaDataCards of the BrowsePage via MetadataListLayout
    */
@@ -97,6 +97,8 @@ const initialState = {
   publicationsResolvedIds: {},
   extractingIds: false,
   idsToResolve: [],
+  existingAuthors: [],
+  existingKeywords: [],
 };
 
 export const metadata = {
@@ -135,6 +137,8 @@ export const metadata = {
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
     publicationsResolvedIdsSize: state => (state.publicationsResolvedIds !== null ? Object.keys(state.publicationsResolvedIds).length : 0),
+    existingAuthors: state => state.existingAuthors,
+    existingKeywords: state => state.existingKeywords,
   },
   mutations,
   actions,

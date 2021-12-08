@@ -7,8 +7,9 @@
         <v-col class="py-0 pr-sm-0"
                 cols="12"
                 sm="5"
-                style="cursor: pointer;"
-                @click="buttonCallback">
+                :style="buttonCallback ? 'cursor: pointer;' : ''"
+                @click="buttonCallback ? buttonCallback : ''">
+
           <v-img class="imagezoom"
                   :src="sloganImg ? sloganImg : fallbackImg"
                   style="min-height: 100%; border-top-left-radius: 4px;"
@@ -40,7 +41,8 @@
     </v-container>
 
 
-    <v-card-actions class="ma-0 pa-4"
+    <v-card-actions v-if="hasButtons"
+                    class="ma-0 pa-4"
                     style="position: absolute; bottom: 0; right: 0;" >
 
       <base-rectangle-button v-if="moreButtonText && moreButtonCallback"
@@ -79,14 +81,35 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 export default {
   name: 'SloganCard',
   props: {
-    slogan: String,
-    sloganImg: String,
-    subSlogan: String,
+    slogan: {
+      type: String,
+      default: '',
+    },
+    sloganImg: {
+      type: String,
+      default: '',
+    },
+    subSlogan: {
+      type: String,
+      default: '',
+    },
     maxHeight: Number,
-    buttonText: String,
-    buttonCallback: Function,
-    moreButtonText: String,
-    moreButtonCallback: Function,
+    buttonText: {
+      type: String,
+      default: '',
+    },
+    buttonCallback: {
+      type: Function,
+      default: null,
+    },
+    moreButtonText: {
+      type: String,
+      default: '',
+    },
+    moreButtonCallback: {
+      type: Function,
+      default: null,
+    },
   },
   components: { BaseRectangleButton },
   beforeMount() {

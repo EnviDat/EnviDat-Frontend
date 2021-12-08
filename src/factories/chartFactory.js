@@ -138,8 +138,8 @@ function getConfigFiles(resources) {
   for (let i = 0; i < resources.length; i++) {
     const res = resources[i];
 
-    const resName = res.name.toLowerCase();
-    const resUrl = res.url.toLowerCase();
+    const resName = res?.name?.toLowerCase() || '';
+    const resUrl = res?.url?.toLowerCase() || '';
 
     if (resName.includes('geoservices_config')) {
       configResources.geoServicesConfig = res;

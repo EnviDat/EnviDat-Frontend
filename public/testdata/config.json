@@ -7,12 +7,12 @@
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
-    "categoryText": "Have a look at one of theses research categories or sign in to upload data. Uploading and pubilshing data is currently restricted to WSL employees and their collaborators."
+    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators."
   },
   "aboutInfo": [
     {
       "title": "Contact",
-      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, quesitons or feedback."
+      "text": "Contact the EnviDat team by <a href='mailto:envidat@wsl.ch'>envidat@wsl.ch</a> for support, questions or feedback."
     },
     {
       "title": "Concept",
@@ -69,5 +69,17 @@
     "showNewYearWishes": true,
     "newYearWishes": "We wish you happy new 2021! <br/> <br/>The year 2020 behind us, let us take a deep breath for a moment. Phew what kind of year was that? <br/> <br/> The changes 2020 brought into our lives, into our socitey were deep and some of them are pretty sure going to stay. So now it is time to take out the compass, review and update the map and plan for the challenges of 2021! <br/> <br/> Do you have a challenge for the EnviDat team? <br/> <a href='./#/about/about' >Let us know!</br>",
     "decemberParticles": true
+  },
+  "userEditMetadataConfig": {
+    "publicationYearsList": 30,
+    "publicationMaxFunders": 5,
+    "customFieldsMax": 10,
+    "keywordsListWordMax": 2,
+    "keywordsCountMin": 5
+  },
+  "userDashboardConfig": {
+    "introText": "Welcome to your dashboard, manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
+    "feedbackText": "However we would be glad if you <a href=\"${this.feedbackUrl}\" target=\"_blank\">let us know about it.</a> <br/>",
+    "showOldDashboardUrl": true
   }
 }

@@ -33,7 +33,7 @@ import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
 export default [
   {
-    title: 'Login',
+    title: 'Sign In',
     type: 'login',
     alias: ['signin'],
     imgPath: 'cards/data_creator_small',

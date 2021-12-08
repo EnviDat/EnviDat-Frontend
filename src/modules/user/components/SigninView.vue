@@ -29,7 +29,8 @@
         </v-col>
       </v-row>
 
-      <form class="enviDatForm">
+      <form v-if="!signedIn"
+            class="enviDatForm">
         <v-row id="emailRow"
                 align="center" >
           <v-col cols="12"
@@ -54,30 +55,11 @@
                     tabindex="0" >
               {{ tokenButtonText }}
             </v-btn>
-            <!-- <v-row no-gutters >
-              <v-col v-if="requestSuccess"
-                      cols="12"
-                      class="caption" >
-                {{ `${requestSentText} ${email}. ${requestSentText2}` }}
-              </v-col>
-
-              <v-col v-if="!key || !keyErrors"
-                      cols="12"
-                      :class="requestSuccess ? 'pt-3' : ''" >
-                <v-btn color="primary"
-                        :loading="requestLoading"
-                        @click="catchRequestToken">
-                  {{ tokenButtonText }}
-                </v-btn>
-              </v-col>
-
-            </v-row> -->
           </v-col>
 
         </v-row>
 
-        <v-row v-if="requestSuccess"
-                no-gutters>
+        <v-row v-if="requestSuccess && email" >
           <v-col cols="12"
                   class="caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
@@ -114,7 +96,7 @@
           <v-col cols="12"
                   md="3" >
 
-            <v-btn v-show="!signedIn && !$v.$invalid"
+            <v-btn v-show="!$v.$invalid"
                     color="primary"
                     :loading="signInRequestLoading"
                     @click="catchSignIn"
@@ -124,7 +106,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formInvalid || showError"
+        <v-row v-if="formInvalid || errorField"
                 id="errorTextRow"
                 :style="`background-color: ${errorColor};`"
                 class="mt-4" >
@@ -162,27 +144,20 @@
 
         </v-row> -->
 
-        <v-row v-if="signedIn"
-                id="signinButtonRow" >
-
-          <v-col v-if="signedIn">
-            <v-btn color="secondary"
-                    @click="catchSignOut"
-                   tabindex="0" >
-              {{ signoutButtonText }}
-            </v-btn>
-          </v-col>
-
-          <!-- <v-col v-if="!signedIn && !$v.$invalid">
-            <v-btn color="primary"
-                    :loading="signInLoading && !signInSuccess"
-                    @click="catchSignIn">
-              {{ signinButtonText}}
-            </v-btn>
-          </v-col> -->
-
-        </v-row>
       </form>
+
+      <v-row v-if="signedIn"
+             id="signinButtonRow" >
+
+        <v-col >
+          <v-btn color="secondary"
+                 outlined
+                 @click="catchSignOut">
+            {{ signoutButtonText }}
+          </v-btn>
+        </v-col>
+
+      </v-row>
 
     </v-container>
 
@@ -233,7 +208,6 @@ export default {
     requestLoading: Boolean,
     requestSuccess: Boolean,
     formErrorText: String,
-    showError: Boolean,
     errorField: String,
     errorFieldText: String,
     errorColor: {
@@ -313,7 +287,7 @@ export default {
   },
   watch: {
     errorField() {
-      if (this.showError && this.errorField) {
+      if (this.errorField) {
         this.backendErrors[this.errorField] = this.errorFieldText;
       }
     },

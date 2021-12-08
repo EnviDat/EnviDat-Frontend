@@ -31,10 +31,10 @@
               align="center"
               justify="space-between" >
 
-        <v-col class="shrink pl-2">
+        <v-col cols="1">
           <v-row no-gutters>
 
-            <v-col cols="6" >
+            <v-col class="shrink px-2" >
               <v-btn icon
                       class="ma-0 pt-1"
                       small
@@ -45,17 +45,8 @@
               </v-btn>
             </v-col>
 
-            <v-col cols="6" >
-              <v-row no-gutters>
-                <v-col class="headline envidatNavbarTitleSmall py-0">
-                  {{ logoText }}
-                </v-col>
-                <!-- <v-col v-if="version"
-                        class="py-0"
-                        style="font-size: 8px; position: relative; left: 2px;">
-                  Version {{ version }}
-                </v-col> -->
-              </v-row>
+            <v-col class="headline envidatNavbarTitleSmall py-0">
+              {{ logoText }}
             </v-col>
           </v-row>
 
@@ -83,12 +74,25 @@
           <v-row align="center"
                   justify="end" >
 
-            <v-col v-show="signedInUser.lastName"
+            <v-col v-if="editingDatasetName"
                    class="shrink">
-              {{ signedInUser.lastName }}
+              <BaseIconButton id="EditButtonNavigationToolbar"
+                              material-icon-name="edit"
+                              :fillColor="$vuetify.theme.themes.light.accent"
+                              iconColor="black"
+                              color="accent"
+                              :isSmall="true"
+                              :isElevated="true"
+                              :tooltipText="`Continue editing ${editingDatasetName}`"
+                              :tooltipBottom="true"
+                              @clicked="catchContinueClick" />
             </v-col>
 
-            <v-col cols="3">
+            <v-col class="shrink">
+              {{ signedInUser.fullname }}
+            </v-col>
+
+            <v-col class="shrink pl-2 pr-4">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
@@ -97,10 +101,26 @@
         </v-col>
 
         <v-col v-else
-                class="shrink" >
+                cols="1" >
 
           <v-row align="center"
                   justify="end" >
+
+            <v-col @click="catchSigninClicked"
+                    style="cursor: pointer;">
+
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <div v-bind="attrs"
+                        v-on="on">
+                    {{ signInText }}
+                  </div>
+                </template>
+
+                <span>{{ tooltipSignIn }}</span>
+              </v-tooltip>
+
+            </v-col>
 
             <v-col class="shrink"
                     @click="catchSigninClicked" >
@@ -138,19 +158,20 @@
 import ModeView from '@/components/Layouts/ModeView';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'TheNavigationToolbar',
-  components: {
-    ModeView,
-    UserMenu,
-  },
   props: {
     loading: Boolean,
     mode: String,
     modeCloseCallback: Function,
     signedInUser: Object,
     userNavigationItems: Array,
+    editingDatasetName: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     compact() {
@@ -170,14 +191,23 @@ export default {
     catchHomeClicked() {
       this.$emit('homeClick');
     },
+    catchContinueClick() {
+      this.$emit('continueClick');
+    },
   },
   data: () => ({
     EnviDatLogo,
     logoText: 'EnviDat',
     expanded: false,
     modeInfoPrefix: 'Special View',
+    signInText: 'Sign In Here',
     tooltipText: 'You are in a specific view which shows data for',
     tooltipSignIn: 'Click to sign in into EnviDat',
   }),
+  components: {
+    ModeView,
+    UserMenu,
+    BaseIconButton,
+  },
 };
 </script>

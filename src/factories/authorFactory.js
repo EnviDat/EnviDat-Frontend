@@ -11,6 +11,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { localIdProperty } from '@/factories/strategyFactory';
+
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
   { score: 80, lvl: 5 },
@@ -21,8 +23,34 @@ const authorDataCreditLevels = [
 ];
 
 export function getAuthorName(author) {
-  const fullName = `${author.given_name ? author.given_name.trim() : ''} ${author.name ? author.name.trim() : ''}`;
+  let fullName = author.fullName;
+
+  if (!fullName) {
+    const firstName = author.given_name || author.firstName || '';
+    const lastName = author.name || author.lastName || '';
+
+    fullName = `${firstName.trim()} ${lastName.trim()}`;
+  }
+
   return fullName.trim();
+}
+
+/**
+ *
+ * @param userObjects {Array}
+ * @returns {String[]}
+ */
+export function getArrayOfFullNames(userObjects) {
+  if (!userObjects || !(userObjects instanceof Array) || userObjects.length <= 0) {
+    return [];
+  }
+  const fullNameArray = [];
+
+  userObjects.forEach((user) => {
+    fullNameArray.push(getAuthorName(user));
+  });
+
+  return fullNameArray;
 }
 
 export function getAuthorsString(dataset) {
@@ -76,8 +104,8 @@ export function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredits[author.data_credit] = 1;
   } else {
-    // console.log(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
-    throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
+    console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
+    // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
   return dataCredits;
@@ -92,6 +120,8 @@ export function createAuthors(dataset) {
 
   if (typeof dataset.author === 'string') {
     authors = JSON.parse(dataset.author);
+  } else {
+    authors = dataset.author;
   }
 
   if (!authors || !(authors instanceof Array)) {
@@ -105,8 +135,8 @@ export function createAuthors(dataset) {
 
     const fullName = getAuthorName(author);
     // const nameSplits = fullName.split(' ');
-    const firstName = author.given_name;
-    const lastName = author.name;
+    const firstName = author.given_name || author.firstName || '';
+    const lastName = author.name || author.lastName || '';
 
     // if (nameSplits.length > 0) {
     //   if (nameSplits.length === 1) {
@@ -123,8 +153,8 @@ export function createAuthors(dataset) {
     const dataCredit = getDataCredit(author);
 
     authorObjs.push({
-      firstName,
-      lastName,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       fullName,
       datasetCount: 1,
       affiliation: author.affiliation,
@@ -139,14 +169,15 @@ export function createAuthors(dataset) {
 
   return authorObjs;
 }
+
 function overwriteDataCredit(author, existingAuthor) {
-  const keys = Object.keys(author.data_credit);
+  const keys = Object.keys(author.dataCredit);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    const value = author.data_credit[key];
+    const value = author.dataCredit[key];
 
-    let existingValue = existingAuthor.data_credit[key];
+    let existingValue = existingAuthor.dataCredit[key];
 
     if (existingValue) {
       existingValue += value;
@@ -155,18 +186,25 @@ function overwriteDataCredit(author, existingAuthor) {
     }
 
     // console.log('for ' + author.name + ' set ' + key + ' ' + existingValue);
-    existingAuthor.data_credit[key] = existingValue;
+    existingAuthor.dataCredit[key] = existingValue;
   }
 }
 
-function getAuthorKey(author) {
-  return author.email || author.fullName ? author.fullName.trim().toLowerCase() : null;
+export function getAuthorKey(author) {
+
+  if (author?.email) {
+    return author.email.trim();
+  }
+
+  return author?.fullName?.trim().toLowerCase() || null;
 }
 
 // TODO try using different method and compare performance
 // make 1st loop over the datasets and store the authors on the authorMap
 // then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredits
+let noDataCredit = 0;
+
 export function extractAuthorsMap(datasets) {
   if (!datasets) { return null; }
 
@@ -187,12 +225,22 @@ export function extractAuthorsMap(datasets) {
       if (existingAuthor) {
         existingAuthor.datasetCount += author.datasetCount;
 
-        if (author.data_credit) {
-          if (existingAuthor.data_credit) {
+        if (author.dataCredit) {
+          if (existingAuthor.dataCredit) {
             overwriteDataCredit(author, existingAuthor);
           } else {
-            existingAuthor.data_credit = author.data_credit;
+            existingAuthor.dataCredit = author.dataCredit;
           }
+        } else {
+          noDataCredit++;
+        }
+
+        if (author.id.identifier && author.id.identifier !== existingAuthor.id.identifier) {
+          existingAuthor.id.identifier = author.id.identifier;
+        }
+
+        if (author.id.type && author.id.type !== existingAuthor.id.type) {
+          existingAuthor.id.type = author.id.type;
         }
 
         // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
@@ -208,6 +256,7 @@ export function extractAuthorsMap(datasets) {
     // console.log(`extracted ${authorCount} authors`);
   }
 
+  // console.log(`counted noDataCredit ${noDataCredit} of ${Object.keys(authorMap).length}`)
   return authorMap;
 }
 
@@ -290,4 +339,41 @@ export function getNameInitials(userObject) {
   }
 
   return `${userObject.firstName.substring(0, 1)}${userObject.lastName.substring(0, 1)}`.toUpperCase();
+}
+
+let localAuthorID = 0;
+
+export function initializeLocalAuthor() {
+  localAuthorID++;
+
+  const newAuthor = {
+    firstName: 'unknown',
+    lastName: '',
+    affiliation: '',
+    id: {
+      type: '',
+      identifier: '',
+    },
+    email: '',
+    existsOnlyLocal: true,
+    loading: false,
+  };
+
+  newAuthor[localIdProperty] = `authorId_${localAuthorID}`;
+
+  return newAuthor;
+}
+
+export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
+  const authorWithFullInfos = [];
+
+  wrappedAuthors.forEach((wAuthor) => {
+    const author = authorsMap[wAuthor.key];
+    authorWithFullInfos.push({
+      ...author,
+      ...wAuthor,
+    });
+  });
+
+  return authorWithFullInfos;
 }

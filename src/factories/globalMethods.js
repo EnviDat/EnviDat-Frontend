@@ -5,7 +5,7 @@
  * @summary function factory for global methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2020-10-13 23:35:11
  *
  * This file is subject to the terms and conditions defined in
@@ -33,6 +33,23 @@ import {
 
 export default {
   methods: {
+    mixinMethods_isFieldReadOnly(property) {
+
+      if (this.readOnlyFields?.length > 0) {
+        return this.readOnlyFields.includes(property);
+      }
+
+      return false;
+    },
+    mixinMethods_readOnlyHint(property) {
+      let hint = '';
+
+      if (this.mixinMethods_isFieldReadOnly(property)) {
+        hint = this.readOnlyExplanation || '';
+      }
+
+      return hint;
+    },
     mixinMethods_isTagSelected(tagName) {
       if (!tagName || this.selectedTagNames === undefined) {
         return false;
@@ -61,9 +78,11 @@ export default {
       }
 
       return false;
-    },    
+    },
     mixinMethods_areArraysIdentical(arr1, arr2) {
-      if (arr1.length !== arr2.length) { return false; }
+      if (arr1.length !== arr2.length) {
+        return false;
+      }
 
       for (let i = arr1.length; i >= 0; i--) {
         if (arr1[i] !== arr2[i]) return false;
@@ -154,11 +173,15 @@ export default {
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
       const imageKey = `./${imageAssetPathName}.${state.webpIsSupported ? 'webp' : 'jpg'}`;
-      
+
       if (state.webpIsSupported) {
-        return state.webpAssets[imageKey];
+        const webpImg = state.webpAssets[imageKey];
+
+        if (webpImg) {
+          return webpImg;
+        }
       }
-      
+
       return state.jpgAssets[imageKey];
     },
     /**
@@ -169,7 +192,7 @@ export default {
      */
     mixinMethods_getIcon(iconName) {
       const iconKey = `./${iconName}.png`;
-      return this.$store.getters.iconImages[iconKey];
+      return this.$store?.getters?.iconImages[iconKey] || null;
     },
     /**
      * Loads the path to the icon image representing a file extension
@@ -216,7 +239,7 @@ export default {
         if (type === LOCATION_TYPE_MULTIPOINT) {
           return this.mixinMethods_getIcon('markerMulti');
         }
-        
+
         if (type === LOCATION_TYPE_POLYGON) {
           return this.mixinMethods_getIcon('polygons');
         }
@@ -237,22 +260,21 @@ export default {
      * @param {*} a
      * @param {*} b
      */
-    mixinMethods_formatBytes(a, b) {
+    mixinMethods_formatBytes(a, b = 2) {
       /* eslint-disable prefer-template */
       /* eslint-disable no-restricted-properties */
       if (a === 0) return '0 Bytes';
 
       const c = 1024;
-      const d = b || 2;
 
       const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       const f = Math.floor(Math.log(a) / Math.log(c));
 
-      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + ' ' + e[f];
+      return parseFloat((a / Math.pow(c, f)).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};
-    
+
       if (useWebp) {
         bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
         bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
@@ -268,7 +290,7 @@ export default {
         bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
         bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
       }
-    
+
       return bgs;
     },
   },

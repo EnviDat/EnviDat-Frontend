@@ -3,7 +3,7 @@
           hover
           style="height: 100%;"
           @click.native="cardClick" >
-          
+
     <!-- <v-card-title primary-title class="pa-0"> -->
 
     <v-container fluid class="pa-0">
@@ -36,7 +36,7 @@
       </v-row>
     </v-container>
 
-    <v-card-text py-2 
+    <v-card-text py-2
                   :class="{['cardText'] : $vuetify.breakpoint.mdAndUp,
                         ['compactText'] : flatLayout || $vuetify.breakpoint.smAndDown,
                         ['pr-5'] : flatLayout,
@@ -76,13 +76,13 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-2 "
+    <v-card-actions class="ma-0 pa-1 "
                     style="position: absolute; bottom: 0px; right: 0px; background-color: white; border-radius: 10px;" >
 
-      <v-container fluid class="pa-0 cardIcons">        
-        <v-row >
-          <v-col v-if="modeData"
-                  class="py-2 px-3" >
+      <v-container class="pa-0 cardIcons">
+        <v-row v-if="modeData"
+                no-gutters>
+          <v-col class="pb-2 px-0" >
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -92,15 +92,16 @@
 
         </v-row>
 
-        <v-row >
-          <v-col class="py-2 px-3" >
+        <v-row no-gutters>
+          <v-col class="py-3 px-1" >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
         </v-row>
 
-        <v-row v-if="geoJSONIcon" >
-          <v-col class="py-2 px-3" >
+        <v-row v-if="geoJSONIcon"
+               no-gutters>
+          <v-col class="pt-1 px-1" >
             <BaseIconLabelView :icon="geoJSONIcon" />
 
           </v-col>
@@ -109,6 +110,24 @@
       </v-container>
 
     </v-card-actions>
+
+    <v-container v-if="showGenericOpenButton"
+                 class="ma-2 pa-0"
+                 style="position: absolute; top: 0; right: 0; width: 30px;">
+      <v-row >
+        <v-col cols="12" >
+          <base-icon-button :materialIconName="openButtonIcon"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :isSmall="true"
+                            :tooltipText="openButtonTooltip"
+                            @clicked="$emit('openButtonClicked')" />
+        </v-col>
+      </v-row>
+
+    </v-container>
+
   </v-card>
 </template>
 
@@ -127,7 +146,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import TagChip from '@/components/Cards/TagChip';
+import TagChip from '@/components/Chips/TagChip';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
@@ -181,6 +200,15 @@ export default {
     geoJSONIcon: String,
     categoryColor: String,
     mode: String,
+    showGenericOpenButton: {
+      type: Boolean,
+      default: false,
+    },
+    openButtonTooltip: String,
+    openButtonIcon: {
+      type: String,
+      default: 'preview',
+    },
   },
   computed: {
     headerImageStyle() {
@@ -198,7 +226,7 @@ export default {
                 background-size: cover; background-repeat: initial; `;
       }
 
-      return `background-color: ${this.categoryColor}`;
+      return `background-color: ${this.categoryColor}; `;
     },
     maxTagsReached() {
       return this.tags && this.tags.length > this.maxTagNumber;

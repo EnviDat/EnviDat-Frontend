@@ -42,6 +42,12 @@ import {
   EXTRACT_IDS_FROM_TEXT,
   EXTRACT_IDS_FROM_TEXT_SUCCESS,
   EXTRACT_IDS_FROM_TEXT_ERROR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  METADATA_UPDATE_AN_EXISTING_AUTHOR,
+  METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -61,6 +67,7 @@ import globalMethods from '@/factories/globalMethods';
 
 import {
   METADATA_PUBLICATIONS_TITLE,
+  METADATA_KEYWORDS_TITLE,
 } from '@/factories/metadataConsts';
 
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
@@ -139,8 +146,7 @@ export default {
   },
   [LOAD_METADATA_CONTENT_BY_ID](state) {
     state.loadingCurrentMetadataContent = true;
-    state.currentMetadataContent = {};
-    // this._vm.$set(state.currentMetadataContent, {});
+    state.currentMetadataContent = null;
   },
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
@@ -150,7 +156,7 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
     state.loadingCurrentMetadataContent = false;
 
-    const errObj = getSpecificApiError('For this entry no Metadata cloud not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError('For this entry no Metadata could be loaded, please report if the error persists!', reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -173,7 +179,7 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError('Metadata can not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -239,7 +245,7 @@ export default {
           publicationsResolvedIds[id] = text;
         }
       });
-    }  
+    }
 
     state.publicationsResolvedIds = publicationsResolvedIds;
   },
@@ -263,5 +269,56 @@ export default {
     const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
-  
+/*
+  [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
+
+  },
+*/
+  [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
+
+    let authorToUpdate = {};
+    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+
+    let key = modifiedAuthor.email;
+
+    if (key) {
+      authorToUpdate = authorsMap[key];
+    }
+
+    if (!authorToUpdate) {
+      const existingAuthors = Object.values(authorsMap);
+      const subSelection = existingAuthors.filter(a => a.fullName === modifiedAuthor.fullName);
+
+      if (subSelection.length > 0) {
+        key = modifiedAuthor.email;
+        authorToUpdate = subSelection[0];
+
+        // if the key isn't correct, the old one needs to be deleted on the map object
+        delete authorsMap[authorToUpdate.email];
+      }
+    }
+
+    if (authorToUpdate) {
+      // use $set to overwrite the entry and make sure the update event of
+      // vue is triggered
+      this._vm.$set(authorsMap, key,
+        {
+          ...authorToUpdate,
+          ...modifiedAuthor,
+        });
+    }
+  },
+  [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
+    state.existingAuthors = existingAuthors;
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS](state) {
+    state.existingKeywords = [];
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS](state, payload) {
+    state.existingKeywords = payload;
+  },
+  [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
+    const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
+    this.commit(ADD_USER_NOTIFICATION, errObj);
+  },
 };

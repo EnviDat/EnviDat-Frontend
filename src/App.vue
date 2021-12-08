@@ -41,9 +41,11 @@
                             :modeCloseCallback="catchModeClose"
                             :signedInUser="user"
                             :userNavigationItems="userMenuItems"
-                            @userMenuItemClick="catchItemClicked"
+                            :editingDatasetName="lastEditedDataset"
+                            @userMenuItemClick="catchUserItemClicked"
                             @signinClick="catchSigninClicked"
-                            @homeClick="catchHomeClicked" />
+                            @homeClick="catchHomeClicked"
+                            @continueClick="catchContinueClick" />
 
     <v-main>
       <v-container class="pa-2 pa-sm-3 fill-height"
@@ -64,8 +66,8 @@
           </v-col>
         </v-row>
 
-        <v-row class="fill-height" 
-                id="maintenanceBanner" >
+        <v-row class="fill-height"
+                id="mainPageRow" >
           <v-col class="mx-0 py-0"
                   cols="12" >
 
@@ -103,13 +105,13 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:12:30
- * Last modified  : 2021-01-06 21:04:56
+ * Last modified  : 2021-08-03 12:10:41
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { 
+import {
   mapState,
   mapGetters,
 } from 'vuex';
@@ -138,10 +140,10 @@ import {
 import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
 import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
 import {
-  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA,
+  FETCH_USER_DATA, USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -181,11 +183,11 @@ export default {
           this.stopParticles();
         }
       }
-    },    
+    },
     stopParticles(fullClean = true) {
-      
+
       try {
-       
+
         if (this.currentParticles) {
           this.currentParticles.particles.move.enable = false;
           this.currentParticles.particles.opcacity.anim.enable = false;
@@ -252,6 +254,11 @@ export default {
       const notis = Object.values(this.notifications);
       return notis.filter(n => n.show);
     },
+    catchContinueClick() {
+      if (this.lastEditedDatasetPath) {
+        this.$router.push({ path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}` });
+      }
+    },
     catchMenuClicked() {
       this.menuItem.active = !this.menuItem.active;
     },
@@ -266,6 +273,9 @@ export default {
       }
 
       this.navigateTo(item.path);
+    },
+    catchUserItemClicked(item) {
+      this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -284,13 +294,7 @@ export default {
         return;
       }
 
-      this.$router.push({ path, query: '' },
-        (route) => {
-          console.log(`onComplete: ${route.name}`);
-        },
-        (route) => {
-          console.log(`onAbort: ${route.name}`);
-        });      
+      this.$router.push({ path, query: '' });
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -332,12 +336,12 @@ export default {
       }
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
-        });      
+        });
     },
   },
   computed: {
@@ -346,7 +350,11 @@ export default {
       'config',
       'webpIsSupported',
     ]),
-    ...mapState(USER_NAMESPACE, ['user']),
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
+    ...mapState(USER_NAMESPACE, [
+      'lastEditedDataset',
+      'lastEditedDatasetPath',
+    ]),
     ...mapGetters(
       METADATA_NAMESPACE, [
         'metadataIds',
@@ -436,20 +444,19 @@ export default {
         return '';
       }
 
-      let bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
+      let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
 
-      bgStyle += `background-position: center top !important;
-                    background-repeat: no-repeat !important;
-                    background-size: cover !important; `;
+      const bgStyle = `background-position: center top !important;
+                        background-repeat: repeat !important; `;
+/*
+      background-size: cover !important; `;
+*/
 
       if (bgImg.includes('browsepage')) {
-        bgStyle = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
-
-        bgStyle += `background-position: center top !important;
-                      background-repeat: repeat !important; `;
+        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
       }
-      
-      return bgStyle;
+
+      return gradient + bgStyle;
     },
     menuItem() {
       let menuItem = { active: true };
@@ -507,7 +514,7 @@ export default {
 
 
 <style >
- 
+
 .envidatNavbar {
   position: -webkit-sticky;
   position: sticky;
@@ -536,6 +543,10 @@ export default {
 
 .readableText img {
   max-width: 100%;
+}
+
+.accentLink a {
+  color: #FFD740 !important;
 }
 
 .imagezoom,
@@ -574,8 +585,10 @@ export default {
   letter-spacing: 0em !important;
 }
 
-.metadataInfoIcon {
-  opacity: 0.7;
+.metadataInfoIcon,
+.metadataInfoIcon .v-icon,
+.metadataInfoIcon .v-image {
+  opacity: 0.8;
 }
 
 .metadataTitleIcons {

@@ -4,7 +4,7 @@ import projectJSON from '@/../public/testdata/projects';
 import {
   enhanceSubprojectsFromExtras,
   enhanceProjectDatasets,
-} from '../../src/factories/projectsDataFactory';
+} from '@/factories/projectsDataFactory';
 
 const metadatasContent = {};
 packagelist.result.forEach((entry) => {

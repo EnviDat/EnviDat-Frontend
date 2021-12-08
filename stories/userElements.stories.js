@@ -19,6 +19,7 @@ import { getNameInitials } from '@/factories/authorFactory';
 import UserAvatar from '@/components/Layouts/UserAvatar';
 import UserCard from '@/components/Cards/UserCard';
 import UserMenu from '@/modules/user/components/UserMenu';
+import MetadataCube from '@/components/BaseElements/MetadataCube';
 
 import authorCollection from '../public/testdata/authorCollection.json';
 
@@ -187,5 +188,39 @@ export const UserCardViews = () => ({
   },
   data: () => ({
     authorCollection,
+  }),
+});
+
+
+export const MetadataCubeViews = () => ({
+  components: { MetadataCube },
+  template: `
+    <v-row>
+      <v-col cols="12">
+        <MetadataCube  />
+      </v-col>
+
+      <v-col cols="12">
+        <v-row no-gutters>
+          <v-col cols="12">
+            <MetadataCube :positionOffset="20" color="green" />
+          </v-col>
+          <v-col cols="12">
+            <MetadataCube :positionOffset="20" color="yellow" />
+          </v-col>
+          <v-col cols="12">
+            <MetadataCube :positionOffset="20" color="red" />
+          </v-col>
+          <v-col cols="12">
+            <MetadataCube :positionOffset="20" color="blue" />
+          </v-col>
+        </v-row>
+      </v-col>
+
+    </v-row>
+  `,
+  methods: {
+  },
+  data: () => ({
   }),
 });

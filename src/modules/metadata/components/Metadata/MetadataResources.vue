@@ -1,7 +1,7 @@
 <template>
   <v-card id="MetadataResources"
           :class="{ ['pt-2']: this.isOnTop }" >
-    
+
     <v-card-title >
       <v-row justify="end"
               no-gutters>
@@ -42,7 +42,7 @@
 
       <v-row v-if="injectedComponent && injectAtStart"
               no-gutters >
-        <component :is="injectedComponent" 
+        <component :is="injectedComponent"
                     :config="injectedComponentConfig" />
       </v-row>
 
@@ -55,28 +55,31 @@
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
+                          :key="res.id"
                           :doiIcon="doiIcon"
                           :fileSizeIcon="fileSizeIcon"
                           :dateCreatedIcon="dateCreatedIcon"
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
-                          :showGenericOpenButton="res.openPreviewEvent ? true : false"
-                          :openButtonTooltip="openButtonTooltip"
-                          @previewClicked="catchPreviewClick(res.openPreviewEvent, res.previewProperty)" />
+                          :showGenericOpenButton="res.openEvent ? true : false"
+                          :openButtonTooltip="res.openButtonTooltip"
+                          :openButtonIcon="res.openButtonIcon"
+                          :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"
+                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
 
       <v-row v-if="injectedComponent && !injectAtStart"
               no-gutters >
-        <component :is="injectedComponent" 
+        <component :is="injectedComponent"
                     :config="injectedComponentConfig" />
       </v-row>
 
     </v-container>
 
     <v-card-text v-if="!showPlaceholder && (!resources || resources.length <= 0)"
-                  style="color: red;" >
+                  :style="`color: ${emptyTextColor}};`" >
       {{ emptyText }}
     </v-card-text>
 
@@ -91,7 +94,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2020-11-04 11:12:21
+ * Last modified  : 2021-08-11 10:14:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -135,7 +138,7 @@ export default {
     this.strategyEvent = null;
     this.strategyProperty = null;
     eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
-  },  
+  },
   computed: {
     doi() {
       return this.mixinMethods_getGenericProp('doi');
@@ -146,7 +149,7 @@ export default {
     availableResources() {
       const res = this.resources;
       return res ? res.filter(r => !r.hideFromResourceList) : [];
-    },    
+    },
     resourcesConfig() {
       return this.mixinMethods_getGenericProp('resourcesConfig', {});
     },
@@ -177,6 +180,12 @@ export default {
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
+    emptyText() {
+      return this.mixinMethods_getGenericProp('emptyText', 'No resources found for this dataset');
+    },
+    emptyTextColor() {
+      return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
+    },
   },
   methods: {
     readMore() {
@@ -186,12 +195,12 @@ export default {
       this.injectedComponent = injectedComponent;
       this.injectedComponentConfig = injectedComponentConfig;
       this.injectAtStart = injectAtStart;
-    },    
+    },
     injectStrategy(strategyEvent, strategyProperty) {
       this.strategyEvent = strategyEvent;
       this.strategyProperty = strategyProperty;
     },
-    catchPreviewClick(event, eventProperty) {
+    catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },
   },
@@ -201,9 +210,7 @@ export default {
     injectedComponentConfig: null,
     strategyEvent: null,
     strategyProperty: null,
-    openButtonTooltip: 'Click for a preview of this resource',
     showAllResources: false,
-    emptyText: 'No resources found for this dataset',
     METADATA_RESOURCES_TITLE,
   }),
 };

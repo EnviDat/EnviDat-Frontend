@@ -1,11 +1,18 @@
 <template>
   <v-card :id="`resourceCard_${id}`"
-          color="primary"
+          :color="cardColor"
           class="metadataResourceCard"
-          style="height: 100%;" >
+          :class="isSelected ? 'highlighted' : ''"
+          style="height: 100%;"
+          :loading="loading" >
+
+    <template slot="progress">
+      <v-progress-linear color="accent"
+                          indeterminate />
+    </template>
 
     <v-card-title class="headline resourceHeadline white--text">
-      {{ name }}
+      {{ name ? name : 'No name set' }}
     </v-card-title>
 
     <v-card-text class="pt-0 white--text"
@@ -63,28 +70,28 @@
                                   icon-tooltip="Data Object Identifier"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="format" 
+            <base-icon-label-view v-if="format"
                                   :text="format"
                                   :label="extensionIcon ? '' : 'File format:'"
                                   :icon="extensionIcon"
                                   icon-tooltip="Format of the file"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="size" 
+            <base-icon-label-view v-if="size"
                                   :text="formatedBytes"
                                   :label="fileSizeIcon ? '' : 'File size:'"
                                   :icon="fileSizeIcon"
                                   icon-tooltip="Filesize"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="created" 
+            <base-icon-label-view v-if="created"
                                   :text="created"
                                   :label="dateCreatedIcon ? '' : 'Created at:'"
                                   :icon="dateCreatedIcon"
                                   icon-tooltip="Date of file creation"
                                   :align-left="twoColumnLayout" />
 
-            <base-icon-label-view v-if="lastModified" 
+            <base-icon-label-view v-if="lastModified"
                                   :text="lastModified"
                                   :label="lastModifiedIcon ? '' : 'Modified at:'"
                                   :icon="lastModifiedIcon"
@@ -113,25 +120,27 @@
 
     </v-card-actions>
 
-    <!-- <div class="ma-0 py-3"
-          style="position: absolute; bottom: 0px; right: 0px;" > -->
-    <!-- <v-card-actions class="ma-0 pa-0"
-                    style="position: absolute; bottom: 0px; right: 0px;" >
- -->
-      <v-container fluid class="pa-2" 
-                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
-        
-      <v-row v-if="!isProtected">
-        <v-col v-if="showGenericOpenButton"
-                cols="12"
-                class="py-1">
-          <base-icon-button materialIconName="preview"
+
+      <v-container v-if="showGenericOpenButton"
+                   class="ma-2 pa-0"
+                   style="position: absolute; top: 0px; right: 0px; width: 40px;">
+        <v-row >
+          <v-col cols="12" >
+          <base-icon-button :materialIconName="openButtonIcon"
                             iconColor="black"
                             color="accent"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
-                            @clicked="$emit('previewClicked')" />
-        </v-col>
+                            @clicked="$emit('openButtonClicked')" />
+          </v-col>
+        </v-row>
+
+      </v-container>
+
+      <v-container fluid class="pa-2"
+                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
+
+      <v-row v-if="!isProtected">
 
         <v-col cols="12"
                 class="pt-1">
@@ -164,9 +173,6 @@
 
       </v-container>
 
-    <!-- </div> -->
-    <!-- </v-card-actions> -->
-
   </v-card>
 </template>
 
@@ -179,7 +185,7 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-01-05 15:33:05
+ * Last modified  : 2021-08-18 10:46:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -228,6 +234,19 @@ export default {
       default: false,
     },
     openButtonTooltip: String,
+    openButtonIcon: {
+      type: String,
+      default: 'preview',
+    },
+    cardColor: {
+      type: String,
+      default: 'primary',
+    },
+    isSelected: {
+      type: Boolean,
+      default: false,
+    },
+    loading: Boolean,
   },
   data: () => ({
     maxDescriptionLength: 175,
@@ -242,9 +261,17 @@ export default {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
     markdownText() {
+      if (!this.description) {
+        return '';
+      }
+
       return renderMarkdown(this.description.trim());
     },
     markdownTextTruncated() {
+      if (!this.description) {
+        return '';
+      }
+
       if (this.maxDescriptionLengthReached) {
         const strippedMarkdown = stripMarkdown(this.description.trim());
 
@@ -255,7 +282,7 @@ export default {
         return '';
       }
 
-      return this.description.trim();      
+      return this.description.trim();
     },
     formatedBytes() {
       if (!this.size) return '';
@@ -311,7 +338,7 @@ export default {
 
         return this.mixinMethods_getIcon('file');
       }
-      
+
       if (this.fileExtensionIcon) {
         return this.lookupExtensionIcon;
       }
@@ -332,7 +359,7 @@ export default {
 
       // console.log(`icon ${icon}`);
       return icon;
-    },    
+    },
   },
   methods: {
 
@@ -394,7 +421,7 @@ export default {
     border: 1px solid grey;
     border-radius: 50%;
     padding: 0 4px 4px 0;
-  }  
+  }
 
   .lockedText {
     display: none;
@@ -416,6 +443,10 @@ export default {
   .protectedLink {
     font-size: 12px;
     overflow: hidden;
-  }  
+  }
+
+  .highlighted {
+    box-shadow: #ffd740 0px 0px 5px 5px !important;
+  }
 
 </style>

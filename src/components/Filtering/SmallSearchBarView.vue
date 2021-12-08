@@ -99,7 +99,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import TagChip from '@/components/Cards/TagChip';
+import TagChip from '@/components/Chips/TagChip';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 

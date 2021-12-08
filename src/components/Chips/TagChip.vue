@@ -6,15 +6,18 @@
             }"
           v-bind="{ 'color': highlighted ? 'primary' : color }"
           :style="{ 'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+          :small="isSmall"
+          close-icon="close"
           @click.stop="clicked"
-          @input="clickedClose" >
+          :close="closeable"
+          @click:close="$emit('clickedClose', name)" >
     {{ name }}
 
-    <span v-if="closeable"
+    <!-- <span v-if="closeable"
           style="margin: 0 -5px 3px 5px;"
           class="" >
       <v-icon small >close</v-icon>
-    </span>
+    </span> -->
 
   </v-chip>
 </template>
@@ -44,9 +47,9 @@ export default {
       type: String,
       default: '#e0e0e0',
     },
-    size: {
-      type: String,
-      default: 'default',
+    isSmall: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {
@@ -59,9 +62,9 @@ export default {
 
       this.$emit('clicked', this.name);
     },
-    clickedClose: function clickedClose() {
-      this.$emit('clickedClose', this.name);
-    },
+    // clickedClose: function clickedClose() {
+    //   this.$emit('clickedClose', this.name);
+    // },
   },
 };
 </script>

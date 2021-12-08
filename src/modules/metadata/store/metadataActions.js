@@ -36,7 +36,13 @@ import {
   EXTRACT_IDS_FROM_TEXT,
   EXTRACT_IDS_FROM_TEXT_SUCCESS,
   EXTRACT_IDS_FROM_TEXT_ERROR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
 } from '@/store/metadataMutationsConsts';
+
+import catCards from '@/store/categoryCards';
 
 import {
   tagsIncludedInSelectedTags,
@@ -48,8 +54,16 @@ import {
   getSelectedTagsMergedWithHidden,
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
+import {
+  getTagColor,
+  sortObjectArray,
+} from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
+/*
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
+*/
 
 /* eslint-disable no-unused-vars  */
 const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
@@ -125,14 +139,14 @@ function localSearch(searchTerm, datasets) {
     const match1 = dataset.title.includes(term1)
       || dataset.author.includes(term1)
       || dataset.notes.includes(term1);
-    
+
     let match2 = true;
     if (check2Terms) {
       match2 = dataset.title.includes(term2)
         || dataset.author.includes(term2)
         || dataset.notes.includes(term2);
     }
-    
+
     if (match1 && match2) {
       foundDatasets.push(dataset);
     }
@@ -140,6 +154,25 @@ function localSearch(searchTerm, datasets) {
 
   return foundDatasets;
 }
+
+// Returns array with strings that are both only maxWords or less and do not start with a number
+function getfilteredArray(arr, maxWords) {
+  return arr.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
+}
+
+// Return array with each element converted to object with name and assigned color
+function getKeywordObjects(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    arr[i] = {
+              name: arr[i],
+              color: getTagColor(catCards, arr[i]),
+            };
+  }
+  return arr;
+}
+
+// Returns array of objects in ascending order by 'name' key
+// Name values converted to upper case so that comparisons are case insensitive
 
 export default {
   async [SEARCH_METADATA]({ commit }, {
@@ -205,8 +238,10 @@ export default {
       commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
     });
   },
-  async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, metadataConfig = {}) {
+  async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
     commit(BULK_LOAD_METADATAS_CONTENT);
+
+    const metadataConfig = config.metadataConfig || {};
 
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
                 API_BASE, PROXY);
@@ -226,6 +261,12 @@ export default {
       .then((response) => {
         // commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.response.docs, showRestrictedContent);
         commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.result);
+
+        // make sure the existingAuthors list is up-2-date
+        dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
+
+        // make sure the existingKeywords list is up-2-date
+        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
 
         // for the case when loaded up on landingpage
         return dispatch(FILTER_METADATA, { selectedTagNames: [] });
@@ -263,7 +304,7 @@ export default {
         } else {
           allWithExtras = metadataTags;
         }
-    
+
         const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
@@ -355,7 +396,7 @@ export default {
 
       commit(EXTRACT_IDS_FROM_TEXT);
 
-      try {       
+      try {
         const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
         const regEx = new RegExp(regExStr, 'gm');
         const hasValidIds = text.match(regEx) || [];
@@ -378,5 +419,46 @@ export default {
         commit(EXTRACT_IDS_FROM_TEXT_ERROR, e);
       }
     }
+  },
+  async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
+
+    const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+    let existingAuthors = Object.values(authorsMap);
+
+    existingAuthors = sortObjectArray(existingAuthors, 'lastName');
+
+    // enhance the entries that the selection button shows up on the authorCard
+    // don't do it for now to disable Author Editing
+    // enhanceElementsWithStrategyEvents(existingAuthors, SELECT_EDITING_AUTHOR_PROPERTY);
+
+    commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
+  },
+  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }, userEditMetadataConfig = {}) {
+
+    commit(METADATA_UPDATE_EXISTING_KEYWORDS);
+
+    const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
+    // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
+
+    const url = urlRewrite('tag_list', API_BASE, PROXY);
+
+    await axios.get(url).then((response) => {
+
+      const tags = response.data.result;
+
+      const keywordsListWordMax = userEditMetadataConfig.keywordsListWordMax || 2;
+      const filteredTags = getfilteredArray(tags, keywordsListWordMax);
+
+      const keywordObjects = getKeywordObjects(filteredTags);
+
+      const mergedKeywords = existingKeywords.concat(keywordObjects);
+
+      const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
+
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
+
+    }).catch((reason) => {
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
+    });
   },
 };

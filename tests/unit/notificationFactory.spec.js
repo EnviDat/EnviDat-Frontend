@@ -4,7 +4,7 @@ import {
   warningMessage,
   getGenericApiError,
   getSpecificApiError,
-} from '../../src/factories/notificationFactory';
+} from '@/factories/notificationFactory';
 
 describe('notificationFactory - successMessage', () => {
   it('empty', () => {

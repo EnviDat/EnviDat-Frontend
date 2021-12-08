@@ -44,19 +44,9 @@ const iconFiles = getIcons();
 
 // console.log(`icons ${str}`);
 
-const metadataCards = [];
+const metadataCards = unFormatedMetadataCards;
 
-unFormatedMetadataCards.forEach((el) => {
-  let formatted = apiFactory.solrResultToCKANJSON(el);
-  // let keys = Object.keys(el.tags[0]);
-  // let props = '';
-  // keys.forEach(element => {
-  //   props += element + ' ';
-  // });
-  // alert(typeof el.resources + ' resources: ' + el.resources.length + ' ' + el.resources instanceof Array);
-  formatted = createResources(formatted);
-  metadataCards.push(formatted);
-});
+metadataCards[2].resources[0].loading = true;
 
 export const methods = {
   onCardClick: action('clicked on card'),

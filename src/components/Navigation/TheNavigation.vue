@@ -1,6 +1,6 @@
 <template>
   <span>
-    <v-btn v-if="smallScreen && !show" 
+    <v-btn v-if="smallScreen && !show"
             fab
             left
             fixed
@@ -26,7 +26,7 @@
       <v-list-item v-for="(item, index) in navItemsMenuExcluded"
                     :key="index"
                     link
-                    :color="item.disabled ? 'grey' : 'primary'"                    
+                    :color="item.disabled ? 'grey' : 'primary'"
                     :disabled="item.disabled"
                     :class="`${item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '' }`"
                     @click.stop="itemClick(item)" >
@@ -87,6 +87,29 @@
                               @click.stop="itemClick(item)" >
           {{ item.title }}
         </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item >
+        <v-list-item-icon >
+          <v-tooltip right
+                     style="z-index: 1150;" >
+            <template v-slot:activator="{ on }">
+
+              <v-icon v-on="on"
+                      color="secondary">
+                tag
+              </v-icon>
+            </template>
+
+            <span>Version {{ version }}</span>
+          </v-tooltip>
+
+        </v-list-item-icon>
+
+        <v-list-item-content class="text-caption">
+          Version {{ version }}
+        </v-list-item-content>
+
       </v-list-item>
 
       <v-list-item link

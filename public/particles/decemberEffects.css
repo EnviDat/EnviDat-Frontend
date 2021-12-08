@@ -1,4 +1,4 @@
-.v-card::before {
+.v-card:not(.v-card--flat)::before {
   content: '';
   display: block;
   position: absolute;
