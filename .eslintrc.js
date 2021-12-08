@@ -12,7 +12,12 @@ module.exports = {
   // env: {
   //   browser: true,
   // },
-  extends: ['@vue/airbnb', 'plugin:vue/essential', 'prettier/vue', 'prettier'],
+  extends: [
+    '@vue/airbnb',
+    'plugin:vue/essential',
+    'prettier/vue',
+    'prettier',
+  ],
 
   // // required to lint *.vue files
   plugins: [
@@ -55,13 +60,14 @@ module.exports = {
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
     'quotes': ['error', 'single', { avoidEscape: true }],
-    'operator-linebreak': ['warn', 'after'],
+    'operator-linebreak': ['off', 'before'],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',
     'vuetify/no-legacy-grid': 'error',
+    'implicit-arrow-linebreak': 0,
   },
 
   overrides: [
