@@ -5,9 +5,8 @@ branches:
   - master
   - develop
 node_js:
-  - lts/*
+  - "12"
 before_script:
-  - npm i -g node-gyp
   - npm i
 
 jobs:
