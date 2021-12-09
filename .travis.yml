@@ -1,16 +1,19 @@
-language: node_js
-
 branches:
   only:
   - master
   - develop
-node_js:
-  - "12"
-before_script:
-  - npm i
 
 jobs:
   include:
+    - language: python
+      python: 3
+
+    - language: node_js
+      node_js: lts/*
+      before_script:
+        - npm i node-gyp -g
+        - npm i
+
     - name: 'Publish to Chromatic'
       script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
     - name: 'run unit tests'
