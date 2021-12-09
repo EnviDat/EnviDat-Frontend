@@ -16,7 +16,6 @@ import { storiesOf } from '@storybook/vue';
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
@@ -42,12 +41,6 @@ const metadataCards = [];
 
 unFormatedMetadataCards.forEach((el) => {
   let formatted = apiFactory.solrResultToCKANJSON(el);
-  // let keys = Object.keys(el.tags[0]);
-  // let props = '';
-  // keys.forEach(element => {
-  //   props += element + ' ';
-  // });
-  // alert(typeof el.resources + ' resources: ' + el.resources.length + ' ' + el.resources instanceof Array);
   formatted = createResources(formatted);
   enhanceElementsWithStrategyEvents(formatted.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(formatted);

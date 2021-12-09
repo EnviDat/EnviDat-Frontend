@@ -547,7 +547,7 @@ export default {
   }
 
   .progress .value, .progress .text {
-    fill: 'black';
+    /* fill: 'black'; */
     text-anchor: middle;
   }
   .progress .value {
@@ -555,7 +555,7 @@ export default {
   }
 
   .highlighted {
-    box-shadow: #71c5bd 0px 0px 5px 5px !important;
+    box-shadow: #71c5bd 0 0 5px 5px !important;
   }
 
 </style>

@@ -250,7 +250,7 @@ function getNextHashNumber(hash, index) {
       
       number = Number.parseInt(char, 10);
 
-      if (typeof number === 'number' && !Number.isNaN(number)) {
+      if (!Number.isNaN(number)) {
         return { index: i + 1, number };
       }
     } catch (error) {

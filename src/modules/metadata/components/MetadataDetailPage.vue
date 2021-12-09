@@ -717,10 +717,7 @@ export default {
         !this.isCurrentIdOrName(this.metadataId)
       ) {
         // in case of navigating into the page load the content directly via Id
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-          this.metadataId,
-        );
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initiailze the components in the their loading state

@@ -21,7 +21,7 @@
                           :rules="[() => !step.error]"
                           class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
                           style="border-radius: 4px;"
-                          :style="`background-color: ${getStepBackgroundColor(index)};
+                          :style="`background-color: ${getStepBackgroundColor};
                                    border: solid black ${stepColor === 'white' ? 1 : 0}px;`"
                           @click="catchStepClick(step)"
                           >
@@ -85,6 +85,9 @@ export default {
     },
   },
   computed: {
+    getStepBackgroundColor() {
+      return this.$vuetify.theme.themes.light[this.stepColor];
+    },
   },
   methods: {
     catchStepClick(step) {
@@ -104,9 +107,6 @@ export default {
       }
 
       return this.inactiveColor;
-    },
-    getStepBackgroundColor() {
-      return this.$vuetify.theme.themes.light[this.stepColor];
     },
   },
   data: () => ({

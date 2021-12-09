@@ -111,7 +111,7 @@
               outlined
               readonly
               prepend-icon="fingerprint"
-              v-model="doi"
+              :value="doi"
             />
           </v-col>
         </v-row>
@@ -122,7 +122,7 @@
               :label="labels.format"
               outlined
               readonly
-              v-model="format"
+              :value="format"
             />
           </v-col>
 
@@ -131,7 +131,7 @@
               :label="labels.size"
               outlined
               readonly
-              v-model="sizeField"
+              :value="sizeField"
             />
           </v-col>
         </v-row>
@@ -142,7 +142,7 @@
               :label="labels.created"
               outlined
               readonly
-              v-model="created"
+              :value="created"
             />
           </v-col>
 
@@ -151,7 +151,7 @@
               :label="labels.lastModified"
               outlined
               readonly
-              v-model="lastModified"
+              :value="lastModified"
             />
           </v-col>
         </v-row>

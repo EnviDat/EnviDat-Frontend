@@ -127,9 +127,7 @@
 import {
   CANCEL_EDITING_RESOURCE,
   SAVE_EDITING_RESOURCE,
-  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_DATA_RESOURCES,
-  SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
   eventBus,
 } from '@/factories/eventBus';
@@ -198,12 +196,8 @@ export default {
   },
   mounted() {
     // Add editing button to resource card
-    if (this.resources !== []) {
-      enhanceElementsWithStrategyEvents(
-        this.resources,
-        SELECT_EDITING_RESOURCE_PROPERTY,
-        true,
-      );
+    if (Array.isArray(this.resources) && this.resources.length > 0) {
+      enhanceElementsWithStrategyEvents(this.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
     }
   },
   beforeDestroy() {},

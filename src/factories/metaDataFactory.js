@@ -147,17 +147,25 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   let { maintainer } = dataset;
 
   if (typeof dataset.maintainer === 'string') {
-    maintainer = JSON.parse(dataset.maintainer);
+    try {
+      maintainer = JSON.parse(dataset.maintainer);
+    } catch (e) {
+      console.error(`Maintainer json parse err: ${e}`);
+    }
   }
 
-  const contactEmail = maintainer.email ? maintainer.email : '';
+  const contactEmail = maintainer?.email || '';
 
   const license = createLicense(dataset);
 
   let authors = null;
 
   if (typeof dataset.author === 'string') {
-    authors = JSON.parse(dataset.author);
+    try {
+      authors = JSON.parse(dataset.author);
+    } catch (e) {
+      console.error(`Maintainer author json parse err: ${e}`);
+    }
   }
 
   return {
@@ -345,7 +353,7 @@ export function getFileFormat(file) {
 
   if (typeof file === 'object' && !!file.format) {
     // if the input is a resource object
-    fileName = file.format ? file.format : '';
+    fileName = file.format;
   } else if (typeof file === 'object') {
     fileName = file.name ? file.name : '';
   } else if (typeof file === 'string') {

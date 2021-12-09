@@ -4,7 +4,7 @@ import {
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 
-import packagelist from '@/../public/testdata/packagelist';
+import packagelist from '@/../public/testdata/packagelist.json';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {

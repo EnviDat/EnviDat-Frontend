@@ -4,7 +4,6 @@ import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 
 import globalMethods from '@/factories/globalMethods';
-import { createResources } from '@/factories/metaDataFactory';
 
 import ResourceCard from '@/modules/metadata/components/ResourceCard';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder';
@@ -17,8 +16,6 @@ import unFormatedMetadataCards from './js/metadata';
 
 
 Vue.mixin(globalMethods);
-
-const apiFactory = require('@/factories/apiFactory');
 
 function getIcons() {
   const icons = new Map();

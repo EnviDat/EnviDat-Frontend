@@ -5,7 +5,6 @@ import {
   getFrontendJSON,
   convertJSON,
   getObjectInOtherCase,
-  toSnakeCase,
   toCamelCase,
 } from '@/factories/mappingFactory';
 

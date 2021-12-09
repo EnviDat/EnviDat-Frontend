@@ -45,25 +45,10 @@ import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
-import unFormatedMetadataCards from "./js/metadata";
 
-
-// import doiIcon from '../src/assets/icons/doi.png';
-// import mailIcon from '../src/assets/icons/mail.png';
-// import contactIcon from '../src/assets/icons/contact2.png';
-// import licenseIcon from '../src/assets/icons/license.png';
-
-// import {
-//   createHeader,
-//   createBody,
-// } from '@/factories/metaDataFactory';
-
-// metadata gets enhance in the storybook config
-// import metadata from './js/metadata';
-
+const unFormatedMetadataCards = { ...metadataset };
 
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
-// import tags from '@/modules/metadata/store/metadataTags';
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
   const tag = tagsFromDatasets[i];

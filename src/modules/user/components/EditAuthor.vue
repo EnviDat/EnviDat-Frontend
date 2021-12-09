@@ -61,7 +61,6 @@
                         ref="email"
                         outlined
                         required
-                        :rules="rulesEmail"
                         :disabled="loading"
                         v-model="emailField" />
         </v-col>
@@ -283,10 +282,6 @@ export default {
       createButtonText: 'Save Author',
     },
     saveButtonEnabled: false,
-    rulesEmail: [
-      v => !!v || 'The email address of the author is required',
-      v => /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Please enter valid email address',
-    ],
   }),
   components: {
     BaseRectangleButton,

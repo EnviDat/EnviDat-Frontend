@@ -172,7 +172,7 @@ export default {
       if (authors?.length > 0) {
         const selected = authors.filter(r => r.isSelected);
 
-        if (selected?.length > 0) {
+        if (selected.length > 0) {
           selectedAuthor = selected[0];
         }
       }

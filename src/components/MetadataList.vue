@@ -190,7 +190,7 @@ import {
   mapState,
   mapGetters,
 } from 'vuex';
-import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
+import { BROWSE_PATH} from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView';
 import FilterMapView from '@/components/Filtering/FilterMapView';
 import ControlPanel from '@/components/Filtering/ControlPanel';
@@ -199,7 +199,6 @@ import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
 import {
-  SET_DETAIL_PAGE_BACK_URL,
   SET_VIRTUAL_LIST_INDEX,
   METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,

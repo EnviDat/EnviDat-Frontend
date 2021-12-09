@@ -6,7 +6,7 @@ import {
 } from '@storybook/addon-knobs';
 */
 
-import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import authorCollection from '../public/testdata/authorCollection.json';
 
 const authorFromCollection = Object.values(authorCollection)[1];

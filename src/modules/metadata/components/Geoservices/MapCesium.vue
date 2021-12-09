@@ -15,10 +15,8 @@
 /* eslint-disable no-unused-vars */
   import {
     buffer as tBuffer,
-    centroid as tCentroid,
-    distance as tDistance,
     envelope as tEnvelope,
-    bboxPolygon as tBboxPolygon,
+
   } from '@turf/turf';
 
     /* eslint-disable new-cap */
@@ -27,8 +25,7 @@
     import BingMapsImageryProvider from 'cesium/Scene/BingMapsImageryProvider';
     import BingMapsStyle from 'cesium/Scene/BingMapsStyle';
     import Rectangle from 'cesium/Core/Rectangle';
-    import Cartographic from 'cesium/Core/Cartographic';
-    import Matrix4 from 'cesium/Core/Matrix4';
+import Matrix4 from 'cesium/Core/Matrix4';
     import SceneMode from 'cesium/Scene/SceneMode';
     import HeadingPitchRange from 'cesium/Core/HeadingPitchRange';
     import Cartesian2 from 'cesium/Core/Cartesian2';

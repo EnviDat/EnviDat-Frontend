@@ -190,7 +190,7 @@ export default {
     getAuthorByName(fullName) {
       const authors = this.existingEnviDatUsers;
       const found = authors.filter(auth => auth.fullName === fullName);
-      return found?.length > 0 ? found[0] : null;
+      return found.length > 0 ? found[0] : null;
     },
   },
   data: () => ({

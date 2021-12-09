@@ -90,11 +90,7 @@ function contentFilterAccessibility(value) {
 }
 
 function contentFilteredByTags(value, selectedTagNames) {
-  if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
-    return true;
-  }
-
-  return false;
+  return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
 }
 
 function createSolrQuery(searchTerm) {

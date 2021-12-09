@@ -23,9 +23,6 @@
         <v-col cols="12">
           <v-text-field :label="labels.textFieldLabel"
                           v-model="url"
-                          :rules="[ v => !!v || 'Link is required',
-                                    v => urlRegex.test(v) || 'Please enter valid url',
-                                  ]"
                           ref="urlTextField"
                           prepend-icon="link"
                           clearable
@@ -70,7 +67,7 @@ export default {
   },
   methods: {
     checkCreateButtonDisabled() {
-      this.createButtonDisabled = !this.urlRegex.test(this.url);
+      // this.createButtonDisabled = !this.urlRegex.test(this.url);
     },
     createButtonClick() {
       this.$emit('createResources', this.url);
@@ -84,12 +81,6 @@ export default {
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },
-    // eslint-disable-next-line no-useless-escape
-    urlRegex: /^(http(s)?:\/\/.)?(ftp(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{0,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
-    // rulesUrl: [
-    //    v => !!v || 'Link is required',
-    //    v => /^(http(s)?:\/\/.)?(ftp(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{0,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/.test(v) || 'Please enter valid url',
-    //   ],
     createButtonDisabled: true,
   }),
   components: {

@@ -292,11 +292,13 @@ export function initializeSteps(steps) {
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
 
-    step.readOnlyFields = null;
-    step.readOnlyExplanation = null;
+    if (step) {
+      step.readOnlyFields = null;
+      step.readOnlyExplanation = null;
 
-    if (step?.detailSteps) {
-      step.detailSteps = initializeSteps(step.detailSteps);
+      if (step.detailSteps) {
+        step.detailSteps = initializeSteps(step.detailSteps);
+      }
     }
   }
 
@@ -409,10 +411,7 @@ yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndFi
       const parsedEnd = isDate(dateEnd) ?
       dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
 
-      if (parsedEnd < parsedStart) {
-        return false;
-      }
-      return true;
+      return parsedEnd >= parsedStart;
     }
   );
 });
@@ -550,14 +549,7 @@ export function getValidationMetadataEditingObject(key) {
   return validationEntry ? validationEntry() : null;
 }
 
-export function isArrayValid(
-  array,
-  arrayProperty,
-  index,
-  valueProperty,
-  validations,
-  errorArray = null,
-) {
+export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray) {
   const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
 
   try {
@@ -581,7 +573,7 @@ export function isArrayValid(
   return true;
 }
 
-export function isFieldValid(property, value, validations, errorObject = null) {
+export function isFieldValid(property, value, validations, errorObject) {
   try {
     validations.validateSyncAt(property, { [property]: value });
   } catch (e) {

@@ -122,7 +122,7 @@ function createErrorMessage(reason) {
     if (reason.response.status === 403) {
       msg += ' you are not authorized';
     }
-    const errorObj = reason.response?.data?.error || reason.response?.error || null;
+    const errorObj = reason?.response?.data?.error || reason?.response?.error || null;
 
     if (errorObj) {
 

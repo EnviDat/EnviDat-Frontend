@@ -521,11 +521,7 @@ export default {
   },
   methods: {
     contentFilteredByTags(value, selectedTagNames) {
-      if (value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames)) {
-        return true;
-      }
-
-      return false;
+      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
     },
     loadRouteTags() {
       const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedTagNames);

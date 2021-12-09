@@ -15,20 +15,9 @@
 /* eslint-disable camelcase */
 import { Object } from 'core-js';
 
-import {
-  FOREST,
-  SNOW,
-  LAND,
-  HAZARD,
-  DIVERSITY,
-  METEO,
-} from '@/store/categoriesConsts';
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW, } from '@/store/categoriesConsts';
 
-import {
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POLYGON,
-} from '@/factories/metaDataFactory';
+import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON, } from '@/factories/metaDataFactory';
 
 
 export default {
@@ -127,9 +116,7 @@ export default {
         jsonConformString = jsonConformString.replace(/-/g, '=');
 
         const jsonString = atob(jsonConformString);
-        const jsonTags = JSON.parse(jsonString);
-
-        return jsonTags;
+        return JSON.parse(jsonString);
       }
 
       // return an empty array for the selectedTagIds

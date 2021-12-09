@@ -160,7 +160,7 @@ export default {
     catchPickClicked(pickedItem) {
 
       if (this.multiplePick) {
-        if (!this.pickedUsers?.includes(pickedItem)) {
+        if (this.pickedUsers?.length > 0 && !this.pickedUsers.includes(pickedItem)) {
           this.pickedUsers.push(pickedItem);
         } else {
           const index = this.pickedUsers.indexOf(pickedItem);

@@ -203,7 +203,7 @@ export function getAuthorKey(author) {
 // make 1st loop over the datasets and store the authors on the authorMap
 // then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredits
-let noDataCredit = 0;
+// let noDataCredit = 0;
 
 export function extractAuthorsMap(datasets) {
   if (!datasets) { return null; }
@@ -231,8 +231,8 @@ export function extractAuthorsMap(datasets) {
           } else {
             existingAuthor.dataCredit = author.dataCredit;
           }
-        } else {
-          noDataCredit++;
+//        } else {
+//          noDataCredit++;
         }
 
         if (author.id.identifier && author.id.identifier !== existingAuthor.id.identifier) {

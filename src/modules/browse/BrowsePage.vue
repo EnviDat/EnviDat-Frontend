@@ -47,30 +47,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters, mapState, } from 'vuex';
+import { BROWSE_PAGENAME, BROWSE_PATH, METADATADETAIL_PAGENAME, } from '@/router/routeConsts';
 import {
-  mapState,
-  mapGetters,
-} from 'vuex';
-import {
-  BROWSE_PAGENAME,
-  BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
-} from '@/router/routeConsts';
-import {
-  SEARCH_METADATA,
   CLEAR_SEARCH_METADATA,
   FILTER_METADATA,
-  METADATA_NAMESPACE,
+  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
-  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+  METADATA_NAMESPACE,
+  SEARCH_METADATA,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-  SET_BROWSE_SCROLL_POSITION,
-} from '@/store/mainMutationsConsts';
+import { SET_APP_BACKGROUND, SET_BROWSE_SCROLL_POSITION, SET_CURRENT_PAGE, } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList';
 
@@ -309,14 +298,12 @@ export default {
       return height;
     },
     metadataListStyling() {
-      const json = {
+      return {
         xs8: this.mapFilteringPossible && this.showMapFilter,
         xs12: this.mapFilteringPossible && !this.showMapFilter,
         'mt-2': !this.showMapFilter,
         // style: this.showMapFilter ? `margin-top: -${this.mapFilterHeight}px;` : '',
       };
-
-      return json;
     },
     mapFilteringPossible() {
       return this.$vuetify.breakpoint.smAndUp;

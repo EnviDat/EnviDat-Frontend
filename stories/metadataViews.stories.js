@@ -13,8 +13,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { action } from '@storybook/addon-actions';
-
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
