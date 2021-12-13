@@ -47,8 +47,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapGetters, mapState, } from 'vuex';
-import { BROWSE_PAGENAME, BROWSE_PATH, METADATADETAIL_PAGENAME, } from '@/router/routeConsts';
+import {
+  mapGetters,
+  mapState,
+} from 'vuex';
+import {
+  BROWSE_PAGENAME,
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+} from '@/router/routeConsts';
 import {
   CLEAR_SEARCH_METADATA,
   FILTER_METADATA,
@@ -59,7 +66,12 @@ import {
   SEARCH_METADATA,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-import { SET_APP_BACKGROUND, SET_BROWSE_SCROLL_POSITION, SET_CURRENT_PAGE, } from '@/store/mainMutationsConsts';
+
+import {
+  SET_APP_BACKGROUND,
+  SET_BROWSE_SCROLL_POSITION,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList';
 

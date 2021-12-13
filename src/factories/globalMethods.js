@@ -15,9 +15,20 @@
 /* eslint-disable camelcase */
 import { Object } from 'core-js';
 
-import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW, } from '@/store/categoriesConsts';
+import {
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  METEO,
+  SNOW,
+} from '@/store/categoriesConsts';
 
-import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON, } from '@/factories/metaDataFactory';
+import {
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metaDataFactory';
 
 
 export default {
