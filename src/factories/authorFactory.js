@@ -326,6 +326,12 @@ export function getLevelProgress(dataCreditScore) {
   return progress;
 }
 
+function getInitials(first, last) {
+  const firstName = first || '';
+  const lastName = last || '';
+  return `${firstName.substring(0, 1)}${lastName.substring(0, 1)}`.toUpperCase();
+}
+
 export function getNameInitials(userObject) {
   if (!userObject) {
     return '';
@@ -334,11 +340,19 @@ export function getNameInitials(userObject) {
   if (userObject.fullName) {
     const splits = userObject.fullName.split(' ');
     if (splits.length > 1) {
-      return `${splits[0].substring(0, 1)}${splits[splits.length - 1].substring(0, 1)}`.toUpperCase();
+      return getInitials(splits[0], splits[splits.length - 1]);
     }
   }
 
-  return `${userObject.firstName.substring(0, 1)}${userObject.lastName.substring(0, 1)}`.toUpperCase();
+  if (userObject.firstName && userObject.lastName) {
+    return getInitials(userObject.firstName, userObject.lastName);
+  }
+
+  if (userObject.name && userObject.fullname) {
+    return getInitials(userObject.name, userObject.fullname);
+  }
+
+  return '';
 }
 
 let localAuthorID = 0;
