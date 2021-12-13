@@ -7,6 +7,8 @@ jobs:
   include:
     - language: python
       python: "3.6"
+      install:
+        - pip install -r requirements.txt
 
     - language: node_js
       node_js: lts/*
