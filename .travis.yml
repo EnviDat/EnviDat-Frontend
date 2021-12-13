@@ -1,21 +1,19 @@
+language: node_js
+
 branches:
   only:
-  - master
-  - develop
+    - master
+    - develop
+node_js:
+  - "12"
+before_script:
+  - npm i
 
 jobs:
   include:
-    - language: python
-      python: "3.6"
-      install:
-        - pip install -r requirements.txt
-
-    - language: node_js
-      node_js: lts/*
-      before_script:
-        - npm i node-gyp -g
-        - npm i
-      script:
-        - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
-        - npm run test:unit
-        - npm run build
+    - name: 'Publish to Chromatic'
+      script: npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+    - name: 'run unit tests'
+      script: npm run test:unit
+    - name: 'test creating a build'
+      script: npm run build
