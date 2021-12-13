@@ -158,8 +158,8 @@ describe('getFrontendJSON', () => {
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const geoData = getFrontendJSON(EDITMETADATA_DATA_GEO, snakeCaseJSON)
 
-    expect(geoData.location.type).toBe(snakeCaseJSON.spatial.type);
-    expect(geoData.location.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
+    expect(geoData.location.geoJSON.type).toBe(snakeCaseJSON.spatial.type);
+    expect(geoData.location.geoJSON.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
 
   });
 
@@ -202,13 +202,16 @@ describe('getFrontendJSON', () => {
 
 
   it(EDITMETADATA_ORGANIZATION, () => {
+    const backendOrganization = mappingTestData.organization;
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const organizationData = getFrontendJSON(EDITMETADATA_ORGANIZATION, snakeCaseJSON)
 
-    const frontendOrganization = organizationData.organization;
-    const backendOrganization = mappingTestData.organization;
+    const id = organizationData.organizationId;
 
-    expect(frontendOrganization.id).toBe(backendOrganization.id);
+//    const frontendOrganization = organizationData.organization;
+
+    expect(id).toBe(backendOrganization.id);
+/*
     expect(frontendOrganization.name).toBe(backendOrganization.name);
     expect(frontendOrganization.title).toBe(backendOrganization.title);
     expect(frontendOrganization.type).toBe(backendOrganization.type);
@@ -219,6 +222,7 @@ describe('getFrontendJSON', () => {
     expect(frontendOrganization.isOrganization).toBe(backendOrganization.is_organization);
     expect(frontendOrganization.approvalStatus).toBe(backendOrganization.approval_status);
     expect(frontendOrganization.state).toBe(backendOrganization.state);
+*/
   });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
@@ -432,20 +436,22 @@ describe('getBackendJSON', () => {
     const spatial = JSON.parse(mappingTestData.spatial);
 
     const frontendJSON = {
-      location: spatial,
+      location: {
+        geoJSON: spatial,
+      },
     }
 
     const frontendGeoInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
     const geoData = getBackendJSON(EDITMETADATA_DATA_GEO, frontendGeoInfo)
 
-    expect(geoData.spatial.type).toBe(frontendJSON.location.type);
-    expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.location.coordinates);
+    expect(geoData.spatial.type).toBe(frontendJSON.location.geoJSON.type);
+    expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.location.geoJSON.coordinates);
 
     const flatJSON = convertJSON(geoData, true);
 
     expect(flatJSON.spatial.includes('type')).toBeTruthy();
     expect(flatJSON.spatial.includes('coordinates')).toBeTruthy();
-    expect(flatJSON.spatial.includes(frontendJSON.location.type)).toBeTruthy();
+    expect(flatJSON.spatial.includes(frontendJSON.location.geoJSON.type)).toBeTruthy();
 
   });
 
@@ -501,15 +507,16 @@ describe('getBackendJSON', () => {
   it(EDITMETADATA_ORGANIZATION, () => {
 
     const frontendOrganizationInfo = getObjectInOtherCase({
-      organization: mappingTestData.organization,
+      organizationId: mappingTestData.organization.id,
     }, toCamelCase);
 
     const organizationData = getBackendJSON(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo)
 
-    const backendOrganization = organizationData.organization;
-    const frontendOrganization = frontendOrganizationInfo.organization;
+//    const backendOrganization = organizationData.organization;
+//    const frontendOrganization = frontendOrganizationInfo.organization;
 
-    expect(frontendOrganization.id).toBe(backendOrganization.id);
+    expect(organizationData.organization.id).toBe(mappingTestData.organization.id);
+/*
     expect(frontendOrganization.name).toBe(backendOrganization.name);
     expect(frontendOrganization.title).toBe(backendOrganization.title);
     expect(frontendOrganization.type).toBe(backendOrganization.type);
@@ -520,6 +527,7 @@ describe('getBackendJSON', () => {
     expect(frontendOrganization.isOrganization).toBe(backendOrganization.is_organization);
     expect(frontendOrganization.approvalStatus).toBe(backendOrganization.approval_status);
     expect(frontendOrganization.state).toBe(backendOrganization.state);
+*/
   });
 
   it(EDITMETADATA_PUBLICATION_INFO, () => {
