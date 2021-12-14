@@ -138,7 +138,7 @@
                             :hint="mixinMethods_readOnlyHint('institution')"
                             :value="item.institution"
                             :error-messages="validationErrors.funders[index].institution"
-                            @input="notifyChange(index, 'institution', $event)" />
+                            @change="notifyChange(index, 'institution', $event)" />
 
             </v-col>
             <v-col cols="4"
@@ -150,7 +150,7 @@
                             :hint="mixinMethods_readOnlyHint('grantNumber')"
                             :value="item.grantNumber"
                             :error-messages="validationErrors.funders[index].grantNumber"
-                            @input="notifyChange(index, 'grantNumber', $event)" />
+                            @change="notifyChange(index, 'grantNumber', $event)" />
             </v-col>
             <v-col cols="4"
                    class="pl-2">
@@ -161,7 +161,7 @@
                             :hint="mixinMethods_readOnlyHint('institutionUrl')"
                             :value="item.institutionUrl"
                             :error-messages="validationErrors.funders[index].institutionUrl"
-                            @input="notifyChange(index, 'institutionUrl', $event)" />
+                            @change="notifyChange(index, 'institutionUrl', $event)" />
             </v-col>
 
       </v-row>
@@ -380,15 +380,9 @@ export default {
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
 /*
-    saveData() {
-
-      this.$store.dispatch(
-          `${USER_NAMESPACE}/${METADATA_EDITING_PATCH_DATASET}`,
-          {
-            id : this.$route.params.metadataid,
-            stepKey: this.stepKey,
-          });
-
+    validateArrayProperty(property, index, value){
+      const errorArray = this.validationErrors.funders;
+      return isArrayValid(this.funders,'funders', index, property, value, this.validations, errorArray)
     },
 */
     getCurrentYear() {

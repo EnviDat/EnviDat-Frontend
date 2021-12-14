@@ -53,7 +53,7 @@
                         :hint="mixinMethods_readOnlyHint('fieldName')"
                         :value="item.fieldName"
                         :error-messages="validationErrors[index].fieldName"
-                        @input="notifyChange(index, 'fieldName', $event)"
+                        @change="notifyChange(index, 'fieldName', $event)"
                         />
         </v-col>
         <v-col cols="6"
@@ -65,7 +65,7 @@
                         :hint="mixinMethods_readOnlyHint('content')"
                         :value="item.content"
                         :error-messages="validationErrors[index].content"
-                        @input="notifyChange(index, 'content', $event)"
+                        @change="notifyChange(index, 'content', $event)"
                         />
         </v-col>
       </v-row>
