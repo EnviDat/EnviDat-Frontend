@@ -84,7 +84,13 @@ function enhanceUserObject(user) {
   if (email) {
     user.emailHash = md5Hash(email);
   }
-  
+
+  const fullName = user?.fullname || user?.fullName || '';
+
+  if (fullName) {
+    user.fullName = fullName;
+  }
+
   return user;
 }
 
