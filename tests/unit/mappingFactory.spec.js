@@ -12,7 +12,7 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_INFO, EDITMETADATA_DATA_INFO_DATES,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -142,9 +142,11 @@ describe('getFrontendJSON', () => {
       const date = array[i];
       const backendDate = snakeCaseJSON.date[i];
 
-      expect(mappingTestData.date.includes(date.date)).toBeTruthy()
-      expect(mappingTestData.date.includes(date.dateType)).toBeTruthy()
-      expect(mappingTestData.date.includes(date.endDate)).toBeTruthy()
+      const mappedEntry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, backendDate);
+
+      expect(mappedEntry.dateStart).toBe(backendDate.date);
+      expect(mappedEntry.dateType).toBe(backendDate.date_type);
+      expect(mappedEntry.dateEnd).toBe(backendDate.end_date);
 
       expect(date.date).toBe(backendDate.date);
       expect(date.dateType).toBe(backendDate.date_type);
@@ -401,9 +403,19 @@ describe('getBackendJSON', () => {
       dataLicenseUrl: mappingTestData.license_url,
     }
 
+    const frontendDates = [];
+    for (let i = 0; i < dates.length; i++) {
+      const date = dates[i];
+      frontendDates.push({
+        dateType: date.date_type,
+        dateStart: date.date,
+        dateEnd: date.end_date,
+      })
+    }
+
     const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const dataInfoData = getBackendJSON(EDITMETADATA_DATA_INFO, frontendDataInfo)
+    const dataInfoData = getBackendJSON(EDITMETADATA_DATA_INFO, frontendDataInfo);
 
     expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
     expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
@@ -413,12 +425,20 @@ describe('getBackendJSON', () => {
     expect(array).toBeInstanceOf(Array);
 
     for (let i = 0; i < array.length; i++) {
-      const date = array[i];
-      const frontendDate = frontendDataInfo.dates[i];
+      const backendDate = array[i];
 
-      expect(date.date).toBe(frontendDate.date);
-      expect(date.date_type).toBe(frontendDate.dateType);
-      expect(date.end_date).toBe(frontendDate.endDate);
+      const frontendDate = frontendDates[i];
+
+      const mappedEntry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, frontendDate);
+
+      expect(backendDate.date).toBe(frontendDate.dateStart);
+      expect(mappedEntry.date).toBe(frontendDate.dateStart);
+      
+      expect(backendDate.date_type).toBe(frontendDate.dateType);
+      expect(mappedEntry.date_type).toBe(frontendDate.dateType);
+
+      expect(backendDate.end_date).toBe(frontendDate.dateEnd);
+      expect(mappedEntry.end_date).toBe(frontendDate.dateEnd);
     }
 
 

@@ -24,17 +24,19 @@ import {
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
-  createDates,
   createLocation,
   enhanceTags,
+  formatDate,
 } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_CUSTOMFIELDS_ENTRY,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_INFO_DATES,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -110,12 +112,46 @@ function commitEditingData(commit, eventName, data) {
   );
 }
 
+function mapCustomFields(fields, frontendToBackend = true) {
+  const backendEntries = [];
+
+  for (let i = 0; i < fields.length; i++) {
+    let mappedEntry = null;
+    if (frontendToBackend) {
+      mappedEntry = getBackendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+    } else {
+      mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+    }
+    backendEntries.push(mappedEntry);
+  }
+
+  return backendEntries;
+}
+
+function formatDates(dates) {
+  const formattedDates = [];
+
+  for (let i = 0; i < dates.length; i++) {
+    const dateEntry = dates[i];
+
+    const entry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    entry.dateStart = formatDate(entry.dateStart) || '';
+    entry.dateEnd = formatDate(entry.dateEnd) || '';
+
+    formattedDates.push(entry);
+  }
+
+  return formattedDates;
+}
+
 export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
   const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
+  // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
+  // with additional data from other "steps"
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
@@ -161,13 +197,13 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
-  const metadataDates = createDates({ date: dateInfoData.dates });
+  dateInfoData.dates = formatDates(dateInfoData.dates);
 
   const dataInfo = {
     // for now only use the title, check how to choose it in the
     // edit component
     dataLicenseId: dateInfoData.dataLicenseId,
-    ...metadataDates,
+    ...dateInfoData,
   };
 
   commitEditingData(commit, stepKey, dataInfo);
@@ -197,6 +233,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
   const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
   commitEditingData(commit, stepKey, customFieldsData);
 
 
@@ -221,6 +258,30 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
 
   commitEditingData(commit, stepKey, enhanceHeader);
 
+}
+
+function mapDatesForBackend(datesArray) {
+
+  if (!Array.isArray(datesArray) || datesArray.length <= 0) {
+    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, {
+      dateType: 'creation',
+      dateStart: '',
+      dateEnd: '',
+    });
+
+    return [entry];
+  }
+
+  const mappedDates = [];
+
+  for (let i = 0; i < datesArray.length; i++) {
+    const dateEntry = datesArray[i];
+
+    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    mappedDates.push(entry);
+  }
+
+  return mappedDates;
 }
 
 function cleanAuthorsForBackend(authors) {
@@ -252,7 +313,6 @@ function cleanAuthorsForBackend(authors) {
   return bAuthors;
 }
 
-
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_AUTHOR_LIST,
@@ -265,6 +325,10 @@ function mapBackendData(stepKey, frontendData) {
 
   if (stepKey === EDITMETADATA_AUTHOR_LIST) {
     frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
+  } else if (stepKey === EDITMETADATA_DATA_INFO) {
+    frontendData.dates = mapDatesForBackend(frontendData.dates);
+  } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
+    frontendData.customFields = mapCustomFields(frontendData.customFields);
   }
 
   let backendData = getBackendJSON(stepKey, frontendData);

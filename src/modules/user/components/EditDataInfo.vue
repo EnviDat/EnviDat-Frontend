@@ -156,7 +156,7 @@
             prepend-icon="data_usage"
             append-icon="arrow_drop_down"
             :value="selectedLicence"
-            @input="notifyChange('dataLicenseId', $event)"
+            @input="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
         </v-col>
@@ -283,12 +283,12 @@ export default {
   computed: {
     selectedLicence: {
       get() {
-
-        if (this.dataLicenseId === '') {
+        if (!this.dataLicenseId) {
           return ''
         }
 
-        const dataLicense = this.dataLicenses.filter(x => x.id === this.dataLicenseId)[0]
+        const dataLicense = this.getLicenseById(this.dataLicenseId);
+
         return {
           id: dataLicense.id,
           title: dataLicense.title,
@@ -301,55 +301,67 @@ export default {
       },
     },
     getDataLicenseLink() {
-      const currentLicense = this.dataLicenseId;
-
-      if (currentLicense === '') {
+      if (!this.dataLicenseId) {
         return 'Please select a data license above to view link for more detailed information.';
       }
 
-      for (let i = 0; i < this.dataLicenses.length; i++) {
-        if (currentLicense === this.dataLicenses[i].id) {
-          return this.dataLicenses[i].link;
-        }
-      }
+      const currentLicense = this.getLicenseById(this.dataLicenseId);
 
-      return 'Data license information unavailable.';
+      return currentLicense?.link || 'Data license information unavailable.';
     },
     getDataLicenseSummary() {
-      const currentLicense = this.dataLicenseId;
-
-      if (currentLicense === '') {
+      if (!this.dataLicenseId) {
         return 'Please select a data license above to view data license summary.';
       }
 
-      for (let i = 0; i < this.dataLicenses.length; i++) {
-        if (currentLicense === this.dataLicenses[i].id) {
-          return this.markdownText(this.dataLicenses[i].summary);
-        }
-      }
+      const currentLicense = this.getLicenseById(this.dataLicenseId);
 
-      return 'Data summary information unavailable.';
+      return this.markdownText(currentLicense?.summary) || 'Data summary information unavailable.';
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
     },
   },
   methods: {
-    dataLicenseLinkExists() {
-      const currentLicense = this.dataLicenseId;
-
-      for (let i = 0; i < this.dataLicenses.length; i++) {
-        if (
-          currentLicense === this.dataLicenses[i].id &&
-          'link' in this.dataLicenses[i]
-        ) {
-          return true;
-        }
+    getLicenseById(id) {
+      if (!id) {
+        return null;
       }
-      return false;
+
+      const dataLicense = this.dataLicenses.filter(x => x.id === id)[0];
+
+      return dataLicense || null;
+    },
+    dataLicenseLinkExists() {
+      const currentLicense = this.getLicenseById(this.dataLicenseId);
+      if (!currentLicense) {
+        return false;
+      }
+
+      return currentLicense?.link || false;
     },
     markdownText(mdText) {
       return renderMarkdown(mdText);
+    },
+    setDataLicenseInfo(value) {
+
+      const currentLicense = this.getLicenseById(value);
+
+      const id = currentLicense?.id || '';
+      const title = currentLicense?.title || '';
+      const url = currentLicense?.link || '';
+
+      const newDataInfo = {
+        ...this.$props,
+        dataLicenseId: id,
+        dataLicenseTitle: title,
+        dataLicenseUrl: url,
+      };
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_INFO,
+        data: newDataInfo,
+      });
     },
     setDataInfo(property, value) {
 
@@ -363,10 +375,11 @@ export default {
         data: newDataInfo,
       });
     },
-    notifyChange(property, value) {
+    changeLicense(value) {
+      const property = 'dataLicenseId';
 
       if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-        this.setDataInfo(property, value);
+        this.setDataLicenseInfo(value);
       }
     },
     dateChanged(index, property, value) {
@@ -380,17 +393,7 @@ export default {
       const errorArray = this.validationErrors.dates;
 
       if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
-        // Rename date variables for CKAN
-        const remappedDates = newDates.map(({
-          dateType,
-          dateStart,
-          dateEnd,
-        }) => ({
-          dateType,
-          date: dateStart,
-          ...(dateEnd && {endDate: dateEnd}),
-        }));
-        this.setDataInfo('dates', remappedDates);
+        this.setDataInfo('dates', newDates);
       }
 
     },
