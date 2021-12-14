@@ -84,13 +84,13 @@
                           :title="metadatasContent[pinnedId].title"
                           :name="metadatasContent[pinnedId].name"
                           :subtitle="metadatasContent[pinnedId].notes"
-                          :tags="metadatasContent[pinnedId].tags"
+                          :tags="!isCompactLayout ? metadatasContent[pinnedId].tags : null"
                           :titleImg="metadatasContent[pinnedId].titleImg"
                           :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
                           :resourceCount="metadatasContent[pinnedId].num_resources"
                           :mode="mode"
                           :flatLayout="listView"
-                          :compactLayout="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+                          :compactLayout="isCompactLayout"
                           :fileIconString="fileIconString"
                           :lockedIconString="lockedIconString"
                           :unlockedIconString="unlockedIconString"
@@ -110,13 +110,13 @@
                           :title="metadata.title"
                           :name="metadata.name"
                           :subtitle="metadata.notes"
-                          :tags="metadata.tags"
+                          :tags="!isCompactLayout ? metadata.tags : null"
                           :titleImg="metadata.titleImg"
                           :restricted="hasRestrictedResources(metadata)"
                           :resourceCount="metadata.num_resources"
                           :mode="mode"
                           :flatLayout="listView"
-                          :compactLayout="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+                          :compactLayout="isCompactLayout"
                           :fileIconString="fileIconString"
                           :lockedIconString="lockedIconString"
                           :unlockedIconString="unlockedIconString"
@@ -136,7 +136,8 @@
           <infinite-loading spinner="waveDots"
                             :identifier="infiniteId"
                             :distance="preloadingDistance"
-                            @infinite="infiniteHandler" >
+                            @infinite="infiniteHandler"
+                            :force-use-infinite-wrapper="mainScrollClass" >
             <div slot="no-results">
               <BaseRectangleButton v-if="vIndex > 0 && vIndex > reloadAmount"
                                     :buttonText="scrollTopButtonText"
@@ -236,6 +237,10 @@ export default {
     searchTerm: String,
     searchCount: Number,
     searchBarPlaceholder: String,
+    mainScrollClass: {
+      type: String,
+      default: '',
+    },
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -317,7 +322,7 @@ export default {
       }
       
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
-      const compactLayout = this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+      const compactLayout = this.isCompactLayout;
 
       return {
         'col-12': true,
@@ -330,6 +335,9 @@ export default {
     },
     contentSize() {
       return this.listContent !== undefined ? Object.keys(this.listContent).length : 0;
+    },
+    isCompactLayout() {
+      return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
   },
   methods: {

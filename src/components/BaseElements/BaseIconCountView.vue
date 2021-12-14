@@ -6,9 +6,10 @@
         <div v-on="on"
               class="iconCountView" >
           <v-container fluid
-                    class="py-0">
+                    class="pa-0">
           <v-row @mouseover="hoverBadge = true"
-                  @mouseleave="hoverBadge = false" >
+                  @mouseleave="hoverBadge = false"
+                 no-gutters >
             <v-col class="pa-0" >
               <v-badge :left="!hoverBadge"
                         overlap
@@ -34,9 +35,10 @@
     <div v-else
           class="iconCountView" >
       <v-container fluid
-                    class="py-0">
+                    class="pa-0">
       <v-row @mouseover="hoverBadge = true"
-              @mouseleave="hoverBadge = false" >
+              @mouseleave="hoverBadge = false"
+              no-gutters>
 
         <v-col class="pa-0" >
           <v-badge :left="!hoverBadge"

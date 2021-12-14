@@ -36,7 +36,7 @@
       </v-row>
     </v-container>
 
-    <v-card-text py-2
+    <v-card-text v-if="showCardBody"
                   :class="{['cardText'] : $vuetify.breakpoint.mdAndUp,
                         ['compactText'] : flatLayout || $vuetify.breakpoint.smAndDown,
                         ['pr-5'] : flatLayout,
@@ -76,13 +76,16 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-1 "
-                    style="position: absolute; bottom: 0px; right: 0px; background-color: white; border-radius: 10px;" >
+    <v-card-actions class="ma-0 pa-2"
+                    :style="`position: absolute; bottom: 0; right: 0;
+                              background-color: ${showCardBody ? 'white' : 'transparent'};
+                              border-radius: 10px;`" >
 
-      <v-container class="pa-0 cardIcons">
+      <v-container v-if="showCardBody"
+                   class="pa-0 cardIcons">
         <v-row v-if="modeData"
                 no-gutters>
-          <v-col class="pb-2 px-0" >
+          <v-col >
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -93,7 +96,7 @@
         </v-row>
 
         <v-row no-gutters>
-          <v-col class="py-3 px-1" >
+          <v-col >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
@@ -101,12 +104,37 @@
 
         <v-row v-if="geoJSONIcon"
                no-gutters>
-          <v-col class="pt-1 px-1" >
+          <v-col >
             <BaseIconLabelView :icon="geoJSONIcon" />
-
           </v-col>
         </v-row>
 
+      </v-container>
+
+      <v-container v-if="!showCardBody"
+                   class="pa-0 cardIcons">
+        <v-row no-gutters>
+
+          <v-col v-if="modeData"
+                 class="pl-1" >
+            <base-icon-button isFlat
+                              isSmall
+                              color="transparent"
+                              :disabled="true"
+                              :customIcon="modeEntryIcon" />
+          </v-col>
+
+          <v-col class="pl-1" >
+            <base-icon-count-view :count="resourceAmount"
+                                  :icon-string="fileIconString" />
+          </v-col>
+
+          <v-col v-if="geoJSONIcon"
+                 class="pl-1" >
+            <BaseIconLabelView :icon="geoJSONIcon" />
+          </v-col>
+
+        </v-row>
       </v-container>
 
     </v-card-actions>
@@ -188,7 +216,10 @@ export default {
     type: Number,
     restricted: Boolean,
     favourit: Boolean,
-    tags: Array,
+    tags: {
+      type: Array,
+      default: null,
+    },
     titleImg: String,
     dark: Boolean,
     resourceCount: Number,
@@ -211,8 +242,14 @@ export default {
     },
   },
   computed: {
+    showCardBody() {
+      return this.tags || !this.compactLayout;
+    },
     headerImageStyle() {
-      const topBorderStyle = 'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
+      let topBorderStyle = 'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
+      if (!this.showCardBody) {
+        topBorderStyle = 'border-radius: 4px; ';
+      }
       const imgStyle = !this.flatLayout ? this.dynamicCardBackground : `background-color: ${this.categoryColor}; `;
 
       return `${topBorderStyle} ${imgStyle}`;

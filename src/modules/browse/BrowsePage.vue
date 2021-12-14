@@ -27,7 +27,8 @@
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
-                    @searchCleared="catchSearchCleared" />
+                    @searchCleared="catchSearchCleared"
+                    mainScrollClass=".mapLayoutContainers" />
 
   </article>
 </template>

@@ -17,7 +17,7 @@
 
     <div class="topBoard" >
 
-      <IntroductionCard :userName="user.fullname"
+      <IntroductionCard :userName="user.fullName"
                         :createClickCallback="createClickCallback"
                         :existingClickCallback="existingClickCallback"
                         :editingClickCallback="editingClickCallback"
@@ -68,7 +68,8 @@
                       :minMapHeight="250"
                       :mapTopLayout="$vuetify.breakpoint.mdAndUp"
                       :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
-                      :showSearch="false" />
+                      :showSearch="false"
+                      mainScrollClass=".midBoard" />
 
       <div v-if="!hasUserDatasets"
             class="noUserDatasetsGrid">
@@ -115,7 +116,6 @@
                        :id="metadata.id"
                        :title="metadata.title"
                        :subtitle="metadata.notes"
-                       :tags="metadata.tags"
                        :name="metadata.name"
                        :titleImg="metadata.titleImg"
                        :resourceCount="metadata.num_resources"
@@ -198,7 +198,6 @@
                       :id="metadata.id"
                       :title="metadata.title"
                       :subtitle="metadata.notes"
-                      :tags="metadata.tags"
                       :name="metadata.name"
                       :titleImg="metadata.titleImg"
                       :resourceCount="metadata.num_resources"
@@ -652,10 +651,10 @@ export default {
     placeHolderAmount: 4,
     orgaDatasetsPreview: 5,
     maxFilterTags: 20,
-    collabCardWidth: 340,
-    collabCardHeight: 220,
-    orgaCardWidth: 340,
-    orgaCardHeight: 220,
+    collabCardWidth: 290,
+    collabCardHeight: 115,
+    orgaCardWidth: 290,
+    orgaCardHeight: 115,
     userCardHeight: 350,
     notFoundCardHeight: 300,
     userCardWidth: 300,
