@@ -557,7 +557,9 @@ export default {
           mutation: USER_GET_COLLABORATOR_DATASET_IDS,
         });
 
-      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
+      if (Array.isArray(this.collaboratorDatasetIds) && this.collaboratorDatasetIds.length > 0) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
+      }
     },
     fetchUserOrganisationData() {
       this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);

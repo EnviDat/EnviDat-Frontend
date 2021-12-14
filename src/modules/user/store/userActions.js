@@ -382,36 +382,27 @@ export default {
     const actionUrl = ACTION_USER_COLLABORATOR_DATASETS();
     const limit = this.state.user.collaboratorDatasetsLimit;
 
-    const requests = [];
+    let idQuery = 'id:(';
     for (let i = 0; i < datasetIds.length; i++) {
-      const id = datasetIds[i];
-
-      let url = extractBodyIntoUrl(actionUrl, {
-        q: `id:${id}`,
-        include_private: true,
-        include_drafts: true,
-        rows: limit,
-      });
-
-      url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-      if (useTestdata) {
-        // ignore the parameters for testdata, because it's directly a file
-        url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-      }
-
-      requests.push(axios.get(url));
+      idQuery += `"${datasetIds[i]}",`;
     }
+    idQuery = ')';
 
-    await Promise.all(requests)
-      .then((responses) => {
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          if (useTestdata && typeof response.data === 'string') {
-            response.data = JSON.parse(response.data);
-          }
-          commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, response.data.result);
+    let url = extractBodyIntoUrl(actionUrl, {
+      q: idQuery,
+      include_private: true,
+      include_drafts: true,
+      rows: limit,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then((response) => {
+        if (useTestdata && typeof response.data === 'string') {
+          response.data = JSON.parse(response.data);
         }
+        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, response.data.result);
       })
       .catch((error) => {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);
@@ -429,8 +420,7 @@ export default {
       url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
     }
 
-    await axios
-      .get(url)
+    await axios.get(url)
       .then((response) => {
         commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
 
@@ -485,6 +475,33 @@ export default {
     const actionUrl = ACTION_USER_ORGANIZATIONS_DATASETS();
     const limit = this.state.user.userRecentOrgaDatasetsLimit;
 
+    let idQuery = 'organization:(';
+    for (let i = 0; i < organizations.length; i++) {
+      idQuery += `"${organizations[i]}",`;
+    }
+    idQuery += ')';
+
+    let url = extractBodyIntoUrl(actionUrl, {
+      q: idQuery,
+      include_private: true,
+      include_drafts: true,
+      rows: limit,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then((response) => {
+        if (useTestdata && typeof response.data === 'string') {
+          response.data = JSON.parse(response.data);
+        }
+        commit(USER_GET_ORGANIZATIONS_DATASETS_SUCCESS, response.data.result);
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
+      });
+
+/*
     const requests = [];
     for (let i = 0; i < organizations.length; i++) {
       const name = organizations[i];
@@ -519,6 +536,7 @@ export default {
       .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
       });
+*/
   },
   // eslint-disable-next-line no-unused-vars
   async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
