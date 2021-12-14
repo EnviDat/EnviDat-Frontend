@@ -115,6 +115,10 @@ function commitEditingData(commit, eventName, data) {
 function mapCustomFields(fields, frontendToBackend = true) {
   const backendEntries = [];
 
+  if (!fields) {
+    return backendEntries;
+  }
+
   for (let i = 0; i < fields.length; i++) {
     let mappedEntry = null;
     if (frontendToBackend) {
@@ -671,7 +675,9 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, null, categoryCards);
+        if (response?.data?.result) {
+          populateEditingComponents(commit, response.data.result, null, categoryCards);
+        }
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
