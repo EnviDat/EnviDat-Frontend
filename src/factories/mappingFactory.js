@@ -15,9 +15,11 @@ import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_CUSTOMFIELDS_ENTRY,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_INFO_DATES,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -69,6 +71,15 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
     ['dataLicenseId','license_id'],
+    ['dataLicenseTitle','license_title'],
+    ['dataLicenseUrl','license_url'],
+  ],
+  [EDITMETADATA_DATA_INFO_DATES]: [
+    // special case because the snakeCase is done before
+    // only a renaming is needed
+    ['dateType','dateType'],
+    ['dateStart','date'],
+    ['dateEnd','endDate'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -85,6 +96,10 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_CUSTOMFIELDS]: [
     ['customFields', 'extras'],
+  ],
+  [EDITMETADATA_CUSTOMFIELDS_ENTRY]: [
+    ['fieldName', 'key'],
+    ['content', 'value'],
   ],
   [EDITMETADATA_ORGANIZATION]: [
     ['organizationId', 'organization.id'],

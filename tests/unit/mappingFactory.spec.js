@@ -145,8 +145,8 @@ describe('getFrontendJSON', () => {
       const mappedEntry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, backendDate);
 
       expect(mappedEntry.dateStart).toBe(backendDate.date);
-      expect(mappedEntry.dateType).toBe(backendDate.date_type);
-      expect(mappedEntry.dateEnd).toBe(backendDate.end_date);
+      expect(mappedEntry.dateType).toBe(backendDate.dateType);
+      expect(mappedEntry.dateEnd).toBe(backendDate.endDate);
 
       expect(date.date).toBe(backendDate.date);
       expect(date.dateType).toBe(backendDate.date_type);

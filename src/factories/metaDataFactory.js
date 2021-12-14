@@ -196,44 +196,6 @@ export function createBody(dataset, smallScreen = false) {
   };
 }
 
-export function createDates(dataset) {
-  // Return an array of formatted dates for the record
-
-  if (!dataset) {
-    return null;
-  }
-
-  const datesArr = typeof dataset.date === 'string' ?
-                    JSON.parse(dataset.date) :
-                    dataset.date;
-
-  if (!datesArr) {
-    return null;
-  }
-
-  const formattedDatesArr = [];
-  datesArr.forEach((dateEntry) => {
-    const dateStart = dateEntry.date || null;
-    const dateEnd = dateEntry.end_date || dateEntry.endDate || null;
-    const type = dateEntry.date_type || dateEntry.dateType || null;
-
-    const start = formatDate(dateStart) || '';
-    const end = formatDate(dateEnd) || '';
-
-    if (type === null) {
-      throw Error(`dateType of Dates array should never be null! ${JSON.stringify(dateEntry)}`);
-    }
-
-    formattedDatesArr.push({
-      dateStart: start,
-      dateEnd: end,
-      dateType: type,
-    });
-  });
-
-  return { dates: formattedDatesArr };
-}
-
 export function createPublications(dataset) {
   if (!dataset) {
     return null;
