@@ -531,16 +531,13 @@ const metadataInEditingValidations = {
       doi: yup.string().required().min(3),
       publisher: yup.string().required().min(3),
       publicationYear: yup.string().required(),
-      funders: yup
-        .array()
-        .min(1)
-        .of(
-          yup.object({
-            institution: yup.string().required().min(3),
-            grantNumber: yup.string(),
-            link: yup.string().url(),
-          }),
-        ),
+      funders: yup.array().min(1).of(
+        yup.object().shape({
+          institution: yup.string().required().min(3),
+          grantNumber: yup.string(),
+          institutionUrl: yup.string().url('Please provide an valid link / url with starting "http://"'),
+        }),
+      ),
     }),
 };
 
