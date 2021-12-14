@@ -36,27 +36,26 @@
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters class="pt-6">
-                  <v-col class="pr-2 text-left">
+                <v-row no-gutters
+                       class="pt-6" >
 
+                  <v-col class="pr-2 text-left">
                     <BaseRectangleButton buttonText="Edit Resources"
                                          color="secondary"
                                          :url="linkEditResourceCKAN" />
 
                   </v-col>
+
                   <v-col class="pr-2 text-right">
-                    <v-btn
-                      large
-                      color="error"
-                      @click="catchEditResourceClose"
-                    >
-                      Close
-                    </v-btn>
+                    <BaseRectangleButton buttonText="Deselect Resource"
+                                         color="error"
+                                          @clicked="catchEditResourceClose"/>
                   </v-col>
                 </v-row>
               </v-container>
             </v-card>
             <!-- TEMPORARY PLACEHOLDER END -->
+
           </v-col>
         </v-row>
 
@@ -93,7 +92,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters class="pt-6">
+                <v-row no-gutters
+                       class="pt-6"
+                        justify="end">
 
                   <BaseRectangleButton buttonText="Add Resources"
                                        color="secondary"

@@ -85,6 +85,7 @@
     </div>
 
      <div class="midBoard pt-4"
+          id="collaboratorDatasets"
           ref="collaboratorDatasets">
 
        <TitleCard title="My Collaborator Datasets"
@@ -93,6 +94,7 @@
                   :clickCallback="catchCollaboratorRefreshClick" />
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
+            id="collaboratorPlaceholders"
             :style="`height: ${collabCardHeight + 30}px;`" >
 
          <MetadataCardPlaceholder id="orgaDataset"
@@ -102,7 +104,8 @@
                                   :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`" />
        </div>
 
-       <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading"
+       <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
+            id="collaboratorDatasetCards"
             :style="`height: ${collabCardHeight + 30}px;`" >
 
          <MetadataCard v-for="(metadata, index) in collaboratorDatasets"
