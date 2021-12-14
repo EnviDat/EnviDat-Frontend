@@ -2,7 +2,7 @@
   "author": "[{\"first_name\": \"David\", \"last_name\": \"Hanimann\", \"dataset_count\": 1, \"affiliation\": \"WSL\", \"id\": {\"identifier\": \"\"}, \"email\": \"david.hanimann@wsl.ch\", \"data_credit\": \"software\"}, {\"first_name\": \"Ionut\", \"last_name\": \"Iosifescu Enescu\", \"dataset_count\": 10, \"affiliation\": \"WSL\", \"id\": {\"identifier\": \"0000-0002-1770-7833\"}, \"email\": \"ionut.iosifescu@wsl.ch\", \"data_credit\": [\"software\", \"publication\", \"supervision\", \"validation\", \"collection\", \"curation\"]}]",
   "author_email": null,
   "creator_user_id": "334cee1e-6afa-4639-88a2-f980e6ff42c3",
-  "date": "[{\"date\": \"2020-06-08\", \"date_type\": \"created\", \"end_date\": \"\"}]",
+  "date": "[{\"date\": \"2020-06-08\", \"date_type\": \"created\", \"end_date\": \"2020-06-09\"}]",
   "doi": "10.16904/envidat04.4",
   "funding": "[{\"grant_number\":\"EnviDat\",\"institution\":\"WSL\",\"institution_url\":\"https://www.envidat.ch\"}]",
   "id": "3397f564-fb50-41ac-a8f1-b2549c9524ba",
