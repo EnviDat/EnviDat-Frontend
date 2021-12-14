@@ -147,6 +147,7 @@ export default {
       return {
         body: {
           text: this.previewDescription,
+          maxTextLength: 5000,
         },
       };
     },

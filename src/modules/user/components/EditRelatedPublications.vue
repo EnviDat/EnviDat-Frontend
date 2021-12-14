@@ -145,6 +145,7 @@ export default {
       return {
         publications: {
           text: this.previewPublicationsText,
+          maxTextLength: 2000,
         },
       };
     },

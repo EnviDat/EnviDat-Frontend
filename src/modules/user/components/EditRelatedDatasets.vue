@@ -144,6 +144,7 @@ export default {
       return {
         datasets: {
           text: this.previewRelatedDatasetsText,
+          maxTextLength: 2000,
         },
       };
     },
