@@ -69,6 +69,8 @@
                       :mapTopLayout="$vuetify.breakpoint.mdAndUp"
                       :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
                       :showSearch="false"
+                      :showPublicationState="true"
+                      :defaultPublicationState="defaultPublicationState"
                       mainScrollClass=".midBoard" />
 
       <div v-if="!hasUserDatasets"
@@ -122,6 +124,7 @@
                        :fileIconString="fileIconString"
                        :categoryColor="metadata.categoryColor"
                        :compactLayout="true"
+                       :state="getMetadataState(metadata)"
                        @clickedEvent="catchMetadataClicked"
                        @clickedTag="catchTagClicked"
                        :showGenericOpenButton="!!metadata.openEvent"
@@ -204,6 +207,7 @@
                       :fileIconString="fileIconString"
                       :categoryColor="metadata.categoryColor"
                       :compactLayout="true"
+                      :state="getMetadataState(metadata)"
                       @clickedEvent="catchMetadataClicked"
                       @clickedTag="catchTagClicked"
                       :showGenericOpenButton="!!metadata.openEvent"
@@ -227,27 +231,6 @@
 
     </div>
    </div>
-<!--
-    <v-row>
-      <v-col>
-        <v-dialog
-          v-model="showModal"
-          attach="#DashboardPage"
-        >
-        <template v-slot:activator="{on, attrs}">
-          <v-btn v-bind="attrs"
-                v-on="on" >
-                showModal
-            </v-btn>
-
-        </template>
-          <v-card>
-            dialog thingy
-          </v-card>
-
-        </v-dialog>
-      </v-col>
-    </v-row> -->
 
   </v-container>
 
@@ -522,6 +505,11 @@ export default {
     },
   },
   methods: {
+    getMetadataState(metadata) {
+      const state = metadata.publication_state || metadata.publicationState || undefined;
+
+      return state !== undefined ? state : this.defaultPublicationState;
+    },
     contentFilteredByTags(value, selectedTagNames) {
       return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
     },
@@ -694,6 +682,7 @@ export default {
       // LISTCONTROL_MAP_ACTIVE,
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
+    defaultPublicationState: 'draft',
   }),
   components: {
     MetadataList,

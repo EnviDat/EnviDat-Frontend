@@ -96,6 +96,7 @@
                           :unlockedIconString="unlockedIconString"
                           :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
+                          :state="getMetadataState(metadatasContent[pinnedId])"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
         </v-col>
@@ -122,6 +123,7 @@
                           :unlockedIconString="unlockedIconString"
                           :geoJSONIcon="getGeoJSONIcon(metadata.location)"
                           :categoryColor="metadata.categoryColor"
+                          :state="getMetadataState(metadata)"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked"
                           :showGenericOpenButton="!!metadata.openEvent"
@@ -241,6 +243,14 @@ export default {
       type: String,
       default: '',
     },
+    showPublicationState: {
+      type: Boolean,
+      default: false,
+    },
+    defaultPublicationState: {
+      type: String,
+      default: undefined,
+    },
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -341,6 +351,15 @@ export default {
     },
   },
   methods: {
+    getMetadataState(metadata) {
+      if (!this.showPublicationState) {
+        return null;
+      }
+
+      const state = metadata.publication_state || metadata.publicationState || undefined;
+
+      return state !== undefined ? state : this.defaultPublicationState;
+    },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },

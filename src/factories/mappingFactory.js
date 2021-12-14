@@ -338,6 +338,7 @@ export function cleanSpatialInfo(spatial) {
   return backEndJson;
 }
 
+// possible publication states: ['', 'published', 'approved', 'publication pending', 'publication requested']
 const readOnlyMappingRules = [
   {
     triggerRule: ['published'],

@@ -82,21 +82,28 @@
                               border-radius: 10px;`" >
 
       <v-container v-if="showCardBody"
-                   class="pa-0 cardIcons">
+                   class="pa-0">
+
+        <v-row v-if="state"
+               no-gutters>
+          <v-col >
+            <MetadataStateChip :state="state" />
+          </v-col>
+        </v-row>
+
         <v-row v-if="modeData"
                 no-gutters>
-          <v-col >
+          <v-col class="cardIcons">
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
                                 :disabled="true"
                                 :customIcon="modeEntryIcon" />
           </v-col>
-
         </v-row>
 
         <v-row no-gutters>
-          <v-col >
+          <v-col class="cardIcons">
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
@@ -104,7 +111,7 @@
 
         <v-row v-if="geoJSONIcon"
                no-gutters>
-          <v-col >
+          <v-col class="cardIcons">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -112,11 +119,16 @@
       </v-container>
 
       <v-container v-if="!showCardBody"
-                   class="pa-0 cardIcons">
+                   class="pa-0">
+
         <v-row no-gutters>
+          <v-col v-if="state"
+                 class="pl-1" >
+            <MetadataStateChip :state="state" />
+          </v-col>
 
           <v-col v-if="modeData"
-                 class="pl-1" >
+                 class="pl-1 cardIcons" >
             <base-icon-button isFlat
                               isSmall
                               color="transparent"
@@ -124,16 +136,15 @@
                               :customIcon="modeEntryIcon" />
           </v-col>
 
-          <v-col class="pl-1" >
+          <v-col class="pl-3 cardIcons" >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
 
           <v-col v-if="geoJSONIcon"
-                 class="pl-1" >
+                 class="pl-1 cardIcons" >
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
-
         </v-row>
       </v-container>
 
@@ -175,9 +186,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import TagChip from '@/components/Chips/TagChip';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+
 import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
 
@@ -207,6 +220,7 @@ export default {
     BaseIconCountView,
     BaseIconLabelView,
     BaseIconButton,
+    MetadataStateChip,
   },
   props: {
     id: String,
@@ -239,6 +253,10 @@ export default {
     openButtonIcon: {
       type: String,
       default: 'preview',
+    },
+    state: {
+      type: String,
+      default: '',
     },
   },
   computed: {
