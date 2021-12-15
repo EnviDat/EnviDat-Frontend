@@ -338,7 +338,7 @@ export default {
         return false;
       }
 
-      return currentLicense?.link || false;
+      return currentLicense.link || false;
     },
     markdownText(mdText) {
       return renderMarkdown(mdText);

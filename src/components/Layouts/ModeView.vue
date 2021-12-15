@@ -73,7 +73,6 @@ import { getModeData } from '@/factories/modeFactory';
 
 export default {
   name: 'ModeView',
-  // TODO: Component is not in use. Moved content to TheNavigationToolbar while upgrading to vuetify2
   components: {
     BaseIconButton,
   },
