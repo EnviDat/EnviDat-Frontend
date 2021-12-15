@@ -30,7 +30,37 @@
       class="content fill-height pa-1 pt-0"
       :style="`background-color: ${backgroundColor}`"
     >
-      <v-card class="fill-height pa-4">
+
+      <v-card v-if="loading"
+              class="fill-height pa-4">
+
+        <v-card-title>
+          <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
+               style="width: 100%;" >
+            <div class="bone bone-type-multiline bone-style-steps" />
+          </div>
+        </v-card-title>
+
+        <v-card-text >
+          <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
+               style="width: 100%;" >
+            <div class="bone bone-type-multiline" />
+            <div class="bone bone-type-multiline bone-style-paragraph" />
+          </div>
+        </v-card-text>
+
+        <v-card-text >
+          <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
+               style="width: 100%;" >
+            <div class="bone bone-type-multiline" />
+            <div class="bone bone-type-multiline bone-style-paragraph" />
+          </div>
+        </v-card-text>
+
+      </v-card>
+
+      <v-card v-if="!loading"
+              class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
@@ -77,6 +107,10 @@ export default {
     subStep: String,
     stepColor: String,
     nextMajorStep: String,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   beforeMount() {
     this.setupSteps();

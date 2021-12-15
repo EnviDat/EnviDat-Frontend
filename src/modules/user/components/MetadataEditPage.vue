@@ -10,6 +10,7 @@
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
+                       :loading="loading"
                        @clickedClose="catchBackClicked" />
 
   </v-container>
@@ -137,17 +138,15 @@ export default {
   },
   computed: {
     ...mapState(USER_NAMESPACE, [
-      'metadataInEditing',
       'lastEditedBackPath',
       'currentEditingContent',
+      'loadingCurrentEditingContent',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
-      'currentMetadataContent',
     ]),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
-      'currentMetadataContent',
       'existingAuthors',
       'existingKeywords',
     ]),
@@ -156,6 +155,9 @@ export default {
      */
     metadataId() {
       return this.$route.params.metadataid;
+    },
+    loading() {
+      return this.loadingCurrentEditingContent && !this.currentEditingContent;
     },
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
