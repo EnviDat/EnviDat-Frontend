@@ -119,7 +119,7 @@ export default {
     for (let i = 0; i < datasetIds.length; i++) {
       idQuery += `"${datasetIds[i]}",`;
     }
-    idQuery = ')';
+    idQuery += ')';
 
     let url = extractBodyIntoUrl(actionUrl, {
       q: idQuery,
