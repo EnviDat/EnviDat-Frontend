@@ -652,10 +652,7 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return (
-        this.currentMetadataContent.id === idOrName ||
-        this.currentMetadataContent.name === idOrName
-      );
+      return this.currentMetadataContent?.id === idOrName || this.currentMetadataContent?.name === idOrName;
     },
     /**
      * @description
