@@ -17,7 +17,7 @@
       <v-col class="shrink">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Finish"
-                             color='success'
+                             color='green'
                              @clicked="submitEdittedMetadata" />
       </v-col>
     </v-row>
@@ -46,8 +46,10 @@ import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
+  eventBus,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
 export default {
@@ -94,8 +96,7 @@ export default {
   },
   methods: {
     submitEdittedMetadata() {
-      // eslint-disable-next-line no-console
-      console.log('todo');
+      eventBus.$emit(METADATA_EDITING_FINISH_CLICK);
     },
   },
   data: () => ({}),

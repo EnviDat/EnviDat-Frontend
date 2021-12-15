@@ -48,13 +48,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
+  eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_NETWORK_ERROR,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  eventBus,
+  METADATA_EDITING_FINISH_CLICK,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
@@ -132,6 +133,7 @@ export default {
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -142,6 +144,7 @@ export default {
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.$off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
   },
   beforeMount() {
     this.initializeStepsInUrl();
