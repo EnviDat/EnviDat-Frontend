@@ -124,6 +124,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    allOrganizations: {
+      type: Array,
+      default: () => [],
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -156,7 +160,8 @@ export default {
   created() {
     eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  beforeMount() {
+  mounted() {
+//  beforeMount() {
     if (this.user) {
       this.fetchUserOrganisationData();
     }
@@ -173,7 +178,15 @@ export default {
     selectedOrganization () {
       // Get organization title, filtering userOrganizationsList by organizationId prop
 
-      const userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
+      let userOrg = null;
+
+      if (this.allOrganizations?.length > 0) {
+        userOrg = this.allOrganizations.filter(x => x.id === this.previewOrganization)[0];
+      }
+
+      if (!userOrg) {
+        userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
+      }
 
       if (!userOrg) {
         return this.emptySelection

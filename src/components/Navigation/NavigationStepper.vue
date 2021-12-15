@@ -31,7 +31,7 @@
       :style="`background-color: ${backgroundColor}`"
     >
 
-      <v-card v-if="loading"
+      <v-card v-show="loading"
               class="fill-height pa-4">
 
         <v-card-title>

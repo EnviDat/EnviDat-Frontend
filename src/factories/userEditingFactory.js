@@ -186,6 +186,7 @@ const emptyMetadataInEditing = {
     customFields: [],
   },
   [EDITMETADATA_ORGANIZATION]: {
+    allOrganizations: [],
     organization: '',
     userOrganizationsList: [],
   },

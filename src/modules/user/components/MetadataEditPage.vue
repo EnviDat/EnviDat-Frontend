@@ -10,7 +10,7 @@
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
-                       :loading="loading"
+                       :loading="false"
                        @clickedClose="catchBackClicked" />
 
 
@@ -82,8 +82,14 @@ import {
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
+  UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
+
+import {
+  GET_ORGANIZATIONS,
+  ORGANIZATIONS_NAMESPACE,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   METADATAEDIT_PAGENAME,
@@ -157,6 +163,8 @@ export default {
       this.initMetadataUsingId(this.metadataId);
     }
 
+    this.loadOrganizations();
+
   },
   computed: {
     ...mapState(USER_NAMESPACE, [
@@ -203,6 +211,39 @@ export default {
     },
   },
   methods: {
+    async loadOrganizations() {
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
+
+      this.updateStepsOrganizations();
+    },
+    updateStepsOrganizations() {
+      const allOrgas = this.$store.state.organizations.organizations;
+
+      if (Array.isArray(allOrgas) && allOrgas.length > 0) {
+
+        const allOrganizations = [];
+        for (let i = 0; i < allOrgas.length; i++) {
+          const orga = allOrgas[i];
+          allOrganizations.push({
+            id: orga.id,
+            title: orga.title,
+          })
+        }
+
+        const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+
+        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+          {
+            object: EDITMETADATA_ORGANIZATION,
+            data: {
+              ...editOrgaData,
+              allOrganizations,
+            },
+          },
+        );
+
+      }
+    },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
         await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
@@ -278,14 +319,6 @@ export default {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
-
-      // save the data in the (frontend) vuex store
-/*
-      this.$store.commit(
-        `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        updateObj,
-      );
-*/
 
       let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
       const payload = {
