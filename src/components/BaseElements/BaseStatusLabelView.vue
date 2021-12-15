@@ -34,8 +34,7 @@
       </v-col>
 
       <v-col v-show="!loading"
-              class="grow pr-2"
-              :class="textCssClass"
+              class="grow pr-2 text-caption"
               :style="expandedText ? 'cursor: pointer;' : ''"
              v-on="expandedText ? { click: () => { expanded = !expanded } } : {}" >
         {{ statusText }}
@@ -59,8 +58,7 @@
     <v-row v-show="expanded && expandedText"
             no-gutters
             justify="start"
-            class="align-center pa-1"             
-            :class="textCssClass" >
+            class="align-center pa-1 text-caption" >
       {{ expandedText }}
     </v-row>
     <!-- </v-expand-y-transition> -->
@@ -92,7 +90,6 @@ export default {
     statusIcon: String,
     statusColor: String,
     statusText: String,
-    textCssClass: String,
     showExpandIcon: {
       type: Boolean,
       default: true,

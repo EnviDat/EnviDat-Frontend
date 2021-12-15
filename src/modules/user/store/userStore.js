@@ -44,7 +44,7 @@ const userState = {
   userRecentOrgaDatasetsError: null,
   userRecentOrgaDatasetsLimit: 10,
   metadataSavingMessageTimeoutTime: 2500,
-  metadataSavingErrorTimeoutTime: 5000,
+  metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',

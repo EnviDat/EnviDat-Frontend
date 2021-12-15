@@ -29,7 +29,7 @@ import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_NETWORK_ERROR,
   eventBus,
   SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
@@ -124,10 +124,19 @@ function createErrorMessage(reason) {
   let details = '';
 
   if (reason?.response) {
+
+    if (reason.response.status !== 200) {
+      eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
+          reason.response.status,
+          reason.response.statusText,
+          reason.response?.data?.error?.message);
+    }
+
     msg = 'Saving failed ';
     if (reason.response.status === 403) {
       msg += ' you are not authorized';
     }
+
     const errorObj = reason?.response?.data?.error || reason?.response?.error || null;
 
     if (errorObj) {
@@ -491,11 +500,9 @@ export default {
 
     eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
 
-/*
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
-*/
   },
   resetMessage(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];

@@ -13,7 +13,24 @@
                        :loading="loading"
                        @clickedClose="catchBackClicked" />
 
+
+    <v-snackbar id="NotificationSnack"
+                top
+                elevation="0"
+                color="transparent"
+                timeout="10000"
+                v-model="showSnack"
+                >
+
+      <NotificationCard v-if="editingError"
+                        :notification="editingError"
+                        :showCloseButton="true"
+                        @clickedClose="showSnack = false" />
+
+    </v-snackbar>
+
   </v-container>
+
 </template>
 
 <script>
@@ -31,18 +48,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
-  eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_NETWORK_ERROR,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+  eventBus,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
-  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
-
 
 import {
   getStepByName,
@@ -77,14 +94,15 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-
 import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import NavigationStepper from '@/components/Navigation/NavigationStepper';
+import NotificationCard from '@/components/Cards/NotificationCard';
+import { errorMessage } from '@/factories/notificationFactory';
 
 const creationSteps = initializeSteps(metadataCreationSteps);
 
@@ -113,7 +131,7 @@ export default {
     eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-
+    eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -123,6 +141,7 @@ export default {
     eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
   },
   beforeMount() {
     this.initializeStepsInUrl();
@@ -172,6 +191,12 @@ export default {
       const subStep = this.$route?.params?.substep;
 
       return subStep || '';
+    },
+    editingError() {
+      if (!this.errorMessage && !this.errorTitle) {
+        return null;
+      }
+      return errorMessage(this.errorTitle, this.errorMessage);
     },
   },
   methods: {
@@ -336,6 +361,22 @@ export default {
       step.error = null;
       return true;
     },
+    showSnackMessage(status, statusMessage, message) {
+
+      const id = this.currentEditingContent?.id || null;
+      const name = this.currentEditingContent?.name || null;
+
+      if (id && name) {
+        statusMessage = statusMessage.replace(id, `"${name}"`);
+        message = message.replace(id, `"${name}"`);
+      }
+
+      const predefinedErrors =this.backendErrorList[status];
+      this.errorTitle = predefinedErrors?.message || 'Fatal Error';
+      this.errorMessage = `${message} ${predefinedErrors?.details || ''}`;
+
+      this.showSnack = true;
+    },
   },
   watch: {
     $route(){
@@ -344,9 +385,28 @@ export default {
   },
   components: {
     NavigationStepper,
+    // NotificationSnack,
+    // BaseRectangleButton,
+    NotificationCard,
   },
   data: () => ({
     creationSteps,
+    errorTitle: null,
+    errorMessage: null,
+    errorColor: 'error',
+    backendErrorList: {
+      403: {
+        message: 'You are not authorized to make these changes',
+      },
+      408: {
+        message: 'Server timeout happened.',
+        details: 'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
+      },
+      409: {
+        message: 'You are not authorized to make these changes',
+      },
+    },
+    showSnack: false,
   }),
 };
 </script>
