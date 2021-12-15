@@ -225,7 +225,7 @@ export default {
   [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, payload) {
     state.collaboratorDatasetsLoading = false;
 
-    const datasets = enhanceMetadataFromCategories(this, payload.datasets);
+    const datasets = enhanceMetadataFromCategories(this, payload.results);
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
