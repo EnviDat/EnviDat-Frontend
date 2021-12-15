@@ -139,6 +139,7 @@ export default {
     ...mapState(USER_NAMESPACE, [
       'metadataInEditing',
       'lastEditedBackPath',
+      'currentEditingContent',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -173,7 +174,9 @@ export default {
   },
   methods: {
     async initMetadataUsingId(id) {
-      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+      if (id !== this.currentEditingContent?.name) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+      }
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 

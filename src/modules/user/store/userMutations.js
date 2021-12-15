@@ -15,15 +15,6 @@
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 import {
-  eventBus,
-  EDITMETADATA_AUTHOR,
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_RESOURCES,
-  SELECT_EDITING_DATASET_PROPERTY,
-} from '@/factories/eventBus';
-
-import {
   selectForEditing,
   setSelected,
   updateAuthors,
@@ -31,11 +22,26 @@ import {
 } from '@/factories/userEditingFactory';
 
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+
+import { populateEditingComponents } from '@/factories/mappingFactory';
+
+import {
+  EDITMETADATA_AUTHOR,
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_RESOURCES,
+  eventBus,
+  SELECT_EDITING_DATASET_PROPERTY,
+} from '@/factories/eventBus';
+
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LAST_DATASET,
+  METADATA_EDITING_LOAD_DATASET,
+  METADATA_EDITING_LOAD_DATASET_ERROR,
+  METADATA_EDITING_LOAD_DATASET_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
@@ -51,12 +57,15 @@ import {
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
-  USER_GET_DATASETS,
-  USER_GET_DATASETS_ERROR,
-  USER_GET_DATASETS_SUCCESS,
+  USER_GET_COLLABORATOR_DATASET_IDS,
+  USER_GET_COLLABORATOR_DATASET_IDS_ERROR,
+  USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
   USER_GET_COLLABORATOR_DATASETS_SUCCESS,
+  USER_GET_DATASETS,
+  USER_GET_DATASETS_ERROR,
+  USER_GET_DATASETS_SUCCESS,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
@@ -68,9 +77,6 @@ import {
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE,
   VALIDATION_ERROR,
-  USER_GET_COLLABORATOR_DATASET_IDS,
-  USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS,
-  USER_GET_COLLABORATOR_DATASET_IDS_ERROR,
 } from './userMutationsConsts';
 
 
@@ -155,6 +161,14 @@ function resetErrorObject(state) {
   state.errorField = '';
 }
 
+function enhanceMetadataFromCategories(store, metadatas) {
+
+  const { cardBGImages, categoryCards } = store.getters;
+//  const categoryCards = store.getters.categoryCards;
+
+  return enhanceMetadatas(metadatas, cardBGImages, categoryCards);
+}
+
 export default {
   [USER_GET_DATASETS](state) {
     state.userDatasetsLoading = true;
@@ -165,11 +179,7 @@ export default {
   [USER_GET_DATASETS_SUCCESS](state, payload) {
     state.userDatasetsLoading = false;
 
-    const store = this;
-    const { cardBGImages } = store.getters;
-    const categoryCards = store.getters.categoryCards;
-
-    const datasets = enhanceMetadatas(payload.datasets, cardBGImages, categoryCards);
+    const datasets = enhanceMetadataFromCategories(this, payload.datasets);
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
@@ -206,7 +216,7 @@ export default {
 
     extractError(this, reason);
   },
-  [USER_GET_COLLABORATOR_DATASETS](state, payload) {
+  [USER_GET_COLLABORATOR_DATASETS](state) {
     state.collaboratorDatasetsLoading = false;
     state.collaboratorDatasets = [];
 
@@ -215,11 +225,7 @@ export default {
   [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, payload) {
     state.collaboratorDatasetsLoading = false;
 
-    const store = this;
-    const { cardBGImages } = store.getters;
-    const categoryCards = store.getters.categoryCards;
-
-    const datasets = enhanceMetadatas(payload.results, cardBGImages, categoryCards);
+    const datasets = enhanceMetadataFromCategories(this, payload.datasets);
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
@@ -278,12 +284,7 @@ export default {
 
     const orgaId = payload.id;
     if (payload.packages?.length > 0) {
-
-      const store = this;
-      const { cardBGImages } = store.getters;
-      const categoryCards = store.getters.categoryCards;
-
-      payload.packages = enhanceMetadatas(payload.packages, cardBGImages, categoryCards);
+      payload.packages = enhanceMetadataFromCategories(this, payload.packages);
     }
 
     this._vm.$set(state.userOrganizations, orgaId, payload);
@@ -307,12 +308,7 @@ export default {
     let recentDatasets = [];
 
     if (payload.results?.length > 0) {
-
-      const store = this;
-      const { cardBGImages } = store.getters;
-      const categoryCards = store.getters.categoryCards;
-
-      recentDatasets = enhanceMetadatas(payload.results, cardBGImages, categoryCards);
+      recentDatasets = enhanceMetadataFromCategories(this, payload.results);
     }
 
     if (state.userRecentOrgaDatasets?.length > 0) {
@@ -509,5 +505,32 @@ export default {
     state.lastEditedDataset = payload.name;
     state.lastEditedDatasetPath = payload.path;
     state.lastEditedBackPath = payload.backPath;
+  },
+  [METADATA_EDITING_LOAD_DATASET](state) {
+    state.loadingCurrentEditingContent = true;
+    state.currentEditingContent = null;
+    state.currentEditingContentError = null;
+  },
+  [METADATA_EDITING_LOAD_DATASET_SUCCESS](state, payload) {
+    state.loadingCurrentEditingContent = false;
+
+    // recentDatasets = enhanceMetadataFromCategories(this, payload.results);
+
+    const currentEntry = enhanceMetadataFromCategories(this, payload);
+    state.currentEditingContent = currentEntry;
+//    state.currentEditingContent = Object.values(enhancedPayload)[0];
+
+    if (currentEntry) {
+//      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+
+      const { authorsMap, categoryCards } = this.getters;
+
+      populateEditingComponents(this.commit, currentEntry, authorsMap, categoryCards);
+    }
+  },
+  [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {
+    state.loadingCurrentEditingContent = false;
+    const errorObj = createErrorMessage(reason);
+    state.currentEditingContentError = errorObj.message;
   },
 };

@@ -942,6 +942,7 @@ export function enhanceMetadataEntry(
  * @param {Array} metadatas
  * @param {Array} cardBGImages
  *
+ * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {

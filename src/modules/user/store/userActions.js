@@ -15,39 +15,12 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
-  convertJSON,
-  getBackendJSON,
-  getFrontendJSON,
-  toSnakeCase,
+  mapFrontendToBackend,
+  populateEditingComponents,
 } from '@/factories/mappingFactory';
 
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import {
-  createLocation,
-  enhanceTags,
-  formatDate,
-} from '@/factories/metaDataFactory';
-
-import {
-  EDITMETADATA_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_CUSTOMFIELDS_ENTRY,
-  EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_INFO_DATES,
-  EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_KEYWORDS,
-  EDITMETADATA_MAIN_DESCRIPTION,
-  EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-} from '@/factories/eventBus';
-
-import { getDataCredit } from '@/factories/authorFactory';
 import {
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
@@ -65,14 +38,10 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
-  UPDATE_METADATA_EDITING,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
@@ -85,7 +54,8 @@ import {
   USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_NAMESPACE, ACTION_USER_COLLABORATOR_DATASETS,
+  ACTION_USER_COLLABORATOR_DATASETS,
+  USER_NAMESPACE,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -102,247 +72,6 @@ if (!useTestdata) {
 const sleep = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-function commitEditingData(commit, eventName, data) {
-  commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-    {
-      object: eventName,
-      data,
-    },
-    { root: true },
-  );
-}
-
-function mapCustomFields(fields, frontendToBackend = true) {
-  const backendEntries = [];
-
-  if (!fields) {
-    return backendEntries;
-  }
-
-  for (let i = 0; i < fields.length; i++) {
-    let mappedEntry = null;
-    if (frontendToBackend) {
-      mappedEntry = getBackendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
-    } else {
-      mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
-    }
-    backendEntries.push(mappedEntry);
-  }
-
-  return backendEntries;
-}
-
-function formatDates(dates) {
-  const formattedDates = [];
-
-  for (let i = 0; i < dates.length; i++) {
-    const dateEntry = dates[i];
-
-    const entry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
-    entry.dateStart = formatDate(entry.dateStart) || '';
-    entry.dateEnd = formatDate(entry.dateEnd) || '';
-
-    formattedDates.push(entry);
-  }
-
-  return formattedDates;
-}
-
-export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
-
-  const snakeCaseJSON = convertJSON(metadataRecord, false);
-
-  let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
-  // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
-  // with additional data from other "steps"
-
-  stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, descriptionData);
-
-  stepKey = EDITMETADATA_KEYWORDS;
-  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
-  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
-
-  const enhancedKeywords = {
-    ...keywordsData,
-    metadataCardTitle: headerData.metadataTitle,
-    metadataCardSubtitle: descriptionData.description,
-  }
-  commitEditingData(commit, stepKey, enhancedKeywords);
-
-  stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
-
-  const authors = []
-  snakeCaseJSON.author.forEach((bAuthor) => {
-
-    const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
-    author.dataCredit = getDataCredit(bAuthor);
-
-    authors.push(author);
-  })
-  // const authors = createAuthors({ author: backendAuthors.authors });
-  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
-
-  commitEditingData(commit, stepKey, {
-    authors,
-  });
-
-
-  // Stepper 2: Data Resources, Info, Location
-  // const resources = createResources(metadataRecord).resources;
-
-  stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, resourceData);
-
-  stepKey = EDITMETADATA_DATA_INFO;
-  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
-
-  dateInfoData.dates = formatDates(dateInfoData.dates);
-
-  const dataInfo = {
-    // for now only use the title, check how to choose it in the
-    // edit component
-    dataLicenseId: dateInfoData.dataLicenseId,
-    ...dateInfoData,
-  };
-
-  commitEditingData(commit, stepKey, dataInfo);
-
-
-  stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
-
-  const location = createLocation({
-    ...snakeCaseJSON,
-    // don't pass location directly as property because it would be
-    // returned without the parsing of geo spatial infos
-    spatial: geoData.location.geoJSON,
-  });
-
-  commitEditingData(commit, stepKey, {
-    location,
-  });
-
-  stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, rPublicationData);
-
-  stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, rDatasetsData);
-
-  stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
-  customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
-  commitEditingData(commit, stepKey, customFieldsData);
-
-
-  stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, publicationData);
-
-  stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, organizationData);
-
-
-  stepKey = EDITMETADATA_MAIN_HEADER;
-
-  const enhanceHeader = {
-    ...headerData,
-    keywords: keywordsData.keywords,
-    authors,
-    dataLicense: dateInfoData.dataLicenseTitle,
-    doi: publicationData.doi,
-  };
-
-  commitEditingData(commit, stepKey, enhanceHeader);
-
-}
-
-function mapDatesForBackend(datesArray) {
-
-  if (!Array.isArray(datesArray) || datesArray.length <= 0) {
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, {
-      dateType: 'creation',
-      dateStart: '',
-      dateEnd: '',
-    });
-
-    return [entry];
-  }
-
-  const mappedDates = [];
-
-  for (let i = 0; i < datesArray.length; i++) {
-    const dateEntry = datesArray[i];
-
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
-    mappedDates.push(entry);
-  }
-
-  return mappedDates;
-}
-
-function cleanAuthorsForBackend(authors) {
-
-  const bAuthors = [];
-  for (let i = 0; i < authors.length; i++) {
-
-    // work with local copy here to avoid to changing the vuex state directly
-    const author = { ...authors[i] };
-
-    if (author.dataCredit) {
-      const keys = Object.keys(author.dataCredit);
-
-      const dataCreditsArray = [];
-
-      for (let j = 0; j < keys.length; j++) {
-        const key = keys[j];
-        dataCreditsArray.push(key);
-      }
-
-      author.dataCredit = dataCreditsArray;
-    }
-
-    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
-
-    bAuthors.push(bAuthor);
-  }
-
-  return bAuthors;
-}
-
-const dataNeedsStringify = [
-  EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_GEO,
-  EDITMETADATA_PUBLICATION_INFO,
-];
-
-function mapBackendData(stepKey, frontendData) {
-
-  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
-  } else if (stepKey === EDITMETADATA_DATA_INFO) {
-    frontendData.dates = mapDatesForBackend(frontendData.dates);
-  } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
-    frontendData.customFields = mapCustomFields(frontendData.customFields);
-  }
-
-  let backendData = getBackendJSON(stepKey, frontendData);
-
-  if (dataNeedsStringify.includes(stepKey)) {
-    backendData = convertJSON(backendData, true);
-  }
-
-  return backendData;
-}
 
 
 /*
@@ -557,22 +286,19 @@ export default {
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
   },
-  async [METADATA_EDITING_LOAD_DATASET]({ commit, dispatch }, metadataId) {
-    await dispatch(
-      `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+  async METADATA_EDITING_LOAD_DATASET({ commit, dispatch }, metadataId) {
+
+    // defining the commitMethod has the effect that mutations of this
+    // module are being used with the output of the action from the metadata module
+    await dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
       metadataId,
-      { root: true },
+      commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
+    },
+    { root: true },
     );
 
-    const currentEntry = this.getters[`${METADATA_NAMESPACE}/currentMetadataContent`];
-
-    if (currentEntry) {
-      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-      const categoryCards = this.state.categoryCards;
-
-      populateEditingComponents(commit, currentEntry, authorsMap, categoryCards);
-    }
   },
+/*
   async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
 
     commit(METADATA_EDITING_PATCH_DATASET_PROPERTY, stepKey);
@@ -612,6 +338,7 @@ export default {
         });
       });
   },
+*/
   async [METADATA_EDITING_PATCH_DATASET_OBJECT]({ commit }, { stepKey, data, id }) {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
@@ -622,7 +349,7 @@ export default {
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const postData = mapBackendData(stepKey, data);
+    const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
 
     await axios.post(url, postData,
