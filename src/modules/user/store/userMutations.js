@@ -132,8 +132,11 @@ function createErrorMessage(reason) {
 
     if (errorObj) {
 
+      details += `${errorObj.__type}: ${errorObj.message}`;
+
+/*
       if (errorObj.__junk && errorObj.__type) {
-        details += `${errorObj.__type} ${errorObj.__junk}`;
+        details += `${errorObj.__type}: ${errorObj.__junk}`;
       } else {
         const errKeys = Object.keys(errorObj);
         for (let i = 0; i < errKeys.length; i++) {
@@ -141,6 +144,7 @@ function createErrorMessage(reason) {
           details += `${key} ${errorObj[key]} `;
         }
       }
+*/
 
     } else {
       details += reason.response.statusText;
