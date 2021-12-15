@@ -93,6 +93,7 @@ import {
 } from 'vuex';
 
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
@@ -152,18 +153,27 @@ export default {
       default: '',
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   beforeMount() {
     if (this.user) {
       this.fetchUserOrganisationData();
     }
   },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
+    previewOrganization() {
+      return this.previewOrganizationId || this.organizationId;
+    },
     selectedOrganization () {
       // Get organization title, filtering userOrganizationsList by organizationId prop
 
-      const userOrg = this.userOrganizationsList.filter(x => x.id === this.organizationId)[0];
+      const userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
 
       if (!userOrg) {
         return this.emptySelection
@@ -191,8 +201,13 @@ export default {
     },
   },
   methods: {
+    clearPreview() {
+      this.previewOrganizationId = '';
+    },
     setOrganization(orgId) {
       // Select organization based on picked item and pass via event bus
+
+      this.previewOrganizationId = orgId;
 
       if (isFieldValid('organizationId', orgId, this.validations, this.validationErrors)) {
 
@@ -220,6 +235,7 @@ export default {
       'id': '',
       'title': '',
     },
+    previewOrganizationId: '',
   }),
   components: {
     BaseStatusLabelView,
