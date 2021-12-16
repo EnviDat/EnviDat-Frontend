@@ -11,11 +11,11 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
 
 import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
+// import { convertTags } from '@/factories/metaDataFactory';
 import fileIcon from '../src/assets/icons/file.png';
 import lockedIcon from '../src/assets/icons/lockClosed.png';
 import unlockedIcon from '../src/assets/icons/lockOpen.png';
@@ -26,6 +26,19 @@ import polygonIcon from '../src/assets/icons/polygons.png';
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
+
+/*
+for (let i = 0; i < metadataCards.length; i++) {
+  const metadata = metadataCards[i];
+  // metadata.tags = convertTags(metadata.tags, false);
+
+  for (let j = 0; j < metadata.tags.length; j++) {
+    const tag = metadata.tags[j];
+    console.log(`tag: ${tag} name: ${tag.name}`);
+  }
+}
+*/
+
 
 export const methods = {
   hasRestrictedResources(metadata) {
@@ -51,7 +64,7 @@ export const methods = {
     if (!metadata || !metadata.spatial) {
       return null;
     }
-    const spatialJSON = metadata.spatial;
+    const spatialJSON = typeof metadata.spatial === 'string' ? JSON.parse(metadata.spatial) : metadata.spatial;
 
     if (spatialJSON.type.toLowerCase() === 'point') {
       return this.pinIcon;
@@ -67,8 +80,6 @@ export const methods = {
 
     return null;
   },
-  onCardClick: action('clicked on card'),
-  onTagClick: action('clicked on tag'),
 };
 
 storiesOf('3 Cards / Metadata Cards', module)
@@ -97,8 +108,6 @@ storiesOf('3 Cards / Metadata Cards', module)
           :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
           :geoJSONIcon="geoJSONIcon(metadata)"
-          @clickedEvent="onCardClick"
-          @clickedTag="onTagClick"
         />
       </v-col>
 
@@ -123,8 +132,6 @@ storiesOf('3 Cards / Metadata Cards', module)
           :lockedIconString="lockedIcon"
           :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
-          @clickedEvent="onCardClick"
-          @clickedTag="onTagClick"
         />
       </v-col>
 
@@ -150,8 +157,6 @@ storiesOf('3 Cards / Metadata Cards', module)
           :lockedIconString="lockedIcon"
           :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
-          @clickedEvent="onCardClick"
-          @clickedTag="onTagClick"
         />
       </v-col>
 
@@ -177,8 +182,6 @@ storiesOf('3 Cards / Metadata Cards', module)
           :lockedIconString="lockedIcon"
           :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
-          @clickedEvent="onCardClick"
-          @clickedTag="onTagClick"
         />
       </v-col>
 
@@ -220,8 +223,6 @@ storiesOf('3 Cards / Metadata Cards', module)
           :lockedIconString="lockedIcon"
           :unlockedIconString="lockedIcon"
           :categoryColor="metadata.categoryColor"
-          @clickedEvent="onCardClick"
-          @clickedTag="onTagClick"
         />
       </v-col>
 

@@ -11,14 +11,10 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
 
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
-export const methods = {
-  onClick: action('clicked'),
-};
 
 storiesOf('4 Filtering / Keyword Tag', module)
   .add('Tag states', () => ({
@@ -55,5 +51,4 @@ storiesOf('4 Filtering / Keyword Tag', module)
       </v-col>
 
     </v-row>`,
-    methods,
   }));

@@ -11,7 +11,7 @@
 
 // /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
@@ -28,10 +28,10 @@ storiesOf('4 Filtering / SearchBarView', module)
                     @searchCleared="onClear" />`,
     methods: {
       onClick(searchTerm) {
-        action(`clicked search for "${searchTerm}"`);
+        console.log(`clicked search for "${searchTerm}"`);
       },
       onClear() {
-        action('cleared Search')(this.searchTerm = '');
+        console.log(`cleared Search ${this.searchTerm}`);
       },
     },
     data: () => ({
@@ -126,12 +126,12 @@ storiesOf('4 Filtering / SearchBarView', module)
 
       </v-row>`,
     methods: {
-      onClick(search) {
-        action(`clicked search for "${search}"`);
-      },
-      onClear() {
-        action('cleared Search')(this.searchTerm = '');
-      },
+        onClick(searchTerm) {
+            console.log(`clicked search for "${searchTerm}"`);
+        },
+        onClear() {
+            console.log(`cleared Search ${this.searchTerm}`);
+        },
     },
     data: () => ({
       searchTerm: '',

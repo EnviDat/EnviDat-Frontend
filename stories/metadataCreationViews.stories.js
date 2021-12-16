@@ -48,6 +48,8 @@ import { METADATA_EDITING } from './storybookFolder';
 
 const unFormatedMetadataCards = { ...metadataset };
 
+// console.log(`got metadata ${!!unFormatedMetadataCards}`);
+
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -83,10 +85,14 @@ const placeholderKeywordsGenericProps = {
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach((el) => {
+for (let i = 0; i < unFormatedMetadataCards.length; i++) {
+  const el = unFormatedMetadataCards[i];
+
+// unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
-});
+// });
+}
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);

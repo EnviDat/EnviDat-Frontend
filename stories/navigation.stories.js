@@ -13,7 +13,7 @@
  */
 
 // /* eslint-disable import/no-extraneous-dependencies */
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import TheNavigation from '@/components/Navigation/TheNavigation';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
@@ -35,9 +35,9 @@ const dominikHaas = {
 };
 
 const methods = {
-  onMenuClick: action('clicked on menu'),
-  onSearchClick: action('clicked on search'),
-  onLoginClick: action('clicked on login'),
+//  onMenuClick: action('clicked on menu'),
+//  onSearchClick: action('clicked on search'),
+//  onLoginClick: action('clicked on login'),
 };
 const appVersion = process.env.VUE_APP_VERSION;
 
