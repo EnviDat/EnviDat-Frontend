@@ -8,7 +8,6 @@
           class="notSignedinGrid">
 
     <NotFoundCard v-bind="notSignedInInfos"
-                  :height="notFoundCardHeight"
                   :actionButtonCallback="catchSigninClick" />
    </div>
 
@@ -76,7 +75,6 @@
       <div v-if="!hasUserDatasets"
             class="noUserDatasetsGrid">
         <NotFoundCard v-bind="noDatasetsInfos"
-                      :height="notFoundCardHeight"
                       :actionButtonCallback="createClickCallback" />
 
         <NotificationCard v-if="noUserDatasetsError"
@@ -158,8 +156,7 @@
 
        <div v-if="!hasCollaboratorDatasets"
             class="noUserDatasetsGrid">
-         <NotFoundCard v-bind="noCollaboratorDatasetsInfos"
-                       :height="notFoundCardHeight"  />
+         <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
 
 <!--
          <NotificationCard v-if="noUserDatasetsError"
@@ -225,7 +222,6 @@
                           :showCloseButton="false" />
 
         <NotFoundCard v-if="!userOrganizationsList"
-                      :height="notFoundCardHeight"
                       v-bind="noOrganizationsInfos"  />
       </div>
 
@@ -644,7 +640,6 @@ export default {
     orgaCardWidth: 290,
     orgaCardHeight: 115,
     userCardHeight: 350,
-    notFoundCardHeight: 300,
     userCardWidth: 300,
     showModal: false,
     left: false,
@@ -732,7 +727,6 @@ export default {
         gap: $gridGap
 
     .bottomBoard
-      overflow: auto
       display: grid
       grid-template-rows: 36px auto
       gap: $gridGap

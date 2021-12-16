@@ -22,15 +22,14 @@
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row justify="space-between">
         <v-col v-if="actionDescription"
-                cols="6"
                 class="text-body-1" >
           {{ actionDescription }}
         </v-col>
 
         <v-col v-if="actionButtonText"
-                cols="6"  >
+                class="shrink" >
           <base-rectangle-button :button-text="actionButtonText"
                                   @clicked="actionButtonCallback" />
         </v-col>
