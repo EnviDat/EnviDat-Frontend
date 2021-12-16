@@ -11,7 +11,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import WindowVerticalView from '@/modules/projects/components/ProjectDetailViews/WindowVerticalView.vue';
 import WindowView from '@/modules/projects/components/ProjectDetailViews/WindowView.vue';
@@ -29,7 +29,7 @@ const projectDetail1 = projects[6];
 const projectDetail2 = projects[3];
 
 export const methods = {
-  onCardClick: action('clicked on card'),
+  // onCardClick: action('clicked on card'),
 };
 
 storiesOf('6 Detail Views / Window Slider', module)

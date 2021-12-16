@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 import Vue from 'vue';
 
 import globalMethods from '@/factories/globalMethods';
@@ -46,8 +46,8 @@ const metadataCards = unFormatedMetadataCards;
 metadataCards[2].resources[0].loading = true;
 
 export const methods = {
-  onCardClick: action('clicked on card'),
-  onTagClick: action('clicked on tag'),
+//  onCardClick: action('clicked on card'),
+//  onTagClick: action('clicked on tag'),
 };
 
 storiesOf('3 Cards / Resource Cards', module)

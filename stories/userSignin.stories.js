@@ -12,7 +12,6 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
 
 import SigninView from '@/modules/user/components/SigninView.vue';
 import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
@@ -28,7 +27,6 @@ export const methods = {
     const items = Object.values(authorCollection);
     return items.splice(2, 4);
   },
-  onClick: action('clicked'),
 };
 
 

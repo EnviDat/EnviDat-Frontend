@@ -39,12 +39,21 @@ const apiFactory = require('@/factories/apiFactory');
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach((el) => {
+// console.log(`got metadata ${!!unFormatedMetadataCards}`);
+
+for (let i = 0; i < unFormatedMetadataCards.length; i++) {
+  const el = unFormatedMetadataCards[i];
+  /*
+  }
+
+  unFormatedMetadataCards.forEach((el) => {
+  */
   let formatted = apiFactory.solrResultToCKANJSON(el);
   formatted = createResources(formatted);
   enhanceElementsWithStrategyEvents(formatted.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(formatted);
-});
+}
+// });
 
 const storybookFolder = `${METADATA_EDITING} / Data Infos`;
 

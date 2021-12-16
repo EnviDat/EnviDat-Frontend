@@ -11,16 +11,12 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import fileIcon from '../src/assets/icons/file.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
 
-export const methods = {
-  onClick: action('clicked'),
-};
 
 storiesOf('2 Buttons / Icon buttons', module)
   .add('icon buttons with envidat icons', () => ({
@@ -73,7 +69,6 @@ storiesOf('2 Buttons / Icon buttons', module)
       </v-col>
 
     </v-row>`,
-    methods,
     data: () => ({
       showFullDescription: false,
       contact2Icon,
@@ -89,8 +84,7 @@ storiesOf('2 Buttons / Icon buttons', module)
           <base-icon-count-view class="mr-2"
                                 :iconString="fileIcon"
                                 :count="counter"
-                                :tooltipText="tooltip"
-                                @clicked="onClick" />
+                                :tooltipText="tooltip"  />
         <!-- /div -->
       </v-col>
 
@@ -99,13 +93,11 @@ storiesOf('2 Buttons / Icon buttons', module)
           <base-icon-count-view class="mr-2"
                                 :iconString="contact2Icon"
                                 :count="counter"
-                                :tooltipText="tooltip"
-                                @clicked="onClick" />
+                                :tooltipText="tooltip" />
         <!-- /div -->
       </v-col>
 
     </v-row>`,
-    methods,
     data: () => ({
       showFullDescription: false,
       fileIcon,

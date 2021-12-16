@@ -11,7 +11,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import globalMethods from '@/factories/globalMethods';
 
@@ -53,8 +53,8 @@ const body2 = projects[6];
 const body3 = projects[8];
 
 export const methods = {
-  onCardClick: action('clicked on card'),
-  onTagClick: action('clicked on tag'),
+//  onCardClick: action('clicked on card'),
+//  onTagClick: action('clicked on tag'),
 };
 
 storiesOf('6 Detail Views / Projects', module)

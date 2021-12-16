@@ -11,7 +11,6 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
 import globalMethods from '@/factories/globalMethods';
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard';
@@ -27,9 +26,6 @@ for (let i = 0; i < categoryCards.length; i++) {
   cardInfo.img = jpgAssets[imageKey];
 }
 
-export const methods = {
-  onClick: action('clicked'),
-};
 
 storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () => ({
   components: { BaseClickCard },
@@ -41,8 +37,7 @@ storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () =
               :key="card.title">
         <base-click-card :title='card.title'
                           :img='card.img'
-                          :color='card.color'
-                          @click='onClick' />
+                          :color='card.color' />
       </v-col>
 
       <v-col col="4"
@@ -50,8 +45,7 @@ storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () =
               :key="card.title">
         <base-click-card :title='card.title'
                           :img='card.img'
-                          :color='card.color'
-                          @click='onClick' />
+                          :color='card.color' />
       </v-col>
 
       <v-col cols="3"
@@ -59,12 +53,10 @@ storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () =
               :key="card.title">
         <base-click-card :title='card.title'
                           :img='card.img'
-                          :color='card.color'
-                          @click='onClick' />
+                          :color='card.color' />
       </v-col>
 
     </v-row>`,
-  methods,
   data: () => ({
     categoryCards,
   }),

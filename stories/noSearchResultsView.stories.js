@@ -1,5 +1,5 @@
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
 import categoryCards from '@/store/categoryCards';
@@ -20,9 +20,6 @@ for (let i = 0; i < categoryCards.length; i++) {
   });
 }
 
-export const methods = {
-  onClick: action('clicked on card'),
-};
 
 storiesOf('4 Filtering / NoSearchResultsView ', module).add('NoSearchResultView', () => ({
   components: { NoSearchResultsView },
@@ -32,33 +29,28 @@ storiesOf('4 Filtering / NoSearchResultsView ', module).add('NoSearchResultView'
         Normal cards
       </v-col>
       <v-col cols="12" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards"
-                                  @clickedCategory="onClick" />
+        <no-search-results-view :categoryCards="categoryCards"  />
       </v-col>
 
       <v-col cols="12" class="pa-2">
         Disabled cards
       </v-col>
       <v-col cols="12" class="pa-2">
-        <no-search-results-view :categoryCards="disabledCards"
-                                  @clickedCategory="onClick" />
+        <no-search-results-view :categoryCards="disabledCards"  />
       </v-col>
 
       <v-col cols="12" class="pa-2">
         small cards
       </v-col>
       <v-col cols="6" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards"
-                                  @clickedCategory="onClick" />
+        <no-search-results-view :categoryCards="categoryCards" />
       </v-col>
 
       <v-col cols="6" class="pa-2">
-        <no-search-results-view :categoryCards="categoryCards"
-                                  @clickedCategory="onClick" />
+        <no-search-results-view :categoryCards="categoryCards"  />
       </v-col>
 
     </v-row>`,
-  methods,
   data: () => ({
     categoryCards,
     disabledCards,

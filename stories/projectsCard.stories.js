@@ -11,7 +11,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
+// import { action } from '@storybook/addon-actions';
 
 import globalMethods from '@/factories/globalMethods';
 import ProjectCard from '@/modules/projects/components/ProjectCard';
@@ -33,8 +33,8 @@ const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName
 const defaultImg = images[`./${imgName}.jpg`];
 
 export const methods = {
-  onCardClick: action('clicked on card'),
-  onTagClick: action('clicked on tag'),
+//  onCardClick: action('clicked on card'),
+//  onTagClick: action('clicked on tag'),
   projectsCardsParents() {
     const noParents = [];
 
