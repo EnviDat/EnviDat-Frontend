@@ -29,7 +29,9 @@ const userSignInState = {
 export const userSignIn = {
   namespaced: true,
   state: userSignInState,
-  getters: {},
+  getters: {
+    getUserApiKey: state => state.user?.apikey,
+  },
   mutations,
   actions,
 };

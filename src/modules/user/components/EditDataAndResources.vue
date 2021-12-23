@@ -61,49 +61,10 @@
 
         <v-row v-if="!selectedResource">
           <v-col>
-            <!-- <v-card class="pa-0">
-              <EditDropResourceFiles @createResources="createResourceFromFiles" />
-
+            <v-card class="pa-0">
+              <EditDropResourceFiles :metadataId="metadataId" />
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-            </v-card> -->
-
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Add New Resource</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Adding new resources is under construction.
-                    <br>
-                    Please edit resources via the legacy website by clicking on the button below and logging in.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters
-                       class="pt-6"
-                        justify="end">
-
-                  <BaseRectangleButton buttonText="Add Resources"
-                                       color="secondary"
-                                       :url="linkAddNewResourcesCKAN" />
-
-                </v-row>
-              </v-container>
             </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
           </v-col>
         </v-row>
       </v-col>
@@ -126,14 +87,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
+  EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_RESOURCE,
   SAVE_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
+  SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
   eventBus,
 } from '@/factories/eventBus';
 
-// import { initializeLocalResource } from '@/factories/metaDataFactory';
+import { initializeLocalResource } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
@@ -143,19 +106,19 @@ import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
-// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
 // import EditResource from '@/modules/user/components/EditResource';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
+import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditDataAndResources',
   components: {
     EditMetadataResources,
-    // EditDropResourceFiles,
-    // EditPasteResourceUrl,
-    // EditResource,
     BaseRectangleButton,
+    // EditResource,
+    EditDropResourceFiles,
+    EditPasteResourceUrl,
   },
   props: {
     resources: {
@@ -236,10 +199,6 @@ export default {
 
       return selectedRes;
     },
-    linkAddNewResourcesCKAN() {
-//      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
-      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
-    },
     linkEditResourceCKAN() {
 //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
       return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
@@ -249,7 +208,6 @@ export default {
     },
   },
   methods: {
-/*
     createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
@@ -293,7 +251,6 @@ export default {
         });
       }
     },
- */
     catchEditResourceClose() {
       eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
