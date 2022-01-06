@@ -136,7 +136,7 @@ export default {
           mutation: USER_SIGNIN,
         });
 
-      if (!this.errorField) {
+      if (!this.errorField && !this.errorFieldText) {
         await this.$router.push(USER_DASHBOARD_PATH);
       }
     },

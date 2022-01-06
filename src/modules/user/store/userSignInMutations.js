@@ -44,6 +44,10 @@ function extractError(store, reason, errorProperty = 'error') {
   if (error) {
     type = error.__type;
 
+    if (!type) {
+      type = 'formError';
+    }
+
     switch (type) {
       case VALIDATION_ERROR: {
         const errKey = Object.keys(error)[0];

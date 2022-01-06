@@ -106,7 +106,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formInvalid || errorField"
+        <v-row v-if="formErrorText"
                 id="errorTextRow"
                 :style="`background-color: ${errorColor};`"
                 class="mt-4" >
@@ -299,6 +299,7 @@ export default {
     backendErrors: {
       email: '',
       key: '',
+      error: '',
     },
     key: '',
     formInvalid: false,
