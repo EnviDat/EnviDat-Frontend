@@ -20,4 +20,5 @@ docker build . \
 
 docker push "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}"
 
-INTERNAL_REG=${INTERNAL_REG} VERSION=${VERSION} docker compose up -d
+VERSION=${VERSION} docker compose \
+  --file docker-compose.dev.yml up -d

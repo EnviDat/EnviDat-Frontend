@@ -19,3 +19,5 @@ docker build . \
   --build-arg EXTERNAL_REG=$EXTERNAL_REG
 
 docker push "${INTERNAL_REG}/envidat-frontend:${VERSION}"
+
+VERSION=${VERSION} docker compose --file docker-compose.prod.yml up -d
