@@ -1,0 +1,15 @@
+version: '3'
+
+networks:
+  ckan-internal:
+    external: true
+
+services:
+  envidat-frontend:
+    image: "${INTERNAL_REG}/envidat-frontend:${VERSION}"
+    container_name: envidat_frontend_prod
+    ports:
+      - 8978:80
+    networks:
+      - ckan-internal
+    restart: unless-stopped

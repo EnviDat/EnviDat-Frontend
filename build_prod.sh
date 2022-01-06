@@ -2,7 +2,7 @@
 
 set -eou pipefail
 export DOCKER_BUILDKIT=1
-INTERNAL_REG=localhost:5050
+source .env
 
 VERSION=$(cat package.json \
   | grep version \
@@ -12,9 +12,10 @@ VERSION=$(cat package.json \
   | tr -d '[[:space:]]')
 
 docker build . \
-  --tag "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}" \
-  --build-arg NODE_ENV=production
+  --target prod \
+  --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}" \
+  --build-arg NODE_ENV=production \
+  --build-arg MAINTAINER=$MAINTAINER \
+  --build-arg EXTERNAL_REG=$EXTERNAL_REG
 
-docker push "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}"
-
-INTERNAL_REG=${INTERNAL_REG} VERSION=${VERSION} docker compose up -d
+docker push "${INTERNAL_REG}/envidat-frontend:${VERSION}"

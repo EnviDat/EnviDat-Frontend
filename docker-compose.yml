@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  envidat-frontend:
-    image: "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}"
-    container_name: envidat_frontend
-    ports:
-      - 8977:80
-    restart: unless-stopped
