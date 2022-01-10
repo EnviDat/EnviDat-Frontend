@@ -459,6 +459,15 @@ export function createResource(resource, datasetName) {
 
   const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
+  let fileName = resource.name;
+
+  if (!fileName && resURL) {
+    const urlSplits = resURL.split('/');
+    if (urlSplits.length > 0) {
+      fileName = urlSplits[urlSplits.length - 1];
+    }
+  }
+
   return {
     // "hash": "",
     description: resource.description,
@@ -471,7 +480,7 @@ export function createResource(resource, datasetName) {
     mimetype: resource.mimetype ? resource.mimetype : '',
     cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
-    name: resource.name,
+    name: fileName,
     url: resURL,
     restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',

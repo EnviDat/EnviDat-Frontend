@@ -12,7 +12,7 @@
     </template>
 
     <v-card-title class="headline resourceHeadline white--text">
-      {{ name ? name : 'No name set' }}
+      {{ name }}
     </v-card-title>
 
     <v-card-text class="pt-0 white--text"
