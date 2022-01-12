@@ -9,7 +9,7 @@ services:
     image: "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}"
     container_name: envidat_frontend_dev
     ports:
-      - 8080:8080
+      - 8990:8080
     volumes:
       - ./src:/app/src:ro
     networks:
