@@ -63,20 +63,24 @@ export default {
           maxNumberOfFiles: 1,
           minNumberOfFiles: 1,
         },
-      }).use(AwsS3Multipart, {
+      })
+      // .use(Uppy.GoldenRetriever)
+      .use(AwsS3Multipart, {
         limit: 4,
         getChunkSize(file) {
           // at least 25MB per request, at most 500 requests
           return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
         },
         createMultipartUpload: this.initiateMultipart,
-        // prepareUploadParts: this.requestPresignedUrls,
-        // listParts: this.listUploadedParts,
-        // abortMultipartUpload: this.abortMultipart,
-        // completeMultipartUpload: this.completeMultipart,
-      });
-      // .on('upload-success', this.functionToSelectResource()),
-      // selecting resource should open the editing component
+        prepareUploadParts: this.requestPresignedUrls,
+        listParts: this.listUploadedParts,
+        abortMultipartUpload: this.abortMultipart,
+        completeMultipartUpload: this.completeMultipart,
+      })
+      // .on('upload-error', this.deleteCKANResource());
+      // .on('upload-success', this.updateMultipartDbCKAN(__, res));
+      // .on('complete', this.functionToSelectResource());
+      // finish upload should open resource in editing component
     },
     userApiKey() {
       if (this.$store) {
@@ -86,20 +90,13 @@ export default {
     },
   },
   methods: {
-    async createResource(file) {
-      // const payload = {
-      //   metadataId: this.metadataId,
-      //   fileName: file.name,
-      //   fileDescription: this.fileDescription,
-      //   fileType: file.extension,
-      //   fileSize: file.size,
-      // };
+    async createCKANResource(file) {
       // this.$store.dispatch(
       //   `${USER_NAMESPACE}/METADATA_EDITING_POST_RESOURCE`,
       //   payload,
       // );
 
-      const url = 'https://envidat04.wsl.ch/api/action/resource_create';
+      const url = 'http://localhost:8989/api/action/resource_create';
       const payload = {
         package_id: this.metadataId,
         url: file.name,
@@ -135,22 +132,45 @@ export default {
         return error;
       }
     },
+    async deleteCKANResource() {
+      const url = 'http://localhost:8989/api/action/resource_delete';
+      const payload = {
+        id: this.resourceId,
+      };
+
+      try {
+        const res = await axios.post(url, payload, {
+          headers: {
+            Authorization: this.userApiKey,
+          },
+        });
+        const success = res.data.success;
+        if (success) {
+          console.log(
+            `Resource DB entry deleted in CKAN: ${this.resourceId}`,
+          );
+        } else {
+          console.log(
+            `Resource deletion in CKAN not successful: ${this.resourceId}`,
+          );
+        }
+        return success;
+      } catch (error) {
+        console.log(`Error deleting resource to CKAN: ${error}`);
+        return error;
+      }
+    },
     async initiateMultipart(file) {
-      // const payload = {
-      //   resourceId: this.????,
-      //   fileName: file.name,
-      //   fileSize: file.size,
-      // };
       // this.$store.dispatch(
       //   `${USER_NAMESPACE}/METADATA_EDITING_MULTIPART_UPLOAD_INIT`,
       //   payload,
       // );
 
       const url =
-        'https://envidat04.wsl.ch/api/action/cloudstorage_initiate_multipart';
+        'http://localhost:8989/api/action/cloudstorage_initiate_multipart';
 
       const payload = {
-        id: await this.createResource(file),
+        id: await this.createCKANResource(file),
         name: file.name,
         size: file.size,
       };
@@ -161,7 +181,6 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        console.log(`Multipart initiated, upload ID: ${res.data.result.id}`);
         return {
           uploadId: res.data.result.id,
           key: res.data.result.name,
@@ -171,14 +190,15 @@ export default {
         return error;
       }
     },
-    async requestPresignedUrls(__, partData) {
+    async requestPresignedUrls(file, partData) {
       const url =
-        'https://envidat04.wsl.ch/api/action/cloudstorage_presign_multipart';
+        'http://localhost:8989/api/action/cloudstorage_get_presigned_url_list_multipart';
 
       const payload = {
+        id: this.resourceId,
         uploadId: partData.uploadId,
-        uploadKey: partData.key,
         partNumbersList: partData.partNumbers,
+        filename: file.name,
       };
 
       try {
@@ -187,20 +207,12 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        console.log(`Presigned urls recieved: ${res.data.result.urls}`);
         return {
-          presignedUrls: res.data.result.urls,
-          headers: res.data.result?.headers,
+          presignedUrls: res.data.result.presignedUrls,
+          // headers: {
+          //   'Content-Type': 'application/octet-stream',
+          // },
         };
-        // API Return Format
-        // {
-        //   "presignedUrls": {
-        //     "1": "https://bucket.region.amazonaws.com/path/to/file.jpg?partNumber=1&...",
-        //     "2": "https://bucket.region.amazonaws.com/path/to/file.jpg?partNumber=2&...",
-        //     "3": "https://bucket.region.amazonaws.com/path/to/file.jpg?partNumber=3&..."
-        //   },
-        //   "headers": { "some-header": "value" }
-        // }
       } catch (error) {
         console.log(`Presigning urls failed: ${error}`);
         return error;
@@ -208,10 +220,12 @@ export default {
     },
     async completeMultipart(file, uploadData) {
       const url =
-        'https://envidat04.wsl.ch/api/action/cloudstorage_finish_multipart';
+        'http://localhost:8989/api/action/cloudstorage_finish_multipart';
 
       const payload = {
+        id: this.resourceId,
         uploadId: uploadData.uploadId,
+        partInfo: JSON.stringify(uploadData.parts),
       };
 
       try {
@@ -220,8 +234,7 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        console.log(`Multipart upload complete, ID: ${uploadData.uploadId}`);
-        return file?.url;
+        return {'location': await res.data.result.url};
       } catch (error) {
         console.log(`Multipart completion failed: ${error}`);
         return error;
@@ -229,10 +242,11 @@ export default {
     },
     async abortMultipart(__, uploadData) {
       const url =
-        'https://envidat04.wsl.ch/api/action/cloudstorage_abort_multipart';
+        'http://localhost:8989/api/action/cloudstorage_abort_multipart';
 
       const payload = {
-        id: this.metadataId,
+        id: this.resourceId,
+        deletedInCKAN: await this.deleteCKANResource(),
       };
 
       try {
@@ -242,22 +256,22 @@ export default {
           },
         });
         console.log(
-          `Multipart upload aborted. Metadata ID ${this.metadataId} | S3 Upload ID ${uploadData.uploadId}`,
+          `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
         );
         return {}
       } catch (error) {
         console.log(
-          `Multipart abort failed for Metadata ID ${this.metadataId}: ${error}`,
+          `Multipart abort failed for Resource ID ${this.resourceId}: ${error}`,
         );
         return error;
       }
     },
     async listUploadedParts(file, uploadData) {
       const url =
-        'https://envidat04.wsl.ch/api/action/cloudstorage_check_multipart';
+        'http://localhost:8989/api/action/cloudstorage_check_multipart';
 
       const payload = {
-        id: this.metadataId,
+        id: this.resourceId,
       };
 
       try {
@@ -267,8 +281,11 @@ export default {
           },
         });
         console.log(`Multipart details: ${res.data.result.upload}`);
-        // CHECK CKAN API TO SEE WHAT IS RETURNED
-        // REQUIRE A LIST OF S3 Part OBJECTS
+        // REQUIRED FORMAT return [{
+        //   PartNumber: xxx,
+        //   Size: xxx,
+        //   ETag: xxx,
+        // }]
         return res.data.result.upload.parts;
       } catch (error) {
         console.log(`Checking multipart details failed: ${error}`)
