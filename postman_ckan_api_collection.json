@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a1c2d13e-8a13-44cb-a525-36069647bea4",
+		"_postman_id": "857fc050-6352-41c4-9d9e-81bf437d6464",
 		"name": "EnviDat CKAN API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -39,10 +39,27 @@
 						{
 							"name": "check_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_check_multipart?id",
+									"raw": "{{host}}/api/action/cloudstorage_check_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -50,13 +67,6 @@
 										"api",
 										"action",
 										"cloudstorage_check_multipart"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Resource ID."
-										}
 									]
 								}
 							},
@@ -65,10 +75,39 @@
 						{
 							"name": "initiate_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "File name.",
+											"type": "text"
+										},
+										{
+											"key": "size",
+											"value": "",
+											"description": "File size.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_initiate_multipart?id&name&size",
+									"raw": "{{host}}/api/action/cloudstorage_initiate_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -76,23 +115,6 @@
 										"api",
 										"action",
 										"cloudstorage_initiate_multipart"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Resource ID."
-										},
-										{
-											"key": "name",
-											"value": null,
-											"description": "File name."
-										},
-										{
-											"key": "size",
-											"value": null,
-											"description": "File size."
-										}
 									]
 								}
 							},
@@ -101,10 +123,39 @@
 						{
 							"name": "upload_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID (returned from initiate_multipart).",
+											"type": "text"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "text"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to upload.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_upload_multipart?uploadId&partNumber&upload",
+									"raw": "{{host}}/api/action/cloudstorage_upload_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -112,23 +163,6 @@
 										"api",
 										"action",
 										"cloudstorage_upload_multipart"
-									],
-									"query": [
-										{
-											"key": "uploadId",
-											"value": null,
-											"description": "S3 multipart upload ID (returned from initiate_multipart)."
-										},
-										{
-											"key": "partNumber",
-											"value": null,
-											"description": "S3 multipart part number for upload."
-										},
-										{
-											"key": "upload",
-											"value": null,
-											"description": "The data part to upload."
-										}
 									]
 								}
 							},
@@ -137,10 +171,27 @@
 						{
 							"name": "get_presigned_url_download",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_download?id",
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_download",
 									"host": [
 										"{{host}}"
 									],
@@ -148,13 +199,6 @@
 										"api",
 										"action",
 										"cloudstorage_get_presigned_url_download"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Resource ID."
-										}
 									]
 								}
 							},
@@ -163,10 +207,45 @@
 						{
 							"name": "get_presigned_url_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "text"
+										},
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "text"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "text"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to extract the filename from.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_multipart?id&uploadId&partNumber&upload",
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -174,28 +253,6 @@
 										"api",
 										"action",
 										"cloudstorage_get_presigned_url_multipart"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Resource ID."
-										},
-										{
-											"key": "uploadId",
-											"value": null,
-											"description": "S3 multipart upload ID."
-										},
-										{
-											"key": "partNumber",
-											"value": null,
-											"description": "S3 multipart part number for upload."
-										},
-										{
-											"key": "upload",
-											"value": null,
-											"description": "The data part to extract the filename from."
-										}
 									]
 								}
 							},
@@ -204,10 +261,45 @@
 						{
 							"name": "get_presigned_url_list_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										},
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partNumbersList",
+											"value": "",
+											"description": "List of parts for upload, e.g. four part file [1,2,3,4].",
+											"type": "default"
+										},
+										{
+											"key": "filename",
+											"value": "",
+											"description": "The name of the file to upload.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_list_multipart?id=&uploadId=&partNumbersList=&filename=",
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_list_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -215,28 +307,6 @@
 										"api",
 										"action",
 										"cloudstorage_get_presigned_url_list_multipart"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": "",
-											"description": "Resource ID."
-										},
-										{
-											"key": "uploadId",
-											"value": "",
-											"description": "S3 multipart upload ID."
-										},
-										{
-											"key": "partNumbersList",
-											"value": "",
-											"description": "List of parts for upload, e.g. four part file [1,2,3,4]."
-										},
-										{
-											"key": "filename",
-											"value": "",
-											"description": "The name of the file to upload."
-										}
 									]
 								}
 							},
@@ -245,10 +315,39 @@
 						{
 							"name": "upload_multipart_presigned",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "default"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to upload.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_upload_multipart_presigned?uploadId&partNumber&upload",
+									"raw": "{{host}}/api/action/cloudstorage_upload_multipart_presigned",
 									"host": [
 										"{{host}}"
 									],
@@ -256,23 +355,62 @@
 										"api",
 										"action",
 										"cloudstorage_upload_multipart_presigned"
-									],
-									"query": [
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "multipart_list_parts",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
 										{
 											"key": "uploadId",
-											"value": null,
-											"description": "S3 multipart upload ID."
+											"value": "",
+											"description": "S3 multipart upload ID.uplo",
+											"type": "default"
 										},
 										{
-											"key": "partNumber",
-											"value": null,
-											"description": "S3 multipart part number for upload."
+											"key": "uploadKey",
+											"value": "",
+											"description": "S3 multipart upload key.",
+											"type": "default"
 										},
 										{
-											"key": "upload",
-											"value": null,
-											"description": "The data part to upload."
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default",
+											"disabled": true
+										},
+										{
+											"key": "filename",
+											"value": "",
+											"description": "The name of the file being uploaded.",
+											"type": "default",
+											"disabled": true
 										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_multipart_list_parts",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_multipart_list_parts"
 									]
 								}
 							},
@@ -281,10 +419,33 @@
 						{
 							"name": "finish_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partInfo",
+											"value": "",
+											"description": "S3-style list of parts, an array of objects with ETag and PartNumber properties.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_finish_multipart?uploadId",
+									"raw": "{{host}}/api/action/cloudstorage_finish_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -292,13 +453,6 @@
 										"api",
 										"action",
 										"cloudstorage_finish_multipart"
-									],
-									"query": [
-										{
-											"key": "uploadId",
-											"value": null,
-											"description": "S3 multipart upload ID."
-										}
 									]
 								}
 							},
@@ -307,10 +461,27 @@
 						{
 							"name": "abort_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/cloudstorage_abort_multipart?id",
+									"raw": "{{host}}/api/action/cloudstorage_abort_multipart",
 									"host": [
 										"{{host}}"
 									],
@@ -318,13 +489,6 @@
 										"api",
 										"action",
 										"cloudstorage_abort_multipart"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Resource ID."
-										}
 									]
 								}
 							},
@@ -333,8 +497,25 @@
 						{
 							"name": "check_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
 									"raw": "{{host}}/api/action/cloudstorage_check_multipart",
 									"host": [
@@ -352,8 +533,14 @@
 						{
 							"name": "clean_multipart",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
 								"url": {
 									"raw": "{{host}}/api/action/cloudstorage_clean_multipart",
 									"host": [
@@ -363,6 +550,43 @@
 										"api",
 										"action",
 										"cloudstorage_clean_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "aws_presigned_upload",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {}
+								},
+								"url": {
+									"raw": "PRESIGNED_URL_FROM_S3",
+									"host": [
+										"PRESIGNED_URL_FROM_S3"
+									],
+									"query": [
+										{
+											"key": "add file to Body>Binary",
+											"value": null,
+											"description": "Keep disabled",
+											"disabled": true
+										}
 									]
 								}
 							},
@@ -409,7 +633,7 @@
 						{
 							"name": "solr_query",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
 								"url": {
 									"raw": "{{host}}/?query",
@@ -437,10 +661,33 @@
 						{
 							"name": "package_export",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "Metadata dataset ID.",
+											"type": "default"
+										},
+										{
+											"key": "format",
+											"value": null,
+											"description": "The file format to export to, e.g. XML.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/package_export?id&format",
+									"raw": "{{host}}/api/action/package_export",
 									"host": [
 										"{{host}}"
 									],
@@ -448,18 +695,6 @@
 										"api",
 										"action",
 										"package_export"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "Metadata dataset ID."
-										},
-										{
-											"key": "format",
-											"value": null,
-											"description": "The file format to export to, e.g. XML."
-										}
 									]
 								}
 							},
@@ -468,10 +703,33 @@
 						{
 							"name": "resource_export",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the resource.",
+											"type": "default"
+										},
+										{
+											"key": "format",
+											"value": null,
+											"description": "The file format to export to, e.g. XML.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/resource_export?id&format",
+									"raw": "{{host}}/api/action/resource_export",
 									"host": [
 										"{{host}}"
 									],
@@ -479,18 +737,6 @@
 										"api",
 										"action",
 										"resource_export"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the resource."
-										},
-										{
-											"key": "format",
-											"value": null,
-											"description": "The file format to export to, e.g. XML."
-										}
 									]
 								}
 							},
@@ -504,10 +750,27 @@
 						{
 							"name": "user_login",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										},
+										{
+											"key": "key",
+											"value": null,
+											"description": "Auth key for user (password).",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/passwordless_user_login?email&key",
+									"raw": "{{host}}/api/action/passwordless_user_login",
 									"host": [
 										"{{host}}"
 									],
@@ -515,18 +778,6 @@
 										"api",
 										"action",
 										"passwordless_user_login"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": null,
-											"description": "Email of user."
-										},
-										{
-											"key": "key",
-											"value": null,
-											"description": "Auth key for user (password)."
-										}
 									]
 								}
 							},
@@ -535,10 +786,21 @@
 						{
 							"name": "perform_reset",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/passwordless_perform_reset?email",
+									"raw": "{{host}}/api/action/passwordless_perform_reset",
 									"host": [
 										"{{host}}"
 									],
@@ -546,13 +808,6 @@
 										"api",
 										"action",
 										"passwordless_perform_reset"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": null,
-											"description": "Email of user."
-										}
 									]
 								}
 							},
@@ -561,10 +816,27 @@
 						{
 							"name": "user_logout",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										},
+										{
+											"key": "key",
+											"value": null,
+											"description": "Auth key for user (password).",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/passwordless_user_logout?email&key",
+									"raw": "{{host}}/api/action/passwordless_user_logout",
 									"host": [
 										"{{host}}"
 									],
@@ -572,18 +844,6 @@
 										"api",
 										"action",
 										"passwordless_user_logout"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": null,
-											"description": "Email of user."
-										},
-										{
-											"key": "key",
-											"value": null,
-											"description": "Auth key for user (password)."
-										}
 									]
 								}
 							},
@@ -597,10 +857,21 @@
 						{
 							"name": "make_public_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_make_public_package?id",
+									"raw": "{{host}}/api/action/datacite_make_public_package",
 									"host": [
 										"{{host}}"
 									],
@@ -608,13 +879,6 @@
 										"api",
 										"action",
 										"datacite_make_public_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -623,10 +887,21 @@
 						{
 							"name": "publish_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_publish_package?id",
+									"raw": "{{host}}/api/action/datacite_publish_package",
 									"host": [
 										"{{host}}"
 									],
@@ -634,13 +909,6 @@
 										"api",
 										"action",
 										"datacite_publish_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -649,10 +917,21 @@
 						{
 							"name": "approve_publication_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_approve_publication_package?id",
+									"raw": "{{host}}/api/action/datacite_approve_publication_package",
 									"host": [
 										"{{host}}"
 									],
@@ -660,13 +939,6 @@
 										"api",
 										"action",
 										"datacite_approve_publication_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -675,10 +947,21 @@
 						{
 							"name": "finish_publication_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_finish_publication_package?id",
+									"raw": "{{host}}/api/action/datacite_finish_publication_package",
 									"host": [
 										"{{host}}"
 									],
@@ -686,13 +969,6 @@
 										"api",
 										"action",
 										"datacite_finish_publication_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -701,10 +977,21 @@
 						{
 							"name": "manual_finish_publication_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_manual_finish_publication_package?id",
+									"raw": "{{host}}/api/action/datacite_manual_finish_publication_package",
 									"host": [
 										"{{host}}"
 									],
@@ -712,13 +999,6 @@
 										"api",
 										"action",
 										"datacite_manual_finish_publication_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -727,10 +1007,21 @@
 						{
 							"name": "update_publication_package",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_update_publication_package?id",
+									"raw": "{{host}}/api/action/datacite_update_publication_package",
 									"host": [
 										"{{host}}"
 									],
@@ -738,13 +1029,6 @@
 										"api",
 										"action",
 										"datacite_update_publication_package"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata dataset."
-										}
 									]
 								}
 							},
@@ -753,10 +1037,21 @@
 						{
 							"name": "publish_resource",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/datacite_publish_resource?id",
+									"raw": "{{host}}/api/action/datacite_publish_resource",
 									"host": [
 										"{{host}}"
 									],
@@ -764,13 +1059,6 @@
 										"api",
 										"action",
 										"datacite_publish_resource"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the data resource."
-										}
 									]
 								}
 							},
@@ -784,8 +1072,26 @@
 						{
 							"name": "user_create",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": null,
+											"description": "all default params for ckan user_create...",
+											"type": "default",
+											"disabled": true
+										}
+									]
+								},
 								"url": {
 									"raw": "{{host}}/api/action/restricted_user_create",
 									"host": [
@@ -795,14 +1101,6 @@
 										"api",
 										"action",
 										"restricted_user_create"
-									],
-									"query": [
-										{
-											"key": "name",
-											"value": null,
-											"description": "all default params for ckan user_create...",
-											"disabled": true
-										}
 									]
 								}
 							},
@@ -811,10 +1109,27 @@
 						{
 							"name": "resource_view_list",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of resource to view.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/restricted_resource_view_list?id",
+									"raw": "{{host}}/api/action/restricted_resource_view_list",
 									"host": [
 										"{{host}}"
 									],
@@ -822,13 +1137,6 @@
 										"api",
 										"action",
 										"restricted_resource_view_list"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of resource to view."
-										}
 									]
 								}
 							},
@@ -837,10 +1145,27 @@
 						{
 							"name": "package_show",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata record.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/restricted_package_show?id",
+									"raw": "{{host}}/api/action/restricted_package_show",
 									"host": [
 										"{{host}}"
 									],
@@ -848,13 +1173,6 @@
 										"api",
 										"action",
 										"restricted_package_show"
-									],
-									"query": [
-										{
-											"key": "id",
-											"value": null,
-											"description": "ID of the metadata record."
-										}
 									]
 								}
 							},
@@ -863,8 +1181,26 @@
 						{
 							"name": "resource_search",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "query",
+											"value": null,
+											"description": "all default params for ckan resource_search...",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
 								"url": {
 									"raw": "{{host}}/api/action/restricted_resource_search",
 									"host": [
@@ -874,14 +1210,6 @@
 										"api",
 										"action",
 										"restricted_resource_search"
-									],
-									"query": [
-										{
-											"key": "query",
-											"value": null,
-											"description": "all default params for ckan resource_search...",
-											"disabled": true
-										}
 									]
 								}
 							},
@@ -890,8 +1218,26 @@
 						{
 							"name": "package_search",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "q",
+											"value": null,
+											"description": "all default params for ckan resource_search...",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
 								"url": {
 									"raw": "{{host}}/api/action/restricted_package_search",
 									"host": [
@@ -901,14 +1247,6 @@
 										"api",
 										"action",
 										"restricted_package_search"
-									],
-									"query": [
-										{
-											"key": "q",
-											"value": null,
-											"description": "all default params for ckan resource_search...",
-											"disabled": true
-										}
 									]
 								}
 							},
@@ -917,10 +1255,33 @@
 						{
 							"name": "check_access",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "package_id",
+											"value": null,
+											"description": "ID of metadata record.",
+											"type": "text"
+										},
+										{
+											"key": "resource_id",
+											"value": null,
+											"description": "ID of data resource.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/api/action/restricted_check_access?package_id&resource_id",
+									"raw": "{{host}}/api/action/restricted_check_access",
 									"host": [
 										"{{host}}"
 									],
@@ -928,18 +1289,6 @@
 										"api",
 										"action",
 										"restricted_check_access"
-									],
-									"query": [
-										{
-											"key": "package_id",
-											"value": null,
-											"description": "ID of metadata record."
-										},
-										{
-											"key": "resource_id",
-											"value": null,
-											"description": "ID of data resource."
-										}
 									]
 								}
 							},
@@ -953,10 +1302,27 @@
 						{
 							"name": "oai",
 							"request": {
-								"method": "GET",
-								"header": [],
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "verb",
+											"value": "ListMetadataFormats",
+											"description": "Verb sent to OAI-PMH server.",
+											"type": "text"
+										}
+									]
+								},
 								"url": {
-									"raw": "{{host}}/oai?verb=ListMetadataFormats",
+									"raw": "{{host}}/oai?",
 									"host": [
 										"{{host}}"
 									],
@@ -964,11 +1330,7 @@
 										"oai"
 									],
 									"query": [
-										{
-											"key": "verb",
-											"value": "ListMetadataFormats",
-											"description": "Verb sent to OAI-PMH server."
-										}
+										{}
 									]
 								}
 							},
@@ -7976,7 +8338,12 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "https://envidat.ch"
+			"value": "http://localhost:8989"
+		},
+		{
+			"key": "api-key",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
