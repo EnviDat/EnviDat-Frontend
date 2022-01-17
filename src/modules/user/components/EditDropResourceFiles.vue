@@ -77,10 +77,9 @@ export default {
         abortMultipartUpload: this.abortMultipart,
         completeMultipartUpload: this.completeMultipart,
       })
-      // .on('upload-error', this.deleteCKANResource());
-      // .on('upload-success', this.updateMultipartDbCKAN(__, res));
-      // .on('complete', this.functionToSelectResource());
-      // finish upload should open resource in editing component
+      // .on('upload-complete', this.functionToSelectResource())
+      // finish upload should reload page to display new entry (window.location.reload()??)
+      // and also open resource in editing component (selectedResource)
     },
     userApiKey() {
       if (this.$store) {
@@ -266,12 +265,13 @@ export default {
         return error;
       }
     },
-    async listUploadedParts(file, uploadData) {
+    async listUploadedParts(__, uploadData) {
       const url =
-        'http://localhost:8989/api/action/cloudstorage_check_multipart';
+        'http://localhost:8989/api/action/cloudstorage_multipart_list_parts';
 
       const payload = {
-        id: this.resourceId,
+        uploadId: uploadData.uploadId,
+        uploadKey: uploadData.key,
       };
 
       try {
@@ -280,15 +280,10 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        console.log(`Multipart details: ${res.data.result.upload}`);
-        // REQUIRED FORMAT return [{
-        //   PartNumber: xxx,
-        //   Size: xxx,
-        //   ETag: xxx,
-        // }]
-        return res.data.result.upload.parts;
+        console.log(`Multipart parts: ${res.data.result}`);
+        return res.data.result;
       } catch (error) {
-        console.log(`Checking multipart details failed: ${error}`)
+        console.log(`Listing multipart parts failed: ${error}`)
         return error;
       }
     },
