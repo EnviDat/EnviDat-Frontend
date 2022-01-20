@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2edbe13a-f687-408a-842f-f96a7dd616da",
+		"_postman_id": "857fc050-6352-41c4-9d9e-81bf437d6464",
 		"name": "EnviDat CKAN API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -28,6 +28,1311 @@
 									]
 								},
 								"description": "Adds a new table to the DataStore.\n\nThe datastore_create action allows you to post JSON data to be stored against a resource. This endpoint also supports altering tables, aliases and indexes and bulk insertion. This endpoint can be called multiple times to initially insert more data, add fields, change the aliases or indexes as well as the primary keys.\n\nTo create an empty datastore resource and a CKAN resource at the same time, provide resource with a valid package_id and omit the resource_id.\n\nIf you want to create a datastore resource from the content of a file, provide resource with a valid url."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "cloudstorage",
+					"item": [
+						{
+							"name": "check_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_check_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_check_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "initiate_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "text"
+										},
+										{
+											"key": "name",
+											"value": "",
+											"description": "File name.",
+											"type": "text"
+										},
+										{
+											"key": "size",
+											"value": "",
+											"description": "File size.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_initiate_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_initiate_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID (returned from initiate_multipart).",
+											"type": "text"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "text"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to upload.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_upload_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_upload_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get_presigned_url_download",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_download",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_get_presigned_url_download"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get_presigned_url_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "text"
+										},
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "text"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "text"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to extract the filename from.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_get_presigned_url_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get_presigned_url_list_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										},
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partNumbersList",
+											"value": "",
+											"description": "List of parts for upload, e.g. four part file [1,2,3,4].",
+											"type": "default"
+										},
+										{
+											"key": "filename",
+											"value": "",
+											"description": "The name of the file to upload.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_get_presigned_url_list_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_get_presigned_url_list_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload_multipart_presigned",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partNumber",
+											"value": "",
+											"description": "S3 multipart part number for upload.",
+											"type": "default"
+										},
+										{
+											"key": "upload",
+											"value": "",
+											"description": "The data part to upload.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_upload_multipart_presigned",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_upload_multipart_presigned"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "multipart_list_parts",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.uplo",
+											"type": "default"
+										},
+										{
+											"key": "uploadKey",
+											"value": "",
+											"description": "S3 multipart upload key.",
+											"type": "default"
+										},
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default",
+											"disabled": true
+										},
+										{
+											"key": "filename",
+											"value": "",
+											"description": "The name of the file being uploaded.",
+											"type": "default",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_multipart_list_parts",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_multipart_list_parts"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "finish_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "uploadId",
+											"value": "",
+											"description": "S3 multipart upload ID.",
+											"type": "default"
+										},
+										{
+											"key": "partInfo",
+											"value": "",
+											"description": "S3-style list of parts, an array of objects with ETag and PartNumber properties.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_finish_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_finish_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "abort_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_abort_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_abort_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": "",
+											"description": "Resource ID.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_check_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_check_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "clean_multipart",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"url": {
+									"raw": "{{host}}/api/action/cloudstorage_clean_multipart",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"cloudstorage_clean_multipart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "aws_presigned_upload",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"content-type": true
+								}
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/octet-stream",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "file",
+									"file": {}
+								},
+								"url": {
+									"raw": "PRESIGNED_URL_FROM_S3",
+									"host": [
+										"PRESIGNED_URL_FROM_S3"
+									],
+									"query": [
+										{
+											"key": "add file to Body>Binary",
+											"value": null,
+											"description": "Keep disabled",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "envidat_theme",
+					"item": [
+						{
+							"name": "catalog_export",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/opendata/export/<file_format>.<extension>",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"opendata",
+										"export",
+										"<file_format>.<extension>"
+									],
+									"query": [
+										{
+											"key": "file_format",
+											"value": "dcat-ap-ch",
+											"description": "Data formatting to export as (only dcat-ap-ch available).",
+											"disabled": true
+										},
+										{
+											"key": "extension",
+											"value": "xml",
+											"description": "File format to export to (only xml available).",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "solr_query",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/?query",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										""
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "package_converter",
+					"item": [
+						{
+							"name": "package_export",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "Metadata dataset ID.",
+											"type": "default"
+										},
+										{
+											"key": "format",
+											"value": null,
+											"description": "The file format to export to, e.g. XML.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/package_export",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"package_export"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resource_export",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the resource.",
+											"type": "default"
+										},
+										{
+											"key": "format",
+											"value": null,
+											"description": "The file format to export to, e.g. XML.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/resource_export",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"resource_export"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "passwordless",
+					"item": [
+						{
+							"name": "user_login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										},
+										{
+											"key": "key",
+											"value": null,
+											"description": "Auth key for user (password).",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_user_login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_user_login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "perform_reset",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_perform_reset",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_perform_reset"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "user_logout",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": null,
+											"description": "Email of user.",
+											"type": "default"
+										},
+										{
+											"key": "key",
+											"value": null,
+											"description": "Auth key for user (password).",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_user_logout",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_user_logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "datacite_publication",
+					"item": [
+						{
+							"name": "make_public_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_make_public_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_make_public_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "publish_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_publish_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_publish_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "approve_publication_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_approve_publication_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_approve_publication_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "finish_publication_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_finish_publication_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_finish_publication_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "manual_finish_publication_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_manual_finish_publication_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_manual_finish_publication_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update_publication_package",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_update_publication_package",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_update_publication_package"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "publish_resource",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata dataset.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/datacite_publish_resource",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"datacite_publish_resource"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "restricted",
+					"item": [
+						{
+							"name": "user_create",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": null,
+											"description": "all default params for ckan user_create...",
+											"type": "default",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_user_create",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_user_create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resource_view_list",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of resource to view.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_resource_view_list",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_resource_view_list"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "package_show",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "id",
+											"value": null,
+											"description": "ID of the metadata record.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_package_show",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_package_show"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "resource_search",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "query",
+											"value": null,
+											"description": "all default params for ckan resource_search...",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_resource_search",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_resource_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "package_search",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "q",
+											"value": null,
+											"description": "all default params for ckan resource_search...",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_package_search",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_package_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check_access",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "package_id",
+											"value": null,
+											"description": "ID of metadata record.",
+											"type": "text"
+										},
+										{
+											"key": "resource_id",
+											"value": null,
+											"description": "ID of data resource.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/restricted_check_access",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"restricted_check_access"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "oaipmh_repository",
+					"item": [
+						{
+							"name": "oai",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{api-key}}",
+										"type": "default"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "verb",
+											"value": "ListMetadataFormats",
+											"description": "Verb sent to OAI-PMH server.",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/oai?",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"oai"
+									],
+									"query": [
+										{}
+									]
+								}
 							},
 							"response": []
 						}
@@ -616,9 +1921,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_activity_list_html?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_activity_list_html"
 							],
 							"query": [
@@ -649,9 +1956,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_activity_list_html?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_activity_list_html"
 							],
 							"query": [
@@ -694,9 +2003,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_activity_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_activity_list"
 							],
 							"query": [
@@ -727,9 +2038,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_activity_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_activity_list"
 							],
 							"query": [
@@ -772,9 +2085,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/am_following_group?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"am_following_group"
 							],
 							"query": [
@@ -805,9 +2120,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_followee_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_followee_list"
 							],
 							"query": [
@@ -838,9 +2155,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_followee_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_followee_list"
 							],
 							"query": [
@@ -871,9 +2190,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_followee_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_followee_count"
 							],
 							"query": [
@@ -904,9 +2225,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_follower_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_follower_count"
 							],
 							"query": [
@@ -937,9 +2260,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_follower_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_follower_list"
 							],
 							"query": [
@@ -970,9 +2295,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_follower_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_follower_count"
 							],
 							"query": [
@@ -1003,9 +2330,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_follower_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_follower_list"
 							],
 							"query": [
@@ -1140,9 +2469,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_create"
 							]
 						}
@@ -1177,9 +2508,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/unfollow_group",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"unfollow_group"
 							]
 						}
@@ -1220,9 +2553,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_member_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_member_delete"
 							]
 						}
@@ -1263,9 +2598,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_member_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_member_delete"
 							]
 						}
@@ -1300,9 +2637,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_purge",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_purge"
 							]
 						}
@@ -1337,9 +2676,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_delete"
 							]
 						}
@@ -1374,9 +2715,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_delete"
 							]
 						}
@@ -1423,9 +2766,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/member_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"member_delete"
 							]
 						}
@@ -1460,9 +2805,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_patch",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_patch"
 							]
 						}
@@ -1497,9 +2844,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_patch",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_patch"
 							]
 						}
@@ -1540,9 +2889,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_update"
 							]
 						}
@@ -1577,9 +2928,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_update"
 							]
 						}
@@ -1614,9 +2967,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/follow_group",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"follow_group"
 							]
 						}
@@ -1663,9 +3018,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_member_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_member_create"
 							]
 						}
@@ -1712,9 +3069,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_member_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_member_create"
 							]
 						}
@@ -1815,9 +3174,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/group_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"group_create"
 							]
 						}
@@ -1870,9 +3231,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/member_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"member_create"
 							]
 						}
@@ -2274,9 +3637,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/recently_changed_packages_activity_list_html",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"recently_changed_packages_activity_list_html"
 							],
 							"query": [
@@ -2314,9 +3679,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_activity_list_html?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_activity_list_html"
 							],
 							"query": [
@@ -2359,9 +3726,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/recently_changed_packages_activity_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"recently_changed_packages_activity_list"
 							],
 							"query": [
@@ -2399,9 +3768,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/am_following_dataset?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"am_following_dataset"
 							],
 							"query": [
@@ -2432,9 +3803,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dataset_followee_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dataset_followee_list"
 							],
 							"query": [
@@ -2465,9 +3838,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dataset_followee_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dataset_followee_count"
 							],
 							"query": [
@@ -2498,9 +3873,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dataset_follower_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dataset_follower_count"
 							],
 							"query": [
@@ -2531,9 +3908,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dataset_follower_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dataset_follower_list"
 							],
 							"query": [
@@ -2718,9 +4097,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_create"
 							]
 						}
@@ -2768,9 +4149,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_search",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_search"
 							],
 							"query": [
@@ -2879,9 +4262,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/unfollow_dataset",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"unfollow_dataset"
 							]
 						}
@@ -2916,9 +4301,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/organization_purge",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"organization_purge"
 							]
 						}
@@ -2965,9 +4352,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_relationship_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_relationship_delete"
 							]
 						}
@@ -3008,9 +4397,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/bulk_update_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"bulk_update_delete"
 							]
 						}
@@ -3051,9 +4442,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/bulk_update_public",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"bulk_update_public"
 							]
 						}
@@ -3094,9 +4487,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/bulk_update_private",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"bulk_update_private"
 							]
 						}
@@ -3137,9 +4532,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_owner_org_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_owner_org_update"
 							]
 						}
@@ -3192,9 +4589,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_relationship_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_relationship_update"
 							]
 						}
@@ -3235,9 +4634,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_resource_reorder",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_resource_reorder"
 							]
 						}
@@ -3295,9 +4696,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_update"
 							]
 						}
@@ -3361,9 +4764,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_patch",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_patch"
 							]
 						}
@@ -3398,9 +4803,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_delete"
 							]
 						}
@@ -3435,9 +4842,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dataset_purge",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dataset_purge"
 							]
 						}
@@ -3472,9 +4881,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/follow_dataset",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"follow_dataset"
 							]
 						}
@@ -3531,9 +4942,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_relationship_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_relationship_create"
 							]
 						}
@@ -3576,9 +4989,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/package_create_default_resource_views",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"package_create_default_resource_views"
 							]
 						}
@@ -3811,9 +5226,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_search",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_search"
 							],
 							"query": [
@@ -4003,9 +5420,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_create"
 							]
 						}
@@ -4040,9 +5459,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_view_clear",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_view_clear"
 							]
 						}
@@ -4077,9 +5498,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_view_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_view_delete"
 							]
 						}
@@ -4114,9 +5537,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_delete"
 							]
 						}
@@ -4151,9 +5576,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_patch",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_patch"
 							]
 						}
@@ -4194,9 +5621,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_view_reorder",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_view_reorder"
 							]
 						}
@@ -4231,9 +5660,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_view_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_view_update"
 							]
 						}
@@ -4268,9 +5699,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_update"
 							]
 						}
@@ -4320,9 +5753,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_create_default_resource_views",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_create_default_resource_views"
 							]
 						}
@@ -4381,9 +5816,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/resource_view_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"resource_view_create"
 							]
 						}
@@ -4537,9 +5974,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/tag_autocomplete?query=te",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"tag_autocomplete"
 							],
 							"query": [
@@ -4594,9 +6033,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/tag_search?query=test",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"tag_search"
 							],
 							"query": [
@@ -4668,9 +6109,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/tag_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"tag_delete"
 							]
 						}
@@ -4711,9 +6154,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/tag_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"tag_create"
 							]
 						}
@@ -4963,9 +6408,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_activity_list?id=de9e46bb-abd0-4c10-8e28-7eb8829ba0ae",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_activity_list"
 							],
 							"query": [
@@ -5008,9 +6455,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_activity_list_html?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_activity_list_html"
 							],
 							"query": [
@@ -5053,9 +6502,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/am_following_user?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"am_following_user"
 							],
 							"query": [
@@ -5086,9 +6537,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_followee_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_followee_list"
 							],
 							"query": [
@@ -5119,9 +6572,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_followee_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_followee_count"
 							],
 							"query": [
@@ -5152,9 +6607,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_follower_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_follower_list"
 							],
 							"query": [
@@ -5185,9 +6642,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dashboard_new_activities_count",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dashboard_new_activities_count"
 							]
 						}
@@ -5211,9 +6670,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/get_site_user",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"get_site_user"
 							],
 							"query": [
@@ -5245,9 +6706,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dashboard_activity_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dashboard_activity_list"
 							],
 							"query": [
@@ -5285,9 +6748,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dashboard_activity_list_html",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dashboard_activity_list_html"
 							],
 							"query": [
@@ -5325,9 +6790,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/followee_list?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"followee_list"
 							],
 							"query": [
@@ -5364,9 +6831,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/followee_count?id",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"followee_count"
 							],
 							"query": [
@@ -5408,9 +6877,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/unfollow_user",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"unfollow_user"
 							]
 						}
@@ -5445,9 +6916,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_delete"
 							]
 						}
@@ -5471,9 +6944,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/send_email_notifications",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"send_email_notifications"
 							]
 						}
@@ -5497,9 +6972,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/dashboard_mark_activities_old",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"dashboard_mark_activities_old"
 							]
 						}
@@ -5534,9 +7011,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_generate_apikey",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_generate_apikey"
 							]
 						}
@@ -5571,9 +7050,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_update"
 							]
 						}
@@ -5608,9 +7089,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/follow_user",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"follow_user"
 							]
 						}
@@ -5657,9 +7140,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_invite",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_invite"
 							]
 						}
@@ -5730,9 +7215,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/user_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"user_create"
 							]
 						}
@@ -5761,9 +7248,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/vocabulary_show?id=a6ef1367-c1e5-46db-a35d-28444f400f32",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"vocabulary_show"
 							],
 							"query": [
@@ -5794,9 +7283,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/vocabulary_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"vocabulary_list"
 							]
 						}
@@ -5824,9 +7315,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/vocabulary_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"vocabulary_update"
 							]
 						}
@@ -5867,9 +7360,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/vocabulary_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"vocabulary_create"
 							]
 						}
@@ -5904,9 +7399,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/vocabulary_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"vocabulary_delete"
 							]
 						}
@@ -5935,9 +7432,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/site_read",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"site_read"
 							]
 						}
@@ -5961,9 +7460,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/license_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"license_list"
 							]
 						}
@@ -5987,9 +7488,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/revision_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"revision_list"
 							],
 							"query": [
@@ -6033,9 +7536,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/revision_show",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"revision_show"
 							],
 							"query": [
@@ -6067,9 +7572,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/task_status_show",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"task_status_show"
 							],
 							"query": [
@@ -6119,9 +7626,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/term_translation_show?terms=Russian, romantic novel&lang_codes=fr",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"term_translation_show"
 							],
 							"query": [
@@ -6157,9 +7666,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/status_show",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"status_show"
 							]
 						}
@@ -6183,9 +7694,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/activity_detail_list?id=4e1c98c5-3714-4007-a8e8-5b12009aee04",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"activity_detail_list"
 							],
 							"query": [
@@ -6216,9 +7729,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/config_option_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"config_option_list"
 							]
 						}
@@ -6242,9 +7757,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/config_option_show?key",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"config_option_show"
 							],
 							"query": [
@@ -6275,9 +7792,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/help_show?name=user_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"help_show"
 							],
 							"query": [
@@ -6308,9 +7827,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/member_roles_list",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"member_roles_list"
 							]
 						}
@@ -6345,9 +7866,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/job_cancel",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"job_cancel"
 							]
 						}
@@ -6382,9 +7905,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/job_clear",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"job_clear"
 							]
 						}
@@ -6419,9 +7944,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/task_status_delete",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"task_status_delete"
 							]
 						}
@@ -6456,9 +7983,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/config_option_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"config_option_update"
 							]
 						}
@@ -6541,9 +8070,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/task_status_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"task_status_update"
 							]
 						}
@@ -6578,9 +8109,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/task_status_update_many",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"task_status_update_many"
 							]
 						}
@@ -6627,9 +8160,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/term_translation_update",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"term_translation_update"
 							]
 						}
@@ -6664,9 +8199,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/term_translation_update_many",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"term_translation_update_many"
 							]
 						}
@@ -6719,9 +8256,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/activity_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"activity_create"
 							]
 						}
@@ -6762,9 +8301,11 @@
 						"url": {
 							"raw": "{{host}}/api/action/rating_create",
 							"host": [
-								"{{host}}/api/action"
+								"{{host}}"
 							],
 							"path": [
+								"api",
+								"action",
 								"rating_create"
 							]
 						}
@@ -6797,7 +8338,12 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "https://envidat.ch"
+			"value": "http://localhost:8989"
+		},
+		{
+			"key": "api-key",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
