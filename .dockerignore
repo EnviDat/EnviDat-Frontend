@@ -88,10 +88,16 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Docker
+Dockerfile
+docker-compose.*
+build_*
+
 # envidat frontend
 dist/
 storybook-static/
 /.idea/
+postman*
 
 .vscode/
 
