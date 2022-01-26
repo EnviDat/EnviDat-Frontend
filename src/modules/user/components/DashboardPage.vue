@@ -397,6 +397,12 @@ export default {
     hasCollaboratorDatasets() {
       return this.collaboratorDatasets?.length > 0;
     },
+    hasDatasetsInOrganizations() {
+      return this.hasUserDatasets && this.hasRecentOrgaDatasets;
+    },
+    hasRecentOrgaDatasets() {
+      return this.userRecentOrgaDatasets && this.userRecentOrgaDatasets.length > 0;
+    },
     filteredUserDatasets() {
       const filteredContent = [];
 
@@ -453,9 +459,6 @@ export default {
       }
 
       return 'your Organizations';
-    },
-    hasRecentOrgaDatasets() {
-      return this.userRecentOrgaDatasets && this.userRecentOrgaDatasets.length > 0;
     },
     usersOrganisationRecentDatasets() {
       const list = this.userOrganizationsList;
