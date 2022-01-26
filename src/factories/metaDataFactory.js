@@ -561,6 +561,19 @@ export function getOrganizationMap(organizations) {
   return mainOrgas;
 }
 
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata.state || null;
+  const priv = metadata.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
+}
+
 export function createDetails(dataset) {
   if (!dataset) {
     return null;

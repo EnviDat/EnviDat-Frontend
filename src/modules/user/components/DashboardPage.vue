@@ -50,6 +50,7 @@
 
       <MetadataList v-if="hasUserDatasets"
                       ref="metadataList"
+                      class="px-1"
                       :listContent="filteredUserDatasets"
                       :searchCount="filteredUserDatasets.length"
                       :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
@@ -73,7 +74,7 @@
                       mainScrollClass=".midBoard" />
 
       <div v-if="!hasUserDatasets"
-            class="noUserDatasetsGrid">
+            class="noUserDatasetsGrid px-1">
         <NotFoundCard v-bind="noDatasetsInfos"
                       :actionButtonCallback="createClickCallback" />
 
@@ -155,7 +156,7 @@
 -->
 
        <div v-if="!hasCollaboratorDatasets"
-            class="noUserDatasetsGrid">
+            class="noUserDatasetsGrid px-1">
          <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
 
 <!--
@@ -215,7 +216,7 @@
       </div>
 
       <div v-if="!userOrganizationLoading && !hasRecentOrgaDatasets"
-            class="noOrgaDatasetsGrid">
+            class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
                           :notification="noOrgaDatasetsError"
@@ -288,6 +289,7 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
 import MetadataList from '@/components/MetadataList';
@@ -502,9 +504,7 @@ export default {
   },
   methods: {
     getMetadataState(metadata) {
-      const state = metadata.publication_state || metadata.publicationState || undefined;
-
-      return state !== undefined ? state : this.defaultPublicationState;
+      return getMetadataVisibilityState(metadata);
     },
     contentFilteredByTags(value, selectedTagNames) {
       return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);

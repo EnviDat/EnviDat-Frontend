@@ -212,6 +212,7 @@ import {
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import MetadataListLayout from '@/components/MetadataListLayout';
 import { eventBus } from '@/factories/eventBus';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
 export default {
@@ -356,9 +357,7 @@ export default {
         return null;
       }
 
-      const state = metadata.publication_state || metadata.publicationState || undefined;
-
-      return state !== undefined ? state : this.defaultPublicationState;
+      return getMetadataVisibilityState(metadata);
     },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);

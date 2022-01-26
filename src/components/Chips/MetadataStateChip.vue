@@ -31,10 +31,8 @@ export default {
       type: Object,
       default: () => ({
         draft: 'gray',
+        unpublished: 'warning',
         published: 'green',
-        approved: 'orange',
-        'pub_pending': 'orange',
-        'pub_requested': 'orange',
       }),
     },
   },
