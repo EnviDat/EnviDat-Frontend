@@ -31,7 +31,7 @@
               align="center"
               justify="space-between" >
 
-        <v-col cols="1">
+        <v-col cols="4" sm="3" md="2">
           <v-row no-gutters>
 
             <v-col class="shrink px-2" >
@@ -45,7 +45,7 @@
               </v-btn>
             </v-col>
 
-            <v-col class="headline envidatNavbarTitleSmall py-0">
+            <v-col class="text-h6 text-md-h5 envidatNavbarTitleSmall py-0">
               {{ logoText }}
             </v-col>
           </v-row>
@@ -69,7 +69,7 @@
 
         <v-col v-if="signedInUser"
                 class="shrink"
-                cols="2" >
+                cols="4" sm="3" md="2">
 
           <v-row align="center"
                   justify="end" >
@@ -92,7 +92,7 @@
               {{ signedInUser.fullname }}
             </v-col>
 
-            <v-col class="shrink pl-2 pr-4">
+            <v-col class="shrink">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
