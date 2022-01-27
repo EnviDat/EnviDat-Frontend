@@ -1,5 +1,6 @@
 <template>
-  <v-card raised
+  <v-card id="UserCard"
+          raised
           :width="width"
           :height="height">
 
@@ -56,6 +57,7 @@
 import UserAvatar from '@/components/Layouts/UserAvatar';
 
 export default {
+  name: 'UserCard',
   components: {
     UserAvatar,
   },
