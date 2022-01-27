@@ -1,0 +1,11 @@
+apiVersion: v2
+type: application
+name: envidat-frontend
+description: EnviDat.ch frontend for displaying publication metadata.
+version: 0.1.0
+appVersion: "0.7.0"
+maintainers:
+- email: samuel.woodcock@wsl.ch
+  name: Sam Woodcock
+home: https://github.com/EnviDat/EnviDat-Frontend/tree/master/chart
+icon: https://envidat.ch/favicon.ico
