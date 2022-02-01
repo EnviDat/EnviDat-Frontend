@@ -589,3 +589,23 @@ export function isFieldValid(property, value, validations, errorObject) {
 
   return true;
 }
+
+export function getUserOrganizationRoleMap(userId, organizations) {
+  const roleMap = {};
+
+  const keys = Object.keys(organizations);
+
+  if (!userId || !organizations || keys.length <= 0) {
+    return roleMap;
+  }
+
+  keys.forEach(k => {
+    const orga = organizations[k];
+    const matchedUsers = orga.users.filter(u => u.id === userId);
+    if (matchedUsers[0]) {
+      roleMap[orga.name] = matchedUsers[0].capacity;
+    }
+  })
+
+  return roleMap;
+}

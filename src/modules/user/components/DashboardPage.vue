@@ -38,6 +38,14 @@
                 :nameInitials="nameInitials"
                 :datasetCount="publishedDatasets.length"  />
 
+      <UserOrganizationInfo :height="userCardHeight"
+                            :width="userCardWidth"
+                            :userName="user.fullName"
+                            :email="user.email"
+                            :emailHash="user.emailHash"
+                            :nameInitials="nameInitials"
+                            :organizationRoleMap="userOrganizationRoles" />
+
     </div>
 
     <div class="midBoard pt-4"
@@ -259,6 +267,7 @@ import {
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASET_IDS,
   ACTION_COLLABORATOR_DATASET_IDS,
+  USER_GET_ORGANIZATIONS,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -290,6 +299,7 @@ import {
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { getUserOrganizationRoleMap } from '@/factories/userEditingFactory';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
 import MetadataList from '@/components/MetadataList';
@@ -299,6 +309,7 @@ import IntroductionCard from '@/components/Cards/IntroductionCard';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import TitleCard from '@/components/Cards/TitleCard';
 import UserCard from '@/components/Cards/UserCard';
+import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
@@ -306,6 +317,7 @@ import {
   eventBus,
   SELECT_EDITING_DATASET,
 } from '@/factories/eventBus';
+
 
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
@@ -354,6 +366,7 @@ export default {
       'userDatasets',
       'userDatasetsLoading',
       'userDatasetsError',
+      'userOrganizationIds',
       'lastEditedDataset',
       'lastEditedDatasetPath',
     ]),
@@ -504,6 +517,13 @@ export default {
     oldDashboardUrl() {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
+    userOrganizationRoles() {
+      if (!this.userOrganizations) {
+        return null;
+      }
+
+      return getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+    },
   },
   methods: {
     getMetadataState(metadata) {
@@ -547,8 +567,12 @@ export default {
         await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
       }
     },
-    fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+    async fetchUserOrganisationData() {
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+      if (this.userOrganizationIds) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      }
     },
     catchRefreshClick() {
       if (this.user) {
@@ -691,6 +715,7 @@ export default {
     UserCard,
     MetadataCard,
     MetadataCardPlaceholder,
+    UserOrganizationInfo,
   },
 };
 </script>
@@ -711,7 +736,7 @@ export default {
 
     .topBoard
       display: grid
-      grid-template-columns: 5fr auto
+      grid-template-columns: 4fr auto auto
       gap: $gridGap
 
     .midBoard
