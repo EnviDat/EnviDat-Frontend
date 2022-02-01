@@ -30,7 +30,7 @@
 
     </div>
 
-    <div style="position: absolute; right: 37.5%; border-radius: 50%;"
+    <div style="position: absolute; right: 39.5%; border-radius: 50%;"
           :style="`top: ${avatarTopPosition}px;`" >
       <UserAvatar :size="avatarHeight"
                   :emailHash="emailHash"
