@@ -17,18 +17,21 @@
     <div class="topBoard" >
 
       <IntroductionCard :userName="user.fullName"
-                        :createClickCallback="createClickCallback"
+                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
                         :existingClickCallback="existingClickCallback"
                         :editingClickCallback="editingClickCallback"
                         :editingDatasetName="lastEditedDataset"
                         :feedbackText="userDashboardConfig.feedbackText"
                         :oldDashboardUrl="oldDashboardUrl"
                         />
-<!--
-      :publishedDatasetCount="publishedDatasets.length"
-      :unpublishedDatasetCount="unpublishedDatasets.length"
-      :editingDatasetCount="editingDatasets.length"
--->
+
+      <UserOrganizationInfo :height="userCardHeight"
+                            :width="userCardWidth"
+                            :userName="user.fullName"
+                            :email="user.email"
+                            :emailHash="user.emailHash"
+                            :nameInitials="nameInitials"
+                            :organizationRoles="organizationRoles" />
 
       <UserCard :height="userCardHeight"
                 :width="userCardWidth"
@@ -38,13 +41,6 @@
                 :nameInitials="nameInitials"
                 :datasetCount="publishedDatasets.length"  />
 
-      <UserOrganizationInfo :height="userCardHeight"
-                            :width="userCardWidth"
-                            :userName="user.fullName"
-                            :email="user.email"
-                            :emailHash="user.emailHash"
-                            :nameInitials="nameInitials"
-                            :organizationRoleMap="userOrganizationRoles" />
 
     </div>
 
@@ -438,15 +434,15 @@ export default {
       return filteredContent;
     },
     publishedDatasets() {
-      if (this.user.datasets) {
-        return this.user.datasets.filter(dataset => !dataset.private);
+      if (this.userDatasets) {
+        return this.userDatasets.filter(dataset => !dataset.private);
       }
 
       return [];
     },
     unpublishedDatasets() {
-      if (this.user.datasets) {
-        return this.user.datasets.filter(dataset => dataset.private);
+      if (this.userDatasets) {
+        return this.userDatasets.filter(dataset => dataset.private);
       }
 
       return [];
@@ -523,6 +519,35 @@ export default {
       }
 
       return getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+    },
+    organizationRoles() {
+      if (!this.userOrganizationRoles) {
+        return null;
+      }
+
+      const roles = [];
+      const keys = Object.keys(this.userOrganizationRoles);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        roles.push ({
+          organization: key,
+          role: this.userOrganizationRoles[key],
+        });
+      }
+
+      return roles;
+    },
+    canCreateDatasets() {
+      const roles = this.organizationRoles;
+
+      if (roles) {
+        const matchedRole = roles.filter(r => r.role === 'editor'
+            || r.role === 'admin'
+            || r.role === 'sysadmin');
+        return matchedRole.length > 0;
+      }
+
+      return false;
     },
   },
   methods: {

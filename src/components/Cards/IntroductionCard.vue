@@ -54,7 +54,7 @@
             </v-col>
 
             <v-col cols="3" >
-             <div class="pb-2">Use the old website for now:</div>
+             <div class="pb-2">Use the legacy website for now:</div>
             </v-col>
 
             <v-col cols="3" >
@@ -212,7 +212,7 @@ export default {
     ckanDashboardText() {
       return this.oldDashboardUrl
           ? ` And more is to come, the dashboard will change over time, if you can't find
-                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the old dashboard</a>.`
+                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the legacy dashboard</a>.`
           : '';
     },
     editingText() {

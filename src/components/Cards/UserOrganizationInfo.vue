@@ -85,7 +85,7 @@ export default {
     email: String,
     emailHash: String,
     nameInitials: String,
-    organizationRoleMap: Object,
+    organizationRoles: Array,
   },
   data: () => ({
     avatarHeight: 32,
@@ -130,23 +130,6 @@ export default {
     },
     isSysadmin() {
       return this.hasRole('sysadmin');
-    },
-    organizationRoles() {
-      if (!this.organizationRoleMap) {
-        return null;
-      }
-
-      const roles = [];
-      const keys = Object.keys(this.organizationRoleMap);
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        roles.push ({
-          organization: key,
-          role: this.organizationRoleMap[key],
-        });
-      }
-
-      return roles;
     },
   },
   methods: {
