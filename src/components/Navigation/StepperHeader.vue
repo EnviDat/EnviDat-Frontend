@@ -21,11 +21,12 @@
                           :rules="[() => !step.error]"
                           class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
                           style="border-radius: 4px;"
-                          :style="`background-color: ${getStepBackgroundColor};
+                          :style="`background-color: ${getStepBackgroundColor(step)};
                                    border: solid black ${stepColor === 'white' ? 1 : 0}px;`"
                           @click="catchStepClick(step)"
                           >
             {{ step.title }}
+            <div v-if="step.error" ><small>{{ step.error }}</small></div>
           </v-stepper-step>
 
           <v-divider v-if="index !== (steps.length - 1)"
@@ -85,9 +86,7 @@ export default {
     },
   },
   computed: {
-    getStepBackgroundColor() {
-      return this.$vuetify.theme.themes.light[this.stepColor];
-    },
+
   },
   methods: {
     catchStepClick(step) {
@@ -103,10 +102,18 @@ export default {
       }
 
       if (step.error) {
-        return this.$vuetify.theme.themes.light.error;
+        return 'white';
       }
 
       return this.inactiveColor;
+    },
+    getStepBackgroundColor(step) {
+
+      if (step.error) {
+        return 'white';
+      }
+
+      return this.$vuetify.theme.themes.light[this.stepColor];
     },
   },
   data: () => ({
