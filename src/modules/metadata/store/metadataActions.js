@@ -310,6 +310,7 @@ export default {
   // eslint-disable-next-line consistent-return
   [FILTER_METADATA]({ dispatch, commit }, {
     selectedTagNames = [],
+    selectedPins= [],
     mode,
   }) {
     commit(FILTER_METADATA);

@@ -73,7 +73,7 @@
       <v-row id="metadataListLayout"
               ref="metadataListLayout" >
 
-        <v-col v-for="(pinnedId, index) in pinnedList"
+        <v-col v-for="(pinnedId, index) in pinnedIds"
                 :key="'pinned_' + index"
                 :class="cardGridClass"
                 class="pa-2" >
@@ -218,6 +218,7 @@ export default {
   name: 'MetadataList',
   props: {
     listContent: Array,
+    prePinnedIds: Array,
     mapFilteringPossible: Boolean,
     placeHolderAmount: Number,
     selectedTagNames: Array,
@@ -291,10 +292,11 @@ export default {
       return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },
     showPinnedElements() {
-      return !this.loading && this.showMapFilter && this.pinnedIds.length > 0;
+      return !this.loading && this.showMapFilter && this.prePinnedIds.length > 0;
     },
     unpinnedFilteredList() {
       const listWithoutPins = [];
+
       for (let i = 0; i < this.virtualListContent.length; i++) {
         const metadata = this.virtualListContent[i];
         if (!this.isPinned(metadata.id)) {
@@ -304,21 +306,12 @@ export default {
 
       return listWithoutPins;
     },
-    pinnedList() {
+    pinnedIds() {
       if (!this.showPinnedElements) {
         return [];
       }
 
-      return this.pinnedIds;
-    },
-    mergePinnedAndFiltered() {
-      const pinnedContent = [];
-
-      this.pinnedIds.forEach((pinId) => {
-        pinnedContent.push(this.metadatasContent[pinId]);
-      });
-
-      return [...pinnedContent, ...this.listContent];
+      return this.prePinnedIds;
     },
     loading() {
       return (this.loadingMetadatasContent
@@ -453,13 +446,13 @@ export default {
         newPins.push(id);
       }
 
-      this.pinnedIds = newPins;
+      // this.pinnedIds = newPins;
 
+      this.$emit('pinnedIds', newPins);
       // this.$store.commit(`${METADATA_NAMESPACE}/${PIN_METADATA}`, id);
     },
     catchClearButtonClick() {
-      this.pinnedIds = [];
-      // this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_PINNED_METADATA}`);
+      this.$emit('pinnedIds', []);
     },
     hasRestrictedResources(metadata) {
       if (!metadata || !metadata.resources || metadata.resources.length <= 0) {
@@ -581,7 +574,6 @@ export default {
     controlsActive: [],
     listView: false,
     showMapFilter: false,
-    pinnedIds: [],
     LISTCONTROL_LIST_ACTIVE,
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,

@@ -7,7 +7,7 @@
       <v-row align="center"
               justify="space-between"
               no-gutters>
-        
+
         <v-col class="py-0"
               cols="12" sm="10" md="9" lg="10">
           <small-search-bar-view class="elevation-0"
@@ -22,6 +22,19 @@
                                   :loading="loading"
                                   @clicked="catchSearchClicked"
                                   @searchCleared="catchSearchCleared" />
+        </v-col>
+
+        <v-col class="py-0 shrink" >
+
+          <BaseIconButton style="opacity: 0.8;"
+                          materialIconName="share"
+                          iconColor="black"
+                          isSmall
+                          tooltipBottom
+                          tooltipText="Copy the url to this view to the clipboard to share it."
+                          @clicked="catchShareClick"
+                          />
+
         </v-col>
 
         <v-col class="hidden-xs-only py-0 fill-height" >
@@ -53,7 +66,7 @@
 */
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import ListControlToggle from '@/components/Filtering/ListControlToggle';
-
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'MetadataList',
@@ -71,6 +84,7 @@ export default {
   components: {
     SmallSearchBarView,
     ListControlToggle,
+    BaseIconButton,
   },
   methods: {
     catchSearchClicked(search) {
@@ -81,6 +95,11 @@ export default {
     },
     catchControlClick(number) {
       this.$emit('controlsChanged', number);
+    },
+    catchShareClick() {
+      const url = `${process.env.VUE_APP_ENVIDAT_PROXY}/#${this.$route.fullPath}`;
+
+      navigator.clipboard.writeText(url);
     },
   },
 };
