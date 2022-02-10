@@ -47,7 +47,7 @@ image-build:
     - export DOCKER_BUILDKIT=1
     - mkdir -p /etc/docker/certs.d/registry.envidat.ch
     - |
-      echo "${IMAGE_REGISTRY_CA_CERT}"" \
+      echo "${IMAGE_REGISTRY_CA_CERT}" \
         | base64 -d > /etc/docker/certs.d/registry.envidat.ch/ca.crt
     - |
       echo ${IMAGE_REGISTRY_PASS} | docker login \
