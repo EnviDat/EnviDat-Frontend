@@ -21,6 +21,20 @@ workflow:
     - if: ($CI_COMMIT_REF_NAME == 'ci-test' && $CI_PIPELINE_SOURCE == "push")
       when: always
 
+get-version:
+  stage: .pre
+  image: docker.io/alpine:3.15
+  before_script:
+    - apk add jq --no-cache
+  script:
+    - >
+      echo "VERSION=$(cat package.json 
+      | jq .version --raw-output)" > build.env
+    - cat .env >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
 # run-tests:
 #   stage: test
 #   image: node:16
@@ -39,30 +53,30 @@ workflow:
 
 image-build:
   stage: build
-  image: docker.io/alpine:3.15
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   before_script:
-    - apk add iptables buildah jq --no-cache
-    - export VERSION=$(cat package.json | jq .version --raw-output)
-    - source .env
-    - mkdir -p /etc/containers/certs.d/registry.envidat.ch
+    - mkdir -p /opt/certs
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d > /etc/containers/certs.d/registry.envidat.ch/ca.crt
+      | base64 -d > /opt/certs/ca.crt
+    - mkdir -p /kaniko/.docker
     - >
-      echo ${IMAGE_REGISTRY_PASS} | buildah login
-      --password-stdin -u "${IMAGE_REGISTRY_USER}" "${INTERNAL_REG}"
+      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
+      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}" 
+      | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >
-      buildah build
-      --file ./Dockerfile
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
-      --tag "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+      --registry-certificate "${INTERNAL_REG}":/opt/certs/ca.crt
+      --destination "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
-      --isolation chroot
-      .
-    - buildah push "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
 
 # image-scan:
 #   stage: scan
