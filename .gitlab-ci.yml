@@ -12,13 +12,21 @@ variables:
 
 workflow:
   rules:
-    - if: ($CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "merge_request_event")
+    - if: >
+          ($CI_COMMIT_REF_NAME == "master" 
+          && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
-    - if: ($CI_COMMIT_REF_NAME == 'staging' && $CI_PIPELINE_SOURCE == "merge_request_event")
+    - if: >
+          ($CI_COMMIT_REF_NAME == 'staging' 
+          && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
-    - if: ($CI_COMMIT_REF_NAME == 'develop' && $CI_PIPELINE_SOURCE == "push")
+    - if: >
+          ($CI_COMMIT_REF_NAME == 'develop' 
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
-    - if: ($CI_COMMIT_REF_NAME == 'ci-test' && $CI_PIPELINE_SOURCE == "push")
+    - if: >
+          ($CI_COMMIT_REF_NAME == 'ci-test' 
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
 
 get-version:
@@ -57,10 +65,9 @@ image-build:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   before_script:
-    - mkdir -p /opt/certs
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d > /opt/certs/ca.crt
+      | base64 -d >> /kaniko/ssl/certs/ca-certificates.crt
     - mkdir -p /kaniko/.docker
     - >
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
