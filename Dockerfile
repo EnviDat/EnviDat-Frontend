@@ -6,12 +6,11 @@ ARG MAINTAINER_CD
 LABEL envidat.ch.maintainer.app="${MAINTAINER_APP}"
 LABEL envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
-COPY package*.json ./
+COPY . .
 RUN npm install
 
 
 FROM base AS local-dev
-COPY . .
 ENTRYPOINT ["npm", "run", "serve"]
 
 

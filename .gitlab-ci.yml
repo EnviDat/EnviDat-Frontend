@@ -77,6 +77,10 @@ image-build:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - node_modules/
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
