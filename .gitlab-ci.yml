@@ -41,7 +41,7 @@ image-build:
   stage: build
   image: docker.io/alpine:3.15
   before_script:
-    - apk add buildah jq --no-cache
+    - apk add iptables buildah jq --no-cache
     - export VERSION=$(cat package.json | jq .version --raw-output)
     - source .env
     - mkdir -p /etc/containers/certs.d/registry.envidat.ch
