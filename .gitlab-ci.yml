@@ -39,28 +39,27 @@ workflow:
 
 image-build:
   stage: build
-  image: docker.io/docker:20.10
+  image: docker.io/alpine:3.15
   before_script:
-    - apk add jq --no-cache
+    - apk add buildah jq --no-cache
     - export VERSION=$(cat package.json | jq .version --raw-output)
     - source .env
-    - export DOCKER_BUILDKIT=1
-    - mkdir -p /etc/docker/certs.d/registry.envidat.ch
+    - mkdir -p /etc/containers/certs.d/registry.envidat.ch
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d > /etc/docker/certs.d/registry.envidat.ch/ca.crt
+      | base64 -d > /etc/containers/certs.d/registry.envidat.ch/ca.crt
     - >
-      echo ${IMAGE_REGISTRY_PASS} | docker login
+      echo ${IMAGE_REGISTRY_PASS} | buildah login
       --password-stdin -u "${IMAGE_REGISTRY_USER}" "${INTERNAL_REG}"
   script:
     - >
-      docker build .
+      buildah build .
       --target prod
       --tag "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
-    - docker push "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+    - buildah push "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
 
 # image-scan:
 #   stage: scan
@@ -95,8 +94,7 @@ image-build:
 # image-retag:
 #   stage: retag
 #   image:
-#     name: docker.io/alpine/skopeo:3.15
-#     entrypoint: [""]
+#     name: docker.io/alpine:3.15
 #   before_script:
 #     - apk add skopeo jq --no-cache
 #     - export VERSION=$(cat package.json | jq .version --raw-output)
