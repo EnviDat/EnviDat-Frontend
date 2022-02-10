@@ -9,6 +9,9 @@ stages:
 variables:
   NAMESPACE: frontend
   APP_NAME: frontend-${CI_COMMIT_REF_NAME}
+  FF_USE_FASTZIP: "true"
+  ARTIFACT_COMPRESSION_LEVEL: "fast"
+  CACHE_COMPRESSION_LEVEL: "fast"
 
 workflow:
   rules:
@@ -46,18 +49,28 @@ get-version:
 # run-tests:
 #   stage: test
 #   image: node:16
+#   cache:
+#     key: $CI_COMMIT_REF_SLUG
+#     paths:
+#       - node_modules/
+#     policy: push-pull
 #   before_script:
-#     - npm i
+#     - npm install
 #   script:
 #     - npm run test:unit
 
-#visual-regression:
-#  stage: visual-regression
-#  image: node:16
-#  before_script:
-#    - npm i
-#  script:
-#    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+# visual-regression:
+#   stage: visual-regression
+#   image: node:16
+#   cache:
+#     key: $CI_COMMIT_REF_SLUG
+#     paths:
+#       - node_modules/
+#     policy: pull
+#   before_script:
+#     - npm install
+#   script:
+#     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
 image-build:
   stage: build
@@ -79,7 +92,8 @@ image-build:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
-      --registry-certificate "${INTERNAL_REG}"=/opt/certs/ca.crt
+      --cache=true
+      --cache-from "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       --destination "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
