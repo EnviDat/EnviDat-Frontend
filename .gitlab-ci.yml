@@ -45,7 +45,11 @@ image-build:
     - export VERSION=$(cat package.json | jq .version)
     - source .env
     - export DOCKER_BUILDKIT=1
-    - docker login -u "$IMAGE_REGISTRY_USER" -p "$IMAGE_REGISTRY_PASS" "$INTERNAL_REG"
+    - mkdir -p /etc/docker/certs.d/registry.envidat.ch
+    - "echo ${IMAGE_REGISTRY_CA_CERT} \
+        | base64 -d > /etc/docker/certs.d/registry.envidat.ch/ca.crt"
+    - echo "${IMAGE_REGISTRY_PASS}" | docker login \
+        -u "${IMAGE_REGISTRY_USER}" --password-stdin "${INTERNAL_REG}"
   script:
     - docker build . \
         --target prod \
@@ -94,7 +98,8 @@ image-build:
 #     - apk add skopeo jq --no-cache
 #     - export VERSION=$(cat package.json | jq .version)
 #     - source .env
-#     - skopeo login -u "$IMAGE_REGISTRY_USER" -p "$IMAGE_REGISTRY_PASS" "$INTERNAL_REG"
+#     - echo "$IMAGE_REGISTRY_PASS" | skopeo login \
+#         -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG"
 #   script:
 #     - "skopeo copy \
 #         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified \
