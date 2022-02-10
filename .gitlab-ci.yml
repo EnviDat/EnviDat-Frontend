@@ -50,8 +50,9 @@ image-build:
     - docker build . \
         --target prod \
         --tag "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}" \
-        --build-arg MAINTAINER=$MAINTAINER \
-        --build-arg EXTERNAL_REG=$EXTERNAL_REG
+        --build-arg MAINTAINER_APP="${MAINTAINER_APP}" \
+        --build-arg MAINTAINER_CD="${MAINTAINER_CD}" \
+        --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
     - docker push "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
 
 # image-scan:

@@ -1,8 +1,10 @@
 ARG EXTERNAL_REG
 
 FROM node:16 AS base
-ARG MAINTAINER
-LABEL envidat.com.maintainer="${MAINTAINER}"
+ARG MAINTAINER_APP
+ARG MAINTAINER_CD
+LABEL envidat.ch.maintainer.app="${MAINTAINER_APP}"
+LABEL envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
 COPY package*.json ./
 RUN npm install

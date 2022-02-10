@@ -15,8 +15,9 @@ docker build . \
   --target local-dev \
   --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}-local" \
   --build-arg NODE_ENV=development \
-  --build-arg MAINTAINER=$MAINTAINER \
-  --build-arg EXTERNAL_REG=$EXTERNAL_REG
+  --build-arg MAINTAINER_APP="${MAINTAINER_APP}" \
+  --build-arg MAINTAINER_CD="${MAINTAINER_CD}" \
+  --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-VERSION=${VERSION} docker compose \
+VERSION="${VERSION}" docker compose \
   --file docker-compose.yml up -d
