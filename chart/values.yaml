@@ -4,14 +4,15 @@
 
 replicaCount: 1
 
+configSecretName: frontend-config-json
+
 image:
   repository: registry.envidat.ch/envidat/frontend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-imagePullSecrets:
-  - name: harbor-reg-creds
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
