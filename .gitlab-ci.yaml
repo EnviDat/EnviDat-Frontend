@@ -1,0 +1,130 @@
+stages:
+  # - test
+  # - visual-regression
+  - build
+  # - scan
+  # - retag
+  - deploy
+
+variables:
+  NAMESPACE: frontend
+  APP_NAME: frontend-${CI_COMMIT_REF_NAME}
+
+workflow:
+  rules:
+    - if: ($CI_COMMIT_REF_NAME == "master" && $CI_PIPELINE_SOURCE == "merge_request_event")
+      when: always
+    - if: ($CI_COMMIT_REF_NAME == 'staging' && $CI_PIPELINE_SOURCE == "merge_request_event")
+      when: always
+    - if: ($CI_COMMIT_REF_NAME == 'develop' && $CI_PIPELINE_SOURCE == "push")
+      when: always
+    - if: ($CI_COMMIT_REF_NAME == 'ci-test' && $CI_PIPELINE_SOURCE == "push")
+      when: always
+
+# run-tests:
+#   stage: test
+#   image: node:16
+#   before_script:
+#     - npm i
+#   script:
+#     - npm run test:unit
+
+#visual-regression:
+#  stage: visual-regression
+#  image: node:16
+#  before_script:
+#    - npm i
+#  script:
+#    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+
+image-build:
+  stage: build
+  image: docker.io/docker:20.10
+  before_script:
+    - apk add jq --no-cache
+    - export VERSION=$(cat package.json | jq .version)
+    - source .env
+    - export DOCKER_BUILDKIT=1
+    - docker login -u "$IMAGE_REGISTRY_USER" -p "$IMAGE_REGISTRY_PASS" "$INTERNAL_REG"
+  script:
+    - docker build . \
+        --target prod \
+        --tag "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}" \
+        --build-arg MAINTAINER=$MAINTAINER \
+        --build-arg EXTERNAL_REG=$EXTERNAL_REG
+    - docker push "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+
+# image-scan:
+#   stage: scan
+#   image:
+#     name: docker.io/aquasec/trivy:0.23.0
+#     entrypoint: [""]
+#   before_script:
+#     - apk add jq --no-cache
+#     - export VERSION=$(cat package.json | jq .version)
+#     - source .env
+#   script:
+#     - time trivy image --clear-cache
+#     - time trivy --download-db-only
+#     - "time trivy --exit-code 0 --no-progress --ignore-unfixed \
+#         --cache-dir .trivycache/ --format template \
+#         --template @/contrib/gitlab.tpl \
+#         --output $CI_PROJECT_DIR/gl-container-scanning-report.json \
+#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
+#     - "time trivy --exit-code 0 --no-progress --ignore-unfixed --cache-dir \
+#         .trivycache/ ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
+#     - "time trivy --exit-code 1 --no-progress --ignore-unfixed \
+#         --cache-dir .trivycache/ --severity CRITICAL \
+#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
+#   cache:
+#     paths:
+#       - .trivycache/
+#   artifacts:
+#     when:
+#     reports:
+#       container_scanning: gl-container-scanning-report.json
+
+# image-retag:
+#   stage: retag
+#   image:
+#     name: docker.io/alpine/skopeo:3.15
+#     entrypoint: [""]
+#   before_script:
+#     - apk add skopeo jq --no-cache
+#     - export VERSION=$(cat package.json | jq .version)
+#     - source .env
+#     - skopeo login -u "$IMAGE_REGISTRY_USER" -p "$IMAGE_REGISTRY_PASS" "$INTERNAL_REG"
+#   script:
+#     - "skopeo copy \
+#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified \
+#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}" 
+
+helm-deploy:
+  stage: deploy
+  image:
+    name: alpine/helm:3.8.0
+    entrypoint: [""]
+  before_script:
+    - apk add jq yq --no-cache
+    - export VERSION=$(cat package.json | jq .version)
+  script: |
+    yq write \
+      --inplace --verbose ./chart/Chart.yaml \
+      appVersion "${VERSION}"-"${CI_COMMIT_REF_NAME}"
+    if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
+        yq write \
+          --inplace --verbose ./chart/values.yaml \
+          ingress.hosts[0].host "${APP_NAME}".envidat.ch
+        yq write \
+          --inplace --verbose ./chart/values.yaml \
+          ingress.tls[0].hosts[0] "${APP_NAME}".envidat.ch
+        yq write \
+          --inplace --verbose ./chart/values.yaml \
+          autoscaling.enabled false
+    fi
+    helm upgrade ${APP_NAME} ./chart \
+      --install --values=./chart/values.yaml \
+      --namespace ${NAMESPACE}
+  # rules:
+  #   - if: $CI_COMMIT_REF_NAME == 'master'
+  #     when: always

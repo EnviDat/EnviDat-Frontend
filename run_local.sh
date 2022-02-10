@@ -12,12 +12,11 @@ VERSION=$(cat package.json \
   | tr -d '[[:space:]]')
 
 docker build . \
-  --target prod \
-  --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}" \
-  --build-arg NODE_ENV=production \
+  --target local-dev \
+  --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}-local" \
+  --build-arg NODE_ENV=development \
   --build-arg MAINTAINER=$MAINTAINER \
   --build-arg EXTERNAL_REG=$EXTERNAL_REG
 
-docker push "${INTERNAL_REG}/envidat-frontend:${VERSION}"
-
-VERSION=${VERSION} docker compose --file docker-compose.prod.yml up -d
+VERSION=${VERSION} docker compose \
+  --file docker-compose.yml up -d

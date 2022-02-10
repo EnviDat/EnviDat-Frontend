@@ -6,16 +6,15 @@ LABEL envidat.com.maintainer="${MAINTAINER}"
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
 
 
-FROM base AS dev
+FROM base AS local-dev
 COPY . .
 ENTRYPOINT ["npm", "run", "serve"]
 
 
-FROM dev AS builder
+FROM local-dev AS builder
+ENV NODE_ENV production
 RUN npm run build -- --mode $NODE_ENV
 
 

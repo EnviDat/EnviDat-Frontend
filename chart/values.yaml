@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: registry.envidatprod.wsl.ch/envidat/envidat-frontend:0.7.0
+  repository: registry.envidat.ch/envidat/frontend
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -46,17 +46,16 @@ ingress:
   className: ""
   annotations:
     kubernetes.io/ingress.class: "traefik"
-    cert-manager.io/cluster-issuer: "self-signed"
     traefik.ingress.kubernetes.io/router.tls: "true"
   hosts:
-    - host: frontend.envidatprod.wsl.ch
+    - host: frontend.envidat.ch
       paths:
         - path: /
           pathType: ImplementationSpecific
   tls:
-   - secretName: k8s-wsl
-     hosts:
-       - frontend.envidatprod.wsl.ch
+    - secretName: envidat-star
+      hosts:
+        - frontend.envidat.ch
 
 resources:
   limits:
