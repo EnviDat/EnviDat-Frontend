@@ -49,7 +49,7 @@ image-build:
     - "echo ${IMAGE_REGISTRY_CA_CERT} \
         | base64 -d > /etc/docker/certs.d/registry.envidat.ch/ca.crt"
     - echo "${IMAGE_REGISTRY_PASS}" | docker login \
-        -u "${IMAGE_REGISTRY_USER}" --password-stdin "${INTERNAL_REG}"
+        --password-stdin -u "${IMAGE_REGISTRY_USER}" "${INTERNAL_REG}"
   script:
     - docker build . \
         --target prod \
