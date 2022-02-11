@@ -9,26 +9,25 @@ stages:
 variables:
   NAMESPACE: frontend
   APP_NAME: frontend-${CI_COMMIT_REF_NAME}
-  FF_USE_FASTZIP: "true"
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 
 workflow:
   rules:
     - if: >
-          ($CI_COMMIT_REF_NAME == "master" 
+          ($CI_COMMIT_REF_NAME == "master"
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'staging' 
+          ($CI_COMMIT_REF_NAME == 'staging'
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'develop' 
+          ($CI_COMMIT_REF_NAME == 'develop'
           && $CI_PIPELINE_SOURCE == "push")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'ci-test' 
+          ($CI_COMMIT_REF_NAME == 'ci-test'
           && $CI_PIPELINE_SOURCE == "push")
       when: always
 
@@ -39,7 +38,7 @@ get-version:
     - apk add jq --no-cache
   script:
     - >
-      echo "VERSION=$(cat package.json 
+      echo "VERSION=$(cat package.json
       | jq .version --raw-output)" > build.env
     - cat .env >> build.env
   artifacts:
@@ -50,7 +49,7 @@ get-version:
 #   stage: test
 #   image: node:16
 #   cache:
-#     key: $CI_COMMIT_REF_SLUG
+#     key: $CI_COMMIT_REF_NAME
 #     paths:
 #       - node_modules/
 #     policy: push-pull
@@ -63,7 +62,7 @@ get-version:
 #   stage: visual-regression
 #   image: node:16
 #   cache:
-#     key: $CI_COMMIT_REF_SLUG
+#     key: $CI_COMMIT_REF_NAME
 #     paths:
 #       - node_modules/
 #     policy: pull
@@ -78,9 +77,10 @@ image-build:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   cache:
-    key: $CI_COMMIT_REF_SLUG
+    key: $CI_COMMIT_REF_NAME
     paths:
       - node_modules/
+    policy: pull
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
@@ -88,7 +88,7 @@ image-build:
     - mkdir -p /kaniko/.docker
     - >
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
-      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}" 
+      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
     - >
@@ -107,10 +107,6 @@ image-build:
 #   image:
 #     name: docker.io/aquasec/trivy:0.23.0
 #     entrypoint: [""]
-#   before_script:
-#     - apk add jq --no-cache
-#     - export VERSION=$(cat package.json | jq .version --raw-output)
-#     - source .env
 #   script:
 #     - time trivy image --clear-cache
 #     - time trivy --download-db-only
@@ -135,17 +131,15 @@ image-build:
 # image-retag:
 #   stage: retag
 #   image:
-#     name: docker.io/alpine:3.15
+#     name: quay.io/skopeo/stable:v1.5.2
+#     entrypoint: [""]
 #   before_script:
-#     - apk add skopeo jq --no-cache
-#     - export VERSION=$(cat package.json | jq .version --raw-output)
-#     - source .env
 #     - echo "$IMAGE_REGISTRY_PASS" | skopeo login \
 #         -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG"
 #   script:
 #     - "skopeo copy \
 #         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified \
-#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}" 
+#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
 
 helm-deploy:
   stage: deploy
@@ -153,26 +147,22 @@ helm-deploy:
     name: alpine/helm:3.8.0
     entrypoint: [""]
   before_script:
-    - apk add jq yq --no-cache
-    - export VERSION=$(cat package.json | jq .version --raw-output)
+    - apk add yq --no-cache
   script: |
-    yq write \
-      --inplace --verbose ./chart/Chart.yaml \
-      appVersion "${VERSION}"-"${CI_COMMIT_REF_NAME}"
+    yq eval --inplace --verbose \
+      ".appVersion = \"${VERSION}-${CI_COMMIT_REF_NAME}\"" \
+      "${CI_PROJECT_DIR}/chart/Chart.yaml"
     if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
-        yq write \
-          --inplace --verbose ./chart/values.yaml \
-          ingress.hosts[0].host "${APP_NAME}".envidat.ch
-        yq write \
-          --inplace --verbose ./chart/values.yaml \
-          ingress.tls[0].hosts[0] "${APP_NAME}".envidat.ch
-        yq write \
-          --inplace --verbose ./chart/values.yaml \
-          autoscaling.enabled false
+        yq eval --inplace --verbose \
+          ".ingress.hosts[0].host = \"${APP_NAME}.envidat.ch\"" \
+          "${CI_PROJECT_DIR}/chart/values.yaml"
+        yq eval --inplace --verbose \
+          ".ingress.tls[0].hosts[0] = \"${APP_NAME}.envidat.ch\"" \
+          "${CI_PROJECT_DIR}/chart/values.yaml"
+        yq eval --inplace --verbose \
+          '.autoscaling.enabled = false' \
+          "${CI_PROJECT_DIR}/chart/values.yaml"
     fi
-    helm upgrade ${APP_NAME} ./chart \
-      --install --values=./chart/values.yaml \
-      --namespace ${NAMESPACE}
-  # rules:
-  #   - if: $CI_COMMIT_REF_NAME == 'master'
-  #     when: always
+    helm upgrade "${APP_NAME}" "${CI_PROJECT_DIR}/chart" \
+      --install --values="${CI_PROJECT_DIR}/chart/values.yaml" \
+      --namespace "${NAMESPACE}"
