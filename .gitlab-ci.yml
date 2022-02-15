@@ -52,7 +52,7 @@ run-tests:
     key: $CI_COMMIT_REF_NAME
     paths:
       - node_modules/
-    policy: push-pull
+    policy: pull
   before_script:
     - npm install
   script:
