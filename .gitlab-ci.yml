@@ -1,6 +1,6 @@
 stages:
-  # - test
   # - visual-regression
+  - test
   - build
   # - scan
   # - retag
@@ -45,18 +45,18 @@ get-version:
     reports:
       dotenv: build.env
 
-# run-tests:
-#   stage: test
-#   image: node:16
-#   cache:
-#     key: $CI_COMMIT_REF_NAME
-#     paths:
-#       - node_modules/
-#     policy: push-pull
-#   before_script:
-#     - npm install
-#   script:
-#     - npm run test:unit
+run-tests:
+  stage: test
+  image: node:16
+  cache:
+    key: $CI_COMMIT_REF_NAME
+    paths:
+      - node_modules/
+    policy: push-pull
+  before_script:
+    - npm install
+  script:
+    - npm run test:unit
 
 # visual-regression:
 #   stage: visual-regression
