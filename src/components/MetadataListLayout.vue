@@ -57,44 +57,38 @@
     </v-row>
 
     <v-row v-if="!mapLayout"
+            ref="metadataListLayoutFiltering"
             no-gutters >
 
-      <v-col cols="12" >
-        <v-row ref="metadataListLayoutFiltering"
-                class="fill-height" >
-
-          <v-col class="hidden-sm-and-up pb-0" 
-                  cols="12"
-                  key="controlPanel_smallscreen" >
-            <slot name="controlPanel" />
-          </v-col>
-
-          <v-col class="pb-0"
-                  cols="12"
-                  key="filterKeywords" >
-            <slot name="filterKeywords" />
-          </v-col>
-
-          <v-col class="hidden-xs-only pb-0" 
-                  cols="12"
-                  key="controlPanel" >
-            <slot name="controlPanel" />
-          </v-col>
-
-
-          <v-col v-if="showMapFilter && mapFilteringPossible"
-                  cols="12"
-                  :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'"
-                  key="filterMap" >
-            <slot name="filterMap" />
-          </v-col>
-
-        </v-row>
+      <v-col class="hidden-sm-and-up pb-2"
+              cols="12"
+              key="controlPanel_smallscreen" >
+        <slot name="controlPanel" />
       </v-col>
+
+      <v-col class="pb-2"
+              cols="12"
+              key="filterKeywords" >
+        <slot name="filterKeywords" />
+      </v-col>
+
+      <v-col class="hidden-xs-only pb-2"
+              cols="12"
+              key="controlPanel" >
+        <slot name="controlPanel" />
+      </v-col>
+
+      <v-col v-if="showMapFilter && mapFilteringPossible"
+              cols="12"
+              :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'"
+              key="filterMap" >
+        <slot name="filterMap" />
+      </v-col>
+
     </v-row>
 
     <v-row v-if="!mapLayout"
-            class="fill-height mt-4"
+            class=""
             no-gutters >
 
       <v-col ref="metadataListScroll"
@@ -152,25 +146,30 @@ export default {
   methods: {
     setFilteringComponentsHeight() {
       let searchViewHeight = 36;
-      const TheNavigationToolbar = 0; // when active: 36;
-      const padding = 0;
+      const TheNavigationToolbar = 36;
+      let padding = 0;
 
       if (this.showMapFilter && this.$refs && this.$refs.controlPanel) {
         searchViewHeight = this.$refs.controlPanel.clientHeight ? this.$refs.controlPanel.clientHeight : searchViewHeight;
       }
 
+      if (!this.showMapFilter && this.$refs && this.$refs.metadataListLayoutFiltering) {
+        searchViewHeight = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : searchViewHeight;
+        padding = 16;
+      }
+
       this.filteringComponentsHeight = searchViewHeight + TheNavigationToolbar + padding;
     },
     setKeywordHeight() {
-      const TheNavigationToolbar = 0; // when active: 36;
+      const TheNavigationToolbar = 36;
       const padding = 16;
-      let keywordHeigth = 150;
+      let keywordHeight = 150;
 
       if (this.showMapFilter && this.$refs && this.$refs.metadataListLayoutFiltering) {
-        keywordHeigth = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : keywordHeigth;
+        keywordHeight = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : keywordHeight;
       }
 
-      this.keywordHeight = keywordHeigth + TheNavigationToolbar + padding;
+      this.keywordHeight = keywordHeight + TheNavigationToolbar + padding;
     },    
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataListScroll) {

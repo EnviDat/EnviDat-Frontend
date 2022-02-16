@@ -141,18 +141,20 @@
                             @infinite="infiniteHandler"
                             :force-use-infinite-wrapper="mainScrollClass" >
             <div slot="no-results">
-              <BaseRectangleButton v-if="vIndex > 0 && vIndex > reloadAmount"
+              <BaseRectangleButton v-if="showScrollTopButton && vIndex > 0 && vIndex > reloadAmount"
                                     :buttonText="scrollTopButtonText"
                                     :isSmall="true"
                                     :isFlat="true"
                                     @clicked="setScrollPos(0)" />
             </div>
             <div slot="no-more">
-              <BaseRectangleButton :buttonText="scrollTopButtonText"
-                                  :isSmall="true"
-                                  :isFlat="true"
-                                  @clicked="setScrollPos(0)" />
+              <BaseRectangleButton v-if="showScrollTopButton"
+                                    :buttonText="scrollTopButtonText"
+                                    :isSmall="true"
+                                    :isFlat="true"
+                                    @clicked="setScrollPos(0)" />
             </div>
+
           </infinite-loading>
         </v-col>
 
@@ -251,6 +253,10 @@ export default {
     defaultPublicationState: {
       type: String,
       default: undefined,
+    },
+    showScrollTopButton: {
+      type: Boolean,
+      default: false,
     },
   },
   beforeMount() {

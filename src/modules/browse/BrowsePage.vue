@@ -28,6 +28,7 @@
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
+                    :showScrollTopButton="true"
                     mainScrollClass=".mapLayoutContainers" />
 
   </article>
