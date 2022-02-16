@@ -32,7 +32,7 @@
                 :key="index"
                 class="pt-1">
             <div class="text-body-1" >
-              {{ roles.organization }}
+              <a :href="`${domain}/organization/${roles.organization}`" target="_blank">{{ roles.organization }}</a>
             </div>
 
             <div class="text-body-1">
@@ -43,7 +43,12 @@
         </div>
 
         <div class="textGrid mt-2 text-caption">
-          {{ organizationInfoText }}
+          <div>
+            <v-icon small>info</v-icon>
+          </div>
+          <div>
+            {{ organizationInfoText }}
+          </div>
         </div>
 
       </div>
@@ -69,6 +74,9 @@
 */
 import UserAvatar from '@/components/Layouts/UserAvatar';
 import UserRoleChip from '@/components/Chips/UserRoleChip';
+import { mapState } from 'vuex';
+
+const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 export default {
   name: 'UserOrganizationInfo',
@@ -86,38 +94,38 @@ export default {
     emailHash: String,
     nameInitials: String,
     organizationRoles: Array,
+    isCollaborator: Boolean,
   },
-  data: () => ({
-    avatarHeight: 32,
-    title: 'Organization Roles',
-    noOrganizationText: `You aren't assigned to an organisation yet.
-      If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation.
-      If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.`,
-    memberOrganizationText: 'As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
-    editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
-    adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information.',
-    sysadminOrganizationText: 'You have System Administrator right, be careful!',
-  }),
   computed: {
+    ...mapState([
+      'config',
+    ]),
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
+    },
     organizationInfoText() {
 
       if (this.isSysadmin) {
-        return this.sysadminOrganizationText;
+        return this.userDashboardConfig.organizationRolesText?.sysadminOrganizationText || this.sysadminOrganizationText;
       }
       
       if (this.isAdmin) {
-        return this.adminOrganizationText;
+        return this.userDashboardConfig.organizationRolesText?.adminOrganizationText || this.adminOrganizationText;
       }
       
       if (this.isEditor) {
-        return this.editorOrganizationText;
+        return this.userDashboardConfig.organizationRolesText?.editorOrganizationText || this.editorOrganizationText;
+      }
+
+      if (this.isCollaborator) {
+        return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
       
       if (this.isMember) {
-        return this.memberOrganizationText;
+        return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
       }
 
-      return this.noOrganizationText;
+      return this.userDashboardConfig.organizationRolesText?.noOrganizationText || this.noOrganizationText;
     },
     isMember() {
       return this.hasRole('member');
@@ -144,6 +152,19 @@ export default {
       return false;
     },
   },
+  data: () => ({
+    avatarHeight: 32,
+    title: 'Organization Roles',
+    noOrganizationText: `You aren't assigned to an organisation yet.
+      If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation.
+      If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.`,
+    memberOrganizationText: 'As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
+    editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
+    adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
+    sysadminOrganizationText: 'You have System Administrator right, be careful!',
+    collaboratorText: 'You are added as collaborator to datasets, you can edit these datasets. They are listed under "Collaborator Datasets".',
+    domain,
+  }),
   components: {
     UserAvatar,
     UserRoleChip,
@@ -190,6 +211,8 @@ export default {
   .textGrid {
     display: grid;
     overflow-y: auto;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
   }
 
 </style>

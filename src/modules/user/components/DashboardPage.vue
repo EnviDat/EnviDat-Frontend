@@ -31,7 +31,8 @@
                             :email="user.email"
                             :emailHash="user.emailHash"
                             :nameInitials="nameInitials"
-                            :organizationRoles="organizationRoles" />
+                            :organizationRoles="organizationRoles"
+                            :isCollaborator="isCollaborator" />
 
       <UserCard :height="userCardHeight"
                 :width="userCardWidth"

@@ -145,20 +145,6 @@ export default {
       type: String,
       default: '',
     },
-/*
-    publishedDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-    unpublishedDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-    editingDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-*/
     createClickCallback: {
       type: Function,
       default: null,
@@ -188,25 +174,10 @@ export default {
     welcomeTitle() {
       return this.userName ? `${this.title} ${this.userName} to your Dashboard!` : `${this.title} to your Dashboard!`;
     },
-/*
-    introText() {
-      let intro = `You have ${this.publishedDatasetCount} datasets published.`;
-
-      if (this.unpublishedDatasetCount > 0) {
-        intro += ` ${this.unpublishedDatasetCount} datasets are still unpublished.`;
-      }
-
-      if (this.editingDatasetCount > 0) {
-        intro += ` And ${this.editingDatasetCount} datasets are currently in editing mode.`;
-      }
-
-      return intro;
-    },
-*/
     introductionText() {
       let text = this.introText ? this.introText : this.introTextFallback;
-      text += this.feedbackText;
       text += this.ckanDashboardText;
+      text += this.feedbackText;
       return text;
     },
     ckanDashboardText() {
