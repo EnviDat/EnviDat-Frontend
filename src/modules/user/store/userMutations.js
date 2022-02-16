@@ -178,12 +178,18 @@ function resetErrorObject(state) {
 }
 
 function enhanceMetadataFromCategories(store, metadatas) {
+  let datasets = metadatas;
+  const isArrayInput = Array.isArray(datasets);
+  if (!isArrayInput) {
+    datasets = [datasets];
+  }
 
   const { cardBGImages, categoryCards } = store.getters;
 
-  metadatas.forEach(dataset => enhanceTags(dataset, categoryCards));
+  datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
 
-  return enhanceMetadatas(metadatas, cardBGImages, categoryCards);
+  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
+  return isArrayInput ? enhanced : enhanced[0];
 }
 
 export default {
