@@ -42,7 +42,7 @@ const userState = {
   userOrganizations: {},
   userRecentOrgaDatasets: [],
   userRecentOrgaDatasetsError: null,
-  userRecentOrgaDatasetsLimit: 10,
+  userRecentOrgaDatasetsLimit: 1000,
   metadataSavingMessageTimeoutTime: 2500,
   metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',

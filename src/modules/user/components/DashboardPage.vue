@@ -54,8 +54,7 @@
                   :clickCallback="catchRefreshClick" />
 
       <MetadataList v-if="hasUserDatasets"
-                      ref="metadataList"
-                      class="px-1"
+                      class="datasetsGrid px-1"
                       :listContent="filteredUserDatasets"
                       :searchCount="filteredUserDatasets.length"
                       :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
@@ -63,16 +62,15 @@
                       :placeHolderAmount="placeHolderAmount"
                       @clickedTag="catchTagClicked"
                       @clickedCard="catchMetadataClicked"
-                      :selectedTagNames="selectedTagNames"
+                      :selectedTagNames="selectedUserTagNames"
                       :allTags="allUserdataTags"
                       :showPlaceholder="updatingTags"
                       @clickedTagClose="catchTagCloseClicked"
                       :defaultListControls="userListDefaultControls"
                       :enabledControls="userListEnabledControls"
                       :useDynamicHeight="false"
-                      :minMapHeight="250"
-                      :mapTopLayout="$vuetify.breakpoint.mdAndUp"
-                      :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
+                      :mapTopLayout="false"
+                      :topFilteringLayout="true"
                       :showSearch="false"
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
@@ -102,6 +100,7 @@
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
             id="collaboratorPlaceholders"
+            class="datasetsGrid"
             :style="`height: ${collabCardHeight + 30}px;`" >
 
          <MetadataCardPlaceholder id="orgaDataset"
@@ -139,7 +138,6 @@
 
 <!--
        <MetadataList v-if="hasCollaboratorDatasets"
-                     ref="metadataList"
                      :listContent="collaboratorDatasets"
                      :searchCount="collaboratorDatasets.length"
                      :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
@@ -147,7 +145,7 @@
                      :placeHolderAmount="placeHolderAmount"
                      @clickedTag="catchTagClicked"
                      @clickedCard="catchMetadataClicked"
-                     :selectedTagNames="selectedTagNames"
+                     :selectedUserTagNames="selectedUserTagNames"
                      :allTags="allUserdataTags"
                      :showPlaceholder="updatingTags"
                      @clickedTagClose="catchTagCloseClicked"
@@ -177,11 +175,35 @@
     <div class="bottomBoard pt-2 pb-4"
          ref="userOrgaDatasets">
 
-      <TitleCard :title="`Recent Datasets of ${usersOrganisationTitle}`"
+      <TitleCard :title="`Datasets of ${usersOrganisationTitle} Organization`"
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
                   :clickCallback="catchRefreshOrgaClick" />
 
+      <MetadataList v-if="hasRecentOrgaDatasets"
+                    class="datasetsGrid px-1"
+                    :listContent="filteredOrgaDatasets"
+                    :searchCount="filteredOrgaDatasets.length"
+                    :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
+                    :loading="userOrganizationLoading"
+                    :placeHolderAmount="placeHolderAmount"
+                    @clickedTag="catchOrgaTagClicked"
+                    @clickedCard="catchMetadataClicked"
+                    :selectedTagNames="selectedOrgaTagNames"
+                    :allTags="allUserOrganizationDataTags"
+                    :showPlaceholder="updatingTags"
+                    @clickedTagClose="catchOrgaTagCloseClicked"
+                    :defaultListControls="userListDefaultControls"
+                    :enabledControls="userListEnabledControls"
+                    :useDynamicHeight="false"
+                    :mapTopLayout="false"
+                    :topFilteringLayout="true"
+                    :showSearch="false"
+                    :showPublicationState="true"
+                    :defaultPublicationState="defaultPublicationState"
+                    mainScrollClass=".bottomBoard" />
+
+<!--
       <div v-if="userOrganizationLoading"
             class="orgaDatasets"
            :style="`height: ${orgaCardHeight + 30}px;`" >
@@ -219,6 +241,7 @@
                       @openButtonClicked="catchEditingClick(metadata.openProperty)" />
 
       </div>
+-->
 
       <div v-if="!userOrganizationLoading && !hasRecentOrgaDatasets"
             class="noOrgaDatasetsGrid px-1">
@@ -295,7 +318,7 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { enhanceTags, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
 import { getUserOrganizationRoleMap } from '@/factories/userEditingFactory';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
@@ -346,6 +369,7 @@ export default {
   computed: {
     ...mapState([
       'config',
+      'categoryCards',
     ]),
     ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
@@ -420,14 +444,35 @@ export default {
         return filteredContent;
       }
 
-      if (!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+      if (!this.selectedUserTagNames || this.selectedUserTagNames.length <= 0) {
         return this.userDatasets;
       }
 
       for (let i = 0; i < this.userDatasets.length; i++) {
         const entry = this.userDatasets[i];
 
-        if (tagsIncludedInSelectedTags(entry.tags, this.selectedTagNames)) {
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedUserTagNames)) {
+          filteredContent.push(entry);
+        }
+      }
+
+      return filteredContent;
+    },
+    filteredOrgaDatasets() {
+      const filteredContent = [];
+
+      if (!this.hasUserDatasets) {
+        return filteredContent;
+      }
+
+      if (!this.selectedOrgaTagNames || this.selectedOrgaTagNames.length <= 0) {
+        return this.userRecentOrgaDatasets;
+      }
+
+      for (let i = 0; i < this.userRecentOrgaDatasets.length; i++) {
+        const entry = this.userRecentOrgaDatasets[i];
+
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedOrgaTagNames)) {
           filteredContent.push(entry);
         }
       }
@@ -499,17 +544,10 @@ export default {
       return null;
     },
     allUserdataTags() {
-      let allTags = getPopularTags(this.userDatasets);
-
-      if (allTags.length <= 0) {
-        allTags = getPopularTags(this.userDatasets, '', 1);
-      }
-
-      if (allTags.length > this.maxFilterTags) {
-        allTags = allTags.splice(this.maxFilterTags, allTags.length - this.maxFilterTags);
-      }
-
-      return allTags;
+      return this.getPopularTagsFromDatasets(this.filteredUserDatasets);
+    },
+    allUserOrganizationDataTags() {
+      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets);
     },
     oldDashboardUrl() {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
@@ -550,19 +588,40 @@ export default {
 
       return false;
     },
+    isCollaborator() {
+      return this.collaboratorDatasets?.length > 0;
+    },
   },
   methods: {
+    getPopularTagsFromDatasets(datasets) {
+      let tags = getPopularTags(datasets);
+
+      if (tags.length <= 0) {
+        tags = getPopularTags(datasets, '', 1);
+      }
+
+      if (tags.length > this.maxFilterTags) {
+        tags = tags.splice(this.maxFilterTags, tags.length - this.maxFilterTags);
+      }
+
+      for (let j = 0; j < tags.length; j++) {
+        const tag = tags[j];
+        tag.color = getTagColor(this.categoryCards, tag.name);
+      }
+
+      return tags;
+    },
     getMetadataState(metadata) {
       return getMetadataVisibilityState(metadata);
     },
-    contentFilteredByTags(value, selectedTagNames) {
-      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
+    contentFilteredByTags(value, selectedUserTagNames) {
+      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedUserTagNames);
     },
     loadRouteTags() {
-      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedTagNames);
+      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
 
       if (routeTags) {
-        this.selectedTagNames = routeTags;
+        this.selectedUserTagNames = routeTags;
       }
     },
     fetchUserDatasets() {
@@ -646,24 +705,19 @@ export default {
     },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {
-        this.selectedTagNames.push(tagName);
-
-        const newTags = [];
-        this.selectedTagNames.forEach(t => newTags.push(t.toLowerCase()));
-
-        this.mixinMethods_additiveChangeRoute(USER_DASHBOARD_PATH, undefined, newTags.toString());
+        this.selectedUserTagNames.push(tagName);
+      }
+    },
+    catchOrgaTagClicked(tagName) {
+      if (!this.mixinMethods_isTagSelected(tagName)) {
+        this.selectedOrgaTagNames.push(tagName);
       }
     },
     catchTagCloseClicked(tagName) {
-      this.selectedTagNames = this.selectedTagNames.filter(tag => tag !== tagName);
-
-      const newTags = [];
-
-      for (let i = 0; i < this.selectedTagNames.length; i++) {
-        newTags.push(this.selectedTagNames[i].toLowerCase());
-      }
-
-      this.mixinMethods_additiveChangeRoute(USER_DASHBOARD_PATH, undefined, newTags.toString());
+      this.selectedUserTagNames = this.selectedUserTagNames.filter(tag => tag !== tagName);
+    },
+    catchOrgaTagCloseClicked(tagName) {
+      this.selectedOrgaTagNames = this.selectedOrgaTagNames.filter(tag => tag !== tagName);
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
@@ -698,7 +752,8 @@ export default {
     left: false,
     right: false,
     headerTitle: 'Dashboard',
-    selectedTagNames: [],
+    selectedUserTagNames: [],
+    selectedOrgaTagNames: [],
     notSignedInInfos: {
       title: 'Not Signed in',
       description: 'Sign in with your email address to see your datasets.',
@@ -749,6 +804,7 @@ export default {
 <style lang="sass" scoped>
   @import "~vuetify/src/styles/settings/_variables.scss"
   $gridGap: $spacer * 4
+  $maxHeight: 750px
 
   .notSignedinGrid
     display: grid
@@ -764,16 +820,19 @@ export default {
       display: grid
       grid-template-columns: 4fr auto auto
       gap: $gridGap
+      overflow: hidden auto
+      max-height: $maxHeight
 
     .midBoard
       display: grid
       grid-template-rows: 36px auto
       gap: $gridGap
       transition: 1s all
+      overflow: hidden hidden
+      max-height: $maxHeight
 
-      .datasetTitleCard
-        display: grid
-        grid-template-columns: 11fr 1fr
+      .datasetsGrid
+        overflow: hidden auto
 
       .noUserDatasetsGrid
         display: grid
@@ -784,18 +843,11 @@ export default {
       display: grid
       grid-template-rows: 36px auto
       gap: $gridGap
+      overflow: hidden auto
+      max-height: $maxHeight
 
-      .orgaDatasets
-        overflow: auto
-        display: grid
-        grid-auto-flow: column
-        justify-content: start
-
-      .orgaDatasets:first-child
-        margin-left: 0
-
-      .orgaDatasets:last-child
-        margin-right: 0
+      .datasetsGrid
+        overflow: hidden auto
 
       .noOrgaDatasetsGrid
         display: grid

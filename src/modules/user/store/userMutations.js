@@ -12,7 +12,10 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import {
+  enhanceMetadatas,
+  enhanceTags,
+} from '@/factories/metaDataFactory';
 
 import {
   selectForEditing,
@@ -177,7 +180,8 @@ function resetErrorObject(state) {
 function enhanceMetadataFromCategories(store, metadatas) {
 
   const { cardBGImages, categoryCards } = store.getters;
-//  const categoryCards = store.getters.categoryCards;
+
+  metadatas.forEach(dataset => enhanceTags(dataset, categoryCards));
 
   return enhanceMetadatas(metadatas, cardBGImages, categoryCards);
 }

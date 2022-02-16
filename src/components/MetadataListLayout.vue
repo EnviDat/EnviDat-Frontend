@@ -93,7 +93,7 @@
 
       <v-col ref="metadataListScroll"
               id="metadataListScroll_no_mapLayout"
-              class="noMapLayoutContainers"
+              class="noMapLayoutContainers pb-4"
               v-on:scroll="onScroll()"
               :class="useDynamicHeight ? 'listScroll' : ''"
               :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight }px);` : ''" >

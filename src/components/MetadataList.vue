@@ -132,7 +132,8 @@
                           @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
         </v-col>
 
-        <v-col class="mx-2"
+        <v-col v-if="showScrollTopButton"
+                class="mx-2"
                 key="infiniteLoader"
                 cols="12" >
           <infinite-loading spinner="waveDots"
@@ -141,15 +142,14 @@
                             @infinite="infiniteHandler"
                             :force-use-infinite-wrapper="mainScrollClass" >
             <div slot="no-results">
-              <BaseRectangleButton v-if="showScrollTopButton && vIndex > 0 && vIndex > reloadAmount"
+              <BaseRectangleButton v-if="vIndex > 0 && vIndex > reloadAmount"
                                     :buttonText="scrollTopButtonText"
                                     :isSmall="true"
                                     :isFlat="true"
                                     @clicked="setScrollPos(0)" />
             </div>
             <div slot="no-more">
-              <BaseRectangleButton v-if="showScrollTopButton"
-                                    :buttonText="scrollTopButtonText"
+              <BaseRectangleButton :buttonText="scrollTopButtonText"
                                     :isSmall="true"
                                     :isFlat="true"
                                     @clicked="setScrollPos(0)" />

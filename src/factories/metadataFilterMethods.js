@@ -92,17 +92,22 @@ export function countTags(datasets) {
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
-    for (let j = 0; j < dataset.tags.length; j++) {
-      const tag = dataset.tags[j];
+    if (dataset.tags) {
+      for (let j = 0; j < dataset.tags.length; j++) {
+        const tag = dataset.tags[j];
 
-      let count = 1;
-      const existingTag = tagMap.get(tag.name);
+        let count = 1;
+        const existingTag = tagMap.get(tag.name);
 
-      if (existingTag) {
-        count += existingTag.count;
+        if (existingTag) {
+          count += existingTag.count;
+        }
+
+        tagMap.set(tag.name, createTag(tag.name, {
+          tag: existingTag,
+          count,
+        }));
       }
-
-      tagMap.set(tag.name, createTag(tag.name, { tag: existingTag, count }));
     }
   }
 
