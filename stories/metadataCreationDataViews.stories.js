@@ -35,23 +35,17 @@ import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
 
-const apiFactory = require('@/factories/apiFactory');
+// const apiFactory = require('@/factories/apiFactory');
 
 const metadataCards = [];
 
 // console.log(`got metadata ${!!unFormatedMetadataCards}`);
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
-  const el = unFormatedMetadataCards[i];
-  /*
-  }
-
-  unFormatedMetadataCards.forEach((el) => {
-  */
-  let formatted = apiFactory.solrResultToCKANJSON(el);
-  formatted = createResources(formatted);
-  enhanceElementsWithStrategyEvents(formatted.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
-  metadataCards.push(formatted);
+  const dataset = unFormatedMetadataCards[i];
+  const resources = createResources(dataset);
+  resources.resources = enhanceElementsWithStrategyEvents(resources.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  metadataCards.push(resources);
 }
 // });
 
@@ -74,6 +68,15 @@ storiesOf(storybookFolder, module)
         </v-col>
       </v-row>
 
+      <v-row>
+        EditMetadataResources with resources
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditMetadataResources v-bind="genericProps" />
+        </v-col>
+      </v-row>    
     </v-col>
     `,
     created() {
@@ -101,7 +104,7 @@ storiesOf(storybookFolder, module)
     data: () => ({
       emptyFirstGenericProps: {
         id: '1',
-        resources: metadataCards[1].resources,
+        resources: [],
         selectionId: -1,
         resourcesConfig: {
           downloadActive: false,
