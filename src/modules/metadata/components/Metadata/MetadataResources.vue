@@ -63,6 +63,7 @@
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
                           :showGenericOpenButton="res.openEvent ? true : false"
+                          :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"
                           :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"

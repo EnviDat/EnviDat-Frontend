@@ -548,7 +548,7 @@ export default {
       if (this.resources?.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources);
+        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
