@@ -7,7 +7,7 @@ stages:
   - deploy
 
 variables:
-  NAMESPACE: frontend
+  NAMESPACE: envidat-frontend
   APP_NAME: frontend-${CI_COMMIT_REF_NAME}
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
@@ -92,49 +92,57 @@ image-build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
       --cache=true
-      --destination "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+      --destination "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-# image-scan:
-#   stage: scan
-#   image:
-#     name: docker.io/aquasec/trivy:0.23.0
-#     entrypoint: [""]
-#   script:
-#     - time trivy image --clear-cache
-#     - time trivy --download-db-only
-#     - "time trivy --exit-code 0 --no-progress --ignore-unfixed \
-#         --cache-dir .trivycache/ --format template \
-#         --template @/contrib/gitlab.tpl \
-#         --output $CI_PROJECT_DIR/gl-container-scanning-report.json \
-#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
-#     - "time trivy --exit-code 0 --no-progress --ignore-unfixed --cache-dir \
-#         .trivycache/ ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
-#     - "time trivy --exit-code 1 --no-progress --ignore-unfixed \
-#         --cache-dir .trivycache/ --severity CRITICAL \
-#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
-#   cache:
-#     paths:
-#       - .trivycache/
-#   artifacts:
-#     when:
-#     reports:
-#       container_scanning: gl-container-scanning-report.json
+image-scan:
+  stage: scan
+  image:
+    name: docker.io/aquasec/trivy:0.23.0
+    entrypoint: [""]
+  script:
+    - time trivy image --clear-cache
+    - time trivy --download-db-only
+    - >
+      time trivy --exit-code 0 --no-progress --ignore-unfixed
+      --cache-dir .trivycache/ --format template
+      --template @/contrib/gitlab.tpl
+      --output $CI_PROJECT_DIR/gl-container-scanning-report.json
+      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+    - >
+      time trivy --exit-code 0 --no-progress --ignore-unfixed --cache-dir
+      .trivycache/ ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+    - >
+      time trivy --exit-code 1 --no-progress --ignore-unfixed
+      --cache-dir .trivycache/ --severity CRITICAL
+      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+  cache:
+    key: $CI_COMMIT_REF_NAME
+    paths:
+      - .trivycache/
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json
 
-# image-retag:
-#   stage: retag
-#   image:
-#     name: quay.io/skopeo/stable:v1.5.2
-#     entrypoint: [""]
-#   before_script:
-#     - echo "$IMAGE_REGISTRY_PASS" | skopeo login \
-#         -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG"
-#   script:
-#     - "skopeo copy \
-#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified \
-#         ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+image-retag:
+  stage: retag
+  image:
+    name: quay.io/skopeo/stable:v1.5.2
+    entrypoint: [""]
+  before_script:
+    - >
+      echo "${IMAGE_REGISTRY_CA_CERT}"
+      | base64 -d >> /etc/ssl/certs/ca-bundle.crt
+    - >
+      echo "$IMAGE_REGISTRY_PASS" | skopeo login
+      -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG
+  script:
+    - >
+      skopeo copy
+      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}
 
 helm-deploy:
   stage: deploy
