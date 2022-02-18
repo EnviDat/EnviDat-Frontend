@@ -7,8 +7,6 @@ stages:
   - deploy
 
 variables:
-  NAMESPACE: envidat-frontend
-  APP_NAME: frontend-${CI_COMMIT_REF_NAME}
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 
@@ -31,7 +29,7 @@ workflow:
           && $CI_PIPELINE_SOURCE == "push")
       when: always
 
-get-version:
+set-vars:
   stage: .pre
   image: docker.io/alpine:3.15
   before_script:
@@ -41,6 +39,12 @@ get-version:
       echo "VERSION=$(cat package.json
       | jq .version --raw-output)" > build.env
     - cat .env >> build.env
+    - echo "NAMESPACE=envidat-frontend" >> build.env
+    - echo "APP_NAME=frontend-${CI_COMMIT_REF_NAME}" >> build.env
+    - source build.env
+    - >
+      echo "IMAGE_NAME=${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+      >> build.env
   artifacts:
     reports:
       dotenv: build.env
@@ -49,7 +53,7 @@ run-tests:
   stage: test
   image: node:16
   cache:
-    key: $CI_COMMIT_REF_NAME
+    key: node-modules
     paths:
       - node_modules/
     policy: pull-push
@@ -62,7 +66,7 @@ run-tests:
 #   stage: visual-regression
 #   image: node:16
 #   cache:
-#     key: $CI_COMMIT_REF_NAME
+#     key: node-modules
 #     paths:
 #       - node_modules/
 #     policy: pull
@@ -92,7 +96,7 @@ image-build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
       --cache=true
-      --destination "${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified"
+      --destination "${IMAGE_NAME}-unverified"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
@@ -102,27 +106,33 @@ image-scan:
   image:
     name: docker.io/aquasec/trivy:0.23.0
     entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none
   script:
+    - trivy --version
     - time trivy image --clear-cache
-    - time trivy --download-db-only
+    - time trivy --download-db-only --no-progress --cache-dir .trivycache/
+    # Create report artifact
     - >
-      time trivy --exit-code 0 --no-progress --ignore-unfixed
-      --cache-dir .trivycache/ --format template
-      --template @/contrib/gitlab.tpl
-      --output $CI_PROJECT_DIR/gl-container-scanning-report.json
-      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
+      --no-progress --format template --template "@/contrib/gitlab.tpl"
+      --output "$CI_PROJECT_DIR/gl-container-scanning-report.json"
+      "$IMAGE_NAME-unverified"
+    # Print full report
     - >
-      time trivy --exit-code 0 --no-progress --ignore-unfixed --cache-dir
-      .trivycache/ ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
+      --no-progress "$IMAGE_NAME"-unverified
+    # Fail on critical vulnerabilities
     - >
-      time trivy --exit-code 1 --no-progress --ignore-unfixed
-      --cache-dir .trivycache/ --severity CRITICAL
-      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
+      time trivy --cache-dir .trivycache/ image --exit-code 1 --ignore-unfixed
+      --severity CRITICAL --no-progress "$IMAGE_NAME"-unverified
   cache:
-    key: $CI_COMMIT_REF_NAME
+    key: trivy-cache
     paths:
       - .trivycache/
+    policy: pull-push
   artifacts:
+    when: always
     reports:
       container_scanning: gl-container-scanning-report.json
 
@@ -131,6 +141,8 @@ image-retag:
   image:
     name: quay.io/skopeo/stable:v1.5.2
     entrypoint: [""]
+  variables:
+    GIT_STRATEGY: none
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
@@ -140,9 +152,7 @@ image-retag:
       -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG
   script:
     - >
-      skopeo copy
-      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}-unverified
-      ${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}
+      skopeo copy ${IMAGE_NAME}-unverified ${IMAGE_NAME}
 
 helm-deploy:
   stage: deploy
