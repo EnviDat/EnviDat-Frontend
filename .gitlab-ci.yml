@@ -2,8 +2,8 @@ stages:
   # - visual-regression
   - test
   - build
-  # - scan
-  # - retag
+  - scan
+  - retag
   - deploy
 
 variables:
