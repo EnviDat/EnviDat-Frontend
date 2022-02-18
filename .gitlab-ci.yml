@@ -52,7 +52,7 @@ run-tests:
     key: $CI_COMMIT_REF_NAME
     paths:
       - node_modules/
-    policy: pull
+    policy: pull-push
   before_script:
     - npm install
   script:
@@ -76,11 +76,6 @@ image-build:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
-  cache:
-    key: $CI_COMMIT_REF_NAME
-    paths:
-      - node_modules/
-    policy: pull
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
@@ -149,17 +144,17 @@ helm-deploy:
   before_script:
     - apk add yq --no-cache
   script: |
-    yq eval --inplace --verbose \
+    yq eval --inplace \
       ".appVersion = \"${VERSION}-${CI_COMMIT_REF_NAME}\"" \
       "${CI_PROJECT_DIR}/chart/Chart.yaml"
     if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
-        yq eval --inplace --verbose \
+        yq eval --inplace \
           ".ingress.hosts[0].host = \"${APP_NAME}.envidat.ch\"" \
           "${CI_PROJECT_DIR}/chart/values.yaml"
-        yq eval --inplace --verbose \
+        yq eval --inplace \
           ".ingress.tls[0].hosts[0] = \"${APP_NAME}.envidat.ch\"" \
           "${CI_PROJECT_DIR}/chart/values.yaml"
-        yq eval --inplace --verbose \
+        yq eval --inplace \
           '.autoscaling.enabled = false' \
           "${CI_PROJECT_DIR}/chart/values.yaml"
     fi
