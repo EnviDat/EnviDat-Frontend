@@ -1,21 +1,21 @@
 ARG EXTERNAL_REG
 
 FROM node:16 AS base
-ARG MAINTAINER
-LABEL envidat.com.maintainer="${MAINTAINER}"
+ARG MAINTAINER_APP
+ARG MAINTAINER_CD
+LABEL envidat.ch.maintainer.app="${MAINTAINER_APP}"
+LABEL envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
-
-
-FROM base AS dev
 COPY . .
+RUN npm install
+
+
+FROM base AS local-dev
 ENTRYPOINT ["npm", "run", "serve"]
 
 
-FROM dev AS builder
+FROM local-dev AS builder
+ENV NODE_ENV production
 RUN npm run build -- --mode $NODE_ENV
 
 
@@ -24,7 +24,6 @@ WORKDIR /usr/share/nginx/html
 # Remove default Nginx static assets
 RUN rm -rf ./*
 COPY --from=builder /app/dist .
-COPY --from=builder /app/config.json ./config.json
 EXPOSE 80
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

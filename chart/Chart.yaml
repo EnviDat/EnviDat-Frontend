@@ -2,8 +2,8 @@ apiVersion: v2
 type: application
 name: envidat-frontend
 description: EnviDat.ch frontend for displaying publication metadata.
-version: 0.1.0
-appVersion: "0.7.0"
+version: 0.2.0
+appVersion: "local"
 maintainers:
 - email: samuel.woodcock@wsl.ch
   name: Sam Woodcock
