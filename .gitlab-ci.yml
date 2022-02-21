@@ -156,7 +156,9 @@ image-retag:
       -u "${IMAGE_REGISTRY_USER}" --password-stdin "${INTERNAL_REG}"
   script:
     - >
-      skopeo copy "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
+      skopeo --debug copy
+      "docker://${IMAGE_NAME}-unverified"
+      "docker://${IMAGE_NAME}"
 
 helm-deploy:
   stage: deploy
