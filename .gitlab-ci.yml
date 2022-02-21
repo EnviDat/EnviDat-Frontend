@@ -108,6 +108,10 @@ image-scan:
     entrypoint: [""]
   variables:
     GIT_STRATEGY: none
+  before_script:
+    - >
+      echo "${IMAGE_REGISTRY_CA_CERT}"
+      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
   script:
     - trivy --version
     - time trivy image --clear-cache
