@@ -6,7 +6,7 @@ networks:
 
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/envidat-frontend:${VERSION}-develop"
+    image: "${INTERNAL_REG}/frontend:${VERSION}-develop"
     container_name: envidat_frontend
     ports:
       - 8990:8080
