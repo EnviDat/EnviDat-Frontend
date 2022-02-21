@@ -24,10 +24,6 @@ workflow:
           ($CI_COMMIT_REF_NAME == 'develop'
           && $CI_PIPELINE_SOURCE == "push")
       when: always
-    - if: >
-          ($CI_COMMIT_REF_NAME == 'ci-test'
-          && $CI_PIPELINE_SOURCE == "push")
-      when: always
 
 set-vars:
   stage: .pre
