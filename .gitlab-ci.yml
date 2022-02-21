@@ -152,11 +152,11 @@ image-retag:
       echo "${IMAGE_REGISTRY_CA_CERT}"
       | base64 -d >> /etc/ssl/certs/ca-bundle.crt
     - >
-      echo "$IMAGE_REGISTRY_PASS" | skopeo login
-      -u "$IMAGE_REGISTRY_USER" --password-stdin "$INTERNAL_REG
+      echo "${IMAGE_REGISTRY_PASS}" | skopeo login
+      -u "${IMAGE_REGISTRY_USER}" --password-stdin "${INTERNAL_REG}"
   script:
     - >
-      skopeo copy ${IMAGE_NAME}-unverified ${IMAGE_NAME}
+      skopeo copy "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
 
 helm-deploy:
   stage: deploy
