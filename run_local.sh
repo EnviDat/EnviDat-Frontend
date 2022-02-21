@@ -13,7 +13,7 @@ VERSION=$(cat package.json \
 
 docker build . \
   --target local-dev \
-  --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}-local" \
+  --tag "${INTERNAL_REG}/envidat-frontend:${VERSION}-develop" \
   --build-arg NODE_ENV=development \
   --build-arg MAINTAINER_APP="${MAINTAINER_APP}" \
   --build-arg MAINTAINER_CD="${MAINTAINER_CD}" \
