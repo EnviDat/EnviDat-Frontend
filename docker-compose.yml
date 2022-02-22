@@ -15,8 +15,6 @@ services:
         MAINTAINER_APP: ${MAINTAINER_APP}
         MAINTAINER_CD: ${MAINTAINER_CD}
     container_name: envidat_frontend
-    environment:
-      - NODE_ENV=development
     ports:
       - 8990:8080
     volumes:

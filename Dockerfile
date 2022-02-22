@@ -9,13 +9,15 @@ WORKDIR /app
 
 
 FROM base AS local-dev
+ENV NODE_ENV development
 ENTRYPOINT ["npm", "run", "serve"]
 
 
 FROM local-dev AS builder
 ENV NODE_ENV production
-COPY . .
+COPY package*.json .
 RUN npm install
+COPY . .
 RUN npm run build -- --mode $NODE_ENV
 
 
