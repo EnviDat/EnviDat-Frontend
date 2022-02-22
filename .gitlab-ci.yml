@@ -31,6 +31,8 @@ workflow:
         - package.json
         - vue.*
       when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: always
 
 set-vars:
   stage: .pre
