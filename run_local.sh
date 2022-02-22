@@ -13,11 +13,13 @@ VERSION=$(cat package.json \
 
 docker build . \
   --target local-dev \
-  --tag "${INTERNAL_REG}/frontend:${VERSION}-develop" \
+  --tag "${INTERNAL_REG}/frontend:${VERSION}-local" \
   --build-arg NODE_ENV=development \
   --build-arg MAINTAINER_APP="${MAINTAINER_APP}" \
   --build-arg MAINTAINER_CD="${MAINTAINER_CD}" \
   --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
+
+docker push "${INTERNAL_REG}/frontend:${VERSION}-local"
 
 VERSION="${VERSION}" docker compose \
   --file docker-compose.yml up -d
