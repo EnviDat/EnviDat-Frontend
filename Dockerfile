@@ -6,8 +6,6 @@ ARG MAINTAINER_CD
 LABEL envidat.ch.maintainer.app="${MAINTAINER_APP}"
 LABEL envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
-COPY . .
-RUN npm install
 
 
 FROM base AS local-dev
@@ -16,6 +14,8 @@ ENTRYPOINT ["npm", "run", "serve"]
 
 FROM local-dev AS builder
 ENV NODE_ENV production
+COPY . .
+RUN npm install
 RUN npm run build -- --mode $NODE_ENV
 
 
