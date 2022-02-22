@@ -19,8 +19,6 @@ docker build . \
   --build-arg MAINTAINER_CD="${MAINTAINER_CD}" \
   --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-docker push "${INTERNAL_REG}/frontend:${VERSION}-local"
-
 docker network create ckan-internal || true
 
 VERSION="${VERSION}" docker compose \
