@@ -17,12 +17,19 @@ workflow:
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'staging'
+          ($CI_COMMIT_REF_NAME == "staging"
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'develop'
+          ($CI_COMMIT_REF_NAME == "develop"
           && $CI_PIPELINE_SOURCE == "push")
+      changes:
+        - src/**/*
+        - public/**/*
+        - tests/**/*
+        - .env*
+        - package.json
+        - vue.*
       when: always
 
 set-vars:
