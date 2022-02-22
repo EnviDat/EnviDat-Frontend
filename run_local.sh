@@ -21,5 +21,7 @@ docker build . \
 
 docker push "${INTERNAL_REG}/frontend:${VERSION}-local"
 
+docker network create ckan-internal || true
+
 VERSION="${VERSION}" docker compose \
   --file docker-compose.yml up -d
