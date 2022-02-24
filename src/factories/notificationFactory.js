@@ -76,7 +76,7 @@ function genericMessage(status) {
     case 408:
       return 'Timeout! Ups no answer from the internet? Check your internet connection and if it persits report this error.';
     default:
-      return 'An unknown Error occured please report to the envidat team (envidat@wsl.ch)';
+      return 'An unknown Error occurred please report to the envidat team (envidat@wsl.ch)';
   }
 }
 

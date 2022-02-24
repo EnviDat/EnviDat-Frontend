@@ -50,7 +50,7 @@ const mutations = {
   [GET_DMP_ERROR](state, reason) {
     state.loading = false;
 
-    const details = 'An error occured while loading the dmp infos!';
+    const details = 'An error occurred while loading the dmp infos!';
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 

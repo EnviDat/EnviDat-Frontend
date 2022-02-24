@@ -43,7 +43,7 @@ export default {
   [GET_PROJECTS_ERROR](state, reason) {
     state.loading = false;
 
-    const details = 'An error occured while loading the policies!';
+    const details = 'An error occurred while loading the policies!';
     const errObj = getSpecificApiError(details, reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);

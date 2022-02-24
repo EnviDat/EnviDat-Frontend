@@ -1,8 +1,6 @@
 /* eslint-disable object-curly-newline */
 
 import {
-  // LANDING_PATH,
-  // LANDING_PAGENAME,
   BROWSE_PATH,
   BROWSE_PAGENAME,
   PROJECTS_PATH,
@@ -15,6 +13,8 @@ import {
   USER_SIGNOUT_PATH,
   USER_DASHBOARD_PAGENAME,
   USER_DASHBOARD_PATH,
+  BLOG_PATH,
+  BLOG_PAGENAME,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -27,6 +27,7 @@ export const navigationItems = [
   // { title: 'DMP', icon: 'menu_book', toolTip: 'Template for a Data Management Plan', active: false, path: DMP_PATH, pageName: DMP_PAGENAME },
   { title: 'Sign In', icon: 'person', toolTip: 'Sign in to management research data', active: false, path: USER_SIGNIN_PATH, pageName: USER_SIGNIN_PAGENAME },
   { title: 'About', icon: 'info', toolTip: 'What is EnviDat? Who is behind EnviDat?', active: false, path: ABOUT_PATH, pageName: ABOUT_PAGENAME },
+  { title: 'Blog', icon: 'newspaper', toolTip: 'News and articles from the EnviDat team', active: false, path: BLOG_PATH, pageName: BLOG_PAGENAME },
   // { title: 'Contact', icon: 'contact_support', toolTip: 'Do you need support?', active: false },
   { title: 'Menu', icon: 'menu', active: false },
 ];

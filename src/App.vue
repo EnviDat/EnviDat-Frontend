@@ -124,7 +124,7 @@ import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
-  USER_SIGNIN_PATH,
+  USER_SIGNIN_PATH, BLOG_PAGENAME,
 } from '@/router/routeConsts';
 import {
   METADATA_NAMESPACE,
@@ -413,16 +413,16 @@ export default {
     searchTerm() {
       return this.$route.query.search;
     },
-    currentPageIsBrowsePage() {
-      return this.currentPage === BROWSE_PAGENAME;
+    mainPageIsScrollable() {
+      return this.currentPage === BROWSE_PAGENAME || this.currentPage === BLOG_PAGENAME;
     },
     showToolbar() {
-      // return this.currentPageIsBrowsePage && this.mode;
+      // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
       const heightStyle = this.showToolbar ? 'height: calc(100vh - 36px);' : 'height: 100vh;';
-      return this.currentPageIsBrowsePage ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      return this.mainPageIsScrollable ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.breakpoint.smAndDown;

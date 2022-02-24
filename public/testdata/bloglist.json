@@ -1,0 +1,14 @@
+[
+  {
+    "title": "New Editing Workflow",
+    "titleImg": "./testdata/blogheader.jpg",
+    "postFile": "blog-new-editing-workflow.md",
+    "date": "17.02.2022"
+  },
+  {
+    "title": "Happy New Year",
+    "titleImg": "./testdata/blogheader.jpg",
+    "postFile": "blog-happy-new-year.md",
+    "date": "01.01.2022"
+  }
+]
