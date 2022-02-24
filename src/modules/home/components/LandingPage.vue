@@ -12,6 +12,211 @@
           id="polygon-canvas2"
           style="position: absolute; width: 400px; height: 300px; bottom: 30%; left: 22.5%;" />
 
+
+    <LandingPageLayout :categoriesTitle="welcomeInfo.categoriesTitle"
+                       :datasetsTitle="welcomeInfo.datasetsTitle"
+                       :newsTitle="welcomeInfo.newsTitle"
+                       :articlesTitle="welcomeInfo.articlesTitle" >
+
+      <template v-slot:logo>
+
+        <v-row align="center" >
+
+          <v-col class="hidden-sm-and-down"
+                 cols="4"
+                 lg="3" >
+            <img :src="mdLogo" :alt="alternativeText">
+          </v-col>
+
+          <v-col class="hidden-xs-only hidden-md-and-up"
+                 cols="2" >
+            <img :src="smLogo"
+                 :alt="alternativeText" >
+          </v-col>
+
+          <v-col class="hidden-sm-and-up"
+                 cols="3" >
+            <img :src="smLogo"
+                 :alt="alternativeText" >
+          </v-col>
+
+          <v-col class="envidatTitle display-4 pl-5 hidden-md-and-down"
+                 style="font-size: 80px !important;" >
+            {{ welcomeInfo.titleText }}
+          </v-col>
+
+          <v-col class="envidatTitle display-3 pl-2 hidden-sm-and-down hidden-lg-and-up" >
+            {{ welcomeInfo.titleText }}
+          </v-col>
+
+          <v-col class="envidatTitle display-2 pl-2 hidden-xs-only hidden-md-and-up" >
+            {{ welcomeInfo.titleText }}
+          </v-col>
+
+          <v-col class="envidatTitle display-3 hidden-sm-and-up" >
+            {{ welcomeInfo.titleText }}
+          </v-col>
+        </v-row>
+
+      </template>
+
+      <template v-slot:welcome>
+
+        <SloganCard :slogan="welcomeInfo.Slogan"
+                     :subSlogan="welcomeInfo.SubSlogan"
+                     :maxHeight="200"
+                     :buttonText="sloganButtonText"
+                     :buttonCallback="catchBrowseClicked"
+                     :moreButtonText="sloganMoreButtonText"
+                     :moreButtonCallback="catchMoreClicked" />
+
+      </template>
+
+      <template v-slot:search>
+        <search-bar-view v-if="$vuetify.breakpoint.smAndUp"
+                         :labelText="welcomeInfo.searchLabelText"
+                         :buttonText="buttonText"
+                         :hasButton="true"
+                         @clicked="catchSearchClicked" />
+
+        <small-search-bar-view v-if="$vuetify.breakpoint.xsOnly"
+                               :labelText="welcomeInfo.smallSearchLabelText"
+                               :buttonText="buttonText"
+                               @clicked="catchSearchClicked" />
+
+      </template>
+
+
+
+      <template v-slot:datasets>
+
+        <v-row v-if="loadingMetadatasContent"
+               no-gutters >
+
+          <v-col v-for="index in 2"
+                 :key="index"
+                 cols="6"
+                 class="pa-2" >
+
+            <MetadataCardPlaceholder id="orgaDataset"
+                                     class="mx-2"  />
+          </v-col>
+        </v-row>
+
+        <v-row v-if="!loadingMetadatasContent"
+               no-gutters >
+
+          <v-col v-for="(metadata, index) in recentMetadata"
+                 :key="index"
+                 cols="6"
+                 class="pa-2" >
+
+            <MetadataCard :key="index"
+                          :id="metadata.id"
+                          :title="metadata.title"
+                          :subtitle="metadata.notes"
+                          :name="metadata.name"
+                          :titleImg="metadata.titleImg"
+                          :resourceCount="metadata.num_resources"
+                          :fileIconString="fileIconString"
+                          :categoryColor="metadata.categoryColor"
+                          :compactLayout="true"
+                          @clickedEvent="catchMetadataClicked" />
+          </v-col>
+        </v-row>
+
+      </template>
+
+      <template v-slot:categories>
+
+<!--
+        <v-row no-gutters>
+          <v-col>
+            <v-card>
+              <v-card-title primary style="word-break: break-word; line-height: 1.5rem;">
+                {{ welcomeInfo.categoryText }}
+              </v-card-title>
+            </v-card>
+          </v-col>
+
+        </v-row>
+-->
+
+<!--        <v-row no-gutters >
+          <v-container class="pt-3 pb-0 px-1 pa-sm-0 pt-sm-3">
+            -->
+            <v-row no-gutters>
+
+              <v-col v-for="card in categoryCards"
+                     :key="card.title"
+                     cols="6"
+                     class="pa-2" >
+
+                <base-click-card :compact="true"
+                                 :title="card.title"
+                                 :img="card.img"
+                                 :color="card.darkColor"
+                                 :contain="card.contain"
+                                 :disabled="card.disabled"
+                                 @click="catchCategoryClicked(card.type)" />
+              </v-col>
+            </v-row>
+
+<!--
+          </v-container>
+        </v-row>
+-->
+
+      </template>
+
+      <template v-slot:articles>
+
+        <v-row no-gutters>
+          <v-col v-for="(post, index) in blogPosts"
+                 :key="index"
+                 cols="6"
+                 class="pa-2"
+                 style="max-height: 105px;"
+                 >
+            <BlogPostCard :post="post"
+                          :loadingImg="fallbackCardImg"
+                          titleCssClass="compactBlogPostCard"
+                          subtitleCssClass="text-caption"
+                          @clicked="catchPostClick(post.postFile)"/>
+          </v-col>
+        </v-row>
+
+      </template>
+
+      <template v-slot:news
+                v-if="showWinterHolidayWishs || showNewYearWishs" >
+
+        <TitleCard :title="welcomeInfo.newsTitle"
+                   cardClass="pa-2"
+                   titleClass="titleCardClass"/>
+
+
+        <div class="pt-4 px-1">
+
+          <SloganCard v-if="showWinterHolidayWishs"
+                      slogan="Happy Holidays!"
+                      :sloganImg="winterHolidayImage"
+                      :maxHeight="275"
+                      :subSlogan="decemberWishes" />
+
+          <SloganCard v-if="showNewYearWishs"
+                      slogan="Happy New Year!"
+                      :sloganImg="newYearImage"
+                      :maxHeight="300"
+                      :subSlogan="newYearWishes" />
+        </div>
+      </template>
+
+
+    </LandingPageLayout>
+
+
+<!--
       <v-row class="pb-5"
               no-gutters>
 
@@ -43,8 +248,10 @@
                                   :moreButtonText="sloganMoreButtonText"
                                   :moreButtonCallback="catchMoreClicked" />
       </v-row>
+-->
 
 
+<!--
       <v-row class="hidden-xs-only px-0 py-5 offset-md-4 offset-lg-6"
               no-gutters>
         <search-bar-view :labelText="welcomeInfo.searchLabelText"
@@ -59,7 +266,9 @@
                                 :buttonText="buttonText"
                                 @clicked="catchSearchClicked" />
       </v-row>
+-->
 
+<!--
       <v-row class="pt-5 pb-2 offset-md-4 offset-lg-6"
               no-gutters>
         <v-col>          
@@ -91,6 +300,7 @@
           </v-row>
         </v-container>
       </v-row>
+-->
 
   </v-container>
 </template>
@@ -113,7 +323,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapState } from 'vuex';
+import {
+  mapGetters,
+  mapState,
+} from 'vuex';
+
+import {
+  METADATA_NAMESPACE,
+  SET_DETAIL_PAGE_BACK_URL,
+} from '@/store/metadataMutationsConsts';
+
 import { getMonth } from 'date-fns';
 
 import {
@@ -121,18 +340,34 @@ import {
   BROWSE_PATH,
   ABOUT_PATH,
   USER_SIGNIN_PATH,
+  METADATADETAIL_PAGENAME,
+  BLOG_PAGENAME,
 } from '@/router/routeConsts';
 
-import BaseClickCard from '@/components/BaseElements/BaseClickCard';
-import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import {
+  BLOG_NAMESPACE,
+  GET_BLOG_LIST,
+} from '@/modules/blog/store/blogMutationsConsts';
+
+import BaseClickCard from '@/components/BaseElements/BaseClickCard';
+import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import SloganCard from '@/modules/home/components/SloganCard';
-import TheTitleScreenLayout from './TheTitleScreenLayout';
-import SearchBarView from './SearchBarView';
+import LandingPageLayout from '@/modules/home/components/LandingPageLayout';
+import MetadataCard from '@/components/Cards/MetadataCard';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
+// import TheTitleScreenLayout from '@/modules/home/components/TheTitleScreenLayout';
+import SearchBarView from '@/modules/home/components/SearchBarView';
+
+import smLogo from '@/assets/logo/EnviDat_logo_64.png';
+import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
+import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
+import TitleCard from '@/components/Cards/TitleCard';
+import BlogPostCard from '@/modules/blog/components/BlogPostCard';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -153,6 +388,12 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
+  beforeMount() {
+    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+
+    this.fileIconString = this.mixinMethods_getIcon('file');
+    this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
+  },
   mounted() {
     window.scrollTo(0, 0);
 
@@ -166,6 +407,20 @@ export default {
       'categoryCards',
       'config',
     ]),
+    ...mapGetters(METADATA_NAMESPACE, [
+      'loadingMetadatasContent',
+      'recentMetadata',
+    ]),
+    ...mapState(BLOG_NAMESPACE, [
+      'list',
+    ]),
+    blogPosts() {
+      if (this.list?.length > 0) {
+        return this.list.slice(0, 6);
+      }
+
+      return this.list;
+    },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
     },
@@ -295,13 +550,37 @@ export default {
     redirectToDashboard() {
       window.open('https://www.envidat.ch/user/reset', '_blank');
     },
+    catchMetadataClicked(datasetname) {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+
+      this.$router.push({
+        name: METADATADETAIL_PAGENAME,
+        params: {
+          metadataid: datasetname,
+        },
+      });
+    },
+    catchPostClick(post) {
+
+      if (this.$route.params?.post !== post) {
+        this.$router.push({
+          name: BLOG_PAGENAME,
+          params: { post },
+        });
+      }
+    },
   },
   components: {
-    TheTitleScreenLayout,
+    LandingPageLayout,
+    // TheTitleScreenLayout,
     SearchBarView,
     SmallSearchBarView,
     BaseClickCard,
     SloganCard,
+    MetadataCard,
+    MetadataCardPlaceholder,
+    TitleCard,
+    BlogPostCard,
   },
   data: () => ({
     PageBGImage: 'app_b_landingpage',
@@ -317,7 +596,34 @@ export default {
       smallSearchLabelText: 'Enter research term, topic or author',
       searchText: 'Looking for something specific?',
       categoryText: 'Have a look at one of theses categories or sign in to upload your data',
+      articlesTitle: 'Recent EnviDat Blog Articles',
+      newsTitle: 'News From The EnviDat Team',
+      categoriesTitle: 'Research Data Categories',
+      datasetsTitle: 'Recently Published Research Datasets',
     },
+    fileIconString: '',
+    alternativeText: 'EnviDat logo',
+    fallbackCardImg: null,
+    smLogo,
+    mdLogo,
+    lgLogo,
   }),
 };
 </script>
+
+<style scoped>
+
+.envidatTitle {
+  font-family: 'Baskervville', serif !important;
+}
+
+</style>
+
+<style >
+
+.compactBlogPostCard {
+  font-size: 1rem;
+  line-height: 1rem;
+}
+
+</style>

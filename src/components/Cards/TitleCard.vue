@@ -11,7 +11,8 @@
                         :tooltipText="tooltipText"
                         @clicked="clickCallback" /> -->
 
-      <BaseIconButton style="justify-self: end;"
+      <BaseIconButton v-if="clickCallback"
+                        style="justify-self: end;"
                         :materialIconName="icon"
                         :tooltipText="tooltipText"
                         @clicked="clickCallback" />
