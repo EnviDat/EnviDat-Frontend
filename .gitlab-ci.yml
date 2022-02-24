@@ -17,12 +17,21 @@ workflow:
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'staging'
+          ($CI_COMMIT_REF_NAME == "staging"
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
-          ($CI_COMMIT_REF_NAME == 'develop'
+          ($CI_COMMIT_REF_NAME == "develop"
           && $CI_PIPELINE_SOURCE == "push")
+      changes:
+        - src/**/*
+        - public/**/*
+        - tests/**/*
+        - .env*
+        - package.json
+        - vue.*
+      when: always
+    - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
 
 set-vars:
@@ -47,7 +56,7 @@ set-vars:
 
 run-tests:
   stage: test
-  image: node:16
+  image: docker.io/node:16
   cache:
     key: node-modules
     paths:
@@ -60,7 +69,7 @@ run-tests:
 
 # visual-regression:
 #   stage: visual-regression
-#   image: node:16
+#   image: docker.io/node:16
 #   cache:
 #     key: node-modules
 #     paths:
@@ -117,15 +126,15 @@ image-scan:
       time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
       --no-progress --format template --template "@/contrib/gitlab.tpl"
       --output "$CI_PROJECT_DIR/gl-container-scanning-report.json"
-      "$IMAGE_NAME-unverified"
+      "${IMAGE_NAME}-unverified"
     # Print full report
     - >
       time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
-      --no-progress "$IMAGE_NAME"-unverified
+      --no-progress "${IMAGE_NAME}"-unverified
     # Fail on critical vulnerabilities
     - >
       time trivy --cache-dir .trivycache/ image --exit-code 1 --ignore-unfixed
-      --severity CRITICAL --no-progress "$IMAGE_NAME"-unverified
+      --severity CRITICAL --no-progress "${IMAGE_NAME}"-unverified
   cache:
     key: trivy-cache
     paths:
@@ -138,31 +147,27 @@ image-scan:
 
 image-retag:
   stage: retag
-  image:
-    name: quay.io/skopeo/stable:v1.5.2
-    entrypoint: [""]
+  image: docker.io/regclient/regctl:v0.3-alpine
   variables:
     GIT_STRATEGY: none
   before_script:
+    - export REG_HOST=${INTERNAL_REG%/*}
     - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /etc/ssl/certs/ca-bundle.crt
-    - >
-      echo "${IMAGE_REGISTRY_PASS}" | skopeo login
-      -u "${IMAGE_REGISTRY_USER}" --password-stdin "${INTERNAL_REG}"
+      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"regcert\":
+      \"$(printf "%s" "${IMAGE_REGISTRY_CERT}" | base64 -d
+      | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\",\"hostname\":
+      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
+      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
   script:
     - >
-      skopeo --debug copy
-      "docker://${IMAGE_NAME}-unverified"
-      "docker://${IMAGE_NAME}"
-    - >
-      skopeo --debug delete
-      "docker://${IMAGE_NAME}-unverified"
+      regctl --verbosity debug image copy
+      "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
+    - regctl --verbosity debug tag delete "${IMAGE_NAME}-unverified"
 
 helm-deploy:
   stage: deploy
   image:
-    name: alpine/helm:3.8.0
+    name: docker.io/alpine/helm:3.8.0
     entrypoint: [""]
   before_script:
     - apk add yq --no-cache
