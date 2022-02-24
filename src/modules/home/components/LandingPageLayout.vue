@@ -9,7 +9,7 @@
     <div class="welcomeGrid pa-2">
       <slot name="welcome"></slot>
 
-      <div class="pt-6">
+      <div class="pt-8">
         <slot name="search"></slot>
       </div>
     </div>
