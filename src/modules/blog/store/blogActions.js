@@ -23,12 +23,8 @@ export default {
   [GET_BLOG_LIST]({ commit }) {
     commit(GET_BLOG_LIST);
 
-    let url = `./blog/bloglist.json?nocache=${new Date().getTime()}`;
+    const url = `./blog/bloglist.json?nocache=${new Date().getTime()}`;
 
-    if (process.env.NODE_ENV === 'development') {
-      url = './testdata/bloglist.json';
-    }
-    
     axios.get(url)
       .then((response) => {
         commit(GET_BLOG_LIST_SUCCESS, response.data);
@@ -40,10 +36,7 @@ export default {
   [GET_BLOG_POST]({ commit }, postFile) {
     commit(GET_BLOG_POST);
 
-    let url = `./blog/${postFile}?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
-      url = `./testdata/${postFile}`;
-    }
+    const url = `./blog/${postFile}?nocache=${new Date().getTime()}`;
 
     axios.get(url)
       .then((response) => {

@@ -5,9 +5,10 @@
                 id="BlogPage" >
 
     <v-row no-gutters
-            ref="blogHeader">
+            ref="blogHeader"
+            class="py-4">
 
-      <v-col class="pt-3" cols="10" offset="1">
+      <v-col cols="10" offset="1">
 
         <BlogHeader :title="blogHeaderTitle"
                     :titleImage="blogHeaderImg"
@@ -21,10 +22,9 @@
 
     <v-row no-gutters
            ref="blogBody"
-           class="pb-4">
+           class="py-4">
 
       <v-col v-if="showBlogPost"
-             class="pt-3"
              cols="10"
              offset="1"
              style="overflow: hidden auto;"
@@ -50,13 +50,15 @@
              >
 
 
-        <v-row >
+        <v-row no-gutters>
           <v-col v-for="(post, index) in list"
                  :key="index"
-                 cols="12"
-                 md="4">
+                 cols="6"
+                 md="4"
+                 class="pa-2" >
             <BlogPostCard :post="post"
                           :loadingImg="fallbackCardImg"
+                          height="200"
                           @clicked="catchPostClick(post.postFile)"/>
           </v-col>
         </v-row>
@@ -99,7 +101,6 @@ import {
 } from '@/modules/blog/store/blogMutationsConsts';
 
 import BlogHeader from '@/modules/blog/components/BlogHeader';
-import blogheaderImg from '@/modules/blog/assets/blogHeader.jpg';
 import BlogPost from '@/modules/blog/components/BlogPost';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard';
 
@@ -148,10 +149,10 @@ export default {
     },
     blogHeaderImg() {
       if (this.showBlogPost) {
-        return this.post.titleImg;
+        return this.mixinMethods_getWebpImage('blog/postHeader', this.$store.state);
       }
 
-      return this.blogheaderImg;
+      return this.mixinMethods_getWebpImage('blog/blogHeader', this.$store.state);
     },
   },
   updated() {
@@ -161,7 +162,7 @@ export default {
     setBlogBodyHeight() {
       let bodyHeaderHeight = 150;
       const TheNavigationToolbar = 36;
-      const padding = 14;
+      const padding = 32;
 
       if (this.$refs?.blogHeader) {
         bodyHeaderHeight = this.$refs.blogHeader.clientHeight ? this.$refs.blogHeader.clientHeight : bodyHeaderHeight;
@@ -214,7 +215,6 @@ export default {
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
-    blogheaderImg,
     fallbackCardImg: null,
     blogBodyHeight: 150,
   }),

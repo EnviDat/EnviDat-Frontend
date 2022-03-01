@@ -1,18 +1,22 @@
 <template>
   <v-card ripple
           hover
+          :height="height"
           @click="$emit('clicked')"
           >
 
-    <v-container class="pa-0">
+      <v-row no-gutters
+             class="pa-0">
 
-      <v-row no-gutters class="pa-0">
+        <v-col cols="5"
+               class="pa-0">
 
-        <v-col cols="5">
           <v-img class="imagezoom"
-                 contain
+                 :height="height"
+                 :aspect-ratio="1"
                  :style="`border-bottom-left-radius: 4px; border-top-left-radius: 4px;`"
-                 :src="loadingImg"  />
+                 :lazy-src="loadingImg"
+                 :src="post.titleImg"  />
 
         </v-col>
 
@@ -28,17 +32,15 @@
         </v-col>
       </v-row>
 
-    </v-container>
-
   </v-card>
 
 </template>
 
 <script>
 /**
- * BlogPost.vue shows the content of a post
+ * BlogPostCard shows the content the title of a post
  *
- * @summary
+ * @summary BlogPostCard shows the content the title of a post
  * @author Dominik Haas-Artho
  *
  * Created at     : 2022-02-17
@@ -48,7 +50,7 @@
  */
 
 export default {
-  name: 'BlogPost',
+  name: 'BlogPostCard',
   props: {
     post: Object,
     loadingImg: String,
@@ -60,6 +62,7 @@ export default {
       type: String,
       default: 'text-body-1',
     },
+    height: String,
   },
   computed: {
   },

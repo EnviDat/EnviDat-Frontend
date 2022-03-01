@@ -6,7 +6,7 @@
 
     <div v-show="showPolygonParticles"
           id="polygon-canvas" 
-          style="position: absolute; width: 100%; height: 325px; bottom: 0; left: 0;" />
+          style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;" />
 
     <div v-show="showPolygonParticles"
           id="polygon-canvas2"
@@ -129,43 +129,22 @@
 
       <template v-slot:categories>
 
-<!--
         <v-row no-gutters>
-          <v-col>
-            <v-card>
-              <v-card-title primary style="word-break: break-word; line-height: 1.5rem;">
-                {{ welcomeInfo.categoryText }}
-              </v-card-title>
-            </v-card>
+
+          <v-col v-for="card in categoryCards"
+                 :key="card.title"
+                 cols="6"
+                 class="pa-2" >
+
+            <base-click-card :compact="true"
+                             :title="card.title"
+                             :img="card.img"
+                             :color="card.darkColor"
+                             :contain="card.contain"
+                             :disabled="card.disabled"
+                             @click="catchCategoryClicked(card.type)" />
           </v-col>
-
         </v-row>
--->
-
-<!--        <v-row no-gutters >
-          <v-container class="pt-3 pb-0 px-1 pa-sm-0 pt-sm-3">
-            -->
-            <v-row no-gutters>
-
-              <v-col v-for="card in categoryCards"
-                     :key="card.title"
-                     cols="6"
-                     class="pa-2" >
-
-                <base-click-card :compact="true"
-                                 :title="card.title"
-                                 :img="card.img"
-                                 :color="card.darkColor"
-                                 :contain="card.contain"
-                                 :disabled="card.disabled"
-                                 @click="catchCategoryClicked(card.type)" />
-              </v-col>
-            </v-row>
-
-<!--
-          </v-container>
-        </v-row>
--->
 
       </template>
 
@@ -176,12 +155,12 @@
                  :key="index"
                  cols="6"
                  class="pa-2"
-                 style="max-height: 105px;"
                  >
             <BlogPostCard :post="post"
                           :loadingImg="fallbackCardImg"
                           titleCssClass="compactBlogPostCard"
                           subtitleCssClass="text-caption"
+                          height="100"
                           @clicked="catchPostClick(post.postFile)"/>
           </v-col>
         </v-row>
@@ -622,7 +601,7 @@ export default {
 <style >
 
 .compactBlogPostCard {
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1rem;
 }
 
