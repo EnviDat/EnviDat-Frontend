@@ -14,6 +14,9 @@ ENTRYPOINT ["npm", "run", "serve"]
 
 
 FROM local-dev AS builder
+COPY package*.json .
+RUN npm install
+COPY . .
 ENV NODE_ENV production
 COPY package*.json .
 RUN npm install
