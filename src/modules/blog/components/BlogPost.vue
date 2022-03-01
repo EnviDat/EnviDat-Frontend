@@ -1,6 +1,7 @@
 <template>
 
-  <div v-html="postContentMarkdown" >
+  <div class="blogPost"
+       v-html="postContentMarkdown" >
 
   </div>
 </template>
@@ -34,6 +35,8 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style >
+.blogPost img {
+  max-width: 100%;
+}
 </style>
