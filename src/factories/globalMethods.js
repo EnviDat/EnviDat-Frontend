@@ -192,20 +192,21 @@ export default {
      * Return the loaded webp image or instead a jpg as fallback
      *
      * @param {*} imageAssetPathName
+     * @param state
      * @returns
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
-      const imageKey = `./${imageAssetPathName}.${state.webpIsSupported ? 'webp' : 'jpg'}`;
+      const imageKey = `./${imageAssetPathName}`;
 
       if (state.webpIsSupported) {
-        const webpImg = state.webpAssets[imageKey];
+        const webpImg = state.webpAssets[`${imageKey}.webp`];
 
         if (webpImg) {
           return webpImg;
         }
       }
 
-      return state.jpgAssets[imageKey];
+      return state.jpgAssets[`${imageKey}.jpg`];
     },
     /**
      * Loads the path to the icon image
