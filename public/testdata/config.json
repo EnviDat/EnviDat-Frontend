@@ -7,7 +7,11 @@
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
-    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators."
+    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators.",
+    "articlesTitle": "Recent EnviDat Blog Articles",
+    "newsTitle": "News From The EnviDat Team",
+    "categoriesTitle": "Research Data Categories",
+    "datasetsTitle": "Recently Published Research Datasets"
   },
   "aboutInfo": [
     {

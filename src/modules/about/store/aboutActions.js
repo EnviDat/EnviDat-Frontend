@@ -1,7 +1,7 @@
 /**
- * guidelines store actions
+ * about store actions
  *
- * @summary guidelines store actions
+ * @summary about store actions
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51

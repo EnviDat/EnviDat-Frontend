@@ -1,7 +1,7 @@
 /**
- * guidelines store mutations
+ * about store mutations
  *
- * @summary guidelines store mutations
+ * @summary about store mutations
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
@@ -38,7 +38,7 @@ export default {
   [GET_GUIDELINES_ERROR](state, reason) {
     state.guidelinesloading = false;
 
-    const details = 'An error occured while loading the guidelines!';
+    const details = 'An error occurred while loading the guidelines!';
     const errObj = getSpecificApiError(details, reason);
     state.guidelinesMarkdown = `${details}: ${reason}`;
 
@@ -58,7 +58,7 @@ export default {
   [GET_POLICIES_ERROR](state, reason) {
     state.policiesLoading = false;
 
-    const details = 'An error occured while loading the policies!';
+    const details = 'An error occurred while loading the policies!';
     const errObj = getSpecificApiError(details, reason);
 
     state.policiesMarkdown = `${details}: ${reason}`;
@@ -79,7 +79,7 @@ export default {
   [GET_DMP_ERROR](state, reason) {
     state.loading = false;
 
-    const details = 'An error occured while loading the dmp infos!';
+    const details = 'An error occurred while loading the dmp infos!';
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 

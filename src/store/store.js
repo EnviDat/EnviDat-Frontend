@@ -28,6 +28,8 @@ import { geoservices } from '@/modules/metadata/components/Geoservices/geoservic
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 
+import { blog } from '@/modules/blog/store/blogStore';
+
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
@@ -154,6 +156,7 @@ const store = new Vuex.Store({
     geoservices,
     user,
     userSignIn,
+    blog,
   },
   plugins: [vuexLocal.plugin],
 });
