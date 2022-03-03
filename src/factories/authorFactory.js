@@ -104,6 +104,7 @@ export function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredits[author.data_credit] = 1;
   } else {
+    // eslint-disable-next-line no-console
     console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
     // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
