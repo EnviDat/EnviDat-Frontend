@@ -18,9 +18,6 @@ COPY package*.json .
 RUN npm install
 COPY . .
 ENV NODE_ENV production
-COPY package*.json .
-RUN npm install
-COPY . .
 RUN npm run build -- --mode $NODE_ENV
 
 
