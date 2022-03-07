@@ -32,9 +32,6 @@ export default {
   title: '7 User / User Elements',
   decorators: [],
   parameters: {
-    // disable the snapshots for the MicroCharts because they pull in recent data and
-    // will change almost everytime
-    chromatic: { disableSnapshot: false },
   },
 };
 
