@@ -1,6 +1,7 @@
 stages:
   # - visual-regression
   - test
+  - config
   - build
   - scan
   - retag
@@ -45,7 +46,12 @@ set-vars:
       | jq .version --raw-output)" > build.env
     - cat .env >> build.env
     - echo "NAMESPACE=envidat-frontend" >> build.env
-    - echo "APP_NAME=frontend-${CI_COMMIT_REF_NAME}" >> build.env
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" != "develop" ]; then
+          echo "APP_NAME=frontend-dev" >> build.env
+      else
+          echo "APP_NAME=frontend-${CI_COMMIT_REF_NAME}" >> build.env
+      fi
     - source build.env
     - >
       echo "IMAGE_NAME=${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
@@ -79,6 +85,20 @@ run-tests:
 #     - npm install
 #   script:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+
+modify-env:
+  stage: config
+  image: docker.io/python:3.9-alpine
+  before_script:
+    - pip install python-dotenv==0.19.*
+  script:
+    - "python -c
+      \"import dotenv;
+      dotenv.set_key(\
+      '.env.production',\
+      'VUE_APP_ENVIDAT_PROXY',\
+      ${APP_NAME}.envidat.ch\
+      )\""
 
 image-build:
   stage: build
@@ -171,21 +191,24 @@ helm-deploy:
     entrypoint: [""]
   before_script:
     - apk add yq --no-cache
-  script: |
-    yq eval --inplace \
-      ".appVersion = \"${VERSION}-${CI_COMMIT_REF_NAME}\"" \
-      "${CI_PROJECT_DIR}/chart/Chart.yaml"
-    if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
-        yq eval --inplace \
-          ".ingress.hosts[0].host = \"${APP_NAME}.envidat.ch\"" \
-          "${CI_PROJECT_DIR}/chart/values.yaml"
-        yq eval --inplace \
-          ".ingress.tls[0].hosts[0] = \"${APP_NAME}.envidat.ch\"" \
-          "${CI_PROJECT_DIR}/chart/values.yaml"
-        yq eval --inplace \
-          '.autoscaling.enabled = false' \
-          "${CI_PROJECT_DIR}/chart/values.yaml"
-    fi
-    helm upgrade "${APP_NAME}" "${CI_PROJECT_DIR}/chart" \
-      --install --values="${CI_PROJECT_DIR}/chart/values.yaml" \
-      --namespace "${NAMESPACE}"
+  script:
+    - |
+      yq eval --inplace \
+        ".appVersion = \"${VERSION}-${CI_COMMIT_REF_NAME}\"" \
+        "${CI_PROJECT_DIR}/chart/Chart.yaml"
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
+          yq eval --inplace \
+            ".ingress.hosts[0].host = \"${APP_NAME}.envidat.ch\"" \
+            "${CI_PROJECT_DIR}/chart/values.yaml"
+          yq eval --inplace \
+            ".ingress.tls[0].hosts[0] = \"${APP_NAME}.envidat.ch\"" \
+            "${CI_PROJECT_DIR}/chart/values.yaml"
+          yq eval --inplace \
+            '.autoscaling.enabled = false' \
+            "${CI_PROJECT_DIR}/chart/values.yaml"
+      fi
+    - |
+      helm upgrade "${APP_NAME}" "${CI_PROJECT_DIR}/chart" \
+        --install --values="${CI_PROJECT_DIR}/chart/values.yaml" \
+        --namespace "${NAMESPACE}"
