@@ -19,10 +19,13 @@
 
       </div>
 
-      <div class="infoGrid pa-4 pt-0" >
+      <div class="infoGrid pa-4 pt-0"
+            :style="!hasARole ? 'grid-template-rows: auto !important;' : ''">
 
-        <div class="roleGrid " >
-          <div class="pb-1">
+        <div v-if="hasARole"
+             class="roleGrid " >
+
+          <div class="pb-1" >
             <div class="text-body-1">Organization</div>
 
             <div class="text-body-1">Role</div>
@@ -101,7 +104,11 @@ export default {
       'config',
     ]),
     userDashboardConfig() {
-      return this.config?.userDashboardConfig || {};
+      if (this.$store) {
+        return this.config?.userDashboardConfig || {};
+      }
+
+      return {};
     },
     organizationInfoText() {
 
@@ -139,6 +146,9 @@ export default {
     isSysadmin() {
       return this.hasRole('sysadmin');
     },
+    hasARole() {
+      return this.isSysadmin || this.isAdmin || this.isEditor || this.isMember;
+    },
   },
   methods: {
     hasRole(roleName) {
@@ -158,11 +168,11 @@ export default {
     noOrganizationText: `You aren't assigned to an organisation yet.
       If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation.
       If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.`,
-    memberOrganizationText: 'As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
+    memberOrganizationText: 'As a member of an organisation you can see its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
     editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
-    sysadminOrganizationText: 'You have System Administrator right, be careful!',
-    collaboratorText: 'You are added as collaborator to datasets, you can edit these datasets. They are listed under "Collaborator Datasets".',
+    sysadminOrganizationText: 'You have System Administrator rights, be careful!',
+    collaboratorText: 'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
     domain,
   }),
   components: {
@@ -204,7 +214,6 @@ export default {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 25px;
-    word-break: break-all;
     align-content: end;
   }
 
