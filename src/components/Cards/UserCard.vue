@@ -20,11 +20,9 @@
 
       <div class="subGrid pb-4" >
         <div class="body-2">Datasets</div>
-
-        <div class="body-2">Email</div>
-
         <div class="caption" >{{ datasetCount }}</div>
 
+        <div class="body-2">Email</div>
         <div class="caption">{{ email }}</div>
       </div>
 
@@ -102,16 +100,14 @@ export default {
   }
 
   .subGrid {
-    align-content: end;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 5px;
+    grid-template-columns: 30% 70%;
+    column-gap: 16px;
     padding-right: 16px;
     padding-left: 16px;
   }
 
   .subGrid div {
-    place-self: center;
     word-break: break-all;
     align-content: end;
   }
