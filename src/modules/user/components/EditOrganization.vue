@@ -37,8 +37,8 @@
       <v-row>
         <v-col>
 
-          <v-text-field v-if="userOrganizationsListItems.length === 1"
-                        :value="userOrganizationsListItems[0]"
+          <v-text-field v-if="userOrganizationsCount === 1"
+                        :value="selectedOrganization.title"
                         outlined
                         readonly
                         hint='This field is "readonly" because you belong to only one organization.'
@@ -162,7 +162,7 @@ export default {
   },
   mounted() {
 //  beforeMount() {
-    if (this.user) {
+    if (this.currentUser) {
       this.fetchUserOrganisationData();
     }
   },
@@ -172,6 +172,25 @@ export default {
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
+    currentUser() {
+      if (this.$store) {
+        return this.user;
+      }
+
+      return null;
+    },
+    userOrganizationsCount() {
+
+      if (this.allOrganizations) {
+        return this.allOrganizations.length;
+      }
+
+      if (this.$store) {
+        return this.userOrganizationsList.length;
+      }
+
+      return 0;
+    },
     previewOrganization() {
       return this.previewOrganizationId || this.organizationId;
     },
@@ -184,7 +203,7 @@ export default {
         userOrg = this.allOrganizations.filter(x => x.id === this.previewOrganization)[0];
       }
 
-      if (!userOrg) {
+      if (!userOrg && this.$store) {
         userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
       }
 
@@ -200,8 +219,15 @@ export default {
     userOrganizationsListItems () {
       // Return formatted list of organizations user is member of, with id/title
 
-      if (this.userOrganizationsList) {
+      if (this.$store && this.userOrganizationsList) {
         return this.userOrganizationsList.map(org => ({
+          id: org.id,
+          title: org.title,
+        }));
+      }
+
+      if (this.allOrganizations) {
+        return this.allOrganizations.map(org => ({
           id: org.id,
           title: org.title,
         }));
@@ -233,7 +259,7 @@ export default {
       }
     },
     fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.currentUser.id);
     },
     validateProperty(property, value) {
       return isFieldValid(property, value, this.validations, this.validationErrors)
