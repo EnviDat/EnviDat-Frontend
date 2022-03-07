@@ -78,6 +78,13 @@
 import UserAvatar from '@/components/Layouts/UserAvatar';
 import UserRoleChip from '@/components/Chips/UserRoleChip';
 import { mapState } from 'vuex';
+import {
+  isMember,
+  isEditor,
+  isAdmin,
+  isSysadmin,
+  hasOrganizationRoles,
+} from '@/factories/userEditingFactory';
 
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
@@ -112,15 +119,15 @@ export default {
     },
     organizationInfoText() {
 
-      if (this.isSysadmin) {
+      if (isSysadmin(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.sysadminOrganizationText || this.sysadminOrganizationText;
       }
       
-      if (this.isAdmin) {
+      if (isAdmin(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.adminOrganizationText || this.adminOrganizationText;
       }
       
-      if (this.isEditor) {
+      if (isEditor(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.editorOrganizationText || this.editorOrganizationText;
       }
 
@@ -128,39 +135,17 @@ export default {
         return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
       
-      if (this.isMember) {
+      if (isMember(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
       }
 
       return this.userDashboardConfig.organizationRolesText?.noOrganizationText || this.noOrganizationText;
     },
-    isMember() {
-      return this.hasRole('member');
-    },
-    isEditor() {
-      return this.hasRole('editor');
-    },
-    isAdmin() {
-      return this.hasRole('admin');
-    },
-    isSysadmin() {
-      return this.hasRole('sysadmin');
-    },
     hasARole() {
-      return this.isSysadmin || this.isAdmin || this.isEditor || this.isMember;
+      return hasOrganizationRoles(this.organizationRoles);
     },
   },
   methods: {
-    hasRole(roleName) {
-      const roles = this.organizationRoles;
-
-      if (roles) {
-        const matchedRole = roles.filter(r => r.role === roleName);
-        return matchedRole.length > 0 && matchedRole[0];
-      }
-
-      return false;
-    },
   },
   data: () => ({
     avatarHeight: 32,

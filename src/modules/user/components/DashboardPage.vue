@@ -79,7 +79,7 @@
       <div v-if="!hasUserDatasets"
             class="noUserDatasetsGrid px-1">
         <NotFoundCard v-bind="noDatasetsInfos"
-                      :actionButtonCallback="createClickCallback" />
+                      :actionButtonCallback="isEditorAndAbove ? createClickCallback : null" />
 
         <NotificationCard v-if="noUserDatasetsError"
                           :notification="noUserDatasetsError"
@@ -243,15 +243,14 @@
       </div>
 -->
 
-      <div v-if="!userOrganizationLoading && !hasRecentOrgaDatasets"
+      <div v-if="!hasRecentOrgaDatasets"
             class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
                           :notification="noOrgaDatasetsError"
                           :showCloseButton="false" />
 
-        <NotFoundCard v-if="!userOrganizationsList"
-                      v-bind="noOrganizationsInfos"  />
+        <NotFoundCard v-bind="noOrganizationsInfos"  />
       </div>
 
     </div>
@@ -300,7 +299,6 @@ import {
 
 import {
   USER_DASHBOARD_PAGENAME,
-  USER_DASHBOARD_PATH,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
@@ -318,8 +316,12 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { enhanceTags, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
-import { getUserOrganizationRoleMap } from '@/factories/userEditingFactory';
+import { getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import {
+  getUserOrganizationRoleMap,
+  hasOrganizationRoles,
+  isMember,
+} from '@/factories/userEditingFactory';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
 import MetadataList from '@/components/MetadataList';
@@ -591,6 +593,18 @@ export default {
     isCollaborator() {
       return this.collaboratorDatasets?.length > 0;
     },
+    isEditorAndAbove() {
+      return hasOrganizationRoles(this.organizationRoles) && !isMember(this.organizationRoles);
+    },
+    noDatasetsInfos() {
+      return {
+        title: 'No Datasets',
+        description: "It seems you don't have any datasets.",
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
+        actionButtonText: 'New Dataset',
+        image: UserNotFound2,
+      };
+    },
   },
   methods: {
     getPopularTagsFromDatasets(datasets) {
@@ -760,13 +774,6 @@ export default {
       actionButtonText: 'Sign in',
       image: UserNotFound1,
     },
-    noDatasetsInfos: {
-      title: 'No Datasets',
-      description: "It seems you don't have any datasets.",
-      actionDescription: 'Get started and create a new dataset',
-      actionButtonText: 'New Dataset',
-      image: UserNotFound2,
-    },
     noCollaboratorDatasetsInfos: {
       title: 'No Collaborator Datasets',
       description: "It seems you don't have datasets where you are added as a collaborator.",
@@ -774,7 +781,7 @@ export default {
     },
     noOrganizationsInfos: {
       title: 'No Organizations Found',
-      description: "It seems that your aren't assigend to an Organisation. Ask your project or organization lead to add you as a member or even better as an editor so you can create datasets.",
+      description: "It seems that your aren't assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.",
       image: UserNotFound1,
     },
     userListDefaultControls: [

@@ -28,7 +28,7 @@
           {{ actionDescription }}
         </v-col>
 
-        <v-col v-if="actionButtonText"
+        <v-col v-if="actionButtonText && actionButtonCallback"
                 class="shrink" >
           <base-rectangle-button :button-text="actionButtonText"
                                   @clicked="actionButtonCallback" />

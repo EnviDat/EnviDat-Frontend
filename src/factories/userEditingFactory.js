@@ -609,3 +609,33 @@ export function getUserOrganizationRoleMap(userId, organizations) {
 
   return roleMap;
 }
+
+
+export function hasRole(roleName, organizationRoles) {
+  if (!organizationRoles || organizationRoles.length <= 0) {
+    return false;
+  }
+
+  const matchedRole = organizationRoles.filter(r => r.role === roleName);
+  return matchedRole.length > 0 && !!matchedRole[0];
+}
+
+export function isMember(organizationRoles) {
+  return hasRole('member', organizationRoles);
+}
+
+export function isEditor(organizationRoles) {
+  return hasRole('editor', organizationRoles);
+}
+
+export function isAdmin(organizationRoles) {
+  return hasRole('admin', organizationRoles);
+}
+
+export function isSysadmin(organizationRoles) {
+  return hasRole('sysadmin', organizationRoles);
+}
+
+export function hasOrganizationRoles(organizationRoles){
+  return isMember(organizationRoles) || isEditor(organizationRoles) || isAdmin(organizationRoles) || isSysadmin(organizationRoles);
+}
