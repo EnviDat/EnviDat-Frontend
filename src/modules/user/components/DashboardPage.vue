@@ -142,7 +142,7 @@
        <div v-if="!hasCollaboratorDatasets"
             class="noUserDatasetsGrid px-1">
          <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
-         
+
        </div>
 
      </div>
@@ -401,7 +401,7 @@ export default {
     filteredOrgaDatasets() {
       const filteredContent = [];
 
-      if (!this.hasUserDatasets) {
+      if (!this.hasRecentOrgaDatasets) {
         return filteredContent;
       }
 
