@@ -1,7 +1,7 @@
 <template>
   <v-row >
     <v-col cols="12"
-            class="error py-4">
+            class="warning py-4">
       <div class="title">{{ noResultText }}</div>
     </v-col>
 

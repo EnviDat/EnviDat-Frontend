@@ -29,6 +29,8 @@
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
                     :showScrollTopButton="true"
+                    :reloadAmount="reloadAmount"
+                    :reloadDelay="vReloadDelay"
                     mainScrollClass=".mapLayoutContainers" />
 
   </article>
@@ -278,7 +280,13 @@ export default {
       searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
       searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
+      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
+      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
+      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
+    reloadAmount() {
+      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
+    },
     metadataConfig() {
       return this.config?.metadataConfig || {};
     },

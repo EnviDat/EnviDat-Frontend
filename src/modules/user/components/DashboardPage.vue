@@ -74,7 +74,9 @@
                       :showSearch="false"
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
-                      mainScrollClass=".midBoard" />
+                      :reloadAmount="20"
+                      mainScrollClass=".midBoard > .datasetsGrid"
+      />
 
       <div v-if="!hasUserDatasets"
             class="noUserDatasetsGrid px-1">
@@ -133,41 +135,14 @@
                        :showGenericOpenButton="!!metadata.openEvent"
                        :openButtonTooltip="metadata.openButtonTooltip"
                        :openButtonIcon="metadata.openButtonIcon"
-                       @openButtonClicked="catchEditingClick(metadata.openProperty)" />
+                       @openButtonClicked="catchEditingClick(metadata.openProperty)"
+         />
        </div>
-
-<!--
-       <MetadataList v-if="hasCollaboratorDatasets"
-                     :listContent="collaboratorDatasets"
-                     :searchCount="collaboratorDatasets.length"
-                     :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
-                     :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
-                     :placeHolderAmount="placeHolderAmount"
-                     @clickedTag="catchTagClicked"
-                     @clickedCard="catchMetadataClicked"
-                     :selectedUserTagNames="selectedUserTagNames"
-                     :allTags="allUserdataTags"
-                     :showPlaceholder="updatingTags"
-                     @clickedTagClose="catchTagCloseClicked"
-                     :defaultListControls="userListDefaultControls"
-                     :enabledControls="userListEnabledControls"
-                     :useDynamicHeight="false"
-                     :minMapHeight="250"
-                     :mapTopLayout="$vuetify.breakpoint.mdAndUp"
-                     :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
-                     :showSearch="false" />
--->
 
        <div v-if="!hasCollaboratorDatasets"
             class="noUserDatasetsGrid px-1">
          <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
-
-<!--
-         <NotificationCard v-if="noUserDatasetsError"
-                           :notification="noUserDatasetsError"
-                           :showCloseButton="false" />
--->
-
+         
        </div>
 
      </div>
@@ -201,47 +176,10 @@
                     :showSearch="false"
                     :showPublicationState="true"
                     :defaultPublicationState="defaultPublicationState"
-                    mainScrollClass=".bottomBoard" />
-
-<!--
-      <div v-if="userOrganizationLoading"
-            class="orgaDatasets"
-           :style="`height: ${orgaCardHeight + 30}px;`" >
-
-        <MetadataCardPlaceholder id="orgaDataset"
-                                  class="mx-2"
-                                  v-for="n in orgaDatasetsPreview"
-                                  :key="n"
-                                 :style="`height: ${orgaCardHeight}px; width: ${orgaCardWidth}px;`" />
-      </div>
-
-      <div v-if="!userOrganizationLoading && hasRecentOrgaDatasets"
-            class="orgaDatasets"
-           :style="`height: ${orgaCardHeight + 30}px;`" >
-
-        <MetadataCard v-for="(metadata, index) in userRecentOrgaDatasets"
-                      class="mx-2"
-                      :style="`height: ${orgaCardHeight}px; width: ${orgaCardWidth}px;`"
-                      :key="index"
-                      :id="metadata.id"
-                      :title="metadata.title"
-                      :subtitle="metadata.notes"
-                      :name="metadata.name"
-                      :titleImg="metadata.titleImg"
-                      :resourceCount="metadata.num_resources"
-                      :fileIconString="fileIconString"
-                      :categoryColor="metadata.categoryColor"
-                      :compactLayout="true"
-                      :state="getMetadataState(metadata)"
-                      @clickedEvent="catchMetadataClicked"
-                      @clickedTag="catchTagClicked"
-                      :showGenericOpenButton="!!metadata.openEvent"
-                      :openButtonTooltip="metadata.openButtonTooltip"
-                      :openButtonIcon="metadata.openButtonIcon"
-                      @openButtonClicked="catchEditingClick(metadata.openProperty)" />
-
-      </div>
--->
+                    :reloadAmount="20"
+                    :preloadingDistance="10"
+                    mainScrollClass=".bottomBoard > .datasetsGrid"
+                    />
 
       <div v-if="!hasRecentOrgaDatasets"
             class="noOrgaDatasetsGrid px-1">
@@ -549,7 +487,15 @@ export default {
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets);
     },
     allUserOrganizationDataTags() {
-      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets);
+      let minTagAmount = 1;
+      let maxTagAmount = 5;
+
+      if (this.userRecentOrgaDatasets?.length > 50) {
+        minTagAmount = 10;
+        maxTagAmount = 50;
+      }
+
+      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagAmount, maxTagAmount);
     },
     oldDashboardUrl() {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
@@ -607,11 +553,11 @@ export default {
     },
   },
   methods: {
-    getPopularTagsFromDatasets(datasets) {
-      let tags = getPopularTags(datasets);
+    getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined) {
+      let tags = getPopularTags(datasets, '', minCount, maxCount);
 
       if (tags.length <= 0) {
-        tags = getPopularTags(datasets, '', 1);
+        tags = getPopularTags(datasets, '', 1, maxCount);
       }
 
       if (tags.length > this.maxFilterTags) {

@@ -132,8 +132,7 @@
                           @openButtonClicked="catchOpenClick(metadata.openEvent, metadata.openProperty)" />
         </v-col>
 
-        <v-col v-if="showScrollTopButton"
-                class="mx-2"
+        <v-col :class="showScrollTopButton ? 'mx-2' : ''"
                 key="infiniteLoader"
                 cols="12" >
           <infinite-loading spinner="waveDots"
@@ -141,18 +140,20 @@
                             :distance="preloadingDistance"
                             @infinite="infiniteHandler"
                             :force-use-infinite-wrapper="mainScrollClass" >
+
             <div slot="no-results">
-              <BaseRectangleButton v-if="vIndex > 0 && vIndex > reloadAmount"
-                                    :buttonText="scrollTopButtonText"
-                                    :isSmall="true"
-                                    :isFlat="true"
-                                    @clicked="setScrollPos(0)" />
             </div>
-            <div slot="no-more">
+
+            <div v-if="showScrollTopButton"
+                 slot="no-more">
               <BaseRectangleButton :buttonText="scrollTopButtonText"
                                     :isSmall="true"
                                     :isFlat="true"
                                     @clicked="setScrollPos(0)" />
+            </div>
+
+            <div v-if="!showScrollTopButton"
+                 slot="no-more">
             </div>
 
           </infinite-loading>
@@ -204,7 +205,6 @@ import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
 import {
-  SET_VIRTUAL_LIST_INDEX,
   METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -244,7 +244,7 @@ export default {
     searchBarPlaceholder: String,
     mainScrollClass: {
       type: String,
-      default: '',
+      default: '#metadataListLayout',
     },
     showPublicationState: {
       type: Boolean,
@@ -257,6 +257,18 @@ export default {
     showScrollTopButton: {
       type: Boolean,
       default: false,
+    },
+    reloadAmount: {
+      type: Number,
+      default: 16,
+    },
+    reloadDelay: {
+      type: Number,
+      default: 350,
+    },
+    preloadingDistance: {
+      type: Number,
+      default: 150,
     },
   },
   beforeMount() {
@@ -288,15 +300,8 @@ export default {
       searchingMetadatasContentOK: `${METADATA_NAMESPACE}/searchingMetadatasContentOK`,
       loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
       updatingTags: `${METADATA_NAMESPACE}/updatingTags`,
-      vIndex: `${METADATA_NAMESPACE}/vIndex`,
-      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
-      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
-      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
       isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
     }),
-    reloadAmount() {
-      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
-    },
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.pinnedIds.length > 0;
     },
@@ -385,7 +390,7 @@ export default {
         let i = 0;
 
         if (that.virtualListContent.length > 0) {
-          // use the current index only if the virutalList has already elements
+          // use the current index only if the virtualList has already elements
           i = that.vIndex;
         }
 
@@ -401,11 +406,11 @@ export default {
           }
         }
 
-        that.$store.commit(`metadata/${SET_VIRTUAL_LIST_INDEX}`, i);
+        that.vIndex = i;
 
         that.vLoading = false;
         // console.log('loaded to ' + that.vIndex );
-      }, this.vReloadDelay);
+      }, this.reloadDelay);
     },
     catchTagClicked(tagName) {
       this.$emit('clickedTag', tagName);
@@ -561,7 +566,8 @@ export default {
   },
   watch: {
     contentSize: function resetVirtualContent() {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);
+      // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);
+      this.vIndex = 0;
       this.virtualListContent = [];
       this.infiniteId += 1;
       this.infiniteHandler();
@@ -579,8 +585,8 @@ export default {
     localTags: [],
     virtualListContent: [],
     vLoading: false,
+    vIndex: 0,
     infiniteId: +new Date(),
-    preloadingDistance: 150,
     scrollTopButtonText: 'Scroll to the top',
     controlsLabel: 'List controls',
     controlsActive: [],
