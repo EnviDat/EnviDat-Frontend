@@ -90,6 +90,11 @@ run-tests:
 modify-env:
   stage: config
   image: docker.io/python:3.9-alpine
+  cache:
+    key: dotenv-config
+    paths:
+      - .env.production
+    policy: push
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
@@ -109,6 +114,11 @@ image-build:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
+  cache:
+    key: dotenv-config
+    paths:
+      - .env.production
+    policy: pull
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
