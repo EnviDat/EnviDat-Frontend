@@ -235,6 +235,7 @@ helm-deploy:
       oci://registry.envidat.ch/envidat/frontend
       --namespace "${NAMESPACE}"
       --version "${CHART_VERSION}"
+      --set image.tag="${HELM_APP_VERSION}"
       --set image.pullPolicy="Always"
       --set ingress.hosts[0].host="${APP_NAME}.envidat.ch"
       --set ingress.hosts[0].paths[0].path="/"
