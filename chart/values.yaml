@@ -4,8 +4,6 @@
 
 replicaCount: 1
 
-configSecretName: frontend-config-json
-
 image:
   repository: registry.envidat.ch/envidat/frontend
   pullPolicy: Always
@@ -15,6 +13,11 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+configSecretName: frontend-config-json
+
+s3AdditionalConfig:
+  bucketName: frontend-config-files
 
 serviceAccount:
   # Specifies whether a service account should be created
