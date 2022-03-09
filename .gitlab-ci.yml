@@ -99,6 +99,7 @@ modify-env:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
+    - cat .env.production
     - "python -c
       \"import os;
       import dotenv;
