@@ -484,18 +484,14 @@ export default {
       return null;
     },
     allUserdataTags() {
-      return this.getPopularTagsFromDatasets(this.filteredUserDatasets);
+      const minTagCount = this.userRecentOrgaDatasets?.length > 50 ? 10 : 1;
+
+      return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
     allUserOrganizationDataTags() {
-      let minTagAmount = 1;
-      let maxTagAmount = 5;
+      const minTagCount = this.userRecentOrgaDatasets?.length > 50 ? 10 : 1;
 
-      if (this.userRecentOrgaDatasets?.length > 50) {
-        minTagAmount = 10;
-        maxTagAmount = 50;
-      }
-
-      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagAmount, maxTagAmount);
+      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
     },
     oldDashboardUrl() {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
@@ -553,7 +549,7 @@ export default {
     },
   },
   methods: {
-    getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined) {
+    getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined, maxTagAmount = 30) {
       let tags = getPopularTags(datasets, '', minCount, maxCount);
 
       if (tags.length <= 0) {
@@ -569,7 +565,7 @@ export default {
         tag.color = getTagColor(this.categoryCards, tag.name);
       }
 
-      return tags;
+      return tags.slice(0, maxTagAmount);
     },
     getMetadataState(metadata) {
       return getMetadataVisibilityState(metadata);
