@@ -25,8 +25,8 @@
                         :oldDashboardUrl="oldDashboardUrl"
                         />
 
-      <UserOrganizationInfo :height="userCardHeight"
-                            :width="userCardWidth"
+      <UserOrganizationInfo :height="userOrgaInfoCardHeight"
+                            :width="userOrgaInfoCardWidth"
                             :userName="user.fullName"
                             :email="user.email"
                             :emailHash="user.emailHash"
@@ -704,10 +704,10 @@ export default {
     maxFilterTags: 20,
     collabCardWidth: 290,
     collabCardHeight: 115,
-    orgaCardWidth: 290,
-    orgaCardHeight: 115,
     userCardHeight: 350,
     userCardWidth: 300,
+    userOrgaInfoCardHeight: 350,
+    userOrgaInfoCardWidth: 400,
     showModal: false,
     left: false,
     right: false,

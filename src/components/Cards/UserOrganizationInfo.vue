@@ -197,7 +197,7 @@ export default {
 
   .roleGrid > div {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     column-gap: 25px;
     align-content: end;
   }
