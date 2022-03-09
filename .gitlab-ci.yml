@@ -48,9 +48,7 @@ set-vars:
     - echo "NAMESPACE=envidat-frontend" >> build.env
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
-          echo "APP_NAME=frontend-dev" >> build.env
-      else
-          echo "APP_NAME=frontend-${CI_COMMIT_REF_NAME}" >> build.env
+        echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
     - echo CHART_VERSION=$(yq '.version' chart/Chart.yaml) >> build.env
     - source build.env
@@ -104,8 +102,8 @@ modify-env:
       import dotenv;
       file = '.env.production';
       key = 'VUE_APP_ENVIDAT_PROXY';
-      app_name = os.getenv('APP_NAME');
-      value = f'https://{app_name}.envidat.ch';
+      branch = os.getenv('CI_COMMIT_REF_NAME');
+      value = f'https://ckan-{branch}.envidat.ch';
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
 
@@ -120,7 +118,6 @@ image-build:
       - .env.production
     policy: pull
   before_script:
-    - cat .env.production
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
       | base64 -d >> /kaniko/ssl/certs/ca-certificates.crt
@@ -242,17 +239,17 @@ helm-deploy:
     GIT_STRATEGY: none
   script:
     - >
-      helm upgrade --install --create-namespace "${APP_NAME}"
+      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
       oci://registry.envidat.ch/envidat/frontend
-      --namespace "${NAMESPACE}"
+      --namespace "${NAMESPACE}" --create-namespace
       --version "${CHART_VERSION}"
       --set image.tag="${HELM_APP_VERSION}"
       --set image.pullPolicy="Always"
-      --set ingress.hosts[0].host="${APP_NAME}.envidat.ch"
+      --set ingress.hosts[0].host="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
       --set ingress.hosts[0].paths[0].path="/"
       --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
       --set ingress.tls[0].secretName="envidat-star"
-      --set ingress.tls[0].hosts[0]="${APP_NAME}.envidat.ch"
+      --set ingress.tls[0].hosts[0]="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
       --set autoscaling.enabled=false
 
 helm-deploy-prod:
@@ -262,7 +259,7 @@ helm-deploy-prod:
     GIT_STRATEGY: none
   script:
     - >
-      helm upgrade --install "${APP_NAME}"
+      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
       oci://registry.envidat.ch/envidat/frontend
       --namespace "${NAMESPACE}" --create-namespace
       --version "${CHART_VERSION}"
