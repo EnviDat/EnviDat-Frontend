@@ -31,19 +31,21 @@ spec:
         - name: copy-additional-config
           image: docker.io/rclone/rclone
           imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 101
           volumeMounts:
           - name: rclone-config
             mountPath: /config/rclone/rclone.conf
             subPath: rclone.conf
           - name: additional-config
-            mountPath: /usr/share/nginx/html
+            mountPath: /usr/share/nginx/config
           command:
             - sh
             - -c
             - >
               rclone --verbose copy
               minio:{{ .Values.s3AdditionalConfig.bucketName }}
-              /usr/share/nginx/html
+              /usr/share/nginx/config
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -55,7 +57,7 @@ spec:
             mountPath: /usr/share/nginx/html/config.json
             subPath: config.json
           - name: additional-config
-            mountPath: /usr/share/nginx/html
+            mountPath: /usr/share/nginx/config
           ports:
             - name: http
               containerPort: 80
@@ -78,8 +80,7 @@ spec:
         secret:
           secretName: minio-rclone-config
       - name: additional-config
-        persistentVolumeClaim:
-          claimName: {{ include "chart.fullname" . }}
+        emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
