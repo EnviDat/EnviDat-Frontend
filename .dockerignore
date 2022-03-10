@@ -90,8 +90,13 @@ typings/
 
 # Docker
 Dockerfile
-docker-compose.*
-build_*
+docker-compose.yml
+
+# Git
+.gitignore
+.gitlab-ci.yml
+.pre-commit-config.yaml
+postman_ckan_api_collection.json
 
 # envidat frontend
 dist/
