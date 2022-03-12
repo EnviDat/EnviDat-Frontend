@@ -238,7 +238,7 @@ helm-deploy:
     GIT_STRATEGY: none
   script:
     - >
-      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
+      helm upgrade --install --force "frontend-${CI_COMMIT_REF_NAME}"
       oci://registry.envidat.ch/envidat/frontend
       --namespace "${NAMESPACE}" --create-namespace
       --version "${CHART_VERSION}"
