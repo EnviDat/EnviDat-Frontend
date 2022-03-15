@@ -440,7 +440,6 @@ export default {
   }
 
   .headerInfo {
-    font-family: 'Baskervville', serif !important;
     font-weight: 400;
     opacity: 0.85;
     line-height: 1rem;
