@@ -1,8 +1,20 @@
 <template>
-  <v-chip class="stateChip"
-          small
+  <v-chip class="stateChip px-2"
+          :class="showContent ? '' : 'stateChipHover' "
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
           :color="stateColor">
-    {{ stateText }}
+
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+        <div v-on="on" >
+          {{ showContent ? stateText : stateText.substr(0, 1) }}
+        </div>
+      </template>
+
+      <span>{{ stateTooltip }}</span>
+    </v-tooltip>
+
   </v-chip>
 </template>
 
@@ -27,6 +39,14 @@ export default {
       type: String,
       default: '',
     },
+    tooltipMap: {
+      type: Object,
+      default: () => ({
+        draft: 'Draft datasets are only visible to you',
+        unpublished: 'Unpublished datasets are visible for you and your organization',
+        published: 'Published datasets are visible for everyone',
+      }),
+    },
     colorMap: {
       type: Object,
       default: () => ({
@@ -35,17 +55,28 @@ export default {
         published: 'green',
       }),
     },
+    showOnHover: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     stateText() {
       return this.state?.toUpperCase() || 'DRAFT';
     },
+    stateTooltip() {
+      return this.tooltipMap[this.stateText.toLowerCase()];
+    },
     stateColor() {
       return this.colorMap[this.state];
     },
+    showContent() {
+      return !this.showOnHover || (this.showOnHover && this.hover);
+    },
   },
-  methods: {
-  },
+  data: () => ({
+    hover: false,
+  }),
 };
 </script>
 
@@ -53,5 +84,9 @@ export default {
   .stateChip{
     height: 1.5rem;
     font-size: 0.75rem;
+  }
+
+  .stateChipHover > .v-chip__content > div:nth-child(1) {
+    font-weight: 700;
   }
 </style>
