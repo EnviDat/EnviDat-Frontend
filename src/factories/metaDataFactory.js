@@ -180,6 +180,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     authors,
     authorDeadInfo,
     categoryColor: dataset.categoryColor,
+    organization: dataset.organization?.name || '',
+    organizationTooltip: dataset.organization?.title || '',
   };
 }
 

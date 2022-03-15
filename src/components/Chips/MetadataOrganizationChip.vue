@@ -80,7 +80,12 @@ export default {
     font-size: 0.75rem;
     max-width: 120px;
   }
-  
+
+  .organizationChip > .v-chip__content > div:nth-child(1) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .organizationChip .v-icon {
     top: -2px;
   }

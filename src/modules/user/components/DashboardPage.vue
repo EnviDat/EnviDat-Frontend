@@ -75,6 +75,7 @@
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
+                      showStateOnHover
                       mainScrollClass=".midBoard > .datasetsGrid"
       />
 
@@ -130,6 +131,7 @@
                        :categoryColor="metadata.categoryColor"
                        :compactLayout="true"
                        :state="getMetadataState(metadata)"
+                       showStateOnHover
                        @clickedEvent="catchMetadataClicked"
                        @clickedTag="catchTagClicked"
                        :showGenericOpenButton="!!metadata.openEvent"
@@ -178,6 +180,7 @@
                     :defaultPublicationState="defaultPublicationState"
                     :reloadAmount="20"
                     :preloadingDistance="10"
+                    showStateOnHover
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 

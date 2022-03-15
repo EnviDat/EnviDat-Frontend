@@ -97,6 +97,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           :state="getMetadataState(metadatasContent[pinnedId])"
+                          :organization="metadata.organization.name"
+                          :organizationTooltip="metadata.organization.title"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
         </v-col>
@@ -124,6 +126,11 @@
                           :geoJSONIcon="getGeoJSONIcon(metadata.location)"
                           :categoryColor="metadata.categoryColor"
                           :state="getMetadataState(metadata)"
+                          :showStateOnHover="showStateOnHover"
+                          :organization="metadata.organization.name"
+                          :organizationTooltip="metadata.organization.title"
+                          :showOrganizationOnHover="showOrganizationOnHover"
+                          @organizationClicked="$emit('organizationClicked', metadata.organization)"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked"
                           :showGenericOpenButton="!!metadata.openEvent"
@@ -269,6 +276,14 @@ export default {
     preloadingDistance: {
       type: Number,
       default: 150,
+    },
+    showStateOnHover: {
+      type: Boolean,
+      default: false,
+    },
+    showOrganizationOnHover: {
+      type: Boolean,
+      default: false,
     },
   },
   beforeMount() {
@@ -452,6 +467,9 @@ export default {
     metaDataClicked(datasetName) {
       this.$emit('clickedCard', datasetName);
     },
+    catchOrganizationClicked(organization) {
+      this.$emit('clickedOrganization', organization);
+    },
     catchPointClicked(id) {
       // bring to top
       // highlight entry
@@ -623,7 +641,7 @@ export default {
   }
 
   .highlighted {
-    box-shadow: #4db6ac 0px 0px 5px 5px !important;
+    box-shadow: #4db6ac 0 0 5px 5px !important;
   }
 
 </style>

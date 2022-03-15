@@ -64,11 +64,14 @@ export default {
     stateText() {
       return this.state?.toUpperCase() || 'DRAFT';
     },
+    stateLowerCase() {
+      return this.state.toLowerCase();
+    },
     stateTooltip() {
-      return this.tooltipMap[this.stateText.toLowerCase()];
+      return this.tooltipMap[this.stateLowerCase];
     },
     stateColor() {
-      return this.colorMap[this.state];
+      return this.colorMap[this.stateLowerCase];
     },
     showContent() {
       return !this.showOnHover || (this.showOnHover && this.hover);

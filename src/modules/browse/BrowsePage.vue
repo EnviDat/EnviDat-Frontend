@@ -28,6 +28,8 @@
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
+                    showOrganizationOnHover
+                    @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
                     :reloadDelay="vReloadDelay"
@@ -253,6 +255,10 @@ export default {
     catchSearchCleared() {
       // the search parameter needs to be '' to clear it
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+    },
+    // eslint-disable-next-line no-unused-vars
+    catchOrganizationClicked(organization) {
+      // console.log(`clicked on ${organization}`);
     },
   },
   computed: {

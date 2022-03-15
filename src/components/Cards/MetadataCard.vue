@@ -85,15 +85,32 @@
                    class="pa-0">
 
         <v-row v-if="state"
-               no-gutters>
-          <v-col >
-            <MetadataStateChip :state="state" />
+               class="pb-1"
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink" >
+            <MetadataStateChip :state="state"
+                                :showOnHover="showStateOnHover" />
           </v-col>
         </v-row>
 
+        <v-row v-if="organization"
+               class="pb-1"
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink" >
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="showOrganizationOnHover"
+                                      @organizationClicked="$emit('organizationClicked', $event)" />
+          </v-col>
+        </v-row>
+
+
         <v-row v-if="modeData"
-                no-gutters>
-          <v-col class="cardIcons">
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -102,16 +119,18 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters>
-          <v-col class="cardIcons">
+        <v-row no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
         </v-row>
 
         <v-row v-if="geoJSONIcon"
-               no-gutters>
-          <v-col class="cardIcons">
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -124,7 +143,16 @@
         <v-row no-gutters>
           <v-col v-if="state"
                  class="pl-1" >
-            <MetadataStateChip :state="state" />
+            <MetadataStateChip :state="state"
+                               :showOnHover="showStateOnHover" />
+          </v-col>
+
+          <v-col v-if="organization"
+                 class="pl-1" >
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="showOrganizationOnHover"
+                                      @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
 
           <v-col v-if="modeData"
@@ -193,6 +221,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -215,13 +244,6 @@ import { stripMarkdown } from '@/factories/stringFactory';
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 
 export default {
-  components: {
-    TagChip,
-    BaseIconCountView,
-    BaseIconLabelView,
-    BaseIconButton,
-    MetadataStateChip,
-  },
   props: {
     id: String,
     title: String,
@@ -258,10 +280,20 @@ export default {
       type: String,
       default: '',
     },
+    organization: {
+      type: String,
+      default: '',
+    },
+    organizationTooltip: {
+      type: String,
+      default: '',
+    },
+    showStateOnHover: Boolean,
+    showOrganizationOnHover: Boolean,
   },
   computed: {
     showCardBody() {
-      return this.tags || !this.compactLayout;
+      return !!this.tags || !this.compactLayout;
     },
     headerImageStyle() {
       let topBorderStyle = 'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
@@ -432,6 +464,14 @@ export default {
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
+  },
+  components: {
+    TagChip,
+    BaseIconCountView,
+    BaseIconLabelView,
+    BaseIconButton,
+    MetadataStateChip,
+    MetadataOrganizationChip,
   },
   data: () => ({
     singleLineCss: 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
