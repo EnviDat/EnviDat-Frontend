@@ -456,6 +456,7 @@ export default {
 
   .orgaChipFullWidth .organizationChip {
     max-width: unset !important;
+    opacity: 0.85;
   }
 
 </style>
