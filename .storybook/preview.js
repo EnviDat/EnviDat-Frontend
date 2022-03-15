@@ -12,7 +12,16 @@ import App from '../src/App.vue';
 
 // Vue.mixin(globalMethods);
 
-export const parameters = {};
+// read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
+export const parameters = {
+  options: {
+    storySort: {
+      method: 'alphabetical',
+//      order: [],
+//      locales: '',
+    },
+  },
+};
 
 export const decorators = [
   (Story) => ({
