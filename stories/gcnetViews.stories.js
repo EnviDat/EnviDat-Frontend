@@ -14,6 +14,7 @@
 
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import { GCNET_VIEWS } from './storybookFolder';
 
 
 const stations = [
@@ -74,7 +75,7 @@ const stations = [
 ];
 
 export default {
-  title: '7 GC-Net Views / Micro Charts ',
+  title: `${GCNET_VIEWS} / Micro Charts`,
   component: MicroChart,
   decorators: [],
   parameters: {

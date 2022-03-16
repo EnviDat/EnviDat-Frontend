@@ -11,6 +11,7 @@
 
 import EditDataGeo from '@/modules/user/components/EditDataGeo';
 import { createLocation } from '@/factories/metaDataFactory';
+import { METADATA_EDITING } from './storybookFolder';
 
 // DUMMY DATA START
 const testMetadata = {
@@ -117,7 +118,7 @@ const geomCollectionLocation = createLocation({
 // DUMMY DATA END
 
 export default {
-  title: '8 Editing Metadata / Data Infos',
+  title: `${METADATA_EDITING} / Data Infos`,
   decorators: [],
   parameters: {},
 };
