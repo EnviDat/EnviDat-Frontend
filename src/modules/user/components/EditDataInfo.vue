@@ -150,6 +150,7 @@
             item-value="id"
             item-text="title"
             outlined
+            hide-details
             :label="labels.dataLicense"
             :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
             :hint="mixinMethods_readOnlyHint('dataLicenseId')"
@@ -162,8 +163,8 @@
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col class="pt-0">
+      <v-row class="pl-8" >
+        <v-col >
           <v-expansion-panels focusable>
             <v-expansion-panel>
 
