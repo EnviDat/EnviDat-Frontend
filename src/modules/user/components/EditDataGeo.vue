@@ -39,7 +39,7 @@
       </v-row>
 
       <v-row>
-        <v-col>
+        <v-col class="editDataGeo">
           <MetadataGeo :genericProps="genericProps"
                         @saveGeometries="updateGeometriesInMetadata"
                         @undoSaveGeometries="revertGeometriesInMetadata" />
@@ -255,3 +255,12 @@ export default {
   }),
 };
 </script>
+
+<style>
+
+ .editDataGeo .leaflet-bar a, .leaflet-bar a:hover {
+   width: 32px;
+   height: 32px;
+ }
+
+</style>
