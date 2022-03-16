@@ -496,7 +496,7 @@ export default {
       institutionUrl: '',
     },
     labels: {
-      cardTitle: 'Publication Info',
+      cardTitle: 'Publication Information',
       publicationState: 'Publication State',
       dataObjectIdentifier: 'Data Object Identifier',
       publisher: 'Publisher',
