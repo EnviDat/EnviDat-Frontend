@@ -12,7 +12,7 @@
     </template>
 
     <v-card-title class="headline resourceHeadline white--text">
-      {{ name }}
+      {{ resourceName }}
     </v-card-title>
 
     <v-card-text class="pt-0 white--text"
@@ -259,6 +259,14 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    resourceName() {
+      if (!this.name && this.isLink) {
+        const splits = this.url.split('/');
+        return splits[splits.length - 1];
+      }
+
+      return this.name ? this.name : 'Unnamed resource';
+    },
     scrollbarColorFront() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
     },
