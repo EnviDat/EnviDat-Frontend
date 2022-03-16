@@ -260,7 +260,7 @@ export default {
   }),
   computed: {
     resourceName() {
-      if (!this.name && this.isLink) {
+      if (!this.name && !!this.url) {
         const splits = this.url.split('/');
         return splits[splits.length - 1];
       }
