@@ -209,7 +209,7 @@ const emptyMetadataInEditing = {
 
 const mainDetailSteps = [
   {
-    title: 'Basic Info',
+    title: 'Main Info',
     completed: false,
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
@@ -236,19 +236,19 @@ const mainDetailSteps = [
 
 const dataDetailSteps = [
   {
-    title: 'Data & Resources',
+    title: 'Managing Data & Resources',
     completed: false,
     component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
-    title: 'Data Info',
+    title: 'Data License & Time',
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
   },
   {
-    title: 'Data Location',
+    title: 'Geospatial Information',
     completed: false,
     key: EDITMETADATA_DATA_GEO,
     component: EditDataGeo,
@@ -257,7 +257,7 @@ const dataDetailSteps = [
 
 export const metadataCreationSteps = [
   {
-    title: 'Main Info',
+    title: 'Metadata',
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
@@ -266,7 +266,7 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Data Info',
+    title: 'Data & Resources',
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
@@ -275,13 +275,13 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Related Info',
+    title: 'Related Research',
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
-    title: 'Publication Info',
+    title: 'Publication Status',
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
