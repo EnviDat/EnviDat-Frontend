@@ -7,13 +7,12 @@
         </v-col>
 
         <v-col class="shrink pl-2">
-          <BaseIconButton
-            v-if="showFullscreenButton"
-            materialIconName="zoom_out_map"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
-            @clicked="triggerFullscreen"
-          />
+          <BaseIconButton v-if="showFullscreenButton"
+                          materialIconName="zoom_out_map"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerFullscreen"
+                        />
         </v-col>
       </v-row>
     </v-card-title>
@@ -56,7 +55,10 @@
 <script>
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
-import { INJECT_MAP_FULLSCREEN, eventBus } from '@/factories/eventBus';
+import {
+  INJECT_MAP_FULLSCREEN,
+  eventBus,
+} from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
@@ -97,7 +99,7 @@ export default {
   },
   methods: {
     triggerFullscreen() {
-      eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
+      eventBus.$emit(INJECT_MAP_FULLSCREEN, {site: this.site, layerConfig: this.layerConfig });
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;

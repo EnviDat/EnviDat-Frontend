@@ -71,6 +71,15 @@
                  :fileObjects="fileObjects"
                  :graphStyling="graphStyling" />
 
+      <component :is="fullScreenComponent"
+                  :site="currentSite"
+                  :layerConfig="currentLayerConfig"
+      />
+
+<!--
+      :mapHeight="mapHeight"
+-->
+
       <!-- prettier-ignore -->
       <component :is="filePreviewComponent"
                  :url="filePreviewUrl" />
@@ -103,35 +112,35 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 import {
-  METADATA_NAMESPACE,
-  LOAD_METADATA_CONTENT_BY_ID,
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
   EXTRACT_IDS_FROM_TEXT,
+  LOAD_METADATA_CONTENT_BY_ID,
+  METADATA_NAMESPACE,
   PUBLICATIONS_RESOLVE_IDS,
 } from '@/store/metadataMutationsConsts';
 import {
-  createHeader,
   createBody,
   createCitation,
-  createLocation,
-  createResources,
   createDetails,
   createFunding,
+  createHeader,
+  createLocation,
   createPublications,
   createRelatedDatasets,
+  createResources,
 } from '@/factories/metaDataFactory';
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
 import {
   eventBus,
-  METADATA_OPEN_MODAL,
-  METADATA_CLOSE_MODAL,
-  GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
-  OPEN_TEXT_PREVIEW,
+  GCNET_OPEN_DETAIL_CHARTS,
   INJECT_MAP_FULLSCREEN,
+  METADATA_CLOSE_MODAL,
+  METADATA_OPEN_MODAL,
+  OPEN_TEXT_PREVIEW,
 } from '@/factories/eventBus';
 
 import {
@@ -181,6 +190,9 @@ export default {
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
     // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
+
+    this.fullScreenConfig = null;
+    this.fullScreenComponent = null;
     eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   /**
@@ -290,11 +302,9 @@ export default {
       return fileList;
     },
     baseUrl() {
-      const url =
-        process.env.NODE_ENV === 'production'
+      return process.env.NODE_ENV === 'production'
           ? this.baseStationURL
           : this.baseStationURLTestdata;
-      return url;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -345,6 +355,12 @@ export default {
       }
 
       return this.appScrollPosition < 20;
+    },
+    currentSite() {
+      return this.fullScreenConfig?.site || null;
+    },
+    currentLayerConfig() {
+      return this.fullScreenConfig?.layerConfig || null;
     },
   },
   methods: {
@@ -449,14 +465,20 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
-    showFullscreenMapModal() {
+    showFullscreenMapModal(layerConfig) {
+
+      this.modalTitle = `Fullscreen Map for ${this.header.metadataTitle}`;
+
+      this.fullScreenConfig = layerConfig;
       this.fullScreenComponent = MetadataMapFullscreen;
+      console.log(this.fullScreenConfig);
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
     closeModal() {
       this.gcnetModalComponent = null;
       this.filePreviewComponent = null;
+      this.fullScreenComponent = null;
     },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;
@@ -871,6 +893,8 @@ export default {
     gcnetModalComponent: null,
     filePreviewComponent: null,
     filePreviewUrl: null,
+    fullScreenComponent: null,
+    fullScreenConfig: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,
