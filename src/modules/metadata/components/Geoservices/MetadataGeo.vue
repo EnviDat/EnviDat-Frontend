@@ -50,32 +50,6 @@
       </v-card-text>
     </v-row>
 
-    <v-card-text >
-
-      <v-row justify="end">
-        <v-col class="shrink">
-          <BaseRectangleButton v-if="mapEditable"
-                              :color="$vuetify.theme.themes.light.accent"
-                              :disabled="!undoButtonEnabled"
-                              buttonText="Undo"
-                              tooltipText="Reset to original geometry"
-                              tooltipPosition="left"
-                              @clicked="$emit('undoSaveGeometries')" />
-        </v-col>
-
-        <v-col class="shrink">
-
-          <BaseRectangleButton v-if="mapEditable"
-                                :color="$vuetify.theme.themes.light.accent"
-                                :disabled="!saveButtonEnabled"
-                                :loading="saveButtonInProgress"
-                                buttonText="Save Geometries"
-                                @clicked="$emit('saveGeometries')" />
-        </v-col>
-      </v-row>
-
-    </v-card-text>
-
   </v-card>
 </template>
 
@@ -85,7 +59,6 @@ import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import { INJECT_MAP_FULLSCREEN, eventBus } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 import Map from './Map';
 
@@ -94,7 +67,6 @@ export default {
   components: {
     Map,
     BaseIconButton,
-    BaseRectangleButton,
   },
   props: {
     genericProps: Object,
@@ -115,15 +87,6 @@ export default {
     },
     mapEditable() {
       return this.genericProps?.mapEditable;
-    },
-    saveButtonEnabled() {
-      return this.genericProps?.saveButtonEnabled;
-    },
-    saveButtonInProgress() {
-      return this.genericProps?.saveButtonInProgress;
-    },
-    undoButtonEnabled() {
-      return this.genericProps?.undoButtonEnabled;
     },
     mapDivId() {
       return this.genericProps?.mapDivId;
