@@ -581,14 +581,17 @@ export default {
     catchSearchCleared() {
       this.$emit('searchCleared');
     },
-  },
-  watch: {
-    contentSize: function resetVirtualContent() {
+    resetVirtualContent() {
       // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);
       this.vIndex = 0;
       this.virtualListContent = [];
       this.infiniteId += 1;
       this.infiniteHandler();
+    },
+  },
+  watch: {
+    listContent() {
+      this.resetVirtualContent();
     },
   },
   data: () => ({

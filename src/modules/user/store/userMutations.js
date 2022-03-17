@@ -31,8 +31,8 @@ import { populateEditingComponents } from '@/factories/mappingFactory';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_NETWORK_ERROR,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_NETWORK_ERROR,
   eventBus,
   SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
@@ -206,7 +206,8 @@ export default {
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
-    state.userDatasets = datasets;
+    // use the $set to make sure updates are triggered
+    this._vm.$set(state, 'userDatasets', datasets);
 
     resetErrorObject(state);
   },
@@ -252,10 +253,13 @@ export default {
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
-    state.collaboratorDatasets = [
+    const collaboratorDatasets = [
       ...state.collaboratorDatasets,
       ...datasets,
     ];
+
+    // use the $set to make sure updates are triggered
+    this._vm.$set(state, 'collaboratorDatasets', collaboratorDatasets);
   },
   [USER_GET_COLLABORATOR_DATASETS_ERROR](state, reason) {
     state.collaboratorDatasetsLoading = false;
@@ -310,6 +314,7 @@ export default {
       payload.packages = enhanceMetadataFromCategories(this, payload.packages);
     }
 
+    // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state.userOrganizations, orgaId, payload);
 
     resetErrorObject(state);
@@ -339,6 +344,7 @@ export default {
       recentDatasets = mergedDatasets.filter((item, pos, self) => self.findIndex(v => v.id === item.id) === pos);
     }
 
+    // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userRecentOrgaDatasets', recentDatasets);
 
     resetErrorObject(state);
@@ -357,13 +363,6 @@ export default {
 
     if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload);
-    } else if (payload.object === EDITMETADATA_CUSTOMFIELDS) {
-
-      // $set() is used here to make sure any changes of the values with in the array are
-      // updated
-      this._vm.$set(state.metadataInEditing, EDITMETADATA_CUSTOMFIELDS, payload.data);
-
-
     } else {
       const current = state.metadataInEditing[payload.object];
 
@@ -371,6 +370,7 @@ export default {
         ...current,
         ...payload.data,
       };
+
     }
   },
   [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
@@ -481,6 +481,7 @@ export default {
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
     editingObject.message = null;
@@ -501,6 +502,7 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
 

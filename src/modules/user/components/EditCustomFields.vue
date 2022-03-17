@@ -254,24 +254,25 @@ export default {
     // eslint-disable-next-line no-unused-vars
     notifyChange(index, property, value) {
 
-      const localyCopy = [...this.customFieldsProp];
+      const localCopy = [...this.customFieldsProp];
+      console.log(localCopy);
       const errorArray = this.validationErrors;
 
-      this.editEntry(localyCopy, index, property, value);
+      this.editEntry(localCopy, index, property, value);
 
-      const deleted = deleteEmptyObject(index, localyCopy);
+      const deleted = deleteEmptyObject(index, localCopy);
       if (deleted) {
         // delete also from the errorArray to keep the arrays in sync
         deleteEmptyObject(index, errorArray);
       }
 
-      this.checkEnoughEntries(localyCopy);
+      this.checkEnoughEntries(localCopy);
 
-      if (deleted || !deleted && isArrayValid(localyCopy, 'customFields', index, property, this.validations, errorArray)) {
-        this.setCustomFields(localyCopy);
+      if (deleted || !deleted && isArrayValid(localCopy, 'customFields', index, property, this.validations, errorArray)) {
+        this.setCustomFields(localCopy);
       }
 
-      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
+      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localCopy);
     },
   },
   components: {
