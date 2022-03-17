@@ -18,12 +18,24 @@
         {{ userName }}
       </div>
 
-      <div class="subGrid pb-4" >
-        <div class="body-2">Datasets</div>
-        <div class="caption" >{{ datasetCount }}</div>
+      <div class="pa-4" >
+        <v-container fluid
+                      class="pa-0">
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
+            <v-col class="body-2">Datasets</v-col>
+            <v-col class="caption">{{ datasetCount }}</v-col>
+          </v-row>
 
-        <div class="body-2">Email</div>
-        <div class="caption">{{ email }}</div>
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
+            <v-col class="body-2">Email</v-col>
+            <v-col class="caption">{{ email }}</v-col>
+          </v-row>
+        </v-container>
+
       </div>
 
     </div>
@@ -66,7 +78,7 @@ export default {
     },
     height: {
       type: Number,
-      default: 350,
+      default: 300,
     },
     userName: String,
     email: String,
@@ -79,7 +91,7 @@ export default {
   }),
   computed: {
     headerHeight() {
-      return this.height >= 350 ? this.height * 0.6 : this.height * 0.4;
+      return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;
     },
     avatarTopPosition() {
       return this.headerHeight - this.avatarHeight * 0.5;
