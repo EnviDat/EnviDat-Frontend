@@ -209,7 +209,7 @@ const emptyMetadataInEditing = {
 
 const mainDetailSteps = [
   {
-    title: 'Main Info',
+    title: 'Header Information',
     completed: false,
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,

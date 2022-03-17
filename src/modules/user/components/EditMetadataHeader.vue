@@ -582,7 +582,7 @@ export default {
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Please chose a contact person from the dropdown list or enter it\'s details.',
+      authorInstructions: 'Please choose a contact person from the dropdown list or enter it\'s details.',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',
