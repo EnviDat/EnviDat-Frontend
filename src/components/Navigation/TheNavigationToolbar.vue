@@ -104,7 +104,8 @@
                 cols="1" >
 
           <v-row align="center"
-                  justify="end" >
+                  justify="end"
+                 no-gutters >
 
             <v-col @click="catchSigninClicked"
                     style="cursor: pointer;">
@@ -112,7 +113,8 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
-                        v-on="on">
+                        v-on="on"
+                        class="text-body-2">
                     {{ signInText }}
                   </div>
                 </template>
