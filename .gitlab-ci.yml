@@ -28,12 +28,13 @@ workflow:
         - src/**/*
         - public/**/*
         - tests/**/*
-        - .env*
-        - package.json
-        - vue.*
         - nginx/**/*
         - chart/**/*
+        - .env*
+        - package.json*
+        - vue.*
         - Dockerfile
+        - .gitlab-ci.yml
       when: always
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
