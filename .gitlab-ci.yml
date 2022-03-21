@@ -31,6 +31,9 @@ workflow:
         - .env*
         - package.json
         - vue.*
+        - nginx/**/*
+        - chart/**/*
+        - Dockerfile
       when: always
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
