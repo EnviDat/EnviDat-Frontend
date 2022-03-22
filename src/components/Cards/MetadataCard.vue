@@ -94,6 +94,7 @@
           </v-col>
         </v-row>
 
+<!--
         <v-row v-if="organization"
                class="pb-1"
                no-gutters
@@ -105,7 +106,7 @@
                                       @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
         </v-row>
-
+-->
 
         <v-row v-if="modeData"
                no-gutters
