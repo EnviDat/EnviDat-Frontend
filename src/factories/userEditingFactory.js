@@ -402,13 +402,14 @@ yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndFi
   return this.test(
     'validate-date-range',
     'End date can\'t be before start date.',
-    // eslint-disable-next-line func-names, prefer-arrow-callback
-    function (_value, options) {
+    (value, options) => {
       const dateStart = options.parent[dateStartField]
+
       const parsedStart = isDate(dateStart) ?
       dateStart : parse(dateStart, 'dd.MM.yyyy', new Date());
 
       const dateEnd = options.parent[dateEndField]
+
       const parsedEnd = isDate(dateEnd) ?
       dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
 

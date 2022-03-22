@@ -70,7 +70,7 @@
                     :label="labels.dateStart"
                     dense
                     prepend-icon="date_range"
-                    :readonly="mixinMethods_isFieldReadOnly('dateStart')"
+                    readonly
                     :hint="mixinMethods_readOnlyHint('dateStart')"
                     outlined
                     :value="item.dateStart"
@@ -83,6 +83,7 @@
                   locale="en-in"
                   :readonly="mixinMethods_isFieldReadOnly('dateStart')"
                   :hint="mixinMethods_readOnlyHint('dateStart')"
+                  :max="reformatDate(item.dateEnd)"
                   @input="dateChanged(index, 'dateStart', $event)"
                   no-title
                   scrollable
@@ -107,7 +108,7 @@
                   <v-text-field
                     :label="labels.dateEnd"
                     prepend-icon="date_range"
-                    :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
+                    readonly
                     :hint="mixinMethods_readOnlyHint('dateEnd')"
                     dense
                     outlined
