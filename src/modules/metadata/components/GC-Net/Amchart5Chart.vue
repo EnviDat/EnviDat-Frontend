@@ -90,6 +90,8 @@ import {
   hasData,
 } from '@/factories/chartFactory';
 
+// My super test commit
+
 /* eslint-disable no-tabs */
 
 export default {
