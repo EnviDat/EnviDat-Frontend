@@ -203,7 +203,7 @@ export default {
         userOrg = this.allOrganizations.filter(x => x.id === this.previewOrganization)[0];
       }
 
-      if (!userOrg && this.$store) {
+      if (!userOrg && this.$store && this.userOrganizationsList?.length > 0) {
         userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
       }
 
