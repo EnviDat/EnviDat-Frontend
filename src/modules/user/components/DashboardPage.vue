@@ -449,7 +449,7 @@ export default {
         return Object.values(this.userOrganizations);
       }
 
-      return null;
+      return [];
     },
     usersOrganisationTitle() {
       if (this.userOrganizationsList?.length > 0) {

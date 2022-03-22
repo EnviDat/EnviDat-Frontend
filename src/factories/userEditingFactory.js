@@ -294,8 +294,10 @@ export function initializeSteps(steps) {
     const step = steps[i];
 
     if (step) {
+      // initialize these properties here so they are reactive
       step.readOnlyFields = null;
       step.readOnlyExplanation = null;
+      step.error = null;
 
       if (step.detailSteps) {
         step.detailSteps = initializeSteps(step.detailSteps);
@@ -307,7 +309,7 @@ export function initializeSteps(steps) {
 }
 
 export function getStepByName(eventName, steps) {
-  if (!steps) {
+  if (!eventName || !steps) {
     return null;
   }
 
@@ -327,6 +329,23 @@ export function getStepByName(eventName, steps) {
   }
 
   return null;
+}
+
+export function getStepFromRoute(route) {
+
+  const stepTitle = route?.params?.step || null;
+  const currentStep = metadataCreationSteps.filter(step => step.title === stepTitle)[0];
+
+  const detailSteps = currentStep?.detailSteps || null;
+  const subStepTitle = route?.params?.substep || null;
+
+  if (detailSteps && subStepTitle) {
+
+    const currentSubstep = detailSteps.filter(subStep => subStep.title === subStepTitle)[0];
+    return currentSubstep?.key || null;
+  }
+
+  return currentStep?.key || null;
 }
 
 export function getEmptyMetadataInEditingObject() {

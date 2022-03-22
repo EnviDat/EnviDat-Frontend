@@ -64,6 +64,7 @@ import {
 
 import {
   getStepByName,
+  getStepFromRoute,
   getValidationMetadataEditingObject,
   initializeSteps,
   metadataCreationSteps,
@@ -114,10 +115,10 @@ import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 const creationSteps = initializeSteps(metadataCreationSteps);
 
-
 export default {
   name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
+
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
@@ -127,6 +128,8 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     // react to route changes...
+
+    // next has to be called to do the route change!
     next((vm) => {
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
@@ -189,6 +192,12 @@ export default {
     },
     loading() {
       return this.loadingCurrentEditingContent && !this.currentEditingContent;
+    },
+    currentComponentLoading() {
+      const stepKey = getStepFromRoute(this.$route);
+      const stepData = this.getGenericPropsForStep(stepKey);
+
+      return stepData?.loading || false;
     },
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
@@ -341,7 +350,7 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        this.updateStepStatus(updateObj.object);
+        this.updateStepStatus(updateObj.object, this.creationSteps);
       });
 
     },
@@ -351,8 +360,8 @@ export default {
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
     },
-    updateStepStatus(stepKey) {
-      const step = getStepByName(stepKey, this.creationSteps);
+    updateStepStatus(stepKey, steps) {
+      const step = getStepByName(stepKey, steps);
 
       if (!step) {
         return;
@@ -365,7 +374,8 @@ export default {
       }
     },
     updateStepCompleted(step, stepData) {
-      const values = Object.values(stepData);
+      const data = stepData || {};
+      const values = Object.values(data);
 
       let isComplete = true;
       for (let i = 0; i < values.length; i++) {
@@ -415,8 +425,17 @@ export default {
     },
   },
   watch: {
+    currentComponentLoading() {
+      if (!this.currentComponentLoading) {
+        const stepKey = getStepFromRoute(this.$route);
+        this.updateStepStatus(stepKey, this.creationSteps);
+      }
+    },
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+
+      const stepKey = getStepFromRoute(this.$route);
+      this.updateStepStatus(stepKey, this.creationSteps);
     },
   },
   components: {
