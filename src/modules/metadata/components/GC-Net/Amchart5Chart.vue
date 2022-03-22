@@ -18,30 +18,12 @@ export default {
 
     const root = am5.Root.new('chartdiv');
 
+    // Set all dates in root to UTC
+    root.utc = true;
+
     root.setThemes([
       am5themes_Animated.new(root),
     ]);
-
-    const data = [{
-      date: new Date(2012, 1, 1).getTime(),
-      value: 8,
-    }, {
-      date: new Date(2012, 1, 2).getTime(),
-      value: 5,
-    }, {
-      date: new Date(2012, 1, 3).getTime(),
-      value: 12,
-      strokeSettings: {
-        stroke: am5.color(0x990000),
-        strokeDasharray: [3, 3],
-      },
-    }, {
-      date: new Date(2012, 1, 4).getTime(),
-      value: 14,
-    }, {
-      date: new Date(2012, 1, 5).getTime(),
-      value: 11,
-    }];
 
     // Create chart
     const chart = root.container.children.push(
@@ -62,7 +44,8 @@ export default {
           maxDeviation: 0.1,
           groupData: false,
           baseInterval: {
-            timeUnit: 'day',
+            // timeUnit: 'day',
+            timeUnit: 'hour',
             count: 1,
           },
           renderer: am5xy.AxisRendererX.new(root, {
@@ -85,8 +68,8 @@ export default {
           minBulletDistance: 10,
           xAxis,
           yAxis,
-          valueYField: 'value',
-          valueXField: 'date',
+          valueYField: 'airtemp1',
+          valueXField: 'timestamp',
           tooltip: am5.Tooltip.new(root, {
             pointerOrientation: 'horizontal',
             labelText: '{valueY}',
@@ -99,7 +82,17 @@ export default {
       templateField: 'strokeSettings',
     });
 
-    series.data.setAll(data);
+    // Load and parse external data
+    am5.net.load('https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2020-11-04T17:00:00/2020-11-10T00:00:00/').then((result) => {
+      // This gets executed when data finishes loading
+      series.data.setAll(am5.JSONParser.parse(result.response));
+    }).catch((result) => {
+      // This gets executed if there was an error loading URL
+      // ... handle error
+      console.log(`Error loading ${result.xhr.responseURL}`);
+    });
+
+
 
   // Add cursor
     const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
