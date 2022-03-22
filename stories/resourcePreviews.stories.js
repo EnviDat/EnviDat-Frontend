@@ -84,8 +84,8 @@ storiesOf('3 Cards / Resource Previews', module)
       <v-col>
         <TextPreviewCard :content="readme2"  />
       </v-col>
-    </v-row>   
-    
+    </v-row>
+
     <v-row>
       <v-col>
       Text Preview with markdown url
@@ -111,12 +111,12 @@ storiesOf('3 Cards / Resource Previews', module)
         <TextPreviewCard :url="relavtieUrl"  />
       </v-col>
     </v-row>
- 
+
   </v-col> `,
   data: () => ({
     txtUrl: 'https://os.zhdk.cloud.switch.ch/envicloud/wsl/ros_data/readme.txt',
     invalidUrl: 'https://os.zhdk.cloud.switch.ch/envicloud/wsl/ros_data/fasdfasdfasdfas.txt',
-    mdUrl: 'https://raw.githubusercontent.com/EnviDat/EnviDat-Frontend/master/README.md',
+    mdUrl: 'https://raw.githubusercontent.com/EnviDat/EnviDat-Frontend/main/README.md',
     relavtieUrl: './testdata/largeText.txt',
     readme1,
     readme2,
@@ -158,7 +158,7 @@ The folder PRecipitation Data sets contains 16 ideal precipiation Data sets for 
 
 const readme2 = `This dataset contains the data acquired during the expedition to Princess Elisabeth Antarctica Station in December 2016 and January 2017.
 
-The data is organized in four folders. Each folder is a .zip file. 
+The data is organized in four folders. Each folder is a .zip file.
 
 
 meteo.zip

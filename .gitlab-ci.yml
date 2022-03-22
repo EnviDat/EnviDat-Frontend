@@ -4,7 +4,7 @@ stages:
   - config
   - build
   - scan
-  - retag
+  - package
   - deploy
 
 variables:
@@ -14,7 +14,7 @@ variables:
 workflow:
   rules:
     - if: >
-          ($CI_COMMIT_REF_NAME == "master"
+          ($CI_COMMIT_REF_NAME == "main"
           && $CI_PIPELINE_SOURCE == "merge_request_event")
       when: always
     - if: >
@@ -28,9 +28,13 @@ workflow:
         - src/**/*
         - public/**/*
         - tests/**/*
+        - nginx/**/*
+        - chart/**/*
         - .env*
-        - package.json
+        - package.json*
         - vue.*
+        - Dockerfile
+        - .gitlab-ci.yml
       when: always
     - if: '$CI_PIPELINE_SOURCE == "web"'
       when: always
@@ -39,19 +43,18 @@ set-vars:
   stage: .pre
   image: docker.io/alpine:3.15
   before_script:
-    - apk add jq --no-cache
-  script:
     - >
-      echo "VERSION=$(cat package.json
-      | jq .version --raw-output)" > build.env
+      apk add jq yq --no-cache
+      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+  script:
+    - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
     - cat .env >> build.env
     - echo "NAMESPACE=envidat-frontend" >> build.env
     - |
-      if [ "${CI_COMMIT_REF_NAME}" != "develop" ]; then
-          echo "APP_NAME=frontend-dev" >> build.env
-      else
-          echo "APP_NAME=frontend-${CI_COMMIT_REF_NAME}" >> build.env
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
+    - echo CHART_VERSION=$(yq '.version' chart/Chart.yaml) >> build.env
     - source build.env
     - >
       echo "IMAGE_NAME=${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
@@ -89,23 +92,35 @@ run-tests:
 modify-env:
   stage: config
   image: docker.io/python:3.9-alpine
+  cache:
+    key: dotenv-config
+    paths:
+      - .env.production
+    policy: push
   before_script:
-    - apk add py3-dotenv --no-cache
+    - pip install --upgrade pip
+    - pip install python-dotenv==0.19.*
   script:
-    - >
-      python3 -c "
+    - "python -c
+      \"import os;
       import dotenv;
-      dotenv.set_key(\
-        ".env.production",\
-        "VUE_APP_ENVIDAT_PROXY",\
-        "${APP_NAME}.envidat.ch"\
-      )"
+      file = '.env.production';
+      key = 'VUE_APP_ENVIDAT_PROXY';
+      branch = os.getenv('CI_COMMIT_REF_NAME');
+      value = f'https://ckan-{branch}.envidat.ch';
+      dotenv.set_key(file, key, value, quote_mode='never')\"
+      "
 
 image-build:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
+  cache:
+    key: dotenv-config
+    paths:
+      - .env.production
+    policy: pull
   before_script:
     - >
       echo "${IMAGE_REGISTRY_CA_CERT}"
@@ -125,6 +140,7 @@ image-build:
       --destination "${IMAGE_NAME}-unverified"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
+      --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
 image-scan:
@@ -167,7 +183,7 @@ image-scan:
       container_scanning: envidat-frontend-imgscan.json
 
 image-retag:
-  stage: retag
+  stage: package
   image: docker.io/regclient/regctl:v0.3-alpine
   variables:
     GIT_STRATEGY: none
@@ -185,31 +201,70 @@ image-retag:
       "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
     - regctl --verbosity debug tag delete "${IMAGE_NAME}-unverified"
 
-helm-deploy:
+.helm:
   stage: deploy
   image:
     name: docker.io/alpine/helm:3.8.0
     entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      when: always
   before_script:
-    - apk add yq --no-cache
+    - >
+      echo "${IMAGE_REGISTRY_CA_CERT}"
+      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
+    - mkdir -p /root/.config/helm/registry
+    - >
+      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf "%s:%s"
+      "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}" | base64
+      | tr -d '\n')\"}}}" > /root/.config/helm/registry/config.json
+
+create-helm-chart:
+  extends:
+    - .helm
+  stage: package
   script:
-    - |
-      yq eval --inplace \
-        ".appVersion = \"${VERSION}-${CI_COMMIT_REF_NAME}\"" \
-        "${CI_PROJECT_DIR}/chart/Chart.yaml"
-    - |
-      if [ "${CI_COMMIT_REF_NAME}" != "master" ]; then
-          yq eval --inplace \
-            ".ingress.hosts[0].host = \"${APP_NAME}.envidat.ch\"" \
-            "${CI_PROJECT_DIR}/chart/values.yaml"
-          yq eval --inplace \
-            ".ingress.tls[0].hosts[0] = \"${APP_NAME}.envidat.ch\"" \
-            "${CI_PROJECT_DIR}/chart/values.yaml"
-          yq eval --inplace \
-            '.autoscaling.enabled = false' \
-            "${CI_PROJECT_DIR}/chart/values.yaml"
-      fi
-    - |
-      helm upgrade "${APP_NAME}" "${CI_PROJECT_DIR}/chart" \
-        --install --values="${CI_PROJECT_DIR}/chart/values.yaml" \
-        --namespace "${NAMESPACE}"
+    - >
+      apk add yq --no-cache
+      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+    - helm dependencies build chart
+    - yq -i '.appVersion = strenv(VERSION)' chart/Chart.yaml
+    - helm package chart
+    - CHART_VER=$(yq '.version' chart/Chart.yaml)
+    - helm push "frontend-${CHART_VER}.tgz" oci://registry.envidat.ch/envidat
+
+helm-deploy:
+  extends:
+    - .helm
+  rules:
+    - if: $CI_COMMIT_REF_NAME != "main"
+      when: always
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - >
+      helm upgrade --install --force "frontend-${CI_COMMIT_REF_NAME}"
+      oci://registry.envidat.ch/envidat/frontend
+      --namespace "${NAMESPACE}" --create-namespace
+      --version "${CHART_VERSION}"
+      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"
+      --set image.pullPolicy="Always"
+      --set ingress.hosts[0].host="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
+      --set ingress.hosts[0].paths[0].path="/"
+      --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
+      --set ingress.tls[0].secretName="envidat-star"
+      --set ingress.tls[0].hosts[0]="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
+      --set autoscaling.enabled=false
+
+helm-deploy-prod:
+  extends:
+    - .helm
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - >
+      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
+      oci://registry.envidat.ch/envidat/frontend
+      --namespace "${NAMESPACE}" --create-namespace
+      --version "${CHART_VERSION}"
+      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"

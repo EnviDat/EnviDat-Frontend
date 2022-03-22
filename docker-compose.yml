@@ -11,6 +11,7 @@ services:
       context: .
       target: local-dev
       args:
+        INTERNAL_REG: ${INTERNAL_REG}
         EXTERNAL_REG: ${EXTERNAL_REG}
         MAINTAINER_APP: ${MAINTAINER_APP}
         MAINTAINER_CD: ${MAINTAINER_CD}
