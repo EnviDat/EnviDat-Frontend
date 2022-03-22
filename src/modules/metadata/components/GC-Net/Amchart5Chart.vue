@@ -19,6 +19,7 @@ export default {
     const root = am5.Root.new('chartdiv');
 
     // Set all dates in root to UTC
+    // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
     root.utc = true;
 
     root.setThemes([
@@ -42,7 +43,8 @@ export default {
     const xAxis = chart.xAxes.push(
         am5xy.DateAxis.new(root, {
           maxDeviation: 0.1,
-          groupData: false,
+          groupData: true,
+          groupCount: 500,
           baseInterval: {
             // timeUnit: 'day',
             timeUnit: 'hour',
@@ -66,6 +68,7 @@ export default {
     const series = chart.series.push(
         am5xy.LineSeries.new(root, {
           minBulletDistance: 10,
+          connect: false,
           xAxis,
           yAxis,
           valueYField: 'airtemp1',
@@ -83,7 +86,7 @@ export default {
     });
 
     // Load and parse external data
-    am5.net.load('https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2020-11-04T17:00:00/2020-11-10T00:00:00/').then((result) => {
+    am5.net.load('https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/').then((result) => {
       // This gets executed when data finishes loading
       series.data.setAll(am5.JSONParser.parse(result.response));
     }).catch((result) => {
