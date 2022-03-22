@@ -110,6 +110,7 @@ import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import { errorMessage } from '@/factories/notificationFactory';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 const creationSteps = initializeSteps(metadataCreationSteps);
 
@@ -251,8 +252,7 @@ export default {
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-      const publicationData = this.getGenericPropsForStep(EDITMETADATA_PUBLICATION_INFO)
-      const publicationState = publicationData.publicationState;
+      const publicationState = getMetadataVisibilityState(this.currentEditingContent);
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
