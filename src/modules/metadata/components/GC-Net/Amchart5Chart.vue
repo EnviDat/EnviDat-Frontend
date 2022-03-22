@@ -1,5 +1,7 @@
 <template>
+
   <div id="chartdiv"></div>
+
 </template>
 
 <script>
@@ -14,82 +16,106 @@ export default {
 
   mounted() {
 
-    // Create root and chart
     const root = am5.Root.new('chartdiv');
 
     root.setThemes([
       am5themes_Animated.new(root),
     ]);
 
+    const data = [{
+      date: new Date(2012, 1, 1).getTime(),
+      value: 8,
+    }, {
+      date: new Date(2012, 1, 2).getTime(),
+      value: 5,
+    }, {
+      date: new Date(2012, 1, 3).getTime(),
+      value: 12,
+      strokeSettings: {
+        stroke: am5.color(0x990000),
+        strokeDasharray: [3, 3],
+      },
+    }, {
+      date: new Date(2012, 1, 4).getTime(),
+      value: 14,
+    }, {
+      date: new Date(2012, 1, 5).getTime(),
+      value: 11,
+    }];
+
+    // Create chart
     const chart = root.container.children.push(
         am5xy.XYChart.new(root, {
-          panY: false,
+          focusable: true,
+          panX: true,
+          panY: true,
+          wheelX: 'panX',
           wheelY: 'zoomX',
-          layout: root.verticalLayout,
         })
     );
 
-    // Define data
-    const data = [{
-      'year': '2021',
-      'europe': 5,
-      'namerica': 2.5,
-      'asia': 1,
-    }, {
-      'year': '2022',
-      'europe': 2.6,
-      'namerica': 6.7,
-      'asia': 2.2,
-    }, {
-      'year': '2023',
-      'europe': 4.8,
-      'namerica': 1.9,
-      'asia': 4.4,
-    }]
+    const easing = am5.ease.linear;
 
-    // Create Y-axis
+    // Create axes
+    const xAxis = chart.xAxes.push(
+        am5xy.DateAxis.new(root, {
+          maxDeviation: 0.1,
+          groupData: false,
+          baseInterval: {
+            timeUnit: 'day',
+            count: 1,
+          },
+          renderer: am5xy.AxisRendererX.new(root, {
+            minGridDistance: 50,
+          }),
+          tooltip: am5.Tooltip.new(root, {}),
+        })
+    );
+
     const yAxis = chart.yAxes.push(
         am5xy.ValueAxis.new(root, {
+          maxDeviation: 0.1,
           renderer: am5xy.AxisRendererY.new(root, {}),
         })
     );
 
-    // Create X-Axis
-    const xAxis = chart.xAxes.push(
-        am5xy.CategoryAxis.new(root, {
-          maxDeviation: 0.2,
-          renderer: am5xy.AxisRendererX.new(root, {}),
-          categoryField: 'year',
+    // Add series
+    const series = chart.series.push(
+        am5xy.LineSeries.new(root, {
+          minBulletDistance: 10,
+          xAxis,
+          yAxis,
+          valueYField: 'value',
+          valueXField: 'date',
+          tooltip: am5.Tooltip.new(root, {
+            pointerOrientation: 'horizontal',
+            labelText: '{valueY}',
+          }),
         })
     );
-    xAxis.data.setAll(data);
 
-    // Create series
-    function createSeries(name, field) {
-      const series = chart.series.push(
-          am5xy.LineSeries.new(root, {
-            name,
-            xAxis,
-            yAxis,
-            valueYField: field,
-            categoryXField: 'year',
-            stacked: true,
-          })
-      );
-      series.strokes.template.setAll({
-        strokeWidth: 3,
-        strokeDasharray: [10,5],
-      });
-      series.fills.template.setAll({
-        fillOpacity: 0.5,
-        visible: true,
-      });
-      series.data.setAll(data);
-    }
+    series.strokes.template.setAll({
+      strokeWidth: 3,
+      templateField: 'strokeSettings',
+    });
 
-    createSeries('Europe', 'europe');
-    createSeries('North America', 'namerica');
-    createSeries('Asia', 'asia');
+    series.data.setAll(data);
+
+  // Add cursor
+    const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
+      xAxis,
+    }));
+    cursor.lineY.set('visible', false);
+
+    // Add scrollbar
+    chart.set('scrollbarX', am5.Scrollbar.new(root, {
+      orientation: 'horizontal',
+    }));
+
+  // Make stuff animate on load
+    series.appear(1000, 100);
+    chart.appear(1000, 100);
+
   },
 
   beforeDestroy() {
@@ -97,6 +123,7 @@ export default {
       this.root.dispose();
     }
   },
+
 }
 </script>
 
