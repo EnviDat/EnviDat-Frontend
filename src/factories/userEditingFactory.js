@@ -384,15 +384,12 @@ export function isMaxLength(maximum, localObjects) {
 yup.addMethod(yup.date, 'parseDateString', function (dateStringFormat='dd.MM.yyyy') {
   // Helper function for yup date string parsing
   // eslint-disable-next-line func-names
-  return this.transform(function (value, originalValue) {
+  return this.transform((value, originalValue) => {
     if (originalValue === '') {
       return null
     }
-    if (this.isType(value)) return value;
 
-    value = parse(originalValue, dateStringFormat, new Date());
-
-    return isDate(value) ? value : originalValue;
+    return parse(originalValue, dateStringFormat, new Date());
   });
 });
 

@@ -84,8 +84,8 @@
                   :readonly="mixinMethods_isFieldReadOnly('dateStart')"
                   :hint="mixinMethods_readOnlyHint('dateStart')"
                   :max="reformatDate(item.dateEnd)"
+                  :value="reformatDate(item.dateStart)"
                   @input="dateChanged(index, 'dateStart', $event)"
-                  no-title
                   scrollable
                   next-icon="skip_next"
                   prev-icon="skip_previous"
@@ -123,8 +123,8 @@
                   :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
                   :hint="mixinMethods_readOnlyHint('dateEnd')"
                   :min="reformatDate(item.dateStart)"
+                  :value="reformatDate(item.dateEnd)"
                   @input="dateChanged(index, 'dateEnd', $event)"
-                  no-title
                   scrollable
                   next-icon="skip_next"
                   prev-icon="skip_previous"
