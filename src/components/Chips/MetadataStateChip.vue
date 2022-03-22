@@ -3,7 +3,8 @@
           :class="showContent ? '' : 'stateChipHover' "
           @mouseover="hover = true"
           @mouseleave="hover = false"
-          :color="stateColor">
+          :color="stateColor"
+          :style="!showContent ? 'font-size: 0.9rem;' : ''">
 
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
