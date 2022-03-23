@@ -5,10 +5,12 @@ FROM ${INTERNAL_REG}/debian:bullseye as certs
 
 
 FROM node:16 AS base
+ARG APP_VERSION
 ARG MAINTAINER_APP
 ARG MAINTAINER_CD
-LABEL envidat.ch.maintainer.app="${MAINTAINER_APP}"
-LABEL envidat.ch.maintainer.cd="${MAINTAINER_CD}"
+LABEL envidat.ch.app-version="${APP_VERSION}" \
+      envidat.ch.maintainer.app="${MAINTAINER_APP}" \
+      envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
 
 

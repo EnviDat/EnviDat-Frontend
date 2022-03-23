@@ -138,6 +138,7 @@ image-build:
       --target prod
       --cache=true
       --destination "${IMAGE_NAME}-unverified"
+      --build-arg APP_VERSION="${VERSION}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
