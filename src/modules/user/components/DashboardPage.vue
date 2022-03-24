@@ -111,8 +111,7 @@
                   cols="3"
                   class="pa-2" >
 
-             <MetadataCardPlaceholder id="orgaDataset"
-                                      :style="`height: ${collabCardHeight}px; `" />
+             <MetadataCardPlaceholder id="orgaDataset" />
            </v-col>
          </v-row>
        </div>
@@ -709,7 +708,7 @@ export default {
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,
-    orgaDatasetsPreview: 5,
+    orgaDatasetsPreview: 4,
     maxFilterTags: 20,
     collabCardWidth: 290,
     collabCardHeight: 115,
@@ -796,9 +795,6 @@ export default {
       .datasetsOverflow
         overflow: hidden auto
 
-      .datasetsGrid
-        display: grid
-        grid-template-columns: repeat(6, 1fr)
 
       .noUserDatasetsGrid
         display: grid
