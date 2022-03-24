@@ -22,7 +22,7 @@ export default {
     },
     apiUrl: {
       type: String,
-      default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+      default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     },
   },
 
@@ -72,6 +72,7 @@ export default {
         am5xy.ValueAxis.new(root, {
           maxDeviation: 0.1,
           renderer: am5xy.AxisRendererY.new(root, {}),
+          tooltip: am5.Tooltip.new(root, {}),
         })
     );
 
@@ -82,35 +83,112 @@ export default {
           connect: false,
           xAxis,
           yAxis,
-          valueYField: 'airtemp1',
-          valueXField: 'timestamp',
-          tooltip: am5.Tooltip.new(root, {
-            pointerOrientation: 'horizontal',
-            labelText: '{valueY}',
-          }),
+          valueYField: 'windspeed1',
+          valueXField: 'timestamp_iso',
+          // TODO get series tooltip to work
+          // tooltip: am5.Tooltip.new(root, {
+          //   labelText: '{valueY}',
+          // }),
+          tooltip: am5.Tooltip.new(root, {}),
+          // tooltip: am5.Tooltip.new(root, {
+          //   pointerOrientation: 'horizontal',
+          //   labelText: '{valueYField}: {valueY}',
+          // }),
+          // tooltip: am5.Tooltip.new(root, {
+          //   pointerOrientation: 'horizontal',
+          //   labelText: '{valueY}',
+          // }),
         })
     );
+
+    // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+
+
+    // const tooltip = am5.Tooltip.new(root, {
+    //   // getFillFromSprite: false,
+    //   labelText: '{valueYField}: {valueY}',
+    // });
+    //
+    // // tooltip.get('background').setAll({
+    // //   fill: am5.color(0xffffff),
+    // //   fillOpacity: 0.8,
+    // // });
+    //
+    // series.set('tooltip', tooltip);
+
+    // series.bullets.push(() => am5.Bullet.new(root, {
+    //     sprite: am5.Circle.new(root, {
+    //       radius: 6,
+    //       stroke: series.get('fill'),
+    //       strokeWidth: 2,
+    //       fill: am5.color(0xffffff),
+    //     }),
+    //   }));
+
+    // series.bullets.push(() => am5.Bullet.new(root, {
+    //     sprite: am5.Circle.new(root, {
+    //       radius: 5,
+    //       fill: series.get('fill'),
+    //       stroke: root.interfaceColors.get('background'),
+    //       strokeWidth: 2,
+    //       tooltipText: '{valueY}',
+    //       showTooltipOn: 'always',
+    //       tooltip: am5.Tooltip.new(root, {}),
+    //     }),
+    //   }));
+
 
     series.strokes.template.setAll({
       strokeWidth: 3,
       templateField: 'strokeSettings',
     });
 
+    // TODO implement logic to distinguish between loading JSON and CSV data
+    // This block loads JSON data
+    // Load and parse external data
+    // am5.net.load(this.apiUrl).then((result) => {
+    //   series.data.setAll(am5.JSONParser.parse(result.response));
+    // }).catch((result) => {
+    //   console.log(`Error loading ${result.xhr.responseURL}`);
+    // });
+
+
+    // This block loads CSV data
     // Load and parse external data
     am5.net.load(this.apiUrl).then((result) => {
-      // This gets executed when data finishes loading
-      series.data.setAll(am5.JSONParser.parse(result.response));
+      
+      // Parse data
+      const data = am5.CSVParser.parse(result.response, {
+        delimiter: ',',
+        reverse: true,
+        skipEmpty: true,
+        useColumnNames: true,
+      });
+
+      // Process data
+      const processor = am5.DataProcessor.new(root, {
+        dateFields: ['timestamp_iso'],
+        dateFormat: "yyyy-MM-dd H:m:s'+00:00'",
+        numericFields: ['windspeed1'],
+      });
+      processor.processMany(data);
+
+      // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+
+      // Use parsed/processed data
+      series.data.setAll(data);
+
     }).catch((result) => {
       // This gets executed if there was an error loading URL
       // ... handle error
-      console.log(`Error loading ${result.xhr.responseURL}`);
+      console.log(`Error loading ${  result.xhr.responseURL}`);
     });
 
     // Add cursor
     const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
       xAxis,
     }));
-    cursor.lineY.set('visible', false);
+    // cursor.lineY.set('visible', false);
 
     // Add scrollbar
     chart.set('scrollbarX', am5.Scrollbar.new(root, {
@@ -146,7 +224,7 @@ body {
 
 .chart {
   width: 100%;
-  height: 250px;
+  height: 350px;
 }
 
 </style>
