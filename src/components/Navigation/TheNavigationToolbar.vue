@@ -85,6 +85,7 @@
                               :isElevated="true"
                               :tooltipText="`Continue editing ${editingDatasetName}`"
                               :tooltipBottom="true"
+                              :overwriteHeight="24"
                               @clicked="catchContinueClick" />
             </v-col>
 

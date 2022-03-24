@@ -138,12 +138,17 @@ export default {
     isElevated: Boolean,
     disabled: Boolean,
     count: Number,
+    overwriteHeight: Number,
   },
   data: () => ({
     hoverBadge: false,
   }),
   computed: {
     height() {
+      if (this.overwriteHeight) {
+        return this.overwriteHeight;
+      }
+
       let height = 36;
       
       if (this.isSmall) {
