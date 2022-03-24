@@ -137,6 +137,8 @@
                            :categoryColor="metadata.categoryColor"
                            :compactLayout="true"
                            :state="getMetadataState(metadata)"
+                           :organization="metadata.organization.name"
+                           :organizationTooltip="metadata.organization.title"
                            showStateOnHover
                            @clickedEvent="catchMetadataClicked"
                            @clickedTag="catchTagClicked"
