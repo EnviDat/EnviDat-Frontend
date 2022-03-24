@@ -54,7 +54,7 @@
                   :clickCallback="catchRefreshClick" />
 
       <MetadataList v-if="hasUserDatasets"
-                      class="datasetsGrid px-1"
+                      class="datasetsOverflow px-1"
                       :listContent="filteredUserDatasets"
                       :searchCount="filteredUserDatasets.length"
                       :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
@@ -103,7 +103,7 @@
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
             id="collaboratorPlaceholders"
-            class="datasetsGrid"
+            class="datasetsGrid datasetsOverflow"
             :style="`height: ${collabCardHeight + 30}px;`" >
 
          <MetadataCardPlaceholder id="orgaDataset"
@@ -115,12 +115,12 @@
 
        <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
             id="collaboratorDatasetCards"
-            :style="`height: ${collabCardHeight + 30}px;`" >
+            class="datasetsGrid" >
 
          <MetadataCard v-for="(metadata, index) in collaboratorDatasets"
+                       :key="index"
                        class="mx-2"
                        :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`"
-                       :key="index"
                        :id="metadata.id"
                        :title="metadata.title"
                        :subtitle="metadata.notes"
@@ -783,8 +783,12 @@ export default {
       overflow: hidden hidden
       max-height: $maxHeight
 
-      .datasetsGrid
+      .datasetsOverflow
         overflow: hidden auto
+
+      .datasetsGrid
+        display: grid
+        grid-template-columns: repeat(6, 1fr)
 
       .noUserDatasetsGrid
         display: grid
