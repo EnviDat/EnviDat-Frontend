@@ -18,6 +18,7 @@ import {
 } from '@/factories/metaDataFactory';
 
 import {
+  isUserGroupAdmin,
   selectForEditing,
   setSelected,
   updateAuthors,
@@ -73,12 +74,9 @@ import {
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_DATASETS,
-  USER_GET_ORGANIZATIONS_DATASETS_ERROR,
-  USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_NAMESPACE,
+  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
   VALIDATION_ERROR,
 } from './userMutationsConsts';
 
@@ -309,9 +307,17 @@ export default {
   [USER_GET_ORGANIZATIONS_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
 
+    // let datasets = payload?.packages || [];
     const orgaId = payload.id;
-    if (payload.packages?.length > 0) {
+
+    if (payload?.packages.length > 0) {
       payload.packages = enhanceMetadataFromCategories(this, payload.packages);
+
+      const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
+
+      if (isUserGroupAdmin(userId, payload)) {
+        enhanceElementsWithStrategyEvents(payload.packages, SELECT_EDITING_DATASET_PROPERTY);
+      }
     }
 
     // use this._vm.$set() to make sure computed properties are recalulated
@@ -322,37 +328,7 @@ export default {
   [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
 
-    extractError(this, reason);
-  },
-  [USER_GET_ORGANIZATIONS_DATASETS](state) {
-    state.userOrganizationLoading = true;
-    state.userRecentOrgaDatasetsError = null;
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATIONS_DATASETS_SUCCESS](state, payload) {
-    state.userOrganizationLoading = false;
-
-    let recentDatasets = [];
-
-    if (payload.results?.length > 0) {
-      recentDatasets = enhanceMetadataFromCategories(this, payload.results);
-    }
-
-    if (state.userRecentOrgaDatasets?.length > 0) {
-      const mergedDatasets = [...state.userRecentOrgaDatasets, ...recentDatasets];
-      recentDatasets = mergedDatasets.filter((item, pos, self) => self.findIndex(v => v.id === item.id) === pos);
-    }
-
-    // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state, 'userRecentOrgaDatasets', recentDatasets);
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATIONS_DATASETS_ERROR](state, reason) {
-    state.userOrganizationLoading = false;
-
-    extractError(this, reason, 'userRecentOrgaDatasetsError');
+    extractError(this, reason, 'userOrgaDatasetsError');
   },
   [UPDATE_METADATA_EDITING](state, payload) {
 /*

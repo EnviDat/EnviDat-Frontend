@@ -57,7 +57,7 @@
                       class="datasetsOverflow px-1"
                       :listContent="filteredUserDatasets"
                       :searchCount="filteredUserDatasets.length"
-                      :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
+                      :mapFilteringPossible="false"
                       :loading="userDatasetsLoading"
                       :placeHolderAmount="placeHolderAmount"
                       @clickedTag="catchTagClicked"
@@ -163,16 +163,16 @@
     <div class="bottomBoard pt-2 pb-4"
          ref="userOrgaDatasets">
 
-      <TitleCard :title="`Datasets of ${usersOrganisationTitle} Organization`"
+      <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
                   :clickCallback="catchRefreshOrgaClick" />
 
-      <MetadataList v-if="hasRecentOrgaDatasets"
+      <MetadataList v-if="hasOrgaDatasets"
                     class="datasetsGrid px-1"
                     :listContent="filteredOrgaDatasets"
                     :searchCount="filteredOrgaDatasets.length"
-                    :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
+                    :mapFilteringPossible="false"
                     :loading="userOrganizationLoading"
                     :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchOrgaTagClicked"
@@ -195,7 +195,7 @@
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 
-      <div v-if="!hasRecentOrgaDatasets"
+      <div v-if="!hasOrgaDatasets"
             class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
@@ -336,8 +336,7 @@ export default {
       'collaboratorDatasets',
       'userOrganizationLoading',
       'userOrganizations',
-      'userRecentOrgaDatasets',
-      'userRecentOrgaDatasetsError',
+      'userOrgaDatasetsError',
       'userDatasets',
       'userDatasetsLoading',
       'userDatasetsError',
@@ -356,11 +355,11 @@ export default {
       return this.userLoading;
     },
     noOrgaDatasetsError() {
-      if (!this.userRecentOrgaDatasetsError) {
+      if (!this.userOrgaDatasetsError) {
         return null;
       }
 
-      const errorDetail = `${this.userRecentOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
+      const errorDetail = `${this.userOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
 
       const notification = errorMessage('Error Loading Datasets From Organization', errorDetail);
       notification.timeout = 0;
@@ -385,11 +384,26 @@ export default {
     hasCollaboratorDatasets() {
       return this.collaboratorDatasets?.length > 0;
     },
-    hasDatasetsInOrganizations() {
-      return this.hasUserDatasets && this.hasRecentOrgaDatasets;
+    hasOrgaDatasets() {
+      return this.userOrgaDatasetList.length > 0;
     },
-    hasRecentOrgaDatasets() {
-      return this.userRecentOrgaDatasets && this.userRecentOrgaDatasets.length > 0;
+    userOrganizationsList() {
+      const keys = Object.keys(this.userOrganizations);
+
+      if (keys.length > 0) {
+        return Object.values(this.userOrganizations);
+      }
+
+      return [];
+    },
+    userOrgaDatasetList() {
+      const datasets = [];
+
+      this.userOrganizationsList.forEach(o => {
+        datasets.push(o.packages);
+      });
+
+      return datasets.flat();
     },
     filteredUserDatasets() {
       const filteredContent = [];
@@ -415,16 +429,16 @@ export default {
     filteredOrgaDatasets() {
       const filteredContent = [];
 
-      if (!this.hasRecentOrgaDatasets) {
+      if (!this.hasOrgaDatasets) {
         return filteredContent;
       }
 
       if (!this.selectedOrgaTagNames || this.selectedOrgaTagNames.length <= 0) {
-        return this.userRecentOrgaDatasets;
+        return this.userOrgaDatasetList;
       }
 
-      for (let i = 0; i < this.userRecentOrgaDatasets.length; i++) {
-        const entry = this.userRecentOrgaDatasets[i];
+      for (let i = 0; i < this.userOrgaDatasetList.length; i++) {
+        const entry = this.userOrgaDatasetList[i];
 
         if (tagsIncludedInSelectedTags(entry.tags, this.selectedOrgaTagNames)) {
           filteredContent.push(entry);
@@ -447,63 +461,23 @@ export default {
 
       return [];
     },
-    editingDatasets() {
-      return [];
-    },
     nameInitials() {
       return getNameInitials(this.user);
     },
-    userOrganizationsList() {
-      const keys = this.userOrganizations ? Object.keys(this.userOrganizations) : null;
-
-      if (keys?.length > 0) {
-        return Object.values(this.userOrganizations);
-      }
-
-      return [];
-    },
     usersOrganisationTitle() {
-      if (this.userOrganizationsList?.length > 0) {
+      if (this.userOrganizationsList?.length === 1) {
         return this.userOrganizationsList[0].display_name;
       }
 
       return 'your Organizations';
     },
-    usersOrganisationRecentDatasets() {
-      const list = this.userOrganizationsList;
-
-      if (list?.length > 0) {
-
-        const datasets = [];
-
-        for (let i = 0; i < list.length; i++) {
-          const orga = list[i];
-          const subList = orga.packages;
-
-          if (subList?.length > 0) {
-            for (let j = 0; j < subList.length; j++) {
-              const dataset = subList[j];
-              datasets.push(dataset);
-
-              if (datasets.length >= this.orgaDatasetsPreview) {
-                break;
-              }
-            }
-          }
-        }
-
-        return datasets;
-      }
-
-      return null;
-    },
     allUserdataTags() {
-      const minTagCount = this.userRecentOrgaDatasets?.length > 50 ? 10 : 1;
+      const minTagCount = this.userDatasets?.length > 50 ? 10 : 1;
 
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
     allUserOrganizationDataTags() {
-      const minTagCount = this.userRecentOrgaDatasets?.length > 50 ? 10 : 1;
+      const minTagCount = this.userOrgaDatasetList?.length > 50 ? 10 : 1;
 
       return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
     },
@@ -511,7 +485,7 @@ export default {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (!this.userOrganizations) {
+      if (this.userOrganizationsList.length <= 0) {
         return null;
       }
 

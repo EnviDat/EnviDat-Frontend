@@ -656,3 +656,13 @@ export function isSysadmin(organizationRoles) {
 export function hasOrganizationRoles(organizationRoles){
   return isMember(organizationRoles) || isEditor(organizationRoles) || isAdmin(organizationRoles) || isSysadmin(organizationRoles);
 }
+
+export function isUserGroupAdmin(userId, organization) {
+
+  if (organization?.users?.length > 0) {
+    const matches = organization.users.filter(user => user.id === userId && user.capacity === 'admin');
+    return matches.length > 0;
+  }
+
+  return false;
+}

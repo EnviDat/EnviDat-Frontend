@@ -31,7 +31,6 @@ import {
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
-  ACTION_USER_ORGANIZATIONS_DATASETS,
   FETCH_USER_DATA,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
@@ -49,9 +48,6 @@ import {
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_DATASETS,
-  USER_GET_ORGANIZATIONS_DATASETS_ERROR,
-  USER_GET_ORGANIZATIONS_DATASETS_SUCCESS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_SUCCESS,
   ACTION_USER_COLLABORATOR_DATASETS,
@@ -156,11 +152,6 @@ export default {
     await axios.get(url)
       .then((response) => {
         commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
-
-        const organizations = this.state.user.userOrganizationNames;
-        if (organizations?.length > 0) {
-          dispatch(USER_GET_ORGANIZATIONS_DATASETS, organizations);
-        }
       })
       .catch((error) => {
         commit(USER_GET_ORGANIZATION_IDS_ERROR, error);
@@ -201,75 +192,6 @@ export default {
       .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
-  },
-  async [USER_GET_ORGANIZATIONS_DATASETS]({ commit }, organizations) {
-    commit(USER_GET_ORGANIZATIONS_DATASETS);
-
-    const actionUrl = ACTION_USER_ORGANIZATIONS_DATASETS();
-    const limit = this.state.user.userRecentOrgaDatasetsLimit;
-
-    let idQuery = 'organization:(';
-    for (let i = 0; i < organizations.length; i++) {
-      idQuery += `"${organizations[i]}",`;
-    }
-    idQuery += ')';
-
-    let url = extractBodyIntoUrl(actionUrl, {
-      q: idQuery,
-      include_private: true,
-      include_drafts: true,
-      rows: limit,
-    });
-
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    await axios.get(url)
-      .then((response) => {
-        if (useTestdata && typeof response.data === 'string') {
-          response.data = JSON.parse(response.data);
-        }
-        commit(USER_GET_ORGANIZATIONS_DATASETS_SUCCESS, response.data.result);
-      })
-      .catch((error) => {
-        commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
-      });
-
-/*
-    const requests = [];
-    for (let i = 0; i < organizations.length; i++) {
-      const name = organizations[i];
-
-      let url = extractBodyIntoUrl(actionUrl, {
-        q: `organization:${name}`,
-        include_private: true,
-        include_drafts: true,
-        rows: limit,
-      });
-
-      url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-      if (useTestdata) {
-        // ignore the parameters for testdata, because it's directly a file
-        url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-      }
-
-      requests.push(axios.get(url));
-    }
-
-    await Promise.all(requests)
-      .then((responses) => {
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          if (useTestdata && typeof response.data === 'string') {
-            response.data = JSON.parse(response.data);
-          }
-          commit(USER_GET_ORGANIZATIONS_DATASETS_SUCCESS, response.data.result);
-        }
-      })
-      .catch((error) => {
-        commit(USER_GET_ORGANIZATIONS_DATASETS_ERROR, error);
-      });
-*/
   },
   // eslint-disable-next-line no-unused-vars
   async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
