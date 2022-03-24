@@ -103,45 +103,55 @@
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
             id="collaboratorPlaceholders"
-            class="datasetsGrid datasetsOverflow"
-            :style="`height: ${collabCardHeight + 30}px;`" >
+            class="datasetsOverflow" >
 
-         <MetadataCardPlaceholder id="orgaDataset"
-                                  class="mx-2"
-                                  v-for="n in orgaDatasetsPreview"
-                                  :key="n"
-                                  :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`" />
+         <v-row no-gutters>
+           <v-col v-for="n in orgaDatasetsPreview"
+                  :key="n"
+                  cols="3"
+                  class="pa-2" >
+
+             <MetadataCardPlaceholder id="orgaDataset"
+                                      :style="`height: ${collabCardHeight}px; `" />
+           </v-col>
+         </v-row>
        </div>
 
        <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
             id="collaboratorDatasetCards"
-            class="datasetsGrid" >
+            class="datasetsOverflow" >
 
-         <MetadataCard v-for="(metadata, index) in collaboratorDatasets"
-                       :key="index"
-                       class="mx-2"
-                       :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`"
-                       :id="metadata.id"
-                       :title="metadata.title"
-                       :subtitle="metadata.notes"
-                       :name="metadata.name"
-                       :titleImg="metadata.titleImg"
-                       :resourceCount="metadata.num_resources"
-                       :fileIconString="fileIconString"
-                       :categoryColor="metadata.categoryColor"
-                       :compactLayout="true"
-                       :state="getMetadataState(metadata)"
-                       showStateOnHover
-                       @clickedEvent="catchMetadataClicked"
-                       @clickedTag="catchTagClicked"
-                       :showGenericOpenButton="!!metadata.openEvent"
-                       :openButtonTooltip="metadata.openButtonTooltip"
-                       :openButtonIcon="metadata.openButtonIcon"
-                       @openButtonClicked="catchEditingClick(metadata.openProperty)"
-         />
+         <v-row no-gutters>
+           <v-col v-for="(metadata, index) in collaboratorDatasets"
+                  :key="index"
+                  cols="3"
+                  class="pa-2" >
+
+             <MetadataCard :style="`height: ${collabCardHeight}px; `"
+                           :id="metadata.id"
+                           :title="metadata.title"
+                           :subtitle="metadata.notes"
+                           :name="metadata.name"
+                           :titleImg="metadata.titleImg"
+                           :resourceCount="metadata.num_resources"
+                           :fileIconString="fileIconString"
+                           :categoryColor="metadata.categoryColor"
+                           :compactLayout="true"
+                           :state="getMetadataState(metadata)"
+                           showStateOnHover
+                           @clickedEvent="catchMetadataClicked"
+                           @clickedTag="catchTagClicked"
+                           :showGenericOpenButton="!!metadata.openEvent"
+                           :openButtonTooltip="metadata.openButtonTooltip"
+                           :openButtonIcon="metadata.openButtonIcon"
+                           @openButtonClicked="catchEditingClick(metadata.openProperty)"
+             />
+           </v-col>
+         </v-row>
+
        </div>
 
-       <div v-if="!hasCollaboratorDatasets"
+       <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && !hasCollaboratorDatasets"
             class="noUserDatasetsGrid px-1">
          <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
 
