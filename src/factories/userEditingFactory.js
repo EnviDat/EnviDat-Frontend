@@ -454,7 +454,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       description: yup.string()
         .required('Description is required')
-        .min(100, 'Please write at least a minimal description with 30 characters.'),
+        .min(100, 'Please write at least a minimal description with 100 characters.'),
     }),
   [EDITMETADATA_KEYWORDS]: () =>
     yup.object().shape({
