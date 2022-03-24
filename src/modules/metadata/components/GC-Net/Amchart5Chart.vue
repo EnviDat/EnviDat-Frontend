@@ -1,6 +1,6 @@
 <template>
 
-  <div id="chartdiv"></div>
+  <div class="chart" :id="this.chartdivID"></div>
 
 </template>
 
@@ -12,11 +12,23 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 
 
 export default {
+
   name: 'Amcharts5',
+
+  props: {
+    chartdivID: {
+      type: String,
+      default: 'chartdiv',
+    },
+    apiUrl: {
+      type: String,
+      default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    },
+  },
 
   mounted() {
 
-    const root = am5.Root.new('chartdiv');
+    const root = am5.Root.new(this.chartdivID);
 
     // Set all dates in root to UTC
     // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
@@ -46,7 +58,6 @@ export default {
           groupData: true,
           groupCount: 500,
           baseInterval: {
-            // timeUnit: 'day',
             timeUnit: 'hour',
             count: 1,
           },
@@ -86,7 +97,7 @@ export default {
     });
 
     // Load and parse external data
-    am5.net.load('https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/').then((result) => {
+    am5.net.load(this.apiUrl).then((result) => {
       // This gets executed when data finishes loading
       series.data.setAll(am5.JSONParser.parse(result.response));
     }).catch((result) => {
@@ -95,9 +106,7 @@ export default {
       console.log(`Error loading ${result.xhr.responseURL}`);
     });
 
-
-
-  // Add cursor
+    // Add cursor
     const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
       xAxis,
     }));
@@ -120,6 +129,11 @@ export default {
     }
   },
 
+  data() {
+    return {
+    };
+  },
+
 }
 </script>
 
@@ -130,7 +144,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
-#chartdiv {
+.chart {
   width: 100%;
   height: 250px;
 }
