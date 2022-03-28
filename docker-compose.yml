@@ -1,9 +1,25 @@
 version: '3'
 
+networks:
+  ckan-internal:
+    external: true
+
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/envidat-frontend:dev-${VERSION}"
+    image: "${INTERNAL_REG}/frontend:local"
+    build:
+      context: .
+      target: local-dev
+      args:
+        INTERNAL_REG: ${INTERNAL_REG}
+        EXTERNAL_REG: ${EXTERNAL_REG}
+        MAINTAINER_APP: ${MAINTAINER_APP}
+        MAINTAINER_CD: ${MAINTAINER_CD}
     container_name: envidat_frontend
     ports:
-      - 8977:80
+      - 8990:8080
+    volumes:
+      - .:/app
+    networks:
+      - ckan-internal
     restart: unless-stopped
