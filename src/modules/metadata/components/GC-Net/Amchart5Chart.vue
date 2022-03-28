@@ -24,6 +24,10 @@ export default {
       type: String,
       default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     },
+    xAxisName: {
+      type: String,
+      default: 'timestamp',
+    },
   },
 
   mounted() {
@@ -83,8 +87,8 @@ export default {
           connect: false,
           xAxis,
           yAxis,
-          valueYField: 'windspeed1',
-          valueXField: 'timestamp_iso',
+          valueYField: 'windspeed1', // TODO implement logic for valueYField, eventually this should handle multiple y axis series
+          valueXField: this.xAxisName,
           // TODO get series tooltip to work
           // tooltip: am5.Tooltip.new(root, {
           //   labelText: '{valueY}',
@@ -143,45 +147,59 @@ export default {
       templateField: 'strokeSettings',
     });
 
-    // TODO implement logic to distinguish between loading JSON and CSV data
-    // This block loads JSON data
-    // Load and parse external data
-    // am5.net.load(this.apiUrl).then((result) => {
-    //   series.data.setAll(am5.JSONParser.parse(result.response));
-    // }).catch((result) => {
-    //   console.log(`Error loading ${result.xhr.responseURL}`);
-    // });
 
-
-    // This block loads CSV data
     // Load and parse external data
     am5.net.load(this.apiUrl).then((result) => {
-      
-      // Parse data
-      const data = am5.CSVParser.parse(result.response, {
-        delimiter: ',',
-        reverse: true,
-        skipEmpty: true,
-        useColumnNames: true,
-      });
 
-      // Process data
-      const processor = am5.DataProcessor.new(root, {
-        dateFields: ['timestamp_iso'],
-        dateFormat: "yyyy-MM-dd H:m:s'+00:00'",
-        numericFields: ['windspeed1'],
-      });
-      processor.processMany(data);
+      // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
+      const responseType = this.getResponseType(result.type)
 
-      // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+      // Parse JSON input, set series with data
+      if (responseType === 'application/json') {
 
-      // Use parsed/processed data
-      series.data.setAll(data);
+        // Set x axis to 'timestamp'
+        // TODO implement logic to determine timestamp format, check if JSON will only accept unix format
+        series.set('valueXField', 'timestamp')
+
+        // Assign parsed data to series
+        series.data.setAll(am5.JSONParser.parse(result.response));
+
+      }
+
+      // Parse CSV input, set series with data
+      else if (responseType === 'text/csv') {
+
+        // Set x axis to 'timestamp_iso'
+        // TODO implement logic to determine timestamp format
+        series.set('valueXField', 'timestamp_iso')
+
+        // Parse data
+        const data = am5.CSVParser.parse(result.response, {
+          delimiter: ',',
+          reverse: true,
+          skipEmpty: true,
+          useColumnNames: true,
+        });
+
+        // Process data
+        const processor = am5.DataProcessor.new(root, {
+          dateFields: ['timestamp_iso'],
+          dateFormat: "yyyy-MM-dd H:m:s'+00:00'",
+          numericFields: ['windspeed1'], // TODO implement logic to determine numericFields for CSV parsing
+        });
+        processor.processMany(data);
+
+        // Assign parsed/processed data to series
+        series.data.setAll(data);
+
+      }
+
+      // TODO implement further error handling in case responseType is not an expected string indicating json or csv
+      // else {
+      // }
 
     }).catch((result) => {
-      // This gets executed if there was an error loading URL
-      // ... handle error
-      console.log(`Error loading ${  result.xhr.responseURL}`);
+      console.log(`Error loading ${result.xhr.responseURL}`);
     });
 
     // Add cursor
@@ -207,9 +225,11 @@ export default {
     }
   },
 
-  data() {
-    return {
-    };
+  methods: {
+    // Return responseType 'type' from result object (only string parsed to first comma)
+    getResponseType(resultType) {
+      return resultType.split(',')[0];
+    },
   },
 
 }

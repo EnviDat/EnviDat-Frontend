@@ -50,61 +50,61 @@ export const Amcharts5SingleChart = () => ({
   },
   data: () => ({
     chartdiv: 'chartdiv1',
-    // apiUrl: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
-    apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/windspeed1/end/-999/2020-11-04/2020-11-06/',
+    // apiUrl: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1,timestamp/2018-11-04T17:00:00/2020-11-10T00:00:00/', // result.type: application/json, application/json; charset=utf-8
+    apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/windspeed1/end/-999/2020-11-04/2020-11-06/', // result.type: text/csv, application/json; charset=utf-8
   }),
 });
 
 
 // TODO reimplement this story after logic fixed in Amcharts5Chart.vue to handle CSV versus JSON data
-// export const Amcharts5MultipleCharts = () => ({
-//   components: { Amcharts5 },
-//   parameters: {
-//     chromatic: { disableSnapshot: false },
-//   },
-//   template: `
-//     <div>
-//       <v-col class="chromatic-ignore">
-//
-//         <v-row class="py-3" >
-//           AmCharts5 testing with 3 charts
-//         </v-row>
-//
-//         <v-row style="border: solid 1px;"
-//                no-gutters>
-//           <v-col >
-//             <Amcharts5 :chartdivID="this.chartdiv1"
-//                        :apiUrl="this.apiUrl1"   />
-//           </v-col>
-//         </v-row>
-//
-//         <v-row style="border: solid 1px;"
-//                no-gutters>
-//           <v-col >
-//             <Amcharts5 :chartdivID="this.chartdiv2"
-//                        :apiUrl="this.apiUrl2"   />
-//           </v-col>
-//         </v-row>
-//
-//         <v-row style="border: solid 1px;"
-//                no-gutters>
-//           <v-col >
-//             <Amcharts5 :chartdivID="this.chartdiv3"
-//                        :apiUrl="this.apiUrl3"   />
-//           </v-col>
-//         </v-row>
-//
-//       </v-col>
-//     </div>
-//     `,
-//   computed: {
-//   },
-//   data: () => ({
-//     chartdiv1: 'chartdiv1',
-//     apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
-//     chartdiv2: 'chartdiv2',
-//     apiUrl2: 'https://www.envidat.ch/data-api/gcnet/json/neem/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
-//     chartdiv3: 'chartdiv3',
-//     apiUrl3: 'https://www.envidat.ch/data-api/gcnet/json/dye2/airtemp1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
-//   }),
-// });
+export const Amcharts5MultipleCharts = () => ({
+  components: { Amcharts5 },
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  template: `
+    <div>
+      <v-col class="chromatic-ignore">
+
+        <v-row class="py-3" >
+          AmCharts5 testing with 3 charts
+        </v-row>
+
+        <v-row style="border: solid 1px;"
+               no-gutters>
+          <v-col >
+            <Amcharts5 :chartdivID="this.chartdiv1"
+                       :apiUrl="this.apiUrl1"   />
+          </v-col>
+        </v-row>
+
+        <v-row style="border: solid 1px;"
+               no-gutters>
+          <v-col >
+            <Amcharts5 :chartdivID="this.chartdiv2"
+                       :apiUrl="this.apiUrl2"   />
+          </v-col>
+        </v-row>
+
+        <v-row style="border: solid 1px;"
+               no-gutters>
+          <v-col >
+            <Amcharts5 :chartdivID="this.chartdiv3"
+                       :apiUrl="this.apiUrl3"   />
+          </v-col>
+        </v-row>
+
+      </v-col>
+    </div>
+    `,
+  computed: {
+  },
+  data: () => ({
+    chartdiv1: 'chartdiv1',
+    apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    chartdiv2: 'chartdiv2',
+    apiUrl2: 'https://www.envidat.ch/data-api/gcnet/json/neem/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    chartdiv3: 'chartdiv3',
+    apiUrl3: 'https://www.envidat.ch/data-api/gcnet/json/dye2/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+  }),
+});
