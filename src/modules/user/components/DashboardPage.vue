@@ -108,7 +108,7 @@
          <v-row no-gutters>
            <v-col v-for="n in orgaDatasetsPreview"
                   :key="n"
-                  cols="3"
+                  cols="2"
                   class="pa-2" >
 
              <MetadataCardPlaceholder id="orgaDataset" />
@@ -123,7 +123,7 @@
          <v-row no-gutters>
            <v-col v-for="(metadata, index) in collaboratorDatasets"
                   :key="index"
-                  cols="3"
+                  cols="2"
                   class="pa-2" >
 
              <MetadataCard :style="`height: ${collabCardHeight}px; `"
