@@ -4,7 +4,7 @@ FROM ${INTERNAL_REG}/debian:bullseye as certs
 
 
 
-FROM node:16 AS base
+FROM ${EXTERNAL_REG}/node:16 AS base
 ARG APP_VERSION
 ARG MAINTAINER_APP
 ARG MAINTAINER_CD
@@ -27,13 +27,12 @@ ENV NODE_ENV production
 RUN npm run build -- --mode $NODE_ENV
 
 
-FROM nginx:1.21-alpine as prod
+FROM ${EXTERNAL_REG}/nginx:1.21-alpine as prod
 # CA-Certs
 COPY --from=certs \
     /etc/ssl/certs/ca-certificates.crt \
     /etc/ssl/certs/ca-certificates.crt
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 WORKDIR /usr/share/nginx/html
 # Remove default Nginx static assets
 RUN rm -rf ./* /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf
