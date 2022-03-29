@@ -113,7 +113,6 @@ import NotificationCard from '@/components/Cards/NotificationCard';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
-const creationSteps = initializeSteps(metadataCreationSteps);
 
 export default {
   name: 'MetadataEditPage',
@@ -135,6 +134,8 @@ export default {
     });
   },
   created() {
+    this.creationSteps = initializeSteps(metadataCreationSteps);
+
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
@@ -267,6 +268,9 @@ export default {
       if (readOnlyObj) {
         this.updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
       }
+
+      const stepKey = getStepFromRoute(this.$route);
+      this.updateStepStatus(stepKey, this.creationSteps);
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
@@ -445,7 +449,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    creationSteps,
+    creationSteps: null,
     errorTitle: null,
     errorMessage: null,
     errorColor: 'error',
