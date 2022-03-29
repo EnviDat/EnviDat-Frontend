@@ -26,7 +26,11 @@ export default {
     },
     xAxisName: {
       type: String,
-      default: 'timestamp',
+      default: 'timestamp_iso',
+    },
+    xAxisFormat: {
+      type: String,
+      default: "yyyy-MM-dd H:m:s'+00:00'",
     },
   },
 
@@ -66,7 +70,7 @@ export default {
             count: 1,
           },
           renderer: am5xy.AxisRendererX.new(root, {
-            minGridDistance: 50,
+            // minGridDistance: 50,
           }),
           tooltip: am5.Tooltip.new(root, {}),
         })
@@ -89,36 +93,11 @@ export default {
           yAxis,
           valueYField: 'windspeed1', // TODO implement logic for valueYField, eventually this should handle multiple y axis series
           valueXField: this.xAxisName,
-          // TODO get series tooltip to work
-          // tooltip: am5.Tooltip.new(root, {
-          //   labelText: '{valueY}',
-          // }),
           tooltip: am5.Tooltip.new(root, {}),
-          // tooltip: am5.Tooltip.new(root, {
-          //   pointerOrientation: 'horizontal',
-          //   labelText: '{valueYField}: {valueY}',
-          // }),
-          // tooltip: am5.Tooltip.new(root, {
-          //   pointerOrientation: 'horizontal',
-          //   labelText: '{valueY}',
-          // }),
         })
     );
 
-    // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
-
-
-    // const tooltip = am5.Tooltip.new(root, {
-    //   // getFillFromSprite: false,
-    //   labelText: '{valueYField}: {valueY}',
-    // });
-    //
-    // // tooltip.get('background').setAll({
-    // //   fill: am5.color(0xffffff),
-    // //   fillOpacity: 0.8,
-    // // });
-    //
-    // series.set('tooltip', tooltip);
+    series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
 
     // series.bullets.push(() => am5.Bullet.new(root, {
     //     sprite: am5.Circle.new(root, {
@@ -154,24 +133,37 @@ export default {
       // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
       const responseType = this.getResponseType(result.type)
 
+      // Logging used for development
+      // console.log(result)
+      // console.log(result.response)
+
+      // TODO extract out JSON and CSV parsing and assigning data to series to separate function
+
       // Parse JSON input, set series with data
       if (responseType === 'application/json') {
 
-        // Set x axis to 'timestamp'
-        // TODO implement logic to determine timestamp format, check if JSON will only accept unix format
-        series.set('valueXField', 'timestamp')
-
+        // Block used when parsing JSON dat without DataProcessor
         // Assign parsed data to series
-        series.data.setAll(am5.JSONParser.parse(result.response));
+        // series.data.setAll(am5.JSONParser.parse(result.response));
+
+        // Parse data
+        const data = am5.JSONParser.parse(result.response);
+
+        // Process data
+        const processor = am5.DataProcessor.new(root, {
+          dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
+          dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
+          numericFields: ['windspeed1'], // TODO implement logic to determine numericFields for JSON parsing
+        });
+        processor.processMany(data);
+
+        // Assign parsed/processed data to series
+        series.data.setAll(data);
 
       }
 
       // Parse CSV input, set series with data
       else if (responseType === 'text/csv') {
-
-        // Set x axis to 'timestamp_iso'
-        // TODO implement logic to determine timestamp format
-        series.set('valueXField', 'timestamp_iso')
 
         // Parse data
         const data = am5.CSVParser.parse(result.response, {
@@ -183,14 +175,17 @@ export default {
 
         // Process data
         const processor = am5.DataProcessor.new(root, {
-          dateFields: ['timestamp_iso'],
-          dateFormat: "yyyy-MM-dd H:m:s'+00:00'",
+          dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
+          dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
           numericFields: ['windspeed1'], // TODO implement logic to determine numericFields for CSV parsing
         });
         processor.processMany(data);
 
         // Assign parsed/processed data to series
         series.data.setAll(data);
+
+        // TODO investigate why tooltip only working for JSON data and not CSV data
+        // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
 
       }
 
