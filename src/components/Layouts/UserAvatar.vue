@@ -65,10 +65,11 @@ export default {
   },
   computed: {
     showGravatar() {
-      return !this.gravatarNotLoaded;
+      // return !this.gravatarNotLoaded;
+      return false;
     },
     showAvaaatarIcons() {
-      return this.emailHash && !this.showGravatar;
+      return this.emailHash;
     },
     showInitials() {
       return !this.emailHash && !this.showGravatar && this.nameInitials;

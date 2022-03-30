@@ -11,7 +11,10 @@
         <v-img :height="headerHeight"
                 :width="width"
                 style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
-                :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`" />
+               :src="userCardBanner" />
+
+<!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
+        -->
       </div>
 
       <div class="title black--text mx-auto pt-8">
@@ -66,6 +69,7 @@
 */
 import UserAvatar from '@/components/Layouts/UserAvatar';
 
+
 export default {
   name: 'UserCard',
   components: {
@@ -90,6 +94,14 @@ export default {
     avatarHeight: 64,
   }),
   computed: {
+    userCardBanner() {
+      if (this.$store) {
+        const imgPath = 'projects/data_creator';
+        return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      }
+
+      return '';
+    },
     headerHeight() {
       return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;
     },
