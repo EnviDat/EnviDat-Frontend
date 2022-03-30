@@ -83,15 +83,12 @@
                   locale="en-in"
                   :readonly="mixinMethods_isFieldReadOnly('dateStart')"
                   :hint="mixinMethods_readOnlyHint('dateStart')"
-                  :max="reformatDate(item.dateEnd)"
                   @input="dateChanged(index, 'dateStart', $event)"
                   scrollable
                   no-title
                   next-icon="skip_next"
                   prev-icon="skip_previous"
                   />
-
-<!--                :value="reformatDate(item.dateStart)"-->
 
               </v-menu>
             </template>
@@ -124,15 +121,23 @@
                   locale="en-in"
                   :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
                   :hint="mixinMethods_readOnlyHint('dateEnd')"
-                  :min="reformatDate(item.dateStart)"
                   @input="dateChanged(index, 'dateEnd', $event)"
                   scrollable
                   no-title
                   next-icon="skip_next"
                   prev-icon="skip_previous"
-                />
-
-<!--                :value="reformatDate(item.dateEnd)"-->
+                >
+                  <div class="px-4"
+                       style="cursor: pointer;"
+                       @click="clearDate(index, 'dateEnd')">
+                    {{ labels.clearEndDate }}
+                  </div>
+                  <BaseIconButton materialIconName="clear"
+                                  iconColor="red"
+                                  tooltipText="Clear the End Date"
+                                  @clicked="clearDate(index, 'dateEnd')"
+                  />
+                </v-date-picker>
 
               </v-menu>
             </template>
@@ -239,6 +244,7 @@ import {
 
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'EditDataInfo',
@@ -329,6 +335,13 @@ export default {
     },
   },
   methods: {
+    getIsoDate(index, property) {
+      if (this.isoDates?.length > 0) {
+        return this.isoDates[index][property] || null;
+      }
+
+      return null;
+    },
     getLicenseById(id) {
       if (!id) {
         return null;
@@ -434,9 +447,13 @@ export default {
       const [day, month, year] = date.split('.');
       return `${year}-${month}-${day}`;
     },
+    clearDate(index, property) {
+      this.dateChanged(index, property, null);
+    },
   },
   components: {
     BaseStatusLabelView,
+    BaseIconButton,
   },
   data: () => ({
     validationErrors: {
@@ -450,7 +467,7 @@ export default {
     labels: {
       cardTitle: 'Additional Information about the Resources',
       instructions:
-        'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
+        'Please select dates for collection and/or creation dates. Dates are in "DD.MM.YYYY" format.',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
@@ -466,6 +483,7 @@ export default {
       dataLicenseSummary: 'Click here to view Data License Summary',
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
+      clearEndDate: 'Clear the End Date',
     },
     dateStartPickerOpen: false,
     dateEndPickerOpen: false,

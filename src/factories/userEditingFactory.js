@@ -404,10 +404,18 @@ yup.addMethod(yup.date, 'parseDateString', function (dateStringFormat='dd.MM.yyy
   // Helper function for yup date string parsing
   // eslint-disable-next-line func-names
   return this.transform((value, originalValue) => {
-    if (originalValue === '') {
+    if (!originalValue) {
       return null
     }
 
+/*    console.log(value);
+
+    if (this.isType(value)) return value;
+
+    value = parse(originalValue, dateStringFormat, new Date());
+
+    return isDate(value) ? value : originalValue;
+    */
     return parse(originalValue, dateStringFormat, new Date());
   });
 });
@@ -425,6 +433,9 @@ yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndFi
       dateStart : parse(dateStart, 'dd.MM.yyyy', new Date());
 
       const dateEnd = options.parent[dateEndField]
+      if (!dateEnd) {
+        return true;
+      }
 
       const parsedEnd = isDate(dateEnd) ?
       dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
