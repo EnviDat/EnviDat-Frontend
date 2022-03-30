@@ -377,10 +377,10 @@ export default {
 
       if (this.validateProperty('keywords', cleanedKeywords)) {
         this.setKeywords('keywords', cleanedKeywords);
-      } else {
-        // clear the preview immediately to show the existing keywords
-        this.previewKeywords = [];
       }
+      // DO NOT clear the preview because than the user isn't able to remove the 5th and add a new 5th keyword
+      // this lead to a UX where the user had to add a 6th keyword first and then remove an existing one
+
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
