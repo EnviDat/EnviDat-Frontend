@@ -47,7 +47,7 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.get(url)
+    await axios.get(url, { withCredentials: true })
         // await axios({ method, url, body })
         .then((response) => {
           if (payload.commit) {
