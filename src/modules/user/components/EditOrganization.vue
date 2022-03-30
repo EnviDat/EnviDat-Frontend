@@ -34,18 +34,34 @@
 
       </v-row>
 
+      <v-row no-gutters align="center" >
+        <v-col class="pt-2 text-body-1">
+          Changing the Organization of a datasets is for now not possible.
+          <br>
+          Contact the Envidat team for support to make such a change.
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col>
 
-          <v-text-field v-if="userOrganizationsCount === 1"
-                        :value="selectedOrganization.title"
-                        outlined
+<!--          v-if="!userIsPartOfSelectedOrganization"-->
+
+
+
+<!--          <v-text-field outlined
                         readonly
                         hint='This field is "readonly" because you belong to only one organization.'
                         :error-messages="validationErrors.organizationId"
                         >
-          </v-text-field>
+            -->
+            <MetadataOrganizationChip :organization="selectedOrganization.title" />
 
+<!--
+          </v-text-field>
+-->
+
+<!--
           <v-select     v-else
                         @input="setOrganization($event)"
                         :value="selectedOrganization"
@@ -62,6 +78,7 @@
                         >
 
          </v-select>
+-->
 
         </v-col>
       </v-row>
@@ -112,6 +129,7 @@ import {
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 
 export default {
   name: 'EditOrganization',
@@ -193,6 +211,14 @@ export default {
     },
     previewOrganization() {
       return this.previewOrganizationId || this.organizationId;
+    },
+    userIsPartOfSelectedOrganization(){
+      if (!!this.selectedOrganization?.id && this.userOrganizationsList?.length > 0) {
+        const matched = this.userOrganizationsList.filter(x => x.id === this.selectedOrganization.id)[0];
+        return !!matched;
+      }
+
+      return false;
     },
     selectedOrganization () {
       // Get organization title, filtering userOrganizationsList by organizationId prop
@@ -278,6 +304,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
+    MetadataOrganizationChip,
   },
 };
 

@@ -1,5 +1,5 @@
 <template>
-  <v-chip class="organizationChip text--black px-1"
+  <v-chip class="organizationChip text--black px-2"
           :outlined="!showContent"
           color="black"
           @mouseover="hover = true"
@@ -14,7 +14,7 @@
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
-
+      
       <span>{{ toolTipText }}</span>
     </v-tooltip>
 
