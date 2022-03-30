@@ -374,7 +374,23 @@ export default {
       const stepData = this.getGenericPropsForStep(step.key);
 
       if (this.updateStepValidation(step, stepData)) {
-        this.updateStepCompleted(step, stepData);
+
+        if (!step.error && step.detailSteps?.length > 0) {
+          const anyErrors = step.detailSteps.filter(s => !!s.error);
+
+/*
+          const firstStepWithErrors = anyErrors[0];
+
+          let mainErrorMsg = '';
+          if (firstStepWithErrors?.error) {
+            mainErrorMsg = `"${firstStepWithErrors.title}" has an error: ${firstStepWithErrors.error}`;
+          }
+*/
+
+          step.error = anyErrors[0]?.error ? 'Detail step has an error' : null;
+        } else {
+          this.updateStepCompleted(step, stepData);
+        }
       }
     },
     updateStepCompleted(step, stepData) {

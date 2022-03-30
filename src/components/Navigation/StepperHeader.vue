@@ -25,8 +25,21 @@
                                    border: solid black ${stepColor === 'white' ? 1 : 0}px;`"
                           @click="catchStepClick(step)"
                           >
+<!--            <v-container fluid class="pa-0">
+            <v-row no-gutters>
+              <v-col class=""
+                      :cols="step.error ? 4 : undefined">
+                {{ step.title }}
+              </v-col>
+              <v-col v-if="step.error"
+                     class="">
+                <small>{{ step.error }}</small>
+              </v-col>
+            </v-row>
+            </v-container>-->
             {{ step.title }}
             <div v-if="step.error" ><small>{{ step.error }}</small></div>
+
           </v-stepper-step>
 
           <v-divider v-if="index !== (steps.length - 1)"
