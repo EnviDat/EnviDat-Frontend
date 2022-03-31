@@ -42,26 +42,38 @@
         </v-col>
       </v-row>
 
+      <v-row >
+        <v-col>
+
+          <v-text-field outlined
+                        prepend-icon="home_filled"
+                        :value="selectedOrganization.title"
+                        readonly
+                        hint='This field is "readonly" because you belong to only one organization.'
+                        :error-messages="validationErrors.organizationId"
+                        />
+        </v-col>
+
+        <v-col >
+          <MetadataOrganizationChip :organization="selectedOrganization.title" />
+        </v-col>
+      </v-row>
+
+
+<!--
       <v-row>
         <v-col>
 
-<!--          v-if="!userIsPartOfSelectedOrganization"-->
-
-
-
-<!--          <v-text-field outlined
+          <v-text-field v-if="!userIsPartOfSelectedOrganization"
+                        outlined
                         readonly
                         hint='This field is "readonly" because you belong to only one organization.'
                         :error-messages="validationErrors.organizationId"
                         >
-            -->
             <MetadataOrganizationChip :organization="selectedOrganization.title" />
 
-<!--
           </v-text-field>
--->
 
-<!--
           <v-select     v-else
                         @input="setOrganization($event)"
                         :value="selectedOrganization"
@@ -78,10 +90,10 @@
                         >
 
          </v-select>
--->
 
         </v-col>
       </v-row>
+-->
 
     </v-container>
   </v-card>
@@ -105,9 +117,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  mapState,
-} from 'vuex';
+import { mapState } from 'vuex';
 
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -297,8 +307,8 @@ export default {
       organizationId: null,
     },
     emptySelection: {
-      'id': '',
-      'title': '',
+      id: '',
+      title: '',
     },
     previewOrganizationId: '',
   }),
