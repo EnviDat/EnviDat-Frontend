@@ -228,10 +228,10 @@ export default {
       return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
     },
     keywordsCountMin() {
-      return this.config?.userEditMetadataConfig.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
+      return this.config?.userEditMetadataConfig?.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
     },
     keywordsListWordMax() {
-      return this.config?.userEditMetadataConfig.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
+      return this.config?.userEditMetadataConfig?.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
     },
     keywordsField: {
       get() {

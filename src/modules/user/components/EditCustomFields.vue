@@ -171,7 +171,7 @@ export default {
       'config',
     ]),
     maxCustomFields() {
-      return this.config?.userEditMetadataConfig.customFieldsMax || this.defaultUserEditMetadataConfig.customFieldsMax;
+      return this.config?.userEditMetadataConfig?.customFieldsMax || this.defaultUserEditMetadataConfig.customFieldsMax;
     },
     customFieldsProp: {
       get() {

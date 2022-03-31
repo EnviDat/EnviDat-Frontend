@@ -455,7 +455,7 @@ export default {
 
       const tags = response.data.result;
 
-      const keywordsListWordMax = userEditMetadataConfig.keywordsListWordMax || 2;
+      const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
       const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
       const keywordObjects = getKeywordObjects(filteredTags);
