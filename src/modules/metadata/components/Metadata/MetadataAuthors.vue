@@ -36,7 +36,7 @@
                   cols="12" sm="6"
                   class="pa-2" >
 
-            <author-card :author="author"
+            <AuthorCard :author="author"
                           :authorDetailsConfig="authorDetailsConfig"
                           :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
                           :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
