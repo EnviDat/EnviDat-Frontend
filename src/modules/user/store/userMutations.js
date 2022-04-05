@@ -39,6 +39,9 @@ import {
   SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
 
+import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -312,6 +315,11 @@ export default {
     const orgaId = payload.id;
 
     if (payload?.packages.length > 0) {
+
+      const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
+
+      payload.packages = enhanceTagsOrganizationDatasetFromAllDatasets(payload.packages, metadataContents);
+
       payload.packages = enhanceMetadataFromCategories(this, payload.packages);
 
       const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;

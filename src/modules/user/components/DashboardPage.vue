@@ -477,7 +477,7 @@ export default {
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
     allUserOrganizationDataTags() {
-      const minTagCount = this.userOrgaDatasetList?.length > 50 ? 10 : 1;
+      const minTagCount = this.userOrgaDatasetList?.length > 50 ? 3 : 2;
 
       return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
     },
@@ -553,7 +553,10 @@ export default {
         tag.color = getTagColor(this.categoryCards, tag.name);
       }
 
-      return tags.slice(0, maxTagAmount);
+      tags = tags.slice(0, maxTagAmount);
+      tags = tags.sort((a, b) => a.count < b.count ? 1 : -1);
+      
+      return tags;
     },
     getMetadataState(metadata) {
       return getMetadataVisibilityState(metadata);
