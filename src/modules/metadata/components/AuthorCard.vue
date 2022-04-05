@@ -85,13 +85,13 @@
           </v-col>
         </v-row>
 
-        <data-credit-layout v-if="authorDetailsConfig.showDataCredits"
-                            class="px-0 py-1 readableText"
-                            :dataCredit="author.dataCredit"
-                            :badgesLabel="dataCreditBadgeLabel"
-                            :iconColor="dark ? 'white' : 'black'"
-                            :badgeColor="dark ? 'white' : darkColor"
-                            :dark="!dark" />
+        <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
+                          class="px-0 py-1 readableText"
+                          :dataCredit="author.dataCredit"
+                          :badgesLabel="dataCreditBadgeLabel"
+                          :iconColor="dark ? 'white' : 'black'"
+                          :badgeColor="dark ? 'white' : darkColor"
+                          :dark="!dark" />
 
         <v-row v-if="authorDetailsConfig.showDataCreditScore"
                 no-gutters

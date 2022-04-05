@@ -139,6 +139,13 @@ export default {
 
       return this.authors;
     },
+    authorsMap() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      }
+
+      return null;
+    },
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
@@ -154,8 +161,16 @@ export default {
       };
     },
     authorListingGenericProps() {
+
+      const authorsMap = this.authorsMap;
+      let authors = this.authorsWrap;
+
+      if (authorsMap) {
+        authors = authors.map(author => authorsMap[author.email])
+      }
+
       return {
-        authors: this.authorsWrap,
+        authors,
         existingAuthors: this.existingAuthorsWrap,
         authorDetailsConfig: {
           showDatasetCount: false,
