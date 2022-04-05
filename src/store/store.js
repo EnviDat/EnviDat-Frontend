@@ -13,13 +13,6 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import VuexPersist from 'vuex-persist';
-
-import {
-  decryptString,
-  encryptString,
-  GetEncryptedKeyFromCookie,
-} from '@/factories/stringFactory';
 
 import { about } from '@/modules/about/store/aboutStore';
 import { projects } from '@/modules/projects/store/projectsStore';
@@ -40,10 +33,7 @@ import {
 } from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
-import {
-  ENVIDAT_USER_SIGNIN_COOKIE,
-  ENVIDAT_USER_SIGNIN_MODULE,
-} from '@/store/storeConsts';
+import localStoragePlugin from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
@@ -91,74 +81,64 @@ const initialState = {
   maxNotifications: 6,
 };
 
+const modules = {
+  metadata,
+  about,
+  projects,
+  geoservices,
+  user,
+  userSignIn,
+  organizations,
+};
 
-const cookieName = ENVIDAT_USER_SIGNIN_COOKIE;
-const storageKey = ENVIDAT_USER_SIGNIN_MODULE;
-const encryptedKey = GetEncryptedKeyFromCookie(cookieName);
-
-// define the localStorage methods
-const vuexLocal = new VuexPersist({
-  storage: {
-    getItem: () => {
-      // Get the store from local storage.
-      const store = window.localStorage.getItem(storageKey);
-
-      if (store) {
-        try {
-          // Decrypt the store retrieved from local storage
-          return decryptString(store, encryptedKey);
-        } catch (e) {
-          // The store will be reset if decryption fails.
-          window.localStorage.removeItem(storageKey);
-        }
-      }
-
-      return null;
+function createStore() {
+  return new Vuex.Store({
+    strict: true,
+    state: initialState,
+    getters: {
+      currentPage: state => state.currentPage,
+      appBGImage: state => state.appBGImage,
+      cardBGImages: state => state.cardBGImages,
+      iconImages: state => state.iconImages,
+      aboutText: state => state.aboutText,
+      categoryCards: state => state.categoryCards,
+      defaultControls: state => state.defaultControls,
+      appScrollPosition: state => state.appScrollPosition,
+      browseScrollPosition: state => state.browseScrollPosition,
+      outdatedVersion: state => state.outdatedVersion,
+      newVersion: state => state.newVersion,
+      config: state => state.config,
+      notifications: state => state.notifications,
+      maxNotifications: state => state.maxNotifications,
     },
-    setItem: (key, value) => {
-      // Encrypt the store using our encryption token stored in cookies.
-      const store = encryptString(value, encryptedKey);
+    mutations,
+    actions,
+    modules,
+    plugins: [localStoragePlugin.plugin],
+  });
+}
 
-      // Save the encrypted store in local storage.
-      return window.localStorage.setItem(storageKey, store);
-    },
-    removeItem: () => window.localStorage.removeItem(storageKey),
-  },
-  modules: ['userSignIn'],
-});
+// eslint-disable-next-line import/no-mutable-exports
+let store = null;
 
-const store = new Vuex.Store({
-  strict: true,
-  state: initialState,
-  getters: {
-    currentPage: state => state.currentPage,
-    appBGImage: state => state.appBGImage,
-    cardBGImages: state => state.cardBGImages,
-    iconImages: state => state.iconImages,
-    aboutText: state => state.aboutText,
-    categoryCards: state => state.categoryCards,
-    defaultControls: state => state.defaultControls,
-    appScrollPosition: state => state.appScrollPosition,
-    browseScrollPosition: state => state.browseScrollPosition,
-    outdatedVersion: state => state.outdatedVersion,
-    newVersion: state => state.newVersion,
-    config: state => state.config,
-    notifications: state => state.notifications,
-    maxNotifications: state => state.maxNotifications,
-  },
-  mutations,
-  actions,
-  modules: {
-    metadata,
-    about,
-    projects,
-    geoservices,
-    user,
-    userSignIn,
-    organizations,
-  },
-  plugins: [vuexLocal.plugin],
-});
+try {
+  store = createStore();
+} catch (e) {
+  if (e instanceof SyntaxError) {
+    // if there is an error for the initial loading
+    // Syntax Error from parsing the json
+
+    console.log('restoreState error');
+    console.log(e);
+
+    // clear it to make sure the app boots with a clean state
+    window.localStorage.clear()
+
+    console.info('cleared local storage');
+
+    store = createStore();
+  }
+}
 
 
 if (process.env.NODE_ENV === 'test') {
