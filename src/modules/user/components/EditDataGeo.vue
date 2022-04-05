@@ -55,7 +55,7 @@
                                    :disabled="!undoButtonEnabled"
                                    buttonText="Undo Changes"
                                    tooltipText="Reset to original geometry"
-                                   tooltipPosition="left"
+                                   tooltipPosition="top"
                                    @clicked="revertGeometriesInMetadata" />
             </v-col>
 
@@ -65,6 +65,8 @@
                                    :disabled="!saveButtonEnabled"
                                    :loading="saveButtonInProgress"
                                    buttonText="Save Geometries"
+                                   tooltipText="Save the geometry"
+                                   tooltipPosition="top"
                                    @clicked="updateGeometriesInMetadata" />
             </v-col>
           </v-row>
