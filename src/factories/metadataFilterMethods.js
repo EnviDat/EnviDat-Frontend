@@ -140,3 +140,17 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
 
   return cleandAndCounted;
 }
+
+export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatasets, datasetMap) {
+
+  for (let i = 0; i < organizationDatasets.length; i++) {
+    const orgaDataset = organizationDatasets[i];
+
+    const dataset = datasetMap[orgaDataset.id];
+    if (dataset) {
+      orgaDataset.tags = dataset.tags;
+    }
+  }
+
+  return organizationDatasets;
+}
