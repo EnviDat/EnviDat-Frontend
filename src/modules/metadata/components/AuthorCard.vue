@@ -156,8 +156,7 @@
                 no-gutters
                 align="start">
 
-          <v-col v-if="author.email && !authorIsDead"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6" >
             <v-row no-gutters>
               <v-col cols="12"
@@ -176,14 +175,13 @@
             </v-row>
           </v-col>
 
-          <v-col v-if="author.id && author.id.identifier"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6" >
             <v-row no-gutters>
               <v-col cols="12"
                       class="authorInfoLabel py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
-                {{ author.id.type ? author.id.type : idLabel }}
+                {{ idLabel }}
               </v-col>
 
               <v-col cols="12"
@@ -202,8 +200,7 @@
             </v-row>
           </v-col>
 
-          <v-col v-if="author.affiliation"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6">
             <v-row no-gutters>
               <v-col cols="12"
@@ -439,9 +436,17 @@ export default {
       this.$refs.progressTrack.setAttribute('style', style);
     },
     isOrcId(id) {
+      if (!id) {
+        return false
+      }
+
       return id.match(RegExp(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g));
     },
     formatIdentifier(id) {
+      if (!id) {
+        return ''
+      }
+
       if (id.includes('https://')) {
         const splits = id.split('/');
         return splits[splits.length - 1];
