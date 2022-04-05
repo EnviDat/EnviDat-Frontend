@@ -87,7 +87,10 @@ import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditRelatedDatasets',

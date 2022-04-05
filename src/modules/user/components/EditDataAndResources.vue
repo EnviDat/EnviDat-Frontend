@@ -138,7 +138,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';

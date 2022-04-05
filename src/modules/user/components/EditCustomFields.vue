@@ -101,9 +101,12 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  deleteEmptyObject,
   getValidationMetadataEditingObject,
   isArrayValid,
+} from '@/factories/userEditingValidations';
+
+import {
+  deleteEmptyObject,
   isMaxLength,
   isObjectEmpty,
 } from '@/factories/userEditingFactory';

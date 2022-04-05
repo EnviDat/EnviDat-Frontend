@@ -18,12 +18,13 @@ import {
 } from '@/factories/metaDataFactory';
 
 import {
-  isUserGroupAdmin,
   selectForEditing,
   setSelected,
   updateAuthors,
   updateResource,
 } from '@/factories/userEditingFactory';
+
+import { isUserGroupAdmin } from '@/factories/userEditingValidations';
 
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 

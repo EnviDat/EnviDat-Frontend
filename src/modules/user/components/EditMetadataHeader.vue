@@ -184,7 +184,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import {METADATA_NAMESPACE} from '@/store/metadataMutationsConsts';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
@@ -192,11 +192,14 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
-import {enhanceTitleImg} from '@/factories/metaDataFactory';
-// eslint-disable-next-line import/no-cycle
-import {getValidationMetadataEditingObject, isFieldValid} from '@/factories/userEditingFactory';
-import {getArrayOfFullNames, getAuthorName} from '@/factories/authorFactory';
-import {EDIT_METADATA_MAIN_TITLE} from '@/factories/metadataConsts';
+import { enhanceTitleImg } from '@/factories/metaDataFactory';
+
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
+import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
+import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
 
 
 export default {

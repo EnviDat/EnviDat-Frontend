@@ -17,7 +17,6 @@
 
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
 import { getNameInitials } from '@/factories/authorFactory';
-import { getUserOrganizationRoleMap } from '@/factories/userEditingFactory';
 import authorCollection from '../public/testdata/authorCollection.json';
 
 export default {

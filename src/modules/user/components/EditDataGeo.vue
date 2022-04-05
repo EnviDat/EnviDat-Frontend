@@ -103,7 +103,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';

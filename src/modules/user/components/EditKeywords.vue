@@ -140,7 +140,10 @@ import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 // eslint-disable-next-line import/no-cycle
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 
 export default {

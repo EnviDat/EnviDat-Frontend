@@ -240,7 +240,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
   isArrayValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';

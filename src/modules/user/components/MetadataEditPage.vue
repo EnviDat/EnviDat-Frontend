@@ -65,10 +65,11 @@ import {
 import {
   getStepByName,
   getStepFromRoute,
-  getValidationMetadataEditingObject,
   initializeSteps,
   metadataCreationSteps,
 } from '@/factories/userEditingFactory';
+
+import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 
 import { mapGetters, mapState } from 'vuex';
 

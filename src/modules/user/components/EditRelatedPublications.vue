@@ -88,7 +88,10 @@ import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataCon
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditRelatedPublications',

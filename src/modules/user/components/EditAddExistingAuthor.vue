@@ -81,7 +81,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import { getArrayOfFullNames } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 
 export default {

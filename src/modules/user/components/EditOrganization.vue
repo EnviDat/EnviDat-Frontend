@@ -129,7 +129,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import {
   USER_SIGNIN_NAMESPACE,

@@ -84,7 +84,7 @@ import {
   isAdmin,
   isSysadmin,
   hasOrganizationRoles,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 

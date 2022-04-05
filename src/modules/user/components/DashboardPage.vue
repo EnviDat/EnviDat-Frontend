@@ -273,7 +273,7 @@ import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
   isMember,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
 import MetadataList from '@/components/MetadataList';
