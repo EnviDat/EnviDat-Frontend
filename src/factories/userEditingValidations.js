@@ -30,6 +30,7 @@ import {
 
 import { parse, isDate } from 'date-fns';
 import * as yup from 'yup';
+import { ckanDateFormat } from '@/factories/mappingFactory';
 
 
 const metadataInEditingValidations = {
@@ -92,6 +93,7 @@ const metadataInEditingValidations = {
           dateType: yup.string('Date type must be a string.'),
           dateStart: yup
             .date('Start date must be a valid date.')
+            .required('Enter at least a start date')
             .parseDateString()
             .validateDateRange('dateStart', 'dateEnd'),
           dateEnd: yup
@@ -115,11 +117,17 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
-      relatedPublicationsText: yup.string().min(20, 'Please use at least 20 characters to describe the related publications.'),
+      relatedPublicationsText: yup
+        .string()
+        .min(20, 'Please use at least 20 characters to describe the related publications.')
+        .nullable(),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
-      relatedDatasetsText: yup.string().min(20, 'Please use at least 20 characters to describe the related datasets.'),
+      relatedDatasetsText: yup
+        .string()
+        .min(20, 'Please use at least 20 characters to describe the related datasets.')
+        .nullable(),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -157,24 +165,21 @@ const metadataInEditingValidations = {
     }),
 };
 
+
 // eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'parseDateString', function (dateStringFormat='dd.MM.yyyy') {
+yup.addMethod(yup.date, 'parseDateString', function () {
   // Helper function for yup date string parsing
   // eslint-disable-next-line func-names
   return this.transform((value, originalValue) => {
-    if (!originalValue) {
-      return null
-    }
+      if (!originalValue) {
+        return null
+      }
 
-    /*    console.log(value);
+      const parsedDate = isDate(originalValue)
+        ? originalValue
+        : parse(originalValue, ckanDateFormat, new Date());
 
-        if (this.isType(value)) return value;
-
-        value = parse(originalValue, dateStringFormat, new Date());
-
-        return isDate(value) ? value : originalValue;
-        */
-    return parse(originalValue, dateStringFormat, new Date());
+      return parsedDate;
   });
 });
 
@@ -187,16 +192,18 @@ yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndFi
     (value, options) => {
       const dateStart = options.parent[dateStartField]
 
-      const parsedStart = isDate(dateStart) ?
-        dateStart : parse(dateStart, 'dd.MM.yyyy', new Date());
+      const parsedStart = isDate(dateStart)
+        ? dateStart
+        : parse(dateStart, ckanDateFormat, new Date());
 
       const dateEnd = options.parent[dateEndField]
       if (!dateEnd) {
         return true;
       }
 
-      const parsedEnd = isDate(dateEnd) ?
-        dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
+      const parsedEnd = isDate(dateEnd)
+        ? dateEnd
+        : parse(dateEnd, ckanDateFormat, new Date());
 
       return parsedEnd >= parsedStart;
     }

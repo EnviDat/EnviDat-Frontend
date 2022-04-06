@@ -469,25 +469,25 @@ export default {
     },
     notifyChange(index, property, value) {
 
-      const localyCopy = [...this.fundersField];
+      const localCopy = [...this.fundersField];
       const errorArray = this.validationErrors.funders;
 
-      this.editEntry(localyCopy, index, property, value);
+      this.editEntry(localCopy, index, property, value);
 
-      const deleted = deleteEmptyObject(index, localyCopy);
+      const deleted = deleteEmptyObject(index, localCopy);
       if (deleted) {
         // delete also from the errorArray to keep the arrays in sync
         deleteEmptyObject(index, errorArray);
       }
 
       // the last entry is always unused, removed it before saving
-      this.removeUnusedEntry(localyCopy);
+      this.removeUnusedEntry(localCopy);
 
-      if (deleted || !deleted && isArrayValid(localyCopy, 'funders', index, property, this.validations, errorArray)) {
-        this.setPublicationInfo('funders', localyCopy);
+      if (deleted || !deleted && isArrayValid(localCopy, 'funders', index, property, this.validations, errorArray)) {
+        this.setPublicationInfo('funders', localCopy);
       }
 
-      if (isMaxLength(this.maxFunders, localyCopy)) {
+      if (isMaxLength(this.maxFunders, localCopy)) {
         this.validationErrors.fundersArray = this.maxFundersMessage;
       }
     },

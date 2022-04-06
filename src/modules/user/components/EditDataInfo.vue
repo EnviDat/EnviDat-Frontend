@@ -73,7 +73,7 @@
                     readonly
                     :hint="mixinMethods_readOnlyHint('dateStart')"
                     outlined
-                    :value="item.dateStart"
+                    :value="formatToEnviDatDate(item.dateStart)"
                     v-on="on"
                     :error-messages="validationErrors.dates[index].dateStart"
                   />
@@ -111,7 +111,7 @@
                     :hint="mixinMethods_readOnlyHint('dateEnd')"
                     dense
                     outlined
-                    :value="item.dateEnd"
+                    :value="formatToEnviDatDate(item.dateEnd)"
                     v-on="on"
                     :error-messages="validationErrors.dates[index].dateEnd"
                   ></v-text-field>
@@ -231,6 +231,7 @@
  */
 
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -245,6 +246,7 @@ import {
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import { parseDateStringToEnviDatFormat } from '@/factories/mappingFactory';
 
 export default {
   name: 'EditDataInfo',
@@ -292,6 +294,12 @@ export default {
       default: '',
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     selectedLicence: {
       get() {
@@ -309,7 +317,7 @@ export default {
     },
     datesField: {
       get() {
-        return this.dates;
+        return this.previewDates?.length > 0 ? this.previewDates : this.dates;
       },
     },
     getDataLicenseLink() {
@@ -335,6 +343,9 @@ export default {
     },
   },
   methods: {
+    clearPreviews() {
+      this.previewDates = [];
+    },
     getIsoDate(index, property) {
       if (this.isoDates?.length > 0) {
         return this.isoDates[index][property] || null;
@@ -408,7 +419,11 @@ export default {
       this.dateStartPickerOpen = false;
       this.dateEndPickerOpen = false;
 
-      const newDates = this.updateDatesArray(this.datesField, index, property, value);
+      const localCopy = [...this.datesField];
+      const newDates = this.updateDatesArray(localCopy, index, property, value);
+
+      this.previewDates = newDates;
+
       const errorArray = this.validationErrors.dates;
 
       if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
@@ -418,34 +433,17 @@ export default {
     },
     updateDatesArray(array, index, property, value) {
 
-      // Format dates to CKAN format "MM.DD.YYYY"
-      if (property === 'dateStart' || property === 'dateEnd') {
-        value = this.formatDate(value);
-      }
-
       const currentEntry = array[index];
+
       array[index] = {
         ...currentEntry,
         [property]: value,
       };
 
-      return array
+      return array;
     },
-    formatDate(date) {
-      // Change Vuetify date format "YYYY-MM-DD" to CKAN date format "DD.MM.YYYY"
-      if (!date) {
-        return null;
-      }
-      const [year, month, day] = date.split('-');
-      return `${day}.${month}.${year}`;
-    },
-    reformatDate(date) {
-      // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
-      if (!date) {
-        return null;
-      }
-      const [day, month, year] = date.split('.');
-      return `${year}-${month}-${day}`;
+    formatToEnviDatDate(dateIsoString) {
+      return parseDateStringToEnviDatFormat(dateIsoString);
     },
     clearDate(index, property) {
       this.dateChanged(index, property, null);
@@ -467,7 +465,7 @@ export default {
     labels: {
       cardTitle: 'Additional Information about the Resources',
       instructions:
-        'Please select dates for collection and/or creation dates. Dates are in "DD.MM.YYYY" format.',
+        'Please select dates for collection and/or creation dates. Dates are in "DD-MM-YYYY" format.',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
@@ -487,6 +485,7 @@ export default {
     },
     dateStartPickerOpen: false,
     dateEndPickerOpen: false,
+    previewDates: [],
     dataLicenses: [
       {
         id: 'odc-odbl',

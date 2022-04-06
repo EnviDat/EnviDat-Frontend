@@ -40,6 +40,7 @@ import {
   formatDate,
 } from '@/factories/metaDataFactory';
 import { getDataCredit } from '@/factories/authorFactory';
+import { format, isDate, parse } from 'date-fns';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -631,3 +632,32 @@ export function mapFrontendToBackend(stepKey, frontendData) {
 
   return backendData;
 }
+
+export const ckanDateFormat = 'yyyy-MM-dd';
+export const enviDatDateFormat = 'dd-MM-yyyy';
+
+export function parseDateStringToCKANFormat(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = isDate(dateString)
+    ? dateString
+    : parse(dateString, enviDatDateFormat, new Date());
+
+  return format(parsedDate, ckanDateFormat);
+}
+
+export function parseDateStringToEnviDatFormat(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = isDate(dateString)
+    ? dateString
+    : parse(dateString, ckanDateFormat, new Date());
+
+  return format(parsedDate, enviDatDateFormat);
+}
+
+

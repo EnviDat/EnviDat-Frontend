@@ -376,7 +376,7 @@ export default {
       return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
     },
     contactPropertyHint(property) {
-      console.log('contactPropertyHint')
+
       if (this.contactInfoReadOnly) {
         return 'Not editable because the contact is defined in the author picker';
       }
