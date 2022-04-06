@@ -85,8 +85,8 @@
 
         <BaseUserPicker :users="fullNameUsers"
                         :preSelected="preselectAuthorName"
-                        @removedUsers="catchPickerAuthorChange($event, true)"
-                        @pickedUsers="catchPickerAuthorChange($event, false)" />
+                        @removedUsers="catchPickerAuthorChange($event, false)"
+                        @pickedUsers="catchPickerAuthorChange($event, true)" />
       </v-col>
 
     </v-row>
@@ -362,12 +362,21 @@ export default {
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
+    contactInfoReadOnly() {
+      return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.preselectAuthorName?.length > 0);
+/*
+      const is = (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.preselectAuthorName?.length > 0);
+      console.log(is);
+      return is;
+*/
+    },
   },
   methods: {
     isContactPropertyReadOnly(property){
       return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
     },
     contactPropertyHint(property) {
+      console.log('contactPropertyHint')
       if (this.contactInfoReadOnly) {
         return 'Not editable because the contact is defined in the author picker';
       }
@@ -405,9 +414,10 @@ export default {
       this.previewContactSurname = value;
       this.validateProperty('contactSurname', value);
     },
-    catchPickerAuthorChange(pickedAuthor, removedAuthor) {
+    catchPickerAuthorChange(pickedAuthor, hasAuthor) {
 
-      this.contactInfoReadOnly = !removedAuthor;
+      this.authorPickerTouched = true;
+      this.authorIsPicked = hasAuthor;
 
       // Get author object
       const author = this.getAuthorByName(pickedAuthor);
@@ -547,6 +557,8 @@ export default {
             this.setContact(authorObject);
             // Validate new author properties
             this.validateAuthor(authorObject);
+
+            this.authorPickerTouched = false;
           }
           else {
             this.setHeaderInfo(property, value);
@@ -585,7 +597,8 @@ export default {
     },
   },
   data: () => ({
-    contactInfoReadOnly: false,
+    authorIsPicked: false,
+    authorPickerTouched: false,
     previewContactGivenName: '',
     previewContactSurname: '',
     previewContactEmail: '',
