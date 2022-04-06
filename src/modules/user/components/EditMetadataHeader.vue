@@ -85,8 +85,8 @@
 
         <BaseUserPicker :users="fullNameUsers"
                         :preSelected="preselectAuthorName"
-                        @removedUsers="catchAuthorChange"
-                        @pickedUsers="catchAuthorChange" />
+                        @removedUsers="catchPickerAuthorChange($event, true)"
+                        @pickedUsers="catchPickerAuthorChange($event, false)" />
       </v-col>
 
     </v-row>
@@ -98,8 +98,8 @@
                       :label="labels.labelContactEmail"
                       outlined
                       :error-messages="validationErrors.contactEmail"
-                      :readonly="mixinMethods_isFieldReadOnly('contactEmail')"
-                      :hint="mixinMethods_readOnlyHint('contactEmail')"
+                      :readonly="isContactPropertyReadOnly('contactEmail')"
+                      :hint="contactPropertyHint('contactEmail')"
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
@@ -114,8 +114,8 @@
                       :label="labels.labelContactGivenName"
                       outlined
                       :error-messages="validationErrors.contactGivenName"
-                      :readonly="mixinMethods_isFieldReadOnly('contactGivenName')"
-                      :hint="mixinMethods_readOnlyHint('contactGivenName')"
+                      :readonly="isContactPropertyReadOnly('contactGivenName')"
+                      :hint="contactPropertyHint('contactGivenName')"
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactGivenName"
                       :value="contactGivenNameField"
@@ -129,8 +129,8 @@
                       :label="labels.labelContactSurname"
                       outlined
                       :error-messages="validationErrors.contactSurname"
-                      :readonly="mixinMethods_isFieldReadOnly('contactSurname')"
-                      :hint="mixinMethods_readOnlyHint('contactSurname')"
+                      :readonly="isContactPropertyReadOnly('contactSurname')"
+                      :hint="contactPropertyHint('contactSurname')"
                       prepend-icon="person"
                       :placeholder="labels.placeholderContactSurname"
                       :value="contactSurnameField"
@@ -364,6 +364,16 @@ export default {
     },
   },
   methods: {
+    isContactPropertyReadOnly(property){
+      return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
+    },
+    contactPropertyHint(property) {
+      if (this.contactInfoReadOnly) {
+        return 'Not editable because the contact is defined in the author picker';
+      }
+
+      return this.mixinMethods_readOnlyHint(property);
+    },
     clearPreviews() {
       this.previewContactGivenName = '';
       this.previewContactSurname = '';
@@ -395,7 +405,9 @@ export default {
       this.previewContactSurname = value;
       this.validateProperty('contactSurname', value);
     },
-    catchAuthorChange(pickedAuthor) {
+    catchPickerAuthorChange(pickedAuthor, removedAuthor) {
+
+      this.contactInfoReadOnly = !removedAuthor;
 
       // Get author object
       const author = this.getAuthorByName(pickedAuthor);
@@ -573,6 +585,7 @@ export default {
     },
   },
   data: () => ({
+    contactInfoReadOnly: false,
     previewContactGivenName: '',
     previewContactSurname: '',
     previewContactEmail: '',
