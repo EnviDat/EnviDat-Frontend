@@ -14,12 +14,14 @@ LABEL envidat.ch.app-version="${APP_VERSION}" \
 WORKDIR /app
 
 
-FROM base AS local-dev
+FROM base AS debug
 ENV NODE_ENV development
-ENTRYPOINT ["npm", "run", "serve"]
+ENTRYPOINT ["node", "--inspect=0.0.0.0:9229", \
+            "./node_modules/@vue/cli-service/bin/vue-cli-service.js", \
+            "serve"]
 
 
-FROM local-dev AS builder
+FROM debug AS builder
 COPY package*.json ./
 RUN npm install
 COPY . .
@@ -39,5 +41,3 @@ RUN rm -rf ./* /etc/nginx/conf.d/default.conf /etc/nginx/nginx.conf
 COPY ./nginx /etc/nginx
 COPY --from=builder --chown=101:101 /app/dist .
 EXPOSE 80
-# Containers run nginx with global directives and daemon off
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
