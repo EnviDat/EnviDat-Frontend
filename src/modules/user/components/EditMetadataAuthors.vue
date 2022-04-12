@@ -17,9 +17,40 @@
         </v-col>
       </v-row>
 
+    <!--
+                    :showGenericOpenButton="author.openEvent ? true : false"
+                    :openButtonTooltip="author.openButtonTooltip"
+                    :openButtonIcon="author.openButtonIcon"
+                    :isSelected="author.isSelected"
+                    :loading="author.loading"
+                    @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
+    -->
+
       <v-row >
         <v-col cols="12">
-          <MetadataAuthors :genericProps="metadataAuthorsObject" />
+          <MetadataAuthors :genericProps="metadataAuthorsObject" >
+            <template #editingAuthors="{ author }" >
+
+              <AuthorCard :author="author"
+                          :authorDetailsConfig="authorDetailsConfig"
+                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                          >
+
+                <template #dataCreditCurrentDataset >
+                  <DataCreditLayout class="px-0 py-1 readableText"
+                                    :dataCredit="author.currentDataCredits"
+                                    :badgesLabel="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
+                                    :noCreditslabel="`No data credit set yet, how did ${author.fullName} contribute to this datasets?`"
+                                    iconColor="white"
+                                    badgeColor="#384753"
+                                    :dark="true" />
+
+                </template>
+
+              </AuthorCard>
+            </template>
+          </MetadataAuthors>
         </v-col>
       </v-row>
 
@@ -43,13 +74,20 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
+import {
+  AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
+  EDIT_METADATA_AUTHORS_TITLE,
+} from '@/factories/metadataConsts';
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+import AuthorCard from '@/modules/metadata/components/AuthorCard';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
 
 export default {
   name: 'EditMetadataAuthors',
   components: {
     MetadataAuthors,
+    AuthorCard,
+    DataCreditLayout,
   },
   props: {
     authors: {
@@ -89,6 +127,7 @@ export default {
   data: () => ({
     editingInstructions: 'Select an author from the list to edit it\'s details',
     EDIT_METADATA_AUTHORS_TITLE,
+    AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
   }),
 };
 </script>

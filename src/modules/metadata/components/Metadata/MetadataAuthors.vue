@@ -36,16 +36,35 @@
                   cols="12" sm="6"
                   class="pa-2" >
 
-            <AuthorCard :author="author"
-                          :authorDetailsConfig="authorDetailsConfig"
-                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                          :showGenericOpenButton="author.openEvent ? true : false"
-                          :openButtonTooltip="author.openButtonTooltip"
-                          :openButtonIcon="author.openButtonIcon"
-                          :isSelected="author.isSelected"
-                          :loading="author.loading"
-                          @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" />
+            <slot name="editingAuthors"
+                  :author="author"
+                  />
+
+            <AuthorCard v-if="!hasEditingAuthorsSlot"
+                        :author="author"
+                        :authorDetailsConfig="authorDetailsConfig"
+                        :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                        :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                        :showGenericOpenButton="author.openEvent ? true : false"
+                        :openButtonTooltip="author.openButtonTooltip"
+                        :openButtonIcon="author.openButtonIcon"
+                        :isSelected="author.isSelected"
+                        :loading="author.loading"
+                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" >
+
+              <template v-if="hasDataCredits(author.currentDataCredits)"
+                        #dataCreditCurrentDataset >
+                <DataCreditLayout class="px-0 py-1 readableText"
+                                  :dataCredit="author.currentDataCredits"
+                                  :badgesLabel="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
+                                  noCreditslabel="AUTHORS No data credit declarations for this dataset"
+                                  iconColor="white"
+                                  badgeColor="#384753"
+                                  :dark="true" />
+
+              </template>
+
+            </AuthorCard>
 
           </v-col>
         </v-row>
@@ -76,18 +95,21 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
+  AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
   METADATA_AUTHORS_TITLE,
 } from '@/factories/metadataConsts';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
 import { eventBus } from '@/factories/eventBus';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
 
 export default {
   name: 'MetadataAuthors',
   components: {
     AuthorCard,
     AuthorCardPlaceholder,
+    DataCreditLayout,
   },
   props: {
     genericProps: Object,
@@ -108,13 +130,12 @@ export default {
     this.observer.disconnect();
     this.showAuthors = false;
   },
-  data: () => ({
-    showAuthors: false,
-    checkedGenericProps: false,
-    observer: null,
-    METADATA_AUTHORS_TITLE,
-  }),
   computed: {
+    hasEditingAuthorsSlot() {
+      // console.log(this.$slots);
+      // console.log(this.$scopedSlots);
+      return !!this.$scopedSlots.editingAuthors;
+    },
     authors() {
       return this.mixinMethods_getGenericProp('authors');
     },
@@ -141,10 +162,24 @@ export default {
     },
   },
   methods: {
+    hasDataCredits(dataCredits) {
+      if (!dataCredits) {
+        return false;
+      }
+
+      return Object.keys(dataCredits).length > 0;
+    },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },
   },
+  data: () => ({
+    showAuthors: false,
+    checkedGenericProps: false,
+    observer: null,
+    METADATA_AUTHORS_TITLE,
+    AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
+  }),
 };
 </script>
 

@@ -20,6 +20,7 @@ export const METADATA_KEYWORDS_TITLE = 'Keywords';
 export const METADATA_AUTHORS_TITLE = 'Author Details';
 export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
 export const AUTHORS_DATACREDIT_CONTRIBUTION = 'Data Credit Contributions';
+export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT = 'Data Credits for this dataset';
 export const AUTHORS_DATACREDIT_SCORE = 'Data Credit Score';
 
 export const METADATA_DETAILS_TITLE = 'Further Information';

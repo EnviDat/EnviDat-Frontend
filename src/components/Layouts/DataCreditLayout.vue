@@ -41,7 +41,7 @@
               </v-icon>
             </template >
 
-            {{ `Author made ${dataCreditCounts[index]} ${creditName} contributions for data` }}
+            {{ `Author made ${dataCreditCounts[index]} ${creditName} contribution${ dataCreditCounts[index] > 1 ? 's': ''}` }}
           </v-tooltip>
         </v-badge>
         </v-hover>
@@ -72,7 +72,7 @@ export default {
     },
     noCreditslabel: {
       type: String,
-      default: 'No declaration of Data Credits',
+      default: 'No data credit declarations',
     },
   },
   computed: {

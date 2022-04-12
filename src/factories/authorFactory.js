@@ -150,7 +150,7 @@ export function createAuthors(dataset) {
     //   }
     // }
 
-    const dataCredit = getDataCredit(author);
+    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
 
     authorObjs.push({
       firstName: firstName.trim(),
@@ -276,7 +276,9 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     const authorKey = getAuthorKey(author);
 
     const fullAuthor = authorMap[authorKey];
+
     if (fullAuthor) {
+      fullAuthor.currentDataCredits = author.dataCredit;
       fullAuthors.push(fullAuthor);
     }
 
@@ -284,6 +286,7 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
 
   return fullAuthors;
 }
+
 
 export function getDataCreditLevel(dataCreditScore) {
   const entires = authorDataCreditLevels;

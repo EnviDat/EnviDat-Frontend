@@ -271,7 +271,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import {
   ckanDateFormat,
   parseDateStringToCKANFormat,
-  parseDateStringToEnviDatFormat
+  parseDateStringToEnviDatFormat,
 } from '@/factories/mappingFactory';
 import { parse } from 'date-fns';
 

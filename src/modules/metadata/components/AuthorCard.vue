@@ -85,6 +85,8 @@
           </v-col>
         </v-row>
 
+        <slot name="dataCreditCurrentDataset"/>
+
         <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
                           class="px-0 py-1 readableText"
                           :dataCredit="author.dataCredit"

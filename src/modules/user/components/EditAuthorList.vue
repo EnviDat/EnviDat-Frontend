@@ -54,11 +54,13 @@
 import EditAuthor from '@/modules/user/components/EditAuthor';
 // import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
-
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
+import {
+  getFullAuthorsFromDataset,
+  initializeLocalAuthor,
+} from '@/factories/authorFactory';
 
-import { initializeLocalAuthor } from '@/factories/authorFactory';
 import {
   // enhanceElementsWithStrategyEvents,
   localIdProperty,
@@ -166,7 +168,10 @@ export default {
       let authors = this.authorsWrap;
 
       if (authorsMap) {
-        authors = authors.map(author => authorsMap[author.email])
+
+        authors = getFullAuthorsFromDataset(authorsMap, { author: authors });
+
+        // authors = authors.map(author => authorsMap[author.email])
       }
 
       return {
