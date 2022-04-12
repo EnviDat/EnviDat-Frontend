@@ -20,7 +20,12 @@
       "identifier": ""
     },
     "email": "matthias.haeni@wsl.ch",
-    "dataCredit": null
+    "dataCredit": {
+      "validation": 1,
+      "curation": 3,
+      "software": 10,
+      "publication": 1
+    }
   },
   "Arthur Gessler": {
     "firstName": "Arthur",
