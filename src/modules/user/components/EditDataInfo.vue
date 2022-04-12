@@ -57,90 +57,110 @@
           </v-col>
 
           <v-col class="pl-4">
-            <template>
-              <v-menu v-model="dateStartPickerOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="auto">
 
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    :label="labels.dateStart"
-                    dense
-                    prepend-icon="date_range"
-                    readonly
-                    :hint="mixinMethods_readOnlyHint('dateStart')"
-                    outlined
-                    :value="formatToEnviDatDate(item.dateStart)"
-                    v-on="on"
-                    :error-messages="validationErrors.dates[index].dateStart"
-                  />
-                </template>
+            <v-text-field v-if="mixinMethods_isFieldReadOnly('dateStart')"
+                          :label="labels.dateStart"
+                          dense
+                          outlined
+                          readonly
+                          prepend-icon="date_range"
+                          :hint="mixinMethods_readOnlyHint('dateStart')"
+                          :value="formatToEnviDatDate(item.dateStart)"
+                          v-on="on"
+                          :error-messages="validationErrors.dates[index].dateStart"
+            />
 
-                <v-date-picker
-                  locale="en-in"
-                  :readonly="mixinMethods_isFieldReadOnly('dateStart')"
-                  :hint="mixinMethods_readOnlyHint('dateStart')"
-                  @input="dateChanged(index, 'dateStart', $event)"
-                  scrollable
-                  no-title
-                  next-icon="skip_next"
-                  prev-icon="skip_previous"
-                  />
+            <v-menu v-else
+                    v-model="dateStartPickerOpen"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto">
 
-              </v-menu>
-            </template>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  :label="labels.dateStart"
+                  dense
+                  outlined
+                  prepend-icon="date_range"
+                  :value="formatToEnviDatDate(item.dateStart)"
+                  v-on="on"
+                  :error-messages="validationErrors.dates[index].dateStart"
+                />
+              </template>
+
+              <v-date-picker
+                locale="en-in"
+                @input="dateChanged(index, 'dateStart', $event)"
+                scrollable
+                :max="formatToDatePickerDate(item.dateEnd)"
+                :value="formatToDatePickerDate(item.dateStart)"
+                next-icon="skip_next"
+                prev-icon="skip_previous"
+                />
+
+            </v-menu>
+
           </v-col>
 
           <v-col class="pl-4">
-            <template>
-              <v-menu v-model="dateEndPickerOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="auto">
 
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    :label="labels.dateEnd"
-                    prepend-icon="date_range"
-                    readonly
-                    :hint="mixinMethods_readOnlyHint('dateEnd')"
-                    dense
-                    outlined
-                    :value="formatToEnviDatDate(item.dateEnd)"
-                    v-on="on"
-                    :error-messages="validationErrors.dates[index].dateEnd"
-                  ></v-text-field>
-                </template>
+            <v-text-field v-if="mixinMethods_isFieldReadOnly('dateEnd')"
+                          :label="labels.dateEnd"
+                          prepend-icon="date_range"
+                          dense
+                          outlined
+                          readonly
+                          :hint="mixinMethods_readOnlyHint('dateEnd')"
+                          :value="formatToEnviDatDate(item.dateEnd)"
+                          v-on="on"
+                          :error-messages="validationErrors.dates[index].dateEnd"
+                          />
 
-                <v-date-picker
-                  locale="en-in"
-                  :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
-                  :hint="mixinMethods_readOnlyHint('dateEnd')"
-                  @input="dateChanged(index, 'dateEnd', $event)"
-                  scrollable
-                  no-title
-                  next-icon="skip_next"
-                  prev-icon="skip_previous"
-                >
-                  <div class="px-4"
-                       style="cursor: pointer;"
-                       @click="clearDate(index, 'dateEnd')">
-                    {{ labels.clearEndDate }}
-                  </div>
-                  <BaseIconButton materialIconName="clear"
-                                  iconColor="red"
-                                  tooltipText="Clear the End Date"
-                                  @clicked="clearDate(index, 'dateEnd')"
-                  />
-                </v-date-picker>
+            <v-menu v-else
+                    v-model="dateEndPickerOpen"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="auto">
 
-              </v-menu>
-            </template>
+              <template v-slot:activator="{ on }">
+                <v-text-field :label="labels.dateEnd"
+                              prepend-icon="date_range"
+                              dense
+                              outlined
+                              :hint="mixinMethods_readOnlyHint('dateEnd')"
+                              :value="formatToEnviDatDate(item.dateEnd)"
+                              v-on="on"
+                              :error-messages="validationErrors.dates[index].dateEnd"
+                              />
+              </template>
+
+              <v-date-picker
+                locale="en-in"
+                @input="dateChanged(index, 'dateEnd', $event)"
+                scrollable
+                :min="formatToDatePickerDate(item.dateStart)"
+                :value="formatToDatePickerDate(item.dateEnd)"
+                next-icon="skip_next"
+                prev-icon="skip_previous"
+              >
+                <div class="px-4"
+                     style="cursor: pointer;"
+                     @click="clearDate(index, 'dateEnd')">
+                  {{ labels.clearEndDate }}
+                </div>
+                <BaseIconButton materialIconName="clear"
+                                iconColor="red"
+                                tooltipText="Clear the End Date"
+                                @clicked="clearDate(index, 'dateEnd')"
+                />
+              </v-date-picker>
+
+            </v-menu>
+
           </v-col>
         </v-row>
 
@@ -221,7 +241,7 @@
  *
  *
  * @summary Shows Additional Information (creation & collection dates, data license and summary)
- * @author Rebecca Kurup Buchholz
+ * @author Rebecca Kurup Buchholz, Sam Woodcock, Dominik Haas-Artho
  *
  * Created        : 2021-08-31
  * Last modified  : 2021-11-08
@@ -239,14 +259,15 @@ import {
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
   isArrayValid,
+  isFieldValid,
 } from '@/factories/userEditingValidations';
 
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import { parseDateStringToEnviDatFormat } from '@/factories/mappingFactory';
+import { ckanDateFormat, parseDateStringToEnviDatFormat } from '@/factories/mappingFactory';
+import { parse } from 'date-fns';
 
 export default {
   name: 'EditDataInfo',
@@ -442,8 +463,17 @@ export default {
 
       return array;
     },
-    formatToEnviDatDate(dateIsoString) {
-      return parseDateStringToEnviDatFormat(dateIsoString);
+    formatToEnviDatDate(dateString) {
+      return parseDateStringToEnviDatFormat(dateString);
+    },
+    formatToDatePickerDate(dateString) {
+      if (!dateString) {
+        return '';
+      }
+      const dateTime = parse(dateString, ckanDateFormat, new Date());
+
+      return (new Date(dateTime - (new Date()).getTimezoneOffset() * 60000)).toISOString()
+          .substr(0, 10);
     },
     clearDate(index, property) {
       this.dateChanged(index, property, null);
