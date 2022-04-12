@@ -85,6 +85,7 @@
                   outlined
                   prepend-icon="date_range"
                   :value="formatToEnviDatDate(item.dateStart)"
+                  @change="dateChangedTextField(index, 'dateStart', $event)"
                   v-on="on"
                   :error-messages="validationErrors.dates[index].dateStart"
                 />
@@ -133,6 +134,7 @@
                               outlined
                               :hint="mixinMethods_readOnlyHint('dateEnd')"
                               :value="formatToEnviDatDate(item.dateEnd)"
+                              @change="dateChangedTextField(index, 'dateEnd', $event)"
                               v-on="on"
                               :error-messages="validationErrors.dates[index].dateEnd"
                               />
@@ -266,7 +268,11 @@ import {
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import { ckanDateFormat, parseDateStringToEnviDatFormat } from '@/factories/mappingFactory';
+import {
+  ckanDateFormat,
+  parseDateStringToCKANFormat,
+  parseDateStringToEnviDatFormat
+} from '@/factories/mappingFactory';
 import { parse } from 'date-fns';
 
 export default {
@@ -433,6 +439,10 @@ export default {
         this.setDataLicenseInfo(value);
       }
     },
+    dateChangedTextField(index, property, value) {
+      const dateValue = this.formatToCKANDate(value);
+      this.dateChanged(index, property, dateValue);
+    },
     dateChanged(index, property, value) {
       // Update indexed object in array, with updated dates
 
@@ -466,14 +476,22 @@ export default {
     formatToEnviDatDate(dateString) {
       return parseDateStringToEnviDatFormat(dateString);
     },
+    formatToCKANDate(dateString) {
+      return parseDateStringToCKANFormat(dateString);
+    },
     formatToDatePickerDate(dateString) {
       if (!dateString) {
         return '';
       }
+
       const dateTime = parse(dateString, ckanDateFormat, new Date());
 
-      return (new Date(dateTime - (new Date()).getTimezoneOffset() * 60000)).toISOString()
-          .substr(0, 10);
+      if (dateTime instanceof Date && !!dateTime.getTime()) {
+        return (new Date(dateTime - (new Date()).getTimezoneOffset() * 60000)).toISOString()
+            .substr(0, 10);
+      }
+
+      return '';
     },
     clearDate(index, property) {
       this.dateChanged(index, property, null);

@@ -637,6 +637,7 @@ export const ckanDateFormat = 'yyyy-MM-dd';
 export const enviDatDateFormat = 'dd-MM-yyyy';
 
 export function parseDateStringToCKANFormat(dateString) {
+
   if (!dateString) {
     return null;
   }
@@ -649,6 +650,7 @@ export function parseDateStringToCKANFormat(dateString) {
 }
 
 export function parseDateStringToEnviDatFormat(dateString) {
+
   if (!dateString) {
     return null;
   }
