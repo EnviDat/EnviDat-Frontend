@@ -125,7 +125,7 @@ export default {
   methods: {
   },
   data: () => ({
-    editingInstructions: 'Select an author from the list to edit it\'s details',
+    editingInstructions: 'Select an author from the list to edit its details',
     EDIT_METADATA_AUTHORS_TITLE,
     AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
   }),
