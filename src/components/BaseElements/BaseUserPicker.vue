@@ -174,6 +174,7 @@ export default {
     },
     catchPicks(picks) {
       this.$emit('pickedUsers', picks);
+      this.search = '';
     },
   },
   data: () => ({
