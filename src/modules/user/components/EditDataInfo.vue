@@ -261,7 +261,7 @@ import {
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  isArrayValid,
+  isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
@@ -457,7 +457,7 @@ export default {
 
       const errorArray = this.validationErrors.dates;
 
-      if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
+      if (isArrayContentValid(newDates, 'dates', index, property, this.validations, errorArray)) {
         this.setDataInfo('dates', newDates);
       }
 

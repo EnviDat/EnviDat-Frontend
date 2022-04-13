@@ -32,13 +32,15 @@ import { parse, isDate } from 'date-fns';
 import * as yup from 'yup';
 import { ckanDateFormat } from '@/factories/mappingFactory';
 
+const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
       metadataTitle: yup.string()
         .required('Dataset title is required')
-        .min(5, 'Dataset title must be at least 5 characters'),
+        .min(5, 'Dataset title must be at least 5 characters')
+        .max(180, 'Dataset title has a maximum of 180 characters'),
       contactGivenName: yup.string()
         .required('Contact given (first) name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
@@ -119,15 +121,17 @@ const metadataInEditingValidations = {
     yup.object().shape({
       relatedPublicationsText: yup
         .string()
-        .min(20, 'Please use at least 20 characters to describe the related publications.')
-        .nullable(),
+        .nullable()
+        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .min(20, 'Please use at least 20 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
       relatedDatasetsText: yup
         .string()
-        .min(20, 'Please use at least 20 characters to describe the related datasets.')
-        .nullable(),
+        .nullable()
+        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .min(20, 'Please use at least 20 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -145,7 +149,7 @@ const metadataInEditingValidations = {
       customFields: yup.array().of(
         yup.object({
           fieldName: yup.string().required().min(3),
-          content: yup.string().min(3),
+          content: yup.string(),
         }),
       ),
     }),
@@ -153,13 +157,20 @@ const metadataInEditingValidations = {
     yup.object().shape({
       publicationState: yup.string(),
       doi: yup.string(),
-      publisher: yup.string().required().min(3),
-      publicationYear: yup.string().required(),
-      funders: yup.array().min(1).of(
+      publisher: yup.string()
+        .required()
+        .min(3),
+      publicationYear: yup.string()
+        .required(),
+      funders: yup.array()
+        .required().min(1, 'Provide at least one entry about funding of the research.').of(
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),
-          institutionUrl: yup.string().url('Please provide an valid link / url with starting "http://"'),
+          institutionUrl: yup.string()
+            .nullable()
+            .transform((value, originalValue) => originalValue === '' ? null : value)
+            .matches(urlRegex, 'Please provide an valid link / url.'),
         }),
       ),
     }),
@@ -216,7 +227,7 @@ export function getValidationMetadataEditingObject(key) {
   return validationEntry ? validationEntry() : null;
 }
 
-export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray) {
+export function isArrayContentValid(array, arrayProperty, index, valueProperty, validations, errorArray) {
   const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
 
   try {
@@ -240,7 +251,9 @@ export function isArrayValid(array, arrayProperty, index, valueProperty, validat
   return true;
 }
 
-export function isFieldValid(property, value, validations, errorObject) {
+export function isFieldValid(property, value, validations, errorObject, errorProperty = undefined) {
+  const errProperty = errorProperty || property;
+
   try {
     validations.validateSyncAt(property, { [property]: value });
   } catch (e) {
@@ -250,11 +263,11 @@ export function isFieldValid(property, value, validations, errorObject) {
       return e;
     }
 
-    errorObject[property] = e.message;
+    errorObject[errProperty] = e.message;
     return false;
   }
 
-  errorObject[property] = '';
+  errorObject[errProperty] = '';
 
   return true;
 }

@@ -127,48 +127,56 @@
       <v-row v-for="(item, index) in fundersField"
             :key="`${item}_${index}`"
              :class="index === 0 ? 'pt-4' : 'py-1'"
-            no-gutters>
+            no-gutters >
 
-            <v-col cols="4"
-                   class="pr-2" >
-              <v-text-field :label="labels.institution"
-                            outlined
-                            dense
-                            :readonly="mixinMethods_isFieldReadOnly('institution')"
-                            :hint="mixinMethods_readOnlyHint('institution')"
-                            :value="item.institution"
-                            :error-messages="validationErrors.funders[index].institution"
-                            @change="notifyChange(index, 'institution', $event)" />
+        <v-col cols="4"
+               class="pr-2" >
+          <v-text-field :label="labels.institution"
+                        outlined
+                        dense
+                        :readonly="mixinMethods_isFieldReadOnly('institution')"
+                        :hint="mixinMethods_readOnlyHint('institution')"
+                        :value="item.institution"
+                        :error-messages="validationErrors.funders[index].institution"
+                        @change="notifyChange(index, 'institution', $event)" />
 
-            </v-col>
-            <v-col cols="4"
-                   class="px-2" >
-              <v-text-field :label="labels.grantNumber"
-                            outlined
-                            dense
-                            :readonly="mixinMethods_isFieldReadOnly('grantNumber')"
-                            :hint="mixinMethods_readOnlyHint('grantNumber')"
-                            :value="item.grantNumber"
-                            :error-messages="validationErrors.funders[index].grantNumber"
-                            @change="notifyChange(index, 'grantNumber', $event)" />
-            </v-col>
-            <v-col cols="4"
-                   class="pl-2">
-              <v-text-field :label="labels.institutionUrl"
-                            outlined
-                            dense
-                            :readonly="mixinMethods_isFieldReadOnly('institutionUrl')"
-                            :hint="mixinMethods_readOnlyHint('institutionUrl')"
-                            :value="item.institutionUrl"
-                            :error-messages="validationErrors.funders[index].institutionUrl"
-                            @change="notifyChange(index, 'institutionUrl', $event)" />
-            </v-col>
+        </v-col>
 
+        <v-col cols="3"
+               class="px-2" >
+          <v-text-field :label="labels.grantNumber"
+                        outlined
+                        dense
+                        :readonly="mixinMethods_isFieldReadOnly('grantNumber')"
+                        :hint="mixinMethods_readOnlyHint('grantNumber')"
+                        :value="item.grantNumber"
+                        :error-messages="validationErrors.funders[index].grantNumber"
+                        @change="notifyChange(index, 'grantNumber', $event)" />
+        </v-col>
+
+        <v-col class="grow pl-2">
+          <v-text-field :label="labels.institutionUrl"
+                        outlined
+                        dense
+                        :readonly="mixinMethods_isFieldReadOnly('institutionUrl')"
+                        :hint="mixinMethods_readOnlyHint('institutionUrl')"
+                        :value="item.institutionUrl"
+                        :error-messages="validationErrors.funders[index].institutionUrl"
+                        @change="notifyChange(index, 'institutionUrl', $event)" />
+        </v-col>
+
+        <v-col class="shrink px-1">
+          <BaseIconButton material-icon-name="clear"
+                          icon-color="red"
+                          :disabled="index >= fundersField.length -1"
+                          @clicked="deleteEntry(index) "/>
+
+        </v-col>
       </v-row>
 
 
-      <v-row v-if="validationErrors.fundersArray">
-
+      <v-row v-if="validationErrors.fundersArray"
+              no-gutters>
         <v-col cols="12">
           <div class="text-subtitle-2"><span class="red--text">{{ validationErrors.fundersArray }}</span></div>
         </v-col>
@@ -220,7 +228,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-  isArrayValid,
+  isArrayContentValid,
 } from '@/factories/userEditingValidations';
 
 import { mapState } from 'vuex';
@@ -232,6 +240,7 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 */
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'EditPublicationInfo',
@@ -298,10 +307,22 @@ export default {
       'config',
     ]),
     maxFunders() {
-      return this.config?.userEditMetadataConfig?.publicationMaxFunders || this.defaultUserEditMetadataConfig.publicationMaxFunders;
+      let max = this.defaultUserEditMetadataConfig.publicationMaxFunders;
+
+      if (this.$store) {
+        max = this.config?.userEditMetadataConfig?.publicationMaxFunders || max;
+      }
+
+      return max;
     },
     maxYears() {
-      return this.config?.userEditMetadataConfig?.publicationYearsList || this.defaultUserEditMetadataConfig.publicationYearsList;
+      let maxYears = this.defaultUserEditMetadataConfig.publicationYearsList;
+
+      if (this.$store) {
+        maxYears = this.config?.userEditMetadataConfig?.publicationYearsList || maxYears;
+      }
+
+      return maxYears;
     },
     publicationStateField: {
       get() {
@@ -440,7 +461,6 @@ export default {
       // If isEmpty is true and localfunders has at least one item then remove last element of array
       if (isEmpty && localfunders.length > 0) {
         localfunders.pop();
-        this.validationErrors.funders.pop();
       }
     },
     editEntry(array, index, property, value) {
@@ -467,6 +487,30 @@ export default {
         property: property.toString(),
       });
     },
+    deleteEntry(index) {
+
+      const localCopy = [...this.fundersField];
+      const errorArray = this.validationErrors.funders;
+
+      if (localCopy.length > 1) {
+        localCopy.splice(index, 1);
+      }
+
+      // the last entry is always unused, removed it before saving
+      this.removeUnusedEntry(localCopy);
+
+      const arrayIsValid = isFieldValid('funders', localCopy, this.validations, this.validationErrors, 'fundersArray');
+
+      if (arrayIsValid) {
+//        if (deleted || !deleted && isArrayValid(localCopy, 'funders', index, property, this.validations, errorArray)) {
+        this.setPublicationInfo('funders', localCopy);
+
+        if (errorArray.length > 1) {
+          errorArray.splice(index, 1);
+        }
+      }
+
+    },
     notifyChange(index, property, value) {
 
       const localCopy = [...this.fundersField];
@@ -475,16 +519,26 @@ export default {
       this.editEntry(localCopy, index, property, value);
 
       const deleted = deleteEmptyObject(index, localCopy);
-      if (deleted) {
-        // delete also from the errorArray to keep the arrays in sync
-        deleteEmptyObject(index, errorArray);
-      }
 
       // the last entry is always unused, removed it before saving
       this.removeUnusedEntry(localCopy);
 
-      if (deleted || !deleted && isArrayValid(localCopy, 'funders', index, property, this.validations, errorArray)) {
+      let arrayIsValid = false;
+      if (deleted) {
+        arrayIsValid = isFieldValid('funders', localCopy, this.validations, this.validationErrors, 'fundersArray');
+      } else {
+        arrayIsValid = isArrayContentValid(localCopy, 'funders', index, property, this.validations, errorArray);
+      }
+
+      if (arrayIsValid) {
         this.setPublicationInfo('funders', localCopy);
+
+        if (deleted) {
+          // delete also from the errorArray to keep the arrays in sync
+          if (errorArray.length > 1) {
+            errorArray.splice(index, 1);
+          }
+        }
       }
 
       if (isMaxLength(this.maxFunders, localCopy)) {
@@ -536,6 +590,7 @@ export default {
   components: {
     BaseRectangleButton,
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 
