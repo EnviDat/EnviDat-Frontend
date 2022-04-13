@@ -437,19 +437,23 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
+function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON) {
 
-  const snakeCaseJSON = convertJSON(metadataRecord, false);
+  const dataObject = {};
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
   const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
   // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
   // with additional data from other "steps"
 
+  dataObject.headerData = headerData;
+  
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, descriptionData);
 
+  commitEditingData(commit, stepKey, descriptionData);
+  dataObject.descriptionData = descriptionData;
+  
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
   const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
@@ -459,7 +463,9 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
     metadataCardTitle: headerData.metadataTitle,
     metadataCardSubtitle: descriptionData.description,
   }
+
   commitEditingData(commit, stepKey, enhancedKeywords);
+  dataObject.keywordsData = keywordsData;
 
   stepKey = EDITMETADATA_AUTHOR_LIST;
   // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
@@ -478,15 +484,24 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   commitEditingData(commit, stepKey, {
     authors,
   });
+  dataObject.authors = authors;
 
+  return dataObject;
+}
 
+function populateEditingData(commit, metadataRecord, snakeCaseJSON) {
+
+  const dataObject = {};
+  
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
-  stepKey = EDITMETADATA_DATA_RESOURCES;
+  let stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
-  commitEditingData(commit, stepKey, resourceData);
 
+  commitEditingData(commit, stepKey, resourceData);
+  dataObject.resourceData = resourceData;
+  
   stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -500,6 +515,7 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   };
 
   commitEditingData(commit, stepKey, dataInfo);
+  dataObject.dataInfo = dataInfo;
 
 
   stepKey = EDITMETADATA_DATA_GEO;
@@ -515,42 +531,80 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
   commitEditingData(commit, stepKey, {
     location,
   });
+  dataObject.location = location;
+  
+  return dataObject;
+}
 
-  stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
+function populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
   const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  
   commitEditingData(commit, stepKey, rPublicationData);
+  dataObject.relatedPublicationData = rPublicationData;
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
   const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
+
   commitEditingData(commit, stepKey, rDatasetsData);
+  dataObject.relatedDatasetsData = rDatasetsData;
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
   const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
   customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
+  
   commitEditingData(commit, stepKey, customFieldsData);
+  dataObject.customFieldsData = customFieldsData;
 
+  return dataObject;
+}
 
-  stepKey = EDITMETADATA_PUBLICATION_INFO;
+function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
+
+  const dataObject = {};
+  
+  let stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+
   commitEditingData(commit, stepKey, publicationData);
+  dataObject.publicationData = publicationData;
 
   stepKey = EDITMETADATA_ORGANIZATION;
   const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
+
   commitEditingData(commit, stepKey, organizationData);
+  dataObject.organizationData = organizationData;
 
+  return dataObject;
+}
 
-  stepKey = EDITMETADATA_MAIN_HEADER;
+export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
+
+  const snakeCaseJSON = convertJSON(metadataRecord, false);
+
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON);
+
+  const { dataInfo } = populateEditingData(commit, metadataRecord, snakeCaseJSON);
+
+  populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON);
+
+  const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
+
+  // enhanced Header for the preview infos
+  const stepKey = EDITMETADATA_MAIN_HEADER;
 
   const enhanceHeader = {
     ...headerData,
     keywords: keywordsData.keywords,
     authors,
-    dataLicense: dateInfoData.dataLicenseTitle,
+    dataLicense: dataInfo.dataLicenseTitle,
     doi: publicationData.doi,
   };
 
   commitEditingData(commit, stepKey, enhanceHeader);
-
 }
 
 function mapDatesForBackend(datesArray) {
