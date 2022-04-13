@@ -142,6 +142,10 @@ export default {
       }
     },
     catchCloseClicked(authorName) {
+      if (this.readonly) {
+        return;
+      }
+
       if (this.multiplePick) {
 
         const remains = this.pickedUsers.filter(value => value !== authorName);
