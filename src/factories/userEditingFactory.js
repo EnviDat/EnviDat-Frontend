@@ -45,9 +45,7 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
-
-import { parse, isDate } from 'date-fns';
-import * as yup from 'yup';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 
 export function updateEditingArray(
@@ -200,6 +198,7 @@ const emptyMetadataInEditing = {
       'published',
     ],
     publicationState: '',
+    visibilityState: '',
     doi: '',
     publisher: '',
     publicationYear: '',

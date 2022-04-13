@@ -34,10 +34,17 @@
       </v-row>
 
       <v-row>
+        <v-col cols="6">
+          {{ labels.visibilityState }}
+        </v-col>
 
         <v-col cols="6">
+          <MetadataStateChip :state="visibilityState" />
+        </v-col>
 
 <!--
+        <v-col cols="6">
+
           <v-select :items="possiblePublicationStates"
                     :label="labels.publicationState"
                     outlined
@@ -50,7 +57,6 @@
                     @change="publicationStateField = $event"
                     @input="validateProperty('publicationState', $event)"
                     :value="publicationStateField" />
--->
 
           <v-text-field :label="labels.publicationState"
                         outlined
@@ -60,10 +66,12 @@
                         :value="publicationStateField" />
 
         </v-col>
+-->
+
       </v-row>
 
 
-      <v-row>
+      <v-row class="pt-2">
 
         <v-col cols="6">
           <v-text-field :label="labels.dataObjectIdentifier"
@@ -241,6 +249,7 @@ import {
 */
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip';
 
 export default {
   name: 'EditPublicationInfo',
@@ -254,6 +263,10 @@ export default {
       default: () => [],
     },
     publicationState: {
+      type: String,
+      default: '',
+    },
+    visibilityState: {
       type: String,
       default: '',
     },
@@ -555,6 +568,7 @@ export default {
     labels: {
       cardTitle: 'Publication Information',
       publicationState: 'Publication State',
+      visibilityState: 'Dataset visibility',
       dataObjectIdentifier: 'Data Object Identifier',
       publisher: 'Publisher',
       year: 'Year',
@@ -591,6 +605,7 @@ export default {
     BaseRectangleButton,
     BaseStatusLabelView,
     BaseIconButton,
+    MetadataStateChip,
   },
 };
 

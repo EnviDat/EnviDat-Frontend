@@ -1,6 +1,6 @@
 <template>
-  <v-chip class="stateChip px-2"
-          :class="showContent ? '' : 'stateChipHover' "
+  <v-chip class="stateChip"
+          :class="cssClasses"
           @mouseover="hover = true"
           @mouseleave="hover = false"
           :color="stateColor"
@@ -62,6 +62,16 @@ export default {
     },
   },
   computed: {
+    cssClasses() {
+      const classes = {
+        stateChipHover: !this.showContent,
+      }
+
+      classes['px-3'] = this.showOnHover && this.hover || !this.showOnHover;
+      classes['px-2'] = this.showOnHover && !this.hover;
+
+      return classes;
+    },
     stateText() {
       return this.state?.toUpperCase() || 'DRAFT';
     },

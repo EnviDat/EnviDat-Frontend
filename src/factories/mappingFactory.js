@@ -34,11 +34,14 @@ import {
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
+
 import {
   createLocation,
   enhanceTags,
   formatDate,
+  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
+
 import { getDataCredit } from '@/factories/authorFactory';
 import { format, isDate, parse } from 'date-fns';
 
@@ -555,7 +558,7 @@ function populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON) {
   stepKey = EDITMETADATA_CUSTOMFIELDS;
   const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
   customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
-  
+
   commitEditingData(commit, stepKey, customFieldsData);
   dataObject.customFieldsData = customFieldsData;
 
@@ -568,6 +571,7 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
 
   commitEditingData(commit, stepKey, publicationData);
   dataObject.publicationData = publicationData;
