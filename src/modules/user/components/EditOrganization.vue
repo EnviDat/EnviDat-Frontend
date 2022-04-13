@@ -43,20 +43,22 @@
       </v-row>
 
       <v-row >
-        <v-col>
+        <v-col >
 
           <v-text-field outlined
                         prepend-icon="home_filled"
                         :value="selectedOrganization.title"
                         readonly
-                        hint='This field is "readonly" because you belong to only one organization.'
+                        hint='This field is "readonly" only the EnviDat Team can change it.'
                         :error-messages="validationErrors.organizationId"
                         />
         </v-col>
 
+<!--
         <v-col >
           <MetadataOrganizationChip :organization="selectedOrganization.title" />
         </v-col>
+-->
       </v-row>
 
 
@@ -139,7 +141,6 @@ import {
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 
 export default {
   name: 'EditOrganization',
@@ -314,7 +315,6 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
-    MetadataOrganizationChip,
   },
 };
 
