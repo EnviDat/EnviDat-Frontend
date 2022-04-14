@@ -73,7 +73,7 @@
 
       <v-row class="pt-2">
 
-        <v-col cols="6">
+        <v-col cols="4">
           <v-text-field :label="labels.dataObjectIdentifier"
                         outlined
                         :readonly="mixinMethods_isFieldReadOnly('doi')"
@@ -85,10 +85,19 @@
                         :value="doiField" />
         </v-col>
 
-        <v-col cols="6">
+        <v-col class="shrink pt-5" >
           <BaseRectangleButton buttonText="Generate New DOI"
                                :disabled="true" />
         </v-col>
+
+        <v-col class="shrink pt-6">
+          <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" >settings</v-icon>
+        </v-col>
+
+        <v-col class=" pt-6">
+          Generating DOI is under construction
+        </v-col>
+
 
       </v-row>
 
