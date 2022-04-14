@@ -19,22 +19,91 @@ export default {
   parameters: {},
 };
 
+
 export const BaseStartEndDateViews = () => ({
   components: { BaseStartEndDate },
   template: `
     <v-row style="border: solid 1px;">
+
+      <v-col cols="12">
+        empty interaction, with no logic in from the parent component!
+      </v-col>
     
       <v-col cols="12">
         <BaseStartEndDate  />
       </v-col>
 
       <v-col cols="12">
-        <BaseStartEndDate  start-date="2022-04-11"
-                            end-date="2022-04-14"/>
+        prefilled interaction
+      </v-col>
+      
+      <v-col cols="12">
+        <BaseStartEndDate :start-date="startDate1"
+                          :startDateProperty="startDateProperty"
+                          :end-date="endDate1"
+                          :endDateProperty="endDateProperty"
+                          :clearableStartDate="true"
+                          :clearableEndDate="true"
+                          @dateChange="dateChange(1, ...arguments)"
+                          @clearClick="catchClearClick"
+                          />
       </v-col>
 
+      <v-col cols="12">
+        fields Readonly 
+      </v-col>
+
+      <v-col cols="12">
+        <BaseStartEndDate :start-date="startDate1"
+                          :startDateProperty="startDateProperty"
+                          :end-date="endDate1"
+                          :endDateProperty="endDateProperty"
+                          :readOnlyFields="readOnlyFields"
+                          :readOnlyExplanation="readOnlyExplanation"
+                          />
+      </v-col>
+    
     </v-row>
   `,
+  computed: {
+    readOnlyFields() {
+      return [
+        this.startDateProperty,
+        this.endDateProperty,
+      ];
+    },
+  },
+  methods: {
+    catchClearClick(dateProperty) {
+      console.log('Got catchClearClick');
+      console.log(dateProperty);
+
+      if (dateProperty === this.startDateProperty) {
+        this.startDate1 = '';
+      }
+      if (dateProperty === this.endDateProperty) {
+        this.endDate1 = '';
+      }
+    },
+    dateChange(index, dateProperty, newDate) {
+      console.log('Got new date');
+      console.log(index);
+      console.log(dateProperty);
+      console.log(newDate);
+
+      if (dateProperty === this.startDateProperty) {
+        this.startDate1 = newDate;
+      }
+      if (dateProperty === this.endDateProperty) {
+        this.endDate1 = newDate;
+      }
+    },
+  },
   data: () => ({
+    startDateProperty: 'dateStart',
+    endDateProperty: 'endDate',
+    startDate1: '2022-04-11',
+    endDate1: '2022-04-20',
+    readOnlyExplanation: 'Fields are readonly for testing!',
   }),
 });

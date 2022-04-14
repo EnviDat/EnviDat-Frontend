@@ -35,7 +35,7 @@
 
       <v-row>
         <v-col>
-          <div class="text-body-1">{{ labels.instructions }}</div>
+          <div class="text-body-1" v-html="labels.instructions" />
         </v-col>
       </v-row>
 
@@ -59,72 +59,18 @@
           <v-col class="pl-4">
 
             <BaseStartEndDate :startDate="item.dateStart"
-                              startDateProperty="dateStart"
+                              :startDateProperty="startDateProperty"
                               :endDate="item.dateEnd"
-                              endDateProperty="dateEnd"
-                              @dateChange="dateChanged(index, $event.dateProperty, $event.newDate)"
+                              :endDateProperty="endDateProperty"
+                              :clearableEndDate="true"
+                              @dateChange="dateChanged(index, ...arguments)"
+                              @clearClick="clearDate(index, ...arguments)"
+                              :readOnlyFields="readOnlyFields"
+                              :readOnlyExplanation="readOnlyExplanation"
                               />
 
           </v-col>
 
-          <v-col class="pl-4">
-
-            <v-text-field v-if="mixinMethods_isFieldReadOnly('dateEnd')"
-                          :label="labels.dateEnd"
-                          prepend-icon="date_range"
-                          dense
-                          outlined
-                          readonly
-                          :hint="mixinMethods_readOnlyHint('dateEnd')"
-                          :value="formatToEnviDatDate(item.dateEnd)"
-                          :error-messages="validationErrors.dates[index].dateEnd"
-                          />
-
-            <v-menu v-else
-                    v-model="dateEndPickerOpen"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="auto">
-
-              <template v-slot:activator="{ on }">
-                <v-text-field :label="labels.dateEnd"
-                              prepend-icon="date_range"
-                              dense
-                              outlined
-                              :hint="mixinMethods_readOnlyHint('dateEnd')"
-                              :value="formatToEnviDatDate(item.dateEnd)"
-                              @change="dateChangedTextField(index, 'dateEnd', $event)"
-                              v-on="on"
-                              :error-messages="validationErrors.dates[index].dateEnd"
-                              />
-              </template>
-
-              <v-date-picker
-                locale="en-in"
-                @input="dateChanged(index, 'dateEnd', $event)"
-                scrollable
-                :min="formatToDatePickerDate(item.dateStart)"
-                :value="formatToDatePickerDate(item.dateEnd)"
-                next-icon="skip_next"
-                prev-icon="skip_previous"
-              >
-                <div class="px-4"
-                     style="cursor: pointer;"
-                     @click="clearDate(index, 'dateEnd')">
-                  {{ labels.clearEndDate }}
-                </div>
-                <BaseIconButton materialIconName="clear"
-                                iconColor="red"
-                                tooltipText="Clear the End Date"
-                                @clicked="clearDate(index, 'dateEnd')"
-                />
-              </v-date-picker>
-
-            </v-menu>
-
-          </v-col>
         </v-row>
 
         </v-container>
@@ -222,15 +168,18 @@ import {
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
+import {
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+} from '@/factories/mappingFactory';
 
 export default {
   name: 'EditDataInfo',
@@ -241,13 +190,7 @@ export default {
     },
     dates: {
       type: Array,
-      default: () => [
-        {
-          dateType: '',
-          dateStart: '',
-          dateEnd: '',
-        },
-      ],
+      default: () => [],
     },
     loading: {
       type: Boolean,
@@ -301,7 +244,31 @@ export default {
     },
     datesField: {
       get() {
-        return this.previewDates?.length > 0 ? this.previewDates : this.dates;
+        const dates = this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
+
+        const createdType = 'created'
+        const createdAmount = dates.filter((dObj) => dObj.dateType === createdType).length > 0;
+
+        if (createdAmount <= 0) {
+          dates.push({
+            [DATE_PROPERTY_DATE_TYPE]: createdType,
+            [DATE_PROPERTY_START_DATE]: '',
+            [DATE_PROPERTY_END_DATE]: '',
+          });
+        }
+
+        const collectedType = 'collected'
+        const collectedAmount = dates.filter((dObj) => dObj.dateType === collectedType).length > 0;
+
+        if (collectedAmount <= 0) {
+          dates.push({
+            [DATE_PROPERTY_DATE_TYPE]: collectedType,
+            [DATE_PROPERTY_START_DATE]: '',
+            [DATE_PROPERTY_END_DATE]: '',
+          });
+        }
+
+        return dates;
       },
     },
     getDataLicenseLink() {
@@ -403,20 +370,21 @@ export default {
     dateChanged(index, property, value) {
       // Update indexed object in array, with updated dates
 
-      // Close datepickers
-      this.dateStartPickerOpen = false;
-      this.dateEndPickerOpen = false;
-
       const localCopy = [...this.datesField];
       const newDates = this.updateDatesArray(localCopy, index, property, value);
 
       this.previewDates = newDates;
 
+      this.setDataInfo('dates', newDates);
+
+/*
       const errorArray = this.validationErrors.dates;
 
       if (isArrayContentValid(newDates, 'dates', index, property, this.validations, errorArray)) {
+        console.log('valid');
         this.setDataInfo('dates', newDates);
       }
+*/
 
     },
     updateDatesArray(array, index, property, value) {
@@ -428,30 +396,46 @@ export default {
         [property]: value,
       };
 
-      return array;
+      const cleanCopy = [];
+
+      for (let i = 0; i < array.length; i++) {
+        const entry = array[i];
+        if (!!entry[DATE_PROPERTY_START_DATE]
+            || !!entry[DATE_PROPERTY_END_DATE]) {
+          cleanCopy.push(entry);
+        }
+      }
+
+      return cleanCopy;
     },
     clearDate(index, property) {
-      this.dateChanged(index, property, null);
+      this.dateChanged(index, property, '');
     },
   },
   components: {
     BaseStartEndDate,
     BaseStatusLabelView,
-    BaseIconButton,
   },
   data: () => ({
     validationErrors: {
       dataLicense: null,
-      dates: [{
-        dateType: null,
-        dateStart: null,
-        dateEnd: null,
-      }],
+      dates: [
+        {
+          dateType: null,
+          [DATE_PROPERTY_START_DATE]: null,
+          [DATE_PROPERTY_END_DATE]: null,
+        },
+        {
+          dateType: null,
+          [DATE_PROPERTY_START_DATE]: null,
+          [DATE_PROPERTY_END_DATE]: null,
+        },
+      ],
     },
     labels: {
       cardTitle: 'Additional Information about the Resources',
       instructions:
-        'Please select dates for collection and/or creation dates. Dates are in "DD-MM-YYYY" format.',
+        'Please select dates for collection and / or creation dates. Dates are in <b>"DD-MM-YYYY"</b> format.',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
@@ -466,8 +450,8 @@ export default {
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
     },
-    dateStartPickerOpen: false,
-    dateEndPickerOpen: false,
+    startDateProperty: DATE_PROPERTY_START_DATE,
+    endDateProperty: DATE_PROPERTY_END_DATE,
     previewDates: [],
     dataLicenses: [
       {

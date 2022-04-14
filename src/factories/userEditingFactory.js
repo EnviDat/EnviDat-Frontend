@@ -45,7 +45,6 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
-import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 
 export function updateEditingArray(

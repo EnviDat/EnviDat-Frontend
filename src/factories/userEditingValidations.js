@@ -14,12 +14,9 @@
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_KEYWORDS,
-  EDITMETADATA_MAIN,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
@@ -28,9 +25,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import { parse, isDate } from 'date-fns';
 import * as yup from 'yup';
-import { ckanDateFormat } from '@/factories/mappingFactory';
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
@@ -90,21 +85,7 @@ const metadataInEditingValidations = {
   // }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
-      dates: yup.array().of(
-        yup.object().shape({
-          dateType: yup.string('Date type must be a string.'),
-          dateStart: yup
-            .date('Start date must be a valid date.')
-            .required('Enter at least a start date')
-            .parseDateString()
-            .validateDateRange('dateStart', 'dateEnd'),
-          dateEnd: yup
-            .date('End date must be a valid date.')
-            .parseDateString()
-            .validateDateRange('dateStart', 'dateEnd')
-            .nullable(),
-        }),
-      ),
+      // dates validation is done the in the BaseStartEndDate component
       dataLicenseId: yup
       .string()
       .test(
@@ -175,51 +156,6 @@ const metadataInEditingValidations = {
       ),
     }),
 };
-
-
-// eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'parseDateString', function () {
-  // Helper function for yup date string parsing
-  // eslint-disable-next-line func-names
-  return this.transform((value, originalValue) => {
-      if (!originalValue) {
-        return null
-      }
-
-      const parsedDate = isDate(originalValue)
-        ? originalValue
-        : parse(originalValue, ckanDateFormat, new Date());
-
-      return parsedDate;
-  });
-});
-
-// eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndField) {
-  // Helper function for yup date range validation
-  return this.test(
-    'validate-date-range',
-    'End date can\'t be before start date.',
-    (value, options) => {
-      const dateStart = options.parent[dateStartField]
-
-      const parsedStart = isDate(dateStart)
-        ? dateStart
-        : parse(dateStart, ckanDateFormat, new Date());
-
-      const dateEnd = options.parent[dateEndField]
-      if (!dateEnd) {
-        return true;
-      }
-
-      const parsedEnd = isDate(dateEnd)
-        ? dateEnd
-        : parse(dateEnd, ckanDateFormat, new Date());
-
-      return parsedEnd >= parsedStart;
-    }
-  );
-});
 
 
 export function getValidationMetadataEditingObject(key) {

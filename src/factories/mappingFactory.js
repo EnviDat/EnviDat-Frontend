@@ -43,7 +43,11 @@ import {
 } from '@/factories/metaDataFactory';
 
 import { getDataCredit } from '@/factories/authorFactory';
-import { format, isDate, parse } from 'date-fns';
+import { format, parse } from 'date-fns';
+
+export const DATE_PROPERTY_DATE_TYPE = 'dateType';
+export const DATE_PROPERTY_START_DATE = 'dateStart';
+export const DATE_PROPERTY_END_DATE = 'dateEnd';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -92,9 +96,9 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO_DATES]: [
     // special case because the snakeCase is done before
     // only a renaming is needed
-    ['dateType','dateType'],
-    ['dateStart','date'],
-    ['dateEnd','endDate'],
+    [DATE_PROPERTY_DATE_TYPE,'dateType'],
+    [DATE_PROPERTY_START_DATE,'date'],
+    [DATE_PROPERTY_END_DATE,'endDate'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -700,10 +704,7 @@ export function parseDateStringToCKANFormat(dateString) {
     return null;
   }
 
-  const parsedDate = isDate(dateString)
-    ? dateString
-    : parse(dateString, enviDatDateFormat, new Date());
-
+  const parsedDate = parse(dateString, enviDatDateFormat, new Date());
   return format(parsedDate, ckanDateFormat);
 }
 
@@ -713,10 +714,7 @@ export function parseDateStringToEnviDatFormat(dateString) {
     return null;
   }
 
-  const parsedDate = isDate(dateString)
-    ? dateString
-    : parse(dateString, ckanDateFormat, new Date());
-
+  const parsedDate = parse(dateString, ckanDateFormat, new Date());
   return format(parsedDate, enviDatDateFormat);
 }
 
