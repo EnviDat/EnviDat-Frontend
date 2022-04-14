@@ -80,18 +80,6 @@
 
     <v-row dense
            class="pt-4">
-
-      <v-col cols="4" >
-
-        <BaseUserPicker :users="fullNameUsers"
-                        :preSelected="preselectAuthorName"
-                        @removedUsers="catchPickerAuthorChange($event, false)"
-                        @pickedUsers="catchPickerAuthorChange($event, true)" />
-      </v-col>
-
-    </v-row>
-
-    <v-row dense >
       <v-col >
 
         <v-text-field ref="contactEmail"
@@ -107,6 +95,32 @@
                       @change="notifyChange('contactEmail', $event)" />
 
       </v-col>
+
+      <v-col class="shrink px-4 text-body-1 "
+              style="text-align: center;"
+              cols="2"
+              v-html="labels.authorOr">
+<!--        {{ labels.authorOr }} -->
+      </v-col>
+
+      <v-col >
+
+        <BaseUserPicker :users="fullNameUsers"
+                        :preSelected="preselectAuthorName"
+                        @removedUsers="catchPickerAuthorChange($event, false)"
+                        @pickedUsers="catchPickerAuthorChange($event, true)" />
+      </v-col>
+
+    </v-row>
+
+    <v-row dense >
+
+      <v-col class="text-body-1">
+        {{ labels.authorAutoComplete }}
+      </v-col>
+    </v-row>
+
+    <v-row dense >
 
       <v-col >
 
@@ -611,7 +625,9 @@ export default {
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Please choose a contact person from the dropdown list or enter it\'s details.',
+      authorInstructions: 'Enter an email address for a main contact.',
+      authorOr: 'Or pick <br /> an author',
+      authorAutoComplete: 'If an author is picked or found with the email address the names is autocompleted!',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',
