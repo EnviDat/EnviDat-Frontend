@@ -58,50 +58,12 @@
 
           <v-col class="pl-4">
 
-            <v-text-field v-if="mixinMethods_isFieldReadOnly('dateStart')"
-                          :label="labels.dateStart"
-                          dense
-                          outlined
-                          readonly
-                          prepend-icon="date_range"
-                          :hint="mixinMethods_readOnlyHint('dateStart')"
-                          :value="formatToEnviDatDate(item.dateStart)"
-                          v-on="on"
-                          :error-messages="validationErrors.dates[index].dateStart"
-            />
-
-            <v-menu v-else
-                    v-model="dateStartPickerOpen"
-                    :close-on-content-click="false"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="auto">
-
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  :label="labels.dateStart"
-                  dense
-                  outlined
-                  prepend-icon="date_range"
-                  :value="formatToEnviDatDate(item.dateStart)"
-                  @change="dateChangedTextField(index, 'dateStart', $event)"
-                  v-on="on"
-                  :error-messages="validationErrors.dates[index].dateStart"
-                />
-              </template>
-
-              <v-date-picker
-                locale="en-in"
-                @input="dateChanged(index, 'dateStart', $event)"
-                scrollable
-                :max="formatToDatePickerDate(item.dateEnd)"
-                :value="formatToDatePickerDate(item.dateStart)"
-                next-icon="skip_next"
-                prev-icon="skip_previous"
-                />
-
-            </v-menu>
+            <BaseStartEndDate :startDate="item.dateStart"
+                              startDateProperty="dateStart"
+                              :endDate="item.dateEnd"
+                              endDateProperty="dateEnd"
+                              @dateChange="dateChanged(index, $event.dateProperty, $event.newDate)"
+                              />
 
           </v-col>
 
@@ -115,7 +77,6 @@
                           readonly
                           :hint="mixinMethods_readOnlyHint('dateEnd')"
                           :value="formatToEnviDatDate(item.dateEnd)"
-                          v-on="on"
                           :error-messages="validationErrors.dates[index].dateEnd"
                           />
 
@@ -268,12 +229,8 @@ import {
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import {
-  ckanDateFormat,
-  parseDateStringToCKANFormat,
-  parseDateStringToEnviDatFormat,
-} from '@/factories/mappingFactory';
-import { parse } from 'date-fns';
+
+import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
 
 export default {
   name: 'EditDataInfo',
@@ -473,31 +430,12 @@ export default {
 
       return array;
     },
-    formatToEnviDatDate(dateString) {
-      return parseDateStringToEnviDatFormat(dateString);
-    },
-    formatToCKANDate(dateString) {
-      return parseDateStringToCKANFormat(dateString);
-    },
-    formatToDatePickerDate(dateString) {
-      if (!dateString) {
-        return '';
-      }
-
-      const dateTime = parse(dateString, ckanDateFormat, new Date());
-
-      if (dateTime instanceof Date && !!dateTime.getTime()) {
-        return (new Date(dateTime - (new Date()).getTimezoneOffset() * 60000)).toISOString()
-            .substr(0, 10);
-      }
-
-      return '';
-    },
     clearDate(index, property) {
       this.dateChanged(index, property, null);
     },
   },
   components: {
+    BaseStartEndDate,
     BaseStatusLabelView,
     BaseIconButton,
   },
@@ -519,8 +457,6 @@ export default {
       instructionsCreation:
         '"Creation Date" should be used for data created from models or other sources.',
       dateType: 'Date Type',
-      dateStart: 'Start Date',
-      dateEnd: 'End Date',
       instructionsLicense:
         'Please select a data license from the dropdown list.',
       creationDate: 'Creation Date',
@@ -529,7 +465,6 @@ export default {
       dataLicenseSummary: 'Click here to view Data License Summary',
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
-      clearEndDate: 'Clear the End Date',
     },
     dateStartPickerOpen: false,
     dateEndPickerOpen: false,
