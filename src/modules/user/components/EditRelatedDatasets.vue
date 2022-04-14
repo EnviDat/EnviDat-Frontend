@@ -155,12 +155,12 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_RELATED_DATASETS);
     },
     previewRelatedDatasetsText() {
-      return this.previewText || this.relatedDatasetsText;
+      return this.previewText ? this.previewText : this.relatedDatasetsText;
     },
   },
   methods: {
     clearPreview() {
-      this.previewText = '';
+      this.previewText = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -183,7 +183,7 @@ export default {
     },
   },
   data: () => ({
-    previewText: '',
+    previewText: null,
     editingProperty: 'relatedDatasetsText',
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {

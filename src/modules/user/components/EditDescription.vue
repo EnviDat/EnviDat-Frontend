@@ -155,12 +155,12 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_DESCRIPTION);
     },
     previewDescription() {
-      return this.previewText || this.description;
+      return this.previewText ? this.previewText : this.description;
     },
   },
   methods: {
     clearPreview() {
-      this.previewText = '';
+      this.previewText = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -188,7 +188,7 @@ export default {
   },
   data: () => ({
     editingProperty: 'description',
-    previewText: '',
+    previewText: null,
     labels: {
       cardTitle: 'Metadata Description',
       labelTextarea: 'Metadata Description',

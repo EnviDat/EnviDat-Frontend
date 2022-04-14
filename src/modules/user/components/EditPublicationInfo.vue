@@ -374,9 +374,10 @@ export default {
     },
     publisherField: {
       get() {
-        return this.publisher;
+        return this.previewPublisher !== null ? this.previewPublisher : this.publisher;
       },
       set(value) {
+        this.previewPublisher = value;
         const property = 'publisher';
 
         if (this.validateProperty(property, value)) {
@@ -569,6 +570,7 @@ export default {
     },
   },
   data: () => ({
+    previewPublisher: null,
     emptyEntry: {
       institution: '',
       grantNumber: '',
