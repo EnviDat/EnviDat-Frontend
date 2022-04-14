@@ -91,8 +91,8 @@
                       prepend-icon="email"
                       :placeholder="labels.placeholderContactEmail"
                       :value="contactEmailField"
-                      @input="catchEmailChange"
-                      @change="notifyChange('contactEmail', $event)" />
+                      @input="validateEmail"
+                      @blur="catchEmailChange" />
 
       </v-col>
 
@@ -106,7 +106,7 @@
       <v-col >
 
         <BaseUserPicker :users="fullNameUsers"
-                        :preSelected="preselectAuthorName"
+                        :preSelected="preselectAuthorNames"
                         @removedUsers="catchPickerAuthorChange($event, false)"
                         @pickedUsers="catchPickerAuthorChange($event, true)" />
       </v-col>
@@ -319,11 +319,9 @@ export default {
         return this.previewContactEmail || this.contactEmail;
       },
     },
-    preselectAuthorName() {
-      const fullName = this.getFullName({
-        given_name: this.contactGivenName,
-        name: this.contactSurname,
-      });
+    preselectAuthorNames() {
+      const author = this.getAuthorByEmail(this.contactEmailField);
+      const fullName = this.getFullName(author);
 
       return fullName ? [fullName] : [];
     },
@@ -377,12 +375,15 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
     contactInfoReadOnly() {
-      return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.preselectAuthorName?.length > 0);
-/*
-      const is = (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.preselectAuthorName?.length > 0);
-      console.log(is);
-      return is;
-*/
+      return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.authorPickerFoundAuthor);
+    },
+    authorPickerFoundAuthor() {
+      if (this.preselectAuthorNames?.length <= 0 || this.fullNameUsers?.length <= 0) {
+        return false;
+      }
+
+      const matches = this.fullNameUsers.filter(fullName => fullName === this.preselectAuthorNames[0]);
+      return matches.length > 0;
     },
   },
   methods: {
@@ -416,7 +417,12 @@ export default {
       this.previewTitle = value;
       this.validateProperty('metadataTitle', value);
     },
-    catchEmailChange(value) {
+    catchEmailChange(){
+      if (this.previewContactEmail) {
+        this.notifyChange('contactEmail', this.previewContactEmail);
+      }
+    },
+    validateEmail(value) {
       this.previewContactEmail = value;
       this.validateProperty('contactEmail', value);
     },
@@ -478,12 +484,12 @@ export default {
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
-      return found?.length > 0 ? found[0] : null;
+      return found[0] || null;
     },
     getAuthorByEmail(email) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.email === email);
-      return found?.length > 0 ? found[0] : null;
+      return found[0] || null;
     },
     getAuthorByNameProp(property, value) {
 
@@ -491,16 +497,15 @@ export default {
 
       if (property === 'contactGivenName') {
         const found = authors.filter(auth => auth.firstName === value);
-        return found?.length > 0 ? found[0] : null;
+        return found[0] || null;
       }
 
       if (property === 'contactSurname') {
         const found = authors.filter(auth => auth.lastName === value);
-        return found?.length > 0 ? found[0] : null;
+        return found[0] || null;
       }
 
       return null;
-
     },
     // Assigns show contact preview Boolean variables to true
     showPreview() {
