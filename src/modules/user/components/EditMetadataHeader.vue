@@ -55,9 +55,10 @@
                       prepend-icon="import_contacts"
                       :error-messages="validationErrors.metadataTitle"
                       :placeholder="labels.placeholderTitle"
+                      :value="metadataTitleField"
                       @input="catchTitleChange"
                       @change="notifyChange('metadataTitle', $event)"
-                      :value="metadataTitleField" />
+                      />
 
       </v-col>
 
@@ -301,22 +302,22 @@ export default {
   computed: {
     metadataTitleField: {
       get() {
-        return this.previewTitle || this.metadataTitle;
+        return this.previewTitle !== null ? this.previewTitle : this.metadataTitle;
       },
     },
     contactGivenNameField: {
       get() {
-        return this.previewContactGivenName || this.contactGivenName;
+        return this.previewContactGivenName !== null ? this.previewContactGivenName : this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        return this.previewContactSurname || this.contactSurname;
+        return this.previewContactSurname !== null ? this.previewContactSurname : this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        return this.previewContactEmail || this.contactEmail;
+        return this.previewContactEmail !== null ? this.previewContactEmail : this.contactEmail;
       },
     },
     preselectAuthorNames() {
@@ -399,10 +400,10 @@ export default {
       return this.mixinMethods_readOnlyHint(property);
     },
     clearPreviews() {
-      this.previewContactGivenName = '';
-      this.previewContactSurname = '';
-      this.previewContactEmail = '';
-      this.previewTitle = '';
+      this.previewContactGivenName = null;
+      this.previewContactSurname = null;
+      this.previewContactEmail = null;
+      this.previewTitle = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -521,9 +522,9 @@ export default {
         this.previewContactSurname = author.lastName.trim();
         this.previewContactEmail = author.email.trim();
       } else {
-        this.previewContactGivenName = '';
-        this.previewContactSurname = '';
-        this.previewContactEmail = '';
+        this.previewContactGivenName = null;
+        this.previewContactSurname = null;
+        this.previewContactEmail = null;
       }
     },
     // Returns object with contact details if author is not null
@@ -559,7 +560,6 @@ export default {
     },
     notifyChange(property, value) {
 
-      // Check if property is valid
       if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
         // If user already exists emit user email, given name and surname to eventBus
@@ -579,15 +579,9 @@ export default {
 
             this.authorPickerTouched = false;
           }
-          else {
-            this.setHeaderInfo(property, value);
-          }
-        }
-        // Else emit property to eventBus
-        else {
-          this.setHeaderInfo(property, value);
         }
 
+        this.setHeaderInfo(property, value);
       }
     },
     setContact(authorObject) {
@@ -618,10 +612,10 @@ export default {
   data: () => ({
     authorIsPicked: false,
     authorPickerTouched: false,
-    previewContactGivenName: '',
-    previewContactSurname: '',
-    previewContactEmail: '',
-    previewTitle: '',
+    previewContactGivenName: null,
+    previewContactSurname: null,
+    previewContactEmail: null,
+    previewTitle: null,
     labels: {
       title: EDIT_METADATA_MAIN_TITLE,
       contactPerson: 'Contact Person',
