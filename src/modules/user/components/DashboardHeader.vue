@@ -13,8 +13,7 @@
 
         <v-col cols="2">
           <v-row no-gutters justify="end">
-            <user-avatar :nameInitials="nameInitials"
-                          :emailHash="emailHash" />
+            <UserAvatar :nameInitials="nameInitials" />
           </v-row>
 
         </v-col>
