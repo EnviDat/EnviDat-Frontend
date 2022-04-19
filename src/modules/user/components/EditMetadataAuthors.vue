@@ -38,13 +38,10 @@
                           >
 
                 <template #dataCreditCurrentDataset >
-                  <DataCreditLayout class="px-0 py-1 readableText"
-                                    :dataCredit="author.currentDataCredits"
-                                    :badgesLabel="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
-                                    :noCreditslabel="`No data credit set yet, how did ${author.fullName} contribute to this datasets?`"
-                                    iconColor="white"
-                                    badgeColor="#384753"
-                                    :dark="true" />
+                  <EditDataCredits :instruction="editDataCreditsInstruction"
+                                   :dataCredit="author.dataCredit"
+                                   @creditClick="catchCreditClick(author, ...arguments)"
+                                    />
 
                 </template>
 
@@ -75,19 +72,26 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
-  AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
+  AUTHORS_EDIT_CURRENT_DATACREDIT,
   EDIT_METADATA_AUTHORS_TITLE,
 } from '@/factories/metadataConsts';
+
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
 
 export default {
   name: 'EditMetadataAuthors',
   components: {
     MetadataAuthors,
     AuthorCard,
-    DataCreditLayout,
+    EditDataCredits,
   },
   props: {
     authors: {
@@ -123,11 +127,49 @@ export default {
     },
   },
   methods: {
+    toggleDataCredit(author, creditName) {
+      let dCredit = author.dataCredit;
+
+      if (!dCredit){
+        dCredit = [];
+      }
+
+      if (!dCredit.includes(creditName)) {
+        dCredit.push(creditName);
+      } else {
+        const index = dCredit.indexOf(creditName);
+        dCredit.splice(index, 1);
+      }
+
+      author.dataCredit = dCredit;
+
+      return author;
+    },
+    catchCreditClick(author, creditName) {
+
+      let localAuthorCopy = [...this.authors];
+      const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
+
+      const authorCopy = { ...authorToChange};
+      const newAuthor = this.toggleDataCredit(authorCopy, creditName);
+
+      // replaces the existing author with the new one
+      localAuthorCopy = localAuthorCopy.map(a => a.email !== newAuthor.email ? a : newAuthor);
+
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: this.stepKey,
+        data: {
+          authors: localAuthorCopy,
+        },
+      });
+
+    },
   },
   data: () => ({
+    stepKey: EDITMETADATA_AUTHOR_LIST,
     editingInstructions: 'Select an author from the list to edit its details',
     EDIT_METADATA_AUTHORS_TITLE,
-    AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
+    editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
   }),
 };
 </script>

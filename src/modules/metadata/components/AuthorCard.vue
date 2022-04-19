@@ -88,8 +88,7 @@
         <slot name="dataCreditCurrentDataset"/>
 
         <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
-                          class="px-0 py-1 readableText"
-                          :dataCredit="author.dataCredit"
+                          :totalDataCredits="author.totalDataCredits"
                           :badgesLabel="dataCreditBadgeLabel"
                           :iconColor="dark ? 'white' : 'black'"
                           :badgeColor="dark ? 'white' : darkColor"
@@ -291,7 +290,7 @@ import {
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
-  name: 'AuthorCard',
+  name: 'EditDataCredits',
   components: {
     DataCreditLayout,
     BaseIconButton,
@@ -351,9 +350,11 @@ export default {
     dark() {
       return this.dataCreditLevel >= 6;
     },
+/*
     dataCredits() {
       return this.author && this.author.dataCredit ? Object.keys(this.author.dataCredit) : [];
     },
+*/
     dataCreditLevel() {
       return getDataCreditLevel(this.dataCreditScore);
     },
@@ -370,8 +371,8 @@ export default {
         // a dataset counts two points
         score = this.author.datasetCount * 2;
 
-        if (this.author.dataCredit) {
-          const counts = Object.values(this.author.dataCredit);
+        if (this.author.totalDataCredits) {
+          const counts = Object.values(this.author.totalDataCredits);
 
           for (let i = 0; i < counts.length; i++) {
             const creditCount = counts[i];
@@ -457,7 +458,7 @@ export default {
       return id;
     },
     dataCreditsCount(credit) {
-      return this.author.dataCredit ? this.author.dataCredit[credit] : '';
+      return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
     cardClick() {
     },

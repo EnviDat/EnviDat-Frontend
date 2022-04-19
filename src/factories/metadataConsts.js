@@ -22,6 +22,7 @@ export const AUTHORS_PUBLISHED_DATACOUNT = 'Published datasets';
 export const AUTHORS_DATACREDIT_CONTRIBUTION = 'Data Credit Contributions';
 export const AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT = 'Data Credits for this dataset';
 export const AUTHORS_DATACREDIT_SCORE = 'Data Credit Score';
+export const AUTHORS_EDIT_CURRENT_DATACREDIT = 'Click on the icons to choose the data credit contributions to this dataset';
 
 export const METADATA_DETAILS_TITLE = 'Further Information';
 export const METADATA_FUNDING_TITLE = 'Funding Information';

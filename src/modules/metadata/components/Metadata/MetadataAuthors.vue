@@ -52,15 +52,15 @@
                         :loading="author.loading"
                         @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" >
 
-              <template v-if="hasDataCredits(author.currentDataCredits)"
+              <template v-if="hasDataCredits(author.dataCredit)"
                         #dataCreditCurrentDataset >
-                <DataCreditLayout class="px-0 py-1 readableText"
-                                  :dataCredit="author.currentDataCredits"
-                                  :badgesLabel="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
-                                  noCreditslabel="AUTHORS No data credit declarations for this dataset"
-                                  iconColor="white"
-                                  badgeColor="#384753"
-                                  :dark="true" />
+
+                <EditDataCredits class="px-0 py-1 readableText"
+                                  :dataCredit="author.dataCredit"
+                                  :instruction="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
+                                  readonly
+                                  dark
+                                  />
 
               </template>
 
@@ -102,14 +102,14 @@ import {
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
 import { eventBus } from '@/factories/eventBus';
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 export default {
   name: 'MetadataAuthors',
   components: {
     AuthorCard,
     AuthorCardPlaceholder,
-    DataCreditLayout,
+    EditDataCredits,
   },
   props: {
     genericProps: Object,
@@ -162,12 +162,12 @@ export default {
     },
   },
   methods: {
-    hasDataCredits(dataCredits) {
-      if (!dataCredits) {
+    hasDataCredits(dataCredit) {
+      if (!dataCredit) {
         return false;
       }
 
-      return Object.keys(dataCredits).length > 0;
+      return Object.keys(dataCredit).length > 0;
     },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);

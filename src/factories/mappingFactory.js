@@ -479,18 +479,13 @@ function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, 
 
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
-
     const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
-    author.dataCredit = getDataCredit(bAuthor);
-
     authors.push(author);
   })
   // const authors = createAuthors({ author: backendAuthors.authors });
   // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
 
-  commitEditingData(commit, stepKey, {
-    authors,
-  });
+  commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
 
   return dataObject;
@@ -643,25 +638,8 @@ function cleanAuthorsForBackend(authors) {
 
   const bAuthors = [];
   for (let i = 0; i < authors.length; i++) {
-
-    // work with local copy here to avoid to changing the vuex state directly
-    const author = { ...authors[i] };
-
-    if (author.dataCredit) {
-      const keys = Object.keys(author.dataCredit);
-
-      const dataCreditsArray = [];
-
-      for (let j = 0; j < keys.length; j++) {
-        const key = keys[j];
-        dataCreditsArray.push(key);
-      }
-
-      author.dataCredit = dataCreditsArray;
-    }
-
+    const author = authors[i];
     const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
-
     bAuthors.push(bAuthor);
   }
 
