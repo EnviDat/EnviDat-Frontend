@@ -7,12 +7,31 @@ import {
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import {
+  createAuthors,
+  extractAuthorsMap,
+  getFullAuthorsFromDataset,
+} from '@/factories/authorFactory';
 import authorCollection from '../public/testdata/authorCollection.json';
 import { CARD_VIEWS } from './storybookFolder';
 
-const authorFromCollection = Object.values(authorCollection)[1];
-const authorFromCollection2 = Object.values(authorCollection)[5];
-const authorFromCollection3 = Object.values(authorCollection)[4];
+import unFormatedMetadataCards from './js/metadata';
+
+const metadataCards = [];
+
+unFormatedMetadataCards.forEach((el) => {
+  el.author = createAuthors(el);
+  metadataCards.push(el);
+});
+
+const authorsMap = extractAuthorsMap(metadataCards);
+
+const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[0];
+const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCards[1])[1];
+const authorFromCollection3 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[2];
+const authorFromCollection4 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[0];
+
+console.log(authorFromCollection.totalDataCredits);
 
 const methods = {
   authors() {
@@ -63,69 +82,42 @@ export const AuthorCardViews = () => ({
     <v-row>
 
       <v-col cols="12" md="4" pt-5 >
-        {{ datasetDataCredit }}
-        <author-card :author="authorFromCollection" >
-          <template #default >
 
-            <DataCreditLayout class="px-0 py-1 readableText"
-                              :dataCredit="datasetDataCredit"
-                              badgesLabel="DataCredits for this Entry"
-                              iconColor="white"
-                              badgeColor="#384753"
-                              :dark="true" />
-
-          </template>
-        </author-card>
+        <author-card :author="authorFromCollection" />
       </v-col>      
-<!--
+      
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" />
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection" >
-          <template #default="{ getCurrentDataCredit }" >
-            {{ getCurrentDataCredit }}
-
-            <DataCreditLayout class="px-0 py-1 readableText"
-                              :dataCredit="getCurrentDataCredit"
-                              badgesLabel="DataCredits for this Entry"
-                              iconColor="white"
-                              badgeColor="black"
-                              :dark="true" />
-
-
-          </template>
-        </author-card>
+        <author-card :author="authorFromCollection2" />
       </v-col>
 
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection2" :loading="true" />
+        <author-card :author="authorFromCollection3" :loading="true" />
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection3" />
+        <author-card :author="authorFromCollection4" />
       </v-col>
--->
 
     </v-row>
   </v-container>
   `,
   methods,
   computed: {
-    getCurrentDataCredit() {
-      return this.datasetDataCredit;
-    },
   },
   data: () => ({
     authorFromCollection,
     authorFromCollection2,
     authorFromCollection3,
-    datasetDataCredit: {
-      collection: 1,
-      software: 2,
-    },
+    authorFromCollection4,
+    datasetDataCredit: [
+      'collection',
+      'software',
+    ],
     author: {
       firstName: 'Felix',
       lastName: 'Gugerli',
@@ -136,7 +128,7 @@ export const AuthorCardViews = () => ({
         identifier: '0000-0003-3878-1845',
       },
       email: 'felix.gugerli@wsl.ch',
-      dataCredit: {
+      totalDataCredits: {
         collection: 10,
         validation: 3,
         curation: 12,
