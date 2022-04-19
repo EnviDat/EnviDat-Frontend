@@ -34,28 +34,15 @@
       <v-card v-show="loading"
               class="fill-height pa-4">
 
-        <v-card-title>
-          <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
-               style="width: 100%;" >
-            <div class="bone bone-type-multiline bone-style-steps" />
-          </div>
-        </v-card-title>
+        <v-row id="metadataListPlaceholder" >
 
-        <v-card-text >
-          <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
-               style="width: 100%;" >
-            <div class="bone bone-type-multiline" />
-            <div class="bone bone-type-multiline bone-style-paragraph" />
-          </div>
-        </v-card-text>
+          <v-col v-for="(n, index) in 2"
+                 :key="'placeHolder_' + index"
+                 class="pa-2" >
 
-        <v-card-text >
-          <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
-               style="width: 100%;" >
-            <div class="bone bone-type-multiline" />
-            <div class="bone bone-type-multiline bone-style-paragraph" />
-          </div>
-        </v-card-text>
+            <MetadataCardPlaceholder :dark="false" />
+          </v-col>
+        </v-row>
 
       </v-card>
 
@@ -98,6 +85,7 @@ import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 export default {
   name: 'NavigationStepper',
@@ -203,6 +191,7 @@ export default {
   components: {
     StepperHeader,
     BaseIconButton,
+    MetadataCardPlaceholder,
   },
 };
 </script>

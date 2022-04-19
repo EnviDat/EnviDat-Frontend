@@ -17,19 +17,11 @@
         </v-col>
       </v-row>
 
-    <!--
-                    :showGenericOpenButton="author.openEvent ? true : false"
-                    :openButtonTooltip="author.openButtonTooltip"
-                    :openButtonIcon="author.openButtonIcon"
-                    :isSelected="author.isSelected"
-                    :loading="author.loading"
-                    @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
-    -->
-
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
-            <template #editingAuthors="{ author }" >
+            <template v-if="!loading"
+                      #editingAuthors="{ author }" >
 
               <AuthorCard :author="author"
                           :authorDetailsConfig="authorDetailsConfig"
@@ -81,18 +73,13 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 import {
-  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
 
 export default {
   name: 'EditMetadataAuthors',
-  components: {
-    MetadataAuthors,
-    AuthorCard,
-    EditDataCredits,
-  },
   props: {
     authors: {
       type: Array,
@@ -114,11 +101,33 @@ export default {
       type: String,
       default: '',
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    authorsFields() {
+      const authors = this.previewAuthors || this.authors;
+
+      if (authors?.length > 0) {
+        for (let i = 0; i < authors.length; i++) {
+          const author = authors[i];
+          author.loading = this.loading;
+        }
+      }
+
+      return authors;
+    },
     metadataAuthorsObject() {
       return {
-        authors: this.authors,
+        authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
         authorDeadInfo: this.authorDeadInfo,
         emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
@@ -127,12 +136,11 @@ export default {
     },
   },
   methods: {
+    clearPreviews() {
+      this.previewAuthors = null;
+    },
     toggleDataCredit(author, creditName) {
-      let dCredit = author.dataCredit;
-
-      if (!dCredit){
-        dCredit = [];
-      }
+      const dCredit = [... author.dataCredit || []];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -156,6 +164,8 @@ export default {
       // replaces the existing author with the new one
       localAuthorCopy = localAuthorCopy.map(a => a.email !== newAuthor.email ? a : newAuthor);
 
+      this.previewAuthors = localAuthorCopy;
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: this.stepKey,
         data: {
@@ -170,7 +180,13 @@ export default {
     editingInstructions: 'Select an author from the list to edit its details',
     EDIT_METADATA_AUTHORS_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
+    previewAuthors: null,
   }),
+  components: {
+    MetadataAuthors,
+    AuthorCard,
+    EditDataCredits,
+  },
 };
 </script>
 

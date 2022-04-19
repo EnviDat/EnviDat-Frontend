@@ -10,7 +10,7 @@
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
-                       :loading="false"
+                       :loading="loading"
                        @clickedClose="catchBackClicked" />
 
 
@@ -193,7 +193,7 @@ export default {
       return this.$route.params.metadataid;
     },
     loading() {
-      return this.loadingCurrentEditingContent && !this.currentEditingContent;
+      return this.loadingCurrentEditingContent || !this.currentEditingContent;
     },
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route);

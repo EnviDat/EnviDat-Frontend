@@ -106,11 +106,6 @@ import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 export default {
   name: 'MetadataAuthors',
-  components: {
-    AuthorCard,
-    AuthorCardPlaceholder,
-    EditDataCredits,
-  },
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
@@ -172,6 +167,11 @@ export default {
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },
+  },
+  components: {
+    AuthorCard,
+    AuthorCardPlaceholder,
+    EditDataCredits,
   },
   data: () => ({
     showAuthors: false,
