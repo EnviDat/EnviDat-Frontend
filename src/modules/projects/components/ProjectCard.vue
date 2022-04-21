@@ -25,7 +25,7 @@
         </v-col>
 
         <v-col class="ma-auto px-4" cols="6">
-          <div class="title"
+          <div class="text-h6"
                style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
                :class="dark ? 'white--text' : 'black--text'"
           >

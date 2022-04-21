@@ -5,10 +5,10 @@
 
       <v-row no-gutters
               justify="space-between">
-        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'display-1'">
+        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'text-h4'">
           {{ this.fileObject.chartTitle }}
         </v-col>
-        <v-col class="title text-right" >
+        <v-col class="text-h6 text-right" >
           {{ stationName }}
         </v-col>
       </v-row>
@@ -30,13 +30,13 @@
         </v-col>
 
         <v-col v-if="!chartIsLoading && !dataAvailable && !dataError"
-                class="title pt-2 pb-1"
+                class="text-h6 pt-2 pb-1"
                 :style="`color: ${ $vuetify.theme.error };`" >
           {{ noDataText }}
         </v-col>
 
         <v-col v-if="dataError"
-                class="title"
+                class="text-h6"
                 :style="`color: ${ $vuetify.theme.error };`" >
           {{ dataError }}
         </v-col>
@@ -63,7 +63,7 @@
         </v-col>
 
         <v-col v-if="showDisclaimer && showChart"
-                class="title" style="color: red;">
+                class="text-h6" style="color: red;">
           {{ disclaimerText }}
         </v-col>
 

@@ -42,7 +42,6 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { getDataCredit } from '@/factories/authorFactory';
 import { format, parse } from 'date-fns';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';

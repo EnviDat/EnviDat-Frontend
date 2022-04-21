@@ -32,7 +32,7 @@
               :style="`line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`"
               :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
                         'display-2': $vuetify.breakpoint.xlOnly,
-                        'display-1': $vuetify.breakpoint.mdAndUp,
+                        'text-h4': $vuetify.breakpoint.mdAndUp,
                         'headline': $vuetify.breakpoint.smOnly,
                         'subtitle-1': $vuetify.breakpoint.xsOnly,
                       }" >
@@ -45,7 +45,7 @@
         <div class="headerTitle py-3"
               :style="`color: ${$vuetify.theme.themes.light.error}`"
               :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                        'display-1': $vuetify.breakpoint.mdAndDown,
+                        'text-h4': $vuetify.breakpoint.mdAndDown,
                         'headline': $vuetify.breakpoint.smAndDown,
                       }" >
           {{ `${NotFoundTitle} '${metadataId}'` }}

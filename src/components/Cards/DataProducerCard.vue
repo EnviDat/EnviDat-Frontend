@@ -15,7 +15,7 @@
       >
         <v-row class="fill-height" >
           <v-col cols="12">
-            <span class="display-2 dataproducer_title white--text">{{ titleText }}</span>
+            <span class="text-h3 dataproducer_title white--text">{{ titleText }}</span>
           </v-col>
         </v-row>
       </v-container>

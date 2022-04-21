@@ -9,7 +9,7 @@
     <v-container fluid class="pa-4">
 
       <v-row>
-        <v-col class="display-2">
+        <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>
@@ -62,7 +62,7 @@
 
         <v-row v-if="requestSuccess && email" >
           <v-col cols="12"
-                  class="caption" >
+                  class="text-caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
           </v-col>
         </v-row>
@@ -113,7 +113,7 @@
                 :style="`background-color: ${errorColor};`"
                 class="mt-4" >
           <v-col cols="12"
-                  class="body-1">
+                  class="text-body-1">
             {{ formErrorText }}
           </v-col>
         </v-row>

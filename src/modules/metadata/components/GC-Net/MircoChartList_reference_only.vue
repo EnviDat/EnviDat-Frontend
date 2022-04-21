@@ -16,7 +16,7 @@
               cols="12" sm="9">
         <v-row   justify="center">
           <v-col 
-                  class="title shrink">
+                  class="text-h6 shrink">
             Loading MicroCharts...
           </v-col>
         </v-row>

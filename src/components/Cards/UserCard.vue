@@ -17,7 +17,7 @@
         -->
       </div>
 
-      <div class="title black--text mx-auto pt-8">
+      <div class="text-h6 black--text mx-auto pt-8">
         {{ userName }}
       </div>
 
@@ -27,15 +27,15 @@
           <v-row no-gutters
                  class="py-2"
                  justify="start">
-            <v-col class="body-2">Datasets</v-col>
-            <v-col class="caption">{{ datasetCount }}</v-col>
+            <v-col class="text-body-2">Datasets</v-col>
+            <v-col class="text-caption">{{ datasetCount }}</v-col>
           </v-row>
 
           <v-row no-gutters
                  class="py-2"
                  justify="start">
-            <v-col class="body-2">Email</v-col>
-            <v-col class="caption">{{ email }}</v-col>
+            <v-col class="text-body-2">Email</v-col>
+            <v-col class="text-caption">{{ email }}</v-col>
           </v-row>
         </v-container>
 

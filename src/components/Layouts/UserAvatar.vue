@@ -81,7 +81,7 @@ export default {
       }
 
       if (this.size > 48) {
-        return 'display-1';
+        return 'text-h4';
       }
 
       if (this.size <= 32) {

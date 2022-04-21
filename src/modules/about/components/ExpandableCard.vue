@@ -16,7 +16,7 @@
                   :src="img" />
         </v-col>
 
-        <v-col cols="7" class="headline cardTitle px-4"
+        <v-col cols="7" class="text-h5 cardTitle px-4"
                align-self="center" >
           {{ title }}
         </v-col>

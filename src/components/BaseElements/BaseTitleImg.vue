@@ -29,7 +29,7 @@
             'black--text': dark,
             'white--text': !dark,
             'display-3' : $vuetify.breakpoint.mdAndUp,
-            'display-1' : $vuetify.breakpoint.smAndDown,
+            'text-h4' : $vuetify.breakpoint.smAndDown,
           }" >
         <span :style="`background-color: ${textBackgroundColor};
                         text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`">

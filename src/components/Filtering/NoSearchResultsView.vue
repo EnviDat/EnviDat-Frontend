@@ -2,11 +2,11 @@
   <v-row >
     <v-col cols="12"
             class="warning py-4">
-      <div class="title">{{ noResultText }}</div>
+      <div class="text-h6">{{ noResultText }}</div>
     </v-col>
 
     <v-col cols="12">
-      <div class="body-1">{{ suggestionText }}</div>
+      <div class="text-body-1">{{ suggestionText }}</div>
     </v-col>
 
     <v-col cols="12" >

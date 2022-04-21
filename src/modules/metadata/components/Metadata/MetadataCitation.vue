@@ -2,7 +2,7 @@
   <v-card :style="fixedHeight ? 'height: 304px;' : ''"
           id="MetadataCitation" >
 
-    <v-card-title class="title metadata_title pa-4">
+    <v-card-title class="text-h6 metadata_title pa-4">
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="headline text-no-wrap pa-4">
+    <v-card-title class="text-h5 text-no-wrap pa-4">
       {{ title }}
     </v-card-title>
 

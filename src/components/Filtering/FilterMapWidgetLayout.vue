@@ -3,7 +3,7 @@
           id="FilterMapWidgetLayout" >
 
     <v-card-title :class="mdScreen ? 'pa-4' : 'pb-2'" >
-      <div class="mb-0 title"
+      <div class="mb-0 text-h6"
             style="word-break: keep-all;" >
         {{ title }}
       </div>
@@ -27,7 +27,7 @@
         <v-col cols="2"
                 md="3"
                 lg="2"
-                class="caption" >
+                class="text-caption" >
           <div :style="`color:${pinnedAmount > 0 ? 'black' : 'rgba(0,0,0,.47)'};`">
             {{ filterText + pinnedAmount }}
           </div>
@@ -81,7 +81,7 @@
       <v-row no-gutters
               align="center" >
 
-        <v-col class="grow caption">
+        <v-col class="grow text-caption">
           <div :style="`color:${pinnedAmount > 0 ? $vuetify.theme.themes.light.primary : 'rgba(0,0,0,.47)'};`">
             {{ filterText + pinnedAmount }}
           </div>

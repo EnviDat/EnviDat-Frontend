@@ -11,7 +11,7 @@
                           indeterminate />
     </template>
 
-    <v-card-title class="headline resourceHeadline white--text">
+    <v-card-title class="text-h5 resourceHeadline white--text">
       {{ resourceName }}
     </v-card-title>
 

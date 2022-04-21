@@ -20,7 +20,7 @@
         <!-- Text -->
         <v-col class="px-0"
                 cols="7" >
-          <div class="px-4 headline"
+          <div class="px-4 text-h5"
                 :class="{ 'compactTitle' : this.$vuetify.breakpoint.smAndDown }" >
             {{ title }}
           </div>

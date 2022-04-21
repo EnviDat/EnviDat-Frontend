@@ -10,7 +10,7 @@
     <v-container fluid class="pa-4">
 
       <v-row>
-        <v-col class="display-2">
+        <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>

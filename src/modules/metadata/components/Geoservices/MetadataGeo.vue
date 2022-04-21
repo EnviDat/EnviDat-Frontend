@@ -2,7 +2,7 @@
   <v-card id="MetadataGeo">
     <v-card-title>
       <v-row justify="end" align="center" no-gutters>
-        <v-col class="title metadata_title grow" align-self="start">
+        <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
