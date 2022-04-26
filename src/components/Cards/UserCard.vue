@@ -46,7 +46,6 @@
     <div style="position: absolute; right: 39.5%; border-radius: 50%;"
           :style="`top: ${avatarTopPosition}px;`" >
       <UserAvatar :size="avatarHeight"
-                  :emailHash="emailHash"
                   :nameInitials="nameInitials"
                   class="elevation-5" />
     </div>

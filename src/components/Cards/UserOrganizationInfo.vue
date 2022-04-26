@@ -13,7 +13,6 @@
         </div>
 
         <UserAvatar :size="avatarHeight"
-                    :emailHash="emailHash"
                     :nameInitials="nameInitials"
                     class="elevation-5" />
 
