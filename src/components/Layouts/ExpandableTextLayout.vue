@@ -2,7 +2,7 @@
   <v-card :class="cardClass">
 
     <v-card-title v-if="title"
-                  class="metadata_title text-h6 pa-4">
+                  class="metadataComponentTitle text-h6 pa-4">
       {{ title }}
     </v-card-title>
     

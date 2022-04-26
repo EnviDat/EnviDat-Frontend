@@ -16,7 +16,7 @@
                   :height="flatLayout ? '55px' : $vuetify.breakpoint.smAndDown ? '90px' : '115px'" >
 
             <div v-if="!maxTitleLengthReached || $vuetify.breakpoint.xsOnly"
-                class="pa-4 text-h5 mb-0"
+                class="pa-4 metadataTitle mb-0"
                 :class="titleClass" >
               {{ truncatedTitle }}
             </div>
@@ -25,7 +25,7 @@
                         bottom >
               <template v-slot:activator="{ on }">
                 <div v-on="on"
-                      class="pa-4 text-h5 mb-0"
+                      class="pa-4 metadataTitle mb-0"
                       :class="titleClass" >
                   {{ truncatedTitle }}
                 </div>
@@ -526,7 +526,7 @@ export default {
     color: rgba(255,255,255,.9) !important;
   }
 
-  .headline {
+  .metadataTitle {
     /* font-family: "Baskervville", serif !important; */
     font-size: 1.2rem !important;
     line-height: 1.2rem !important;

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="metadata_title text-h6 pa-4">
+    <v-card-title class="metadataComponentTitle text-h6 pa-4">
       {{ projectDatasetsTitle }}
     </v-card-title>
 

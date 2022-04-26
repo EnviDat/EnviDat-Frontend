@@ -2,7 +2,7 @@
   <v-card id="MetadataAuthors"
           ref="MetadataAuthors">
 
-    <v-card-title class="text-h6 metadata_title">
+    <v-card-title class="text-h6 metadataComponentTitle">
       {{ METADATA_AUTHORS_TITLE }}
     </v-card-title>
 
@@ -59,7 +59,6 @@
                                   :dataCredit="author.dataCredit"
                                   :instruction="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
                                   readonly
-                                  dark
                                   />
 
               </template>

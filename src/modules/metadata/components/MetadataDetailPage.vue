@@ -911,7 +911,7 @@ export default {
 </script>
 
 <style>
-.metadata_title {
+.metadataComponentTitle {
   font-family: 'Baskervville', serif !important;
   /* font-weight: 700 !important; */
   font-weight: 500 !important;

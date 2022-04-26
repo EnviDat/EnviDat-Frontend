@@ -6,7 +6,7 @@
       <v-row justify="end"
               no-gutters>
 
-        <v-col class="text-h6 metadata_title grow">
+        <v-col class="text-h6 metadataComponentTitle grow">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
