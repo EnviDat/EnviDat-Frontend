@@ -104,7 +104,7 @@
           <v-col class="cardIcons shrink" >
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
-                                      :showOnHover="!hover"
+                                      :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
                                       @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
         </v-row>
@@ -159,7 +159,7 @@
                  class="pl-1 shrink" >
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
-                                      :showOnHover="!hover"
+                                      :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
                                       @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
 
@@ -300,6 +300,10 @@ export default {
     role: {
       type: String,
       default: '',
+    },
+    showOrganizationOnHover: {
+      type: Boolean,
+      default: undefined,
     },
   },
   computed: {
