@@ -51,7 +51,8 @@ export const Amcharts5SingleChart = () => ({
   data: () => ({
     chartdiv: 'chartdiv1',
       // apiUrl: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1,timestamp/2018-11-04T17:00:00/2020-11-10T00:00:00/', // result.type: application/json, application/json; charset=utf-8
-      apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/windspeed1/end/-999/2020-11-04/2020-11-06/', // result.type: text/csv, application/json; charset=utf-8
+      // apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/windspeed1/end/-999/2020-11-04/2020-11-06/', // result.type: text/csv, application/json; charset=utf-8
+       apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2020-11-04/2020-11-06/',
   }),
 });
 

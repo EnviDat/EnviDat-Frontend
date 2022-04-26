@@ -91,7 +91,7 @@ export default {
           connect: false,
           xAxis,
           yAxis,
-          valueYField: 'windspeed1', // TODO implement logic for valueYField, eventually this should handle multiple y axis series
+          valueYField: 'airtemp2', // TODO implement logic for valueYField, eventually this should handle multiple y axis series
           valueXField: this.xAxisName,
           tooltip: am5.Tooltip.new(root, {}),
         })
@@ -153,7 +153,7 @@ export default {
         const processor = am5.DataProcessor.new(root, {
           dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
           dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-          numericFields: ['windspeed1'], // TODO implement logic to determine numericFields for JSON parsing
+          numericFields: ['airtemp1'], // TODO implement logic to determine numericFields for JSON parsing
         });
         processor.processMany(data);
 
@@ -165,27 +165,41 @@ export default {
       // Parse CSV input, set series with data
       else if (responseType === 'text/csv') {
 
+        const jsonData = this.convertCSVToJSON(result.response, '-999')
+        // console.log(jsonData)
+
         // Parse data
-        const data = am5.CSVParser.parse(result.response, {
-          delimiter: ',',
-          reverse: true,
-          skipEmpty: true,
-          useColumnNames: true,
-        });
+        // const data = am5.CSVParser.parse(result.response, {
+        //   delimiter: ',',
+        //   reverse: true,
+        //   skipEmpty: true,
+        //   useColumnNames: true,
+        // });
+        //
+        // // Process data
+        // const processor = am5.DataProcessor.new(root, {
+        //   dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
+        //   dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
+        //   numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for CSV parsing
+        // });
+        // processor.processMany(data);
+        //
+        // // Assign parsed/processed data to series
+        // series.data.setAll(data);
+
+        // TODO investigate why tooltip only working for JSON data and not CSV data
+        // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
 
         // Process data
         const processor = am5.DataProcessor.new(root, {
           dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
           dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-          numericFields: ['windspeed1'], // TODO implement logic to determine numericFields for CSV parsing
+          numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
         });
-        processor.processMany(data);
+        processor.processMany(jsonData);
 
         // Assign parsed/processed data to series
-        series.data.setAll(data);
-
-        // TODO investigate why tooltip only working for JSON data and not CSV data
-        // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+        series.data.setAll(jsonData);
 
       }
 
@@ -224,6 +238,31 @@ export default {
     // Return responseType 'type' from result object (only string parsed to first comma)
     getResponseType(resultType) {
       return resultType.split(',')[0];
+    },
+    // Return JSON data from inputted CSV data, convert nullValue to null
+    convertCSVToJSON(csv, nullValue) {
+
+      const lines = csv.split('\n');
+
+      // Remove last line if it is an empty string
+      if (lines[lines.length -1] === '') {
+        lines.pop()
+      }
+
+      const keys = lines[0].split(',');
+
+      return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
+
+        const toAdd = {};
+
+        if (cur === nullValue) {
+          cur = null
+        }
+
+        toAdd[keys[i]] = cur;
+
+        return { ...acc, ...toAdd };
+      }, {}));
     },
   },
 
