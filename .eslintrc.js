@@ -68,6 +68,7 @@ module.exports = {
     'vuetify/grid-unknown-attributes': 'error',
     'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
+    'no-restricted-syntax': 0,
   },
 
   overrides: [
