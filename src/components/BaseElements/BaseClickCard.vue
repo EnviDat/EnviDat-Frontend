@@ -20,7 +20,7 @@
         <!-- Text -->
         <v-col class="px-0"
                 cols="7" >
-          <div class="px-4 text-h5"
+          <div class="px-3 baseClickCardTitle"
                 :class="{ 'compactTitle' : this.$vuetify.breakpoint.smAndDown }" >
             {{ title }}
           </div>
@@ -80,8 +80,8 @@ export default {
 
 <style scoped>
 
-  .card .headline {
-    font-size: 1.45em !important;
+  .baseClickCardTitle {
+    /* font-size: 1.45em !important; */
     overflow: inherit !important;
     text-overflow: inherit !important;
     max-height: inherit !important;
