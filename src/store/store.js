@@ -11,8 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex';
 
 import { about } from '@/modules/about/store/aboutStore';
 import { projects } from '@/modules/projects/store/projectsStore';
@@ -51,8 +50,6 @@ let errorReportingEnabled = false;
 if (typeof errReport === 'string') {
   errorReportingEnabled = errReport.toLowerCase() === 'true';
 }
-
-Vue.use(Vuex);
 
 const initialState = {
   webpIsSupported: false,
@@ -93,8 +90,8 @@ const modules = {
   blog,
 };
 
-function createStore() {
-  return new Vuex.Store({
+function getStore() {
+  return createStore({
     strict: true,
     state: initialState,
     getters: {
@@ -124,7 +121,7 @@ function createStore() {
 let store = null;
 
 try {
-  store = createStore();
+  store = getStore();
 } catch (e) {
   if (e instanceof SyntaxError) {
     // if there is an error for the initial loading
@@ -138,7 +135,7 @@ try {
 
     console.info('cleared local storage');
 
-    store = createStore();
+    store = getStore();
   }
 }
 

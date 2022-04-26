@@ -70,12 +70,37 @@ module.exports = {
       allowedPlugins: ['define'],
     },
   },
+  chainWebpack: config => {
+    config.resolve.alias.set('vue', '@vue/compat')
+
+    config.module
+      .rule('vue')
+      .use('vue-loader')
+      .tap(options => {
+        return {
+          ...options,
+          compilerOptions: {
+            compatConfig: {
+              MODE: 2
+            }
+          }
+        }
+      })
+  },
   // chainWebpack: config => {
   //   // config.optimization.delete('splitChunks'),
   //   // disabling prefetch will prevent the browser from loading the other parts of the ap
   //   // while on idle state
   //   // config.plugins.delete('prefetch')
   // },
+  configureWebpack: {
+    resolve: {
+      fallback: {
+        "path": false,
+      },
+    },
+  },
+/*
   configureWebpack: {
     devtool: 'source-map',
     optimization: {
@@ -104,7 +129,7 @@ module.exports = {
           from: path.join(cesiumSource, 'Assets'),
           to: 'Assets',
           globOptions: {
-            ignore: ['Images/**', 'Textures/**', 'IAU2006_XYS/**'],
+            ignore: ['Images/!**', 'Textures/!**', 'IAU2006_XYS/!**'],
           },
         },
         {
@@ -115,6 +140,7 @@ module.exports = {
       new webpack.DefinePlugin({ CESIUM_BASE_URL: JSON.stringify('') }),
     ],
   },
+  */
   // devServer: {
   //   // assetsSubDirectory: "static",
   //   // assetsPublicPath: "/",

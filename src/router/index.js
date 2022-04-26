@@ -12,8 +12,11 @@
  */
 
 /* eslint-disable prefer-template */
-import Vue from 'vue';
-import Router from 'vue-router';
+import {
+  createRouter,
+  createWebHashHistory,
+} from 'vue-router';
+
 import {
   GCMD_PATH,
   GCMD_PAGENAME,
@@ -31,8 +34,6 @@ import { aboutRoutes } from '@/modules/about/routes';
 import { userRoutes } from '@/modules/user/routes';
 
 import { blogRoutes } from '@/modules/blog/routes';
-
-Vue.use(Router);
 
 const START = '/';
 const trailingSlashRE = /\/?$/;
@@ -56,7 +57,8 @@ const routes = [
 ];
 
 
-export default new Router({
+export default createRouter({
+  history: createWebHashHistory(),
   routes: [
     ...homeRoutes,
     ...browseRoutes,

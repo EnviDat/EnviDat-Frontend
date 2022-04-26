@@ -8,10 +8,10 @@
 
       <v-stepper-header :style="`height: ${height}px; `">
 
-        <template v-for="(step, index) in steps">
+        <template v-for="(step, index) in steps"
+                  :key="`step-${index}`" >
 
-          <v-stepper-step :key="`step-${index}`"
-                          :id="`step-${index}`"
+          <v-stepper-step :id="`step-${index}`"
                           :color="getStepIconColor(step, index)"
                           editable
                           edit-icon="check"

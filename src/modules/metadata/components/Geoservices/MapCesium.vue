@@ -13,13 +13,13 @@
 
 <script>
 /* eslint-disable no-unused-vars */
+/*
   import {
     buffer as tBuffer,
     envelope as tEnvelope,
-
   } from '@turf/turf';
 
-    /* eslint-disable new-cap */
+    /!* eslint-disable new-cap *!/
     import Viewer from 'cesium/Widgets/Viewer/Viewer';
     import OpenStreetMapImageryProvider from 'cesium/Scene/OpenStreetMapImageryProvider';
     import BingMapsImageryProvider from 'cesium/Scene/BingMapsImageryProvider';
@@ -393,6 +393,7 @@ import Matrix4 from 'cesium/Core/Matrix4';
         LOCATION_TYPE_POLYGON,
       }),
     };
+*/
 </script>
 
 <style scoped>

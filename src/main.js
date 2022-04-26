@@ -13,10 +13,10 @@
  */
 
 import 'babel-polyfill';
-import Vue from 'vue';
+import { createApp } from 'vue';
 
 import axios from 'axios';
-import Vue2Filters from 'vue2-filters';
+
 import InfiniteLoading from 'vue-infinite-loading';
 import store from '@/store/store';
 
@@ -33,8 +33,6 @@ import App from './App';
 
 
 Vue.use(InfiniteLoading /* , { options } */);
-Vue.use(Vue2Filters);
-Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 
 /* eslint-disable prefer-template */
@@ -91,7 +89,13 @@ axios.interceptors.response.use(
 );
 
 
+createApp(App)
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .mount('<App/>');
 /* eslint-disable no-new */
+/*
 new Vue({
   el: '#app',
   router,
@@ -100,3 +104,4 @@ new Vue({
   components: { App },
   template: '<App/>',
 });
+*/

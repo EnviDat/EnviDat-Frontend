@@ -4,7 +4,7 @@ module.exports = {
   root: true,
 
   parserOptions: {
-    parser: 'babel-eslint',
+    parser: '@babel/eslint-parser',
     sourceType: 'module',
     ecmaVersion: 10,
   },
@@ -14,7 +14,7 @@ module.exports = {
   // },
   extends: [
     '@vue/airbnb',
-    'plugin:vue/essential',
+    'plugin:vue/vue3-essential',
     'prettier/vue',
     'prettier',
   ],
@@ -22,7 +22,7 @@ module.exports = {
   // // required to lint *.vue files
   plugins: [
     // 'html',
-    'vuetify',
+    // 'vuetify',
   ],
   // // check if imports actually resolve
   settings: {
@@ -64,9 +64,9 @@ module.exports = {
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
-    'vuetify/no-deprecated-classes': 'error',
-    'vuetify/grid-unknown-attributes': 'error',
-    'vuetify/no-legacy-grid': 'error',
+    // 'vuetify/no-deprecated-classes': 'error',
+    // 'vuetify/grid-unknown-attributes': 'error',
+    // 'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
   },
