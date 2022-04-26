@@ -192,6 +192,7 @@
                     :defaultPublicationState="defaultPublicationState"
                     :reloadAmount="20"
                     :preloadingDistance="10"
+                    :showOrganizationOnHover="false"
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 

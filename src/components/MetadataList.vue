@@ -99,6 +99,7 @@
                           :state="getMetadataState(metadatasContent[pinnedId])"
                           :organization="metadata.organization.name"
                           :organizationTooltip="metadata.organization.title"
+                          :showOrganizationOnHover="showOrganizationOnHover"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
         </v-col>
@@ -128,6 +129,7 @@
                           :state="getMetadataState(metadata)"
                           :organization="metadata.organization.name"
                           :organizationTooltip="metadata.organization.title"
+                          :showOrganizationOnHover="showOrganizationOnHover"
                           @organizationClicked="$emit('organizationClicked', metadata.organization)"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked"
@@ -274,6 +276,10 @@ export default {
     preloadingDistance: {
       type: Number,
       default: 150,
+    },
+    showOrganizationOnHover: {
+      type: Boolean,
+      default: undefined,
     },
   },
   beforeMount() {
