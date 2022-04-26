@@ -6,7 +6,7 @@
       <v-row justify="end"
               no-gutters>
 
-        <v-col class="title metadata_title grow">
+        <v-col class="text-h6 metadataComponentTitle grow">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
@@ -63,6 +63,7 @@
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
                           :showGenericOpenButton="res.openEvent ? true : false"
+                          :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"
                           :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"

@@ -182,6 +182,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     authors,
     authorDeadInfo,
     categoryColor: dataset.categoryColor,
+    organization: dataset.organization?.name || '',
+    organizationTooltip: dataset.organization?.title || '',
   };
 }
 
@@ -461,6 +463,15 @@ export function createResource(resource, datasetName) {
 
   const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
+  let fileName = resource.name;
+
+  if (!fileName && resURL) {
+    const urlSplits = resURL.split('/');
+    if (urlSplits.length > 0) {
+      fileName = urlSplits[urlSplits.length - 1];
+    }
+  }
+
   return {
     // "hash": "",
     description: resource.description,
@@ -473,7 +484,7 @@ export function createResource(resource, datasetName) {
     mimetype: resource.mimetype ? resource.mimetype : '',
     cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
-    name: resource.name,
+    name: fileName,
     url: resURL,
     restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
@@ -552,6 +563,19 @@ export function getOrganizationMap(organizations) {
   }
 
   return mainOrgas;
+}
+
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata.state || null;
+  const priv = metadata.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
 }
 
 export function createDetails(dataset) {
@@ -944,6 +968,7 @@ export function enhanceMetadataEntry(
  * @param {Array} metadatas
  * @param {Array} cardBGImages
  *
+ * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {

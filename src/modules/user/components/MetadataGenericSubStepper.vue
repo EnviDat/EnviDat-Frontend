@@ -90,6 +90,14 @@ export default {
       this.$router.push({
         params,
         query: this.$route.query,
+      }, () => {
+
+      }, (err) => {
+        // add empty onAbort to not trigger the NavigationDuplicated Error message
+        // when it's a NavigationDuplicated Error
+        if (err?.name?.toLowerCase() !== 'navigationduplicated') {
+          console.error(err);
+        }
       });
     },
     nextStep() {

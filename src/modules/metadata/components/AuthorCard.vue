@@ -85,13 +85,14 @@
           </v-col>
         </v-row>
 
-        <data-credit-layout v-if="authorDetailsConfig.showDataCredits"
-                            class="px-0 py-1 readableText"
-                            :dataCredit="author.dataCredit"
-                            :badgesLabel="dataCreditBadgeLabel"
-                            :iconColor="dark ? 'white' : 'black'"
-                            :badgeColor="dark ? 'white' : darkColor"
-                            :dark="!dark" />
+        <slot name="dataCreditCurrentDataset"/>
+
+        <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
+                          :totalDataCredits="author.totalDataCredits"
+                          :badgesLabel="dataCreditBadgeLabel"
+                          :iconColor="dark ? 'white' : 'black'"
+                          :badgeColor="dark ? 'white' : darkColor"
+                          :dark="!dark" />
 
         <v-row v-if="authorDetailsConfig.showDataCreditScore"
                 no-gutters
@@ -156,8 +157,7 @@
                 no-gutters
                 align="start">
 
-          <v-col v-if="author.email && !authorIsDead"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6" >
             <v-row no-gutters>
               <v-col cols="12"
@@ -176,14 +176,13 @@
             </v-row>
           </v-col>
 
-          <v-col v-if="author.id && author.id.identifier"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6" >
             <v-row no-gutters>
               <v-col cols="12"
                       class="authorInfoLabel py-0"
                       :class="dark ? 'white--text' : 'black--text'" >
-                {{ author.id.type ? author.id.type : idLabel }}
+                {{ idLabel }}
               </v-col>
 
               <v-col cols="12"
@@ -202,8 +201,7 @@
             </v-row>
           </v-col>
 
-          <v-col v-if="author.affiliation"
-                  class="pa-1"
+          <v-col class="pa-1"
                   cols="6">
             <v-row no-gutters>
               <v-col cols="12"
@@ -292,7 +290,7 @@ import {
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
-  name: 'AuthorCard',
+  name: 'EditDataCredits',
   components: {
     DataCreditLayout,
     BaseIconButton,
@@ -352,9 +350,6 @@ export default {
     dark() {
       return this.dataCreditLevel >= 6;
     },
-    dataCredits() {
-      return this.author && this.author.dataCredit ? Object.keys(this.author.dataCredit) : [];
-    },
     dataCreditLevel() {
       return getDataCreditLevel(this.dataCreditScore);
     },
@@ -371,8 +366,8 @@ export default {
         // a dataset counts two points
         score = this.author.datasetCount * 2;
 
-        if (this.author.dataCredit) {
-          const counts = Object.values(this.author.dataCredit);
+        if (this.author.totalDataCredits) {
+          const counts = Object.values(this.author.totalDataCredits);
 
           for (let i = 0; i < counts.length; i++) {
             const creditCount = counts[i];
@@ -439,9 +434,17 @@ export default {
       this.$refs.progressTrack.setAttribute('style', style);
     },
     isOrcId(id) {
+      if (!id) {
+        return false
+      }
+
       return id.match(RegExp(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g));
     },
     formatIdentifier(id) {
+      if (!id) {
+        return ''
+      }
+
       if (id.includes('https://')) {
         const splits = id.split('/');
         return splits[splits.length - 1];
@@ -450,7 +453,7 @@ export default {
       return id;
     },
     dataCreditsCount(credit) {
-      return this.author.dataCredit ? this.author.dataCredit[credit] : '';
+      return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
     cardClick() {
     },

@@ -3,25 +3,38 @@
             id="GenericModalPageLayout"
             transition="dialog-bottom-transition"
             scrollable
-            persistent
-            class="modalHeight" >
+            persistent>
 
-    <v-card class="pa-0 ml-15">
-      
-      <v-toolbar flat
-                  dark
-                  color="primary" >
+    <v-card class="modalHeight pa-0 ml-15" >
 
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-sheet flat
+               dark
+               color="primary"
+               class="pa-4"
+              style="height: 64px;">
 
-        <v-spacer></v-spacer>
+        <v-row no-gutters
+               justify="space-between"
+                align-content="center">
 
-        <v-btn icon
-                @click="closeClicked" >
-          <v-icon dark >close</v-icon>
-        </v-btn>
+          <v-col class="text-h6">
+            {{ title }}
+          </v-col>
 
-      </v-toolbar>
+          <v-col class="shrink" >
+
+            <BaseIconButton id="GenericModalPageLayoutCloseButton"
+                              material-icon-name="close"
+                              icon-color="white"
+                              color="white"
+                              outlined
+                              tool-tip-text="Close"
+                              :tool-tip-bottom="true"
+                              @clicked="closeClicked" />
+
+          </v-col>
+        </v-row>
+      </v-sheet>
 
       <v-card-text class="pa-0"
                     :style="autoScroll ? 'overflow: auto;' : 'overflow: hidden;'" >
@@ -52,6 +65,7 @@ import {
   METADATA_OPEN_MODAL,
   METADATA_CLOSE_MODAL,
 } from '@/factories/eventBus';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'GenericModalPageLayout',
@@ -71,18 +85,16 @@ export default {
   methods: {
     closeClicked() {
       this.showDialog = false;
-      this.modalContentComponent = null;
+
       eventBus.$emit(METADATA_CLOSE_MODAL);
     },
-    // openClicked(modalContentComponent) {
-      // this.modalContentComponent = modalContentComponent;
     openClicked() {
       this.showDialog = true;
     },    
   },
+  components: { BaseIconButton },
   data: () => ({
     showDialog: false,
-    // modalContentComponent: null,
   }),
 };
 </script>
@@ -91,8 +103,8 @@ export default {
 <style scoped>
 
   .modalHeight {
+    height: calc(100vh - 90px);
     max-height: 95% !important;
-    height: 95% !important;
   }
 
 </style>

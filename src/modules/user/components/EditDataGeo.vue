@@ -39,12 +39,40 @@
       </v-row>
 
       <v-row>
-        <v-col>
-          <MetadataGeo :genericProps="genericProps"
-                        @saveGeometries="updateGeometriesInMetadata"
-                        @undoSaveGeometries="revertGeometriesInMetadata" />
+        <v-col cols="12"
+               md="10"
+            class="editDataGeo">
+          <MetadataGeo :genericProps="genericProps" />
+        </v-col>
+
+        <v-col cols="12"
+               md="2"
+               class="align-self-md-end">
+
+          <v-row >
+            <v-col>
+              <BaseRectangleButton :color="$vuetify.theme.themes.light.accent"
+                                   :disabled="!undoButtonEnabled"
+                                   buttonText="Undo Changes"
+                                   tooltipText="Reset to original geometry"
+                                   tooltipPosition="top"
+                                   @clicked="revertGeometriesInMetadata" />
+            </v-col>
+
+            <v-col >
+
+              <BaseRectangleButton :color="$vuetify.theme.themes.light.accent"
+                                   :disabled="!saveButtonEnabled"
+                                   :loading="saveButtonInProgress"
+                                   buttonText="Save Geometries"
+                                   tooltipText="Save the geometry"
+                                   tooltipPosition="top"
+                                   @clicked="updateGeometriesInMetadata" />
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
+
     </v-container>
 
   </v-card>
@@ -75,13 +103,14 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditDataGeo',
@@ -238,6 +267,7 @@ export default {
   components: {
     MetadataGeo,
     BaseStatusLabelView,
+    BaseRectangleButton,
   },
   data: () => ({
     labels: {
@@ -255,3 +285,12 @@ export default {
   }),
 };
 </script>
+
+<style>
+
+ .editDataGeo .leaflet-bar a, .leaflet-bar a:hover {
+   width: 32px;
+   height: 32px;
+ }
+
+</style>

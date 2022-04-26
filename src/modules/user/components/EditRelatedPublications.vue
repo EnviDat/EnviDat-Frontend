@@ -88,7 +88,10 @@ import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataCon
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditRelatedPublications',
@@ -145,6 +148,7 @@ export default {
       return {
         publications: {
           text: this.previewPublicationsText,
+          maxTextLength: 2000,
         },
       };
     },
@@ -152,12 +156,12 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
     },
     previewPublicationsText() {
-      return this.previewText || this.relatedPublicationsText;
+      return this.previewText ? this.previewText : this.relatedPublicationsText;
     },
   },
   methods: {
     clearPreview() {
-      this.previewText = '';
+      this.previewText = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -180,7 +184,7 @@ export default {
     },
   },
   data: () => ({
-    previewText: '',
+    previewText: null,
     editingProperty: 'relatedPublicationsText',
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {

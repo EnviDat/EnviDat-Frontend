@@ -87,7 +87,10 @@ import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditRelatedDatasets',
@@ -144,6 +147,7 @@ export default {
       return {
         datasets: {
           text: this.previewRelatedDatasetsText,
+          maxTextLength: 2000,
         },
       };
     },
@@ -151,12 +155,12 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_RELATED_DATASETS);
     },
     previewRelatedDatasetsText() {
-      return this.previewText || this.relatedDatasetsText;
+      return this.previewText ? this.previewText : this.relatedDatasetsText;
     },
   },
   methods: {
     clearPreview() {
-      this.previewText = '';
+      this.previewText = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -179,7 +183,7 @@ export default {
     },
   },
   data: () => ({
-    previewText: '',
+    previewText: null,
     editingProperty: 'relatedDatasetsText',
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {

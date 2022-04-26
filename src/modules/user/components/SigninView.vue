@@ -9,7 +9,7 @@
     <v-container fluid class="pa-4">
 
       <v-row>
-        <v-col class="display-2">
+        <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>
@@ -41,6 +41,7 @@
                           label="Email"
                           required
                           @change="$v.email.$touch()"
+                          @keyup.enter="catchRequestToken"
                           tabindex="0" />
           </v-col>
 
@@ -61,7 +62,7 @@
 
         <v-row v-if="requestSuccess && email" >
           <v-col cols="12"
-                  class="caption" >
+                  class="text-caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
           </v-col>
         </v-row>
@@ -90,6 +91,7 @@
                           clearable
                           clear-icon="clear"
                           @blur="$v.key.$touch()"
+                          @keyup.enter="catchSignIn"
                           tabindex="0"/>
           </v-col>
 
@@ -106,43 +108,15 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formInvalid || errorField"
+        <v-row v-if="formErrorText"
                 id="errorTextRow"
                 :style="`background-color: ${errorColor};`"
                 class="mt-4" >
           <v-col cols="12"
-                  class="body-1">
+                  class="text-body-1">
             {{ formErrorText }}
           </v-col>
         </v-row>
-
-        <!-- <v-row v-if="!key || !keyErrors"
-                id="tokenButtonRow" >
-
-          <v-col v-if="!signedIn"
-                  cols="12"
-                  md="4">
-
-            <v-row no-gutters >
-              <v-col v-if="requestSuccess"
-                      cols="12"
-                      class="caption" >
-                {{ `${requestSentText} ${email}. ${requestSentText2}` }}
-              </v-col>
-
-              <v-col cols="12"
-                      :class="requestSuccess ? 'pt-3' : ''" >
-                <v-btn color="primary"
-                        :loading="requestLoading"
-                        @click="catchRequestToken">
-                  {{ tokenButtonText }}
-                </v-btn>
-              </v-col>
-
-            </v-row>
-          </v-col>
-
-        </v-row> -->
 
       </form>
 
@@ -299,6 +273,7 @@ export default {
     backendErrors: {
       email: '',
       key: '',
+      error: '',
     },
     key: '',
     formInvalid: false,

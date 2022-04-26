@@ -4,7 +4,7 @@
             style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
 
      <v-img v-if="showGravatar"
-          :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGavatar ? defaultGavatar : 'somethingWhichThrowsAnError' }&r=g`"
+          :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'somethingWhichThrowsAnError' }&r=g`"
           @error="imageError" />
 
     <v-img v-if="showAvaaatarIcons"
@@ -45,10 +45,9 @@ export default {
   props: {
     nameInitials: String,
     emailHash: String,
-    defaultGavatar: {
+    defaultGravatar: {
       type: String,
       default: '',
-//      default: 'identicon',
     },
     size: {
       type: Number,
@@ -68,7 +67,7 @@ export default {
       return !this.gravatarNotLoaded;
     },
     showAvaaatarIcons() {
-      return this.emailHash && !this.showGravatar;
+      return !this.showGravatar && this.emailHash;
     },
     showInitials() {
       return !this.emailHash && !this.showGravatar && this.nameInitials;
@@ -82,7 +81,7 @@ export default {
       }
 
       if (this.size > 48) {
-        return 'display-1';
+        return 'text-h4';
       }
 
       if (this.size <= 32) {

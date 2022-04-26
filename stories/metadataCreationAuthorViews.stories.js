@@ -11,7 +11,6 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 
 import {
   SELECT_EDITING_AUTHOR,
@@ -35,6 +34,8 @@ import {
   extractAuthorsMap,
 } from '@/factories/authorFactory';
 
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
@@ -64,237 +65,329 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 const storybookFolder = `${METADATA_EDITING} / Author Infos`;
 
-storiesOf(storybookFolder, module)
-  .add('User Picker', () => ({
-    components: { BaseUserPicker },
-    template: `
-    <v-col>
+export default {
+  title: `${storybookFolder}`,
+  decorators: [],
+  parameters: {},
+};
 
-      <v-row>
-        BaseUserPicker
-      </v-row>
+export const UserPickerViews = () => ({
+  components: { BaseUserPicker },
+  template: `
+  <v-col>
 
-      <v-row class="py-3" >
-        <v-col >
-          <BaseUserPicker :users="authors" />
-        </v-col>
-      </v-row>
+    <v-row>
+      BaseUserPicker
+    </v-row>
 
-      <v-row>
-        BaseUserPicker with preSelection
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <BaseUserPicker :users="authors"
-                          :preSelected="preSelectedAuthor" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        BaseUserPicker as Card with multiple-pick, clearable and instructions
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <BaseUserPicker :users="authors"
-                          :multiplePick="true"
-                          :isClearable="true"
-                          :showAsCard="true"
-                          instructions="Pick an EnviDat user to add as an author." />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        BaseUserPicker with multiple-pick and clearable and with pre selection
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <BaseUserPicker :users="authors"
-                          :multiplePick="true"
-                          :preSelected="preSelectedAuthors3"
-                          :isClearable="true" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    methods: {
-    },
-    data: () => ({
-      authors: authorsStrings,
-      preSelectedAuthor,
-      preSelectedAuthors3,
-    }),
-  }))
-  .add('Edit Authors list', () => ({
-    components: { EditMetadataAuthors },
-    template: `
-    <v-col>
-
-      <v-row>
-        EditMetadataAuthors
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataAuthors v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    },
-    beforeDestroy() {
-      eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    },
-    methods: {
-      selectAuthor(id) {
-        if (this.selectionId !== '') {
-          this.cancelEditing();
-        }
-
-        this.selectionId = id;
-        this.setSelected(this.selectionId, true);
-      },
-      cancelEditing() {
-        this.setSelected(this.selectionId, false);
-        this.selectionId = '';
-      },
-      setSelected(id, selected) {
-        const auths = this.genericProps.authors;
-
-        for (let i = 0; i < auths.length; i++) {
-          const r = auths[i];
-          if (r.email === id) {
-            r.isSelected = selected;
-            return;
-          }
-        }
-      },
-    },
-    data: () => ({
-      genericProps: {
-        id: '1',
-        authorDetailsConfig: {
-          showAuthorInfo: true,
-        },
-        selectionId: '',
-        authors,
-      },
-      selectionId: -1,
-    }),
-  }))
-  .add('Full editing of Authors', () => ({
-    components: { EditAuthorList },
-    template: `
-      <v-col>
-
-      <v-row>
-        EditAuthorList
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditAuthorList v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors" />
       </v-col>
-    `,
-    created() {
-      eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-      eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-      eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+    </v-row>
+
+    <v-row>
+      BaseUserPicker with preSelection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :preSelected="preSelectedAuthor" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      BaseUserPicker as Card with multiple-pick, clearable and instructions
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :isClearable="true"
+                        :showAsCard="true"
+                        instructions="Pick an EnviDat user to add as an author." />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      BaseUserPicker with multiple-pick and clearable and with pre selection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :preSelected="preSelectedAuthors3"
+                        :isClearable="true" />
+      </v-col>
+    </v-row>
+
+  </v-col>
+  `,
+  methods: {
+  },
+  data: () => ({
+    authors: authorsStrings,
+    preSelectedAuthor,
+    preSelectedAuthors3,
+  }),
+});
+
+export const EditingDataCreditViews = () => ({
+  components: { EditDataCredits },
+  template: `
+  <v-col>
+
+    <v-row>
+      empty EditDataCredits with defaults
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col style="background-color: darkgrey;">
+        <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, ...arguments)"
+                         :dataCredit="emptyAuthor.dataCredit"
+                         :dark="true"
+                        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      EditDataCredits
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col style="background-color: gray;">
+        <EditDataCredits :instruction="instruction"
+                         :dataCredit="author.dataCredit"
+                          @creditClick="catchCreditClick(author, ...arguments)"
+                         :dark="true"
+                          />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      EditDataCredits dark
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col style="background-color: greenyellow;">
+        <EditDataCredits :instruction="instruction"
+                         :dataCredit="author.dataCredit"
+                         @creditClick="catchCreditClick(author, ...arguments)"
+        />
+      </v-col>
+    </v-row>
+    
+    <v-row>
+      readonly EditDataCredits
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col style="background-color: gray;">
+        <EditDataCredits :instruction="instruction"
+                         :dataCredit="author.dataCredit"
+                         :dark="true"
+                         :readOnly="true" />
+      </v-col>
+    </v-row>
+  
+  </v-col>
+  `,
+  methods: {
+    catchCreditClick(author, creditName) {
+      let dCredit = author.dataCredit;
+
+      if (!dCredit){
+        dCredit = [];
+      }
+
+      if (!dCredit.includes(creditName)) {
+        dCredit.push(creditName);
+      } else {
+        const index = dCredit.indexOf(creditName);
+        dCredit.splice(index, 1);
+      }
+
+      author.dataCredit = dCredit;
     },
-    beforeDestroy() {
-      eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-      eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-      eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  data: () => ({
+    emptyAuthor: {},
+    author: authors[0],
+    instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
+  }),
+});
+
+export const EditAuthorsListViews = () => ({
+  components: { EditMetadataAuthors },
+  template: `
+  <v-col>
+
+    <v-row>
+      EditMetadataAuthors
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditMetadataAuthors v-bind="genericProps" />
+      </v-col>
+    </v-row>
+
+  </v-col>
+  `,
+  created() {
+    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+  },
+  beforeDestroy() {
+    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+  },
+  methods: {
+    selectAuthor(id) {
+      if (this.selectionId !== '') {
+        this.cancelEditing();
+      }
+
+      this.selectionId = id;
+      this.setSelected(this.selectionId, true);
     },
-    computed: {
-      genericProps() {
-        return {
-          selectionId: '',
-          authors: this.preSelectedAuthors2,
-          existingAuthors: this.authors,
-        };
-      },
+    cancelEditing() {
+      this.setSelected(this.selectionId, false);
+      this.selectionId = '';
     },
-    methods: {
-      selectAuthor(id) {
-        if (this.selectionId !== '') {
-          this.cancelEditing();
+    setSelected(id, selected) {
+      const auths = this.genericProps.authors;
+
+      for (let i = 0; i < auths.length; i++) {
+        const r = auths[i];
+        if (r.email === id) {
+          r.isSelected = selected;
+          return;
         }
-
-        this.selectionId = id;
-        this.setSelected(this.selectionId, true);
+      }
+    },
+  },
+  data: () => ({
+    genericProps: {
+      id: '1',
+      authorDetailsConfig: {
+        showAuthorInfo: true,
       },
-      cancelEditing() {
-        this.setSelected(this.selectionId, false);
-        this.selectionId = '';
-      },
-      setSelected(id, selected) {
-        const auths = this.genericProps.authors;
+      selectionId: '',
+      authors,
+    },
+    selectionId: -1,
+  }),
+});
 
-        for (let i = 0; i < auths.length; i++) {
-          const r = auths[i];
-          // if (r.email === id) {
-          //   r.isSelected = selected;
-          //   this.$set(auths, i, r);
-          //   return;
-          // }
+export const FullEditingAuthorViews = () => ({
+  components: { EditAuthorList },
+  template: `
+    <v-col>
 
-          if (r[localIdProperty]) {
-            if (r[localIdProperty] === id) {
-              r.isSelected = selected;
-              this.$set(auths, i, r);
-              return;
-            }
-          } else if (r.email === id) {
+    <v-row>
+      EditAuthorList
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditAuthorList v-bind="genericProps" />
+      </v-col>
+    </v-row>
+
+    </v-col>
+  `,
+  created() {
+    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  beforeDestroy() {
+    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  computed: {
+    genericProps() {
+      return {
+        selectionId: '',
+        authors: this.preSelectedAuthors2,
+        existingAuthors: this.authors,
+      };
+    },
+  },
+  methods: {
+    selectAuthor(id) {
+      if (this.selectionId !== '') {
+        this.cancelEditing();
+      }
+
+      this.selectionId = id;
+      this.setSelected(this.selectionId, true);
+    },
+    cancelEditing() {
+      this.setSelected(this.selectionId, false);
+      this.selectionId = '';
+    },
+    setSelected(id, selected) {
+      const auths = this.genericProps.authors;
+
+      for (let i = 0; i < auths.length; i++) {
+        const r = auths[i];
+        // if (r.email === id) {
+        //   r.isSelected = selected;
+        //   this.$set(auths, i, r);
+        //   return;
+        // }
+
+        if (r[localIdProperty]) {
+          if (r[localIdProperty] === id) {
             r.isSelected = selected;
             this.$set(auths, i, r);
             return;
           }
+        } else if (r.email === id) {
+          r.isSelected = selected;
+          this.$set(auths, i, r);
+          return;
         }
-      },
-      saveAuthor(newAuthor) {
-        newAuthor.existsOnlyLocal = false;
-        this.updateResource(newAuthor);
-        this.cancelEditing();
-      },
-      updateAuthors(newAuthor) {
-        const auths = this.genericProps.authors;
+      }
+    },
+    saveAuthor(newAuthor) {
+      newAuthor.existsOnlyLocal = false;
+      this.updateResource(newAuthor);
+      this.cancelEditing();
+    },
+    updateAuthors(newAuthor) {
+      const auths = this.genericProps.authors;
 
-        for (let i = 0; i < auths.length; i++) {
-          const r = auths[i];
-          if (r.localId) {
-            if (r.localId === newAuthor.localId) {
-              this.$set(auths, i, newAuthor);
-              return;
-            }
-          } else if (r.email === newAuthor.email) {
+      for (let i = 0; i < auths.length; i++) {
+        const r = auths[i];
+        if (r.localId) {
+          if (r.localId === newAuthor.localId) {
             this.$set(auths, i, newAuthor);
             return;
           }
+        } else if (r.email === newAuthor.email) {
+          this.$set(auths, i, newAuthor);
+          return;
         }
+      }
 
-        auths.unshift(newAuthor);
-      },
-      changeAuthors(updateObj) {
-        if (updateObj.object === EDITMETADATA_AUTHOR) {
-
-          this.updateAuthors(updateObj.data);
-        }
-      },
+      auths.unshift(newAuthor);
     },
-    data: () => ({
-      preSelectedAuthors2,
-      authors,
-    }),
-  }));
+    changeAuthors(updateObj) {
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+
+        this.updateAuthors(updateObj.data);
+      }
+    },
+  },
+  data: () => ({
+    preSelectedAuthors2,
+    authors,
+  }),
+});

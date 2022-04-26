@@ -445,15 +445,16 @@ export default {
       }
 
       let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
+      let bgStyle = 'background-position: center top !important;';
 
-      const bgStyle = `background-position: center top !important;
-                        background-repeat: repeat !important; `;
-/*
-      background-size: cover !important; `;
-*/
+      if (bgImg.includes(LANDING_PAGENAME.toLowerCase())) {
+        bgStyle += `background-size: cover !important;
+                    background-repeat: no-repeat !important; `;
+      }
 
-      if (bgImg.includes('browsepage')) {
-        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
+      if (bgImg.includes(BROWSE_PAGENAME.toLowerCase())) {
+        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;
+                    background-repeat: repeat !important; `;
       }
 
       return gradient + bgStyle;

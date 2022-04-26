@@ -30,6 +30,10 @@
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
+                    @organizationClicked="catchOrganizationClicked"
+                    :showScrollTopButton="true"
+                    :reloadAmount="reloadAmount"
+                    :reloadDelay="vReloadDelay"
                     mainScrollClass=".mapLayoutContainers" />
 
   </article>
@@ -278,6 +282,10 @@ export default {
       // the search parameter needs to be '' to clear it
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
     },
+    // eslint-disable-next-line no-unused-vars
+    catchOrganizationClicked(organization) {
+      // console.log(`clicked on ${organization}`);
+    },
   },
   computed: {
     ...mapState([
@@ -304,7 +312,13 @@ export default {
       searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
       searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
+      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
+      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
+      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
+    reloadAmount() {
+      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
+    },
     metadataConfig() {
       return this.config?.metadataConfig || {};
     },

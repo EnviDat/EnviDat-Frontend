@@ -30,7 +30,7 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    This section is still under construction.
+                    Editing Resources is still under construction.
                     <br>
                     Please add resources via the legacy website by clicking on the button below and logging in.
                   </v-col>
@@ -86,7 +86,7 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    This section is still under construction.
+                    Adding new resources is under construction.
                     <br>
                     Please edit resources via the legacy website by clicking on the button below and logging in.
                   </v-col>
@@ -138,7 +138,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -238,7 +238,7 @@ export default {
     },
     linkAddNewResourcesCKAN() {
 //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
-      return `${this.envidatDomain}/dataset/${this.metadataId}`;
+      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
     },
     linkEditResourceCKAN() {
 //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;

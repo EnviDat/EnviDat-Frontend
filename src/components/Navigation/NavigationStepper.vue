@@ -30,7 +30,24 @@
       class="content fill-height pa-1 pt-0"
       :style="`background-color: ${backgroundColor}`"
     >
-      <v-card class="fill-height pa-4">
+
+      <v-card v-show="loading"
+              class="fill-height pa-4">
+
+        <v-row id="metadataListPlaceholder" >
+
+          <v-col v-for="(n, index) in 2"
+                 :key="'placeHolder_' + index"
+                 class="pa-2" >
+
+            <MetadataCardPlaceholder :dark="false" />
+          </v-col>
+        </v-row>
+
+      </v-card>
+
+      <v-card v-if="!loading"
+              class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
@@ -68,6 +85,7 @@ import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 export default {
   name: 'NavigationStepper',
@@ -77,6 +95,10 @@ export default {
     subStep: String,
     stepColor: String,
     nextMajorStep: String,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   beforeMount() {
     this.setupSteps();
@@ -120,6 +142,14 @@ export default {
           substep: undefined,
         },
         query: this.$route.query,
+      }, () => {
+
+      }, (err) => {
+        // add empty onAbort to not trigger the NavigationDuplicated Error message
+        // when it's a NavigationDuplicated Error
+        if (err?.name?.toLowerCase() !== 'navigationduplicated') {
+          console.error(err);
+        }
       });
     },
     nextStep() {
@@ -161,6 +191,7 @@ export default {
   components: {
     StepperHeader,
     BaseIconButton,
+    MetadataCardPlaceholder,
   },
 };
 </script>

@@ -5,23 +5,29 @@
           class="elevation-5"
           :color="notification.color" >
 
-    <v-card-title class="pb-0">
+    <v-card-title >
       <v-row align="start">
         <v-col class="shrink">
           <v-icon>{{ notification.icon }}</v-icon>
         </v-col>
 
-        <v-col cols="11">
-          <div class="title">{{ notification.message }}</div>
+        <v-col >
+          <div class="text-h6">{{ notification.message }}</div>
         </v-col>
       </v-row>
     </v-card-title>
 
     <v-card-text class="pb-0">
       <div :style="height ? 'overflow: hidden auto; ': 'height: 100%;'"
-            class="caption">
+            class="text-body-1">
         {{ notification.details }}
-        <br />
+      </div>
+    </v-card-text>
+
+    <v-card-text v-if="notification.stack"
+                 class="pb-0">
+      <div :style="height ? 'overflow: hidden auto; ': 'height: 100%;'"
+           class="text-caption">
         {{ notification.stack }}
       </div>
     </v-card-text>

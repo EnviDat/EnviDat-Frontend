@@ -7,7 +7,7 @@
         >
           <v-col class="text-center text" cols="12"
                  :class="{ 'display-3' : $vuetify.breakpoint.mdAndUp,
-                                'display-1' : $vuetify.breakpoint.smAndDown }">
+                                'text-h4' : $vuetify.breakpoint.smAndDown }">
             {{ title }}
           </v-col>
         </v-row>

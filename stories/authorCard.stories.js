@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 /*
 import {
  withKnobs, text, number,
@@ -7,13 +6,34 @@ import {
 */
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import {
+  createAuthors,
+  extractAuthorsMap,
+  getFullAuthorsFromDataset,
+} from '@/factories/authorFactory';
 import authorCollection from '../public/testdata/authorCollection.json';
+import { CARD_VIEWS } from './storybookFolder';
 
-const authorFromCollection = Object.values(authorCollection)[1];
-const authorFromCollection2 = Object.values(authorCollection)[5];
-const authorFromCollection3 = Object.values(authorCollection)[4];
+import unFormatedMetadataCards from './js/metadata';
 
-export const methods = {
+const metadataCards = [];
+
+unFormatedMetadataCards.forEach((el) => {
+  el.author = createAuthors(el);
+  metadataCards.push(el);
+});
+
+const authorsMap = extractAuthorsMap(metadataCards);
+
+const authorFromCollection = getFullAuthorsFromDataset(authorsMap, metadataCards[0])[0];
+const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCards[1])[1];
+const authorFromCollection3 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[2];
+const authorFromCollection4 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[0];
+
+console.log(authorFromCollection.totalDataCredits);
+
+const methods = {
   authors() {
     const items = Object.values(authorCollection);
     return items.splice(0, items.length / 2);
@@ -21,10 +41,17 @@ export const methods = {
 };
 
 
-// const stories = storiesOf('3 Cards / Author Cards', module)
-storiesOf('3 Cards / Author Cards', module)
-  .add('Author Cards', () => ({
-    components: { AuthorCard },
+export default {
+  title: `${CARD_VIEWS}`,
+  decorators: [],
+  parameters: {},
+};
+
+export const AuthorCardViews = () => ({
+  components: {
+    AuthorCard,
+    DataCreditLayout,
+  },
 /*
     props: {
       author: {
@@ -50,54 +77,67 @@ storiesOf('3 Cards / Author Cards', module)
       },
     },
 */
-    template: `
-    <v-container grid-list-lg fluid pa-0>
-      <v-row>
+  template: `
+  <v-container grid-list-lg fluid pa-0>
+    <v-row>
 
-        <v-col cols="12" md="4" pt-5 >
-          <author-card :author="author" />
-        </v-col>
+      <v-col cols="12" md="4" pt-5 >
 
-        <v-col cols="12" md="4" pt-5 >
-          <author-card :author="authorFromCollection" />
-        </v-col>
+        <author-card :author="authorFromCollection" />
+      </v-col>      
+      
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="author" />
+      </v-col>
 
-        <v-col cols="12" md="4" pt-5 >
-          <author-card :author="authorFromCollection2" :loading="true" />
-        </v-col>
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="authorFromCollection2" />
+      </v-col>
 
-        <v-col cols="12" md="4" pt-5 >
-          <author-card :author="authorFromCollection3" />
-        </v-col>
 
-      </v-row>
-    </v-container>
-    `,
-    methods,
-    data: () => ({
-      authorFromCollection,
-      authorFromCollection2,
-      authorFromCollection3,
-      author: {
-        firstName: 'Felix',
-        lastName: 'Gugerli',
-        fullName: 'Felix Gugerli',
-        datasetCount: 7,
-        affiliation: 'WSL',
-        id: {
-          identifier: '0000-0003-3878-1845',
-        },
-        email: 'felix.gugerli@wsl.ch',
-        dataCredit: {
-          collection: 10,
-          validation: 3,
-          curation: 12,
-          software: 10,
-          publication: 15,
-          supervision: 1,
-        },
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="authorFromCollection3" :loading="true" />
+      </v-col>
+
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="authorFromCollection4" />
+      </v-col>
+
+    </v-row>
+  </v-container>
+  `,
+  methods,
+  computed: {
+  },
+  data: () => ({
+    authorFromCollection,
+    authorFromCollection2,
+    authorFromCollection3,
+    authorFromCollection4,
+    datasetDataCredit: [
+      'collection',
+      'software',
+    ],
+    author: {
+      firstName: 'Felix',
+      lastName: 'Gugerli',
+      fullName: 'Felix Gugerli',
+      datasetCount: 7,
+      affiliation: 'WSL',
+      id: {
+        identifier: '0000-0003-3878-1845',
       },
-    }),
-  }));
+      email: 'felix.gugerli@wsl.ch',
+      totalDataCredits: {
+        collection: 10,
+        validation: 3,
+        curation: 12,
+        software: 10,
+        publication: 15,
+        supervision: 1,
+      },
+    },
+  }),
+});
 
 // stories.addDecorator(withKnobs);

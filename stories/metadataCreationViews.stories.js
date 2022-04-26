@@ -32,7 +32,7 @@ import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPr
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
 
-import { getTagColor } from '@/factories/metaDataFactory';
+import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
 import { getPopularTags } from '@/factories/metadataFilterMethods';
 
 import {
@@ -46,7 +46,9 @@ import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
-const unFormatedMetadataCards = { ...metadataset };
+const unFormatedMetadataCards = metadataset;
+
+// console.log(`got metadata ${!!unFormatedMetadataCards}`);
 
 // console.log(`got metadata ${!!unFormatedMetadataCards}`);
 
@@ -94,8 +96,12 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 // });
 }
 
+
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
+
+let existingAuthors = Object.values(authorsMap);
+existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
 const storybookFolder = `${METADATA_EDITING} / Main Infos`;
@@ -659,6 +665,7 @@ contribute something to the general goal of your product. `,
     data: () => ({
       emptyFirstGenericProps: {
         id: '1',
+        existingAuthors,
         metadataTitle: '',
         contactEmail: '',
         contactGivenName: '',
@@ -667,6 +674,7 @@ contribute something to the general goal of your product. `,
       },
       genericProps: {
         id: '2',
+        existingAuthors,
         metadataTitle: 'My Glorious Title',
         contactEmail: 'sarah@smith.com',
         contactGivenName: 'Sarah',

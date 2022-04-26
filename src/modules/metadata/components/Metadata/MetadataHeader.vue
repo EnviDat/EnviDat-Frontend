@@ -1,7 +1,7 @@
 <template>
   <v-card id="MetadataHeader"
           :dark="dark"
-          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'transparent'"  >
+          :color="(showPlaceholder || !hasContent) ? 'primary' : 'transparent'"  >
 
     <div id="headerBackground"
          :style="dynamicCardBackground" >
@@ -26,13 +26,13 @@
     <v-row no-gutters
             style="position: relative; z-index: 1;">
 
-      <v-col v-if="metadataTitle"
+      <v-col v-if="hasContent"
               cols="12" >
         <div class="headerTitle"
               :style="`line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`"
               :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
                         'display-2': $vuetify.breakpoint.xlOnly,
-                        'display-1': $vuetify.breakpoint.mdAndUp,
+                        'text-h4': $vuetify.breakpoint.mdAndUp,
                         'headline': $vuetify.breakpoint.smOnly,
                         'subtitle-1': $vuetify.breakpoint.xsOnly,
                       }" >
@@ -45,7 +45,7 @@
         <div class="headerTitle py-3"
               :style="`color: ${$vuetify.theme.themes.light.error}`"
               :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                        'display-1': $vuetify.breakpoint.mdAndDown,
+                        'text-h4': $vuetify.breakpoint.mdAndDown,
                         'headline': $vuetify.breakpoint.smAndDown,
                       }" >
           {{ `${NotFoundTitle} '${metadataId}'` }}
@@ -258,8 +258,15 @@
     </v-container>
 
     <v-card-actions v-show="expanded"
-                    style="position: absolute; bottom: 0px; right: 0px; z-index: 2;">
+                    class="orgaChipFullWidth"
+                    style="position: absolute; bottom: 0; right: 0; z-index: 2;">
+
+      <MetadataOrganizationChip v-if="hasContent"
+                                :organization="organization"
+                                :tooltip="organizationTooltip" />
+
       <base-icon-button v-if="maxTagsReached"
+                        class="pl-2"
                         materialIconName="expand_more"
                         color="primary"
                         :iconColor="showTagsExpanded ? 'accent' : 'primary'"
@@ -269,6 +276,7 @@
                         :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
                         :tooltipBottom="true"
                         @clicked="showTagsExpanded = !showTagsExpanded" />
+
     </v-card-actions>
   </v-card>
 </template>
@@ -294,7 +302,8 @@ import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import { getAuthorName } from '@/factories/authorFactory';
-import TagChipAuthor from '../../../../components/Chips/TagChipAuthor';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 
 export default {
   name: 'MetadataHeader',
@@ -304,6 +313,7 @@ export default {
     TagChipPlaceholder,
     BaseIconLabelView,
     BaseIconButton,
+    MetadataOrganizationChip,
   },
   props: {
     metadataId: String,
@@ -334,6 +344,8 @@ export default {
       default: true,
     },
     categoryColor: String,
+    organization: String,
+    organizationTooltip: String,
   },
   data: () => ({
     showTagsExpanded: false,
@@ -346,6 +358,9 @@ export default {
     authorTagsMaxHeight: 75,
   }),
   computed: {
+    hasContent() {
+      return this.metadataTitle && !this.showPlaceholder;
+    },
     asciiDead() {
       return this.authorDeadInfo && this.authorDeadInfo.asciiDead ? this.authorDeadInfo.asciiDead : null;
     },
@@ -408,8 +423,7 @@ export default {
       this.$emit('clickedBack');
     },
     iconFlip(icon) {
-      const iconflip = this.dark ? `${icon}_w` : icon;
-      return iconflip;
+      return this.dark ? `${icon}_w` : icon;
     },
     authorName: getAuthorName,
   },
@@ -426,7 +440,6 @@ export default {
   }
 
   .headerInfo {
-    font-family: 'Baskervville', serif !important;
     font-weight: 400;
     opacity: 0.85;
     line-height: 1rem;
@@ -438,6 +451,11 @@ export default {
   }
 
   .headerTag {
+    opacity: 0.85;
+  }
+
+  .orgaChipFullWidth .organizationChip {
+    max-width: unset !important;
     opacity: 0.85;
   }
 

@@ -2,7 +2,7 @@
 
   <v-container fluid
                class="pa-0"
-               id="EditMetadataAuthors" >
+               id="EditAuthorList" >
 
     <v-row >
       <v-col cols="6" >
@@ -54,11 +54,14 @@
 import EditAuthor from '@/modules/user/components/EditAuthor';
 // import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
-
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
+import {
+  // getAuthorKey,
+  getFullAuthorsFromDataset,
+  initializeLocalAuthor,
+} from '@/factories/authorFactory';
 
-import { initializeLocalAuthor } from '@/factories/authorFactory';
 import {
   // enhanceElementsWithStrategyEvents,
   localIdProperty,
@@ -94,10 +97,6 @@ export default {
     authors: {
       type: Array,
       default: () => [],
-    },
-    loading: {
-      type: Boolean,
-      default: false,
     },
     message: {
       type: String,
@@ -139,12 +138,26 @@ export default {
 
       return this.authors;
     },
+    authorsMap() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      }
+
+      return null;
+    },
+    authorsMapLoading() {
+      if (!this.$store) {
+        return false;
+      }
+
+      return this.authorsMap === null;
+    },
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
         existingEnviDatUsers: this.existingAuthorsWrap,
         isClearable: false,
-        loading: this.loading,
+        loading: this.authorsMapLoading,
         message: this.message,
         messageDetails: this.messageDetails,
         error: this.error,
@@ -154,13 +167,38 @@ export default {
       };
     },
     authorListingGenericProps() {
+
+      const authorsMap = this.authorsMap;
+      const authors = this.authorsWrap;
+
+      let mergedAuthors = [];
+
+      if (authorsMap) {
+        const fullAuthors = getFullAuthorsFromDataset(authorsMap, { author: authors });
+
+        for (let i = 0; i < authors.length; i++) {
+          const author = authors[i];
+          const fullAuthor = fullAuthors[i];
+
+          mergedAuthors.push({
+            ...fullAuthor,
+            // manually merge / overwrite the dataCredit, because
+            // it's based on the current datasets
+            dataCredit: author.dataCredit,
+          });
+        }
+      } else {
+        mergedAuthors = authors;
+      }
+
       return {
-        authors: this.authorsWrap,
+        authors: mergedAuthors,
         existingAuthors: this.existingAuthorsWrap,
+        loading: this.authorsMapLoading,
         authorDetailsConfig: {
           showDatasetCount: false,
           showAuthorInfos: true,
-          showDataCredits: true,
+          showDataCredits: false,
           showDataCreditScore: false,
         },
       };

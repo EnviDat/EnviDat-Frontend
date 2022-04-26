@@ -10,9 +10,27 @@
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
+                       :loading="loading"
                        @clickedClose="catchBackClicked" />
 
+
+    <v-snackbar id="NotificationSnack"
+                top
+                elevation="0"
+                color="transparent"
+                timeout="10000"
+                v-model="showSnack"
+                >
+
+      <NotificationCard v-if="editingError"
+                        :notification="editingError"
+                        :showCloseButton="true"
+                        @clickedClose="showSnack = false" />
+
+    </v-snackbar>
+
   </v-container>
+
 </template>
 
 <script>
@@ -33,22 +51,25 @@ import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
   CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_NETWORK_ERROR,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
+  EDITMETADATA_PUBLICATION_INFO,
+  METADATA_EDITING_FINISH_CLICK,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
-  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
-
 
 import {
   getStepByName,
-  getValidationMetadataEditingObject,
+  getStepFromRoute,
   initializeSteps,
   metadataCreationSteps,
 } from '@/factories/userEditingFactory';
+
+import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 
 import { mapGetters, mapState } from 'vuex';
 
@@ -63,8 +84,14 @@ import {
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
+  UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
+
+import {
+  GET_ORGANIZATIONS,
+  ORGANIZATIONS_NAMESPACE,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
   METADATAEDIT_PAGENAME,
@@ -76,21 +103,22 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-
 import {
   METADATA_NAMESPACE,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
-
-const creationSteps = initializeSteps(metadataCreationSteps);
+import NavigationStepper from '@/components/Navigation/NavigationStepper';
+import NotificationCard from '@/components/Cards/NotificationCard';
+import { errorMessage } from '@/factories/notificationFactory';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
 
 export default {
   name: 'MetadataEditPage',
   beforeRouteEnter(to, from, next) {
+
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
@@ -100,11 +128,15 @@ export default {
   },
   beforeRouteUpdate(to, from, next) {
     // react to route changes...
+
+    // next has to be called to do the route change!
     next((vm) => {
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
   },
   created() {
+    this.creationSteps = initializeSteps(metadataCreationSteps);
+
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
@@ -112,7 +144,8 @@ export default {
     eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-
+    eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -122,6 +155,8 @@ export default {
     eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.$off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
   },
   beforeMount() {
     this.initializeStepsInUrl();
@@ -134,19 +169,20 @@ export default {
       this.initMetadataUsingId(this.metadataId);
     }
 
+    this.loadOrganizations();
+
   },
   computed: {
     ...mapState(USER_NAMESPACE, [
-      'metadataInEditing',
       'lastEditedBackPath',
+      'currentEditingContent',
+      'loadingCurrentEditingContent',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
-      'currentMetadataContent',
     ]),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
-      'currentMetadataContent',
       'existingAuthors',
       'existingKeywords',
     ]),
@@ -155,6 +191,15 @@ export default {
      */
     metadataId() {
       return this.$route.params.metadataid;
+    },
+    loading() {
+      return this.loadingCurrentEditingContent || !this.currentEditingContent;
+    },
+    currentComponentLoading() {
+      const stepKey = getStepFromRoute(this.$route);
+      const stepData = this.getGenericPropsForStep(stepKey);
+
+      return stepData?.loading || false;
     },
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
@@ -170,20 +215,63 @@ export default {
 
       return subStep || '';
     },
+    editingError() {
+      if (!this.errorMessage && !this.errorTitle) {
+        return null;
+      }
+      return errorMessage(this.errorTitle, this.errorMessage);
+    },
   },
   methods: {
+    async loadOrganizations() {
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
+
+      this.updateStepsOrganizations();
+    },
+    updateStepsOrganizations() {
+      const allOrgas = this.$store.state.organizations.organizations;
+
+      if (Array.isArray(allOrgas) && allOrgas.length > 0) {
+
+        const allOrganizations = [];
+        for (let i = 0; i < allOrgas.length; i++) {
+          const orga = allOrgas[i];
+          allOrganizations.push({
+            id: orga.id,
+            title: orga.title,
+          })
+        }
+
+        const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+
+        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+          {
+            object: EDITMETADATA_ORGANIZATION,
+            data: {
+              ...editOrgaData,
+              allOrganizations,
+            },
+          },
+        );
+
+      }
+    },
     async initMetadataUsingId(id) {
-      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+      if (id !== this.currentEditingContent?.name) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+      }
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-      const publicationData = this.getGenericPropsForStep(EDITMETADATA_PUBLICATION_INFO)
-      const publicationState = publicationData.publicationState;
+      const publicationState = getMetadataVisibilityState(this.currentEditingContent);
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
         this.updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
       }
+
+      const stepKey = getStepFromRoute(this.$route);
+      this.updateStepStatus(stepKey, this.creationSteps);
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
@@ -246,14 +334,6 @@ export default {
     },
     editComponentsChanged(updateObj) {
 
-      // save the data in the (frontend) vuex store
-/*
-      this.$store.commit(
-        `${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-        updateObj,
-      );
-*/
-
       let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
       const payload = {
         stepKey: updateObj.object,
@@ -275,7 +355,7 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        this.updateStepStatus(updateObj.object);
+        this.updateStepStatus(updateObj.object, this.creationSteps);
       });
 
     },
@@ -285,8 +365,8 @@ export default {
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
     },
-    updateStepStatus(stepKey) {
-      const step = getStepByName(stepKey, this.creationSteps);
+    updateStepStatus(stepKey, steps) {
+      const step = getStepByName(stepKey, steps);
 
       if (!step) {
         return;
@@ -295,11 +375,28 @@ export default {
       const stepData = this.getGenericPropsForStep(step.key);
 
       if (this.updateStepValidation(step, stepData)) {
-        this.updateStepCompleted(step, stepData);
+
+        if (!step.error && step.detailSteps?.length > 0) {
+          const anyErrors = step.detailSteps.filter(s => !!s.error);
+
+/*
+          const firstStepWithErrors = anyErrors[0];
+
+          let mainErrorMsg = '';
+          if (firstStepWithErrors?.error) {
+            mainErrorMsg = `"${firstStepWithErrors.title}" has an error: ${firstStepWithErrors.error}`;
+          }
+*/
+
+          step.error = anyErrors[0]?.error ? 'Detail step has an error' : null;
+        } else {
+          this.updateStepCompleted(step, stepData);
+        }
       }
     },
     updateStepCompleted(step, stepData) {
-      const values = Object.values(stepData);
+      const data = stepData || {};
+      const values = Object.values(data);
 
       let isComplete = true;
       for (let i = 0; i < values.length; i++) {
@@ -331,17 +428,61 @@ export default {
       step.error = null;
       return true;
     },
+    showSnackMessage(status, statusMessage, message) {
+
+      const id = this.currentEditingContent?.id || null;
+      const name = this.currentEditingContent?.name || null;
+
+      if (id && name) {
+        statusMessage = statusMessage.replace(id, `"${name}"`);
+        message = message.replace(id, `"${name}"`);
+      }
+
+      const predefinedErrors =this.backendErrorList[status];
+      this.errorTitle = predefinedErrors?.message || 'Fatal Error';
+      this.errorMessage = `${message} ${predefinedErrors?.details || ''}`;
+
+      this.showSnack = true;
+    },
   },
   watch: {
+    currentComponentLoading() {
+      if (!this.currentComponentLoading) {
+        const stepKey = getStepFromRoute(this.$route);
+        this.updateStepStatus(stepKey, this.creationSteps);
+      }
+    },
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+
+      const stepKey = getStepFromRoute(this.$route);
+      this.updateStepStatus(stepKey, this.creationSteps);
     },
   },
   components: {
     NavigationStepper,
+    // NotificationSnack,
+    // BaseRectangleButton,
+    NotificationCard,
   },
   data: () => ({
-    creationSteps,
+    creationSteps: null,
+    errorTitle: null,
+    errorMessage: null,
+    errorColor: 'error',
+    backendErrorList: {
+      403: {
+        message: 'You are not authorized to make these changes',
+      },
+      408: {
+        message: 'Server timeout happened.',
+        details: 'This can have many reasons, please try your action / changes again after a while. If it problem persists please contact us via envidat@wsl.ch.',
+      },
+      409: {
+        message: 'You are not authorized to make these changes',
+      },
+    },
+    showSnack: false,
   }),
 };
 </script>

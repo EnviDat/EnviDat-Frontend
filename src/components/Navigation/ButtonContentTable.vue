@@ -4,7 +4,7 @@
     <v-container class="pa-3" fluid >
       <v-row  > 
 
-        <v-col class="display-1"
+        <v-col class="text-h4"
                 style="text-align: center;">
           {{ title }}
         </v-col>
@@ -13,7 +13,7 @@
 
       <v-row  > 
         <v-col cols="12"
-                class="title">
+                class="text-h6">
           {{ subtitle }}
         </v-col>
       </v-row> 

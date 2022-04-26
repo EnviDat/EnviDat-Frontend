@@ -54,7 +54,7 @@
             </v-col>
 
             <v-col cols="3" >
-             <div class="pb-2">Use the old website for now:</div>
+             <div class="pb-2">Use the legacy website for now:</div>
             </v-col>
 
             <v-col cols="3" >
@@ -145,20 +145,6 @@ export default {
       type: String,
       default: '',
     },
-/*
-    publishedDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-    unpublishedDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-    editingDatasetCount: {
-      type: Number,
-      default: 0,
-    },
-*/
     createClickCallback: {
       type: Function,
       default: null,
@@ -188,31 +174,16 @@ export default {
     welcomeTitle() {
       return this.userName ? `${this.title} ${this.userName} to your Dashboard!` : `${this.title} to your Dashboard!`;
     },
-/*
-    introText() {
-      let intro = `You have ${this.publishedDatasetCount} datasets published.`;
-
-      if (this.unpublishedDatasetCount > 0) {
-        intro += ` ${this.unpublishedDatasetCount} datasets are still unpublished.`;
-      }
-
-      if (this.editingDatasetCount > 0) {
-        intro += ` And ${this.editingDatasetCount} datasets are currently in editing mode.`;
-      }
-
-      return intro;
-    },
-*/
     introductionText() {
-      let text = this.introText ? this.introText : this.introTextFallback;
-      text += this.feedbackText;
+      let text = this.introText || this.introTextFallback;
       text += this.ckanDashboardText;
+      text += this.feedbackText;
       return text;
     },
     ckanDashboardText() {
       return this.oldDashboardUrl
           ? ` And more is to come, the dashboard will change over time, if you can't find
-                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the old dashboard</a>.`
+                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the legacy dashboard</a>.`
           : '';
     },
     editingText() {
@@ -222,7 +193,7 @@ export default {
   methods: {
   },
   data: () => ({
-    introTextFallback: 'Welcome to your dashboard, manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
+    introTextFallback: 'Here you can manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
     createText: 'Create a dataset',
     createButtonText: 'New Dataset',
     existingText: 'Edit your existing datasets',

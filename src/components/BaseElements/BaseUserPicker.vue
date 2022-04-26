@@ -142,6 +142,10 @@ export default {
       }
     },
     catchCloseClicked(authorName) {
+      if (this.readonly) {
+        return;
+      }
+
       if (this.multiplePick) {
 
         const remains = this.pickedUsers.filter(value => value !== authorName);
@@ -159,8 +163,8 @@ export default {
     },
     catchPickClicked(pickedItem) {
 
-      if (this.multiplePick) {
-        if (this.pickedUsers?.length > 0 && !this.pickedUsers.includes(pickedItem)) {
+      if (this.multiplePick && Array.isArray(this.pickedUsers)) {
+        if (this.pickedUsers.length > 0 && !this.pickedUsers.includes(pickedItem)) {
           this.pickedUsers.push(pickedItem);
         } else {
           const index = this.pickedUsers.indexOf(pickedItem);
@@ -174,6 +178,7 @@ export default {
     },
     catchPicks(picks) {
       this.$emit('pickedUsers', picks);
+      this.search = '';
     },
   },
   data: () => ({

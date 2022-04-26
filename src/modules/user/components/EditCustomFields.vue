@@ -23,8 +23,8 @@
                                :statusText="message"
                                :expandedText="messageDetails" />
         </v-col>
-        <v-col v-if="error"  >
 
+        <v-col v-if="error"  >
           <BaseStatusLabelView statusIcon="error"
                                statusColor="error"
                                :statusText="error"
@@ -44,29 +44,36 @@
            no-gutters
           :class="index === 0 ? 'pt-4' : 'py-1'" >
 
-        <v-col cols="6"
-                class="pr-2" >
+        <v-col class="pr-2" >
           <v-text-field :label="labels.labelFieldName"
                         outlined
                         dense
                         :readonly="mixinMethods_isFieldReadOnly('fieldName')"
                         :hint="mixinMethods_readOnlyHint('fieldName')"
+                        :error-messages="validationErrors.customFieldsList[index].fieldName"
                         :value="item.fieldName"
-                        :error-messages="validationErrors[index].fieldName"
                         @change="notifyChange(index, 'fieldName', $event)"
                         />
         </v-col>
-        <v-col cols="6"
-               class="pl-2" >
+
+        <v-col class="pl-2" >
           <v-text-field :label="labels.labelContent"
                         outlined
                         dense
                         :readonly="mixinMethods_isFieldReadOnly('content')"
                         :hint="mixinMethods_readOnlyHint('content')"
+                        :error-messages="validationErrors.customFieldsList[index].content"
                         :value="item.content"
-                        :error-messages="validationErrors[index].content"
                         @change="notifyChange(index, 'content', $event)"
                         />
+        </v-col>
+
+        <v-col class="shrink px-1">
+          <BaseIconButton material-icon-name="clear"
+                          icon-color="red"
+                          :disabled="index >= customFieldsProp.length -1"
+                          @clicked="deleteEntry(index) "/>
+
         </v-col>
       </v-row>
 
@@ -101,14 +108,18 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  deleteEmptyObject,
   getValidationMetadataEditingObject,
-  isArrayValid,
+  isArrayContentValid, isFieldValid,
+} from '@/factories/userEditingValidations';
+
+import {
+  deleteEmptyObject,
   isMaxLength,
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'EditCustomFields',
@@ -116,14 +127,17 @@ export default {
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
-      cardInstructions: 'Advance custom data fields (optional)',
+      cardInstructions: 'Advanced custom data fields. These are fields for special internal use cases.',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
-    validationErrors: [{
-      fieldName: '',
-      content: '',
-    }],
+    validationErrors: {
+      customFieldsList: [{
+        fieldName: '',
+        content: '',
+      }],
+      customFieldArray: null,
+    },
     defaultUserEditMetadataConfig: {
       customFieldsMax: 10,
     },
@@ -171,7 +185,13 @@ export default {
       'config',
     ]),
     maxCustomFields() {
-      return this.config?.userEditMetadataConfig.customFieldsMax || this.defaultUserEditMetadataConfig.customFieldsMax;
+      let max = this.defaultUserEditMetadataConfig.customFieldsMax;
+
+      if (this.$store) {
+        max = this.config?.userEditMetadataConfig?.customFieldsMax || max;
+      }
+
+      return max;
     },
     customFieldsProp: {
       get() {
@@ -183,6 +203,8 @@ export default {
           this.addEmptyFieldObj(fields);
         }
 
+        // fields.sort((a, b) => a.fieldName > b.fieldName);
+        
         return fields;
       },
     },
@@ -194,15 +216,14 @@ export default {
     },
   },
   methods: {
-     addEmptyFieldObj(localFields) {
+    addEmptyFieldObj(localFields) {
 
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
       const lastCustomFieldName = lastCustomFieldObj?.fieldName;
-      const lastCustomFieldContent = lastCustomFieldObj?.content;
 
       let addCustomField = true;
-      if (lastCustomFieldName === '' || lastCustomFieldContent === '') {
+      if (lastCustomFieldName === '') {
         addCustomField = false;
       }
 
@@ -212,10 +233,10 @@ export default {
       if (addCustomField && localFields.length < this.maxCustomFields) {
         localFields.push({...this.emptyEntry});
 
-        const sizeDiff = localFields.length - this.validationErrors.length;
+        const sizeDiff = localFields.length - this.validationErrors.customFieldsList.length;
 
         for (let i = 0; i < sizeDiff; i++) {
-          this.validationErrors.push({...this.emptyEntry});
+          this.validationErrors.customFieldsList.push({...this.emptyEntry});
         }
       }
     },
@@ -251,31 +272,82 @@ export default {
         data: { customFields: value },
       });
     },
+    deleteEntry(index) {
+
+      const localCopy = [...this.customFieldsProp];
+      const errorArray = this.validationErrors.customFieldsList;
+
+      if (localCopy.length > 1) {
+        localCopy.splice(index, 1);
+      }
+
+      // the last entry is always unused, removed it before saving
+      this.removeUnusedEntry(localCopy);
+
+      const arrayIsValid = isFieldValid('customFields', localCopy, this.validations, this.validationErrors, 'customFieldArray');
+
+      if (arrayIsValid ) {
+        this.setCustomFields(localCopy);
+
+        if (errorArray.length > 1) {
+          errorArray.splice(index, 1);
+        }
+      }
+
+    },
+    removeUnusedEntry(localfunders) {
+
+      const lastFunder = localfunders[localfunders.length - 1];
+
+      // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
+      const isEmpty = isObjectEmpty(lastFunder);
+
+      // If isEmpty is true and localfunders has at least one item then remove last element of array
+      if (isEmpty && localfunders.length > 0) {
+        localfunders.pop();
+      }
+    },
     // eslint-disable-next-line no-unused-vars
     notifyChange(index, property, value) {
 
-      const localyCopy = [...this.customFieldsProp];
-      const errorArray = this.validationErrors;
+      const localCopy = [...this.customFieldsProp];
+      const errorArray = this.validationErrors.customFieldsList;
 
-      this.editEntry(localyCopy, index, property, value);
+      this.editEntry(localCopy, index, property, value);
 
-      const deleted = deleteEmptyObject(index, localyCopy);
+      const deleted = deleteEmptyObject(index, localCopy);
       if (deleted) {
         // delete also from the errorArray to keep the arrays in sync
         deleteEmptyObject(index, errorArray);
       }
 
-      this.checkEnoughEntries(localyCopy);
+      this.checkEnoughEntries(localCopy);
 
-      if (deleted || !deleted && isArrayValid(localyCopy, 'customFields', index, property, this.validations, errorArray)) {
-        this.setCustomFields(localyCopy);
+      let arrayIsValid = false;
+      if (deleted) {
+        arrayIsValid = isFieldValid('customFields', localCopy, this.validations, this.validationErrors, 'customFieldArray');
+      } else {
+        arrayIsValid = isArrayContentValid(localCopy, 'customFields', index, property, this.validations, errorArray);
       }
 
-      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localyCopy);
+      if (arrayIsValid ) {
+        this.setCustomFields(localCopy);
+
+        if (deleted) {
+          // delete also from the errorArray to keep the arrays in sync
+          if (errorArray.length > 1) {
+            errorArray.splice(index, 1);
+          }
+        }
+
+      }
+
+      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localCopy);
     },
   },
   components: {
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 </script>

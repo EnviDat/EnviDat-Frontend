@@ -139,6 +139,7 @@ storiesOf('3 Cards / Resource Cards', module)
                               :lastModifiedIcon="lastModifiedIcon"
                               :fileExtensionIcon="iconFiles"
                               :showGenericOpenButton="true"
+                              :genericOpenButtonBottom="true"
                               openButtonTooltip="Open File in Preview"
                               @clicked="onCardClick" />
       </v-col>

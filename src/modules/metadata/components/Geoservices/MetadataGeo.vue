@@ -2,18 +2,17 @@
   <v-card id="MetadataGeo">
     <v-card-title>
       <v-row justify="end" align="center" no-gutters>
-        <v-col class="title metadata_title grow" align-self="start">
+        <v-col class="text-h6 metadataComponentTitle grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
         <v-col class="shrink pl-2">
-          <BaseIconButton
-            v-if="showFullscreenButton"
-            materialIconName="zoom_out_map"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
-            @clicked="triggerFullscreen"
-          />
+          <BaseIconButton v-if="showFullscreenButton"
+                          materialIconName="zoom_out_map"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerFullscreen"
+                        />
         </v-col>
       </v-row>
     </v-card-title>
@@ -50,42 +49,18 @@
       </v-card-text>
     </v-row>
 
-    <v-card-text >
-
-      <v-row justify="end">
-        <v-col class="shrink">
-          <BaseRectangleButton v-if="mapEditable"
-                              :color="$vuetify.theme.themes.light.accent"
-                              :disabled="!undoButtonEnabled"
-                              buttonText="Undo"
-                              tooltipText="Reset to original geometry"
-                              tooltipPosition="left"
-                              @clicked="$emit('undoSaveGeometries')" />
-        </v-col>
-
-        <v-col class="shrink">
-
-          <BaseRectangleButton v-if="mapEditable"
-                                :color="$vuetify.theme.themes.light.accent"
-                                :disabled="!saveButtonEnabled"
-                                :loading="saveButtonInProgress"
-                                buttonText="Save Geometries"
-                                @clicked="$emit('saveGeometries')" />
-        </v-col>
-      </v-row>
-
-    </v-card-text>
-
   </v-card>
 </template>
 
 <script>
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
-import { INJECT_MAP_FULLSCREEN, eventBus } from '@/factories/eventBus';
+import {
+  INJECT_MAP_FULLSCREEN,
+  eventBus,
+} from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 import Map from './Map';
 
@@ -94,7 +69,6 @@ export default {
   components: {
     Map,
     BaseIconButton,
-    BaseRectangleButton,
   },
   props: {
     genericProps: Object,
@@ -116,15 +90,6 @@ export default {
     mapEditable() {
       return this.genericProps?.mapEditable;
     },
-    saveButtonEnabled() {
-      return this.genericProps?.saveButtonEnabled;
-    },
-    saveButtonInProgress() {
-      return this.genericProps?.saveButtonInProgress;
-    },
-    undoButtonEnabled() {
-      return this.genericProps?.undoButtonEnabled;
-    },
     mapDivId() {
       return this.genericProps?.mapDivId;
     },
@@ -134,7 +99,7 @@ export default {
   },
   methods: {
     triggerFullscreen() {
-      eventBus.$emit(INJECT_MAP_FULLSCREEN, this.layerConfig);
+      eventBus.$emit(INJECT_MAP_FULLSCREEN, {site: this.site, layerConfig: this.layerConfig });
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;

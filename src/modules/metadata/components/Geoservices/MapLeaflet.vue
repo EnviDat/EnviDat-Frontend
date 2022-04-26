@@ -2,8 +2,9 @@
   <div
     :id="mapDivId"
     ref="map"
-    :style="`height: ${mapHeight === 0 ? '100%' : mapHeight + 'px'};`"
+    :style="`min-height: ${mapHeight + 'px'}; height: 100%;`"
   >
+
   </div>
 </template>
 
@@ -23,14 +24,10 @@ import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
   MAP_ZOOM_CENTER,
-  INJECT_MAP_FULLSCREEN,
-  METADATA_OPEN_MODAL,
-  METADATA_CLOSE_MODAL,
   MAP_GEOMETRY_MODIFIED,
   eventBus,
 } from '@/factories/eventBus';
 // import { leafletLayer } from './layer-leaflet';
-import MetadataMapFullscreen from './MetadataMapFullscreen';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -61,8 +58,6 @@ export default {
     eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
     eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
     eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
-    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-    eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
 
     this.setupMap();
 
@@ -74,8 +69,6 @@ export default {
     eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
     eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
     eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
-    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-    eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
 
     if (this.map) {
       this.map.remove();
@@ -403,14 +396,6 @@ export default {
     //   console.log(geoms);
     //   console.log(geoms[0].feature.geometry.coordinates);
     // },
-    showFullscreenMapModal() {
-      this.fullScreenComponent = MetadataMapFullscreen;
-      eventBus.$emit(METADATA_OPEN_MODAL);
-    },
-    closeModal() {
-      this.fullScreenComponent = null;
-      eventBus.$emit(METADATA_CLOSE_MODAL);
-    },
   },
   watch: {
     opacity() {

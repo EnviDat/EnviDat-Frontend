@@ -22,20 +22,20 @@
               :alt="alternativeText" >
       </v-col>
 
-      <v-col class="envidatTitle display-4 pl-5 hidden-md-and-down"
+      <v-col class="envidatTitle text-h1 pl-5 hidden-md-and-down"
               style="font-size: 80px !important;" >
         {{ title }}
       </v-col>
 
-      <v-col class="envidatTitle display-3 pl-2 hidden-sm-and-down hidden-lg-and-up" >
+      <v-col class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up" >
         {{ title }}
       </v-col>
 
-      <v-col class="envidatTitle display-2 pl-2 hidden-xs-only hidden-md-and-up" >
+      <v-col class="envidatTitle text-h3 pl-2 hidden-xs-only hidden-md-and-up" >
         {{ title }}
       </v-col>
 
-      <v-col class="envidatTitle display-3 hidden-sm-and-up" >
+      <v-col class="envidatTitle text-h2 hidden-sm-and-up" >
         {{ title }}
       </v-col>
     </v-row>

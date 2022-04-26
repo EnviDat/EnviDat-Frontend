@@ -100,3 +100,89 @@ export function GetEncryptedKeyFromCookie(cookieName) {
 export function md5Hash(string) {
   return Crypto.MD5(string).toString();
 }
+
+
+
+
+function fillMapWithArray(key, value, map) {
+  const existingArrayValue = map.get(key);
+
+  if (existingArrayValue) {
+    if (value instanceof Array) {
+      map.set(key, [...existingArrayValue, ...value]);
+    } else {
+      existingArrayValue.push(value);
+    }
+  } else if (value instanceof Array) {
+    map.set(key, value);
+  } else {
+    map.set(key, [value]);
+  }
+}
+
+let tempLastRuName = '';
+let tempLastOrgaName = '';
+
+function getResearchUnitName(orgaName, researchUnits) {
+
+  const lowerOrgaName = orgaName.toLowerCase();
+
+  if (lowerOrgaName === tempLastOrgaName) {
+    return tempLastRuName;
+  }
+
+  tempLastOrgaName = lowerOrgaName;
+
+  for (let i = 0; i < researchUnits.length; ++i) {
+    const unit = researchUnits[i];
+    const ruName = unit.name;
+    tempLastRuName = ruName;
+    const ruNameLower = unit.name.toLowerCase();
+
+    if (ruNameLower.includes(lowerOrgaName)) {
+      return ruName;
+    }
+
+    if (unit.groups.length > 0) {
+      const groups = unit.groups;
+
+      for (let j = 0; j < groups.length; ++j) {
+        const groupName = groups[j].toLowerCase();
+
+        if (groupName.includes(lowerOrgaName)) {
+          return ruName;
+        }
+      }
+    }
+
+  }
+
+  tempLastRuName = 'others';
+  return 'others';
+}
+
+export function getResearchUnitDatasets (researchUnitStructure, datasets) {
+  if (!researchUnitStructure || !datasets) {
+    return null;
+  }
+
+  const orgaMap = new Map();
+
+  datasets.forEach(dSet => {
+
+    const orgaName = dSet.organization.title;
+    fillMapWithArray(orgaName, dSet, orgaMap);
+
+  });
+
+  const ruMap = new Map();
+
+  for (const [orgaName] of orgaMap) {
+
+    const orgaDatasets = orgaMap.get(orgaName);
+    const ruName = getResearchUnitName(orgaName, researchUnitStructure.researchUnits);
+    fillMapWithArray(ruName, orgaDatasets, ruMap);
+  }
+
+  return ruMap;
+}

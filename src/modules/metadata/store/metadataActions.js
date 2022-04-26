@@ -213,25 +213,38 @@ export default {
         commit(SEARCH_METADATA_ERROR, reason);
       });
   },
-  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, metadataId) {
-    commit(LOAD_METADATA_CONTENT_BY_ID);
+  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod }) {
+    // commitMethod can be given from the caller of the action to direct
+    // the output to a different store mutation then one from this module (metadataMutations)
+    const commitMethodPrefix = commitMethod || LOAD_METADATA_CONTENT_BY_ID;
+
+    commit(commitMethodPrefix, null, {
+      root: !!commitMethod,
+    });
 
     const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
     const contents = Object.values(metadatasContent);
 
     const localEntry = contents.filter(entry => entry.name === metadataId);
-    // filter() always return an array
     if (localEntry.length === 1) {
-      commit(LOAD_METADATA_CONTENT_BY_ID_SUCCESS, localEntry[0]);
+      // filter() always return an array
+      commit(`${commitMethodPrefix}_SUCCESS`, localEntry[0], {
+        root: !!commitMethod,
+      });
       return;
     }
 
     const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
 
     await axios.get(url).then((response) => {
-      commit(LOAD_METADATA_CONTENT_BY_ID_SUCCESS, response.data.result);
+      commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
+        root: !!commitMethod,
+      });
+
     }).catch((reason) => {
-      commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
+      commit(`${commitMethodPrefix}_ERROR`, reason, {
+        root: !!commitMethod,
+      });
     });
   },
   async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
@@ -443,7 +456,7 @@ export default {
 
       const tags = response.data.result;
 
-      const keywordsListWordMax = userEditMetadataConfig.keywordsListWordMax || 2;
+      const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
       const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
       const keywordObjects = getKeywordObjects(filteredTags);

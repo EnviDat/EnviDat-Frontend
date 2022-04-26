@@ -58,7 +58,10 @@ import {
   ACTION_USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { USER_SIGNIN_PAGENAME } from '@/router/routeConsts';
+import {
+  USER_DASHBOARD_PATH,
+  USER_SIGNIN_PAGENAME,
+} from '@/router/routeConsts';
 
 import {
   SET_APP_BACKGROUND,
@@ -133,11 +136,9 @@ export default {
           mutation: USER_SIGNIN,
         });
 
-/*
-      if (!this.errorField) {
-        this.checkUserSignedIn();
+      if (!this.errorField && !this.errorFieldText) {
+        await this.$router.push(USER_DASHBOARD_PATH);
       }
-*/
     },
     catchRequestToken(email) {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,

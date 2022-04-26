@@ -27,10 +27,10 @@
                   height: ${height}px; width: 100%;
                   z-index: 1;`"
           class="headerTitle pa-4"
-          :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                    'display-1': $vuetify.breakpoint.mdAndDown,
-                    'headline': $vuetify.breakpoint.smAndDown,
-          }" >
+          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
+                    'text-h4': $vuetify.breakpoint.mdAndDown,
+                    'text-h5': $vuetify.breakpoint.smAndDown,
+                  }" >
       {{ title }}
     </div>
 
@@ -40,10 +40,10 @@
                   height: ${height}px; width: 100%;
                   z-index: 1; color: ${$vuetify.theme.themes.light.error};`"
           class="headerTitle pa-4"
-          :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                    'display-1': $vuetify.breakpoint.mdAndDown,
-                    'headline': $vuetify.breakpoint.smAndDown,
-          }" >
+          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
+                    'text-h4': $vuetify.breakpoint.mdAndDown,
+                    'text-h5': $vuetify.breakpoint.smAndDown,
+                  }" >
       {{ NotFoundTitle }}
     </div>
 

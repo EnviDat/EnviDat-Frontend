@@ -1,0 +1,91 @@
+{
+  "top": "Swiss Federal Institute for Forest, Snow and Landscape (WSL)",
+  "researchUnits": [
+    {
+      "name": "Biodiversity and Conservation Biology",
+      "groups":[
+        "Conservation Biology",
+        "Ecological Genetics",
+        "Ecosystems Dynamics",
+        "HOLZNER LAB",
+        "Spatial evolutionary ecology"
+      ]
+    },
+    {
+      "name": "Community Ecology",
+      "groups": [
+        "Functional Plant Ecology",
+        "Insubric Ecosystems",
+        "Research Group Mountain Ecosystems (Mountain Ecosystems)",
+        "Plant-Animal Interactions"
+      ]
+    },
+    {
+      "name": "Economics and Social Sciences",
+      "groups": []
+    },
+    {
+      "name": "Research Unit Forest Resources and Management (FoReMa)",
+      "groups": [
+        "Forest Production Systems (Forest Production Systems)",
+        "GIS",
+        "Swiss National Forest Inventory (NFI)",
+        "Resource Analysis",
+        "Stand Dynamics and Silviculture"
+      ]
+    },
+    {
+      "name": "Forest Dynamics",
+      "groups": [
+        "Dendrosciences",
+        "Disturbance Ecology",
+        "SwissForestLab (SwissFL)",
+        "Long-term Forest Ecosystem Research Programme (LWF)"
+      ]
+    },
+    {
+      "name": "Forest Soils and Biogeochemistry",
+      "groups": []
+    },
+    {
+      "name": "Forest health and biotic interactions",
+      "groups": ["Forest Entomology"]
+    },
+    {
+      "name": "Mountain Hydrology and Mass Movements (GebirgsHydrologie)",
+      "groups": []
+    },
+    {
+      "name": "Land Change Science",
+      "groups": [
+        "Dynamic Macroecology",
+        "Land-use systems",
+        "Landscape Ecology",
+        "Remote Sensing Group (Remote Sensing)"
+      ]
+    },
+    {
+      "name": "Alpine Environment and Natural Hazards",
+      "groups": [
+        "Alpine Remote Sensing",
+        "Permafrost"
+      ]
+    },
+    {
+      "name": "Snow Avalanches and Prevention",
+      "groups": [
+        "Avalanche Formation",
+        "Avalanche bulletin and snow situation"
+      ]
+    },
+    {
+      "name": "Snow and Atmosphere",
+      "groups": [
+        "Snow Hydrology",
+        "Snow Physics",
+        "Snow Processes",
+        "Winter Sports and Climate"
+      ]
+    }
+  ]
+}

@@ -49,7 +49,7 @@
                   align="start"
                   justify="end" >
             <v-col cols="12"
-                    class="headline envidatNavbarTitleSmall py-0">
+                   class="text-h5 envidatNavbarTitleSmall py-0">
               {{ logoText }}
             </v-col>
             <v-col v-if="version"

@@ -81,7 +81,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import { getArrayOfFullNames } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 
 export default {
@@ -142,7 +142,7 @@ export default {
       return this.validationErrors.authors;
     },
     preselectAuthorNames() {
-      return this.previewAuthors?.length > 0 ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
+      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -150,7 +150,11 @@ export default {
   },
   methods: {
     clearPreviews() {
-      this.previewAuthors = [];
+      // previewAuthors is expected to be null when normal instead of []
+      // because this way we know when a user removed the last author entry
+      // is null and we can show an empty selection box with the error validation
+      // not saving the users changes, but reflecting their action and show the error
+      this.previewAuthors = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -183,9 +187,10 @@ export default {
             authors,
           },
         });
-      } else {
-        this.previewAuthors = [];
       }
+      // DO NOT clear the preview because than the user isn't able to remove the last author
+      // this lead to a UX where the user had to add a second author to then remove the first, it
+      // changes want to be made
     },
     getAuthorByName(fullName) {
       const authors = this.existingEnviDatUsers;
@@ -202,7 +207,7 @@ export default {
     validationErrors: {
       authors: '',
     },
-    previewAuthors: [],
+    previewAuthors: null,
   }),
   components: {
     BaseUserPicker,

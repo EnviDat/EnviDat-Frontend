@@ -67,6 +67,7 @@ export default {
       type: String,
       default: '',
     },
+    nextMajorStep: String,
   },
   computed: {
     relatedPublicationsText() {
@@ -114,7 +115,7 @@ export default {
   },
   methods: {
     nextStep() {
-      eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, 'Publication Info');
+      eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
     },
   },
   data: () => ({

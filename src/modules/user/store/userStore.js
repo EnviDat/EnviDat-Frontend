@@ -40,17 +40,18 @@ const userState = {
   userOrganizationIds: [],
   userOrganizationNames: [],
   userOrganizations: {},
-  userRecentOrgaDatasets: [],
-  userRecentOrgaDatasetsError: null,
-  userRecentOrgaDatasetsLimit: 10,
+  userOrgaDatasetsError: null,
   metadataSavingMessageTimeoutTime: 2500,
-  metadataSavingErrorTimeoutTime: 5000,
+  metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
   metadataInEditing: getEmptyMetadataInEditingObject(),
   selectedResourceId: '',
   selectedAuthorId: '',
+  loadingCurrentEditingContent: false,
+  currentEditingContent: null,
+  currentEditingContentError: null,
 };
 
 

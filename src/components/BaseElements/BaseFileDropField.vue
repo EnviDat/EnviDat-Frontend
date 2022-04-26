@@ -49,7 +49,7 @@
       </v-row>
 
       <v-row justify="center" no-gutters >
-        <v-col cols="12" class="caption">
+        <v-col cols="12" class="text-caption">
           {{ labels.pickerSubInstructions }}
         </v-col>
       </v-row>

@@ -10,7 +10,7 @@
     <v-container fluid class="pa-4">
 
       <v-row>
-        <v-col class="display-2">
+        <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>
@@ -22,15 +22,14 @@
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row justify="space-between">
         <v-col v-if="actionDescription"
-                cols="6"
                 class="text-body-1" >
           {{ actionDescription }}
         </v-col>
 
-        <v-col v-if="actionButtonText"
-                cols="6"  >
+        <v-col v-if="actionButtonText && actionButtonCallback"
+                class="shrink" >
           <base-rectangle-button :button-text="actionButtonText"
                                   @clicked="actionButtonCallback" />
         </v-col>
