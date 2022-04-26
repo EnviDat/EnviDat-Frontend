@@ -17,6 +17,7 @@
     <div class="topBoard" >
 
       <IntroductionCard :userName="user.fullName"
+                        :introText="userDashboardConfig.introText"
                         :createClickCallback="canCreateDatasets ? createClickCallback : null"
                         :existingClickCallback="existingClickCallback"
                         :editingClickCallback="editingClickCallback"

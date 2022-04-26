@@ -175,7 +175,7 @@ export default {
       return this.userName ? `${this.title} ${this.userName} to your Dashboard!` : `${this.title} to your Dashboard!`;
     },
     introductionText() {
-      let text = this.introText ? this.introText : this.introTextFallback;
+      let text = this.introText || this.introTextFallback;
       text += this.ckanDashboardText;
       text += this.feedbackText;
       return text;
@@ -193,7 +193,7 @@ export default {
   methods: {
   },
   data: () => ({
-    introTextFallback: 'Welcome to your dashboard, manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
+    introTextFallback: 'Here you can manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
     createText: 'Create a dataset',
     createButtonText: 'New Dataset',
     existingText: 'Edit your existing datasets',
