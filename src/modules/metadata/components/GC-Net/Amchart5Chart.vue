@@ -133,79 +133,28 @@ export default {
       // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
       const responseType = this.getResponseType(result.type)
 
-      // Logging used for development
-      // console.log(result)
-      // console.log(result.response)
+      let data = []
 
-      // TODO extract out JSON and CSV parsing and assigning data to series to separate function
-
-      // Parse JSON input, set series with data
       if (responseType === 'application/json') {
-
-        // Block used when parsing JSON dat without DataProcessor
-        // Assign parsed data to series
-        // series.data.setAll(am5.JSONParser.parse(result.response));
-
-        // Parse data
-        const data = am5.JSONParser.parse(result.response);
-
-        // Process data
-        const processor = am5.DataProcessor.new(root, {
-          dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
-          dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-          numericFields: ['airtemp1'], // TODO implement logic to determine numericFields for JSON parsing
-        });
-        processor.processMany(data);
-
-        // Assign parsed/processed data to series
-        series.data.setAll(data);
-
+        data = am5.JSONParser.parse(result.response);
       }
-
-      // Parse CSV input, set series with data
       else if (responseType === 'text/csv') {
-
-        const jsonData = this.convertCSVToJSON(result.response, '-999')
-        // console.log(jsonData)
-
-        // Parse data
-        // const data = am5.CSVParser.parse(result.response, {
-        //   delimiter: ',',
-        //   reverse: true,
-        //   skipEmpty: true,
-        //   useColumnNames: true,
-        // });
-        //
-        // // Process data
-        // const processor = am5.DataProcessor.new(root, {
-        //   dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
-        //   dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-        //   numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for CSV parsing
-        // });
-        // processor.processMany(data);
-        //
-        // // Assign parsed/processed data to series
-        // series.data.setAll(data);
-
-        // TODO investigate why tooltip only working for JSON data and not CSV data
-        // series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
-
-        // Process data
-        const processor = am5.DataProcessor.new(root, {
-          dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
-          dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-          numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
-        });
-        processor.processMany(jsonData);
-
-        // Assign parsed/processed data to series
-        series.data.setAll(jsonData);
-
+        data = this.convertCSVToJSON(result.response, '-999')
       }
-
       // TODO implement further error handling in case responseType is not an expected string indicating json or csv
       // else {
       // }
+
+      // Process data
+      const processor = am5.DataProcessor.new(root, {
+        dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
+        dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
+        numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
+      });
+      processor.processMany(data);
+
+      // Assign parsed/processed data to series
+      series.data.setAll(data);
 
     }).catch((result) => {
       console.log(`Error loading ${result.xhr.responseURL}`);

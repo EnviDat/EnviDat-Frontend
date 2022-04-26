@@ -52,7 +52,7 @@ export const Amcharts5SingleChart = () => ({
     chartdiv: 'chartdiv1',
       // apiUrl: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1,timestamp/2018-11-04T17:00:00/2020-11-10T00:00:00/', // result.type: application/json, application/json; charset=utf-8
       // apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/windspeed1/end/-999/2020-11-04/2020-11-06/', // result.type: text/csv, application/json; charset=utf-8
-       apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2020-11-04/2020-11-06/',
+       apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2019-11-04/2020-11-06/',
   }),
 });
 
@@ -102,10 +102,10 @@ export const Amcharts5MultipleCharts = () => ({
   },
   data: () => ({
     chartdiv1: 'chartdiv1',
-    apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    apiUrl1: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     chartdiv2: 'chartdiv2',
-    apiUrl2: 'https://www.envidat.ch/data-api/gcnet/json/neem/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    apiUrl2: 'https://www.envidat.ch/data-api/gcnet/json/neem/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     chartdiv3: 'chartdiv3',
-    apiUrl3: 'https://www.envidat.ch/data-api/gcnet/json/dye2/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    apiUrl3: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
   }),
 });
