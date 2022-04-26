@@ -136,13 +136,13 @@
                  cols="6"
                  class="pa-2" >
 
-            <base-click-card :compact="true"
-                             :title="card.title"
-                             :img="card.img"
-                             :color="card.darkColor"
-                             :contain="card.contain"
-                             :disabled="card.disabled"
-                             @click="catchCategoryClicked(card.type)" />
+            <BaseClickCard :compact="true"
+                           :title="card.title"
+                           :img="card.img"
+                           :color="card.darkColor"
+                           :contain="card.contain"
+                           :disabled="card.disabled"
+                           @click="catchCategoryClicked(card.type)" />
           </v-col>
         </v-row>
 

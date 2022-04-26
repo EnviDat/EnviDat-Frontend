@@ -12,7 +12,7 @@
                 cols="5" >
           <v-img class="imagezoom"
                   :contain="contain"
-                  :height=" $vuetify.breakpoint.smAndDown ? '65px' : '100px' "
+                  :height="compact ? '65px' : '100px' "
                   style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                   :src="img" />
         </v-col>
@@ -21,7 +21,7 @@
         <v-col class="px-0"
                 cols="7" >
           <div class="px-3 baseClickCardTitle"
-                :class="{ 'compactTitle' : this.$vuetify.breakpoint.smAndDown }" >
+                :class="{ 'compactTitle' : compact }" >
             {{ title }}
           </div>
 
@@ -66,6 +66,10 @@ export default {
       default: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    compact: {
       type: Boolean,
       default: false,
     },
