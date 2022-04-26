@@ -1,6 +1,8 @@
 <template>
   <v-card ripple
           hover
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
           style="height: 100%;"
           @click.native="cardClick" >
 
@@ -90,7 +92,7 @@
                justify="end">
           <v-col class="cardIcons shrink" >
             <MetadataStateChip :state="state"
-                                :showOnHover="showStateOnHover" />
+                                :showOnHover="!hover" />
           </v-col>
         </v-row>
 
@@ -102,7 +104,7 @@
           <v-col class="cardIcons shrink" >
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
-                                      :showOnHover="showOrganizationOnHover"
+                                      :showOnHover="!hover"
                                       @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
         </v-row>
@@ -141,23 +143,28 @@
       <v-container v-if="!showCardBody"
                    class="pa-0">
 
-        <v-row no-gutters>
+        <v-row no-gutters
+               class="justify-end">
+          <v-col v-if="role"
+                 class="pl-1 shrink" >
+            <UserRoleChip :role="role" />
+          </v-col>
           <v-col v-if="state"
-                 class="pl-1" >
+                 class="pl-1 shrink" >
             <MetadataStateChip :state="state"
-                               :showOnHover="showStateOnHover" />
+                               :showOnHover="!hover" />
           </v-col>
 
           <v-col v-if="organization"
-                 class="pl-1" >
+                 class="pl-1 shrink" >
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
-                                      :showOnHover="showOrganizationOnHover"
+                                      :showOnHover="!hover"
                                       @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
 
           <v-col v-if="modeData"
-                 class="pl-1 cardIcons" >
+                 class="pl-1 shrink cardIcons" >
             <base-icon-button isFlat
                               isSmall
                               color="transparent"
@@ -165,13 +172,13 @@
                               :customIcon="modeEntryIcon" />
           </v-col>
 
-          <v-col class="pl-3 cardIcons" >
+          <v-col class="pl-3 shrink cardIcons" >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
 
           <v-col v-if="geoJSONIcon"
-                 class="pl-1 cardIcons" >
+                 class="pl-1 shrink cardIcons" >
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -223,6 +230,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
+import UserRoleChip from '@/components/Chips/UserRoleChip';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -289,8 +297,10 @@ export default {
       type: String,
       default: '',
     },
-    showStateOnHover: Boolean,
-    showOrganizationOnHover: Boolean,
+    role: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     showCardBody() {
@@ -473,8 +483,10 @@ export default {
     BaseIconButton,
     MetadataStateChip,
     MetadataOrganizationChip,
+    UserRoleChip,
   },
   data: () => ({
+    hover: false,
     singleLineCss: 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
     show: false,
     showDataText: 'SHOW DATA',

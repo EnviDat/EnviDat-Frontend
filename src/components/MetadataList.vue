@@ -126,10 +126,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadata.location)"
                           :categoryColor="metadata.categoryColor"
                           :state="getMetadataState(metadata)"
-                          :showStateOnHover="showStateOnHover"
                           :organization="metadata.organization.name"
                           :organizationTooltip="metadata.organization.title"
-                          :showOrganizationOnHover="showOrganizationOnHover"
                           @organizationClicked="$emit('organizationClicked', metadata.organization)"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked"
@@ -276,14 +274,6 @@ export default {
     preloadingDistance: {
       type: Number,
       default: 150,
-    },
-    showStateOnHover: {
-      type: Boolean,
-      default: false,
-    },
-    showOrganizationOnHover: {
-      type: Boolean,
-      default: false,
     },
   },
   beforeMount() {

@@ -267,3 +267,14 @@ export function isUserGroupAdmin(userId, organization) {
 
   return false;
 }
+
+export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
+
+  if (collaboratorIdEntries?.length > 0) {
+    const matches = collaboratorIdEntries.filter(entry => entry.id === datasetId);
+    return matches[0]?.role || '';
+  }
+
+  return '';
+}
+

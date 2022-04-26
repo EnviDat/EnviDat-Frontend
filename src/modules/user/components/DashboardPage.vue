@@ -76,7 +76,6 @@
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
-                      showStateOnHover
                       mainScrollClass=".midBoard > .datasetsGrid"
       />
 
@@ -140,14 +139,15 @@
                            :state="getMetadataState(metadata)"
                            :organization="metadata.organization.name"
                            :organizationTooltip="metadata.organization.title"
-                           showStateOnHover
+                           :role="metadata.role"
                            @clickedEvent="catchMetadataClicked"
                            @clickedTag="catchTagClicked"
                            :showGenericOpenButton="!!metadata.openEvent"
                            :openButtonTooltip="metadata.openButtonTooltip"
                            :openButtonIcon="metadata.openButtonIcon"
                            @openButtonClicked="catchEditingClick(metadata.openProperty)"
-             />
+                            />
+
            </v-col>
          </v-row>
 
@@ -192,7 +192,6 @@
                     :defaultPublicationState="defaultPublicationState"
                     :reloadAmount="20"
                     :preloadingDistance="10"
-                    showStateOnHover
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 

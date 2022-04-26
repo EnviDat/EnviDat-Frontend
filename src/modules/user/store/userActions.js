@@ -105,15 +105,15 @@ export default {
         commit(`${payload.mutation}_ERROR`, error);
       });
   },
-  async [USER_GET_COLLABORATOR_DATASETS]({ commit }, datasetIds) {
+  async [USER_GET_COLLABORATOR_DATASETS]({ commit }, collaboratorIds) {
     commit(USER_GET_COLLABORATOR_DATASETS);
 
     const actionUrl = ACTION_USER_COLLABORATOR_DATASETS();
     const limit = this.state.user.collaboratorDatasetsLimit;
 
     let idQuery = 'id:(';
-    for (let i = 0; i < datasetIds.length; i++) {
-      idQuery += `"${datasetIds[i]}",`;
+    for (let i = 0; i < collaboratorIds.length; i++) {
+      idQuery += `"${collaboratorIds[i].id}",`;
     }
     idQuery += ')';
 
@@ -131,7 +131,11 @@ export default {
         if (useTestdata && typeof response.data === 'string') {
           response.data = JSON.parse(response.data);
         }
-        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, response.data.result);
+        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS,
+          {
+            datasets: response.data.result.results,
+            collaboratorIds,
+          });
       })
       .catch((error) => {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);

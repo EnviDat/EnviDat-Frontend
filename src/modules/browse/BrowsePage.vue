@@ -28,7 +28,6 @@
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
-                    showOrganizationOnHover
                     @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"

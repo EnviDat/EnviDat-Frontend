@@ -24,7 +24,7 @@ import {
   updateResource,
 } from '@/factories/userEditingFactory';
 
-import { isUserGroupAdmin } from '@/factories/userEditingValidations';
+import { getCollaboratorCapacity, isUserGroupAdmin } from '@/factories/userEditingValidations';
 
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
@@ -232,7 +232,10 @@ export default {
 
     for (let i = 0; i < listOfPackageIds.length; i++) {
       const entry = listOfPackageIds[i];
-      datasetIds.push(entry.package_id);
+      datasetIds.push({
+        id: entry.package_id,
+        role: entry.capacity,
+      });
     }
 
     state.collaboratorDatasetIds = datasetIds;
@@ -248,10 +251,15 @@ export default {
 
     resetErrorObject(state);
   },
-  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, payload) {
+  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, { datasets, collaboratorIds } ) {
     state.collaboratorDatasetsLoading = false;
 
-    const datasets = enhanceMetadataFromCategories(this, payload.results);
+    for (let i = 0; i < datasets.length; i++) {
+      const dSet = datasets[i];
+      dSet.role = getCollaboratorCapacity(dSet.id, collaboratorIds);
+    }
+
+    datasets = enhanceMetadataFromCategories(this, datasets);
 
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
