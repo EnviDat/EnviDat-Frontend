@@ -56,7 +56,9 @@
                  cols="6"
                  md="4"
                  class="pa-2" >
-            <BlogPostCard :post="post"
+            <BlogPostCard :postTitle="post.title"
+                          :postDate="post.date"
+                          :titleImg="post.titleImg"
                           :loadingImg="fallbackCardImg"
                           height="200"
                           @clicked="catchPostClick(post.postFile)"/>

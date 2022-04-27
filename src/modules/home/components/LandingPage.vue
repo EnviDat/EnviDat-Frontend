@@ -156,11 +156,12 @@
                  cols="6"
                  class="pa-2"
                  >
-            <BlogPostCard :post="post"
+            <BlogPostCard :postTitle="post.title"
+                          :titleImg="post.titleImg"
                           :loadingImg="fallbackCardImg"
                           titleCssClass="compactBlogPostCard"
                           subtitleCssClass="text-caption"
-                          height="100"
+                          height="75"
                           @clicked="catchPostClick(post.postFile)"/>
           </v-col>
         </v-row>
