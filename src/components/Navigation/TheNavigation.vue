@@ -13,6 +13,7 @@
   <v-navigation-drawer app
                         :permanent="!smallScreen"
                         clipped
+                        :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
                         :mini-variant="mini"
                         :value="show"
                         @change="setShow"

@@ -648,4 +648,8 @@ export default {
 .fade-leave-active {
   opacity: 0;
 }
+
+.application .v-overlay.v-overlay--active {
+  z-index: 1025 !important;
+}
 </style>

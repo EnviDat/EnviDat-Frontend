@@ -22,13 +22,9 @@ export const navigationItems = [
   { title: 'Explore', icon: 'search', toolTip: 'Explore research data', active: false, path: BROWSE_PATH, pageName: BROWSE_PAGENAME },
   { title: 'Projects', icon: 'library_books', toolTip: 'Overview of the research projects on envidat', active: false, path: PROJECTS_PATH, pageName: PROJECTS_PAGENAME, subpages: [PROJECT_DETAIL_PAGENAME] },
   { title: 'Organizations', icon: 'account_tree', toolTip: 'Overview of the different organizations', active: false, path: 'https://www.envidat.ch/organization', pageName: 'external' },
-  // { title: 'Guidelines', icon: 'local_library', toolTip: 'Guidlines about the creation of metadata', active: false, path: GUIDELINES_PATH, pageName: GUIDELINES_PAGENAME },
-  // { title: 'Policies', icon: 'policy', toolTip: 'The rules of EnviDat', active: false, path: POLICIES_PATH, pageName: POLICIES_PAGENAME },
-  // { title: 'DMP', icon: 'menu_book', toolTip: 'Template for a Data Management Plan', active: false, path: DMP_PATH, pageName: DMP_PAGENAME },
   { title: 'Sign In', icon: 'person', toolTip: 'Sign in to manage your research data', active: false, path: USER_SIGNIN_PATH, pageName: USER_SIGNIN_PAGENAME },
+  { title: 'Blog', icon: 'auto_stories', toolTip: 'News and articles from the EnviDat team', active: false, path: BLOG_PATH, pageName: BLOG_PAGENAME },
   { title: 'About', icon: 'info', toolTip: 'What is EnviDat? Who is behind EnviDat?', active: false, path: ABOUT_PATH, pageName: ABOUT_PAGENAME },
-  { title: 'Blog', icon: 'newspaper', toolTip: 'News and articles from the EnviDat team', active: false, path: BLOG_PATH, pageName: BLOG_PAGENAME },
-  // { title: 'Contact', icon: 'contact_support', toolTip: 'Do you need support?', active: false },
   { title: 'Menu', icon: 'menu', active: false },
 ];
 
