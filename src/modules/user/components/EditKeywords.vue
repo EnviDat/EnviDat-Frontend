@@ -341,14 +341,14 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
-            // eslint-disable-next-line no-continue
-            continue;
-          }
+          } else {
 
-          valuesArray[i] = {
-            name: valuesArray[i].toUpperCase().trim(),
-            color: getTagColor(catCards, valuesArray[i]),
-          };
+            valuesArray[i] = {
+              name: valuesArray[i].toUpperCase()
+                  .trim(),
+              color: getTagColor(catCards, valuesArray[i]),
+            };
+          }
         }
 
       }

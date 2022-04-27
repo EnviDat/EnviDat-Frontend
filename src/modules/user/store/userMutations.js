@@ -132,9 +132,9 @@ function createErrorMessage(reason) {
 
     if (reason.response.status !== 200) {
       eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
-          reason.response.status,
-          reason.response.statusText,
-          reason.response?.data?.error?.message);
+          reason.response.status || -1,
+          reason.response.statusText || '',
+          reason.response.data?.error?.message || '');
     }
 
     msg = 'Saving failed ';
@@ -142,7 +142,7 @@ function createErrorMessage(reason) {
       msg += ' you are not authorized';
     }
 
-    const errorObj = reason?.response?.data?.error || reason?.response?.error || null;
+    const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
 
@@ -320,7 +320,7 @@ export default {
     state.userOrganizationLoading = false;
 
     // let datasets = payload?.packages || [];
-    const orgaId = payload.id;
+    const orgaId = payload?.id || payload?.name;
 
     if (payload?.packages.length > 0) {
 

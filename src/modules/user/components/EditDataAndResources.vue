@@ -229,7 +229,7 @@ export default {
       if (res?.length > 0) {
         const selected = res.filter((r) => r.isSelected);
 
-        if (selected?.length > 0) {
+        if (selected.length > 0) {
           selectedRes = selected[0];
         }
       }

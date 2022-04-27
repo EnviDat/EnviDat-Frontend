@@ -211,11 +211,11 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
 export function getUserOrganizationRoleMap(userId, organizations) {
   const roleMap = {};
 
-  const keys = Object.keys(organizations);
-
-  if (!userId || !organizations || keys.length <= 0) {
+  if (!userId || !organizations) {
     return roleMap;
   }
+
+  const keys = Object.keys(organizations);
 
   keys.forEach(k => {
     const orga = organizations[k];

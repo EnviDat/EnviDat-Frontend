@@ -445,7 +445,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, authorsMap, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -492,7 +492,7 @@ function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, 
   return dataObject;
 }
 
-function populateEditingData(commit, metadataRecord, snakeCaseJSON) {
+function populateEditingData(commit, snakeCaseJSON) {
 
   const dataObject = {};
   
@@ -539,7 +539,7 @@ function populateEditingData(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON) {
+function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -589,11 +589,11 @@ export function populateEditingComponents(commit, metadataRecord, authorsMap, ca
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, authorsMap, categoryCards, snakeCaseJSON);
 
-  const { dataInfo } = populateEditingData(commit, metadataRecord, snakeCaseJSON);
+  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
 
-  populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON);
+  populateEditingRelatedResearch(commit, snakeCaseJSON);
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
 
