@@ -170,24 +170,33 @@
       </template>
 
       <template v-slot:news
-                v-if="showWinterHolidayWishs || showNewYearWishs" >
+                v-if="hasActiveNews">
 
         <TitleCard :title="welcomeInfo.newsTitle"
                    cardClass="pa-2"
                    titleClass="titleCardClass"/>
 
+        <div v-for="(entry, index) in newsEntries"
+             :key="index"
+              class="pt-4 px-1">
+          <SloganCard :slogan="entry.title"
+                      :subSlogan="entry.text"
+                      :sloganImg="entry.image" />
 
-        <div class="pt-4 px-1">
+        </div>
 
+        <div v-if="showWinterHolidayWishs"
+             class="pt-4 px-1">
           <SloganCard slogan="Happy Holidays!"
                       :sloganImg="winterHolidayImage"
-                      :maxHeight="275"
                       :subSlogan="decemberWishes" />
 
-          <SloganCard v-if="showNewYearWishs"
-                      slogan="Happy New Year!"
+        </div>
+
+        <div v-if="showNewYearWishs"
+             class="pt-4 px-1">
+          <SloganCard slogan="Happy New Year!"
                       :sloganImg="newYearImage"
-                      :maxHeight="300"
                       :subSlogan="newYearWishes" />
         </div>
       </template>
@@ -403,6 +412,14 @@ export default {
     },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
+    },
+    hasActiveNews(){
+      return (this.config?.newsConfig?.newsActive && this.newsEntries.length > 0)
+          || this.showNewYearWishs
+          || this.showWinterHolidayWishs;
+    },
+    newsEntries(){
+      return this.config?.newsConfig?.entries || []
     },
     showPolygonParticles() {
       return this.$vuetify.breakpoint.lgAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;

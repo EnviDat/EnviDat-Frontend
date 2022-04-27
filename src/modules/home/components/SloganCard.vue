@@ -35,7 +35,6 @@
           </div>
 
           <div :class="hasButtons ? 'pb-5 mb-5' : 'pb-0'"
-                :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 14px !important;' : '' "
                 v-html="subSlogan">
           </div>
         </v-col>

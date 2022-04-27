@@ -389,13 +389,12 @@ export default {
       return this.config?.maintenanceConfig || {};
     },
     maintenanceBannerVisible() {
-      return this.maintenanceConfig && this.maintenanceConfig.messageActive && this.showMaintenanceBanner;
+      return this.maintenanceConfig.messageActive
+          && this.showMaintenanceBanner
+          && this.currentPage !== LANDING_PAGENAME;
     },
     signinDisabled() {
       return this.maintenanceConfig && this.maintenanceConfig.signinDisabled;
-    },
-    metadataConfig() {
-      return this.config?.metadataConfig || {};
     },
     showDecemberParticles() {
       return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
