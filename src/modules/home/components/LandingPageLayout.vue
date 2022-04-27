@@ -90,7 +90,7 @@ export default {
 .landingPageGrid {
   display: grid;
   grid-template-columns: 2fr 2fr 1fr;
-  grid-template-rows: 4fr 0.25fr 4fr;
+  grid-template-rows: 4fr 0.25fr auto;
   gap: 10px;
   grid-template-areas:
     "Logo Welcome Categories"

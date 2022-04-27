@@ -73,13 +73,13 @@
       </template>
 
       <template v-slot:search>
-        <search-bar-view v-if="$vuetify.breakpoint.smAndUp"
+        <SearchBarView v-if="$vuetify.breakpoint.smAndUp"
                          :labelText="welcomeInfo.searchLabelText"
                          :buttonText="buttonText"
                          :hasButton="true"
                          @clicked="catchSearchClicked" />
 
-        <small-search-bar-view v-if="$vuetify.breakpoint.xsOnly"
+        <SmallSearchBarView v-if="$vuetify.breakpoint.xsOnly"
                                :labelText="welcomeInfo.smallSearchLabelText"
                                :buttonText="buttonText"
                                @clicked="catchSearchClicked" />
@@ -396,7 +396,7 @@ export default {
     ]),
     blogPosts() {
       if (this.list?.length > 0) {
-        return this.list.slice(0, 6);
+        return this.list.slice(0, 4);
       }
 
       return this.list;
@@ -433,6 +433,22 @@ export default {
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};
+    },
+    sloganButtonText() {
+/*
+      if (this.$vuetify.breakpoint.lgAndDown) {
+        return 'EXPLORE';
+      }
+*/
+
+      return 'EXPLORE DATA';
+    },
+    sloganMoreButtonText(){
+      if (this.$vuetify.breakpoint.lgAndDown) {
+        return 'ABOUT';
+      }
+
+      return 'ABOUT ENVIDAT';
     },
   },
   watch: {
@@ -500,8 +516,10 @@ export default {
         return;
       }
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl([cardType.toUpperCase()]);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', tagsEncoded);
+      const newTags = [cardType];
+      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({
@@ -566,8 +584,6 @@ export default {
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
-    sloganButtonText: 'EXPLORE DATA',
-    sloganMoreButtonText: 'ABOUT ENVIDAT',
     defaultWelcomeInfo: {
       titleText: 'EnviDat',
       Slogan: 'Environmental Research Data at your Fingertips',

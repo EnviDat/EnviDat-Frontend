@@ -21,7 +21,8 @@
         <v-col class="px-0"
                 cols="7" >
           <div class="px-3 baseClickCardTitle"
-                :class="{ 'compactTitle' : compact }" >
+                :class="{ 'compactTitle': compact,
+                          'text-h5': !compact }" >
             {{ title }}
           </div>
 

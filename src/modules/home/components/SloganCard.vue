@@ -21,7 +21,7 @@
                 cols="12"
                 sm="7" >
 
-          <div class="hidden-sm-and-down envidatSlogan text-h4 pb-5"
+          <div class="hidden-sm-and-down envidatSlogan text-h4 pb-4"
                 v-html="slogan">
           </div>
           <div class="hidden-xs-only hidden-md-and-up envidatSlogan text-h5 pb-5"
