@@ -344,7 +344,10 @@ export default {
     },
     cardGridClass() {
       if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
-        return { 'col-12': true };
+        return {
+          'col-12': true,
+          'col-xl-6': true,
+        };
       }
       
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -356,7 +359,8 @@ export default {
         'col-md-4': true,
         'col-lg-3': compactLayout || !mapActive,
         'col-lg-4': mapActive && !compactLayout,
-        'col-xl-2': !mapActive && compactLayout,
+        'col-xl-2': !mapActive,
+        'col-xl-3': mapActive,
       };
     },
     contentSize() {
