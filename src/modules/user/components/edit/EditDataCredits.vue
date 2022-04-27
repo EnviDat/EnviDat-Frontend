@@ -94,6 +94,10 @@ export default {
         'publication',
       ],
     },
+    authorName: {
+      type: String,
+      default: '',
+    },
     readOnly: {
       type: Boolean,
       default: false,
@@ -128,9 +132,11 @@ export default {
 
       const active = this.isActive(creditName);
 
-      const contribution = `${ active ? '' : 'no' } <b>${creditName}</b>`;
+      if (!active) {
+        return `No <b>${creditName}</b> contribution`;
+      }
 
-      return `Author has ${ contribution } contribution`;
+      return `${this.authorName ? this.authorName : 'Author'} has <b>${creditName}</b> contribution for this dataset`;
     },
     catchCreditClick(creditName){
       this.$emit('creditClick', creditName)

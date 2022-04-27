@@ -32,6 +32,7 @@
                 <template #dataCreditCurrentDataset >
                   <EditDataCredits :instruction="editDataCreditsInstruction"
                                    :dataCredit="author.dataCredit"
+                                   :authorName="author.fullName"
                                    @creditClick="catchCreditClick(author, ...arguments)"
                                     />
 

@@ -18,7 +18,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_AUTHOR,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR,
+  SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -52,15 +52,15 @@ const authorsObjs = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 // enhanceElementsWithStrategyEvents(authors, SELECT_EDITING_AUTHOR_PROPERTY);
 
 // extract the names of the authors into a plain array of string for the baseUserPicker
-const authors = [];
+const extractedAuthors = [];
 const authorsStrings = [];
 authorsObjs.forEach((author) => {
-  authors.push(author);
+  extractedAuthors.push(author);
   authorsStrings.push(author.fullName);
 });
 
 const preSelectedAuthor = authorsStrings.filter(value => value.includes('Fischer'));
-const preSelectedAuthors2 = authors.filter(value => value.fullName.includes('A'));
+const preSelectedAuthors2 = extractedAuthors.filter(value => value.fullName.includes('A'));
 const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 const storybookFolder = `${METADATA_EDITING} / Author Infos`;
@@ -148,6 +148,7 @@ export const EditingDataCreditViews = () => ({
       <v-col style="background-color: darkgrey;">
         <EditDataCredits @creditClick="catchCreditClick(emptyAuthor, ...arguments)"
                          :dataCredit="emptyAuthor.dataCredit"
+                         authorName="Dominik Haas-Artho"
                          :dark="true"
                         />
       </v-col>
@@ -161,6 +162,7 @@ export const EditingDataCreditViews = () => ({
       <v-col style="background-color: gray;">
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
+                         authorName="Dominik Haas-Artho"
                           @creditClick="catchCreditClick(author, ...arguments)"
                          :dark="true"
                           />
@@ -175,6 +177,7 @@ export const EditingDataCreditViews = () => ({
       <v-col style="background-color: greenyellow;">
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
+                         authorName="Dominik Haas-Artho"
                          @creditClick="catchCreditClick(author, ...arguments)"
         />
       </v-col>
@@ -188,6 +191,7 @@ export const EditingDataCreditViews = () => ({
       <v-col style="background-color: gray;">
         <EditDataCredits :instruction="instruction"
                          :dataCredit="author.dataCredit"
+                         authorName="Dominik Haas-Artho"
                          :dark="true"
                          :readOnly="true" />
       </v-col>
@@ -215,7 +219,7 @@ export const EditingDataCreditViews = () => ({
   },
   data: () => ({
     emptyAuthor: {},
-    author: authors[0],
+    author: extractedAuthors[0],
     instruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
   }),
 });
@@ -275,7 +279,7 @@ export const EditAuthorsListViews = () => ({
         showAuthorInfo: true,
       },
       selectionId: '',
-      authors,
+      authors: extractedAuthors,
     },
     selectionId: -1,
   }),
@@ -292,7 +296,8 @@ export const FullEditingAuthorViews = () => ({
 
     <v-row class="py-3" >
       <v-col >
-        <EditAuthorList v-bind="genericProps" />
+        <EditAuthorList :authors="authors"
+                        :existingAuthors="existingAuthors" />
       </v-col>
     </v-row>
 
@@ -309,15 +314,6 @@ export const FullEditingAuthorViews = () => ({
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
-  },
-  computed: {
-    genericProps() {
-      return {
-        selectionId: '',
-        authors: this.preSelectedAuthors2,
-        existingAuthors: this.authors,
-      };
-    },
   },
   methods: {
     selectAuthor(id) {
@@ -358,7 +354,7 @@ export const FullEditingAuthorViews = () => ({
     },
     saveAuthor(newAuthor) {
       newAuthor.existsOnlyLocal = false;
-      this.updateResource(newAuthor);
+      this.updateAuthors(newAuthor);
       this.cancelEditing();
     },
     updateAuthors(newAuthor) {
@@ -380,14 +376,16 @@ export const FullEditingAuthorViews = () => ({
       auths.unshift(newAuthor);
     },
     changeAuthors(updateObj) {
-      if (updateObj.object === EDITMETADATA_AUTHOR) {
-
-        this.updateAuthors(updateObj.data);
+      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+        this.authors = updateObj.data.authors;
+        // console.log('FullEditingAuthorView updated authors');
+        // console.log(this.authors);
       }
     },
   },
   data: () => ({
-    preSelectedAuthors2,
-    authors,
+    selectionId: '',
+    authors: preSelectedAuthors2,
+    existingAuthors: extractedAuthors,
   }),
 });

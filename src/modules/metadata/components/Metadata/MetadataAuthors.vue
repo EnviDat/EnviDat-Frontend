@@ -58,6 +58,7 @@
                 <EditDataCredits class="px-0 py-1 readableText"
                                   :dataCredit="author.dataCredit"
                                   :instruction="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
+                                  :authorName="author.fullName"
                                   readonly
                                   />
 
