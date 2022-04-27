@@ -341,6 +341,7 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
+            i--; // decrease to ensure not skipping the next entry becduse splice changes the index
           } else {
 
             valuesArray[i] = {

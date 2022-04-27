@@ -445,7 +445,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, authorsMap, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -483,8 +483,6 @@ function populateEditingMain(commit, authorsMap, categoryCards, snakeCaseJSON) {
     const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
     authors.push(author);
   })
-  // const authors = createAuthors({ author: backendAuthors.authors });
-  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
 
   commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
@@ -585,11 +583,11 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, authorsMap, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
 
   const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
 

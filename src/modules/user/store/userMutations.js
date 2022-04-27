@@ -539,9 +539,9 @@ export default {
     if (currentEntry) {
 //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
-      const { authorsMap, categoryCards } = this.getters;
+      const { categoryCards } = this.getters;
 
-      populateEditingComponents(this.commit, currentEntry, authorsMap, categoryCards);
+      populateEditingComponents(this.commit, currentEntry, categoryCards);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {
