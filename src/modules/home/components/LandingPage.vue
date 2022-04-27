@@ -18,7 +18,8 @@
                        :newsTitle="welcomeInfo.newsTitle"
                        :articlesTitle="welcomeInfo.articlesTitle" >
 
-      <template v-slot:logo>
+      <template v-if="$vuetify.breakpoint.mdAndUp"
+                v-slot:logo>
 
         <v-row align="center" >
 
@@ -178,8 +179,7 @@
 
         <div class="pt-4 px-1">
 
-          <SloganCard v-if="showWinterHolidayWishs"
-                      slogan="Happy Holidays!"
+          <SloganCard slogan="Happy Holidays!"
                       :sloganImg="winterHolidayImage"
                       :maxHeight="275"
                       :subSlogan="decemberWishes" />
@@ -618,7 +618,8 @@ export default {
 <style >
 
 .compactBlogPostCard {
-  font-size: 0.9rem;
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1rem;
 }
 

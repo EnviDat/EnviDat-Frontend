@@ -31,7 +31,7 @@
               align="center"
               justify="space-between" >
 
-        <v-col cols="4" sm="3" md="2">
+        <v-col cols="4" sm="2">
           <v-row no-gutters>
 
             <v-col class="shrink px-2" >
@@ -102,13 +102,15 @@
         </v-col>
 
         <v-col v-else
-                cols="1" >
+               class="shrink"
+               cols="4" sm="2" md="1" xl="1">
 
           <v-row align="center"
                   justify="end"
                  no-gutters >
 
             <v-col @click="catchSigninClicked"
+                   xl="4"
                     style="cursor: pointer;">
 
               <v-tooltip bottom>

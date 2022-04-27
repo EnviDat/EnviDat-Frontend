@@ -4,13 +4,16 @@
           raised
           :disabled="disabled"
           @click.native="clicked" >
+
     <v-container class="pa-0" >
       <v-row align="center"
               no-gutters >
         <!-- Image -->
         <v-col class="py-0"
-                cols="5" >
+                cols="4"
+                sm="5">
           <v-img class="imagezoom"
+                 :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
                   :contain="contain"
                   :height="compact ? '65px' : '100px' "
                   style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
@@ -19,7 +22,8 @@
 
         <!-- Text -->
         <v-col class="px-0"
-                cols="7" >
+                cols="8"
+                sm="7" >
           <div class="px-3 baseClickCardTitle"
                 :class="{ 'compactTitle': compact,
                           'text-h5': !compact }" >

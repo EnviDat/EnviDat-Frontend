@@ -11,9 +11,11 @@
                 @click="buttonCallback ? buttonCallback : ''">
 
           <v-img class="imagezoom"
-                  :src="sloganImg ? sloganImg : fallbackImg"
-                  style="min-height: 100%; border-top-left-radius: 4px;"
-                  :style="`max-height: ${maxHeight}px; border-bottom-left-radius: ${$vuetify.breakpoint.smAndUp ? 4 : 0}px;
+                 cover
+                 :aspect-ratio="1"
+                 :src="sloganImg ? sloganImg : fallbackImg"
+                 style="min-height: 100%; border-top-left-radius: 4px;"
+                 :style="`max-height: ${maxHeight}px; border-bottom-left-radius: ${$vuetify.breakpoint.smAndUp ? 4 : 0}px;
                     border-top-right-radius: ${$vuetify.breakpoint.xsOnly ? 4 : 0}px;`"  />
         </v-col>
 
