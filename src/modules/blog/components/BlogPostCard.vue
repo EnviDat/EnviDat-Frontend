@@ -21,7 +21,7 @@
         </v-col>
 
         <v-col cols="7"
-               class="px-2"
+               class="px-3"
                :class="titleCssClass"
                align-self="center" >
           {{ postTitle }}

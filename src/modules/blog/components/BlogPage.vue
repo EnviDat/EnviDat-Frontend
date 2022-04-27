@@ -6,9 +6,11 @@
 
     <v-row no-gutters
             ref="blogHeader"
-            class="py-4">
+           class="py-1 py-md-4">
 
-      <v-col cols="10" offset="1">
+      <v-col cols="12"
+             md="10"
+             offset-md="1">
 
         <BlogHeader :title="blogHeaderTitle"
                     :titleImage="blogHeaderImg"
@@ -22,11 +24,12 @@
 
     <v-row no-gutters
            ref="blogBody"
-           class="py-4">
+           class="py-1 py-md-4">
 
       <v-col v-if="showBlogPost"
-             cols="10"
-             offset="1"
+             cols="12"
+             md="10"
+             offset-md="1"
              style="overflow: hidden auto;"
              :style="`height: calc(100vh - ${blogBodyHeight }px);`"
             >
@@ -36,27 +39,31 @@
 
       <v-col v-if="!showBlogPost && loadingList"
              class="pt-3"
-             cols="10"
-             offset="1">
+             cols="12"
+             md="10"
+             offset-md="1">
         Loading the blog entries...
       </v-col>
 
       <v-col v-if="!showBlogPost && !loadingList"
              class="pt-3"
-             cols="10"
-             offset="1"
-            style="overflow: hidden auto;"
-            :style="`height: calc(100vh - ${blogBodyHeight }px);`"
+             cols="12"
+             md="10"
+             offset-md="1"
+             style="overflow: hidden auto;"
+             :style="`height: calc(100vh - ${blogBodyHeight }px);`"
              >
 
 
         <v-row no-gutters>
           <v-col v-for="(post, index) in list"
                  :key="index"
-                 cols="6"
+                 cols="12"
+                 sm="6"
                  md="4"
                  class="pa-2" >
             <BlogPostCard :postTitle="post.title"
+                          :titleCssClass="$vuetify.breakpoint.smAndDown ? 'text-h6 px-4' : undefined"
                           :postDate="post.date"
                           :titleImg="post.titleImg"
                           :loadingImg="fallbackCardImg"

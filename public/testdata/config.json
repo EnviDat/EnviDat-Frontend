@@ -29,7 +29,7 @@
     {
       "title": "Team",
       "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
-      "widthClass": "col-12 col-sm-6 col-md-8"
+      "widthClass": "col-12 col-sm-6 col-md-8 col-xl-3"
     },
     {
       "title": "Community",
