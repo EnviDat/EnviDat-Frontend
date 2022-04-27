@@ -613,7 +613,7 @@ describe('populateEditingComponents', () => {
   }
 
   it('with mock commit', () => {
-    populateEditingComponents(mockCommit, mappingTestData, null, categoryCards);
+    populateEditingComponents(mockCommit, mappingTestData, categoryCards);
   });
 
 });

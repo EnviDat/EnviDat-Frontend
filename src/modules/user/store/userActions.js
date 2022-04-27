@@ -291,7 +291,7 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, null, categoryCards);
+        populateEditingComponents(commit, response.data.result, categoryCards);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
@@ -329,7 +329,7 @@ export default {
         });
 
         if (response?.data?.result) {
-          populateEditingComponents(commit, response.data.result, null, categoryCards);
+          populateEditingComponents(commit, response.data.result, categoryCards);
         }
       })
       .catch((reason) => {
