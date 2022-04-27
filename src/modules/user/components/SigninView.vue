@@ -37,10 +37,9 @@
                   md="9">
 
             <v-text-field v-model="email"
-                          :error-messages="emailErrors"
+                          :error-messages="backendErrors.email"
                           label="Email"
-                          required
-                          @change="$v.email.$touch()"
+                          @input="validateEmail($event)"
                           @keyup.enter="catchRequestToken"
                           tabindex="0" />
           </v-col>
@@ -87,10 +86,9 @@
                           :error-messages="keyErrors"
                           :counter="keyLength"
                           label="Token"
-                          required
                           clearable
                           clear-icon="clear"
-                          @blur="$v.key.$touch()"
+                          @input="validateToken($event)"
                           @keyup.enter="catchSignIn"
                           tabindex="0"/>
           </v-col>
@@ -162,6 +160,8 @@ import {
 } from 'vuelidate/lib/validators';
 
 import signInPic from '@/modules/user/assets/signin.jpg';
+import { isFieldValid } from '@/factories/userEditingValidations';
+import * as yup from 'yup';
 
 const keyLength = 32;
 
@@ -237,8 +237,26 @@ export default {
     tokenButtonText() {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
+    yupValidations: () =>
+      yup.object().shape({
+        email: yup.string()
+            .email('Email must be a valid email address')
+            .required('Email is required'),
+        key: yup.string()
+            .required('Token is required')
+            .min(32, 'Token must be 32 characters')
+            .max(32, 'Token must be 32 characters'),
+      }),
   },
   methods: {
+    validateEmail(value) {
+      this.email = value;
+      isFieldValid('email', this.email, this.yupValidations, this.backendErrors);
+    },
+    validateToken(value) {
+      this.key = value;
+      isFieldValid('key', this.key, this.yupValidations, this.backendErrors);
+    },
     catchRequestToken() {
       this.$v.email.$touch();
       this.formInvalid = this.$v.email.$invalid;
