@@ -704,7 +704,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription :genericProps="genericProps" />
+          <EditDescription :description="genericProps.description" />
         </v-col>
       </v-row>
 

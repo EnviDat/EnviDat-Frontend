@@ -155,7 +155,7 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_DESCRIPTION);
     },
     previewDescription() {
-      return this.previewText ? this.previewText : this.description;
+      return this.previewText !== null ? this.previewText : this.description;
     },
   },
   methods: {
