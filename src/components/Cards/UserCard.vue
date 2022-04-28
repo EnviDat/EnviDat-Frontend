@@ -17,7 +17,7 @@
         -->
       </div>
 
-      <div class="text-h6 black--text mx-auto pt-8">
+      <div class="text-h6 black--text mx-auto pt-10">
         {{ userName }}
       </div>
 
@@ -35,7 +35,7 @@
                  class="py-2"
                  justify="start">
             <v-col class="text-body-2">Email</v-col>
-            <v-col class="text-caption">{{ email }}</v-col>
+            <v-col class="text-caption"><a :href="`mailto:${email}`">{{ email }}</a></v-col>
           </v-row>
         </v-container>
 
