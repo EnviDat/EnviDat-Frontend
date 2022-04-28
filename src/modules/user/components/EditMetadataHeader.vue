@@ -634,7 +634,7 @@ export default {
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
       authorInstructions: 'Enter an email address for a main contact.',
-      authorOr: 'Or pick <br /> an author',
+      authorOr: '<strong>Or</strong> pick <br /> an author',
       authorAutoComplete: 'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
