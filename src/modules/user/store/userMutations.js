@@ -130,27 +130,36 @@ function createErrorMessage(reason) {
 
   if (reason?.response) {
 
+/*
     if (reason.response.status !== 200) {
       eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
           reason.response.status || -1,
           reason.response.statusText || '',
           reason.response.data?.error?.message || '');
     }
+*/
 
     msg = 'Saving failed ';
     if (reason.response.status === 403) {
       msg += ' you are not authorized';
     }
 
+    if (reason.response.status === 409) {
+      msg += ' Validation Error';
+    }
+
     const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
 
-      details += `${errorObj.__type}: ${errorObj.message}`;
+      if (errorObj.__type) {
+        details += `${errorObj.__type}: `;
+      }
 
-/*
-      if (errorObj.__junk && errorObj.__type) {
-        details += `${errorObj.__type}: ${errorObj.__junk}`;
+      if (errorObj.message) {
+        details += errorObj.message;
+      } else if (errorObj.__junk) {
+        details += errorObj.__junk;
       } else {
         const errKeys = Object.keys(errorObj);
         for (let i = 0; i < errKeys.length; i++) {
@@ -158,7 +167,6 @@ function createErrorMessage(reason) {
           details += `${key} ${errorObj[key]} `;
         }
       }
-*/
 
     } else {
       details += reason.response.statusText;

@@ -158,8 +158,8 @@ export default {
     labels: {
       title: 'Edit Metadata Keywords',
       keywordsLabel: 'Click here to pick Keywords',
-      cardInstructions1: 'Please enter at least 5 keywords for your metadata entry.',
-      cardInstructions2: 'To use a new keyword not in dropdown list please type keyword and press enter.',
+      cardInstructions1: 'Start typing to search for a keyword. To create a new keyword type it and press enter.',
+      cardInstructions2: 'Please enter at least 5 keywords.',
       previewText: 'Metadata card preview',
     },
     defaultUserEditMetadataConfig: {
@@ -169,7 +169,7 @@ export default {
     validationErrors: {
       keywords: '',
     },
-    previewKeywords: null,
+    previewKeywords: [],
     stepKey: EDITMETADATA_KEYWORDS,
   }),
   props: {
@@ -239,7 +239,7 @@ export default {
     },
     keywordsField: {
       get() {
-        return this.previewKeywords ? this.previewKeywords : this.keywords;
+        return this.previewKeywords.length > 0 ? this.previewKeywords : this.keywords;
       },
     },
     metadataPreviewEntry() {
@@ -292,12 +292,14 @@ export default {
   },
   methods: {
     saveChange() {
-      if (this.validateProperty('keywords', this.previewKeywords)) {
-        this.setKeywords('keywords', this.previewKeywords);
+      if (this.previewKeywords.length > 0) {
+        if (this.validateProperty('keywords', this.previewKeywords)) {
+          this.setKeywords('keywords', this.previewKeywords);
+        }
       }
     },
     clearPreviews() {
-      this.previewKeywords = null;
+      this.previewKeywords = [];
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
