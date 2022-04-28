@@ -9,7 +9,7 @@
 
     <v-img v-if="showAvaaatarIcons"
           :src="avataaarUrl"
-          @error="imageError" />
+          @error="avataaarError" />
 
     <span v-if="showInitials"
           class="white--text"
@@ -67,10 +67,10 @@ export default {
       return !this.gravatarNotLoaded;
     },
     showAvaaatarIcons() {
-      return !this.showGravatar && this.emailHash;
+      return !this.avataaarNotLoaded && this.emailHash;
     },
     showInitials() {
-      return !this.emailHash && !this.showGravatar && this.nameInitials;
+      return !this.showGravatar && !this.showAvaaatarIcons && this.nameInitials;
     },
     showFallbackAccountIcon() {
       return !this.emailHash && !this.showGravatar && !this.nameInitials;
@@ -95,9 +95,13 @@ export default {
     imageError() {
       this.gravatarNotLoaded = true;
     },
+    avataaarError() {
+      this.avataaarNotLoaded = true;
+    },
   },
   data: () => ({
     gravatarNotLoaded: false,
+    avataaarNotLoaded: false,
     avataaarUrl: '',
   }),
 };
