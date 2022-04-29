@@ -20,6 +20,11 @@ export default {
       type: String,
       default: 'chartdiv',
     },
+    // TODO implement apiParameters in apiUrl
+    // TODO derive nullvalue and apiParameters by parsing apiURL, distinguish between json and csv calls, use computedProperties or methods
+    // apiParameters: {
+    //   type: Array,
+    // },
     apiUrl: {
       type: String,
       default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
@@ -91,7 +96,7 @@ export default {
           connect: false,
           xAxis,
           yAxis,
-          valueYField: 'airtemp2', // TODO implement logic for valueYField, eventually this should handle multiple y axis series
+          valueYField: 'air_pressure', // TEST blocking out  // TODO implement logic for valueYField, eventually this should handle multiple y axis series
           valueXField: this.xAxisName,
           tooltip: am5.Tooltip.new(root, {}),
         })
@@ -139,17 +144,21 @@ export default {
         data = am5.JSONParser.parse(result.response);
       }
       else if (responseType === 'text/csv') {
-        data = this.convertCSVToJSON(result.response, '-999')
+        // TODO dynamically assign nullValue in call below
+        // data = this.convertCSVToJSON(result.response, '-999')
+        data = this.convertCSVToJSON(result.response, '')
+        console.log(data)
       }
-      // TODO implement further error handling in case responseType is not an expected string indicating json or csv
-      // else {
-      // }
+      else {
+        console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
+      }
 
       // Process data
       const processor = am5.DataProcessor.new(root, {
         dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
         dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-        numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
+        // numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
+        numericFields: ['air_pressure'], // TODO implement logic to determine numericFields for JSON parsing
       });
       processor.processMany(data);
 
@@ -191,16 +200,41 @@ export default {
     // Return JSON data from inputted CSV data, convert nullValue to null
     convertCSVToJSON(csv, nullValue) {
 
-      const lines = csv.split('\n');
+      let lines = csv.split('\n');
+
+
+      // TEST DEV BLOCK //
+      const displayDescription = lines.filter((line) => line.startsWith('# display_description = '))
+
+      let keys = []
+      if (displayDescription.length === 1) {
+        keys = displayDescription[0].replace('# display_description = ', '').split(',')
+
+      }
+      // TODO refine error handling
+      else {
+        console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = ""');
+        return {}
+      }
+
+      // TEST code for removing NEAD metadata header lines that start with '#'
+      lines = lines.filter((line) => !line.startsWith('#'))
+
+
+      // TEST END DEV BLOCK //
+
 
       // Remove last line if it is an empty string
       if (lines[lines.length -1] === '') {
         lines.pop()
       }
 
-      const keys = lines[0].split(',');
+      // TEST comment this out
+      // const keys = lines[0].split(',');
 
       return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
+
+        // TODO add logic that tests that keys.length equals length of comma separated line
 
         const toAdd = {};
 
