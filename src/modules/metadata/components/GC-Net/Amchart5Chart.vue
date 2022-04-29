@@ -20,7 +20,7 @@ export default {
       type: String,
       default: 'chartdiv',
     },
-    // TODO implement apiParameters in apiUrl
+    // TODO implement apiParameters in apiUrl BUT ONLT IF JSON data will need to be read
     // TODO derive nullvalue and apiParameters by parsing apiURL, distinguish between json and csv calls, use computedProperties or methods
     // apiParameters: {
     //   type: Array,
@@ -36,6 +36,9 @@ export default {
     xAxisFormat: {
       type: String,
       default: "yyyy-MM-dd H:m:s'+00:00'",
+    },
+    yAxisName: {
+      type: String,
     },
   },
 
@@ -96,7 +99,7 @@ export default {
           connect: false,
           xAxis,
           yAxis,
-          valueYField: 'air_pressure', // TEST blocking out  // TODO implement logic for valueYField, eventually this should handle multiple y axis series
+          valueYField: this.yAxisName,
           valueXField: this.xAxisName,
           tooltip: am5.Tooltip.new(root, {}),
         })
@@ -144,10 +147,10 @@ export default {
         data = am5.JSONParser.parse(result.response);
       }
       else if (responseType === 'text/csv') {
-        // TODO dynamically assign nullValue in call below
+        // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
         // data = this.convertCSVToJSON(result.response, '-999')
         data = this.convertCSVToJSON(result.response, '')
-        console.log(data)
+        // console.log(data)
       }
       else {
         console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
@@ -155,10 +158,9 @@ export default {
 
       // Process data
       const processor = am5.DataProcessor.new(root, {
-        dateFields: [this.xAxisName],  // TODO implement logic to determine timestamp name
-        dateFormat: this.xAxisFormat,  // TODO implement logic to determine timestamp format
-        // numericFields: ['airtemp2'], // TODO implement logic to determine numericFields for JSON parsing
-        numericFields: ['air_pressure'], // TODO implement logic to determine numericFields for JSON parsing
+        dateFields: [this.xAxisName],
+        dateFormat: this.xAxisFormat,
+        numericFields: [this.yAxisName],
       });
       processor.processMany(data);
 
@@ -209,7 +211,6 @@ export default {
       let keys = []
       if (displayDescription.length === 1) {
         keys = displayDescription[0].replace('# display_description = ', '').split(',')
-
       }
       // TODO refine error handling
       else {
@@ -234,7 +235,7 @@ export default {
 
       return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
 
-        // TODO add logic that tests that keys.length equals length of comma separated line
+        // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
 
         const toAdd = {};
 

@@ -40,7 +40,8 @@ export const Amcharts5SingleChart = () => ({
               no-gutters>
         <v-col >
           <Amcharts5 :chartdivID="this.chartdiv"
-                     :apiUrl="this.apiUrl"   />
+                     :apiUrl="this.apiUrl" 
+                     :yAxisName="this.yAxisName" />
         </v-col>
       </v-row>
     
@@ -51,7 +52,8 @@ export const Amcharts5SingleChart = () => ({
   data: () => ({
     chartdiv: 'chartdiv1',
       //  apiUrl: 'https://www.envidat.ch/data-api/gcnet/csv/swisscamp/airtemp2/end/-999/2019-11-04/2020-11-06/',
-      apiUrl: 'https://www.envidat.ch/data-api/gcnet/nead/swisscamp/end/empty/2020-11-03/2020-11-06/',
+    apiUrl: 'https://www.envidat.ch/data-api/gcnet/nead/swisscamp/end/empty/2020-11-03/2020-11-06/',
+    yAxisName: 'air_temperature_2',
   }),
 });
 
@@ -74,7 +76,8 @@ export const Amcharts5MultipleCharts = () => ({
                no-gutters>
           <v-col >
             <Amcharts5 :chartdivID="this.chartdiv1"
-                       :apiUrl="this.apiUrl1"   />
+                       :apiUrl="this.apiUrl1"
+                       :yAxisName="this.yAxisName" />
           </v-col>
         </v-row>
 
@@ -82,7 +85,8 @@ export const Amcharts5MultipleCharts = () => ({
                no-gutters>
           <v-col >
             <Amcharts5 :chartdivID="this.chartdiv2"
-                       :apiUrl="this.apiUrl2"   />
+                       :apiUrl="this.apiUrl2"
+                       :yAxisName="this.yAxisName" />
           </v-col>
         </v-row>
 
@@ -90,7 +94,8 @@ export const Amcharts5MultipleCharts = () => ({
                no-gutters>
           <v-col >
             <Amcharts5 :chartdivID="this.chartdiv3"
-                       :apiUrl="this.apiUrl3"   />
+                       :apiUrl="this.apiUrl3"
+                       :yAxisName="this.yAxisName" />
           </v-col>
         </v-row>
 
@@ -106,5 +111,6 @@ export const Amcharts5MultipleCharts = () => ({
     apiUrl2: 'https://www.envidat.ch/data-api/gcnet/json/neem/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     chartdiv3: 'chartdiv3',
     apiUrl3: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp2/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+    yAxisName: 'airtemp2',
   }),
 });
