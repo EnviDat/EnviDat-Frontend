@@ -38,15 +38,65 @@
         </v-col>
       </v-row>
 
+      <v-row no-gutters
+              class="pt-4">
+        <v-col >
+          <v-text-field ref="firstName"
+                        :label="labels.firstName"
+                        outlined
+                        :readonly="mixinMethods_isFieldReadOnly('firstName')"
+                        :hint="mixinMethods_readOnlyHint('firstName')"
+                        prepend-icon="person"
+                        :error-messages="validationErrors.firstName"
+                        :placeholder="labels.firstName"
+                        :value="firstNameField"
+                        @input="previewChange('firstName', $event)"
+                        @change="notifyChange('firstName', $event)"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col >
+          <v-text-field ref="lastName"
+                        :label="labels.lastName"
+                        outlined
+                        :readonly="mixinMethods_isFieldReadOnly('lastName')"
+                        :hint="mixinMethods_readOnlyHint('lastName')"
+                        prepend-icon="person"
+                        :error-messages="validationErrors.lastName"
+                        :placeholder="labels.lastName"
+                        :value="lastNameField"
+                        @input="previewChange('lastName', $event)"
+                        @change="notifyChange('lastName', $event)"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col >
+          <v-text-field ref="email"
+                        :label="labels.email"
+                        outlined
+                        :readonly="mixinMethods_isFieldReadOnly('email')"
+                        :hint="mixinMethods_readOnlyHint('email')"
+                        prepend-icon="email"
+                        :error-messages="validationErrors.email"
+                        :placeholder="labels.email"
+                        :value="emailField"
+                        @input="previewChange('email', $event)"
+                        @change="notifyChange('email', $event)"
+          />
+        </v-col>
+
+      </v-row>
+
       <v-row>
         <v-col >
 
-          <UserCard :user-name="userFullName"
-                    :name-initials="initials"
-                    :email="email"
-                    :datasetCount="datasetCount"
-                    :width="minWidth"
+          <UserCard v-bind="userCardPreviewObject"
                     />
+<!--          :width="300"-->
 
         </v-col>
       </v-row>
@@ -70,6 +120,13 @@
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import UserCard from '@/components/Cards/UserCard';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import {
+  EDIT_USER_PROFILE,
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_MAIN_HEADER,
+  eventBus
+} from '@/factories/eventBus';
 
 
 export default {
@@ -90,6 +147,10 @@ export default {
     emailHash: {
       type: String,
       default: '',
+    },
+    minWidth: {
+      type: Number,
+      default: 300,
     },
     loading: {
       type: Boolean,
@@ -120,11 +181,26 @@ export default {
       default: '',
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
+    firstNameField() {
+      return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
+    },
+    lastNameField() {
+      return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
+    },
+    emailField() {
+      return this.previews.email !== null ? this.previews.email : this.email;
+    },
     userFullName() {
       return getAuthorName({
-        firstName: this.firstName,
-        lastName: this.lastName,
+        firstName: this.firstNameField,
+        lastName: this.lastNameField,
       });
     },
     initials() {
@@ -133,21 +209,72 @@ export default {
     datasetCount() {
       return 0;
     },
+    validations () {
+      return getValidationMetadataEditingObject(EDIT_USER_PROFILE);
+    },
+    userCardPreviewObject() {
+      return {
+        userName: this.userFullName,
+        nameInitials: this.initials,
+        email: this.emailField,
+        datasetCount: this.datasetCount,
+      };
+    },
   },
   methods: {
+    previewChange(property, value) {
+      this.previews[property] = value;
+      this.validateProperty(property, value);
+    },
+    validateProperty(property, value) {
+      return isFieldValid(property, value, this.validations, this.validationErrors);
+    },
+    notifyChange(property, value) {
+      if (this.previews[property] === null){
+        return;
+      }
 
+      if (this.validateProperty(property, value)) {
+
+        const userInfo = {
+          ...this.$props,
+          [property]: value,
+        };
+
+        console.log('emitting change');
+        console.log(userInfo);
+
+/*        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+          object: EDITMETADATA_MAIN_HEADER,
+          data: userInfo,
+        });
+            */
+      }
+    },
+    clearPreviews() {
+      this.previews.firstName = null;
+      this.previews.lastName = null;
+      this.previews.email = null;
+    },
   },
   data: () => ({
-    minWidth: 300,
     editingProperty: 'description',
-    previewText: null,
+    previews: {
+      firstName: null,
+      lastName: null,
+      email: null,
+    },
     labels: {
       cardTitle: 'Edit User Profile',
       instructions: 'Change your user profile.',
-      subtitlePreview: 'Description Preview',
+      firstName: 'First name',
+      lastName: 'Last name',
+      email: 'Email',
     },
     validationErrors: {
-      description: null,
+      firstName: null,
+      lastName: null,
+      email: null,
     },
   }),
   components: {

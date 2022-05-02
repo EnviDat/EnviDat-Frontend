@@ -12,6 +12,7 @@
  */
 
 import {
+  EDIT_USER_PROFILE,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -154,6 +155,18 @@ const metadataInEditingValidations = {
             .matches(urlRegex, 'Please provide an valid link / url.'),
         }),
       ),
+    }),
+  [EDIT_USER_PROFILE]: () =>
+    yup.object().shape({
+      firstName: yup.string()
+        .required('First name is required')
+        .min(3, 'First name must be at least 3 characters'),
+      lastName: yup.string()
+        .required('Last name is required')
+        .min(3, 'Last name must be at least 3 characters'),
+      email: yup.string()
+        .email('Please enter a valid email address')
+        .required('Email is required'),
     }),
 };
 

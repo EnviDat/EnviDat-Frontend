@@ -32,12 +32,12 @@ export const EditUserViews = () => ({
   template: `
     <v-row >
 
-      <v-col class="shrink">
+      <v-col cols="6">
         empty Edit User Profile
         <EditUserProfile />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col cols="6">
         {{ user1.fullName + ' Edit User Profile' }}
         <EditUserProfile :first-name="user1.firstName" 
                           :last-name="user1.lastName"
@@ -45,7 +45,7 @@ export const EditUserViews = () => ({
                           />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col cols="6">
         {{ user2.fullName + ' Edit User Profile in loading state' }}
         <EditUserProfile :first-name="user2.firstName"
                          :last-name="user2.lastName"
@@ -54,7 +54,7 @@ export const EditUserViews = () => ({
         />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col cols="6">
         {{ user2.fullName + ' Edit User Profile with errors' }}
         <EditUserProfile :first-name="user2.firstName"
                          :last-name="user2.lastName"
