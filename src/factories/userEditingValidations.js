@@ -221,6 +221,24 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
   return true;
 }
 
+export function isObjectValid(properties, objectToValidate, validations, errorObject) {
+
+  // Validate fields corresponding to properties
+  for (let i = 0; i < properties.length; i++) {
+    isFieldValid(properties[i], objectToValidate[properties[i]], validations, errorObject);
+  }
+
+  // Return false if any of the properties have a validation error
+  for (let i = 0; i < properties.length; i++) {
+    const prop = properties[i];
+    if (errorObject[prop]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function getUserOrganizationRoleMap(userId, organizations) {
   const roleMap = {};
 

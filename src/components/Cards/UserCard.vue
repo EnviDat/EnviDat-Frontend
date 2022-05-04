@@ -77,7 +77,7 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 250,
+      default: undefined,
     },
     height: {
       type: Number,

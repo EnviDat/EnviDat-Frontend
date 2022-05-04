@@ -42,6 +42,7 @@
               class="pt-4">
         <v-col >
           <v-text-field ref="firstName"
+                        id="firstName"
                         :label="labels.firstName"
                         outlined
                         :readonly="mixinMethods_isFieldReadOnly('firstName')"
@@ -50,8 +51,9 @@
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
                         :value="firstNameField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('firstName', $event)"
                         @input="previewChange('firstName', $event)"
-                        @change="notifyChange('firstName', $event)"
           />
         </v-col>
       </v-row>
@@ -59,6 +61,7 @@
       <v-row no-gutters>
         <v-col >
           <v-text-field ref="lastName"
+                        id="lastName"
                         :label="labels.lastName"
                         outlined
                         :readonly="mixinMethods_isFieldReadOnly('lastName')"
@@ -67,8 +70,9 @@
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
                         :value="lastNameField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('lastName', $event)"
                         @input="previewChange('lastName', $event)"
-                        @change="notifyChange('lastName', $event)"
           />
         </v-col>
       </v-row>
@@ -76,6 +80,7 @@
       <v-row no-gutters>
         <v-col >
           <v-text-field ref="email"
+                        id="email"
                         :label="labels.email"
                         outlined
                         :readonly="mixinMethods_isFieldReadOnly('email')"
@@ -84,8 +89,9 @@
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
                         :value="emailField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('email', $event)"
                         @input="previewChange('email', $event)"
-                        @change="notifyChange('email', $event)"
           />
         </v-col>
 
@@ -120,12 +126,17 @@
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import UserCard from '@/components/Cards/UserCard';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+  isObjectValid,
+} from '@/factories/userEditingValidations';
 import {
   EDIT_USER_PROFILE,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_MAIN_HEADER,
-  eventBus
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
 } from '@/factories/eventBus';
 
 
@@ -220,8 +231,34 @@ export default {
         datasetCount: this.datasetCount,
       };
     },
+    anyUserElementsActive() {
+      return this.activeElements.firstName
+          || this.activeElements.lastName
+          || this.activeElements.email;
+    },
+    anyPreviewsChanged() {
+      return this.previews.firstName !== null
+          || this.previews.lastName !== null
+          || this.previews.email !== null;
+    },
   },
   methods: {
+    focusIn(event) {
+      this.markPropertyActive(event.target, true);
+    },
+    focusOut(property, event) {
+      this.markPropertyActive(event.target, false);
+      this.markPropertyActive(event.relatedTarget, true);
+      // this.delayedNotifyChange(property, event.target.value);
+      // this.notifyChange(property, event.target.value);
+      this.notifyChange();
+    },
+    markPropertyActive(toElement, editing) {
+      const toId = toElement?.id || null;
+      if (toId) {
+        this.activeElements[toId] = editing;
+      }
+    },
     previewChange(property, value) {
       this.previews[property] = value;
       this.validateProperty(property, value);
@@ -229,26 +266,32 @@ export default {
     validateProperty(property, value) {
       return isFieldValid(property, value, this.validations, this.validationErrors);
     },
-    notifyChange(property, value) {
-      if (this.previews[property] === null){
+    notifyChange() {
+      if (this.anyUserElementsActive) {
         return;
       }
 
-      if (this.validateProperty(property, value)) {
+      if (!this.anyPreviewsChanged) {
+        return;
+      }
+
+      const userObject = {
+        firstName: this.firstNameField,
+        lastName: this.lastNameField,
+        email: this.emailField,
+      }
+
+      if (isObjectValid(this.validationProperties, userObject, this.validations, this.validationErrors)) {
 
         const userInfo = {
           ...this.$props,
-          [property]: value,
+          ...userObject,
         };
 
-        console.log('emitting change');
-        console.log(userInfo);
-
-/*        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_MAIN_HEADER,
           data: userInfo,
         });
-            */
       }
     },
     clearPreviews() {
@@ -271,10 +314,20 @@ export default {
       lastName: 'Last name',
       email: 'Email',
     },
+    validationProperties: [
+      'firstName',
+      'lastName',
+      'email',
+    ],
     validationErrors: {
       firstName: null,
       lastName: null,
       email: null,
+    },
+    activeElements: {
+      firstName: false,
+      lastName: false,
+      email: false,
     },
   }),
   components: {
