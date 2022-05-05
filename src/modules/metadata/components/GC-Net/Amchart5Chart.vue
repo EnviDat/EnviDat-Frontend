@@ -173,6 +173,7 @@ export default {
 
     // Add cursor
     const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
+      behavior: 'zoomXY',
       xAxis,
     }));
     // cursor.lineY.set('visible', false);
