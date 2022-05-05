@@ -26,6 +26,7 @@
                         :error-messages="errorMessages"
                         clear-icon="close"
                         @change="catchPicks"
+                        @blur="$emit('blur', $event)"
                         >
 
           <template v-slot:selection="{ item }">
