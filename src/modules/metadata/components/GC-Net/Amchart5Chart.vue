@@ -214,7 +214,7 @@ export default {
       }
       // TODO refine error handling
       else {
-        console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = ""');
+        console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = "');
         return {}
       }
 
