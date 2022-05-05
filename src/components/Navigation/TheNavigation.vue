@@ -173,7 +173,9 @@ export default {
       }
     },
     itemClick(item) {
-      this.$emit('itemClick', item);
+      if (!item.disabled) {
+        this.$emit('itemClick', item);
+      }
     },
   },
 };

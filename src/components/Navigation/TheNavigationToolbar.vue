@@ -109,9 +109,9 @@
                   justify="end"
                  no-gutters >
 
-            <v-col @click="catchSigninClicked"
+            <v-col @click="!signInDisabled  ? catchSigninClicked : undefined"
                    xl="4"
-                    style="cursor: pointer;">
+                    :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -127,14 +127,15 @@
 
             </v-col>
 
-            <v-col class="shrink"
-                    @click="catchSigninClicked" >
+            <v-col class="shrink" >
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon
+                         :disabled="signInDisabled"
                           color="black"
                           small
+                          @click="catchSigninClicked"
                           v-bind="attrs"
                           v-on="on" >
                     <v-icon>account_circle</v-icon>
@@ -172,6 +173,10 @@ export default {
     mode: String,
     modeCloseCallback: Function,
     signedInUser: Object,
+    signInDisabled: {
+      type: Boolean,
+      default: false,
+    },
     userNavigationItems: Array,
     editingDatasetName: {
       type: String,
@@ -191,7 +196,10 @@ export default {
       this.$emit('userMenuItemClick', item);
     },
     catchSigninClicked() {
-      this.$emit('signinClick');
+      console.log(this.signInDisabled);
+      if (!this.signInDisabled) {
+        this.$emit('signinClick');
+      }
     },
     catchHomeClicked() {
       this.$emit('homeClick');

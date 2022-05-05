@@ -40,7 +40,7 @@ function disablingCategoryCards(config, categoryCards) {
     return;
   }
 
-  const signinDisabled = config && config.maintenanceConfig && config.maintenanceConfig.signinDisabled;
+  const signinDisabled = config?.maintenanceConfig?.signinDisabled || false;
 
   if (signinDisabled) {
     for (let i = 0; i < categoryCards.length; i++) {

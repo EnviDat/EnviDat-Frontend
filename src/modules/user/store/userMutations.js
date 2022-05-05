@@ -42,6 +42,7 @@ import {
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -477,6 +478,8 @@ export default {
     editingObject.error = errorObj.message;
     editingObject.errorDetails = errorObj.details;
 
+    this.dispatch(SET_CONFIG);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
@@ -512,6 +515,8 @@ export default {
     editingObject.errorDetails = errorObj.details;
 
     eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+
+    this.dispatch(SET_CONFIG);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);

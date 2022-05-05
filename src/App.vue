@@ -1,36 +1,36 @@
 <template>
   <v-app class="application"
-          :style="dynamicBackground">
+         :style="dynamicBackground">
 
-      <div v-show="showDecemberParticles"
-            id="christmas-canvas"
-            style="position: absolute; width: 100%; height: 100%;"></div>
+    <div v-show="showDecemberParticles"
+         id="christmas-canvas"
+         style="position: absolute; width: 100%; height: 100%;"></div>
 
-      <link v-if="showDecemberParticles"
-            rel="stylesheet"
-            href="./particles/decemberEffects.css">
+    <link v-if="showDecemberParticles"
+          rel="stylesheet"
+          href="./particles/decemberEffects.css">
 
-      <div v-for="(notification, index) in visibleNotifications()"
-          :key="`notification_${index}`"
-          :style="`position: absolute;
+    <div v-for="(notification, index) in visibleNotifications()"
+         :key="`notification_${index}`"
+         :style="`position: absolute;
                   right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
                   top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`" >
+                  z-index: ${NotificationZIndex};`">
 
-        <notification-card v-if="notification.show"
-                            :notification="notification"
-                            :height="165"
-                            :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
-                            :showCloseButton="true"
-                            @clickedClose="catchCloseClicked(notification.key)"
-                            @clickedReport="catchReportClicked(notification.key)" />
-      </div>
+      <notification-card v-if="notification.show"
+                         :notification="notification"
+                         :height="165"
+                         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
+                         :showCloseButton="true"
+                         @clickedClose="catchCloseClicked(notification.key)"
+                         @clickedReport="catchReportClicked(notification.key)"/>
+    </div>
 
     <the-navigation :style="`z-index: ${NavigationZIndex}`"
                     :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
-                    @itemClick="catchItemClicked" />
+                    @itemClick="catchItemClicked"/>
 
     <the-navigation-toolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
@@ -40,39 +40,41 @@
                             :mode="mode"
                             :modeCloseCallback="catchModeClose"
                             :signedInUser="user"
+                            :signInDisabled="signinDisabled"
                             :userNavigationItems="userMenuItems"
                             :editingDatasetName="lastEditedDataset"
                             @userMenuItemClick="catchUserItemClicked"
                             @signinClick="catchSigninClicked"
                             @homeClick="catchHomeClicked"
-                            @continueClick="catchContinueClick" />
+                            @continueClick="catchContinueClick"/>
 
     <v-main>
       <v-container class="pa-2 pa-sm-3 fill-height"
-                    fluid
-                    v-on:scroll="updateScroll()"
-                    id="appContainer"
-                    ref="appContainer"
-                    :style="pageStyle" >
+                   fluid
+                   v-on:scroll="updateScroll()"
+                   id="appContainer"
+                   ref="appContainer"
+                   :style="pageStyle">
 
         <v-row v-if="maintenanceBannerVisible"
-                id="maintenanceBanner"
-                no-gutters
-                class="pb-2">
+               id="maintenanceBanner"
+               no-gutters
+               class="pb-2">
           <v-col>
-            <TextBanner :text="maintenanceConfig.message"
+            <TextBanner :text="maintenanceBannerText"
                         confirmText="Okay"
-                        :confirmClick="() => { showMaintenanceBanner = false }" />
+                        :bannerColor="maintenanceBannerColor"
+                        :confirmClick="catchMaintenanceConfirmClick"/>
           </v-col>
         </v-row>
 
         <v-row class="fill-height"
-                id="mainPageRow" >
+               id="mainPageRow">
           <v-col class="mx-0 py-0"
-                  cols="12" >
+                 cols="12">
 
             <transition name="fade" mode="out-in">
-              <router-view />
+              <router-view/>
             </transition>
 
           </v-col>
@@ -84,12 +86,12 @@
                 max-width="300">
 
         <ConfirmTextCard title="New Version Available!"
-                          :text="dialogVersionText()"
-                          confirmText="Reload"
-                          :confirmClick="reloadApp"
-                          cancelText="Cancel"
-                          :cancelClick="() => { reloadDialogCanceled = true }"
-                          />
+                         :text="dialogVersionText()"
+                         confirmText="Reload"
+                         :confirmClick="reloadApp"
+                         cancelText="Cancel"
+                         :cancelClick="() => { reloadDialogCanceled = true }"
+        />
 
       </v-dialog>
     </v-main>
@@ -124,12 +126,15 @@ import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
-  USER_SIGNIN_PATH, BLOG_PAGENAME,
+  USER_SIGNIN_PATH,
+  BLOG_PAGENAME, METADATAEDIT_PAGENAME, USER_DASHBOARD_PATH,
 } from '@/router/routeConsts';
+
 import {
   METADATA_NAMESPACE,
   BULK_LOAD_METADATAS_CONTENT,
 } from '@/store/metadataMutationsConsts';
+
 import {
   SET_CONFIG,
   SET_APP_SCROLL_POSITION,
@@ -226,29 +231,32 @@ export default {
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
-      if (this.navigationItems) {
-        for (let i = 0; i < this.navigationItems.length; i++) {
-          const item = this.navigationItems[i];
+      if (!this.navigationItems) {
+        return;
+      }
 
-          if (item.icon !== 'menu') {
-            const isActive = this.currentPage === item.pageName;
+      for (let i = 0; i < this.navigationItems.length; i++) {
+        const item = this.navigationItems[i];
 
-            if (item.subpages && item.subpages instanceof Array) {
-              let subIsActive = false;
+        if (item.icon !== 'menu') {
+          const isActive = this.currentPage === item.pageName;
 
-              item.subpages.forEach((sub) => {
-                if (!subIsActive) {
-                  subIsActive = this.currentPage === sub;
-                }
-              });
+          if (item.subpages && item.subpages instanceof Array) {
+            let subIsActive = false;
 
-              item.active = isActive || subIsActive;
-            } else {
-              item.active = isActive;
-            }
+            item.subpages.forEach((sub) => {
+              if (!subIsActive) {
+                subIsActive = this.currentPage === sub;
+              }
+            });
+
+            item.active = isActive || subIsActive;
+          } else {
+            item.active = isActive;
           }
         }
       }
+
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
@@ -289,12 +297,23 @@ export default {
         path: BROWSE_PATH,
       });
     },
+    catchMaintenanceConfirmClick() {
+      if (this.userIsOnEditPage) {
+        this.editMaintenanceBanner = false;
+        return;
+      }
+
+      this.showMaintenanceBanner = false;
+    },
     navigateTo(path) {
       if (this.$route.path === path) {
         return;
       }
 
-      this.$router.push({ path, query: '' });
+      this.$router.push({
+        path,
+        query: '',
+      });
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -305,7 +324,10 @@ export default {
       if (this.$route.path === REPORT_PATH) {
         return;
       }
-      this.$router.push({ path: REPORT_PATH, query: index });
+      this.$router.push({
+        path: REPORT_PATH,
+        query: index,
+      });
     },
     catchSigninClicked() {
       this.navigateTo(USER_SIGNIN_PATH);
@@ -325,15 +347,14 @@ export default {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
-      for (let i = 0; i < this.navigationItems.length; i++) {
-        const item = this.navigationItems[i];
-        const title = item.title.toLowerCase();
 
-        if (title === 'organizations'
-          || title === 'sign in') {
-          item.disabled = this.signinDisabled;
+      if (this.signinDisabled) {
+        const signItem = this.navigationItems.filter(item => item.path === USER_SIGNIN_PATH)[0];
+        if (signItem) {
+          signItem.disabled = true;
         }
       }
+
     },
     checkUserSignedIn() {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
@@ -356,18 +377,18 @@ export default {
       'lastEditedDatasetPath',
     ]),
     ...mapGetters(
-      METADATA_NAMESPACE, [
-        'metadataIds',
-        'metadatasContent',
-        'metadatasContentSize',
-        'loadingMetadataIds',
-        'loadingMetadatasContent',
-        'loadingCurrentMetadataContent',
-        'searchingMetadatasContent',
-        'currentMetadataContent',
-        'filteredContent',
-        'isFilteringContent',
-      ],
+        METADATA_NAMESPACE, [
+          'metadataIds',
+          'metadatasContent',
+          'metadatasContentSize',
+          'loadingMetadataIds',
+          'loadingMetadatasContent',
+          'loadingCurrentMetadataContent',
+          'searchingMetadatasContent',
+          'currentMetadataContent',
+          'filteredContent',
+          'isFilteringContent',
+        ],
     ),
     ...mapGetters({
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
@@ -389,15 +410,44 @@ export default {
       return this.config?.maintenanceConfig || {};
     },
     maintenanceBannerVisible() {
-      return this.maintenanceConfig.messageActive
-          && this.showMaintenanceBanner
-          && this.currentPage !== LANDING_PAGENAME;
+      if (!this.maintenanceConfig.messageActive){
+        return false;
+
+      }
+
+      if (this.userIsOnEditPage) {
+        return this.editMaintenanceBanner;
+      }
+
+      if (this.currentPage !== LANDING_PAGENAME) {
+        return this.showMaintenanceBanner;
+      }
+
+      return false;
+    },
+    maintenanceBannerText() {
+      if (this.userIsOnEditPage) {
+        return this.editMaintenanceMessage;
+      }
+
+      return this.maintenanceConfig.message;
+    },
+    maintenanceBannerColor() {
+      if (this.userIsOnEditPage) {
+        return 'error';
+      }
+
+      // this will use the default defined by the TextBanner component
+      return undefined;
     },
     signinDisabled() {
-      return this.maintenanceConfig && this.maintenanceConfig.signinDisabled;
+      return this.maintenanceConfig?.signinDisabled || false;
     },
     showDecemberParticles() {
       return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
+    },
+    userIsOnEditPage() {
+      return this.currentPage === METADATAEDIT_PAGENAME;
     },
     itIsDecember() {
       return getMonth(Date.now()) === 11;
@@ -505,15 +555,17 @@ export default {
     NavigationZIndex: 1100,
     NotificationZIndex: 1500,
     showMaintenanceBanner: true,
+    editMaintenanceBanner: true,
     currentParticles: null,
     navigationItems,
     userMenuItems,
+    editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
   }),
 };
 </script>
 
 
-<style >
+<style>
 
 .envidatNavbar {
   position: -webkit-sticky;
@@ -619,6 +671,7 @@ export default {
   height: 1.25rem !important;
   font-size: 0.55rem !important;
 }
+
 .smallChip > .v-chip__content > .v-chip__close > .v-icon {
   font-size: 15px !important;
 }
