@@ -39,9 +39,12 @@ export const Amcharts5SingleChart = () => ({
       <v-row style="border: solid 1px;"
               no-gutters>
         <v-col >
-          <Amcharts5 :chartdivID="this.chartdiv"
-                     :apiUrl="this.apiUrl" 
-                     :yAxisName="this.yAxisName" />
+<!--          <Amcharts5 :chartdivID="this.chartdiv"-->
+<!--                     :apiUrl="this.apiUrl" -->
+<!--                     :yAxisName="this.yAxisName" />-->
+          <Amcharts5 
+                     :apiUrl="this.apiUrl"
+                      />
         </v-col>
       </v-row>
     
