@@ -4,11 +4,7 @@
 
     <v-container class="pa-4" fluid>
 
-<!--    <div class="chart" :id="this.chartdivID"></div>-->
-
-<!--    <div class="chart" id="test1"></div>-->
-
-      <div v-if="!isFetching">
+        <div v-if="dataAvailable">
 
         <div class="chart" v-for="yAxis in yAxesArray" :id=yAxis :key="yAxis">
           {{yAxis}}
@@ -60,18 +56,8 @@ export default {
   },
   mounted() {
 
-    // ======= TEST DEV BLOCK ================
-
-    // this.createChart('test')
-
     // Load and parsed external data
     this.loadParseData();
-
-    // Create one chart per element in this.yAxesArray
-     // this.yAxesArray.map(element => this.createChart((element)))
-
-
-    // ========= END TEST DEV BLOCK ==========
 
   },
   beforeDestroy() {
@@ -79,23 +65,14 @@ export default {
       this.root.dispose();
     }
   },
-  watch: {
-    // parsedData() {
-    //
-    //   // Load and parsed external data
-    //   // this.loadParseData();
-    //
-    //   // Create one chart per element in this.yAxesArray
-    //   this.yAxesArray.map(element => this.createChart((element)))
-    // },
-    yAxesArray() {
+  updated() {
 
-      // Load and parsed external data
-      // this.loadParseData();
+    if (this.dataAvailable) {
 
       // Create one chart per element in this.yAxesArray
       this.yAxesArray.map(element => this.createChart((element)))
-    },
+
+    }
   },
   methods: {
     // Return responseType 'type' from result object (only string parsed to first comma)
@@ -107,8 +84,6 @@ export default {
 
       let lines = csv.split('\n');
 
-
-      // TEST DEV BLOCK //
       const displayDescription = lines.filter((line) => line.startsWith('# display_description = '))
 
       let keys = []
@@ -116,7 +91,7 @@ export default {
         keys = displayDescription[0].replace('# display_description = ', '').split(',')
         const removeKeys = ['timestamp_iso']
         this.yAxesArray = keys.filter(element => !removeKeys.includes(element))
-        // console.log(this.yAxesArray)
+
       }
       // TODO refine error handling
       else {
@@ -126,8 +101,6 @@ export default {
 
       // TEST code for removing NEAD metadata header lines that start with '#'
       lines = lines.filter((line) => !line.startsWith('#'))
-      // TEST END DEV BLOCK //
-
 
       // Remove last line if it is an empty string
       if (lines[lines.length -1] === '') {
@@ -153,6 +126,8 @@ export default {
       }, {}));
     },
     createChart(yAxisDivID) {
+
+      // console.log(`CREATE CHART ${yAxisDivID}`)
 
       const root = am5.Root.new(yAxisDivID);
 
@@ -224,8 +199,6 @@ export default {
             connect: false,
             xAxis,
             yAxis,
-            // valueYField: this.yAxisName,
-            // TEST
             valueYField: yAxisDivID,
             valueXField: this.xAxisName,
             tooltip: am5.Tooltip.new(root, {}),
@@ -245,20 +218,17 @@ export default {
       chart.appear(1000, 100);
 
 
-      // TEST
       // Process data
       const processor = am5.DataProcessor.new(root, {
         dateFields: [this.xAxisName],
         dateFormat: this.xAxisFormat,
-        // numericFields: [this.yAxisName],
-        numericFields: this.yAxesArray,
+        numericFields: [yAxisDivID],
       });
-      processor.processMany(this.parsedResponse);
+      processor.processMany(this.parsedData);
 
       // Assign parsed/processed data to series
-      series.data.setAll(this.parsedResponse);
+      series.data.setAll(this.parsedData);
 
-      // TEST
       return () => root.dispose();
 
     },
@@ -271,13 +241,21 @@ export default {
         const responseType = this.getResponseType(result.type)
 
         if (responseType === 'application/json') {
+
           this.parsedData = am5.JSONParser.parse(result.response);
+
+          // TODO refine this to test for valid data (at least greater than 0)
+          this.dataAvailable = true
+
         }
         else if (responseType === 'text/csv') {
+
           // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
           this.parsedData = this.convertCSVToJSON(result.response, '')
-          // TEST
-          this.isFetching = false;
+
+          // TODO refine this to test for valid data (at least greater than 0)
+          this.dataAvailable = true
+
         }
         else {
           console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
@@ -294,10 +272,8 @@ export default {
   data() {
     return {
       yAxesArray : [],
-      yAxisName: 'net_radiation',
-      parsedResponse: [],
       parsedData: [],
-      isFetching: true,
+      dataAvailable: false,
     };
   },
 
