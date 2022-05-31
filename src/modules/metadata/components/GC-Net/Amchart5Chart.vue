@@ -4,14 +4,22 @@
 
     <v-container class="pa-4" fluid>
 
-        <div v-if="dataAvailable">
+<!--      TODO Refine loading display-->
+      <div v-if="!jsonDataAvailable && !csvDataAvailable">
+        <h1>Data loading...</h1>
+      </div>
 
+      <div v-if="jsonDataAvailable">
+        <div class="chart" :id="jsonChartDivID" >
+          {{yAxisName}}
+        </div>
+      </div>
+
+      <div v-if="csvDataAvailable">
         <div class="chart" v-for="yAxis in yAxesArray" :id=yAxis :key="yAxis">
           {{yAxis}}
         </div>
-
       </div>
-
 
     </v-container>
 
@@ -32,7 +40,7 @@ export default {
   name: 'Amcharts5',
 
   props: {
-    chartdivID: {
+    jsonChartDivID: {
       type: String,
       default: 'chartdiv',
     },
@@ -53,6 +61,14 @@ export default {
       type: String,
       default: "yyyy-MM-dd H:m:s'+00:00'",
     },
+    yAxisName: {
+      type: String,
+      default: '',
+    },
+    timestampArray: {
+      type: Array,
+      default: () => ['timestamp_iso', 'timestamp'],
+    },
   },
   mounted() {
 
@@ -67,12 +83,17 @@ export default {
   },
   updated() {
 
-    if (this.dataAvailable) {
-
+    if (this.csvDataAvailable) {
       // Create one chart per element in this.yAxesArray
       this.yAxesArray.map(element => this.createChart((element)))
-
     }
+
+    if (this.jsonDataAvailable) {
+      // Create chart for JSON data
+      // this.createChart(this.yAxisName);
+      this.createChart(this.jsonChartDivID);
+    }
+
   },
   methods: {
     // Return responseType 'type' from result object (only string parsed to first comma)
@@ -126,8 +147,6 @@ export default {
       }, {}));
     },
     createChart(yAxisDivID) {
-
-      // console.log(`CREATE CHART ${yAxisDivID}`)
 
       const root = am5.Root.new(yAxisDivID);
 
@@ -200,6 +219,7 @@ export default {
             xAxis,
             yAxis,
             valueYField: yAxisDivID,
+            // valueYField: 'airtemp2',
             valueXField: this.xAxisName,
             tooltip: am5.Tooltip.new(root, {}),
           })
@@ -243,9 +263,13 @@ export default {
         if (responseType === 'application/json') {
 
           this.parsedData = am5.JSONParser.parse(result.response);
+          // console.log(this.parsedData)
+
+          // TEST
+          this.getJsonDataYAxis();
 
           // TODO refine this to test for valid data (at least greater than 0)
-          this.dataAvailable = true
+          this.jsonDataAvailable = true
 
         }
         else if (responseType === 'text/csv') {
@@ -254,7 +278,7 @@ export default {
           this.parsedData = this.convertCSVToJSON(result.response, '')
 
           // TODO refine this to test for valid data (at least greater than 0)
-          this.dataAvailable = true
+          this.csvDataAvailable = true
 
         }
         else {
@@ -268,12 +292,22 @@ export default {
       return this.parsedData;
 
       },
+    getJsonDataYAxis() {
+
+      const firstElementKeys = Object.keys(this.parsedData[0])
+
+      const yAxis = firstElementKeys.filter(item => !this.timestampArray.includes(item))
+
+      console.log(yAxis)
+
+    },
   },
   data() {
     return {
       yAxesArray : [],
       parsedData: [],
-      dataAvailable: false,
+      jsonDataAvailable: false,
+      csvDataAvailable: false,
     };
   },
 
