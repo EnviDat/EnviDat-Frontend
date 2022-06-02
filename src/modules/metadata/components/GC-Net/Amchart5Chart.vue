@@ -4,20 +4,24 @@
 
     <v-container class="pa-4" fluid>
 
-      <div v-if="!jsonDataAvailable && !csvDataAvailable">
+      <div v-if="!jsonDataAvailable && !csvDataAvailable && !dataLoadParseError">
         <h1>Data loading...</h1>
       </div>
 
+      <div v-if="dataLoadParseError">
+        <h1>Data not available</h1>
+      </div>
+
       <div v-if="jsonDataAvailable">
-        <v-card class="chart" :id="jsonChartDivID" >
+        <div class="chart" :id="jsonChartDivID" >
           {{this.jsonDataYAxisName}}
-        </v-card>
+        </div>
       </div>
 
       <div v-if="csvDataAvailable">
-        <v-card class="chart" v-for="yAxis in yAxesArray" :id=yAxis :key="yAxis">
+        <div class="chart" v-for="yAxis in csvDataYAxesArray" :id=yAxis :key="yAxis">
           {{yAxis}}
-        </v-card>
+        </div>
       </div>
 
     </v-container>
@@ -35,9 +39,7 @@ import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 
 
 export default {
-
   name: 'Amcharts5',
-
   props: {
     jsonChartDivID: {
       type: String,
@@ -45,7 +47,7 @@ export default {
     },
     apiUrl: {
       type: String,
-      default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+      default: '',
     },
     xAxisName: {
       type: String,
@@ -61,7 +63,7 @@ export default {
     },
   },
   mounted() {
-    // Load and parsed external data
+    // Load and parse data from API call (JSON or NEAD)
     this.loadParseData();
   },
   beforeDestroy() {
@@ -72,8 +74,8 @@ export default {
   updated() {
 
     if (this.csvDataAvailable) {
-      // Create one chart per yAxis (element) in this.yAxesArray for CSV data, compatible for NEAD format
-      this.yAxesArray.map(yAxis => this.createChart(yAxis, yAxis))
+      // Create multiple charts: one chart per yAxis (element) in csvDataYAxesArray for CSV data
+      this.csvDataYAxesArray.map(yAxis => this.createChart(yAxis, yAxis))
     }
 
     if (this.jsonDataAvailable) {
@@ -98,10 +100,9 @@ export default {
       if (displayDescription.length === 1) {
         keys = displayDescription[0].replace('# display_description = ', '').split(',')
         const removeKeys = ['timestamp_iso']
-        this.yAxesArray = keys.filter(element => !removeKeys.includes(element))
+        this.csvDataYAxesArray = keys.filter(element => !removeKeys.includes(element))
 
       }
-      // TODO refine error handling
       else {
         console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = "');
         return {}
@@ -117,7 +118,7 @@ export default {
 
       return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
 
-        // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
+        // TODO possibly add logic that tests that keys.length equals length of comma separated line before adding JSON object
 
         const toAdd = {};
 
@@ -153,7 +154,7 @@ export default {
           }),
       );
 
-      const easing = am5.ease.linear;
+      // const easing = am5.ease.linear;
 
       // Create axes
       const xAxis = chart.xAxes.push(
@@ -180,8 +181,8 @@ export default {
           })
       );
 
-      // Add cursor
-      const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
+      // Set cursor
+      chart.set('cursor', am5xy.XYCursor.new(root, {
         behavior: 'zoomX',
         xAxis,
       }));
@@ -215,7 +216,6 @@ export default {
         templateField: 'strokeSettings',
       });
 
-
       // Make stuff animate on load
       series.appear(1000, 100);
       chart.appear(1000, 100);
@@ -235,62 +235,58 @@ export default {
       return () => root.dispose();
 
     },
-    // Assign this.parsedData to loaded and parsed external data
+    // Assign parsedData to loaded and parsed external data
     loadParseData() {
 
       am5.net.load(this.apiUrl).then((result) => {
 
-        console.log(result)
-
         // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
-        const responseType = this.getResponseType(result.type)
+        const responseType = this.getResponseType(result.type);
 
-        // Process JSON data
+        // Parse JSON data
         if (responseType === 'application/json') {
 
-          // TODO refine this to test for valid data (at least greater than 0)
           this.parsedData = am5.JSONParser.parse(result.response);
 
-          // Assign jsonDataYAxis name from this.parsedData keys
-          // NOTE: this block currently assumes that the API JSON call will return data for only one non-timestamp parameter!
-          const firstElementKeys = Object.keys(this.parsedData[0])
+          // Assign jsonDataYAxis name from parsedData key (excluding timestamp keys)
+          // NOTE: this block assumes that the API JSON call will return data for only one non-timestamp parameter!
+          const firstElementKeys = Object.keys(this.parsedData[0]);
           this.jsonDataYAxisName = (firstElementKeys.filter(item => !this.timestampArray.includes(item))).shift();
 
-          // Update jsonDataAvailable
-          this.jsonDataAvailable = true
+          this.jsonDataAvailable = true;
 
         }
-        // Process CSV data
+
+        // Parse CSV data
         else if (responseType === 'text/csv') {
 
           // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
-          // TODO refine this to test for valid data (at least greater than 0)
-          this.parsedData = this.convertCSVToJSON(result.response, '')
+          this.parsedData = this.convertCSVToJSON(result.response, '');
 
-          // Update csvDataAvailable
-          this.csvDataAvailable = true
+          this.csvDataAvailable = true;
 
         }
+
         else {
+          this.dataLoadParseError = true;
           console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
         }
+
       }).catch((error) => {
-          // TODO create div for loading error (this.loadingError)
+          this.dataLoadParseError = true;
           console.log(`Error loading data: ${error} for ${this.apiUrl}`);
          }
       );
-
-      return this.parsedData;
-
-      },
+    },
   },
   data() {
     return {
-      yAxesArray : [],
+      dataLoadParseError: false,
       parsedData: [],
       jsonDataAvailable: false,
       jsonDataYAxisName: '',
       csvDataAvailable: false,
+      csvDataYAxesArray : [],
     };
   },
 
@@ -301,7 +297,8 @@ export default {
 <style scoped>
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .chart {
