@@ -69,7 +69,7 @@ export const Amcharts5MultipleCharts = () => ({
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :chartdivID="this.chartdiv1"
+            <Amcharts5 :jsonChartDivID="this.chartdiv1"
                        :apiUrl="this.apiUrl1"
                        />
           </v-col>
@@ -78,18 +78,18 @@ export const Amcharts5MultipleCharts = () => ({
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :chartdivID="this.chartdiv2"
+            <Amcharts5 :jsonChartDivID="this.chartdiv2"
                        :apiUrl="this.apiUrl2"
-                       :yAxisName="this.yAxisName" />
+                       />
           </v-col>
         </v-row>
 
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :chartdivID="this.chartdiv3"
+            <Amcharts5 :jsonChartDivID="this.chartdiv3"
                        :apiUrl="this.apiUrl3"
-                       :yAxisName="this.yAxisName" />
+                        />
           </v-col>
         </v-row>
 

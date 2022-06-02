@@ -4,21 +4,20 @@
 
     <v-container class="pa-4" fluid>
 
-<!--      TODO Refine loading display-->
       <div v-if="!jsonDataAvailable && !csvDataAvailable">
         <h1>Data loading...</h1>
       </div>
 
       <div v-if="jsonDataAvailable">
-        <div class="chart" :id="jsonChartDivID" >
-          {{yAxisName}}
-        </div>
+        <v-card class="chart" :id="jsonChartDivID" >
+          {{this.jsonDataYAxisName}}
+        </v-card>
       </div>
 
       <div v-if="csvDataAvailable">
-        <div class="chart" v-for="yAxis in yAxesArray" :id=yAxis :key="yAxis">
+        <v-card class="chart" v-for="yAxis in yAxesArray" :id=yAxis :key="yAxis">
           {{yAxis}}
-        </div>
+        </v-card>
       </div>
 
     </v-container>
@@ -44,11 +43,6 @@ export default {
       type: String,
       default: 'chartdiv',
     },
-    // TODO implement apiParameters in apiUrl BUT ONLT IF JSON data will need to be read
-    // TODO derive nullvalue and apiParameters by parsing apiURL, distinguish between json and csv calls, use computedProperties or methods
-    // apiParameters: {
-    //   type: Array,
-    // },
     apiUrl: {
       type: String,
       default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
@@ -61,20 +55,14 @@ export default {
       type: String,
       default: "yyyy-MM-dd H:m:s'+00:00'",
     },
-    yAxisName: {
-      type: String,
-      default: '',
-    },
     timestampArray: {
       type: Array,
       default: () => ['timestamp_iso', 'timestamp'],
     },
   },
   mounted() {
-
     // Load and parsed external data
     this.loadParseData();
-
   },
   beforeDestroy() {
     if (this.root) {
@@ -84,14 +72,13 @@ export default {
   updated() {
 
     if (this.csvDataAvailable) {
-      // Create one chart per element in this.yAxesArray
-      this.yAxesArray.map(element => this.createChart((element)))
+      // Create one chart per yAxis (element) in this.yAxesArray for CSV data, compatible for NEAD format
+      this.yAxesArray.map(yAxis => this.createChart(yAxis, yAxis))
     }
 
     if (this.jsonDataAvailable) {
       // Create chart for JSON data
-      // this.createChart(this.yAxisName);
-      this.createChart(this.jsonChartDivID);
+      this.createChart(this.jsonChartDivID, this.jsonDataYAxisName);
     }
 
   },
@@ -120,16 +107,13 @@ export default {
         return {}
       }
 
-      // TEST code for removing NEAD metadata header lines that start with '#'
+      // Remove NEAD metadata header lines that start with '#'
       lines = lines.filter((line) => !line.startsWith('#'))
 
       // Remove last line if it is an empty string
       if (lines[lines.length -1] === '') {
         lines.pop()
       }
-
-      // TEST comment this out
-      // const keys = lines[0].split(',');
 
       return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
 
@@ -146,7 +130,7 @@ export default {
         return { ...acc, ...toAdd };
       }, {}));
     },
-    createChart(yAxisDivID) {
+    createChart(yAxisDivID, yAxisName) {
 
       const root = am5.Root.new(yAxisDivID);
 
@@ -218,8 +202,7 @@ export default {
             connect: false,
             xAxis,
             yAxis,
-            valueYField: yAxisDivID,
-            // valueYField: 'airtemp2',
+            valueYField: yAxisName,
             valueXField: this.xAxisName,
             tooltip: am5.Tooltip.new(root, {}),
           })
@@ -242,7 +225,7 @@ export default {
       const processor = am5.DataProcessor.new(root, {
         dateFields: [this.xAxisName],
         dateFormat: this.xAxisFormat,
-        numericFields: [yAxisDivID],
+        numericFields: [yAxisName],
       });
       processor.processMany(this.parsedData);
 
@@ -257,56 +240,56 @@ export default {
 
       am5.net.load(this.apiUrl).then((result) => {
 
+        console.log(result)
+
         // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
         const responseType = this.getResponseType(result.type)
 
+        // Process JSON data
         if (responseType === 'application/json') {
 
-          this.parsedData = am5.JSONParser.parse(result.response);
-          // console.log(this.parsedData)
-
-          // TEST
-          this.getJsonDataYAxis();
-
           // TODO refine this to test for valid data (at least greater than 0)
+          this.parsedData = am5.JSONParser.parse(result.response);
+
+          // Assign jsonDataYAxis name from this.parsedData keys
+          // NOTE: this block currently assumes that the API JSON call will return data for only one non-timestamp parameter!
+          const firstElementKeys = Object.keys(this.parsedData[0])
+          this.jsonDataYAxisName = (firstElementKeys.filter(item => !this.timestampArray.includes(item))).shift();
+
+          // Update jsonDataAvailable
           this.jsonDataAvailable = true
 
         }
+        // Process CSV data
         else if (responseType === 'text/csv') {
 
           // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
+          // TODO refine this to test for valid data (at least greater than 0)
           this.parsedData = this.convertCSVToJSON(result.response, '')
 
-          // TODO refine this to test for valid data (at least greater than 0)
+          // Update csvDataAvailable
           this.csvDataAvailable = true
 
         }
         else {
           console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
         }
-      }).catch((result) => {
-          console.log(`Error loading ${result.xhr.this.responseURL}`);
+      }).catch((error) => {
+          // TODO create div for loading error (this.loadingError)
+          console.log(`Error loading data: ${error} for ${this.apiUrl}`);
          }
       );
 
       return this.parsedData;
 
       },
-    getJsonDataYAxis() {
-
-      const firstElementKeys = Object.keys(this.parsedData[0])
-
-      const yAxis = firstElementKeys.filter(item => !this.timestampArray.includes(item))
-
-      console.log(yAxis)
-
-    },
   },
   data() {
     return {
       yAxesArray : [],
       parsedData: [],
       jsonDataAvailable: false,
+      jsonDataYAxisName: '',
       csvDataAvailable: false,
     };
   },
