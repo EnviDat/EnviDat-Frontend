@@ -11,6 +11,14 @@
                         :title="`Detailed charts of ${ currentStation.name } station`"
                         :subtitle="contentTableTitle"
                         @buttonClick="scrollToChart" />
+
+        <ButtonContentTable :stationName="currentStation.name"
+                            :buttonList="downloadButton"
+                            :scrollPos="scrollPos"
+                            :title="`Download data of ${ currentStation.name } station`"
+                            :subtitle="downloadSubtitle"
+                            @buttonClick="downloadData" />
+
       </v-col>
 
       <v-col cols="9"
@@ -214,6 +222,10 @@ export default {
         // });
       }
     },
+    downloadData() {
+      const downloadURL = `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
+      window.open(downloadURL)
+    },
     referenceExists(paramName) {
       const target = this.$refs[`${paramName}_1`];
       return target && target.length > 0;
@@ -245,8 +257,14 @@ export default {
           }
         }
       }
-
       return Object.values(buttons);
+    },
+    downloadButton() {
+      return [
+        {
+          buttonText: 'Download Data',
+        },
+      ];
     },
     stationId() {
       return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
@@ -255,6 +273,7 @@ export default {
   data: () => ({
     paramExclusion: ['swout', 'netrad'],
     contentTableTitle: 'Show specific measurement',
+    downloadSubtitle: 'Data downloaded in NEAD format. Data downloaded after <insert date> not quality controlled.',
     loadingStation: false,
     stationImg: null,
     stationPreloadImage: null,

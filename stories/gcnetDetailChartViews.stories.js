@@ -156,13 +156,39 @@ export const DetailChartsListViews = () => ({
     <v-col class="chromatic-ignore">
 
       <v-row class="py-3" >
-        Station 1 DetailChartsList
+        Station 0 DetailChartsList
       </v-row>
 
       <v-row style="border: solid 1px;"
               no-gutters>
         <v-col >
+          <DetailChartsList :currentStation="station0"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3" >
+        Station 1 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
           <DetailChartsList :currentStation="station1"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3" >
+        Station 7 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station7"
                             :fileObjects="fileObjects"
                             :graphStyling="graphStyling" />
         </v-col>
@@ -171,11 +197,14 @@ export const DetailChartsListViews = () => ({
     </v-col>
     `,
   computed: {
-    station1() {
+    station0() {
       return this.stations[0];
     },
-    station2() {
+    station1() {
       return this.stations[1];
+    },
+    station7() {
+      return this.stations[7];
     },
   },
   // methods,
