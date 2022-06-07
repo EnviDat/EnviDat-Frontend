@@ -224,7 +224,7 @@ export default {
     },
     downloadData() {
       const downloadURL = `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
-      window.open(downloadURL)
+      window.open(downloadURL, '_blank')
     },
     referenceExists(paramName) {
       const target = this.$refs[`${paramName}_1`];
