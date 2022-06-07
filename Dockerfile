@@ -26,7 +26,7 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 ENV NODE_ENV production
-RUN npm run build -- --mode $NODE_ENV
+RUN npm run modern-build -- --mode $NODE_ENV
 
 
 FROM ${EXTERNAL_REG}/nginx:1.21-alpine as prod
