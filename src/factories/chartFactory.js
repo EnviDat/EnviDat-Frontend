@@ -113,7 +113,8 @@ function addStartEndDateUrl(url, daysBetween = 14, historicalEndDate = undefined
   }
 
   const endDateDate = new Date(endDate);
-  const differenceDate = new Date((endDateDate - daysBetween));
+  const baseDate = new Date();
+  const differenceDate = new Date(baseDate.setDate(endDateDate.getDate() - daysBetween));
   const startDate = differenceDate.toISOString().substring(0, 19);
 
   return `${url + startDate}/${endDate}/`;
