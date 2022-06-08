@@ -3,9 +3,7 @@
     :id="mapDivId"
     ref="map"
     :style="`min-height: ${mapHeight + 'px'}; height: 100%;`"
-  >
-
-  </div>
+  ></div>
 </template>
 
 <script>
@@ -25,6 +23,7 @@ import {
   MAP_ZOOM_OUT,
   MAP_ZOOM_CENTER,
   MAP_GEOMETRY_MODIFIED,
+  GCNET_OPEN_DETAIL_CHARTS,
   eventBus,
 } from '@/factories/eventBus';
 // import { leafletLayer } from './layer-leaflet';
@@ -33,8 +32,7 @@ import {
 
 export default {
   name: 'MapLeaflet',
-  components: {
-  },
+  components: {},
   props: {
     baseMapLayerName: String,
     wmsLayer: Object,
@@ -50,6 +48,10 @@ export default {
       default: 0,
     },
     mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    isGcnet: {
       type: Boolean,
       default: false,
     },
@@ -102,7 +104,7 @@ export default {
       }
       if (this.mapEditable) {
         const layerArray = this.map.pm.getGeomanLayers();
-        layerArray.forEach((layer) => {
+        layerArray.forEach(layer => {
           this.map.removeLayer(layer);
         });
       }
@@ -114,23 +116,70 @@ export default {
       }
 
       let geoJsonArray = [];
+      // const propertiesArray = [];
+
       if (geoJson.type === 'GeometryCollection') {
-        // Split geometries for individual features
-        geoJson.geometries.forEach((geometry) => {
+        // Split geometries from geometries list
+        geoJson.geometries.forEach(geometry => {
           geoJsonArray.push(geometry);
         });
+
+        // } else if (geoJson.type === 'Feature') {
+        //   // Split geometry from feature object
+        //   geoJsonArray.push(geoJson.geometry);
+        //   propertiesArray.push(geoJson.properties);
+
+        // } else if (geoJson.type === 'FeatureCollection') {
+        //   // Split geometries from feature list
+        //   geoJson.features.forEach((feature) => {
+        //     geoJsonArray.push(feature.geometry);
+        //     propertiesArray.push(feature.properties);
+        //   });
       } else {
         geoJsonArray = [geoJson];
       }
 
       const styleObj = this.getCustomLeafletStyle();
 
+      const isGcnet = this.isGcnet;
+
       this.siteLayer = L.geoJSON(geoJsonArray, {
-        pointToLayer(geoJsonPoint, latlng) {
+        pointToLayer(feature, latlng) {
+          if (isGcnet) {
+            if (feature.properties.active === false) {
+              return L.marker(latlng, styleObj.gcnetInactiveStyle);
+            }
+            if (feature.properties.active === null) {
+              return L.marker(latlng, styleObj.gcnetMissingStyle);
+            }
+            return L.marker(latlng, styleObj.gcnetStyle);
+          }
           return L.marker(latlng, styleObj.customPointStyle);
         },
         style: styleObj.customPolygonStyle,
       });
+
+      if (isGcnet) {
+        this.siteLayer.eachLayer(layer => {
+          layer.bindTooltip(
+            `<div">
+            <b>${layer.feature.properties.name}</b>
+            <p>
+            Elevation: ${layer.feature.properties.elevation}
+            </div>
+            `,
+            {
+              className: 'rounded-xl text-md-center subtitle-1',
+              permanent: false,
+            },
+          );
+
+          // Open popup data modal on click
+          layer.on('click', () => {
+            this.catchGcnetStationClick(layer.feature.properties.alias);
+          });
+        });
+      }
 
       // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
 
@@ -139,7 +188,7 @@ export default {
       // Editing event listeners on map layers
       if (this.mapEditable) {
         const allLayers = this.map.pm.getGeomanLayers();
-        allLayers.forEach((editableLayer) => {
+        allLayers.forEach(editableLayer => {
           editableLayer.on('pm:update', () => {
             this.triggerGeometryEditEvent();
           });
@@ -160,11 +209,11 @@ export default {
 
       while (start < this.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
-        const promise = axios.get(url).then((res) => {
+        const promise = axios.get(url).then(res => {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(res.data, 'text/xml');
           const layers = xmlDoc.getElementsByTagName('Layer');
-          layers.forEach((layer) => {
+          layers.forEach(layer => {
             featureinfo.push({
               name: layer.attributes.name.nodeValue,
               value: Number(layer.childNodes[1].attributes.value.nodeValue),
@@ -190,7 +239,7 @@ export default {
       // eslint-disable-next-line no-underscore-dangle
       bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
       const layers = this.layerConfig.layers
-        .map((layer) => layer.name)
+        .map(layer => layer.name)
         .slice(start, stop);
       const params = {
         request: 'GetFeatureInfo',
@@ -234,6 +283,17 @@ export default {
       }
     },
     setupMap() {
+      if (this.isGcnet) {
+        // Disable editing
+        this.mapEditable = false;
+
+        // Reproject EPSG:5938
+        // var crs = L.Proj.CRS("EPSG:5938",{
+        //     origin: [-180,90],
+        //     scaleDenominators: [2000,1000,500,200,100,50,20,10],
+        // });
+        console.log('GCNET!');
+      }
 
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
@@ -247,22 +307,25 @@ export default {
       });
 
       // Lock zoom to bounds
-      this.map.setMinZoom(Math.ceil(Math.log2(Math.max(
-        this.$refs.map.clientWidth,
-        this.$refs.map.clientHeight,
-      ) / 256)));
+      this.map.setMinZoom(
+        Math.ceil(
+          Math.log2(
+            Math.max(this.$refs.map.clientWidth, this.$refs.map.clientHeight) /
+              256,
+          ),
+        ),
+      );
 
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
       if (this.layerConfig && this.layerConfig.timeseries) {
-        this.map.on('click', (e) => this.getFeatureInfo(e.latlng));
+        this.map.on('click', e => this.getFeatureInfo(e.latlng));
       }
 
       this.addSiteIfAvailable();
     },
     addSiteIfAvailable() {
-
       this.removeSite();
 
       if (this.site) {
@@ -316,7 +379,7 @@ export default {
       const geoJSONArray = [];
 
       if (layerArray.length !== 0) {
-        layerArray.forEach((geometry) => {
+        layerArray.forEach(geometry => {
           const geoJSON = geometry.toGeoJSON();
           geoJSONArray.push(geoJSON.geometry);
         });
@@ -349,10 +412,33 @@ export default {
           // opacity: 1,
           // weight: 1,
         },
-      }
+        gcnetStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle green',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.65,
+          riseOnHover: true,
+        },
+        gcnetInactiveStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle red',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.35,
+          riseOnHover: true,
+        },
+        gcnetMissingStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle grey',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.65,
+          riseOnHover: true,
+        },
+      };
     },
     setupEditing() {
-
       // Set styles for markers and polygons
       const styleObj = this.getCustomLeafletStyle();
       this.map.pm.setGlobalOptions({
@@ -390,6 +476,9 @@ export default {
       //   onClick: this.tempFunction,
       //   toggle: false,
       // });
+    },
+    catchGcnetStationClick(stationAlias) {
+      eventBus.$emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
     },
     // tempFunction() {
     //   const geoms = this.map.pm.getGeomanLayers()

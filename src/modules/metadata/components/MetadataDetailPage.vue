@@ -189,7 +189,6 @@ export default {
     eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
-    // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
 
     this.fullScreenConfig = null;
     this.fullScreenComponent = null;
@@ -254,8 +253,8 @@ export default {
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
       publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
-    hasGcnetStationConfig() {
-      return this.stationsConfig !== null;
+    hasGcnetStationConfig () {
+      return this.configInfos?.stationsConfigUrl !== null;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -378,6 +377,7 @@ export default {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
+          ...(this.hasGcnetStationConfig) && {isGcnet: true},
         };
       }
 
@@ -411,6 +411,33 @@ export default {
         .get(url)
         .then((response) => {
           this.stationsConfig = response.data;
+
+          const stations = response.data;
+          const featureCollection = {
+            'type': 'FeatureCollection',
+            'features': [],
+          };
+
+          stations.forEach(geom => {
+            featureCollection.features.push({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [Number(geom.longitude), Number(geom.latitude)],
+              },
+              properties: {
+                'alias': geom.alias,
+                'name': geom.name,
+                'active': geom.active,
+                'elevation': geom.elevation,
+              },
+            })
+          })
+
+          // Override location with stations FeatureCollection
+          const locationOverride = this.location;
+          locationOverride.geoJSON = featureCollection;
+          this.setGeoServiceLayers(locationOverride, null, null);
 
           successCallback();
         })
@@ -471,7 +498,6 @@ export default {
 
       this.fullScreenConfig = layerConfig;
       this.fullScreenComponent = MetadataMapFullscreen;
-      console.log(this.fullScreenConfig);
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },

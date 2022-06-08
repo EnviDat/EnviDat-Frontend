@@ -43,6 +43,7 @@
           :site="site"
           :mapHeight="mapHeight"
           :mapEditable="mapEditable"
+          :isGcnet="isGcnet"
         >
           <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
@@ -93,6 +94,10 @@ export default {
       default: 0,
     },
     mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    isGcnet: {
       type: Boolean,
       default: false,
     },

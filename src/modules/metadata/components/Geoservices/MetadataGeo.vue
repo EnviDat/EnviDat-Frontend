@@ -32,6 +32,7 @@
         :site="site"
         :mapHeight="mapHeight"
         :mapEditable="mapEditable"
+        :isGcnet="isGcnet"
       />
     </v-card-text>
 
@@ -83,6 +84,9 @@ export default {
     },
     layerConfig() {
       return this.genericProps?.layerConfig;
+    },
+    isGcnet() {
+      return this.genericProps?.isGcnet;
     },
     mapHeight() {
       return this.genericProps?.mapHeight;
