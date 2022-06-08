@@ -16,6 +16,10 @@ import { storiesOf } from '@storybook/vue';
 // import { defaultSeriesSettings } from '@/factories/chartFactory';
 // const seriesSettings = defaultSeriesSettings;
 
+import AmCharts from 'amcharts3';
+import serial from 'amcharts3/amcharts/serial';
+import responsive from 'amcharts3/amcharts/plugins/responsive/responsive';
+
 import stationParameters from '@/../public/testdata/stationParameters.json';
 import stationsConfig from '@/../public/testdata/stationsConfig.json';
 
@@ -37,7 +41,7 @@ storiesOf('7 GC-Net Views / Charts', module)
   //   components: { DetailChart },
   //   template: `
   //   <v-col>
-     
+
   //     <v-row>
   //       Station 1 DetailChart
   //     </v-row>
@@ -118,7 +122,7 @@ storiesOf('7 GC-Net Views / Charts', module)
   //     },
   //     stationId() {
   //       return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
-  //     },      
+  //     },
   //   },
   //   data: () => ({
   //     stations,
@@ -131,7 +135,7 @@ storiesOf('7 GC-Net Views / Charts', module)
     components: { DetailChartsList },
     template: `
     <v-col>
-      
+
       <v-row class="py-3"
               >
         Station 1 DetailChartsList
@@ -146,14 +150,45 @@ storiesOf('7 GC-Net Views / Charts', module)
         </v-col>
       </v-row>
 
+      <v-row class="py-3"
+      >
+        Station 4 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station4"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3"
+      >
+        Station 8 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station8"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
     </v-col>
     `,
     computed: {
       station1() {
         return this.stations[0];
       },
-      station2() {
-        return this.stations[1];
+      station4() {
+        return this.stations[3];
+      },
+      station8() {
+        return this.stations[7];
       },
     },
     // methods,
