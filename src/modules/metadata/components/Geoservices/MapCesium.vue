@@ -35,6 +35,7 @@ import Matrix4 from 'cesium/Core/Matrix4';
     import HorizontalOrigin from 'cesium/Scene/HorizontalOrigin';
     import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
     import Color from 'cesium/Core/Color';
+    import LabelGraphics from 'cesium/DataSources/LabelGraphics';
     import 'cesium/Widgets/widgets.css';
     import marker from '@/assets/map/marker-icon.png';
     import marker2x from '@/assets/map/marker-icon-2x.png';
@@ -51,6 +52,8 @@ import Matrix4 from 'cesium/Core/Matrix4';
       LOCATION_TYPE_POINT,
       LOCATION_TYPE_MULTIPOINT,
       LOCATION_TYPE_POLYGON,
+      LOCATION_TYPE_GEOMCOLLECTION,
+      LOCATION_TYPE_FEATCOLLECTION,
     } from '@/factories/metaDataFactory';
     import { cesiumLayer } from './layer-cesium';
 
@@ -253,9 +256,33 @@ import Matrix4 from 'cesium/Core/Matrix4';
             this.siteLayer = dataSource;
             const entities = dataSource.entities.values;
 
-            const isPoints = geoJson.type === LOCATION_TYPE_MULTIPOINT || geoJson.type === LOCATION_TYPE_POINT;
+            const isFeatCollection = geoJson.type === LOCATION_TYPE_FEATCOLLECTION;
+            const isGeomCollection = geoJson.type === LOCATION_TYPE_GEOMCOLLECTION;
+
+            // Determine if point or polygon dataset
+            let isPoints = null;
+            if (isFeatCollection) {
+              isPoints = (
+                geoJson.features[0].geometry.type === LOCATION_TYPE_MULTIPOINT
+                || geoJson.features[0].geometry.type === LOCATION_TYPE_POINT
+              );
+
+            } else if (isGeomCollection) {
+              isPoints = (
+                geoJson.geometries[0].type === LOCATION_TYPE_MULTIPOINT
+                || geoJson.geometries[0].type === LOCATION_TYPE_POINT
+              );
+
+            } else {
+              isPoints = (
+                geoJson.type === LOCATION_TYPE_MULTIPOINT
+                || geoJson.type === LOCATION_TYPE_POINT
+              );
+
+            }
 
             entities.forEach((entity) => {
+
               // Set point style
               if (isPoints) {
                 entity.billboard = {
@@ -265,12 +292,25 @@ import Matrix4 from 'cesium/Core/Matrix4';
                   alpha: 0.65,
                 };
               } else {
+
                 // Set polygon style
                 entity.polygon.material = new Color.fromCssColorString(this.color).withAlpha(0.5);
                 entity.outline = true;
                 // entity.outlineWidth = this.outlineWidth;
                 entity.polygon.outlineColor = new Color.fromCssColorString(this.color);
               }
+
+              // Set labels, if present
+              if (isFeatCollection) {
+                entity.label = new LabelGraphics ({
+                  text: entity.properties?.name,
+                  scale: 0.5,
+                  verticalOrigin: VerticalOrigin.TOP,
+                  // horizontalOrigin: HorizontalOrigin.LEFT,
+                  // pixelOffset: new Cartesian2(0.0, -40.0), // Show above ground?
+                });
+              }
+
             });
           });
         },
