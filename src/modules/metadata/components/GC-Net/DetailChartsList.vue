@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-1"
-                fluid                
+                fluid
                 id="DetailChartList" >
     <v-row no-gutters>
       <v-col cols="3"
@@ -41,8 +41,10 @@
                           :graphs="buildGraphs(fileObject)"
                           :preload="fileObject.preload"
                           :showDisclaimer="fileObject.showDisclaimer"
+                          :historicalEndDate="fileObject.historicalEndDate"
                           :convertLocalTime="convertLocalTime"
                           :key="fileObject.fileName + reRenderKey" />
+
           </v-col>
         </v-row>
 
@@ -117,7 +119,7 @@ export default {
         bulletAlpha: this.seriesSettings.bulletsfillOpacity,
         bulletSize: this.seriesSettings.bulletsRadius,
         bulletBorderThickness: this.seriesSettings.bulletsStrokeWidth,
-        lineThickness: this.seriesSettings.lineStrokeWidth,        
+        lineThickness: this.seriesSettings.lineStrokeWidth,
         connect: false,
         gridAboveGraphs: true,
         negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
@@ -143,7 +145,7 @@ export default {
     //     if (obj.fileName.includes(fileName)) {
     //       scrollToChart = obj.fileName;
     //       break;
-    //     }        
+    //     }
     //   }
 
     //   if (scrollToChart) {
@@ -205,7 +207,7 @@ export default {
 
       if (target) {
         this.$refs.scrollableList.scrollTop = target.offsetTop;
-        
+
         // this.$vuetify.goTo(`${paramName}_1`, {
         // this.$vuetify.goTo(target, {
           // duration: this.duration,
@@ -229,9 +231,9 @@ export default {
         const key = keys[i];
 
         const paramList = Object.keys(buttons);
-        const stringToCheck = key.substring(0, key.length - 1);        
+        const stringToCheck = key.substring(0, key.length - 1);
 
-        if (!this.paramExclusion.includes(key)) {         
+        if (!this.paramExclusion.includes(key)) {
           const name = this.graphStyling[key].titleString.trim();
           const lastChar = name.substring(name.length - 2);
           const cutOff = isNumber(lastChar);

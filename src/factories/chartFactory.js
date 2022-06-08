@@ -60,7 +60,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
         // "dataDateFormat": "MMM DD, YYYY JJ:NN"
       },
-      categoryField: 'timestamp_iso',    
+      categoryField: 'timestamp_iso',
       categoryAxis: {
         parseDates: true,
         // "minPeriod": recentData ? "hh" : "DD",
@@ -83,7 +83,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         //   event: 'init',
         //   method: () => {
         //     doneCallback(chart.dataProvider.length);
-        //     // console.log("init finished"); 
+        //     // console.log("init finished");
         //   },
         // },
       ],
@@ -103,13 +103,18 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
 //     chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
 // }
 
-function addStartEndDateUrl(url, daysBetween = 14) {
+function addStartEndDateUrl(url, daysBetween = 14, historicalEndDate = undefined) {
 
   const currentDate = new Date();
-  const endDate = currentDate.toISOString().substring(0, 19);
+  let endDate = historicalEndDate;
 
-  const dateTwoWeeksAgo = new Date(currentDate.setDate(currentDate.getDate() - daysBetween));
-  const startDate = dateTwoWeeksAgo.toISOString().substring(0, 19);
+  if (!endDate) {
+    endDate = currentDate.toISOString().substring(0, 19);
+  }
+
+  const endDateDate = new Date(endDate);
+  const differenceDate = new Date((endDateDate - daysBetween));
+  const startDate = differenceDate.toISOString().substring(0, 19);
 
   return `${url + startDate}/${endDate}/`;
 }
