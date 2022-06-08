@@ -1,16 +1,34 @@
 <template>
   <v-container class="pa-1"
-                fluid
+                fluid                
                 id="DetailChartList" >
     <v-row no-gutters>
       <v-col cols="3"
               class="pa-2" >
-        <ButtonContentTable :stationName="currentStation.name"
-                        :buttonList="stationParams"
-                        :scrollPos="scrollPos"
-                        :title="`Detailed charts of ${ currentStation.name } station`"
-                        :subtitle="contentTableTitle"
-                        @buttonClick="scrollToChart" />
+
+        <v-row no-gutters>
+          <v-col cols="12"
+                 class="py-1" >
+            <ButtonContentTable :stationName="currentStation.name"
+                                :buttonList="stationParams"
+                                :scrollPos="scrollPos"
+                                :title="`Detailed charts of ${ currentStation.name } station`"
+                                :subtitle="contentTableTitle"
+                                @buttonClick="scrollToChart" />
+          </v-col>
+
+          <v-col cols="12"
+                 class="py-1" >
+            <ButtonContentTable :stationName="currentStation.name"
+                                :buttonList="downloadButton"
+                                :scrollPos="scrollPos"
+                                title="Download Data"
+                                :subtitle="downloadSubtitle"
+                                @buttonClick="downloadData" />
+          </v-col>
+        </v-row>
+
+
       </v-col>
 
       <v-col cols="9"
@@ -119,7 +137,7 @@ export default {
         bulletAlpha: this.seriesSettings.bulletsfillOpacity,
         bulletSize: this.seriesSettings.bulletsRadius,
         bulletBorderThickness: this.seriesSettings.bulletsStrokeWidth,
-        lineThickness: this.seriesSettings.lineStrokeWidth,
+        lineThickness: this.seriesSettings.lineStrokeWidth,        
         connect: false,
         gridAboveGraphs: true,
         negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
@@ -145,7 +163,7 @@ export default {
     //     if (obj.fileName.includes(fileName)) {
     //       scrollToChart = obj.fileName;
     //       break;
-    //     }
+    //     }        
     //   }
 
     //   if (scrollToChart) {
@@ -207,7 +225,7 @@ export default {
 
       if (target) {
         this.$refs.scrollableList.scrollTop = target.offsetTop;
-
+        
         // this.$vuetify.goTo(`${paramName}_1`, {
         // this.$vuetify.goTo(target, {
           // duration: this.duration,
@@ -215,6 +233,10 @@ export default {
           // easing: this.easing,
         // });
       }
+    },
+    downloadData() {
+      const downloadURL = `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
+      window.open(downloadURL, '_blank')
     },
     referenceExists(paramName) {
       const target = this.$refs[`${paramName}_1`];
@@ -231,9 +253,9 @@ export default {
         const key = keys[i];
 
         const paramList = Object.keys(buttons);
-        const stringToCheck = key.substring(0, key.length - 1);
+        const stringToCheck = key.substring(0, key.length - 1);        
 
-        if (!this.paramExclusion.includes(key)) {
+        if (!this.paramExclusion.includes(key)) {         
           const name = this.graphStyling[key].titleString.trim();
           const lastChar = name.substring(name.length - 2);
           const cutOff = isNumber(lastChar);
@@ -247,8 +269,14 @@ export default {
           }
         }
       }
-
       return Object.values(buttons);
+    },
+    downloadButton() {
+      return [
+        {
+          buttonText: 'Download Data',
+        },
+      ];
     },
     stationId() {
       return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
@@ -257,6 +285,7 @@ export default {
   data: () => ({
     paramExclusion: ['swout', 'netrad'],
     contentTableTitle: 'Show specific measurement',
+    downloadSubtitle: 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format. Data after <insert date> not quality controlled.',
     loadingStation: false,
     stationImg: null,
     stationPreloadImage: null,
@@ -273,6 +302,7 @@ export default {
 
 .scrollableList {
   overflow: auto scroll;
-  height: 100vh;
+  /* height: 100vh; */
+  max-height: 850px;
 }
 </style>
