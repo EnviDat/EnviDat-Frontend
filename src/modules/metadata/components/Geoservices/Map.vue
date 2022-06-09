@@ -1,127 +1,223 @@
 <template>
-  <div style="height: 100%; width: 100%; z-index: 100; max-width: 100%; position: relative;">
+  <v-container id="MapComponent" fluid class="fill-height pa-0">
+    <MapOverlayUI
+      :style="`position: absolute; top: 0;
+                        z-index: 1000;
+                        width: ${showMapSplitCloseButton ? '50' : '95'}%;
+                        height: 95%; `"
+      :baseMapLayerName="currentBaseMapLayer"
+      :layerConfig="layerConfig"
+      :site="site"
+      :mapDivId="mapDivId"
+      :selectedLayerName="selectedLayerName"
+      :mapIs3D="mapIn3D"
+      :showMapSplitButton="showMapSplitButton"
+      :showMapSplitCloseButton="showMapSplitCloseButton"
+      @changeLayer="changeLayer"
+      @changeOpacity="changeOpacity"
+      @toggleMapIn3D="toggle3D"
+    />
 
-    <div :class="config.timeseries ? 'map-container-timeslider' : 'map-container'">
-      <v-row class="top-slot">
-        <slot name="top"></slot>
-      </v-row>
+    <v-row no-gutters class="fill-height">
+      <v-col class="fill-height">
+        <map-cesium
+          v-if="mapIn3D"
+          :baseMapLayerName="currentBaseMapLayer"
+          :wmsLayer="selectedLayer"
+          :map-div-id="mapDivId"
+          :opacity="opacity"
+          :site="site"
+          :max-extent="maxExtent"
+          :mapHeight="mapHeight"
+        >
+          <!-- :featureInfoPts="featureinfo" -->
+        </map-cesium>
 
-      <v-icon @click="layerControlOpen = !layerControlOpen" class="icon elevation-5" style="position: absolute; top: 95px; color: black; background-color: white; z-index: 999; margin-left: 10px; border-radius: 4px;">
-        layers
-      </v-icon>
-
-      <map-layer-control
-        v-if="layerControlOpen"
-        :layers="config.layers"
-        :selected="selectedLayerName"
-        @select="select"
-        style="position: absolute; z-index: 999; top: 95px; bottom: 150px; left: 35px;"
-      ></map-layer-control>
-
-      <div v-if="!hasGeom" style="color: red;">No data to show</div>
-      <map-leaflet v-if="!show3d" :layer="selectedLayer" :map-div-id="mapDivId">
-        <slot></slot><br>
-        <v-btn fab small @click="show3d = true">3D</v-btn>
-      </map-leaflet>
-      <map-cesium v-if="show3d" :layer="selectedLayer" :map-div-id="mapDivId">
-        <slot></slot><br>
-        <v-btn fab small @click="show3d = false">2D</v-btn>
-      </map-cesium>
-    </div>
-    <div class="timeslider-container" v-if="config.timeseries" style="position: relative;">
-      <timeslider
-        style="height: 120px; z-index: 10000; position: relative;"
-        @select="select"
-        :chart-data="config.layers"
-        :div-id="`timeslider_${mapDivId}`"
-        :selected="selectedLayerName"
-      ></timeslider>
-    </div>
-
-  </div>
+        <map-leaflet
+          v-if="!mapIn3D"
+          :baseMapLayerName="currentBaseMapLayer"
+          :wmsLayer="selectedLayer"
+          :max-extent="maxExtent"
+          :map-div-id="mapDivId"
+          :opacity="opacity"
+          :site="site"
+          :mapHeight="mapHeight"
+          :mapEditable="mapEditable"
+          :isGcnet="isGcnet"
+        >
+          <!-- :featureInfoPts="featureinfo" -->
+        </map-leaflet>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
-  import MapLeaflet from './MapLeaflet';
-  import MapCesium from './MapCesium';
-  import MapLayerControl from './MapLayerControl';
-  import Timeslider from './Timeslider';
+import { MAP_TOGGLE_BASE_LAYER, eventBus } from '@/factories/eventBus';
 
-  export default {
-    name: 'Map',
-    components: {
-      Timeslider,
-      MapLayerControl,
-      MapCesium,
-      MapLeaflet,
+import {
+  buffer as tBuffer,
+  centroid as tCentroid,
+  envelope as tEnvelope,
+} from '@turf/turf';
+
+import {
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_GEOMCOLLECTION,
+} from '@/factories/metaDataFactory';
+
+import MapLeaflet from './MapLeaflet';
+import MapCesium from './MapCesium';
+import MapOverlayUI from './MapOverlayUI';
+
+export default {
+  name: 'Map',
+  components: {
+    MapCesium,
+    MapLeaflet,
+    MapOverlayUI,
+  },
+  props: {
+    baseMapLayer: String,
+    layerConfig: Object,
+    site: Object,
+    mapDivId: {
+      type: String,
+      default: 'map-small',
     },
-    props: {
-      config: { type: Object, required: true },
-      mapDivId: { type: String, required: true },
-      selected: { type: String },
+    selectedLayerName: { type: String },
+    showMapSplitButton: Boolean,
+    showMapSplitCloseButton: Boolean,
+    mapHeight: {
+      type: Number,
+      default: 0,
     },
-    data: () => ({
-      layerControlOpen: false,
-      show3d: false,
-      selectedLayerName: null,
-    }),
-    computed: {
-      selectedLayer() {
-        if (!this.selectedLayerName) {
-          return null;
+    mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    isGcnet: {
+      type: Boolean,
+      default: false,
+    },
+    webpIsSupported: Boolean,
+  },
+  mounted() {
+    eventBus.$on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
+  },
+  beforeDestroy() {
+    eventBus.$off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
+  },
+  computed: {
+    maxExtent() {
+      let extent = null;
+      if (this.site) {
+        if (this.site.type === LOCATION_TYPE_GEOMCOLLECTION) {
+          if (this.site.geometries.length === 0) {
+            return extent;
+          }
         }
-        const layer = this.config.layers.find(l => l.name === this.selectedLayerName);
-        layer.baseURL = this.config.baseURL;
-        layer.bbox = this.config.bbox;
-        layer.type = 'wms'; // this.config.type || 'wms';
-        return layer;
-      },
-      hasGeom() {
-        return !!this.config;
-      },
+
+        // default zoom distance for single Points 50km otherwise go closer
+        let zoomDist = 10;
+        if (this.site.type === LOCATION_TYPE_POINT) {
+          zoomDist = 50;
+        } else if (this.site.type === LOCATION_TYPE_MULTIPOINT) {
+          zoomDist = 15;
+        }
+
+        // If the centroid of the geometry is above 60° or below -60°
+        // zoom out even futher
+        const centroid = tCentroid(this.site);
+        if (Math.abs(centroid.geometry.coordinates[1]) > 60) {
+          zoomDist = 200;
+        }
+
+        // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
+        // const bbox = tEnvelope(this.site);
+        let envelope = tBuffer(this.site, zoomDist, { units: 'kilometers' });
+        envelope = tEnvelope(envelope);
+
+        // Convert from geometry to extent object
+        extent = {
+          minx: envelope.geometry.coordinates[0][0][0],
+          miny: envelope.geometry.coordinates[0][0][1],
+          maxx: envelope.geometry.coordinates[0][2][0],
+          maxy: envelope.geometry.coordinates[0][2][1],
+        };
+      } else if (this.layerConfig) {
+        extent = this.layerConfig.bbox;
+      }
+
+      return extent;
     },
-    methods: {
-      select(layerName) {
-        this.selectedLayerName = layerName;
-      },
+    featureinfo() {
+      return this.$store.state.geoservices.timeseries;
     },
-    watch: {
-      selectedLayerName() {
-        this.$emit('changeLayer', this.selectedLayerName);
-      },
+    selectedLayer() {
+      // return null;
+
+      if (!this.layerConfig || !this.selectedLayerName) {
+        return null;
+      }
+      const layer = this.layerConfig.layers.find(
+        (l) => l.name === this.selectedLayerName,
+      );
+      layer.baseURL = this.layerConfig.baseURL;
+      layer.bbox = this.layerConfig.bbox;
+      return layer;
     },
-    mounted() {
-      if (this.selected) {
-        this.select(this.selected);
+  },
+  methods: {
+    toggle3D() {
+      this.mapIn3D = !this.mapIn3D;
+    },
+    changeOpacity(value) {
+      this.opacity = value;
+    },
+    changeLayer(layerName) {
+      this.$emit('changeLayer', layerName, this.mapDivId);
+    },
+    toggleBaseMapLayer(mapId) {
+      if (this.mapDivId !== mapId) {
+        return;
+      }
+
+      if (this.currentBaseMapLayer === 'streets') {
+        this.currentBaseMapLayer = 'satellite';
       } else {
-        const layer = this.config.layers.find(l => l.visibility);
-        this.select(layer.name);
+        this.currentBaseMapLayer = 'streets';
       }
     },
-  };
+  },
+  data: () => ({
+    layerControlOpen: false,
+    opacity: 100,
+    mapIn3D: false,
+    currentBaseMapLayer: 'streets',
+  }),
+};
 </script>
 
 <style scoped>
+.top-slot {
+  left: 50%;
+  position: absolute;
+  z-index: 9999;
+  cursor: pointer;
+  top: 15px;
+}
 
-  .top-slot {
-    left: 50%;
-    position: absolute;
-    z-index: 9999;
-    cursor: pointer;
-    top: 15px;
-  }
+.map-container {
+  height: 100%;
+}
 
-  .map-container {
-    height: 100%;
-  }
+.map-container-timeslider {
+  height: calc(100% - 100px);
+}
 
-  .map-container-timeslider {
-    height: calc(100% - 120px);
-  }
-
-  .timeslider-container {
-    height: 120px;
-  }
-
-
+.timeslider-container {
+  height: 100px;
+}
 </style>
