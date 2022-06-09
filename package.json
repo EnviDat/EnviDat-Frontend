@@ -18,6 +18,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@geoman-io/leaflet-geoman-free": "^2.13.0",
     "@turf/turf": "^5.1.6",
     "amcharts3": "^3.21.15",
     "amstock3": "^3.21.15",
@@ -31,7 +32,7 @@
     "leaflet": "^1.6.0",
     "leaflet-bing-layer": "^3.3.1",
     "leaflet.markercluster": "^1.4.1",
-    "material-design-icons-iconfont": "^6.1.0",
+    "material-design-icons-iconfont": "^6.7.0",
     "remark": "^13.0.0",
     "remark-html": "^13.0.1",
     "remark-strip-html": "^1.0.2",
@@ -63,7 +64,6 @@
     "@vue/cli": "^4.5.9",
     "@vue/cli-plugin-babel": "^4.5.9",
     "@vue/cli-plugin-eslint": "^4.5.9",
-    "@vue/cli-plugin-unit-jest": "^4.5.9",
     "@vue/cli-service": "^4.5.13",
     "@vue/eslint-config-airbnb": "^4.0.1",
     "@vue/test-utils": "^1.1.2",
