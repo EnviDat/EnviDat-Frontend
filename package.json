@@ -48,7 +48,8 @@
     "vuetify": "^2.4.0",
     "vuex": "^3.6.0",
     "vuex-localstorage": "^1.0.0",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "wms-capabilities": "^0.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.10.3",

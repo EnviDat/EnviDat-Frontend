@@ -60,7 +60,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
         // "dataDateFormat": "MMM DD, YYYY JJ:NN"
       },
-      categoryField: 'timestamp_iso',
+      categoryField: 'timestamp_iso',    
       categoryAxis: {
         parseDates: true,
         // "minPeriod": recentData ? "hh" : "DD",
@@ -83,7 +83,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         //   event: 'init',
         //   method: () => {
         //     doneCallback(chart.dataProvider.length);
-        //     // console.log("init finished");
+        //     // console.log("init finished"); 
         //   },
         // },
       ],
@@ -103,19 +103,13 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
 //     chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
 // }
 
-function addStartEndDateUrl(url, daysBetween = 14, historicalEndDate = undefined) {
+function addStartEndDateUrl(url, daysBetween = 14) {
 
   const currentDate = new Date();
-  let endDate = historicalEndDate;
+  const endDate = currentDate.toISOString().substring(0, 19);
 
-  if (!endDate) {
-    endDate = currentDate.toISOString().substring(0, 19);
-  }
-
-  const endDateDate = new Date(endDate);
-  const baseDate = new Date();
-  const differenceDate = new Date(baseDate.setDate(endDateDate.getDate() - daysBetween));
-  const startDate = differenceDate.toISOString().substring(0, 19);
+  const dateTwoWeeksAgo = new Date(currentDate.setDate(currentDate.getDate() - daysBetween));
+  const startDate = dateTwoWeeksAgo.toISOString().substring(0, 19);
 
   return `${url + startDate}/${endDate}/`;
 }
@@ -135,43 +129,51 @@ function hasData(data, parameter) {
 }
 
 function getConfigFiles(resources) {
-  const configs = {};
+  const configResources = {};
 
   if (!resources) {
-    return configs;
+    return configResources;
   }
 
   for (let i = 0; i < resources.length; i++) {
     const res = resources[i];
 
-    const resName = res.name.toLowerCase();
-    const resUrl = res.url.toLowerCase();
+    const resName = res?.name?.toLowerCase() || '';
+    const resUrl = res?.url?.toLowerCase() || '';
 
     if (resName.includes('geoservices_config')) {
-      configs.geoServicesConfig = res;
+      configResources.geoServicesConfig = res;
     } else if (resUrl.includes('stationparameters')) {
-      configs.gcnetStationParameters = res;
+      configResources.gcnetStationParameters = res;
     } else if (resUrl.includes('stationsconfig')) {
-      configs.gcnetStationsConfig = res;
+      configResources.gcnetStationsConfig = res;
     }
 
   }
 
-  return configs;
+  return configResources;
 }
 
 // eslint-disable-next-line no-unused-vars
-function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json') {
+function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
+  // eslint-disable-next-line prefer-const
+  let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
+  // eslint-disable-next-line prefer-const
+  let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
+  // eslint-disable-next-line prefer-const
+  let geoConfigUrl = configs?.geoServicesConfig?.url || null;
+
   if (!configs) {
     configs = {};
   }
 
-  let stationsConfigUrl = configs.gcnetStationsConfig?.url || null;
-  let stationParametersUrl = configs.gcnetStationParameters?.url || null;
-
   if (process.env.NODE_ENV === 'development') {
-    stationsConfigUrl = ''; // testStationsConfigUrl;
-    stationParametersUrl = ''; // testStationParametersUrl;
+    // stationsConfigUrl = ''; // testStationsConfigUrl;
+    // stationParametersUrl = ''; // testStationParametersUrl;
+
+    // overwrite the local development config url for testing in development
+    // geoConfigUrl = testGeoUrl;
+    geoConfigUrl = configs.geoServicesConfig?.url ? testGeoUrl : null;
 
   } else {
 
@@ -182,10 +184,15 @@ function getGcnetStationsConfigs(configs, testStationsConfigUrl = './testdata/st
     if (configs.gcnetStationParameters) {
       configs.gcnetStationParameters.hideFromResourceList = true;
     }
+
+    if (configs.geoServicesConfig) {
+      configs.geoServicesConfig.hideFromResourceList = true;
+    }
   }
 
   configs.stationsConfigUrl = stationsConfigUrl;
   configs.stationParametersUrl = stationParametersUrl;
+  configs.geoConfigUrl = geoConfigUrl;
 
   return configs;
 }
@@ -197,5 +204,5 @@ export {
   addStartEndDateUrl,
   hasData,
   getConfigFiles,
-  getGcnetStationsConfigs,
+  getConfigUrls,
 };

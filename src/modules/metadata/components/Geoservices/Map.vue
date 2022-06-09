@@ -162,7 +162,7 @@ export default {
         return null;
       }
       const layer = this.layerConfig.layers.find(
-        (l) => l.name === this.selectedLayerName,
+        l => l.name === this.selectedLayerName,
       );
       layer.baseURL = this.layerConfig.baseURL;
       layer.bbox = this.layerConfig.bbox;
