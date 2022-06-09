@@ -126,6 +126,7 @@ export default {
         'cesium-widget-credits',
       );
 
+      // eslint-disable-next-line no-restricted-syntax
       for (const item of cesiumWidgets) {
         item.style.display = 'none';
       }
@@ -140,7 +141,7 @@ export default {
 
       this.viewer.scene.canvas.addEventListener(
         'click',
-        event => {
+        (event) => {
           event.preventDefault();
           const viewer = that.viewer;
           const mousePosition = new Cartesian2(event.clientX, event.clientY);
@@ -276,7 +277,7 @@ export default {
 
       // });
 
-      GeoJsonDataSource.load(geoJson).then(dataSource => {
+      GeoJsonDataSource.load(geoJson).then((dataSource) => {
         this.viewer.dataSources.add(dataSource);
 
         this.siteLayer = dataSource;
@@ -288,20 +289,17 @@ export default {
         // Determine if point or polygon dataset
         let isPoints = null;
         if (isFeatCollection) {
-          isPoints =
-            geoJson.features[0].geometry.type === LOCATION_TYPE_MULTIPOINT ||
-            geoJson.features[0].geometry.type === LOCATION_TYPE_POINT;
+          isPoints = geoJson.features[0].geometry.type === LOCATION_TYPE_MULTIPOINT
+            || geoJson.features[0].geometry.type === LOCATION_TYPE_POINT;
         } else if (isGeomCollection) {
-          isPoints =
-            geoJson.geometries[0].type === LOCATION_TYPE_MULTIPOINT ||
-            geoJson.geometries[0].type === LOCATION_TYPE_POINT;
+          isPoints = geoJson.geometries[0].type === LOCATION_TYPE_MULTIPOINT
+            || geoJson.geometries[0].type === LOCATION_TYPE_POINT;
         } else {
-          isPoints =
-            geoJson.type === LOCATION_TYPE_MULTIPOINT ||
-            geoJson.type === LOCATION_TYPE_POINT;
+          isPoints = geoJson.type === LOCATION_TYPE_MULTIPOINT
+            || geoJson.type === LOCATION_TYPE_POINT;
         }
 
-        entities.forEach(entity => {
+        entities.forEach((entity) => {
           // Set point style
           if (isPoints) {
             entity.billboard = {
@@ -328,6 +326,7 @@ export default {
               text: entity.properties?.name,
               scale: 0.5,
               verticalOrigin: VerticalOrigin.TOP,
+              fillColor: Color.BLACK,
               // horizontalOrigin: HorizontalOrigin.LEFT,
               // pixelOffset: new Cartesian2(0.0, -40.0), // Show above ground?
             });
@@ -419,8 +418,7 @@ export default {
         this.viewer.imageryLayers.remove(this.basemapLayer);
         this.basemapLayer = null;
       }
-      this.basemapLayer =
-        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.basemapLayer = this.viewer.imageryLayers.addImageryProvider(
         this.basemapLayer,
         0,

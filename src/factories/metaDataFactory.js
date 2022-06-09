@@ -6,33 +6,30 @@
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2020-11-04 09:10:17
+ * Last modified  : 2021-09-01 13:19:14
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import seedrandom from 'seedrandom';
-import { parse, format } from 'date-fns';
+import { format, formatISO, parse } from 'date-fns';
+
+import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 
 import {
-  getAuthorName,
-  getAuthorsString,
-} from '@/factories/authorFactory';
+  DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
+  METEO,
+  SNOW,
+} from '@/store/categoriesConsts';
 
 import globalMethods from '@/factories/globalMethods';
 
-import {
-  FOREST,
-  SNOW,
-  LAND,
-  HAZARD,
-  DIVERSITY,
-  METEO,
-} from '@/store/categoriesConsts';
-
 /**
- * Create a psyeudo random integer based on a given seed using the 'seedrandom' lib.
+ * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
  *
  * @param {Number} min
  * @param {Number} max
@@ -58,7 +55,6 @@ export function randomInt(min, max, seed = 'For the Horde!') {
  * @return {String} category based on tags array
  */
 export function guessTagCategory(tags) {
-
   if (!tags) {
     return LAND;
   }
@@ -67,7 +63,7 @@ export function guessTagCategory(tags) {
     const element = tags[i];
     const name = element.name;
 
-    switch (name) {
+    switch (true) {
       case name.includes('HAZARD'):
       case name.includes('ACCIDENTS'):
       case name.includes('FATALITIES'):
@@ -93,6 +89,7 @@ export function guessTagCategory(tags) {
 
 /**
  * @param {String} date expecting a format like 2017-08-15T15:25:45.175790
+ * @param {String} inputFormat, it's optional
  * @return {String} Returns a date string containing the date and hours:minutes:seconds
  */
 export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
@@ -101,7 +98,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
 
   if (date) {
     const split = date.split('T');
-    if (split.length > 0) {
+    if (split.length > 1) {
       const dateOnly = split[0];
       const parsedDate = parse(dateOnly, inputFormat, new Date(date));
       const newDate = format(parsedDate, 'd. MMM yyyy');
@@ -119,6 +116,15 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   }
 
   return formatedDate;
+}
+
+/**
+ * @returns {String} ISO Formated Date String from now
+ */
+export function getCurrentDate() {
+  const now = new Date();
+  const isoFormatted = formatISO(now);
+  return formatDate(isoFormatted);
 }
 
 export function createLicense(dataset) {
@@ -141,20 +147,27 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   let { maintainer } = dataset;
 
   if (typeof dataset.maintainer === 'string') {
-    maintainer = JSON.parse(dataset.maintainer);
+    try {
+      maintainer = JSON.parse(dataset.maintainer);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(`Maintainer json parse err: ${e}`);
+    }
   }
 
-  let contactEmail = dataset.maintainer_email;
-  if (!dataset.maintainer_email && maintainer) {
-    contactEmail = maintainer.email ? maintainer.email : '';
-  }
+  const contactEmail = maintainer?.email || '';
 
   const license = createLicense(dataset);
 
   let authors = null;
 
   if (typeof dataset.author === 'string') {
-    authors = JSON.parse(dataset.author);
+    try {
+      authors = JSON.parse(dataset.author);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(`Author json parse err: ${e}`);
+    }
   }
 
   return {
@@ -168,6 +181,9 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     maxTags: smallScreen ? 5 : 12,
     authors,
     authorDeadInfo,
+    categoryColor: dataset.categoryColor,
+    organization: dataset.organization?.name || '',
+    organizationTooltip: dataset.organization?.title || '',
   };
 }
 
@@ -195,6 +211,17 @@ export function createPublications(dataset) {
   };
 }
 
+export function createRelatedDatasets(dataset) {
+  if (!dataset) {
+    return null;
+  }
+
+  return {
+    text: dataset.related_datasets,
+    maxTextLength: 500,
+  };
+}
+
 export function createFunding(dataset) {
   if (!dataset) {
     return null;
@@ -202,10 +229,23 @@ export function createFunding(dataset) {
 
   if (typeof dataset.funding === 'string') {
     try {
-      const funding = JSON.parse(dataset.funding);
+      const fundingArray = JSON.parse(dataset.funding);
+
+      const funding = [];
+
+      for (let i = 0; i < fundingArray.length; i++) {
+        const fund = fundingArray[i];
+        funding.push({
+          institution: fund.institution,
+          grantNumber: fund.grant_number,
+          institutionUrl: fund.institution_url,
+        });
+      }
+
       return funding;
     } catch (e) {
-      console.log(`Error JSON Parse of Funding: ${e}`);
+      // eslint-disable-next-line no-console
+      console.error(`Error JSON Parse of Funding: ${e}`);
     }
   }
 
@@ -254,6 +294,55 @@ export function createCitation(dataset) {
   };
 }
 
+export function createPublishingInfo(dataset) {
+  if (!dataset) {
+    return null;
+  }
+
+  let { publication } = dataset;
+
+  if (typeof publication === 'string') {
+    publication = JSON.parse(dataset.publication);
+  }
+
+  return {
+    publisher: publication.publisher,
+    publicationYear: publication.publication_year,
+    publicationState: dataset.publication_state,
+    doi: dataset.doi,
+  };
+}
+
+export function getFileFormat(file) {
+  let fileFormat = '';
+  let fileName = '';
+
+  if (typeof file === 'object' && !!file.format) {
+    // if the input is a resource object
+    fileName = file.format;
+  } else if (typeof file === 'object') {
+    fileName = file.name ? file.name : '';
+  } else if (typeof file === 'string') {
+    fileName = file;
+  }
+
+  const splits = fileName.split('.');
+  fileFormat = splits[splits.length - 1];
+  /*  const last = splits[splits.length - 1];
+
+  if (last?.length > 4) {
+    fileFormat = 'url';
+  } else {
+    fileFormat = last;
+  }
+*/
+
+  fileFormat = fileFormat.toLowerCase();
+
+  return fileFormat;
+}
+
+
 export function createResource(resource, datasetName) {
   if (!resource) {
     return null;
@@ -263,9 +352,11 @@ export function createResource(resource, datasetName) {
   let restrictedUsers;
   let restrictedObj = false;
 
-  if (resource.restricted && typeof resource.restricted === 'string'
-      && resource.restricted.length > 0) {
-
+  if (
+    resource.restricted
+    && typeof resource.restricted === 'string'
+    && resource.restricted.length > 0
+  ) {
     try {
       restrictedObj = JSON.parse(resource.restricted);
       isProtected = restrictedObj.level !== 'public';
@@ -278,7 +369,10 @@ export function createResource(resource, datasetName) {
 
   let resURL = resource.url;
 
-  if (isProtected || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)) {
+  if (
+    isProtected
+    || (typeof restrictedUsers === 'boolean' && restrictedUsers === true)
+  ) {
     const splits = resource.url.split('resource');
     if (splits && splits.length > 0) {
       resURL = splits[0];
@@ -295,6 +389,15 @@ export function createResource(resource, datasetName) {
 
   const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
+  let fileName = resource.name;
+
+  if (!fileName && resURL) {
+    const urlSplits = resURL.split('/');
+    if (urlSplits.length > 0) {
+      fileName = urlSplits[urlSplits.length - 1];
+    }
+  }
+
   return {
     // "hash": "",
     description: resource.description,
@@ -307,7 +410,7 @@ export function createResource(resource, datasetName) {
     mimetype: resource.mimetype ? resource.mimetype : '',
     cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
-    name: resource.name,
+    name: fileName,
     url: resURL,
     restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
@@ -319,7 +422,6 @@ export function createResource(resource, datasetName) {
     revisionId: resource.revision_id ? resource.revision_id : '',
     isProtected,
   };
-
 }
 
 export function createResources(dataset) {
@@ -331,7 +433,7 @@ export function createResources(dataset) {
 
   let { maintainer } = dataset;
 
-  if (typeof (dataset.maintainer) === 'string') {
+  if (typeof dataset.maintainer === 'string') {
     maintainer = JSON.parse(dataset.maintainer);
   }
 
@@ -342,7 +444,6 @@ export function createResources(dataset) {
 
   if (dataset.resources) {
     dataset.resources.forEach((element) => {
-
       const res = createResource(element, dataset.name);
       res.metadataContact = contactEmail;
 
@@ -358,6 +459,51 @@ export function createResources(dataset) {
   };
 }
 
+export function getOrganizationMap(organizations) {
+  const mainOrgas = {};
+  const topLevel = [];
+
+  for (let i = 0; i < organizations.length; i++) {
+    const orga = organizations[i];
+    let orgasSublist = null;
+
+    if (orga?.groups?.length > 0) {
+      const main = orga.groups[0].name;
+      if (main && !mainOrgas[main]) {
+        mainOrgas[main] = [];
+      }
+
+      orgasSublist = mainOrgas[main];
+    }
+
+    if (orgasSublist && !orgasSublist.includes(orga)) {
+      orgasSublist.push(orga);
+    } else {
+      topLevel.push(orga);
+    }
+  }
+
+  for (let i = 0; i < topLevel.length; i++) {
+    const k = topLevel[i];
+    mainOrgas[k.name] = k;
+  }
+
+  return mainOrgas;
+}
+
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata.state || null;
+  const priv = metadata.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
+}
+
 export function createDetails(dataset) {
   if (!dataset) {
     return null;
@@ -365,69 +511,200 @@ export function createDetails(dataset) {
 
   const details = [];
 
-  details.push({ label: 'Title', text: dataset.title });
+  details.push({
+    label: 'Title',
+    text: dataset.title,
+  });
 
   const authors = getAuthorsString(dataset);
-  details.push({ label: 'Authors', text: authors });
+  details.push({
+    label: 'Authors',
+    text: authors,
+  });
 
   // TODO DataCRedit
 
-  details.push({ label: 'DOI', text: dataset.doi, url: `https://doi.org/${dataset.doi}` });
-
+  details.push({
+    label: 'DOI',
+    text: dataset.doi,
+    url: `https://doi.org/${dataset.doi}`,
+  });
 
   const created = formatDate(dataset.metadata_created);
-  details.push({ label: 'Created', text: created });
+  details.push({
+    label: 'Created',
+    text: created,
+  });
 
   const modified = formatDate(dataset.metadata_modified);
-  details.push({ label: 'Last Modified', text: modified });
+  details.push({
+    label: 'Last Modified',
+    text: modified,
+  });
 
   const license = createLicense(dataset);
-  details.push({ label: 'License', text: license.title, url: license.url });
+  details.push({
+    label: 'License',
+    text: license.title,
+    url: license.url,
+  });
 
-  details.push({ label: 'MetadataId', text: dataset.id });
+  details.push({
+    label: 'MetadataId',
+    text: dataset.id,
+  });
 
   if (dataset.swissFL_type) {
-    details.push({ label: 'swissFL_type', text: dataset.swissFL_type });
+    details.push({
+      label: 'swissFL_type',
+      text: dataset.swissFL_type,
+    });
   }
 
   return details;
 }
 
-function getPolygonPointArray(coordinates) {
-  const points = [];
-
-  for (let i = 0; i < coordinates.length; i++) {
-    const pointElement = coordinates[i];
-    const pointObject = [];
-
-    for (let j = 0; j < pointElement.length; j++) {
-      const coord = pointElement[j];
-      pointObject.push([coord[1], coord[0]]);
-    }
-
-    points.push(pointObject);
-  }
-
-  return points;
-}
-
 function getMultiPointArray(coordinates) {
-  const points = [];
+  // Return a multipoint array with swapped point coordinates
+  const pointArray = [];
+  coordinates.forEach((coord) => {
+    const swappedCoord = [coord[1], coord[0]];
+    pointArray.push(swappedCoord);
+  });
 
-  for (let i = 0; i < coordinates.length; i++) {
-    const pointElement = coordinates[i];
-    const pointObject = [pointElement[1], pointElement[0]];
-    points.push(pointObject);
-  }
-
-  return points;
+  return pointArray;
 }
 
+function getPolygonPointArray(coordinates) {
+  // Return a polygon array with swapped point coordinates, accepts holes
+  const polygonArray = [];
+  coordinates.forEach((outerArray) => {
+    const pointArray = [];
+    outerArray.forEach((coord) => {
+      const swappedCoord = [coord[1], coord[0]];
+      pointArray.push(swappedCoord);
+    });
+    polygonArray.push(pointArray);
+  });
+
+  return polygonArray;
+}
+
+function getMultiPolygonPointArray(coordinates) {
+  // Return a multipolygon array with swapped point coordinates, accepts holes
+  const multiPolyArray = [];
+  coordinates.forEach((polygon) => {
+    const polygonArray = [];
+    polygon.forEach((outerArray) => {
+      const pointArray = [];
+      outerArray.forEach((coord) => {
+        const swappedCoord = [coord[1], coord[0]];
+        pointArray.push(swappedCoord);
+      });
+      polygonArray.push(pointArray);
+    });
+    multiPolyArray.push(polygonArray);
+  });
+
+  return multiPolyArray;
+}
+
+/**
+ * Extract each geometry individually from a multipoint or multipolygon
+ *
+ * @param {Object} multiGeom valid MultiPoint or MultiPolygon GeoJSON
+ * @returns {Array} array of single GeoJSON geometries (Point or Polygon)
+ */
+function extractGeomsFromMultiGeoms(multiGeom) {
+
+  let geomType = '';
+  if (multiGeom.isMultiPoint) {
+    geomType = 'Point';
+  } else if (multiGeom.isMultiPolygon) {
+    geomType = 'Polygon';
+  }
+
+  const geomArray = [];
+  multiGeom.geoJSON.coordinates.forEach((geomCoords) => {
+    const formattedGeom = {
+      type: geomType,
+      coordinates: geomCoords,
+    };
+    geomArray.push(formattedGeom);
+  });
+
+  return geomArray;
+}
+
+export const LOCATION_TYPE_POINT = 'Point';
+export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
+export const LOCATION_TYPE_POLYGON = 'Polygon';
+export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
+export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
+export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+
+/**
+ * Extract an array of coordinate arrays with swapped point coordinates for each geom
+ *
+ * @param {Array} geometries array of GeoJSON objects from GeometryCollection (.geometries)
+ * @returns {Array} array of geometry arrays, with swapped coordinates
+ */
+function getGeomCollectionPointArray(geometries) {
+  // Return an array of coordinate arrays with swapped point coordinates for each geom
+
+  let pointArray = [];
+  const geomCollectionArray = [];
+
+  geometries.forEach((geometry) => {
+    if (geometry.type === LOCATION_TYPE_POINT) {
+      pointArray = [geometry.coordinates[1], geometry.coordinates[0]];
+    } else if (geometry.type === LOCATION_TYPE_POLYGON) {
+      pointArray = getPolygonPointArray(geometry.coordinates);
+    } else if (geometry.type === LOCATION_TYPE_MULTIPOINT) {
+      pointArray = getMultiPointArray(geometry.coordinates);
+    } else if (geometry.type === LOCATION_TYPE_MULTIPOLYGON) {
+      pointArray = getMultiPolygonPointArray(geometry.coordinates);
+    }
+    geomCollectionArray.push(pointArray);
+  });
+
+  return geomCollectionArray;
+}
+
+/**
+ * Parse geometries into GeometryCollection GeoJSON format
+ *
+ * @export
+ * @param {Array} geomArray array of valid GeoJSON geometries
+ * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
+ * @returns {Object} GeoJSON of GeometryCollection type
+ */
+export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
+
+  if (!geomArray) {
+    return null;
+  }
+
+  return {
+    type: 'GeometryCollection',
+    geometries: geomArray,
+    properties: propertiesObj,
+  };
+}
+
+/**
+ * Create location object containing geometries for geospatial components
+ *
+ * @export
+ * @param {Object} dataset CKAN metadata entry object
+ * @returns {Object} extracted and transformed spatial field prop for geospatial components
+ */
 export function createLocation(dataset) {
   if (!dataset) {
     return null;
   }
 
+  // If already GeoJSON return, else WKT
   if (typeof dataset.location === 'object') {
     return dataset.location;
   }
@@ -442,24 +719,56 @@ export function createLocation(dataset) {
     location.geoJSON = dataset.spatial;
 
     // parseJSON because the geoJOSN from CKAN might be invalid!
-    const spatialJSON = JSON.parse(dataset.spatial);
+
+    let spatialJSON = dataset.spatial;
+
+    if (typeof dataset.spatial === 'string') {
+      try {
+        spatialJSON = JSON.parse(dataset.spatial);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(`MetaDataFactory: geojson parsing error ${error}`);
+      }
+    }
 
     if (spatialJSON) {
-      location.isPolygon = spatialJSON.type === 'Polygon';
-      location.isPoint = spatialJSON.type === 'Point';
-      location.isMultiPoint = spatialJSON.type === 'MultiPoint';
+      location.geoJSON = spatialJSON;
+      location.isPolygon = spatialJSON.type === LOCATION_TYPE_POLYGON;
+      location.isPoint = spatialJSON.type === LOCATION_TYPE_POINT;
+      location.isMultiPoint = spatialJSON.type === LOCATION_TYPE_MULTIPOINT;
+      location.isMultiPolygon = spatialJSON.type === LOCATION_TYPE_MULTIPOLYGON;
+      location.isGeomCollection = spatialJSON.type === LOCATION_TYPE_GEOMCOLLECTION;
 
       // Swap lngLat to latLng because the geoJOSN from CKAN might be invalid!
 
+      let geomCollection = [spatialJSON];
+
       if (location.isPoint) {
         // swap coords for the leaflet map
-        location.pointArray = [spatialJSON.coordinates[1], spatialJSON.coordinates[0]];
+        location.pointArray = [
+          spatialJSON.coordinates[1],
+          spatialJSON.coordinates[0],
+        ];
+
       } else if (location.isPolygon) {
         location.pointArray = getPolygonPointArray(spatialJSON.coordinates);
 
       } else if (location.isMultiPoint) {
         location.pointArray = getMultiPointArray(spatialJSON.coordinates);
+        geomCollection = extractGeomsFromMultiGeoms(location);
+
+      } else if (location.isMultiPolygon) {
+        location.pointArray = getMultiPolygonPointArray(spatialJSON.coordinates);
+        geomCollection = extractGeomsFromMultiGeoms(location);
+
+      } else if (location.isGeomCollection) {
+        location.pointArray = getGeomCollectionPointArray(spatialJSON.geometries);
+        geomCollection = spatialJSON.geometries;
+
       }
+
+      location.geomCollection = parseAsGeomCollection(geomCollection, location.name);
+
     }
   }
 
@@ -470,7 +779,10 @@ export function convertTags(tagsStringArray, tagsEnabled) {
   const tagObjs = [];
 
   tagsStringArray.forEach((element) => {
-    tagObjs.push({ name: element, enabled: tagsEnabled });
+    tagObjs.push({
+      name: element,
+      enabled: tagsEnabled,
+    });
   });
 
   return tagObjs;
@@ -486,7 +798,6 @@ export function getCategoryColor(categoryCards, categoryName) {
 
   return null;
 }
-
 
 export function getTagColor(categoryCards, tagName) {
   if (!categoryCards || !tagName) {
@@ -520,10 +831,15 @@ export function enhanceTags(dataset, categoryCards) {
   return dataset;
 }
 
+let lastCategory = '';
+let tempImgKeys = [];
+let tempImgValues = [];
+
 /**
  * @param {Object} metadata
- * @param {Array} cardBGImages
+ * @param {Object<String, String>} cardBGImages, it's an object of key value pairs paths to images
  *
+ * @param {Array<Object>} categoryCards
  * @return {Object} metadata entry enhanced with a title image based on its tags
  */
 export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
@@ -535,12 +851,17 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
   const category = guessTagCategory(metadata.tags);
 
   if (cardBGImages) {
-    const categoryImgs = cardBGImages[category];
-    const max = Object.keys(categoryImgs).length - 1;
-    const randomIndex = randomInt(0, max, metadata.title);
-    const cardImg = randomIndex >= 0 ? Object.values(categoryImgs)[randomIndex] : 0;
+    if (category !== lastCategory) {
+      const categoryImages = cardBGImages[category];
+      tempImgKeys = Object.keys(categoryImages);
+      tempImgValues = Object.values(categoryImages);
+      lastCategory = category;
+    }
 
-    metadata.titleImg = cardImg;
+    const max = tempImgKeys.length - 1;
+    const randomIndex = randomInt(0, max, metadata.title);
+
+    metadata.titleImg = randomIndex >= 0 ? tempImgValues[randomIndex] : 0;
   }
 
   metadata.categoryColor = getCategoryColor(categoryCards, category);
@@ -554,7 +875,11 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
-export function enhanceMetadataEntry(metadataEntry, cardBGImages, categoryCards) {
+export function enhanceMetadataEntry(
+  metadataEntry,
+  cardBGImages,
+  categoryCards,
+) {
   if (!metadataEntry || !cardBGImages || !categoryCards) {
     return null;
   }
@@ -570,6 +895,7 @@ export function enhanceMetadataEntry(metadataEntry, cardBGImages, categoryCards)
  * @param {Array} metadatas
  * @param {Array} cardBGImages
  *
+ * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
@@ -588,6 +914,14 @@ export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
   }
 
   return metadatas;
+}
+
+export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
+  if (sort === 'ASC') {
+    return arrOfObjects.sort((a, b) => (a[sortProperty].toUpperCase() > b[sortProperty].toUpperCase() ? 1 : -1));
+  }
+
+  return arrOfObjects.sort((a, b) => (b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1));
 }
 
 

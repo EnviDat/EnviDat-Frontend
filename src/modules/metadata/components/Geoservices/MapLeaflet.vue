@@ -104,7 +104,7 @@ export default {
       }
       if (this.mapEditable) {
         const layerArray = this.map.pm.getGeomanLayers();
-        layerArray.forEach(layer => {
+        layerArray.forEach((layer) => {
           this.map.removeLayer(layer);
         });
       }
@@ -120,7 +120,7 @@ export default {
 
       if (geoJson.type === 'GeometryCollection') {
         // Split geometries from geometries list
-        geoJson.geometries.forEach(geometry => {
+        geoJson.geometries.forEach((geometry) => {
           geoJsonArray.push(geometry);
         });
 
@@ -160,7 +160,7 @@ export default {
       });
 
       if (isGcnet) {
-        this.siteLayer.eachLayer(layer => {
+        this.siteLayer.eachLayer((layer) => {
           layer.bindTooltip(
             `<div">
             <b>${layer.feature.properties.name}</b>
@@ -188,7 +188,7 @@ export default {
       // Editing event listeners on map layers
       if (this.mapEditable) {
         const allLayers = this.map.pm.getGeomanLayers();
-        allLayers.forEach(editableLayer => {
+        allLayers.forEach((editableLayer) => {
           editableLayer.on('pm:update', () => {
             this.triggerGeometryEditEvent();
           });
@@ -209,11 +209,11 @@ export default {
 
       while (start < this.layerConfig.layers.length) {
         const url = this.getFeatureInfoUrl(latlng, start, start + 50);
-        const promise = axios.get(url).then(res => {
+        const promise = axios.get(url).then((res) => {
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(res.data, 'text/xml');
           const layers = xmlDoc.getElementsByTagName('Layer');
-          layers.forEach(layer => {
+          layers.forEach((layer) => {
             featureinfo.push({
               name: layer.attributes.name.nodeValue,
               value: Number(layer.childNodes[1].attributes.value.nodeValue),
@@ -224,12 +224,10 @@ export default {
         start += 50;
       }
 
-      Promise.all(promises).then(() =>
-        this.$store.commit('addTimeSeries', {
+      Promise.all(promises).then(() => this.$store.commit('addTimeSeries', {
           values: featureinfo,
           coords: latlng,
-        }),
-      );
+        }));
     },
     getFeatureInfoUrl(latlng, start, stop) {
       // Construct a GetFeatureInfo request URL given a point
@@ -255,8 +253,8 @@ export default {
         j: point.y,
       };
       return (
-        this.layerConfig.baseURL +
-        L.Util.getParamString(params, this.layerConfig.baseURL, true)
+        this.layerConfig.baseURL
+        + L.Util.getParamString(params, this.layerConfig.baseURL, true)
       );
     },
     zoomIn(mapId) {
@@ -286,13 +284,6 @@ export default {
       if (this.isGcnet) {
         // Disable editing
         this.mapEditable = false;
-
-        // Reproject EPSG:5938
-        // var crs = L.Proj.CRS("EPSG:5938",{
-        //     origin: [-180,90],
-        //     scaleDenominators: [2000,1000,500,200,100,50,20,10],
-        // });
-        console.log('GCNET!');
       }
 
       this.map = new L.Map(this.$refs.map, {
@@ -310,8 +301,8 @@ export default {
       this.map.setMinZoom(
         Math.ceil(
           Math.log2(
-            Math.max(this.$refs.map.clientWidth, this.$refs.map.clientHeight) /
-              256,
+            Math.max(this.$refs.map.clientWidth, this.$refs.map.clientHeight)
+              / 256,
           ),
         ),
       );
@@ -368,8 +359,7 @@ export default {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer =
-        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -379,7 +369,7 @@ export default {
       const geoJSONArray = [];
 
       if (layerArray.length !== 0) {
-        layerArray.forEach(geometry => {
+        layerArray.forEach((geometry) => {
           const geoJSON = geometry.toGeoJSON();
           geoJSONArray.push(geoJSON.geometry);
         });
@@ -417,7 +407,7 @@ export default {
             className: 'rounded-circle green',
             iconSize: [20, 20],
           }),
-          opacity: 0.65,
+          opacity: 0.75,
           riseOnHover: true,
         },
         gcnetInactiveStyle: {
@@ -425,7 +415,7 @@ export default {
             className: 'rounded-circle red',
             iconSize: [20, 20],
           }),
-          opacity: 0.35,
+          opacity: 0.75,
           riseOnHover: true,
         },
         gcnetMissingStyle: {
@@ -433,7 +423,7 @@ export default {
             className: 'rounded-circle grey',
             iconSize: [20, 20],
           }),
-          opacity: 0.65,
+          opacity: 0.75,
           riseOnHover: true,
         },
       };
