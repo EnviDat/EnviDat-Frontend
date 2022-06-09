@@ -434,8 +434,8 @@ export default {
             })
           })
 
-          // Override location with stations FeatureCollection
-          const locationOverride = this.location;
+          // Override location with stations FeatureCollection, creating shallow copy
+          const locationOverride = {...this.location};
           locationOverride.geoJSON = featureCollection;
           this.setGeoServiceLayers(locationOverride, null, null);
 
