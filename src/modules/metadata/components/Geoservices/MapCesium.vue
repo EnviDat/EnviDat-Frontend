@@ -328,6 +328,7 @@ export default {
               text: entity.properties?.name,
               scale: 0.5,
               verticalOrigin: VerticalOrigin.TOP,
+              fillColor: Color.BLACK,
               // horizontalOrigin: HorizontalOrigin.LEFT,
               // pixelOffset: new Cartesian2(0.0, -40.0), // Show above ground?
             });

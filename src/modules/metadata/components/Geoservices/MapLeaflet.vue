@@ -286,13 +286,6 @@ export default {
       if (this.isGcnet) {
         // Disable editing
         this.mapEditable = false;
-
-        // Reproject EPSG:5938
-        // var crs = L.Proj.CRS("EPSG:5938",{
-        //     origin: [-180,90],
-        //     scaleDenominators: [2000,1000,500,200,100,50,20,10],
-        // });
-        console.log('GCNET!');
       }
 
       this.map = new L.Map(this.$refs.map, {
@@ -417,7 +410,7 @@ export default {
             className: 'rounded-circle green',
             iconSize: [20, 20],
           }),
-          opacity: 0.65,
+          opacity: 0.75,
           riseOnHover: true,
         },
         gcnetInactiveStyle: {
@@ -425,7 +418,7 @@ export default {
             className: 'rounded-circle red',
             iconSize: [20, 20],
           }),
-          opacity: 0.35,
+          opacity: 0.75,
           riseOnHover: true,
         },
         gcnetMissingStyle: {
@@ -433,7 +426,7 @@ export default {
             className: 'rounded-circle grey',
             iconSize: [20, 20],
           }),
-          opacity: 0.65,
+          opacity: 0.75,
           riseOnHover: true,
         },
       };
