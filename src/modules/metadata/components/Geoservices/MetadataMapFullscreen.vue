@@ -17,6 +17,7 @@
               @changeLayer="setLayer"
               :site="site"
               :mapHeight="mapHeight"
+              :isGcnet="isGcnet"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
 
@@ -56,6 +57,10 @@
       site: Object,
       layerConfig: Object,
       mapHeight: Number,
+      isGcnet: {
+        type: Boolean,
+        default: false,
+      },
     },
     mounted() {
       // Wait for dialog transition to complete

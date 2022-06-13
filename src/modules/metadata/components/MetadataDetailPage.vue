@@ -74,6 +74,7 @@
       <component :is="fullScreenComponent"
                   :site="currentSite"
                   :layerConfig="currentLayerConfig"
+                  :isGcnet="hasGcnetStationConfig"
       />
 
 <!--
@@ -433,7 +434,7 @@ export default {
               },
             });
           });
-          
+
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
           locationOverride.geoJSON = featureCollection;
