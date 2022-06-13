@@ -1,95 +1,137 @@
 <template>
-  <v-card>
-    <v-card-title class="title metadata_title">Location Geoservices</v-card-title>
+  <v-card id="MetadataGeo">
+    <v-card-title>
+      <v-row justify="end" align="center" no-gutters>
+        <v-col class="text-h6 metadataComponentTitle grow" align-self="start">
+          {{ METADATA_LOCATION_TITLE }}
+        </v-col>
 
-    <v-card-text v-if="configFile" style="width: 100%; height: 500px; position: relative;">
-      <Map :config="configFile" :map-div-id="'map-small'">
-        <v-btn fab small color="primary" @click.native.stop="openFullscreen">
-          <v-icon medium style="height:auto;">fullscreen</v-icon>
-        </v-btn>
-      </Map>
+        <v-col class="shrink pl-2">
+          <BaseIconButton v-if="showFullscreenButton"
+                          materialIconName="zoom_out_map"
+                          iconColor="black"
+                          :fillColor="$vuetify.theme.themes.light.accent"
+                          @clicked="triggerFullscreen"
+                        />
+        </v-col>
+      </v-row>
+    </v-card-title>
+
+    <v-card-text v-if="error"
+                  class="py-1 text-caption readableText"
+                  :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`" >
+      {{ error }}
     </v-card-text>
+
+    <v-card-text style="position: relative">
+      <Map
+        :layer-config="layerConfig"
+        :mapDivId="mapDivId"
+        :selectedLayerName="selectedLayerName"
+        @changeLayer="selectLayer"
+        :site="site"
+        :mapHeight="mapHeight"
+        :mapEditable="mapEditable"
+        :isGcnet="isGcnet"
+      />
+    </v-card-text>
+
+    <v-row v-if="editErrorMessage"
+           justify="end"
+           align="center"
+           no-gutters>
+
+      <v-card-text
+        class="text-caption readableText"
+        align="center"
+        :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`"
+      >
+        {{ editErrorMessage }}
+      </v-card-text>
+    </v-row>
 
   </v-card>
 </template>
 
 <script>
-  import axios from 'axios';
-  import Map from './Map';
+import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
-  export default {
-    name: 'MetadataGeo',
-    components: { Map },
-    props: {
-      genericProps: Object,
-    },
-    data: () => ({
-      map: null,
-      mapLayer: null,
-      configFile: null,
-      selectedLayer: null,
-      smallSize: 300,
-      mediumSize: 500,
-      largeSize: 725,
-      fullWidthSize: 875,
-    }),
-    computed: {
-      ready() {
-        return !!this.genericProps.config;
-      },
-      title() {
-        return this.mixinMethods_getGenericProp('title');
-      },
-      mapSize() {
-        let height = this.mediumSize;
+import {
+  INJECT_MAP_FULLSCREEN,
+  eventBus,
+} from '@/factories/eventBus';
 
-        if (this.$vuetify.breakpoint.xsOnly) {
-          height = this.smallSize;
-        } else if (this.$vuetify.breakpoint.smAndDown) {
-          height = this.smallSize;
-        }
-        return {
-          style: `max-width: 100%;
-                  height: ${height}px !important;`,
-        };
-      },
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+
+import Map from './Map';
+
+export default {
+  name: 'MetadataGeo',
+  components: {
+    Map,
+    BaseIconButton,
+  },
+  props: {
+    genericProps: Object,
+    editErrorMessage: String,
+  },
+  computed: {
+    error() {
+      return this.genericProps?.error;
     },
-    watch: {
-      ready: {
-        handler() {
-          if (this.genericProps.config) {
-            this.loadConfig();
-          }
-        },
-        immediate: true,
-      },
+    site() {
+      return this.genericProps?.site;
     },
-    methods: {
-      openFullscreen() {
-        this.$router.push({ path: '/metadata/dataset-for-testing-geoservices/map' });
-      },
-      loadConfig() {
-        const url = this.genericProps.config.url;
-        axios.get(url)
-          .then((res) => {
-            this.configFile = res.data;
-            this.selectedLayer = this.configFile.layers.find(layer => layer.visibility).name;
-            return 'Success';
-          });
-      },
+    layerConfig() {
+      return this.genericProps?.layerConfig;
     },
-  };
+    isGcnet() {
+      return this.genericProps?.isGcnet;
+    },
+    mapHeight() {
+      return this.genericProps?.mapHeight;
+    },
+    mapEditable() {
+      return this.genericProps?.mapEditable;
+    },
+    mapDivId() {
+      return this.genericProps?.mapDivId;
+    },
+    showFullscreenButton() {
+      return this.genericProps?.showFullscreenButton;
+    },
+  },
+  methods: {
+    triggerFullscreen() {
+      eventBus.$emit(INJECT_MAP_FULLSCREEN, { site: this.site, layerConfig: this.layerConfig });
+    },
+    selectLayer(layerName) {
+      this.selectedLayerName = layerName;
+    },
+  },
+  data: () => ({
+    ready: false,
+    map: null,
+    smallSize: 300,
+    mediumSize: 500,
+    largeSize: 725,
+    fullWidthSize: 875,
+    fullscreen: false,
+    METADATA_LOCATION_TITLE,
+    selectedLayerName: '',
+  }),
+};
 </script>
-<style scoped>
-  .layers {
-    position: absolute;
-    top: 70px;
-    right: 5px;
-    padding: 3px;
-    z-index: 9999;
-  }
 
-  .selected {
-    background-color: cadetblue;
-  }
+<style scoped>
+.layers {
+  position: absolute;
+  top: 70px;
+  right: 5px;
+  padding: 3px;
+  z-index: 9999;
+}
+.selected {
+  background-color: cadetblue;
+}
 </style>
