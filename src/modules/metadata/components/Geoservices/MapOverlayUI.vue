@@ -39,14 +39,16 @@
       <v-col class="ml-auto" >
 
         <v-row no-gutters >
+<!--
           <v-col v-if="showMapSplitButton"
                   class="shrink" >
-                <!-- style="position: absolute; top: 0; left: 45%;" -->
+                &lt;!&ndash; style="position: absolute; top: 0; left: 45%;" &ndash;&gt;
             <BaseIconButton materialIconName="vertical_split"
                             iconColor="black"
                             :fillColor="$vuetify.theme.themes.light.accent"
                             @clicked="triggerSplit" />
           </v-col>
+          -->
 
           <v-col v-if="showMapSplitCloseButton"
                   class="shrink" >
