@@ -2,7 +2,7 @@
 
   <v-container id="MetadataMapFullscreen"
                v-if="ready"
-                style="position: relative;"
+                style="position: relative; height: 89vh;"
                 fluid
                 class="fill-height">
 
@@ -22,7 +22,7 @@
 
       </v-col>
 
-      <v-col v-if="mapCompareActive" 
+      <v-col v-if="mapCompareActive"
               cols="6">
         <Map :layer-config="layerConfig"
               :mapDivId="mapId2"
@@ -71,7 +71,7 @@
       if (this.map) {
         this.map.remove();
       }
-    },    
+    },
     computed: {
     },
     methods: {
