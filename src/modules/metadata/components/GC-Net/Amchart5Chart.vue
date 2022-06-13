@@ -13,14 +13,18 @@
       </div>
 
       <div v-if="jsonDataAvailable">
-        <div class="chart" :id="jsonChartDivID" >
-          {{this.jsonDataYAxisName}}
+        <div class="chart"
+             :id="jsonChartDivID" >
+          {{ jsonDataYAxisName }}
         </div>
       </div>
 
-      <div v-if="csvDataAvailable">
-        <div class="chart" v-for="yAxis in csvDataYAxesArray" :id=yAxis :key="yAxis">
-          {{yAxis}}
+      <div v-if="csvDataAvailable" >
+        <div class="chart my-4"
+             v-for="yAxis in csvDataYAxesArray"
+             :id=yAxis
+             :key="yAxis">
+          {{ yAxis }}
         </div>
       </div>
 
