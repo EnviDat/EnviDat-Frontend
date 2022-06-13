@@ -18,6 +18,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.2.7",
     "@geoman-io/leaflet-geoman-free": "^2.11.2",
     "@turf/turf": "^5.1.6",
     "amcharts3": "^3.21.15",
