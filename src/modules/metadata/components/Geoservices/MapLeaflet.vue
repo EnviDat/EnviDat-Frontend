@@ -310,9 +310,11 @@ export default {
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
+/*
       if (this.layerConfig && this.layerConfig.timeseries) {
         this.map.on('click', e => this.getFeatureInfo(e.latlng));
       }
+*/
 
       this.addSiteIfAvailable();
     },

@@ -156,8 +156,9 @@ export default {
       return this.$store.state.geoservices.timeseries;
     },
     selectedLayer() {
-      // return null;
+      return null;
 
+/*
       if (!this.layerConfig || !this.selectedLayerName) {
         return null;
       }
@@ -167,6 +168,7 @@ export default {
       layer.baseURL = this.layerConfig.baseURL;
       layer.bbox = this.layerConfig.bbox;
       return layer;
+*/
     },
   },
   methods: {
