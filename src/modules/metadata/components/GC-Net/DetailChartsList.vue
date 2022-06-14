@@ -235,7 +235,7 @@ export default {
       }
     },
     downloadData() {
-      const downloadURL = `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
+      const downloadURL = this.currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
       window.open(downloadURL, '_blank');
     },
     referenceExists(paramName) {
