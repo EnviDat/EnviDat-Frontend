@@ -1,342 +1,2841 @@
 [
-	{
-		"id": 0,
-		"name": "Swiss Camp 10m",
-		"latitude": "69.56833",
-		"longitude": "-49.31582",
-		"elevation": 1176,
-		"startdate": "1990.4",
-		"active": true,
-		"alias": "swisscamp10m",
-		"aliasApi": "swisscamp_10m_tower",
-		"data": 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp_10m_tower/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/0temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/00-Swiss Camp 10m.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp10m.jpg"
-		}
-	},
-	{
-		"id": 1,
-		"name": "Swiss Camp",
-		"latitude": "69.56833",
-		"longitude": "-49.31582",
-		"elevation": 1176,
-		"startdate": "1990.30",
-		"active": true,
-		"alias": "swisscamp",
-		"aliasApi": "swisscamp",
-		"data": 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/1temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/01-Swiss Camp.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg"
-		}
-	},
-	{
-		"id" : 2,
-		"name" : "Crawford Point",
-		"latitude" : "69.87975",
-		"longitude" : "-46.98667",
-		"elevation" : 2022,
-		"startdate" : "1995.39",
-		"active" : false,
-		"alias" : "crawfordpoint",
-		"aliasApi": "crawfordpoint",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/crawfordpoint/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/2temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/02-Crawford Point 1.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/crawfordpoint.jpg"
-		}
-	},
-	{
-		"id" : 3,
-		"name" : "NASA-U",
-		"latitude" : "73.84189",
-		"longitude" : "-49.49831",
-		"elevation" : 2369,
-		"startdate" : "1995.41",
-		"active" : true,
-		"alias" : "nasau",
-		"aliasApi": "nasa_u",
-		"data" : 0,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_u/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/3temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/03-NASA-U.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg"
-		}
-	},
-	{
-		"id" : 4,
-		"name" : "GITS",
-		"latitude" : "77.13781",
-		"longitude" : "-61.04113",
-		"elevation" : 1887,
-		"startdate" : "1995.43",
-		"active" : false,
-		"alias" : "gits",
-		"aliasApi": "gits",
-		"data" : 0,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/gits/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/4temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/04-GITS.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg"
-		}
-	},
-	{
-		"id" : 5,
-		"name" : "Humboldt",
-		"latitude" : "78.5266",
-		"longitude" : "-56.8305",
-		"elevation" : 1995,
-		"startdate" : "1995.47",
-		"active" : false,
-		"alias" : "humboldt",
-		"aliasApi": "humboldt",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/humboldt/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/5temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/05-Humboldt.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/humboldt.jpg"
-		}
-	},
-	{
-		"id" : 6,
-		"name" : "Summit Station",
-		"latitude" : "72.57972",
-		"longitude" : "-38.50454",
-		"elevation" : 3199,
-		"startdate" : "1996.37 ",
-		"active" : true,
-		"alias" : "summitstation",
-		"aliasApi": "summit",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/summit/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/6temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/06-Summit.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/summitstation.jpg"
-		}
-	},
-	{
-		"id" : 7,
-		"name" : "TUNU-N",
-		"latitude" : "78.01677",
-		"longitude" : "-33.99387",
-		"elevation" : 2113,
-		"startdate" : "1996.38",
-		"active" : true,
-		"alias" : "tununorth",
-		"aliasApi": "tunu_n",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/tunu_n/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/7temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/07-Tunu-N.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/tununorth.jpg"
-		}
-	},
-	{
-		"id" : 8,
-		"name" : "DYE-2",
-		"latitude" : "66.48001",
-		"longitude" : "-46.27889",
-		"elevation" : 2165,
-		"startdate" : "1996.40",
-		"active" : true,
-		"alias" : "dyeii",
-		"aliasApi": "dye2",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/dye2/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/8temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/08-DYE2.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/dyeii.jpg"
-		}
-	},
-	{
-		"id" : 9,
-		"name" : "JAR 1",
-		"latitude" : "69.498358",
-		"longitude" : "-49.68156",
-		"elevation" : 932,
-		"startdate" : "1996.47",
-		"active" : null,
-		"alias" : "jar1",
-		"aliasApi": "jar1",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/jar1/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/9temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/09-JAR1.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/jar1.jpg"
-		}
-	},
-	{
-		"id" : 10,
-		"name" : "Saddle",
-		"latitude" : "65.99947",
-		"longitude" : "-44.50016",
-		"elevation" : 2467,
-		"startdate" : "1997.30",
-		"active" : false,
-		"alias" : "saddle",
-		"aliasApi": "saddle",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/saddle/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/10temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/10-Saddle.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/saddle.jpg"
-		}
-	},
-	{
-		"id" : 11,
-		"name" : "South Dome",
-		"latitude" : "63.1488",
-		"longitude" : "-44.81717",
-		"elevation" : 2922,
-		"startdate" : "1997.31",
-		"active" : true,
-		"alias" : "southdome",
-		"aliasApi": "southdome",
-		"data" : 0,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/southdome/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/11temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/11-South Dome.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/southdome.jpg"
-		}
-	},
-	{
-		"id" : 12,
-		"name" : "NASA-E",
-		"latitude" : "75.00000",
-		"longitude" : "-29.99972",
-		"elevation" : 2631,
-		"startdate" : "1997.34",
-		"active" : true,
-		"alias" : "nasaeast",
-		"aliasApi": "nasa_east",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_east/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/12temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/12-NASA-E.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasaeast.jpg"
-		}
-	},
-	{
-		"id" : 15,
-		"name" : "NASA-SE",
-		"latitude" : "66.4797",
-		"longitude" : "-42.5002",
-		"elevation" : 2425,
-		"startdate" : "1998.30",
-		"active" : false,
-		"alias" : "nasasoutheast",
-		"aliasApi": "nasa_southeast",
-		"data" : 0,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_southeast/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/15temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/15-NASA-SE.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasasoutheast.jpg"
-		}
-	},
-	{
-		"id" : 22,
-		"name" : "Peterman ELA",
-		"latitude" : "80.09694444",
-		"longitude" : "-58.13166667",
-		"elevation" : 924,
-		"startdate" : "2003.40",
-		"active" : false,
-		"alias" : "petermann",
-		"aliasApi": "petermann",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/petermann/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/22temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/22-Petermann ELA.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/petermann.jpg"
-		}
-	},
-	{
-		"id" : 23,
-		"name" : "NEEM",
-		"latitude" : "77.50222222",
-		"longitude" : "-50.87444444",
-		"elevation" : 2454,
-		"startdate" : "2006",
-		"active" : true,
-		"alias" : "neem",
-		"aliasApi": "neem",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/neem/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/23temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/23-NEEM.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/neem.jpg"
-		}
-	},
-	{
-		"id" : 24,
-		"name" : "East Grip",
-		"latitude" : "75.59333333",
-		"longitude" : "-35.98861111",
-		"elevation" : 2600,
-		"startdate" : "2014",
-		"active" : true,
-		"alias" : "eastgrip",
-		"aliasApi": "east_grip",
-		"data" : 1,
-		"envidatConfig": {
-			"apiUrl": "https://www.envidat.ch/data-api/gcnet/json/east_grip/airtemp1/",
-			"graphParameter": "airtemp1",
-			"fallbackUrl": "https://www.envidat.ch/data-files/24temp.json",
-			"fallbackParameter": "airtemp1",
-			"downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/24-E-GRIP.csv",
-			"previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/eastgrip.jpg"
-		}
-	}
+  {
+    "id": 0,
+    "name": "Swiss Camp 10m",
+    "latitude": "69.56833",
+    "longitude": "-49.31582",
+    "elevation": 1176,
+    "startdate": "1990.4",
+    "active": true,
+    "alias": "swisscamp10m",
+    "aliasApi": "swisscamp_10m_tower",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp_10m_tower/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/0temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/00-Swiss Camp 10m.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp10m.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-01-06T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-01-06T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-01-06T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-01-06T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2020-11-04T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2020-11-04T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-06-23T19:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2020-11-04T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2021-06-23T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2020-11-04T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2020-11-03T21:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2014-05-09T21:00:00Z",
+          "timestamp_iso_latest": "2022-01-23T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "name": "Swiss Camp",
+    "latitude": "69.56833",
+    "longitude": "-49.31582",
+    "elevation": 1176,
+    "startdate": "1990.30",
+    "active": true,
+    "alias": "swisscamp",
+    "aliasApi": "swisscamp",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/swisscamp/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/1temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/01-Swiss Camp.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2002-01-25T20:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2002-01-25T20:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2002-01-25T20:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2002-01-25T20:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2002-01-25T20:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1995-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1995-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2021-07-25T09:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1995-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1995-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-07T19:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-06-16T17:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1997-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1996-06-23T01:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1995-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2019-05-04T18:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1996-06-16T18:00:00Z",
+          "timestamp_iso_latest": "2021-07-15T20:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2003-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2021-08-05T14:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "name": "Crawford Point",
+    "latitude": "69.87975",
+    "longitude": "-46.98667",
+    "elevation": 2022,
+    "startdate": "1995.39",
+    "active": false,
+    "alias": "crawfordpoint",
+    "aliasApi": "crawfordpoint",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/crawfordpoint/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/2temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/02-Crawford Point 1.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/crawfordpoint.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T15:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-05-20T17:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-20T17:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2001-12-31T14:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1995-05-23T12:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1995-05-23T10:00:00Z",
+          "timestamp_iso_latest": "2017-07-19T03:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1998-05-31T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2010-05-09T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-11T16:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "NASA-U",
+    "latitude": "73.84189",
+    "longitude": "-49.49831",
+    "elevation": 2369,
+    "startdate": "1995.41",
+    "active": true,
+    "alias": "nasau",
+    "aliasApi": "nasa_u",
+    "data": 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_u/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/3temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/03-NASA-U.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1995-05-27T02:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1997-05-19T23:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1997-05-19T23:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2003-06-02T15:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2011-05-31T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1995-05-31T02:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1998-05-12T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "1995-05-27T01:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "GITS",
+    "latitude": "77.13781",
+    "longitude": "-61.04113",
+    "elevation": 1887,
+    "startdate": "1995.43",
+    "active": false,
+    "alias": "gits",
+    "aliasApi": "gits",
+    "data": 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/gits/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/4temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/04-GITS.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-11T22:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-11T22:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2011-02-10T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-20T17:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2010-05-22T21:00:00Z",
+          "timestamp_iso_latest": "2014-05-21T12:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-05-04T08:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-09T05:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-12T17:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-04T08:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-12T17:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-07T14:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1995-06-07T14:00:00Z",
+          "timestamp_iso_latest": "2020-08-20T17:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1995-06-07T14:00:00Z",
+          "timestamp_iso_latest": "2021-07-01T15:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2012-05-24T14:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2021-08-11T20:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2010-05-08T06:00:00Z",
+          "timestamp_iso_latest": "2012-05-24T14:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-05-04T08:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1995-06-07T14:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1996-05-01T01:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2019-05-20T17:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1995-06-07T13:00:00Z",
+          "timestamp_iso_latest": "2019-05-17T18:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1996-05-07T16:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T11:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2011-01-14T04:00:00Z",
+          "timestamp_iso_latest": "2012-05-17T05:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "Humboldt",
+    "latitude": "78.5266",
+    "longitude": "-56.8305",
+    "elevation": 1995,
+    "startdate": "1995.47",
+    "active": false,
+    "alias": "humboldt",
+    "aliasApi": "humboldt",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/humboldt/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/5temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/05-Humboldt.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/humboldt.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2019-05-21T12:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2014-05-20T13:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-07-01T01:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-09T15:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2012-05-24T13:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-05-09T15:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2018-11-29T21:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1995-06-22T02:00:00Z",
+          "timestamp_iso_latest": "2018-12-01T19:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2002-03-14T14:00:00Z",
+          "timestamp_iso_latest": "2021-12-24T20:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        }
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "name": "Summit Station",
+    "latitude": "72.57972",
+    "longitude": "-38.50454",
+    "elevation": 3199,
+    "startdate": "1996.37 ",
+    "active": true,
+    "alias": "summitstation",
+    "aliasApi": "summit",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/summit/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/6temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/06-Summit.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/summitstation.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1996-05-12T13:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-05-13T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-13T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1996-05-13T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1996-05-12T14:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1996-05-12T11:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-05-19T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "name": "TUNU-N",
+    "latitude": "78.01677",
+    "longitude": "-33.99387",
+    "elevation": 2113,
+    "startdate": "1996.38",
+    "active": true,
+    "alias": "tununorth",
+    "aliasApi": "tunu_n",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/tunu_n/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/7temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/07-Tunu-N.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/tununorth.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2012-05-26T17:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2020-11-05T14:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2012-05-26T17:00:00Z",
+          "timestamp_iso_latest": "2014-05-18T16:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2012-05-26T18:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2012-05-26T18:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2012-05-26T18:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2012-05-26T18:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2012-05-26T17:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2014-05-18T18:00:00Z",
+          "timestamp_iso_latest": "2018-05-23T12:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2012-05-26T17:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2014-05-18T18:00:00Z",
+          "timestamp_iso_latest": "2018-05-23T12:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1996-05-16T22:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "2022-03-14T04:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "1996-05-16T20:00:00Z",
+          "timestamp_iso_latest": "1999-05-20T18:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "name": "DYE-2",
+    "latitude": "66.48001",
+    "longitude": "-46.27889",
+    "elevation": 2165,
+    "startdate": "1996.40",
+    "active": true,
+    "alias": "dyeii",
+    "aliasApi": "dye2",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/dye2/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/8temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/08-DYE2.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/dyeii.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-18T22:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-04-26T02:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1996-05-24T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2001-06-05T12:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-07-17T12:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1996-05-24T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1996-05-24T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1996-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-05-16T18:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "name": "JAR 1",
+    "latitude": "69.498358",
+    "longitude": "-49.68156",
+    "elevation": 932,
+    "startdate": "1996.47",
+    "active": null,
+    "alias": "jar1",
+    "aliasApi": "jar1",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/jar1/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/9temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/09-JAR1.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/jar1.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T00:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T00:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-05-05T13:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-05-05T13:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T00:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-02T11:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T00:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-07T12:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2001-11-03T23:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-07T12:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1996-06-19T13:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-05-05T13:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1996-06-19T12:00:00Z",
+          "timestamp_iso_latest": "2019-05-05T13:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1999-05-31T15:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-05-10T17:00:00Z",
+          "timestamp_iso_latest": "2019-09-08T01:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "name": "Saddle",
+    "latitude": "65.99947",
+    "longitude": "-44.50016",
+    "elevation": 2467,
+    "startdate": "1997.30",
+    "active": false,
+    "alias": "saddle",
+    "aliasApi": "saddle",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/saddle/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/10temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/10-Saddle.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/saddle.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T07:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-18T20:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2019-05-18T20:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T03:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-09-29T17:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-09-29T17:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T03:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-09-29T17:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-08-18T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-15T22:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T00:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T18:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-08-13T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-15T12:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-15T12:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1998-04-17T14:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1997-04-21T09:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1998-04-17T15:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-18T20:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2018-02-10T11:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1997-04-20T21:00:00Z",
+          "timestamp_iso_latest": "2021-10-16T17:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2010-04-30T22:00:00Z",
+          "timestamp_iso_latest": "2021-09-29T17:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "name": "South Dome",
+    "latitude": "63.1488",
+    "longitude": "-44.81717",
+    "elevation": 2922,
+    "startdate": "1997.31",
+    "active": true,
+    "alias": "southdome",
+    "aliasApi": "southdome",
+    "data": 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/southdome/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/11temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/11-South Dome.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/southdome.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T13:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2019-07-05T21:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-05-15T21:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T13:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1999-06-01T01:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1999-06-01T01:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1997-04-24T00:00:00Z",
+          "timestamp_iso_latest": "2019-07-05T21:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1997-04-24T00:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2003-05-09T14:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1997-04-25T12:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1998-04-19T20:00:00Z",
+          "timestamp_iso_latest": "2019-07-05T21:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-18T22:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1997-04-23T16:00:00Z",
+          "timestamp_iso_latest": "2018-12-10T14:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2001-06-07T02:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-05-15T20:00:00Z",
+          "timestamp_iso_latest": "2020-08-24T19:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "name": "NASA-E",
+    "latitude": "75.00000",
+    "longitude": "-29.99972",
+    "elevation": 2631,
+    "startdate": "1997.34",
+    "active": true,
+    "alias": "nasaeast",
+    "aliasApi": "nasa_east",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_east/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/12temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/12-NASA-E.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasaeast.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2011-06-02T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2011-06-02T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2011-06-02T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2011-06-02T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2011-06-02T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1997-05-03T23:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1997-05-03T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1997-05-03T23:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2011-06-02T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T08:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "name": "NASA-SE",
+    "latitude": "66.4797",
+    "longitude": "-42.5002",
+    "elevation": 2425,
+    "startdate": "1998.30",
+    "active": false,
+    "alias": "nasasoutheast",
+    "aliasApi": "nasa_southeast",
+    "data": 0,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/nasa_southeast/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/15temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/15-NASA-SE.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasasoutheast.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2012-01-07T23:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2009-04-26T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-04-26T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2012-01-07T23:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2009-04-26T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-04-26T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "2000-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "2000-01-01T00:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-04-07T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2005-05-26T12:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-04-07T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-04-26T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "1998-04-25T16:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-14T17:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-15T10:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "1998-04-24T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-04-26T18:00:00Z",
+          "timestamp_iso_latest": "2019-05-19T10:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "name": "Peterman ELA",
+    "latitude": "80.09694444",
+    "longitude": "-58.13166667",
+    "elevation": 924,
+    "startdate": "2003.40",
+    "active": false,
+    "alias": "petermann",
+    "aliasApi": "petermann",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/petermann/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/22temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/22-Petermann ELA.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/petermann.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2018-05-24T14:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2014-05-20T15:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-03-28T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-03-31T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "2003-05-24T20:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-03-31T10:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-03-25T05:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "2011-06-02T00:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2012-05-25T14:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "2003-05-24T21:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "2003-05-25T02:00:00Z",
+          "timestamp_iso_latest": "2018-05-24T14:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "2003-05-25T02:00:00Z",
+          "timestamp_iso_latest": "2017-10-05T07:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2003-05-23T07:00:00Z",
+          "timestamp_iso_latest": "2022-04-12T18:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        }
+      ]
+    }
+  },
+  {
+    "id": 23,
+    "name": "NEEM",
+    "latitude": "77.50222222",
+    "longitude": "-50.87444444",
+    "elevation": 2454,
+    "startdate": "2006",
+    "active": true,
+    "alias": "neem",
+    "aliasApi": "neem",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/neem/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/23temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/23-NEEM.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/neem.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "2006-03-29T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "2006-03-29T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "2006-04-27T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "2006-03-29T22:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "2006-04-27T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2006-03-29T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "2006-04-27T20:00:00Z",
+          "timestamp_iso_latest": "2008-11-18T22:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "2006-04-27T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "2006-04-27T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2006-03-29T19:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2009-05-30T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        }
+      ]
+    }
+  },
+  {
+    "id": 24,
+    "name": "East Grip",
+    "latitude": "75.59333333",
+    "longitude": "-35.98861111",
+    "elevation": 2600,
+    "startdate": "2014",
+    "active": true,
+    "alias": "eastgrip",
+    "aliasApi": "east_grip",
+    "data": 1,
+    "envidatConfig": {
+      "apiUrl": "https://www.envidat.ch/data-api/gcnet/json/east_grip/airtemp1/",
+      "graphParameter": "airtemp1",
+      "fallbackUrl": "https://www.envidat.ch/data-files/24temp.json",
+      "fallbackParameter": "airtemp1",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/24-E-GRIP.csv",
+      "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/eastgrip.jpg",
+      "parameterDates": [
+        {
+          "parameter": "swin",
+          "timestamp_iso_earliest": "2020-06-08T16:00:00Z",
+          "timestamp_iso_latest": "2021-08-25T18:00:00Z"
+        },
+        {
+          "parameter": "swin_maximum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2019-05-06T20:00:00Z"
+        },
+        {
+          "parameter": "swout",
+          "timestamp_iso_earliest": "2020-06-08T16:00:00Z",
+          "timestamp_iso_latest": "2021-08-09T18:00:00Z"
+        },
+        {
+          "parameter": "swin_stdev",
+          "timestamp_iso_earliest": "2016-07-11T20:00:00Z",
+          "timestamp_iso_latest": "2018-09-28T21:00:00Z"
+        },
+        {
+          "parameter": "netrad",
+          "timestamp_iso_earliest": "2022-05-22T21:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "netrad_stdev",
+          "timestamp_iso_earliest": null,
+          "timestamp_iso_latest": null
+        },
+        {
+          "parameter": "airtemp1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-05-16T23:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_maximum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp1_minimum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_maximum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp2_minimum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "airtemp_cs500air2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "rh2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_maximum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u1_stdev",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_maximum",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "windspeed_u2_stdev",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "winddir2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "pressure",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh1",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "sh2",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-05-29T11:00:00Z"
+        },
+        {
+          "parameter": "battvolt",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        },
+        {
+          "parameter": "reftemp",
+          "timestamp_iso_earliest": "2014-05-17T20:00:00Z",
+          "timestamp_iso_latest": "2022-06-20T07:00:00Z"
+        }
+      ]
+    }
+  }
 ]
