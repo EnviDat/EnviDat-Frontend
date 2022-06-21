@@ -4,7 +4,7 @@ const fs = require('fs');
 // eslint-disable-next-line import/no-dynamic-require
 // const packagelist = require(packagePath);
 const axios = require('axios');
-const dateFns = require('date-fns');
+// const dateFns = require('date-fns');
 // const StreamArray = require('stream-json/streamers/StreamArray');
 
 const packagePath = `${__dirname}/../../public`;
@@ -59,7 +59,7 @@ const getMetadata = (station, callback) => {
   });
 };
 
-const saveMetadataForStations = (stationConfig, callback) => {
+const saveMetadataForStations = (callback) => {
 
   if (!stationConfig) {
     console.log('Not stationConfig to work with!');
@@ -145,11 +145,10 @@ const updateStationConfig = () => {
 
 };
 
-// saveMetadataForStations(stationConfig, updateStationConfig);
+saveMetadataForStations(updateStationConfig);
 
 
 /*
-
 function getParameterDate(param, currentStation) {
   const matches = currentStation.envidatConfig.parameterDates.filter(dateObj => dateObj.parameter === param);
   return matches[0];
@@ -187,6 +186,24 @@ function getHistoricalEndDate(parameters, configEntry) {
   return dateFns.formatISO(endDate);
 }
 
+const addStartEndDateUrl = (url, daysBetween = 14, historicalEndDate = undefined) => {
+
+  const currentDate = new Date();
+  let endDate = historicalEndDate;
+
+  if (!endDate) {
+    endDate = currentDate.toISOString().substring(0, 19);
+  }
+
+  const endDateDate = new Date(endDate);
+  const baseDate = endDateDate;
+  const diffDays = endDateDate.getDate() - daysBetween;
+  baseDate.setDate(diffDays);
+  const differenceDate = new Date(baseDate);
+  const startDate = differenceDate.toISOString().substring(0, 19);
+
+  return `${url}${startDate}/${endDate}/`;
+};
 
 const testHistoricalDate = () => {
   for (let i = 0; i < stationConfig.length; i++) {
@@ -200,11 +217,13 @@ const testHistoricalDate = () => {
     ], configEntry);
 
     console.log(`historical date \t ${hEndDate}`);
+
+    const url = addStartEndDateUrl('', 730, hEndDate);
+    console.log(`historical url ${url}`);
   }
 };
 
 testHistoricalDate();
-
 */
 
 

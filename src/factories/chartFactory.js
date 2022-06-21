@@ -103,15 +103,23 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
 //     chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
 // }
 
-function addStartEndDateUrl(url, daysBetween = 14) {
+function addStartEndDateUrl(url, daysBetween = 14, historicalEndDate = undefined) {
 
   const currentDate = new Date();
-  const endDate = currentDate.toISOString().substring(0, 19);
+  let endDate = historicalEndDate;
 
-  const dateTwoWeeksAgo = new Date(currentDate.setDate(currentDate.getDate() - daysBetween));
-  const startDate = dateTwoWeeksAgo.toISOString().substring(0, 19);
+  if (!endDate) {
+    endDate = currentDate.toISOString().substring(0, 19);
+  }
 
-  return `${url + startDate}/${endDate}/`;
+  const endDateDate = new Date(endDate);
+  const baseDate = endDateDate;
+  const diffDays = endDateDate.getDate() - daysBetween;
+  baseDate.setDate(diffDays);
+  const differenceDate = new Date(baseDate);
+  const startDate = differenceDate.toISOString().substring(0, 19);
+
+  return `${url}${startDate}/${endDate}/`;
 }
 
 function hasData(data, parameter) {
