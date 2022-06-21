@@ -198,24 +198,23 @@ export default {
       });
     },
     loadJsonFiles(fallback = false) {
-      const baseUrl = fallback ? this.fallbackUrl : this.apiUrl;
-      const cutOffSplit = fallback ? 1 : 2;
+      const baseUrl = this.apiUrl ? this.apiUrl : this.fallbackUrl;
+      const cutOffSplit = this.apiUrl ? 2 : 1;
 
       const splits = baseUrl.split('/');
       const urlSplits = splits.slice(0, splits.length - cutOffSplit);
       const url = urlSplits.join('/');
 
-      let urlParam = `${url}/`;
-      if (fallback) {
-        urlParam += this.stationId + this.fallbackFilename;
-      } else {
-        urlParam = `${urlParam}${this.fileObject.parameters.join(',')}/`;
+      let urlParam = `${url}/${this.fileObject.parameters.join(',')}/`;
 
-        // 2 weeks for the recent data, 2 years for historical
-        const dayRange = this.isRecentDataChart ? 14 : 730;
-        urlParam = addStartEndDateUrl(urlParam, dayRange, this.historicalEndDate);
+      // 2 weeks for the recent data, 2 years for historical
+      let dayRange = this.isRecentDataChart ? 14 : 730;
+      if (this.isRecentDataChart && fallback) {
+        // use a 1.5 month for recent data as fallback
+        dayRange = 45;
       }
 
+      urlParam = addStartEndDateUrl(urlParam, dayRange, this.isRecentDataChart ? undefined : this.historicalEndDate);
 
       axios
       .get(urlParam)
