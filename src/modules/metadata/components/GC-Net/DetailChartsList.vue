@@ -59,7 +59,7 @@
                           :graphs="buildGraphs(fileObject)"
                           :preload="fileObject.preload"
                           :showDisclaimer="fileObject.showDisclaimer"
-                          :historicalEndDate="fileObject.historicalEndDate"
+                          :historicalEndDate="getHistoricalEndDate(fileObject.parameters)"
                           :convertLocalTime="convertLocalTime"
                           :key="fileObject.fileName + reRenderKey" />
 
@@ -82,7 +82,9 @@
 import { defaultSeriesSettings } from '@/factories/chartFactory';
 import { isNumber } from '@turf/turf';
 import ButtonContentTable from '@/components/Navigation/ButtonContentTable';
+import dateFns from 'date-fns';
 import DetailChart from './DetailChart';
+
 
 export default {
   name: 'Station',
@@ -241,6 +243,36 @@ export default {
     referenceExists(paramName) {
       const target = this.$refs[`${paramName}_1`];
       return target && target.length > 0;
+    },
+    getHistoricalEndDate(parameters) {
+
+      if (!parameters || parameters.length <= 0) {
+        return undefined;
+      }
+
+      let endDate = null;
+
+      for (let i = 0; i < parameters.length; i++) {
+        const param = parameters[i];
+
+        const paramObj = this.getParameterDate(param);
+
+        const isoDate = paramObj.timestamp_iso_latest;
+        if (isoDate) {
+          const stringDate = isoDate.substr(0, isoDate.length - 1);
+          const date = dateFns.parseISO(stringDate);
+
+          if (endDate === null || dateFns.isAfter(date, endDate)) {
+            endDate = date;
+          }
+        }
+      }
+
+      return dateFns.formatISO(endDate);
+    },
+    getParameterDate(param) {
+      const matches = this.currentStation.envidatConfig.parameterDates.filter(dateObj => dateObj.parameter === param);
+      return matches[0];
     },
   },
   computed: {
