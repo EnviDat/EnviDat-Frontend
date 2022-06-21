@@ -15,7 +15,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/0temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/00-Swiss Camp 10m.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/00-Swiss%20Camp%2010m.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp10m.jpg",
       "parameterDates": [
         {
@@ -182,7 +182,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/1temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/01-Swiss Camp.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/01-Swiss%20Camp.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/swisscamp.jpg",
       "parameterDates": [
         {
@@ -349,7 +349,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/2temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/02-Crawford Point 1.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/02-Crawford%20Point%201.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/crawfordpoint.jpg",
       "parameterDates": [
         {
@@ -516,7 +516,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/3temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/03-NASA-U.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/03-NASA-U.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasau.jpg",
       "parameterDates": [
         {
@@ -683,7 +683,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/4temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/04-GITS.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/04-GITS.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/gits.jpg",
       "parameterDates": [
         {
@@ -850,7 +850,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/5temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/05-Humboldt.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/05-Humboldt.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/humboldt.jpg",
       "parameterDates": [
         {
@@ -1017,7 +1017,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/6temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/06-Summit.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/06-Summit.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/summitstation.jpg",
       "parameterDates": [
         {
@@ -1184,7 +1184,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/7temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/07-Tunu-N.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/07-Tunu-N.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/tununorth.jpg",
       "parameterDates": [
         {
@@ -1351,7 +1351,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/8temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/08-DYE2.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/08-DYE2.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/dyeii.jpg",
       "parameterDates": [
         {
@@ -1518,7 +1518,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/9temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/09-JAR1.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/09-JAR1.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/jar1.jpg",
       "parameterDates": [
         {
@@ -1685,7 +1685,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/10temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/10-Saddle.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/10-Saddle.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/saddle.jpg",
       "parameterDates": [
         {
@@ -1852,7 +1852,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/11temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/11-South Dome.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/11-South%20Dome.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/southdome.jpg",
       "parameterDates": [
         {
@@ -2019,7 +2019,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/12temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/12-NASA-E.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/12-NASA-E.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasaeast.jpg",
       "parameterDates": [
         {
@@ -2186,7 +2186,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/15temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/15-NASA-SE.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/15-NASA-SE.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/nasasoutheast.jpg",
       "parameterDates": [
         {
@@ -2353,7 +2353,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/22temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/22-Petermann ELA.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/22-Petermann%20ELA.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/petermann.jpg",
       "parameterDates": [
         {
@@ -2520,7 +2520,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/23temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/23-NEEM.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/23-NEEM.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/neem.jpg",
       "parameterDates": [
         {
@@ -2687,7 +2687,7 @@
       "graphParameter": "airtemp1",
       "fallbackUrl": "https://www.envidat.ch/data-files/24temp.json",
       "fallbackParameter": "airtemp1",
-      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/wsl/wsl-geus-cooperation/gcnet/L1/24-E-GRIP.csv",
+      "downloadAllUrl": "https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/24-E-GRIP.csv",
       "previewImageUrl": "https://www.envidat.ch/gcnet/assets/stations/small/eastgrip.jpg",
       "parameterDates": [
         {
