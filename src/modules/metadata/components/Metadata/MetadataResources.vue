@@ -41,8 +41,8 @@
 
       <v-row v-if="injectedComponent && injectAtStart"
               no-gutters >
-        <component :is="injectedComponent" 
-                    :config="injectedComponentConfig" />
+        <component :is="injectedComponent"
+                    :stationConfig="injectedComponentConfig" />
       </v-row>
 
       <v-row no-gutters >

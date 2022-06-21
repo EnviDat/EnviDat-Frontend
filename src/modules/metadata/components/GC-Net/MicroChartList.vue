@@ -15,6 +15,7 @@
                     :image="station.envidatConfig.previewImageUrl"
                     :apiUrl="station.envidatConfig.apiUrl"
                     :fallbackUrl="station.envidatConfig.fallbackUrl"
+                    :downloadAllUrl="downloadAllUrl(station)"
                     :parameter="station.envidatConfig.graphParameter"
                     :chartHeight="45"
                     @detailClick="(stationID) => { changeCurrentStation(stationID); }" />
@@ -26,27 +27,34 @@
 
 <script>
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
+import { mapState } from 'vuex';
 
 export default {
   name: 'MicroChartList',
   props: {
-    config: Array,
+    stationConfig: Array,
   },
   components: {
     MicroChart,
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
     stations() {
       const stations = [];
 
-      if (this.config) {
-        for (let i = 0; i < this.config.length; i++) {
-          const station = this.config[i];
+      if (this.stationConfig) {
+        for (let i = 0; i < this.stationConfig.length; i++) {
+          const station = this.stationConfig[i];
           stations.push(station);
         }
       }
 
       return stations;
+    },
+    metadataConfig() {
+      return this.config?.metadataConfig || {};
     },
   },
   // beforeMount() {
@@ -73,6 +81,13 @@ export default {
     changeCurrentStation(newStation) {
       this.$router.push({ path: `/station/${newStation}` });
       this.$emit('detailClick', newStation);
+    },
+    downloadAllUrl(currentStation) {
+      if (this.metadataConfig?.resourcesConfig?.downloadActive === false) {
+        return '';
+      }
+
+      return currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${currentStation?.aliasApi}/end/empty/`;
     },
   },
   data: () => ({

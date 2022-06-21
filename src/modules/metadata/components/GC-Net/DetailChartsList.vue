@@ -24,6 +24,7 @@
                                 :scrollPos="scrollPos"
                                 title="Download Data"
                                 :subtitle="downloadSubtitle"
+                                :downloadActive="downloadActive"
                                 @buttonClick="downloadData" />
           </v-col>
         </v-row>
@@ -86,6 +87,7 @@ import ButtonContentTable from '@/components/Navigation/ButtonContentTable';
 import formatISO from 'date-fns/formatISO';
 import parseISO from 'date-fns/parseISO';
 import isAfter from 'date-fns/isAfter';
+import { mapState } from 'vuex';
 import DetailChart from './DetailChart';
 
 
@@ -240,7 +242,7 @@ export default {
       }
     },
     downloadData() {
-      const downloadURL = this.currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation.aliasApi}/end/empty/`;
+      const downloadURL = this.currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation?.aliasApi}/end/empty/`;
       window.open(downloadURL, '_blank');
     },
     referenceExists(paramName) {
@@ -283,6 +285,20 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
+    metadataConfig() {
+      return this.config?.metadataConfig || {};
+    },
+    downloadActive() {
+
+      if (this.metadataConfig?.resourcesConfig) {
+        return this.metadataConfig?.resourcesConfig?.downloadActive;
+      }
+
+      return true;
+    },
     stationParams() {
       // just pick the first param name of the each list
       const buttons = {};

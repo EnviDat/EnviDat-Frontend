@@ -17,23 +17,24 @@
                 v-html="subtitle">
 
         </v-col>
-      </v-row> 
+      </v-row>
 
       <v-row no-gutters
              class="pt-2">
 
         <v-col v-for="(buttonObj, index) in buttonList"
-                :key="index" 
+                :key="index"
                 cols="12"
                 class="py-1">
 
           <v-btn color="secondary"
                 :small="$vuetify.breakpoint.mdAndUp"
+                :disabled="!downloadActive"
                 @click="$emit('buttonClick', buttonObj.buttonKey);">
             {{ buttonObj.buttonText }}
           </v-btn>
 
-        </v-col>                
+        </v-col>
 
       </v-row>
 
@@ -52,6 +53,10 @@ export default {
     title: String,
     subtitle: String,
     buttonList: Array,
+    downloadActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
   },
