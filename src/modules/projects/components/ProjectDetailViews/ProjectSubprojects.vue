@@ -1,7 +1,7 @@
 <template>
   <v-card :dark="dark">
 
-    <v-card-title class="metadataComponentTitle text-h6">
+    <v-card-title class="metadata_title text-h6">
       {{ title }}
     </v-card-title>
 

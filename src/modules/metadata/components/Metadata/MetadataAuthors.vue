@@ -2,7 +2,7 @@
   <v-card id="MetadataAuthors"
           ref="MetadataAuthors">
 
-    <v-card-title class="text-h6 metadataComponentTitle">
+    <v-card-title class="text-h6 metadata_title">
       {{ METADATA_AUTHORS_TITLE }}
     </v-card-title>
 

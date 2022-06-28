@@ -125,14 +125,6 @@ export default {
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
   },
-  beforeRouteUpdate(to, from, next) {
-    // react to route changes...
-
-    // next has to be called to do the route change!
-    next((vm) => {
-      // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
-    });
-  },
   created() {
     this.creationSteps = initializeSteps(metadataCreationSteps);
 
