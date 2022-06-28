@@ -6,6 +6,7 @@
   >
 
   </div>
+
 </template>
 
 <script>
@@ -25,6 +26,7 @@ import {
   MAP_ZOOM_OUT,
   MAP_ZOOM_CENTER,
   MAP_GEOMETRY_MODIFIED,
+  GCNET_OPEN_DETAIL_CHARTS,
   eventBus,
 } from '@/factories/eventBus';
 // import { leafletLayer } from './layer-leaflet';
@@ -33,8 +35,7 @@ import {
 
 export default {
   name: 'MapLeaflet',
-  components: {
-  },
+  components: {},
   props: {
     baseMapLayerName: String,
     wmsLayer: Object,
@@ -50,6 +51,10 @@ export default {
       default: 0,
     },
     mapEditable: {
+      type: Boolean,
+      default: false,
+    },
+    isGcnet: {
       type: Boolean,
       default: false,
     },
@@ -114,23 +119,74 @@ export default {
       }
 
       let geoJsonArray = [];
+      // const propertiesArray = [];
+
       if (geoJson.type === 'GeometryCollection') {
-        // Split geometries for individual features
+        // Split geometries from geometries list
         geoJson.geometries.forEach((geometry) => {
           geoJsonArray.push(geometry);
         });
+
+        // } else if (geoJson.type === 'Feature') {
+        //   // Split geometry from feature object
+        //   geoJsonArray.push(geoJson.geometry);
+        //   propertiesArray.push(geoJson.properties);
+
+        // } else if (geoJson.type === 'FeatureCollection') {
+        //   // Split geometries from feature list
+        //   geoJson.features.forEach((feature) => {
+        //     geoJsonArray.push(feature.geometry);
+        //     propertiesArray.push(feature.properties);
+        //   });
       } else {
         geoJsonArray = [geoJson];
       }
 
       const styleObj = this.getCustomLeafletStyle();
 
+      const isGcnet = this.isGcnet;
+
       this.siteLayer = L.geoJSON(geoJsonArray, {
-        pointToLayer(geoJsonPoint, latlng) {
+        pointToLayer(feature, latlng) {
+          if (isGcnet) {
+
+            if (feature.properties.active === false) {
+              return L.marker(latlng, styleObj.gcnetInactiveStyle);
+            }
+
+            if (feature.properties.active === null) {
+              return L.marker(latlng, styleObj.gcnetMissingStyle);
+            }
+
+            return L.marker(latlng, styleObj.gcnetStyle);
+          }
+
           return L.marker(latlng, styleObj.customPointStyle);
         },
         style: styleObj.customPolygonStyle,
       });
+
+      if (isGcnet) {
+        this.siteLayer.eachLayer((layer) => {
+          layer.bindTooltip(
+            `<div">
+            <b>${layer.feature.properties.name}</b>
+            <p>
+            Elevation: ${layer.feature.properties.elevation}
+            </div>
+            `,
+            {
+              className: 'rounded-xl text-md-center subtitle-1',
+              permanent: false,
+            },
+          );
+
+          // Open popup data modal on click
+          layer.on('click', () => {
+            this.catchGcnetStationClick(layer.feature.properties.alias);
+          });
+        });
+      }
 
       // this.siteLayer.bindPopup(layer => layer.feature.properties.description);
 
@@ -234,6 +290,10 @@ export default {
       }
     },
     setupMap() {
+      if (this.isGcnet) {
+        // Disable editing
+        this.mapEditable = false;
+      }
 
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
@@ -255,9 +315,11 @@ export default {
       L.control.scale().addTo(this.map);
       this.replaceBasemap();
 
+/*
       if (this.layerConfig && this.layerConfig.timeseries) {
-        this.map.on('click', (e) => this.getFeatureInfo(e.latlng));
+        this.map.on('click', e => this.getFeatureInfo(e.latlng));
       }
+*/
 
       this.addSiteIfAvailable();
     },
@@ -305,8 +367,7 @@ export default {
       if (this.basemapLayer) {
         this.map.removeLayer(this.basemapLayer);
       }
-      this.basemapLayer =
-        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.map.addLayer(this.basemapLayer);
       // this.basemapLayer.bringToBack();
     },
@@ -349,10 +410,33 @@ export default {
           // opacity: 1,
           // weight: 1,
         },
-      }
+        gcnetStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle green',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+        gcnetInactiveStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle red',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+        gcnetMissingStyle: {
+          icon: L.divIcon({
+            className: 'rounded-circle grey',
+            iconSize: [20, 20],
+          }),
+          opacity: 0.75,
+          riseOnHover: true,
+        },
+      };
     },
     setupEditing() {
-
       // Set styles for markers and polygons
       const styleObj = this.getCustomLeafletStyle();
       this.map.pm.setGlobalOptions({
@@ -390,6 +474,9 @@ export default {
       //   onClick: this.tempFunction,
       //   toggle: false,
       // });
+    },
+    catchGcnetStationClick(stationAlias) {
+      eventBus.$emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
     },
     // tempFunction() {
     //   const geoms = this.map.pm.getGeomanLayers()

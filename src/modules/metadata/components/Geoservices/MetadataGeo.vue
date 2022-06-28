@@ -2,7 +2,7 @@
   <v-card id="MetadataGeo">
     <v-card-title>
       <v-row justify="end" align="center" no-gutters>
-        <v-col class="text-h6 metadataComponentTitle grow" align-self="start">
+        <v-col class="text-h6 metadata_title grow" align-self="start">
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
@@ -32,6 +32,7 @@
         :site="site"
         :mapHeight="mapHeight"
         :mapEditable="mapEditable"
+        :isGcnet="isGcnet"
       />
     </v-card-text>
 
@@ -84,6 +85,9 @@ export default {
     layerConfig() {
       return this.genericProps?.layerConfig;
     },
+    isGcnet() {
+      return this.genericProps?.isGcnet;
+    },
     mapHeight() {
       return this.genericProps?.mapHeight;
     },
@@ -99,7 +103,7 @@ export default {
   },
   methods: {
     triggerFullscreen() {
-      eventBus.$emit(INJECT_MAP_FULLSCREEN, {site: this.site, layerConfig: this.layerConfig });
+      eventBus.$emit(INJECT_MAP_FULLSCREEN, { site: this.site, layerConfig: this.layerConfig });
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;

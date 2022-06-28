@@ -500,7 +500,6 @@ export default {
       if (this.showPolygonParticles) {
         // particleOptions have to be in the folder public/particles/polygonParticleOptions.json for development
         // in production they have to be in same folder as the index.html there -> ./particles/polygonParticleOptions.json
-
         // eslint-disable-next-line no-undef
         particlesJS.load('polygon-canvas', './particles/polygonParticleOptions.json', () => {
           // console.log('polygon-canvas - particles.js config loaded');

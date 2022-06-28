@@ -149,7 +149,8 @@
                                 @clicked="catchDetailClick(station.alias)" />
               </v-row>
 
-              <v-row no-gutters
+              <v-row v-if="downloadAllUrl"
+                     no-gutters
                       justify="end">
 
                 <BaseIconButton materialIconName="file_download"
@@ -157,7 +158,7 @@
                                 iconColor="black"
                                 isElevated
                                 tooltipText="Download station data"
-                                @clicked="catchDetailClick(station.alias)" />
+                                @clicked="downloadData()" />
               </v-row>
             </v-col>
           </v-row>
@@ -202,6 +203,7 @@ export default {
     },
     apiUrl: String,
     fallbackUrl: String,
+    downloadAllUrl: String,
     parameter: String,
     chartHeight: {
       type: Number,
@@ -558,6 +560,9 @@ export default {
     },
     catchDetailClick(stationId) {
       eventBus.$emit(GCNET_OPEN_DETAIL_CHARTS, stationId);
+    },
+    downloadData() {
+      window.open(this.downloadAllUrl, '_blank');
     },
   },
   data: () => ({

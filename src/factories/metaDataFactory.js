@@ -715,6 +715,8 @@ export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
 export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
+export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+
 
 /**
  * Extract an array of coordinate arrays with swapped point coordinates for each geom
