@@ -164,13 +164,18 @@ export default {
     },
     catchPickClicked(pickedItem) {
 
-      if (this.multiplePick && Array.isArray(this.pickedUsers)) {
-        if (this.pickedUsers.length > 0 && !this.pickedUsers.includes(pickedItem)) {
-          this.pickedUsers.push(pickedItem);
-        } else {
-          const index = this.pickedUsers.indexOf(pickedItem);
-          this.pickedUsers.splice(index, 1);
-        }
+      if (this.multiplePick){
+
+        // if (Array.isArray(this.pickedUsers)) {
+          if (!this.pickedUsers.includes(pickedItem)) {
+            this.pickedUsers.push(pickedItem);
+/*
+          } else {
+            const index = this.pickedUsers.indexOf(pickedItem);
+            this.pickedUsers.splice(index, 1);
+*/
+          }
+        // }
       } else {
         this.pickedUsers = pickedItem;
       }

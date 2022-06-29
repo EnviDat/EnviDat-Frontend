@@ -426,6 +426,27 @@ export default {
       this.previews.contactEmail = null;
       this.previews.metadataTitle = null;
     },
+    // Validate contact author properties by calling isFieldValid()
+    // Returns true if all properties are valid, else returns false
+    validateAuthor(authorObject) {
+
+      const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
+
+      // Validate fields corresponding to properties
+      for (let i = 0; i < properties.length; i++) {
+        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
+      }
+
+      // Return false if any of the properties have a validation error
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+        if (this.validationErrors[prop]) {
+          return false;
+        }
+      }
+
+      return true;
+    },
     getFullName(authorObj) {
       if (!authorObj) {
         return [];
