@@ -55,11 +55,10 @@
               <template v-if="hasDataCredits(author.dataCredit)"
                         #dataCreditCurrentDataset >
 
-                <EditDataCredits class="px-0 py-1 readableText"
+                <ActiveDataCredits class="px-0 py-1 readableText"
                                   :dataCredit="author.dataCredit"
                                   :instruction="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
                                   :authorName="author.fullName"
-                                  readonly
                                   />
 
               </template>
@@ -102,7 +101,7 @@ import {
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
 import { eventBus } from '@/factories/eventBus';
-import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits';
 
 export default {
   name: 'MetadataAuthors',
@@ -169,9 +168,9 @@ export default {
     },
   },
   components: {
+    ActiveDataCredits,
     AuthorCard,
     AuthorCardPlaceholder,
-    EditDataCredits,
   },
   data: () => ({
     showAuthors: false,
