@@ -481,6 +481,11 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+
+    if (typeof author.dataCredit === 'string') {
+      author.dataCredit = [author.dataCredit];
+    }
+
     authors.push(author);
   })
 

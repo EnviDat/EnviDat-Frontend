@@ -171,7 +171,16 @@ export function createAuthors(dataset) {
     // }
 
 //    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
-    const dataCredit = author.dataCredit || author.data_credit || [];
+    let dataCredit = author.dataCredit || author.data_credit || [];
+
+    if (typeof dataCredit === 'string') {
+      dataCredit = [dataCredit];
+    }
+
+    if (author.email.includes('shaodiese')) {
+      console.log(author);
+      console.log(dataCredit);
+    }
 
     authorObjs.push({
       firstName: firstName.trim(),
@@ -306,7 +315,11 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     const fullAuthor = authorMap[authorKey];
 
     if (fullAuthor) {
-      fullAuthors.push(fullAuthor);
+      fullAuthors.push({
+          ...fullAuthor,
+          dataCredit: author.dataCredit,
+        },
+      );
     }
 
   }

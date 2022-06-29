@@ -74,7 +74,8 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 import {
-  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';

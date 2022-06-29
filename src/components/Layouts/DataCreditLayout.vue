@@ -76,7 +76,7 @@ export default {
     },
     badgesLabel: {
       type: String,
-      default: 'Data Credit Badges',
+      default: 'Overall Data Credit Contributions',
     },
     noCreditslabel: {
       type: String,
