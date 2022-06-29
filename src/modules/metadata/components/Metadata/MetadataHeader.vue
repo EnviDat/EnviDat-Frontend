@@ -260,22 +260,38 @@
     <v-card-actions v-show="expanded"
                     class="orgaChipFullWidth"
                     style="position: absolute; bottom: 0; right: 0; z-index: 2;">
+      <v-row no-gutters
+              align="center">
 
-      <MetadataOrganizationChip v-if="hasContent"
-                                :organization="organization"
-                                :tooltip="organizationTooltip" />
+        <v-col v-if="maxTagsReached"
+               class="px-1" >
+          <base-icon-button materialIconName="expand_more"
+                            color="primary"
+                            :iconColor="showTagsExpanded ? 'accent' : 'primary'"
+                            outlined
+                            :rotateOnClick="true"
+                            :rotateToggle="showTagsExpanded"
+                            :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
+                            :tooltipBottom="true"
+                            @clicked="showTagsExpanded = !showTagsExpanded" />
 
-      <base-icon-button v-if="maxTagsReached"
-                        class="pl-2"
-                        materialIconName="expand_more"
-                        color="primary"
-                        :iconColor="showTagsExpanded ? 'accent' : 'primary'"
-                        outlined
-                        :rotateOnClick="true"
-                        :rotateToggle="showTagsExpanded"
-                        :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
-                        :tooltipBottom="true"
-                        @clicked="showTagsExpanded = !showTagsExpanded" />
+        </v-col>
+
+        <v-col v-if="metadataState"
+               class="px-1" >
+          <MetadataStateChip :state="metadataState"
+                              :showOnHover="metadataState === 'published'" />
+
+        </v-col>
+
+        <v-col v-if="hasContent"
+          class="px-1" >
+          <MetadataOrganizationChip :organization="organization"
+                                    :tooltip="organizationTooltip" />
+
+        </v-col>
+
+      </v-row>
 
     </v-card-actions>
   </v-card>
@@ -304,6 +320,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import { getAuthorName } from '@/factories/authorFactory';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip';
 
 export default {
   name: 'MetadataHeader',
@@ -314,6 +331,7 @@ export default {
     BaseIconLabelView,
     BaseIconButton,
     MetadataOrganizationChip,
+    MetadataStateChip,
   },
   props: {
     metadataId: String,
@@ -346,6 +364,10 @@ export default {
     categoryColor: String,
     organization: String,
     organizationTooltip: String,
+    metadataState: {
+      type: String,
+      default: undefined,
+    },
   },
   data: () => ({
     showTagsExpanded: false,

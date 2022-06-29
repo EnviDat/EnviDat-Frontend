@@ -130,6 +130,7 @@ import {
   createPublications,
   createRelatedDatasets,
   createResources,
+  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
@@ -551,6 +552,8 @@ export default {
           this.$vuetify.breakpoint.smAndDown,
           this.authorDeadInfo,
         );
+
+        this.header.metadataState = getMetadataVisibilityState(currentContent);
 
         this.body = createBody(
           currentContent,
