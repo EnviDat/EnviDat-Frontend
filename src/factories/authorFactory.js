@@ -177,11 +177,6 @@ export function createAuthors(dataset) {
       dataCredit = [dataCredit];
     }
 
-    if (author.email.includes('shaodiese')) {
-      console.log(author);
-      console.log(dataCredit);
-    }
-
     authorObjs.push({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
