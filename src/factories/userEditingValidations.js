@@ -15,6 +15,7 @@ import {
   EDIT_USER_PROFILE,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_KEYWORDS,
@@ -28,7 +29,7 @@ import {
 
 import * as yup from 'yup';
 
-const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+export const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -63,27 +64,27 @@ const metadataInEditingValidations = {
       authors: yup.array()
         .min(1, 'Please enter at least one author.'),
     }),
-  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
-  // yup.object().shape({
-  //   isLink: yup.boolean(),
-  //   name: yup
-  //     .string()
-  //     .required('Resource name is required')
-  //     .min(5, 'Resource name must be at least 5 characters')
-  //     .notOneOf(
-  //       [yup.ref('url')],
-  //       'Title cannot be the same as the resource url',
-  //     ),
-  //   description: yup.string(),
-  //   url: yup.string().when('isLink', {
-  //     is: true,
-  //     then: yup
-  //       .string()
-  //       .url('Resource url must be valid')
-  //       .required('Resource url is required'),
-  //     otherwise: yup.string().notRequired(),
-  //   }),
-  // }),
+  [EDITMETADATA_DATA_RESOURCES]: () =>
+    yup.object().shape({
+      // isLink: yup.boolean(),
+      name: yup
+        .string()
+        .required('Resource name is required')
+        .min(5, 'Resource name must be at least 5 characters')
+        .notOneOf(
+          [yup.ref('url')],
+          'Title cannot be the same as the resource url',
+        ),
+      // description: yup.string(),
+      // url: yup.string().when('isLink', {
+      //   is: true,
+      //   then: yup
+      //     .string()
+      //     .url('Resource url must be valid')
+      //     .required('Resource url is required'),
+      //   otherwise: yup.string().notRequired(),
+      // }),
+    }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
@@ -308,4 +309,3 @@ export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
 
   return '';
 }
-

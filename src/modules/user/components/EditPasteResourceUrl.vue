@@ -8,13 +8,13 @@
                   class="pa-0">
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
         </v-col>
-      </v-row>  
+      </v-row>
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
@@ -34,7 +34,7 @@
 
       <v-row no-gutters
               justify="end">
-        <v-col class="shrink"> 
+        <v-col class="shrink">
           <BaseRectangleButton :disabled="createButtonDisabled"
                                 :buttonText="labels.buttonText"
                                 @clicked="createButtonClick" />
@@ -42,7 +42,7 @@
       </v-row>
 
     </v-container>
-  </v-card>  
+  </v-card>
 </template>
 
 <script>
@@ -57,17 +57,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import { urlRegex } from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditPasteResourceUrl',
-  props: {  
+  props: {
     genericProps: Object,
   },
   computed: {
   },
   methods: {
     checkCreateButtonDisabled() {
-      // this.createButtonDisabled = !this.urlRegex.test(this.url);
+      this.createButtonDisabled = !urlRegex.test(this.url);
     },
     createButtonClick() {
       this.$emit('createResources', this.url);
@@ -85,7 +86,7 @@ export default {
   }),
   components: {
     BaseRectangleButton,
-  },  
+  },
 };
 </script>
 
