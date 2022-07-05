@@ -45,6 +45,8 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
+const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+
 export default {
   name: 'EditDropResourceFiles',
   props: {
@@ -104,7 +106,7 @@ export default {
       //   payload,
       // );
 
-      const url = 'http://localhost:8989/api/action/resource_create';
+      const url = `${domain}/api/action/resource_create`;
       const payload = {
         package_id: this.metadataId,
         url: file.name,
@@ -141,7 +143,8 @@ export default {
       }
     },
     async deleteCKANResource() {
-      const url = 'http://localhost:8989/api/action/resource_delete';
+      const url = `${domain}/api/action/resource_delete`;
+
       const payload = {
         id: this.resourceId,
       };
@@ -179,8 +182,7 @@ export default {
       this.fileType = file.type;
       this.$emit('createResources', this.files);
 
-      const url =
-        'http://localhost:8989/api/action/cloudstorage_initiate_multipart';
+      const url = `${domain}/api/action/cloudstorage_initiate_multipart`;
 
       const payload = {
         id: await this.createCKANResource(file),
@@ -204,8 +206,7 @@ export default {
       }
     },
     async requestPresignedUrls(file, partData) {
-      const url =
-        'http://localhost:8989/api/action/cloudstorage_get_presigned_url_list_multipart';
+      const url = `${domain}/api/action/cloudstorage_get_presigned_url_list_multipart`;
 
       const payload = {
         id: this.resourceId,
@@ -232,8 +233,7 @@ export default {
       }
     },
     async completeMultipart(file, uploadData) {
-      const url =
-        'http://localhost:8989/api/action/cloudstorage_finish_multipart';
+      const url = `${domain}/api/action/cloudstorage_finish_multipart`;
 
       const payload = {
         id: this.resourceId,
@@ -254,8 +254,7 @@ export default {
       }
     },
     async abortMultipart(__, uploadData) {
-      const url =
-        'http://localhost:8989/api/action/cloudstorage_abort_multipart';
+      const url = `${domain}/api/action/cloudstorage_abort_multipart`;
 
       const payload = {
         id: this.resourceId,
@@ -280,8 +279,7 @@ export default {
       }
     },
     async listUploadedParts(__, uploadData) {
-      const url =
-        'http://localhost:8989/api/action/cloudstorage_multipart_list_parts';
+      const url = `${domain}/api/action/cloudstorage_multipart_list_parts`;
 
       const payload = {
         uploadId: uploadData.uploadId,
@@ -309,6 +307,7 @@ export default {
     resourceId: null,
     fileName: null,
     fileSize: null,
+    domain,
   }),
   components: {
     DragDrop,
