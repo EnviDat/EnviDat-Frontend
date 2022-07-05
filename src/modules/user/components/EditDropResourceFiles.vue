@@ -38,6 +38,7 @@ import '@uppy/status-bar/dist/style.css';
 
 import Uppy from '@uppy/core';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
+import GoldenRetriever from '@uppy/golden-retriever';
 
 import {
   // USER_NAMESPACE,
@@ -57,29 +58,37 @@ export default {
     uppy() {
       return new Uppy({
         autoProceed: true,
-        logger: Uppy.debugLogger,
+        debug: false,
+        // logger: Uppy.debugLogger,
         restrictions: {
-          maxFileSize: 1024 * 1024 * 1024 * 2, // 20 GB
+          maxFileSize: 1024 * 1024 * 1024 * 20, // 20 GB
           maxNumberOfFiles: 1,
           minNumberOfFiles: 1,
         },
       })
-      // .use(Uppy.GoldenRetriever)
-      .use(AwsS3Multipart, {
-        limit: 4,
-        getChunkSize(file) {
-          // at least 25MB per request, at most 500 requests
-          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+        .use(GoldenRetriever, { serviceWorker: true })
+        .use(AwsS3Multipart, {
+          limit: 4,
+          getChunkSize(file) {
+            // at least 25MB per request, at most 500 requests
+            return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+          },
+          createMultipartUpload: this.initiateMultipart,
+          prepareUploadParts: this.requestPresignedUrls,
+          listParts: this.listUploadedParts,
+          abortMultipartUpload: this.abortMultipart,
+          completeMultipartUpload: this.completeMultipart,
+        })
+        .on('upload-complete', this.$emit('uploadComplete', 'Done'));
+    },
+    files() {
+      return [
+        {
+          name: this.fileName,
+          size: this.fileSize,
+          type: this.fileType,
         },
-        createMultipartUpload: this.initiateMultipart,
-        prepareUploadParts: this.requestPresignedUrls,
-        listParts: this.listUploadedParts,
-        abortMultipartUpload: this.abortMultipart,
-        completeMultipartUpload: this.completeMultipart,
-      })
-      // .on('upload-complete', this.functionToSelectResource())
-      // finish upload should reload page to display new entry (window.location.reload()??)
-      // and also open resource in editing component (selectedResource)
+      ];
     },
     userApiKey() {
       if (this.$store) {
@@ -122,12 +131,12 @@ export default {
           },
         });
         this.resourceId = res.data.result.id;
-        console.log(
-          `Resource DB entry created in CKAN: ${res.data.result.url}`,
-        );
+        // console.log(
+        //   `Resource DB entry created in CKAN: ${res.data.result.url}`,
+        // );
         return res.data.result.id;
       } catch (error) {
-        console.log(`Error saving resource to CKAN: ${error}`);
+        // console.log(`Error saving resource to CKAN: ${error}`);
         return error;
       }
     },
@@ -145,17 +154,17 @@ export default {
         });
         const success = res.data.success;
         if (success) {
-          console.log(
-            `Resource DB entry deleted in CKAN: ${this.resourceId}`,
-          );
+          // console.log(
+          //   `Resource DB entry deleted in CKAN: ${this.resourceId}`,
+          // );
         } else {
-          console.log(
-            `Resource deletion in CKAN not successful: ${this.resourceId}`,
-          );
+          // console.log(
+          //   `Resource deletion in CKAN not successful: ${this.resourceId}`,
+          // );
         }
         return success;
       } catch (error) {
-        console.log(`Error deleting resource to CKAN: ${error}`);
+        // console.log(`Error deleting resource to CKAN: ${error}`);
         return error;
       }
     },
@@ -164,6 +173,11 @@ export default {
       //   `${USER_NAMESPACE}/METADATA_EDITING_MULTIPART_UPLOAD_INIT`,
       //   payload,
       // );
+
+      this.fileName = file.name;
+      this.fileSize = file.size;
+      this.fileType = file.type;
+      this.$emit('createResources', this.files);
 
       const url =
         'http://localhost:8989/api/action/cloudstorage_initiate_multipart';
@@ -185,7 +199,7 @@ export default {
           key: res.data.result.name,
         };
       } catch (error) {
-        console.log(`Multipart initiation failed: ${error}`);
+        // console.log(`Multipart initiation failed: ${error}`);
         return error;
       }
     },
@@ -213,7 +227,7 @@ export default {
           // },
         };
       } catch (error) {
-        console.log(`Presigning urls failed: ${error}`);
+        // console.log(`Presigning urls failed: ${error}`);
         return error;
       }
     },
@@ -233,9 +247,9 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        return {'location': await res.data.result.url};
+        return { location: await res.data.result.url };
       } catch (error) {
-        console.log(`Multipart completion failed: ${error}`);
+        // console.log(`Multipart completion failed: ${error}`);
         return error;
       }
     },
@@ -254,14 +268,14 @@ export default {
             Authorization: this.userApiKey,
           },
         });
-        console.log(
-          `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
-        );
-        return {}
+        // console.log(
+        //   `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
+        // );
+        return {};
       } catch (error) {
-        console.log(
-          `Multipart abort failed for Resource ID ${this.resourceId}: ${error}`,
-        );
+        // console.log(
+        //   `Multipart abort failed for Resource ID ${this.resourceId}: ${error}`,
+        // );
         return error;
       }
     },
@@ -283,7 +297,7 @@ export default {
         console.log(`Multipart parts: ${res.data.result}`);
         return res.data.result;
       } catch (error) {
-        console.log(`Listing multipart parts failed: ${error}`)
+        console.log(`Listing multipart parts failed: ${error}`);
         return error;
       }
     },
@@ -293,6 +307,8 @@ export default {
       title: 'Create Resource from Files',
     },
     resourceId: null,
+    fileName: null,
+    fileSize: null,
   }),
   components: {
     DragDrop,
