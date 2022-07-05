@@ -5,64 +5,18 @@
         <v-row v-if="selectedResource">
           <v-col>
             <!-- prettier-ignore -->
-            <!-- <EditResource v-bind="selectedResource"
+            <EditResource v-bind="selectedResource"
                                @closeClicked="catchEditResourceClose"
-                               @saveResource="catchSaveResourceClose"
-                               @triggerValidateField="validateField"
-                               :validationErrors="validationErrors" /> -->
-
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Edit Selected Resource</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Editing Resources is still under construction.
-                    <br>
-                    Please add resources via the legacy website by clicking on the button below and logging in.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters
-                       class="pt-6" >
-
-                  <v-col class="pr-2 text-left">
-                    <BaseRectangleButton buttonText="Edit Resources"
-                                         color="secondary"
-                                         :url="linkEditResourceCKAN" />
-
-                  </v-col>
-
-                  <v-col class="pr-2 text-right">
-                    <BaseRectangleButton buttonText="Deselect Resource"
-                                         color="error"
-                                          @clicked="catchEditResourceClose"/>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
-
+                               @saveResource="catchSaveResourceClose" />
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
           <v-col>
             <v-card class="pa-0">
-              <EditDropResourceFiles :metadataId="metadataId" />
+              <!-- prettier-ignore -->
+              <EditDropResourceFiles :metadataId="metadataId"
+                                     @createResources="createResourceFromFiles" />
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
             </v-card>
           </v-col>
@@ -106,17 +60,15 @@ import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-// import EditResource from '@/modules/user/components/EditResource';
+import EditResource from '@/modules/user/components/EditResource';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditDataAndResources',
   components: {
     EditMetadataResources,
-    BaseRectangleButton,
-    // EditResource,
+    EditResource,
     EditDropResourceFiles,
     EditPasteResourceUrl,
   },
@@ -198,10 +150,6 @@ export default {
       }
 
       return selectedRes;
-    },
-    linkEditResourceCKAN() {
-//      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
-      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCES);
