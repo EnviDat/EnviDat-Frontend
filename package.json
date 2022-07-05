@@ -76,7 +76,7 @@
     "cesium": "^1.64.0",
     "chromatic": "^6.0.4",
     "copy-webpack-plugin": "^6.0.2",
-    "eslint": "^5.16.0",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^3.6.0",
     "eslint-import-resolver-babel-module": "^5.3.1",
     "eslint-import-resolver-webpack": "^0.11.1",
