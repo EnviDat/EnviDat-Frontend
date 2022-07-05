@@ -313,43 +313,14 @@ export function createPublishingInfo(dataset) {
   };
 }
 
-export function getFileFormat(file) {
-  let fileFormat = '';
-  let fileName = '';
-
-  if (typeof file === 'object' && !!file.format) {
-    // if the input is a resource object
-    fileName = file.format;
-  } else if (typeof file === 'object') {
-    fileName = file.name ? file.name : '';
-  } else if (typeof file === 'string') {
-    fileName = file;
-  }
-
-  const splits = fileName.split('.');
-  fileFormat = splits[splits.length - 1];
-  /*  const last = splits[splits.length - 1];
-
-  if (last?.length > 4) {
-    fileFormat = 'url';
-  } else {
-    fileFormat = last;
-  }
-*/
-
-  fileFormat = fileFormat.toLowerCase();
-
-  return fileFormat;
-}
-
 let localResoureID = 0;
 
 export function initializeLocalResource(metadataId, file = null, url = '') {
   const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : getFileFormat(file);
+  const resourceFormat = isLink ? 'url' : file.type;
   let resourceName = isLink ? '' : file.name;
   const fileName = isLink ? '' : file.name;
-  const size = !isLink ? file.size : 0;
+  const size = isLink ? 0 : file.size;
 
   if (!isLink) {
     const splits = resourceName.split('.');
