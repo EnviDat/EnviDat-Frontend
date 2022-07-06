@@ -99,7 +99,7 @@
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
-    "dashboardRedirect": true,
+    "dashboardRedirect": false,
     "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
     "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
     "organizationRolesText": {
