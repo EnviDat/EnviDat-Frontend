@@ -83,7 +83,8 @@
 
       <v-dialog v-model="showReloadDialog"
                 persistent
-                max-width="300">
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="450">
 
         <ConfirmTextCard title="New Version Available!"
                          :text="dialogVersionText()"
@@ -91,6 +92,19 @@
                          :confirmClick="reloadApp"
                          cancelText="Cancel"
                          :cancelClick="() => { reloadDialogCanceled = true }"
+        />
+
+      </v-dialog>
+
+      <v-dialog v-model="showInfoDialog"
+                persistent
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="500">
+
+        <ConfirmTextCard :title="dialogTitle"
+                         :text="dialogMessage"
+                         confirmText="Ok"
+                         :confirmClick="dialogCallback"
         />
 
       </v-dialog>
@@ -127,7 +141,11 @@ import {
   BROWSE_PAGENAME,
   REPORT_PATH,
   USER_SIGNIN_PATH,
-  BLOG_PAGENAME, METADATAEDIT_PAGENAME, USER_DASHBOARD_PATH,
+  BLOG_PAGENAME,
+  METADATAEDIT_PAGENAME,
+  USER_DASHBOARD_PATH,
+  USER_DASHBOARD_PAGENAME,
+  USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -163,6 +181,13 @@ import NotificationCard from '@/components/Cards/NotificationCard';
 import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
 import TextBanner from '@/components/Layouts/TextBanner';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+import {
+  eventBus,
+  SHOW_DIALOG,
+} from '@/factories/eventBus';
+
+
+const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 export default {
   name: 'App',
@@ -171,7 +196,12 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
+
     this.checkUserSignedIn();
+  },
+  beforeDestroy() {
+    eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
   },
   mounted() {
     this.startParticles();
@@ -271,6 +301,13 @@ export default {
       this.menuItem.active = !this.menuItem.active;
     },
     catchItemClicked(item) {
+      if (this.signinRedirectActive && item.pageName === USER_SIGNIN_PAGENAME) {
+        this.redirectToDashboard = false;
+        this.handleRedirectCallBack();
+
+        return;
+      }
+
       if (item.pageName === 'external') {
         window.open(item.path, '_blank');
         return;
@@ -283,6 +320,15 @@ export default {
       this.navigateTo(item.path);
     },
     catchUserItemClicked(item) {
+
+      // make a redirect in case we need to disable the editing in the frontend
+      if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
+        this.redirectToDashboard = true;
+        this.handleRedirectCallBack();
+
+        return;
+      }
+
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
@@ -329,7 +375,59 @@ export default {
         query: index,
       });
     },
+    redirectMessage(componentName = 'Sign In') {
+      const userName = this.user?.name || '';
+      return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
+    },
+    handleRedirectCallBack() {
+
+      let message = this.redirectMessage();
+      let callback = this.redirectToLegacyLogin;
+
+      if (this.redirectToDashboard) {
+        message = this.redirectMessage('Dashboard');
+        callback = this.redirectToLegacyDashboard;
+      }
+
+      eventBus.$emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+    },
+    redirectToLegacyDashboard() {
+      const userName = this.user?.name || '';
+      window.open(`${this.domain}/user/${userName}`, '_blank');
+    },
+    redirectToLegacyLogin() {
+      window.open(`${this.domain}/user/reset/`, '_blank');
+    },
+    openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
+      this.dialogTitle = title;
+
+      if (!message) {
+        this.dialogMessage = this.redirectMessage();
+      } else {
+        this.dialogMessage = message;
+      }
+
+      if (!callback) {
+        callback = this.redirectToLegacyLogin;
+      }
+
+      this.dialogCallback = () => {
+        callback();
+        this.showInfoDialog = false;
+      }
+
+      this.showInfoDialog = true;
+    },
     catchSigninClicked() {
+
+      // make a redirect to the legacy website in case the sign in via the frontend doesn't work
+      if (this.signinRedirectActive) {
+        this.redirectToDashboard = false;
+        this.handleRedirectCallBack();
+
+        return;
+      }
+
       this.navigateTo(USER_SIGNIN_PATH);
     },
     catchHomeClicked() {
@@ -408,6 +506,15 @@ export default {
     },
     maintenanceConfig() {
       return this.config?.maintenanceConfig || {};
+    },
+    userEditMetadataConfig() {
+      return this.config?.userEditMetadataConfig || {};
+    },
+    signinRedirectActive() {
+      return this.maintenanceConfig?.signinRedirectActive || false;
+    },
+    dashboardRedirect() {
+      return this.userEditMetadataConfig?.dashboardRedirect || false;
     },
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){
@@ -548,7 +655,13 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
+    domain,
     reloadDialogCanceled: false,
+    showInfoDialog: false,
+    dialogTitle: 'Redirect to Legacy Website!',
+    dialogMessage: '',
+    dialogCallback: () => {},
+    redirectToDashboard: false,
     appVersion: process.env.VUE_APP_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,

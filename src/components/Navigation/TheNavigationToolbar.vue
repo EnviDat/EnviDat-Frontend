@@ -109,7 +109,7 @@
                   justify="end"
                  no-gutters >
 
-            <v-col @click="!signInDisabled  ? catchSigninClicked : undefined"
+            <v-col @click="!signInDisabled  ? catchSigninClicked() : undefined"
                    xl="4"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
@@ -196,7 +196,7 @@ export default {
       this.$emit('userMenuItemClick', item);
     },
     catchSigninClicked() {
-      console.log(this.signInDisabled);
+
       if (!this.signInDisabled) {
         this.$emit('signinClick');
       }
@@ -215,7 +215,7 @@ export default {
     modeInfoPrefix: 'Special View',
     signInText: 'Sign In Here',
     tooltipText: 'You are in a specific view which shows data for',
-    tooltipSignIn: 'Click to sign in into EnviDat',
+    tooltipSignIn: 'Sign in to manage your research data',
   }),
   components: {
     ModeView,

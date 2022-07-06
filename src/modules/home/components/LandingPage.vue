@@ -357,6 +357,10 @@ import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
 import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
 import TitleCard from '@/components/Cards/TitleCard';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard';
+import {
+  eventBus,
+  SHOW_DIALOG,
+} from '@/factories/eventBus';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -423,6 +427,12 @@ export default {
     },
     showPolygonParticles() {
       return this.$vuetify.breakpoint.lgAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
+    },
+    maintenanceConfig() {
+      return this.config?.maintenanceConfig || {};
+    },
+    signinRedirectActive() {
+      return this.maintenanceConfig?.signinRedirectActive || false;
     },
     showDecemberParticles() {
       return this.effectsConfig.decemberParticles && this.itIsDecember;
@@ -556,9 +566,17 @@ export default {
       this.$router.push({ path: ABOUT_PATH });
     },
     catchSigninClick() {
+
+      if (this.signinRedirectActive) {
+        // don't pass any parameters to show the default message for Sign In redirect
+        eventBus.$emit(SHOW_DIALOG);
+        return;
+      }
+
       if (this.$route.path === USER_SIGNIN_PATH) {
         return;
       }
+
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     redirectToDashboard() {
