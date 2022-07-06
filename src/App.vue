@@ -421,12 +421,10 @@ export default {
         this.dialogMessage = message;
       }
 
-      if (!callback) {
-        callback = this.redirectToLegacySignin;
-      }
-
       this.dialogCallback = () => {
-        callback();
+        if (callback) {
+          callback();
+        }
         this.showInfoDialog = false;
       }
 
