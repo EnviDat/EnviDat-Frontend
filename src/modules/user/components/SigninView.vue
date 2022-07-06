@@ -121,12 +121,28 @@
       <v-row v-if="signedIn"
              id="signinButtonRow" >
 
-        <v-col >
+        <v-col class="shrink">
+          <BaseRectangleButton color="primary"
+                               :button-text="dashboardButtonText"
+                               @clicked="catchOpenDashboard"
+          />
+
+        </v-col>
+
+        <v-col class="shrink">
+<!--
           <v-btn color="secondary"
                  outlined
                  @click="catchSignOut">
             {{ signoutButtonText }}
           </v-btn>
+-->
+
+          <BaseRectangleButton color="secondary"
+                               :button-text="signoutButtonText"
+                               is-outlined
+                               @clicked="catchSignOut"
+          />
         </v-col>
 
       </v-row>
@@ -154,6 +170,7 @@
 
 import signInPic from '@/modules/user/assets/signin.jpg';
 import { isFieldValid } from '@/factories/userEditingValidations';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import * as yup from 'yup';
 
 const keyLength = 32;
@@ -240,6 +257,9 @@ export default {
     catchSignOut() {
       this.$emit('signOut');
     },
+    catchOpenDashboard() {
+      this.$emit('openDashboard');
+    },
   },
   watch: {
     errorField() {
@@ -251,6 +271,7 @@ export default {
   data: () => ({
     signinButtonText: 'Sign In',
     signoutButtonText: 'Sign Out',
+    dashboardButtonText: 'Goto Dashboard',
     email: '',
     backendErrors: {
       email: '',
@@ -269,6 +290,7 @@ export default {
     signInPic,
   }),
   components: {
+    BaseRectangleButton,
   },
 };
 </script>

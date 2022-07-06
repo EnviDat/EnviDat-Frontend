@@ -291,6 +291,7 @@ import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 import {
   eventBus,
   SELECT_EDITING_DATASET,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
 } from '@/factories/eventBus';
 
 
@@ -319,6 +320,12 @@ export default {
       this.fetchUserDatasets();
       this.fetchCollaboratorDatasets()
       this.fetchUserOrganisationData();
+    }
+  },
+  mounted() {
+    if (this.dashboardRedirect) {
+      // if the config is set to redirect to the legacy dashboard
+      eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
     }
   },
   computed: {
@@ -351,6 +358,9 @@ export default {
     ]),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
+    },
+    dashboardRedirect() {
+      return this.userDashboardConfig?.dashboardRedirect || false;
     },
     loading() {
       return this.userLoading;

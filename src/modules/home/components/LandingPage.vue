@@ -359,7 +359,7 @@ import TitleCard from '@/components/Cards/TitleCard';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard';
 import {
   eventBus,
-  SHOW_DIALOG,
+  SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
 // Login & Register form and animation
@@ -569,7 +569,7 @@ export default {
 
       if (this.signinRedirectActive) {
         // don't pass any parameters to show the default message for Sign In redirect
-        eventBus.$emit(SHOW_DIALOG);
+        eventBus.$emit(SHOW_REDIRECT_SIGNIN_DIALOG);
         return;
       }
 

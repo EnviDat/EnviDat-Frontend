@@ -184,6 +184,8 @@ import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 import {
   eventBus,
   SHOW_DIALOG,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
+  SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
 
@@ -197,11 +199,15 @@ export default {
   },
   created() {
     eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.$on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.$on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     this.checkUserSignedIn();
   },
   beforeDestroy() {
     eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.$off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.$off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
     this.startParticles();
@@ -302,8 +308,7 @@ export default {
     },
     catchItemClicked(item) {
       if (this.signinRedirectActive && item.pageName === USER_SIGNIN_PAGENAME) {
-        this.redirectToDashboard = false;
-        this.handleRedirectCallBack();
+        this.showRedirectSignDialog();
 
         return;
       }
@@ -323,8 +328,7 @@ export default {
 
       // make a redirect in case we need to disable the editing in the frontend
       if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
-        this.redirectToDashboard = true;
-        this.handleRedirectCallBack();
+        this.showRedirectDashboardDialog();
 
         return;
       }
@@ -379,12 +383,12 @@ export default {
       const userName = this.user?.name || '';
       return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
     },
-    handleRedirectCallBack() {
+    handleRedirectCallBack(redirectToDashboard) {
 
       let message = this.redirectMessage();
-      let callback = this.redirectToLegacyLogin;
+      let callback = this.redirectToLegacySignin;
 
-      if (this.redirectToDashboard) {
+      if (redirectToDashboard) {
         message = this.redirectMessage('Dashboard');
         callback = this.redirectToLegacyDashboard;
       }
@@ -394,9 +398,19 @@ export default {
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
       window.open(`${this.domain}/user/${userName}`, '_blank');
+
+      if (this.$route.path === USER_DASHBOARD_PATH) {
+        this.$router.replace('/');
+      }
     },
-    redirectToLegacyLogin() {
+    redirectToLegacySignin() {
       window.open(`${this.domain}/user/reset/`, '_blank');
+    },
+    showRedirectSignDialog() {
+      this.handleRedirectCallBack(false);
+    },
+    showRedirectDashboardDialog() {
+      this.handleRedirectCallBack(true);
     },
     openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
       this.dialogTitle = title;
@@ -408,7 +422,7 @@ export default {
       }
 
       if (!callback) {
-        callback = this.redirectToLegacyLogin;
+        callback = this.redirectToLegacySignin;
       }
 
       this.dialogCallback = () => {
@@ -422,8 +436,7 @@ export default {
 
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
       if (this.signinRedirectActive) {
-        this.redirectToDashboard = false;
-        this.handleRedirectCallBack();
+        this.showRedirectSignDialog();
 
         return;
       }
@@ -507,14 +520,14 @@ export default {
     maintenanceConfig() {
       return this.config?.maintenanceConfig || {};
     },
-    userEditMetadataConfig() {
-      return this.config?.userEditMetadataConfig || {};
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
     },
     signinRedirectActive() {
       return this.maintenanceConfig?.signinRedirectActive || false;
     },
     dashboardRedirect() {
-      return this.userEditMetadataConfig?.dashboardRedirect || false;
+      return this.userDashboardConfig?.dashboardRedirect || false;
     },
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){
