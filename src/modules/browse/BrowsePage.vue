@@ -34,7 +34,7 @@
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
                     :reloadDelay="vReloadDelay"
-                    mainScrollClass=".mapLayoutContainers" />
+    />
 
   </article>
 </template>

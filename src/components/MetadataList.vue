@@ -146,7 +146,7 @@
                             :identifier="infiniteId"
                             :distance="preloadingDistance"
                             @infinite="infiniteHandler"
-                            :force-use-infinite-wrapper="mainScrollClass" >
+                            :force-use-infinite-wrapper="dynamicMainScrollClass" >
 
             <div slot="no-results">
             </div>
@@ -252,7 +252,7 @@ export default {
     searchBarPlaceholder: String,
     mainScrollClass: {
       type: String,
-      default: '#metadataListLayout',
+      default: undefined,
     },
     showPublicationState: {
       type: Boolean,
@@ -315,7 +315,7 @@ export default {
       isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
     }),
     showPinnedElements() {
-      return !this.loading && this.showMapFilter && this.prePinnedIds.length > 0;
+      return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
     unpinnedFilteredList() {
       const listWithoutPins = [];
@@ -369,6 +369,16 @@ export default {
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
+    mapLayout() {
+      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.breakpoint.mdAndUp;
+    },
+    dynamicMainScrollClass() {
+      if (this.mainScrollClass) {
+        return this.mainScrollClass;
+      }
+
+      return this.mapLayout ? '.mapLayoutContainers' : '.noMapLayoutContainers';
+    },
   },
   methods: {
     getMetadataState(metadata) {
@@ -417,7 +427,6 @@ export default {
         that.vIndex = i;
 
         that.vLoading = false;
-        // console.log('loaded to ' + that.vIndex );
       }, this.reloadDelay);
     },
     catchTagClicked(tagName) {
