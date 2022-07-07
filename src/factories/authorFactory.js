@@ -22,6 +22,14 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
+export function getAuthorGivenName(author) {
+  const firstName = author?.given_name || author?.firstName || '';
+  return firstName.trim() || null;
+}
+export function getAuthorLastName(author) {
+  const lastName = author.name || author.lastName || '';
+  return lastName.trim() || null;
+}
 export function getAuthorName(author) {
   let fullName = author.fullName;
 
