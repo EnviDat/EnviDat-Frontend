@@ -71,6 +71,7 @@ import {
   LISTCONTROL_MAP_ACTIVE,
   METADATA_NAMESPACE,
   SEARCH_METADATA,
+  SEARCH_AUTHOR,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
@@ -206,6 +207,15 @@ export default {
 
       this.loadRoutePins();
 
+      // TODO connect author search to browswer URL and clear search
+      // Check if searchParameter is for an author only search
+      const queryObj = this.$route.query;
+      if (Object.hasOwn(queryObj, 'isAuthorSearch')) {
+        this.authorSearch(queryObj);
+        this.resetScrollPos();
+        return;
+      }
+
       const searchParameter = this.$route.query.search || '';
       const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
 
@@ -224,6 +234,7 @@ export default {
       }
 
       if (checkSearchTriggering) {
+
         if (searchParameter && searchParameter.length > 0) {
 
           this.metadataSearch(searchParameter, this.metadataConfig);
@@ -274,6 +285,9 @@ export default {
     },
     metadataSearch(searchTerm, metadataConfig) {
       this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
+    },
+    authorSearch(queryObj) {
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR}`, { queryObj });
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
