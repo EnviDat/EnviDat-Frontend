@@ -98,7 +98,8 @@
                                   :tooltipText="authorToolTipText"
                                   :asciiDead="asciiDead"
                                   :authorPassedInfo="authorPassedInfo"
-                                  @clicked="catchAuthorClicked(authorName(author))" />
+                                  @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
+<!--                                  @clicked="catchAuthorClicked(authorName(author))" />-->
               </v-col>
             </v-row>
           </v-col>
@@ -317,7 +318,7 @@ import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
-import { getAuthorName } from '@/factories/authorFactory';
+import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip';
@@ -438,8 +439,13 @@ export default {
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
-    catchAuthorClicked(authorName) {
-      this.$emit('clickedAuthor', authorName);
+    // catchAuthorClicked(authorName) {
+    //   console.log(`EXECUTED: catchAuthorClicked(authorName)  authorName: ${authorName}`);
+    //   this.$emit('clickedAuthor', authorName);
+    // },
+    catchAuthorClicked(authorGivenName, authorLastName) {
+      console.log(`EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)  authorGivenName: ${authorGivenName}   authorLastName: ${authorLastName}`);
+      this.$emit('clickedAuthor', authorGivenName, authorLastName);
     },
     catchBackClicked() {
       this.$emit('clickedBack');
@@ -448,6 +454,8 @@ export default {
       return this.dark ? `${icon}_w` : icon;
     },
     authorName: getAuthorName,
+    authorGivenName: getAuthorGivenName,
+    authorLastName: getAuthorLastName,
   },
 };
 </script>
