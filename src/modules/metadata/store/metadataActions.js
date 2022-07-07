@@ -115,6 +115,40 @@ function createSolrQuery(searchTerm) {
 
   return solrQuery;
 }
+// TODO handle cases where givenName has middle initial (which should be removed)
+// TODO handle cases where arguments have a special character that should be converted to unicode (like umlauts)
+function createSolrQueryAuthorOnly(givenName, lastName) {
+
+  console.log('EXECUTED: createSolrQueryAuthorOnly(givenName, lastName)');
+  console.log(`author:"*${givenName} ${lastName}*"~1000`);
+
+  return `author:"*${givenName} ${lastName}*"~1000`;
+
+  // TODO remove this block
+  // // Assign single word search term query string
+  // const searchStringSingleTerm = `author:"*${searchTerm}*"`;
+  //
+  // // Split search term by space character
+  // const splits = searchTerm.split(' ');
+  // console.log(`splits:  ${splits}`);
+  //
+  // // If search term only one word then return searchStringSingleTerm
+  // if (splits.length <= 1) {
+  //   console.log(`searchStringSingleTerm ${searchStringSingleTerm}`);
+  //   return searchStringSingleTerm;
+  // }
+  //
+  // // Else search term is multiple words then return searchStringMultipleTerms
+  // // that searches author field for all words in search term
+  // let searchStringMultipleTerms = '';
+  // for (const term of splits) {
+  //   searchStringMultipleTerms += `author:"*${term}* AND `
+  // }
+  // // Remove ' AND ' on end of string
+  // searchStringMultipleTerms = searchStringMultipleTerms.replace(/( AND $)/, '');
+  // console.log(`searchStringMultipleTerms  ${searchStringMultipleTerms}`);
+  // return searchStringMultipleTerms;
+}
 
 function localSearch(searchTerm, datasets) {
   const foundDatasets = [];
@@ -200,18 +234,53 @@ export default {
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
 
-
     await axios
-      .get(url)
-      .then((response) => {
+        .get(url)
+        .then((response) => {
 
-        commit(SEARCH_METADATA_SUCCESS, {
-          payload: response.data.response.docs,
+          commit(SEARCH_METADATA_SUCCESS, {
+            payload: response.data.response.docs,
+          });
+        })
+        .catch((reason) => {
+          commit(SEARCH_METADATA_ERROR, reason);
         });
-      })
-      .catch((reason) => {
-        commit(SEARCH_METADATA_ERROR, reason);
-      });
+  },
+  // TODO finish SEARCH_AUTHOR action
+  async [SEARCH_AUTHOR]({ commit }, {
+    queryObj,
+  }) {
+    console.log('EXECUTED: metadataAction SEARCH_AUTHOR');
+
+    commit(SEARCH_AUTHOR, queryObj);  // TODO determine if this is necessary
+
+    const givenName = queryObj.givenName.trim();
+    const lastName = queryObj.lastName.trim();
+    console.log(givenName);
+    console.log(lastName);
+
+    const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
+
+    // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
+    const query = `query?q=${solrQuery}`;
+    const queryAdditions = '&wt=json&rows=1000';
+    const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
+    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+    console.log(url);
+
+    // TODO create new metadata success and error commits
+    await axios
+        .get(url)
+        .then((response) => {
+
+          commit(SEARCH_METADATA_SUCCESS, {
+            payload: response.data.response.docs,
+          });
+          console.log(response.data.response.docs);
+        })
+        .catch((reason) => {
+          commit(SEARCH_METADATA_ERROR, reason);
+        });
   },
   async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod }) {
     // commitMethod can be given from the caller of the action to direct
