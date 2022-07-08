@@ -58,6 +58,11 @@ const initialState = {
   searchingMetadatasContentOK: false,
   currentSearchTerm: '',
   /**
+   * author search properties when users make an author only search
+   */
+  givenNameAuthorSearch: '',
+  lastNameAuthorSearch: '',
+  /**
    * filteredContent is the Metadata which is actually shown on the BrowsePage
    */
   isFilteringContent: false,
@@ -126,6 +131,8 @@ export const metadata = {
     searchingMetadatasContent: state => state.searchingMetadatasContent,
     searchingMetadatasContentOK: state => state.searchingMetadatasContentOK,
     currentSearchTerm: state => state.currentSearchTerm,
+    givenNameAuthorSearch: state => state.givenNameAuthorSearch,
+    lastNameAuthorSearch: state => state.lastNameAuthorSearch,
     loadingCurrentMetadataContent: state => state.loadingCurrentMetadataContent,
     currentMetadataContent: state => state.currentMetadataContent,
     isFilteringContent: state => state.isFilteringContent,
