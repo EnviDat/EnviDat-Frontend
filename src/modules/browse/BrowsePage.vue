@@ -207,17 +207,44 @@ export default {
 
       this.loadRoutePins();
 
-      // TODO connect author search to browswer URL and clear search
+      // TODO connect author search to browser URL (clear existing search in URL after selecting ano
+      // TODO clear search, try to clear author search properties and keys from this.$route.query object
       // Check if searchParameter is for an author only search
+      // Block is for author search queries triggered by clicking on an author tag in a metadata entry
       const queryObj = this.$route.query;
       if (Object.hasOwn(queryObj, 'isAuthorSearch')) {
-        this.authorSearch(queryObj);
-        this.resetScrollPos();
-        return;
+
+        const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
+        const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
+
+        const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
+
+        // TODO determine if more logic is need to handle clearing search
+        if (!checkAuthorTriggering) {
+          triggerClearSearch = true;
+          // this.clearSearchResults();
+        }
+
+        if (checkAuthorTriggering) {
+
+          // Send queryObj to store and trigger author search
+          if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
+            this.authorSearch(queryObj);
+            this.resetScrollPos();
+            // return;
+          }
+
+          // Both given and last names were changed to empty -> clear the search results
+          triggerClearSearch = true;
+          triggerScrollReset = true;
+        }
+
       }
+
 
       const searchParameter = this.$route.query.search || '';
       const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
+
 
       if (!checkSearchTriggering) {
         // use the search parameter from the url in any case
@@ -234,6 +261,8 @@ export default {
       }
 
       if (checkSearchTriggering) {
+
+        // TODO create and trigger a new CLEAR_SEARCH_AUTHOR action
 
         if (searchParameter && searchParameter.length > 0) {
 
@@ -326,6 +355,8 @@ export default {
       searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
       searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
+      givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
+      lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
       vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
       vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
