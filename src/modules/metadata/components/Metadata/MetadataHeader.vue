@@ -444,7 +444,7 @@ export default {
     //   this.$emit('clickedAuthor', authorName);
     // },
     catchAuthorClicked(authorGivenName, authorLastName) {
-      console.log(`EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)  authorGivenName: ${authorGivenName}   authorLastName: ${authorLastName}`);
+      console.log('EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)');
       this.$emit('clickedAuthor', authorGivenName, authorLastName);
     },
     catchBackClicked() {

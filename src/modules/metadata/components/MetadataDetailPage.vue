@@ -741,20 +741,14 @@ export default {
     //   });
     // },
     catchAuthorClicked(authorGivenName, authorLastName) {
-      console.log(`EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)   authorGivenName:  ${authorGivenName}     authorLastName:  ${authorLastName}`);
-      // const query = {};
-      // query.search = {
-      //   givenName: authorGivenName,
-      //   lastName: authorLastName,
-      //   isAuthorSearch: true,
-      // };
+
+      console.log('EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)');
+
       const query = {
         givenName: authorGivenName,
         lastName: authorLastName,
         isAuthorSearch: true,
       };
-
-      console.log(`query:  ${query.givenName}   ${query.lastName}     ${query.isAuthorSearch}`);
 
       this.$router.push({
         path: BROWSE_PATH,
