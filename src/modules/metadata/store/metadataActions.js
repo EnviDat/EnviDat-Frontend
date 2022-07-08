@@ -226,9 +226,6 @@ export default {
     }
 
     const solrQuery = createSolrQuery(originalTerm);
-
-    // using the envidat "query" action for performance boost (ckan package_search isn't performant)
-    // const queryAuthor = `query?q=title:"${searchTerm}" OR notes:"${searchTerm}" OR author:"${searchTerm}"~2&wt=json&rows=1000`;
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
@@ -247,17 +244,18 @@ export default {
         });
   },
   // TODO finish SEARCH_AUTHOR action
+  // TODO test that query is accurate
   async [SEARCH_AUTHOR]({ commit }, {
     queryObj,
   }) {
     console.log('EXECUTED: metadataAction SEARCH_AUTHOR');
 
-    commit(SEARCH_AUTHOR, queryObj);  // TODO determine if this is necessary
+    commit(SEARCH_AUTHOR, queryObj);
 
     const givenName = queryObj.givenName.trim();
     const lastName = queryObj.lastName.trim();
-    console.log(givenName);
-    console.log(lastName);
+    // console.log(givenName);
+    // console.log(lastName);
 
     const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
 
@@ -268,12 +266,14 @@ export default {
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
     console.log(url);
 
-    // TODO create new metadata success and error commits
+    // TODO create and implement new metadata success and error actions
     await axios
         .get(url)
         .then((response) => {
 
           commit(SEARCH_METADATA_SUCCESS, {
+            // TODO filter payload to make sure that author given and last names are in same author object
+            // TODO try using JSON.parse to get author objects
             payload: response.data.response.docs,
           });
           console.log(response.data.response.docs);
