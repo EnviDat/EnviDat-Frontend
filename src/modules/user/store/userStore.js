@@ -21,7 +21,12 @@ import {
 
 
 import actions from './userActions';
+import editActions from './editActions';
+import createActions from './createActions';
+
 import mutations from './userMutations';
+import editMutations from './editMutations';
+import createMutations from './createMutations';
 
 const userState = {
   error: null,
@@ -79,6 +84,14 @@ export const user = {
       return filteredContent;
     },
   },
-  mutations,
-  actions,
+  mutations: {
+    ...mutations,
+    ...editMutations,
+    ...createMutations,
+  },
+  actions: {
+    ...actions,
+    ...editActions,
+    ...createActions,
+  },
 };
