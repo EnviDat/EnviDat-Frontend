@@ -11,6 +11,8 @@
                        :subStep="routeSubStep"
                        stepColor="highlight"
                        :loading="loading"
+                       showPreviewButton
+                       @clickedPreview="catchPreviewClicked"
                        @clickedClose="catchBackClicked" />
 
 
@@ -93,6 +95,7 @@ import {
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
+  METADATADETAIL_PATH,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
 } from '@/router/routeConsts';
@@ -304,6 +307,9 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
+    catchPreviewClicked() {
+      window.open(`${this.domain}/#${METADATADETAIL_PATH}/${this.metadataId}`, '_blank');
+    },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
@@ -457,6 +463,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
+    domain: process.env.VUE_APP_ENVIDAT_PROXY,
     creationSteps: null,
     errorTitle: null,
     errorMessage: null,
