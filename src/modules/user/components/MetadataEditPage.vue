@@ -463,7 +463,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    domain: process.env.VUE_APP_ENVIDAT_PROXY,
+    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     creationSteps: null,
     errorTitle: null,
     errorMessage: null,
