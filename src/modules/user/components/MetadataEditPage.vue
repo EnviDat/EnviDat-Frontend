@@ -58,7 +58,7 @@ import {
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE, CREATE_METADATA_CREATE_RESOURCE,
 } from '@/factories/eventBus';
 
 import {
@@ -73,6 +73,7 @@ import { getValidationMetadataEditingObject } from '@/factories/userEditingValid
 import { mapGetters, mapState } from 'vuex';
 
 import {
+  ACTION_METADATA_CREATION_RESOURCE,
   METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LAST_DATASET,
@@ -128,6 +129,7 @@ export default {
   created() {
     this.creationSteps = initializeSteps(metadataCreationSteps);
 
+    eventBus.$on(CREATE_METADATA_CREATE_RESOURCE, this.createMetadata);
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
@@ -139,6 +141,7 @@ export default {
     eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
   },
   beforeDestroy() {
+    eventBus.$off(CREATE_METADATA_CREATE_RESOURCE, this.createMetadata);
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
@@ -322,6 +325,17 @@ export default {
     // eslint-disable-next-line no-unused-vars
     saveAuthor(newAuthor) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
+    },
+    createMetadata(updateObj) {
+
+      const action = ACTION_METADATA_CREATION_RESOURCE;
+      const payload = {
+        stepKey: updateObj.object,
+        data: updateObj.data,
+        // id: this.$route.params.metadataid,
+      }
+
+      this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
     },
     editComponentsChanged(updateObj) {
 

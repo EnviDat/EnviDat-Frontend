@@ -322,7 +322,11 @@ export function initializeLocalResource(metadataId, file = null, url = '') {
   const fileName = isLink ? '' : file.name;
   const size = isLink ? 0 : file.size;
 
-  if (!isLink) {
+  if (isLink) {
+    const splits = url.split('/');
+    const splitPos = splits.length > 0 ? splits.length - 1 : 0;
+    resourceName = splits[splitPos];
+  } else {
     const splits = resourceName.split('.');
     resourceName = splits[0];
   }
@@ -332,20 +336,29 @@ export function initializeLocalResource(metadataId, file = null, url = '') {
   const now = getCurrentDate();
 
   return {
-    metadataId,
+    package_id: metadataId,
     name: resourceName,
     fileName,
     file,
+    mimetype: file.type,
     size,
-    id: `resoureId_${localResoureID}`,
+    // id: `resoureId_${localResoureID}`,
     [localIdProperty]: `resoureId_${localResoureID}`,
     url_type: isLink ? '' : 'upload',
     format: resourceFormat,
     url,
+    publication_state: null,
+    multipart_name: file.name,
+    doi: null,
     existsOnlyLocal: true,
     created: now,
     lastModified: now,
     loading: false,
+    'resource_size-size_value': file.size / 1024 / 1024,
+    'resource_size-size_units': 'mb',
+    'restricted-level': null,
+    'restricted-allowed_users': null,
+    'restricted-shared_secret': null,
   };
 }
 

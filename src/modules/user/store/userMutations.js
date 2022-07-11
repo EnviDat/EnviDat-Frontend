@@ -46,7 +46,7 @@ import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
-  METADATA_CANCEL_RESOURCE_EDITING,
+  METADATA_CANCEL_RESOURCE_EDITING, METADATA_CREATION_RESOURCE, METADATA_CREATION_RESOURCE_SUCCESS,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_LOAD_DATASET_ERROR,
@@ -357,13 +357,10 @@ export default {
     extractError(this, reason, 'userOrgaDatasetsError');
   },
   [UPDATE_METADATA_EDITING](state, payload) {
-/*
+
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
       updateResource(this, state, payload);
-    } else
-*/
-
-    if (payload.object === EDITMETADATA_AUTHOR) {
+    } else if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload);
     } else {
       const current = state.metadataInEditing[payload.object];
@@ -374,6 +371,39 @@ export default {
       };
 
     }
+  },
+  [METADATA_CREATION_RESOURCE](state, resource) {
+    resource.loading = true;
+  },
+  [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
+
+    resource.loading = false;
+    resource.message = message;
+/*
+    const payload = {
+      object: EDITMETADATA_DATA_RESOURCES,
+      data: resource,
+    };
+
+    this[EDITMETADATA_DATA_RESOURCES](state, payload);
+*/
+
+/*
+    const editingObject = state.metadataInEditing[stepKey];
+    editingObject.loading = false;
+    editingObject.message = message;
+*/
+
+    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+    }, state.metadataSavingMessageTimeoutTime);
+
+  },
+  [METADATA_CREATION_RESOURCE_SUCCESS](state, reason) {
+
+    extractError(this, reason);
   },
   [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
 

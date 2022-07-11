@@ -47,7 +47,7 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
-  eventBus,
+  eventBus, CREATE_METADATA_CREATE_RESOURCE,
 } from '@/factories/eventBus';
 
 import { initializeLocalResource } from '@/factories/metaDataFactory';
@@ -188,7 +188,7 @@ export default {
         true,
       );
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.$emit(CREATE_METADATA_CREATE_RESOURCE, {
         object: EDITMETADATA_DATA_RESOURCES,
         data: newRes,
       });

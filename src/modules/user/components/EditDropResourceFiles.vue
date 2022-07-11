@@ -185,7 +185,8 @@ export default {
       const url = `${domain}/api/action/cloudstorage_initiate_multipart`;
 
       const payload = {
-        id: await this.createCKANResource(file),
+        // id: await this.createCKANResource(file),
+        id: '',
         name: file.name,
         size: file.size,
       };

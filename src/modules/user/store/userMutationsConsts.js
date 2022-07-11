@@ -170,5 +170,17 @@ export const METADATA_EDITING_LOAD_DATASET_SUCCESS = 'METADATA_EDITING_LOAD_DATA
 
 export const METADATA_EDITING_LAST_DATASET = 'METADATA_EDITING_LAST_DATASET';
 
+export const ACTION_METADATA_CREATION_RESOURCE = () => {
+  if (process.env.NODE_ENV === 'development' && useTestdata) {
+    return './testdata/resource_create.json';
+  }
+
+  return 'resource_create';
+};
+
+export const METADATA_CREATION_RESOURCE = 'METADATA_CREATION_RESOURCE';
+export const METADATA_CREATION_RESOURCE_ERROR = 'METADATA_CREATION_RESOURCE_ERROR';
+export const METADATA_CREATION_RESOURCE_SUCCESS = 'METADATA_CREATION_RESOURCE_SUCCESS';
+
 export const USER_NAMESPACE = 'user';
 export const USER_SIGNIN_NAMESPACE = 'userSignIn';

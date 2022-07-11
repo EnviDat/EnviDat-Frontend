@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     checkCreateButtonDisabled() {
-      this.createButtonDisabled = !urlRegex.test(this.url);
+      // this.createButtonDisabled = !urlRegex.test(this.url);
     },
     createButtonClick() {
       this.$emit('createResources', this.url);
@@ -82,7 +82,7 @@ export default {
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },
-    createButtonDisabled: true,
+    createButtonDisabled: false, // true,
   }),
   components: {
     BaseRectangleButton,
