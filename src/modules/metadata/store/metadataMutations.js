@@ -18,6 +18,7 @@ import {
   LOAD_METADATA_CONTENT_BY_ID_ERROR,
   CLEAN_CURRENT_METADATA,
   SEARCH_AUTHOR,
+  CLEAR_SEARCH_AUTHOR,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -110,10 +111,14 @@ export default {
     state.lastNameAuthorSearch = queryObj.lastName;
     console.log(`metadataMutations   ${state.givenNameAuthorSearch}  ${state.lastNameAuthorSearch}`)
   },
-  // TODO create the following new mutations (and be sure to add any new variables to metadataStore):
+  // TODO create (ONLY if needed) the following new mutations (and be sure to add any new variables to metadataStore):
   // TODO     SEARCH_AUTHOR_SUCCESS
   // TODO     SEARCH_METADATA_ERROR
-  // TODO     CLEAR_SEARCH_AUTHOR
+  [CLEAR_SEARCH_AUTHOR](state) {
+    state.givenNameAuthorSearch = '';
+    state.lastNameAuthorSearch = '';
+    console.log('EXECUTED CLEAR_SEARCH_AUTHOR');
+  },
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
     state.searchingMetadatasContentOK = false;
