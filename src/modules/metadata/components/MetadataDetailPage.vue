@@ -747,7 +747,7 @@ export default {
       const query = {
         givenName: authorGivenName,
         lastName: authorLastName,
-        isAuthorSearch: true,
+        // isAuthorSearch: true,   // TODO determine if isAuthorSearch boolean is needed
       };
 
       this.$router.push({
