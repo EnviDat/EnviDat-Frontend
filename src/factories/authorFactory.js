@@ -230,7 +230,11 @@ function overwriteDataCredit(author, existingAuthor) {
 export function getAuthorKey(author) {
 
   if (author?.email) {
-    return author.email.trim();
+    return author.email.trim().toLowerCase();
+  }
+
+  if (author?.id?.identifier) {
+    return author.id.identifier.trim().toLowerCase();
   }
 
   return author?.fullName?.trim().toLowerCase() || null;

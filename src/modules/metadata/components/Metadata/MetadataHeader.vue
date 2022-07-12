@@ -163,7 +163,7 @@
 
           <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
-            <BaseIconLabelView :text="contactEmail"
+            <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
@@ -424,6 +424,9 @@ export default {
     },
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : null;
+    },
+    contactEmailLowerCase() {
+      return this.contactEmail?.toLowerCase() || '';
     },
   },
   updated() {
