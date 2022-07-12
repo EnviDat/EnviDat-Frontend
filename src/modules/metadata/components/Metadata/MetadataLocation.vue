@@ -1,6 +1,6 @@
 <template>
   <v-card id="MetadataLocation" v-if="catalog">
-    <v-card-title class="text-h6 metadataComponentTitle">
+    <v-card-title class="text-h6 metadata_title">
       {{ METADATA_LOCATION_TITLE }}
     </v-card-title>
 

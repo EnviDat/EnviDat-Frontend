@@ -50,6 +50,8 @@ const unFormatedMetadataCards = metadataset;
 
 // console.log(`got metadata ${!!unFormatedMetadataCards}`);
 
+// console.log(`got metadata ${!!unFormatedMetadataCards}`);
+
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -85,10 +87,14 @@ const placeholderKeywordsGenericProps = {
 
 const metadataCards = [];
 
-unFormatedMetadataCards.forEach((el) => {
+for (let i = 0; i < unFormatedMetadataCards.length; i++) {
+  const el = unFormatedMetadataCards[i];
+
+// unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
-});
+// });
+}
 
 
 const authorsMap = extractAuthorsMap(metadataCards);
@@ -698,7 +704,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription :genericProps="genericProps" />
+          <EditDescription :description="genericProps.description" />
         </v-col>
       </v-row>
 

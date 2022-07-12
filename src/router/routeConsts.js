@@ -45,3 +45,6 @@ export const USER_SIGNIN_PAGENAME = 'SigninPage';
 export const USER_DASHBOARD_PATH = '/dashboard';
 export const USER_DASHBOARD_PAGENAME = 'DashboardPage';
 export const USER_SIGNOUT_PATH = '/signout';
+
+export const BLOG_PATH = '/blog';
+export const BLOG_PAGENAME = 'BlogPage';

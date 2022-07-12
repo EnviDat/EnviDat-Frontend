@@ -15,8 +15,8 @@ import axios from 'axios';
 
 import {
   LOAD_METADATA_CONTENT_BY_ID,
-  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  LOAD_METADATA_CONTENT_BY_ID_ERROR,
+  // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
+  // LOAD_METADATA_CONTENT_BY_ID_ERROR,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -323,6 +323,7 @@ export default {
   // eslint-disable-next-line consistent-return
   [FILTER_METADATA]({ dispatch, commit }, {
     selectedTagNames = [],
+    selectedPins= [],
     mode,
   }) {
     commit(FILTER_METADATA);

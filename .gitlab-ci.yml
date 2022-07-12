@@ -45,7 +45,7 @@ set-vars:
   before_script:
     - >
       apk add jq yq --no-cache
-      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
     - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
     - cat .env >> build.env
@@ -227,7 +227,7 @@ create-helm-chart:
   script:
     - >
       apk add yq --no-cache
-      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
     - helm dependencies build chart
     - yq -i '.appVersion = strenv(VERSION)' chart/Chart.yaml
     - helm package chart

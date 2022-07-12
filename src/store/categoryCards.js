@@ -33,15 +33,6 @@ import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
 export default [
   {
-    title: 'Sign In',
-    type: 'login',
-    alias: ['signin'],
-    imgPath: 'cards/data_creator_small',
-    color: '#E0F2F1',
-    darkColor: '#B2DFDB',
-    disabled: false,
-  },
-  {
     title: 'Forest',
     type: FOREST,
     alias: ['wood', 'tree'],
@@ -93,6 +84,15 @@ export default [
     imgPath: 'cards/c_b_c_b_clouds_lighting_small',
     color: '#E8EAF6',
     darkColor: '#C5CAE9',
+    disabled: false,
+  },
+  {
+    title: 'Sign In',
+    type: 'login',
+    alias: ['signin'],
+    imgPath: 'cards/data_creator_small',
+    color: '#E0F2F1',
+    darkColor: '#B2DFDB',
     disabled: false,
   },
   {

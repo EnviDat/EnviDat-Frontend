@@ -11,9 +11,11 @@
                 @click="buttonCallback ? buttonCallback : ''">
 
           <v-img class="imagezoom"
-                  :src="sloganImg ? sloganImg : fallbackImg"
-                  style="min-height: 100%; border-top-left-radius: 4px;"
-                  :style="`max-height: ${maxHeight}px; border-bottom-left-radius: ${$vuetify.breakpoint.smAndUp ? 4 : 0}px;
+                 cover
+                 :aspect-ratio="1"
+                 :src="sloganImg ? sloganImg : fallbackImg"
+                 style="min-height: 100%; border-top-left-radius: 4px;"
+                 :style="`max-height: ${maxHeight}px; border-bottom-left-radius: ${$vuetify.breakpoint.smAndUp ? 4 : 0}px;
                     border-top-right-radius: ${$vuetify.breakpoint.xsOnly ? 4 : 0}px;`"  />
         </v-col>
 
@@ -21,7 +23,7 @@
                 cols="12"
                 sm="7" >
 
-          <div class="hidden-sm-and-down envidatSlogan text-h4 pb-5"
+          <div class="hidden-sm-and-down envidatSlogan text-h4 pb-4"
                 v-html="slogan">
           </div>
           <div class="hidden-xs-only hidden-md-and-up envidatSlogan text-h5 pb-5"
@@ -33,7 +35,6 @@
           </div>
 
           <div :class="hasButtons ? 'pb-5 mb-5' : 'pb-0'"
-                :style="$vuetify.breakpoint.mdAndUp ? 'font-size: 14px !important;' : '' "
                 v-html="subSlogan">
           </div>
         </v-col>

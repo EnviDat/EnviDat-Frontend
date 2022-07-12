@@ -19,12 +19,12 @@ import Crypto from 'crypto-js';
 import Cookie from 'js-cookie';
 import uuid from 'uuid';
 
-export function renderMarkdown(markdownString) {
+export function renderMarkdown(markdownString, sanitizeHTML = true) {
   if (!markdownString || markdownString.length <= 0) {
     return '';
   }
 
-  const strippedMDFile = remark().use(htmlLib).processSync(markdownString);
+  const strippedMDFile = remark().use(htmlLib, { sanitize: sanitizeHTML}).processSync(markdownString);
   return strippedMDFile.contents;
 }
 

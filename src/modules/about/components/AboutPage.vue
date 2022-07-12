@@ -4,85 +4,109 @@
                 fluid
                 id="AboutPage" >
 
-      <!-- Tabs -->
-      <v-tabs v-model="activeTab"
-              slider-color="accent"
-              color="white"
-              grow
-              icons-and-text
-              background-color="highlight">
+    <v-row no-gutters
+           ref="aboutHeader"
+           class="py-1 py-md-4">
 
-        <v-tab v-for="tab in tabs"
-              :key="tab.name"
-              @click="catchTabClick(tab.name)"
-              class="pa-0">
-            {{ $vuetify.breakpoint.smAndUp ? tab.name : '' }}
+      <v-col cols="12"
+             md="10"
+             offset-md="1">
 
-          <v-icon>{{ tab.icon }}</v-icon>
-        </v-tab>
-      </v-tabs>
+        <!-- Tabs -->
+        <v-tabs v-model="activeTab"
+                slider-color="accent"
+                color="white"
+                grow
+                icons-and-text
+                background-color="highlight">
 
-      <!-- Tab contents -->
-      <v-tabs-items v-model="activeTab">
+          <v-tab v-for="tab in tabs"
+                :key="tab.name"
+                @click="catchTabClick(tab.name)"
+                class="pa-0">
+              {{ $vuetify.breakpoint.smAndUp ? tab.name : '' }}
 
-        <!-- About -->
-        <v-tab-item :key="tabs[0].name">
+            <v-icon>{{ tab.icon }}</v-icon>
+          </v-tab>
+        </v-tabs>
 
-          <about-tab-layout title="About EnviDat"
-                            :titleImage="missionImg" >
+      </v-col>
 
-            <v-row no-gutters >
-              <v-col v-for="(card, index) in aboutCardInfo"
-                      :key="index"
-                      class="pa-3"
-                      :class="card.widthClass" >
+    </v-row>
 
-                <expandable-card :title="card.title"
-                                  :text="card.text"
-                                  :img="card.img"
-                                  :min-height="100"
-                                  :max-height="150"
-                                  :contain="card.title === 'WSL'" />
-              </v-col>
-            </v-row>
+    <v-row no-gutters
+           ref="aboutBody"
+           class="py-1 py-md-4">
 
-          </about-tab-layout>
+      <v-col cols="12"
+             md="10"
+             offset-md="1">
 
-        </v-tab-item>
+        <!-- Tab contents -->
+        <v-tabs-items v-model="activeTab">
 
-        <!-- Guidelines -->
-        <v-tab-item :key="tabs[1].name">
+          <!-- About -->
+          <v-tab-item :key="tabs[0].name">
 
-          <about-tab-layout title="Guidelines"
-                            :titleImage="guidelineImg"
-                            :loading="guidelinesLoading"
-                            loadingText="Loading Guidelines..."
-                            :markdownContent="guidelinesMarkdownText" />
+            <about-tab-layout title="About EnviDat"
+                              :titleImage="missionImg" >
 
-        </v-tab-item>
+              <v-row no-gutters >
+                <v-col v-for="(card, index) in aboutCardInfo"
+                        :key="index"
+                        class="pa-3"
+                        :class="card.widthClass" >
 
-        <!-- Policies -->
-        <v-tab-item :key="tabs[2].name">
+                  <expandable-card :title="card.title"
+                                    :text="card.text"
+                                    :img="card.img"
+                                    :min-height="100"
+                                    :max-height="150"
+                                    :contain="card.title === 'WSL'" />
+                </v-col>
+              </v-row>
 
-          <about-tab-layout title="Policies"
-                            :titleImage="policiesImg"
-                            :loading="policiesLoading"
-                            loadingText="Loading Policies..."
-                            :markdownContent="policiesMarkdownText" />
+            </about-tab-layout>
 
-        </v-tab-item>
+          </v-tab-item>
 
-        <!-- DMP -->
-        <v-tab-item :key="tabs[3].name">
+          <!-- Guidelines -->
+          <v-tab-item :key="tabs[1].name">
 
-          <about-tab-layout title="Data Management Plan"
-                            :titleImage="dmpImg"
-                            :loading="dmpLoading"
-                            loadingText="Loading Data Management Plan infos..."
-                            :markdownContent="dmpMarkdownText" />
+            <about-tab-layout title="Guidelines"
+                              :titleImage="guidelineImg"
+                              :loading="guidelinesLoading"
+                              loadingText="Loading Guidelines..."
+                              :markdownContent="guidelinesMarkdownText" />
 
-        </v-tab-item>
-      </v-tabs-items>
+          </v-tab-item>
+
+          <!-- Policies -->
+          <v-tab-item :key="tabs[2].name">
+
+            <about-tab-layout title="Policies"
+                              :titleImage="policiesImg"
+                              :loading="policiesLoading"
+                              loadingText="Loading Policies..."
+                              :markdownContent="policiesMarkdownText" />
+
+          </v-tab-item>
+
+          <!-- DMP -->
+          <v-tab-item :key="tabs[3].name">
+
+            <about-tab-layout title="Data Management Plan"
+                              :titleImage="dmpImg"
+                              :loading="dmpLoading"
+                              loadingText="Loading Data Management Plan infos..."
+                              :markdownContent="dmpMarkdownText" />
+
+          </v-tab-item>
+        </v-tabs-items>
+
+      </v-col>
+
+    </v-row>
 
   </v-container>
 </template>
@@ -250,7 +274,7 @@ export default {
       const wslLogoImg = this.mixinMethods_getWebpImage('about/wslLogo', this.$store.state);
       const teamImg = this.mixinMethods_getWebpImage('about/team_small', this.$store.state);
 
-      const defaultWidthClass = 'col-12 col-sm-6 col-md-4';
+      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-2';
 
       const defaultAboutInfo = [
         {
@@ -288,7 +312,7 @@ export default {
           /* eslint-disable prefer-template */
           text: '<img src="' + this.orga + '" style="width: 100%; height: 100%;" />',
           img: teamImg,
-          defaultWidthClass: 'col-12 col-sm-12 col-md-8',
+          defaultWidthClass: 'col-12 col-sm-12 col-md-8 col-xl-3',
         },
       ];
 

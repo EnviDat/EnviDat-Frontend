@@ -32,7 +32,7 @@ export function getAuthorName(author) {
     fullName = `${firstName.trim()} ${lastName.trim()}`;
   }
 
-  return fullName?.trim() || null;
+  return fullName.trim() || null;
 }
 
 /**
@@ -123,6 +123,7 @@ export function getDataCredit(author) {
   } else if (typeof author.data_credit === 'string') {
     dataCredit[author.data_credit] = 1;
   } else {
+    // eslint-disable-next-line no-console
     console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
     // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
@@ -170,7 +171,11 @@ export function createAuthors(dataset) {
     // }
 
 //    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
-    const dataCredit = author.dataCredit || author.data_credit || [];
+    let dataCredit = author.dataCredit || author.data_credit || [];
+
+    if (typeof dataCredit === 'string') {
+      dataCredit = [dataCredit];
+    }
 
     authorObjs.push({
       firstName: firstName.trim(),
@@ -225,7 +230,11 @@ function overwriteDataCredit(author, existingAuthor) {
 export function getAuthorKey(author) {
 
   if (author?.email) {
-    return author.email.trim();
+    return author.email.trim().toLowerCase();
+  }
+
+  if (author?.id?.identifier) {
+    return author.id.identifier.trim().toLowerCase();
   }
 
   return author?.fullName?.trim().toLowerCase() || null;
@@ -305,7 +314,11 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     const fullAuthor = authorMap[authorKey];
 
     if (fullAuthor) {
-      fullAuthors.push(fullAuthor);
+      fullAuthors.push({
+          ...fullAuthor,
+          dataCredit: author.dataCredit,
+        },
+      );
     }
 
   }

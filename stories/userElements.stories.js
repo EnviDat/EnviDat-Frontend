@@ -90,21 +90,25 @@ export const UserAvatarViews = () => ({
 
     <v-col>
       <UserAvatar :size="32"
+                  nameInitials="II"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar
+          nameInitials="II"
           emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar :size="64"
+                  nameInitials="II"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar :size="128"
+                  nameInitials="II"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 

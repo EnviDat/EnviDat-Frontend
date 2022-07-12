@@ -30,6 +30,8 @@ import { aboutRoutes } from '@/modules/about/routes';
 
 import { userRoutes } from '@/modules/user/routes';
 
+import { blogRoutes } from '@/modules/blog/routes';
+
 Vue.use(Router);
 
 const START = '/';
@@ -62,6 +64,7 @@ export default new Router({
     ...projectsRoutes,
     ...aboutRoutes,
     ...userRoutes,
+    ...blogRoutes,
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {

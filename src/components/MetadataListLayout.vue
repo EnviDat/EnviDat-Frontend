@@ -57,8 +57,9 @@
     </v-row>
 
     <v-row v-if="!mapLayout"
+            id="metadataListLayoutFiltering_no_map"
             ref="metadataListLayoutFiltering"
-            no-gutters >
+            no-gutters>
 
       <v-col class="hidden-sm-and-up pb-2"
               cols="12"
@@ -93,7 +94,7 @@
 
       <v-col ref="metadataListScroll"
               id="metadataListScroll_no_mapLayout"
-              class="noMapLayoutContainers pb-4"
+              class="noMapLayoutContainers mt-2 mb-4"
               v-on:scroll="onScroll()"
               :class="useDynamicHeight ? 'listScroll' : ''"
               :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight }px);` : ''" >
@@ -149,11 +150,11 @@ export default {
       const TheNavigationToolbar = 36;
       let padding = 0;
 
-      if (this.showMapFilter && this.$refs && this.$refs.controlPanel) {
+      if (this.mapLayout && this.$refs && this.$refs.controlPanel) {
         searchViewHeight = this.$refs.controlPanel.clientHeight ? this.$refs.controlPanel.clientHeight : searchViewHeight;
       }
 
-      if (!this.showMapFilter && this.$refs && this.$refs.metadataListLayoutFiltering) {
+      if (!this.mapLayout && this.$refs && this.$refs.metadataListLayoutFiltering) {
         searchViewHeight = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : searchViewHeight;
         padding = 16;
       }

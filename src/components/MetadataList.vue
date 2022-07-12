@@ -73,7 +73,7 @@
       <v-row id="metadataListLayout"
               ref="metadataListLayout" >
 
-        <v-col v-for="(pinnedId, index) in pinnedList"
+        <v-col v-for="(pinnedId, index) in pinnedIds"
                 :key="'pinned_' + index"
                 :class="cardGridClass"
                 class="pa-2" >
@@ -146,7 +146,7 @@
                             :identifier="infiniteId"
                             :distance="preloadingDistance"
                             @infinite="infiniteHandler"
-                            :force-use-infinite-wrapper="mainScrollClass" >
+                            :force-use-infinite-wrapper="dynamicMainScrollClass" >
 
             <div slot="no-results">
             </div>
@@ -228,6 +228,7 @@ export default {
   name: 'MetadataList',
   props: {
     listContent: Array,
+    prePinnedIds: Array,
     mapFilteringPossible: Boolean,
     placeHolderAmount: Number,
     selectedTagNames: Array,
@@ -251,7 +252,7 @@ export default {
     searchBarPlaceholder: String,
     mainScrollClass: {
       type: String,
-      default: '#metadataListLayout',
+      default: undefined,
     },
     showPublicationState: {
       type: Boolean,
@@ -314,10 +315,11 @@ export default {
       isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
     }),
     showPinnedElements() {
-      return !this.loading && this.showMapFilter && this.pinnedIds.length > 0;
+      return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
     unpinnedFilteredList() {
       const listWithoutPins = [];
+
       for (let i = 0; i < this.virtualListContent.length; i++) {
         const metadata = this.virtualListContent[i];
         if (!this.isPinned(metadata.id)) {
@@ -327,21 +329,12 @@ export default {
 
       return listWithoutPins;
     },
-    pinnedList() {
+    pinnedIds() {
       if (!this.showPinnedElements) {
         return [];
       }
 
-      return this.pinnedIds;
-    },
-    mergePinnedAndFiltered() {
-      const pinnedContent = [];
-
-      this.pinnedIds.forEach((pinId) => {
-        pinnedContent.push(this.metadatasContent[pinId]);
-      });
-
-      return [...pinnedContent, ...this.listContent];
+      return this.prePinnedIds;
     },
     loading() {
       return (this.loadingMetadatasContent
@@ -351,7 +344,10 @@ export default {
     },
     cardGridClass() {
       if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
-        return { 'col-12': true };
+        return {
+          'col-12': true,
+          'col-xl-6': true,
+        };
       }
       
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
@@ -363,7 +359,8 @@ export default {
         'col-md-4': true,
         'col-lg-3': compactLayout || !mapActive,
         'col-lg-4': mapActive && !compactLayout,
-        'col-xl-2': !mapActive && compactLayout,
+        'col-xl-2': !mapActive,
+        'col-xl-3': mapActive,
       };
     },
     contentSize() {
@@ -371,6 +368,16 @@ export default {
     },
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+    },
+    mapLayout() {
+      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.breakpoint.mdAndUp;
+    },
+    dynamicMainScrollClass() {
+      if (this.mainScrollClass) {
+        return this.mainScrollClass;
+      }
+
+      return this.mapLayout ? '.mapLayoutContainers' : '.noMapLayoutContainers';
     },
   },
   methods: {
@@ -420,7 +427,6 @@ export default {
         that.vIndex = i;
 
         that.vLoading = false;
-        // console.log('loaded to ' + that.vIndex );
       }, this.reloadDelay);
     },
     catchTagClicked(tagName) {
@@ -477,13 +483,13 @@ export default {
         newPins.push(id);
       }
 
-      this.pinnedIds = newPins;
+      // this.pinnedIds = newPins;
 
+      this.$emit('pinnedIds', newPins);
       // this.$store.commit(`${METADATA_NAMESPACE}/${PIN_METADATA}`, id);
     },
     catchClearButtonClick() {
-      this.pinnedIds = [];
-      // this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_PINNED_METADATA}`);
+      this.$emit('pinnedIds', []);
     },
     hasRestrictedResources(metadata) {
       if (!metadata || !metadata.resources || metadata.resources.length <= 0) {
@@ -609,7 +615,6 @@ export default {
     controlsActive: [],
     listView: false,
     showMapFilter: false,
-    pinnedIds: [],
     LISTCONTROL_LIST_ACTIVE,
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,

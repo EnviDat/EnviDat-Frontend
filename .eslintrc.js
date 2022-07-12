@@ -1,14 +1,11 @@
 // https://eslint.org/docs/user-guide/configuring
-
 module.exports = {
   root: true,
-
   parserOptions: {
     parser: 'babel-eslint',
     sourceType: 'module',
-    ecmaVersion: 10,
+    ecmaVersion: 10
   },
-
   // env: {
   //   browser: true,
   // },
@@ -17,32 +14,26 @@ module.exports = {
     'plugin:vue/essential',
     'prettier/vue',
     'prettier',
+    'plugin:storybook/recommended',
   ],
-
   // // required to lint *.vue files
-  plugins: [
-    // 'html',
-    'vuetify',
-  ],
+  plugins: [// 'html',
+  'vuetify'],
   // // check if imports actually resolve
   settings: {
     'import/resolver': {
       'babel-module': {},
     },
   },
-
   // },
   // add your custom rules here
   rules: {
     // don't require .vue extension when importing
-    'import/extensions': [
-      1, // warning
-      'always',
-      {
-        js: 'never',
-        vue: 'never',
-      },
-    ],
+    'import/extensions': [1, // warning
+    'always', {
+      js: 'never',
+      vue: 'never',
+    }],
     // allow optionalDependencies
     'import/no-extraneous-dependencies': 'off',
     // allow debugger during development
@@ -59,7 +50,9 @@ module.exports = {
     'no-trailing-spaces': 'off',
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
-    'quotes': ['error', 'single', { avoidEscape: true }],
+    'quotes': ['error', 'single', {
+      avoidEscape: true
+    }],
     'operator-linebreak': ['off', 'before'],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
     // windows linebreaks when not in production environment
@@ -70,16 +63,10 @@ module.exports = {
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
   },
-
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
-      env: {
-        jest: true,
-      },
+  overrides: [{
+    files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
+    env: {
+      jest: true,
     },
-  ],
+  }]
 };

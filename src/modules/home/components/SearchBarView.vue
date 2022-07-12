@@ -1,6 +1,10 @@
 <template>
-  <v-card hover raised style="width: 100%;">
-    <v-container fluid style="width: 100%;">
+  <v-card hover
+          raised
+          style="width: 100%;"
+          class="pa-4">
+    <v-container fluid
+                  class="pa-0">
       <v-row align="center"
               justify="space-between"
               class="grow"
@@ -17,7 +21,8 @@
                         @keyup.enter="clicked" />
         </v-col>
 
-        <v-col class="shrink py-0" >
+        <v-col v-if="hasButton"
+               class="shrink py-0" >
           <base-rectangle-button :button-text="buttonText"
                                   :is-small="true"
                                   @clicked="clicked" />

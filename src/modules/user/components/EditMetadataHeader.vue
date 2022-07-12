@@ -222,7 +222,7 @@ import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
+  isFieldValid, isObjectValid,
 } from '@/factories/userEditingValidations';
 import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
 import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
@@ -402,6 +402,11 @@ export default {
           || this.activeElements.contactGivenName
           || this.activeElements.contactSurname;
     },
+    anyPreviewsChanged() {
+      return this.previews.contactGivenName !== null
+          || this.previews.contactSurname !== null
+          || this.previews.contactEmail !== null;
+    },
   },
   methods: {
     isContactPropertyReadOnly(property) {
@@ -420,6 +425,27 @@ export default {
       this.previews.contactSurname = null;
       this.previews.contactEmail = null;
       this.previews.metadataTitle = null;
+    },
+    // Validate contact author properties by calling isFieldValid()
+    // Returns true if all properties are valid, else returns false
+    validateAuthor(authorObject) {
+
+      const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
+
+      // Validate fields corresponding to properties
+      for (let i = 0; i < properties.length; i++) {
+        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
+      }
+
+      // Return false if any of the properties have a validation error
+      for (let i = 0; i < properties.length; i++) {
+        const prop = properties[i];
+        if (this.validationErrors[prop]) {
+          return false;
+        }
+      }
+
+      return true;
     },
     getFullName(authorObj) {
       if (!authorObj) {
@@ -474,27 +500,6 @@ export default {
       }
 
     },
-    // Validate contact author properties by calling isFieldValid()
-    // Returns true if all properties are valid, else returns false
-    validateAuthor(authorObject) {
-
-      const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
-
-      // Validate fields corresponding to properties
-      for (let i = 0; i < properties.length; i++) {
-        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
-      }
-
-      // Return false if any of the properties have a validation error
-      for (let i = 0; i < properties.length; i++) {
-        const prop = properties[i];
-        if (this.validationErrors[prop]) {
-          return false;
-        }
-      }
-
-      return true;
-    },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
@@ -548,7 +553,7 @@ export default {
         return;
       }
 
-      if (this.previews[property] === null){
+      if (!this.anyPreviewsChanged) {
         return;
       }
 
@@ -586,7 +591,7 @@ export default {
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      if (this.validateAuthor(authorObject)) {
+      if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
         this.setFullContactInfos(authorObject);
       }
 
@@ -634,7 +639,7 @@ export default {
       labelContactSurname: 'Contact Surname',
       instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
       authorInstructions: 'Enter an email address for a main contact.',
-      authorOr: 'Or pick <br /> an author',
+      authorOr: '<strong>Or</strong> pick <br /> an author',
       authorAutoComplete: 'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
@@ -644,6 +649,11 @@ export default {
       previewText: 'Metadata Header Preview',
       authorDropdown: 'Click here and start typing to select an existing EnviDat author',
     },
+    validationProperties: [
+      'contactEmail',
+      'contactGivenName',
+      'contactSurname',
+    ],
     validationErrors: {
       metadataTitle: null,
       contactGivenName: null,

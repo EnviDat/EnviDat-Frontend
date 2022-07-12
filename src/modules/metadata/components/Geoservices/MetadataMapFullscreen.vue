@@ -2,7 +2,7 @@
 
   <v-container id="MetadataMapFullscreen"
                v-if="ready"
-                style="position: relative;"
+                style="position: relative; height: 89vh;"
                 fluid
                 class="fill-height">
 
@@ -17,12 +17,13 @@
               @changeLayer="setLayer"
               :site="site"
               :mapHeight="mapHeight"
+              :isGcnet="isGcnet"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
 
       </v-col>
 
-      <v-col v-if="mapCompareActive" 
+      <v-col v-if="mapCompareActive"
               cols="6">
         <Map :layer-config="layerConfig"
               :mapDivId="mapId2"
@@ -56,6 +57,10 @@
       site: Object,
       layerConfig: Object,
       mapHeight: Number,
+      isGcnet: {
+        type: Boolean,
+        default: false,
+      },
     },
     mounted() {
       // Wait for dialog transition to complete
@@ -71,7 +76,7 @@
       if (this.map) {
         this.map.remove();
       }
-    },    
+    },
     computed: {
     },
     methods: {

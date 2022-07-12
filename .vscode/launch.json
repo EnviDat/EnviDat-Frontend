@@ -1,0 +1,28 @@
+{
+  "configurations": [
+    {
+      "name": "Node: Docker Debug",
+      "type": "docker",
+      "request": "launch",
+      "preLaunchTask": "docker-run: debug",
+      "platform": "node",
+      "dockerServerReadyAction": {
+        "uriFormat": "http://localhost:%s"
+      },
+      "node": {
+        "remoteRoot": "/app"
+      }
+    },
+    {
+      "name": "Node: DIND Debug",
+      "type": "node",
+      "request": "attach",
+      "address": "envidat_frontend",
+      "port": 9229,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
+      "trace": true,
+      "sourceMaps": true
+    }
+  ]
+}

@@ -141,8 +141,10 @@ export default {
      * @param {String} basePath the path of the route
      * @param {String} search search term
      * @param {String} tags encoded string
+     * @param {String} mode which defines the mode for the special view
+     * @param {Array} pins array of ids for the pinned metadatas
      */
-    mixinMethods_additiveChangeRoute(basePath, search, tags, mode) {
+    mixinMethods_additiveChangeRoute(basePath, search, tags, mode = undefined, pins = undefined) {
       const query = {};
       Object.assign(query, this.$route.query);
 
@@ -158,29 +160,53 @@ export default {
         query.mode = mode;
       }
 
+      if (pins !== undefined) {
+        query.pins = pins;
+      }
+
       this.$router.push({
         path: basePath,
         query,
       });
     },
+    mixinMethods_convertUrlStringToArray(string) {
+      if (!string) {
+        return [];
+      }
+
+      return string.split(',');
+    },
+    mixinMethods_convertArrayToUrlString(array) {
+
+      let str = '';
+      for (let i = 0; i < array.length; i++) {
+        str += `${array[i]},`;
+      }
+
+      // remove the last comma
+      str = str.substring(0, str.length - 1);
+
+      return str;
+    },
     /**
      * Return the loaded webp image or instead a jpg as fallback
      *
      * @param {*} imageAssetPathName
+     * @param state
      * @returns
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
-      const imageKey = `./${imageAssetPathName}.${state.webpIsSupported ? 'webp' : 'jpg'}`;
+      const imageKey = `./${imageAssetPathName}`;
 
       if (state.webpIsSupported) {
-        const webpImg = state.webpAssets[imageKey];
+        const webpImg = state.webpAssets[`${imageKey}.webp`];
 
         if (webpImg) {
           return webpImg;
         }
       }
 
-      return state.jpgAssets[imageKey];
+      return state.jpgAssets[`${imageKey}.jpg`];
     },
     /**
      * Loads the path to the icon image

@@ -1,5 +1,5 @@
 {
-  "version": "0.6.93",
+  "version": "0.7.16",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -7,7 +7,11 @@
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
-    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators."
+    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators.",
+    "articlesTitle": "Recent EnviDat Blog Articles",
+    "newsTitle": "News From The EnviDat Team",
+    "categoriesTitle": "Research Data Categories",
+    "datasetsTitle": "Recently Published Research Datasets"
   },
   "aboutInfo": [
     {
@@ -24,7 +28,8 @@
     },
     {
       "title": "Team",
-      "widthClass": "col-12 col-sm-6 col-md-8"
+      "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
+      "widthClass": "col-12 col-sm-6 col-md-8 col-xl-3"
     },
     {
       "title": "Community",
@@ -59,8 +64,24 @@
   },
   "maintenanceConfig": {
     "signinDisabled": false,
+    "signinRedirectActive": false,
     "messageActive": false,
     "message": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>."
+  },
+  "newsConfig": {
+    "newsActive": true,
+    "entries": [
+    ]
+  },
+  "ignoredNews": {
+    "newsActive": false,
+    "entries": [
+      {
+        "title": "Maintenance Mode Active!",
+        "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
+        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+      }
+    ]
   },
   "effectsConfig": {
     "landingPageParticles": true,
@@ -78,6 +99,7 @@
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
+    "dashboardRedirect": false,
     "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
     "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
     "organizationRolesText": {

@@ -74,6 +74,7 @@
       <component :is="fullScreenComponent"
                   :site="currentSite"
                   :layerConfig="currentLayerConfig"
+                  :isGcnet="hasGcnetStationConfig"
       />
 
 <!--
@@ -129,6 +130,7 @@ import {
   createPublications,
   createRelatedDatasets,
   createResources,
+  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
@@ -189,7 +191,6 @@ export default {
     eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
-    // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
 
     this.fullScreenConfig = null;
     this.fullScreenComponent = null;
@@ -255,7 +256,7 @@ export default {
       publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
     hasGcnetStationConfig() {
-      return this.stationsConfig !== null;
+      return this.configInfos?.stationsConfigUrl !== null;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -378,6 +379,7 @@ export default {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
+          ...(this.hasGcnetStationConfig) && { isGcnet: true },
         };
       }
 
@@ -411,6 +413,33 @@ export default {
         .get(url)
         .then((response) => {
           this.stationsConfig = response.data;
+
+          const stations = response.data;
+          const featureCollection = {
+            type: 'FeatureCollection',
+            features: [],
+          };
+
+          stations.forEach((geom) => {
+            featureCollection.features.push({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [Number(geom.longitude), Number(geom.latitude)],
+              },
+              properties: {
+                alias: geom.alias,
+                name: geom.name,
+                active: geom.active,
+                elevation: geom.elevation,
+              },
+            });
+          });
+
+          // Override location with stations FeatureCollection, creating shallow copy
+          const locationOverride = { ...this.location };
+          locationOverride.geoJSON = featureCollection;
+          this.setGeoServiceLayers(locationOverride, null, null);
 
           successCallback();
         })
@@ -471,7 +500,6 @@ export default {
 
       this.fullScreenConfig = layerConfig;
       this.fullScreenComponent = MetadataMapFullscreen;
-      console.log(this.fullScreenConfig);
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
@@ -490,10 +518,8 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if (
-        (this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20) ||
-        this.$vuetify.breakpoint.mdAndUp
-      ) {
+      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
+        || this.$vuetify.breakpoint.mdAndUp ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
@@ -526,6 +552,8 @@ export default {
           this.$vuetify.breakpoint.smAndDown,
           this.authorDeadInfo,
         );
+
+        this.header.metadataState = getMetadataVisibilityState(currentContent);
 
         this.body = createBody(
           currentContent,
@@ -731,10 +759,8 @@ export default {
      * Either loads it from the backend via action or creates it from the localStorage.
      */
     async loadMetaDataContent() {
-      if (
-        !this.loadingMetadatasContent &&
-        !this.isCurrentIdOrName(this.metadataId)
-      ) {
+      if (!this.loadingMetadatasContent
+          && !this.isCurrentIdOrName(this.metadataId) ) {
         // in case of navigating into the page load the content directly via Id
         await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
           metadataId: this.metadataId,
@@ -769,11 +795,10 @@ export default {
      * @description watcher on idsToResolve start resolving them, if not already in the works
      */
     idsToResolve() {
-      if (
-        !this.extractingIds &&
-        this.idsToResolve?.length > 0 &&
-        !this.publicationsResolvingIds
-      ) {
+      if (!this.extractingIds
+          && this.idsToResolve?.length > 0
+          && !this.publicationsResolvingIds) {
+
         this.$store.dispatch(
           `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
           {
@@ -787,11 +812,10 @@ export default {
      * @description watcher on publicationsResolvedIds start replacing the text with the resolved texts based on the ids
      */
     publicationsResolvedIds() {
-      if (
-        !this.publicationsResolvingIds &&
-        this.publicationsResolvedIdsSize > 0 &&
-        this.idsToResolve?.length > 0
-      ) {
+      if ( !this.publicationsResolvingIds
+        && this.publicationsResolvedIdsSize > 0
+        && this.idsToResolve?.length > 0 ) {
+
         let publicationsText = this.publications?.text;
 
         if (publicationsText) {
@@ -829,9 +853,9 @@ export default {
      * if EnviDat is called via MetadataDetailPage URL directly
      */
     metadatasContent() {
-      if (!this.loadingMetadatasContent &&
-          !this.loadingCurrentMetadataContent &&
-          !this.isCurrentIdOrName(this.metadataId)) {
+      if (!this.loadingMetadatasContent
+          && !this.loadingCurrentMetadataContent
+          && !this.isCurrentIdOrName(this.metadataId)) {
 
         this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
           metadataId: this.metadataId,
@@ -911,7 +935,7 @@ export default {
 </script>
 
 <style>
-.metadataComponentTitle {
+.metadata_title {
   font-family: 'Baskervville', serif !important;
   /* font-weight: 700 !important; */
   font-weight: 500 !important;

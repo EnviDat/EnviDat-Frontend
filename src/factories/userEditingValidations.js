@@ -12,6 +12,7 @@
  */
 
 import {
+  EDIT_USER_PROFILE,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -155,6 +156,18 @@ const metadataInEditingValidations = {
         }),
       ),
     }),
+  [EDIT_USER_PROFILE]: () =>
+    yup.object().shape({
+      firstName: yup.string()
+        .required('First name is required')
+        .min(3, 'First name must be at least 3 characters'),
+      lastName: yup.string()
+        .required('Last name is required')
+        .min(3, 'Last name must be at least 3 characters'),
+      email: yup.string()
+        .email('Please enter a valid email address')
+        .required('Email is required'),
+    }),
 };
 
 
@@ -208,14 +221,32 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
   return true;
 }
 
+export function isObjectValid(properties, objectToValidate, validations, errorObject) {
+
+  // Validate fields corresponding to properties
+  for (let i = 0; i < properties.length; i++) {
+    isFieldValid(properties[i], objectToValidate[properties[i]], validations, errorObject);
+  }
+
+  // Return false if any of the properties have a validation error
+  for (let i = 0; i < properties.length; i++) {
+    const prop = properties[i];
+    if (errorObject[prop]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function getUserOrganizationRoleMap(userId, organizations) {
   const roleMap = {};
 
-  const keys = Object.keys(organizations);
-
-  if (!userId || !organizations || keys.length <= 0) {
+  if (!userId || !organizations) {
     return roleMap;
   }
+
+  const keys = Object.keys(organizations);
 
   keys.forEach(k => {
     const orga = organizations[k];

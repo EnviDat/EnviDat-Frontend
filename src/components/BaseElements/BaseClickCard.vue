@@ -2,26 +2,31 @@
   <v-card ripple
           hover
           raised
+          :height="height"
           :disabled="disabled"
           @click.native="clicked" >
+
     <v-container class="pa-0" >
       <v-row align="center"
               no-gutters >
         <!-- Image -->
         <v-col class="py-0"
-                cols="5" >
+                cols="4
+                sm="5">
           <v-img class="imagezoom"
+                 :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
                   :contain="contain"
-                  :height=" $vuetify.breakpoint.smAndDown ? '65px' : '100px' "
+                  :height="height"
                   style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                   :src="img" />
         </v-col>
 
         <!-- Text -->
         <v-col class="px-0"
-                cols="7" >
+                cols="8"
+                sm="7" >
           <div class="px-3 baseClickCardTitle"
-                :class="{ 'compactTitle' : this.$vuetify.breakpoint.smAndDown }" >
+                :class="{ 'compactTitle': $vuetify.breakpoint.xl }" >
             {{ title }}
           </div>
 
@@ -69,6 +74,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+    height: {
+      type: String,
+      default: '65',
+    },
   },
   methods: {
     clicked() {
@@ -81,16 +94,25 @@ export default {
 <style scoped>
 
   .baseClickCardTitle {
-    /* font-size: 1.45em !important; */
+    font-size: 1rem !important;
     overflow: inherit !important;
     text-overflow: inherit !important;
     max-height: inherit !important;
-    line-height: inherit !important;
+    line-height: 1.1em !important;
   }
 
-  .compactTitle {
-    font-size: 15px !important;
-    line-height: 1.3em !important;
+  @media screen and (max-width: 1920px) {
+    .compactTitle {
+      font-size: 1rem !important;
+      line-height: 1.3em !important;
+    }
+  }
+
+  @media screen and (min-width: 1921px) {
+    .compactTitle {
+      font-size: 1.1rem !important;
+      line-height: 1.1em !important;
+    }
   }
 
   .v-card__media img {

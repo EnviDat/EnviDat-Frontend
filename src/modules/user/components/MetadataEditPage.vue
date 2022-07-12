@@ -11,6 +11,8 @@
                        :subStep="routeSubStep"
                        stepColor="highlight"
                        :loading="loading"
+                       showPreviewButton
+                       @clickedPreview="catchPreviewClicked"
                        @clickedClose="catchBackClicked" />
 
 
@@ -54,7 +56,6 @@ import {
   EDITMETADATA_NETWORK_ERROR,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
   METADATA_EDITING_FINISH_CLICK,
   SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
@@ -94,6 +95,7 @@ import {
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
+  METADATADETAIL_PATH,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
 } from '@/router/routeConsts';
@@ -123,14 +125,6 @@ export default {
       vm.$store.commit(SET_CURRENT_PAGE, METADATAEDIT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
 
-      // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
-    });
-  },
-  beforeRouteUpdate(to, from, next) {
-    // react to route changes...
-
-    // next has to be called to do the route change!
-    next((vm) => {
       // vm.updateLastEditingDataset(to.params.metadataid, to.fullPath);
     });
   },
@@ -313,6 +307,9 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
+    catchPreviewClicked() {
+      window.open(`${this.domain}/#${METADATADETAIL_PATH}/${this.metadataId}`, '_blank');
+    },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
@@ -438,9 +435,9 @@ export default {
         message = message.replace(id, `"${name}"`);
       }
 
-      const predefinedErrors =this.backendErrorList[status];
+      const predefinedErrors = this.backendErrorList[status];
       this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${message} ${predefinedErrors?.details || ''}`;
+      this.errorMessage = `${statusMessage} ${message} ${predefinedErrors?.details || ''}`;
 
       this.showSnack = true;
     },
@@ -466,6 +463,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
+    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     creationSteps: null,
     errorTitle: null,
     errorMessage: null,

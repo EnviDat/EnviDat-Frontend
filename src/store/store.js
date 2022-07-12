@@ -21,6 +21,7 @@ import { geoservices } from '@/modules/metadata/components/Geoservices/geoservic
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
+import { blog } from '@/modules/blog/store/blogStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -43,6 +44,7 @@ const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
 const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 
+/*
 const errReport = process.env.VUE_APP_ERROR_REPORTING_ENABLED;
 // the check for 'NULL' is needed because simply nothing will not work
 let errorReportingEnabled = false;
@@ -50,6 +52,7 @@ let errorReportingEnabled = false;
 if (typeof errReport === 'string') {
   errorReportingEnabled = errReport.toLowerCase() === 'true';
 }
+*/
 
 Vue.use(Vuex);
 
@@ -76,7 +79,7 @@ const initialState = {
   newVersion: process.env.VUE_APP_VERSION,
   // config can be overloaded from the backend
   loadingConfig: false,
-  config: { errorReportingEnabled },
+  config: {},
   notifications: {},
   maxNotifications: 6,
 };
@@ -89,6 +92,7 @@ const modules = {
   user,
   userSignIn,
   organizations,
+  blog,
 };
 
 function createStore() {

@@ -81,7 +81,7 @@ export default {
   }),
   computed: {
     markdownText() {
-      return renderMarkdown(this.text.trim());
+      return renderMarkdown(this.text.trim(), false);
     },
   },
   methods: {

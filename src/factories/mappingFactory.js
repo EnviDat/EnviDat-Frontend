@@ -186,8 +186,10 @@ export function convertJSON(data, stringify, recursive = false) {
 
           if (process.env.NODE_ENV === 'develop') {
             if (e instanceof SyntaxError) {
+              // eslint-disable-next-line no-console
               console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             } else {
+              // eslint-disable-next-line no-console
               console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             }
           }
@@ -443,7 +445,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -479,10 +481,13 @@ function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, 
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+
+    if (typeof author.dataCredit === 'string') {
+      author.dataCredit = [author.dataCredit];
+    }
+
     authors.push(author);
   })
-  // const authors = createAuthors({ author: backendAuthors.authors });
-  // const authors = getFullAuthorsFromDataset(authorsMap,{ author: backendAuthors.authors });
 
   commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
@@ -490,7 +495,7 @@ function populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, 
   return dataObject;
 }
 
-function populateEditingData(commit, metadataRecord, snakeCaseJSON) {
+function populateEditingData(commit, snakeCaseJSON) {
 
   const dataObject = {};
   
@@ -537,7 +542,7 @@ function populateEditingData(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON) {
+function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -583,15 +588,15 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, authorsMap, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, metadataRecord, authorsMap, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
 
-  const { dataInfo } = populateEditingData(commit, metadataRecord, snakeCaseJSON);
+  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
 
-  populateEditingRelatedResearch(commit, metadataRecord, snakeCaseJSON);
+  populateEditingRelatedResearch(commit, snakeCaseJSON);
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
 

@@ -88,10 +88,21 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Docker
+Dockerfile
+docker-compose.yml
+
+# Git
+.gitignore
+.gitlab-ci.yml
+.pre-commit-config.yaml
+postman_ckan_api_collection.json
+
 # envidat frontend
 dist/
 storybook-static/
 /.idea/
+postman*
 
 .vscode/
 

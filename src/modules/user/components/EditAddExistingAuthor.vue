@@ -50,6 +50,7 @@
                           :errorMessages="baseUserErrorMessages"
                           :readonly="mixinMethods_isFieldReadOnly('authors')"
                           :hint="mixinMethods_readOnlyHint('authors')"
+                          @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
         </v-col>
@@ -160,13 +161,12 @@ export default {
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchRemovedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
+      this.changePreviews(pickedUsers);
     },
     catchPickedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
+      this.changePreviews(pickedUsers);
     },
-    notifyChange(authorsNames) {
-
+    changePreviews(authorsNames){
       const authors = [];
 
       authorsNames.forEach((name) => {
@@ -177,14 +177,16 @@ export default {
       });
 
       this.previewAuthors = authors;
+    },
+    notifyChange() {
 
-      if (this.validateProperty('authors', authors)) {
+      if (this.validateProperty('authors', this.previewAuthors)) {
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_AUTHOR_LIST,
           data: {
             ...this.$props,
-            authors,
+            authors: this.previewAuthors,
           },
         });
       }

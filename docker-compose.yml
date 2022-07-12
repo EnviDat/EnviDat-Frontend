@@ -6,10 +6,10 @@ networks:
 
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/frontend:local"
+    image: "${INTERNAL_REG}/frontend:debug"
     build:
       context: .
-      target: local-dev
+      target: debug
       args:
         INTERNAL_REG: ${INTERNAL_REG}
         EXTERNAL_REG: ${EXTERNAL_REG}

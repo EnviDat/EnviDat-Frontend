@@ -14,6 +14,8 @@
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
                     @clickedCard="catchMetadataClicked"
+                   :prePinnedIds="selectedPins"
+                    @pinnedIds="catchPinnedIds"
                     :mode="mode"
                     :defaultListControls="defaultControls"
                     :enabledControls="enabledControls"
@@ -32,7 +34,7 @@
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
                     :reloadDelay="vReloadDelay"
-                    mainScrollClass=".mapLayoutContainers" />
+    />
 
   </article>
 </template>
@@ -93,19 +95,25 @@ export default {
   },
   methods: {
     loadRouteTags() {
-      const tagsEncoded = this.$route.query.tags ? this.$route.query.tags : '';
-      let decodedTags = [];
+      let tags = this.$route.query.tags || '';
 
-      if (tagsEncoded.length > 0) {
-        decodedTags = this.mixinMethods_decodeTagsFromUrl(tagsEncoded);
-      }
+      if (!this.mixinMethods_areArraysIdentical(this.selectedTagNames, tags)) {
 
-      if (!this.mixinMethods_areArraysIdentical(this.selectedTagNames, decodedTags)) {
-        this.selectedTagNames = decodedTags;
+        tags = this.mixinMethods_convertUrlStringToArray(tags);
+        this.selectedTagNames = tags;
         return true;
       }
 
       return false;
+    },
+    loadRoutePins() {
+      let pins = this.$route.query.pins || '';
+
+      if (pins.length > 0) {
+        pins = this.mixinMethods_convertUrlStringToArray(pins);
+
+        this.selectedPins = pins;
+      }
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
@@ -121,8 +129,10 @@ export default {
       if (!this.mixinMethods_isTagSelected(tagName)) {
         const newTags = [...this.selectedTagNames, tagName];
 
-        const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, tagsEncoded);
+        const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+
+        // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
       }
     },
     catchTagCloseClicked(tagId) {
@@ -131,13 +141,23 @@ export default {
       }
 
       const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
+      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, tagsEncoded);
+      // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
     },
     catchTagCleared() {
       this.selectedTagNames = [];
       this.filterContent();
+    },
+    catchPinnedIds(pins) {
+
+      // if ()
+      this.selectedPins = pins;
+
+      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined, undefined, stringPins);
     },
     catchMapFilterChanged(visibleIds) {
       this.mapFilterVisibleIds = visibleIds;
@@ -163,7 +183,11 @@ export default {
     },
     filterContent() {
       const mode = this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, { selectedTagNames: this.selectedTagNames, mode });
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
+        {
+          selectedTagNames: this.selectedTagNames,
+          mode,
+        });
     },
     checkRouteChanges(fromRoute) {
       let triggerClearSearch = false;
@@ -179,6 +203,9 @@ export default {
 
       const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
       const tagsChanged = this.loadRouteTags();
+
+      this.loadRoutePins();
+
       const searchParameter = this.$route.query.search || '';
       const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
 
@@ -370,6 +397,7 @@ export default {
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
     selectedTagNames: [],
+    selectedPins: [],
     popularTagAmount: 10,
     showMapFilter: false,
     smallMapHeight: 250,

@@ -42,6 +42,7 @@ import {
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -130,27 +131,36 @@ function createErrorMessage(reason) {
 
   if (reason?.response) {
 
+/*
     if (reason.response.status !== 200) {
       eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
-          reason.response.status,
-          reason.response.statusText,
-          reason.response?.data?.error?.message);
+          reason.response.status || -1,
+          reason.response.statusText || '',
+          reason.response.data?.error?.message || '');
     }
+*/
 
     msg = 'Saving failed ';
     if (reason.response.status === 403) {
       msg += ' you are not authorized';
     }
 
-    const errorObj = reason?.response?.data?.error || reason?.response?.error || null;
+    if (reason.response.status === 409) {
+      msg += ' Validation Error';
+    }
+
+    const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
 
-      details += `${errorObj.__type}: ${errorObj.message}`;
+      if (errorObj.__type) {
+        details += `${errorObj.__type}: `;
+      }
 
-/*
-      if (errorObj.__junk && errorObj.__type) {
-        details += `${errorObj.__type}: ${errorObj.__junk}`;
+      if (errorObj.message) {
+        details += errorObj.message;
+      } else if (errorObj.__junk) {
+        details += errorObj.__junk;
       } else {
         const errKeys = Object.keys(errorObj);
         for (let i = 0; i < errKeys.length; i++) {
@@ -158,7 +168,6 @@ function createErrorMessage(reason) {
           details += `${key} ${errorObj[key]} `;
         }
       }
-*/
 
     } else {
       details += reason.response.statusText;
@@ -320,7 +329,7 @@ export default {
     state.userOrganizationLoading = false;
 
     // let datasets = payload?.packages || [];
-    const orgaId = payload.id;
+    const orgaId = payload?.id || payload?.name;
 
     if (payload?.packages.length > 0) {
 
@@ -469,6 +478,8 @@ export default {
     editingObject.error = errorObj.message;
     editingObject.errorDetails = errorObj.details;
 
+    this.dispatch(SET_CONFIG);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
@@ -505,6 +516,8 @@ export default {
 
     eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
 
+    this.dispatch(SET_CONFIG);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
@@ -539,9 +552,9 @@ export default {
     if (currentEntry) {
 //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
-      const { authorsMap, categoryCards } = this.getters;
+      const { categoryCards } = this.getters;
 
-      populateEditingComponents(this.commit, currentEntry, authorsMap, categoryCards);
+      populateEditingComponents(this.commit, currentEntry, categoryCards);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

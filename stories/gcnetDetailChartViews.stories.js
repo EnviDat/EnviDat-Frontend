@@ -76,6 +76,34 @@ export const DetailChartViews = () => ({
         </v-col>
       </v-row>
 
+      <v-row class="py-3"
+      >
+        Station 4 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station4"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3"
+      >
+        Station 8 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station8"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
     </v-col>
     `,
     computed: {

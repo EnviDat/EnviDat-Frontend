@@ -111,6 +111,14 @@ export const metadata = {
     loadingMetadatasContent: state => state.loadingMetadatasContent,
     metadataIds: state => state.metadataIds,
     metadatasContent: state => state.metadatasContent,
+    recentMetadata: (state, getters) => {
+      if (state.loadingMetadatasContent ||
+          (!state.loadingMetadatasContent && !state.metadatasContentOK)) {
+        return [];
+      }
+
+      return getters.allMetadatas.slice(0, 4);
+    },
     allMetadatas: state => Object.values(state.metadatasContent),
     metadatasContentSize: state => (state.metadatasContent !== undefined ? Object.keys(state.metadatasContent).length : 0),
     authorsMap: state => state.authorsMap,

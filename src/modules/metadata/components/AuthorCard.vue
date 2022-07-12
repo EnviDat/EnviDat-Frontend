@@ -350,11 +350,6 @@ export default {
     dark() {
       return this.dataCreditLevel >= 6;
     },
-/*
-    dataCredits() {
-      return this.author && this.author.dataCredit ? Object.keys(this.author.dataCredit) : [];
-    },
-*/
     dataCreditLevel() {
       return getDataCreditLevel(this.dataCreditScore);
     },
