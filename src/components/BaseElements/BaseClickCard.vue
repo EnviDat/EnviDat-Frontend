@@ -11,7 +11,7 @@
               no-gutters >
         <!-- Image -->
         <v-col class="py-0"
-                cols="4
+                cols="4"
                 sm="5">
           <v-img class="imagezoom"
                  :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
