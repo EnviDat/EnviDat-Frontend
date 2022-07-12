@@ -150,6 +150,15 @@ export default {
 
       if (search !== undefined) {
         query.search = search;
+
+        // Delete givenName and lastName properties if they exist so that query path is cleared
+        if (query.givenName) {
+          delete query.givenName;
+        }
+
+        if (query.lastName) {
+          delete query.lastName;
+        }
       }
 
       if (tags !== undefined) {
