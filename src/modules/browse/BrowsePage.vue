@@ -72,6 +72,7 @@ import {
   METADATA_NAMESPACE,
   SEARCH_METADATA,
   SEARCH_AUTHOR,
+  CLEAR_SEARCH_AUTHOR,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
@@ -194,6 +195,7 @@ export default {
       let triggerClearSearch = false;
       let triggerScrollReset = false;
 
+      // TODO determine if this needs to be revised for author search
       if (!fromRoute) {
         if (this.detailPageBackRoute) {
           fromRoute = this.detailPageBackRoute;
@@ -207,42 +209,97 @@ export default {
 
       this.loadRoutePins();
 
-      // TODO connect author search to browser URL (clear existing search in URL after selecting ano
+      // Assign searchParameter so that it can be checked for both author and full text searches
+      const searchParameter = this.$route.query.search || '';
+
+      // TODO clear search logic write, check that it works properly (see globalMethods/mixinMethods_additiveChangeRoute)
+      // TODO connect author search to browser URL (clear existing search in URL after selecting another author)
       // TODO clear search, try to clear author search properties and keys from this.$route.query object
+      // TODO possibly remove isAuthorSearch from query object
       // Check if searchParameter is for an author only search
       // Block is for author search queries triggered by clicking on an author tag in a metadata entry
       const queryObj = this.$route.query;
-      if (Object.hasOwn(queryObj, 'isAuthorSearch')) {
+      console.log(`this.$route.query     ${JSON.stringify(queryObj)}`);
 
-        const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
-        const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
+      const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
+      const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
 
-        const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
+      const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
+      console.log(`checkAuthorTriggering  ${checkAuthorTriggering}`);
 
-        // TODO determine if more logic is need to handle clearing search
-        if (!checkAuthorTriggering) {
-          triggerClearSearch = true;
-          // this.clearSearchResults();
+      // TODO determine if more logic is need to handle clearing search
+      // Check if author or search terms have changed or are empty strings (which means they do not currently exist)
+      // if (!checkAuthorTriggering) {
+      //
+      //   // triggerClearSearch = ((this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) && (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter))
+      //   //                       || (this.currentSearchTerm !== '' && !searchParameter) ;
+      //   triggerClearSearch = this.currentSearchTerm !== '' && !searchParameter;
+      //   console.log(`this.currentSearchTerm    ${this.currentSearchTerm}`);
+      //   console.log(`triggerClearSearch   ${triggerClearSearch}`);
+      //   // this.clearSearchResults();
+      // }
+
+      if (checkAuthorTriggering) {
+
+        // Send queryObj to store and trigger author search
+        if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
+          this.authorSearch(queryObj);
+          this.resetScrollPos();
+          // return;   // TODO determine if return is needed here
         }
 
-        if (checkAuthorTriggering) {
-
-          // Send queryObj to store and trigger author search
-          if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
-            this.authorSearch(queryObj);
-            this.resetScrollPos();
-            // return;
-          }
-
-          // Both given and last names were changed to empty -> clear the search results
-          triggerClearSearch = true;
-          triggerScrollReset = true;
-        }
-
+        // Both given and last names were changed to empty -> clear the search results
+        triggerClearSearch = true;
+        triggerScrollReset = true;
       }
 
 
-      const searchParameter = this.$route.query.search || '';
+      // const queryObj = this.$route.query;
+      // console.log(`this.$route.query     ${JSON.stringify(queryObj)}`);
+      // if (Object.hasOwn(queryObj, 'isAuthorSearch')) {
+      //
+      //   const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
+      //   const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
+      //
+      //   const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
+      //   console.log(`checkAuthorTriggering  ${checkAuthorTriggering}`);
+      //
+      //   // TODO determine if more logic is need to handle clearing search
+      //   // Check if author or search terms have changed or are empty strings (which means they do not currently exist)
+      //   if (!checkAuthorTriggering) {
+      //
+      //     triggerClearSearch = (this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) &&
+      //                          (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter) ||
+      //                          (this.currentSearchTerm !== '' && !searchParameter) ;
+      //     console.log(`triggerClearSearch   ${triggerClearSearch}`);
+      //     // this.clearSearchResults();
+      //   }
+      //
+      //   if (checkAuthorTriggering) {
+      //
+      //     // Send queryObj to store and trigger author search
+      //     if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
+      //       this.authorSearch(queryObj);
+      //       this.resetScrollPos();
+      //       // return;   // TODO determine if return is needed here
+      //     }
+      //
+      //     // Both given and last names were changed to empty -> clear the search results
+      //     triggerClearSearch = true;
+      //     triggerScrollReset = true;
+      //   }
+      //
+      // }
+
+      // TODO determine if more logic is need to handle clearing search
+      // if (!checkAuthorTriggering) {
+      //
+      //   triggerClearSearch = (this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) && (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter);
+      //   console.log(`triggerClearSearch   ${triggerClearSearch}`);
+      //   // this.clearSearchResults();
+      // }
+
+
       const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
 
 
@@ -262,7 +319,9 @@ export default {
 
       if (checkSearchTriggering) {
 
-        // TODO create and trigger a new CLEAR_SEARCH_AUTHOR action
+        // TODO test CLEAR_SEARCH_AUTHOR mutation
+        this.authorSearchClearResults();
+        console.log(`TEST   ${JSON.stringify(this.$route.query)}`);
 
         if (searchParameter && searchParameter.length > 0) {
 
@@ -318,7 +377,11 @@ export default {
     authorSearch(queryObj) {
       this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR}`, { queryObj });
     },
+    authorSearchClearResults() {
+      this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
+    },
     catchSearchClicked(search) {
+      // this.mixinMethods_authorReductiveChangeRoute(BROWSE_PATH);
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
     },
     catchSearchCleared() {
