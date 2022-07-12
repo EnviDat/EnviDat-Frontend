@@ -2,6 +2,7 @@
   <v-card ripple
           hover
           raised
+          :height="height"
           :disabled="disabled"
           @click.native="clicked" >
 
@@ -15,7 +16,7 @@
           <v-img class="imagezoom"
                  :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
                   :contain="contain"
-                  :height="compact ? '65px' : '100px' "
+                  :height="height"
                   style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                   :src="img" />
         </v-col>
@@ -25,8 +26,7 @@
                 cols="8"
                 sm="7" >
           <div class="px-3 baseClickCardTitle"
-                :class="{ 'compactTitle': compact,
-                          'text-h5': !compact }" >
+                :class="{ 'compactTitle': $vuetify.breakpoint.xl }" >
             {{ title }}
           </div>
 
@@ -78,6 +78,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    height: {
+      type: String,
+      default: '65',
+    },
   },
   methods: {
     clicked() {
@@ -90,16 +94,25 @@ export default {
 <style scoped>
 
   .baseClickCardTitle {
-    /* font-size: 1.45em !important; */
+    font-size: 1rem !important;
     overflow: inherit !important;
     text-overflow: inherit !important;
     max-height: inherit !important;
-    line-height: inherit !important;
+    line-height: 1.1em !important;
   }
 
-  .compactTitle {
-    font-size: 15px !important;
-    line-height: 1.3em !important;
+  @media screen and (max-width: 1920px) {
+    .compactTitle {
+      font-size: 1rem !important;
+      line-height: 1.3em !important;
+    }
+  }
+
+  @media screen and (min-width: 1921px) {
+    .compactTitle {
+      font-size: 1.1rem !important;
+      line-height: 1.1em !important;
+    }
   }
 
   .v-card__media img {

@@ -137,7 +137,7 @@
                  cols="6"
                  class="pa-2" >
 
-            <BaseClickCard :compact="true"
+            <BaseClickCard :height="$vuetify.breakpoint.lgAndDown ? '65' : '90'"
                            :title="card.title"
                            :img="card.img"
                            :color="card.darkColor"
@@ -162,7 +162,7 @@
                           :loadingImg="fallbackCardImg"
                           titleCssClass="compactBlogPostCard"
                           subtitleCssClass="text-caption"
-                          height="75"
+                          :height="$vuetify.breakpoint.lgAndDown ? '75' : '100'"
                           @clicked="catchPostClick(post.postFile)"/>
           </v-col>
         </v-row>
@@ -652,9 +652,9 @@ export default {
 <style >
 
 .compactBlogPostCard {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  line-height: 1rem;
+  line-height: 1.1rem;
 }
 
 </style>
