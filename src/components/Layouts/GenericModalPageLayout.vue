@@ -3,7 +3,8 @@
             id="GenericModalPageLayout"
             transition="dialog-bottom-transition"
             scrollable
-            persistent>
+            persistent
+            style="z-index: 1030;">
 
     <v-card class="modalHeight pa-0 ml-15" >
 
