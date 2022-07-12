@@ -266,7 +266,7 @@ export default {
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
     console.log(url);
 
-    // TODO create and implement new metadata success and error actions
+    // TODO determine if success and error actions should be with metadata or separate author
     await axios
         .get(url)
         .then((response) => {
