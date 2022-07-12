@@ -110,7 +110,7 @@
                  no-gutters >
 
             <v-col @click="!signInDisabled  ? catchSigninClicked() : undefined"
-                   xl="4"
+                   xl="7"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
