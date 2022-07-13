@@ -16,6 +16,9 @@ import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 // import { convertTags } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
+import categoryCards from '@/store/categoryCards';
+import globalMethods from '@/factories/globalMethods';
 import fileIcon from '../src/assets/icons/file.png';
 import lockedIcon from '../src/assets/icons/lockClosed.png';
 import unlockedIcon from '../src/assets/icons/lockOpen.png';
@@ -24,21 +27,13 @@ import multiPinIcon from '../src/assets/icons/markerMulti.png';
 import polygonIcon from '../src/assets/icons/polygons.png';
 
 
+
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
 
-/*
-for (let i = 0; i < metadataCards.length; i++) {
-  const metadata = metadataCards[i];
-  // metadata.tags = convertTags(metadata.tags, false);
+const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
-  for (let j = 0; j < metadata.tags.length; j++) {
-    const tag = metadata.tags[j];
-    console.log(`tag: ${tag} name: ${tag.name}`);
-  }
-}
-*/
-
+enhanceMetadatas(metadataCards, cardBGImages, categoryCards);
 
 export const methods = {
   hasRestrictedResources(metadata) {

@@ -87,7 +87,7 @@ import ButtonContentTable from '@/components/Navigation/ButtonContentTable';
 import formatISO from 'date-fns/formatISO';
 import parseISO from 'date-fns/parseISO';
 import isAfter from 'date-fns/isAfter';
-import { mapState } from 'vuex';
+
 import DetailChart from './DetailChart';
 
 
@@ -97,6 +97,7 @@ export default {
     currentStation: Object,
     fileObjects: Array,
     graphStyling: Object,
+    config: Object,
   },
   components: {
     DetailChart,
@@ -285,9 +286,6 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
     metadataConfig() {
       return this.config?.metadataConfig || {};
     },

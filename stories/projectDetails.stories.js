@@ -158,7 +158,7 @@ storiesOf('6 Detail Views / Projects', module)
       </v-col>
 
       <v-col cols="12" >
-        No full list for now, since the MetadataList relys on the vuex store
+        No full list for now, since the MetadataList relies on the vuex store
       </v-col>
 
       <!-- v-col cols="12" >

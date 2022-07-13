@@ -40,6 +40,10 @@ export const UserMenuViews = () => ({
   template: `
     <v-row >
 
+      <v-col cols="12">
+        Click on the avatar
+      </v-col>
+    
       <v-col class="shrink">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
