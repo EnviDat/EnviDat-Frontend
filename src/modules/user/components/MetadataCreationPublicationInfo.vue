@@ -7,9 +7,66 @@
       </v-col>
 
       <v-col cols="6">
-        <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
-        <!-- prettier-ignore -->
-        <EditOrganization v-bind="editOrganizationProps" />
+
+        <v-row>
+
+          <v-col >
+
+          <!-- TEMPORARY PLACEHOLDER START -->
+          <v-card class="pa-4">
+            <v-container fluid class="pa-0">
+              <v-row>
+                <v-col cols="12">
+                  <div class="text-h5">Publishing Dataset</div>
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters align="center" class="pt-6">
+                <v-col cols="1">
+                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                </v-col>
+
+                <v-col class="text-h5" cols="11">
+                  Coming Soon!
+                </v-col>
+
+                <v-col class="pt-2 text-body-1">
+                  Publishing datasets is still under construction.
+                  <br>
+                  Please publish via this dataset the legacy website by clicking on the button below.
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters
+                     class="pt-6" >
+
+                <v-col class="pr-2 text-left">
+                  <BaseRectangleButton buttonText="Publish Dataset"
+                                       color="secondary"
+                                       :url="linkToDatasetCKAN" />
+
+                </v-col>
+
+              </v-row>
+            </v-container>
+          </v-card>
+          <!-- TEMPORARY PLACEHOLDER END -->
+
+          </v-col >
+
+        </v-row>
+
+        <v-row>
+
+          <v-col >
+
+            <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
+            <!-- prettier-ignore -->
+            <EditOrganization v-bind="editOrganizationProps" />
+
+          </v-col >
+
+        </v-row>
       </v-col>
     </v-row>
 
@@ -93,13 +150,21 @@ export default {
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
+    metadataId() {
+      return this.$route.params.metadataid;
+    },
+    linkToDatasetCKAN() {
+      return `${this.envidatDomain}/dataset/${this.metadataId}`;
+    },
   },
   methods: {
     submitEdittedMetadata() {
       eventBus.$emit(METADATA_EDITING_FINISH_CLICK);
     },
   },
-  data: () => ({}),
+  data: () => ({
+    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+  }),
   components: {
     //  EditOrganizationTree,
     EditPublicationInfo,

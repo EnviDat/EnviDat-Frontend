@@ -22,7 +22,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -30,9 +30,9 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    Editing Resources is still under construction.
+                    Editing metadata and uploading resources is still under construction.
                     <br>
-                    Please add resources via the legacy website by clicking on the button below and logging in.
+                    Please edit resources via the legacy website by clicking on the button below.
                   </v-col>
                 </v-row>
 
@@ -78,7 +78,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -88,8 +88,7 @@
                   <v-col class="pt-2 text-body-1">
                     Adding new resources is under construction.
                     <br>
-                    Please edit resources via the legacy website by clicking on the button below and logging in.
-                  </v-col>
+                    Please add resources via the legacy website by clicking on the button below.                  </v-col>
                 </v-row>
 
                 <v-row no-gutters
