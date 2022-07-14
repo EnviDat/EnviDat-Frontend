@@ -16,8 +16,9 @@
 -->
 
     <div v-if="showInitials"
-         id="jazzIconContainer"
-          ref="jazzIcon">
+          id="jazzIconContainer"
+          ref="jazzIcon"
+          :style="`height: ${size}px;`">
     </div>
 
     <span v-if="showInitials"
