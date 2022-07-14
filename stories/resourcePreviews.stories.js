@@ -11,17 +11,20 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
+import { CARD_VIEWS } from './storybookFolder';
 
 // const readme1 = './testdata/bender2020_readme.txt';
 // const readme2 = './testdata/10-16904-envidat-30_readme.txt';
 
+export default {
+  title: `${CARD_VIEWS} / Resource Previews`,
+  decorators: [],
+  parameters: {
+  },
+};
 
-storiesOf('3 Cards / Resource Previews', module)
-.add('Text Preview', () => ({
+export const TextPreview = () => ({
   components: { TextPreviewCard },
   template: `
   <v-col>
@@ -121,7 +124,7 @@ storiesOf('3 Cards / Resource Previews', module)
     readme1,
     readme2,
   }),
-}));
+});
 
 
 const readme1 = `This folder contains, Ini files, data and programs to create a full year precipitation data set for Imis Stations and data and files to model GT with snowpack.

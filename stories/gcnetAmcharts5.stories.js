@@ -16,9 +16,10 @@
 /* eslint-disable object-property-newline */
 
 import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart';
+import { CHART_VIEWS } from './storybookFolder';
 
 export default {
-  title: 'amChart5 Tests / AmChart ',
+  title: `${CHART_VIEWS} / AmChart5 Tests`,
   component: Amcharts5,
   decorators: [],
   parameters: {},

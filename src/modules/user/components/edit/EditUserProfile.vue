@@ -215,7 +215,7 @@ export default {
       });
     },
     initials() {
-      return getNameInitials(this.userFullName);
+      return getNameInitials({ fullName: this.userFullName });
     },
     datasetCount() {
       return 0;

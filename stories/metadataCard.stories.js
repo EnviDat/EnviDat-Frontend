@@ -9,13 +9,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import MetadataCard from '@/components/Cards/MetadataCard';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
-// import { convertTags } from '@/factories/metaDataFactory';
+import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import categoryCards from '@/store/categoryCards';
+import globalMethods from '@/factories/globalMethods';
 import fileIcon from '../src/assets/icons/file.png';
 import lockedIcon from '../src/assets/icons/lockClosed.png';
 import unlockedIcon from '../src/assets/icons/lockOpen.png';
@@ -24,23 +23,16 @@ import multiPinIcon from '../src/assets/icons/markerMulti.png';
 import polygonIcon from '../src/assets/icons/polygons.png';
 
 
+
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
+import { CARD_VIEWS, LABLE_VIEWS } from './storybookFolder';
 
-/*
-for (let i = 0; i < metadataCards.length; i++) {
-  const metadata = metadataCards[i];
-  // metadata.tags = convertTags(metadata.tags, false);
+const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
-  for (let j = 0; j < metadata.tags.length; j++) {
-    const tag = metadata.tags[j];
-    console.log(`tag: ${tag} name: ${tag.name}`);
-  }
-}
-*/
+enhanceMetadatas(metadataCards, cardBGImages, categoryCards);
 
-
-export const methods = {
+const methods = {
   hasRestrictedResources(metadata) {
     if (!metadata || !metadata.resources || metadata.resources.length <= 0) {
       return false;
@@ -82,8 +74,13 @@ export const methods = {
   },
 };
 
-storiesOf('3 Cards / Metadata Cards', module)
-  .add('collection', () => ({
+export default {
+  title: `${CARD_VIEWS} / Metadata Cards`,
+  decorators: [],
+  parameters: {},
+};
+
+export const MetadataCardCollectionView = () => ({
     components: { MetadataCard },
     template: `
     <v-container fluid>
@@ -198,8 +195,9 @@ storiesOf('3 Cards / Metadata Cards', module)
       multiPinIcon,
       polygonIcon,
     }),
-  }))
-  .add('Flat collection', () => ({
+  });
+
+export const MetadataCardFlatCollectionView = () => ({
     components: { MetadataCard },
     template: `
     <v-row >
@@ -234,8 +232,9 @@ storiesOf('3 Cards / Metadata Cards', module)
       lockedIcon,
       unlockedIcon,
     }),
-  }))
-  .add('Placeholder / Loading collection', () => ({
+  });
+
+export const PlaceholderLoadingCollectionView = () => ({
     components: { MetadataCardPlaceholder },
     template: `
     <v-container fluid >
@@ -272,4 +271,4 @@ storiesOf('3 Cards / Metadata Cards', module)
     `,
     methods,
     data: () => ({}),
-  }));
+  });

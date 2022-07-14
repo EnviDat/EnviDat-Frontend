@@ -3,16 +3,27 @@
             :size="size"
             style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
 
-     <v-img v-if="showGravatar"
-          :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'somethingWhichThrowsAnError' }&r=g`"
-          @error="imageError" />
+    <v-img v-if="showGravatar"
+           id="gravatarIcon"
+           :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'somethingWhichThrowsAnError' }&r=g`"
+           @error="imageError" />
 
-    <v-img v-if="showAvaaatarIcons"
+<!--
+    <v-img v-if="!showGravatar && showAvaaatarIcons"
+           id="avaaatarIcons"
           :src="avataaarUrl"
           @error="avataaarError" />
+-->
+
+    <div v-if="showInitials"
+          id="jazzIconContainer"
+          ref="jazzIcon"
+          :style="`height: ${size}px;`">
+    </div>
 
     <span v-if="showInitials"
           class="white--text"
+          style="position: absolute;"
           :class="initialsTextClass" >{{ nameInitials }}</span>
 
     <v-icon v-if="showFallbackAccountIcon"
@@ -37,7 +48,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import jazzicons from 'jazzicon';
 import { getAvataaarUrl } from '@/store/avataaars';
+import seedrandom from 'seedrandom';
 
 export default {
   components: {
@@ -61,6 +74,7 @@ export default {
   mounted() {
     this.avataaarUrl = getAvataaarUrl(this.emailHash);
     // console.log(`emailHash: ${this.emailHash} url: ${this.avataaarUrl}`);
+    this.loadJazzIcon();
   },
   computed: {
     showGravatar() {
@@ -92,11 +106,30 @@ export default {
     },
   },
   methods: {
+    loadJazzIcon() {
+      const jazzIconElement = this.$refs.jazzIcon;
+
+      if (jazzIconElement) {
+        const rng = seedrandom(this.nameInitials);
+        const randNr = rng.int32();
+        const icon = jazzicons(this.size, randNr);
+        jazzIconElement.appendChild(icon);
+      }
+    },
     imageError() {
       this.gravatarNotLoaded = true;
     },
     avataaarError() {
       this.avataaarNotLoaded = true;
+    },
+  },
+  watch: {
+    gravatarNotLoaded() {
+      if (this.gravatarNotLoaded) {
+        this.$nextTick(() => {
+          this.loadJazzIcon();
+        });
+      }
     },
   },
   data: () => ({

@@ -8,7 +8,7 @@
       
       <div v-bind="attrs"
             v-on="on" >
-        <UserAvatar :size="28"
+        <UserAvatar :size="size"
                     :nameInitials="nameInitials" />
       </div>                    
 
@@ -54,6 +54,10 @@ export default {
   props: {
     userObject: Object,
     navItems: Array,
+    size: {
+      type: Number,
+      default: 28,
+    },
   },
   components: {
     UserAvatar,

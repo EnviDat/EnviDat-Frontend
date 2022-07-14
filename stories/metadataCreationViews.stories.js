@@ -10,9 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -104,11 +101,13 @@ let existingAuthors = Object.values(authorsMap);
 existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
-const storybookFolder = `${METADATA_EDITING} / Main Infos`;
+export default {
+  title: `${METADATA_EDITING} / Main Infos`,
+  decorators: [],
+  parameters: {},
+};
 
-
-storiesOf(storybookFolder, module)
-  .add('Editing Keywords & Placeholder Images', () => ({
+export const EditingKeywordsPlaceholder = () => ({
     components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
     template: `
     <v-col>
@@ -148,8 +147,9 @@ storiesOf(storybookFolder, module)
     data: () => ({
       genericProps: placeholderKeywordsGenericProps,
     }),
-  }))
-  .add('Edit Related Publications', () => ({
+  });
+
+export const EditRelatedPublicationViews = () => ({
     components: { EditRelatedPublications },
     template: `
     <v-col>
@@ -208,9 +208,9 @@ storiesOf(storybookFolder, module)
         isVerticalLayout: true,
       },
       genericPropsFilled: {
-                id: '2',
-                labelTextarea: 'Related Publications',
-                textareaContent: `# Why user stories?
+        id: '2',
+        labelTextarea: 'Related Publications',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -234,15 +234,16 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                publications: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        publications: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Generic Textarea Preview Publications', () => ({
+  });
+
+export const GenericTextAreaPreviewPublications = () => ({
     components: { GenericTextareaPreviewLayout, MetadataPublications },
     template: `
     <v-col>
@@ -275,7 +276,7 @@ contribute something to the general goal of your product. `,
 
     </v-col> `,
     mounted() {
-        this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
     methods: {
       catchChangedText(value) {
@@ -317,10 +318,10 @@ contribute something to the general goal of your product. `,
         isVerticalLayout: true,
       },
       genericPropsFilled: {
-                id: '2',
-                columns: '',
-                labelTextarea: 'Related Publications',
-                textareaContent: `# Why user stories?
+        id: '2',
+        columns: '',
+        labelTextarea: 'Related Publications',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -344,14 +345,15 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                publications: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        publications: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Edit Image Placeholder', () => ({
+  });
+
+export const EditImagePlaceholderView = () => ({
     components: { EditImgPlaceholder },
     template: `
     <v-col>
@@ -378,8 +380,9 @@ contribute something to the general goal of your product. `,
       componentTitle: 'Test of the Edit Image Placeholder',
       disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
     }),
-  }))
-  .add('Generic Textarea Preview Metadata Body', () => ({
+  });
+
+export const GenericTextareaPreviewMetadataBodyView = () => ({
     components: { GenericTextareaPreviewLayout, MetadataBody },
     template: `
     <v-col>
@@ -434,21 +437,21 @@ contribute something to the general goal of your product. `,
     },
     data: () => ({
       genericProps: {
-                id: '1',
-                columns: '',
-                labelTextarea: 'Larry Label',
-                textareaContent: '',
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                body: {
-                  text: '',
-                },
+        id: '1',
+        columns: '',
+        labelTextarea: 'Larry Label',
+        textareaContent: '',
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        body: {
+          text: '',
+        },
       },
       genericPropsFilled: {
-                id: '2',
-                columns: '',
-                labelTextarea: 'Larry Label',
-                textareaContent: `# Why user stories?
+        id: '2',
+        columns: '',
+        labelTextarea: 'Larry Label',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -472,15 +475,16 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                body: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        body: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Edit Publication Info', () => ({
+  });
+
+export const EditPublicationInfoView = () => ({
     components: { EditPublicationInfo },
     template: `
     <v-col>
@@ -538,8 +542,9 @@ contribute something to the general goal of your product. `,
           ],
       },
     }),
-  }))
-  .add('Edit Custom Fields', () => ({
+  });
+
+export const EditCustomFieldViews = () => ({
     components: { EditCustomFields },
     template: `
     <v-col>
@@ -616,8 +621,9 @@ contribute something to the general goal of your product. `,
         },
       ],
     }),
-  }))
-.add('Edit Metadata Header', () => ({
+  });
+
+export const EditMetadataHeaderViews = () => ({
     components: { EditMetadataHeader },
     template: `
     <v-col>
@@ -681,8 +687,9 @@ contribute something to the general goal of your product. `,
         contactSurname: 'Miller',
       },
     }),
-  }))
-.add('Edit Metadata Description', () => ({
+  });
+
+export const EditMetadataDescriptionViews = () => ({
     components: { EditDescription },
     template: `
      <v-col>
@@ -741,4 +748,4 @@ contribute something to the general goal of your product. `,
         };
       },
     },
-}));
+});

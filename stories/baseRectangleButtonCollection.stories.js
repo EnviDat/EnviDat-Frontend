@@ -9,14 +9,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import { BUTTONS_VIEWS } from './storybookFolder';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+export default {
+  title: `${BUTTONS_VIEWS} / Rectangle Collection`,
+  decorators: [],
+  parameters: {},
+};
 
 
-storiesOf('2 Buttons / Rectangle Collection', module)
-  .add('buttons with differents states', () => ({
+export const ButtonsCollectionViews = () => ({
     components: { BaseRectangleButton },
     template: `
     <v-row >
@@ -199,4 +202,4 @@ storiesOf('2 Buttons / Rectangle Collection', module)
       </v-col>
       
     </v-row>`,
-  }));
+  });
