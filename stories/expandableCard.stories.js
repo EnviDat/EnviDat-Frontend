@@ -20,8 +20,9 @@ import handsSmall from '../src/assets/about/hands_small.jpg';
 import orga from '../src/assets/about/EnviDat_organigram.png';
 import conceptSmall from '../src/assets/about/concept_small.jpg';
 import communitySmall from '../src/assets/about/community_small.jpg';
+import { CARD_VIEWS, METADATA_EDITING } from './storybookFolder';
 
-export const computed = {
+const computed = {
   missionImg() {
     return this.$vuetify.breakpoint.mdAndUp ? mission : missionSmall;
   },
@@ -62,8 +63,13 @@ export const computed = {
   },
 };
 
-storiesOf('3 Cards / Expandable Cards', module)
-  .add('Expandable card Collection', () => ({
+export default {
+  title: `${CARD_VIEWS} / Expandable Cards`,
+  decorators: [],
+  parameters: {},
+};
+
+export const ExpandableCardCollectionView = () => ({
     components: { ExpandableCard },
     template: `
     <v-row >
@@ -97,4 +103,4 @@ storiesOf('3 Cards / Expandable Cards', module)
       conceptSmall,
       communitySmall,
     }),
-  }));
+  });

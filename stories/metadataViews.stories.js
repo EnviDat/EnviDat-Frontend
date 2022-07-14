@@ -49,6 +49,7 @@ import fileIcon from '../src/assets/icons/file.png';
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
+import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
 
 // function getIcons() {
 //   const icons = new Map();
@@ -151,7 +152,7 @@ const genericProps5 = {
 
 
 export default {
-  title: '6 Detail Views / Metadata',
+  title: `${DETAIL_VIEWS} / Mode View`,
   decorators: [],
   parameters: {},
 };

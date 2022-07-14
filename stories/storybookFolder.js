@@ -1,6 +1,12 @@
+export const LABLE_VIEWS =  '1 Labels';
+export const BUTTONS_VIEWS =  '2 Buttons';
 export const CARD_VIEWS =  '3 Cards';
+export const FILTERING_VIEWS =  '4 Filtering';
+export const NAVIGATION_VIEWS = '5 Navigation';
+export const DETAIL_VIEWS = '6 Detail Views';
 export const USER_VIEWS = '7 User';
 export const GCNET_VIEWS =  '8 GC-Net Views';
-export const BASE_ELEMENTS =  '11 Base Elements';
 export const METADATA_EDITING = '9 Editing Metadata';
 export const CHIPS = '10 CHIPS';
+export const BASE_ELEMENTS =  '11 Base Elements';
+export const CHART_VIEWS =  '12 Chart Views';

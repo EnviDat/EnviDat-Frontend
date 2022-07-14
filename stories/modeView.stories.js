@@ -9,15 +9,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import ModeView from '@/components/Layouts/ModeView';
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { LABLE_VIEWS } from './storybookFolder';
 
+export default {
+  title: `${LABLE_VIEWS} / Mode View`,
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf('1 Lables / Mode View', module).add('SwissForestLab implementation', () => ({
-  components: { ModeView },
+export const SwissForestLabView = () => ({
+components: { ModeView },
   template: `
   <v-row>
 
@@ -38,4 +41,4 @@ storiesOf('1 Lables / Mode View', module).add('SwissForestLab implementation', (
     SWISSFL_MODE,
     emptyMode: '',
   }),
-}));
+});
