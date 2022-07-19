@@ -12,6 +12,8 @@ LABEL envidat.ch.app-version="${APP_VERSION}" \
       envidat.ch.maintainer.app="${MAINTAINER_APP}" \
       envidat.ch.maintainer.cd="${MAINTAINER_CD}"
 WORKDIR /app
+COPY package*.json ./
+RUN npm install
 
 
 FROM base AS debug
@@ -21,11 +23,9 @@ ENTRYPOINT ["node", "--inspect=0.0.0.0:9229", \
             "serve"]
 
 
-FROM debug AS builder
-COPY package*.json ./
-RUN npm install
-COPY . .
+FROM base AS builder
 ENV NODE_ENV production
+COPY . .
 RUN npm run modern-build -- --mode $NODE_ENV
 
 
