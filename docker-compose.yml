@@ -18,6 +18,7 @@ services:
     container_name: envidat_frontend
     ports:
       - 8990:8080
+      - 9229:9229
     volumes:
       - .:/app
     networks:

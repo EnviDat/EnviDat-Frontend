@@ -89,8 +89,6 @@ dist/
 storybook-static/
 /.idea/
 
-.vscode/
-
 public/version_*
 
 public/testdata/config.json
