@@ -21,7 +21,7 @@ import {
 
 const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
 
-let domain = 'https://www.envidat.ch';
+let domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 if (useTestdata) {
   domain = '.';
