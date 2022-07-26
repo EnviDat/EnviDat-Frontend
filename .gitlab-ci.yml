@@ -1,10 +1,8 @@
 stages:
-  # - visual-regression
   - test
+# - visual-regression
   - config
   - build
-  - scan
-  - package
   - deploy
 
 variables:
@@ -107,7 +105,21 @@ modify-env:
       file = '.env.production';
       key = 'VUE_APP_ENVIDAT_PROXY';
       branch = os.getenv('CI_COMMIT_REF_NAME');
-      value = f'https://ckan-{branch}.envidat.ch';
+      if branch == 'main':
+      value = 'https://ckan.envidat.ch' if branch == 'main' \
+      else f'https://ckan-{branch}.envidat.ch';
+      dotenv.set_key(file, key, value, quote_mode='never')\"
+      "
+    - "python -c
+      \"import os;
+      import dotenv;
+      file = '.env.production';
+      key = 'VUE_APP_CONFIG_URL';
+      branch = os.getenv('CI_COMMIT_REF_NAME');
+      value = ( \
+          'https://envidat-frontend-config.s3-website-zh.os.switch.ch/' \
+          f'{branch}.json' \
+      );
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
 
@@ -137,135 +149,37 @@ image-build:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
       --cache=true
-      --destination "${IMAGE_NAME}-unverified"
+      --destination "${IMAGE_NAME}"
       --build-arg APP_VERSION="${VERSION}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-image-scan:
-  stage: scan
-  image:
-    name: docker.io/aquasec/trivy:0.23.0
-    entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
-  script:
-    - trivy --version
-    - time trivy image --clear-cache
-    - time trivy --cache-dir .trivycache/ image --download-db-only --no-progress
-    # Create report artifact
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
-      --no-progress --format template --template "@/contrib/gitlab.tpl"
-      --output "$CI_PROJECT_DIR/envidat-frontend-imgscan.json"
-      "${IMAGE_NAME}-unverified"
-    # Print full report
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
-      --no-progress "${IMAGE_NAME}"-unverified
-    # Fail on critical vulnerabilities
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 1 --ignore-unfixed
-      --severity CRITICAL --no-progress "${IMAGE_NAME}"-unverified
-  cache:
-    key: trivy-cache
-    paths:
-      - .trivycache/
-    policy: pull-push
-  artifacts:
-    when: always
-    reports:
-      container_scanning: envidat-frontend-imgscan.json
-
-image-retag:
-  stage: package
-  image: docker.io/regclient/regctl:v0.3-alpine
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    - export REG_HOST=${INTERNAL_REG%/*}
-    - >
-      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"regcert\":
-      \"$(printf "%s" "${IMAGE_REGISTRY_CERT}" | base64 -d
-      | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\",\"hostname\":
-      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
-      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
-  script:
-    - >
-      regctl --verbosity debug image copy
-      "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
-    - regctl --verbosity debug tag delete "${IMAGE_NAME}-unverified"
-
-.helm:
+rclone-sync:
   stage: deploy
-  image:
-    name: docker.io/alpine/helm:3.8.0
-    entrypoint: [""]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main"
-      when: always
-  before_script:
-    - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
-    - mkdir -p /root/.config/helm/registry
-    - >
-      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf "%s:%s"
-      "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}" | base64
-      | tr -d '\n')\"}}}" > /root/.config/helm/registry/config.json
-
-create-helm-chart:
-  extends:
-    - .helm
-  stage: package
-  script:
-    - >
-      apk add yq --no-cache
-      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
-    - helm dependencies build chart
-    - yq -i '.appVersion = strenv(VERSION)' chart/Chart.yaml
-    - helm package chart
-    - CHART_VER=$(yq '.version' chart/Chart.yaml)
-    - helm push "frontend-${CHART_VER}.tgz" oci://registry.envidat.ch/envidat
-
-helm-deploy:
-  extends:
-    - .helm
+  image: "${IMAGE_NAME}"
   rules:
     - if: $CI_COMMIT_REF_NAME != "main"
       when: always
   variables:
     GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
+  before_script:
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
   script:
-    - >
-      helm upgrade --install --force "frontend-${CI_COMMIT_REF_NAME}"
-      oci://registry.envidat.ch/envidat/frontend
-      --namespace "${NAMESPACE}" --create-namespace
-      --version "${CHART_VERSION}"
-      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"
-      --set image.pullPolicy="Always"
-      --set ingress.hosts[0].host="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
-      --set ingress.hosts[0].paths[0].path="/"
-      --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
-      --set ingress.tls[0].secretName="envidat-star"
-      --set ingress.tls[0].hosts[0]="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
-      --set autoscaling.enabled=false
+    - rclone --verbose sync . "switch:frontend-${CI_COMMIT_REF_NAME}"'
 
-helm-deploy-prod:
+rclone-sync-prod:
   extends:
-    - .helm
-  variables:
-    GIT_STRATEGY: none
+    - rclone-sync
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "main"
+      when: always
   script:
-    - >
-      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
-      oci://registry.envidat.ch/envidat/frontend
-      --namespace "${NAMESPACE}" --create-namespace
-      --version "${CHART_VERSION}"
-      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"
+    - rclone --verbose sync . switch:frontend'
