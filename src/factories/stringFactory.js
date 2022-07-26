@@ -90,7 +90,7 @@ export function decryptString(string, encryptionKey) {
 export function GetEncryptedKeyFromCookie(cookieName) {
   // Get the encryption token from cookie or generate a new one.
   const encryptionToken = Cookie.get(cookieName, {
-    domain: process.env.VUE_APP_ENVIDAT_DOMAIN
+    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
   }) || uuid.v4();
 
   // Store the encryption token in a secure cookie.
