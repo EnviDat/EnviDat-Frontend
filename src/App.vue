@@ -189,8 +189,6 @@ import {
 } from '@/factories/eventBus';
 
 
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
-
 export default {
   name: 'App',
   beforeCreate() {
@@ -397,14 +395,14 @@ export default {
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
-      window.open(`${this.domain}/user/${userName}`, '_blank');
+      window.open(`${this.ckanDomain}/user/${userName}`, '_blank');
 
       if (this.$route.path === USER_DASHBOARD_PATH) {
         this.$router.replace('/');
       }
     },
     redirectToLegacySignin() {
-      window.open(`${this.domain}/user/reset/`, '_blank');
+      window.open(`${this.ckanDomain}/user/reset/`, '_blank');
     },
     showRedirectSignDialog() {
       this.handleRedirectCallBack(false);
@@ -666,7 +664,7 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    domain,
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
     dialogTitle: 'Redirect to Legacy Website!',

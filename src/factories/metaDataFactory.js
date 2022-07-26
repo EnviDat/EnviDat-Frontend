@@ -281,16 +281,16 @@ export function createCitation(dataset) {
     text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
   }
 
-  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
 
   return {
     id: dataset.id,
     citationText: text,
-    citationXmlLink: `${domain}/dataset/${dataset.name}/export/datacite.xml`,
-    citationIsoXmlLink: `${domain}/dataset/${dataset.name}/export/iso19139.xml`,
-    citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
-    citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
-    citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`,
+    citationXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/datacite.xml`,
+    citationIsoXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/iso19139.xml`,
+    citationGCMDXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
+    citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
+    citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
   };
 }
 
@@ -461,7 +461,7 @@ export function createResource(resource, datasetName) {
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
 
   let fileName = resource.name;
 
@@ -486,7 +486,7 @@ export function createResource(resource, datasetName) {
     doi: resource.doi,
     name: fileName,
     url: resURL,
-    restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
+    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
     state: resource.state ? resource.state : '',
