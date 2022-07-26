@@ -4,7 +4,7 @@
  * @summary functions for string conversion
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-12-03 10:53:30 
+ * Created at     : 2020-12-03 10:53:30
  * Last modified  : 2020-12-09 11:47:25
  *
  * This file is subject to the terms and conditions defined in
@@ -92,7 +92,11 @@ export function GetEncryptedKeyFromCookie(cookieName) {
   const encryptionToken = Cookie.get(cookieName) || uuid.v4();
 
   // Store the encryption token in a secure cookie.
-  Cookie.set(cookieName, encryptionToken, { secure: true, expires: 7 });
+  Cookie.set(cookieName, encryptionToken, {
+    secure: true,
+    expires: 7,
+    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
+  });
 
   return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();
 }
