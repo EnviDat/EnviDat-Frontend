@@ -11,10 +11,10 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import SigninView from '@/modules/user/components/SigninView';
-import WelcomeCard from '@/components/Cards/WelcomeCard';
+import SigninView from '@/modules/user/components/SigninView.vue';
+import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard';
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 

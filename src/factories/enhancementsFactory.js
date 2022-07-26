@@ -4,21 +4,20 @@
  * @summary function for techncial enhancements and syntatic sugar
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-10-13 17:06:03 
+ * Created at     : 2020-10-13 17:06:03
  * Last modified  : 2020-10-29 20:32:51
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import globalMethods from '@/factories/globalMethods';
 import {
-  SET_WEBP_SUPPORT,
   SET_CARD_IMAGES,
   SET_WEBP_ASSETS,
+  SET_WEBP_SUPPORT,
   UPDATE_CATEGORYCARD_IMAGES,
 } from '@/store/mainMutationsConsts';
-
-import globalMethods from '@/factories/globalMethods';
 
 /**
  * Return a string image path with .webp
@@ -32,7 +31,7 @@ export function getWebpImagePathWithFallback(imagePath, webpIsSupported = false,
   if (!imagePath) {
     return null;
   }
-  
+
   const targetExtension = webpIsSupported ? 'webp' : fallbackExtension;
 
   const splits = imagePath.split('.');
@@ -112,12 +111,12 @@ export function loadImages(store, isSupported = false) {
   store.commit(SET_WEBP_SUPPORT, isSupported);
 
   const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
-
+  console.log(cardBGImages)
   if (cardBGImages) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = isSupported ? require.context('../assets/', true, /\.webp$/) : null;
+  const webpAssetPaths = isSupported ? import.meta.glob('../assets/*.webp', { eager: true }) : null;
   const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths, false) : null;
   if (webpAssets) {
     store.commit(SET_WEBP_ASSETS, webpAssets);
@@ -126,4 +125,3 @@ export function loadImages(store, isSupported = false) {
   store.commit(UPDATE_CATEGORYCARD_IMAGES);
 
 }
-

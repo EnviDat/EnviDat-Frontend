@@ -1,45 +1,46 @@
 <template>
   <v-card :dark="dark">
-
     <v-card-title class="metadata_title text-h6">
       {{ title }}
     </v-card-title>
 
-    <v-card-text v-if="subProjects" >
-
-      <v-container class="pa-0"
-                        fluid >
-        <v-row >
-
-          <v-col v-for="(project, index) in subProjects"
-                  :key="'sub_' + index"
-                  cols="12" sm="6" md="4" xl="3" >
-
-            <project-card :id="project.id"
-                          :title="project.title"
-                          :img="project.image_display_url"
-                          :defaultImg="defaultImg"
-                          :description="project.description"
-                          :subProjects="project.subProjects"
-                          @cardClick="onCardClick"
-                          @subprojectClick="onSubprojectClick" />
+    <v-card-text v-if="subProjects">
+      <v-container class="pa-0" fluid>
+        <v-row>
+          <v-col
+            v-for="(project, index) in subProjects"
+            :key="'sub_' + index"
+            cols="12"
+            sm="6"
+            md="4"
+            xl="3"
+          >
+            <project-card
+              :id="project.id"
+              :title="project.title"
+              :img="project.image_display_url"
+              :defaultImg="defaultImg"
+              :description="project.description"
+              :subProjects="project.subProjects"
+              @cardClick="onCardClick"
+              @subprojectClick="onSubprojectClick"
+            />
           </v-col>
-
         </v-row>
       </v-container>
     </v-card-text>
 
-    <v-card-text v-if="showPlaceholder && !subProjects" >
-      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer">
+    <v-card-text v-if="showPlaceholder && !subProjects">
+      <div
+        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
+      >
         <div class="bone bone-type-multiline bone-style-paragraph" />
       </div>
     </v-card-text>
 
-    <v-card-text v-if="!showPlaceholder && !subProjects"
-                  style="color: red;" >
+    <v-card-text v-if="!showPlaceholder && !subProjects" style="color: red;">
       {{ emptyText }}
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -56,9 +57,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import ProjectCard from '../ProjectCard';
+import ProjectCard from '../ProjectCard.vue';
 
 export default {
   components: {
@@ -74,8 +75,7 @@ export default {
     dark: Boolean,
     showPlaceholder: Boolean,
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     onCardClick(projectId) {
       this.$emit('projectClick', projectId);
@@ -92,7 +92,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

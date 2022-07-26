@@ -25,8 +25,7 @@ import {
 } from '@/factories/eventBus';
 
 import categoryCards from '@/store/categoryCards';
-
-const mappingTestData = require('@/../public/testdata/mappingTestData.json');
+import * as mappingTestData from '@/../public/testdata/mappingTestData.json';
 
 describe('getFrontendJSON', () => {
 
@@ -434,7 +433,7 @@ describe('getBackendJSON', () => {
 
       expect(backendDate.date).toBe(frontendDate.dateStart);
       expect(mappedEntry.date).toBe(frontendDate.dateStart);
-      
+
       expect(backendDate.date_type).toBe(frontendDate.dateType);
       expect(mappedEntry.date_type).toBe(frontendDate.dateType);
 

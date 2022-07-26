@@ -1,12 +1,14 @@
 <template>
   <v-container fluid>
-    <v-row >
+    <v-row>
       <h1>EnviDat Global Change Master Directory Exchange Platform</h1>
 
-      <v-col class="py-2"
+      <v-col
+        class="py-2"
         v-for="metadata in metadatasContent"
         :key="metadata.id"
-        cols="6" >
+        cols="6"
+      >
         <a :href="gcdmLink(metadata)">
           {{ gcdmLink(metadata) }}
         </a>
@@ -31,6 +33,7 @@
  */
 
 import { mapGetters } from 'vuex';
+
 import { GCMD_PAGENAME } from '@/router/routeConsts';
 import {
   SET_APP_BACKGROUND,
@@ -40,7 +43,7 @@ import {
 export default {
   name: 'GCMDPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       // console.log("beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
       vm.$store.commit(SET_CURRENT_PAGE, GCMD_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
@@ -56,8 +59,7 @@ export default {
       return `https://www.envidat.ch/dataset/${metadata.name}/export/gcmd_dif.xml`;
     },
   },
-  components: {
-  },
+  components: {},
   data: () => ({
     PageBGImage: 'app_b_browsepage',
   }),

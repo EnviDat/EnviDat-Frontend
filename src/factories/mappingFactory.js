@@ -11,6 +11,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { format, parse } from 'date-fns';
+
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
@@ -29,20 +31,17 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
-
-import {
-  UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
-
 import {
   createLocation,
   enhanceTags,
   formatDate,
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
+import {
+  UPDATE_METADATA_EDITING,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
 
-import { format, parse } from 'date-fns';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -184,7 +183,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (process.env.NODE_ENV === 'develop') {
+          if (import.meta.env.DEV) {
             if (e instanceof SyntaxError) {
               // eslint-disable-next-line no-console
               console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
@@ -231,12 +230,12 @@ export function toSnakeCase(inputString) {
 
 /**
  * Code from https://stackoverflow.com/a/61375162/2733509
- * @param {String} snake_case_string
+ * @param {String} snakeCaseString
  * @returns {String} camelCaseString
  */
 // eslint-disable-next-line camelcase
-export function toCamelCase(snake_case_string) {
-  return snake_case_string
+export function toCamelCase(snakeCaseString) {
+  return snakeCaseString
       // .toLowerCase()
       .replace(/([-_][a-z])/g, group => group
           .toUpperCase()
@@ -455,13 +454,13 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
-  
+
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
-  
+
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
   const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
@@ -498,7 +497,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 function populateEditingData(commit, snakeCaseJSON) {
 
   const dataObject = {};
-  
+
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
@@ -507,7 +506,7 @@ function populateEditingData(commit, snakeCaseJSON) {
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;
-  
+
   stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -538,7 +537,7 @@ function populateEditingData(commit, snakeCaseJSON) {
     location,
   });
   dataObject.location = location;
-  
+
   return dataObject;
 }
 
@@ -548,7 +547,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
   const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
-  
+
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
@@ -571,7 +570,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
 
   const dataObject = {};
-  
+
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
@@ -699,5 +698,3 @@ export function parseDateStringToEnviDatFormat(dateString) {
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
   return format(parsedDate, enviDatDateFormat);
 }
-
-

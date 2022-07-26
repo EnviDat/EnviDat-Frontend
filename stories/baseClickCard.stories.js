@@ -9,13 +9,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import globalMethods from '@/factories/globalMethods';
-
-import BaseClickCard from '@/components/BaseElements/BaseClickCard';
 import categoryCards from '@/store/categoryCards';
+
 import { CARD_VIEWS } from './storybookFolder';
 
-const jpgAssetPaths = require.context('../src/assets/', true, /\.jpg$/);
+const jpgAssetPaths = import.meta.glob('../src/assets/**/*.jpg', { eager: true });
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
 for (let i = 0; i < categoryCards.length; i++) {

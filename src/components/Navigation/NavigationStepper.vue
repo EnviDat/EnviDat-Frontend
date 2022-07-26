@@ -1,10 +1,10 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
   <div id="NavigationStepper" class="pa-0 fill-height stepperContentGrid">
-
-    <div class="stepper fill-height pl-10 headerContentGrid"
-          :style="`background-color: ${backgroundColor}`" >
-
+    <div
+      class="stepper fill-height pl-10 headerContentGrid"
+      :style="`background-color: ${backgroundColor}`"
+    >
       <!-- prettier-ignore -->
       <StepperHeader class="py-4"
                          :steps="steps"
@@ -14,51 +14,49 @@
                          :stepNumber="currentStepIndex"
                          @stepClick="catchStepClick" />
 
-      <BaseIconButton v-if="showPreviewButton"
-                      id="PreviewMetadataButton"
-                      class="ma-auto px-4"
-                      material-icon-name="remove_red_eye"
-                      icon-color="white"
-                      color="white"
-                      outlined
-                      tooltipText="Preview Dataset"
-                      :tooltipBottom="true"
-                      @clicked="catchPreviewClick" />
+      <BaseIconButton
+        v-if="showPreviewButton"
+        id="PreviewMetadataButton"
+        class="ma-auto px-4"
+        material-icon-name="remove_red_eye"
+        icon-color="white"
+        color="white"
+        outlined
+        tooltipText="Preview Dataset"
+        :tooltipBottom="true"
+        @clicked="catchPreviewClick"
+      />
 
-      <BaseIconButton id="MetadataEditCloseButton"
-                      class="ma-auto px-4"
-                      material-icon-name="close"
-                      icon-color="white"
-                      color="white"
-                      outlined
-                      tooltipText="Close metadata editing"
-                      :tooltipBottom="true"
-                      @clicked="catchCloseClick" />
-
+      <BaseIconButton
+        id="MetadataEditCloseButton"
+        class="ma-auto px-4"
+        material-icon-name="close"
+        icon-color="white"
+        color="white"
+        outlined
+        tooltipText="Close metadata editing"
+        :tooltipBottom="true"
+        @clicked="catchCloseClick"
+      />
     </div>
-    
+
     <div
       class="content fill-height pa-1 pt-0"
       :style="`background-color: ${backgroundColor}`"
     >
-
-      <v-card v-show="loading"
-              class="fill-height pa-4">
-
-        <v-row id="metadataListPlaceholder" >
-
-          <v-col v-for="(n, index) in 2"
-                 :key="'placeHolder_' + index"
-                 class="pa-2" >
-
+      <v-card v-show="loading" class="fill-height pa-4">
+        <v-row id="metadataListPlaceholder">
+          <v-col
+            v-for="(n, index) in 2"
+            :key="'placeHolder_' + index"
+            class="pa-2"
+          >
             <MetadataCardPlaceholder :dark="false" />
           </v-col>
         </v-row>
-
       </v-card>
 
-      <v-card v-if="!loading"
-              class="fill-height pa-4">
+      <v-card v-if="!loading" class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
@@ -70,7 +68,7 @@
                        :readOnlyExplanation="currentStep.readOnlyExplanation"
                        :nextMajorStep="getNextMajorStepTitle()" />
 
-        <div v-if="!currentStep" >
+        <div v-if="!currentStep">
           Nothing selected, please select a step in the navigation!
         </div>
       </v-card>
@@ -92,11 +90,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
-
-import StepperHeader from '@/components/Navigation/StepperHeader';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 export default {
   name: 'NavigationStepper',
@@ -151,21 +148,23 @@ export default {
       }
     },
     catchStepClick(stepTitle) {
-      this.$router.push({
-        params: {
-          step: stepTitle,
-          substep: undefined,
+      this.$router.push(
+        {
+          params: {
+            step: stepTitle,
+            substep: undefined,
+          },
+          query: this.$route.query,
         },
-        query: this.$route.query,
-      }, () => {
-
-      }, (err) => {
-        // add empty onAbort to not trigger the NavigationDuplicated Error message
-        // when it's a NavigationDuplicated Error
-        if (err?.name?.toLowerCase() !== 'navigationduplicated') {
-          console.error(err);
-        }
-      });
+        () => {},
+        err => {
+          // add empty onAbort to not trigger the NavigationDuplicated Error message
+          // when it's a NavigationDuplicated Error
+          if (err?.name?.toLowerCase() !== 'navigationduplicated') {
+            console.error(err);
+          }
+        },
+      );
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;
@@ -173,9 +172,11 @@ export default {
         nextIndex = 0;
       }
 
-      this.$router.push({ params: {
-        step: this.steps[nextIndex].title,
-      }});
+      this.$router.push({
+        params: {
+          step: this.steps[nextIndex].title,
+        },
+      });
     },
     // eslint-disable-next-line no-unused-vars
     setCurrentStep(stepTitle) {
@@ -196,10 +197,10 @@ export default {
       this.currentStep = null;
     },
     catchCloseClick() {
-      this.$emit('clickedClose')
+      this.$emit('clickedClose');
     },
     catchPreviewClick() {
-      this.$emit('clickedPreview')
+      this.$emit('clickedPreview');
     },
   },
   data: () => ({

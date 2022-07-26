@@ -20,9 +20,9 @@ import {
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
-import EditDataInfo from '@/modules/user/components/EditDataInfo';
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
+import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
@@ -31,8 +31,6 @@ import {
 import unFormatedMetadataCards from './js/metadata';
 import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
 
-
-// const apiFactory = require('@/factories/apiFactory');
 
 const metadataCards = [];
 
@@ -75,7 +73,7 @@ export const EditResourcesList = () => ({
         <v-col >
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
-      </v-row>    
+      </v-row>
     </v-col>
     `,
     created() {

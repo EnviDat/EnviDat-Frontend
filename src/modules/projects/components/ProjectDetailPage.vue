@@ -1,73 +1,71 @@
 <template>
-  <v-container class="pa-0"
-                tag="article"
-                fluid>
+  <v-container class="pa-0" tag="article" fluid>
     <v-row no-gutters>
-
-      <v-col class="elevation-5 pa-0"
-              cols="12"
-              ref="header"
-              style="z-index: 1; position: absolute; left: 0;"
-              :style="headerStyle" >
-
-        <project-header :title="currentProject ? currentProject.title : null"
-                        :titleImg="currentProject ? currentProject.image_display_url : null"
-                        :defaultImg="missionImg"
-                        :showPlaceholder="loading"
-                        @clickedBack="catchBackClicked" />
+      <v-col
+        class="elevation-5 pa-0"
+        cols="12"
+        ref="header"
+        style="z-index: 1; position: absolute; left: 0;"
+        :style="headerStyle"
+      >
+        <project-header
+          :title="currentProject ? currentProject.title : null"
+          :titleImg="currentProject ? currentProject.image_display_url : null"
+          :defaultImg="missionImg"
+          :showPlaceholder="loading"
+          @clickedBack="catchBackClicked"
+        />
       </v-col>
     </v-row>
 
-    <v-row :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
-            no-gutters>
-
-      <v-col class="pb-2 px-sm-3"
-              cols="12"
-              lg="10"
-              offset-lg="1">
-
-        <project-body :description="currentProject ? currentProject.description : null"
-                        :showPlaceholder="loading"
-                        :maxTextLength="$vuetify.breakpoint.xsOnly ? 950 : 1500" />
+    <v-row
+      :style="`z-index: 0; position: relative; top: ${headerHeight()}px`"
+      no-gutters
+    >
+      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+        <project-body
+          :description="currentProject ? currentProject.description : null"
+          :showPlaceholder="loading"
+          :maxTextLength="$vuetify.breakpoint.xsOnly ? 950 : 1500"
+        />
       </v-col>
 
-      <v-col v-if="loading || (!loading && subProjects)"
-              class="pb-2 px-sm-3"
-              cols="12"
-              lg="10"
-              offset-lg="1" >
-
-        <project-subprojects :subProjects="subProjects"
-                              :defaultImg="creatorImg"
-                              :showPlaceholder="loading"
-                              @projectClick="catchProjectClick"
-                              @subprojectClick="catchSubprojectClick" />
+      <v-col
+        v-if="loading || (!loading && subProjects)"
+        class="pb-2 px-sm-3"
+        cols="12"
+        lg="10"
+        offset-lg="1"
+      >
+        <project-subprojects
+          :subProjects="subProjects"
+          :defaultImg="creatorImg"
+          :showPlaceholder="loading"
+          @projectClick="catchProjectClick"
+          @subprojectClick="catchSubprojectClick"
+        />
       </v-col>
 
-      <v-col class="pb-2 px-sm-3"
-              cols="12"
-              lg="10"
-              offset-lg="1" >
-
-        <ProjectDatasets :hasMetadatas="hasMetadatas"
-                          :listContent="filteredListContent"
-                          :showMapFilter="false"
-                          :mapFilteringPossible="mapFilteringPossible"
-                          :placeHolderAmount="placeHolderAmount"
-                          @clickedTag="catchTagClicked"
-                          :allTags="allMetadataTags"
-                          :selectedTagNames="selectedTagNames"
-                          @clickedTagClose="catchTagCloseClicked"
-                          @clickedClear="catchTagCleared"
-                          @clickedCard="catchMetadataClicked"
-                          :defaultListControls="defaultControls"
-                          :enabledControls="enabledControls"
-                          :topFilteringLayout="true"
-                          :showSearch="false"
-                          @setScroll="setScrollPos" />
-
+      <v-col class="pb-2 px-sm-3" cols="12" lg="10" offset-lg="1">
+        <ProjectDatasets
+          :hasMetadatas="hasMetadatas"
+          :listContent="filteredListContent"
+          :showMapFilter="false"
+          :mapFilteringPossible="mapFilteringPossible"
+          :placeHolderAmount="placeHolderAmount"
+          @clickedTag="catchTagClicked"
+          :allTags="allMetadataTags"
+          :selectedTagNames="selectedTagNames"
+          @clickedTagClose="catchTagCloseClicked"
+          @clickedClear="catchTagCleared"
+          @clickedCard="catchMetadataClicked"
+          :defaultListControls="defaultControls"
+          :enabledControls="enabledControls"
+          :topFilteringLayout="true"
+          :showSearch="false"
+          @setScroll="setScrollPos"
+        />
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -86,54 +84,46 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapState,
-  mapGetters,
-} from 'vuex';
+import { mapGetters,mapState } from 'vuex';
 
 import {
-  PROJECTS_PATH,
-  PROJECT_DETAIL_PAGENAME,
+  createTag,
+  tagsIncludedInSelectedTags,
+} from '@/factories/metadataFilterMethods';
+import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
+import {
   METADATADETAIL_PAGENAME,
+  PROJECT_DETAIL_PAGENAME,
+  PROJECTS_PATH,
 } from '@/router/routeConsts';
-
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
-
 import {
-  METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
+  METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
-
-import {
-  tagsIncludedInSelectedTags,
-  createTag,
-} from '@/factories/metadataFilterMethods';
-
-
-import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets';
-import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects';
-import ProjectBody from './ProjectDetailViews/ProjectBody';
-import ProjectHeader from './ProjectDetailViews/ProjectHeader';
 
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
+import ProjectBody from './ProjectDetailViews/ProjectBody.vue';
+import ProjectHeader from './ProjectDetailViews/ProjectHeader.vue';
+import ProjectSubprojects from './ProjectDetailViews/ProjectSubprojects.vue';
 
 export default {
   /**
-     * @description beforeRouteEnter is used to change background image of this page.
-     * It's called via vue-router.
-     */
+   * @description beforeRouteEnter is used to change background image of this page.
+   * It's called via vue-router.
+   */
   name: 'ProjectDetailPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECT_DETAIL_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
 
@@ -146,14 +136,19 @@ export default {
         };
       }
 
-      vm.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, backRoute);
+      vm.$store.commit(
+        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+        backRoute,
+      );
 
       // reset scroll for every new load of project details
       vm.setScrollPos(0);
     });
   },
   beforeRouteUpdate(to, from, next) {
-    const toProject = this.projects.find(project => project.id === to.params.id);
+    const toProject = this.projects.find(
+      project => project.id === to.params.id,
+    );
     let backRoute = { path: PROJECTS_PATH };
 
     if (toProject.parent) {
@@ -162,7 +157,10 @@ export default {
         params: { id: toProject.parent.id },
       };
     }
-    this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, backRoute);
+    this.$store.commit(
+      `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+      backRoute,
+    );
 
     this.setScrollPos(0);
     next();
@@ -180,10 +178,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'loadingConfig',
-      'config',
-    ]),
+    ...mapState(['loadingConfig', 'config']),
     ...mapGetters({
       loading: `${PROJECTS_NAMESPACE}/loading`,
       projects: `${PROJECTS_NAMESPACE}/projects`,
@@ -218,14 +213,22 @@ export default {
       return this.$vuetify.breakpoint.smAndUp;
     },
     hasMetadatas() {
-      return this.currentProject && this.currentProject.packages && this.currentProject.packages.length > 0;
+      return (
+        this.currentProject &&
+        this.currentProject.packages &&
+        this.currentProject.packages.length > 0
+      );
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp ? 'projects/data_creator' : 'about/data_creator_small';
+      const imgPath = this.$vuetify.breakpoint.mdAndUp
+        ? 'projects/data_creator'
+        : 'about/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp ? 'projects/mission' : 'about/mission_small';
+      const imgPath = this.$vuetify.breakpoint.mdAndUp
+        ? 'projects/mission'
+        : 'about/mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     allMetadataTags() {
@@ -297,7 +300,10 @@ export default {
   },
   methods: {
     catchMetadataClicked(datasetname) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
@@ -308,7 +314,10 @@ export default {
     },
     loadProjects() {
       if (this.projects.length <= 0) {
-        this.$store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, this.projectsConfig);
+        this.$store.dispatch(
+          `${PROJECTS_NAMESPACE}/${GET_PROJECTS}`,
+          this.projectsConfig,
+        );
       }
     },
     headerHeight() {
@@ -357,7 +366,10 @@ export default {
       this.$router.push({ path: PROJECTS_PATH });
     },
     catchProjectClick(projectId) {
-      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,
@@ -365,7 +377,10 @@ export default {
       });
     },
     catchSubprojectClick(subprojectId) {
-      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,
@@ -383,14 +398,15 @@ export default {
       }
 
       if (this.mixinMethods_isTagSelected(tagId)) {
-        this.selectedTagNames = this.selectedTagNames.filter(tag => tag !== tagId);
+        this.selectedTagNames = this.selectedTagNames.filter(
+          tag => tag !== tagId,
+        );
       }
     },
     catchTagCleared() {
       this.selectedTagNames = [];
     },
     setScrollPos(toPos) {
-
       if (this.$root.$children && this.$root.$children[0].$refs.appContainer) {
         this.$root.$children[0].$refs.appContainer.scrollTop = toPos;
       }
@@ -407,10 +423,7 @@ export default {
     placeHolderAmount: 3,
     selectedTagNames: [],
     defaultControls: [LISTCONTROL_MAP_ACTIVE],
-    enabledControls: [
-      LISTCONTROL_LIST_ACTIVE,
-      LISTCONTROL_MAP_ACTIVE,
-    ],
+    enabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE],
   }),
 };
 </script>

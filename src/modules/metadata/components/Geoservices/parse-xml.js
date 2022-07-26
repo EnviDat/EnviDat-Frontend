@@ -3,21 +3,21 @@
  * for it. The configuration file can be used for MetadataGeo.
  */
 
-const fs = require('fs');
-const axios = require('axios');
-const parseString = require('xml2js').parseString;
+import fs from 'fs';
+import axios from 'axios';
+import parseString from 'xml2js/parseString'
 
 let xml;
 
 // eslint-disable-next-line no-extend-native
-Date.prototype.addDays = function (days) {
+Date.prototype.addDays = function(days) {
   const date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
   return date;
 };
 
 function getDates(startDate, stopDate) {
-  const dateArray = new Array();
+  const dateArray = [];
   let currentDate = startDate;
   while (currentDate <= stopDate) {
     dateArray.push(new Date(currentDate));
@@ -26,9 +26,11 @@ function getDates(startDate, stopDate) {
   return dateArray;
 }
 
-
-axios.get('http://map.wsl.ch/cgi-bin/envidat/map.fcgi?REQUEST=Getcapabilities&SERVICE=WMS')
-  .then((res) => {
+axios
+  .get(
+    'http://map.wsl.ch/cgi-bin/envidat/map.fcgi?REQUEST=Getcapabilities&SERVICE=WMS',
+  )
+  .then(res => {
     xml = res.data;
     parseString(xml, (err, result) => {
       const layers = result.WMS_Capabilities.Capability[0].Layer[0].Layer;
@@ -45,14 +47,14 @@ axios.get('http://map.wsl.ch/cgi-bin/envidat/map.fcgi?REQUEST=Getcapabilities&SE
       };
       const dates = getDates(new Date(2015, 0, 1), new Date().addDays(300));
       let count = 0;
-      layers.forEach((layer) => {
+      layers.forEach(layer => {
         const date = dates[count];
         const name = layer.Name[0];
         const dateString = name.split('V_1_0')[1];
         if (!dateString) return;
         const year = date.getFullYear();
-        const month = ('0' + (date.getMonth() + 1).toString()).slice(-2);
-        const day = ('0' + date.getDate().toString()).slice(-2);
+        const month = `0${(date.getMonth() + 1).toString()}`.slice(-2);
+        const day = `0${date.getDate().toString()}`.slice(-2);
 
         const jsonlayer = {
           name: layer.Name[0],
@@ -63,11 +65,8 @@ axios.get('http://map.wsl.ch/cgi-bin/envidat/map.fcgi?REQUEST=Getcapabilities&SE
         };
         data.layers.push(jsonlayer);
         count++;
-
       });
 
       fs.writeFileSync('geoservice_chelsa_parsed.json', JSON.stringify(data));
-
-
     });
   });

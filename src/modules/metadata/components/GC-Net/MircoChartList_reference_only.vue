@@ -1,31 +1,24 @@
 <template>
-  <v-container class="fill-height pa-0" fluid
-                >
-
-    <v-row   >
-
+  <v-container class="fill-height pa-0" fluid>
+    <v-row>
       <v-col cols="12" offset-md="4">
-        <p v-html="homeInfos.smallInfo"></p>
+        <div v-html="homeInfos.smallInfo"></div>
       </v-col>
 
       <v-col cols="12" sm="3">
         <stations-map @mapClick="mapStationClick" />
       </v-col>
 
-      <v-col v-if="!visible"
-              cols="12" sm="9">
-        <v-row   justify="center">
-          <v-col 
-                  class="text-h6 shrink">
+      <v-col v-if="!visible" cols="12" sm="9">
+        <v-row justify="center">
+          <v-col class="text-h6 shrink">
             Loading MicroCharts...
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col v-if="visible"
-              cols="12" sm="9" >
-        <v-row  >
-
+      <v-col v-if="visible" cols="12" sm="9">
+        <v-row>
           <!-- <v-flex xs12 md4 lg3>
             <micro-chart :station="stations[0]"
                           :JSONUrls="getJSONUrls(stations[0])"
@@ -33,27 +26,35 @@
                           @detailClick="(stationID) => { changeCurrentStation(stationID); }" />
           </v-flex> -->
 
-          <v-col v-for="(station, index) in stations"
-                  :key="`${station.id}_${station.alias}`"
-                  cols="12" md="4" lg="3">
-            <micro-chart :station="station"
-                          :image="stationImg(station.alias)"
-                          :fileValueMapping="fileValueMapping"
-                          :delay="index * 100"
-                          @detailClick="(stationID) => { changeCurrentStation(stationID); }" />
+          <v-col
+            v-for="(station, index) in stations"
+            :key="`${station.id}_${station.alias}`"
+            cols="12"
+            md="4"
+            lg="3"
+          >
+            <micro-chart
+              :station="station"
+              :image="stationImg(station.alias)"
+              :fileValueMapping="fileValueMapping"
+              :delay="index * 100"
+              @detailClick="
+                stationID => {
+                  changeCurrentStation(stationID);
+                }
+              "
+            />
           </v-col>
 
-                          <!-- :JSONUrls="getJSONUrls(station)" -->
-
+          <!-- :JSONUrls="getJSONUrls(station)" -->
         </v-row>
       </v-col>
-
     </v-row>
   </v-container>
 </template>
 
 <script>
-// import StationsMap from '@/components/StationsMap';
+// import StationsMap from '@/components/StationsMap.vue';
 // import MicroChart from '@/components/MicroChart.vue';
 import homeInfos from './homeInfos';
 // import * as am4core from "@amcharts/amcharts4/core";
@@ -61,8 +62,7 @@ import homeInfos from './homeInfos';
 
 export default {
   name: 'StationOverviewPage',
-  props: {
-  },
+  props: {},
   components: {
     // MicroChart,
     // StationsMap,
@@ -85,12 +85,16 @@ export default {
     },
   },
   beforeMount() {
-    const imgs = require.context('@/assets/cards', false, /\.jpg$/);
+    const imgPaths = import.meta.glob('@/assets/cards/*.jpg', { eager: true });
     const imgCache = {};
 
-    imgs.keys().forEach((key) => {
-      imgCache[key] = imgs(key);
-    });
+    for (const path in imgPaths) {
+      if (path) {
+        imgPaths[path]().then((mod) => {
+          imgCache[path] = path;
+        })
+      }
+    }
 
     this.cardImgs = imgCache;
   },
@@ -124,15 +128,17 @@ export default {
       this.$emit('detailClick', newStation);
     },
     getJSONUrls(station) {
-      const dataURLs = []; const 
-recentDataURLs = [];
+      const dataURLs = [];
+      const recentDataURLs = [];
       const keys = Object.keys(this.fileValueMapping);
 
       for (let i = 0; i < keys.length; i++) {
         const prefix = keys[i];
         const fileName = `${station.id}${prefix}.json`;
         const recentFileName = `${station.id}${prefix}_v.json`;
-        const baseUrl = process.env.NODE_ENV === 'production' ? this.baseStationURL : this.baseStationURLTestdata;
+        const baseUrl = import.meta.env.PROD
+          ? this.baseStationURL
+          : this.baseStationURLTestdata;
 
         // add the timestamp to prevent server side caching
         // const url = `${baseUrl}${fileName}?t=${Date.now()}`;
@@ -156,6 +162,4 @@ recentDataURLs = [];
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

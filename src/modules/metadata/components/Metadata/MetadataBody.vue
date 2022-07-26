@@ -1,11 +1,12 @@
 <template id="MetadataBody">
-  <expandable-text-layout :title="METADATA_BODY_TITLE"
-                          :text="body ? body.text : undefined"
-                          :showPlaceholder="showPlaceholder"
-                          :maxTextLength="body ? body.maxTextLength : undefined"
-                          :emptyTextColor="emptyTextColor"
-                          :emptyText="emptyText" />
-
+  <expandable-text-layout
+    :title="METADATA_BODY_TITLE"
+    :text="body ? body.text : undefined"
+    :showPlaceholder="showPlaceholder"
+    :maxTextLength="body ? body.maxTextLength : undefined"
+    :emptyTextColor="emptyTextColor"
+    :emptyText="emptyText"
+  />
 </template>
 
 <script>
@@ -20,9 +21,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_BODY_TITLE } from '@/factories/metadataConsts';
 
 export default {
@@ -42,17 +43,17 @@ export default {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No description found for this dataset.');
+      return this.mixinMethods_getGenericProp(
+        'emptyText',
+        'No description found for this dataset.',
+      );
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     METADATA_BODY_TITLE,
   }),
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

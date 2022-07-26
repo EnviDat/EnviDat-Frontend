@@ -4,14 +4,14 @@
  * @summary Color Themes
  * @author Dominik Haas-Artho
  *
- * Created at     : 2021-01-26 16:11:52 
+ * Created at     : 2021-01-26 16:11:52
  * Last modified  : 2021-01-26 09:16:01
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
- // Icons list: https://jossef.github.io/material-design-icons-iconfont/
+// Icons list: https://jossef.github.io/material-design-icons-iconfont/
 
 // original theme, not colorblind ready
 // const theme = {
@@ -46,19 +46,16 @@ export const gradients = {
     from: '#d6ff7f',
     to: '#00b3cc',
   },
-  violetBlueTurkis:
-  {
+  violetBlueTurkis: {
     from: '#9055ff',
     to: '#13e2da',
   },
-  darkToLighTurkis:
-  {
+  darkToLighTurkis: {
     from: '#402565',
     to: '#30be96',
   },
-  blueLightToBrigth:
-  {
+  blueLightToBrigth: {
     from: '#2f80ed',
     to: '#b2ffda',
-  },  
+  },
 };

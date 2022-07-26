@@ -17,10 +17,7 @@ export const urlParameters = [
   'topType',
 ];
 
-export const avatarStyle = [
-  'Circle',
-  'Tranparent',
-];
+export const avatarStyle = ['Circle', 'Tranparent'];
 
 export const skinColor = [
   'Black',
@@ -118,7 +115,7 @@ export const graphicType = [
   'Selena',
   'Bear',
   'SkullOutline',
-  'Skull',  
+  'Skull',
 ];
 
 export const facialHairType = [
@@ -165,7 +162,7 @@ export const hatColor = [
   'PastelBlue',
   'PastelGreen',
   'PastelOrange',
-  'PastelRed',  
+  'PastelRed',
 ];
 
 export const accessoriesType = [
@@ -247,7 +244,6 @@ function getNextHashNumber(hash, index) {
     const char = hash[i];
 
     try {
-      
       number = Number.parseInt(char, 10);
 
       if (!Number.isNaN(number)) {
@@ -256,14 +252,12 @@ function getNextHashNumber(hash, index) {
     } catch (error) {
       console.error(`getNextHashNumber ${error}`);
     }
-
   }
 
   return { index: i, number };
 }
 
 export function getAvataaarUrl(emailHash, avatarStyleParam = 'Transparent') {
-
   const paramKeys = Object.keys(parameterCollection);
 
   let url = `https://avataaars.io/?avatarStyle=${avatarStyleParam}`;
@@ -271,7 +265,7 @@ export function getAvataaarUrl(emailHash, avatarStyleParam = 'Transparent') {
 
   for (let i = 0; i < paramKeys.length; i++) {
     const key = paramKeys[i];
-    
+
     const paramValues = parameterCollection[key];
 
     const returnObj = getNextHashNumber(emailHash, hashIndex);

@@ -16,10 +16,10 @@
 
 import { getNameInitials } from '@/factories/authorFactory';
 
-import UserAvatar from '@/components/Layouts/UserAvatar';
-import UserCard from '@/components/Cards/UserCard';
-import UserMenu from '@/modules/user/components/UserMenu';
-import MetadataCube from '@/components/BaseElements/MetadataCube';
+import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
+import UserMenu from '@/modules/user/components/UserMenu.vue';
+import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 
 import seedrandom from 'seedrandom';
 import jazzicons from '@metamask/jazzicon';
@@ -47,13 +47,13 @@ export const UserMenuViews = () => ({
       <v-col cols="12">
         Click on the avatar
       </v-col>
-    
+
       <v-col class="shrink">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
 
       <v-col class="shrink">
-        <UserMenu :navItems="userMenuItems" 
+        <UserMenu :navItems="userMenuItems"
                   :user-object="user" />
       </v-col>
 
@@ -91,7 +91,7 @@ export const JazzIconsViews = () => ({
   template: `
     <v-row >
 
-   
+
       <v-col class="shrink"
              id="jazzIcon"
              ref="jazzIcon">
@@ -106,7 +106,7 @@ export const JazzIconsViews = () => ({
              id="jazzIcon3"
              ref="jazzIcon3">
       </v-col>
-    
+
     </v-row>
     `,
   mounted() {

@@ -8,11 +8,9 @@ import L from 'leaflet';
  * Code for how to solve this could potentially be found in the Leaflet TileLayer.GL plugin.
  */
 
-
 L.TileLayer.Difference = L.TileLayer.extend({
-
-  initialize: function (url, options) {
-    options = options || {}
+  initialize: function(url, options) {
+    options = options || {};
     options.crossOrigin = true;
     L.TileLayer.prototype.initialize.call(this, url, options);
 
@@ -21,33 +19,36 @@ L.TileLayer.Difference = L.TileLayer.extend({
     });
   },
 
-  _createTile: function () {
+  _createTile: function() {
     var tile = L.TileLayer.prototype._createTile.call(this);
-    tile.crossOrigin = "Anonymous";
+    tile.crossOrigin = 'Anonymous';
     return tile;
   },
-  _makeGrayscale: function (img) {
-    if (img.getAttribute('data-grayscaled'))
-      return;
+  _makeGrayscale: function(img) {
+    if (img.getAttribute('data-grayscaled')) return;
 
     img.crossOrigin = '';
-    var canvas = document.createElement("canvas");
+    var canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
 
     var imgd = ctx.getImageData(0, 0, canvas.width, canvas.height);
     var pix = imgd.data;
     for (var i = 0, n = pix.length; i < n; i += 4) {
-      pix[i] = pix[i + 1] = pix[i + 2] = (this.options.quotaRed * pix[i] + this.options.quotaGreen * pix[i + 1] + this.options.quotaBlue * pix[i + 2]) / this.options.quotaDivider();
+      pix[i] = pix[i + 1] = pix[i + 2] =
+        (this.options.quotaRed * pix[i] +
+          this.options.quotaGreen * pix[i + 1] +
+          this.options.quotaBlue * pix[i + 2]) /
+        this.options.quotaDivider();
     }
     ctx.putImageData(imgd, 0, 0);
     img.setAttribute('data-grayscaled', true);
     img.src = canvas.toDataURL();
-  }
+  },
 });
 
-L.tileLayer.difference = function (layers, options) {
+L.tileLayer.difference = function(layers, options) {
   return new L.TileLayer.Difference(layers, options);
 };

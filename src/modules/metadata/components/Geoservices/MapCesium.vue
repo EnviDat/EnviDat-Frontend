@@ -29,44 +29,45 @@
 
 <script>
 /* eslint-disable no-unused-vars */
-import { buffer as tBuffer, envelope as tEnvelope } from '@turf/turf';
+import 'cesium/Widgets/widgets.css';
 
-/* eslint-disable new-cap */
-import Viewer from 'cesium/Widgets/Viewer/Viewer';
-import OpenStreetMapImageryProvider from 'cesium/Scene/OpenStreetMapImageryProvider';
+import { buffer as tBuffer, envelope as tEnvelope } from '@turf/turf';
+import Cartesian2 from 'cesium/Core/Cartesian2';
+import Color from 'cesium/Core/Color';
+import Ellipsoid from 'cesium/Core/Ellipsoid';
+import HeadingPitchRange from 'cesium/Core/HeadingPitchRange';
+import CesiumMath from 'cesium/Core/Math';
+import Matrix4 from 'cesium/Core/Matrix4';
+import Rectangle from 'cesium/Core/Rectangle';
+import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
+import LabelGraphics from 'cesium/DataSources/LabelGraphics';
 import BingMapsImageryProvider from 'cesium/Scene/BingMapsImageryProvider';
 import BingMapsStyle from 'cesium/Scene/BingMapsStyle';
-import Rectangle from 'cesium/Core/Rectangle';
-import Matrix4 from 'cesium/Core/Matrix4';
-import SceneMode from 'cesium/Scene/SceneMode';
-import HeadingPitchRange from 'cesium/Core/HeadingPitchRange';
-import Cartesian2 from 'cesium/Core/Cartesian2';
-import Ellipsoid from 'cesium/Core/Ellipsoid';
-import CesiumMath from 'cesium/Core/Math';
-import GeoJsonDataSource from 'cesium/DataSources/GeoJsonDataSource';
 import HorizontalOrigin from 'cesium/Scene/HorizontalOrigin';
+import OpenStreetMapImageryProvider from 'cesium/Scene/OpenStreetMapImageryProvider';
+import SceneMode from 'cesium/Scene/SceneMode';
 import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
-import Color from 'cesium/Core/Color';
-import LabelGraphics from 'cesium/DataSources/LabelGraphics';
-import 'cesium/Widgets/widgets.css';
+/* eslint-disable new-cap */
+import Viewer from 'cesium/Widgets/Viewer/Viewer';
+import { mapState } from 'vuex';
+
 import marker from '@/assets/map/marker-icon.png';
 import marker2x from '@/assets/map/marker-icon-2x.png';
 import markerShadow from '@/assets/map/marker-shadow.png';
-import { mapState } from 'vuex';
-
 import {
+  eventBus,
+  MAP_ZOOM_CENTER,
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
-  MAP_ZOOM_CENTER,
-  eventBus,
 } from '@/factories/eventBus';
 import {
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POLYGON,
-  LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_FEATCOLLECTION,
+  LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
 } from '@/factories/metaDataFactory';
+
 import { cesiumLayer } from './layer-cesium';
 
 export default {
@@ -141,7 +142,7 @@ export default {
 
       this.viewer.scene.canvas.addEventListener(
         'click',
-        (event) => {
+        event => {
           event.preventDefault();
           const viewer = that.viewer;
           const mousePosition = new Cartesian2(event.clientX, event.clientY);
@@ -179,7 +180,6 @@ export default {
             const minLat = CesiumMath.toDegrees(cartLr.latitude).toFixed(2);
             const cartLl = Ellipsoid.WGS84.cartesianToCartographic(posLL);
             const minLon = CesiumMath.toDegrees(cartLl.longitude).toFixed(2);
-
           } else {
             console.log('could not resolve selected Location');
           }
@@ -277,7 +277,7 @@ export default {
 
       // });
 
-      GeoJsonDataSource.load(geoJson).then((dataSource) => {
+      GeoJsonDataSource.load(geoJson).then(dataSource => {
         this.viewer.dataSources.add(dataSource);
 
         this.siteLayer = dataSource;
@@ -289,17 +289,20 @@ export default {
         // Determine if point or polygon dataset
         let isPoints = null;
         if (isFeatCollection) {
-          isPoints = geoJson.features[0].geometry.type === LOCATION_TYPE_MULTIPOINT
-            || geoJson.features[0].geometry.type === LOCATION_TYPE_POINT;
+          isPoints =
+            geoJson.features[0].geometry.type === LOCATION_TYPE_MULTIPOINT ||
+            geoJson.features[0].geometry.type === LOCATION_TYPE_POINT;
         } else if (isGeomCollection) {
-          isPoints = geoJson.geometries[0].type === LOCATION_TYPE_MULTIPOINT
-            || geoJson.geometries[0].type === LOCATION_TYPE_POINT;
+          isPoints =
+            geoJson.geometries[0].type === LOCATION_TYPE_MULTIPOINT ||
+            geoJson.geometries[0].type === LOCATION_TYPE_POINT;
         } else {
-          isPoints = geoJson.type === LOCATION_TYPE_MULTIPOINT
-            || geoJson.type === LOCATION_TYPE_POINT;
+          isPoints =
+            geoJson.type === LOCATION_TYPE_MULTIPOINT ||
+            geoJson.type === LOCATION_TYPE_POINT;
         }
 
-        entities.forEach((entity) => {
+        entities.forEach(entity => {
           // Set point style
           if (isPoints) {
             entity.billboard = {
@@ -418,7 +421,8 @@ export default {
         this.viewer.imageryLayers.remove(this.basemapLayer);
         this.basemapLayer = null;
       }
-      this.basemapLayer = this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
+      this.basemapLayer =
+        this.baseMapLayerName === 'streets' ? this.streets : this.satellite;
       this.basemapLayer = this.viewer.imageryLayers.addImageryProvider(
         this.basemapLayer,
         0,

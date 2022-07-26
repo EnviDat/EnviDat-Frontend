@@ -20,9 +20,9 @@ import {
   SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
-import EditAuthorList from '@/modules/user/components/EditAuthorList';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
+import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import {
   localIdProperty,
@@ -33,7 +33,7 @@ import {
   extractAuthorsMap,
 } from '@/factories/authorFactory';
 
-import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
@@ -194,7 +194,7 @@ export const EditingDataCreditViews = () => ({
         />
       </v-col>
     </v-row>
-    
+
     <v-row>
       readonly EditDataCredits
     </v-row>
@@ -208,7 +208,7 @@ export const EditingDataCreditViews = () => ({
                          :readOnly="true" />
       </v-col>
     </v-row>
-  
+
   </v-col>
   `,
   methods: {

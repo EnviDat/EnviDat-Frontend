@@ -12,78 +12,75 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { solrResultToCKANJSON } from '@/factories/apiFactory';
+import { extractAuthorsMap } from '@/factories/authorFactory';
+import { checkWebpFeature } from '@/factories/enhancementsFactory';
+import globalMethods from '@/factories/globalMethods';
 import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  LOAD_METADATA_CONTENT_BY_ID_ERROR,
-  CLEAN_CURRENT_METADATA,
-  SEARCH_METADATA,
-  SEARCH_METADATA_SUCCESS,
-  SEARCH_METADATA_ERROR,
-  CLEAR_SEARCH_METADATA,
-  BULK_LOAD_METADATAS_CONTENT,
-  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
-  BULK_LOAD_METADATAS_CONTENT_ERROR,
-  UPDATE_TAGS,
-  UPDATE_TAGS_SUCCESS,
-  UPDATE_TAGS_ERROR,
-  FILTER_METADATA,
-  FILTER_METADATA_SUCCESS,
-  FILTER_METADATA_ERROR,
-  PIN_METADATA,
-  CLEAR_PINNED_METADATA,
-  SET_DETAIL_PAGE_BACK_URL,
-  SET_ABOUT_PAGE_BACK_URL,
-  SET_VIRTUAL_LIST_INDEX,
-  SWISSFL_MODE,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
-  METADATA_UPDATE_EXISTING_AUTHORS,
-  METADATA_UPDATE_EXISTING_KEYWORDS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
-  METADATA_UPDATE_AN_EXISTING_AUTHOR,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
-
+  METADATA_KEYWORDS_TITLE,
+  METADATA_PUBLICATIONS_TITLE,
+} from '@/factories/metadataConsts';
 import {
-  warningMessage,
-  getSpecificApiError,
-} from '@/factories/notificationFactory';
-
-import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
-
-import {
+  createLocation,
   enhanceMetadataEntry,
   enhanceTags,
-  createLocation,
 } from '@/factories/metaDataFactory';
-
-import globalMethods from '@/factories/globalMethods';
-
-import {
-  METADATA_PUBLICATIONS_TITLE,
-  METADATA_KEYWORDS_TITLE,
-} from '@/factories/metadataConsts';
-
-import { checkWebpFeature } from '@/factories/enhancementsFactory';
-import { extractAuthorsMap } from '@/factories/authorFactory';
-import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadataFromExtras } from '@/factories/modeFactory';
-
+import {
+  getSpecificApiError,
+  warningMessage,
+} from '@/factories/notificationFactory';
+import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
+import {
+  BULK_LOAD_METADATAS_CONTENT,
+  BULK_LOAD_METADATAS_CONTENT_ERROR,
+  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
+  CLEAN_CURRENT_METADATA,
+  CLEAR_PINNED_METADATA,
+  CLEAR_SEARCH_METADATA,
+  EXTRACT_IDS_FROM_TEXT,
+  EXTRACT_IDS_FROM_TEXT_ERROR,
+  EXTRACT_IDS_FROM_TEXT_SUCCESS,
+  FILTER_METADATA,
+  FILTER_METADATA_ERROR,
+  FILTER_METADATA_SUCCESS,
+  LOAD_METADATA_CONTENT_BY_ID,
+  LOAD_METADATA_CONTENT_BY_ID_ERROR,
+  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
+  METADATA_NAMESPACE,
+  METADATA_UPDATE_AN_EXISTING_AUTHOR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  PIN_METADATA,
+  PUBLICATIONS_RESOLVE_IDS,
+  PUBLICATIONS_RESOLVE_IDS_ERROR,
+  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
+  SEARCH_METADATA,
+  SEARCH_METADATA_ERROR,
+  SEARCH_METADATA_SUCCESS,
+  SET_ABOUT_PAGE_BACK_URL,
+  SET_DETAIL_PAGE_BACK_URL,
+  SET_VIRTUAL_LIST_INDEX,
+  SWISSFL_MODE,
+  UPDATE_TAGS,
+  UPDATE_TAGS_ERROR,
+  UPDATE_TAGS_SUCCESS,
+} from '@/store/metadataMutationsConsts';
 
 function enhanceMetadatas(store, datasets) {
   if (!(datasets instanceof Array)) {
-    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
+    throw new Error(
+      `enhanceMetadatas() expects an array of datasets got ${typeof datasets}`,
+    );
   }
 
   // const rootBGImgs = store.rootState?.getters?.cardBGImages;
   let cardBGImgs = store.state.cardBGImages; // || rootBGImgs;
-  cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
+  cardBGImgs =
+    cardBGImgs ||
+    globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
   const categoryCards = store.state.categoryCards;
   const enhancedContent = {};
 
@@ -102,7 +99,6 @@ function enhanceMetadatas(store, datasets) {
   return enhancedContent;
 }
 
-
 export default {
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
@@ -110,11 +106,7 @@ export default {
     state.searchedMetadatasContent = {};
     state.currentSearchTerm = searchTerm;
   },
-  [SEARCH_METADATA_SUCCESS](state, {
-    payload,
-    isLocalSearch = false,
-  }) {
-
+  [SEARCH_METADATA_SUCCESS](state, { payload, isLocalSearch = false }) {
     let convertedPayload = [];
     if (isLocalSearch) {
       convertedPayload = payload;
@@ -134,7 +126,10 @@ export default {
     state.searchingMetadatasContent = false;
     state.searchingMetadatasContentOK = false;
 
-    const errObj = getSpecificApiError('The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'The searching cause an error. Try again or use Keywords for filtering. Please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -156,7 +151,10 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
     state.loadingCurrentMetadataContent = false;
 
-    const errObj = getSpecificApiError('For this entry no Metadata could be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'For this entry no Metadata could be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -179,7 +177,10 @@ export default {
     state.loadingMetadatasContent = false;
     state.metadatasContentOK = false;
 
-    const errObj = getSpecificApiError('Metadata could not be loaded, please report if the error persists!', reason);
+    const errObj = getSpecificApiError(
+      'Metadata could not be loaded, please report if the error persists!',
+      reason,
+    );
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
@@ -193,7 +194,11 @@ export default {
   [UPDATE_TAGS_ERROR](state, reason) {
     state.updatingTags = false;
 
-    const errObj = warningMessage('Keyword update error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Keyword update error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [FILTER_METADATA](state) {
@@ -205,7 +210,11 @@ export default {
   },
   [FILTER_METADATA_ERROR](state, reason) {
     state.isFilteringContent = false;
-    const errObj = warningMessage('Filtering error', `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`, reason.stack);
+    const errObj = warningMessage(
+      'Filtering error',
+      `Error: ${reason.message}. \n Filtering might not work properly try reloading the page`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [PIN_METADATA](state, payload) {
@@ -231,14 +240,17 @@ export default {
     state.publicationsResolvingIds = true;
     state.publicationsResolvedIds = {};
   },
-  [PUBLICATIONS_RESOLVE_IDS_SUCCESS](state, { idsToResolve, resolvedPublications }) {
+  [PUBLICATIONS_RESOLVE_IDS_SUCCESS](
+    state,
+    { idsToResolve, resolvedPublications },
+  ) {
     state.publicationsResolvingIds = false;
     let publicationsResolvedIds = null;
 
     if (idsToResolve) {
       publicationsResolvedIds = {};
 
-      idsToResolve.forEach((id) => {
+      idsToResolve.forEach(id => {
         const resolvedObject = resolvedPublications[id];
         const text = resolvedObject?.citation?.ACS; // jshint ignore:line
         if (text) {
@@ -252,7 +264,11 @@ export default {
   [PUBLICATIONS_RESOLVE_IDS_ERROR](state, reason) {
     state.publicationsResolvingIds = false;
 
-    const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while resolving the ids: ${reason.message}.`, reason.stack);
+    const errObj = warningMessage(
+      `${METADATA_PUBLICATIONS_TITLE} Error`,
+      `Error while resolving the ids: ${reason.message}.`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
   [EXTRACT_IDS_FROM_TEXT](state) {
@@ -266,16 +282,19 @@ export default {
   [EXTRACT_IDS_FROM_TEXT_ERROR](state, reason) {
     state.extractingIds = false;
 
-    const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
+    const errObj = warningMessage(
+      `${METADATA_PUBLICATIONS_TITLE} Error`,
+      `Error while extracting ids from text: ${reason.message}.`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
-/*
+  /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {
 
   },
 */
   [METADATA_UPDATE_AN_EXISTING_AUTHOR](state, modifiedAuthor) {
-
     let authorToUpdate = {};
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
@@ -287,7 +306,9 @@ export default {
 
     if (!authorToUpdate) {
       const existingAuthors = Object.values(authorsMap);
-      const subSelection = existingAuthors.filter(a => a.fullName === modifiedAuthor.fullName);
+      const subSelection = existingAuthors.filter(
+        a => a.fullName === modifiedAuthor.fullName,
+      );
 
       if (subSelection.length > 0) {
         key = modifiedAuthor.email;
@@ -301,11 +322,10 @@ export default {
     if (authorToUpdate) {
       // use $set to overwrite the entry and make sure the update event of
       // vue is triggered
-      this._vm.$set(authorsMap, key,
-        {
-          ...authorToUpdate,
-          ...modifiedAuthor,
-        });
+      this._vm.$set(authorsMap, key, {
+        ...authorToUpdate,
+        ...modifiedAuthor,
+      });
     }
   },
   [METADATA_UPDATE_EXISTING_AUTHORS](state, existingAuthors) {
@@ -318,7 +338,11 @@ export default {
     state.existingKeywords = payload;
   },
   [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
-    const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
+    const errObj = warningMessage(
+      `${METADATA_KEYWORDS_TITLE} Error`,
+      `Error while processing keywords: ${reason.message}.`,
+      reason.stack,
+    );
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 };

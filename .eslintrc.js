@@ -2,38 +2,33 @@
 module.exports = {
   root: true,
   parserOptions: {
-    parser: 'babel-eslint',
     sourceType: 'module',
-    ecmaVersion: 10
+    ecmaVersion: 2021
   },
-  // env: {
-  //   browser: true,
-  // },
+  env: { es2021: true },
   extends: [
-    '@vue/airbnb',
+    'airbnb-base',
     'plugin:vue/essential',
-    'prettier/vue',
+    'plugin:import/recommended',
     'prettier',
     'plugin:storybook/recommended',
   ],
-  // // required to lint *.vue files
-  plugins: [// 'html',
-  'vuetify'],
-  // // check if imports actually resolve
   settings: {
     'import/resolver': {
-      'babel-module': {},
+      alias: {
+        map: [
+          ['@', './src'],
+          ['cesium', './node_modules/cesium/Source'],
+        ],
+      },
     },
   },
-  // },
+  // // required to lint *.vue files
+  plugins: ['vuetify', 'simple-import-sort', 'import'],
+  "ignorePatterns": ["particles.js"],
   // add your custom rules here
   rules: {
-    // don't require .vue extension when importing
-    'import/extensions': [1, // warning
-    'always', {
-      js: 'never',
-      vue: 'never',
-    }],
+    'import/extensions': [0, { 'js': "always" }],
     // allow optionalDependencies
     'import/no-extraneous-dependencies': 'off',
     // allow debugger during development
@@ -62,6 +57,11 @@ module.exports = {
     'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
   },
   overrides: [{
     files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],

@@ -1,22 +1,19 @@
 <template>
-  <article class="landingPageGrid pa-0"
-           :class="{
-            'gridXs' : $vuetify.breakpoint.xsOnly,
-            'gridSm' : $vuetify.breakpoint.smOnly,
-           }"
-           id="LandingPage">
+  <article
+    class="landingPageGrid pa-0"
+    :class="{
+      gridXs: $vuetify.breakpoint.xsOnly,
+      gridSm: $vuetify.breakpoint.smOnly,
+    }"
+    id="LandingPage"
+  >
+    <!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
 
-<!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
-    
-    <div v-if="$slots.logo"
-         class="logoGrid"
-          :class="paddings" >
+    <div v-if="$slots.logo" class="logoGrid" :class="paddings">
       <slot name="logo"></slot>
     </div>
 
-    <div v-if="$slots.welcome"
-         class="welcomeGrid"
-         :class="paddings" >
+    <div v-if="$slots.welcome" class="welcomeGrid" :class="paddings">
       <slot name="welcome"></slot>
 
       <div class="pt-8">
@@ -24,60 +21,53 @@
       </div>
     </div>
 
-    <div v-if="$slots.categories"
-         class="categoriesGrid"
-         :class="paddings" >
+    <div v-if="$slots.categories" class="categoriesGrid" :class="paddings">
+      <TitleCard
+        :title="categoriesTitle"
+        cardClass="pa-2"
+        titleClass="titleCardClass"
+      />
 
-        <TitleCard :title="categoriesTitle"
-                    cardClass="pa-2"
-                    titleClass="titleCardClass"/>
-
-        <div class="pt-2">
-          <slot name="categories"></slot>
-        </div>
-
+      <div class="pt-2">
+        <slot name="categories"></slot>
+      </div>
     </div>
 
-    <div v-if="$slots.datasets"
-         class="datasetsGrid"
-         :class="paddings" >
-
-      <TitleCard :title="datasetsTitle"
-                 cardClass="pa-2"
-                 titleClass="titleCardClass"/>
+    <div v-if="$slots.datasets" class="datasetsGrid" :class="paddings">
+      <TitleCard
+        :title="datasetsTitle"
+        cardClass="pa-2"
+        titleClass="titleCardClass"
+      />
 
       <div class="pt-2 px-1">
         <slot name="datasets"></slot>
       </div>
     </div>
 
-    <div v-if="$slots.news"
-         class="newsGrid"
-         :class="paddings" >
-
+    <div v-if="$slots.news" class="newsGrid" :class="paddings">
       <div class="">
         <slot name="news"></slot>
       </div>
     </div>
 
-    <div v-if="$slots.articles"
-         class="articlesGrid"
-         :class="paddings" >
-
-      <TitleCard :title="articlesTitle"
-                 cardClass="pa-2"
-                 titleClass="titleCardClass"/>
+    <div v-if="$slots.articles" class="articlesGrid" :class="paddings">
+      <TitleCard
+        :title="articlesTitle"
+        cardClass="pa-2"
+        titleClass="titleCardClass"
+      />
 
       <div class="pt-2">
         <slot name="articles"></slot>
       </div>
     </div>
-
   </article>
 </template>
 
-<script>/**
- * LandingPageLayout.vue.vue
+<script>
+/**
+ * LandingPageLayout.vue
  *
  * @summary implements the different layout for the landing page
  * @author Haas
@@ -87,7 +77,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import TitleCard from '@/components/Cards/TitleCard';
+import TitleCard from '@/components/Cards/TitleCard.vue';
 
 export default {
   name: 'LandingPageLayout',
@@ -109,18 +99,15 @@ export default {
 </script>
 
 <style scoped>
-
 .landingPageGrid {
   display: grid;
   gap: 10px;
   grid-template-columns: 2fr 2fr 1fr;
   grid-template-rows: 4fr 0.25fr auto;
   grid-template-areas:
-    "Logo Welcome Categories"
-    ". . ."
-    "News Datasets Articles"
-
-
+    'Logo Welcome Categories'
+    '. . .'
+    'News Datasets Articles';
 }
 
 @media screen and (min-width: 1921px) {
@@ -128,9 +115,9 @@ export default {
     grid-template-columns: 2fr 2fr 2fr 2fr;
     grid-template-rows: 1fr 0.25fr auto;
     grid-template-areas:
-    ". Logo Welcome Categories"
-    ". . . ."
-    ". News Datasets Articles"
+      '. Logo Welcome Categories'
+      '. . . .'
+      '. News Datasets Articles';
   }
 }
 
@@ -138,21 +125,21 @@ export default {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: none;
   grid-template-areas:
-    "Welcome Welcome"
-    "News News"
-    "Datasets Categories"
-    ". Articles"
+    'Welcome Welcome'
+    'News News'
+    'Datasets Categories'
+    '. Articles';
 }
 
 .landingPageGrid.gridXs {
   grid-template-columns: 1fr;
   grid-template-rows: none;
   grid-template-areas:
-    "Welcome"
-    "News"
-    "Datasets"
-    "Categories"
-    "Articles"
+    'Welcome'
+    'News'
+    'Datasets'
+    'Categories'
+    'Articles';
 }
 
 .logoGrid {
@@ -178,15 +165,14 @@ export default {
 .articlesGrid {
   grid-area: Articles;
 }
-
 </style>
 
 <style>
-  .titleCardClass {
-    font-size: 1.25rem;
-    word-break: break-word;
-    line-height: 1.5rem !important;
-    font-weight: 500;
-    letter-spacing: normal !important;
-  }
+.titleCardClass {
+  font-size: 1.25rem;
+  word-break: break-word;
+  line-height: 1.5rem !important;
+  font-weight: 500;
+  letter-spacing: normal !important;
+}
 </style>

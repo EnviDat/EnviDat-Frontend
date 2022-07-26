@@ -12,8 +12,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import TheNavigation from '@/components/Navigation/TheNavigation';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
+import TheNavigation from '@/components/Navigation/TheNavigation.vue';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
@@ -38,7 +38,7 @@ const methods = {
 //  onSearchClick: action('clicked on search'),
 //  onLoginClick: action('clicked on login'),
 };
-const appVersion = process.env.VUE_APP_VERSION;
+const appVersion = import.meta.env.VITE_VERSION;
 
 export default {
   title: `${NAVIGATION_VIEWS} / Redesigned Navigation`,

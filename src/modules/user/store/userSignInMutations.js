@@ -1,17 +1,16 @@
 /* eslint-disable no-underscore-dangle */
 /**
-* user store mutations
-*
-* @summary user store mutations
-* @author Dominik Haas-Artho
-*
-* Created at     : 2020-07-14 16:51:52
+ * user store mutations
+ *
+ * @summary user store mutations
+ * @author Dominik Haas-Artho
+ *
+ * Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
-*
-* This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of this source code package.
-*/
-
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
 import { md5Hash } from '@/factories/stringFactory';
 
@@ -32,8 +31,7 @@ import {
   VALIDATION_ERROR,
 } from './userMutationsConsts';
 
-
-function resetUser (state) {
+function resetUser(state) {
   state.signInLoading = false;
   state.signInSuccess = false;
   state.requestLoading = false;
@@ -46,10 +44,10 @@ function resetUser (state) {
 }
 
 function extractError(store, reason, errorProperty = 'error') {
-
   let type = '';
   let field = '';
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg =
+    'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
   const error = reason?.response?.data?.error || reason?.error || reason;
 
@@ -87,7 +85,6 @@ function extractError(store, reason, errorProperty = 'error') {
 
   // store._vm.$set(store.state[USER_SIGNIN_NAMESPACE], errorProperty, msg);
 }
-
 
 function resetErrorObject(state) {
   state.errorType = '';

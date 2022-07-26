@@ -1,15 +1,13 @@
 <template>
-  <v-card id="EditUserProfile"
-          class="pa-0"
-          :width="minWidth"
-          :loading="loading">
-
-    <v-container fluid
-                 class="pa-4">
-
+  <v-card
+    id="EditUserProfile"
+    class="pa-0"
+    :width="minWidth"
+    :loading="loading"
+  >
+    <v-container fluid class="pa-4">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
@@ -17,102 +15,102 @@
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
       <v-row>
-        <v-col >
+        <v-col>
           <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              class="pt-4">
-        <v-col >
-          <v-text-field ref="firstName"
-                        id="firstName"
-                        :label="labels.firstName"
-                        outlined
-                        :readonly="mixinMethods_isFieldReadOnly('firstName')"
-                        :hint="mixinMethods_readOnlyHint('firstName')"
-                        prepend-icon="person"
-                        :error-messages="validationErrors.firstName"
-                        :placeholder="labels.firstName"
-                        :value="firstNameField"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('firstName', $event)"
-                        @input="previewChange('firstName', $event)"
+      <v-row no-gutters class="pt-4">
+        <v-col>
+          <v-text-field
+            ref="firstName"
+            id="firstName"
+            :label="labels.firstName"
+            outlined
+            :readonly="mixinMethods_isFieldReadOnly('firstName')"
+            :hint="mixinMethods_readOnlyHint('firstName')"
+            prepend-icon="person"
+            :error-messages="validationErrors.firstName"
+            :placeholder="labels.firstName"
+            :value="firstNameField"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('firstName', $event)"
+            @input="previewChange('firstName', $event)"
           />
         </v-col>
       </v-row>
 
       <v-row no-gutters>
-        <v-col >
-          <v-text-field ref="lastName"
-                        id="lastName"
-                        :label="labels.lastName"
-                        outlined
-                        :readonly="mixinMethods_isFieldReadOnly('lastName')"
-                        :hint="mixinMethods_readOnlyHint('lastName')"
-                        prepend-icon="person"
-                        :error-messages="validationErrors.lastName"
-                        :placeholder="labels.lastName"
-                        :value="lastNameField"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('lastName', $event)"
-                        @input="previewChange('lastName', $event)"
+        <v-col>
+          <v-text-field
+            ref="lastName"
+            id="lastName"
+            :label="labels.lastName"
+            outlined
+            :readonly="mixinMethods_isFieldReadOnly('lastName')"
+            :hint="mixinMethods_readOnlyHint('lastName')"
+            prepend-icon="person"
+            :error-messages="validationErrors.lastName"
+            :placeholder="labels.lastName"
+            :value="lastNameField"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('lastName', $event)"
+            @input="previewChange('lastName', $event)"
           />
         </v-col>
       </v-row>
 
       <v-row no-gutters>
-        <v-col >
-          <v-text-field ref="email"
-                        id="email"
-                        :label="labels.email"
-                        outlined
-                        :readonly="mixinMethods_isFieldReadOnly('email')"
-                        :hint="mixinMethods_readOnlyHint('email')"
-                        prepend-icon="email"
-                        :error-messages="validationErrors.email"
-                        :placeholder="labels.email"
-                        :value="emailField"
-                        @focusin="focusIn($event)"
-                        @focusout="focusOut('email', $event)"
-                        @input="previewChange('email', $event)"
+        <v-col>
+          <v-text-field
+            ref="email"
+            id="email"
+            :label="labels.email"
+            outlined
+            :readonly="mixinMethods_isFieldReadOnly('email')"
+            :hint="mixinMethods_readOnlyHint('email')"
+            prepend-icon="email"
+            :error-messages="validationErrors.email"
+            :placeholder="labels.email"
+            :value="emailField"
+            @focusin="focusIn($event)"
+            @focusout="focusOut('email', $event)"
+            @input="previewChange('email', $event)"
           />
         </v-col>
-
       </v-row>
 
       <v-row>
-        <v-col >
-
-          <UserCard v-bind="userCardPreviewObject"
-                    />
-<!--          :width="300"-->
-
+        <v-col>
+          <UserCard v-bind="userCardPreviewObject" />
+          <!--          :width="300"-->
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
-
 </template>
 
-<script>/**
+<script>
+/**
  * EditUserProfile.vue
  *
  * @summary component for changing the users information
@@ -123,14 +121,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import UserCard from '@/components/Cards/UserCard';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
-} from '@/factories/userEditingValidations';
 import {
   EDIT_USER_PROFILE,
   EDITMETADATA_CLEAR_PREVIEW,
@@ -138,7 +131,11 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+  isObjectValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditUserProfile',
@@ -200,10 +197,14 @@ export default {
   },
   computed: {
     firstNameField() {
-      return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
+      return this.previews.firstName !== null
+        ? this.previews.firstName
+        : this.firstName;
     },
     lastNameField() {
-      return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
+      return this.previews.lastName !== null
+        ? this.previews.lastName
+        : this.lastName;
     },
     emailField() {
       return this.previews.email !== null ? this.previews.email : this.email;
@@ -220,7 +221,7 @@ export default {
     datasetCount() {
       return 0;
     },
-    validations () {
+    validations() {
       return getValidationMetadataEditingObject(EDIT_USER_PROFILE);
     },
     userCardPreviewObject() {
@@ -232,14 +233,18 @@ export default {
       };
     },
     anyUserElementsActive() {
-      return this.activeElements.firstName
-          || this.activeElements.lastName
-          || this.activeElements.email;
+      return (
+        this.activeElements.firstName ||
+        this.activeElements.lastName ||
+        this.activeElements.email
+      );
     },
     anyPreviewsChanged() {
-      return this.previews.firstName !== null
-          || this.previews.lastName !== null
-          || this.previews.email !== null;
+      return (
+        this.previews.firstName !== null ||
+        this.previews.lastName !== null ||
+        this.previews.email !== null
+      );
     },
   },
   methods: {
@@ -264,7 +269,12 @@ export default {
       this.validateProperty(property, value);
     },
     validateProperty(property, value) {
-      return isFieldValid(property, value, this.validations, this.validationErrors);
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     notifyChange() {
       if (this.anyUserElementsActive) {
@@ -279,10 +289,16 @@ export default {
         firstName: this.firstNameField,
         lastName: this.lastNameField,
         email: this.emailField,
-      }
+      };
 
-      if (isObjectValid(this.validationProperties, userObject, this.validations, this.validationErrors)) {
-
+      if (
+        isObjectValid(
+          this.validationProperties,
+          userObject,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
         const userInfo = {
           ...this.$props,
           ...userObject,
@@ -314,11 +330,7 @@ export default {
       lastName: 'Last name',
       email: 'Email',
     },
-    validationProperties: [
-      'firstName',
-      'lastName',
-      'email',
-    ],
+    validationProperties: ['firstName', 'lastName', 'email'],
     validationErrors: {
       firstName: null,
       lastName: null,
@@ -337,6 +349,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

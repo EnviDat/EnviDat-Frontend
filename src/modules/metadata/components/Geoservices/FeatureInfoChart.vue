@@ -1,14 +1,20 @@
 <template>
   <div style="height: 100%; width: 100%;">
     <div v-if="chart">
-    <feature-info-chart-graph v-for="(graph, key) in data" :data="graph" :key="key" @add="addGraph" @remove="removeGraph"></feature-info-chart-graph>
+      <feature-info-chart-graph
+        v-for="(graph, key) in data"
+        :data="graph"
+        :key="key"
+        @add="addGraph"
+        @remove="removeGraph"
+      ></feature-info-chart-graph>
     </div>
-  <div :id="divId" style="height: 100%; width: 100%;"></div>
+    <div :id="divId" style="height: 100%; width: 100%;"></div>
   </div>
 </template>
 
 <script>
-import FeatureInfoChartGraph from '@/modules/metadata/components/Geoservices/FeatureInfoChartGraph';
+import FeatureInfoChartGraph from '@/modules/metadata/components/Geoservices/FeatureInfoChartGraph.vue';
 
 export default {
   name: 'FeatureInfoGraph',
@@ -44,11 +50,13 @@ export default {
         autoMarginOffset: 20,
         marginTop: 7,
         dataProvider: this.chartData,
-        valueAxes: [{
-          axisAlpha: 0.2,
-          dashLength: 1,
-          position: 'left',
-        }],
+        valueAxes: [
+          {
+            axisAlpha: 0.2,
+            dashLength: 1,
+            position: 'left',
+          },
+        ],
         mouseWheelZoomEnabled: true,
         graphs: [],
         chartScrollbar: {
@@ -70,25 +78,27 @@ export default {
         export: {
           enabled: true,
         },
-        listeners: [{
-          event: 'init',
-          method(e) {
-            that.chart = e;
-            e.chart.chartDiv.addEventListener('click', () => {
-              // track cursor's last known position by "changed" event
-              if (e.chart.lastCursorPosition !== undefined) {
-                // get date of the last known cursor position
-                const date = e.chart.dataProvider[e.chart.lastCursorPosition];
-                that.$emit('select', date.name);
-              }
-            });
+        listeners: [
+          {
+            event: 'init',
+            method(e) {
+              that.chart = e;
+              e.chart.chartDiv.addEventListener('click', () => {
+                // track cursor's last known position by "changed" event
+                if (e.chart.lastCursorPosition !== undefined) {
+                  // get date of the last known cursor position
+                  const date = e.chart.dataProvider[e.chart.lastCursorPosition];
+                  that.$emit('select', date.name);
+                }
+              });
+            },
           },
-        }, {
-          event: 'changed',
-          method(e) {
-            e.chart.lastCursorPosition = e.index; // Log cursor's last known position
+          {
+            event: 'changed',
+            method(e) {
+              e.chart.lastCursorPosition = e.index; // Log cursor's last known position
+            },
           },
-        },
         ],
       };
       // eslint-disable-next-line no-undef
@@ -97,9 +107,9 @@ export default {
     addGraph(data) {
       const key = `value_${data.id}`;
       this.chartData = this.chartData.map(cd => ({
-          ...cd,
-          [key]: data.values.find(d => d.name === cd.name).value,
-        }));
+        ...cd,
+        [key]: data.values.find(d => d.name === cd.name).value,
+      }));
       this.chart.chart.dataProvider = this.chartData;
       const graph = {
         id: `g${data.id}`,
@@ -118,8 +128,8 @@ export default {
         valueField: key,
         useLineColorForBulletBorder: true,
         balloon: {
-        drop: true,
-      },
+          drop: true,
+        },
       };
       this.graphs.push(graph);
       this.chart.chart.addGraph(graph);
@@ -130,7 +140,7 @@ export default {
       this.chart.chart.removeGraph(graph);
     },
     updateSelection() {
-      this.chart.chart.dataProvider.forEach((dataPoint) => {
+      this.chart.chart.dataProvider.forEach(dataPoint => {
         if (dataPoint.name !== this.selected) {
           dataPoint.selectedColor = undefined;
           dataPoint.selectedSize = undefined;
@@ -149,6 +159,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

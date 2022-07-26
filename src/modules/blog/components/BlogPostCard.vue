@@ -1,40 +1,28 @@
 <template>
-  <v-card ripple
-          hover
+  <v-card ripple hover :height="height" @click="$emit('clicked')">
+    <v-row no-gutters class="pa-0">
+      <v-col cols="5" class="pa-0">
+        <v-img
+          class="imagezoom"
           :height="height"
-          @click="$emit('clicked')"
-          >
+          :aspect-ratio="1"
+          :style="
+            `border-bottom-left-radius: 4px; border-top-left-radius: 4px;`
+          "
+          :lazy-src="loadingImg"
+          :src="titleImg"
+        />
+      </v-col>
 
-      <v-row no-gutters
-             class="pa-0">
+      <v-col cols="7" class="px-3" :class="titleCssClass" align-self="center">
+        {{ postTitle }}
 
-        <v-col cols="5"
-               class="pa-0">
-
-          <v-img class="imagezoom"
-                 :height="height"
-                 :aspect-ratio="1"
-                 :style="`border-bottom-left-radius: 4px; border-top-left-radius: 4px;`"
-                 :lazy-src="loadingImg"
-                 :src="titleImg"  />
-
-        </v-col>
-
-        <v-col cols="7"
-               class="px-3"
-               :class="titleCssClass"
-               align-self="center" >
-          {{ postTitle }}
-
-          <div v-if="postDate"
-               :class="subtitleCssClass">
-            {{ postDate }}
-          </div>
-        </v-col>
-      </v-row>
-
+        <div v-if="postDate" :class="subtitleCssClass">
+          {{ postDate }}
+        </div>
+      </v-col>
+    </v-row>
   </v-card>
-
 </template>
 
 <script>
@@ -67,11 +55,8 @@ export default {
     },
     height: String,
   },
-  computed: {
-  },
+  computed: {},
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

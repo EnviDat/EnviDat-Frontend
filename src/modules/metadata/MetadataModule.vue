@@ -5,7 +5,7 @@
 <script>
 /**
  * The metadata module to route the subpages
- * 
+ *
  * @summary metadata module
  * @author Dominik Haas-Artho
  *

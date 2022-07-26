@@ -1,30 +1,24 @@
 <template>
-  <v-card id="EditMetadataResources"
-          class="pa-4" >
-
-    <v-container fluid
-                  class="pa-0">
-
-      <v-row >
-        <v-col class="text-h5" >
+  <v-card id="EditMetadataResources" class="pa-4">
+    <v-container fluid class="pa-0">
+      <v-row>
+        <v-col class="text-h5">
           {{ EDIT_METADATA_RESOURCES_TITLE }}
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-col class="text-body-1">
           {{ editingInstructions }}
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-col cols="12">
           <MetadataResources :genericProps="metadataResourcesGenericProps" />
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
 </template>
 
@@ -40,10 +34,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources';
-
+import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
 export default {
   name: 'EditMetadataResources',
@@ -78,13 +71,13 @@ export default {
         contactIcon: this.contactIcon,
         mailIcon: this.mailIcon,
         licenseIcon: this.licenseIcon,
-        emptyText: 'No resources has been added yet. Upload a file or provide a link to a resource.',
+        emptyText:
+          'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
       };
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     editingInstructions: 'Pick a resource from the list to edit its details',
     EDIT_METADATA_RESOURCES_TITLE,
@@ -100,6 +93,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

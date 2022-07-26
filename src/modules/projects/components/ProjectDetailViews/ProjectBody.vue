@@ -1,10 +1,11 @@
 <template>
-  <expandable-text-layout title="Description"
-                            :text="description"
-                            :maxTextLength="maxTextLength"
-                            :emptyText="emptyText"
-                            :showPlaceholder="showPlaceholder" />
-
+  <expandable-text-layout
+    title="Description"
+    :text="description"
+    :maxTextLength="maxTextLength"
+    :emptyText="emptyText"
+    :showPlaceholder="showPlaceholder"
+  />
 </template>
 
 <script>
@@ -19,9 +20,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 
 export default {
   name: 'ProjectBody',
@@ -36,10 +37,8 @@ export default {
       default: 1500,
     },
   },
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
   data: () => ({
     emptyText: 'No description found for this project.',
   }),

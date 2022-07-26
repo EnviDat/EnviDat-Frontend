@@ -7,30 +7,30 @@
                  class="pa-4" >
 
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
+        <v-col cols="6" class="text-h5">
           {{ labels.title }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
       <v-row>
@@ -39,22 +39,23 @@
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col >
-          <BaseUserPicker :users="baseUserPickerObject"
-                          :preSelected="preselectAuthorNames"
-                          :multiplePick="true"
-                          :isClearable="isClearable"
-                          :instructions="labels.userPickInstructions"
-                          :errorMessages="baseUserErrorMessages"
-                          :readonly="mixinMethods_isFieldReadOnly('authors')"
-                          :hint="mixinMethods_readOnlyHint('authors')"
-                          @blur="notifyChange"
-                          @removedUsers="catchRemovedUsers"
-                          @pickedUsers="catchPickedUsers"/>
+      <v-row>
+        <v-col>
+          <BaseUserPicker
+            :users="baseUserPickerObject"
+            :preSelected="preselectAuthorNames"
+            :multiplePick="true"
+            :isClearable="isClearable"
+            :instructions="labels.userPickInstructions"
+            :errorMessages="baseUserErrorMessages"
+            :readonly="mixinMethods_isFieldReadOnly('authors')"
+            :hint="mixinMethods_readOnlyHint('authors')"
+            @blur="notifyChange"
+            @removedUsers="catchRemovedUsers"
+            @pickedUsers="catchPickedUsers"
+          />
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
 </template>
@@ -69,20 +70,21 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import { getArrayOfFullNames } from '@/factories/authorFactory';
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import { getArrayOfFullNames } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
-
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -142,7 +144,9 @@ export default {
       return this.validationErrors.authors;
     },
     preselectAuthorNames() {
-      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
+      return this.previewAuthors
+        ? getArrayOfFullNames(this.previewAuthors)
+        : getArrayOfFullNames(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -156,8 +160,13 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchRemovedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
@@ -165,10 +174,10 @@ export default {
     catchPickedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
     },
-    changePreviews(authorsNames){
+    changePreviews(authorsNames) {
       const authors = [];
 
-      authorsNames.forEach((name) => {
+      authorsNames.forEach(name => {
         const author = this.getAuthorByName(name);
         if (author) {
           authors.push(author);
@@ -227,8 +236,10 @@ export default {
   data: () => ({
     labels: {
       title: 'Change Metadata Authors',
-      instructions: 'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
-      userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
+      instructions:
+        'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
+      userPickInstructions:
+        'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
     },
     validationErrors: {
       authors: '',
@@ -242,7 +253,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

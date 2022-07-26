@@ -16,6 +16,11 @@
 import { Object } from 'core-js';
 
 import {
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metaDataFactory';
+import {
   DIVERSITY,
   FOREST,
   HAZARD,
@@ -23,12 +28,6 @@ import {
   METEO,
   SNOW,
 } from '@/store/categoriesConsts';
-
-import {
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_POLYGON,
-} from '@/factories/metaDataFactory';
 
 
 export default {
@@ -233,23 +232,30 @@ export default {
     /**
      * Loads the file path to given images into a Map.
      *
-     * @param {Map<string, string>} imgs imageContext which is loaded via require.context() (ex. require.context('./assets/', false, /\.jpg$/);)
+     * @param {Map<string, string>} imgs imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
      * @param {String} checkForString
      *
      * @return {Map<string, string>} Image cache
      */
-    mixinMethods_importImages(imgs, checkForString) {
-      if (!imgs) {
+    mixinMethods_importImages(imgPaths, checkForString) {
+      if (!imgPaths) {
         // console.log(`Got empty imgs for ${checkForString}`);
         return null;
       }
       const imgCache = {};
+      console.log(imgPaths)
 
-      imgs.keys().forEach((key) => {
-        if (!checkForString || (checkForString && key.includes(checkForString))) {
-          imgCache[key] = imgs(key);
+      for (const path in imgPaths) {
+        if (path) {
+            if (!checkForString || (checkForString && path.includes(checkForString))) {
+              // const p = new URL(path)
+              // const imgUrl = new URL(path, import.meta.url).href
+              // const imageUrl = URL.createObjectURL(path)
+              // imgCache[path] = imgPaths[path].default;
+              imgCache[path] = path;
+            }
         }
-      });
+      }
 
       return imgCache;
     },
@@ -294,25 +300,25 @@ export default {
       const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       const f = Math.floor(Math.log(a) / Math.log(c));
 
-      return parseFloat((a / Math.pow(c, f)).toFixed(b)) + ' ' + e[f];
+      return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};
 
       if (useWebp) {
-        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
-        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
-        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
-        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
-        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
+        bgs[LAND] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true }));
+        bgs[FOREST] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/forest/*.webp', { eager: true }));
+        bgs[SNOW] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/snow/*.webp', { eager: true }));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true }));
+        bgs[HAZARD] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true }));
+        bgs[METEO] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true }));
       } else {
-        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
-        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
-        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
-        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
-        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
+        bgs[LAND] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true }));
+        bgs[FOREST] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true }));
+        bgs[SNOW] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true }));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true }));
+        bgs[HAZARD] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true }));
+        bgs[METEO] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true }));
       }
 
       return bgs;

@@ -12,25 +12,22 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import 'babel-polyfill';
-import Vue from 'vue';
-
 import axios from 'axios';
-import Vue2Filters from 'vue2-filters';
+import Vue from 'vue';
 import InfiniteLoading from 'vue-infinite-loading';
+import Vue2Filters from 'vue2-filters';
+
+import App from '@/App.vue';
+import globalMethods from '@/factories/globalMethods';
+import {
+  handleGenericAPIError,
+  handleGenericError,
+} from '@/factories/notificationFactory';
+import vuetify from '@/plugins/vuetify';
+import router from '@/router';
 import store from '@/store/store';
 
-import {
-  handleGenericError,
-  handleGenericAPIError,
-} from '@/factories/notificationFactory';
-
-import vuetify from './plugins/vuetify';
-import router from './router';
-import globalMethods from './factories/globalMethods';
-
-import App from './App';
-
+window.CESIUM_BASE_URL = JSON.stringify('')
 
 Vue.use(InfiniteLoading /* , { options } */);
 Vue.use(Vue2Filters);
@@ -43,7 +40,9 @@ Vue.config.errorHandler = (err, vm, info) => {
   // the error was found in. Only available in 2.2.0+
   // console.log('Vue errorHandler ' + err.message + ' \n ' + info + ' \n ' + err.stack);
   const msg = err.message ? err.message : err;
-  const errStack = err.stack ? err.stack : 'No error stack available, please let the envidat team know of this Error!';
+  const errStack = err.stack
+    ? err.stack
+    : 'No error stack available, please let the envidat team know of this Error!';
   handleGenericError(store, msg, info, errStack);
 };
 
@@ -55,20 +54,22 @@ Vue.config.errorHandler = (err, vm, info) => {
 
 const storeReference = store;
 
-axios.interceptors.request.use((config) => {
-  // Do something before request is sent
+axios.interceptors.request.use(
+  config => {
+    // Do something before request is sent
 
-  const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
+    const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
 
-  if (apiKey) {
-    config.withCredentials = true;
-    config.Authorization = apiKey;
-  }
+    if (apiKey) {
+      config.withCredentials = true;
+      config.Authorization = apiKey;
+    }
 
-  return config;
-}, (error) => 
-  // Do something with request error
-   Promise.reject(error),
+    return config;
+  },
+  error =>
+    // Do something with request error
+    Promise.reject(error),
 );
 
 axios.interceptors.response.use(
@@ -77,7 +78,7 @@ axios.interceptors.response.use(
   // Do something with response data
   // console.log('interceptor got ' + response.status);
   response => response,
-  (error) => {
+  error => {
     // this is called "onRejected"
     // console.log('interceptor error ' + error);
     if (error.status >= 500) {
@@ -90,13 +91,18 @@ axios.interceptors.response.use(
   },
 );
 
-
 /* eslint-disable no-new */
+// new Vue({
+//   el: '#app',
+//   router,
+//   store,
+//   vuetify,
+//   components: { App },
+//   template: '<App/>',
+// });
 new Vue({
-  el: '#app',
   router,
   store,
   vuetify,
-  components: { App },
-  template: '<App/>',
-});
+  render: h => h(App),
+}).$mount('#app');

@@ -9,8 +9,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import SearchBarView from '@/modules/home/components/SearchBarView';
-import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView';
+import SearchBarView from '@/modules/home/components/SearchBarView.vue';
+import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 import { FILTERING_VIEWS } from './storybookFolder';
 
 export default {
@@ -123,7 +123,7 @@ export const SmallSearchViews = () => ({
                             @searchCleared="onClear"
                               />
             </v-col>
-            
+
           </v-row>
         </v-col>
 

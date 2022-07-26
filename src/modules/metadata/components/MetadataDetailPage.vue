@@ -106,8 +106,44 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { rewind as tRewind } from '@turf/turf';
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
+
+import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout.vue';
+import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
+import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
+import {
+  eventBus,
+  GCNET_INJECT_MICRO_CHARTS,
+  GCNET_OPEN_DETAIL_CHARTS,
+  INJECT_MAP_FULLSCREEN,
+  METADATA_CLOSE_MODAL,
+  METADATA_OPEN_MODAL,
+  OPEN_TEXT_PREVIEW,
+} from '@/factories/eventBus';
+import {
+  createBody,
+  createCitation,
+  createDetails,
+  createFunding,
+  createHeader,
+  createLocation,
+  createPublications,
+  createRelatedDatasets,
+  createResources,
+  getMetadataVisibilityState,
+} from '@/factories/metaDataFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  getPreviewStrategyFromUrl,
+} from '@/factories/strategyFactory';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
+import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
+import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
 import {
   SET_APP_BACKGROUND,
@@ -121,54 +157,16 @@ import {
   METADATA_NAMESPACE,
   PUBLICATIONS_RESOLVE_IDS,
 } from '@/store/metadataMutationsConsts';
-import {
-  createBody,
-  createCitation,
-  createDetails,
-  createFunding,
-  createHeader,
-  createLocation,
-  createPublications,
-  createRelatedDatasets,
-  createResources,
-  getMetadataVisibilityState,
-} from '@/factories/metaDataFactory';
-import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
-import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
-import {
-  eventBus,
-  GCNET_INJECT_MICRO_CHARTS,
-  GCNET_OPEN_DETAIL_CHARTS,
-  INJECT_MAP_FULLSCREEN,
-  METADATA_CLOSE_MODAL,
-  METADATA_OPEN_MODAL,
-  OPEN_TEXT_PREVIEW,
-} from '@/factories/eventBus';
-
-import {
-  enhanceElementsWithStrategyEvents,
-  getPreviewStrategyFromUrl,
-} from '@/factories/strategyFactory';
-
-import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
-import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
-import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
-
-import { rewind as tRewind } from '@turf/turf';
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
-import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
-import MetadataHeader from './Metadata/MetadataHeader';
-import MetadataBody from './Metadata/MetadataBody';
-import MetadataResources from './Metadata/MetadataResources';
-import MetadataDetails from './Metadata/MetadataDetails';
-import MetadataCitation from './Metadata/MetadataCitation';
-import MetadataPublications from './Metadata/MetadataPublications';
-import MetadataFunding from './Metadata/MetadataFunding';
-import MetadataAuthors from './Metadata/MetadataAuthors';
-import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
+import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen.vue';
+import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import MetadataBody from './Metadata/MetadataBody.vue';
+import MetadataCitation from './Metadata/MetadataCitation.vue';
+import MetadataDetails from './Metadata/MetadataDetails.vue';
+import MetadataFunding from './Metadata/MetadataFunding.vue';
+import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataPublications from './Metadata/MetadataPublications.vue';
+import MetadataResources from './Metadata/MetadataResources.vue';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -179,7 +177,7 @@ import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
 export default {
   name: 'MetadataDetailPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, METADATADETAIL_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -304,9 +302,9 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return process.env.NODE_ENV === 'production'
-          ? this.baseStationURL
-          : this.baseStationURLTestdata;
+      return import.meta.env.PROD
+        ? this.baseStationURL
+        : this.baseStationURLTestdata;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -380,7 +378,7 @@ export default {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
-          ...(this.hasGcnetStationConfig) && { isGcnet: true },
+          ...(this.hasGcnetStationConfig && { isGcnet: true }),
         };
       }
 
@@ -400,10 +398,10 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.geoServiceLayers = response.data;
         })
-        .catch((error) => {
+        .catch(error => {
           this.geoServiceLayersError = error;
         });
     },
@@ -412,7 +410,7 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.stationsConfig = response.data;
 
           const stations = response.data;
@@ -421,7 +419,7 @@ export default {
             features: [],
           };
 
-          stations.forEach((geom) => {
+          stations.forEach(geom => {
             featureCollection.features.push({
               type: 'Feature',
               geometry: {
@@ -444,7 +442,7 @@ export default {
 
           successCallback();
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationsConfigError = error;
         });
     },
@@ -454,11 +452,11 @@ export default {
 
       axios
         .get(url)
-        .then((response) => {
+        .then(response => {
           this.fileObjects = response.data.fileObjects;
           this.graphStyling = response.data.graphStyling;
         })
-        .catch((error) => {
+        .catch(error => {
           this.stationParametersError = error;
         });
     },
@@ -496,7 +494,6 @@ export default {
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
     showFullscreenMapModal(layerConfig) {
-
       this.modalTitle = `Fullscreen Map for ${this.header.metadataTitle}`;
 
       this.fullScreenConfig = layerConfig;
@@ -519,8 +516,10 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.breakpoint.mdAndUp ) {
+      if (
+        (this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20) ||
+        this.$vuetify.breakpoint.mdAndUp
+      ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
@@ -599,7 +598,11 @@ export default {
       if (this.resources?.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
+        enhanceElementsWithStrategyEvents(
+          this.resources.resources,
+          undefined,
+          true,
+        );
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
@@ -703,7 +706,10 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.currentMetadataContent?.id === idOrName || this.currentMetadataContent?.name === idOrName;
+      return (
+        this.currentMetadataContent?.id === idOrName ||
+        this.currentMetadataContent?.name === idOrName
+      );
     },
     /**
      * @description
@@ -760,12 +766,17 @@ export default {
      * Either loads it from the backend via action or creates it from the localStorage.
      */
     async loadMetaDataContent() {
-      if (!this.loadingMetadatasContent
-          && !this.isCurrentIdOrName(this.metadataId) ) {
+      if (
+        !this.loadingMetadatasContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
         // in case of navigating into the page load the content directly via Id
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
-        });
+        await this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
+            metadataId: this.metadataId,
+          },
+        );
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initiailze the components in the their loading state
@@ -774,7 +785,7 @@ export default {
       }
     },
     fetchWmsConfig(url) {
-      createWmsCatalog(url).then((res) => {
+      createWmsCatalog(url).then(res => {
         this.setGeoServiceLayers(this.location, res, null);
       });
     },
@@ -796,10 +807,11 @@ export default {
      * @description watcher on idsToResolve start resolving them, if not already in the works
      */
     idsToResolve() {
-      if (!this.extractingIds
-          && this.idsToResolve?.length > 0
-          && !this.publicationsResolvingIds) {
-
+      if (
+        !this.extractingIds &&
+        this.idsToResolve?.length > 0 &&
+        !this.publicationsResolvingIds
+      ) {
         this.$store.dispatch(
           `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
           {
@@ -813,16 +825,17 @@ export default {
      * @description watcher on publicationsResolvedIds start replacing the text with the resolved texts based on the ids
      */
     publicationsResolvedIds() {
-      if ( !this.publicationsResolvingIds
-        && this.publicationsResolvedIdsSize > 0
-        && this.idsToResolve?.length > 0 ) {
-
+      if (
+        !this.publicationsResolvingIds &&
+        this.publicationsResolvedIdsSize > 0 &&
+        this.idsToResolve?.length > 0
+      ) {
         let publicationsText = this.publications?.text;
 
         if (publicationsText) {
           const keys = Object.keys(this.publicationsResolvedIds);
 
-          keys.forEach((id) => {
+          keys.forEach(id => {
             const text = this.publicationsResolvedIds[id];
             if (text) {
               publicationsText = publicationsText.replace(id, text);
@@ -854,13 +867,17 @@ export default {
      * if EnviDat is called via MetadataDetailPage URL directly
      */
     metadatasContent() {
-      if (!this.loadingMetadatasContent
-          && !this.loadingCurrentMetadataContent
-          && !this.isCurrentIdOrName(this.metadataId)) {
-
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
-          metadataId: this.metadataId,
-        });
+      if (
+        !this.loadingMetadatasContent &&
+        !this.loadingCurrentMetadataContent &&
+        !this.isCurrentIdOrName(this.metadataId)
+      ) {
+        this.$store.dispatch(
+          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
+          {
+            metadataId: this.metadataId,
+          },
+        );
       }
     },
   },

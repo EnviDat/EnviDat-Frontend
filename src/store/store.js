@@ -14,38 +14,34 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { about } from '@/modules/about/store/aboutStore';
-import { projects } from '@/modules/projects/store/projectsStore';
-import { metadata } from '@/modules/metadata/store/metadataStore';
-import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
-import { user } from '@/modules/user/store/userStore';
-import { userSignIn } from '@/modules/user/store/userSignInStore';
-import { organizations } from '@/modules/organizations/store/organizationsStore';
-import { blog } from '@/modules/blog/store/blogStore';
-
-import mutations from '@/store/mainMutations';
-import actions from '@/store/mainActions';
-
-
-import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 import {
   checkWebpFeatureAsync,
   loadImages,
 } from '@/factories/enhancementsFactory';
-
 import globalMethods from '@/factories/globalMethods';
+import { about } from '@/modules/about/store/aboutStore';
+import { blog } from '@/modules/blog/store/blogStore';
+import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
+import { metadata } from '@/modules/metadata/store/metadataStore';
+import { organizations } from '@/modules/organizations/store/organizationsStore';
+import { projects } from '@/modules/projects/store/projectsStore';
+import { userSignIn } from '@/modules/user/store/userSignInStore';
+import { user } from '@/modules/user/store/userStore';
 import localStoragePlugin from '@/store/localStorage';
+import actions from '@/store/mainActions';
+import mutations from '@/store/mainMutations';
+import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
+
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
+const jpgAssetPaths = import.meta.glob('../assets/*.jpg', { eager: true });
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
-const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
+const iconImgPath = import.meta.glob('../assets/icons/*.png', { eager: true });
 const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
-
 /*
-const errReport = process.env.VUE_APP_ERROR_REPORTING_ENABLED;
+const errReport = import.meta.env.VITE_ERROR_REPORTING_ENABLED;
 // the check for 'NULL' is needed because simply nothing will not work
 let errorReportingEnabled = false;
 
@@ -76,7 +72,7 @@ const initialState = {
   appScrollPosition: 0,
   browseScrollPosition: 0,
   outdatedVersion: false,
-  newVersion: process.env.VUE_APP_VERSION,
+  newVersion: import.meta.env.VITE_VERSION,
   // config can be overloaded from the backend
   loadingConfig: false,
   config: {},
@@ -136,7 +132,7 @@ try {
     console.log(e);
 
     // clear it to make sure the app boots with a clean state
-    window.localStorage.clear()
+    window.localStorage.clear();
 
     console.info('cleared local storage');
 
@@ -144,14 +140,12 @@ try {
   }
 }
 
-
-if (process.env.NODE_ENV === 'test') {
+if (import.meta.env.NODE_ENV === 'test') {
   loadImages(store);
 } else {
   checkWebpFeatureAsync('lossy', (feature, isSupported) => {
     loadImages(store, isSupported);
   });
 }
-
 
 export default store;

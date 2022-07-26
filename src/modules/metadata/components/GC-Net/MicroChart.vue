@@ -1,72 +1,80 @@
 /* eslint-disable consistent-return */
 <template>
+  <v-card
+    :id="stationId"
+    ref="main_container"
+    class="metadataResourceCard"
+    :color="darkTheme ? 'primary' : 'white'"
+    :dark="darkTheme"
+    v-show="visible"
+  >
+    <v-container fluid class="pa-0">
+      <v-row no-gutters>
+        <v-col
+          v-show="image"
+          cols="3"
+          id="image_col"
+          @click="catchDetailClick(station.alias)"
+        >
+          <v-img
+            :src="image"
+            @load="imageLoadSuccess"
+            @error="imageLoadError"
+            :width="imageLoading || imageError ? '0%' : '100%'"
+            :height="imageLoading || imageError ? '0%' : '100%'"
+            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;"
+          />
 
-  <v-card :id="stationId"
-          ref="main_container"
-          class="metadataResourceCard"
-          :color="darkTheme ? 'primary' : 'white'"
-          :dark="darkTheme"       
-          v-show="visible" >
-
-    <v-container fluid
-                 class="pa-0" >
-
-      <v-row no-gutters >
-
-        <v-col v-show="image"
-                cols="3"
-                id="image_col"
-                @click="catchDetailClick(station.alias)" >
-
-          <v-img :src="image"
-                  @load="imageLoadSuccess"
-                  @error="imageLoadError"
-                  :width="imageLoading || imageError ? '0%' : '100%'" 
-                  :height="imageLoading || imageError ? '0%' : '100%'" 
-                  style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; cursor: pointer;" />
-
-          <div v-show="imageLoading"
-                class='skeleton skeleton-animation-shimmer' style="height: 100%;" >
-            <div style="width: 100%; min-height: 100%; " class='bone bone-type-image'></div>
+          <div
+            v-show="imageLoading"
+            class="skeleton skeleton-animation-shimmer"
+            style="height: 100%;"
+          >
+            <div
+              style="width: 100%; min-height: 100%; "
+              class="bone bone-type-image"
+            ></div>
           </div>
         </v-col>
- 
-        <v-col :cols="currentColumnNum"
-                class="pa-2">
 
-          <v-row no-gutters >
-
-            <v-col class="text-h5 v-card__title"
-                    style="font-weight: 700;">
+        <v-col :cols="currentColumnNum" class="pa-2">
+          <v-row no-gutters>
+            <v-col class="text-h5 v-card__title" style="font-weight: 700;">
               {{ station.name }}
-            </v-col> 
-
+            </v-col>
           </v-row>
 
           <v-row no-gutters>
-            
-            <v-col v-if="!dataError && dataAvailable()"
-                    id="chartSubText"
-                    class="smallChartSubText pa-0 pb-1">
+            <v-col
+              v-if="!dataError && dataAvailable()"
+              id="chartSubText"
+              class="smallChartSubText pa-0 pb-1"
+            >
               {{ chartSubText }}
             </v-col>
-          </v-row>          
+          </v-row>
 
-          <v-row no-gutters >
-
-            <v-col v-if="chartIsLoading"
-                    class="py-0"
-                    cols="12" 
-                    style="width: 100%">
-              <div class='skeleton skeleton-animation-shimmer' :style="`height: ${chartHeight};`" >
-                <div style="width: 100%;" class='bone bone-type-image'></div>
+          <v-row no-gutters>
+            <v-col
+              v-if="chartIsLoading"
+              class="py-0"
+              cols="12"
+              style="width: 100%"
+            >
+              <div
+                class="skeleton skeleton-animation-shimmer"
+                :style="`height: ${chartHeight};`"
+              >
+                <div style="width: 100%;" class="bone bone-type-image"></div>
               </div>
             </v-col>
 
-            <v-col v-if="!chartIsLoading && !dataAvailable() && !dataError"
-                  cols="12" 
-                  class="text-body-1 pb-1"
-                  :style="`color: red;`" >
+            <v-col
+              v-if="!chartIsLoading && !dataAvailable() && !dataError"
+              cols="12"
+              class="text-body-1 pb-1"
+              :style="`color: red;`"
+            >
               {{ noDataText }}
             </v-col>
 
@@ -77,120 +85,109 @@
               {{ dataError }}
             </v-col> -->
 
-            <v-col v-show="!dataError"
-                    :id="microChartId"
-                    ref="microChart"
-                    class="mircoChart"
-                    :style="`background-color: #f5f5f5; height: ${chartHeight}; border: ${chartIsLoading ? 0 : 1}px solid #eee;`" >
+            <v-col
+              v-show="!dataError"
+              :id="microChartId"
+              ref="microChart"
+              class="mircoChart"
+              :style="
+                `background-color: #f5f5f5; height: ${chartHeight}; border: ${
+                  chartIsLoading ? 0 : 1
+                }px solid #eee;`
+              "
+            >
             </v-col>
-
           </v-row>
 
-          <v-row no-gutters >
-
-            <v-col class="grow pt-1 pr-1"
-                    id="statusInfo"
-                    cols="10" >
-
+          <v-row no-gutters>
+            <v-col class="grow pt-1 pr-1" id="statusInfo" cols="10">
               <v-row no-gutters>
-                
-                <v-col v-if="firstParameterData"
-                        id="FirstDate"
-                        class="smallChartSubText pa-0 pb-1" >
+                <v-col
+                  v-if="firstParameterData"
+                  id="FirstDate"
+                  class="smallChartSubText pa-0 pb-1"
+                >
                   {{ `First Data point: ${firstParameterData}` }}
                 </v-col>
               </v-row>
 
               <v-row no-gutters>
+                <BaseStatusLabelView
+                  v-if="infoObject"
+                  :loading="chartIsLoading"
+                  :statusIcon="infoObject.icon"
+                  :statusColor="infoObject.icon"
+                  :statusText="infoObject.title"
+                  :expandedText="infoObject.message"
+                  :showExpandIcon="false"
+                  textCssClass="statusInfoText"
+                />
 
-                <BaseStatusLabelView v-if="infoObject"
-                                      :loading="chartIsLoading"
-                                      :statusIcon="infoObject.icon"
-                                      :statusColor="infoObject.icon"
-                                      :statusText="infoObject.title"
-                                      :expandedText="infoObject.message"
-                                      :showExpandIcon="false"
-                                      textCssClass="statusInfoText" />
+                <BaseStatusLabelView
+                  v-if="warningObject"
+                  :loading="chartIsLoading"
+                  :statusIcon="warningObject.icon"
+                  :statusColor="warningObject.icon"
+                  :statusText="warningObject.title"
+                  :expandedText="warningObject.message"
+                  :showExpandIcon="false"
+                  textCssClass="statusInfoText"
+                />
 
-                <BaseStatusLabelView v-if="warningObject"
-                                      :loading="chartIsLoading"
-                                      :statusIcon="warningObject.icon"
-                                      :statusColor="warningObject.icon"
-                                      :statusText="warningObject.title"
-                                      :expandedText="warningObject.message"
-                                      :showExpandIcon="false"
-                                      textCssClass="statusInfoText" />
-
-                <BaseStatusLabelView v-if="errorObject"
-                                      :loading="chartIsLoading"
-                                      :statusIcon="errorObject.icon"
-                                      :statusColor="errorObject.icon"
-                                      :statusText="errorObject.title"
-                                      :expandedText="errorObject.message"
-                                      :showExpandIcon="false"
-                                      textCssClass="statusInfoText" />
+                <BaseStatusLabelView
+                  v-if="errorObject"
+                  :loading="chartIsLoading"
+                  :statusIcon="errorObject.icon"
+                  :statusColor="errorObject.icon"
+                  :statusText="errorObject.title"
+                  :expandedText="errorObject.message"
+                  :showExpandIcon="false"
+                  textCssClass="statusInfoText"
+                />
               </v-row>
-
             </v-col>
 
-            <v-col class="grow pt-1"
-                    style="align-self: flex-end;"
-                    cols="2" >
-
-              <v-row no-gutters
-                      justify="end"
-                      class="pb-2">
-
-                <BaseIconButton materialIconName="bar_chart"
-                                color="accent"
-                                iconColor="black"
-                                isElevated
-                                tooltipText="Show measurement details"
-                                @clicked="catchDetailClick(station.alias)" />
+            <v-col class="grow pt-1" style="align-self: flex-end;" cols="2">
+              <v-row no-gutters justify="end" class="pb-2">
+                <BaseIconButton
+                  materialIconName="bar_chart"
+                  color="accent"
+                  iconColor="black"
+                  isElevated
+                  tooltipText="Show measurement details"
+                  @clicked="catchDetailClick(station.alias)"
+                />
               </v-row>
 
-              <v-row v-if="downloadAllUrl"
-                     no-gutters
-                      justify="end">
-
-                <BaseIconButton materialIconName="file_download"
-                                color="accent"
-                                iconColor="black"
-                                isElevated
-                                tooltipText="Download station data"
-                                @clicked="downloadData()" />
+              <v-row v-if="downloadAllUrl" no-gutters justify="end">
+                <BaseIconButton
+                  materialIconName="file_download"
+                  color="accent"
+                  iconColor="black"
+                  isElevated
+                  tooltipText="Download station data"
+                  @clicked="downloadData()"
+                />
               </v-row>
             </v-col>
           </v-row>
-
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
-
 </template>
 
 <script>
-import {
-  min,
-  format,
-} from 'date-fns';
-
-import {
-  eventBus,
-  GCNET_OPEN_DETAIL_CHARTS,
-} from '@/factories/eventBus';
-import {
-  addStartEndDateUrl,
-  hasData,
-} from '@/factories/chartFactory';
+import 'uplot/dist/uPlot.min.css';
 
 import axios from 'axios';
+import { format,min } from 'date-fns';
 import uPlot from 'uplot/dist/uPlot.esm';
-import 'uplot/dist/uPlot.min.css';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import { addStartEndDateUrl, hasData } from '@/factories/chartFactory';
+import { eventBus, GCNET_OPEN_DETAIL_CHARTS } from '@/factories/eventBus';
 
 export default {
   name: 'MicroChart',
@@ -220,13 +217,17 @@ export default {
     BaseStatusLabelView,
   },
   beforeMount() {
-   
-    const imgs = require.context('@/assets/logo', false, /\.png$/);
+
+    const imgPaths = import.meta.glob('@/assets/logo/*.png', { eager: true });
     const imgCache = {};
 
-    imgs.keys().forEach((key) => {
-      imgCache[key] = imgs(key);
-    });
+    for (const path in imgPaths) {
+      if (path) {
+        imgPaths[path]().then((mod) => {
+          imgCache[path] = path;
+        })
+      }
+    }
 
     this.logoImgs = imgCache;
   },
@@ -250,14 +251,23 @@ export default {
       return `${this.stationId}_microChart`;
     },
     stationId() {
-      return `${this.station.id}_${this.station.alias ? this.station.alias : this.station.name}`;
+      return `${this.station.id}_${
+        this.station.alias ? this.station.alias : this.station.name
+      }`;
     },
     chartSubText() {
-      return `${this.chartIsLoading ? 'Loading' : 'Showing'} the ${this.parameter ? `'${this.parameter}' parameter` : '[parameter missing]'} from ${new Date(this.minDate).toLocaleDateString('en-US')} to ${new Date(this.maxDate).toLocaleDateString('en-US')}`;
+      return `${this.chartIsLoading ? 'Loading' : 'Showing'} the ${
+        this.parameter ? `'${this.parameter}' parameter` : '[parameter missing]'
+      } from ${new Date(this.minDate).toLocaleDateString(
+        'en-US',
+      )} to ${new Date(this.maxDate).toLocaleDateString('en-US')}`;
     },
     currentColumnNum() {
       // return this.image && this.imageSuccess ? 9 : 12;
-      return (this.image && this.imageLoading) || (this.image && this.imageSuccess) ? 9 : 12;
+      return (this.image && this.imageLoading) ||
+        (this.image && this.imageSuccess)
+        ? 9
+        : 12;
     },
     infoObject() {
       if (this.isFallback) {
@@ -269,7 +279,7 @@ export default {
       }
 
       return null;
-    },    
+    },
     warningObject() {
       if (this.imageError) {
         return {
@@ -280,11 +290,13 @@ export default {
       }
 
       return null;
-    },    
+    },
     errorObject() {
       if (this.dataError) {
         return {
-          title: `Chart ${this.isFallback ? 'fallback' : ''} data could not been loaded`,
+          title: `Chart ${
+            this.isFallback ? 'fallback' : ''
+          } data could not been loaded`,
           message: this.dataError,
           icon: 'error',
         };
@@ -323,9 +335,7 @@ export default {
       });
     },
     clearChart() {
-
       if (this.$refs.microChart) {
-
         const childs = this.$refs.microChart.children;
 
         if (childs) {
@@ -340,36 +350,39 @@ export default {
       this.data = null;
       this.chartIsLoading = true;
       this.isFallback = isFallback;
-      
+
       if (!isFallback) {
-       url = addStartEndDateUrl(url);
+        url = addStartEndDateUrl(url);
       }
-     
+
       axios
-      .get(url)
-      .then((response) => {
-        this.chartIsLoading = false;        
-        this.data = response.data;
-
-        if (hasData(this.data, this.parameter)) {
-          this.makeSparkChart(this.data, this.parameter);
-
-          this.setFirstParameterData(this.data);
-        } else if (isFallback) {
-          this.dataError = `${this.noDataText} on the fallback for ${this.fallbackUrl}`;
-        } else {
-          this.loadJsonFiles(this.fallbackUrl, true);
-        }
-      })
-      .catch((error) => {
-
-        if (isFallback) {
+        .get(url)
+        .then(response => {
           this.chartIsLoading = false;
-          this.dataError = `${error.message} on the fallback for ${this.fallbackUrl}`;
-        } else {
-          this.loadJsonFiles(this.fallbackUrl, true);
-        }
-      });
+        this.chartIsLoading = false;
+          this.chartIsLoading = false;
+        this.chartIsLoading = false;
+          this.chartIsLoading = false;
+          this.data = response.data;
+
+          if (hasData(this.data, this.parameter)) {
+            this.makeSparkChart(this.data, this.parameter);
+
+            this.setFirstParameterData(this.data);
+          } else if (isFallback) {
+            this.dataError = `${this.noDataText} on the fallback for ${this.fallbackUrl}`;
+          } else {
+            this.loadJsonFiles(this.fallbackUrl, true);
+          }
+        })
+        .catch(error => {
+          if (isFallback) {
+            this.chartIsLoading = false;
+            this.dataError = `${error.message} on the fallback for ${this.fallbackUrl}`;
+          } else {
+            this.loadJsonFiles(this.fallbackUrl, true);
+          }
+        });
     },
     setFirstParameterData(data) {
       if (!data || data.length <= 0) {
@@ -402,7 +415,6 @@ export default {
       }
     },
     makeSparkChart(data, chartParameter) {
-
       const x = [];
       const y = [];
       const dataLength = data ? data.length : 0;
@@ -410,11 +422,10 @@ export default {
       this.unit = chartParameter?.includes('temp') ? ' °' : '';
 
       if (dataLength > 0) {
-
         for (let i = 0; i < data.length; i++) {
           const entry = data[i];
           const param = entry[chartParameter];
-          
+
           x.push(entry.timestamp);
           y.push(param);
         }
@@ -424,17 +435,23 @@ export default {
         this.minDate = data[0].timestamp;
         this.maxDate = data[data.length - 1].timestamp;
       }
-
     },
     makeSpark(data) {
-      const width = this.$refs.microChart.clientWidth !== 0 ? this.$refs.microChart.clientWidth : this.$refs.microChart.parentElement.clientWidth;
-      this.sparkLineOptions.width = width; 
+      const width =
+        this.$refs.microChart.clientWidth !== 0
+          ? this.$refs.microChart.clientWidth
+          : this.$refs.microChart.parentElement.clientWidth;
+      this.sparkLineOptions.width = width;
 
       this.sparkLineOptions.height = this.chartHeight;
       this.sparkLineOptions.plugins = [this.tooltipsPlugin(null, this.unit)];
 
       // eslint-disable-next-line new-cap
-      const sparkChart = new uPlot(this.sparkLineOptions, data, this.$refs.microChart);
+      const sparkChart = new uPlot(
+        this.sparkLineOptions,
+        data,
+        this.$refs.microChart,
+      );
 
       return sparkChart;
     },
@@ -447,7 +464,7 @@ export default {
         const plot = u.root.querySelector('.u-over');
 
         // eslint-disable-next-line no-multi-assign
-        const ttc = u.cursortt = document.createElement('div');
+        const ttc = (u.cursortt = document.createElement('div'));
         ttc.className = 'tooltip';
         ttc.textContent = '(x,y)';
         ttc.style.pointerEvents = 'none';
@@ -510,8 +527,8 @@ export default {
 
         // this is here to handle if initial cursor position is set
         // not great (can be optimized by doing more enter/leave state transition tracking)
-      // if (left > 0)
-      //  u.cursortt.style.display = null;
+        // if (left > 0)
+        //  u.cursortt.style.display = null;
 
         // u.cursortt.style.left = left + "px";
         // u.cursortt.style.top = top + "px";
@@ -620,18 +637,18 @@ export default {
 };
 </script>
 
-<style >
- .smallChartSubText {
-   font-size: 0.7rem;
-   word-break: break-word;
-   line-height: 0.85rem;
- }
+<style>
+.smallChartSubText {
+  font-size: 0.7rem;
+  word-break: break-word;
+  line-height: 0.85rem;
+}
 
- .statusInfoText {
-   font-size: 0.8rem;
-   word-break: break-word;
-   line-height: 0.9rem;
- }
+.statusInfoText {
+  font-size: 0.8rem;
+  word-break: break-word;
+  line-height: 0.9rem;
+}
 
 .mircoChart > .uplot,
 .mircoChart > .uplot > .u-wrap,
@@ -640,5 +657,4 @@ export default {
 .mircoChart > .uplot > .u-wrap > .u-over {
   width: inherit !important;
 }
-
 </style>

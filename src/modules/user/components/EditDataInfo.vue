@@ -1,36 +1,31 @@
 <template>
-  <v-card id="EditDataInfo"
-          class="pa-0"
-          :loading="loading">
-
-    <v-container fluid
-                 class="pa-4 fill-height">
-
+  <v-card id="EditDataInfo" class="pa-0" :loading="loading">
+    <v-container fluid class="pa-4 fill-height">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="8"
-               class="text-h5">
+        <v-col cols="8" class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
       <v-row>
@@ -39,40 +34,38 @@
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-container fluid class="py-2 px-4 heightAndScroll">
+          <v-row
+            v-for="(item, index) in datesField"
+            :key="`${item}_${index}`"
+            dense
+          >
+            <v-col cols="3">
+              <v-text-field
+                dense
+                readonly
+                outlined
+                prepend-icon="category"
+                :value="item.dateType"
+                :error-messages="validationErrors.dates[index].dateType"
+              />
+            </v-col>
 
-        <v-row v-for="(item, index) in datesField"
-                :key="`${item}_${index}`"
-                dense >
-          <v-col cols="3">
-            <v-text-field
-              dense
-              readonly
-              outlined
-              prepend-icon="category"
-              :value="item.dateType"
-              :error-messages="validationErrors.dates[index].dateType"
-            />
-          </v-col>
-
-          <v-col class="pl-4">
-
-            <BaseStartEndDate :startDate="item.dateStart"
-                              :startDateProperty="startDateProperty"
-                              :endDate="item.dateEnd"
-                              :endDateProperty="endDateProperty"
-                              :clearableEndDate="true"
-                              @dateChange="dateChanged(index, ...arguments)"
-                              @clearClick="clearDate(index, ...arguments)"
-                              :readOnlyFields="readOnlyFields"
-                              :readOnlyExplanation="readOnlyExplanation"
-                              />
-
-          </v-col>
-
-        </v-row>
-
+            <v-col class="pl-4">
+              <BaseStartEndDate
+                :startDate="item.dateStart"
+                :startDateProperty="startDateProperty"
+                :endDate="item.dateEnd"
+                :endDateProperty="endDateProperty"
+                :clearableEndDate="true"
+                @dateChange="dateChanged(index, ...arguments)"
+                @clearClick="clearDate(index, ...arguments)"
+                :readOnlyFields="readOnlyFields"
+                :readOnlyExplanation="readOnlyExplanation"
+              />
+            </v-col>
+          </v-row>
         </v-container>
       </v-row>
 
@@ -82,7 +75,7 @@
         </v-col>
       </v-row>
 
-      <v-row >
+      <v-row>
         <v-col>
           <v-select
             :items="dataLicenses"
@@ -102,11 +95,10 @@
         </v-col>
       </v-row>
 
-      <v-row class="pl-8" >
-        <v-col >
+      <v-row class="pl-8">
+        <v-col>
           <v-expansion-panels focusable>
             <v-expansion-panel>
-
               <v-expansion-panel-header expand-icon="arrow_drop_down">
                 {{ this.labels.dataLicenseSummary }}
               </v-expansion-panel-header>
@@ -114,7 +106,6 @@
               <v-expansion-panel-content>
                 <div v-html="getDataLicenseSummary" />
               </v-expansion-panel-content>
-
             </v-expansion-panel>
           </v-expansion-panels>
         </v-col>
@@ -126,8 +117,10 @@
             {{ this.getDataLicenseLink }}
           </div>
 
-          <div v-if="this.selectedLicence && this.dataLicenseLinkExists()"
-                class="text-body-3" >
+          <div
+            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
+            class="text-body-3"
+          >
             {{ this.labels.dataLicenseEmail }}
           </div>
           <div
@@ -159,27 +152,25 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-// eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
-
-import { renderMarkdown } from '@/factories/stringFactory';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-
-import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
 import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
 } from '@/factories/mappingFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
+// eslint-disable-next-line import/no-cycle
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditDataInfo',
@@ -231,7 +222,7 @@ export default {
     selectedLicence: {
       get() {
         if (!this.dataLicenseId) {
-          return ''
+          return '';
         }
 
         const dataLicense = this.getLicenseById(this.dataLicenseId);
@@ -239,15 +230,18 @@ export default {
         return {
           id: dataLicense.id,
           title: dataLicense.title,
-        }
+        };
       },
     },
     datesField: {
       get() {
-        const dates = this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
+        const dates =
+          this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
 
-        const createdType = 'created'
-        const createdAmount = dates.filter((dObj) => dObj.dateType === createdType).length;
+        const createdType = 'created';
+        const createdAmount = dates.filter(
+          dObj => dObj.dateType === createdType,
+        ).length;
 
         if (createdAmount <= 0) {
           dates.push({
@@ -257,8 +251,10 @@ export default {
           });
         }
 
-        const collectedType = 'collected'
-        const collectedAmount = dates.filter((dObj) => dObj.dateType === collectedType).length;
+        const collectedType = 'collected';
+        const collectedAmount = dates.filter(
+          dObj => dObj.dateType === collectedType,
+        ).length;
 
         if (collectedAmount <= 0) {
           dates.push({
@@ -287,7 +283,10 @@ export default {
 
       const currentLicense = this.getLicenseById(this.dataLicenseId);
 
-      return this.markdownText(currentLicense?.summary) || 'Data summary information unavailable.';
+      return (
+        this.markdownText(currentLicense?.summary) ||
+        'Data summary information unavailable.'
+      );
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
@@ -325,7 +324,6 @@ export default {
       return renderMarkdown(mdText);
     },
     setDataLicenseInfo(value) {
-
       const currentLicense = this.getLicenseById(value);
 
       const id = currentLicense?.id || '';
@@ -345,7 +343,6 @@ export default {
       });
     },
     setDataInfo(property, value) {
-
       const newDataInfo = {
         ...this.$props,
         [property]: value,
@@ -359,7 +356,9 @@ export default {
     changeLicense(value) {
       const property = 'dataLicenseId';
 
-      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+      if (
+        isFieldValid(property, value, this.validations, this.validationErrors)
+      ) {
         this.setDataLicenseInfo(value);
       }
     },
@@ -377,7 +376,7 @@ export default {
 
       this.setDataInfo('dates', newDates);
 
-/*
+      /*
       const errorArray = this.validationErrors.dates;
 
       if (isArrayContentValid(newDates, 'dates', index, property, this.validations, errorArray)) {
@@ -385,10 +384,8 @@ export default {
         this.setDataInfo('dates', newDates);
       }
 */
-
     },
     updateDatesArray(array, index, property, value) {
-
       const currentEntry = array[index];
 
       array[index] = {
@@ -400,8 +397,10 @@ export default {
 
       for (let i = 0; i < array.length; i++) {
         const entry = array[i];
-        if (!!entry[DATE_PROPERTY_START_DATE]
-            || !!entry[DATE_PROPERTY_END_DATE]) {
+        if (
+          !!entry[DATE_PROPERTY_START_DATE] ||
+          !!entry[DATE_PROPERTY_END_DATE]
+        ) {
           cleanCopy.push(entry);
         }
       }

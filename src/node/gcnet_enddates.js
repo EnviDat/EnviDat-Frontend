@@ -1,9 +1,9 @@
-const fs = require('fs');
+import fs from 'fs';
+import axios from 'axios';
 // const JSONStream = require('JSONStream');
 
 // eslint-disable-next-line import/no-dynamic-require
 // const packagelist = require(packagePath);
-const axios = require('axios');
 // const dateFns = require('date-fns');
 // const StreamArray = require('stream-json/streamers/StreamArray');
 
@@ -28,13 +28,11 @@ let stationAmount = 0;
 const metadataMap = new Map();
 
 const readStationConfig = () => {
-
   try {
     console.log(`Reading data from file ${stationConfigFile}`);
     const content = fs.readFileSync(stationConfigFile);
     const contentString = content.toString();
     return JSON.parse(contentString);
-
   } catch (err) {
     console.error(`read file error: ${err}`);
   }
@@ -45,22 +43,21 @@ const readStationConfig = () => {
 const stationConfig = readStationConfig();
 
 const getMetadata = (station, callback) => {
-
   const url = `${metadataBaseUrl}/${station}/multiple/`;
 
   console.log(`Loading metadata from ${url}`);
 
-  axios.get(url).then((res) => {
-
-    callback(res.data);
-
-  }).catch((err) => {
-    console.error(`${station} has error: ${err}`);
-  });
+  axios
+    .get(url)
+    .then(res => {
+      callback(res.data);
+    })
+    .catch(err => {
+      console.error(`${station} has error: ${err}`);
+    });
 };
 
-const saveMetadataForStations = (callback) => {
-
+const saveMetadataForStations = callback => {
   if (!stationConfig) {
     console.log('Not stationConfig to work with!');
     return;
@@ -69,13 +66,11 @@ const saveMetadataForStations = (callback) => {
   stationAmount = stationConfig.length;
 
   for (let i = 0; i < stationConfig.length; i++) {
-
     const configEntry = stationConfig[i];
 
     console.log(`Saving metadata for ${configEntry.aliasApi}`);
 
-    getMetadata(configEntry.aliasApi, (data) => {
-
+    getMetadata(configEntry.aliasApi, data => {
       metadataMap.set(configEntry.aliasApi, data);
       console.log(`Saved metadata for ${configEntry.aliasApi}`);
 
@@ -84,32 +79,27 @@ const saveMetadataForStations = (callback) => {
       }
     });
   }
-
 };
 
-const extractDates = (data) => {
-
+const extractDates = data => {
   const parameterDates = [];
   const keys = Object.keys(data);
 
   // console.log(data);
 
   for (let j = 0; j < keys.length; j++) {
-
     const metadataProperty = keys[j];
     const metadataValue = data[metadataProperty];
 
     // console.log(`metadataProperty ${metadataProperty} ${typeof metadataValue}`);
 
     if (typeof metadataValue === 'object') {
-
       parameterDates.push({
         parameter: metadataProperty,
         timestamp_iso_earliest: metadataValue.timestamp_iso_earliest,
         timestamp_iso_latest: metadataValue.timestamp_iso_latest,
       });
     }
-
   }
 
   /*
@@ -121,7 +111,6 @@ const extractDates = (data) => {
 };
 
 const updateStationConfig = () => {
-
   for (let i = 0; i < stationConfig.length; i++) {
     const configEntry = stationConfig[i];
 
@@ -138,15 +127,12 @@ const updateStationConfig = () => {
   try {
     const string = JSON.stringify(stationConfig);
     fs.writeFileSync(stationConfigFile, string);
-
   } catch (e) {
     console.error(`Error writing the stationConfig file: ${e}`);
   }
-
 };
 
 saveMetadataForStations(updateStationConfig);
-
 
 /*
 function getParameterDate(param, currentStation) {
@@ -226,7 +212,6 @@ const testHistoricalDate = () => {
 testHistoricalDate();
 */
 
-
 /*
 const dateMap = new Map();
 let lastEndDate = null;
@@ -268,7 +253,6 @@ const fetchGCNetData = function fetchGCNetData(station, url, callback) {
   });
 };
 */
-
 
 /*
 function getStationJSONUrls(stations, baseUrl, startDateUrl, endDateUrl) {
@@ -448,7 +432,6 @@ for (let i = 0; i < stations.length; i++) {
   });
 }
 */
-
 
 // processFiles(0);
 

@@ -11,12 +11,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import remark from 'remark';
-import stripMarkdownLib from 'strip-markdown';
-import htmlLib from 'remark-html';
-import remarkStripHtmlLib from 'remark-strip-html';
 import Crypto from 'crypto-js';
 import Cookie from 'js-cookie';
+import remark from 'remark';
+import htmlLib from 'remark-html';
+import remarkStripHtmlLib from 'remark-strip-html';
+import stripMarkdownLib from 'strip-markdown';
 import uuid from 'uuid';
 
 export function renderMarkdown(markdownString, sanitizeHTML = true) {

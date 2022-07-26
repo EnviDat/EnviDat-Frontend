@@ -10,12 +10,12 @@
  */
 
 import globalMethods from '@/factories/globalMethods';
-import ProjectCard from '@/modules/projects/components/ProjectCard';
-import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder';
 // get Project test data and enhance it
 import {
   enhanceSubprojectsFromExtras,
 } from '@/factories/projectsDataFactory';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
 import projectJSON from '../public/testdata/projects.json';
 import { CARD_VIEWS } from './storybookFolder';
@@ -24,7 +24,7 @@ const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
 
 
-const imgPaths = require.context('../src/assets/cards/forest/', false, /\.jpg$/);
+const imgPaths = import.meta.glob('../src/assets/cards/forest/*.jpg', { eager: true })
 const imgName = 'c_b_forest_texture_bark2';
 const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
 const defaultImg = images[`./${imgName}.jpg`];

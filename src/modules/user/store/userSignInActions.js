@@ -12,25 +12,22 @@
  */
 
 import axios from 'axios';
+
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import {
-  FETCH_USER_DATA,
-} from './userMutationsConsts';
-
+import { FETCH_USER_DATA } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
-
 
 export default {
   async [FETCH_USER_DATA]({ commit }, payload) {
@@ -39,7 +36,8 @@ export default {
     const body = payload.body || {};
 
     // unpack the action because it might be wrapped to provide a test url
-    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
+    const actionUrl =
+      typeof payload.action === 'function' ? payload.action() : payload.action;
 
     let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
@@ -47,16 +45,16 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.get(url, { withCredentials: true })
-        // await axios({ method, url, body })
-        .then((response) => {
-          if (payload.commit) {
-            commit(`${payload.mutation}_SUCCESS`, response.data.result);
-          }
-        })
-        .catch((error) => {
-          commit(`${payload.mutation}_ERROR`, error);
-        });
+    await axios
+      .get(url, { withCredentials: true })
+      // await axios({ method, url, body })
+      .then(response => {
+        if (payload.commit) {
+          commit(`${payload.mutation}_SUCCESS`, response.data.result);
+        }
+      })
+      .catch(error => {
+        commit(`${payload.mutation}_ERROR`, error);
+      });
   },
-
 };

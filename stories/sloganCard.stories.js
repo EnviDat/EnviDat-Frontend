@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import SloganCard from '@/modules/home/components/SloganCard';
+import SloganCard from '@/modules/home/components/SloganCard.vue';
 
 import fingertips from '../src/assets/cards/slogan/fingertips_small.webp';
 

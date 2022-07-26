@@ -1,16 +1,16 @@
 import {
-  ABOUT_PATH,
   ABOUT_PAGENAME,
-  POLICIES_PATH,
-  GUIDELINES_PATH,
+  ABOUT_PATH,
   DMP_PATH,
+  GUIDELINES_PATH,
+  POLICIES_PATH,
 } from '@/router/routeConsts';
 
 export const aboutRoutes = [
   {
     path: `${ABOUT_PATH}/:tab`,
     name: ABOUT_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "aboutPage" */ '@/modules/about/components/AboutPage'),
+    component: () => import('@/modules/about/components/AboutPage.vue'),
   },
   {
     path: ABOUT_PATH,

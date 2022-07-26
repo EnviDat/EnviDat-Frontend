@@ -4,28 +4,28 @@
 import Vue from 'vue';
 import '../../node_modules/skeleton-placeholder/dist/bone.min.css';
 
-import { VBtn } from 'vuetify/lib/components/VBtn';
-import { VTooltip } from 'vuetify/lib/components/VTooltip';
-import { VIcon } from 'vuetify/lib/components/VIcon';
-import { VImg } from 'vuetify/lib/components/VImg';
-import { VFlex, VLayout, VSpacer } from 'vuetify/lib/components/VGrid';
-import { VParallax } from 'vuetify/lib/components/VParallax';
-import { VHover } from 'vuetify/lib/components/VHover';
+import { VBtn } from 'vuetify/lib/components/VBtn.vue';
+import { VTooltip } from 'vuetify/lib/components/VTooltip.vue';
+import { VIcon } from 'vuetify/lib/components/VIcon.vue';
+import { VImg } from 'vuetify/lib/components/VImg.vue';
+import { VFlex, VLayout, VSpacer } from 'vuetify/lib/components/VGrid.vue';
+import { VParallax } from 'vuetify/lib/components/VParallax.vue';
+import { VHover } from 'vuetify/lib/components/VHover.vue';
 import {
   VCard, VCardActions, VCardMedia, VCardText, VCardTitle,
-} from 'vuetify/lib/components/VCard';
-import { VChip } from 'vuetify/lib/components/VChip';
+} from 'vuetify/lib/components/VCard.vue';
+import { VChip } from 'vuetify/lib/components/VChip.vue';
 import { VSlideYTransition } from 'vuetify/lib/components/transitions';
-import { VAvatar } from 'vuetify/lib/components/VAvatar';
-import { VDivider } from 'vuetify/lib/components/VDivider';
-import { VForm } from 'vuetify/lib/components/VForm';
-import { VTextarea } from 'vuetify/lib/components/VTextarea';
+import { VAvatar } from 'vuetify/lib/components/VAvatar.vue';
+import { VDivider } from 'vuetify/lib/components/VDivider.vue';
+import { VForm } from 'vuetify/lib/components/VForm.vue';
+import { VTextarea } from 'vuetify/lib/components/VTextarea.vue';
 import {
   VToolbar,
   VToolbarItems,
   VToolbarSideIcon,
   VToolbarTitle,
-} from 'vuetify/lib/components/VToolbar';
+} from 'vuetify/lib/components/VToolbar.vue';
 import { VTextField } from 'vuetify/lib/components/VTextField';
 import { VNavigationDrawer } from 'vuetify/lib/components/VNavigationDrawer';
 import {
@@ -34,8 +34,8 @@ import {
   VListTile,
   VListTileAction,
   VListTileActionText, VListTileAvatar, VListTileContent, VListTileSubTitle, VListTileTitle,
-} from 'vuetify/lib/components/VList';
-import { VWindow, VWindowItem } from 'vuetify/lib/components/VWindow';
+} from 'vuetify/lib/components/VList.vue';
+import { VWindow, VWindowItem } from 'vuetify/lib/components/VWindow.vue';
 import { VItem, VItemGroup } from 'vuetify/lib/components/VItemGroup';
 import { VBadge } from 'vuetify/lib';
 

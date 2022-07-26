@@ -17,8 +17,8 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo.vue';
 
 import {
   metadataCreationSteps,

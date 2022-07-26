@@ -2,50 +2,69 @@
   <div :style="`height: ${height}px;`">
     <!-- use slot for the content and make a component for only the layouting -->
 
-    <v-parallax v-if="parallax"
-                :height="height"
-                :src="img"
-                :dark="dark"
-                :class="{ 'blur_parallax' : blur }"
-                :style="blur ? 'opacity: 0.8' : ''" />
+    <v-parallax
+      v-if="parallax"
+      :height="height"
+      :src="img"
+      :dark="dark"
+      :class="{ blur_parallax: blur }"
+      :style="blur ? 'opacity: 0.8' : ''"
+    />
 
-    <v-img v-if="!parallax"
-          :height="height"
-          :src="img"
-          :dark="dark"
-          :class="{ 'blur_parallax' : blur }"
-          :style="blur ? 'opacity: 0.8' : ''" />
+    <v-img
+      v-if="!parallax"
+      :height="height"
+      :src="img"
+      :dark="dark"
+      :class="{ blur_parallax: blur }"
+      :style="blur ? 'opacity: 0.8' : ''"
+    />
 
-    <v-row class="fill-height mx-2"
-            align="center"
-            justify="center" 
-            :style="`position: relative; top: -${height }px;
-                    text-align: center;`" >
-
+    <v-row
+      class="fill-height mx-2"
+      align="center"
+      justify="center"
+      :style="
+        `position: relative; top: -${height}px;
+                    text-align: center;`
+      "
+    >
       <div style="background-color: white;" />
 
-      <div class="envidatTitle"
-          :class="{
-            'black--text': dark,
-            'white--text': !dark,
-            'display-3' : $vuetify.breakpoint.mdAndUp,
-            'text-h4' : $vuetify.breakpoint.smAndDown,
-          }" >
-        <span :style="`background-color: ${textBackgroundColor};
-                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`">
+      <div
+        class="envidatTitle"
+        :class="{
+          'black--text': dark,
+          'white--text': !dark,
+          'display-3': $vuetify.breakpoint.mdAndUp,
+          'text-h4': $vuetify.breakpoint.smAndDown,
+        }"
+      >
+        <span
+          :style="
+            `background-color: ${textBackgroundColor};
+                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`
+          "
+        >
           {{ title }}
         </span>
       </div>
 
-      <div class="envidatTitle"
-          :class="{
-            'black--text': dark,
-            'white--text': !dark,
-            'headline' : $vuetify.breakpoint.mdAndUp,
-            'subtitle-1' : $vuetify.breakpoint.smAndDown,
-          }" >
-        <span :style="`background-color: ${textBackgroundColor};
-                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`">
+      <div
+        class="envidatTitle"
+        :class="{
+          'black--text': dark,
+          'white--text': !dark,
+          headline: $vuetify.breakpoint.mdAndUp,
+          'subtitle-1': $vuetify.breakpoint.smAndDown,
+        }"
+      >
+        <span
+          :style="
+            `background-color: ${textBackgroundColor};
+                        text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);`
+          "
+        >
           {{ subTitle }}
         </span>
       </div>
@@ -94,9 +113,7 @@ export default {
 </script>
 
 <style scoped>
-
-  .blur_parallax {
-    filter: blur(2px);
-  }
-
+.blur_parallax {
+  filter: blur(2px);
+}
 </style>

@@ -1,59 +1,54 @@
 <template>
-  <v-container id="ProjectsPage"
-               tag="article"
-               fluid
-               class="pa-0" >
-
-    <v-row >
-      <v-col cols="12"
-             lg="10"
-             offset-lg="1">
-        <img-and-text-layout :img="missionImg"
-                              :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
-                              title="Research Projects" />
+  <v-container id="ProjectsPage" tag="article" fluid class="pa-0">
+    <v-row>
+      <v-col cols="12" lg="10" offset-lg="1">
+        <img-and-text-layout
+          :img="missionImg"
+          :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+          title="Research Projects"
+        />
       </v-col>
 
-      <v-col class="mt-5" cols="12" lg="10" offset-lg="1" >
-
-        <v-container v-if="loading"
-                      class="pa-0"
-                      fluid>
-          <v-row >
-
-            <v-col v-for="(project, index) in 4"
-                    :key="index"
-                    cols="12" sm="6" md="4" xl="3" >
+      <v-col class="mt-5" cols="12" lg="10" offset-lg="1">
+        <v-container v-if="loading" class="pa-0" fluid>
+          <v-row>
+            <v-col
+              v-for="(project, index) in 4"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+              xl="3"
+            >
               <project-card-placeholder />
             </v-col>
-
           </v-row>
         </v-container>
 
-        <v-container  v-else
-                      class="pa-0"
-                      fluid >
-          <v-row >
-
-            <v-col v-for="(project, index) in projectsCardsParents"
-                    :key="index"
-                    cols="12" sm="6" md="4" xl="3"
-                     >
-              <project-card :id="project.id"
-                            :title="project.title"
-                            :img="project.image_display_url"
-                            :defaultImg="creatorImg"
-                            :description="project.description"
-                            :subProjects="project.subProjects"
-                            @cardClick="onCardClick"
-                            @subprojectClick="onSubprojectClick"
+        <v-container v-else class="pa-0" fluid>
+          <v-row>
+            <v-col
+              v-for="(project, index) in projectsCardsParents"
+              :key="index"
+              cols="12"
+              sm="6"
+              md="4"
+              xl="3"
+            >
+              <project-card
+                :id="project.id"
+                :title="project.title"
+                :img="project.image_display_url"
+                :defaultImg="creatorImg"
+                :description="project.description"
+                :subProjects="project.subProjects"
+                @cardClick="onCardClick"
+                @subprojectClick="onSubprojectClick"
               />
             </v-col>
-
           </v-row>
         </v-container>
-
       </v-col>
-
     </v-row>
   </v-container>
 </template>
@@ -73,23 +68,25 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters,mapState } from 'vuex';
+
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import {
-  mapState,
-  mapGetters,
-} from 'vuex';
-import { PROJECTS_PAGENAME, PROJECT_DETAIL_PAGENAME } from '@/router/routeConsts';
-import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
-
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
-
-import ProjectCardPlaceholder from './ProjectCardPlaceholder';
-import ProjectCard from './ProjectCard';
+  PROJECT_DETAIL_PAGENAME,
+  PROJECTS_PAGENAME,
+} from '@/router/routeConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 
 import {
   GET_PROJECTS,
   PROJECTS_NAMESPACE,
   SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from '../store/projectsMutationsConsts';
+import ProjectCard from './ProjectCard.vue';
+import ProjectCardPlaceholder from './ProjectCardPlaceholder.vue';
 
 export default {
   name: 'ProjectsPage',
@@ -98,7 +95,7 @@ export default {
    * It's called via vue-router.
    */
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, PROJECTS_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -123,10 +120,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'loadingConfig',
-      'config',
-    ]),
+    ...mapState(['loadingConfig', 'config']),
     ...mapGetters({
       projects: `${PROJECTS_NAMESPACE}/projects`,
       loading: `${PROJECTS_NAMESPACE}/loading`,
@@ -136,20 +130,30 @@ export default {
       return this.config?.projectsConfig || {};
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp ? 'projects/mission' : 'about/mission_small';
+      const imgPath = this.$vuetify.breakpoint.mdAndUp
+        ? 'projects/mission'
+        : 'about/mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp ? 'projects/data_creator' : 'about/data_creator_small';
+      const imgPath = this.$vuetify.breakpoint.mdAndUp
+        ? 'projects/data_creator'
+        : 'about/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
   },
   methods: {
     loadProjects() {
-      this.$store.dispatch(`${PROJECTS_NAMESPACE}/${GET_PROJECTS}`, this.projectsConfig);
+      this.$store.dispatch(
+        `${PROJECTS_NAMESPACE}/${GET_PROJECTS}`,
+        this.projectsConfig,
+      );
     },
     onCardClick(projectId) {
-      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,
@@ -157,7 +161,10 @@ export default {
       });
     },
     onSubprojectClick(subprojectId) {
-      this.$store.commit(`${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${PROJECTS_NAMESPACE}/${SET_PROJECTDETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: PROJECT_DETAIL_PAGENAME,

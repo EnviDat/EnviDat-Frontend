@@ -1,12 +1,9 @@
-import {
-  BROWSE_PATH,
-  BROWSE_PAGENAME,
-} from '@/router/routeConsts';
+import { BROWSE_PAGENAME,BROWSE_PATH } from '@/router/routeConsts';
 
 export const browseRoutes = [
   {
     path: BROWSE_PATH,
     name: BROWSE_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "browsePage" */ '@/modules/browse/BrowsePage'),
+    component: () => import('@/modules/browse/BrowsePage.vue'),
   },
 ];

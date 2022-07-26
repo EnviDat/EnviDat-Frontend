@@ -11,6 +11,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import * as yup from 'yup';
+
 import {
   EDIT_USER_PROFILE,
   EDITMETADATA_AUTHOR_LIST,
@@ -26,7 +28,6 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import * as yup from 'yup';
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
@@ -308,4 +309,3 @@ export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
 
   return '';
 }
-

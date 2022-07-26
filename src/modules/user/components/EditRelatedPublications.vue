@@ -1,65 +1,56 @@
 <template>
+  <v-card id="EditRelatedPublications" class="pa-0" :loading="loading">
+    <v-container fluid class="pa-4 fill-height">
+      <template slot="progress">
+        <v-progress-linear color="primary" indeterminate />
+      </template>
 
-<v-card id="EditRelatedPublications"
-        class="pa-0"
-        :loading="loading">
+      <v-row>
+        <v-col cols="6" class="text-h5">
+          {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
+        </v-col>
 
-  <v-container fluid
-                class="pa-4 fill-height" >
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
+        </v-col>
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
+        </v-col>
+      </v-row>
 
-    <template slot="progress">
-      <v-progress-linear color="primary"
-                         indeterminate />
-    </template>
+      <v-row>
+        <v-col>
+          <div class="text-subtitle-1">{{ labels.cardInstructions }}</div>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col cols="6" class="text-h5">
-        {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
-      </v-col>
-
-      <v-col v-if="message" >
-        <BaseStatusLabelView statusIcon="check"
-                             statusColor="success"
-                             :statusText="message"
-                             :expandedText="messageDetails" />
-      </v-col>
-      <v-col v-if="error"  >
-
-        <BaseStatusLabelView statusIcon="error"
-                             statusColor="error"
-                             :statusText="error"
-                             :expandedText="errorDetails" />
-      </v-col>
-
-    </v-row>
-
-    <v-row>
-      <v-col >
-        <div class="text-subtitle-1">{{ labels.cardInstructions }}</div>
-      </v-col>
-    </v-row>
-
-
-    <v-row>
-      <v-col >
-
-        <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
-                                      :validationError="validationErrors[editingProperty]"
-                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
-                                      @inputedText="catchInputedText($event)"
-                                      @changedText="catchChangedText($event)">
-          <MetadataPublications :genericProps="publicationsObject" />
-        </GenericTextareaPreviewLayout>
-
-      </v-col>
-    </v-row>
-
- </v-container>
-</v-card>
-
+      <v-row>
+        <v-col>
+          <GenericTextareaPreviewLayout
+            v-bind="genericTextAreaObject"
+            :validationError="validationErrors[editingProperty]"
+            :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
+            :hint="mixinMethods_readOnlyHint(editingProperty)"
+            @inputedText="catchInputedText($event)"
+            @changedText="catchChangedText($event)"
+          >
+            <MetadataPublications :genericProps="publicationsObject" />
+          </GenericTextareaPreviewLayout>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
-
 
 <script>
 /**
@@ -74,24 +65,21 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
-
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 
 export default {
   name: 'EditRelatedPublications',
@@ -153,7 +141,9 @@ export default {
       };
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_RELATED_PUBLICATIONS);
+      return getValidationMetadataEditingObject(
+        EDITMETADATA_RELATED_PUBLICATIONS,
+      );
     },
     previewPublicationsText() {
       return this.previewText ? this.previewText : this.relatedPublicationsText;
@@ -163,8 +153,13 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value){
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+    validateProperty(property, value) {
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -176,7 +171,6 @@ export default {
       }
     },
     setRelatedPublicationsText(value) {
-
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
@@ -202,6 +196,4 @@ export default {
     BaseStatusLabelView,
   },
 };
-
-
 </script>

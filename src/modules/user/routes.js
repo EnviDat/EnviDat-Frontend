@@ -12,34 +12,35 @@
  */
 
 import {
-  USER_SIGNIN_PATH,
-  USER_SIGNIN_PAGENAME,
-  USER_DASHBOARD_PATH,
-  USER_DASHBOARD_PAGENAME,
-  METADATAEDIT_PATH,
   METADATAEDIT_PAGENAME,
+  METADATAEDIT_PATH,
+  USER_DASHBOARD_PAGENAME,
+  USER_DASHBOARD_PATH,
+  USER_SIGNIN_PAGENAME,
+  USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 
 export const userRoutes = [
   {
     path: USER_SIGNIN_PATH,
     name: USER_SIGNIN_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "signinPage" */ '@/modules/user/components/SigninPage'),
+    component: () => import('@/modules/user/components/SigninPage.vue'),
   },
   {
     path: USER_DASHBOARD_PATH,
     name: USER_DASHBOARD_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "dashboardPage" */ '@/modules/user/components/DashboardPage'),
+    component: () => import('@/modules/user/components/DashboardPage.vue'),
   },
   {
     path: METADATAEDIT_PATH,
     name: METADATAEDIT_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
+    component: () => import('@/modules/user/components/MetadataEditPage.vue'),
     children: [
       {
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
-        component: () => import(/* webpackPrefetch: true, webpackChunkName: "metadataEditPage" */ '@/modules/user/components/MetadataEditPage'),
+        component: () =>
+          import('@/modules/user/components/MetadataEditPage.vue'),
       },
     ],
   },

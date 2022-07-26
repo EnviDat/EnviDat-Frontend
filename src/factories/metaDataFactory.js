@@ -12,11 +12,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import seedrandom from 'seedrandom';
 import { format, formatISO, parse } from 'date-fns';
+import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
-
+import { localIdProperty } from '@/factories/strategyFactory';
 import {
   DIVERSITY,
   FOREST,
@@ -25,8 +25,6 @@ import {
   METEO,
   SNOW,
 } from '@/store/categoriesConsts';
-
-import { localIdProperty } from '@/factories/strategyFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -281,7 +279,7 @@ export function createCitation(dataset) {
     text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
   }
 
-  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
 
   return {
     id: dataset.id,
@@ -461,7 +459,7 @@ export function createResource(resource, datasetName) {
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
 
   let fileName = resource.name;
 

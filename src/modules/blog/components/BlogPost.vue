@@ -1,9 +1,5 @@
 <template>
-
-  <div class="blogPost"
-       v-html="postContentMarkdown" >
-
-  </div>
+  <div class="blogPost" v-html="postContentMarkdown"></div>
 </template>
 
 <script>
@@ -35,7 +31,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .blogPost img {
   max-width: 100%;
 }

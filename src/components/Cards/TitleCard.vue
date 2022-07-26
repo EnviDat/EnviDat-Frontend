@@ -1,24 +1,26 @@
 <template>
-  <v-card class="datasetTitleCard"
-          :class="cardClass"
-          style="align-self: center;">
+  <v-card
+    class="datasetTitleCard"
+    :class="cardClass"
+    style="align-self: center;"
+  >
+    <div :class="titleClass">{{ title }}</div>
 
-      <div :class="titleClass" >{{ title }}</div>
-
-      <!-- <BaseRectangleButton v-if="buttonText"
+    <!-- <BaseRectangleButton v-if="buttonText"
                         style="justify-self: end;"
                         :materialIconName="icon"
                         :tooltipText="tooltipText"
                         @clicked="clickCallback" /> -->
 
-      <BaseIconButton v-if="clickCallback"
-                        style="justify-self: end;"
-                        :materialIconName="icon"
-                        :tooltipText="tooltipText"
-                        @clicked="clickCallback" />
+    <BaseIconButton
+      v-if="clickCallback"
+      style="justify-self: end;"
+      :materialIconName="icon"
+      :tooltipText="tooltipText"
+      @clicked="clickCallback"
+    />
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -34,8 +36,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-// import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+// import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'TitleCard',
@@ -54,12 +56,9 @@ export default {
     tooltipText: String,
     clickCallback: Function,
   },
-  computed: {
-  },
-  methods: {
-  },
-  data: () => ({
-  }),  
+  computed: {},
+  methods: {},
+  data: () => ({}),
   components: {
     // BaseRectangleButton,
     BaseIconButton,
@@ -69,8 +68,7 @@ export default {
 
 <style lang="sass" scoped>
 
-  .datasetTitleCard
-    display: grid
-    grid-template-columns: 11fr 1fr
-
+.datasetTitleCard
+  display: grid
+  grid-template-columns: 11fr 1fr
 </style>

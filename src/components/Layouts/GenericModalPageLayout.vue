@@ -1,50 +1,41 @@
 <template>
-  <v-dialog v-model="showDialog"
-            id="GenericModalPageLayout"
-            transition="dialog-bottom-transition"
-            scrollable
-            persistent
-            style="z-index: 1030;">
-
-    <v-card class="modalHeight pa-0 ml-15" >
-
-      <v-sheet flat
-               dark
-               color="primary"
-               class="pa-4"
-              style="height: 64px;">
-
-        <v-row no-gutters
-               justify="space-between"
-                align-content="center">
-
+  <v-dialog
+    v-model="showDialog"
+    id="GenericModalPageLayout"
+    transition="dialog-bottom-transition"
+    scrollable
+    persistent
+    style="z-index: 1030;"
+  >
+    <v-card class="modalHeight pa-0 ml-15">
+      <v-sheet flat dark color="primary" class="pa-4" style="height: 64px;">
+        <v-row no-gutters justify="space-between" align-content="center">
           <v-col class="text-h6">
             {{ title }}
           </v-col>
 
-          <v-col class="shrink" >
-
-            <BaseIconButton id="GenericModalPageLayoutCloseButton"
-                              material-icon-name="close"
-                              icon-color="white"
-                              color="white"
-                              outlined
-                              tool-tip-text="Close"
-                              :tool-tip-bottom="true"
-                              @clicked="closeClicked" />
-
+          <v-col class="shrink">
+            <BaseIconButton
+              id="GenericModalPageLayoutCloseButton"
+              material-icon-name="close"
+              icon-color="white"
+              color="white"
+              outlined
+              tool-tip-text="Close"
+              :tool-tip-bottom="true"
+              @clicked="closeClicked"
+            />
           </v-col>
         </v-row>
       </v-sheet>
 
-      <v-card-text class="pa-0"
-                    :style="autoScroll ? 'overflow: auto;' : 'overflow: hidden;'" >
-        
+      <v-card-text
+        class="pa-0"
+        :style="autoScroll ? 'overflow: auto;' : 'overflow: hidden;'"
+      >
         <slot name="default" />
-
       </v-card-text>
     </v-card>
-
   </v-dialog>
 </template>
 
@@ -60,13 +51,13 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   eventBus,
-  METADATA_OPEN_MODAL,
   METADATA_CLOSE_MODAL,
+  METADATA_OPEN_MODAL,
 } from '@/factories/eventBus';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'GenericModalPageLayout',
@@ -91,7 +82,7 @@ export default {
     },
     openClicked() {
       this.showDialog = true;
-    },    
+    },
   },
   components: { BaseIconButton },
   data: () => ({
@@ -100,12 +91,9 @@ export default {
 };
 </script>
 
-
 <style scoped>
-
-  .modalHeight {
-    height: calc(100vh - 90px);
-    max-height: 95% !important;
-  }
-
+.modalHeight {
+  height: calc(100vh - 90px);
+  max-height: 95% !important;
+}
 </style>

@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import ModeView from '@/components/Layouts/ModeView';
+import ModeView from '@/components/Layouts/ModeView.vue';
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import { LABLE_VIEWS } from './storybookFolder';
 

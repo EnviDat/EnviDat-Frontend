@@ -1,16 +1,14 @@
 <template>
-
-  <v-container fluid
-               class="pa-0"
-               id="EditAuthorList" >
-
-    <v-row >
-      <v-col cols="6" >
-        <v-row v-if="selectedAuthor" >
-          <v-col >
-            <EditAuthor v-bind="selectedAuthor"
-                        @closeClicked="catchEditAuthorClose"
-                        @saveAuthor="catchSaveAuthorClose"/>
+  <v-container fluid class="pa-0" id="EditAuthorList">
+    <v-row>
+      <v-col cols="6">
+        <v-row v-if="selectedAuthor">
+          <v-col>
+            <EditAuthor
+              v-bind="selectedAuthor"
+              @closeClicked="catchEditAuthorClose"
+              @saveAuthor="catchSaveAuthorClose"
+            />
           </v-col>
         </v-row>
 
@@ -28,13 +26,11 @@
         </v-row>
       </v-col>
 
-      <v-col cols="6" >
+      <v-col cols="6">
         <EditMetadataAuthors v-bind="authorListingGenericProps" />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
 
 <script>
@@ -61,11 +57,6 @@ import {
   getFullAuthorsFromDataset,
   initializeLocalAuthor,
 } from '@/factories/authorFactory';
-
-import {
-  // enhanceElementsWithStrategyEvents,
-  localIdProperty,
-} from '@/factories/strategyFactory';
 import {
   CANCEL_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
@@ -76,10 +67,16 @@ import {
   SELECT_EDITING_AUTHOR,
   // SELECT_EDITING_AUTHOR_PROPERTY,
 } from '@/factories/eventBus';
-
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import {
+  // enhanceElementsWithStrategyEvents,
+  localIdProperty,
+} from '@/factories/strategyFactory';
+// import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
+import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor.vue';
+import EditAuthor from '@/modules/user/components/EditAuthor.vue';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'EditAuthorList',
@@ -136,7 +133,9 @@ export default {
     },
     authorsWrap() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST).authors;
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_AUTHOR_LIST).authors;
       }
 
       return this.authors;
@@ -170,14 +169,15 @@ export default {
       };
     },
     authorListingGenericProps() {
-
       const authorsMap = this.authorsMap;
       const authors = this.authorsWrap;
 
       let mergedAuthors = [];
 
       if (authorsMap) {
-        const fullAuthors = getFullAuthorsFromDataset(authorsMap, { author: authors });
+        const fullAuthors = getFullAuthorsFromDataset(authorsMap, {
+          author: authors,
+        });
 
         for (let i = 0; i < authors.length; i++) {
           const author = authors[i];
@@ -249,11 +249,8 @@ export default {
       this.initAuthor();
     },
   },
-  data: () => ({
-  }),
+  data: () => ({}),
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -12,7 +12,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import authorCollection from '../public/testdata/authorCollection.json';
 import { METADATA_EDITING } from './storybookFolder';
 
@@ -39,7 +39,7 @@ export const EditUserViews = () => ({
 
       <v-col cols="6">
         {{ user1.fullName + ' Edit User Profile' }}
-        <EditUserProfile :first-name="user1.firstName" 
+        <EditUserProfile :first-name="user1.firstName"
                           :last-name="user1.lastName"
                           :email="user1.email"
                           />
@@ -63,7 +63,7 @@ export const EditUserViews = () => ({
                          error-details="Some Validation Error Text"
         />
       </v-col>
-    
+
     </v-row>
     `,
   data: () => ({

@@ -1,20 +1,20 @@
 /* eslint-disable object-curly-newline */
 
 import {
-  BROWSE_PATH,
-  BROWSE_PAGENAME,
-  PROJECTS_PATH,
-  PROJECTS_PAGENAME,
-  PROJECT_DETAIL_PAGENAME,
-  ABOUT_PATH,
   ABOUT_PAGENAME,
-  USER_SIGNIN_PATH,
-  USER_SIGNIN_PAGENAME,
-  USER_SIGNOUT_PATH,
+  ABOUT_PATH,
+  BLOG_PAGENAME,
+  BLOG_PATH,
+  BROWSE_PAGENAME,
+  BROWSE_PATH,
+  PROJECT_DETAIL_PAGENAME,
+  PROJECTS_PAGENAME,
+  PROJECTS_PATH,
   USER_DASHBOARD_PAGENAME,
   USER_DASHBOARD_PATH,
-  BLOG_PATH,
-  BLOG_PAGENAME,
+  USER_SIGNIN_PAGENAME,
+  USER_SIGNIN_PATH,
+  USER_SIGNOUT_PATH,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -47,7 +47,7 @@ export const navigationItems = [
     pageName: 'external',
     disabled: false,
   },
-/*
+  /*
   {
     title: 'Sign In',
     icon: 'person',
@@ -85,8 +85,22 @@ export const navigationItems = [
 ];
 
 export const userMenuItems = [
-  { title: 'Dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: USER_DASHBOARD_PATH, pageName: USER_DASHBOARD_PAGENAME },
+  {
+    title: 'Dashboard',
+    icon: 'dashboard',
+    toolTip: 'My Dashboard',
+    active: false,
+    path: USER_DASHBOARD_PATH,
+    pageName: USER_DASHBOARD_PAGENAME,
+  },
   // { title: 'Create Dataset', icon: 'add_cricle_outline', toolTip: 'Create a new dataset', active: false, path: 'createDataset', pageName: 'CreateDataset' },
   // { title: 'Edit Profile', icon: 'edit', toolTip: 'Edit profile', active: false, path: 'profile', pageName: 'EditProfile' },
-  { title: 'Sign out', icon: 'logout', toolTip: 'Sign out', active: false, path: USER_SIGNOUT_PATH, pageName: '' },
+  {
+    title: 'Sign out',
+    icon: 'logout',
+    toolTip: 'Sign out',
+    active: false,
+    path: USER_SIGNOUT_PATH,
+    pageName: '',
+  },
 ];

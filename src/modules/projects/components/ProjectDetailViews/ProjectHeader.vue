@@ -1,59 +1,70 @@
 <template>
-  <v-card :height="height"
-          :class="{
-            'pa-4': $vuetify.breakpoint.smAndUp,
-            'pa-3': $vuetify.breakpoint.xsOnly,
-          }"
-          :dark="dark"
-          :color="showPlaceholder ? 'primary' : 'white'" >
-
-    <div v-bind="{['style'] : dynamicCardBackground }" >
+  <v-card
+    :height="height"
+    :class="{
+      'pa-4': $vuetify.breakpoint.smAndUp,
+      'pa-3': $vuetify.breakpoint.xsOnly,
+    }"
+    :dark="dark"
+    :color="showPlaceholder ? 'primary' : 'white'"
+  >
+    <div v-bind="{ ['style']: dynamicCardBackground }">
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button class="ma-2"
-                      style="position: absolute; top: 0px; right: 0px; z-index: 2;"
-                      material-icon-name="close"
-                      icon-color="primary"
-                      color="primary"
-                      outlined
-                      tooltip-text="Close Project Detail"
-                      :tooltip-bottom="true"
-                      @clicked="catchBackClicked" />
+    <base-icon-button
+      class="ma-2"
+      style="position: absolute; top: 0px; right: 0px; z-index: 2;"
+      material-icon-name="close"
+      icon-color="primary"
+      color="primary"
+      outlined
+      tooltip-text="Close Project Detail"
+      :tooltip-bottom="true"
+      @clicked="catchBackClicked"
+    />
 
-
-    <div v-if="title"
-          :style="`position: absolute; top: 0px; right: 0px;
+    <div
+      v-if="title"
+      :style="
+        `position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
-                  z-index: 1;`"
-          class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
-                    'text-h4': $vuetify.breakpoint.mdAndDown,
-                    'text-h5': $vuetify.breakpoint.smAndDown,
-                  }" >
+                  z-index: 1;`
+      "
+      class="headerTitle pa-4"
+      :class="{
+        'text-h3': $vuetify.breakpoint.lgAndUp,
+        'text-h4': $vuetify.breakpoint.mdAndDown,
+        'text-h5': $vuetify.breakpoint.smAndDown,
+      }"
+    >
       {{ title }}
     </div>
 
-
-    <div v-if="!title && !showPlaceholder"
-          :style="`position: absolute; top: 0px; right: 0px;
+    <div
+      v-if="!title && !showPlaceholder"
+      :style="
+        `position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
-                  z-index: 1; color: ${$vuetify.theme.themes.light.error};`"
-          class="headerTitle pa-4"
-          :class="{ 'text-h3': $vuetify.breakpoint.lgAndUp,
-                    'text-h4': $vuetify.breakpoint.mdAndDown,
-                    'text-h5': $vuetify.breakpoint.smAndDown,
-                  }" >
+                  z-index: 1; color: ${$vuetify.theme.themes.light.error};`
+      "
+      class="headerTitle pa-4"
+      :class="{
+        'text-h3': $vuetify.breakpoint.lgAndUp,
+        'text-h4': $vuetify.breakpoint.mdAndDown,
+        'text-h5': $vuetify.breakpoint.smAndDown,
+      }"
+    >
       {{ NotFoundTitle }}
     </div>
 
-
-    <div v-if="!title && showPlaceholder"
-          style="z-index: 1;"
-          class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer" >
+    <div
+      v-if="!title && showPlaceholder"
+      style="z-index: 1;"
+      class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
+    >
       <div class="bone bone-type-multiline bone-style-steps" />
     </div>
-
   </v-card>
 </template>
 
@@ -70,9 +81,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   components: {
@@ -104,7 +115,9 @@ export default {
       return img;
     },
     dynamicCardBackground() {
-      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
+      const gradient = this.dark
+        ? this.blackTopToBottom
+        : this.whiteTopToBottom;
 
       let style = `position: absolute; top: 0px; right: 0px;
                   height: ${this.height}px; width: 100%;
@@ -138,11 +151,9 @@ export default {
 </script>
 
 <style scoped>
-
-  .headerTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-  }
-
+.headerTitle {
+  font-family: 'Baskervville', serif !important;
+  font-weight: 400;
+  opacity: 1;
+}
 </style>

@@ -1,31 +1,30 @@
 <template>
-  <v-container class="pa-1" fluid >
-
-    <v-row  >
-
+  <v-container class="pa-1" fluid>
+    <v-row>
       <!-- Domi: For single line only the "xs12" css-class is needed  -->
-      <v-col class="my-1" cols="6" md="3" lg="2"
-              
-              v-for="station in $store.getters.stations"
-              :key="station.name"
-              v-show="station.active" >
-
-        <base-click-card :title="station.name"
-                        v-on:clicked="station.alias ? listClick(station.name) : ''"
-                        :style="backgroundColor(station)"
-                        :img="stationImg(station.alias)"
-                        :disabled="!station.alias"
-                        />
-                        <!-- Domi: remove randomImg and added Station Img
+      <v-col
+        class="my-1"
+        cols="6"
+        md="3"
+        lg="2"
+        v-for="station in $store.getters.stations"
+        :key="station.name"
+        v-show="station.active"
+      >
+        <base-click-card
+          :title="station.name"
+          v-on:clicked="station.alias ? listClick(station.name) : ''"
+          :style="backgroundColor(station)"
+          :img="stationImg(station.alias)"
+          :disabled="!station.alias"
+        />
+        <!-- Domi: remove randomImg and added Station Img
                           :randomImgPosition="true"
                           :img="randomImg(station.elevation + station.alias)"
                           -->
-
       </v-col>
-
     </v-row>
   </v-container>
-
 </template>
 
 <script>
@@ -42,12 +41,16 @@ export default {
     BaseClickCard,
   },
   beforeMount() {
-    const imgs = require.context('@/assets/cards', false, /\.jpg$/);
+    const imgPaths = import.meta.glob('@/assets/cards/*.jpg', { eager: true });
     const imgCache = {};
 
-    imgs.keys().forEach((key) => {
-      imgCache[key] = imgs(key);
-    });
+    for (const path in imgPaths) {
+      if (path) {
+        imgPaths[path]().then((mod) => {
+          imgCache[path] = path;
+        })
+      }
+    }
 
     this.cardImgs = imgCache;
   },
@@ -86,9 +89,6 @@ export default {
     },
   },
 };
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

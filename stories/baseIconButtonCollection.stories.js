@@ -9,8 +9,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import fileIcon from '../src/assets/icons/file.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
 import { BUTTONS_VIEWS } from './storybookFolder';

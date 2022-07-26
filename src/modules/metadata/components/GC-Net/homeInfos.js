@@ -1,23 +1,23 @@
 export default {
   title: 'GC Net Data Portal',
   startText: 'Select stations in the menu to the left!',
-//   smallInfo: `<h3>Automatic Weather Stations on Greenland</h3>
-// As of the 1999 field season, several automatic weather stations (AWS) are collecting climate information on Greenland's ice sheet.<br />Hourly average data are transmitted via a satellite link (GOES or ARGOS) throughout the year.`,
+  //   smallInfo: `<h3>Automatic Weather Stations on Greenland</h3>
+  // As of the 1999 field season, several automatic weather stations (AWS) are collecting climate information on Greenland's ice sheet.<br />Hourly average data are transmitted via a satellite link (GOES or ARGOS) throughout the year.`,
   smallInfo: `<h3>Automatic Weather Stations (AWS)</h3>
     As of the 1995 field season, automatic weather stations (AWS) are collecting climate information on Greenland's ice sheet.<br />
     Click on a station to see all the data collected. Use the Navigation for more information and data requests.`,
   homeText: `Prof. Dr. Konrad Steffen is the principal investigator of this project.
 
   GC-Net Automated Weather Stations (AWS) are collecting climate information on Greenland's ice sheet. They are equipped with communication satellite transmitters that enable near-real time monitoring of weather conditions on the Greenland ice sheet. Transmission latency is typically 1-2 hours, and occasionally as long as 48 hours. All times displayed are Zulu = UTC.
-  
+
   Hourly average data are transmitted via a satellite link (GOES or ARGOS) throughout the year. In addition, measurements are stored in solid state memory. The system is powered with two 100 Ah batteries, charged by a 10 or 20 W solar panel. The satellite data-link is powered by two separate 100 Ah batteries connected to a 20 W solar panel. This setup guarantees continuous data recordings and storage, even in the case of satellite transmission failure. For more information on the GC-NET see: <a href="http://cires1.colorado.edu/steffen/gcnet/" target="_blank">GC-Net@CIRES.colorado.edu.</a>
-  <br />  
+  <br />
   <br />
   <strong><a href="https://www.wsl.ch/en/2020/08/director-konrad-steffen-tragically-killed-in-accident.html" target="_blank">Konrad Steffen died in an accident in Greenland on 8 August 2020.</a></strong>`,
   awsInfo: `<h3>Automatic Weather Stations (AWS)</h3>
 
   <p>As of the 1999 field season, 18 automatic weather stations (AWS) are collecting climate information on Greenland's ice sheet. Each AWS is equipped with a number of instruments to sample the following:</p>
-  
+
   <ul>
   <li>air temperature, wind speed, wind direction, humidity, pressure</li>
   <li>accumulation rate at high temporal resolution to identify and resolve individual storms</li>
@@ -25,10 +25,10 @@ export default {
   <li>sensible and latent heat flux fluxes</li>
   <li>snowpack conductive heat fluxes</li>
   </ul>
-  
+
   <p>Hourly average data are transmitted via a satellite link (GOES or ARGOS) throughout the year. In addition, measurements are stored in solid state memory. The system is powered with two 100 Ah batteries, charged by a 10 or 20 W solar panel. The satellite data-link is powered by two separate 100 Ah batteries connected to a 20 W solar panel. This setup guarantees continuous data recordings and storage, even in the case of satellite transmission failure. The expected lifetime of the instrumentation is 5 years.</p>`,
   gcnetTransmissionsInfo: `<h3>Current GC-Net Transmissions</h3>
-  
+
   <table align="right" width="120"><tr><td align="center"><a target="_blank" href="http://cires1.colorado.edu/steffen/gcnet/aws.html"><img src="http://cires1.colorado.edu/steffen/gcnet/images/awsLabeled110.jpg" width="110" height="148" hspace="5" border="0"></a><br><span class="text-caption">Click on image to see <a target="_blank" href="http://cires1.colorado.edu/steffen/gcnet/aws.html">full size</a> version of AWS.</span></td></tr></table>
 
 <p>PARCA GC-Net Automated Weather Stations (AWS) are equipped with communication satellite transmitters that enable

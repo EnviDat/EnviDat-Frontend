@@ -1,48 +1,43 @@
 <template>
-  <v-card id="EditPasteResourceUrl"
-            class="pa-4"
-            flat>
-
-
-    <v-container fluid
-                  class="pa-0">
-
+  <v-card id="EditPasteResourceUrl" class="pa-4" flat>
+    <v-container fluid class="pa-0">
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
         </v-col>
-      </v-row>  
+      </v-row>
 
       <v-row>
-        <v-col cols="12"> 
+        <v-col cols="12">
           <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12">
-          <v-text-field :label="labels.textFieldLabel"
-                          v-model="url"
-                          ref="urlTextField"
-                          prepend-icon="link"
-                          clearable
-                          clear-icon="close"
-                          @input="checkCreateButtonDisabled"
-                          />
+          <v-text-field
+            :label="labels.textFieldLabel"
+            v-model="url"
+            ref="urlTextField"
+            prepend-icon="link"
+            clearable
+            clear-icon="close"
+            @input="checkCreateButtonDisabled"
+          />
         </v-col>
       </v-row>
 
-      <v-row no-gutters
-              justify="end">
-        <v-col class="shrink"> 
-          <BaseRectangleButton :disabled="createButtonDisabled"
-                                :buttonText="labels.buttonText"
-                                @clicked="createButtonClick" />
+      <v-row no-gutters justify="end">
+        <v-col class="shrink">
+          <BaseRectangleButton
+            :disabled="createButtonDisabled"
+            :buttonText="labels.buttonText"
+            @clicked="createButtonClick"
+          />
         </v-col>
       </v-row>
-
     </v-container>
-  </v-card>  
+  </v-card>
 </template>
 
 <script>
@@ -55,16 +50,15 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+ */
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'EditPasteResourceUrl',
-  props: {  
+  props: {
     genericProps: Object,
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     checkCreateButtonDisabled() {
       // this.createButtonDisabled = !this.urlRegex.test(this.url);
@@ -85,11 +79,8 @@ export default {
   }),
   components: {
     BaseRectangleButton,
-  },  
+  },
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

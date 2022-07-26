@@ -57,6 +57,14 @@
       </v-row>
       <!-- TEMPORARY PLACEHOLDER END -->
 
+    <v-row justify="end">
+      <v-col class="shrink">
+        <BaseRectangleButton
+          :buttonText="labels.createButtonText"
+          @clicked="createAuthorClick"
+        />
+      </v-col>
+    </v-row>
   </v-card>
 </template>
 
@@ -70,9 +78,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'EditAddAuthor',
@@ -97,10 +105,11 @@ export default {
   data: () => ({
     labels: {
       title: 'Create A New Author',
-      instructions: 'Create a new author which is not a on any Metadata entry and is not EnviDat users.',
+      instructions:
+        'Create a new author which is not a on any Metadata entry and is not EnviDat users.',
       createButtonText: 'Create Author',
     },
-    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
   }),
   components: {
     BaseRectangleButton,
@@ -108,7 +117,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

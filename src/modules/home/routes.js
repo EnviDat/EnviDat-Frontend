@@ -1,12 +1,9 @@
-import {
-  LANDING_PATH,
-  LANDING_PAGENAME,
-} from '@/router/routeConsts';
+import { LANDING_PAGENAME,LANDING_PATH } from '@/router/routeConsts';
 
 export const homeRoutes = [
   {
     path: LANDING_PATH,
     name: LANDING_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "landingPage" */ '@/modules/home/components/LandingPage'),
+    component: () => import('@/modules/home/components/LandingPage.vue'),
   },
 ];

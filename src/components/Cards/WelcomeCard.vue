@@ -1,70 +1,74 @@
 <template>
-  <v-card color="primary"
-          dark
-          id="WelcomeCard"
-          class="pa-0" >
-
+  <v-card color="primary" dark id="WelcomeCard" class="pa-0">
     <v-container fluid class="pa-4">
-
       <v-row no-gutters>
         <v-col class="text-h5">
           {{ welcomeTitle }}
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col cols="12"
-                class="text-body-1" >
+      <v-row>
+        <v-col cols="12" class="text-body-1">
           {{ introText }}
         </v-col>
       </v-row>
 
       <v-row v-if="hasEditing">
-        <v-col class="text-body-1" >
+        <v-col class="text-body-1">
           {{ editingText }}
         </v-col>
 
-        <v-col >
-          <base-rectangle-button color="accent"
-                                  marginClass="black--text"
-                                  :button-text="editingButtonText"
-                                  :disabled="editingClickCallback === null"
-                                  @clicked="editingClickCallback ? editingClickCallback : ''" />
+        <v-col>
+          <base-rectangle-button
+            color="accent"
+            marginClass="black--text"
+            :button-text="editingButtonText"
+            :disabled="editingClickCallback === null"
+            @clicked="editingClickCallback ? editingClickCallback : ''"
+          />
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col class="text-body-1" >
+      <v-row>
+        <v-col class="text-body-1">
           {{ createText }}
         </v-col>
 
-        <v-col >
-          <base-rectangle-button color="accent"
-                                  marginClass="black--text"
-                                  :isOutlined="hasEditing"
-                                  :button-text="createButtonText"
-                                  :disabled="createClickCallback === null"
-                                  @clicked="createClickCallback ? createClickCallback : ''" />
+        <v-col>
+          <base-rectangle-button
+            color="accent"
+            marginClass="black--text"
+            :isOutlined="hasEditing"
+            :button-text="createButtonText"
+            :disabled="createClickCallback === null"
+            @clicked="createClickCallback ? createClickCallback : ''"
+          />
         </v-col>
       </v-row>
 
       <v-row v-if="hasUnpublished">
-        <v-col class="text-body-1" >
+        <v-col class="text-body-1">
           {{ unpublishedText }}
         </v-col>
 
-        <v-col >
-          <base-rectangle-button color="accent"
-                                  isOutlined
-                                  :button-text="unpublishedButtonText"
-                                  :disabled="unpublishedClickCallback === null"
-                                  @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''" />
+        <v-col>
+          <base-rectangle-button
+            color="accent"
+            isOutlined
+            :button-text="unpublishedButtonText"
+            :disabled="unpublishedClickCallback === null"
+            @clicked="unpublishedClickCallback ? unpublishedClickCallback : ''"
+          />
         </v-col>
       </v-row>
 
       <v-row no-gutters align="center">
         <v-col cols="1">
-          <v-icon style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+          <v-icon
+            style="animation: progress-circular-rotate 3s linear infinite"
+            x-large
+            >settings</v-icon
+          >
         </v-col>
 
         <v-col class="text-h5" cols="11">
@@ -75,13 +79,9 @@
           This section is still under construction.
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
-
 </template>
-
 
 <script>
 /**
@@ -96,7 +96,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'WelcomeCard',
@@ -133,7 +133,9 @@ export default {
   },
   computed: {
     welcomeTitle() {
-      return this.userName ? `${this.title} ${this.userName}!` : `${this.title}!`;
+      return this.userName
+        ? `${this.title} ${this.userName}!`
+        : `${this.title}!`;
     },
     introText() {
       let intro = `You have ${this.publishedDatasetCount} datasets published.`;
@@ -155,8 +157,7 @@ export default {
       return this.editingDatasetCount > 0;
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     createText: 'Create a new dataset',
     createButtonText: 'New Dataset',
@@ -164,12 +165,11 @@ export default {
     unpublishedButtonText: 'Show unpublished Datasets',
     editingText: 'Are you in the middle of editing?',
     editingButtonText: 'Continue editing',
-  }),  
+  }),
   components: {
     BaseRectangleButton,
   },
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

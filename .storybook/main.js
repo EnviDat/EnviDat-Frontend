@@ -1,4 +1,5 @@
-const path = require('path');
+import path from 'path';
+import { mergeConfig } from 'vite';
 
 module.exports = {
   "stories": [
@@ -11,36 +12,24 @@ module.exports = {
 //    "@storybook/addon-essentials",
 //    "@storybook/addon-storysource"
 //  ],
-  webpackFinal: async (config, { configType }) => {
+  core: { builder: "@storybook/builder-vite" },
+  async viteFinal(config, { configType }) {
+    // return the customized config
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'
     // You can change the configuration based on that.
     // 'PRODUCTION' is used when building the static version of storybook.
-
-    // Use Sass loader for vuetify components
-    config.module.rules.push({
+    return mergeConfig(config, {
+      // customize the Vite config here
       test: /\.s(a|c)ss$/,
+      // Use Sass loader for vuetify components
       use: ['style-loader', 'css-loader', 'sass-loader'],
       include: path.resolve(__dirname, '../'),
-    });
-
-    // config.module.rules.push({
-    //   test: /\.(png|jpg)$/,
-    //   use: ['file-loader'],
-    //   include: path.resolve(__dirname, '../'),
-    // });
-
-    config.module.rules.push({
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '../src'),
-          vue: 'vue/dist/vue.js',
-          'vue$': 'vue/dist/vue.esm.js',
           cesium: path.resolve(__dirname, '../node_modules/cesium/Source'),
         },
       },
     });
-
-    // Return the altered config
-    return config;
   },
 };

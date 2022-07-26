@@ -15,19 +15,19 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
-import EditDescription from '@/modules/user/components/EditDescription';
-import EditCustomFields from '@/modules/user/components/EditCustomFields';
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
-import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
-import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder';
-import EditKeywords from '@/modules/user/components/EditKeywords';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
+import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
+import EditDescription from '@/modules/user/components/EditDescription.vue';
+import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
+import EditKeywords from '@/modules/user/components/EditKeywords.vue';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 
-import EditDataInfo from '@/modules/user/components/EditDataInfo';
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
+import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 
 import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
 import { getPopularTags } from '@/factories/metadataFilterMethods';

@@ -10,7 +10,7 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
+import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
 import { BASE_ELEMENTS } from './storybookFolder';
 
 export default {
@@ -28,7 +28,7 @@ export const BaseStartEndDateViews = () => ({
       <v-col cols="12">
         empty interaction, with no logic in from the parent component!
       </v-col>
-    
+
       <v-col cols="12">
         <BaseStartEndDate  />
       </v-col>
@@ -36,7 +36,7 @@ export const BaseStartEndDateViews = () => ({
       <v-col cols="12">
         prefilled interaction
       </v-col>
-      
+
       <v-col cols="12">
         <BaseStartEndDate :start-date="startDate1"
                           :startDateProperty="startDateProperty"
@@ -50,7 +50,7 @@ export const BaseStartEndDateViews = () => ({
       </v-col>
 
       <v-col cols="12">
-        fields Readonly 
+        fields Readonly
       </v-col>
 
       <v-col cols="12">
@@ -62,7 +62,7 @@ export const BaseStartEndDateViews = () => ({
                           :readOnlyExplanation="readOnlyExplanation"
                           />
       </v-col>
-    
+
     </v-row>
   `,
   computed: {

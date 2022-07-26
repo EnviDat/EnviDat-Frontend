@@ -1,41 +1,38 @@
 <template>
-  <article class="ma-0 pa-0 fill-height"
-            id="BrowsePage"
-            key="BrowsePage">
-
-    <metadata-list ref="metadataList"
-                    :listContent="filteredContent"
-                    :mapFilteringPossible="mapFilteringPossible"
-                    :placeHolderAmount="placeHolderAmount"
-                    @clickedTag="catchTagClicked"
-                    :selectedTagNames="selectedTagNames"
-                    :allTags="allTags"
-                    @clickedExpand="catchFilterExpandClicked"
-                    @clickedTagClose="catchTagCloseClicked"
-                    @clickedClear="catchTagCleared"
-                    @clickedCard="catchMetadataClicked"
-                   :prePinnedIds="selectedPins"
-                    @pinnedIds="catchPinnedIds"
-                    :mode="mode"
-                    :defaultListControls="defaultControls"
-                    :enabledControls="enabledControls"
-                    :useDynamicHeight="true"
-                    :minMapHeight="310"
-                    :mapTopLayout="$vuetify.breakpoint.lgAndUp"
-                    :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
-                    @onScroll="storeScroll"
-                    :showSearch="true"
-                    :searchTerm="currentSearchTerm"
-                    :searchCount="searchCount"
-                    :searchBarPlaceholder="searchBarPlaceholder"
-                    @searchClick="catchSearchClicked"
-                    @searchCleared="catchSearchCleared"
-                    @organizationClicked="catchOrganizationClicked"
-                    :showScrollTopButton="true"
-                    :reloadAmount="reloadAmount"
-                    :reloadDelay="vReloadDelay"
+  <article class="ma-0 pa-0 fill-height" id="BrowsePage" key="BrowsePage">
+    <metadata-list
+      ref="metadataList"
+      :listContent="filteredContent"
+      :mapFilteringPossible="mapFilteringPossible"
+      :placeHolderAmount="placeHolderAmount"
+      @clickedTag="catchTagClicked"
+      :selectedTagNames="selectedTagNames"
+      :allTags="allTags"
+      @clickedExpand="catchFilterExpandClicked"
+      @clickedTagClose="catchTagCloseClicked"
+      @clickedClear="catchTagCleared"
+      @clickedCard="catchMetadataClicked"
+      :prePinnedIds="selectedPins"
+      @pinnedIds="catchPinnedIds"
+      :mode="mode"
+      :defaultListControls="defaultControls"
+      :enabledControls="enabledControls"
+      :useDynamicHeight="true"
+      :minMapHeight="310"
+      :mapTopLayout="$vuetify.breakpoint.lgAndUp"
+      :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
+      @onScroll="storeScroll"
+      :showSearch="true"
+      :searchTerm="currentSearchTerm"
+      :searchCount="searchCount"
+      :searchBarPlaceholder="searchBarPlaceholder"
+      @searchClick="catchSearchClicked"
+      @searchCleared="catchSearchCleared"
+      @organizationClicked="catchOrganizationClicked"
+      :showScrollTopButton="true"
+      :reloadAmount="reloadAmount"
+      :reloadDelay="vReloadDelay"
     />
-
   </article>
 </template>
 
@@ -54,15 +51,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapGetters,
-  mapState,
-} from 'vuex';
+import { mapGetters, mapState } from 'vuex';
+
+import MetadataList from '@/components/MetadataList.vue';
 import {
   BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
+import {
+  SET_APP_BACKGROUND,
+  SET_BROWSE_SCROLL_POSITION,
+  SET_CURRENT_PAGE,
+} from '@/store/mainMutationsConsts';
 import {
   CLEAR_SEARCH_METADATA,
   FILTER_METADATA,
@@ -74,18 +75,10 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  SET_APP_BACKGROUND,
-  SET_BROWSE_SCROLL_POSITION,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
-
-import MetadataList from '@/components/MetadataList';
-
 export default {
   name: 'BrowsePage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -98,7 +91,6 @@ export default {
       let tags = this.$route.query.tags || '';
 
       if (!this.mixinMethods_areArraysIdentical(this.selectedTagNames, tags)) {
-
         tags = this.mixinMethods_convertUrlStringToArray(tags);
         this.selectedTagNames = tags;
         return true;
@@ -116,7 +108,10 @@ export default {
       }
     },
     catchMetadataClicked(datasetname) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
+      this.$store.commit(
+        `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
+        this.$route,
+      );
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
@@ -132,7 +127,11 @@ export default {
         const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
         // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
+        this.mixinMethods_additiveChangeRoute(
+          BROWSE_PATH,
+          undefined,
+          stringTags,
+        );
       }
     },
     catchTagCloseClicked(tagId) {
@@ -151,13 +150,20 @@ export default {
       this.filterContent();
     },
     catchPinnedIds(pins) {
-
       // if ()
       this.selectedPins = pins;
 
-      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+      const stringPins = this.mixinMethods_convertArrayToUrlString(
+        this.selectedPins,
+      );
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined, undefined, stringPins);
+      this.mixinMethods_additiveChangeRoute(
+        BROWSE_PATH,
+        undefined,
+        undefined,
+        undefined,
+        stringPins,
+      );
     },
     catchMapFilterChanged(visibleIds) {
       this.mapFilterVisibleIds = visibleIds;
@@ -182,12 +188,13 @@ export default {
       return visibleContent;
     },
     filterContent() {
-      const mode = this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
-        {
-          selectedTagNames: this.selectedTagNames,
-          mode,
-        });
+      const mode = this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : null;
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`, {
+        selectedTagNames: this.selectedTagNames,
+        mode,
+      });
     },
     checkRouteChanges(fromRoute) {
       let triggerClearSearch = false;
@@ -201,7 +208,10 @@ export default {
         }
       }
 
-      const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
+      const isBackNavigation = this.$router.options.isSameRoute(
+        this.$route,
+        fromRoute,
+      );
       const tagsChanged = this.loadRouteTags();
 
       this.loadRoutePins();
@@ -213,7 +223,10 @@ export default {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
         // this.searchTerm = searchParameter;
-        triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
+        triggerClearSearch =
+          this.currentSearchTerm !== '' &&
+          !searchParameter &&
+          this.filteredContentSize !== this.metadatasContentSize;
       }
 
       if (isBackNavigation) {
@@ -225,7 +238,6 @@ export default {
 
       if (checkSearchTriggering) {
         if (searchParameter && searchParameter.length > 0) {
-
           this.metadataSearch(searchParameter, this.metadataConfig);
           this.resetScrollPos();
 
@@ -243,7 +255,7 @@ export default {
         // in case the tags have changed the scroll needs to be reset
         triggerScrollReset = true;
       }
-      
+
       if (triggerScrollReset && !isBackNavigation) {
         // and manually reset the scrolling
         this.resetScrollPos();
@@ -273,7 +285,10 @@ export default {
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
     },
     metadataSearch(searchTerm, metadataConfig) {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, {
+        searchTerm,
+        metadataConfig,
+      });
     },
     catchSearchClicked(search) {
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -288,9 +303,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -317,7 +330,9 @@ export default {
       vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
     reloadAmount() {
-      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
+      return this.$vuetify.breakpoint.smAndUp
+        ? this.vReloadAmount
+        : this.vReloadAmountMobile;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -326,19 +341,25 @@ export default {
       let enableds = this.preenabledControls;
 
       if (this.$vuetify.breakpoint.smAndDown) {
-        enableds = enableds.filter(i => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
+        enableds = enableds.filter(
+          i => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
+        );
       }
 
       return enableds;
     },
     searchBarPlaceholder() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.searchPlaceholderText : this.searchPlaceholderTextSmall;
+      return this.$vuetify.breakpoint.mdAndUp
+        ? this.searchPlaceholderText
+        : this.searchPlaceholderTextSmall;
     },
     // keywordsPlaceholder() {
     //   return this.searchingMetadatasContent || this.updatingTags;
     // },
     searchMetadatasContentSize() {
-      return this.searchedMetadatasContent !== undefined ? Object.keys(this.searchedMetadatasContent).length : 0;
+      return this.searchedMetadatasContent !== undefined
+        ? Object.keys(this.searchedMetadatasContent).length
+        : 0;
     },
     mapFilterHeight() {
       const sHeight = document.documentElement.clientHeight;
@@ -363,10 +384,14 @@ export default {
       return this.$vuetify.breakpoint.smAndUp;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredContent !== undefined
+        ? Object.keys(this.filteredContent).length
+        : 0;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
+      return this.$route.query.mode
+        ? this.$route.query.mode.toLowerCase()
+        : null;
     },
   },
   watch: {
@@ -412,14 +437,11 @@ export default {
 };
 </script>
 
-
 <style scoped>
-
-  .stickyFilterBar {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 50px;
-    z-index: 1000;
-  }
-
+.stickyFilterBar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 50px;
+  z-index: 1000;
+}
 </style>

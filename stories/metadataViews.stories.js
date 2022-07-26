@@ -13,16 +13,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
-import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation';
-import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails';
-import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
-import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
+import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
+import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation.vue';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
+import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
 import {
   createHeader,
@@ -48,23 +48,8 @@ import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
-
-// function getIcons() {
-//   const icons = new Map();
-
-//   const imgPaths = require.context('../src/assets/icons/', false, /\.png$/);
-
-//   imgPaths.keys().forEach((iconFileName) => {
-//     const splits = iconFileName.split('/');
-//     let key = splits[splits.length - 1];
-//     key = key.replace('.png', '');
-//     icons.set(key, iconFileName);
-//   });
-
-//   return icons;
-// }
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -465,7 +450,7 @@ export const MetadataRelatedDatasetsViews = () => ({
     <v-col cols="4" class="py-3">
       <MetadataRelatedDatasets :genericProps="genericProps" />
     </v-col>
-    
+
     <v-col cols="8" class="py-3">
       <MetadataRelatedDatasets :genericProps="genericProps" />
     </v-col>

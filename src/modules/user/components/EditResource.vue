@@ -77,8 +77,8 @@
               prepend-icon="insert_drive_file"
               value=" "
             >
-              <template v-slot:append style="justfiy-content: flex-end">
-                <v-col>
+              <template v-slot:append>
+                <v-col class="justify-content">
                   <v-row no-gutters class="pb-2">{{ fileNameField }}</v-row>
                   <v-row no-gutters>
                     <img
@@ -187,18 +187,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { getCurrentDate } from '@/factories/metaDataFactory';
-
+import fileSizeIcon from '@/assets/icons/fileSize.png';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import {
-  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-
-import fileSizeIcon from '@/assets/icons/fileSize.png';
+import { getCurrentDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditResource',

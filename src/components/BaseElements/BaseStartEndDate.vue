@@ -1,29 +1,31 @@
 <template>
-<v-row no-gutters>
-  <v-col cols="6">
-    <v-text-field v-if="isReadonly(startDateProperty)"
-                  :label="labels.startDate"
-                  dense
-                  outlined
-                  readonly
-                  prepend-icon="date_range"
-                  :hint="readonlyHint(startDateProperty)"
-                  :value="formatToEnviDatDate(startDateField, startDateProperty)"
-                  :error-messages="validationErrors[startDateProperty]"
-                  />
+  <v-row no-gutters>
+    <v-col cols="6">
+      <v-text-field
+        v-if="isReadonly(startDateProperty)"
+        :label="labels.startDate"
+        dense
+        outlined
+        readonly
+        prepend-icon="date_range"
+        :hint="readonlyHint(startDateProperty)"
+        :value="formatToEnviDatDate(startDateField, startDateProperty)"
+        :error-messages="validationErrors[startDateProperty]"
+      />
 
-    <v-menu v-else
-            id="startDateMenu"
-            key="startDateMenu"
-            v-model="dateStartPickerOpen"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto">
-
-      <template v-slot:activator="{ on }">
-        <v-text-field
+      <v-menu
+        v-else
+        id="startDateMenu"
+        key="startDateMenu"
+        v-model="dateStartPickerOpen"
+        :close-on-content-click="false"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on }">
+          <v-text-field
             :label="labels.startDate"
             dense
             outlined
@@ -32,10 +34,10 @@
             :value="formatToEnviDatDate(startDateField, startDateProperty)"
             @change="changedDateTextField(startDateProperty, $event)"
             :error-messages="validationErrors[startDateProperty]"
-            />
-      </template>
+          />
+        </template>
 
-      <v-date-picker
+        <v-date-picker
           locale="en-in"
           @input="changeDatePicker(startDateProperty, $event)"
           scrollable
@@ -43,57 +45,58 @@
           :value="formatToDatePickerDate(startDateField)"
           next-icon="skip_next"
           prev-icon="skip_previous"
+        >
+          <v-row
+            v-if="clearableStartDate"
+            no-gutters
+            class="px-4"
+            style="align-items: center;"
           >
-        <v-row v-if="clearableStartDate"
-               no-gutters
-               class="px-4"
-               style="align-items: center;"
-                >
-          <v-col >
-            <div @click="clearClick(startDateProperty)">
-              {{ labels.clearStartDate }}
-            </div>
-          </v-col>
+            <v-col>
+              <div @click="clearClick(startDateProperty)">
+                {{ labels.clearStartDate }}
+              </div>
+            </v-col>
 
-          <v-col class="shrink">
-            <BaseIconButton materialIconName="clear"
-                            iconColor="red"
-                            :tooltipText="labels.clearStartDate"
-                            @clicked="clearClick(startDateProperty)"
-            />
-          </v-col>
-        </v-row>
+            <v-col class="shrink">
+              <BaseIconButton
+                materialIconName="clear"
+                iconColor="red"
+                :tooltipText="labels.clearStartDate"
+                @clicked="clearClick(startDateProperty)"
+              />
+            </v-col>
+          </v-row>
+        </v-date-picker>
+      </v-menu>
+    </v-col>
 
-      </v-date-picker>
+    <v-col cols="6" class="pl-4">
+      <v-text-field
+        v-if="isReadonly(endDateProperty)"
+        :label="labels.endDate"
+        dense
+        outlined
+        readonly
+        prepend-icon="date_range"
+        :hint="readonlyHint(endDateProperty)"
+        :value="formatToEnviDatDate(endDateField, endDateProperty)"
+        :error-messages="validationErrors[endDateProperty]"
+      />
 
-    </v-menu>
-  </v-col>
-
-  <v-col cols="6"
-        class="pl-4">
-    <v-text-field v-if="isReadonly(endDateProperty)"
-                  :label="labels.endDate"
-                  dense
-                  outlined
-                  readonly
-                  prepend-icon="date_range"
-                  :hint="readonlyHint(endDateProperty)"
-                  :value="formatToEnviDatDate(endDateField, endDateProperty)"
-                  :error-messages="validationErrors[endDateProperty]"
-                  />
-
-    <v-menu v-else
-            id="endDateMenu"
-            key="endDateMenu"
-            v-model="dateEndPickerOpen"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="auto">
-
-      <template v-slot:activator="{ on }">
-        <v-text-field
+      <v-menu
+        v-else
+        id="endDateMenu"
+        key="endDateMenu"
+        v-model="dateEndPickerOpen"
+        :close-on-content-click="false"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on }">
+          <v-text-field
             :label="labels.endDate"
             dense
             outlined
@@ -102,10 +105,10 @@
             @change="changedDateTextField(endDateProperty, $event)"
             v-on="on"
             :error-messages="validationErrors[endDateProperty]"
-            />
-      </template>
+          />
+        </template>
 
-      <v-date-picker
+        <v-date-picker
           locale="en-in"
           @input="changeDatePicker(endDateProperty, $event)"
           scrollable
@@ -113,65 +116,62 @@
           :value="formatToDatePickerDate(endDateField)"
           next-icon="skip_next"
           prev-icon="skip_previous"
-      >
-        <v-row v-if="clearableEndDate"
-               no-gutters
-               class="px-4"
-               style="align-items: center;"
-                >
-          <v-col >
-            <div @click="clearClick(endDateProperty)">
-              {{ labels.clearEndDate }}
-            </div>
-          </v-col>
+        >
+          <v-row
+            v-if="clearableEndDate"
+            no-gutters
+            class="px-4"
+            style="align-items: center;"
+          >
+            <v-col>
+              <div @click="clearClick(endDateProperty)">
+                {{ labels.clearEndDate }}
+              </div>
+            </v-col>
 
-          <v-col class="shrink">
-            <BaseIconButton materialIconName="clear"
-                            iconColor="red"
-                            :tooltipText="labels.clearEndDate"
-                            @clicked="clearClick(endDateProperty)"
-            />
-          </v-col>
-        </v-row>
-      </v-date-picker>
-
-    </v-menu>
-
-  </v-col>
-</v-row>
+            <v-col class="shrink">
+              <BaseIconButton
+                materialIconName="clear"
+                iconColor="red"
+                :tooltipText="labels.clearEndDate"
+                @clicked="clearClick(endDateProperty)"
+              />
+            </v-col>
+          </v-row>
+        </v-date-picker>
+      </v-menu>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
+import { isDate, isMatch, parse } from 'date-fns';
 import * as yup from 'yup';
 
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   ckanDateFormat,
   enviDatDateFormat,
   parseDateStringToCKANFormat,
   parseDateStringToEnviDatFormat,
 } from '@/factories/mappingFactory';
-
-import { isDate, isMatch, parse } from 'date-fns';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
 // eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'parseDateString', function () {
+yup.addMethod(yup.date, 'parseDateString', function() {
   // Helper function for yup date string parsing
   // eslint-disable-next-line func-names
 
   return this.transform((value, originalValue) => {
     if (!originalValue) {
-      return null
+      return null;
     }
 
     return isDate(originalValue)
-        ? originalValue
-        : parse(originalValue, ckanDateFormat, new Date());
+      ? originalValue
+      : parse(originalValue, ckanDateFormat, new Date());
   });
 });
-
 
 export default {
   name: 'BaseStartEndDate',
@@ -213,7 +213,7 @@ export default {
     this.validationErrors = {
       [this.startDateProperty]: '',
       [this.endDateProperty]: '',
-    }
+    };
   },
   computed: {
     startDateField: {
@@ -238,14 +238,15 @@ export default {
             .date('Start date must be a valid date.')
             .required()
             .parseDateString()
-            .test('date-range-validation',
+            .test(
+              'date-range-validation',
               `${component.labels.startDate} can't be after ${component.labels.endDate}`,
-              (value) => {
+              value => {
                 const dateStart = value;
 
                 const parsedStart = isDate(dateStart)
-                    ? dateStart
-                    : parse(dateStart, ckanDateFormat, new Date());
+                  ? dateStart
+                  : parse(dateStart, ckanDateFormat, new Date());
 
                 const dateEnd = component.endDateField;
                 if (!dateEnd) {
@@ -253,11 +254,12 @@ export default {
                 }
 
                 const parsedEnd = isDate(dateEnd)
-                    ? dateEnd
-                    : parse(dateEnd, ckanDateFormat, new Date());
+                  ? dateEnd
+                  : parse(dateEnd, ckanDateFormat, new Date());
 
                 return parsedEnd >= parsedStart;
-              }),
+              },
+            ),
         });
       }
 
@@ -266,14 +268,15 @@ export default {
           [component.endDateProperty]: yup
             .date('End date must be a valid date.')
             .parseDateString()
-            .test('date-range-validation',
+            .test(
+              'date-range-validation',
               `${component.labels.endDate} can't be before ${component.labels.startDate}`,
-              (value) => {
+              value => {
                 const dateEnd = value;
 
                 const parsedEnd = isDate(dateEnd)
-                    ? dateEnd
-                    : parse(dateEnd, ckanDateFormat, new Date());
+                  ? dateEnd
+                  : parse(dateEnd, ckanDateFormat, new Date());
 
                 const dateStart = component.startDateField;
                 if (!dateStart) {
@@ -281,14 +284,14 @@ export default {
                 }
 
                 const parsedStart = isDate(dateStart)
-                    ? dateStart
-                    : parse(dateStart, ckanDateFormat, new Date());
+                  ? dateStart
+                  : parse(dateStart, ckanDateFormat, new Date());
 
                 return parsedEnd >= parsedStart;
-              }),
+              },
+            ),
         });
       }
-
     },
     isReadonly(dateProperty) {
       return this.mixinMethods_isFieldReadOnly(dateProperty);
@@ -304,25 +307,37 @@ export default {
         this.previewEndDate = value;
       }
 
-      if (isFieldValid(dateProperty, value, this.getValidation(dateProperty), this.validationErrors)) {
+      if (
+        isFieldValid(
+          dateProperty,
+          value,
+          this.getValidation(dateProperty),
+          this.validationErrors,
+        )
+      ) {
         this.changeDate(dateProperty, value);
       }
-
     },
     changedDateTextField(dateProperty, dateString) {
-
       try {
         const dateValue = parseDateStringToCKANFormat(dateString);
-        if (isFieldValid(dateProperty, dateValue, this.getValidation(dateProperty), this.validationErrors)) {
+        if (
+          isFieldValid(
+            dateProperty,
+            dateValue,
+            this.getValidation(dateProperty),
+            this.validationErrors,
+          )
+        ) {
           this.changeDate(dateProperty, dateValue);
         }
-
       } catch (e) {
-        this.validationErrors[dateProperty] = `Invalid date format, use ${ enviDatDateFormat.toUpperCase() }`
+        this.validationErrors[
+          dateProperty
+        ] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
       }
     },
     changeDate(dateProperty, newDate) {
-
       this.$emit('dateChange', dateProperty, newDate);
     },
     clearClick(dateProperty) {
@@ -336,7 +351,6 @@ export default {
       this.$emit('clearClick', dateProperty);
     },
     formatToEnviDatDate(dateString, dateProperty) {
-
       if (!isMatch(dateString, ckanDateFormat)) {
         return dateString;
       }
@@ -345,7 +359,9 @@ export default {
         return parseDateStringToEnviDatFormat(dateString);
       } catch (e) {
         console.log(e);
-        this.validationErrors[dateProperty] = `Invalid date format, use ${ enviDatDateFormat.toUpperCase() }`
+        this.validationErrors[
+          dateProperty
+        ] = `Invalid date format, use ${enviDatDateFormat.toUpperCase()}`;
       }
 
       return '';
@@ -358,8 +374,9 @@ export default {
       const dateTime = parse(dateString, ckanDateFormat, new Date());
 
       if (dateTime instanceof Date && !!dateTime.getTime()) {
-        return (new Date(dateTime - (new Date()).getTimezoneOffset() * 60000)).toISOString()
-            .substr(0, 10);
+        return new Date(dateTime - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10);
       }
 
       return '';
@@ -373,8 +390,7 @@ export default {
     previewEndDate: '',
     dateStartPickerOpen: false,
     dateEndPickerOpen: false,
-    validationErrors: {
-    },
+    validationErrors: {},
     labels: {
       startDate: 'Start Date',
       endDate: 'End Date',
