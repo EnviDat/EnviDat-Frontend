@@ -172,7 +172,7 @@ rclone-sync:
     - unzip rclone-v1.59.0-linux-amd64.zip
     - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
   script:
-    - rclone --verbose sync . "switch:frontend-${CI_COMMIT_REF_NAME}"'
+    - rclone --verbose sync . "switch:frontend-${CI_COMMIT_REF_NAME}"
 
 rclone-sync-prod:
   extends:
@@ -181,4 +181,4 @@ rclone-sync-prod:
     - if: $CI_COMMIT_REF_NAME == "main"
       when: always
   script:
-    - rclone --verbose sync . switch:frontend'
+    - rclone --verbose sync . switch:frontend
