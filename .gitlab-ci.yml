@@ -174,4 +174,7 @@ rclone-sync:
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
   script:
-    - rclone --verbose sync /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    >
+    rclone --verbose sync
+    /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    --header-upload "Cache-Control: max-age=300"
