@@ -103,9 +103,9 @@ modify-env:
       \"import os;
       import dotenv;
       file = '.env.production';
-      key = 'VUE_APP_ENVIDAT_PROXY';
+      key = 'VITE_ENVIDAT_PROXY';
       branch = os.getenv('CI_COMMIT_REF_NAME');
-      value = 'https://ckan.envidat.ch' if branch == 'main' \
+      value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
@@ -116,8 +116,7 @@ modify-env:
       key = 'VUE_APP_CONFIG_URL';
       branch = os.getenv('CI_COMMIT_REF_NAME');
       value = ( \
-          'https://frontend-config.s3-website-zh.os.switch.ch/' \
-          f'{branch}.json' \
+          f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json' \
       );
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
@@ -158,9 +157,6 @@ image-build:
 rclone-sync:
   stage: deploy
   image: "${IMAGE_NAME}"
-  rules:
-    - if: $CI_COMMIT_REF_NAME != "main"
-      when: always
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -171,17 +167,11 @@ rclone-sync:
     - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
     - unzip rclone-v1.59.0-linux-amd64.zip
     - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
   script:
-    >
-    rclone --verbose sync
-    /usr/share/nginx/html/
-    "switch:frontend-${CI_COMMIT_REF_NAME}"
-
-rclone-sync-prod:
-  extends:
-    - rclone-sync
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main"
-      when: always
-  script:
-    - rclone --verbose sync /usr/share/nginx/html/ switch:frontend
+    - rclone --verbose sync /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
