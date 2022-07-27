@@ -116,7 +116,7 @@ modify-env:
       key = 'VUE_APP_CONFIG_URL';
       branch = os.getenv('CI_COMMIT_REF_NAME');
       value = ( \
-          'https://envidat-frontend-config.s3-website-zh.os.switch.ch/' \
+          'https://frontend-config.s3-website-zh.os.switch.ch/' \
           f'{branch}.json' \
       );
       dotenv.set_key(file, key, value, quote_mode='never')\"
