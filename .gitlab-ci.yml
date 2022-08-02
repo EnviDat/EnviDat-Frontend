@@ -103,7 +103,7 @@ modify-env:
       \"import os;
       import dotenv;
       file = '.env.production';
-      key = 'VITE_ENVIDAT_PROXY';
+      key = 'VUE_APP_ENVIDAT_PROXY';
       branch = os.getenv('CI_COMMIT_REF_NAME');
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
@@ -115,7 +115,9 @@ modify-env:
       file = '.env.production';
       key = 'VUE_APP_CONFIG_URL';
       branch = os.getenv('CI_COMMIT_REF_NAME');
-      value = ( \
+      value = 'https://frontend-config.s3-zh.os.switch.ch/prod.json' \
+      if branch == 'main' \
+      else ( \
           f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json' \
       );
       dotenv.set_key(file, key, value, quote_mode='never')\"
