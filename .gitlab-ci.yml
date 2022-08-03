@@ -103,22 +103,26 @@ modify-env:
       \"import os;
       import dotenv;
       file = '.env.production';
+      branch = os.getenv('CI_COMMIT_REF_NAME'); \
+      \
       key = 'VUE_APP_ENVIDAT_PROXY';
-      branch = os.getenv('CI_COMMIT_REF_NAME');
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
-      dotenv.set_key(file, key, value, quote_mode='never')\"
-      "
-    - "python -c
-      \"import os;
-      import dotenv;
-      file = '.env.production';
+      dotenv.set_key(file, key, value, quote_mode='never') \
+      \
       key = 'VUE_APP_CONFIG_URL';
-      branch = os.getenv('CI_COMMIT_REF_NAME');
       value = 'https://frontend-config.s3-zh.os.switch.ch/prod.json' \
       if branch == 'main' \
       else ( \
           f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json' \
+      );
+      dotenv.set_key(file, key, value, quote_mode='never') \
+      \
+      key = 'VUE_APP_ENVIDAT_DOMAIN';
+      value = 'https://frontend.s3-website-zh.os.switch.ch' \
+      if branch == 'main' \
+      else ( \
+          f'https://frontend-{branch}.s3-website-zh.os.switch.ch' \
       );
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
@@ -158,7 +162,9 @@ image-build:
 
 rclone-sync:
   stage: deploy
-  image: "${IMAGE_NAME}"
+  image:
+    name: "${IMAGE_NAME}"
+    pull_policy: always
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
