@@ -160,11 +160,27 @@ image-build:
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
+tag-commit-sha:
+  stage: package
+  image: docker.io/regclient/regctl:v0.3-alpine
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - export REG_HOST=${INTERNAL_REG%/*}
+    - >
+      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"regcert\":
+      \"$(printf "%s" "${IMAGE_REGISTRY_CERT}" | base64 -d
+      | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\",\"hostname\":
+      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
+      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
+  script:
+      - >
+        regctl --verbosity debug image copy
+        "${IMAGE_NAME}" "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+
 rclone-sync:
   stage: deploy
-  image:
-    name: "${IMAGE_NAME}"
-    pull_policy: always
+  image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -185,4 +201,3 @@ rclone-sync:
     >
     rclone --verbose sync
     /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
-    --header-upload "Cache-Control: max-age=300"
