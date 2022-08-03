@@ -3,6 +3,7 @@ stages:
 # - visual-regression
   - config
   - build
+  - package
   - deploy
 
 variables:
