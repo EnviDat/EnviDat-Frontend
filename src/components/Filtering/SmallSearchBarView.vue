@@ -66,6 +66,9 @@
                             @keyup.enter="clicked"
                             append-icon="clear"
                             @click:append="clearClicked" />
+<!--                            :prepend-inner-icon="icon"-->
+<!--                            @click:prepend-inner="changeIcon"-->
+
             </template>
 
           <span>{{ searchToolTipText }}</span>
@@ -134,8 +137,16 @@ export default {
     placeHolderText: 'Enter research term, topic or author',
     searchToolTipText:
       'The full text search works for research terms, topics or authors',
+    // iconIndex: 0,
+    // icons: [
+    //   'mdi-text-box-multiple',
+    //   'mdi-map-marker',
+    // ],
   }),
   computed: {
+    // icon () {
+    //   return this.icons[this.iconIndex]
+    // },
     height() {
       let height = this.fixedHeight;
 
@@ -176,6 +187,12 @@ export default {
         this.lastSearch = this.searchText;
       }
     },
+    // changeIcon () {
+    //   // eslint-disable-next-line no-unused-expressions
+    //   this.iconIndex === this.icons.length - 1
+    //       ? this.iconIndex = 0
+    //       : this.iconIndex++
+    // },
   },
 };
 </script>
