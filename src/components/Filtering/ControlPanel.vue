@@ -73,9 +73,9 @@
                 v-model="isAuthorSearch"
                 dense
                 :flat="true"
-                :label="`Author S${isAuthorSearch.toString()}`"
-                @change="catchAuthorSearch"
+                :label="`Author Search`"
             ></v-checkbox>
+<!--          @change="catchAuthorSearch"-->
         </v-col>
 
 
