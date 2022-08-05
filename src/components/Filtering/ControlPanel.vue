@@ -9,7 +9,7 @@
               no-gutters>
 
         <v-col class="py-0"
-              cols="12" sm="10" md="9" lg="10">
+              cols="12" sm="10" md="9" lg="9">
           <small-search-bar-view class="elevation-0"
                                   :compactLayout="compactLayout"
                                   :searchTerm="searchTerm"
@@ -24,6 +24,16 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
+
+<!--        <v-col>-->
+<!--          <v-switch-->
+<!--              v-model="switch1"-->
+<!--              :label="`Switch 1: ${switch1.toString()}`"-->
+<!--          ></v-switch>-->
+<!--        </v-col>-->
+
+
+
         <v-col class="py-0 shrink" >
 
           <BaseIconButton style="opacity: 0.8;"
@@ -37,6 +47,39 @@
 
         </v-col>
 
+
+<!--        <v-col class="py-0 shrink fill-height" >-->
+<!--        <v-col>-->
+<!--          <v-card outlined-->
+<!--                  class="d-flex pa-2">-->
+<!--            <v-checkbox-->
+<!--                v-model="checkbox"-->
+<!--                dense-->
+<!--                :label="`Checkbox 1: ${checkbox.toString()}`"-->
+<!--            ></v-checkbox>-->
+
+<!--          </v-card>-->
+
+
+<!--        </v-col>-->
+
+
+<!--        <v-col class="py-0 ml-4">-->
+<!--        TODO replace hard-coded height and fix layout of checkbox element -->
+<!--        TODO handle smaller screens for checkbox element-->
+        <v-col class="py-0 ml-4">
+            <v-checkbox
+                :style="`height: ${28}px;`"
+                v-model="isAuthorSearch"
+                dense
+                :flat="true"
+                :label="`Author S${isAuthorSearch.toString()}`"
+                @change="catchAuthorSearch"
+            ></v-checkbox>
+        </v-col>
+
+
+
         <v-col class="hidden-xs-only py-0 fill-height" >
           <list-control-toggle :style="`height: ${fixedHeight}px;`"
                                 :controls="controlsActive"
@@ -45,6 +88,20 @@
                                 @controlsChanged="catchControlClick" />
         </v-col>
       </v-row>
+
+
+<!--      <v-row align="center"-->
+<!--             justify="space-between"-->
+<!--             no-gutters>-->
+<!--        <v-col cols="12">-->
+<!--            <v-switch-->
+<!--                v-model="switch1"-->
+<!--                :label="`Switch 1: ${switch1.toString()}`"-->
+<!--            ></v-switch>-->
+<!--        </v-col>-->
+<!--      </v-row>-->
+
+
     </v-container>
   </v-card>
 </template>
@@ -86,7 +143,15 @@ export default {
     ListControlToggle,
     BaseIconButton,
   },
+  data: () => ({
+    // switch1: true,
+    isAuthorSearch: false,
+  }),
   methods: {
+    catchAuthorSearch() {
+      console.log(this.isAuthorSearch);
+      // TODO emit isAuthorSearch and send to smallsearchbarview, adjust method in that component
+    },
     catchSearchClicked(search) {
       this.$emit('searchClick', search);
     },
