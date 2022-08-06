@@ -150,6 +150,7 @@ image-build:
   script:
     - >
       /kaniko/executor
+      --force
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
