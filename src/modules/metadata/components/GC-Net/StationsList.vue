@@ -41,13 +41,13 @@ export default {
     BaseClickCard,
   },
   beforeMount() {
-    const imgPaths = import.meta.glob('@/assets/cards/*.jpg', { eager: true });
+    const imgPaths = import.meta.glob('@/assets/cards/*.jpg');
     const imgCache = {};
 
     for (const path in imgPaths) {
       if (path) {
-        imgPaths[path]().then((mod) => {
-          imgCache[path] = path;
+        imgPaths[path]().then((img) => {
+          imgCache[path] = img.default
         })
       }
     }

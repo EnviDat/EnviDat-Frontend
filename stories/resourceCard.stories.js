@@ -17,7 +17,7 @@ Vue.mixin(globalMethods);
 
 function getIcons() {
   const icons = new Map();
-  const imgPaths = import.meta.glob('../src/assets/icons/*.png', { eager: true })
+  const imgPaths = import.meta.glob('../src/assets/icons/*.png')
 
   for (const path in imgPaths) {
     if (path) {

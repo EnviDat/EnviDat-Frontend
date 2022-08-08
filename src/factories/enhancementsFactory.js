@@ -111,12 +111,11 @@ export function loadImages(store, isSupported = false) {
   store.commit(SET_WEBP_SUPPORT, isSupported);
 
   const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
-  console.log(cardBGImages)
   if (cardBGImages) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = isSupported ? import.meta.glob('../assets/*.webp', { eager: true }) : null;
+  const webpAssetPaths = isSupported ? import.meta.glob('../assets/*.webp') : null;
   const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths, false) : null;
   if (webpAssets) {
     store.commit(SET_WEBP_ASSETS, webpAssets);

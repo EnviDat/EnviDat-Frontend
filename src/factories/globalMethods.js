@@ -243,17 +243,14 @@ export default {
         return null;
       }
       const imgCache = {};
-      console.log(imgPaths)
 
       for (const path in imgPaths) {
         if (path) {
-            if (!checkForString || (checkForString && path.includes(checkForString))) {
-              // const p = new URL(path)
-              // const imgUrl = new URL(path, import.meta.url).href
-              // const imageUrl = URL.createObjectURL(path)
-              // imgCache[path] = imgPaths[path].default;
-              imgCache[path] = path;
-            }
+          if (!checkForString || (checkForString && path.includes(checkForString))) {
+            imgPaths[path]().then((img) => {
+              imgCache[path] = img.default
+            })
+          }
         }
       }
 
@@ -306,19 +303,19 @@ export default {
       const bgs = {};
 
       if (useWebp) {
-        bgs[LAND] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true }));
-        bgs[FOREST] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/forest/*.webp', { eager: true }));
-        bgs[SNOW] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/snow/*.webp', { eager: true }));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true }));
-        bgs[HAZARD] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true }));
-        bgs[METEO] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true }));
+        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true });
+        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.webp', { eager: true });
+        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.webp', { eager: true });
+        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true });
+        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true });
+        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true });
       } else {
-        bgs[LAND] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true }));
-        bgs[FOREST] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true }));
-        bgs[SNOW] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true }));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true }));
-        bgs[HAZARD] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true }));
-        bgs[METEO] = this.mixinMethods_importImages(import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true }));
+        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true });
+        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true });
+        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true });
+        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true });
+        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true });
+        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true });
       }
 
       return bgs;

@@ -19,17 +19,16 @@ import {
 } from '@/modules/metadata/store/swissForestLabTags';
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
-function getSwissflLogo() {
-  // use the relative path to the assets, because it will run in unit tests
-  const swissflImages = import.meta.glob('../assets/modes/swissfl/*.jpg', { eager: true });
-  const imgLogo = globalMethods.methods.mixinMethods_importImages(swissflImages, 'logo');
-  return imgLogo['./logo.jpg'];
+async function getSwissflLogo() {
+  const img = await import('../assets/modes/swissfl/logo.jpg')
+  return img
 }
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
+  const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png');
   const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
+
   const icons = Object.values(iconImgs);
   const swissflIconMap = {
     dataset: icons[0],
