@@ -98,6 +98,7 @@ export function GetEncryptedKeyFromCookie(cookieName) {
   // Store the encryption token in a secure cookie.
   Cookie.set(cookieName, encryptionToken, {
     secure: true,
+    sameSite: 'lax',
     expires: 7,
     domain: isProd ? '.envidat.ch' : 'localhost',
   });
