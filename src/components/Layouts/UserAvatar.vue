@@ -48,7 +48,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import jazzicons from 'jazzicon';
+import jazzicons from '@metamask/jazzicon';
 import { getAvataaarUrl } from '@/store/avataaars';
 import seedrandom from 'seedrandom';
 
