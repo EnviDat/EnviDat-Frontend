@@ -124,6 +124,8 @@
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import ListControlToggle from '@/components/Filtering/ListControlToggle';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import { BROWSE_PATH } from '@/router/routeConsts';
+import { mapGetters } from 'vuex';import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'MetadataList',
@@ -148,12 +150,85 @@ export default {
     isAuthorSearch: false,
   }),
   methods: {
-    catchAuthorSearch() {
-      console.log(this.isAuthorSearch);
-      // TODO emit isAuthorSearch and send to smallsearchbarview, adjust method in that component
-    },
+    // catchAuthorSearch(isAuthorSearch) {
+    //
+    //   console.log(this.isAuthorSearch);
+    //
+    //   // TODO possibly emit isAuthorSearch and send to smallsearchbarview, adjust method in that component
+    //   // this.$emit('isAuthorSearch', isAuthorSearch);
+    //
+    //   // console.log('EXECUTED: catchAuthorSearch()');
+    //   //
+    //   // console.log(this.searchTerm);
+    //
+    //   // const query = {
+    //   //   givenName: authorGivenName,
+    //   //   lastName: authorLastName,
+    //   //   // isAuthorSearch: true,   // TODO determine if isAuthorSearch boolean is needed
+    //   // };
+    //   //
+    //   // this.$router.push({
+    //   //   path: BROWSE_PATH,
+    //   //   query,
+    //   // });
+    //
+    // },
+    // TODO try instead emitting query object or search to authorSearch(queryObj) in BrowsePage.vue
+    // TODO check previous version of catchSearchClicked
     catchSearchClicked(search) {
-      this.$emit('searchClick', search);
+
+      console.log(`SEARCH TERM  ${this.searchTerm}`);
+
+      // TODO check if this is still needed
+      // this.$emit('searchClick', search, this.isAuthorSearch);
+      // this.$emit('searchClick', search);
+
+      // TODO add condition that author search is selected
+      if (this.isAuthorSearch) {
+
+        // console.log(search);
+        // console.log(`this.isAuthorSearch ${this.isAuthorSearch}`);
+
+        const searchSplit = search.split(' ')
+        console.log(searchSplit);
+
+        const givenNameSearchParameter = searchSplit[0];
+
+        let lastNameSearchParameter = '';
+        if (searchSplit.length > 1) {
+          lastNameSearchParameter = searchSplit[searchSplit.length -1]
+        }
+
+        // TODO write computed properties that check given and last name search parameters against current state
+        // TODO (see BrowsePage.vue for example) before pushing to browse page
+        // Push query to browse path if it is not identical to current query name keys
+        if (givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch) {
+
+          const query = {
+            givenName: givenNameSearchParameter,
+            lastName: lastNameSearchParameter,
+          };
+
+          console.log(query);
+
+          this.$router.push({
+            path: BROWSE_PATH,
+            query,
+          });
+        }
+
+      } else if (search !== this.searchTerm) {
+          console.log('NOT AUTHOR SEARCH')
+          this.$emit('searchClick', search);
+      }
+
+      // else {
+      //   console.log('NOT AUTHOR SEARCH')
+      //   this.$emit('searchClick', search);
+      // }
+
+
+
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
@@ -166,6 +241,12 @@ export default {
 
       navigator.clipboard.writeText(url);
     },
+  },
+  computed: {
+    ...mapGetters({
+      givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
+      lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
+    }),
   },
 };
 
