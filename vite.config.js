@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path from 'path';
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
-import Components from 'unplugin-vue-components/vite';
-import { defineConfig, loadEnv } from 'vite';
-import cesium from 'vite-plugin-cesium';
-import eslint from 'vite-plugin-eslint';
+import fs from 'fs'
+import path from 'path'
+import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
+import { defineConfig, loadEnv } from 'vite'
+import cesium from 'vite-plugin-cesium'
+import eslint from 'vite-plugin-eslint'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { createVuePlugin } from 'vite-plugin-vue2';
+import { createVuePlugin } from 'vite-plugin-vue2'
 
 import { version } from './package.json'
 // TODO exposing package.json to app is potential security risk
