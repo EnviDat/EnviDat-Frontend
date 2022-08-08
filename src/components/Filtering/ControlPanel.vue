@@ -23,17 +23,7 @@
                                   @clicked="catchSearchClicked"
                                   @searchCleared="catchSearchCleared" />
         </v-col>
-
-
-<!--        <v-col>-->
-<!--          <v-switch-->
-<!--              v-model="switch1"-->
-<!--              :label="`Switch 1: ${switch1.toString()}`"-->
-<!--          ></v-switch>-->
-<!--        </v-col>-->
-
-
-
+        
         <v-col class="py-0 shrink" >
 
           <BaseIconButton style="opacity: 0.8;"
