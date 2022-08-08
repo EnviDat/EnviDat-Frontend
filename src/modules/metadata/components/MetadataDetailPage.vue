@@ -725,29 +725,11 @@ export default {
         query,
       });
     },
-    /**
-     * @description
-     * @param authorGivenName
-     * @param authorLastName
-     */
-    // catchAuthorClicked(authorName) {
-    //   console.log(`EXECUTED: catchAuthorClicked(authorName)   authorName:  ${authorName}`);
-    //   const query = {};
-    //   query.search = authorName;
-    //
-    //   this.$router.push({
-    //     path: BROWSE_PATH,
-    //     query,
-    //   });
-    // },
     catchAuthorClicked(authorGivenName, authorLastName) {
-
-      console.log('EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)');
 
       const query = {
         givenName: authorGivenName,
         lastName: authorLastName,
-        // isAuthorSearch: true,   // TODO determine if isAuthorSearch boolean is needed
       };
 
       this.$router.push({

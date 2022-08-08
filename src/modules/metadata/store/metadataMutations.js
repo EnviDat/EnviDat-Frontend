@@ -109,7 +109,6 @@ export default {
   [SEARCH_AUTHOR](state, queryObj) {
     state.givenNameAuthorSearch = queryObj.givenName;
     state.lastNameAuthorSearch = queryObj.lastName;
-    console.log(`metadataMutations   ${state.givenNameAuthorSearch}  ${state.lastNameAuthorSearch}`)
   },
   // TODO create (ONLY if needed) the following new mutations (and be sure to add any new variables to metadataStore):
   // TODO     SEARCH_AUTHOR_SUCCESS
@@ -117,7 +116,6 @@ export default {
   [CLEAR_SEARCH_AUTHOR](state) {
     state.givenNameAuthorSearch = '';
     state.lastNameAuthorSearch = '';
-    console.log('EXECUTED CLEAR_SEARCH_AUTHOR');
   },
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;

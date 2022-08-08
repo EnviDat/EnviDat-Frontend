@@ -439,12 +439,7 @@ export default {
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
-    // catchAuthorClicked(authorName) {
-    //   console.log(`EXECUTED: catchAuthorClicked(authorName)  authorName: ${authorName}`);
-    //   this.$emit('clickedAuthor', authorName);
-    // },
     catchAuthorClicked(authorGivenName, authorLastName) {
-      console.log('EXECUTED: catchAuthorClicked(authorGivenName, authorLastName)');
       this.$emit('clickedAuthor', authorGivenName, authorLastName);
     },
     catchBackClicked() {

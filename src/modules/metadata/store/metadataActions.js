@@ -119,36 +119,7 @@ function createSolrQuery(searchTerm) {
 // TODO handle cases where givenName has middle initial (which should be removed)
 // TODO handle cases where arguments have a special character that should be converted to unicode (like umlauts)
 function createSolrQueryAuthorOnly(givenName, lastName) {
-
-  console.log('EXECUTED: createSolrQueryAuthorOnly(givenName, lastName)');
-  console.log(`author:"*${givenName} ${lastName}*"~1000`);
-
   return `author:"*${givenName} ${lastName}*"~1000`;
-
-  // TODO remove this block
-  // // Assign single word search term query string
-  // const searchStringSingleTerm = `author:"*${searchTerm}*"`;
-  //
-  // // Split search term by space character
-  // const splits = searchTerm.split(' ');
-  // console.log(`splits:  ${splits}`);
-  //
-  // // If search term only one word then return searchStringSingleTerm
-  // if (splits.length <= 1) {
-  //   console.log(`searchStringSingleTerm ${searchStringSingleTerm}`);
-  //   return searchStringSingleTerm;
-  // }
-  //
-  // // Else search term is multiple words then return searchStringMultipleTerms
-  // // that searches author field for all words in search term
-  // let searchStringMultipleTerms = '';
-  // for (const term of splits) {
-  //   searchStringMultipleTerms += `author:"*${term}* AND `
-  // }
-  // // Remove ' AND ' on end of string
-  // searchStringMultipleTerms = searchStringMultipleTerms.replace(/( AND $)/, '');
-  // console.log(`searchStringMultipleTerms  ${searchStringMultipleTerms}`);
-  // return searchStringMultipleTerms;
 }
 
 function localSearch(searchTerm, datasets) {
@@ -244,19 +215,15 @@ export default {
           commit(SEARCH_METADATA_ERROR, reason);
         });
   },
-  // TODO finish SEARCH_AUTHOR action
   // TODO test that query is accurate
   async [SEARCH_AUTHOR]({ commit }, {
     queryObj,
   }) {
-    console.log('EXECUTED: metadataAction SEARCH_AUTHOR');
 
     commit(SEARCH_AUTHOR, queryObj);
 
     const givenName = queryObj.givenName.trim();
     const lastName = queryObj.lastName.trim();
-    // console.log(givenName);
-    // console.log(lastName);
 
     const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
 
@@ -265,9 +232,7 @@ export default {
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
-    console.log(url);
 
-    // TODO determine if success and error actions should be with metadata or separate author
     await axios
         .get(url)
         .then((response) => {
@@ -277,7 +242,7 @@ export default {
             // TODO try using JSON.parse to get author objects
             payload: response.data.response.docs,
           });
-          console.log(response.data.response.docs);
+          // console.log(response.data.response.docs);
         })
         .catch((reason) => {
           commit(SEARCH_METADATA_ERROR, reason);
