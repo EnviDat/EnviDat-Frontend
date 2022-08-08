@@ -48,23 +48,6 @@
         </v-col>
 
 
-<!--        <v-col class="py-0 shrink fill-height" >-->
-<!--        <v-col>-->
-<!--          <v-card outlined-->
-<!--                  class="d-flex pa-2">-->
-<!--            <v-checkbox-->
-<!--                v-model="checkbox"-->
-<!--                dense-->
-<!--                :label="`Checkbox 1: ${checkbox.toString()}`"-->
-<!--            ></v-checkbox>-->
-
-<!--          </v-card>-->
-
-
-<!--        </v-col>-->
-
-
-<!--        <v-col class="py-0 ml-4">-->
 <!--        TODO replace hard-coded height and fix layout of checkbox element -->
 <!--        TODO handle smaller screens for checkbox element-->
         <v-col class="py-0 ml-4">
@@ -75,9 +58,7 @@
                 :flat="true"
                 :label="`Author Search`"
             ></v-checkbox>
-<!--          @change="catchAuthorSearch"-->
         </v-col>
-
 
 
         <v-col class="hidden-xs-only py-0 fill-height" >
@@ -88,18 +69,6 @@
                                 @controlsChanged="catchControlClick" />
         </v-col>
       </v-row>
-
-
-<!--      <v-row align="center"-->
-<!--             justify="space-between"-->
-<!--             no-gutters>-->
-<!--        <v-col cols="12">-->
-<!--            <v-switch-->
-<!--                v-model="switch1"-->
-<!--                :label="`Switch 1: ${switch1.toString()}`"-->
-<!--            ></v-switch>-->
-<!--        </v-col>-->
-<!--      </v-row>-->
 
 
     </v-container>
@@ -146,70 +115,34 @@ export default {
     BaseIconButton,
   },
   data: () => ({
-    // switch1: true,
     isAuthorSearch: false,
   }),
   methods: {
-    // catchAuthorSearch(isAuthorSearch) {
-    //
-    //   console.log(this.isAuthorSearch);
-    //
-    //   // TODO possibly emit isAuthorSearch and send to smallsearchbarview, adjust method in that component
-    //   // this.$emit('isAuthorSearch', isAuthorSearch);
-    //
-    //   // console.log('EXECUTED: catchAuthorSearch()');
-    //   //
-    //   // console.log(this.searchTerm);
-    //
-    //   // const query = {
-    //   //   givenName: authorGivenName,
-    //   //   lastName: authorLastName,
-    //   //   // isAuthorSearch: true,   // TODO determine if isAuthorSearch boolean is needed
-    //   // };
-    //   //
-    //   // this.$router.push({
-    //   //   path: BROWSE_PATH,
-    //   //   query,
-    //   // });
-    //
-    // },
-    // TODO try instead emitting query object or search to authorSearch(queryObj) in BrowsePage.vue
-    // TODO check previous version of catchSearchClicked
     catchSearchClicked(search) {
 
-      console.log(`SEARCH TERM  ${this.searchTerm}`);
-
-      // TODO check if this is still needed
-      // this.$emit('searchClick', search, this.isAuthorSearch);
-      // this.$emit('searchClick', search);
-
-      // TODO add condition that author search is selected
+      // Handle author only searches
       if (this.isAuthorSearch) {
 
-        // console.log(search);
-        // console.log(`this.isAuthorSearch ${this.isAuthorSearch}`);
-
+        // Split search string by spaces
         const searchSplit = search.split(' ')
-        console.log(searchSplit);
 
+        // Assign given name to first search term
         const givenNameSearchParameter = searchSplit[0];
 
+        // If search string has more than one term assign last name to last term
         let lastNameSearchParameter = '';
         if (searchSplit.length > 1) {
           lastNameSearchParameter = searchSplit[searchSplit.length -1]
         }
 
-        // TODO write computed properties that check given and last name search parameters against current state
-        // TODO (see BrowsePage.vue for example) before pushing to browse page
-        // Push query to browse path if it is not identical to current query name keys
-        if (givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch) {
+        // Push query to browse path if it does not have name keys that are equal to state query name keys
+        if (givenNameSearchParameter !== this.givenNameAuthorSearch
+            || lastNameSearchParameter !== this.lastNameAuthorSearch) {
 
           const query = {
             givenName: givenNameSearchParameter,
             lastName: lastNameSearchParameter,
           };
-
-          console.log(query);
 
           this.$router.push({
             path: BROWSE_PATH,
@@ -217,18 +150,11 @@ export default {
           });
         }
 
-      } else if (search !== this.searchTerm) {
-          console.log('NOT AUTHOR SEARCH')
+      }
+      // Else if search is not equal to current search term emit search
+      else if (search !== this.searchTerm) {
           this.$emit('searchClick', search);
       }
-
-      // else {
-      //   console.log('NOT AUTHOR SEARCH')
-      //   this.$emit('searchClick', search);
-      // }
-
-
-
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
