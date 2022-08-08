@@ -209,35 +209,18 @@ export default {
 
       this.loadRoutePins();
 
-      // Assign searchParameter so that it can be checked for both author and full text searches
-      const searchParameter = this.$route.query.search || '';
 
-      // TODO clear search logic write, check that it works properly (see globalMethods/mixinMethods_additiveChangeRoute)
-      // TODO connect author search to browser URL (clear existing search in URL after selecting another author)
-      // TODO clear search, try to clear author search properties and keys from this.$route.query object
-      // TODO possibly remove isAuthorSearch from query object
-      // Check if searchParameter is for an author only search
       // Block is for author search queries triggered by clicking on an author tag in a metadata entry
+      // or selecting 'Author Only' option in search bar
       const queryObj = this.$route.query;
-      console.log(`this.$route.query     ${JSON.stringify(queryObj)}`);
 
+      // Assign name parameters to keys from route query object, if they do not exist then assign to empty strings
       const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
       const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
 
+      // Trigger author checking if given name or last name do not match current state name values
       const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
-      console.log(`checkAuthorTriggering  ${checkAuthorTriggering}`);
 
-      // TODO determine if more logic is need to handle clearing search
-      // Check if author or search terms have changed or are empty strings (which means they do not currently exist)
-      // if (!checkAuthorTriggering) {
-      //
-      //   // triggerClearSearch = ((this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) && (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter))
-      //   //                       || (this.currentSearchTerm !== '' && !searchParameter) ;
-      //   triggerClearSearch = this.currentSearchTerm !== '' && !searchParameter;
-      //   console.log(`this.currentSearchTerm    ${this.currentSearchTerm}`);
-      //   console.log(`triggerClearSearch   ${triggerClearSearch}`);
-      //   // this.clearSearchResults();
-      // }
 
       if (checkAuthorTriggering) {
 
@@ -254,59 +237,15 @@ export default {
       }
 
 
-      // const queryObj = this.$route.query;
-      // console.log(`this.$route.query     ${JSON.stringify(queryObj)}`);
-      // if (Object.hasOwn(queryObj, 'isAuthorSearch')) {
-      //
-      //   const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
-      //   const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
-      //
-      //   const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
-      //   console.log(`checkAuthorTriggering  ${checkAuthorTriggering}`);
-      //
-      //   // TODO determine if more logic is need to handle clearing search
-      //   // Check if author or search terms have changed or are empty strings (which means they do not currently exist)
-      //   if (!checkAuthorTriggering) {
-      //
-      //     triggerClearSearch = (this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) &&
-      //                          (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter) ||
-      //                          (this.currentSearchTerm !== '' && !searchParameter) ;
-      //     console.log(`triggerClearSearch   ${triggerClearSearch}`);
-      //     // this.clearSearchResults();
-      //   }
-      //
-      //   if (checkAuthorTriggering) {
-      //
-      //     // Send queryObj to store and trigger author search
-      //     if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
-      //       this.authorSearch(queryObj);
-      //       this.resetScrollPos();
-      //       // return;   // TODO determine if return is needed here
-      //     }
-      //
-      //     // Both given and last names were changed to empty -> clear the search results
-      //     triggerClearSearch = true;
-      //     triggerScrollReset = true;
-      //   }
-      //
-      // }
+      // Assign searchParameter so that it can be checked for full text searches
+      const searchParameter = this.$route.query.search || '';
 
-      // TODO determine if more logic is need to handle clearing search
-      // if (!checkAuthorTriggering) {
-      //
-      //   triggerClearSearch = (this.givenNameAuthorSearch !== '' && !givenNameSearchParameter) && (this.lastNameAuthorSearch !== '' && !lastNameSearchParameter);
-      //   console.log(`triggerClearSearch   ${triggerClearSearch}`);
-      //   // this.clearSearchResults();
-      // }
-
-
+      // True is searchParameter does not equal currentSearchTerm, else False
       const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
-
 
       if (!checkSearchTriggering) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
-        // this.searchTerm = searchParameter;
         triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
       }
 
@@ -320,8 +259,7 @@ export default {
       if (checkSearchTriggering) {
 
         // TODO test CLEAR_SEARCH_AUTHOR mutation
-        this.authorSearchClearResults();
-        console.log(`TEST   ${JSON.stringify(this.$route.query)}`);
+        // this.authorSearchClearResults();
 
         if (searchParameter && searchParameter.length > 0) {
 
@@ -351,7 +289,7 @@ export default {
       if (triggerClearSearch) {
         this.clearSearchResults();
       }
-
+      
       // always filter changes of the url except a change of the search term
       // because due to navigation the inital filter might be needed
       this.filterContent();
