@@ -22,7 +22,7 @@ import UserMenu from '@/modules/user/components/UserMenu';
 import MetadataCube from '@/components/BaseElements/MetadataCube';
 
 import seedrandom from 'seedrandom';
-import jazzicons from 'jazzicon';
+import jazzicons from '@metamask/jazzicon';
 import authorCollection from '../public/testdata/authorCollection.json';
 
 import { USER_VIEWS } from './storybookFolder';
