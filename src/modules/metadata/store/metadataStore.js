@@ -60,9 +60,6 @@ const initialState = {
   /**
    * author search properties when users make an author only search
    */
-  // givenNameAuthorSearch: '',
-  // lastNameAuthorSearch: '',
-  // TEST store data below
   authorSearchTerm: '',
   isAuthorSearch: false,
   /**
@@ -134,10 +131,8 @@ export const metadata = {
     searchingMetadatasContent: state => state.searchingMetadatasContent,
     searchingMetadatasContentOK: state => state.searchingMetadatasContentOK,
     currentSearchTerm: state => state.currentSearchTerm,
-    authorSearchTerm: state => state.authorSearchTerm,    // TEST
-    isAuthorSearch: state => state.isAuthorSearch,   // TEST
-    // givenNameAuthorSearch: state => state.givenNameAuthorSearch,
-    // lastNameAuthorSearch: state => state.lastNameAuthorSearch,
+    authorSearchTerm: state => state.authorSearchTerm,
+    isAuthorSearch: state => state.isAuthorSearch,
     loadingCurrentMetadataContent: state => state.loadingCurrentMetadataContent,
     currentMetadataContent: state => state.currentMetadataContent,
     isFilteringContent: state => state.isFilteringContent,

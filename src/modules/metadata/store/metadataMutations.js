@@ -109,11 +109,6 @@ function enhanceMetadatas(store, datasets) {
 
 
 export default {
-  // [SEARCH_AUTHOR](state, queryObj) {
-  //   state.givenNameAuthorSearch = queryObj.givenName;
-  //   state.lastNameAuthorSearch = queryObj.lastName;
-  // },
-  // TEST mutation below
   [SEARCH_AUTHOR](state, authorSearchTerm) {
     state.authorSearchTerm = authorSearchTerm;
   },
@@ -126,10 +121,6 @@ export default {
   [SEARCH_FULL_TEXT](state) {
     state.isAuthorSearch = false;
   },
-  // [CLEAR_SEARCH_AUTHOR](state) {
-  //   state.givenNameAuthorSearch = '';
-  //   state.lastNameAuthorSearch = '';
-  // },
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
     state.searchingMetadatasContentOK = false;

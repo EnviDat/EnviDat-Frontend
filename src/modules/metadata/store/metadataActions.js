@@ -116,9 +116,6 @@ function createSolrQuery(searchTerm) {
 
   return solrQuery;
 }
-// function createSolrQueryAuthorOnly(givenName, lastName) {
-//   return `author:"*${givenName} ${lastName}*"~1000`;
-// }
 
 function localSearch(searchTerm, datasets) {
   const foundDatasets = [];
@@ -213,45 +210,12 @@ export default {
           commit(SEARCH_METADATA_ERROR, reason);
         });
   },
-  // async [SEARCH_AUTHOR]({ commit }, {
-  //   queryObj,
-  // }) {
-  //
-  //   commit(SEARCH_AUTHOR, queryObj);
-  //
-  //   const givenName = queryObj.givenName.trim();
-  //   const lastName = queryObj.lastName.trim();
-  //
-  //   const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
-  //
-  //   // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
-  //   const query = `query?q=${solrQuery}`;
-  //   const queryAdditions = '&wt=json&rows=1000';
-  //   const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-  //   const url = urlRewrite(publicOnlyQuery, '/', PROXY);
-  //
-  //   await axios
-  //       .get(url)
-  //       .then((response) => {
-  //
-  //         commit(SEARCH_METADATA_SUCCESS, {
-  //           // TODO filter payload to make sure that author given and last names are in same author object
-  //           // TODO try using JSON.parse to get author objects
-  //           payload: response.data.response.docs,
-  //         });
-  //         // console.log(response.data.response.docs);
-  //       })
-  //       .catch((reason) => {
-  //         commit(SEARCH_METADATA_ERROR, reason);
-  //       });
-  // },
   // TODO investigate query accuracy for names with an umlaut
-  // TEST function below
   async [SEARCH_AUTHOR]({ commit }, {
-    authorSearchTerm, isAuthorSearch,
+    authorSearchTerm,
   }) {
 
-    commit(SEARCH_AUTHOR, authorSearchTerm, isAuthorSearch);
+    commit(SEARCH_AUTHOR, authorSearchTerm);
 
 
     // Use the envidat "query" action for performance boost (ckan package_search isn't performant)

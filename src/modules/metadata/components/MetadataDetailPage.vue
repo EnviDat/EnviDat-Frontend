@@ -725,19 +725,6 @@ export default {
         query,
       });
     },
-    // catchAuthorClicked(authorGivenName, authorLastName) {
-    //
-    //   const query = {
-    //     givenName: authorGivenName,
-    //     lastName: authorLastName,
-    //   };
-    //
-    //   this.$router.push({
-    //     path: BROWSE_PATH,
-    //     query,
-    //   });
-    // },
-    // TEST function below
     catchAuthorClicked(authorGivenName, authorLastName) {
 
       const query = {};

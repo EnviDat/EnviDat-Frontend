@@ -129,8 +129,6 @@ export default {
     loading: Boolean,
   },
   beforeMount() {
-    // this.searchText = this.searchTerm;
-    // TEST
     this.searchText = (this.authorSearchTerm.length > 0) ? this.authorSearchTerm : this.searchTerm;
   },
   data: () => ({
