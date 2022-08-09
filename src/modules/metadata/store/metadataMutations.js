@@ -19,6 +19,8 @@ import {
   CLEAN_CURRENT_METADATA,
   SEARCH_AUTHOR,
   CLEAR_SEARCH_AUTHOR,
+  SEARCH_AUTHOR_ONLY,
+  SEARCH_FULL_TEXT,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -78,6 +80,7 @@ import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadataFromExtras } from '@/factories/modeFactory';
 
 
+
 function enhanceMetadatas(store, datasets) {
   if (!(datasets instanceof Array)) {
     throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
@@ -106,17 +109,27 @@ function enhanceMetadatas(store, datasets) {
 
 
 export default {
-  [SEARCH_AUTHOR](state, queryObj) {
-    state.givenNameAuthorSearch = queryObj.givenName;
-    state.lastNameAuthorSearch = queryObj.lastName;
+  // [SEARCH_AUTHOR](state, queryObj) {
+  //   state.givenNameAuthorSearch = queryObj.givenName;
+  //   state.lastNameAuthorSearch = queryObj.lastName;
+  // },
+  // TEST mutation below
+  [SEARCH_AUTHOR](state, authorSearchTerm) {
+    state.authorSearchTerm = authorSearchTerm;
   },
-  // TODO create (ONLY if needed) the following new mutations (and be sure to add any new variables to metadataStore):
-  // TODO     SEARCH_AUTHOR_SUCCESS
-  // TODO     SEARCH_METADATA_ERROR
   [CLEAR_SEARCH_AUTHOR](state) {
-    state.givenNameAuthorSearch = '';
-    state.lastNameAuthorSearch = '';
+    state.authorSearchTerm = '';
   },
+  [SEARCH_AUTHOR_ONLY](state) {
+    state.isAuthorSearch = true;
+  },
+  [SEARCH_FULL_TEXT](state) {
+    state.isAuthorSearch = false;
+  },
+  // [CLEAR_SEARCH_AUTHOR](state) {
+  //   state.givenNameAuthorSearch = '';
+  //   state.lastNameAuthorSearch = '';
+  // },
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
     state.searchingMetadatasContentOK = false;
