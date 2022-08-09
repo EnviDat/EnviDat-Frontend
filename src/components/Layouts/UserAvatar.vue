@@ -1,5 +1,5 @@
 <template>
-  <v-avatar :color="color"
+  <v-avatar :color="backgroundColor"
             :size="size"
             style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
 
@@ -18,7 +18,7 @@
     <div v-if="showInitials"
           id="jazzIconContainer"
           ref="jazzIcon"
-          :style="`height: ${size}px;`">
+          :style="`opacity: 0.75; height: ${size}px;`">
     </div>
 
     <span v-if="showInitials"
@@ -77,6 +77,13 @@ export default {
     this.loadJazzIcon();
   },
   computed: {
+    backgroundColor() {
+      if (!this.showInitials) {
+        return this.color;
+      }
+
+      return 'transparent';
+    },
     showGravatar() {
       return !this.gravatarNotLoaded;
     },
@@ -91,18 +98,22 @@ export default {
     },
     initialsTextClass() {
       if (this.size >= 128) {
-        return 'display-2';
+        return 'text-h2';
       }
 
       if (this.size > 48) {
         return 'text-h4';
       }
 
-      if (this.size <= 32) {
-        return 'subtitle-1';
+      if (this.size >= 32) {
+        return 'text-h6';
       }
 
-      return 'headline';
+      if (this.size <= 28) {
+        return '';
+      }
+
+      return 'text-h5';
     },
   },
   methods: {

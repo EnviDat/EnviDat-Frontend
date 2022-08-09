@@ -132,6 +132,7 @@ export const JazzIconsViews = () => ({
 export const UserAvatarViews = () => ({
   components: { UserAvatar },
   template: `
+    <v-container fluid>
     <v-row>
 
     <v-col>
@@ -149,7 +150,9 @@ export const UserAvatarViews = () => ({
     <v-col>
       <UserAvatar :size="128"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32" nameInitials="DH"/>
     </v-col>
@@ -165,7 +168,9 @@ export const UserAvatarViews = () => ({
     <v-col>
       <UserAvatar :size="128" nameInitials="DH"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32"
                   nameInitials="II"
@@ -189,7 +194,9 @@ export const UserAvatarViews = () => ({
                   nameInitials="II"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32"
                   defaultGravatar="robohash"
@@ -213,7 +220,9 @@ export const UserAvatarViews = () => ({
                   emailHash="4c6104f35821eb25ef16742fc23eb13e"
                   nameInitials="KP"/>
     </v-col>
+    </v-row>
 
+    <v-row class="pt-4">
     <v-col>
       <UserAvatar :size="32"
                   nameInitials="II"
@@ -238,6 +247,7 @@ export const UserAvatarViews = () => ({
     </v-col>
 
     </v-row>
+    </v-container>
   `,
 });
 
