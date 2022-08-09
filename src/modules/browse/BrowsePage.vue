@@ -73,6 +73,8 @@ import {
   SEARCH_METADATA,
   SEARCH_AUTHOR,
   CLEAR_SEARCH_AUTHOR,
+  SEARCH_AUTHOR_ONLY,
+  SEARCH_FULL_TEXT,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
@@ -191,11 +193,115 @@ export default {
           mode,
         });
     },
+    // checkRouteChanges(fromRoute) {
+    //   let triggerClearSearch = false;
+    //   let triggerScrollReset = false;
+    //
+    //   if (!fromRoute) {
+    //     if (this.detailPageBackRoute) {
+    //       fromRoute = this.detailPageBackRoute;
+    //     } else if (this.currentSearchTerm) {
+    //       triggerClearSearch = true;
+    //     }
+    //   }
+    //
+    //   const isBackNavigation = this.$router.options.isSameRoute(this.$route, fromRoute);
+    //   const tagsChanged = this.loadRouteTags();
+    //
+    //   this.loadRoutePins();
+    //
+    //
+    //   // Block is for author search queries triggered by clicking on an author tag in a metadata entry
+    //   // or selecting 'Author Only' option in search bar
+    //   const queryObj = this.$route.query;
+    //
+    //   // Assign name parameters to keys from route query object, if they do not exist then assign to empty strings
+    //   const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
+    //   const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
+    //
+    //   // Trigger author checking if given name or last name do not match current state name values
+    //   const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
+    //
+    //
+    //   if (checkAuthorTriggering) {
+    //
+    //     // Send queryObj to store and trigger author search
+    //     if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
+    //       this.authorSearch(queryObj);
+    //       this.resetScrollPos();
+    //       // return;   // TODO determine if return is needed here
+    //     }
+    //
+    //     // Both given and last names were changed to empty -> clear the search results
+    //     triggerClearSearch = true;
+    //     triggerScrollReset = true;
+    //   }
+    //
+    //
+    //   // Assign searchParameter so that it can be checked for full text searches
+    //   const searchParameter = this.$route.query.search || '';
+    //
+    //   // True is searchParameter does not equal currentSearchTerm, else False
+    //   const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
+    //
+    //   if (!checkSearchTriggering) {
+    //     // use the search parameter from the url in any case
+    //     // if it's a back navigation it has to be set that is will appear in the searchBar component
+    //     triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
+    //   }
+    //
+    //   if (isBackNavigation) {
+    //     // use a delayed scroll position setup because the list as to be loaded first
+    //     setTimeout(() => {
+    //       this.setScrollPos(this.browseScrollPosition);
+    //     }, this.scrollPositionDelay);
+    //   }
+    //
+    //   if (checkSearchTriggering) {
+    //
+    //     // TODO test CLEAR_SEARCH_AUTHOR mutation
+    //     // this.authorSearchClearResults();
+    //
+    //     if (searchParameter && searchParameter.length > 0) {
+    //
+    //       this.metadataSearch(searchParameter, this.metadataConfig);
+    //       this.resetScrollPos();
+    //
+    //       // prevent immediately filtering, the search results
+    //       // will be filtered via searchingMetadatasContentOK watch
+    //       return;
+    //     }
+    //
+    //     // the searchTerm was changed to empty -> clear the search results
+    //     triggerClearSearch = true;
+    //     triggerScrollReset = true;
+    //   }
+    //
+    //   if (tagsChanged) {
+    //     // in case the tags have changed the scroll needs to be reset
+    //     triggerScrollReset = true;
+    //   }
+    //
+    //   if (triggerScrollReset && !isBackNavigation) {
+    //     // and manually reset the scrolling
+    //     this.resetScrollPos();
+    //   }
+    //
+    //   if (triggerClearSearch) {
+    //     this.clearSearchResults();
+    //   }
+    //
+    //   // always filter changes of the url except a change of the search term
+    //   // because due to navigation the inital filter might be needed
+    //   this.filterContent();
+    // },
+    // TEST function below
+    // TODO make sure author search boolean is reset to false for full text searches
     checkRouteChanges(fromRoute) {
+
       let triggerClearSearch = false;
       let triggerScrollReset = false;
 
-      // TODO determine if this needs to be revised for author search
       if (!fromRoute) {
         if (this.detailPageBackRoute) {
           fromRoute = this.detailPageBackRoute;
@@ -210,42 +316,56 @@ export default {
       this.loadRoutePins();
 
 
-      // Block is for author search queries triggered by clicking on an author tag in a metadata entry
+      // SEARCH SETUP BLOCK
+
+      // Assign searchParameter so that it can be checked for both author only and full text searches
+      const searchParameter = this.$route.query.search || '';
+
+      // Assign isAuthorSearch boolean to corresponding key from query object, if it does not exist then assign to false
+      const isAuthorSearch = this.$route.query.isAuthorSearch || false;
+
+      // True if searchParameter does not equal currentSearchTerm, else false OR
+      // True if authorSearch does not equal current isAuthorSearch, else false
+      const checkSearchTriggering = searchParameter !== this.currentSearchTerm
+                                 || isAuthorSearch !== this.isAuthorSearch;
+
+
+
+      // AUTHOR SEARCH BLOCK
+
+      // Author search queries triggered by clicking on an author tag in a metadata entry
       // or selecting 'Author Only' option in search bar
-      const queryObj = this.$route.query;
 
-      // Assign name parameters to keys from route query object, if they do not exist then assign to empty strings
-      const givenNameSearchParameter = (Object.hasOwn(queryObj, 'givenName')) ? queryObj.givenName : '';
-      const lastNameSearchParameter = (Object.hasOwn(queryObj, 'lastName')) ? queryObj.lastName : '';
+      // Check if authorSearch function should be executed
+      // AND that searchParameter is not equal to current state authorSearchTerm
+      if (isAuthorSearch && searchParameter !== this.authorSearchTerm) {
 
-      // Trigger author checking if given name or last name do not match current state name values
-      const checkAuthorTriggering = givenNameSearchParameter !== this.givenNameAuthorSearch || lastNameSearchParameter !== this.lastNameAuthorSearch;
-
-
-      if (checkAuthorTriggering) {
-
-        // Send queryObj to store and trigger author search
-        if (givenNameSearchParameter.length > 0 || lastNameSearchParameter.length > 0) {
-          this.authorSearch(queryObj);
-          this.resetScrollPos();
-          // return;   // TODO determine if return is needed here
+        if (searchParameter.length > 0) {
+            this.authorSearch(searchParameter);
+            this.activateAuthorSearch();
+            this.resetScrollPos();
+            // console.log(`state isAuthorSearch  ${this.isAuthorSearch}`);
+            return;
         }
 
-        // Both given and last names were changed to empty -> clear the search results
+        // Else searchParameter is empty so clear the search results
         triggerClearSearch = true;
         triggerScrollReset = true;
+
       }
 
 
-      // Assign searchParameter so that it can be checked for full text searches
-      const searchParameter = this.$route.query.search || '';
+      // FULL TEXT SEARCH BLOCK
 
-      // True is searchParameter does not equal currentSearchTerm, else False
-      const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
+      this.activateFullTextSearch();
+
+      // Clear state authorSearchTerm
+      this.clearAuthorSearch()
+
 
       if (!checkSearchTriggering) {
-        // use the search parameter from the url in any case
-        // if it's a back navigation it has to be set that is will appear in the searchBar component
+        // Use the search parameter from the url in any case
+        // If it's a back navigation it has to be set that is will appear in the searchBar component
         triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
       }
 
@@ -257,9 +377,6 @@ export default {
       }
 
       if (checkSearchTriggering) {
-
-        // TODO test CLEAR_SEARCH_AUTHOR mutation
-        // this.authorSearchClearResults();
 
         if (searchParameter && searchParameter.length > 0) {
 
@@ -280,7 +397,7 @@ export default {
         // in case the tags have changed the scroll needs to be reset
         triggerScrollReset = true;
       }
-      
+
       if (triggerScrollReset && !isBackNavigation) {
         // and manually reset the scrolling
         this.resetScrollPos();
@@ -289,10 +406,11 @@ export default {
       if (triggerClearSearch) {
         this.clearSearchResults();
       }
-      
+
       // always filter changes of the url except a change of the search term
       // because due to navigation the inital filter might be needed
       this.filterContent();
+      // console.log(`state isAuthorSearch  ${this.isAuthorSearch}`);
     },
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataList) {
@@ -312,12 +430,21 @@ export default {
     metadataSearch(searchTerm, metadataConfig) {
       this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
     },
-    authorSearch(queryObj) {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR}`, { queryObj });
+    authorSearch(authorSearchTerm) {
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR}`, { authorSearchTerm });
     },
-    authorSearchClearResults() {
+    clearAuthorSearch() {
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
     },
+    activateAuthorSearch() {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR_ONLY}`);
+    },
+    activateFullTextSearch() {
+      this.$store.commit(`${METADATA_NAMESPACE}/${SEARCH_FULL_TEXT}`);
+    },
+    // authorSearchClearResults() {
+    //   this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
+    // },
     catchSearchClicked(search) {
       // this.mixinMethods_authorReductiveChangeRoute(BROWSE_PATH);
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
@@ -355,6 +482,8 @@ export default {
       defaultControls: 'defaultControls',
       searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
       searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
+      authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,  // TEST
+      isAuthorSearch: `${METADATA_NAMESPACE}/isAuthorSearch`,    // TEST
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
       givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
       lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
