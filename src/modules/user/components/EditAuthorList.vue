@@ -15,16 +15,16 @@
         </v-row>
 
         <v-row v-if="!selectedAuthor" >
-          <v-col>
-            <v-card class="pa-0">
+          <v-col cols="12">
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
-
-<!--              disabled Author creation for a first "editing only" version -->
-<!--              <EditAddAuthor @createAuthor="catchCreateAuthor" />-->
-            </v-card>
-
           </v-col>
+
+          <v-col cols="12">
+<!--          For now the EditAddAuthor is a placeholder which links to the legacy website -->
+              <EditAddAuthor :metadataId="metadataId" />
+          </v-col>
+
         </v-row>
       </v-col>
 
@@ -52,7 +52,7 @@
 */
 
 import EditAuthor from '@/modules/user/components/EditAuthor';
-// import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
@@ -86,7 +86,7 @@ export default {
   components: {
     EditMetadataAuthors,
     EditAuthor,
-//    EditAddAuthor,
+    EditAddAuthor,
     EditAddExistingAuthor,
   },
   props: {
@@ -124,6 +124,9 @@ export default {
     },
   },
   computed: {
+    metadataId() {
+      return this.$route?.params?.metadataid || '';
+    },
     existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];

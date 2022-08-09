@@ -1,6 +1,5 @@
 <template>
   <v-card id="EditAddExistingAuthor"
-          flat
           class="pa-0"
           :loading="loading" >
 
