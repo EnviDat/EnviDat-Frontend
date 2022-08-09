@@ -116,11 +116,9 @@ function createSolrQuery(searchTerm) {
 
   return solrQuery;
 }
-// TODO handle cases where givenName has middle initial (which should be removed)
-// TODO handle cases where arguments have a special character that should be converted to unicode (like umlauts)
-function createSolrQueryAuthorOnly(givenName, lastName) {
-  return `author:"*${givenName} ${lastName}*"~1000`;
-}
+// function createSolrQueryAuthorOnly(givenName, lastName) {
+//   return `author:"*${givenName} ${lastName}*"~1000`;
+// }
 
 function localSearch(searchTerm, datasets) {
   const foundDatasets = [];
@@ -215,19 +213,50 @@ export default {
           commit(SEARCH_METADATA_ERROR, reason);
         });
   },
-  // TODO test that query is accurate
+  // async [SEARCH_AUTHOR]({ commit }, {
+  //   queryObj,
+  // }) {
+  //
+  //   commit(SEARCH_AUTHOR, queryObj);
+  //
+  //   const givenName = queryObj.givenName.trim();
+  //   const lastName = queryObj.lastName.trim();
+  //
+  //   const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
+  //
+  //   // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
+  //   const query = `query?q=${solrQuery}`;
+  //   const queryAdditions = '&wt=json&rows=1000';
+  //   const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
+  //   const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+  //
+  //   await axios
+  //       .get(url)
+  //       .then((response) => {
+  //
+  //         commit(SEARCH_METADATA_SUCCESS, {
+  //           // TODO filter payload to make sure that author given and last names are in same author object
+  //           // TODO try using JSON.parse to get author objects
+  //           payload: response.data.response.docs,
+  //         });
+  //         // console.log(response.data.response.docs);
+  //       })
+  //       .catch((reason) => {
+  //         commit(SEARCH_METADATA_ERROR, reason);
+  //       });
+  // },
+  // TODO investigate query accuracy for names with an umlaut
+  // TEST function below
   async [SEARCH_AUTHOR]({ commit }, {
-    queryObj,
+    authorSearchTerm, isAuthorSearch,
   }) {
 
-    commit(SEARCH_AUTHOR, queryObj);
+    commit(SEARCH_AUTHOR, authorSearchTerm, isAuthorSearch);
 
-    const givenName = queryObj.givenName.trim();
-    const lastName = queryObj.lastName.trim();
-
-    const solrQuery = createSolrQueryAuthorOnly(givenName, lastName);
 
     // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
+    const authorSearchTermTrimmed = authorSearchTerm.trim();
+    const solrQuery = `author:"*${authorSearchTermTrimmed}*"~1000`;
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
@@ -238,11 +267,10 @@ export default {
         .then((response) => {
 
           commit(SEARCH_METADATA_SUCCESS, {
-            // TODO filter payload to make sure that author given and last names are in same author object
-            // TODO try using JSON.parse to get author objects
+            // TODO filter payload to make sure that authorSearchTerm is in same author object
+            // TODO possibly use JSON.parse to get author objects
             payload: response.data.response.docs,
           });
-          // console.log(response.data.response.docs);
         })
         .catch((reason) => {
           commit(SEARCH_METADATA_ERROR, reason);
