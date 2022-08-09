@@ -133,6 +133,23 @@ export default {
       // return an empty array for the selectedTagIds
       return [];
     },
+    // mixinMethods_authorReductiveChangeRoute(basePath) {
+    //   const query = {};
+    //   Object.assign(query, this.$route.query);
+    //
+    //   if (query.givenName) {
+    //     delete query.givenName;
+    //   }
+    //
+    //   if (query.lastName) {
+    //     delete query.lastName;
+    //   }
+    //
+    //   this.$router.push({
+    //     path: basePath,
+    //     query,
+    //   });
+    // },
     /**
      * Changes the route via this.$router.push();
      * The search and tag parameter are added as query parameters.
@@ -151,14 +168,20 @@ export default {
       if (search !== undefined) {
         query.search = search;
 
-        // Delete givenName and lastName properties if they exist so that query path is cleared
-        if (query.givenName) {
-          delete query.givenName;
+        // TEST block
+        // Delete isAuthorSearch properties if it exists so that query path is cleared
+        if (query.isAuthorSearch) {
+          delete query.isAuthorSearch;
         }
 
-        if (query.lastName) {
-          delete query.lastName;
-        }
+        // // Delete givenName and lastName properties if they exist so that query path is cleared
+        // if (query.givenName) {
+        //   delete query.givenName;
+        // }
+        //
+        // if (query.lastName) {
+        //   delete query.lastName;
+        // }
       }
 
       if (tags !== undefined) {
