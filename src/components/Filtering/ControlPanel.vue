@@ -23,7 +23,7 @@
                                   @clicked="catchSearchClicked"
                                   @searchCleared="catchSearchCleared" />
         </v-col>
-        
+
         <v-col class="py-0 shrink" >
 
           <BaseIconButton style="opacity: 0.8;"
@@ -108,43 +108,72 @@ export default {
     isAuthorSearch: false,
   }),
   methods: {
+    // catchSearchClicked(search) {
+    //
+    //   // Handle author only searches
+    //   if (this.isAuthorSearch) {
+    //
+    //     // Split search string by spaces
+    //     const searchSplit = search.split(' ')
+    //
+    //     // Assign given name to first search term
+    //     const givenNameSearchParameter = searchSplit[0];
+    //
+    //     // If search string has more than one term assign last name to last term
+    //     let lastNameSearchParameter = '';
+    //     if (searchSplit.length > 1) {
+    //       lastNameSearchParameter = searchSplit[searchSplit.length -1]
+    //     }
+    //
+    //     // Push query to browse path if it does not have name keys that are equal to state query name keys
+    //     if (givenNameSearchParameter !== this.givenNameAuthorSearch
+    //         || lastNameSearchParameter !== this.lastNameAuthorSearch) {
+    //
+    //       const query = {
+    //         givenName: givenNameSearchParameter,
+    //         lastName: lastNameSearchParameter,
+    //       };
+    //
+    //       this.$router.push({
+    //         path: BROWSE_PATH,
+    //         query,
+    //       });
+    //     }
+    //
+    //   }
+    //   // Else if search is not equal to current search term emit search
+    //   else if (search !== this.searchTerm) {
+    //       this.$emit('searchClick', search);
+    //   }
+    // },
+    // TEST function below
     catchSearchClicked(search) {
 
-      // Handle author only searches
+      // console.log(`this.isAuthorSearch  ${this.isAuthorSearch}`);
+
+      // AUTHOR SEARCH BLOCK
       if (this.isAuthorSearch) {
 
-        // Split search string by spaces
-        const searchSplit = search.split(' ')
+        // Push query to browse path if search is not equal to state authorSearchTerm
+        if (search !== this.authorSearchTerm) {
 
-        // Assign given name to first search term
-        const givenNameSearchParameter = searchSplit[0];
-
-        // If search string has more than one term assign last name to last term
-        let lastNameSearchParameter = '';
-        if (searchSplit.length > 1) {
-          lastNameSearchParameter = searchSplit[searchSplit.length -1]
-        }
-
-        // Push query to browse path if it does not have name keys that are equal to state query name keys
-        if (givenNameSearchParameter !== this.givenNameAuthorSearch
-            || lastNameSearchParameter !== this.lastNameAuthorSearch) {
-
-          const query = {
-            givenName: givenNameSearchParameter,
-            lastName: lastNameSearchParameter,
-          };
+          const query = {};
+          query.search = `${search}`;
+          query.isAuthorSearch = true;
 
           this.$router.push({
             path: BROWSE_PATH,
             query,
           });
         }
-
       }
+
+      // FULL TEXT SEARCH BLOCK
       // Else if search is not equal to current search term emit search
       else if (search !== this.searchTerm) {
-          this.$emit('searchClick', search);
+        this.$emit('searchClick', search);
       }
+
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
@@ -160,8 +189,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
-      lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
+      authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,
+      // givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
+      // lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
+
     }),
   },
 };
