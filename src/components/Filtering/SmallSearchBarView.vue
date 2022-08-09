@@ -102,6 +102,9 @@
 import TagChip from '@/components/Chips/TagChip';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import { mapGetters } from 'vuex';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
 
 export default {
   components: {
@@ -126,7 +129,9 @@ export default {
     loading: Boolean,
   },
   beforeMount() {
-    this.searchText = this.searchTerm;
+    // this.searchText = this.searchTerm;
+    // TEST
+    this.searchText = (this.authorSearchTerm.length > 0) ? this.authorSearchTerm : this.searchTerm;
   },
   data: () => ({
     searchText: '',
@@ -136,6 +141,9 @@ export default {
       'The full text search works for research terms, topics or authors',
   }),
   computed: {
+    ...mapGetters({
+      authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,
+    }),
     height() {
       let height = this.fixedHeight;
 
