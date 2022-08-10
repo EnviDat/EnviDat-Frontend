@@ -60,7 +60,6 @@
                             single-line
                             hide-details
                             primary
-                            :clearable="searchText && searchText.length > 0"
                             :flat="isFlat"
                             :placeholder="labelText"
                             @keyup.enter="clicked"
