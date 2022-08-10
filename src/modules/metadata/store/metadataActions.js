@@ -168,6 +168,27 @@ function getKeywordObjects(arr) {
   return arr;
 }
 
+// Returns solr query string for author key
+// Adds anglicized umlaut characters for authors whose names include umlauts
+// to broaden search and return more search results
+function getAuthorSolrQuery(author) {
+
+  // Trim author string
+  const authorTrimmed = author.trim();
+
+  const authorSpecialChars = authorTrimmed
+                            .replace('ü', 'ue')
+                            .replace('ä', 'ae')
+                            .replace('ö', 'oe');
+
+  if (authorTrimmed === authorSpecialChars) {
+    return `author:"*${authorTrimmed}*"~1000`;
+  }
+
+  return `author:"*${authorTrimmed}*"OR"*${authorSpecialChars}*"~1000`;
+
+}
+
 // Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
 
@@ -210,17 +231,14 @@ export default {
           commit(SEARCH_METADATA_ERROR, reason);
         });
   },
-  // TODO investigate query accuracy for names with an umlaut
   async [SEARCH_AUTHOR]({ commit }, {
     authorSearchTerm,
   }) {
 
     commit(SEARCH_AUTHOR, authorSearchTerm);
 
-
     // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
-    const authorSearchTermTrimmed = authorSearchTerm.trim();
-    const solrQuery = `author:"*${authorSearchTermTrimmed}*"~1000`;
+    const solrQuery = getAuthorSolrQuery(authorSearchTerm);
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
