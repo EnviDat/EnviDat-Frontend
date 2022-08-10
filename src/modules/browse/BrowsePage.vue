@@ -340,7 +340,11 @@ export default {
     //   this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
     // },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      if (this.currentSearchTerm.trim() !== search) {
+        // the search parameter needs to be '' to clear it
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      }
     },
     catchSearchCleared() {
       // Only change route if state currentSearchTrim is not equal to an empty string
