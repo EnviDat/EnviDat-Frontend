@@ -34,7 +34,7 @@
                 :key="index"
                 class="pt-1">
             <div class="text-body-1" >
-              <a :href="`${domain}/organization/${roles.organization}`" target="_blank">{{ roles.organization }}</a>
+              <a :href="`${ckanDomain}/organization/${roles.organization}`" target="_blank">{{ roles.organization }}</a>
             </div>
 
             <div class="text-body-1">
@@ -85,8 +85,6 @@ import {
   hasOrganizationRoles,
 } from '@/factories/userEditingValidations';
 
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
-
 export default {
   name: 'UserOrganizationInfo',
   props: {
@@ -121,11 +119,11 @@ export default {
       if (isSysadmin(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.sysadminOrganizationText || this.sysadminOrganizationText;
       }
-      
+
       if (isAdmin(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.adminOrganizationText || this.adminOrganizationText;
       }
-      
+
       if (isEditor(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.editorOrganizationText || this.editorOrganizationText;
       }
@@ -133,7 +131,7 @@ export default {
       if (this.isCollaborator) {
         return this.userDashboardConfig.organizationRolesText?.collaboratorText || this.collaboratorText;
       }
-      
+
       if (isMember(this.organizationRoles)) {
         return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
       }
@@ -157,7 +155,7 @@ export default {
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
     sysadminOrganizationText: 'You have System Administrator rights, be careful!',
     collaboratorText: 'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
-    domain,
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
   }),
   components: {
     UserAvatar,
