@@ -240,7 +240,6 @@ export default {
             this.authorSearch(searchParameter);
             this.activateAuthorSearch();
             this.resetScrollPos();
-            // console.log(`state isAuthorSearch  ${this.isAuthorSearch}`);
             return;
         }
 
@@ -306,7 +305,6 @@ export default {
       // always filter changes of the url except a change of the search term
       // because due to navigation the inital filter might be needed
       this.filterContent();
-      // console.log(`state isAuthorSearch  ${this.isAuthorSearch}`);
     },
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataList) {
@@ -342,12 +340,15 @@ export default {
     //   this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
     // },
     catchSearchClicked(search) {
-      // this.mixinMethods_authorReductiveChangeRoute(BROWSE_PATH);
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
     },
     catchSearchCleared() {
-      // the search parameter needs to be '' to clear it
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      // Only change route if state currentSearchTrim is not equal to an empty string
+      // to avoid redundant navigation when there are no search terms
+      if (this.currentSearchTerm.trim() !== '') {
+        // the search parameter needs to be '' to clear it
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      }
     },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
@@ -381,8 +382,6 @@ export default {
       authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,
       isAuthorSearch: `${METADATA_NAMESPACE}/isAuthorSearch`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
-      givenNameAuthorSearch: `${METADATA_NAMESPACE}/givenNameAuthorSearch`,
-      lastNameAuthorSearch: `${METADATA_NAMESPACE}/lastNameAuthorSearch`,
       vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
       vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
