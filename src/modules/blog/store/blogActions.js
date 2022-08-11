@@ -20,7 +20,7 @@ import {
 } from '@/modules/blog/store/blogMutationsConsts';
 
 const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
-let bloglistUrlPrefix = '.';
+let bloglistUrlPrefix = process.env.VUE_APP_ENVIDAT_DOMAIN;
 
 if (process.env.NODE_ENV === 'development' && useTestdata) {
   bloglistUrlPrefix = './testdata';
