@@ -24,7 +24,7 @@ const actions = {
   [GET_DMP]({ commit }) {
     commit(GET_DMP);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_DOMAIN}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
+    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
     if (process.env.NODE_ENV === 'development') {
       url = './testdata/dmp.md';
     }

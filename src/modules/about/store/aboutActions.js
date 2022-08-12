@@ -29,7 +29,7 @@ export default {
   [GET_GUIDELINES]({ commit }) {
     commit(GET_GUIDELINES);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_DOMAIN}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
+    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
     if (process.env.NODE_ENV === 'development') {
       url = './testdata/guidelines.md';
     }
@@ -45,7 +45,7 @@ export default {
   [GET_POLICIES]({ commit }) {
     commit(GET_POLICIES);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_DOMAIN}/policies/policies.md?nocache=${new Date().getTime()}`;
+    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/policies/policies.md?nocache=${new Date().getTime()}`;
     if (process.env.NODE_ENV === 'development') {
       url = './testdata/policies.md';
     }
@@ -61,7 +61,7 @@ export default {
   [GET_DMP]({ commit }) {
     commit(GET_DMP);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_DOMAIN}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
+    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
     if (process.env.NODE_ENV === 'development') {
       url = './testdata/dmp.md';
     }
