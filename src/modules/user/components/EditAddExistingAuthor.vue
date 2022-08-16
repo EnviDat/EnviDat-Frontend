@@ -179,6 +179,10 @@ export default {
     },
     notifyChange() {
 
+      if (!this.previewAuthors) {
+        return;
+      }
+
       if (this.validateProperty('authors', this.previewAuthors)) {
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
