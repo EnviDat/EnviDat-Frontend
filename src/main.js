@@ -54,15 +54,20 @@ Vue.config.errorHandler = (err, vm, info) => {
 // }
 
 const storeReference = store;
+const excludedDomains = [process.env.VUE_APP_ENVIDAT_STATIC_ROOT, process.env.VUE_APP_CONFIG_URL];
 
 axios.interceptors.request.use((config) => {
   // Do something before request is sent
 
-  const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
+  const urlIsExcluded = excludedDomains.some(domain => config.url.includes(domain));
 
-  if (apiKey) {
-    config.withCredentials = true;
-    config.Authorization = apiKey;
+  if (!urlIsExcluded) {
+    const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
+
+    if (apiKey) {
+      config.withCredentials = true;
+      config.Authorization = apiKey;
+    }
   }
 
   return config;
