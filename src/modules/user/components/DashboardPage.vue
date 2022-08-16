@@ -539,7 +539,7 @@ export default {
       return {
         title: 'No Datasets',
         description: "It seems you don't have any datasets.",
-        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
