@@ -140,7 +140,6 @@ import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
-// eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -229,13 +228,17 @@ export default {
       'config',
     ]),
     userEditMetadataConfig() {
+      if (!this.$store) {
+        return this.defaultUserEditMetadataConfig;
+      }
+
       return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
     },
     keywordsCountMin() {
-      return this.config?.userEditMetadataConfig?.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
+      return this.userEditMetadataConfig.keywordsCountMin;
     },
     keywordsListWordMax() {
-      return this.config?.userEditMetadataConfig?.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
+      return this.userEditMetadataConfig.keywordsListWordMax;
     },
     keywordsField: {
       get() {
@@ -311,7 +314,6 @@ export default {
 
         if (this.isKeywordValid(enteredKeyword)) {
           this.catchKeywordClicked(enteredKeyword);
-          this.search = null;
         }
       }
     },
@@ -327,6 +329,7 @@ export default {
       const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
 
       this.previewKeywords = this.processValues(selectedKeywords);
+      this.search = null;
     },
     processValues(valuesArray) {
 
@@ -366,7 +369,6 @@ export default {
       this.isEnoughKeywords();
 
       return valuesArray;
-
     },
     removeKeyword(item) {
 

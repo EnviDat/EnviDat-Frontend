@@ -29,7 +29,7 @@ The data sets must be:
 
 <br />
 
-This should be the normal case for projects having followed a DMP.  
+This should be the normal case for projects having followed a DMP.
 In any case, please note that we **donâ€™t serve** :
 
 -   Data â€œdumpsâ€ (undocumented, non-quality-controlled)
@@ -137,9 +137,9 @@ You have two options to publish your research data:
     -   Additional data files can also be added.
 
 <br />
-<br /> 
+<br />
 
 For any questions, please contact EnviDat support at mailto:envidat@wsl.ch.
 
-<br /> 
-<br /> 
+<br />
+<br />

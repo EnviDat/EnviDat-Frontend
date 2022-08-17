@@ -179,7 +179,16 @@ export default {
     },
     notifyChange() {
 
+      if (!this.previewAuthors) {
+        return;
+      }
+
       if (this.validateProperty('authors', this.previewAuthors)) {
+
+        if (this.previewAuthors?.length > this.authors?.length) {
+          // make sure to add the new author with cleared dataCredit because it has been newly added
+          this.cleanDataCreditFromNewAuthors();
+        }
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_AUTHOR_LIST,
@@ -197,6 +206,22 @@ export default {
       const authors = this.existingEnviDatUsers;
       const found = authors.filter(auth => auth.fullName === fullName);
       return found.length > 0 ? found[0] : null;
+    },
+    cleanDataCreditFromNewAuthors() {
+      const diff = this.previewAuthors.length - this.authors.length;
+      const startIndex = this.previewAuthors.length - diff;
+
+      const cleanedAuthors = []
+      for (let i = startIndex; i < this.previewAuthors.length; i++) {
+        const newAuthor = this.previewAuthors[i];
+
+        cleanedAuthors.push({
+          ...newAuthor,
+          dataCredit: [],
+        })
+      }
+
+      this.previewAuthors.splice(startIndex, cleanedAuthors.length, ...cleanedAuthors)
     },
   },
   data: () => ({
