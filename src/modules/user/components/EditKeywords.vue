@@ -123,9 +123,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
