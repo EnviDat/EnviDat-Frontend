@@ -316,6 +316,8 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     if (fullAuthor) {
       fullAuthors.push({
           ...fullAuthor,
+          // merge / overwrite the dataCredit, because
+          // it's based on the current datasets
           dataCredit: author.dataCredit,
         },
       );
@@ -328,10 +330,10 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
 
 
 export function getDataCreditLevel(dataCreditScore) {
-  const entires = authorDataCreditLevels;
+  const entries = authorDataCreditLevels;
 
-  for (let i = 0; i < entires.length; i++) {
-    const scoreLvl = entires[i];
+  for (let i = 0; i < entries.length; i++) {
+    const scoreLvl = entries[i];
     if (dataCreditScore >= scoreLvl.score) {
       return scoreLvl.lvl;
     }

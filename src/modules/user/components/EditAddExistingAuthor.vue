@@ -169,10 +169,17 @@ export default {
       const authors = [];
 
       authorsNames.forEach((name) => {
-        const author = this.getAuthorByName(name);
-        if (author) {
-          authors.push(author);
+        let author = this.getAuthorByName(name, this.authors);
+
+        // if the author is part of the dataset authors, pick it as it is
+        // including the existing dataCredits
+        if (!author) {
+          // if the author is newly picked, use the existing list as reference
+
+          author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
+
+        authors.push(author);
       });
 
       this.previewAuthors = authors;
@@ -184,11 +191,6 @@ export default {
       }
 
       if (this.validateProperty('authors', this.previewAuthors)) {
-
-        if (this.previewAuthors?.length > this.authors?.length) {
-          // make sure to add the new author with cleared dataCredit because it has been newly added
-          this.cleanDataCreditFromNewAuthors();
-        }
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_AUTHOR_LIST,
@@ -202,26 +204,9 @@ export default {
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
     },
-    getAuthorByName(fullName) {
-      const authors = this.existingEnviDatUsers;
+    getAuthorByName(fullName, authors) {
       const found = authors.filter(auth => auth.fullName === fullName);
       return found.length > 0 ? found[0] : null;
-    },
-    cleanDataCreditFromNewAuthors() {
-      const diff = this.previewAuthors.length - this.authors.length;
-      const startIndex = this.previewAuthors.length - diff;
-
-      const cleanedAuthors = []
-      for (let i = startIndex; i < this.previewAuthors.length; i++) {
-        const newAuthor = this.previewAuthors[i];
-
-        cleanedAuthors.push({
-          ...newAuthor,
-          dataCredit: [],
-        })
-      }
-
-      this.previewAuthors.splice(startIndex, cleanedAuthors.length, ...cleanedAuthors)
     },
   },
   data: () => ({
