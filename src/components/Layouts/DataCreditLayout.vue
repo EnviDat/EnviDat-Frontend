@@ -6,7 +6,7 @@
 
     <v-row no-gutters>
       <v-col cols="12"
-              :class="!dark ? 'white--text' : 'black--text'" >
+              :class="dark ? 'white--text' : 'black--text'" >
         {{ badgesLabel }}
       </v-col>
     </v-row>
@@ -15,7 +15,7 @@
       <v-col v-if="!hasDataCreditCounts"
               cols="12"
               class="pt-4"
-              :class="!dark ? 'white--text' : 'black--text'"       
+              :class="dark ? 'white--text' : 'black--text'"
               style="opacity: 0.65">
         {{ noCreditslabel }}
       </v-col>
