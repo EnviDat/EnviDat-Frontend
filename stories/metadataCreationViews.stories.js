@@ -44,11 +44,6 @@ import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
 const unFormatedMetadataCards = metadataset;
-
-// console.log(`got metadata ${!!unFormatedMetadataCards}`);
-
-// console.log(`got metadata ${!!unFormatedMetadataCards}`);
-
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -68,15 +63,13 @@ function getKeywordsSource(tagsSource, catCards) {
   return keywordsArray;
 }
 
-
-const keywordsTags = getKeywordsSource(storyTags, categoryCards);
-
+const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
 
 const placeholderKeywordsGenericProps = {
   // keywordsSource: tagsFromDatasets,
   metadataCardTitle: 'A Mostly Glorious Title',
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
-  existingKeywords: keywordsTags,
+  existingKeywords: tagsFromDatasets,
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
@@ -86,11 +79,8 @@ const metadataCards = [];
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   const el = unFormatedMetadataCards[i];
-
-// unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
-// });
 }
 
 
@@ -118,7 +108,19 @@ export const EditingKeywordsPlaceholder = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditKeywords :genericProps="genericProps" />
+          <EditKeywords v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditKeywords with prefilled keywords
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditKeywords v-bind="genericProps"
+                        :keywords="storyTags5"
+          />
         </v-col>
       </v-row>
 
@@ -128,7 +130,7 @@ export const EditingKeywordsPlaceholder = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataInfo :genericProps="genericProps" />
+          <EditDataInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -138,7 +140,7 @@ export const EditingKeywordsPlaceholder = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <MetadataCreationRelatedInfo :genericProps="genericProps" />
+          <MetadataCreationRelatedInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -146,6 +148,7 @@ export const EditingKeywordsPlaceholder = () => ({
     `,
     data: () => ({
       genericProps: placeholderKeywordsGenericProps,
+      storyTags5,
     }),
   });
 
@@ -160,7 +163,7 @@ export const EditRelatedPublicationViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditRelatedPublications :genericProps="genericProps" />
+          <EditRelatedPublications v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -171,7 +174,7 @@ export const EditRelatedPublicationViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditRelatedPublications :genericProps="genericPropsFilled" />
+          <EditRelatedPublications v-bind="genericPropsFilled" />
         </v-col>
       </v-row>
 

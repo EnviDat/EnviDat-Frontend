@@ -122,6 +122,20 @@ export const UserPickerViews = () => ({
       </v-col>
     </v-row>
 
+    <v-row>
+      BaseUserPicker read only with pre selection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :preSelected="preSelectedAuthors3"
+                        :readonly="true"
+                        hint="Testing readonly" />
+      </v-col>
+    </v-row>
+  
   </v-col>
   `,
   methods: {
@@ -295,7 +309,8 @@ export const FullEditingAuthorViews = () => ({
     <v-row class="py-3" >
       <v-col >
         <EditAuthorList :authors="authors"
-                        :existingAuthors="existingAuthors" />
+                        :existingAuthors="existingAuthors"
+                        :authorsMap="authorsMap" />
       </v-col>
     </v-row>
 
@@ -385,5 +400,6 @@ export const FullEditingAuthorViews = () => ({
     selectionId: '',
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,
+    authorsMap,
   }),
 });

@@ -1,9 +1,15 @@
 <template>
   <v-card id="EditMetadataResources"
-          class="pa-4" >
+          class="pa-0"
+          :loading="loading" >
 
-<!--    <v-container fluid
-                 class="pa-0">-->
+    <v-container fluid
+                 class="pa-4" >
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row >
         <v-col class="text-h5" >
@@ -20,8 +26,7 @@
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
-            <template v-if="!loading"
-                      #editingAuthors="{ author }" >
+            <template #editingAuthors="{ author }" >
 
               <AuthorCard :author="author"
                           :authorDetailsConfig="authorDetailsConfig"
@@ -44,7 +49,7 @@
         </v-col>
       </v-row>
 
-<!--    </v-container>-->
+    </v-container>
 
   </v-card>
 
