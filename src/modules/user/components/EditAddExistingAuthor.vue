@@ -82,6 +82,7 @@ import {
 } from '@/factories/eventBus';
 import { getArrayOfFullNames } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -211,8 +212,8 @@ export default {
   },
   data: () => ({
     labels: {
-      title: 'Change Metadata Authors',
-      instructions: 'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
+      title: EDIT_METADATA_AUTHORS_TITLE,
+      instructions: 'Choose authors which from other metadata entries.',
       userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
     },
     validationErrors: {

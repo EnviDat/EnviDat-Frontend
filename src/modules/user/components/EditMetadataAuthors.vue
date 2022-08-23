@@ -13,7 +13,7 @@
 
       <v-row >
         <v-col class="text-h5" >
-          {{ EDIT_METADATA_AUTHORS_TITLE }}
+          {{ title }}
         </v-col>
       </v-row>
 
@@ -71,7 +71,7 @@
 */
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
-  EDIT_METADATA_AUTHORS_TITLE,
+  EDIT_METADATA_AUTHORSLIST_TITLE,
 } from '@/factories/metadataConsts';
 
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
@@ -185,7 +185,7 @@ export default {
   data: () => ({
     stepKey: EDITMETADATA_AUTHOR_LIST,
     editingInstructions: 'Select an author from the list to edit its details',
-    EDIT_METADATA_AUTHORS_TITLE,
+    title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
   }),

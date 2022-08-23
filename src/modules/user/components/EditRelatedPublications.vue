@@ -189,7 +189,7 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add references to other related publications',
+      cardInstructions: 'Add references to other related publications which are relevant to this research data.',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {
