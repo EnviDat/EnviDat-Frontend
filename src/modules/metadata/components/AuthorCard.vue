@@ -411,12 +411,16 @@ export default {
       return minSize;
     },
     dynamicCardBackground() {
-      if (this.dataCreditLevel === 0) {
-        return 'background-color: #fff';
+      let from = 0;
+      let to = 0;
+
+      if (this.dataCreditLevel > 0) {
+        from = this.dataCreditLevel - 1;
+        to = this.dataCreditLevel - 1;
       }
 
-      const color = this.colorPalette[this.dataCreditLevel - 1];
-      const toColor = this.colorPaletteTo[this.dataCreditLevel - 1];
+      const color = this.colorPalette[from];
+      const toColor = this.colorPaletteTo[to];
 
       return `background-image: linear-gradient(45deg, ${color} 10%, ${toColor} 90%);
               background-position: center, center; background-size: cover;`;
