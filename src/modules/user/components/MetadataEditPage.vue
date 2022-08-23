@@ -308,7 +308,8 @@ export default {
       this.$router.push({ path });
     },
     catchPreviewClicked() {
-      window.open(`${this.domain}/#${METADATADETAIL_PATH}/${this.metadataId}`, '_blank');
+      const routeData = this.$router.resolve({ path:`${METADATADETAIL_PATH}/${this.metadataId}`});
+      window.open(routeData.href, '_blank');
     },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
