@@ -35,7 +35,7 @@
 
       <v-row>
         <v-col cols="6">
-          <div class="text-body-1">{{ labels.descriptionInstructions }}</div>
+          <div class="text-body-1" v-html="labels.descriptionInstructions"></div>
         </v-col>
         <v-col cols="6">
           <div class="text-subtitle-1">{{ labels.subtitlePreview }}</div>
@@ -90,6 +90,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -190,9 +191,9 @@ export default {
     editingProperty: 'description',
     previewText: null,
     labels: {
-      cardTitle: 'Metadata Description',
-      labelTextarea: 'Metadata Description',
-      descriptionInstructions: 'Please enter a description for the research data.',
+      cardTitle: EDIT_METADATA_DESCRIPTION_TITLE,
+      labelTextarea: 'Research Data Description',
+      descriptionInstructions: 'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
       subtitlePreview: 'Description Preview',
     },
     validationErrors: {

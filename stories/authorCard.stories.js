@@ -82,6 +82,10 @@ export const AuthorCardViews = () => ({
     <v-row>
 
       <v-col cols="12" md="4" pt-5 >
+        <author-card :author="emptyAuthor" />
+      </v-col>
+      
+      <v-col cols="12" md="4" pt-5 >
 
         <author-card :author="authorFromCollection" />
       </v-col>      
@@ -157,6 +161,25 @@ export const AuthorCardViews = () => ({
         software: 30,
         publication: 15,
         supervision: 20,
+      },
+    },
+    emptyAuthor: {
+      firstName: 'Some',
+      lastName: 'Dude',
+      fullName: 'Some Dude',
+      datasetCount: 0,
+      affiliation: 'WSL',
+      id: {
+        identifier: '01234-0003-3878-1845',
+      },
+      email: 'some.dude@wsl.ch',
+      totalDataCredits: {
+        collection: 0,
+        validation: 0,
+        curation: 0,
+        software: 0,
+        publication: 0,
+        supervision: 0,
       },
     },
   }),

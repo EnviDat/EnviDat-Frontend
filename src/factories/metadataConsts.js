@@ -29,10 +29,28 @@ export const METADATA_FUNDING_TITLE = 'Funding Information';
 export const METADATA_LOCATION_TITLE = 'Geospatial Information';
 export const METADATA_RESOURCES_TITLE = 'Data and resources';
 
-export const EDIT_METADATA_MAIN_TITLE = 'Metadata Main Information';
+export const EDIT_METADATA_MAIN_TITLE = 'Research Header Information';
+export const EDIT_METADATA_DESCRIPTION_TITLE = 'Research Data Description';
+export const EDIT_METADATA_KEYWORDS_TITLE = 'Research Data Keywords';
+export const EDIT_METADATA_AUTHORS_TITLE = 'Involved Authors';
+
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
-export const EDIT_METADATA_AUTHORS_TITLE = 'Select an Author for Editing';
+export const EDIT_METADATA_AUTHORSLIST_TITLE = 'Select an Author for Editing';
 export const EDIT_ORGANIZATION_TITLE = 'Organization(s) for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
 export const EDIT_METADATA_GEODATA_TITLE = 'Editing Geospatial Information';
+
+export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
+export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
+export const EDIT_STEP_TITLE_MAIN_RELATED = 'Related Research';
+export const EDIT_STEP_TITLE_MAIN_PUBLICATION = 'Publication Information';
+
+export const EDIT_STEP_TITLE_SUB_HEADER = 'Header Information';
+export const EDIT_STEP_TITLE_SUB_DESC = 'Description';
+export const EDIT_STEP_TITLE_SUB_KEYWORDS = 'Keywords';
+export const EDIT_STEP_TITLE_SUB_AUTHORS = 'Authors';
+
+export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Resources';
+export const EDIT_STEP_TITLE_SUB_DATES = 'Data License & Time';
+export const EDIT_STEP_TITLE_SUB_GEO = 'Geospatial Information';

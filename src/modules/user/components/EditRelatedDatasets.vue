@@ -188,7 +188,7 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: 'Add references to other related datasets',
+      cardInstructions: 'Add references to other related research datasets which are relevant to this one.',
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {
