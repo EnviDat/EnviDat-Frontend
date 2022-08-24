@@ -97,6 +97,7 @@
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
+    "defaultLocation": {"type": "Polygon", "coordinates": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]},
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
     "customFieldsMax": 10,
