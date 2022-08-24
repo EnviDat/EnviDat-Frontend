@@ -9,17 +9,20 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
 import fileIcon from '../src/assets/icons/file.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
+import { BUTTONS_VIEWS } from './storybookFolder';
 
 
-storiesOf('2 Buttons / Icon buttons', module)
-  .add('icon buttons with envidat icons', () => ({
+export default {
+  title: `${BUTTONS_VIEWS} / Icon buttons`,
+  decorators: [],
+  parameters: {},
+};
+
+export const IconButtonsViews = () => ({
     components: { BaseIconButton },
     template: `
     <v-row style="border: solid 1px;">
@@ -73,8 +76,9 @@ storiesOf('2 Buttons / Icon buttons', module)
       showFullDescription: false,
       contact2Icon,
     }),
-  }))
-  .add('envidat icons with count badge', () => ({
+  });
+
+export const IconsWithCountBadeViews = () => ({
     components: { BaseIconCountView },
     template: `
     <v-row style="border: solid 1px;">
@@ -105,4 +109,4 @@ storiesOf('2 Buttons / Icon buttons', module)
       counter: 55,
       tooltip: 'This is the tooltip of the icon count view',
     }),
-  }));
+  });

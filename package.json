@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.7.2",
+  "version": "0.7.261",
   "private": true,
   "description": "Envidat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -11,6 +11,7 @@
     "test": "jest",
     "lint": "vue-cli-service lint",
     "extract-authors": "node src/node/extractAuthors.js",
+    "extract-emails": "node src/node/extractUsers.js",
     "full-build": "vue-cli-service build --modern && build-storybook",
     "storybook": "start-storybook -p 6006",
     "test:debug": "node --inspect-brk=9229 ./node_modules/jest/bin/jest.js --no-cache --runInBand",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
     "@geoman-io/leaflet-geoman-free": "^2.11.2",
+    "@metamask/jazzicon": "^2.0.0",
     "@turf/turf": "^5.1.6",
     "@uppy/aws-s3-multipart": "^2.4.1",
     "@uppy/core": "^2.3.1",

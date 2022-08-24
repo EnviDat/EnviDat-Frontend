@@ -69,7 +69,8 @@
       <component :is="gcnetModalComponent"
                  :currentStation="currentStation"
                  :fileObjects="fileObjects"
-                 :graphStyling="graphStyling" />
+                 :graphStyling="graphStyling"
+                 :config="config" />
 
       <component :is="fullScreenComponent"
                   :site="currentSite"

@@ -15,16 +15,16 @@
         </v-row>
 
         <v-row v-if="!selectedAuthor" >
-          <v-col>
-            <v-card class="pa-0">
+          <v-col cols="12">
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
-
-<!--              disabled Author creation for a first "editing only" version -->
-<!--              <EditAddAuthor @createAuthor="catchCreateAuthor" />-->
-            </v-card>
-
           </v-col>
+
+          <v-col cols="12">
+<!--          For now the EditAddAuthor is a placeholder which links to the legacy website -->
+              <EditAddAuthor :metadataId="metadataId" />
+          </v-col>
+
         </v-row>
       </v-col>
 
@@ -52,7 +52,7 @@
 */
 
 import EditAuthor from '@/modules/user/components/EditAuthor';
-// import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
@@ -86,7 +86,7 @@ export default {
   components: {
     EditMetadataAuthors,
     EditAuthor,
-//    EditAddAuthor,
+    EditAddAuthor,
     EditAddExistingAuthor,
   },
   props: {
@@ -97,6 +97,15 @@ export default {
     authors: {
       type: Array,
       default: () => [],
+    },
+    // only used for testing via storybook
+    authorsMap: {
+      type: Object,
+      default: () => {},
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
     message: {
       type: String,
@@ -124,6 +133,9 @@ export default {
     },
   },
   computed: {
+    metadataId() {
+      return this.$route?.params?.metadataid || '';
+    },
     existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
@@ -138,26 +150,40 @@ export default {
 
       return this.authors;
     },
-    authorsMap() {
+    noDataCreditAuthorsWrap() {
+      const authors = [...this.existingAuthorsWrap];
+
+      for (let i = 0; i < authors.length; i++) {
+        authors[i] = {
+          ...authors[i],
+          dataCredit: [],
+        }
+      }
+
+      return authors
+    },
+/*
+    authorsMapWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
       }
 
-      return null;
+      return this.authorsMap;
     },
     authorsMapLoading() {
       if (!this.$store) {
         return false;
       }
 
-      return this.authorsMap === null;
+      return this.authorsMapWrap === null;
     },
+*/
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
-        existingEnviDatUsers: this.existingAuthorsWrap,
+        existingEnviDatUsers: this.noDataCreditAuthorsWrap,
         isClearable: false,
-        loading: this.authorsMapLoading,
+        loading: this.loading, // || this.authorsMapLoading,
         message: this.message,
         messageDetails: this.messageDetails,
         error: this.error,
@@ -168,33 +194,10 @@ export default {
     },
     authorListingGenericProps() {
 
-      const authorsMap = this.authorsMap;
-      const authors = this.authorsWrap;
-
-      let mergedAuthors = [];
-
-      if (authorsMap) {
-        const fullAuthors = getFullAuthorsFromDataset(authorsMap, { author: authors });
-
-        for (let i = 0; i < authors.length; i++) {
-          const author = authors[i];
-          const fullAuthor = fullAuthors[i];
-
-          mergedAuthors.push({
-            ...fullAuthor,
-            // manually merge / overwrite the dataCredit, because
-            // it's based on the current datasets
-            dataCredit: author.dataCredit,
-          });
-        }
-      } else {
-        mergedAuthors = authors;
-      }
-
       return {
-        authors: mergedAuthors,
+        authors: this.authorsWrap,
         existingAuthors: this.existingAuthorsWrap,
-        loading: this.authorsMapLoading,
+        loading: this.loading, // || this.authorsMapLoading,
         authorDetailsConfig: {
           showDatasetCount: false,
           showAuthorInfos: true,

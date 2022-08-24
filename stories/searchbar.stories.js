@@ -9,16 +9,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
+import SearchBarView from '@/modules/home/components/SearchBarView';
+import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView';
+import { FILTERING_VIEWS } from './storybookFolder';
 
-import SearchBarView from '@/modules/home/components/SearchBarView.vue';
-import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
+export default {
+  title: `${FILTERING_VIEWS} / SearchBarView`,
+  decorators: [],
+  parameters: {
+  },
+};
 
-
-storiesOf('4 Filtering / SearchBarView', module)
-  .add('basic', () => ({
+export const BasicSearchViews = () => ({
     components: { SearchBarView },
     template: `
     <search-bar-view labelText="Search for something"
@@ -37,8 +39,9 @@ storiesOf('4 Filtering / SearchBarView', module)
     data: () => ({
       searchTerm: '',
     }),
-  }))
-  .add('small', () => ({
+  });
+
+export const SmallSearchViews = () => ({
     components: { SmallSearchBarView },
     template: `
     <v-row >
@@ -136,4 +139,4 @@ storiesOf('4 Filtering / SearchBarView', module)
     data: () => ({
       searchTerm: '',
     }),
-  }));
+  });

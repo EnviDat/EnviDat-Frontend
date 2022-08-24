@@ -10,9 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
@@ -32,7 +29,7 @@ import {
   localIdProperty,
 } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
-import { METADATA_EDITING } from './storybookFolder';
+import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
 
 
 // const apiFactory = require('@/factories/apiFactory');
@@ -49,11 +46,13 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 }
 // });
 
-const storybookFolder = `${METADATA_EDITING} / Data Infos`;
+export default {
+  title: `${METADATA_EDITING} / Data Infos`,
+  decorators: [],
+  parameters: {},
+};
 
-
-storiesOf(storybookFolder, module)
-  .add('Edit Resources List', () => ({
+export const EditResourcesList = () => ({
     components: { EditMetadataResources },
     template: `
     <v-col>
@@ -119,8 +118,9 @@ storiesOf(storybookFolder, module)
         },
       },
     }),
-  }))
-  .add('Edit Data Info', () => ({
+  });
+
+export const EditDataInfoViews = () => ({
   components: { EditDataInfo },
   template: `
     <v-col>
@@ -177,8 +177,9 @@ storiesOf(storybookFolder, module)
         },
       ],
     }),
-  }))
-  .add('Edit Data And Resources List', () => ({
+  });
+
+export const EditDataAndResourcesListViews = () => ({
     components: { EditDataAndResources },
     template: `
     <v-col>
@@ -293,4 +294,4 @@ storiesOf(storybookFolder, module)
       resources: metadataCards[0].resources,
       selectionId: -1,
     }),
-  }));
+  });

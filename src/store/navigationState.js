@@ -47,6 +47,7 @@ export const navigationItems = [
     pageName: 'external',
     disabled: false,
   },
+/*
   {
     title: 'Sign In',
     icon: 'person',
@@ -56,6 +57,7 @@ export const navigationItems = [
     pageName: USER_SIGNIN_PAGENAME,
     disabled: false,
   },
+*/
   {
     title: 'Blog',
     icon: 'auto_stories',

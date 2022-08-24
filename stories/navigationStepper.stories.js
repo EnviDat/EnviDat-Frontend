@@ -12,7 +12,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// /* eslint-disable import/no-extraneous-dependencies */
 import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -26,8 +25,10 @@ import {
   getStepByName,
 } from '@/factories/userEditingFactory';
 
+import { NAVIGATION_VIEWS } from './storybookFolder';
+
 export default {
-  title: '5 Navigation / Navigation Stepper',
+  title: `${NAVIGATION_VIEWS} / NavigationStepper`,
   decorators: [],
   parameters: {},
 };

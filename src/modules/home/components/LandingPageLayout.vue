@@ -3,10 +3,11 @@
            :class="{
             'gridXs' : $vuetify.breakpoint.xsOnly,
             'gridSm' : $vuetify.breakpoint.smOnly,
-            'gridXl' : $vuetify.breakpoint.xl,
            }"
            id="LandingPage">
 
+<!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
+    
     <div v-if="$slots.logo"
          class="logoGrid"
           :class="paddings" >
@@ -118,17 +119,20 @@ export default {
     "Logo Welcome Categories"
     ". . ."
     "News Datasets Articles"
+
+
 }
 
-.landingPageGrid.gridXl {
-  grid-template-columns: 4fr 2fr 2fr 1fr;
-  grid-template-rows: 4fr 0.25fr auto;
-  grid-template-areas:
+@media screen and (min-width: 1921px) {
+  .landingPageGrid {
+    grid-template-columns: 2fr 2fr 2fr 2fr;
+    grid-template-rows: 1fr 0.25fr auto;
+    grid-template-areas:
     ". Logo Welcome Categories"
     ". . . ."
     ". News Datasets Articles"
+  }
 }
-
 
 .landingPageGrid.gridSm {
   grid-template-columns: 1fr 1fr;

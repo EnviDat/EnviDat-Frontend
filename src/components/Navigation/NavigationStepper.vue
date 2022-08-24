@@ -14,6 +14,17 @@
                          :stepNumber="currentStepIndex"
                          @stepClick="catchStepClick" />
 
+      <BaseIconButton v-if="showPreviewButton"
+                      id="PreviewMetadataButton"
+                      class="ma-auto px-4"
+                      material-icon-name="remove_red_eye"
+                      icon-color="white"
+                      color="white"
+                      outlined
+                      tooltipText="Preview Dataset"
+                      :tooltipBottom="true"
+                      @clicked="catchPreviewClick" />
+
       <BaseIconButton id="MetadataEditCloseButton"
                       class="ma-auto px-4"
                       material-icon-name="close"
@@ -96,6 +107,10 @@ export default {
     stepColor: String,
     nextMajorStep: String,
     loading: {
+      type: Boolean,
+      default: false,
+    },
+    showPreviewButton: {
       type: Boolean,
       default: false,
     },
@@ -183,6 +198,9 @@ export default {
     catchCloseClick() {
       this.$emit('clickedClose')
     },
+    catchPreviewClick() {
+      this.$emit('clickedPreview')
+    },
   },
   data: () => ({
     currentStep: null,
@@ -211,7 +229,7 @@ export default {
 
 .headerContentGrid {
   display: grid;
-  grid-template-columns: 11fr auto;
+  grid-template-columns: 11fr 0.1fr 0.1fr;
   gap: 0;
   width: 100%;
   height: 100%;

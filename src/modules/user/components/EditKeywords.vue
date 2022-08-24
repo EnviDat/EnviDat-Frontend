@@ -36,7 +36,7 @@
 
 
       <v-row>
-        <v-col class="text-body-2">
+        <v-col class="text-body-1">
           <div >{{ labels.cardInstructions1 }}</div>
           <div >{{ labels.cardInstructions2 }}</div>
         </v-col>
@@ -140,11 +140,11 @@ import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
-// eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -156,10 +156,11 @@ export default {
     keywordCount: 0,
     rulesKeywords: [],
     labels: {
-      title: 'Edit Metadata Keywords',
+      title: EDIT_METADATA_KEYWORDS_TITLE,
       keywordsLabel: 'Click here to pick Keywords',
-      cardInstructions1: 'Start typing to search for a keyword. To create a new keyword type it and press enter.',
-      cardInstructions2: 'Please enter at least 5 keywords.',
+      cardInstructions1: 'Please enter at least 5 keywords.',
+      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
+          ' To create a new keyword type it and press enter.',
       previewText: 'Metadata card preview',
     },
     defaultUserEditMetadataConfig: {
@@ -229,13 +230,17 @@ export default {
       'config',
     ]),
     userEditMetadataConfig() {
+      if (!this.$store) {
+        return this.defaultUserEditMetadataConfig;
+      }
+
       return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
     },
     keywordsCountMin() {
-      return this.config?.userEditMetadataConfig?.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
+      return this.userEditMetadataConfig.keywordsCountMin;
     },
     keywordsListWordMax() {
-      return this.config?.userEditMetadataConfig?.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
+      return this.userEditMetadataConfig.keywordsListWordMax;
     },
     keywordsField: {
       get() {
@@ -311,7 +316,6 @@ export default {
 
         if (this.isKeywordValid(enteredKeyword)) {
           this.catchKeywordClicked(enteredKeyword);
-          this.search = null;
         }
       }
     },
@@ -327,6 +331,7 @@ export default {
       const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
 
       this.previewKeywords = this.processValues(selectedKeywords);
+      this.search = null;
     },
     processValues(valuesArray) {
 
@@ -366,7 +371,6 @@ export default {
       this.isEnoughKeywords();
 
       return valuesArray;
-
     },
     removeKeyword(item) {
 

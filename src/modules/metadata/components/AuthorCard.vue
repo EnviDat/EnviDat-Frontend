@@ -92,7 +92,7 @@
                           :badgesLabel="dataCreditBadgeLabel"
                           :iconColor="dark ? 'white' : 'black'"
                           :badgeColor="dark ? 'white' : darkColor"
-                          :dark="!dark" />
+                          :dark="dark" />
 
         <v-row v-if="authorDetailsConfig.showDataCreditScore"
                 no-gutters
@@ -411,12 +411,16 @@ export default {
       return minSize;
     },
     dynamicCardBackground() {
-      if (this.dataCreditLevel === 0) {
-        return 'background-color: #fff';
+      let from = 0;
+      let to = 0;
+
+      if (this.dataCreditLevel > 0) {
+        from = this.dataCreditLevel - 1;
+        to = this.dataCreditLevel - 1;
       }
 
-      const color = this.colorPalette[this.dataCreditLevel - 1];
-      const toColor = this.colorPaletteTo[this.dataCreditLevel - 1];
+      const color = this.colorPalette[from];
+      const toColor = this.colorPaletteTo[to];
 
       return `background-image: linear-gradient(45deg, ${color} 10%, ${toColor} 90%);
               background-position: center, center; background-size: cover;`;
@@ -478,8 +482,8 @@ export default {
     // darkColor: '#231F20',
     darkColor: '#384753',
     whiteColor: '#EFEFEF',
-    colorPalette: ['rgb(226, 242, 124)', 'rgb(158, 219, 129)', 'rgb(0, 191, 173)', 'rgb(8, 135, 124)', 'rgb(153, 88, 209)', 'rgb(17, 17, 17)'],
-    colorPaletteTo: ['rgba(226, 242, 124, 0.4)', 'rgba(158, 219, 129, 0.4)', 'rgba(0, 191, 173, 0.4)', 'rgba(8, 135, 124, 0.4)', 'rgba(153, 88, 209, 0.4)', 'rgba(17, 17, 17, 0.4)'],
+    colorPalette: ['rgb(226, 242, 124)', 'rgb(158, 219, 129)', 'rgb(0, 191, 173)', 'rgb(8, 135, 124)', 'rgb(153, 88, 209)', 'rgb(55, 55, 55)'],
+    colorPaletteTo: ['rgba(226, 242, 124, 0.4)', 'rgba(158, 219, 129, 0.4)', 'rgba(0, 191, 173, 0.4)', 'rgba(8, 135, 124, 0.4)', 'rgba(153, 88, 209, 0.4)', 'rgba(55, 55, 55, 0.4)'],
     // colorsPalette: ['#E2F27C', '#9EDB81', '#00BFAD', '#08877C', '#111111'],
   }),
 };

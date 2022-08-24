@@ -291,10 +291,9 @@ import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 import {
   eventBus,
   SELECT_EDITING_DATASET,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
 } from '@/factories/eventBus';
 
-
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 export default {
   name: 'DashboardPage',
@@ -319,6 +318,12 @@ export default {
       this.fetchUserDatasets();
       this.fetchCollaboratorDatasets()
       this.fetchUserOrganisationData();
+    }
+  },
+  mounted() {
+    if (this.dashboardRedirect) {
+      // if the config is set to redirect to the legacy dashboard
+      eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
     }
   },
   computed: {
@@ -351,6 +356,9 @@ export default {
     ]),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
+    },
+    dashboardRedirect() {
+      return this.userDashboardConfig?.dashboardRedirect || false;
     },
     loading() {
       return this.userLoading;
@@ -483,7 +491,7 @@ export default {
       return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
     },
     oldDashboardUrl() {
-      return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
+      return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
       if (this.userOrganizationsList.length <= 0) {
@@ -531,7 +539,7 @@ export default {
       return {
         title: 'No Datasets',
         description: "It seems you don't have any datasets.",
-        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
@@ -556,7 +564,7 @@ export default {
 
       tags = tags.slice(0, maxTagAmount);
       tags = tags.sort((a, b) => a.count < b.count ? 1 : -1);
-      
+
       return tags;
     },
     getMetadataState(metadata) {
@@ -626,7 +634,7 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      window.open(`${this.domain}${this.createCKANUrl}`, '_blank');
+      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
@@ -681,7 +689,7 @@ export default {
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    domain,
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',

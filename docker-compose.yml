@@ -3,8 +3,6 @@ version: '3'
 networks:
   ckan-internal:
     external: true
-  traefik-proxy:
-    external: true
 
 services:
   envidat-frontend:
@@ -20,9 +18,10 @@ services:
     container_name: envidat_frontend
     ports:
       - 8990:8080
+      - 9229:9229
     volumes:
       - .:/app
+      - /app/node_modules/
     networks:
       - ckan-internal
-      - traefik-proxy
     restart: unless-stopped

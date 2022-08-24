@@ -19,8 +19,10 @@ import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
 import { getNameInitials } from '@/factories/authorFactory';
 import authorCollection from '../public/testdata/authorCollection.json';
 
+import { USER_VIEWS } from './storybookFolder';
+
 export default {
-  title: '7 User / User Elements',
+  title: `${USER_VIEWS} / User Elements`,
   decorators: [],
   parameters: {
   },

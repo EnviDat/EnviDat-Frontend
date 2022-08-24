@@ -64,12 +64,18 @@
   },
   "maintenanceConfig": {
     "signinDisabled": false,
+    "signinRedirectActive": false,
     "messageActive": false,
     "message": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>."
   },
   "newsConfig": {
     "newsActive": true,
     "entries": [
+      {
+        "title": "Maintenance Mode Active!",
+        "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
+        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+      }
     ]
   },
   "ignoredNews": {
@@ -98,6 +104,7 @@
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
+    "dashboardRedirect": false,
     "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
     "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
     "organizationRolesText": {

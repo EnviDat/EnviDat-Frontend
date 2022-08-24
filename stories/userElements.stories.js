@@ -21,7 +21,11 @@ import UserCard from '@/components/Cards/UserCard';
 import UserMenu from '@/modules/user/components/UserMenu';
 import MetadataCube from '@/components/BaseElements/MetadataCube';
 
+import seedrandom from 'seedrandom';
+import jazzicons from '@metamask/jazzicon';
 import authorCollection from '../public/testdata/authorCollection.json';
+
+import { USER_VIEWS } from './storybookFolder';
 
 const userMenuItems = [
   { title: 'dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: 'dashboard', pageName: 'UserDashboard' },
@@ -29,7 +33,7 @@ const userMenuItems = [
 ];
 
 export default {
-  title: '7 User / User Elements',
+  title: `${USER_VIEWS} / User Elements`,
   decorators: [],
   parameters: {
   },
@@ -40,20 +44,95 @@ export const UserMenuViews = () => ({
   template: `
     <v-row >
 
+      <v-col cols="12">
+        Click on the avatar
+      </v-col>
+    
       <v-col class="shrink">
         <UserMenu :navItems="userMenuItems" />
+      </v-col>
+
+      <v-col class="shrink">
+        <UserMenu :navItems="userMenuItems" 
+                  :user-object="user" />
+      </v-col>
+
+      <v-col class="shrink">
+        <UserMenu :navItems="userMenuItems"
+                  :user-object="user2" />
+      </v-col>
+
+      <v-col class="shrink">
+        <UserMenu :navItems="userMenuItems"
+                  :user-object="user3" />
       </v-col>
 
     </v-row>
     `,
   data: () => ({
+    user: {
+      firstName: 'Enjo',
+      lastName: 'Haas',
+    },
+    user2: {
+      firstName: 'Onio',
+      lastName: 'Artho',
+    },
+    user3: {
+      firstName: 'Guybrush',
+      lastName: 'Threepwood',
+    },
     userMenuItems,
   }),
 });
 
+export const JazzIconsViews = () => ({
+  components: { },
+  template: `
+    <v-row >
+
+   
+      <v-col class="shrink"
+             id="jazzIcon"
+             ref="jazzIcon">
+      </v-col>
+
+      <v-col class="shrink"
+             id="jazzIcon2"
+             ref="jazzIcon2">
+      </v-col>
+
+      <v-col class="shrink"
+             id="jazzIcon3"
+             ref="jazzIcon3">
+      </v-col>
+    
+    </v-row>
+    `,
+  mounted() {
+    this.jazzIcon(this.$refs.jazzIcon);
+    this.jazzIcon(this.$refs.jazzIcon2);
+    this.jazzIcon(this.$refs.jazzIcon3);
+  },
+  methods: {
+    jazzIcon(ref) {
+
+      if (ref) {
+        const rng = seedrandom(ref.id);
+        const randNr = rng.int32();
+        const icon = jazzicons(48, randNr);
+        ref.appendChild(icon);
+      }
+    },
+  },
+  data: () => ({
+    userMenuItems,
+  }),
+});
 export const UserAvatarViews = () => ({
   components: { UserAvatar },
   template: `
+    <v-container fluid>
     <v-row>
 
     <v-col>
@@ -71,7 +150,9 @@ export const UserAvatarViews = () => ({
     <v-col>
       <UserAvatar :size="128"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32" nameInitials="DH"/>
     </v-col>
@@ -87,7 +168,9 @@ export const UserAvatarViews = () => ({
     <v-col>
       <UserAvatar :size="128" nameInitials="DH"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32"
                   nameInitials="II"
@@ -111,7 +194,9 @@ export const UserAvatarViews = () => ({
                   nameInitials="II"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
+    </v-row>
 
+    <v-row>
     <v-col>
       <UserAvatar :size="32"
                   defaultGravatar="robohash"
@@ -135,7 +220,9 @@ export const UserAvatarViews = () => ({
                   emailHash="4c6104f35821eb25ef16742fc23eb13e"
                   nameInitials="KP"/>
     </v-col>
+    </v-row>
 
+    <v-row class="pt-4">
     <v-col>
       <UserAvatar :size="32"
                   nameInitials="II"
@@ -160,6 +247,7 @@ export const UserAvatarViews = () => ({
     </v-col>
 
     </v-row>
+    </v-container>
   `,
 });
 

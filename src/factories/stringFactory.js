@@ -4,7 +4,7 @@
  * @summary functions for string conversion
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-12-03 10:53:30 
+ * Created at     : 2020-12-03 10:53:30
  * Last modified  : 2020-12-09 11:47:25
  *
  * This file is subject to the terms and conditions defined in
@@ -88,11 +88,20 @@ export function decryptString(string, encryptionKey) {
 }
 
 export function GetEncryptedKeyFromCookie(cookieName) {
+  const isProd = process.env.NODE_ENV === 'production';
+
   // Get the encryption token from cookie or generate a new one.
-  const encryptionToken = Cookie.get(cookieName) || uuid.v4();
+  const encryptionToken = Cookie.get(cookieName, {
+    domain: isProd ? '.envidat.ch' : 'localhost',
+  }) || uuid.v4();
 
   // Store the encryption token in a secure cookie.
-  Cookie.set(cookieName, encryptionToken, { secure: true, expires: 7 });
+  Cookie.set(cookieName, encryptionToken, {
+    secure: true,
+    sameSite: 'lax',
+    expires: 7,
+    domain: isProd ? '.envidat.ch' : 'localhost',
+  });
 
   return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();
 }

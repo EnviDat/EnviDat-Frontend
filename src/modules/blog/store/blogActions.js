@@ -19,11 +19,18 @@ import {
   GET_BLOG_POST_ERROR,
 } from '@/modules/blog/store/blogMutationsConsts';
 
+const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+let bloglistUrlPrefix = process.env.VUE_APP_ENVIDAT_STATIC_ROOT;
+
+if (process.env.NODE_ENV === 'development' && useTestdata) {
+  bloglistUrlPrefix = './testdata';
+}
+
 export default {
   [GET_BLOG_LIST]({ commit }) {
     commit(GET_BLOG_LIST);
 
-    const url = `./blog/bloglist.json?nocache=${new Date().getTime()}`;
+    const url = `${bloglistUrlPrefix}/blog/bloglist.json?nocache=${new Date().getTime()}`;
 
     axios.get(url)
       .then((response) => {
@@ -36,7 +43,7 @@ export default {
   [GET_BLOG_POST]({ commit }, postFile) {
     commit(GET_BLOG_POST);
 
-    const url = `./blog/${postFile}?nocache=${new Date().getTime()}`;
+    const url = `${bloglistUrlPrefix}/blog/${postFile}?nocache=${new Date().getTime()}`;
 
     axios.get(url)
       .then((response) => {

@@ -1,8 +1,9 @@
 <template>
   <v-card id="EditAddAuthor"
-          flat
           class="pa-4" >
 
+<!--  disabled for now to link to the legacy website  -->
+<!--
       <v-row>
         <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
@@ -19,6 +20,42 @@
                                 @clicked="createAuthorClick" />
         </v-col>
       </v-row>
+-->
+
+
+      <!-- TEMPORARY PLACEHOLDER START -->
+      <v-row>
+        <v-col cols="12">
+          <div class="text-h5">Create New Author</div>
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters align="center" class="pt-6">
+        <v-col cols="1">
+          <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+        </v-col>
+
+        <v-col class="text-h5" cols="11">
+          Coming Soon!
+        </v-col>
+
+        <v-col class="pt-2 text-body-1">
+          Creating new author is under construction.
+          <br>
+          Please create and add authors which aren't in any other dataset yet via the legacy website by clicking on the button below.
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters
+             class="pt-6"
+             justify="end">
+
+        <BaseRectangleButton buttonText="Create New Author"
+                             color="secondary"
+                             :url="linkAddNewAuthorCKAN" />
+
+      </v-row>
+      <!-- TEMPORARY PLACEHOLDER END -->
 
   </v-card>
 </template>
@@ -40,10 +77,17 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 export default {
   name: 'EditAddAuthor',
   props: {
+    metadataId: {
+      type: String,
+      default: '',
+    },
   },
   mounted() {
   },
   computed: {
+    linkAddNewAuthorCKAN() {
+      return `${this.envidatDomain}/dataset/edit/${this.metadataId}`;
+    },
   },
   methods: {
     createAuthorClick() {
@@ -56,6 +100,7 @@ export default {
       instructions: 'Create a new author which is not a on any Metadata entry and is not EnviDat users.',
       createButtonText: 'Create Author',
     },
+    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
   }),
   components: {
     BaseRectangleButton,

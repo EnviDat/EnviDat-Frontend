@@ -9,15 +9,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import fileIcon from '../src/assets/icons/fileAudio.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
+import { LABLE_VIEWS } from './storybookFolder';
 
 
-storiesOf('1 Lables / IconLabel Collection', module).add('different labels', () => ({
+export default {
+  title: `${LABLE_VIEWS} / IconLabel Collection`,
+  decorators: [],
+  parameters: {},
+};
+
+export const DifferentLabelsView = () => ({
   components: { BaseIconLabelView },
   template: `
     <v-row style="border: solid 1px;">
@@ -115,4 +119,4 @@ storiesOf('1 Lables / IconLabel Collection', module).add('different labels', () 
     fileIcon,
     contact2Icon,
   }),
-}));
+});

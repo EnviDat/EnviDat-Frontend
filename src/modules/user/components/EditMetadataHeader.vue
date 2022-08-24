@@ -35,13 +35,17 @@
 
 
       <v-row>
-
-        <v-col class="text-body-1">
+        <v-col class="text-body-1 pb-0">
           {{ labels.instructions }}
         </v-col>
-
       </v-row>
 
+
+      <v-row>
+        <v-col class="text-body-1">
+          {{ labels.instructions2 }}
+        </v-col>
+      </v-row>
 
       <v-row>
 
@@ -119,13 +123,13 @@
 
       <v-row dense>
 
-        <v-col class="text-body-1"
+        <v-col class=" pl-10 text-body-1"
                v-html="labels.authorAutoComplete">
         </v-col>
       </v-row>
 
       <v-row dense
-             class="pt-2">
+             class="pt-2 pl-10">
 
         <v-col>
 
@@ -225,7 +229,7 @@ import {
   isFieldValid, isObjectValid,
 } from '@/factories/userEditingValidations';
 import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
-import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
+import { EDIT_METADATA_MAIN_TITLE, EDIT_STEP_TITLE_MAIN_METADATA } from '@/factories/metadataConsts';
 
 
 export default {
@@ -637,8 +641,10 @@ export default {
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
-      instructions: 'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Enter an email address for a main contact.',
+      instructions: 'The header is part of the main metadata information.' +
+          ` Together with the other information in the ${EDIT_STEP_TITLE_MAIN_METADATA} step, it represents the core information for your research dataset.`,
+      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
+      authorInstructions: 'Enter an email address as main contact and maintainer of this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
       authorAutoComplete: 'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
       placeholderTitle: 'Enter the title for your metadata entry here',

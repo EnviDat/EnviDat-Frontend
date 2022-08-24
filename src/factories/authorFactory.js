@@ -230,7 +230,11 @@ function overwriteDataCredit(author, existingAuthor) {
 export function getAuthorKey(author) {
 
   if (author?.email) {
-    return author.email.trim();
+    return author.email.trim().toLowerCase();
+  }
+
+  if (author?.id?.identifier) {
+    return author.id.identifier.trim().toLowerCase();
   }
 
   return author?.fullName?.trim().toLowerCase() || null;
@@ -312,6 +316,8 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     if (fullAuthor) {
       fullAuthors.push({
           ...fullAuthor,
+          // merge / overwrite the dataCredit, because
+          // it's based on the current datasets
           dataCredit: author.dataCredit,
         },
       );
@@ -324,10 +330,10 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
 
 
 export function getDataCreditLevel(dataCreditScore) {
-  const entires = authorDataCreditLevels;
+  const entries = authorDataCreditLevels;
 
-  for (let i = 0; i < entires.length; i++) {
-    const scoreLvl = entires[i];
+  for (let i = 0; i < entries.length; i++) {
+    const scoreLvl = entries[i];
     if (dataCreditScore >= scoreLvl.score) {
       return scoreLvl.lvl;
     }

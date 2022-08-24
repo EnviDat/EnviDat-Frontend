@@ -10,9 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import EditOrganization from '@/modules/user/components/EditOrganization';
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
@@ -29,10 +26,13 @@ import { METADATA_EDITING } from './storybookFolder';
 const organizationsMap = getOrganizationMap(testOrganizations);
 const organizationsMap2 = { ...organizationsMap };
 
-const storybookFolder = `${METADATA_EDITING} / Organization`;
+export default {
+  title: `${METADATA_EDITING} / Organization`,
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf(storybookFolder, module)
-  .add('Organization Tree view', () => ({
+export const OrganizationTreeView = () => ({
     components: { OrganizationTree },
     template: `
     <v-col>
@@ -78,8 +78,9 @@ storiesOf(storybookFolder, module)
       selectedOrga: '',
       preSelectedOrganization: 'wsl',
     }),
-  }))
-  .add('Edit Dataset Organization', () => ({
+  });
+
+export const EditDatasetOrganization = () => ({
     components: { EditOrganization },
     template: `
     <v-col>
@@ -201,8 +202,9 @@ storiesOf(storybookFolder, module)
       ],
       },
     }),
-  }))
-  .add('Edit Organization component', () => ({
+  });
+
+export const EditOrganizationViews = () => ({
     components: { EditOrganizationTree },
     template: `
     <v-col>
@@ -256,4 +258,4 @@ storiesOf(storybookFolder, module)
         selectionDisabled: true,
       },
     }),
-  }));
+  });

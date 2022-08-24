@@ -434,15 +434,15 @@ export default {
     },
     labels: {
       cardTitle: 'Additional Information about the Resources',
-      instructions:
-        'Please select dates for collection and / or creation dates. Dates are in <b>"DD-MM-YYYY"</b> format.',
+      instructions: 'Select a date range for the collection and / or the creation of your research data.' +
+          ' This helps researcher better to categorize your data. ' +
+          ' (Dates are in <b>"DD-MM-YYYY"</b> format).',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
         '"Creation Date" should be used for data created from models or other sources.',
       dateType: 'Date Type',
-      instructionsLicense:
-        'Please select a data license from the dropdown list.',
+      instructionsLicense: 'Select a data license which reflects the terms of usage of your research data.',
       creationDate: 'Creation Date',
       collectionDate: 'Collection Date',
       dataLicense: 'Click here to select a data license',
