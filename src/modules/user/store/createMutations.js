@@ -17,7 +17,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-
 import {
   extractError,
 } from '@/modules/user/store/mutationFactory';
@@ -25,16 +24,10 @@ import {
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
-  METADATA_CREATION_RESOURCE_ERROR,
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
 
-function resetErrorObject(state) {
-  state.error = null;
-  state.errorType = '';
-  state.errorField = '';
-}
 
 
 export default {

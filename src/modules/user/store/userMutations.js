@@ -12,10 +12,6 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  enhanceMetadatas,
-  enhanceTags,
-} from '@/factories/metaDataFactory';
 
 import { getCollaboratorCapacity, isUserGroupAdmin } from '@/factories/userEditingValidations';
 
@@ -28,7 +24,7 @@ import {
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
-import { extractError } from '@/modules/user/store/mutationFactory';
+import { enhanceMetadataFromCategories, extractError } from '@/modules/user/store/mutationFactory';
 import {
   USER_GET_COLLABORATOR_DATASET_IDS,
   USER_GET_COLLABORATOR_DATASET_IDS_ERROR,
@@ -55,20 +51,6 @@ function resetErrorObject(state) {
   state.errorField = '';
 }
 
-function enhanceMetadataFromCategories(store, metadatas) {
-  let datasets = metadatas;
-  const isArrayInput = Array.isArray(datasets);
-  if (!isArrayInput) {
-    datasets = [datasets];
-  }
-
-  const { cardBGImages, categoryCards } = store.getters;
-
-  datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
-
-  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
-  return isArrayInput ? enhanced : enhanced[0];
-}
 
 export default {
   [USER_GET_DATASETS](state) {

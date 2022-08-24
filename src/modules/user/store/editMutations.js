@@ -36,7 +36,7 @@ import {
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
 
 import {
-  createErrorMessage,
+  createErrorMessage, enhanceMetadataFromCategories,
   extractError,
 } from '@/modules/user/store/mutationFactory';
 
@@ -73,20 +73,6 @@ function resetErrorObject(state) {
   state.errorField = '';
 }
 
-function enhanceMetadataFromCategories(store, metadatas) {
-  let datasets = metadatas;
-  const isArrayInput = Array.isArray(datasets);
-  if (!isArrayInput) {
-    datasets = [datasets];
-  }
-
-  const { cardBGImages, categoryCards } = store.getters;
-
-  datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
-
-  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
-  return isArrayInput ? enhanced : enhanced[0];
-}
 
 export default {
   [UPDATE_METADATA_EDITING](state, payload) {

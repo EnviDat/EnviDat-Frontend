@@ -14,9 +14,8 @@
 
 import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
 
-import {
-  VALIDATION_ERROR,
-} from './userMutationsConsts';
+import { VALIDATION_ERROR, } from './userMutationsConsts';
+
 
 export function extractError(store, reason, errorProperty = 'error') {
 
