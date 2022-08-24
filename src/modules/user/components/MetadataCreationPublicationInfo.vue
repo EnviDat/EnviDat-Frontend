@@ -8,7 +8,7 @@
 
       <v-col cols="6">
 
-        <v-row>
+        <v-row v-if="!isDatasetPublic">
 
           <v-col >
 
@@ -135,6 +135,9 @@ export default {
       }
 
       return {};
+    },
+    isDatasetPublic() {
+      return this.publicationsInfo?.publicationState === 'published';
     },
     editPublicationsProps() {
       return {
