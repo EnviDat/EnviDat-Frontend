@@ -148,7 +148,6 @@ export default {
     },
     catchPinnedIds(pins) {
 
-      // if ()
       this.selectedPins = pins;
 
       const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
