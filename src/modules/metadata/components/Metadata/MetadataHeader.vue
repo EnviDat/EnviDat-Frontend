@@ -17,8 +17,8 @@
                       icon-color="primary"
                       color="primary"
                       outlined
-                      tool-tip-text="Close Metadata"
-                      :tool-tip-bottom="true"
+                      tooltipText="Close metadata view"
+                      :tooltipBottom="true"
                       @clicked="catchBackClicked" />
 
     <v-container fluid
