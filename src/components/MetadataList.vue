@@ -450,8 +450,8 @@ export default {
         return;
       }
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl([cardType.toUpperCase()]);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', tagsEncoded);
+      const stringTags = this.mixinMethods_convertArrayToUrlString([cardType]);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({

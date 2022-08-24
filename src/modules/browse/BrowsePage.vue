@@ -130,8 +130,6 @@ export default {
         const newTags = [...this.selectedTagNames, tagName];
 
         const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
-
-        // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
         this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
       }
     },
@@ -142,8 +140,6 @@ export default {
 
       const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
       const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
-
-      // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
       this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
     },
     catchTagCleared() {
