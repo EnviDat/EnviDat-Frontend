@@ -3,111 +3,54 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col>
+          <v-col v-if="resourceEditingActive">
             <!-- prettier-ignore -->
             <EditResource v-bind="selectedResource"
                                @closeClicked="catchEditResourceClose"
                                @saveResource="catchSaveResourceClose"
                                @triggerValidateField="validateField"
                                :validationErrors="validationErrors" />
+          </v-col>
 
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Edit Selected Resource</div>
-                  </v-col>
-                </v-row>
+          <v-col v-else>
 
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                  </v-col>
+            <PlaceholderSoon title="Edit Selected Resource"
+                             buttonText="Edit Resources"
+                             buttonText2="Deselect Resource"
+                             @buttonClick1="catchNewResourceClick"
+                             @buttonClick2="catchEditResourceClose"
+            >
+              Editing metadata and uploading resources is still under construction.
+              <br>
+              Please edit resources via the legacy website by clicking on the button below.
+              
+            </PlaceholderSoon>
 
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Editing metadata and uploading resources is still under construction.
-                    <br>
-                    Please edit resources via the legacy website by clicking on the button below.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters
-                       class="pt-6" >
-
-                  <v-col class="pr-2 text-left">
-                    <BaseRectangleButton buttonText="Edit Resources"
-                                         color="secondary"
-                                         :url="linkEditResourceCKAN" />
-
-                  </v-col>
-
-                  <v-col class="pr-2 text-right">
-                    <BaseRectangleButton buttonText="Deselect Resource"
-                                         color="error"
-                                          @clicked="catchEditResourceClose"/>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
-
->>>>>>> develop
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <v-col>
-            <v-card class="pa-0">
-              <!-- prettier-ignore -->
-              <EditDropResourceFiles :metadataId="metadataId"
-                                     @createResources="createResourceFromFiles" />
-              <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-<<<<<<< HEAD
-=======
-            </v-card> -->
 
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Add New Resource</div>
-                  </v-col>
-                </v-row>
+          <v-col v-if="resourceEditingActive"
+                 class="pa-0">
+            <!-- prettier-ignore -->
+            <EditDropResourceFiles :metadataId="metadataId"
+                                   @createResources="createResourceFromFiles" />
 
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Adding new resources is under construction.
-                    <br>
-                    Please add resources via the legacy website by clicking on the button below.                  </v-col>
-                </v-row>
-
-                <v-row no-gutters
-                       class="pt-6"
-                        justify="end">
-
-                  <BaseRectangleButton buttonText="Add Resources"
-                                       color="secondary"
-                                       :url="linkAddNewResourcesCKAN" />
-
-                </v-row>
-              </v-container>
->>>>>>> develop
-            </v-card>
+            <EditPasteResourceUrl @createResources="createResourceFromUrl" />
           </v-col>
+
+          <v-col v-else>
+            <PlaceholderSoon title="Add New Resource"
+                              buttonText="Add Resources"
+                              @buttonClick1="catchNewResourceClick"
+            >
+              Adding new resources is under construction.
+              <br>
+              Please add resources via the legacy website by clicking on the button below.
+            </PlaceholderSoon>
+          </v-col>
+
         </v-row>
       </v-col>
 
@@ -129,21 +72,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import {
-  EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_RESOURCE,
-  SAVE_EDITING_RESOURCE,
+  CREATE_METADATA_CREATE_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
+  eventBus,
+  SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
-  eventBus, CREATE_METADATA_CREATE_RESOURCE,
 } from '@/factories/eventBus';
 
 import { initializeLocalResource } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject, isFieldValid, } from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -151,6 +91,7 @@ import EditMetadataResources from '@/modules/user/components/EditMetadataResourc
 import EditResource from '@/modules/user/components/EditResource';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
+import PlaceholderSoon from '@/modules/user/components/edit/PlaceholderSoon';
 
 export default {
   name: 'EditDataAndResources',
@@ -159,6 +100,7 @@ export default {
     EditResource,
     EditDropResourceFiles,
     EditPasteResourceUrl,
+    PlaceholderSoon,
   },
   props: {
     resources: {
@@ -239,6 +181,9 @@ export default {
 
       return selectedRes;
     },
+    resourceEditingActive() {
+      return true;
+    },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCES);
     },
@@ -286,6 +231,9 @@ export default {
           eventBus.$emit(SELECT_EDITING_RESOURCE, newRes.id);
         });
       }
+    },
+    catchNewResourceClick() {
+      window.open(this.linkEditResourceCKAN, '_blank');
     },
     catchEditResourceClose() {
       eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
