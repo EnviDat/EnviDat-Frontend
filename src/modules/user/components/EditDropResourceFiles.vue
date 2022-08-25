@@ -9,8 +9,12 @@
 
       <v-row>
         <v-col cols="12">
-          <drag-drop :uppy="uppy" />
-          <status-bar :uppy="uppy" />
+          <DragDrop :uppy="uppy"
+                    v-on:ondragover="logEvent"
+                    v-on:ondragleave="logEvent"
+                    v-on:ondrop="logEvent" />
+
+          <StatusBar :uppy="uppy" />
         </v-col>
       </v-row>
     </v-container>
@@ -36,7 +40,6 @@ import '@uppy/core/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';
 import '@uppy/status-bar/dist/style.css';
 
-import Uppy from '@uppy/core';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
 import GoldenRetriever from '@uppy/golden-retriever';
 
@@ -45,6 +48,16 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
+import {
+  destoryUppyInstance,
+  getUppyInstance,
+  initiateMultipart,
+  listUploadedParts,
+  requestPresignedUrls,
+  abortMultipart,
+  completeMultipart,
+} from '@/factories/uploadFactory';
+
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 export default {
@@ -52,22 +65,29 @@ export default {
   props: {
     metadataId: String,
   },
-  beforeMount() {},
+  mounted() {
+    this.setupUppy();
+  },
   beforeDestroy() {
-    this.uppy.close();
+    destoryUppyInstance();
+    this.uppy = null;
   },
   computed: {
-    uppy() {
-      return new Uppy({
-        autoProceed: true,
-        debug: false,
-        // logger: Uppy.debugLogger,
-        restrictions: {
-          maxFileSize: 1024 * 1024 * 1024 * 20, // 20 GB
-          maxNumberOfFiles: 1,
-          minNumberOfFiles: 1,
-        },
-      })
+    userApiKey() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_SIGNIN_NAMESPACE}/getUserApiKey`];
+      }
+
+      return null;
+    },
+  },
+  methods: {
+    setupUppy() {
+      if (this.uppy === null) {
+        this.uppy = getUppyInstance(this.userApiKey);
+      }
+
+      this.uppy
         .use(GoldenRetriever, { serviceWorker: true })
         .use(AwsS3Multipart, {
           limit: 4,
@@ -75,31 +95,17 @@ export default {
             // at least 25MB per request, at most 500 requests
             return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
           },
-          createMultipartUpload: this.initiateMultipart,
-          prepareUploadParts: this.requestPresignedUrls,
-          listParts: this.listUploadedParts,
-          abortMultipartUpload: this.abortMultipart,
-          completeMultipartUpload: this.completeMultipart,
-        })
-        .on('upload-complete', this.$emit('uploadComplete', 'Done'));
+          createMultipartUpload: initiateMultipart,
+          prepareUploadParts: requestPresignedUrls,
+          listParts: listUploadedParts,
+          abortMultipartUpload: abortMultipart,
+          completeMultipartUpload: completeMultipart,
+        });
+
+      // this.$options.components.DragDrop.o
+
+
     },
-    files() {
-      return [
-        {
-          name: this.fileName,
-          size: this.fileSize,
-          type: this.fileType,
-        },
-      ];
-    },
-    userApiKey() {
-      if (this.$store) {
-        return this.$store.getters[`${USER_SIGNIN_NAMESPACE}/getUserApiKey`];
-      }
-      return null;
-    },
-  },
-  methods: {
     async createCKANResource(file) {
       // this.$store.dispatch(
       //   `${USER_NAMESPACE}/METADATA_EDITING_POST_RESOURCE`,
@@ -171,137 +177,13 @@ export default {
         return error;
       }
     },
-    async initiateMultipart(file) {
-      // this.$store.dispatch(
-      //   `${USER_NAMESPACE}/METADATA_EDITING_MULTIPART_UPLOAD_INIT`,
-      //   payload,
-      // );
-
-      this.fileName = file.name;
-      this.fileSize = file.size;
-      this.fileType = file.type;
-      this.$emit('createResources', this.files);
-
-      const url = `${domain}/api/action/cloudstorage_initiate_multipart`;
-
-      const payload = {
-        // id: await this.createCKANResource(file),
-        id: '',
-        name: file.name,
-        size: file.size,
-      };
-
-      try {
-        const res = await axios.post(url, payload, {
-          headers: {
-            Authorization: this.userApiKey,
-          },
-        });
-        return {
-          uploadId: res.data.result.id,
-          key: res.data.result.name,
-        };
-      } catch (error) {
-        // console.log(`Multipart initiation failed: ${error}`);
-        return error;
-      }
-    },
-    async requestPresignedUrls(file, partData) {
-      const url = `${domain}/api/action/cloudstorage_get_presigned_url_list_multipart`;
-
-      const payload = {
-        id: this.resourceId,
-        uploadId: partData.uploadId,
-        partNumbersList: partData.partNumbers,
-        filename: file.name,
-      };
-
-      try {
-        const res = await axios.post(url, payload, {
-          headers: {
-            Authorization: this.userApiKey,
-          },
-        });
-        return {
-          presignedUrls: res.data.result.presignedUrls,
-          // headers: {
-          //   'Content-Type': 'application/octet-stream',
-          // },
-        };
-      } catch (error) {
-        // console.log(`Presigning urls failed: ${error}`);
-        return error;
-      }
-    },
-    async completeMultipart(file, uploadData) {
-      const url = `${domain}/api/action/cloudstorage_finish_multipart`;
-
-      const payload = {
-        id: this.resourceId,
-        uploadId: uploadData.uploadId,
-        partInfo: JSON.stringify(uploadData.parts),
-      };
-
-      try {
-        const res = await axios.post(url, payload, {
-          headers: {
-            Authorization: this.userApiKey,
-          },
-        });
-        return { location: await res.data.result.url };
-      } catch (error) {
-        // console.log(`Multipart completion failed: ${error}`);
-        return error;
-      }
-    },
-    async abortMultipart(__, uploadData) {
-      const url = `${domain}/api/action/cloudstorage_abort_multipart`;
-
-      const payload = {
-        id: this.resourceId,
-        deletedInCKAN: await this.deleteCKANResource(),
-      };
-
-      try {
-        const res = await axios.post(url, payload, {
-          headers: {
-            Authorization: this.userApiKey,
-          },
-        });
-        // console.log(
-        //   `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
-        // );
-        return {};
-      } catch (error) {
-        // console.log(
-        //   `Multipart abort failed for Resource ID ${this.resourceId}: ${error}`,
-        // );
-        return error;
-      }
-    },
-    async listUploadedParts(__, uploadData) {
-      const url = `${domain}/api/action/cloudstorage_multipart_list_parts`;
-
-      const payload = {
-        uploadId: uploadData.uploadId,
-        uploadKey: uploadData.key,
-      };
-
-      try {
-        const res = await axios.post(url, payload, {
-          headers: {
-            Authorization: this.userApiKey,
-          },
-        });
-        console.log(`Multipart parts: ${res.data.result}`);
-        return res.data.result;
-      } catch (error) {
-        console.log(`Listing multipart parts failed: ${error}`);
-        return error;
-      }
+    logEvent(event) {
+      console.log(`Got event ${event}`);
+      console.log(event);
     },
   },
   data: () => ({
+    uppy: null,
     labels: {
       title: 'Create Resource from Files',
     },
