@@ -305,6 +305,7 @@ export default {
         showAuthorInfos: true,
         showDataCredits: true,
         showDataCreditScore: true,
+        showDatasetCount: true,
       }),
     },
     showGenericOpenButton: {
