@@ -1,272 +1,272 @@
 <template>
-    <v-card class="authorCard pa-0"
-            :class="cardClass"
-            :style="dynamicCardBackground"
-            @click.native="cardClick"
-            :loading="loading" >
+  <v-card class="authorCard pa-0"
+          :class="cardClass"
+          :style="dynamicCardBackground"
+          @click.native="cardClick"
+          :loading="loading">
 
-      <v-container fluid
-                    class="pa-4" >
+    <v-container fluid
+                 class="pa-4">
 
-        <template slot="progress">
-          <v-progress-linear color="primary"
-                             indeterminate />
-        </template>
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate/>
+      </template>
 
-        <v-row no-gutters
-                class="pb-3">
+      <v-row no-gutters
+             class="pb-3">
 
-          <v-col class="grow py-0" >
-            <div class="authorTitle"
-                  :class="dark ? 'white--text' : 'black--text'" >
-              {{ author.firstName }}
-            </div>
-          </v-col>
+        <v-col class="grow py-0">
+          <div class="authorTitle"
+               :class="dark ? 'white--text' : 'black--text'">
+            {{ author.firstName }}
+          </div>
+        </v-col>
 
-          <v-col v-if="authorIsDead"
-                  class="shrink py-0" >
+        <v-col v-if="authorIsDead"
+               class="shrink py-0">
 
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on"
-                        dark
-                        small
-                        :class="dark ? 'white--text' : 'black--text'">
-                  hourglass_empty
-                </v-icon>
-              </template >
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on"
+                      dark
+                      small
+                      :class="dark ? 'white--text' : 'black--text'">
+                hourglass_empty
+              </v-icon>
+            </template>
 
-              {{ authorPassedInfo }}
-            </v-tooltip>
+            {{ authorPassedInfo }}
+          </v-tooltip>
 
-          </v-col>
+        </v-col>
 
-          <v-col class="py-0"
-                  cols="12" >
-            <div class="authorTitle"
-                  :class="dark ? 'white--text' : 'black--text'" >
-              {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
-            </div>
-          </v-col>
+        <v-col class="py-0"
+               cols="12">
+          <div class="authorTitle"
+               :class="dark ? 'white--text' : 'black--text'">
+            {{ authorIsDead ? author.lastName.replace(`(${asciiDead})`, '') : author.lastName }}
+          </div>
+        </v-col>
 
-        </v-row>
+      </v-row>
 
-        <v-row v-if="authorDetailsConfig.showDatasetCount"
-                no-gutters
-                class="py-1 readableText"
-                align="center"
-                justify="space-between" >
+      <v-row v-if="authorDetailsConfig.showDatasetCount"
+             no-gutters
+             class="py-1 readableText"
+             align="center"
+             justify="space-between">
 
-          <v-col cols="6"
-                  :class="dark ? 'white--text' : 'black--text'" >
-            {{ dataCountLabel }}
-          </v-col>
+        <v-col cols="6"
+               :class="dark ? 'white--text' : 'black--text'">
+          {{ dataCountLabel }}
+        </v-col>
 
-          <v-col class="shrink py-0"
-                  style="max-height: 36px;">
+        <v-col class="shrink py-0"
+               style="max-height: 36px;">
 
-            <base-icon-button class="ma-0"
-                              material-icon-name="search"
-                              :iconColor="dark ? 'white' : darkColor"
-                              outlined
-                              :color="dark ? 'white' : darkColor"
-                              :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                              @clicked="catchSearchAuthor(author.fullName)" />
+          <base-icon-button class="ma-0"
+                            material-icon-name="search"
+                            :iconColor="dark ? 'white' : darkColor"
+                            outlined
+                            :color="dark ? 'white' : darkColor"
+                            :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
+                            @clicked="catchSearchAuthor(author.fullName)"/>
 
-            <v-badge :color="dark ? 'white' : darkColor"
-                      overlap
-                      style="top: -25px; right: -2px;">
+          <v-badge :color="dark ? 'white' : darkColor"
+                   overlap
+                   style="top: -25px; right: -2px;">
               <span slot="badge"
-                    :class="!dark ? 'white--text' : 'black--text'" >
+                    :class="!dark ? 'white--text' : 'black--text'">
                     {{ author.datasetCount }}
               </span>
-            </v-badge>
+          </v-badge>
 
-          </v-col>
-        </v-row>
+        </v-col>
+      </v-row>
 
-        <slot name="dataCreditCurrentDataset"/>
+      <slot name="dataCreditCurrentDataset"/>
 
-        <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
-                          :totalDataCredits="author.totalDataCredits"
-                          :badgesLabel="dataCreditBadgeLabel"
-                          :iconColor="dark ? 'white' : 'black'"
-                          :badgeColor="dark ? 'white' : darkColor"
-                          :dark="dark" />
+      <DataCreditLayout v-if="authorDetailsConfig.showDataCredits"
+                        :totalDataCredits="author.totalDataCredits"
+                        :badgesLabel="dataCreditBadgeLabel"
+                        :iconColor="dark ? 'white' : 'black'"
+                        :badgeColor="dark ? 'white' : darkColor"
+                        :dark="dark"/>
 
-        <v-row v-if="authorDetailsConfig.showDataCreditScore"
-                no-gutters
-                class="py-1 readableText"
-                justify="space-between"
-                align="center" >
+      <v-row v-if="authorDetailsConfig.showDataCreditScore"
+             no-gutters
+             class="py-1 readableText"
+             justify="space-between"
+             align="center">
 
-          <v-col class="grow"
-                  :class="dark ? 'white--text' : 'black--text'" >
-            {{ dataScoreLabel }}
-          </v-col>
+        <v-col class="grow"
+               :class="dark ? 'white--text' : 'black--text'">
+          {{ dataScoreLabel }}
+        </v-col>
 
-          <v-col class="shrink" >
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on"
-                        class="badgesIcon"
-                        dark
-                        :class="dark ? 'white--text' : 'black--text'">
-                  info_outline
-                </v-icon>
-              </template>
+        <v-col class="shrink">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on"
+                      class="badgesIcon"
+                      dark
+                      :class="dark ? 'white--text' : 'black--text'">
+                info_outline
+              </v-icon>
+            </template>
 
-              {{ dataCreditScoreInfo }}
-            </v-tooltip>
-          </v-col>
+            {{ dataCreditScoreInfo }}
+          </v-tooltip>
+        </v-col>
 
-          <v-col class="shrink pl-2" >
-            <div :style="`background-color: ${ !this.dark ? darkColor : whiteColor };`"
-                  class="dataCreditScore elevation-5">
+        <v-col class="shrink pl-2">
+          <div :style="`background-color: ${ !this.dark ? darkColor : whiteColor };`"
+               class="dataCreditScore elevation-5">
 
-              <div :style="bigCountStyling"
-                  :class="!this.dark ? 'white--text' : 'black--text'" >
-                {{ dataCreditScore }}
-              </div>
+            <div :style="bigCountStyling"
+                 :class="!this.dark ? 'white--text' : 'black--text'">
+              {{ dataCreditScore }}
             </div>
-          </v-col>
-        </v-row>
+          </div>
+        </v-col>
+      </v-row>
 
-        <v-row v-if="authorDetailsConfig.showAuthorInfos"
-                no-gutters
-                class="pt-1 readableText"
-                align="center" >
+      <v-row v-if="authorDetailsConfig.showAuthorInfos"
+             no-gutters
+             class="pt-1 readableText"
+             align="center">
 
-          <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
-            <v-divider :dark="dark" />
-          </v-col>
+        <v-col class="grow pr-5" @click="infosExpanded = !infosExpanded">
+          <v-divider :dark="dark"/>
+        </v-col>
 
-          <v-col class="shrink" >
-            <v-btn icon
-                    :color="dark ? 'white' : 'black'"
-                    outlined
-                    class="ma-0 badgesIcon"
-                    @click="infosExpanded = !infosExpanded">
-              <v-icon> {{ infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left' }}</v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
+        <v-col class="shrink">
+          <v-btn icon
+                 :color="dark ? 'white' : 'black'"
+                 outlined
+                 class="ma-0 badgesIcon"
+                 @click="infosExpanded = !infosExpanded">
+            <v-icon> {{ infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left' }}</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
 
-        <v-row  v-if="authorDetailsConfig.showAuthorInfos && infosExpanded"
-                class="pa-0 readableText"
-                no-gutters
-                align="start">
+      <v-row v-if="authorDetailsConfig.showAuthorInfos && infosExpanded"
+             class="pa-0 readableText"
+             no-gutters
+             align="start">
 
-          <v-col class="pa-1"
-                  cols="6" >
-            <v-row no-gutters>
-              <v-col cols="12"
-                      class="authorInfoLabel py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
-                {{ emailLabel }}
-              </v-col>
+        <v-col class="pa-1"
+               cols="6">
+          <v-row no-gutters>
+            <v-col cols="12"
+                   class="authorInfoLabel py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
+              {{ emailLabel }}
+            </v-col>
 
-              <v-col cols="12"
-                      class="authorInfo py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
-                <a :href="`mailto:${author.email}`" >
-                  {{ author.email }}
-                </a>
-              </v-col>
-            </v-row>
-          </v-col>
+            <v-col cols="12"
+                   class="authorInfo py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
+              <a :href="`mailto:${author.email}`">
+                {{ author.email }}
+              </a>
+            </v-col>
+          </v-row>
+        </v-col>
 
-          <v-col class="pa-1"
-                  cols="6" >
-            <v-row no-gutters>
-              <v-col cols="12"
-                      class="authorInfoLabel py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
-                {{ idLabel }}
-              </v-col>
+        <v-col class="pa-1"
+               cols="6">
+          <v-row no-gutters>
+            <v-col cols="12"
+                   class="authorInfoLabel py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
+              {{ idLabel }}
+            </v-col>
 
-              <v-col cols="12"
-                      class="authorInfo py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
+            <v-col cols="12"
+                   class="authorInfo py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
 
-                <a v-if="(author.id.type && author.id.type === 'orcid') || isOrcId(formatIdentifier(author.id.identifier))"
-                    :href="`https://orcid.org/${formatIdentifier(author.id.identifier)}`"
-                    rel="noopener noreferrer"
-                    target="_blank" >
-                  {{ formatIdentifier(author.id.identifier) }}
-                </a>
-                <div v-else>{{ formatIdentifier(author.id.identifier) }}</div>
+              <a v-if="(author.id.type && author.id.type === 'orcid') || isOrcId(formatIdentifier(author.id.identifier))"
+                 :href="`https://orcid.org/${formatIdentifier(author.id.identifier)}`"
+                 rel="noopener noreferrer"
+                 target="_blank">
+                {{ formatIdentifier(author.id.identifier) }}
+              </a>
+              <div v-else>{{ formatIdentifier(author.id.identifier) }}</div>
 
-              </v-col>
-            </v-row>
-          </v-col>
+            </v-col>
+          </v-row>
+        </v-col>
 
-          <v-col class="pa-1"
-                  cols="6">
-            <v-row no-gutters>
-              <v-col cols="12"
-                      class="authorInfoLabel py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
-                {{ affiliationLabel }}
-              </v-col>
+        <v-col class="pa-1"
+               cols="6">
+          <v-row no-gutters>
+            <v-col cols="12"
+                   class="authorInfoLabel py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
+              {{ affiliationLabel }}
+            </v-col>
 
-              <v-col cols="12"
-                      class="authorInfo py-0"
-                      :class="dark ? 'white--text' : 'black--text'" >
-                {{ author.affiliation }}
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+            <v-col cols="12"
+                   class="authorInfo py-0"
+                   :class="dark ? 'white--text' : 'black--text'">
+              {{ author.affiliation }}
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
 
-      </v-container>
+    </v-container>
 
-      <v-container v-if="showGenericOpenButton"
-                   class="ma-2 pa-0"
-                   style="position: absolute; top: 0px; right: 0px; width: 40px;">
-        <v-row >
-          <v-col cols="12" >
-            <base-icon-button :materialIconName="openButtonIcon"
-                              iconColor="black"
-                              color="accent"
-                              :isElevated="true"
-                              :tooltipText="openButtonTooltip"
-                              @clicked="$emit('openButtonClicked')" />
-          </v-col>
-        </v-row>
+    <v-container v-if="showGenericOpenButton"
+                 class="ma-2 pa-0"
+                 style="position: absolute; top: 0px; right: 0px; width: 40px;">
+      <v-row>
+        <v-col cols="12">
+          <base-icon-button :materialIconName="openButtonIcon"
+                            iconColor="black"
+                            color="accent"
+                            :isElevated="true"
+                            :tooltipText="openButtonTooltip"
+                            @clicked="$emit('openButtonClicked')"/>
+        </v-col>
+      </v-row>
 
-      </v-container>
+    </v-container>
 
 
-      <!-- <div id="wrapper"
-            style="position: absolute; top: 0; right: 0;"
-            class="pa-4">
+    <!-- <div id="wrapper"
+          style="position: absolute; top: 0; right: 0;"
+          class="pa-4">
 
-        <svg class="progress"
-              :data-progress="levelProgress"
-              x="0px" y="0px"
-              viewBox="0 0 776 628">
+      <svg class="progress"
+            :data-progress="levelProgress"
+            x="0px" y="0px"
+            viewBox="0 0 776 628">
 
-          <path ref="progressTrack"
-                class="track"
-                viewBox="0 0 500 500"
-                d="M723 314L543 625.77 183 625.77 3 314 183 2.23 543 2.23 723 314z">
-          </path>
+        <path ref="progressTrack"
+              class="track"
+              viewBox="0 0 500 500"
+              d="M723 314L543 625.77 183 625.77 3 314 183 2.23 543 2.23 723 314z">
+        </path>
 
-          <path ref="progressFill"
-                class="fill"
-                d="M723 314L543 625.77 183 625.77 3 314 183 2.23 543 2.23 723 314z">
-          </path>
+        <path ref="progressFill"
+              class="fill"
+              d="M723 314L543 625.77 183 625.77 3 314 183 2.23 543 2.23 723 314z">
+        </path>
 
-          <text class="value"
-                style="fill: white;"
-                x="50%" y="73%">
-            {{ dataCreditLevel }}
-          </text>
-        </svg>
-      </div> -->
+        <text class="value"
+              style="fill: white;"
+              x="50%" y="73%">
+          {{ dataCreditLevel }}
+        </text>
+      </svg>
+    </div> -->
 
-    </v-card>
+  </v-card>
 
 </template>
 
@@ -321,6 +321,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    overrideAuthorInfosExpanded: {
+      type: Boolean,
+      default: false,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -328,6 +332,7 @@ export default {
   },
   mounted() {
     // this.setLevelProgress();
+    this.infosExpanded = this.overrideAuthorInfosExpanded;
   },
   computed: {
     // getDataCreditLevel(currentScore) {
@@ -440,14 +445,14 @@ export default {
     },
     isOrcId(id) {
       if (!id) {
-        return false
+        return false;
       }
 
       return id.match(RegExp(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g));
     },
     formatIdentifier(id) {
       if (!id) {
-        return ''
+        return '';
       }
 
       if (id.includes('https://')) {
@@ -492,78 +497,82 @@ export default {
 
 <style scoped>
 
-  div.v-card__title {
-    position: relative;
-    z-index: 10;
-  }
+div.v-card__title {
+  position: relative;
+  z-index: 10;
+}
 
-  .dataCreditScore {
-    border-radius: 50% !important;
-    text-align: center;
-    font-size: 28px !important;
-    /* font-weight: bold !important; */
-    position: relative;
-    z-index: 1;
-    /* border-style: solid; */
-  }
+.dataCreditScore {
+  border-radius: 50% !important;
+  text-align: center;
+  font-size: 28px !important;
+  /* font-weight: bold !important; */
+  position: relative;
+  z-index: 1;
+  /* border-style: solid; */
+}
 
-  .authorCard {
-    border-radius: 20px;
-    line-height: 1rem;
-  }
+.authorCard {
+  border-radius: 20px;
+  line-height: 1rem;
+}
 
-  .authorTitle {
-    margin: 0;
-    padding: 0;
-    line-height: 2.5rem;
-    word-break: break-word;
-    font-size: 34px !important;
-    font-weight: 400 !important;
-    font-family: 'Raleway', serif !important;
-  }
+.authorTitle {
+  margin: 0;
+  padding: 0;
+  line-height: 2.5rem;
+  word-break: break-word;
+  font-size: 34px !important;
+  font-weight: 400 !important;
+  font-family: 'Raleway', serif !important;
+}
 
-  .subheading {
-    font-size: 14px !important;
-  }
+.subheading {
+  font-size: 14px !important;
+}
 
-  .badgesIcon {
-    opacity: 0.75;
-  }
+.badgesIcon {
+  opacity: 0.75;
+}
 
-  .authorInfoLabel {
-    opacity: 0.65;
-  }
+.authorInfoLabel {
+  opacity: 0.65;
+}
 
-  .progress {
-    width: 40px;
-    height: 40px;
-  }
-  .progress .track, .progress .fill{
-    stroke-width: 65;
-    transform: translate(290px, 800px)rotate(-120deg);
-  }
-  .progress .track{
-    /* stroke: rgb(56, 71, 83); */
-    fill: rgb(56, 71, 83);
-  }
-  .progress .fill {
-    fill: rgba(56, 71, 83, 0);
-    stroke-linecap: round;
-    stroke-dasharray: 2160;
-    stroke-dashoffset: 2160;
-    transition: stroke-dashoffset 1s;
-  }
+.progress {
+  width: 40px;
+  height: 40px;
+}
 
-  .progress .value, .progress .text {
-    /* fill: 'black'; */
-    text-anchor: middle;
-  }
-  .progress .value {
-    font-size: 500px;
-  }
+.progress .track, .progress .fill {
+  stroke-width: 65;
+  transform: translate(290px, 800px) rotate(-120deg);
+}
 
-  .highlighted {
-    box-shadow: #71c5bd 0 0 5px 5px !important;
-  }
+.progress .track {
+  /* stroke: rgb(56, 71, 83); */
+  fill: rgb(56, 71, 83);
+}
+
+.progress .fill {
+  fill: rgba(56, 71, 83, 0);
+  stroke-linecap: round;
+  stroke-dasharray: 2160;
+  stroke-dashoffset: 2160;
+  transition: stroke-dashoffset 1s;
+}
+
+.progress .value, .progress .text {
+  /* fill: 'black'; */
+  text-anchor: middle;
+}
+
+.progress .value {
+  font-size: 500px;
+}
+
+.highlighted {
+  box-shadow: #71c5bd 0 0 5px 5px !important;
+}
 
 </style>

@@ -18,8 +18,8 @@
       </v-row>
 
       <v-row >
-        <v-col class="text-body-1">
-          {{ editingInstructions }}
+        <v-col class="text-body-1"
+                v-html="editingInstructions">
         </v-col>
       </v-row>
 
@@ -32,6 +32,7 @@
                           :authorDetailsConfig="authorDetailsConfig"
                           :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
                           :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                          :overrideAuthorInfosExpanded="true"
                           >
 
                 <template #dataCreditCurrentDataset >
@@ -184,7 +185,7 @@ export default {
   },
   data: () => ({
     stepKey: EDITMETADATA_AUTHOR_LIST,
-    editingInstructions: 'Select an author from the list to edit its details',
+    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author by clicking on the icons.',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
