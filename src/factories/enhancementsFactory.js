@@ -115,7 +115,7 @@ export function loadImages(store, isSupported = false) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = isSupported ? import.meta.glob('../assets/*.webp') : null;
+  const webpAssetPaths = isSupported ? import.meta.glob('../assets/**/*.webp', { eager: true, as: 'url' }) : null;
   const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths, false) : null;
   if (webpAssets) {
     store.commit(SET_WEBP_ASSETS, webpAssets);
