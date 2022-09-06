@@ -110,7 +110,7 @@ export default {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
     this.fallbackCardImg = this.mixinMethods_getWebpImage(
-      'about/contact',
+      'contact_image',
       this.$store.state,
     );
   },

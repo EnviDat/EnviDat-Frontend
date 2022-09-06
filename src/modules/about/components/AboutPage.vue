@@ -236,28 +236,28 @@ export default {
       const backendAboutInfos = this.config?.aboutInfo || null;
 
       const contact = this.mixinMethods_getWebpImage(
-        'about/contact',
+        'contact_image',
         this.$store.state,
       );
       const handsSmall = this.mixinMethods_getWebpImage(
-        'about/hands_small',
+        'hands_small',
         this.$store.state,
       );
       const conceptImg = this.mixinMethods_getWebpImage(
-        'about/concept_small',
+        'concept_small',
         this.$store.state,
       );
 
       const communityImg = this.mixinMethods_getWebpImage(
-        'about/community_small',
+        'community_small',
         this.$store.state,
       );
       const wslLogoImg = this.mixinMethods_getWebpImage(
-        'about/wslLogo',
+        'wslLogo',
         this.$store.state,
       );
       const teamImg = this.mixinMethods_getWebpImage(
-        'about/team_small',
+        'team_small',
         this.$store.state,
       );
 
@@ -323,8 +323,8 @@ export default {
     },
     missionImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/mission'
-        : 'about/mission_small';
+        ? 'mission'
+        : 'mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     policiesMarkdownText() {
@@ -332,8 +332,8 @@ export default {
     },
     policiesImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/policies'
-        : 'about/policies_small';
+        ? 'policies'
+        : 'policies_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     guidelinesMarkdownText() {
@@ -341,14 +341,14 @@ export default {
     },
     guidelineImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/guidelines'
-        : 'about/guidelines_small';
+        ? 'guidelines'
+        : 'guidelines_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     dmpImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
-        ? 'about/dmp'
-        : 'about/dmp_small';
+        ? 'dmp'
+        : 'dmp_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     dmpMarkdownText() {

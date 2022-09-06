@@ -126,10 +126,11 @@ export default {
   beforeMount() {
     if (this.$store) {
       this.fallbackImg = this.mixinMethods_getWebpImage(
-        'cards/slogan/fingertips_small',
+        'fingertips_small',
         this.$store.state,
       );
     } else {
+      // TODO check if this fallback is needed and how it can be done on vitejs
       // use the import() for lazy loading a fallback incase there is not $store (storybook stories usually)
       import('@/assets/cards/slogan/fingertips_small.jpg').then(imgImport => {
         this.fallbackImg = imgImport.default;
