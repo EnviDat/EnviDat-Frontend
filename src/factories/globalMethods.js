@@ -303,19 +303,19 @@ export default {
       const bgs = {};
 
       if (useWebp) {
-        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true });
-        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.webp', { eager: true });
-        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.webp', { eager: true });
-        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true });
-        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true });
-        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true });
+        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true, as: 'url' });
+        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.webp', { eager: true, as: 'url' });
+        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.webp', { eager: true, as: 'url' });
+        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true, as: 'url' });
+        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true, as: 'url' });
+        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true, as: 'url' });
       } else {
-        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true });
-        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true });
-        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true });
-        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true });
-        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true });
-        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true });
+        bgs[LAND] = import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true, as: 'url' });
+        bgs[FOREST] = import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true, as: 'url' });
+        bgs[SNOW] = import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true, as: 'url' });
+        bgs[DIVERSITY] = import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true, as: 'url' });
+        bgs[HAZARD] = import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true, as: 'url' });
+        bgs[METEO] = import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true, as: 'url' });
       }
 
       return bgs;

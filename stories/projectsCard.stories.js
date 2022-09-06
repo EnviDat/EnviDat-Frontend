@@ -24,7 +24,7 @@ const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
 
 
-const imgPaths = import.meta.glob('../src/assets/cards/forest/*.jpg')
+const imgPaths = import.meta.glob('../src/assets/cards/forest/*.jpg', { eager: true, as: 'url' })
 const imgName = 'c_b_forest_texture_bark2';
 const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
 const defaultImg = images[`./${imgName}.jpg`];

@@ -218,7 +218,7 @@ export default {
   },
   beforeMount() {
 
-    const imgPaths = import.meta.glob('@/assets/logo/*.png');
+    const imgPaths = import.meta.glob('@/assets/logo/*.png', { eager: true, as: 'url' });
     const imgCache = {};
 
     for (const path in imgPaths) {
