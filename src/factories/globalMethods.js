@@ -195,7 +195,8 @@ export default {
      * @returns
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
-      const imageKey = `./${imageAssetPathName}`;
+      // const imageKey = `./${imageAssetPathName}`;
+      const imageKey = imageAssetPathName;
 
       if (state.webpIsSupported) {
         const webpImg = state.webpAssets[`${imageKey}.webp`];
@@ -203,6 +204,8 @@ export default {
         if (webpImg) {
           return webpImg;
         }
+
+        console.warn(`Wanted to get ${imageKey}, but didn't find it`);
       }
 
       return state.jpgAssets[`${imageKey}.jpg`];
@@ -214,8 +217,9 @@ export default {
      * @return {String} relative file path with extension to the icon image file
      */
     mixinMethods_getIcon(iconName) {
-      const iconKey = `./${iconName}.png`;
-      return this.$store?.getters?.iconImages[iconKey] || null;
+      // const iconKey = `./${iconName}.png`;
+
+      return this.$store?.getters?.iconImages[iconName] || null;
     },
     /**
      * Loads the path to the icon image representing a file extension
@@ -246,10 +250,15 @@ export default {
 
       for (const path in imgPaths) {
         if (path) {
+
           if (!checkForString || (checkForString && path.includes(checkForString))) {
-            imgPaths[path]().then((img) => {
-              imgCache[path] = img.default
-            })
+            const splits = path.split('/');
+            const imgName = splits[splits.length - 1];
+
+            const localPath = splits.slice(1, splits.length).join('/');
+            imgCache[imgName] = `./src/${localPath}`;
+
+            // console.log(`${imgName} on ${localPath}`);
           }
         }
       }
