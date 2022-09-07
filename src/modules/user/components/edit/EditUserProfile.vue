@@ -45,8 +45,8 @@
                         id="firstName"
                         :label="labels.firstName"
                         outlined
-                        :readonly="mixinMethods_isFieldReadOnly('firstName')"
-                        :hint="mixinMethods_readOnlyHint('firstName')"
+                        :readonly="checkReadOnly('firstName')"
+                        :hint="checkReadOnlyHint('firstName')"
                         prepend-icon="person"
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
@@ -64,8 +64,8 @@
                         id="lastName"
                         :label="labels.lastName"
                         outlined
-                        :readonly="mixinMethods_isFieldReadOnly('lastName')"
-                        :hint="mixinMethods_readOnlyHint('lastName')"
+                        :readonly="checkReadOnly('lastName')"
+                        :hint="checkReadOnlyHint('lastName')"
                         prepend-icon="person"
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
@@ -83,8 +83,8 @@
                         id="email"
                         :label="labels.email"
                         outlined
-                        :readonly="mixinMethods_isFieldReadOnly('email')"
-                        :hint="mixinMethods_readOnlyHint('email')"
+                        :readonly="checkReadOnly('email')"
+                        :hint="checkReadOnlyHint('email')"
                         prepend-icon="email"
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
@@ -97,7 +97,7 @@
 
       </v-row>
 
-      <v-row>
+      <v-row v-if="showPreview">
         <v-col >
 
           <UserCard v-bind="userCardPreviewObject"
@@ -162,6 +162,10 @@ export default {
     minWidth: {
       type: Number,
       default: 300,
+    },
+    showPreview: {
+      type: Boolean,
+      default: true,
     },
     loading: {
       type: Boolean,
@@ -243,6 +247,20 @@ export default {
     },
   },
   methods: {
+    checkReadOnly(property) {
+      if (!this.$store) {
+        return false;
+      }
+
+      return this.mixinMethods_isFieldReadOnly(property);
+    },
+    checkReadOnlyHint(property) {
+      if (!this.$store) {
+        return '';
+      }
+
+      return this.mixinMethods_readOnlyHint(property);
+    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
