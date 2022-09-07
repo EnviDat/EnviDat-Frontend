@@ -187,18 +187,18 @@ export default {
     extractError(this, reason);
   },
   [USER_EDITING_UPDATE](state) {
-    state.userLoading = true;
+    state.userEditLoading = true;
 
     resetErrorObject(state);
   },
   [USER_EDITING_UPDATE_SUCCESS](state, payload) {
-    state.userLoading = false;
+    state.userEditLoading = false;
 
     const user = payload.user;
     state.user = enhanceUserObject(user);
   },
   [USER_EDITING_UPDATE_ERROR](state, reason) {
-    state.userLoading = false;
+    state.userEditLoading = false;
 
     extractError(this, reason);
   },
