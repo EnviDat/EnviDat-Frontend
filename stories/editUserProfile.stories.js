@@ -18,7 +18,7 @@ import { getNameInitials } from '@/factories/authorFactory';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import FlipLayout from '@/components/Layouts/FlipLayout';
 import {
-  EDITMETADATA_OBJECT_UPDATE,
+  EDIT_USER_PROFILE_EVENT,
   eventBus,
 } from '@/factories/eventBus';
 import authorCollection from '../public/testdata/authorCollection.json';
@@ -91,7 +91,7 @@ export const UserCardEditingViews = () => ({
     <v-row >
 
       <v-col cols="6">
-        FlipLayout
+        FlipLayout with autoButtonFlip true
       </v-col>
 
       <v-col cols="6">
@@ -120,14 +120,75 @@ export const UserCardEditingViews = () => ({
         </FlipLayout>
       </v-col>
 
-          
+      <v-col cols="6">
+        FlipLayout loading
+      </v-col>
+
+      <v-col cols="6">
+        <FlipLayout :height="height"
+                    :width="height"
+                    :autoButtonFlip="true" >
+
+          <template v-slot:front>
+            <UserCard :height="height"
+                      :width="height"
+                      :userName="author.firstName + ' ' + author.lastName"
+                      :email="author.email"
+                      :loading="true"
+            />
+          </template>
+
+          <template v-slot:back>
+            <EditUserProfile :height="height"
+                             :minWidth="height"
+                             :showPreview="false"
+                             :firstName="author.firstName"
+                             :lastName="author.lastName"
+                             :email="author.email"
+                             :loading="true"
+            />
+          </template>
+
+        </FlipLayout>
+      </v-col>
+
+
+      <v-col cols="6">
+        FlipLayout with autoButtonFlip false
+      </v-col>
+
+      <v-col cols="6">
+        <FlipLayout :height="height"
+                    :width="height" >
+
+          <template v-slot:front>
+            <UserCard :height="height"
+                      :width="height"
+                      :userName="author.firstName + ' ' + author.lastName"
+                      :email="author.email"
+            />
+          </template>
+
+          <template v-slot:back>
+            <EditUserProfile :height="height"
+                             :minWidth="height"
+                             :showPreview="false"
+                             :firstName="author.firstName"
+                             :lastName="author.lastName"
+                             :email="author.email"
+            />
+          </template>
+
+        </FlipLayout>
+      </v-col>
+        
     </v-row>
     `,
   created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.authorChanged);
+    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.authorChanged);
+    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   computed: {
     author() {
@@ -136,6 +197,9 @@ export const UserCardEditingViews = () => ({
   },
   methods: {
     authorChanged(userObject) {
+      console.log('authorChanged');
+      console.log(userObject);
+
       this.user1.firstName = userObject.data.firstName;
       this.user1.lastName = userObject.data.lastName;
       this.user1.email = userObject.data.email;
@@ -143,7 +207,7 @@ export const UserCardEditingViews = () => ({
     getNameInitials,
   },
   data: () => ({
-    height: 400,
+    height: 350,
     user1,
   }),
 });

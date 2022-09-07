@@ -3,8 +3,6 @@
 
     <div :style="`position: absolute; z-index: 2; top: 10px; left: ${ width - 50}px; width: 40px;`">
 
-<!--      style="position: relative; top: 16px; right: 16px; height: 30px; width: 30px; z-index: 1;">-->
-
       <base-icon-button :materialIconName="buttonIcon"
                         iconColor="black"
                         :color="buttonColor"
@@ -15,6 +13,7 @@
 
     <div class="flipAnimation"
          :class="animationFlip()" >
+
       <div class="front" >
         <slot name="front"></slot>
       </div>
@@ -26,44 +25,10 @@
 
   </div>
 
-<!--
-  <v-container >
-    <div class="pa-4"
-         style="position: absolute; top: 16px; right: 16px; height: 30px; width: 30px; z-index: 1;">
-      <base-icon-button materialIconName="edit"
-                        iconColor="black"
-                        color="accent"
-                        :isElevated="true"
-                        :isSmall="true"
-                        @clicked="flipCard" />
-    </div>
-
-    <v-row>
-      <v-col>
-        <div class="flipAnimation"
-             :class="animationFlip(true)" >
-          <div class="front" >
-            <slot name="front"></slot>
-          </div>
-
-          <div class="back" >
-            <slot name="back"></slot>
-          </div>
-        </div>
-
-      </v-col>
-    </v-row>
-  </v-container>
-  -->
 
 </template>
 
 <script>
-/*
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
-import UserCard from '@/components/Cards/UserCard';
-*/
-import { getNameInitials } from '@/factories/authorFactory';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 /**
@@ -90,10 +55,6 @@ export default {
       default: 300,
     },
     autoButtonFlip: {
-      type: Boolean,
-      default: false,
-    },
-    loading: {
       type: Boolean,
       default: false,
     },
@@ -125,19 +86,11 @@ export default {
 
       return this.flipped ? 'flipOut' : 'flipIn';
     },
-    getNameInitials,
   },
   data: () => ({
-    flipIn: 0,
-    flipOut: 90,
     flipped: false,
-    animationTime: 0.2,
   }),
   components: {
-/*
-    EditUserProfile,
-    UserCard,
-*/
     BaseIconButton,
   },
 };
