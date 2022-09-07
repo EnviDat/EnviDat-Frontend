@@ -1,6 +1,7 @@
 <template>
   <v-card id="EditUserProfile"
           class="pa-0"
+          :height="height"
           :width="minWidth"
           :loading="loading">
 
@@ -132,10 +133,10 @@ import {
   isObjectValid,
 } from '@/factories/userEditingValidations';
 import {
+  USER_PROFILE,
   EDIT_USER_PROFILE,
+  EDIT_USER_PROFILE_EVENT,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_MAIN_HEADER,
-  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -158,6 +159,10 @@ export default {
     emailHash: {
       type: String,
       default: '',
+    },
+    height: {
+      type: Number,
+      default: undefined,
     },
     minWidth: {
       type: Number,
@@ -306,8 +311,8 @@ export default {
           ...userObject,
         };
 
-        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_MAIN_HEADER,
+        eventBus.$emit(EDIT_USER_PROFILE_EVENT, {
+          object: USER_PROFILE,
           data: userInfo,
         });
       }
