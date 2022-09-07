@@ -108,6 +108,7 @@
     "dashboardRedirect": false,
     "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
     "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
+    "userEditingEnabled": true,
     "organizationRolesText": {
       "noOrganizationText": "You aren't assigned to an organisation yet. If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation. If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.",
       "memberOrganizationText": "As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.",
