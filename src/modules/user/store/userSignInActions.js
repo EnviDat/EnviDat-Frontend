@@ -16,11 +16,12 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
+  ACTION_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
-  FETCH_USER_DATA,
+  FETCH_USER_DATA, GET_USER_CONTEXT,
   USER_EDITING_UPDATE,
   USER_EDITING_UPDATE_ERROR,
-  USER_EDITING_UPDATE_SUCCESS,
+  USER_EDITING_UPDATE_SUCCESS, USER_SIGNIN_NAMESPACE,
 } from './userMutationsConsts';
 
 
@@ -62,7 +63,7 @@ export default {
         commit(`${payload.mutation}_ERROR`, error);
       });
   },
-  async [USER_EDITING_UPDATE]({ commit }, { userId, firstName, lastName, email }) {
+  async [USER_EDITING_UPDATE]({ commit, dispatch }, { userId, firstName, lastName, email }) {
 
     commit(USER_EDITING_UPDATE);
 
@@ -85,13 +86,21 @@ export default {
 
     // the adding of the apiKey into the headers is taken care of
     // via axios interceptor in @/src/main.js
-    await axios.post(url, postData)
-      .then((response) => {
-        commit(USER_EDITING_UPDATE_SUCCESS, response?.data?.result);
-      })
-      .catch((reason) => {
-        commit(USER_EDITING_UPDATE_ERROR, reason);
-      });
+    try {
+      await axios.post(url, postData);
+
+      await dispatch(FETCH_USER_DATA,
+        {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });
+
+      commit(USER_EDITING_UPDATE_SUCCESS);
+
+    } catch (reason) {
+      commit(USER_EDITING_UPDATE_ERROR, reason);
+    }
   },
 
 };

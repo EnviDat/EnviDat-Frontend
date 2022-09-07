@@ -191,11 +191,8 @@ export default {
 
     resetErrorObject(state);
   },
-  [USER_EDITING_UPDATE_SUCCESS](state, payload) {
+  [USER_EDITING_UPDATE_SUCCESS](state) {
     state.userEditLoading = false;
-
-    const user = payload.user;
-    state.user = enhanceUserObject(user);
   },
   [USER_EDITING_UPDATE_ERROR](state, reason) {
     state.userEditLoading = false;
