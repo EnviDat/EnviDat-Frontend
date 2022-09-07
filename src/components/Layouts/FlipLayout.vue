@@ -1,7 +1,7 @@
 <template>
-  <div :style="`height: ${height}px; width: ${width}px;`">
+  <div :style="`height: ${height}px; width: ${width}px; position: relative; `">
 
-    <div :style="`position: relative; z-index: 2; top: 40px; left: ${ width - 50}px; width: 40px;`">
+    <div :style="`position: absolute; z-index: 2; top: 10px; left: ${ width - 50}px; width: 40px;`">
 
 <!--      style="position: relative; top: 16px; right: 16px; height: 30px; width: 30px; z-index: 1;">-->
 
