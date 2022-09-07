@@ -15,8 +15,14 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
+import { getAuthorName } from '@/factories/authorFactory';
+
 import {
+  ACTION_USER_EDITING_UPDATE,
   FETCH_USER_DATA,
+  USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE_ERROR,
+  USER_EDITING_UPDATE_SUCCESS,
 } from './userMutationsConsts';
 
 
@@ -57,6 +63,45 @@ export default {
         .catch((error) => {
           commit(`${payload.mutation}_ERROR`, error);
         });
+  },
+  async [USER_EDITING_UPDATE]({ commit }, { userId, firstName, lastName, email }) {
+
+    commit(USER_EDITING_UPDATE);
+
+    // const apiKey = this.state.userSignIn.user?.apikey || null;
+    const actionUrl = ACTION_USER_EDITING_UPDATE();
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+    // the userId is the minimum, only add the other data if there is
+    // data to patch
+    const postData = { id: userId };
+
+    const fullname = getAuthorName({ firstName, lastName }).fullName;
+
+    if (fullname) {
+      postData.fullname = fullname;
+    }
+
+    if (email) {
+      postData.email = email;
+    }
+
+    // the adding of the apiKey into the headers is taken care of
+    // via axios interceptor in @/src/main.js
+    await axios.post(url, postData,
+    {
+      /*
+              headers: {
+                Authorization: apiKey,
+              },
+      */
+    })
+    .then((response) => {
+      commit(USER_EDITING_UPDATE_SUCCESS, response?.data?.result);
+    })
+    .catch((reason) => {
+      commit(USER_EDITING_UPDATE_ERROR, reason);
+    });
   },
 
 };
