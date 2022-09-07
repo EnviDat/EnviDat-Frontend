@@ -15,8 +15,6 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import { getAuthorName } from '@/factories/authorFactory';
-
 import {
   ACTION_USER_EDITING_UPDATE,
   FETCH_USER_DATA,
@@ -54,21 +52,20 @@ export default {
     // const method = url.includes('.json') ? 'get' : 'post';
 
     await axios.get(url, { withCredentials: true })
-        // await axios({ method, url, body })
-        .then((response) => {
-          if (payload.commit) {
-            commit(`${payload.mutation}_SUCCESS`, response.data.result);
-          }
-        })
-        .catch((error) => {
-          commit(`${payload.mutation}_ERROR`, error);
-        });
+      // await axios({ method, url, body })
+      .then((response) => {
+        if (payload.commit) {
+          commit(`${payload.mutation}_SUCCESS`, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(`${payload.mutation}_ERROR`, error);
+      });
   },
   async [USER_EDITING_UPDATE]({ commit }, { userId, firstName, lastName, email }) {
 
     commit(USER_EDITING_UPDATE);
 
-    // const apiKey = this.state.userSignIn.user?.apikey || null;
     const actionUrl = ACTION_USER_EDITING_UPDATE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
@@ -76,7 +73,7 @@ export default {
     // data to patch
     const postData = { id: userId };
 
-    const fullname = getAuthorName({ firstName, lastName }).fullName;
+    const fullname = `${firstName} ${lastName}`.trim();
 
     if (fullname) {
       postData.fullname = fullname;
@@ -88,20 +85,13 @@ export default {
 
     // the adding of the apiKey into the headers is taken care of
     // via axios interceptor in @/src/main.js
-    await axios.post(url, postData,
-    {
-      /*
-              headers: {
-                Authorization: apiKey,
-              },
-      */
-    })
-    .then((response) => {
-      commit(USER_EDITING_UPDATE_SUCCESS, response?.data?.result);
-    })
-    .catch((reason) => {
-      commit(USER_EDITING_UPDATE_ERROR, reason);
-    });
+    await axios.post(url, postData)
+      .then((response) => {
+        commit(USER_EDITING_UPDATE_SUCCESS, response?.data?.result);
+      })
+      .catch((reason) => {
+        commit(USER_EDITING_UPDATE_ERROR, reason);
+      });
   },
 
 };
