@@ -2,7 +2,13 @@
   <v-card id="UserCard"
           raised
           :width="width"
-          :height="height">
+          :height="height"
+          :loading="loading">
+
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
     <div class="cardGrid fill-height"
           :style="`grid-template-rows: ${headerHeight}px 70px auto`">
@@ -88,6 +94,10 @@ export default {
     emailHash: String,
     nameInitials: String,
     datasetCount: Number,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     avatarHeight: 64,

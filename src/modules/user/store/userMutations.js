@@ -119,10 +119,10 @@ function extractError(store, reason, errorProperty = 'error') {
     }
   }
 
-  store.state.user.errorField = field;
-  store.state.user.errorType = type;
+  store.state.errorField = field;
+  store.state.errorType = type;
 
-  store._vm.$set(store.state.user, errorProperty, msg);
+  store._vm.$set(store.state, errorProperty, msg);
 }
 
 function createErrorMessage(reason) {
