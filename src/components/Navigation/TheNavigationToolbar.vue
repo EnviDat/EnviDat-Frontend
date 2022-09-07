@@ -89,7 +89,7 @@
                               @clicked="catchContinueClick" />
             </v-col>
 
-            <v-col class="shrink">
+            <v-col style="text-align: right; ">
               {{ signedInUser.fullname }}
             </v-col>
 
