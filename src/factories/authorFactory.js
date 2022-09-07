@@ -32,7 +32,9 @@ export function getAuthorName(author) {
     fullName = `${firstName.trim()} ${lastName.trim()}`;
   }
 
-  return fullName.trim() || null;
+  fullName = fullName.trim();
+
+  return  fullName || null;
 }
 
 /**
