@@ -15,11 +15,11 @@
 
           <!--        class="imagezoom"-->
 
-
         </v-col>
       </v-row>
 
-      <v-row no-gutters>
+      <v-row no-gutters
+              class="pt-4">
         <v-col cols="12" >
           <div :class="titleCssClass"
           >
@@ -65,7 +65,7 @@
 
           <div v-if="text"
                :class="subtitleCssClass"
-                v-html="text">
+                v-html="markdownText(text)">
 
           </div>
         </v-col>
@@ -78,6 +78,8 @@
 </template>
 
 <script>
+import { renderMarkdown } from '@/factories/stringFactory';
+
 /**
  * ImageTextCard shows the content the title of a post
  *
@@ -112,6 +114,11 @@ export default {
     subtitleCssClass: {
       type: String,
       default: undefined,
+    },
+  },
+  methods: {
+    markdownText(text) {
+      return renderMarkdown(text);
     },
   },
   computed: {
