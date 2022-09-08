@@ -8,13 +8,13 @@ import {
   PROJECT_DETAIL_PAGENAME,
   ABOUT_PATH,
   ABOUT_PAGENAME,
-  USER_SIGNIN_PATH,
-  USER_SIGNIN_PAGENAME,
   USER_SIGNOUT_PATH,
   USER_DASHBOARD_PAGENAME,
   USER_DASHBOARD_PATH,
   BLOG_PATH,
   BLOG_PAGENAME,
+  COMMUNITY_PATH,
+  COMMUNITY_PAGENAME,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -74,6 +74,15 @@ export const navigationItems = [
     active: false,
     path: ABOUT_PATH,
     pageName: ABOUT_PAGENAME,
+    disabled: false,
+  },
+  {
+    title: 'Community',
+    icon: 'close',
+    toolTip: 'EnviDat is integrated in the various platforms',
+    active: false,
+    path: COMMUNITY_PATH,
+    pageName: COMMUNITY_PAGENAME,
     disabled: false,
   },
   {

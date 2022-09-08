@@ -9,6 +9,7 @@
            class="py-1 py-md-4">
 
       <v-col cols="12"
+             offset-md="1"
              md="10" >
 
         <ImgAndTextLayout style="position: relative; z-index: 0;"
@@ -25,9 +26,11 @@
            class="py-1 py-md-4">
 
       <v-col cols="12"
+             offset-md="1"
              md="10" >
 
-        <TextCardListLayout :listItems="entries"
+        <TextCardListLayout :listItems="list"
+                            :loading="loadingList"
                             :loadingImg="fallbackCardImg">
           <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
             <ImageTextCard
@@ -77,11 +80,9 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import {
-  BLOG_NAMESPACE,
-  CLOSE_BLOG_POST,
-  GET_BLOG_LIST,
-  GET_BLOG_POST,
-} from '@/modules/blog/store/blogMutationsConsts';
+  COMMUNITY_NAMESPACE,
+  GET_COMMUNITY_LIST,
+} from '@/modules/community/store/communityMutationsConsts';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
@@ -96,9 +97,10 @@ export default {
     });
   },
   beforeMount() {
-    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+    this.$store.dispatch(`${COMMUNITY_NAMESPACE}/${GET_COMMUNITY_LIST}`);
 
     this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
+    this.titleImage = this.mixinMethods_getWebpImage('about/guidelines', this.$store.state);
   },
   /**
    * @description reset the scrolling to the top,
@@ -107,83 +109,20 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
 
-    this.checkRouteChanges();
+    this.loadCommunityList();
   },
   computed: {
     ...mapState([
       'config',
     ]),
-    ...mapState(BLOG_NAMESPACE, [
+    ...mapState(COMMUNITY_NAMESPACE, [
       'loadingList',
-      'loadingPost',
       'list',
-      'post',
-      'postContent',
     ]),
-    showBlogPost() {
-      return this.post && this.postContent;
-    },
-    blogHeaderTitle() {
-      if (this.showBlogPost) {
-        return this.post.title;
-      }
-
-      return 'EnviDat Blog';
-    },
-    blogHeaderImg() {
-      if (this.showBlogPost) {
-        return this.mixinMethods_getWebpImage('blog/postHeader', this.$store.state);
-      }
-
-      return this.mixinMethods_getWebpImage('blog/blogHeader', this.$store.state);
-    },
-  },
-  updated() {
-    this.setBlogBodyHeight();
   },
   methods: {
-    setBlogBodyHeight() {
-      let bodyHeaderHeight = 150;
-      const TheNavigationToolbar = 36;
-      const padding = 32;
-
-      if (this.$refs?.blogHeader) {
-        bodyHeaderHeight = this.$refs.blogHeader.clientHeight ? this.$refs.blogHeader.clientHeight : bodyHeaderHeight;
-      }
-
-      this.blogBodyHeight = bodyHeaderHeight + TheNavigationToolbar + padding;
-    },
-    checkRouteChanges() {
-      const post = this.$route.params?.post || null;
-      
-      if (post) {
-        this.loadPost(post);
-      } else {
-        this.clearPost();
-      }
-    },
-    catchPostClick(post) {
-
-      if (this.$route.params?.post !== post) {
-        this.$router.push({
-          name: BLOG_PAGENAME,
-          params: { post },
-        });
-      }
-    },
-    loadPost(postFile) {
-      if (this.post !== postFile) {
-        this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_POST}`, postFile);
-      }
-    },
-    catchClosePost() {
-      this.$router.push({
-        path: BLOG_PATH,
-        params: { post: null},
-      });
-    },
-    clearPost() {
-      this.$store.commit(`${BLOG_NAMESPACE}/${CLOSE_BLOG_POST}`);
+    loadCommunityList() {
+      this.$store.dispatch(`${COMMUNITY_NAMESPACE}/${GET_COMMUNITY_LIST}`);
     },
   },
   watch: {
@@ -198,9 +137,10 @@ export default {
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
-    fallbackCardImg: null,
     pageTitle: 'EnviDat Community',
     pageIntroText: '',
+    fallbackCardImg: null,
+    titleImage: null,
   }),
 };
 </script>

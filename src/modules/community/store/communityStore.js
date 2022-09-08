@@ -1,7 +1,7 @@
 /**
- * blog page store module
+ * community store module
  *
- * @summary blog vuex store
+ * @summary community vuex store
  * @author Dominik Haas-Artho
  *
  * This file is subject to the terms and conditions defined in
@@ -17,16 +17,16 @@ import {
   GET_COMMUNITY_LIST_SUCCESS,
 } from '@/modules/community/store/communityMutationsConsts';
 
-const community = {
+const communityState = {
   loadingList: false,
   list: [],
 };
 
 const staticRoot = process.env.VUE_APP_ENVIDAT_STATIC_ROOT;
 
-export const blog = {
+export const community = {
   namespaced: true,
-  state: community,
+  state: communityState,
   mutations: {
     [GET_COMMUNITY_LIST](state) {
       state.loadingList = true;
