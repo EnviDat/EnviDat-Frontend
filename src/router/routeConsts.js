@@ -48,3 +48,5 @@ export const USER_SIGNOUT_PATH = '/signout';
 
 export const BLOG_PATH = '/blog';
 export const BLOG_PAGENAME = 'BlogPage';
+export const COMMUNITY_PATH = '/community';
+export const COMMUNITY_PAGENAME = 'CommunityPage';
