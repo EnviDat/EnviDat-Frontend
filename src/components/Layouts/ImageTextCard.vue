@@ -1,12 +1,12 @@
 <template>
-  <v-card :height="height"
+  <v-card :minHeight="height"
           >
     <v-container v-if="imageTopLayout"
                   fluid >
       <v-row no-gutters>
         <v-col cols="12" >
 
-          <v-img :height="height / 2"
+          <v-img :height="imageHeight"
                  contain
                  :lazy-src="loadingImg"
                  :src="image"  />
@@ -65,7 +65,7 @@
 
           <div v-if="text"
                :class="subtitleCssClass"
-                v-html="markdownText(text)">
+                v-html="textIsMarkdown ? markdownText(text) : text">
 
           </div>
         </v-col>
@@ -97,6 +97,10 @@ export default {
   props: {
     title: String,
     text: String,
+    textIsMarkdown: {
+      type: Boolean,
+      default: false,
+    },
     image: String,
     height: Number,
     imageTopLayout: {
@@ -122,6 +126,9 @@ export default {
     },
   },
   computed: {
+    imageHeight() {
+      return this.height * 0.3;
+    },
   },
 };
 </script>

@@ -23,7 +23,9 @@
                  :key="`listItems_${index}`"
                  :id="`listItems_${index}`"
                  cols="12"
-                 sm="6"
+                 :sm="smallCols"
+                 :md="mediumCols"
+                 :lg="largeCols"
                  class="pa-2" >
 
             <slot name="entry"
@@ -62,6 +64,18 @@ export default {
     listItems: {
       type: Array,
       default: () => [],
+    },
+    smallCols: {
+      type: Number,
+      default: 3,
+    },
+    mediumCols: {
+      type: Number,
+      default: undefined,
+    },
+    largeCols: {
+      type: Number,
+      default: undefined,
     },
     loading: {
       type: Boolean,
