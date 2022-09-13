@@ -13,8 +13,8 @@ import {
   USER_DASHBOARD_PATH,
   BLOG_PATH,
   BLOG_PAGENAME,
-  COMMUNITY_PATH,
-  COMMUNITY_PAGENAME,
+  INTEGRATION_PATH,
+  INTEGRATION_PAGENAME,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -68,21 +68,21 @@ export const navigationItems = [
     disabled: false,
   },
   {
+    title: 'Community Integration',
+    icon: 'public',
+    toolTip: 'EnviDat is integrated in the various platforms',
+    active: false,
+    path: INTEGRATION_PATH,
+    pageName: INTEGRATION_PAGENAME,
+    disabled: false,
+  },
+  {
     title: 'About',
     icon: 'info',
     toolTip: 'What is EnviDat? Who is behind EnviDat?',
     active: false,
     path: ABOUT_PATH,
     pageName: ABOUT_PAGENAME,
-    disabled: false,
-  },
-  {
-    title: 'Community',
-    icon: 'close',
-    toolTip: 'EnviDat is integrated in the various platforms',
-    active: false,
-    path: COMMUNITY_PATH,
-    pageName: COMMUNITY_PAGENAME,
     disabled: false,
   },
   {
