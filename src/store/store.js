@@ -22,7 +22,7 @@ import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
 import { blog } from '@/modules/blog/store/blogStore';
-import { community } from '@/modules/community/store/communityStore';
+import { integration } from '@/modules/integration/store/integrationStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -94,7 +94,7 @@ const modules = {
   userSignIn,
   organizations,
   blog,
-  community,
+  integration,
 };
 
 function createStore() {

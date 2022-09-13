@@ -12,30 +12,31 @@ import axios from 'axios';
 import { getSpecificApiError } from '@/factories/notificationFactory';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 import {
-  GET_COMMUNITY_LIST,
-  GET_COMMUNITY_LIST_ERROR,
-  GET_COMMUNITY_LIST_SUCCESS,
-} from '@/modules/community/store/communityMutationsConsts';
+  GET_INTEGRATION_LIST,
+  GET_INTEGRATION_LIST_ERROR,
+  GET_INTEGRATION_LIST_SUCCESS,
+} from '@/modules/integration/store/integrationMutationsConsts';
 
-const communityState = {
+const integrationState = {
   loadingList: false,
   list: [],
 };
 
 const staticRoot = process.env.VUE_APP_ENVIDAT_STATIC_ROOT;
+const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
 
-export const community = {
+export const integration = {
   namespaced: true,
-  state: communityState,
+  state: integrationState,
   mutations: {
-    [GET_COMMUNITY_LIST](state) {
+    [GET_INTEGRATION_LIST](state) {
       state.loadingList = true;
     },
-    [GET_COMMUNITY_LIST_SUCCESS](state, payload) {
+    [GET_INTEGRATION_LIST_SUCCESS](state, payload) {
       state.list = payload;
       state.loadingList = false;
     },
-    [GET_COMMUNITY_LIST_ERROR](state, reason) {
+    [GET_INTEGRATION_LIST_ERROR](state, reason) {
       state.loadingList = false;
 
       const details = 'An error occurred while loading the list of blog posts!';
@@ -45,17 +46,21 @@ export const community = {
     },
   },
   actions: {
-    [GET_COMMUNITY_LIST]({ commit }) {
-      commit(GET_COMMUNITY_LIST);
+    [GET_INTEGRATION_LIST]({ commit }) {
+      commit(GET_INTEGRATION_LIST);
 
-      const url = `${staticRoot}/community/communitylist.json?nocache=${new Date().getTime()}`;
+      let url = `${staticRoot}/integration/integrationlist.json?nocache=${new Date().getTime()}`;
+
+      if (process.env.NODE_ENV === 'development' && useTestdata) {
+        url = './testdata/integrationlist.json';
+      }
 
       axios.get(url)
         .then((response) => {
-          commit(GET_COMMUNITY_LIST_SUCCESS, response.data);
+          commit(GET_INTEGRATION_LIST_SUCCESS, response.data);
         })
         .catch((reason) => {
-          commit(GET_COMMUNITY_LIST_ERROR, reason);
+          commit(GET_INTEGRATION_LIST_ERROR, reason);
         });
     },
   },

@@ -22,7 +22,23 @@
     </v-row>
 
     <v-row no-gutters
+           id="pageSubHeader"
+           class="py-1 py-md-4">
+
+      <v-col cols="12"
+             offset-md="1"
+             md="10" >
+
+        <div v-html="markdownText(pageIntroText)"></div>
+      </v-col>
+
+    </v-row>
+
+    <v-row no-gutters
            id="pageBody"
+           style="overflow: hidden auto; "
+           :style="`height: calc(100vh - ${headerHeight}px);`"
+
            class="py-1 py-md-4">
 
       <v-col cols="12"
@@ -30,11 +46,14 @@
              md="10" >
 
         <TextCardListLayout :listItems="list"
+                            :smallCols="4"
+                            :mediumCols="3"
                             :loading="loadingList"
                             :loadingImg="fallbackCardImg">
+
           <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
             <ImageTextCard
-                :height="300"
+                :height="cardHeight"
                 :title="entry.title"
                 :text="entry.text"
                 :image="entry.image"
@@ -66,38 +85,35 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  mapState,
-} from 'vuex';
+import { mapState } from 'vuex';
 
-import {
-  BLOG_PAGENAME,
-  BLOG_PATH,
-} from '@/router/routeConsts';
+import { INTEGRATION_PAGENAME } from '@/router/routeConsts';
+
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
 import {
-  COMMUNITY_NAMESPACE,
-  GET_COMMUNITY_LIST,
-} from '@/modules/community/store/communityMutationsConsts';
+  INTEGRATION_NAMESPACE,
+  GET_INTEGRATION_LIST,
+} from '@/modules/integration/store/integrationMutationsConsts';
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
 import ImageTextCard from '@/components/Layouts/ImageTextCard';
+import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
-  name: 'CommunityPage',
+  name: INTEGRATION_PAGENAME,
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.commit(SET_CURRENT_PAGE, BLOG_PAGENAME);
+      vm.$store.commit(SET_CURRENT_PAGE, INTEGRATION_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
   beforeMount() {
-    this.$store.dispatch(`${COMMUNITY_NAMESPACE}/${GET_COMMUNITY_LIST}`);
+    this.loadCommunityList();
 
     this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
     this.titleImage = this.mixinMethods_getWebpImage('about/guidelines', this.$store.state);
@@ -108,21 +124,25 @@ export default {
    */
   mounted() {
     window.scrollTo(0, 0);
-
-    this.loadCommunityList();
   },
   computed: {
     ...mapState([
       'config',
     ]),
-    ...mapState(COMMUNITY_NAMESPACE, [
+    ...mapState(INTEGRATION_NAMESPACE, [
       'loadingList',
       'list',
     ]),
+    cardHeight() {
+      return this.$vuetify?.breakpoint?.smAndDown ? 350 : 300;
+    },
   },
   methods: {
     loadCommunityList() {
-      this.$store.dispatch(`${COMMUNITY_NAMESPACE}/${GET_COMMUNITY_LIST}`);
+      this.$store.dispatch(`${INTEGRATION_NAMESPACE}/${GET_INTEGRATION_LIST}`);
+    },
+    markdownText(text) {
+      return renderMarkdown(text);
     },
   },
   watch: {
@@ -137,10 +157,12 @@ export default {
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
-    pageTitle: 'EnviDat Community',
-    pageIntroText: '',
+    pageTitle: 'Community Integration',
+    pageIntroText: `With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration.
+    Consequently, we are officially registered in re3data.org and FAIRsharing.org and a contributor community to NASA Earthdata, ESA's GEOSS Portal and data.europa.eu via opendata.swiss.`,
     fallbackCardImg: null,
     titleImage: null,
+    headerHeight: 350,
   }),
 };
 </script>

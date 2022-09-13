@@ -16,8 +16,8 @@
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
 import ImageTextCard from '@/components/Layouts/ImageTextCard';
 
-import communityList from '@/../public/testdata/communitylist.json';
 import dataCreatorImg from '@/assets/cards/data_creator_small.jpg'
+import integrationlist from '../public/testdata/integrationlist.json';
 import { LAYOUT_VIEWS } from './storybookFolder';
 
 
@@ -96,7 +96,7 @@ export const TextCardListLayoutViews = () => ({
   computed: {
   },
   data: () => ({
-    entries: communityList,
+    entries: integrationlist,
     loadingImg: dataCreatorImg,
   }),
   methods: {
