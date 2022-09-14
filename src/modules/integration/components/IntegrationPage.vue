@@ -47,7 +47,6 @@
 
         <TextCardListLayout :listItems="list"
                             :smallCols="4"
-                            :mediumCols="3"
                             :loading="loadingList"
                             :loadingImg="fallbackCardImg">
 

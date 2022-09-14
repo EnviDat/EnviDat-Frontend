@@ -2,7 +2,10 @@
   <v-card :minHeight="height"
           >
     <v-container v-if="imageTopLayout"
-                  fluid >
+                 :style="`min-height: ${height}px; `"
+                 class="fill-height"
+                 fluid >
+
       <v-row no-gutters>
         <v-col cols="12" >
 
@@ -47,9 +50,8 @@
                class="pa-0">
 
           <v-img class="imagezoom"
-                 :height="height"
                  :aspect-ratio="1"
-                 style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
+                 style="height: 100%; border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                  :lazy-src="loadingImg"
                  :src="image"  />
 
