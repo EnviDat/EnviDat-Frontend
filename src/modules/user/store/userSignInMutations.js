@@ -14,6 +14,7 @@
 
 
 import { md5Hash } from '@/factories/stringFactory';
+import { clearLocalStorage } from '@/store/localStorage';
 
 import {
   GET_USER_CONTEXT,
@@ -173,6 +174,8 @@ export default {
   },
   [USER_SIGNOUT](state) {
     state.userLoading = true;
+
+    clearLocalStorage();
 
     resetErrorObject(state);
   },

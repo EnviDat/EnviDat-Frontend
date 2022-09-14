@@ -100,8 +100,6 @@ import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
 import ImageTextCard from '@/components/Layouts/ImageTextCard';
 import { renderMarkdown } from '@/factories/stringFactory';
 
-import imageNotFound from '@/modules/services/assets/imageNotFound.jpg';
-
 export default {
   name: SERVICE_PAGENAME,
   beforeRouteEnter(to, from, next) {
@@ -114,7 +112,8 @@ export default {
     this.loadServiceList();
 
     this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
-    this.titleImage = this.mixinMethods_getWebpImage('about/mission', this.$store.state);
+    this.titleImage = this.mixinMethods_getWebpImage('service/service_header', this.$store.state);
+    this.missingCardImage = this.mixinMethods_getWebpImage('service/imageNotFound', this.$store.state);
   },
   /**
    * @description reset the scrolling to the top,
@@ -159,7 +158,7 @@ export default {
     fallbackCardImg: null,
     titleImage: null,
     SERVICE_PAGENAME,
-    missingCardImage: imageNotFound,
+    missingCardImage: null,
   }),
 };
 </script>
