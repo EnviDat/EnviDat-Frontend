@@ -36,7 +36,7 @@ import {
 } from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
-import localStoragePlugin from '@/store/localStorage';
+import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
@@ -140,7 +140,7 @@ try {
     console.log(e);
 
     // clear it to make sure the app boots with a clean state
-    window.localStorage.clear()
+    clearLocalStorage();
 
     console.info('cleared local storage');
 
