@@ -710,12 +710,10 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const tagNames = [];
-      tagNames.push(tagName);
+      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl(tagNames);
       const query = {};
-      query.tags = tagsEncoded;
+      query.tags = stringTags;
 
       // clear the search result here, in case this metadata entry
       // was part of a full text search

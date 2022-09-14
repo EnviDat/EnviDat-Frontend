@@ -32,7 +32,7 @@
                   :color="badgeColor">
 
           <span slot="badge"
-                :class="dark ? 'white--text' : 'black--text'" >
+                :class="!dark ? 'white--text' : 'black--text'" >
                 {{ dataCreditCounts[index] }}
           </span>
 

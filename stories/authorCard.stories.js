@@ -95,10 +95,17 @@ export const AuthorCardViews = () => ({
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
+        <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
+      </v-col>
+      
+      <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" />
       </v-col>
 
-
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="authorFromCollection2" :isSelected="true" />
+      </v-col>
+      
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection3" :loading="true" />
       </v-col>

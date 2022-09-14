@@ -29,8 +29,9 @@ import { projectsRoutes } from '@/modules/projects/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 
 import { userRoutes } from '@/modules/user/routes';
-
 import { blogRoutes } from '@/modules/blog/routes';
+import { integrationRoutes } from '@/modules/integration/routes';
+import { serviceRoutes } from '@/modules/services/routes';
 
 Vue.use(Router);
 
@@ -65,6 +66,8 @@ export default new Router({
     ...aboutRoutes,
     ...userRoutes,
     ...blogRoutes,
+    ...integrationRoutes,
+    ...serviceRoutes,
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {

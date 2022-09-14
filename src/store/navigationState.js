@@ -8,13 +8,15 @@ import {
   PROJECT_DETAIL_PAGENAME,
   ABOUT_PATH,
   ABOUT_PAGENAME,
-  USER_SIGNIN_PATH,
-  USER_SIGNIN_PAGENAME,
   USER_SIGNOUT_PATH,
   USER_DASHBOARD_PAGENAME,
   USER_DASHBOARD_PATH,
   BLOG_PATH,
   BLOG_PAGENAME,
+  INTEGRATION_PATH,
+  INTEGRATION_PAGENAME,
+  SERVICE_PATH,
+  SERVICE_PAGENAME,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -31,7 +33,7 @@ export const navigationItems = [
   {
     title: 'Projects',
     icon: 'library_books',
-    toolTip: 'Overview of the research projects on envidat',
+    toolTip: 'Overview of the research projects on Envidat',
     active: false,
     path: PROJECTS_PATH,
     pageName: PROJECTS_PAGENAME,
@@ -59,6 +61,24 @@ export const navigationItems = [
   },
 */
   {
+    title: 'Tools & Services',
+    icon: 'design_services',
+    toolTip: 'Research data tools and services',
+    active: false,
+    path: SERVICE_PATH,
+    pageName: SERVICE_PAGENAME,
+    disabled: false,
+  },
+  {
+    title: 'Community Integration',
+    icon: 'public',
+    toolTip: 'EnviDat is integrated in the various research data platforms',
+    active: false,
+    path: INTEGRATION_PATH,
+    pageName: INTEGRATION_PAGENAME,
+    disabled: false,
+  },
+  {
     title: 'Blog',
     icon: 'auto_stories',
     toolTip: 'News and articles from the EnviDat team',
@@ -70,7 +90,7 @@ export const navigationItems = [
   {
     title: 'About',
     icon: 'info',
-    toolTip: 'What is EnviDat? Who is behind EnviDat?',
+    toolTip: 'Information about EnviDat',
     active: false,
     path: ABOUT_PATH,
     pageName: ABOUT_PAGENAME,
