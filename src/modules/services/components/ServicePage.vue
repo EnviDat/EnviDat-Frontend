@@ -28,6 +28,7 @@
       <v-col cols="12"
              offset-md="1"
              md="10"
+             class="text-body-1"
              v-html="pageIntroText">
 
       </v-col>
@@ -170,7 +171,6 @@ export default {
     pageIntroText: 'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat. <a href="mailto:envidat@wsl.ch" >Get in touch</a> with the EnviDat team for consulting on services, tools or any other requests.',
     fallbackCardImg: null,
     titleImage: null,
-    headerHeight: 320,
     SERVICE_PAGENAME,
     missingCardImage: imageNotFound,
   }),

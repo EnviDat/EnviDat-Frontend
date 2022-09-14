@@ -28,6 +28,7 @@
       <v-col cols="12"
              offset-md="1"
              md="10"
+             class="text-body-1"
              v-html="markdownText(pageIntroText)" >
 
       </v-col>
@@ -152,7 +153,6 @@ export default {
     Consequently, we are officially registered in re3data.org and FAIRsharing.org and a contributor community to NASA Earthdata, ESA's GEOSS Portal and data.europa.eu via opendata.swiss.`,
     fallbackCardImg: null,
     titleImage: null,
-    headerHeight: 350,
   }),
 };
 </script>
