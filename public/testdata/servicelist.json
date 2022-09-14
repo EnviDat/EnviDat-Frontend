@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Research Data Management",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/edit_workflow_header.jpg",
+    "text": "Consulting on managing research data."
+  },
+  {
+    "title": "Data Management Plan",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/python_logo.png",
+    "text": "Consulting on Data Management Plan and <a href='./#/about/dmp'>template on EnviDat<a>."
+  },
+  {
+    "title": "GitLab on WSL",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/envidat_team_2022.jpg",
+    "text": "Technical consulting about the <a href='https://gitlabext.wsl.ch/' target='_blank'>GitLab usage on WSL</a> (it allows collaboration with external partners)."
+  },
+  {
+    "title": "EnviDat at your Service",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/EnviDat_landingpage.jpg",
+    "text": "Consulting and support on publishing research data with DOIs on EnviDat."
+  },
+  {
+    "title": "HPC on WSL",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/Near-real-time-dataviz.jpg",
+    "text": "WSL's <a href='https://hyperion.wsl.ch/documentation-master/build/html/' target='_blank'>Hyperion High-Performance Computing</a> (HPC) Linux Cluster (only available inside the WSL Intranet)."
+  },
+  {
+    "title": "Interactive Jupyter Hub",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/blog/images/Near-real-time-dataviz.jpg",
+    "text": "JupyterLab/JupyterHub <a href='https://hyperion.wsl.ch/documentation-master/build/html/Jupyter.html'  target='_blank'>interactive development environment</a> to combine documentation, code and data (only available inside the WSL Intranet)."
+  }
+]

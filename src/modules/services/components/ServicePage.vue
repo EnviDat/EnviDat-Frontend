@@ -29,7 +29,7 @@
              offset-md="1"
              md="10" >
 
-        <div v-html="markdownText(pageIntroText)"></div>
+        <div v-html="pageIntroText"></div>
       </v-col>
 
     </v-row>
@@ -167,10 +167,10 @@ export default {
   data: () => ({
     PageBGImage: 'app_b_browsepage',
     pageTitle: 'Tools & Services',
-    pageIntroText: 'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat.',
+    pageIntroText: 'List of the Research Data Management (RDM) tools and services currently provided for WSL employees by WSL IT and EnviDat. <a href="mailto:envidat@wsl.ch" >Get in touch</a> with the EnviDat team for consulting on services, tools or any other requests.',
     fallbackCardImg: null,
     titleImage: null,
-    headerHeight: 300,
+    headerHeight: 320,
     SERVICE_PAGENAME,
     missingCardImage: imageNotFound,
   }),
