@@ -51,7 +51,8 @@
 
           <v-img class="imagezoom"
                  :aspect-ratio="1"
-                 style="height: 100%; border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
+                 :height="height"
+                 style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                  :lazy-src="loadingImg"
                  :src="image"  />
 

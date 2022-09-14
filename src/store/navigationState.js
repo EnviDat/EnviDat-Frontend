@@ -15,6 +15,8 @@ import {
   BLOG_PAGENAME,
   INTEGRATION_PATH,
   INTEGRATION_PAGENAME,
+  SERVICE_PATH,
+  SERVICE_PAGENAME,
 } from '@/router/routeConsts';
 
 export const navigationItems = [
@@ -31,7 +33,7 @@ export const navigationItems = [
   {
     title: 'Projects',
     icon: 'library_books',
-    toolTip: 'Overview of the research projects on envidat',
+    toolTip: 'Overview of the research projects on Envidat',
     active: false,
     path: PROJECTS_PATH,
     pageName: PROJECTS_PAGENAME,
@@ -74,6 +76,15 @@ export const navigationItems = [
     active: false,
     path: INTEGRATION_PATH,
     pageName: INTEGRATION_PAGENAME,
+    disabled: false,
+  },
+  {
+    title: 'Tools & Services',
+    icon: 'design_services',
+    toolTip: 'Research Data Tools and Services',
+    active: false,
+    path: SERVICE_PATH,
+    pageName: SERVICE_PAGENAME,
     disabled: false,
   },
   {

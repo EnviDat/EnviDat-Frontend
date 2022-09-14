@@ -50,3 +50,6 @@ export const BLOG_PATH = '/blog';
 export const BLOG_PAGENAME = 'BlogPage';
 export const INTEGRATION_PATH = '/integration';
 export const INTEGRATION_PAGENAME = 'IntegrationPage';
+export const SERVICE_PATH = '/services';
+export const SERVICE_PAGENAME = 'ServicePage';
+
