@@ -111,7 +111,7 @@ export default {
     this.loadCommunityList();
 
     this.fallbackCardImg = this.mixinMethods_getWebpImage('about/contact', this.$store.state);
-    this.titleImage = this.mixinMethods_getWebpImage('about/guidelines', this.$store.state);
+    this.titleImage = this.mixinMethods_getWebpImage('integration/integration_header', this.$store.state);
   },
   /**
    * @description reset the scrolling to the top,
