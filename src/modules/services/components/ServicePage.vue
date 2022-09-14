@@ -43,7 +43,7 @@
              offset-md="1"
              md="10" >
 
-        <TextCardListLayout :listItems="serviceList"
+        <TextCardListLayout :listItems="list"
                             :smallCols="6"
                             :mediumCols="4"
                             subtitleCssClass="text-body-2"
@@ -131,19 +131,6 @@ export default {
       'loadingList',
       'list',
     ]),
-    serviceList() {
-      const serviceList = [...this.list];
-
-      if (serviceList.length > 0) {
-        serviceList.push({
-          title: 'Missing a Something?',
-          image: this.missingCardImage,
-          text: 'Missing a service, a tool or a feature? Let us know via <a href="mailto:envidat@wsl.ch" >envidat@wsl.ch</a>.',
-        });
-      }
-
-      return serviceList;
-    },
     cardHeight() {
       if (this.$vuetify?.breakpoint?.sm) {
         return 210;
