@@ -23,23 +23,20 @@
 
     <v-row no-gutters
            id="pageSubHeader"
-           class="py-1 py-md-4">
+           class="py-2">
 
       <v-col cols="12"
              offset-md="1"
-             md="10" >
+             md="10"
+             v-html="markdownText(pageIntroText)" >
 
-        <div v-html="markdownText(pageIntroText)"></div>
       </v-col>
 
     </v-row>
 
     <v-row no-gutters
            id="pageBody"
-           style="overflow: hidden auto; "
-           :style="`height: calc(100vh - ${headerHeight}px);`"
-
-           class="py-1 py-md-4">
+           class="py-4">
 
       <v-col cols="12"
              offset-md="1"
@@ -51,16 +48,15 @@
                             :loadingImg="fallbackCardImg">
 
           <template #entry="{ entry, loadingImg, titleCssClass, subtitleCssClass }">
-            <ImageTextCard
-                :height="cardHeight"
-                :title="entry.title"
-                :text="entry.text"
-                :image="entry.image"
-                :loadingImg="loadingImg"
-                :titleCssClass="titleCssClass"
-                :subtitleCssClass="subtitleCssClass"
-                :imageTopLayout="true"
-            >
+            <ImageTextCard :height="cardHeight"
+                            :title="entry.title"
+                            :text="entry.text"
+                            :image="entry.image"
+                            :loadingImg="loadingImg"
+                            :titleCssClass="titleCssClass"
+                            :subtitleCssClass="subtitleCssClass"
+                            :imageTopLayout="true"
+                        >
 
             </ImageTextCard>
           </template>
@@ -142,11 +138,6 @@ export default {
     },
     markdownText(text) {
       return renderMarkdown(text);
-    },
-  },
-  watch: {
-    $route() {
-      this.checkRouteChanges();
     },
   },
   components: {

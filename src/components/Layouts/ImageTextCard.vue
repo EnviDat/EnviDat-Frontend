@@ -3,7 +3,6 @@
           >
     <v-container v-if="imageTopLayout"
                  :style="`min-height: ${height}px; `"
-                 class="fill-height"
                  fluid >
 
       <v-row no-gutters>
@@ -41,26 +40,27 @@
 
     <v-container v-if="!imageTopLayout"
                  fluid
-                  class="pa-0">
+                  class="pa-0"
+                  :style="`min-height: ${height}px`">
 
       <v-row no-gutters
-             class="pa-0">
+             class="pa-0"
+             :style="`min-height: ${height}px`">
 
         <v-col cols="5"
                class="pa-0">
 
           <v-img class="imagezoom"
                  :aspect-ratio="1"
-                 :height="height"
-                 style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
+                 cover
+                 style="height: 100%; border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
                  :lazy-src="loadingImg"
                  :src="image"  />
 
         </v-col>
 
         <v-col cols="7"
-               class="px-3"
-               align-self="center" >
+               class="pa-3" >
           <div :class="titleCssClass"
             >
             {{ title }}
