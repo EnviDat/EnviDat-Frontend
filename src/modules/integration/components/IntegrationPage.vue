@@ -29,7 +29,7 @@
              offset-md="1"
              md="10"
              class="text-body-1"
-             v-html="markdownText(pageIntroText)" >
+             v-html="pageIntroText" >
 
       </v-col>
 
@@ -98,7 +98,6 @@ import {
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
 import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
 import ImageTextCard from '@/components/Layouts/ImageTextCard';
-import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: INTEGRATION_PAGENAME,
@@ -136,9 +135,6 @@ export default {
   methods: {
     loadCommunityList() {
       this.$store.dispatch(`${INTEGRATION_NAMESPACE}/${GET_INTEGRATION_LIST}`);
-    },
-    markdownText(text) {
-      return renderMarkdown(text);
     },
   },
   components: {
