@@ -22,8 +22,8 @@
       <control-panel :compactLayout="true"
                       :searchTerm="searchTerm"
                       :showSearch="showSearch"
-                      :showSearchCount="true"
                       :searchCount="searchCount"
+                      :isAuthorSearch="isAuthorSearch"
                       :fixedHeight="36"
                       :searchBarPlaceholder="searchBarPlaceholder"
                       :loading="loading"
@@ -31,7 +31,9 @@
                       :enabledControls="enabledControls"
                       @searchClick="catchSearchClicked"
                       @searchCleared="catchSearchCleared"
-                      @controlsChanged="controlsChanged" />
+                      @controlsChanged="controlsChanged"
+                      @authorSearchClick="catchAuthorSearchClick"
+                      />
 
     </template>
 
@@ -249,6 +251,10 @@ export default {
     showSearch: Boolean,
     searchTerm: String,
     searchCount: Number,
+    isAuthorSearch: {
+      type: Boolean,
+      default: false,
+    },
     searchBarPlaceholder: String,
     mainScrollClass: {
       type: String,
@@ -573,6 +579,9 @@ export default {
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
+    },
+    catchAuthorSearchClick() {
+      this.$emit('authorSearchClick');
     },
     resetVirtualContent() {
       // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);

@@ -41,8 +41,7 @@
         <v-col v-if="showSearch"
                class="py-0 ml-4 shrink">
 
-          <BaseIconSwitch v-on="on"
-                          :active="isAuthorSearch"
+          <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
                           materialIconName="account_circle"
                           @click="catchAuthorSearchClick" />

@@ -143,20 +143,14 @@ export default {
      * @param {String} tags encoded string
      * @param {String} mode which defines the mode for the special view
      * @param {Array} pins array of ids for the pinned metadatas
+     * @param {String} isAuthorSearch if true the search term will only be compared against authors
      */
-    mixinMethods_additiveChangeRoute(basePath, search, tags, mode = undefined, pins = undefined) {
+    mixinMethods_additiveChangeRoute(basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
       const query = {};
       Object.assign(query, this.$route.query);
 
       if (search !== undefined) {
-
         query.search = search;
-
-        // Delete isAuthorSearch property if it exists so that query path is cleared
-        if (query.isAuthorSearch) {
-          delete query.isAuthorSearch;
-        }
-
       }
 
       if (tags !== undefined) {
@@ -169,6 +163,10 @@ export default {
 
       if (pins !== undefined) {
         query.pins = pins;
+      }
+
+      if (isAuthorSearch !== undefined) {
+        query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
       }
 
       this.$router.push({

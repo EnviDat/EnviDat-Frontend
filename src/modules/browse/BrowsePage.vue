@@ -25,11 +25,13 @@
                     :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
                     @onScroll="storeScroll"
                     :showSearch="true"
+                    :isAuthorSearch="isAuthorSearch"
                     :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
+                    @authorSearchClick="catchAuthorSearchClick"
                     @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
@@ -91,6 +93,8 @@ export default {
     });
   },
   mounted() {
+    this.oldIsAuthorSearch = this.isAuthorSearch;
+
     this.checkRouteChanges(null);
   },
   methods: {
@@ -132,7 +136,8 @@ export default {
         const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
         // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+            stringTags, undefined, undefined, this.isAuthorSearch);
       }
     },
     catchTagCloseClicked(tagId) {
@@ -144,7 +149,8 @@ export default {
       const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
       // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+          stringTags, undefined, undefined, this.isAuthorSearch);
     },
     catchTagCleared() {
       this.selectedTagNames = [];
@@ -157,7 +163,9 @@ export default {
 
       const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined, undefined, stringPins);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined,
+          undefined, stringPins,
+          this.isAuthorSearch);
     },
     catchMapFilterChanged(visibleIds) {
       this.mapFilterVisibleIds = visibleIds;
@@ -190,7 +198,6 @@ export default {
         });
     },
     checkRouteChanges(fromRoute) {
-
       let triggerClearSearch = false;
       let triggerScrollReset = false;
 
@@ -207,56 +214,15 @@ export default {
 
       this.loadRoutePins();
 
-
-      // SEARCH SETUP BLOCK
-
-      // Assign searchParameter so that it can be checked for both author only and full text searches
+      // Assign searchParameter so that it can be checked for full text searches
       const searchParameter = this.$route.query.search || '';
 
-      // Assign isAuthorSearch boolean to corresponding key from query object, if it does not exist then assign to false
-      const isAuthorSearch = this.$route.query.isAuthorSearch || false;
-
-      // True if searchParameter does not equal currentSearchTerm, else false OR
-      // True if authorSearch does not equal current isAuthorSearch, else false
-      const checkSearchTriggering = searchParameter !== this.currentSearchTerm
-                                 || isAuthorSearch !== this.isAuthorSearch;
-
-
-
-      // AUTHOR SEARCH BLOCK
-
-      // Author search queries triggered by clicking on an author tag in a metadata entry
-      // or selecting 'Author Only' option in search bar
-
-      // Check if authorSearch function should be executed
-      // AND that searchParameter is not equal to current state authorSearchTerm
-      if (isAuthorSearch && searchParameter !== this.authorSearchTerm) {
-
-        if (searchParameter.length > 0) {
-            this.authorSearch(searchParameter);
-            this.activateAuthorSearch();
-            this.resetScrollPos();
-            return;
-        }
-
-        // Else searchParameter is empty so clear the search results
-        triggerClearSearch = true;
-        triggerScrollReset = true;
-
-      }
-
-
-      // FULL TEXT SEARCH BLOCK
-
-      this.activateFullTextSearch();
-
-      // Clear state authorSearchTerm
-      this.clearAuthorSearch()
-
+      // True is searchParameter does not equal currentSearchTerm, else False
+      const checkSearchTriggering = searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
 
       if (!checkSearchTriggering) {
-        // Use the search parameter from the url in any case
-        // If it's a back navigation it has to be set that is will appear in the searchBar component
+        // use the search parameter from the url in any case
+        // if it's a back navigation it has to be set that is will appear in the searchBar component
         triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
       }
 
@@ -299,7 +265,7 @@ export default {
       }
 
       // always filter changes of the url except a change of the search term
-      // because due to navigation the inital filter might be needed
+      // because due to navigation the initial filter might be needed
       this.filterContent();
     },
     setScrollPos(toPos) {
@@ -329,20 +295,31 @@ export default {
       if (this.currentSearchTerm.trim() !== search) {
         // the search parameter needs to be '' to clear it
 
-        const isAuthorSearchString = this.isAuthorSearch.toString();
-
         this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
           undefined, undefined, undefined,
-            isAuthorSearchString);
+            this.isAuthorSearch);
       }
     },
     catchSearchCleared() {
       // Only change route if state currentSearchTrim is not equal to an empty string
       // to avoid redundant navigation when there are no search terms
       if (this.currentSearchTerm.trim() !== '') {
+
         // the search parameter needs to be '' to clear it
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
+        undefined, undefined, undefined,
+          this.isAuthorSearch);
       }
+    },
+    catchAuthorSearchClick() {
+      this.oldIsAuthorSearch = this.isAuthorSearch;
+      const newIsAuthorSearchParameter = this.isAuthorSearch ? 'false' : 'true';
+
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH,
+          this.currentSearchTerm,
+          undefined, undefined, undefined,
+          newIsAuthorSearchParameter);
+
     },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
@@ -383,6 +360,9 @@ export default {
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
+    },
+    isAuthorSearch() {
+      return this.$route?.query?.isAuthorSearch === 'true' || false;
     },
     enabledControls() {
       let enableds = this.preenabledControls;
@@ -470,6 +450,7 @@ export default {
       LISTCONTROL_MAP_ACTIVE,
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
+    oldIsAuthorSearch: false,
   }),
 };
 </script>
