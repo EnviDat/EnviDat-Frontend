@@ -95,7 +95,7 @@ function contentFilteredByTags(value, selectedTagNames) {
 
 function createSolrQuery(searchTerm) {
 
-  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2 OR author:"*${searchTerm}*"~2`;
+  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
 
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
@@ -107,7 +107,7 @@ function createSolrQuery(searchTerm) {
   for (let i = 0; i < splits.length; i++) {
     const searchSplit = splits[i];
 
-    solrQuery += ` OR author: "*${searchSplit}*" OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
+    solrQuery += ` OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
   }
 
   // https://www.envidat.ch/query?ident=on&q=author:%22Marcia%20Phillips%22~2
