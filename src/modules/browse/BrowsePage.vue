@@ -348,8 +348,6 @@ export default {
       scrollPositionDelay: `${METADATA_NAMESPACE}/scrollPositionDelay`,
       browseScrollPosition: 'browseScrollPosition',
       defaultControls: 'defaultControls',
-      searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
-      searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
       vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
@@ -374,7 +372,11 @@ export default {
       return enableds;
     },
     searchBarPlaceholder() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.searchPlaceholderText : this.searchPlaceholderTextSmall;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return this.searchPlaceholderTextSmall;
+      }
+
+      return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
     },
     // keywordsPlaceholder() {
     //   return this.searchingMetadatasContent || this.updatingTags;
@@ -438,6 +440,9 @@ export default {
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
+    searchPlaceholderTextSmall: 'Enter research search term',
+    searchPlaceholderText: 'Enter research term or topic ',
+    authorSearchPlaceholderText: 'Enter a name of an author',
     selectedTagNames: [],
     selectedPins: [],
     popularTagAmount: 10,
