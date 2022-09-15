@@ -17,10 +17,6 @@ import {
   LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
   LOAD_METADATA_CONTENT_BY_ID_ERROR,
   CLEAN_CURRENT_METADATA,
-  SEARCH_AUTHOR,
-  CLEAR_SEARCH_AUTHOR,
-  SEARCH_AUTHOR_ONLY,
-  SEARCH_FULL_TEXT,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -109,18 +105,6 @@ function enhanceMetadatas(store, datasets) {
 
 
 export default {
-  [SEARCH_AUTHOR](state, authorSearchTerm) {
-    state.authorSearchTerm = authorSearchTerm;
-  },
-  [CLEAR_SEARCH_AUTHOR](state) {
-    state.authorSearchTerm = '';
-  },
-  [SEARCH_AUTHOR_ONLY](state) {
-    state.isAuthorSearch = true;
-  },
-  [SEARCH_FULL_TEXT](state) {
-    state.isAuthorSearch = false;
-  },
   [SEARCH_METADATA](state, searchTerm) {
     state.searchingMetadatasContent = true;
     state.searchingMetadatasContentOK = false;

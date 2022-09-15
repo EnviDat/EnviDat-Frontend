@@ -71,10 +71,6 @@ import {
   LISTCONTROL_MAP_ACTIVE,
   METADATA_NAMESPACE,
   SEARCH_METADATA,
-  SEARCH_AUTHOR,
-  CLEAR_SEARCH_AUTHOR,
-  SEARCH_AUTHOR_ONLY,
-  SEARCH_FULL_TEXT,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
 
@@ -322,28 +318,22 @@ export default {
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
     },
     metadataSearch(searchTerm, metadataConfig) {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, {
+        searchTerm,
+        metadataConfig,
+        isAuthorSearch: this.isAuthorSearch,
+      });
     },
-    authorSearch(authorSearchTerm) {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR}`, { authorSearchTerm });
-    },
-    clearAuthorSearch() {
-      this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
-    },
-    activateAuthorSearch() {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SEARCH_AUTHOR_ONLY}`);
-    },
-    activateFullTextSearch() {
-      this.$store.commit(`${METADATA_NAMESPACE}/${SEARCH_FULL_TEXT}`);
-    },
-    // authorSearchClearResults() {
-    //   this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_AUTHOR}`)
-    // },
     catchSearchClicked(search) {
       // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
       if (this.currentSearchTerm.trim() !== search) {
         // the search parameter needs to be '' to clear it
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+
+        const isAuthorSearchString = this.isAuthorSearch.toString();
+
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
+          undefined, undefined, undefined,
+            isAuthorSearchString);
       }
     },
     catchSearchCleared() {
@@ -383,8 +373,6 @@ export default {
       defaultControls: 'defaultControls',
       searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
       searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
-      authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,
-      isAuthorSearch: `${METADATA_NAMESPACE}/isAuthorSearch`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
       vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,

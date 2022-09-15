@@ -17,7 +17,6 @@ import {
   LOAD_METADATA_CONTENT_BY_ID,
   // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
   // LOAD_METADATA_CONTENT_BY_ID_ERROR,
-  SEARCH_AUTHOR,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -196,6 +195,7 @@ export default {
   async [SEARCH_METADATA]({ commit }, {
     searchTerm,
     metadataConfig = {},
+    isAuthorSearch = false,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -213,50 +213,23 @@ export default {
       return;
     }
 
-    const solrQuery = createSolrQuery(originalTerm);
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
 
     await axios
-        .get(url)
-        .then((response) => {
+      .get(url)
+      .then((response) => {
 
-          commit(SEARCH_METADATA_SUCCESS, {
-            payload: response.data.response.docs,
-          });
-        })
-        .catch((reason) => {
-          commit(SEARCH_METADATA_ERROR, reason);
+        commit(SEARCH_METADATA_SUCCESS, {
+          payload: response.data.response.docs,
         });
-  },
-  async [SEARCH_AUTHOR]({ commit }, {
-    authorSearchTerm,
-  }) {
-
-    commit(SEARCH_AUTHOR, authorSearchTerm);
-
-    // Use the envidat "query" action for performance boost (ckan package_search isn't performant)
-    const solrQuery = getAuthorSolrQuery(authorSearchTerm);
-    const query = `query?q=${solrQuery}`;
-    const queryAdditions = '&wt=json&rows=1000';
-    const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
-
-    await axios
-        .get(url)
-        .then((response) => {
-
-          commit(SEARCH_METADATA_SUCCESS, {
-            // TODO filter payload to make sure that authorSearchTerm is in same author object
-            // TODO possibly use JSON.parse to get author objects
-            payload: response.data.response.docs,
-          });
-        })
-        .catch((reason) => {
-          commit(SEARCH_METADATA_ERROR, reason);
-        });
+      })
+      .catch((reason) => {
+        commit(SEARCH_METADATA_ERROR, reason);
+      });
   },
   async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod }) {
     // commitMethod can be given from the caller of the action to direct
