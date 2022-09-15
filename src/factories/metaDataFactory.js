@@ -417,53 +417,38 @@ export function createLocalResource(
   };
 }
 
-export function createResource(resource, datasetName) {
-  if (!resource) {
-    return null;
-  }
-
+function getRestrictedState(resource) {
   let isProtected = false;
-  let restrictedUsers;
   let restrictedObj = false;
+  let hasAllowedUsers = false;
 
-  if (
-    resource.restricted &&
+  if (resource.restricted &&
     typeof resource.restricted === 'string' &&
     resource.restricted.length > 0
   ) {
     try {
       restrictedObj = JSON.parse(resource.restricted);
+      hasAllowedUsers = restrictedObj.allowed_users !== '';
       isProtected = restrictedObj.level !== 'public';
-      restrictedUsers = restrictedObj.allowed_users !== '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
       isProtected = !resource.restricted.includes('public');
     }
   }
 
-  let resURL = resource.url;
+  return {
+    isProtected,
+    isPublic: restrictedObj.level === 'public',
+    sameOrganizationOnly: restrictedObj.level === 'same_organization',
+    level: restrictedObj.level,
+    hasAllowedUsers,
+    allowedUsers: restrictedObj.allowed_users,
+  };
+}
 
-  if (
-    isProtected ||
-    (typeof restrictedUsers === 'boolean' && restrictedUsers === true)
-  ) {
-    const splits = resource.url.split('resource');
-    if (splits && splits.length > 0) {
-      resURL = splits[0];
-    } else {
-      resURL = '';
-    }
-  }
-
-  let fileFormat = resource.format ? resource.format : '';
-  fileFormat = fileFormat.replace('.', '').toLowerCase();
-
-  const created = formatDate(resource.created);
-  const modified = formatDate(resource.last_modified);
-
-  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
-
+function getFileName(resource) {
   let fileName = resource.name;
+  const resURL = resource.url;
 
   if (!fileName && resURL) {
     const urlSplits = resURL.split('/');
@@ -471,6 +456,45 @@ export function createResource(resource, datasetName) {
       fileName = urlSplits[urlSplits.length - 1];
     }
   }
+  
+  return fileName;
+}
+
+function getResourceUrl(resource, restrictedState) {
+  let resURL = resource.url;
+
+  if (restrictedState.isProtected ||
+    (typeof restrictedState.allowedUsers === 'boolean' && restrictedState.allowedUsers === true)) {
+
+    const splits = resource.url.split('resource');
+    if (splits && splits.length > 0) {
+      resURL = splits[0];
+    } else {
+      resURL = '';
+    }
+  }
+  
+  return resURL;
+}
+
+export function createResource(resource, datasetName) {
+  if (!resource) {
+    return null;
+  }
+
+  const restrictedState = getRestrictedState(resource);
+
+  const resURL = getResourceUrl(resource, restrictedState);
+
+  let fileFormat = resource.format || '';
+  fileFormat = fileFormat.replace('.', '').toLowerCase();
+
+  const created = formatDate(resource.created);
+  const modified = formatDate(resource.last_modified);
+
+  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
+
+  const fileName = getFileName(resource);
 
   return {
     // "hash": "",
@@ -480,21 +504,21 @@ export function createResource(resource, datasetName) {
     // "mimetype_inner": null,
     // url_type: "upload",
     id: resource.id,
-    size: resource.size ? resource.size : 0,
-    mimetype: resource.mimetype ? resource.mimetype : '',
-    cacheUrl: resource.cache_url ? resource.cache_url : '',
+    size: resource.size || 0,
+    mimetype: resource.mimetype || '',
+    cacheUrl: resource.cache_url || '',
     doi: resource.doi,
     name: fileName,
     url: resURL,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
-    restricted: resource.restricted ? resource.restricted : '',
+    restricted: resource.restricted || '',
     format: fileFormat,
-    state: resource.state ? resource.state : '',
+    state: resource.state || '',
     created,
     lastModified: modified,
-    position: resource.position ? resource.position : '',
-    revisionId: resource.revision_id ? resource.revision_id : '',
-    isProtected,
+    position: resource.position || '',
+    revisionId: resource.revision_id || '',
+    ...restrictedState,
   };
 }
 

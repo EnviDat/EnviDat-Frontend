@@ -407,21 +407,6 @@ export default {
 
       return cleanSubtitle;
     },
-    isRestricted() {
-      return this.restricted;
-      // return this.restricted &&
-      // (this.restricted.allowed_users !== undefined || this.restricted.level !== 'public');
-    },
-    userHasAccess() {
-      if (!this.isRestricted) {
-        return false;
-      }
-
-      const userAccess = this.restricted.allowed_users;
-      const accessLvl = this.restricted.level;
-
-      return userAccess || accessLvl;
-    },
     resourceAmount() {
       if (this.resourceCount) {
         return this.resourceCount;
