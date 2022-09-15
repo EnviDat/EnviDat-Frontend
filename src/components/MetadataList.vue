@@ -99,8 +99,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           :state="getMetadataState(metadatasContent[pinnedId])"
-                          :organization="metadata.organization.name"
-                          :organizationTooltip="metadata.organization.title"
+                          :organization="metadatasContent[pinnedId].organization.name"
+                          :organizationTooltip="metadatasContent[pinnedId].organization.title"
                           :showOrganizationOnHover="showOrganizationOnHover"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
