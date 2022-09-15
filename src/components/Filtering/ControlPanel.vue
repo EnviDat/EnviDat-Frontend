@@ -1,4 +1,4 @@
-<template v-slot:controlPanel>
+<template>
   <v-card :style="`height: ${fixedHeight}px;`"
             id="controlPanel" >
 
@@ -9,7 +9,7 @@
               no-gutters>
 
         <v-col class="py-0"
-              cols="12" sm="10" md="9" lg="9">
+              cols="12" sm="10" md="8" lg="8">
           <small-search-bar-view class="elevation-0"
                                   :compactLayout="compactLayout"
                                   :searchTerm="searchTerm"
@@ -24,7 +24,8 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 shrink" >
+        <v-col class="py-0 shrink"
+                id="shareSearchResult" >
 
           <BaseIconButton style="opacity: 0.8;"
                           materialIconName="share"
@@ -37,22 +38,19 @@
 
         </v-col>
 
+        <v-col v-if="showSearch"
+               class="py-0 ml-4 shrink">
 
-<!--        TODO replace hard-coded height and fix layout of checkbox element -->
-<!--        TODO handle smaller screens for checkbox element-->
-        <v-col class="py-0 ml-4">
-            <v-checkbox
-                :style="`height: ${28}px;`"
-                v-model="isAuthorSearch"
-                dense
-                :flat="true"
-                :label="`Author Search`"
-            ></v-checkbox>
+          <BaseIconSwitch v-on="on"
+                          :active="isAuthorSearch"
+                          :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
+                          materialIconName="account_circle"
+                          @click="catchAuthorSearchClick" />
+
         </v-col>
 
-
         <v-col class="hidden-xs-only py-0 fill-height" >
-          <list-control-toggle :style="`height: ${fixedHeight}px;`"
+          <list-control-toggle :style="`height: ${controlsHeight}px;`"
                                 :controls="controlsActive"
                                 :enabledControls="enabledControls"
                                 :flat="true"
@@ -83,18 +81,24 @@
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import ListControlToggle from '@/components/Filtering/ListControlToggle';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import { BROWSE_PATH } from '@/router/routeConsts';
-import { mapGetters } from 'vuex';import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch'
 
 export default {
-  name: 'MetadataList',
+  name: 'ControlPanel',
   props: {
     compactLayout: Boolean,
-    fixedHeight: Number,
+    fixedHeight: {
+      type: Number,
+      default: undefined,
+    },
     controlsActive: Array,
     enabledControls: Array,
     loading: Boolean,
     showSearch: Boolean,
+    isAuthorSearch: {
+      type: Boolean,
+      default: false,
+    },
     searchTerm: String,
     searchCount: Number,
     searchBarPlaceholder: String,
@@ -103,13 +107,13 @@ export default {
     SmallSearchBarView,
     ListControlToggle,
     BaseIconButton,
+    BaseIconSwitch,
   },
-  data: () => ({
-    isAuthorSearch: false,
-  }),
   methods: {
     catchSearchClicked(search) {
+      this.$emit('searchClick', search);
 
+/*
       // AUTHOR SEARCH BLOCK
       if (this.isAuthorSearch) {
 
@@ -132,7 +136,11 @@ export default {
       else if (search !== this.searchTerm) {
         this.$emit('searchClick', search);
       }
+*/
 
+    },
+    catchAuthorSearchClick() {
+      this.$emit('authorSearchClick');
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
@@ -147,10 +155,22 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      authorSearchTerm: `${METADATA_NAMESPACE}/authorSearchTerm`,
-    }),
+    controlsHeight() {
+      if (this.compactLayout && !this.fixedHeight) {
+        return 36;
+      }
+
+      return this.fixedHeight;
+    },
   },
 };
 
 </script>
+
+<style>
+
+.switchSmallFont label {
+  font-size: 10px !important;
+}
+
+</style>
