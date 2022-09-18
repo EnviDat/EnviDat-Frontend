@@ -32,9 +32,9 @@ const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
 
 
-const imgPaths = import.meta.glob('../src/assets/projects/*.jpg')
+const imgPaths = import.meta.glob('../src/assets/projects/*.jpg', { eager: true })
 const imgName = 'mission';
-const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
+const images = globalMethods.methods.mixinMethods_importGlobImages(imgPaths, imgName);
 const defaultImg = images[`./${imgName}.jpg`];
 
 const header1 = projects[5];

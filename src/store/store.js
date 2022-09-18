@@ -34,11 +34,11 @@ import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = import.meta.glob('../assets/*.jpg');
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+const jpgAssetPaths = import.meta.glob('../assets/*.jpg', { eager: true });
+const jpgAssets = globalMethods.methods.mixinMethods_importGlobImages(jpgAssetPaths);
 
-const iconImgPath = import.meta.glob('../assets/icons/*.png');
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
+const iconImgPath = import.meta.glob('../assets/icons/*.png', { eager: true });
+const iconImages = globalMethods.methods.mixinMethods_importGlobImages(iconImgPath);
 
 /*
 const errReport = import.meta.env.VITE_ERROR_REPORTING_ENABLED;

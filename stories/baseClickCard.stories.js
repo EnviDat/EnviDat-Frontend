@@ -15,8 +15,8 @@ import categoryCards from '@/store/categoryCards';
 
 import { CARD_VIEWS } from './storybookFolder';
 
-const jpgAssetPaths = import.meta.glob('../src/assets/**/*.jpg');
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+const jpgAssetPaths = import.meta.glob('../src/assets/**/*.jpg', { eager: true });
+const jpgAssets = globalMethods.methods.mixinMethods_importGlobImages(jpgAssetPaths);
 
 for (let i = 0; i < categoryCards.length; i++) {
   const cardInfo = categoryCards[i];
