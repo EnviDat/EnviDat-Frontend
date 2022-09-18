@@ -7,7 +7,7 @@
   "scripts": {
     "serve": "vite --debug",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host 0.0.0.0 --port 8080",
     "test": "jest",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
@@ -26,7 +26,7 @@
     "amcharts3": "^3.21.15",
     "amstock3": "^3.21.15",
     "axios": "^0.21.4",
-    "cesium": "^1.96.0",
+    "cesium": "^1.95.0",
     "crypto-js": "^4.1.1",
     "css-loader": "^3.6.0",
     "date-fns": "^2.28.0",
