@@ -214,7 +214,7 @@ rclone-sync:
 
 collect:
   stage: release
-  image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+  image: "${IMAGE_NAME}"
   rules:
     - if: $CI_COMMIT_TAG
   variables:
