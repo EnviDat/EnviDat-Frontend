@@ -95,6 +95,15 @@ export default ({ mode }) => {
             assetsDir: './static',
             chunkSizeWarningLimit: 600,
             cssCodeSplit: false,
+            // sourcemap: true,
+            emptyOutDir: true,
+            rollupOptions: {
+                output: {
+                  entryFileNames: '[name][hash].js',
+                  chunkFileNames: '[name][hash].js',
+                  assetFileNames: 'static/[name].[ext]',
+                },
+            },
         },
         server: {
             host: '0.0.0.0',
