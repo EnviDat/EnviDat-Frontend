@@ -222,11 +222,14 @@ collect:
   variables:
     GIT_STRATEGY: none
   script:
+    - echo "Copying build dist to project dir"
+    - mkdir -p $CI_PROJECT_DIR
+    - mv /usr/share/nginx/html $CI_PROJECT_DIR/envidat-frontend
     - echo "Creating frontend artifact."
   artifacts:
     name: frontend-${VERSION}
     paths:
-      - /usr/share/nginx/html/
+      - ./envidat-frontend
 
 release:
   stage: release
