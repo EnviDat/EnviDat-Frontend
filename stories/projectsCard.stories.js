@@ -9,8 +9,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import globalMethods from '@/factories/globalMethods';
 // get Project test data and enhance it
+import bark2 from '@/assets/cards/forest/c_b_forest_texture_bark2.jpg';
 import {
   enhanceSubprojectsFromExtras,
 } from '@/factories/projectsDataFactory';
@@ -20,14 +20,9 @@ import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPla
 import projectJSON from '../public/testdata/projects.json';
 import { CARD_VIEWS } from './storybookFolder';
 
+
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
-
-
-const imgPaths = import.meta.glob('../src/assets/cards/forest/*.jpg', { eager: true, as: 'url' })
-const imgName = 'c_b_forest_texture_bark2';
-const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
-const defaultImg = images[`./${imgName}.jpg`];
 
 const methods = {
 //  onCardClick: action('clicked on card'),
@@ -95,7 +90,7 @@ export const ProjectCardsParents = () => ({
     methods,
     data: () => ({
       projectsCards,
-      defaultImg,
+      defaultImg: bark2,
     }),
   });
 
@@ -126,6 +121,6 @@ export const ProjectCardsChildren = () => ({
     methods,
     data: () => ({
       projectsCards,
-      defaultImg,
+      defaultImg: bark2,
     }),
   });

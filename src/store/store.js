@@ -34,11 +34,26 @@ import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
 
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = import.meta.glob('../assets/**/*.jpg', { eager: true , as: 'url'});
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+const jpgAssetPaths = import.meta.glob('../assets/**/*.jpg', { eager: true });
+const jpgAssets = globalMethods.methods.mixinMethods_importGlobImages(jpgAssetPaths);
 
-const iconImgPath = import.meta.glob('../assets/icons/**/*.png', { eager: true, as: 'url' });
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
+/*
+let keys = Object.keys(jpgAssets);
+let firstKey = keys[0];
+let first = jpgAssets[firstKey];
+console.log(`loaded jpgAssets ${firstKey} -> ${first}`);
+*/
+
+
+const iconImgPath = import.meta.glob('../assets/icons/**/*.png', { eager: true });
+const iconImages = globalMethods.methods.mixinMethods_importGlobImages(iconImgPath);
+
+/*
+keys = Object.keys(iconImages);
+firstKey = 'file'; // keys[0];
+first = iconImages[firstKey];
+console.log(`loaded iconImages ${firstKey} -> ${first}`);
+*/
 
 
 /*
