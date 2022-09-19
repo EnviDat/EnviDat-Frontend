@@ -417,7 +417,40 @@ export function createLocalResource(
   };
 }
 
-function getRestrictedState(resource) {
+
+/*
+
+  check same organization?
+  - check in allowed users?
+
+  if any of these two true check the backend for a resourceID
+
+  if not, request for access view resources
+
+  "name": "satellite-avalanche-mapping-validation",
+  "restricted": "{\"allowed_users\": \"divyesh_varade-iitjammu_ac_in,dangerraf-gmail_com,sukocaman-gmail_com,zengjx1317028-gmail_com,james_thornton-unibe_ch\", \"level\": \"same_organization\", \"shared_secret\": \"\"}",
+
+  "name": "water-availability-of-swiss-forests-during-the-2015-and-2018-droughts",
+  "restricted": "{\"level\": \"public\", \"allowed_users\": \"\", \"shared_secret\": \"\"}",
+
+*/
+
+export function userHasResourceAccess(restrictedState, user) {
+
+  if (restrictedState.hasAllowedUsers) {
+    return restrictedState.allowedUsers.includes(user.name);
+  }
+
+  if (restrictedState.sameOrganizationOnly) {
+    const orgaName = restrictedState.organizationName;
+    const matches = user.userOrganizations.filter(o => o.name === orgaName);
+    return matches.length > 0;
+  }
+
+  return false;
+}
+
+function getRestrictedState(resource, dataset) {
   let isProtected = false;
   let restrictedObj = false;
   let hasAllowedUsers = false;
@@ -440,6 +473,7 @@ function getRestrictedState(resource) {
     isProtected,
     isPublic: restrictedObj.level === 'public',
     sameOrganizationOnly: restrictedObj.level === 'same_organization',
+    organizationName: dataset?.organization?.name || '',
     level: restrictedObj.level,
     hasAllowedUsers,
     allowedUsers: restrictedObj.allowed_users,
@@ -477,13 +511,14 @@ function getResourceUrl(resource, restrictedState) {
   return resURL;
 }
 
-export function createResource(resource, datasetName) {
+export function createResource(resource, dataset) {
   if (!resource) {
     return null;
   }
 
-  const restrictedState = getRestrictedState(resource);
+  const restrictedState = getRestrictedState(resource, dataset);
 
+  const datasetName = dataset.name;
   const resURL = getResourceUrl(resource, restrictedState);
 
   let fileFormat = resource.format || '';
@@ -542,7 +577,7 @@ export function createResources(dataset) {
 
   if (dataset.resources) {
     dataset.resources.forEach((element) => {
-      const res = createResource(element, dataset.name);
+      const res = createResource(element, dataset);
       res.metadataContact = contactEmail;
 
       resources.push(res);
