@@ -35,7 +35,10 @@
 
     <v-row>
       <v-col >
-        <div class="text-subtitle-1">{{ labels.cardInstructions }}</div>
+        <div class="text-subtitle-1"
+             v-html="labels.cardInstructions">
+
+        </div>
       </v-col>
     </v-row>
 
@@ -188,7 +191,7 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: 'Add references to other related datasets',
+      cardInstructions: 'Add references to other related research datasets which are relevant to this one. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {

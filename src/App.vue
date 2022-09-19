@@ -579,7 +579,7 @@ export default {
       return this.$route.query.search;
     },
     mainPageIsScrollable() {
-      return this.currentPage === BROWSE_PAGENAME || this.currentPage === BLOG_PAGENAME;
+      return this.currentPage === BROWSE_PAGENAME;
     },
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;

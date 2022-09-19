@@ -91,49 +91,6 @@ export default {
       return true;
     },
     /**
-     * Encodes a array of tagNames via btoa() to a string.
-     * Also replaces theses characters '.', '_', '-' which cause problems for urls.
-     *
-     * @param {array} jsonTags: array of tagNames
-     * @return {String} encoded string usable for urls
-     */
-    mixinMethods_encodeTagForUrl(jsonTags) {
-      if (jsonTags && jsonTags.length > 0) {
-        const jsonString = JSON.stringify(jsonTags);
-
-        const urlquery = btoa(jsonString);
-
-        let urlConformString = urlquery.replace(/\+/g, '.');
-        urlConformString = urlConformString.replace(/\//g, '_');
-        urlConformString = urlConformString.replace(/=/g, '-');
-
-        return urlConformString;
-      }
-
-      return '';
-    },
-    /**
-     * Decodes a string which was encoded via mixinMethods_encodeTagForUrl().
-     * Returns the original array or an empty one.
-     * Also restores characters '.', '_', '-'.
-     *
-     * @param {String} urlquery: encoded string
-     * @return {array}: array of tagNames
-     */
-    mixinMethods_decodeTagsFromUrl(urlquery) {
-      if (urlquery) {
-        let jsonConformString = urlquery.replace(/\./g, '+');
-        jsonConformString = jsonConformString.replace(/_/g, '/');
-        jsonConformString = jsonConformString.replace(/-/g, '=');
-
-        const jsonString = atob(jsonConformString);
-        return JSON.parse(jsonString);
-      }
-
-      // return an empty array for the selectedTagIds
-      return [];
-    },
-    /**
      * Changes the route via this.$router.push();
      * The search and tag parameter are added as query parameters.
      * urlSubPath is added as the path.
@@ -174,13 +131,19 @@ export default {
         return [];
       }
 
-      return string.split(',');
+      const splits = string.split(',');
+
+      for (let i = 0; i < splits.length; i++) {
+        splits[i] = splits[i].toUpperCase();
+      }
+
+      return splits;
     },
     mixinMethods_convertArrayToUrlString(array) {
 
       let str = '';
       for (let i = 0; i < array.length; i++) {
-        str += `${array[i]},`;
+        str += `${array[i].toUpperCase()},`;
       }
 
       // remove the last comma

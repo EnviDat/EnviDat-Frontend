@@ -79,6 +79,7 @@ import {
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
   USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
   VALIDATION_ERROR,
@@ -118,10 +119,10 @@ function extractError(store, reason, errorProperty = 'error') {
     }
   }
 
-  store.state.user.errorField = field;
-  store.state.user.errorType = type;
+  store.state.errorField = field;
+  store.state.errorType = type;
 
-  store._vm.$set(store.state.user, errorProperty, msg);
+  store._vm.$set(store.state, errorProperty, msg);
 }
 
 function createErrorMessage(reason) {
@@ -321,6 +322,12 @@ export default {
   },
   [USER_GET_ORGANIZATIONS](state) {
     state.userOrganizationLoading = true;
+
+    resetErrorObject(state);
+  },
+  [USER_GET_ORGANIZATIONS_RESET](state) {
+    state.userOrganizationLoading = false;
+    state.userOrganizations = {};
 
     resetErrorObject(state);
   },

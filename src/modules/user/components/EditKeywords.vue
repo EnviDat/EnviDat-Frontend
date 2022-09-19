@@ -36,7 +36,7 @@
 
 
       <v-row>
-        <v-col class="text-body-2">
+        <v-col class="text-body-1">
           <div >{{ labels.cardInstructions1 }}</div>
           <div >{{ labels.cardInstructions2 }}</div>
         </v-col>
@@ -144,6 +144,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -155,10 +156,11 @@ export default {
     keywordCount: 0,
     rulesKeywords: [],
     labels: {
-      title: 'Edit Metadata Keywords',
+      title: EDIT_METADATA_KEYWORDS_TITLE,
       keywordsLabel: 'Click here to pick Keywords',
-      cardInstructions1: 'Start typing to search for a keyword. To create a new keyword type it and press enter.',
-      cardInstructions2: 'Please enter at least 5 keywords.',
+      cardInstructions1: 'Please enter at least 5 keywords.',
+      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
+          ' To create a new keyword type it and press enter.',
       previewText: 'Metadata card preview',
     },
     defaultUserEditMetadataConfig: {

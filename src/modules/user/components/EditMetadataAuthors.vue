@@ -1,32 +1,38 @@
 <template>
   <v-card id="EditMetadataResources"
-          class="pa-4" >
+          class="pa-0"
+          :loading="loading" >
 
-<!--    <v-container fluid
-                 class="pa-0">-->
+    <v-container fluid
+                 class="pa-4" >
+
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
       <v-row >
         <v-col class="text-h5" >
-          {{ EDIT_METADATA_AUTHORS_TITLE }}
+          {{ title }}
         </v-col>
       </v-row>
 
       <v-row >
-        <v-col class="text-body-1">
-          {{ editingInstructions }}
+        <v-col class="text-body-1"
+                v-html="editingInstructions">
         </v-col>
       </v-row>
 
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
-            <template v-if="!loading"
-                      #editingAuthors="{ author }" >
+            <template #editingAuthors="{ author }" >
 
               <AuthorCard :author="author"
                           :authorDetailsConfig="authorDetailsConfig"
                           :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
                           :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                          :overrideAuthorInfosExpanded="true"
                           >
 
                 <template #dataCreditCurrentDataset >
@@ -44,7 +50,7 @@
         </v-col>
       </v-row>
 
-<!--    </v-container>-->
+    </v-container>
 
   </v-card>
 
@@ -66,7 +72,7 @@
 */
 import {
   AUTHORS_EDIT_CURRENT_DATACREDIT,
-  EDIT_METADATA_AUTHORS_TITLE,
+  EDIT_METADATA_AUTHORSLIST_TITLE,
 } from '@/factories/metadataConsts';
 
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
@@ -179,8 +185,8 @@ export default {
   },
   data: () => ({
     stepKey: EDITMETADATA_AUTHOR_LIST,
-    editingInstructions: 'Select an author from the list to edit its details',
-    EDIT_METADATA_AUTHORS_TITLE,
+    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author by clicking on the icons.',
+    title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
   }),

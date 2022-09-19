@@ -31,7 +31,7 @@ const authorFromCollection2 = getFullAuthorsFromDataset(authorsMap, metadataCard
 const authorFromCollection3 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[2];
 const authorFromCollection4 = getFullAuthorsFromDataset(authorsMap, metadataCards[2])[0];
 
-console.log(authorFromCollection.totalDataCredits);
+// console.log(authorFromCollection.totalDataCredits);
 
 const methods = {
   authors() {
@@ -82,6 +82,10 @@ export const AuthorCardViews = () => ({
     <v-row>
 
       <v-col cols="12" md="4" pt-5 >
+        <author-card :author="emptyAuthor" />
+      </v-col>
+      
+      <v-col cols="12" md="4" pt-5 >
 
         <author-card :author="authorFromCollection" />
       </v-col>      
@@ -91,10 +95,17 @@ export const AuthorCardViews = () => ({
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
+        <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
+      </v-col>
+      
+      <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" />
       </v-col>
 
-
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="authorFromCollection2" :isSelected="true" />
+      </v-col>
+      
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection3" :loading="true" />
       </v-col>
@@ -103,6 +114,9 @@ export const AuthorCardViews = () => ({
         <author-card :author="authorFromCollection4" />
       </v-col>
 
+      <v-col cols="12" md="4" pt-5 >
+        <author-card :author="author2" />
+      </v-col>      
     </v-row>
   </v-container>
   `,
@@ -135,6 +149,44 @@ export const AuthorCardViews = () => ({
         software: 10,
         publication: 15,
         supervision: 1,
+      },
+    },
+    author2: {
+      firstName: 'Felix',
+      lastName: 'Gugerli',
+      fullName: 'Felix Gugerli',
+      datasetCount: 77,
+      affiliation: 'WSL',
+      id: {
+        identifier: '0000-0003-3878-1845',
+      },
+      email: 'felix.gugerli@wsl.ch',
+      totalDataCredits: {
+        collection: 20,
+        validation: 20,
+        curation: 32,
+        software: 30,
+        publication: 15,
+        supervision: 20,
+      },
+    },
+    emptyAuthor: {
+      firstName: 'Some',
+      lastName: 'Dude',
+      fullName: 'Some Dude',
+      datasetCount: 0,
+      affiliation: 'WSL',
+      id: {
+        identifier: '01234-0003-3878-1845',
+      },
+      email: 'some.dude@wsl.ch',
+      totalDataCredits: {
+        collection: 0,
+        validation: 0,
+        curation: 0,
+        software: 0,
+        publication: 0,
+        supervision: 0,
       },
     },
   }),

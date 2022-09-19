@@ -29,8 +29,8 @@
                               icon-color="white"
                               color="white"
                               outlined
-                              tool-tip-text="Close"
-                              :tool-tip-bottom="true"
+                              tooltipText="Close fullscreen view"
+                              :tooltipBottom="true"
                               @clicked="closeClicked" />
 
           </v-col>

@@ -1,0 +1,37 @@
+[
+  {
+    "title": "Registry of Research Data Repositories",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/EnviDat_redata_badge.svg",
+    "text": "<a href='https://www.re3data.org/' target='_blank' >Re3data</a> is a global registry of research data repositories that covers research data repositories from different academic disciplines. It includes repositories that enable permanent storage of and access to data sets to researchers, funding bodies, publishers, and scholarly institutions."
+  },
+  {
+    "title": "Registry of Research Data Repositories",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/re3datalogo_black.png",
+    "text": "<a href='https://www.re3data.org/' target='_blank' >Re3data</a> is a global registry of research data repositories that covers research data repositories from different academic disciplines. It includes repositories that enable permanent storage of and access to data sets to researchers, funding bodies, publishers, and scholarly institutions."
+  },
+  {
+    "title": "FAIR-sharing",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/logo_fairsharing.svg",
+    "text": "A curated, informative and educational resource on data and metadata standards, inter-related to databases and data policies: <a href='https://www.fairsharing.org' target='_blank' > FAIRsharing.org </a>."
+  },
+  {
+    "title": "Data Europa EU",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/logo_data.europa.eu.png",
+    "text": "The <a href='https://data.europa.eu/' target='_blank' >portal</a> provides access to open data from international, EU, national, regional, local and geo data portals. It replaces the EU Open Data Portal and the European Data Portal."
+  },
+  {
+    "title": "Earthdata OAOS",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/logo_earthdata-oaos.jpg",
+    "text": "The Earth Science Data Systems (ESDS) Program provides full and open access to NASA’s collection of Earth science data for understanding and protecting our home planet <a href='https://www.earthdata.nasa.gov/' target='_blank' >earthdata.nasa.gov</a>."
+  },
+  {
+    "title": "GEOSS Portal",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/integration/logo_geoss-portal-transparent.png",
+    "text": "The <a href='https://www.geoportal.org' target='_blank' > GEOSS Portal </a> is an online map-based user interface which allows users to discover and access Earth observation data and resources from different providers from all over the world. "
+  },
+  {
+    "title": "Opendata.swiss",
+    "image": "https://s3-zh.os.switch.ch/frontend-static/outreach/logo_opendata_swiss.png",
+    "text": "<a href='https://opendata.swiss' target='_blank' >opendata.swiss </a> is the Swiss public administration’s central portal for open government data."
+  }
+]

@@ -2,7 +2,7 @@
   <v-container class="pa-0 ma-0"
                 tag="article"
                 fluid
-                id="BlogPage" >
+                :id="BLOG_PAGENAME" >
 
     <v-row no-gutters
             ref="blogHeader"
@@ -13,7 +13,7 @@
              offset-md="1">
 
         <BlogHeader :title="blogHeaderTitle"
-                    :titleImage="blogHeaderImg"
+                    :titleImage="post ? post.titleImg : blogHeaderImg"
                     :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
                     :showCloseButton="!!showBlogPost"
                     @clickedBack="catchClosePost"
@@ -23,6 +23,21 @@
     </v-row>
 
     <v-row no-gutters
+           id="blogSubHeader"
+           class="py-2">
+
+      <v-col cols="12"
+             offset-md="1"
+             md="10"
+             class="text-body-1"
+             v-html="pageIntroText">
+
+      </v-col>
+
+    </v-row>
+
+
+    <v-row no-gutters
            ref="blogBody"
            class="py-1 py-md-4">
 
@@ -30,8 +45,6 @@
              cols="12"
              md="10"
              offset-md="1"
-             style="overflow: hidden auto;"
-             :style="`height: calc(100vh - ${blogBodyHeight }px);`"
             >
         <BlogPost :post="post"
                   :postContent="postContent" />
@@ -50,10 +63,7 @@
              cols="12"
              md="10"
              offset-md="1"
-             style="overflow: hidden auto;"
-             :style="`height: calc(100vh - ${blogBodyHeight }px);`"
              >
-
 
         <v-row no-gutters>
           <v-col v-for="(post, index) in list"
@@ -114,7 +124,7 @@ import BlogPost from '@/modules/blog/components/BlogPost';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard';
 
 export default {
-  name: 'BlogPage',
+  name: BLOG_PAGENAME,
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, BLOG_PAGENAME);
@@ -164,21 +174,7 @@ export default {
       return this.mixinMethods_getWebpImage('blog/blogHeader', this.$store.state);
     },
   },
-  updated() {
-    this.setBlogBodyHeight();
-  },
   methods: {
-    setBlogBodyHeight() {
-      let bodyHeaderHeight = 150;
-      const TheNavigationToolbar = 36;
-      const padding = 32;
-
-      if (this.$refs?.blogHeader) {
-        bodyHeaderHeight = this.$refs.blogHeader.clientHeight ? this.$refs.blogHeader.clientHeight : bodyHeaderHeight;
-      }
-
-      this.blogBodyHeight = bodyHeaderHeight + TheNavigationToolbar + padding;
-    },
     checkRouteChanges() {
       const post = this.$route.params?.post || null;
       
@@ -223,9 +219,10 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    BLOG_PAGENAME,
     PageBGImage: 'app_b_browsepage',
     fallbackCardImg: null,
-    blogBodyHeight: 150,
+    pageIntroText: 'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
   }),
 };
 </script>

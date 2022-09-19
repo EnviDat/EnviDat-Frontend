@@ -9,10 +9,9 @@
                     style="position: absolute; top: 0; right: 0; z-index: 2;"
                     material-icon-name="close"
                     icon-color="white"
-                    color="white"
-                    outlined
-                    tool-tip-text="Close Metadata"
-                    :tool-tip-bottom="true"
+                    isElevated
+                    tooltipText="Close post and return to blog overview"
+                    :tooltipBottom="true"
                     @clicked="$emit('clickedBack')" />
 
     <ImgAndTextLayout style="position: relative; z-index: 0;"

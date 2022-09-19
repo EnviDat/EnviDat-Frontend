@@ -77,3 +77,7 @@ function getVuexPersist() {
 const localStoragePlugin = getVuexPersist();
 
 export default localStoragePlugin;
+
+export function clearLocalStorage() {
+  window.localStorage.clear()
+}

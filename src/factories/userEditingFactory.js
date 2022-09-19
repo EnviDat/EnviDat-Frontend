@@ -45,6 +45,19 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
+import {
+  EDIT_STEP_TITLE_MAIN_METADATA,
+  EDIT_STEP_TITLE_MAIN_PUBLICATION,
+  EDIT_STEP_TITLE_MAIN_RELATED,
+  EDIT_STEP_TITLE_MAIN_RESOURCES,
+  EDIT_STEP_TITLE_SUB_AUTHORS,
+  EDIT_STEP_TITLE_SUB_DATA,
+  EDIT_STEP_TITLE_SUB_DATES,
+  EDIT_STEP_TITLE_SUB_DESC,
+  EDIT_STEP_TITLE_SUB_GEO,
+  EDIT_STEP_TITLE_SUB_HEADER,
+  EDIT_STEP_TITLE_SUB_KEYWORDS,
+} from '@/factories/metadataConsts';
 
 
 export function updateEditingArray(
@@ -207,25 +220,25 @@ const emptyMetadataInEditing = {
 
 const mainDetailSteps = [
   {
-    title: 'Header Information',
+    title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
-    title: 'Description',
+    title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
     component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
-    title: 'Keywords',
+    title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
     component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
   },
   {
-    title: 'Authors',
+    title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
     component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
@@ -234,19 +247,19 @@ const mainDetailSteps = [
 
 const dataDetailSteps = [
   {
-    title: 'Managing Data & Resources',
+    title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
     component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
-    title: 'Data License & Time',
+    title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
   },
   {
-    title: 'Geospatial Information',
+    title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
     component: EditDataGeo,
@@ -255,7 +268,7 @@ const dataDetailSteps = [
 
 export const metadataCreationSteps = [
   {
-    title: 'Metadata',
+    title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
@@ -264,7 +277,7 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Data & Resources',
+    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
@@ -273,13 +286,13 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Related Research',
+    title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
-    title: 'Publication Status',
+    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,

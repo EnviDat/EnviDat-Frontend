@@ -35,7 +35,37 @@
                             :organizationRoles="organizationRoles"
                             :isCollaborator="isCollaborator" />
 
-      <UserCard :height="userCardHeight"
+
+      <FlipLayout v-if="userEditingEnabled"
+                  :height="userCardHeight"
+                  :width="userCardWidth"
+                  :autoButtonFlip="true" >
+
+        <template v-slot:front>
+          <UserCard :height="userCardHeight"
+                    :width="userCardWidth"
+                    :userName="user.fullName"
+                    :email="user.email"
+                    :emailHash="user.emailHash"
+                    :nameInitials="nameInitials"
+                    :datasetCount="publishedDatasets.length"
+                    :loading="userEditLoading" />
+        </template>
+
+        <template v-slot:back>
+          <EditUserProfile :height="userCardHeight"
+                           :minWidth="userCardWidth"
+                           :showPreview="false"
+                           :firstName="userFirstName"
+                           :lastName="userLastName"
+                           :email="user.email"
+                           :loading="userEditLoading" />
+        </template>
+
+      </FlipLayout>
+
+      <UserCard v-if="!userEditingEnabled"
+                :height="userCardHeight"
                 :width="userCardWidth"
                 :userName="user.fullName"
                 :email="user.email"
@@ -239,7 +269,7 @@ import {
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASET_IDS,
   ACTION_COLLABORATOR_DATASET_IDS,
-  USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS, USER_EDITING_UPDATE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -284,15 +314,20 @@ import IntroductionCard from '@/components/Cards/IntroductionCard';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import TitleCard from '@/components/Cards/TitleCard';
 import UserCard from '@/components/Cards/UserCard';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
+import FlipLayout from '@/components/Layouts/FlipLayout';
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
+
 import {
+  EDIT_USER_PROFILE_EVENT,
   eventBus,
   SELECT_EDITING_DATASET,
-  SHOW_REDIRECT_DASHBOARD_DIALOG,
+  SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
 } from '@/factories/eventBus';
+
 
 
 export default {
@@ -305,9 +340,11 @@ export default {
   },
   created() {
     eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeDestroy() {
     eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -334,6 +371,7 @@ export default {
     ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
       'userLoading',
+      'userEditLoading',
     ]),
     ...mapState(USER_NAMESPACE, [
       'collaboratorDatasetIdsLoading',
@@ -544,6 +582,15 @@ export default {
         image: UserNotFound2,
       };
     },
+    userEditingEnabled() {
+      return this.userDashboardConfig?.userEditingEnabled || false;
+    },
+    userFirstName() {
+      return this.user?.fullName?.split(' ')[0] || '';
+    },
+    userLastName() {
+      return this.user?.fullName?.split(' ')[1] || '';
+    },
   },
   methods: {
     getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined, maxTagAmount = 30) {
@@ -604,16 +651,14 @@ export default {
           mutation: USER_GET_COLLABORATOR_DATASET_IDS,
         });
 
-      if (Array.isArray(this.collaboratorDatasetIds) && this.collaboratorDatasetIds.length > 0) {
-        await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
-      }
+      // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
     async fetchUserOrganisationData() {
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
-      if (this.userOrganizationIds) {
-        await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
-      }
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {
@@ -685,6 +730,23 @@ export default {
         },
       });
     },
+    callUserUpdateAction(updateObject) {
+
+      if (updateObject.object === USER_PROFILE) {
+
+        const payload = {
+          userId: this.user.id,
+          firstName: updateObject.data.firstName,
+          lastName: updateObject.data.lastName,
+          email: updateObject.data.email,
+        };
+
+        this.$store.dispatch(
+            `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
+            payload,
+        );
+      }
+    },
   },
   data: () => ({
     dashboardCKANUrl: '/user/',
@@ -700,9 +762,9 @@ export default {
     maxFilterTags: 20,
     collabCardWidth: 290,
     collabCardHeight: 115,
-    userCardHeight: 350,
+    userCardHeight: 400,
     userCardWidth: 300,
-    userOrgaInfoCardHeight: 350,
+    userOrgaInfoCardHeight: 400,
     userOrgaInfoCardWidth: 400,
     showModal: false,
     left: false,
@@ -746,6 +808,8 @@ export default {
     MetadataCard,
     MetadataCardPlaceholder,
     UserOrganizationInfo,
+    FlipLayout,
+    EditUserProfile,
   },
 };
 </script>

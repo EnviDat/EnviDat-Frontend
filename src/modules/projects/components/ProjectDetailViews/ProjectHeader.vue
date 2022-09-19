@@ -17,8 +17,8 @@
                       icon-color="primary"
                       color="primary"
                       outlined
-                      tooltip-text="Close Project Detail"
-                      :tooltip-bottom="true"
+                      tooltipText="Close project detail view"
+                      :tooltipBottom="true"
                       @clicked="catchBackClicked" />
 
 

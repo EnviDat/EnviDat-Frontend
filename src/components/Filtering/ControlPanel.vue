@@ -24,7 +24,8 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 shrink" >
+        <v-col id="shareButton"
+               class="py-0 shrink" >
 
           <BaseIconButton style="opacity: 0.8;"
                           materialIconName="share"
@@ -67,6 +68,7 @@
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import ListControlToggle from '@/components/Filtering/ListControlToggle';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import { METADATADETAIL_PATH } from '@/router/routeConsts';
 
 export default {
   name: 'MetadataList',
@@ -97,9 +99,9 @@ export default {
       this.$emit('controlsChanged', number);
     },
     catchShareClick() {
-      const url = `${process.env.VUE_APP_ENVIDAT_PROXY}/#${this.$route.fullPath}`;
+      // const routeData = this.$router.resolve({ path: this.$route.fullPath });
 
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(window.location);
     },
   },
 };

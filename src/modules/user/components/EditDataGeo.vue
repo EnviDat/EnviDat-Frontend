@@ -272,7 +272,7 @@ export default {
   data: () => ({
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
-      cardInstructions: 'Choose the location(s) where the data was collected.',
+      cardInstructions: 'Choose the location(s) where the research data was collected.',
     },
     validationErrors: {
       geometries: null,

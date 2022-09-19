@@ -24,6 +24,7 @@ const userSignInState = {
   errorFieldText: '',
   user: null,
   userLoading: false,
+  userEditLoading: false,
 };
 
 export const userSignIn = {

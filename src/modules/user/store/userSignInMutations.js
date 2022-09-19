@@ -14,6 +14,7 @@
 
 
 import { md5Hash } from '@/factories/stringFactory';
+import { clearLocalStorage } from '@/store/localStorage';
 
 import {
   GET_USER_CONTEXT,
@@ -22,6 +23,9 @@ import {
   REQUEST_TOKEN,
   REQUEST_TOKEN_ERROR,
   REQUEST_TOKEN_SUCCESS,
+  USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE_ERROR,
+  USER_EDITING_UPDATE_SUCCESS,
   USER_SIGNIN,
   USER_SIGNIN_ERROR,
   USER_SIGNIN_NAMESPACE,
@@ -101,7 +105,10 @@ function enhanceUserObject(user) {
     user.emailHash = md5Hash(email);
   }
 
-  const fullName = user?.fullname || user?.fullName || '';
+  // only use the fullname from ckan api, because the "name" just put together
+  // from the email, when a User signs in the first time with dominik.haas@wsl.ch
+  // the "name" is just dominik_haas-wsl_ch and it's to usable to address
+  const fullName = user?.fullname || user?.fullName || user?.display_name || '';
 
   if (fullName) {
     user.fullName = fullName;
@@ -168,6 +175,8 @@ export default {
   [USER_SIGNOUT](state) {
     state.userLoading = true;
 
+    clearLocalStorage();
+
     resetErrorObject(state);
   },
   [USER_SIGNOUT_SUCCESS](state) {
@@ -180,4 +189,18 @@ export default {
 
     extractError(this, reason);
   },
+  [USER_EDITING_UPDATE](state) {
+    state.userEditLoading = true;
+
+    resetErrorObject(state);
+  },
+  [USER_EDITING_UPDATE_SUCCESS](state) {
+    state.userEditLoading = false;
+  },
+  [USER_EDITING_UPDATE_ERROR](state, reason) {
+    state.userEditLoading = false;
+
+    extractError(this, reason);
+  },
+
 };

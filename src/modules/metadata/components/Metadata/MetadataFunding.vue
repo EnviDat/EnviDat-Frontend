@@ -26,12 +26,12 @@
       <v-row >
         <v-col v-for="(item, index) in fundingItems"
                 :key="index"
-                cols="6" md="4">
+                class="shrink">
 
           <v-row v-if="showFundingItem(item)"
                   no-gutters >
-            <v-col v-if="item.institution_url" >
-              <a :href="item.institution_url"
+            <v-col v-if="item.institutionUrl" >
+              <a :href="item.institutionUrl"
                   rel="noopener noreferrer"
                   target="_blank">
                 <strong>{{ item.institution }}</strong>
@@ -43,10 +43,10 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="showFundingItem(item) && item.grant_number"
+          <v-row v-if="showFundingItem(item) && item.grantNumber"
                   no-gutters
                   class="pt-2">
-            <v-col>(Grant/Award:{{ item.grant_number }})</v-col>
+            <v-col>Grant/Award: {{ item.grantNumber }}</v-col>
           </v-row>
 
         </v-col>

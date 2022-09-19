@@ -22,6 +22,8 @@ import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
 import { blog } from '@/modules/blog/store/blogStore';
+import { integration } from '@/modules/integration/store/integrationStore';
+import { service } from '@/modules/services/store/serviceStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -34,7 +36,7 @@ import {
 } from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
-import localStoragePlugin from '@/store/localStorage';
+import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
@@ -93,6 +95,8 @@ const modules = {
   userSignIn,
   organizations,
   blog,
+  integration,
+  service,
 };
 
 function createStore() {
@@ -136,7 +140,7 @@ try {
     console.log(e);
 
     // clear it to make sure the app boots with a clean state
-    window.localStorage.clear()
+    clearLocalStorage();
 
     console.info('cleared local storage');
 
