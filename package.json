@@ -8,7 +8,7 @@
     "serve": "vite",
     "serve-debug": "vite --debug",
     "build": "vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host 0.0.0.0 --port 8080",
     "test": "jest",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
