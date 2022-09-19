@@ -216,7 +216,7 @@ rclone-sync:
 
 collect:
   stage: release
-  image: "${IMAGE_NAME}"
+  image: "${INTERNAL_REG}/frontend:${VERSION}-main"
   rules:
     - if: $CI_COMMIT_TAG
   variables:
