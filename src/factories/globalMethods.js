@@ -283,12 +283,16 @@ export default {
       }
       const imgCache = {};
 
-      for (const path in imgPaths) {
+      for (let path in imgPaths) {
         if (path) {
           if (!checkForString || (checkForString && path.includes(checkForString))) {
 
             const splits = path.split('/');
             const imgName = splits[splits.length - 1];
+
+            if (process.env.NODE_ENV === 'production') {
+              path = `./${imgName}`;
+            }
 
             const imgUrl = new URL(path, import.meta.url)
             imgCache[imgName] = imgUrl.href;
