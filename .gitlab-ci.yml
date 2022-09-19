@@ -5,6 +5,7 @@ stages:
   - build
   - package
   - deploy
+  - release
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
@@ -200,6 +201,39 @@ rclone-sync:
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
   script:
-    >
-    rclone --verbose sync
-    /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    - >
+      rclone --verbose sync
+      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+
+collect:
+  stage: release
+  image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Creating frontend artifact."
+  artifacts:
+    name: frontend-${VERSION}
+    paths:
+      - /usr/share/nginx/html/
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.13.0
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Running the release job."
+  needs:
+    - job: collect
+      artifacts: true
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: 'Frontend build'
+          url: 'https://gitlabext.wsl.ch/EnviDat/EnviDat-Frontend/-/jobs/artifacts/${CI_COMMIT_TAG}/download?job=collect'
