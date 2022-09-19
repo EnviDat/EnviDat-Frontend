@@ -11,7 +11,7 @@ variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 
-workflow:
+.trigger-rules:
   rules:
     - if: >
           ($CI_COMMIT_REF_NAME == "main"
@@ -40,6 +40,7 @@ workflow:
       when: always
 
 set-vars:
+  extends: .trigger-rules
   stage: .pre
   image: docker.io/alpine:3.15
   before_script:
@@ -64,6 +65,7 @@ set-vars:
       dotenv: build.env
 
 run-tests:
+  extends: .trigger-rules
   stage: test
   image: docker.io/node:16
   cache:
@@ -77,6 +79,7 @@ run-tests:
     - npm run test:unit
 
 # visual-regression:
+#   extends: .trigger-rules
 #   stage: visual-regression
 #   image: docker.io/node:16
 #   cache:
@@ -90,6 +93,7 @@ run-tests:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
 modify-env:
+  extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
   cache:
@@ -130,6 +134,7 @@ modify-env:
       "
 
 image-build:
+  extends: .trigger-rules
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -164,6 +169,7 @@ image-build:
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
 tag-commit-sha:
+  extends: .trigger-rules
   stage: package
   image: docker.io/regclient/regctl:v0.3-alpine
   variables:
@@ -182,6 +188,7 @@ tag-commit-sha:
         "${IMAGE_NAME}" "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
 
 rclone-sync:
+  extends: .trigger-rules
   stage: deploy
   image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
   variables:
