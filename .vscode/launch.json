@@ -4,7 +4,7 @@
       "name": "Node: Docker Debug",
       "type": "node",
       "request": "attach",
-      "address": "localhost",
+      "address": "envidat_frontend",
       "port": 9229,
       "localRoot": "${workspaceFolder}",
       "remoteRoot": "/app",
