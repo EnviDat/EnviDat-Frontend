@@ -365,7 +365,7 @@ export default {
 
     this.fileIconString = this.mixinMethods_getIcon('file');
     this.fallbackCardImg = this.mixinMethods_getWebpImage(
-      'contact_image',
+      'about/contact',
       this.$store.state,
     );
   },
@@ -434,7 +434,7 @@ export default {
     },
     winterHolidayImage() {
       return this.mixinMethods_getWebpImage(
-        'holidays_winter',
+        'cards/slogan/holidays_winter',
         this.$store.state,
       );
     },
@@ -443,7 +443,7 @@ export default {
     },
     newYearImage() {
       return this.mixinMethods_getWebpImage(
-        'new_year',
+        'cards/slogan/new_year',
         this.$store.state,
       );
     },
