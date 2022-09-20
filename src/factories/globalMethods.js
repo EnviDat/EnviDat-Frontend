@@ -195,8 +195,7 @@ export default {
      * @returns
      */
     mixinMethods_getWebpImage(imageAssetPathName, state) {
-      // const imageKey = `./${imageAssetPathName}`;
-      const imageKey = imageAssetPathName;
+      const imageKey = `./${imageAssetPathName}`;
 
       if (state.webpIsSupported) {
         const webpImg = state.webpAssets[`${imageKey}.webp`];
@@ -219,8 +218,7 @@ export default {
      * @return {String} relative file path with extension to the icon image file
      */
     mixinMethods_getIcon(iconName) {
-      const iconKey = `${iconName}.png`;
-      console.log(`resolving icon ${iconKey} found ${this.$store?.getters?.iconImages[iconKey]}`);
+      const iconKey = `./${iconName}.png`;
 
       return this.$store?.getters?.iconImages[iconKey] || null;
     },
@@ -251,20 +249,15 @@ export default {
       }
       const imgCache = {};
 
-      for (const path in imgPaths) {
-        if (path) {
+      imgPaths.keys().forEach((key) => {
+        if (!checkForString || (checkForString && key.includes(checkForString))) {
+          // imgCache[key] = imgPaths(key).default;
 
-          if (!checkForString || (checkForString && path.includes(checkForString))) {
-            const splits = path.split('/');
-            const imgName = splits[splits.length - 1];
-
-            const localPath = splits.slice(1, splits.length).join('/');
-            imgCache[imgName] = `./src/${localPath}`;
-
-            // console.log(`${imgName} on ${localPath}`);
-          }
+          const imgPath = imgPaths(key)?.default || '';
+          const imgUrl = new URL(imgPath, import.meta.url)
+          imgCache[key] = imgUrl.href;
         }
-      }
+      });
 
       return imgCache;
     },
@@ -283,16 +276,12 @@ export default {
       }
       const imgCache = {};
 
-      for (let path in imgPaths) {
+      for (const path in imgPaths) {
         if (path) {
           if (!checkForString || (checkForString && path.includes(checkForString))) {
 
             const splits = path.split('/');
             const imgName = splits[splits.length - 1];
-
-            if (process.env.NODE_ENV === 'production') {
-              path = `./${imgName}`;
-            }
 
             const imgUrl = new URL(path, import.meta.url)
             imgCache[imgName] = imgUrl.href;
@@ -349,19 +338,19 @@ export default {
       const bgs = {};
 
       if (useWebp) {
-        bgs[LAND] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/landscape/*.webp', { eager: true }));
-        bgs[FOREST] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/forest/*.webp', { eager: true }));
-        bgs[SNOW] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/snow/*.webp', { eager: true }));
-        bgs[DIVERSITY] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/diversity/*.webp', { eager: true }));
-        bgs[HAZARD] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/hazard/*.webp', { eager: true }));
-        bgs[METEO] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/meteo/*.webp', { eager: true }));
+        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
+        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
+        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
+        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
+        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
       } else {
-        bgs[LAND] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/landscape/*.jpg', { eager: true }));
-        bgs[FOREST] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/forest/*.jpg', { eager: true }));
-        bgs[SNOW] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/snow/*.jpg', { eager: true }));
-        bgs[DIVERSITY] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/diversity/*.jpg', { eager: true }));
-        bgs[HAZARD] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/hazard/*.jpg', { eager: true }));
-        bgs[METEO] = this.mixinMethods_importGlobImages(import.meta.glob('@/assets/cards/meteo/*.jpg', { eager: true }));
+        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
+        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
+        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
+        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
+        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
+        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
       }
 
       return bgs;

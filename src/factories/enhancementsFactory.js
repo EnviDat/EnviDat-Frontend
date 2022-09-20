@@ -115,13 +115,8 @@ export function loadImages(store, isSupported = false) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = isSupported ? import.meta.glob('../assets/**/*.webp', { eager: true }) : null;
-  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importGlobImages(webpAssetPaths) : null;
-
-  const keys = Object.keys(webpAssets);
-  const firstKey = keys[0];
-  const first = webpAssets[firstKey];
-  console.log(`loaded webpAssets ${firstKey} -> ${first}`);
+  const webpAssetPaths = require.context('../assets/', true, /\.webp$/)
+  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths) : null;
 
   if (webpAssets) {
     store.commit(SET_WEBP_ASSETS, webpAssets);

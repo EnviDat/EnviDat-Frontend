@@ -7,6 +7,7 @@ import cesium from 'vite-plugin-cesium'
 import eslint from 'vite-plugin-eslint'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { createVuePlugin } from 'vite-plugin-vue2'
+import ViteRequireContext from '@originjs/vite-plugin-require-context'
 
 import { version } from './package.json'
 // TODO exposing package.json to app is potential security risk
@@ -49,6 +50,7 @@ export default ({ mode }) => {
             eslint(),
             cesium(),
             createVuePlugin(),
+            ViteRequireContext(),
             Components({
                 resolvers: [
                   // Vuetify
@@ -97,15 +99,6 @@ export default ({ mode }) => {
             cssCodeSplit: false,
             // sourcemap: true,
             emptyOutDir: true,
-/*
-            rollupOptions: {
-                output: {
-                  entryFileNames: 'static/[name][hash].js',
-                  chunkFileNames: 'static/[name][hash].js',
-                  assetFileNames: 'static/[name].[ext]',
-                },
-            },
-*/
         },
         server: {
             host: '0.0.0.0',

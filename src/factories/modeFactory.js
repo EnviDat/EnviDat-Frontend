@@ -11,36 +11,35 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
 import { createTag } from '@/factories/metadataFilterMethods';
-import {
-  swissFLExtraTags,
-  swissFLTag,
-} from '@/modules/metadata/store/swissForestLabTags';
+import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
+/*
 async function getSwissflLogo() {
   const img = await import('../assets/modes/swissfl/logo.jpg')
   return img
 }
+*/
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
-  const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);
+  const swissflPngs = require.context('../assets/modes/swissfl', false, /\.png$/);
+  const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
+  // const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
+  // const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);
 
   const icons = Object.values(iconImgs);
-  const swissflIconMap = {
+  return {
     dataset: icons[0],
     infrastructure: icons[1],
     model: icons[2],
   };
-
-  return swissflIconMap;
 }
 
-const swissflLogo = getSwissflLogo();
-const swissflIcons = getSwissflIcons();
+// const swissflLogo = getSwissflLogo();
 
 const swissflMode = {
   name: SWISSFL_MODE,
@@ -49,7 +48,7 @@ const swissflMode = {
   mainTag: swissFLTag,
   extraTags: swissFLExtraTags,
   logo: swissflLogo,
-  icons: swissflIcons,
+  icons: getSwissflIcons(),
   extrasKey: 'swissFL_type',
 };
 
