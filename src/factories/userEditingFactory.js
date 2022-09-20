@@ -13,6 +13,20 @@
 
 /* eslint-disable no-underscore-dangle */
 
+import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
+import EditDescription from '@/modules/user/components/EditDescription';
+
+import EditKeywords from '@/modules/user/components/EditKeywords';
+import EditAuthorList from '@/modules/user/components/EditAuthorList';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
+import EditDataInfo from '@/modules/user/components/EditDataInfo';
+import EditDataGeo from '@/modules/user/components/EditDataGeo';
+import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
+
+import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper';
+
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
@@ -29,17 +43,21 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
+
 import { localIdProperty } from '@/factories/strategyFactory';
-import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import EditDescription from '@/modules/user/components/EditDescription.vue';
-import EditKeywords from '@/modules/user/components/EditKeywords.vue';
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
+import {
+  EDIT_STEP_TITLE_MAIN_METADATA,
+  EDIT_STEP_TITLE_MAIN_PUBLICATION,
+  EDIT_STEP_TITLE_MAIN_RELATED,
+  EDIT_STEP_TITLE_MAIN_RESOURCES,
+  EDIT_STEP_TITLE_SUB_AUTHORS,
+  EDIT_STEP_TITLE_SUB_DATA,
+  EDIT_STEP_TITLE_SUB_DATES,
+  EDIT_STEP_TITLE_SUB_DESC,
+  EDIT_STEP_TITLE_SUB_GEO,
+  EDIT_STEP_TITLE_SUB_HEADER,
+  EDIT_STEP_TITLE_SUB_KEYWORDS,
+} from '@/factories/metadataConsts';
 
 
 export function updateEditingArray(
@@ -202,25 +220,25 @@ const emptyMetadataInEditing = {
 
 const mainDetailSteps = [
   {
-    title: 'Header Information',
+    title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
-    title: 'Description',
+    title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
     component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
-    title: 'Keywords',
+    title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
     component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
   },
   {
-    title: 'Authors',
+    title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
     component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
@@ -229,19 +247,19 @@ const mainDetailSteps = [
 
 const dataDetailSteps = [
   {
-    title: 'Managing Data & Resources',
+    title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
     component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
-    title: 'Data License & Time',
+    title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
   },
   {
-    title: 'Geospatial Information',
+    title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
     component: EditDataGeo,
@@ -250,7 +268,7 @@ const dataDetailSteps = [
 
 export const metadataCreationSteps = [
   {
-    title: 'Metadata',
+    title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
@@ -259,7 +277,7 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Data & Resources',
+    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
@@ -268,13 +286,13 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Related Research',
+    title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
-    title: 'Publication Status',
+    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,

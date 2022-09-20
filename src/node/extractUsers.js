@@ -1,14 +1,18 @@
 const fs = require('fs');
 
-const packagePath = `${__dirname}/../../public/testdata/user_list_17-08-2022.json`;
+const inputPath = `${__dirname}/../../public/testdata/`;
+const userListPath = `${inputPath}user_list_17-08-2022.json`;
 // eslint-disable-next-line import/no-dynamic-require
-const packagelist = require(packagePath);
-const userList = packagelist.result;
+const userList = require(userListPath).result;
+
+const packageListPath = `${inputPath}all_packages.json`;
+const packageList = require(packageListPath).result;
 
 const outputFileName = 'user_emails.json';
-const outputFileNameCSV = 'envidat_users.csv';
 const outputPath = `${__dirname}/../../public/testdata/`;
 
+const outputFileNameCSV = 'envidat_users.csv';
+const outputDataMaintainersCSV = 'envidat_datamaintainers.csv';
 
 function getUserObj(userName, email) {
 
@@ -35,14 +39,40 @@ function getUserObj(userName, email) {
   };
 }
 
-function extractUsersMap(users) {
+function isBetterEmail(email, oldEmail) {
+  return (email.includes('wsl') || email.includes('slf') || email.includes('epfl') || email.includes('eth'))
+    && (!oldEmail.includes('wsl') && !oldEmail.includes('slf') && !oldEmail.includes('epfl') && !oldEmail.includes('eth'));
+}
+
+function getEnviDatUser(entry) {
+  return {
+    userName: entry.fullname,
+    email: entry.email,
+  }
+
+}
+
+function getDataMaintainer(entry) {
+  const maintainer = JSON.parse(entry.maintainer);
+  const email = maintainer.email;
+  const userName = `${maintainer.given_name} ${maintainer.name}`;
+
+  return {
+    userName,
+    email,
+  }
+}
+
+function genericExtractUser(array, getUserFromData){
 
   const userMap = {};
   let userCount = 0;
 
-  for (let i = 0; i < users.length; i++) {
-    const user = users[i];
-    const userName = `${user.fullname}`;
+  for (let i = 0; i < array.length; i++) {
+    const entry = array[i];
+    const user = getUserFromData(entry);
+
+    const userName = user.userName;
     const email = user.email;
     const existingUser = userMap[userName];
     let save = false;
@@ -50,15 +80,14 @@ function extractUsersMap(users) {
     if (!userName) {
       console.warn(`-- Wrong entry: ${JSON.stringify(user)}`);
     }
- 
+
     if (existingUser) {
 
       const oldEmail = userMap[userName].email;
 
-      const isBetterEmail = (email.includes('wsl') || email.includes('slf') || email.includes('epfl') || email.includes('eth'))
-        && (!oldEmail.includes('wsl') && !oldEmail.includes('slf') && !oldEmail.includes('epfl') && !oldEmail.includes('eth'));
+      const isBetter = isBetterEmail(email, oldEmail);
 
-      if (isBetterEmail) {
+      if (isBetter) {
         save = true;
       } else {
         console.warn(`${userName} already added with email: ${userMap[userName].email} but also got ${email}`)
@@ -94,21 +123,42 @@ function writeUsersToFile(data, fileName) {
   
 }
 
-const userMap = extractUsersMap(userList);
-/*
-const usersJsonString = JSON.stringify(userMap, null, 2);
+function getCSVData (userMap) {
+  let csvString = 'firstname, lastname, email \n';
+  const keys = Object.keys(userMap)
 
-writeUsersToFile(usersJsonString, outputPath + outputFileName);
-*/
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const user = userMap[key];
 
-let csvString = 'firstname, lastname, email \n';
-const keys = Object.keys(userMap)
+    csvString += `${user.firstname}, ${user.lastname || ''}, ${user.email} \n`;
+  }
 
-for (let i = 0; i < keys.length; i++) {
-  const key = keys[i];
-  const user = userMap[key];
-
-  csvString += `${user.firstname}, ${user.lastname || ''}, ${user.email} \n`;
+  return csvString;
 }
 
+/* Create the envidat users csv file */
+
+/*
+const userMap = genericExtractUser(userList, getEnviDatUser);
+
+const csvString = getCSVData(userMap);
+
 writeUsersToFile(csvString, outputPath + outputFileNameCSV);
+*/
+
+/* Create a envidat user json file
+
+const usersJsonString = JSON.stringify(userMap, null, 2);
+writeUsersToFile(usersJsonString, outputPath + outputFileName);
+
+*/
+
+/* Create the data owners csv file */
+
+const userMap = genericExtractUser(packageList, getDataMaintainer);
+
+const csvString = getCSVData(userMap);
+
+writeUsersToFile(csvString, outputPath + outputDataMaintainersCSV);
+

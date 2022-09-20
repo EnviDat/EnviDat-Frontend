@@ -1,26 +1,24 @@
 <template>
-  <div id="BlogHeader" style="position: relative;">
-    <BaseIconButton
-      v-if="showCloseButton"
-      id="BlogHeaderCloseButton"
-      class="ma-2"
-      :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2;"
-      material-icon-name="close"
-      icon-color="white"
-      color="white"
-      outlined
-      tool-tip-text="Close Metadata"
-      :tool-tip-bottom="true"
-      @clicked="$emit('clickedBack')"
-    />
+  <div id="BlogHeader"
+       style="position: relative;">
 
-    <ImgAndTextLayout
-      style="position: relative; z-index: 0;"
-      :title="title"
-      :img="titleImage"
-      :height="height"
-    />
+    <BaseIconButton v-if="showCloseButton"
+                    id="BlogHeaderCloseButton"
+                    class="ma-2"
+                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                    style="position: absolute; top: 0; right: 0; z-index: 2;"
+                    material-icon-name="close"
+                    icon-color="white"
+                    isElevated
+                    tooltipText="Close post and return to blog overview"
+                    :tooltipBottom="true"
+                    @clicked="$emit('clickedBack')" />
+
+    <ImgAndTextLayout style="position: relative; z-index: 0;"
+                      :title="title"
+                      :img="titleImage"
+                      :height="height" />
+
   </div>
 </template>
 
@@ -37,8 +35,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'BlogHeader',
@@ -55,4 +53,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

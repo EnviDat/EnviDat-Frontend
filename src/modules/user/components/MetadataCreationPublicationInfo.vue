@@ -7,60 +7,65 @@
       </v-col>
 
       <v-col cols="6">
-        <v-row>
-          <v-col>
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Publishing Dataset</div>
-                  </v-col>
-                </v-row>
 
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon
-                      color="secondary"
-                      style="animation: progress-circular-rotate 3s linear infinite"
-                      x-large
-                      >settings</v-icon
-                    >
-                  </v-col>
+        <v-row v-if="!isDatasetPublic">
 
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
+          <v-col >
 
-                  <v-col class="pt-2 text-body-1">
-                    Publishing datasets is still under construction.
-                    <br />
-                    Please publish via this dataset the legacy website by
-                    clicking on the button below.
-                  </v-col>
-                </v-row>
+          <!-- TEMPORARY PLACEHOLDER START -->
+          <v-card class="pa-4">
+            <v-container fluid class="pa-0">
+              <v-row>
+                <v-col cols="12">
+                  <div class="text-h5">Publishing Dataset</div>
+                </v-col>
+              </v-row>
 
-                <v-row no-gutters class="pt-6">
-                  <v-col class="pr-2 text-left">
-                    <BaseRectangleButton
-                      buttonText="Publish Dataset"
-                      color="secondary"
-                      :url="linkToDatasetCKAN"
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
-          </v-col>
+              <v-row no-gutters align="center" class="pt-6">
+                <v-col cols="1">
+                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                </v-col>
+
+                <v-col class="text-h5" cols="11">
+                  Coming Soon!
+                </v-col>
+
+                <v-col class="pt-2 text-body-1">
+                  Publishing datasets is still under construction.
+                  <br>
+                  Please publish via this dataset the legacy website by clicking on the button below.
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters
+                     class="pt-6" >
+
+                <v-col class="pr-2 text-left">
+                  <BaseRectangleButton buttonText="Publish Dataset"
+                                       color="secondary"
+                                       :url="linkToDatasetCKAN" />
+
+                </v-col>
+
+              </v-row>
+            </v-container>
+          </v-card>
+          <!-- TEMPORARY PLACEHOLDER END -->
+
+          </v-col >
+
         </v-row>
 
         <v-row>
-          <v-col>
+
+          <v-col >
+
             <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
             <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
-          </v-col>
+
+          </v-col >
+
         </v-row>
       </v-col>
     </v-row>
@@ -91,17 +96,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import EditOrganization from '@/modules/user/components/EditOrganization';
+
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
+// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
+  eventBus,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
-import EditOrganization from '@/modules/user/components/EditOrganization.vue';
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -118,21 +124,20 @@ export default {
   computed: {
     publicationsInfo() {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_PUBLICATION_INFO);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
       }
 
       return {};
     },
     organizationsInfo() {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_ORGANIZATION);
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
       }
 
       return {};
+    },
+    isDatasetPublic() {
+      return this.publicationsInfo?.publicationState === 'published';
     },
     editPublicationsProps() {
       return {
@@ -161,7 +166,7 @@ export default {
     },
   },
   data: () => ({
-    envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
   }),
   components: {
     //  EditOrganizationTree,

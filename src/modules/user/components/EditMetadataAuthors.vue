@@ -1,48 +1,59 @@
 <template>
-  <v-card id="EditMetadataResources" class="pa-4">
-    <!--    <v-container fluid
-                 class="pa-0">-->
+  <v-card id="EditMetadataResources"
+          class="pa-0"
+          :loading="loading" >
 
-    <v-row>
-      <v-col class="text-h5">
-        {{ EDIT_METADATA_AUTHORS_TITLE }}
-      </v-col>
-    </v-row>
+    <v-container fluid
+                 class="pa-4" >
 
-    <v-row>
-      <v-col class="text-body-1">
-        {{ editingInstructions }}
-      </v-col>
-    </v-row>
+      <template slot="progress">
+        <v-progress-linear color="primary"
+                           indeterminate />
+      </template>
 
-    <v-row>
-      <v-col cols="12">
-        <MetadataAuthors :genericProps="metadataAuthorsObject">
-          <template v-if="!loading" #editingAuthors="{ author }">
-            <AuthorCard
-              :author="author"
-              :authorDetailsConfig="authorDetailsConfig"
-              :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-              :authorPassedInfo="
-                authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''
-              "
-            >
-              <template #dataCreditCurrentDataset>
-                <EditDataCredits
-                  :instruction="editDataCreditsInstruction"
-                  :dataCredit="author.dataCredit"
-                  :authorName="author.fullName"
-                  @creditClick="catchCreditClick(author, ...arguments)"
-                />
-              </template>
-            </AuthorCard>
-          </template>
-        </MetadataAuthors>
-      </v-col>
-    </v-row>
+      <v-row >
+        <v-col class="text-h5" >
+          {{ title }}
+        </v-col>
+      </v-row>
 
-    <!--    </v-container>-->
+      <v-row >
+        <v-col class="text-body-1"
+                v-html="editingInstructions">
+        </v-col>
+      </v-row>
+
+      <v-row >
+        <v-col cols="12">
+          <MetadataAuthors :genericProps="metadataAuthorsObject" >
+            <template #editingAuthors="{ author }" >
+
+              <AuthorCard :author="author"
+                          :authorDetailsConfig="authorDetailsConfig"
+                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                          :overrideAuthorInfosExpanded="true"
+                          >
+
+                <template #dataCreditCurrentDataset >
+                  <EditDataCredits :instruction="editDataCreditsInstruction"
+                                   :dataCredit="author.dataCredit"
+                                   :authorName="author.fullName"
+                                   @creditClick="catchCreditClick(author, ...arguments)"
+                                    />
+
+                </template>
+
+              </AuthorCard>
+            </template>
+          </MetadataAuthors>
+        </v-col>
+      </v-row>
+
+    </v-container>
+
   </v-card>
+
 </template>
 
 <script>
@@ -58,20 +69,22 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
+import {
+  AUTHORS_EDIT_CURRENT_DATACREDIT,
+  EDIT_METADATA_AUTHORSLIST_TITLE,
+} from '@/factories/metadataConsts';
+
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
+import AuthorCard from '@/modules/metadata/components/AuthorCard';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import {
-  AUTHORS_EDIT_CURRENT_DATACREDIT,
-  EDIT_METADATA_AUTHORS_TITLE,
-} from '@/factories/metadataConsts';
-import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
-import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -125,8 +138,7 @@ export default {
         authors: this.authorsFields,
         authorDetailsConfig: this.authorDetailsConfig,
         authorDeadInfo: this.authorDeadInfo,
-        emptyText:
-          'No author has been added yet. Select authors in the dropdown or create a new author.',
+        emptyText: 'No author has been added yet. Select authors in the dropdown or create a new author.',
         emptyTextColor: 'grey',
       };
     },
@@ -136,7 +148,7 @@ export default {
       this.previewAuthors = null;
     },
     toggleDataCredit(author, creditName) {
-      const dCredit = [...(author.dataCredit || [])];
+      const dCredit = [... author.dataCredit || []];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -150,18 +162,15 @@ export default {
       return author;
     },
     catchCreditClick(author, creditName) {
-      let localAuthorCopy = [...this.authors];
-      const authorToChange = localAuthorCopy.filter(
-        a => a.email === author.email,
-      )[0];
 
-      const authorCopy = { ...authorToChange };
+      let localAuthorCopy = [...this.authors];
+      const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
+
+      const authorCopy = { ...authorToChange};
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one
-      localAuthorCopy = localAuthorCopy.map(a =>
-        a.email !== newAuthor.email ? a : newAuthor,
-      );
+      localAuthorCopy = localAuthorCopy.map(a => a.email !== newAuthor.email ? a : newAuthor);
 
       this.previewAuthors = localAuthorCopy;
 
@@ -171,12 +180,13 @@ export default {
           authors: localAuthorCopy,
         },
       });
+
     },
   },
   data: () => ({
     stepKey: EDITMETADATA_AUTHOR_LIST,
-    editingInstructions: 'Select an author from the list to edit its details',
-    EDIT_METADATA_AUTHORS_TITLE,
+    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author by clicking on the icons.',
+    title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
   }),
@@ -188,4 +198,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

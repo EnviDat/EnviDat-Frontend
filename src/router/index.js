@@ -14,21 +14,24 @@
 /* eslint-disable prefer-template */
 import Vue from 'vue';
 import Router from 'vue-router';
+import {
+  GCMD_PATH,
+  GCMD_PAGENAME,
+  REPORT_PATH,
+  REPORT_PAGENAME,
+  PAGENOTFOUND_PAGENAME,
+} from '@/router/routeConsts';
 
-import { aboutRoutes } from '@/modules/about/routes';
-import { blogRoutes } from '@/modules/blog/routes';
-import { browseRoutes } from '@/modules/browse/routes';
 import { homeRoutes } from '@/modules/home/routes';
+import { browseRoutes } from '@/modules/browse/routes';
 import { metadataRoutes } from '@/modules/metadata/routes';
 import { projectsRoutes } from '@/modules/projects/routes';
+import { aboutRoutes } from '@/modules/about/routes';
+
 import { userRoutes } from '@/modules/user/routes';
-import {
-  GCMD_PAGENAME,
-  GCMD_PATH,
-  PAGENOTFOUND_PAGENAME,
-  REPORT_PAGENAME,
-  REPORT_PATH,
-} from '@/router/routeConsts';
+import { blogRoutes } from '@/modules/blog/routes';
+import { integrationRoutes } from '@/modules/integration/routes';
+import { serviceRoutes } from '@/modules/services/routes';
 
 Vue.use(Router);
 
@@ -38,20 +41,21 @@ const routes = [
   {
     path: GCMD_PATH,
     name: GCMD_PAGENAME,
-    component: () => import('@/components/Pages/GCMDPage.vue'),
+    component: () => import(/* webpackChunkName: "gcmdPage" */ '@/components/Pages/GCMDPage'),
   },
   {
     path: REPORT_PATH,
     name: REPORT_PAGENAME,
-    component: () => import('@/components/Pages/ReportPage.vue'),
+    component: () => import(/* webpackChunkName: "guidelinesPage", webpackPrefetch: true */ '@/components/Pages/ReportPage'),
   },
   /* The not found route needes to be last in the list! */
   {
     path: '/:catchAll(.*)',
     name: PAGENOTFOUND_PAGENAME,
-    component: () => import('@/components/Pages/PageNotFound.vue'),
-  },
+    component: () => import(/* webpackChunkName: "pageNotFound", webpackPrefetch: true */ '@/components/Pages/PageNotFound'),
+  },  
 ];
+
 
 export default new Router({
   routes: [
@@ -62,10 +66,12 @@ export default new Router({
     ...aboutRoutes,
     ...userRoutes,
     ...blogRoutes,
+    ...integrationRoutes,
+    ...serviceRoutes,
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(() => {
         resolve(() => {
           if (savedPosition) {
@@ -85,9 +91,7 @@ export default new Router({
     if (b === null) b = {};
 
     // handle null value #1566
-    if (!a || !b) {
-      return a === b;
-    }
+    if (!a || !b) { return a === b; }
 
     const aKeys = Object.keys(a);
     const bKeys = Object.keys(b);
@@ -96,7 +100,7 @@ export default new Router({
       return false;
     }
 
-    return aKeys.every(key => {
+    return aKeys.every((key) => {
       const aVal = a[key];
       const bVal = b[key];
       // check nested equality
@@ -118,19 +122,18 @@ export default new Router({
 
     if (a.path && b.path) {
       return (
-        a.path.replace(trailingSlashRE, '') ===
-          b.path.replace(trailingSlashRE, '') &&
-        a.hash === b.hash &&
-        this.isObjectEqual(a.query, b.query)
+        a.path.replace(trailingSlashRE, '') === b.path.replace(trailingSlashRE, '')
+        && a.hash === b.hash
+        && this.isObjectEqual(a.query, b.query)
       );
     }
 
     if (a.name && b.name) {
       return (
-        a.name === b.name &&
-        a.hash === b.hash &&
-        this.isObjectEqual(a.query, b.query) &&
-        this.isObjectEqual(a.params, b.params)
+        a.name === b.name
+        && a.hash === b.hash
+        && this.isObjectEqual(a.query, b.query)
+        && this.isObjectEqual(a.params, b.params)
       );
     }
 

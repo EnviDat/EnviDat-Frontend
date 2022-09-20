@@ -1,5 +1,15 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="EnviDat-Frontend Debug localhost" type="JavascriptDebugType" engineId="f27bb1c6-7eaa-4f01-929f-87d006796850" uri="http://localhost:8080/#" useFirstLineBreakpoints="true">
-    <method v="2" />
+  <configuration default="false" name="EnviDat-Frontend Debug localhost" type="JavascriptDebugType" uri="http://localhost:8080/#" useFirstLineBreakpoints="true">
+    <method v="2">
+      <option name="NpmBeforeRunTask" enabled="true">
+        <package-json value="$PROJECT_DIR$/package.json" />
+        <command value="run" />
+        <scripts>
+          <script value="serve" />
+        </scripts>
+        <node-interpreter value="project" />
+        <envs />
+      </option>
+    </method>
   </configuration>
 </component>

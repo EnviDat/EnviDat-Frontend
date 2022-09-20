@@ -1,134 +1,115 @@
 <template>
-  <v-app class="application" :style="dynamicBackground">
-    <div
-      v-show="showDecemberParticles"
-      id="christmas-canvas"
-      style="position: absolute; width: 100%; height: 100%;"
-    ></div>
+  <v-app class="application"
+         :style="dynamicBackground">
 
-    <link
-      v-if="showDecemberParticles"
-      rel="stylesheet"
-      href="./particles/decemberEffects.css"
-    />
+    <div v-show="showDecemberParticles"
+         id="christmas-canvas"
+         style="position: absolute; width: 100%; height: 100%;"></div>
 
-    <div
-      v-for="(notification, index) in visibleNotifications()"
-      :key="`notification_${index}`"
-      :style="
-        `position: absolute;
+    <link v-if="showDecemberParticles"
+          rel="stylesheet"
+          href="./particles/decemberEffects.css">
+
+    <div v-for="(notification, index) in visibleNotifications()"
+         :key="`notification_${index}`"
+         :style="`position: absolute;
                   right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
                   top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`
-      "
-    >
-      <notification-card
-        v-if="notification.show"
-        :notification="notification"
-        :height="165"
-        :showReportButton="
-          config.errorReportingEnabled && notification.type === 'error'
-        "
-        :showCloseButton="true"
-        @clickedClose="catchCloseClicked(notification.key)"
-        @clickedReport="catchReportClicked(notification.key)"
-      />
+                  z-index: ${NotificationZIndex};`">
+
+      <notification-card v-if="notification.show"
+                         :notification="notification"
+                         :height="165"
+                         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
+                         :showCloseButton="true"
+                         @clickedClose="catchCloseClicked(notification.key)"
+                         @clickedReport="catchReportClicked(notification.key)"/>
     </div>
 
-    <the-navigation
-      :style="`z-index: ${NavigationZIndex}`"
-      :navigationItems="navigationItems"
-      :version="appVersion"
-      @menuClick="catchMenuClicked"
-      @itemClick="catchItemClicked"
-    />
+    <the-navigation :style="`z-index: ${NavigationZIndex}`"
+                    :navigationItems="navigationItems"
+                    :version="appVersion"
+                    @menuClick="catchMenuClicked"
+                    @itemClick="catchItemClicked"/>
 
-    <the-navigation-toolbar
-      v-if="showToolbar"
-      ref="TheNavigationToolbar"
-      class="envidatToolbar"
-      :style="`z-index: ${NavToolbarZIndex}`"
-      :loading="loading"
-      :mode="mode"
-      :modeCloseCallback="catchModeClose"
-      :signedInUser="user"
-      :signInDisabled="signinDisabled"
-      :userNavigationItems="userMenuItems"
-      :editingDatasetName="lastEditedDataset"
-      @userMenuItemClick="catchUserItemClicked"
-      @signinClick="catchSigninClicked"
-      @homeClick="catchHomeClicked"
-      @continueClick="catchContinueClick"
-    />
+    <the-navigation-toolbar v-if="showToolbar"
+                            ref="TheNavigationToolbar"
+                            class="envidatToolbar"
+                            :style="`z-index: ${NavToolbarZIndex}`"
+                            :loading="loading"
+                            :mode="mode"
+                            :modeCloseCallback="catchModeClose"
+                            :signedInUser="user"
+                            :signInDisabled="signinDisabled"
+                            :userNavigationItems="userMenuItems"
+                            :editingDatasetName="lastEditedDataset"
+                            @userMenuItemClick="catchUserItemClicked"
+                            @signinClick="catchSigninClicked"
+                            @homeClick="catchHomeClicked"
+                            @continueClick="catchContinueClick"/>
 
     <v-main>
-      <v-container
-        class="pa-2 pa-sm-3 fill-height"
-        fluid
-        v-on:scroll="updateScroll()"
-        id="appContainer"
-        ref="appContainer"
-        :style="pageStyle"
-      >
-        <v-row
-          v-if="maintenanceBannerVisible"
-          id="maintenanceBanner"
-          no-gutters
-          class="pb-2"
-        >
+      <v-container class="pa-2 pa-sm-3 fill-height"
+                   fluid
+                   v-on:scroll="updateScroll()"
+                   id="appContainer"
+                   ref="appContainer"
+                   :style="pageStyle">
+
+        <v-row v-if="maintenanceBannerVisible"
+               id="maintenanceBanner"
+               no-gutters
+               class="pb-2">
           <v-col>
-            <TextBanner
-              :text="maintenanceBannerText"
-              confirmText="Okay"
-              :bannerColor="maintenanceBannerColor"
-              :confirmClick="catchMaintenanceConfirmClick"
-            />
+            <TextBanner :text="maintenanceBannerText"
+                        confirmText="Okay"
+                        :bannerColor="maintenanceBannerColor"
+                        :confirmClick="catchMaintenanceConfirmClick"/>
           </v-col>
         </v-row>
 
-        <v-row class="fill-height" id="mainPageRow">
-          <v-col class="mx-0 py-0" cols="12">
+        <v-row class="fill-height"
+               id="mainPageRow">
+          <v-col class="mx-0 py-0"
+                 cols="12">
+
             <transition name="fade" mode="out-in">
-              <router-view />
+              <router-view/>
             </transition>
+
           </v-col>
         </v-row>
       </v-container>
 
-      <v-dialog
-        v-model="showReloadDialog"
-        persistent
-        :style="`z-index: ${NotificationZIndex};`"
-        max-width="450"
-      >
-        <ConfirmTextCard
-          title="New Version Available!"
-          :text="dialogVersionText()"
-          confirmText="Reload"
-          :confirmClick="reloadApp"
-          cancelText="Cancel"
-          :cancelClick="
-            () => {
-              reloadDialogCanceled = true;
-            }
-          "
+      <v-dialog v-model="showReloadDialog"
+                persistent
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="450">
+
+        <ConfirmTextCard title="New Version Available!"
+                         :text="dialogVersionText()"
+                         confirmText="Reload"
+                         :confirmClick="reloadApp"
+                         cancelText="Cancel"
+                         :cancelClick="() => { reloadDialogCanceled = true }"
         />
+
       </v-dialog>
 
-      <v-dialog
-        v-model="showInfoDialog"
-        persistent
-        :style="`z-index: ${NotificationZIndex};`"
-        max-width="500"
-      >
-        <ConfirmTextCard
-          :title="dialogTitle"
-          :text="dialogMessage"
-          confirmText="Ok"
-          :confirmClick="dialogCallback"
+      <v-dialog v-model="showInfoDialog"
+                persistent
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="500">
+
+        <ConfirmTextCard :title="dialogTitle"
+                         :text="dialogMessage"
+                         confirmText="Ok"
+                         :confirmClick="dialogCallback"
         />
+
       </v-dialog>
     </v-main>
+
   </v-app>
 </template>
 
@@ -146,55 +127,66 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+import {
+  mapState,
+  mapGetters,
+} from 'vuex';
 
 import { getMonth } from 'date-fns';
-import { mapGetters,mapState } from 'vuex';
 
-import ConfirmTextCard from '@/components/Cards/ConfirmTextCard.vue';
-import NotificationCard from '@/components/Cards/NotificationCard.vue';
-import TextBanner from '@/components/Layouts/TextBanner.vue';
-import TheNavigation from '@/components/Navigation/TheNavigation.vue';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
+import {
+  LANDING_PATH,
+  LANDING_PAGENAME,
+  BROWSE_PATH,
+  BROWSE_PAGENAME,
+  REPORT_PATH,
+  USER_SIGNIN_PATH,
+  BLOG_PAGENAME,
+  METADATAEDIT_PAGENAME,
+  USER_DASHBOARD_PATH,
+  USER_DASHBOARD_PAGENAME,
+  USER_SIGNIN_PAGENAME,
+} from '@/router/routeConsts';
+
+import {
+  METADATA_NAMESPACE,
+  BULK_LOAD_METADATAS_CONTENT,
+} from '@/store/metadataMutationsConsts';
+
+import {
+  SET_CONFIG,
+  SET_APP_SCROLL_POSITION,
+  TRIM_NOTIFICATIONS,
+  HIDE_NOTIFICATIONS,
+} from '@/store/mainMutationsConsts';
+
+import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
+import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
+import {
+  USER_SIGNIN_NAMESPACE,
+  GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT,
+  FETCH_USER_DATA, USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+
+
+import {
+  navigationItems,
+  userMenuItems,
+} from '@/store/navigationState';
+
+import TheNavigation from '@/components/Navigation/TheNavigation';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
+import NotificationCard from '@/components/Cards/NotificationCard';
+import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
+import TextBanner from '@/components/Layouts/TextBanner';
+import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 import {
   eventBus,
   SHOW_DIALOG,
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
-import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
-import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
-import {
-  ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA,
-  GET_USER_CONTEXT,
-  USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
-import {
-  BLOG_PAGENAME,
-  BROWSE_PAGENAME,
-  BROWSE_PATH,
-  LANDING_PAGENAME,
-  LANDING_PATH,
-  METADATAEDIT_PAGENAME,
-  REPORT_PATH,
-  USER_DASHBOARD_PAGENAME,
-  USER_DASHBOARD_PATH,
-  USER_SIGNIN_PAGENAME,
-  USER_SIGNIN_PATH,
-} from '@/router/routeConsts';
-import {
-  HIDE_NOTIFICATIONS,
-  SET_APP_SCROLL_POSITION,
-  SET_CONFIG,
-  TRIM_NOTIFICATIONS,
-} from '@/store/mainMutationsConsts';
-import {
-  BULK_LOAD_METADATAS_CONTENT,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
-import { navigationItems, userMenuItems } from '@/store/navigationState';
 
 
 export default {
@@ -206,20 +198,14 @@ export default {
   created() {
     eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.$on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$on(
-      SHOW_REDIRECT_DASHBOARD_DIALOG,
-      this.showRedirectDashboardDialog,
-    );
+    eventBus.$on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     this.checkUserSignedIn();
   },
   beforeDestroy() {
     eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.$off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$off(
-      SHOW_REDIRECT_DASHBOARD_DIALOG,
-      this.showRedirectDashboardDialog,
-    );
+    eventBus.$off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
     this.startParticles();
@@ -238,12 +224,15 @@ export default {
       }
     },
     stopParticles(fullClean = true) {
+
       try {
+
         if (this.currentParticles) {
           this.currentParticles.particles.move.enable = false;
           this.currentParticles.particles.opcacity.anim.enable = false;
           this.currentParticles.particles.size.anim.enable = false;
         }
+
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(`Error during particle stop: ${error}`);
@@ -258,17 +247,14 @@ export default {
       // particleOptions have to be in the folder public/particles/christmasParticleOptions.json for development
       // in production they have to be in same folder as the index.html there -> ./particles/christmasParticleOptions.json
       // eslint-disable-next-line no-undef
-      particlesJS.load(
-        'christmas-canvas',
-        './particles/christmasParticleOptions.json',
-        () => {
-          // console.log('christmas-canvas - particles.js config loaded');
-          if (this.currentParticles) {
-            this.stopParticles(false);
-          }
-          this.currentParticles = window.pJS;
-        },
-      );
+      particlesJS.load('christmas-canvas', './particles/christmasParticleOptions.json', () => {
+        // console.log('christmas-canvas - particles.js config loaded');
+        if (this.currentParticles) {
+          this.stopParticles(false);
+        }
+        this.currentParticles = window.pJS;
+      });
+
     },
     updateScroll() {
       if (this.$refs && this.$refs.appContainer) {
@@ -292,7 +278,7 @@ export default {
           if (item.subpages && item.subpages instanceof Array) {
             let subIsActive = false;
 
-            item.subpages.forEach(sub => {
+            item.subpages.forEach((sub) => {
               if (!subIsActive) {
                 subIsActive = this.currentPage === sub;
               }
@@ -304,6 +290,7 @@ export default {
           }
         }
       }
+
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
@@ -311,9 +298,7 @@ export default {
     },
     catchContinueClick() {
       if (this.lastEditedDatasetPath) {
-        this.$router.push({
-          path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}`,
-        });
+        this.$router.push({ path: `${this.lastEditedDatasetPath}?backPath=${this.$route.fullPath}` });
       }
     },
     catchMenuClicked() {
@@ -338,6 +323,7 @@ export default {
       this.navigateTo(item.path);
     },
     catchUserItemClicked(item) {
+
       // make a redirect in case we need to disable the editing in the frontend
       if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
         this.showRedirectDashboardDialog();
@@ -396,6 +382,7 @@ export default {
       return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
     },
     handleRedirectCallBack(redirectToDashboard) {
+
       let message = this.redirectMessage();
       let callback = this.redirectToLegacySignin;
 
@@ -404,12 +391,7 @@ export default {
         callback = this.redirectToLegacyDashboard;
       }
 
-      eventBus.$emit(
-        SHOW_DIALOG,
-        'Redirect to Legacy Website!',
-        message,
-        callback,
-      );
+      eventBus.$emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
@@ -428,11 +410,7 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
-    openGenericDialog(
-      message,
-      callback,
-      title = 'Redirect to Legacy Website!',
-    ) {
+    openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
       this.dialogTitle = title;
 
       if (!message) {
@@ -446,11 +424,12 @@ export default {
           callback();
         }
         this.showInfoDialog = false;
-      };
+      }
 
       this.showInfoDialog = true;
     },
     catchSigninClicked() {
+
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
       if (this.signinRedirectActive) {
         this.showRedirectSignDialog();
@@ -468,49 +447,56 @@ export default {
     },
     loadAllMetadata() {
       if (!this.loadingMetadatasContent && this.metadatasContentSize <= 0) {
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`,
-          this.config,
-        );
+        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.config);
       }
     },
     dialogVersionText() {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
+
       if (this.signinDisabled) {
-        const signItem = this.navigationItems.filter(
-          item => item.path === USER_SIGNIN_PATH,
-        )[0];
+        const signItem = this.navigationItems.filter(item => item.path === USER_SIGNIN_PATH)[0];
         if (signItem) {
           signItem.disabled = true;
         }
       }
+
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_GET_USER_CONTEXT,
-        commit: true,
-        mutation: GET_USER_CONTEXT,
-      });
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });
     },
   },
   computed: {
-    ...mapState(['loadingConfig', 'config', 'webpIsSupported']),
-    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    ...mapState(USER_NAMESPACE, ['lastEditedDataset', 'lastEditedDatasetPath']),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'metadataIds',
-      'metadatasContent',
-      'metadatasContentSize',
-      'loadingMetadataIds',
-      'loadingMetadatasContent',
-      'loadingCurrentMetadataContent',
-      'searchingMetadatasContent',
-      'currentMetadataContent',
-      'filteredContent',
-      'isFilteringContent',
+    ...mapState([
+      'loadingConfig',
+      'config',
+      'webpIsSupported',
     ]),
+    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
+    ...mapState(USER_NAMESPACE, [
+      'lastEditedDataset',
+      'lastEditedDatasetPath',
+    ]),
+    ...mapGetters(
+        METADATA_NAMESPACE, [
+          'metadataIds',
+          'metadatasContent',
+          'metadatasContentSize',
+          'loadingMetadataIds',
+          'loadingMetadatasContent',
+          'loadingCurrentMetadataContent',
+          'searchingMetadatasContent',
+          'currentMetadataContent',
+          'filteredContent',
+          'isFilteringContent',
+        ],
+    ),
     ...mapGetters({
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
       guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
@@ -540,8 +526,9 @@ export default {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
     maintenanceBannerVisible() {
-      if (!this.maintenanceConfig.messageActive) {
+      if (!this.maintenanceConfig.messageActive){
         return false;
+
       }
 
       if (this.userIsOnEditPage) {
@@ -573,11 +560,7 @@ export default {
       return this.maintenanceConfig?.signinDisabled || false;
     },
     showDecemberParticles() {
-      return (
-        this.$vuetify.breakpoint.mdAndUp &&
-        this.effectsConfig.decemberParticles &&
-        this.itIsDecember
-      );
+      return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
     },
     userIsOnEditPage() {
       return this.currentPage === METADATAEDIT_PAGENAME;
@@ -586,50 +569,31 @@ export default {
       return getMonth(Date.now()) === 11;
     },
     polygonParticlesActive() {
-      return (
-        this.$vuetify.breakpoint.mdAndUp &&
-        this.currentPage &&
-        this.currentPage === LANDING_PAGENAME
-      );
+      return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
     },
     loading() {
-      return (
-        this.loadingMetadatasContent ||
-        this.searchingMetadatasContent ||
-        this.isFilteringContent ||
-        this.projectsLoading ||
-        this.policiesLoading ||
-        this.guidelinesLoading
-      );
+      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent
+          || this.projectsLoading || this.policiesLoading || this.guidelinesLoading;
     },
     searchTerm() {
       return this.$route.query.search;
     },
     mainPageIsScrollable() {
-      return (
-        this.currentPage === BROWSE_PAGENAME ||
-        this.currentPage === BLOG_PAGENAME
-      );
+      return this.currentPage === BROWSE_PAGENAME;
     },
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
       return true;
     },
     pageStyle() {
-      const heightStyle = this.showToolbar
-        ? 'height: calc(100vh - 36px);'
-        : 'height: 100vh;';
-      return this.mainPageIsScrollable
-        ? ''
-        : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
+      const heightStyle = this.showToolbar ? 'height: calc(100vh - 36px);' : 'height: 100vh;';
+      return this.mainPageIsScrollable ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
       return this.$vuetify.breakpoint.smAndDown;
     },
     searchCount() {
-      return this.filteredContent !== undefined
-        ? Object.keys(this.filteredContent).length
-        : 0;
+      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
     },
     showReloadDialog() {
       return this.outdatedVersion && !this.reloadDialogCanceled;
@@ -662,7 +626,7 @@ export default {
     },
     menuItem() {
       let menuItem = { active: true };
-      this.navigationItems.forEach(el => {
+      this.navigationItems.forEach((el) => {
         if (el.icon === 'menu') {
           menuItem = el;
         }
@@ -671,9 +635,7 @@ export default {
       return menuItem;
     },
     mode() {
-      return this.$route.query.mode
-        ? this.$route.query.mode.toLowerCase()
-        : null;
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
     },
   },
   components: {
@@ -702,14 +664,14 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
     dialogTitle: 'Redirect to Legacy Website!',
     dialogMessage: '',
     dialogCallback: () => {},
     redirectToDashboard: false,
-    appVersion: import.meta.env.VITE_VERSION,
+    appVersion: process.env.VUE_APP_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
@@ -724,7 +686,9 @@ export default {
 };
 </script>
 
+
 <style>
+
 .envidatNavbar {
   position: -webkit-sticky;
   position: sticky;
@@ -756,7 +720,7 @@ export default {
 }
 
 .accentLink a {
-  color: #ffd740 !important;
+  color: #FFD740 !important;
 }
 
 .imagezoom,
@@ -791,7 +755,7 @@ export default {
 }
 
 .envidatTitle {
-  font-family: 'Baskervville', serif !important;
+  font-family: "Baskervville", serif !important;
   letter-spacing: 0em !important;
 }
 

@@ -1,36 +1,41 @@
 <template>
-  <v-card id="EditDescription" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4">
+  <v-card id="EditDescription"
+          class="pa-0"
+          :loading="loading">
+
+    <v-container fluid
+                  class="pa-4">
+
       <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
+        <v-progress-linear color="primary"
+                           indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="8" class="text-h5">
+        <v-col cols="8"
+               class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message">
-          <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
         </v-col>
-        <v-col v-if="error">
-          <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
         </v-col>
+
       </v-row>
 
       <v-row>
         <v-col cols="6">
-          <div class="text-body-1">{{ labels.descriptionInstructions }}</div>
+          <div class="text-body-1" v-html="labels.descriptionInstructions"></div>
         </v-col>
         <v-col cols="6">
           <div class="text-subtitle-1">{{ labels.subtitlePreview }}</div>
@@ -38,21 +43,23 @@
       </v-row>
 
       <v-row>
-        <v-col>
-          <GenericTextareaPreviewLayout
-            v-bind="genericTextAreaObject"
-            :validationError="validationErrors[editingProperty]"
-            :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-            :hint="mixinMethods_readOnlyHint(editingProperty)"
-            @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)"
-          >
+        <v-col >
+
+          <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
+                                        :validationError="validationErrors[editingProperty]"
+                                        :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
+                                        :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                        @inputedText="catchInputedText($event)"
+                                        @changedText="catchChangedText($event)">
             <MetadataBody :genericProps="descriptionObject" />
           </GenericTextareaPreviewLayout>
+
         </v-col>
       </v-row>
+
     </v-container>
   </v-card>
+
 </template>
 
 <script>
@@ -67,20 +74,24 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import {
-  EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
+  EDITMETADATA_MAIN_DESCRIPTION,
+  eventBus, EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
+
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
+
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
+
 
 export default {
   name: 'EditDescription',
@@ -152,13 +163,8 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -170,6 +176,7 @@ export default {
       }
     },
     setDescriptionText(value) {
+
       const newDescription = {
         [this.editingProperty]: value,
       };
@@ -184,10 +191,9 @@ export default {
     editingProperty: 'description',
     previewText: null,
     labels: {
-      cardTitle: 'Metadata Description',
-      labelTextarea: 'Metadata Description',
-      descriptionInstructions:
-        'Please enter a description for the research data.',
+      cardTitle: EDIT_METADATA_DESCRIPTION_TITLE,
+      labelTextarea: 'Research Data Description',
+      descriptionInstructions: 'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
       subtitlePreview: 'Description Preview',
     },
     validationErrors: {
@@ -202,4 +208,6 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

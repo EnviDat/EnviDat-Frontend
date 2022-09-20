@@ -1,15 +1,23 @@
 {
   "configurations": [
+
     {
-      "name": "Node: Docker Debug",
-      "type": "node",
+      "name": "Launch Chrome for debugging",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}/src",
+      "breakOnLoad": true,
+      "sourceMapPathOverrides": {
+        "webpack:///src/*": "${webRoot}/*"
+      }
+    },
+    {
+      "name": "Attach to Chrome",
+      "port": 8080,
       "request": "attach",
-      "address": "envidat_frontend",
-      "port": 9229,
-      "localRoot": "${workspaceFolder}",
-      "remoteRoot": "/app",
-      "trace": true,
-      "sourceMaps": true,
+      "type": "chrome",
+      "webRoot": "${workspaceFolder}"
     },
   ]
 }

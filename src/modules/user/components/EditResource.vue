@@ -9,8 +9,8 @@
                     icon-color="primary"
                     color="primary"
                     outlined
-                    tool-tip-text="Cancel Resource Editing"
-                    :tool-tip-bottom="true"
+                    tooltipText="Cancel Resource Editing"
+                    :tooltipBottom="true"
                     @clicked="$emit('closeClicked')" />
 
     <v-form ref="editResourceForm">

@@ -12,7 +12,15 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
+import UserCard from '@/components/Cards/UserCard';
+import { getNameInitials } from '@/factories/authorFactory';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import FlipLayout from '@/components/Layouts/FlipLayout';
+import {
+  EDIT_USER_PROFILE_EVENT,
+  eventBus,
+} from '@/factories/eventBus';
 import authorCollection from '../public/testdata/authorCollection.json';
 import { METADATA_EDITING } from './storybookFolder';
 
@@ -39,8 +47,8 @@ export const EditUserViews = () => ({
 
       <v-col cols="6">
         {{ user1.fullName + ' Edit User Profile' }}
-        <EditUserProfile :first-name="user1.firstName"
-                          :last-name="user1.lastName"
+        <EditUserProfile :firstName="user1.firstName" 
+                          :lastName="user1.lastName"
                           :email="user1.email"
                           />
       </v-col>
@@ -63,7 +71,7 @@ export const EditUserViews = () => ({
                          error-details="Some Validation Error Text"
         />
       </v-col>
-
+    
     </v-row>
     `,
   data: () => ({
@@ -71,3 +79,136 @@ export const EditUserViews = () => ({
     user2,
   }),
 });
+
+export const UserCardEditingViews = () => ({
+  components: {
+    EditUserProfile,
+    UserCard,
+    BaseIconButton,
+    FlipLayout,
+  },
+  template: `
+    <v-row >
+
+      <v-col cols="6">
+        FlipLayout with autoButtonFlip true
+      </v-col>
+
+      <v-col cols="6">
+        <FlipLayout :height="height"
+                    :width="height"
+                    :autoButtonFlip="true" >
+
+          <template v-slot:front>
+            <UserCard :height="height"
+                      :width="height"
+                      :userName="author.firstName + ' ' + author.lastName"
+                      :email="author.email"
+            />
+          </template>
+
+          <template v-slot:back>
+            <EditUserProfile :height="height"
+                             :minWidth="height"
+                             :showPreview="false"
+                             :firstName="author.firstName"
+                             :lastName="author.lastName"
+                             :email="author.email"
+            />
+          </template>
+          
+        </FlipLayout>
+      </v-col>
+
+      <v-col cols="6">
+        FlipLayout loading
+      </v-col>
+
+      <v-col cols="6">
+        <FlipLayout :height="height"
+                    :width="height"
+                    :autoButtonFlip="true" >
+
+          <template v-slot:front>
+            <UserCard :height="height"
+                      :width="height"
+                      :userName="author.firstName + ' ' + author.lastName"
+                      :email="author.email"
+                      :loading="true"
+            />
+          </template>
+
+          <template v-slot:back>
+            <EditUserProfile :height="height"
+                             :minWidth="height"
+                             :showPreview="false"
+                             :firstName="author.firstName"
+                             :lastName="author.lastName"
+                             :email="author.email"
+                             :loading="true"
+            />
+          </template>
+
+        </FlipLayout>
+      </v-col>
+
+
+      <v-col cols="6">
+        FlipLayout with autoButtonFlip false
+      </v-col>
+
+      <v-col cols="6">
+        <FlipLayout :height="height"
+                    :width="height" >
+
+          <template v-slot:front>
+            <UserCard :height="height"
+                      :width="height"
+                      :userName="author.firstName + ' ' + author.lastName"
+                      :email="author.email"
+            />
+          </template>
+
+          <template v-slot:back>
+            <EditUserProfile :height="height"
+                             :minWidth="height"
+                             :showPreview="false"
+                             :firstName="author.firstName"
+                             :lastName="author.lastName"
+                             :email="author.email"
+            />
+          </template>
+
+        </FlipLayout>
+      </v-col>
+        
+    </v-row>
+    `,
+  created() {
+    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+  },
+  computed: {
+    author() {
+      return this.user1;
+    },
+  },
+  methods: {
+    authorChanged(userObject) {
+      console.log('authorChanged');
+      console.log(userObject);
+
+      this.user1.firstName = userObject.data.firstName;
+      this.user1.lastName = userObject.data.lastName;
+      this.user1.email = userObject.data.email;
+    },
+    getNameInitials,
+  },
+  data: () => ({
+    height: 350,
+    user1,
+  }),
+});
+

@@ -1,18 +1,25 @@
 <template>
-  <v-card id="UserCard" raised :width="width" :height="height">
-    <div
-      class="cardGrid fill-height"
-      :style="`grid-template-rows: ${headerHeight}px 70px auto`"
-    >
-      <div :style="`height: ${headerHeight}px; overflow: hidden;`">
-        <v-img
-          :height="headerHeight"
+  <v-card id="UserCard"
+          raised
           :width="width"
-          style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
-          :src="userCardBanner"
-        />
+          :height="height"
+          :loading="loading">
 
-        <!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
+
+    <div class="cardGrid fill-height"
+          :style="`grid-template-rows: ${headerHeight}px 70px auto`">
+
+      <div :style="`height: ${headerHeight}px; overflow: hidden;`">
+        <v-img :height="headerHeight"
+                :width="width"
+                style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
+               :src="userCardBanner" />
+
+<!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
         -->
       </div>
 
@@ -20,33 +27,35 @@
         {{ userName }}
       </div>
 
-      <div class="pa-4">
-        <v-container fluid class="pa-0">
-          <v-row no-gutters class="py-2" justify="start">
+      <div class="pa-4" >
+        <v-container fluid
+                      class="pa-0">
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
             <v-col class="text-body-2">Datasets</v-col>
             <v-col class="text-caption">{{ datasetCount }}</v-col>
           </v-row>
 
-          <v-row no-gutters class="py-2" justify="start">
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
             <v-col class="text-body-2">Email</v-col>
-            <v-col class="text-caption"
-              ><a :href="`mailto:${email}`">{{ email }}</a></v-col
-            >
+            <v-col class="text-caption"><a :href="`mailto:${email}`">{{ email }}</a></v-col>
           </v-row>
         </v-container>
+
       </div>
+
     </div>
 
-    <div
-      style="position: absolute; right: 39.5%; border-radius: 50%;"
-      :style="`top: ${avatarTopPosition}px;`"
-    >
-      <UserAvatar
-        :size="avatarHeight"
-        :nameInitials="nameInitials"
-        class="elevation-5"
-      />
+    <div style="position: absolute; right: 39.5%; border-radius: 50%;"
+          :style="`top: ${avatarTopPosition}px;`" >
+      <UserAvatar :size="avatarHeight"
+                  :nameInitials="nameInitials"
+                  class="elevation-5" />
     </div>
+
   </v-card>
 </template>
 
@@ -62,8 +71,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
-import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+*/
+import UserAvatar from '@/components/Layouts/UserAvatar';
+
 
 export default {
   name: 'UserCard',
@@ -84,6 +94,10 @@ export default {
     emailHash: String,
     nameInitials: String,
     datasetCount: Number,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     avatarHeight: 64,
@@ -111,22 +125,24 @@ export default {
 </script>
 
 <style scoped>
-.cardGrid {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 100%;
-}
 
-.subGrid {
-  display: grid;
-  grid-template-columns: 30% 70%;
-  column-gap: 16px;
-  padding-right: 16px;
-  padding-left: 16px;
-}
+  .cardGrid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: 100%;
+  }
 
-.subGrid div {
-  word-break: break-all;
-  align-content: end;
-}
+  .subGrid {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    column-gap: 16px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .subGrid div {
+    word-break: break-all;
+    align-content: end;
+  }
+
 </style>

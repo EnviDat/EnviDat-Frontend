@@ -10,3 +10,4 @@ export const METADATA_EDITING = '9 Editing Metadata';
 export const CHIPS = '10 CHIPS';
 export const BASE_ELEMENTS =  '11 Base Elements';
 export const CHART_VIEWS =  '12 Chart Views';
+export const LAYOUT_VIEWS = '13 Layouts';

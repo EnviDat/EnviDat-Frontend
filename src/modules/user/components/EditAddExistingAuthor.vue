@@ -7,30 +7,30 @@
                  class="pa-4" >
 
       <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
+        <v-progress-linear color="primary"
+                           indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6" class="text-h5">
+        <v-col cols="6"
+               class="text-h5">
           {{ labels.title }}
         </v-col>
 
-        <v-col v-if="message">
-          <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
+        <v-col v-if="message" >
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails" />
         </v-col>
-        <v-col v-if="error">
-          <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+        <v-col v-if="error"  >
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails" />
         </v-col>
+
       </v-row>
 
       <v-row>
@@ -39,23 +39,22 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col>
-          <BaseUserPicker
-            :users="baseUserPickerObject"
-            :preSelected="preselectAuthorNames"
-            :multiplePick="true"
-            :isClearable="isClearable"
-            :instructions="labels.userPickInstructions"
-            :errorMessages="baseUserErrorMessages"
-            :readonly="mixinMethods_isFieldReadOnly('authors')"
-            :hint="mixinMethods_readOnlyHint('authors')"
-            @blur="notifyChange"
-            @removedUsers="catchRemovedUsers"
-            @pickedUsers="catchPickedUsers"
-          />
+      <v-row >
+        <v-col >
+          <BaseUserPicker :users="baseUserPickerObject"
+                          :preSelected="preselectAuthorNames"
+                          :multiplePick="true"
+                          :isClearable="isClearable"
+                          :instructions="labels.userPickInstructions"
+                          :errorMessages="baseUserErrorMessages"
+                          :readonly="mixinMethods_isFieldReadOnly('authors')"
+                          :hint="mixinMethods_readOnlyHint('authors')"
+                          @blur="notifyChange"
+                          @removedUsers="catchRemovedUsers"
+                          @pickedUsers="catchPickedUsers"/>
         </v-col>
       </v-row>
+
     </v-container>
   </v-card>
 </template>
@@ -70,21 +69,21 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import { getArrayOfFullNames } from '@/factories/authorFactory';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getArrayOfFullNames } from '@/factories/authorFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
+
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -144,9 +143,7 @@ export default {
       return this.validationErrors.authors;
     },
     preselectAuthorNames() {
-      return this.previewAuthors
-        ? getArrayOfFullNames(this.previewAuthors)
-        : getArrayOfFullNames(this.authors);
+      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -160,13 +157,8 @@ export default {
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
     },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchRemovedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
@@ -174,14 +166,21 @@ export default {
     catchPickedUsers(pickedUsers) {
       this.changePreviews(pickedUsers);
     },
-    changePreviews(authorsNames) {
+    changePreviews(authorsNames){
       const authors = [];
 
-      authorsNames.forEach(name => {
-        const author = this.getAuthorByName(name);
-        if (author) {
-          authors.push(author);
+      authorsNames.forEach((name) => {
+        let author = this.getAuthorByName(name, this.authors);
+
+        // if the author is part of the dataset authors, pick it as it is
+        // including the existing dataCredits
+        if (!author) {
+          // if the author is newly picked, use the existing list as reference
+
+          author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
+
+        authors.push(author);
       });
 
       this.previewAuthors = authors;
@@ -193,11 +192,6 @@ export default {
       }
 
       if (this.validateProperty('authors', this.previewAuthors)) {
-
-        if (this.previewAuthors?.length > this.authors?.length) {
-          // make sure to add the new author with cleared dataCredit because it has been newly added
-          this.cleanDataCreditFromNewAuthors();
-        }
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_AUTHOR_LIST,
@@ -211,35 +205,16 @@ export default {
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
     },
-    getAuthorByName(fullName) {
-      const authors = this.existingEnviDatUsers;
+    getAuthorByName(fullName, authors) {
       const found = authors.filter(auth => auth.fullName === fullName);
       return found.length > 0 ? found[0] : null;
-    },
-    cleanDataCreditFromNewAuthors() {
-      const diff = this.previewAuthors.length - this.authors.length;
-      const startIndex = this.previewAuthors.length - diff;
-
-      const cleanedAuthors = []
-      for (let i = startIndex; i < this.previewAuthors.length; i++) {
-        const newAuthor = this.previewAuthors[i];
-
-        cleanedAuthors.push({
-          ...newAuthor,
-          dataCredit: [],
-        })
-      }
-
-      this.previewAuthors.splice(startIndex, cleanedAuthors.length, ...cleanedAuthors)
     },
   },
   data: () => ({
     labels: {
-      title: 'Change Metadata Authors',
-      instructions:
-        'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
-      userPickInstructions:
-        'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
+      title: EDIT_METADATA_AUTHORS_TITLE,
+      instructions: 'Choose authors which from other metadata entries.',
+      userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
     },
     validationErrors: {
       authors: '',
@@ -253,4 +228,7 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+
+</style>

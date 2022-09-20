@@ -193,3 +193,49 @@ export function getResearchUnitDatasets (researchUnitStructure, datasets) {
 
   return ruMap;
 }
+
+/**
+ * Encodes a array of string entries via btoa() to a single string.
+ * Also replaces theses characters '.', '_', '-' which cause problems for urls.
+ *
+ * @param {array} array: array of e.g. tagNames
+ * @return {String} encoded string usable for urls
+ */
+export function encodeArrayToUrlString(array) {
+
+  if (array && array.length > 0) {
+    const jsonString = JSON.stringify(array);
+
+    const urlString = btoa(jsonString);
+
+    let urlConformString = urlString.replace(/\+/g, '.');
+    urlConformString = urlConformString.replace(/\//g, '_');
+    urlConformString = urlConformString.replace(/=/g, '-');
+
+    return urlConformString;
+  }
+
+  return '';
+}
+
+/**
+ * Decodes a string which was encoded via encodeArrayToUrlString().
+ * Returns the original array or an empty one.
+ * Also restores characters '.', '_', '-'.
+ *
+ * @param {String} urlString: encoded string
+ * @return {array}: array of tagNames
+ */
+export function decodeArrayFromUrlString(urlString) {
+  if (urlString) {
+    let jsonConformString = urlString.replace(/\./g, '+');
+    jsonConformString = jsonConformString.replace(/_/g, '/');
+    jsonConformString = jsonConformString.replace(/-/g, '=');
+
+    const jsonString = atob(jsonConformString);
+    return JSON.parse(jsonString);
+  }
+
+  // return an empty array for the selectedTagIds
+  return [];
+}

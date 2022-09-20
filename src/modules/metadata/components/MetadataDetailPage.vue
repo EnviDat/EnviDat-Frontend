@@ -207,6 +207,8 @@ export default {
     this.contactIcon = this.mixinMethods_getIcon('contact2');
     this.mailIcon = this.mixinMethods_getIcon('mail');
     this.licenseIcon = this.mixinMethods_getIcon('license');
+
+    window.scrollTo(0, 0);
   },
   /**
    * @description reset the scrolling to the top.
@@ -650,7 +652,7 @@ export default {
       });
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
-        ...this.relatedDatasets,
+        datasets: this.relatedDatasets,
       });
 
       this.$set(components.MetadataFunding, 'genericProps', {
@@ -716,12 +718,10 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const tagNames = [];
-      tagNames.push(tagName);
+      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl(tagNames);
       const query = {};
-      query.tags = tagsEncoded;
+      query.tags = stringTags;
 
       // clear the search result here, in case this metadata entry
       // was part of a full text search

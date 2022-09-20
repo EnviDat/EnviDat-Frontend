@@ -129,6 +129,7 @@ export const JazzIconsViews = () => ({
     userMenuItems,
   }),
 });
+
 export const UserAvatarViews = () => ({
   components: { UserAvatar },
   template: `

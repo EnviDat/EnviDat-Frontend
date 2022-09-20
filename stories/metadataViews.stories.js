@@ -34,7 +34,7 @@ import {
   createResources,
 } from '@/factories/metaDataFactory';
 
-import { createAuthors } from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
 import mailIcon from '../src/assets/icons/mail.png';
@@ -128,11 +128,19 @@ const genericProps4 = {
   geoJSON: location1.geoJSON,
 };
 
-const authors = createAuthors(metadata[2]);
+const authorsMap = extractAuthorsMap(metadata);
+const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
+
 
 const genericProps5 = {
   showPlaceholder: false,
-  authors,
+  authors: fullAuthors,
+  authorDetailsConfig: {
+    showAuthorInfos: true,
+    showDataCredits: true,
+    showDataCreditScore: false,
+    showDatasetCount: false,
+  },
 };
 
 

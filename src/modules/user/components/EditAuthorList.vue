@@ -1,14 +1,16 @@
 <template>
-  <v-container fluid class="pa-0" id="EditAuthorList">
-    <v-row>
-      <v-col cols="6">
-        <v-row v-if="selectedAuthor">
-          <v-col>
-            <EditAuthor
-              v-bind="selectedAuthor"
-              @closeClicked="catchEditAuthorClose"
-              @saveAuthor="catchSaveAuthorClose"
-            />
+
+  <v-container fluid
+               class="pa-0"
+               id="EditAuthorList" >
+
+    <v-row >
+      <v-col cols="6" >
+        <v-row v-if="selectedAuthor" >
+          <v-col >
+            <EditAuthor v-bind="selectedAuthor"
+                        @closeClicked="catchEditAuthorClose"
+                        @saveAuthor="catchSaveAuthorClose"/>
           </v-col>
         </v-row>
 
@@ -26,11 +28,13 @@
         </v-row>
       </v-col>
 
-      <v-col cols="6">
+      <v-col cols="6" >
         <EditMetadataAuthors v-bind="authorListingGenericProps" />
       </v-col>
     </v-row>
+
   </v-container>
+
 </template>
 
 <script>
@@ -47,12 +51,21 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import EditAuthor from '@/modules/user/components/EditAuthor';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
 import {
   // getAuthorKey,
   getFullAuthorsFromDataset,
   initializeLocalAuthor,
 } from '@/factories/authorFactory';
+
+import {
+  // enhanceElementsWithStrategyEvents,
+  localIdProperty,
+} from '@/factories/strategyFactory';
 import {
   CANCEL_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
@@ -63,17 +76,10 @@ import {
   SELECT_EDITING_AUTHOR,
   // SELECT_EDITING_AUTHOR_PROPERTY,
 } from '@/factories/eventBus';
-import {
-  // enhanceElementsWithStrategyEvents,
-  localIdProperty,
-} from '@/factories/strategyFactory';
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
-import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor.vue';
-import EditAuthor from '@/modules/user/components/EditAuthor.vue';
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-// import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+
 
 export default {
   name: 'EditAuthorList',
@@ -91,6 +97,15 @@ export default {
     authors: {
       type: Array,
       default: () => [],
+    },
+    // only used for testing via storybook
+    authorsMap: {
+      type: Object,
+      default: () => {},
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
     message: {
       type: String,
@@ -130,33 +145,45 @@ export default {
     },
     authorsWrap() {
       if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_AUTHOR_LIST).authors;
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST).authors;
       }
 
       return this.authors;
     },
-    authorsMap() {
+    noDataCreditAuthorsWrap() {
+      const authors = [...this.existingAuthorsWrap];
+
+      for (let i = 0; i < authors.length; i++) {
+        authors[i] = {
+          ...authors[i],
+          dataCredit: [],
+        }
+      }
+
+      return authors
+    },
+/*
+    authorsMapWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
       }
 
-      return null;
+      return this.authorsMap;
     },
     authorsMapLoading() {
       if (!this.$store) {
         return false;
       }
 
-      return this.authorsMap === null;
+      return this.authorsMapWrap === null;
     },
+*/
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
-        existingEnviDatUsers: this.existingAuthorsWrap,
+        existingEnviDatUsers: this.noDataCreditAuthorsWrap,
         isClearable: false,
-        loading: this.authorsMapLoading,
+        loading: this.loading, // || this.authorsMapLoading,
         message: this.message,
         messageDetails: this.messageDetails,
         error: this.error,
@@ -166,35 +193,11 @@ export default {
       };
     },
     authorListingGenericProps() {
-      const authorsMap = this.authorsMap;
-      const authors = this.authorsWrap;
-
-      let mergedAuthors = [];
-
-      if (authorsMap) {
-        const fullAuthors = getFullAuthorsFromDataset(authorsMap, {
-          author: authors,
-        });
-
-        for (let i = 0; i < authors.length; i++) {
-          const author = authors[i];
-          const fullAuthor = fullAuthors[i];
-
-          mergedAuthors.push({
-            ...fullAuthor,
-            // manually merge / overwrite the dataCredit, because
-            // it's based on the current datasets
-            dataCredit: author.dataCredit,
-          });
-        }
-      } else {
-        mergedAuthors = authors;
-      }
 
       return {
-        authors: mergedAuthors,
+        authors: this.authorsWrap,
         existingAuthors: this.existingAuthorsWrap,
-        loading: this.authorsMapLoading,
+        loading: this.loading, // || this.authorsMapLoading,
         authorDetailsConfig: {
           showDatasetCount: false,
           showAuthorInfos: true,
@@ -246,8 +249,11 @@ export default {
       this.initAuthor();
     },
   },
-  data: () => ({}),
+  data: () => ({
+  }),
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>

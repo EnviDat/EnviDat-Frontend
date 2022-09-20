@@ -1,56 +1,68 @@
 <template>
-  <v-card id="EditRelatedDatasets" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4 fill-height">
-      <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
-      <v-row>
-        <v-col cols="6" class="text-h5">
-          {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
-        </v-col>
+<v-card id="EditRelatedDatasets"
+        class="pa-0"
+        :loading="loading">
 
-        <v-col v-if="message">
-          <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
-        </v-col>
-        <v-col v-if="error">
-          <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
-        </v-col>
-      </v-row>
+  <v-container fluid
+                class="pa-4 fill-height" >
 
-      <v-row>
-        <v-col>
-          <div class="text-subtitle-1">{{ labels.cardInstructions }}</div>
-        </v-col>
-      </v-row>
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
-      <v-row>
-        <v-col>
-          <GenericTextareaPreviewLayout
-            v-bind="genericTextAreaObject"
-            :validationError="validationErrors[editingProperty]"
-            :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-            :hint="mixinMethods_readOnlyHint(editingProperty)"
-            @inputedText="catchInputedText($event)"
-            @changedText="catchChangedText($event)"
-          >
-            <MetadataRelatedDatasets :genericProps="datasetObject" />
-          </GenericTextareaPreviewLayout>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-card>
+    <v-row>
+      <v-col cols="6" class="text-h5">
+        {{ EDIT_METADATA_RELATED_DATASETS_TITLE }}
+      </v-col>
+
+      <v-col v-if="message" >
+        <BaseStatusLabelView statusIcon="check"
+                             statusColor="success"
+                             :statusText="message"
+                             :expandedText="messageDetails" />
+      </v-col>
+      <v-col v-if="error"  >
+
+        <BaseStatusLabelView statusIcon="error"
+                             statusColor="error"
+                             :statusText="error"
+                             :expandedText="errorDetails" />
+      </v-col>
+
+    </v-row>
+
+    <v-row>
+      <v-col >
+        <div class="text-subtitle-1"
+             v-html="labels.cardInstructions">
+
+        </div>
+      </v-col>
+    </v-row>
+
+
+    <v-row>
+      <v-col >
+
+        <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
+                                      :validationError="validationErrors[editingProperty]"
+                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
+                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                      @inputedText="catchInputedText($event)"
+                                      @changedText="catchChangedText($event)">
+          <MetadataRelatedDatasets :genericProps="datasetObject" />
+        </GenericTextareaPreviewLayout>
+
+      </v-col>
+    </v-row>
+
+ </v-container>
+</v-card>
+
 </template>
+
 
 <script>
 /**
@@ -64,21 +76,24 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+*/
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_RELATED_DATASETS,
   eventBus,
 } from '@/factories/eventBus';
+
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
 import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts';
+
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
 export default {
   name: 'EditRelatedDatasets',
@@ -150,13 +165,8 @@ export default {
     clearPreview() {
       this.previewText = null;
     },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+    validateProperty(property, value){
+      return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchInputedText(value) {
       this.previewText = value;
@@ -168,6 +178,7 @@ export default {
       }
     },
     setRelatedDatasetsText(value) {
+
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_DATASETS,
         data: { [this.editingProperty]: value },
@@ -180,7 +191,7 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: 'Add references to other related datasets',
+      cardInstructions: 'Add references to other related research datasets which are relevant to this one. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {
@@ -193,4 +204,6 @@ export default {
     BaseStatusLabelView,
   },
 };
+
+
 </script>

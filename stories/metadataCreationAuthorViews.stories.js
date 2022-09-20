@@ -309,7 +309,8 @@ export const FullEditingAuthorViews = () => ({
     <v-row class="py-3" >
       <v-col >
         <EditAuthorList :authors="authors"
-                        :existingAuthors="existingAuthors" />
+                        :existingAuthors="existingAuthors"
+                        :authorsMap="authorsMap" />
       </v-col>
     </v-row>
 
@@ -399,5 +400,6 @@ export const FullEditingAuthorViews = () => ({
     selectionId: '',
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,
+    authorsMap,
   }),
 });

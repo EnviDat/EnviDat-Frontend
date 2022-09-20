@@ -564,8 +564,8 @@ export function getOrganizationMap(organizations) {
 }
 
 export function getMetadataVisibilityState(metadata) {
-  const state = metadata.state || null;
-  const priv = metadata.private || undefined;
+  const state = metadata?.state || null;
+  const priv = metadata?.private || undefined;
 
   let visibilityState = 'draft';
 

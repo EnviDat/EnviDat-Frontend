@@ -1,56 +1,73 @@
 <template>
-  <v-card id="EditMetadataHeader" class="pa-0" :loading="loading">
-    <v-container fluid class="pa-4 fill-height">
+  <v-card id="EditMetadataHeader"
+          class="pa-0"
+          :loading="loading">
+
+    <v-container fluid
+                 class="pa-4 fill-height">
+
       <template slot="progress">
-        <v-progress-linear color="primary" indeterminate />
+        <v-progress-linear color="primary"
+                           indeterminate/>
       </template>
 
       <v-row>
+
         <v-col class="text-h5" cols="8">
           {{ labels.title }}
         </v-col>
 
         <v-col v-if="message" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            statusIcon="check"
-            statusColor="success"
-            :statusText="message"
-            :expandedText="messageDetails"
-          />
+          <BaseStatusLabelView statusIcon="check"
+                               statusColor="success"
+                               :statusText="message"
+                               :expandedText="messageDetails"/>
         </v-col>
         <v-col v-if="error" cols="4" class="pl-16">
-          <BaseStatusLabelView
-            statusIcon="error"
-            statusColor="error"
-            :statusText="error"
-            :expandedText="errorDetails"
-          />
+
+          <BaseStatusLabelView statusIcon="error"
+                               statusColor="error"
+                               :statusText="error"
+                               :expandedText="errorDetails"/>
         </v-col>
+
       </v-row>
 
+
       <v-row>
-        <v-col class="text-body-1">
+        <v-col class="text-body-1 pb-0">
           {{ labels.instructions }}
         </v-col>
       </v-row>
 
+
       <v-row>
-        <v-col cols="8" class="pb-0">
-          <v-text-field
-            ref="metadataTitle"
-            :label="labels.labelTitle"
-            outlined
-            :readonly="mixinMethods_isFieldReadOnly('metadataTitle')"
-            :hint="mixinMethods_readOnlyHint('metadataTitle')"
-            prepend-icon="import_contacts"
-            :error-messages="validationErrors.metadataTitle"
-            :placeholder="labels.placeholderTitle"
-            :value="metadataTitleField"
-            @input="changeProperty('metadataTitle', $event)"
-            @change="notifyTitleChange('metadataTitle', $event)"
-          />
+        <v-col class="text-body-1">
+          {{ labels.instructions2 }}
         </v-col>
       </v-row>
+
+      <v-row>
+
+        <v-col cols="8" class="pb-0">
+
+          <v-text-field ref="metadataTitle"
+                        :label="labels.labelTitle"
+                        outlined
+                        :readonly="mixinMethods_isFieldReadOnly('metadataTitle')"
+                        :hint="mixinMethods_readOnlyHint('metadataTitle')"
+                        prepend-icon="import_contacts"
+                        :error-messages="validationErrors.metadataTitle"
+                        :placeholder="labels.placeholderTitle"
+                        :value="metadataTitleField"
+                        @input="changeProperty('metadataTitle', $event)"
+                        @change="notifyTitleChange('metadataTitle', $event)"
+          />
+
+        </v-col>
+
+      </v-row>
+
 
       <v-row>
         <v-col class="text-h6 pb-0">
@@ -58,92 +75,102 @@
         </v-col>
       </v-row>
 
+
       <v-row>
         <v-col class="text-body-1">
           {{ labels.authorInstructions }}
         </v-col>
       </v-row>
 
-      <v-row dense class="pt-2">
+
+      <v-row dense
+             class="pt-2">
         <v-col>
-          <v-text-field
-            ref="contactEmail"
-            id="contactEmail"
-            :label="labels.labelContactEmail"
-            outlined
-            :error-messages="validationErrors.contactEmail"
-            :readonly="isContactPropertyReadOnly('contactEmail')"
-            :hint="contactPropertyHint('contactEmail')"
-            prepend-icon="email"
-            :placeholder="labels.placeholderContactEmail"
-            :value="contactEmailField"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('contactEmail', $event)"
-            @input="changeProperty('contactEmail', $event)"
-          />
+
+          <v-text-field ref="contactEmail"
+                        id="contactEmail"
+                        :label="labels.labelContactEmail"
+                        outlined
+                        :error-messages="validationErrors.contactEmail"
+                        :readonly="isContactPropertyReadOnly('contactEmail')"
+                        :hint="contactPropertyHint('contactEmail')"
+                        prepend-icon="email"
+                        :placeholder="labels.placeholderContactEmail"
+                        :value="contactEmailField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('contactEmail', $event)"
+                        @input="changeProperty('contactEmail', $event)"
+                        />
+
         </v-col>
 
-        <v-col
-          class="shrink px-4 text-body-1 "
-          style="text-align: center;"
-          cols="2"
-        >
-          <div v-html="labels.authorOr"></div>
+        <v-col class="shrink px-4 text-body-1 "
+               style="text-align: center;"
+               cols="2"
+               v-html="labels.authorOr">
+          <!--        {{ labels.authorOr }} -->
         </v-col>
 
         <v-col>
-          <BaseUserPicker
-            :users="fullNameUsers"
-            :preSelected="preselectAuthorNames"
-            @removedUsers="catchPickerAuthorChange($event, false)"
-            @pickedUsers="catchPickerAuthorChange($event, true)"
-          />
+
+          <BaseUserPicker :users="fullNameUsers"
+                          :preSelected="preselectAuthorNames"
+                          @removedUsers="catchPickerAuthorChange($event, false)"
+                          @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
+
       </v-row>
 
       <v-row dense>
-        <v-col class="text-body-1">
-          <div v-html="labels.authorAutoComplete"></div>
+
+        <v-col class=" pl-10 text-body-1"
+               v-html="labels.authorAutoComplete">
         </v-col>
       </v-row>
 
-      <v-row dense class="pt-2">
+      <v-row dense
+             class="pt-2 pl-10">
+
         <v-col>
-          <v-text-field
-            ref="contactGivenName"
-            id="contactGivenName"
-            :label="labels.labelContactGivenName"
-            outlined
-            :error-messages="validationErrors.contactGivenName"
-            :readonly="isContactPropertyReadOnly('contactGivenName')"
-            :hint="contactPropertyHint('contactGivenName')"
-            prepend-icon="person"
-            :placeholder="labels.placeholderContactGivenName"
-            :value="contactGivenNameField"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('contactGivenName', $event)"
-            @input="changeProperty('contactGivenName', $event)"
-          />
+
+          <v-text-field ref="contactGivenName"
+                        id="contactGivenName"
+                        :label="labels.labelContactGivenName"
+                        outlined
+                        :error-messages="validationErrors.contactGivenName"
+                        :readonly="isContactPropertyReadOnly('contactGivenName')"
+                        :hint="contactPropertyHint('contactGivenName')"
+                        prepend-icon="person"
+                        :placeholder="labels.placeholderContactGivenName"
+                        :value="contactGivenNameField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('contactGivenName', $event)"
+                        @input="changeProperty('contactGivenName', $event)"
+                        />
+
         </v-col>
 
         <v-col class="pl-4">
-          <v-text-field
-            ref="contactSurname"
-            id="contactSurname"
-            :label="labels.labelContactSurname"
-            outlined
-            :error-messages="validationErrors.contactSurname"
-            :readonly="isContactPropertyReadOnly('contactSurname')"
-            :hint="contactPropertyHint('contactSurname')"
-            prepend-icon="person"
-            :placeholder="labels.placeholderContactSurname"
-            :value="contactSurnameField"
-            @focusin="focusIn($event)"
-            @focusout="focusOut('contactSurname', $event)"
-            @input="changeProperty('contactSurname', $event)"
-          />
+
+          <v-text-field ref="contactSurname"
+                        id="contactSurname"
+                        :label="labels.labelContactSurname"
+                        outlined
+                        :error-messages="validationErrors.contactSurname"
+                        :readonly="isContactPropertyReadOnly('contactSurname')"
+                        :hint="contactPropertyHint('contactSurname')"
+                        prepend-icon="person"
+                        :placeholder="labels.placeholderContactSurname"
+                        :value="contactSurnameField"
+                        @focusin="focusIn($event)"
+                        @focusout="focusOut('contactSurname', $event)"
+                        @input="changeProperty('contactSurname', $event)"
+                        />
+
         </v-col>
+
       </v-row>
+
 
       <v-row>
         <v-col cols="12" class="text-subtitle-1">
@@ -153,14 +180,19 @@
 
       <v-row>
         <v-col cols="12">
-          <MetadataHeader v-bind="metadataPreviewEntry" />
+          <MetadataHeader v-bind="metadataPreviewEntry"/>
         </v-col>
+
       </v-row>
+
+
     </v-container>
   </v-card>
+
 </template>
 
 <script>
+
 /**
  * EditMetadataHeader.vue shows the title, main contact email, main contact given name,
  * main contact surname, and metadata header preview.
@@ -175,26 +207,30 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import imageContact from '@/assets/icons/contact.png';
-import imageMail from '@/assets/icons/mail.png';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
-import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import { EDIT_METADATA_MAIN_TITLE } from '@/factories/metadataConsts';
+
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
+import imageContact from '@/assets/icons/contact.png';
+import imageMail from '@/assets/icons/mail.png';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
+
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
+  isFieldValid, isObjectValid,
 } from '@/factories/userEditingValidations';
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
+import { EDIT_METADATA_MAIN_TITLE, EDIT_STEP_TITLE_MAIN_METADATA } from '@/factories/metadataConsts';
+
 
 export default {
   name: 'EditMetadataHeader',
@@ -281,30 +317,22 @@ export default {
   computed: {
     metadataTitleField: {
       get() {
-        return this.previews.metadataTitle !== null
-          ? this.previews.metadataTitle
-          : this.metadataTitle;
+        return this.previews.metadataTitle !== null ? this.previews.metadataTitle : this.metadataTitle;
       },
     },
     contactGivenNameField: {
       get() {
-        return this.previews.contactGivenName !== null
-          ? this.previews.contactGivenName
-          : this.contactGivenName;
+        return this.previews.contactGivenName !== null ? this.previews.contactGivenName : this.contactGivenName;
       },
     },
     contactSurnameField: {
       get() {
-        return this.previews.contactSurname !== null
-          ? this.previews.contactSurname
-          : this.contactSurname;
+        return this.previews.contactSurname !== null ? this.previews.contactSurname : this.contactSurname;
       },
     },
     contactEmailField: {
       get() {
-        return this.previews.contactEmail !== null
-          ? this.previews.contactEmail
-          : this.contactEmail;
+        return this.previews.contactEmail !== null ? this.previews.contactEmail : this.contactEmail;
       },
     },
     preselectAuthorNames() {
@@ -325,9 +353,9 @@ export default {
       return getArrayOfFullNames(localAuthors);
     },
     metadataPreviewEntry() {
+
       const doiIcon = this.mixinMethods_getIcon('doi') || '';
-      const contactIcon =
-        this.mixinMethods_getIcon('contact2') || this.iconName;
+      const contactIcon = this.mixinMethods_getIcon('contact2') || this.iconName;
       const mailIcon = this.mixinMethods_getIcon('mail') || this.iconMail;
       const licenseIcon = this.mixinMethods_getIcon('license') || '';
 
@@ -337,8 +365,7 @@ export default {
       });
 
       const previewEntry = {
-        metadataTitle:
-          this.metadataTitleField || this.labels.placeholderHeaderTitle,
+        metadataTitle: this.metadataTitleField || this.labels.placeholderHeaderTitle,
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: fullName,
@@ -364,46 +391,33 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_HEADER);
     },
     contactInfoReadOnly() {
-      return (
-        (this.authorPickerTouched && this.authorIsPicked) ||
-        (!this.authorPickerTouched && this.authorPickerFoundAuthor)
-      );
+      return (this.authorPickerTouched && this.authorIsPicked) || (!this.authorPickerTouched && this.authorPickerFoundAuthor);
     },
     authorPickerFoundAuthor() {
-      if (
-        this.preselectAuthorNames?.length <= 0 ||
-        this.fullNameUsers?.length <= 0
-      ) {
+      if (this.preselectAuthorNames?.length <= 0 || this.fullNameUsers?.length <= 0) {
         return false;
       }
 
-      const matches = this.fullNameUsers.filter(
-        fullName => fullName === this.preselectAuthorNames[0],
-      );
+      const matches = this.fullNameUsers.filter(fullName => fullName === this.preselectAuthorNames[0]);
       return matches.length > 0;
     },
     anyUserElementsActive() {
-      return (
-        this.activeElements.contactEmail ||
-        this.activeElements.contactGivenName ||
-        this.activeElements.contactSurname
-      );
+      return this.activeElements.contactEmail
+          || this.activeElements.contactGivenName
+          || this.activeElements.contactSurname;
     },
     anyPreviewsChanged() {
-      return (
-        this.previews.contactGivenName !== null ||
-        this.previews.contactSurname !== null ||
-        this.previews.contactEmail !== null
-      );
+      return this.previews.contactGivenName !== null
+          || this.previews.contactSurname !== null
+          || this.previews.contactEmail !== null;
     },
   },
   methods: {
     isContactPropertyReadOnly(property) {
-      return (
-        this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property)
-      );
+      return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
     },
     contactPropertyHint(property) {
+
       if (this.contactInfoReadOnly) {
         return 'Not editable because the contact is defined in the author picker';
       }
@@ -419,16 +433,12 @@ export default {
     // Validate contact author properties by calling isFieldValid()
     // Returns true if all properties are valid, else returns false
     validateAuthor(authorObject) {
+
       const properties = ['contactEmail', 'contactGivenName', 'contactSurname'];
 
       // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
-        isFieldValid(
-          properties[i],
-          authorObject[properties[i]],
-          this.validations,
-          this.validationErrors,
-        );
+        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
       }
 
       // Return false if any of the properties have a validation error
@@ -467,14 +477,10 @@ export default {
       this.validateProperty(property, value);
     },
     validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
+      return isFieldValid(property, value, this.validations, this.validationErrors);
     },
     catchPickerAuthorChange(pickedAuthorName, hasAuthor) {
+
       this.authorPickerTouched = true;
       this.authorIsPicked = hasAuthor;
 
@@ -496,6 +502,7 @@ export default {
         this.previews.contactSurname = '';
         this.previews.contactEmail = '';
       }
+
     },
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
@@ -508,6 +515,7 @@ export default {
       return found[0] || null;
     },
     getAuthorByNameProp(property, value) {
+
       const authors = this.existingAuthorsWrap;
 
       if (property === 'contactGivenName') {
@@ -523,6 +531,7 @@ export default {
       return null;
     },
     getAuthorObject(author) {
+
       if (author) {
         return {
           contactGivenName: author.firstName.trim(),
@@ -535,7 +544,7 @@ export default {
     },
 
     notifyTitleChange(property, value) {
-      if (this.previews[property] === null) {
+      if (this.previews[property] === null){
         return;
       }
 
@@ -557,22 +566,19 @@ export default {
         contactGivenName: this.contactGivenNameField,
         contactSurname: this.contactSurnameField,
         contactEmail: this.contactEmailField,
-      };
+      }
 
       if (property === 'contactEmail') {
-        if (
-          isFieldValid(property, value, this.validations, this.validationErrors)
-        ) {
+        if (isFieldValid(property, value, this.validations, this.validationErrors)) {
+
           // autocomplete author
           const author = this.getAuthorByEmail(value);
 
           const autoCompletedAuthorObject = this.getAuthorObject(author);
 
           if (autoCompletedAuthorObject) {
-            this.previews.contactGivenName =
-              autoCompletedAuthorObject.contactGivenName;
-            this.previews.contactSurname =
-              autoCompletedAuthorObject.contactSurname;
+            this.previews.contactGivenName = autoCompletedAuthorObject.contactGivenName;
+            this.previews.contactSurname = autoCompletedAuthorObject.contactSurname;
 
             // overwrite any infos from the text-fields with the author infos
             // from the autocomplete
@@ -584,22 +590,18 @@ export default {
         }
       }
 
+
       // store all the contact infos because notifyChanges is only called
       // when the user focus leaves any of the fields, therefore all changes
       // must be stored
 
-      if (
-        isObjectValid(
-          this.validationProperties,
-          authorObject,
-          this.validations,
-          this.validationErrors,
-        )
-      ) {
+      if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
         this.setFullContactInfos(authorObject);
       }
+
     },
     setFullContactInfos(authorObject) {
+
       const newHeaderInfo = {
         ...this.$props,
         ...authorObject,
@@ -611,6 +613,7 @@ export default {
       });
     },
     setHeaderInfo(property, value) {
+
       const newHeaderInfo = {
         ...this.$props,
         [property]: value,
@@ -638,20 +641,19 @@ export default {
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',
-      instructions:
-        'Please enter research dataset title. Please make sure that title is meaningful and specific.',
-      authorInstructions: 'Enter an email address for a main contact.',
+      instructions: 'The header is part of the main metadata information.' +
+          ` Together with the other information in the ${EDIT_STEP_TITLE_MAIN_METADATA} step, it represents the core information for your research dataset.`,
+      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
+      authorInstructions: 'Enter an email address as main contact and maintainer of this dataset.',
       authorOr: '<strong>Or</strong> pick <br /> an author',
-      authorAutoComplete:
-        'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
+      authorAutoComplete: 'If an author is picked or found with the email address the names is <strong>autocompleted</strong>!',
       placeholderTitle: 'Enter the title for your metadata entry here',
       placeholderHeaderTitle: 'Your Metadata Title',
       placeholderContactEmail: 'Enter contact email address here',
       placeholderContactGivenName: 'Enter contact given (first) name here',
       placeholderContactSurname: 'Enter contact surname name here',
       previewText: 'Metadata Header Preview',
-      authorDropdown:
-        'Click here and start typing to select an existing EnviDat author',
+      authorDropdown: 'Click here and start typing to select an existing EnviDat author',
     },
     validationProperties: [
       'contactEmail',
@@ -681,8 +683,10 @@ export default {
 </script>
 
 <style scoped>
+
 .compact-form {
   transform: scale(0.875);
   transform-origin: left;
 }
+
 </style>

@@ -47,7 +47,7 @@ import {
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_ERROR, USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE,
 } from './userMutationsConsts';
@@ -107,6 +107,11 @@ export default {
   async [USER_GET_COLLABORATOR_DATASETS]({ commit }, collaboratorIds) {
     commit(USER_GET_COLLABORATOR_DATASETS);
 
+    if (!collaboratorIds || collaboratorIds.length <= 0) {
+      commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, { datasets: [], collaboratorIds: [] });
+      return;
+    }
+
     const actionUrl = ACTION_USER_COLLABORATOR_DATASETS();
     const limit = this.state.user.collaboratorDatasetsLimit;
 
@@ -163,6 +168,11 @@ export default {
   },
   async [USER_GET_ORGANIZATIONS]({ commit }, ids) {
     commit(USER_GET_ORGANIZATIONS);
+
+    if (!ids || ids.length <= 0) {
+      commit(USER_GET_ORGANIZATIONS_RESET);
+      return;
+    }
 
     const actionUrl = ACTION_USER_ORGANIZATIONS();
 

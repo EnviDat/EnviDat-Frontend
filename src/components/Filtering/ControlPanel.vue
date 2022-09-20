@@ -1,44 +1,49 @@
 <template v-slot:controlPanel>
-  <v-card :style="`height: ${fixedHeight}px;`" id="controlPanel">
-    <v-container class="px-2 py-0 fill-height" fluid>
-      <v-row align="center" justify="space-between" no-gutters>
-        <v-col class="py-0" cols="12" sm="10" md="9" lg="10">
-          <small-search-bar-view
-            class="elevation-0"
-            :compactLayout="compactLayout"
-            :searchTerm="searchTerm"
-            :showSearch="showSearch"
-            :showSearchCount="true"
-            :searchCount="searchCount"
-            :isFlat="true"
-            :fixedHeight="fixedHeight"
-            :labelText="searchBarPlaceholder"
-            :loading="loading"
-            @clicked="catchSearchClicked"
-            @searchCleared="catchSearchCleared"
-          />
+  <v-card :style="`height: ${fixedHeight}px;`"
+            id="controlPanel" >
+
+    <v-container class="px-2 py-0 fill-height"
+                    fluid> 
+      <v-row align="center"
+              justify="space-between"
+              no-gutters>
+
+        <v-col class="py-0"
+              cols="12" sm="10" md="9" lg="10">
+          <small-search-bar-view class="elevation-0"
+                                  :compactLayout="compactLayout"
+                                  :searchTerm="searchTerm"
+                                  :showSearch="showSearch"
+                                  :showSearchCount="true"
+                                  :searchCount="searchCount"
+                                  :isFlat="true"
+                                  :fixedHeight="fixedHeight"
+                                  :labelText="searchBarPlaceholder"
+                                  :loading="loading"
+                                  @clicked="catchSearchClicked"
+                                  @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 shrink">
-          <BaseIconButton
-            style="opacity: 0.8;"
-            materialIconName="share"
-            iconColor="black"
-            isSmall
-            tooltipBottom
-            tooltipText="Copy the url to this view to the clipboard to share it."
-            @clicked="catchShareClick"
-          />
+        <v-col id="shareButton"
+               class="py-0 shrink" >
+
+          <BaseIconButton style="opacity: 0.8;"
+                          materialIconName="share"
+                          iconColor="black"
+                          isSmall
+                          tooltipBottom
+                          tooltipText="Copy the url to this view to the clipboard to share it."
+                          @clicked="catchShareClick"
+                          />
+
         </v-col>
 
-        <v-col class="hidden-xs-only py-0 fill-height">
-          <list-control-toggle
-            :style="`height: ${fixedHeight}px;`"
-            :controls="controlsActive"
-            :enabledControls="enabledControls"
-            :flat="true"
-            @controlsChanged="catchControlClick"
-          />
+        <v-col class="hidden-xs-only py-0 fill-height" >
+          <list-control-toggle :style="`height: ${fixedHeight}px;`"
+                                :controls="controlsActive"
+                                :enabledControls="enabledControls"
+                                :flat="true"
+                                @controlsChanged="catchControlClick" />
         </v-col>
       </v-row>
     </v-container>
@@ -59,10 +64,11 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
-import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
+*/
+import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
+import ListControlToggle from '@/components/Filtering/ListControlToggle';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import { METADATADETAIL_PATH } from '@/router/routeConsts';
 
 export default {
   name: 'MetadataList',
@@ -93,12 +99,11 @@ export default {
       this.$emit('controlsChanged', number);
     },
     catchShareClick() {
-      const url = `${import.meta.env.VITE_ENVIDAT_PROXY}/#${
-        this.$route.fullPath
-      }`;
+      // const routeData = this.$router.resolve({ path: this.$route.fullPath });
 
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(window.location);
     },
   },
 };
+
 </script>
