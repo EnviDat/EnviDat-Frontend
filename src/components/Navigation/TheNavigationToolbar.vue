@@ -7,26 +7,6 @@
     <v-container fluid
                   class="pa-0" >
 
-      <!-- <v-row class="pa-0" >
-        <v-col v-if="hasModeData" >
-          <ModeView :mode="mode"
-                    :compact="compact"
-                    :closeCallback="modeCloseCallback"/>
-        </v-col>
-
-        <v-col v-if="userIsSignedIn">
-          <user-avatar v-if="$vuetify.breakpoint.smAndUp"
-                      :clickCallback="avatarClickCallback" />
-        </v-col>
-
-        <v-progress-linear v-show="loading"
-                          indeterminate
-                          style="position: absolute; left: 0; bottom: 0;"
-                          height="2"
-                          color="primary" />
-      </v-row>
-
-    </v-container> -->
       <v-row no-gutters
               align="center"
               justify="space-between" >
@@ -52,20 +32,11 @@
 
         </v-col>
 
-        <!-- <v-spacer></v-spacer> -->
-
         <v-col v-if="hasModeData" >
           <ModeView :mode="mode"
                     :compact="compact"
                     :closeCallback="modeCloseCallback"/>
         </v-col>
-
-        <!-- <v-col v-if="signedInUser"
-                class="shrink"
-                cols="2">
-          <user-avatar v-if="$vuetify.breakpoint.smAndUp"
-                      :clickCallback="avatarClickCallback" />
-        </v-col> -->
 
         <v-col v-if="signedInUser"
                 class="shrink"
@@ -73,6 +44,10 @@
 
           <v-row align="center"
                   justify="end" >
+
+            <v-col style="text-align: right; ">
+              {{ signedInUser.fullname }}
+            </v-col>
 
             <v-col v-if="editingDatasetName"
                    class="shrink">
@@ -87,10 +62,6 @@
                               :tooltipBottom="true"
                               :overwriteHeight="24"
                               @clicked="catchContinueClick" />
-            </v-col>
-
-            <v-col style="text-align: right; ">
-              {{ signedInUser.fullname }}
             </v-col>
 
             <v-col class="shrink">
