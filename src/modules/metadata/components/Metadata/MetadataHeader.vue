@@ -94,11 +94,12 @@
                       }"
                       class="shrink" >
 
-                <tag-chip-author :name="authorName(author)"
-                                  :tooltipText="authorToolTipText"
-                                  :asciiDead="asciiDead"
-                                  :authorPassedInfo="authorPassedInfo"
-                                  @clicked="catchAuthorClicked(authorName(author))" />
+                <TagChipAuthor :name="authorName(author)"
+                                :tooltipText="authorToolTipText"
+                                :asciiDead="asciiDead"
+                                :authorPassedInfo="authorPassedInfo"
+                                isSmall
+                                @clicked="catchAuthorClicked(authorName(author))" />
               </v-col>
             </v-row>
           </v-col>
