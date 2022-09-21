@@ -131,7 +131,7 @@ export default {
         query,
       });
     },
-    mixinMethods_convertUrlStringToArray(string) {
+    mixinMethods_convertUrlStringToArray(string, toUpperCase = true, toLowerCase = false) {
       if (!string) {
         return [];
       }
@@ -139,16 +139,28 @@ export default {
       const splits = string.split(',');
 
       for (let i = 0; i < splits.length; i++) {
-        splits[i] = splits[i].toUpperCase();
+        if (toUpperCase) {
+          splits[i] = splits[i].toUpperCase();
+        }
+
+        if (toLowerCase) {
+          splits[i] = splits[i].toLowerCase();
+        }
       }
 
       return splits;
     },
-    mixinMethods_convertArrayToUrlString(array) {
+    mixinMethods_convertArrayToUrlString(array, toUpperCase = true, toLowerCase = false) {
 
       let str = '';
       for (let i = 0; i < array.length; i++) {
-        str += `${array[i].toUpperCase()},`;
+        if (toUpperCase) {
+          str += `${array[i].toUpperCase()},`;
+        }
+
+        if (toLowerCase) {
+          str += `${array[i].toLowerCase()},`;
+        }
       }
 
       // remove the last comma

@@ -114,7 +114,7 @@ export default {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins);
+        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
       }
