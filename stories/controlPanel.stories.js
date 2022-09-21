@@ -55,7 +55,7 @@ export const BaseIconSwitchViews = () => ({
       <BaseIconSwitch :active="active"
                       materialIconName="account_circle"
                       tooltipText="Author search tool tip"
-                      @click="active = !active"/>
+                      @clicked="active = !active"/>
     </v-col>
 
     <v-col cols="12">
@@ -66,7 +66,7 @@ export const BaseIconSwitchViews = () => ({
       <BaseIconSwitch :active="active"
                       materialIconName="info"
                       tooltipText="notification tool tip"
-                      @click="active = !active"/>
+                      @clicked="active = !active"/>
     </v-col>
 
   </v-row>

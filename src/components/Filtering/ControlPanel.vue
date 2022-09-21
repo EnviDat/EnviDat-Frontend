@@ -44,7 +44,7 @@
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
                           materialIconName="account_circle"
-                          @click="catchAuthorSearchClick" />
+                          @clicked="catchAuthorSearchClick" />
 
         </v-col>
 

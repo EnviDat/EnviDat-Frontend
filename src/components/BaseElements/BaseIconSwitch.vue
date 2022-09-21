@@ -9,7 +9,7 @@
 
         <div class="authorSwitch"
              :style="active ? 'left: -2px;' : 'left: 18px;'"
-             @click="$emit('click', $event)"
+             @click="$emit('clicked', $event)"
              >
           <v-icon v-if="materialIconName"
                   :color="active ? 'primary' : 'gray'"
@@ -84,11 +84,6 @@ export default {
       return this.active ? secondary : 'lightgray';
     },
   },  
-  methods: {
-    onClick() {
-      this.$emit('clicked');
-    },
-  },
 };
 
 </script>
