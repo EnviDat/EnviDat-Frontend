@@ -668,19 +668,19 @@ export default {
       this.secondCol = [
         components.MetadataResources,
         components.MetadataGeo,
-        components.MetadataDetails,
+        // components.MetadataDetails,
       ];
 
       this.singleCol = [
         components.MetadataBody,
         components.MetadataCitation,
-        components.MetadataPublications,
-        components.MetadataRelatedDatasets,
         components.MetadataResources,
-        components.MetadataFunding,
         components.MetadataGeo,
         components.MetadataAuthors,
-        components.MetadataDetails,
+        components.MetadataFunding,
+        components.MetadataPublications,
+        components.MetadataRelatedDatasets,
+        // components.MetadataDetails,
       ];
     },
     async injectMicroCharts() {
