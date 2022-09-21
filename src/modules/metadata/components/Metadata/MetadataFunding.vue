@@ -26,6 +26,9 @@
       <v-row >
         <v-col v-for="(item, index) in fundingItems"
                 :key="index"
+                cols="12"
+                sm="6"
+                xl="4"
                 class="shrink">
 
           <v-row v-if="showFundingItem(item)"
