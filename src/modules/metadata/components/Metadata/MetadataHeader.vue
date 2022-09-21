@@ -166,6 +166,7 @@
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
+                                  :url="`mailto:${contactEmailLowerCase}`"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -189,6 +190,7 @@
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="license"
                                   :label="licenseIcon ? '' : 'License:'"
+                                  :url="licenseUrl"
                                   :icon="licenseIcon"
                                   icon-tooltip="License for the data files"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -342,6 +344,7 @@ export default {
     contactEmail: String,
     doi: String,
     license: String,
+    licenseUrl: String,
     tags: Array,
     authors: Array,
     maxTags: Number,
