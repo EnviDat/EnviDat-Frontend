@@ -2,7 +2,7 @@
   <v-card id="MetadataResources"
           :class="{ ['pt-2']: this.isOnTop }" >
 
-    <v-card-title >
+    <v-card-title class="pa-4 pb-2">
       <v-row justify="end"
               no-gutters>
         <v-col class="text-h6 metadata_title grow">
@@ -10,7 +10,7 @@
         </v-col>
 
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
-                class="shrink resourcesIcons pt-2" >
+                class="shrink resourcesIcons" >
           <base-icon-count-view :count="resources.length"
                                 :icon-string="fileIcon" />
         </v-col>
@@ -224,4 +224,7 @@ export default {
     scrollbar-width: thin;
   }
 
+  .resourcesIcons {
+    opacity: 0.5;
+  }
 </style>
