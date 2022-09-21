@@ -348,14 +348,16 @@ export default {
       );
     },
     cardGridClass() {
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+
       if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
         return {
           'col-12': true,
+          'col-lg-6': !mapActive,
           'col-xl-6': true,
         };
       }
       
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
 
       return {
@@ -567,6 +569,8 @@ export default {
       this.showMapFilter = mapToggled;
 
       this.controlsActive = controlsActive;
+
+      this.resetVirtualContent();
     },
     setScrollPos(toPos) {
       if (this.useDynamicHeight) {
