@@ -726,13 +726,17 @@ export default {
         query,
       });
     },
-    /**
-     * @description
-     * @param {any} authorName
-     */
-    catchAuthorClicked(authorName) {
+    catchAuthorClicked(authorGivenName, authorLastName) {
+
       const query = {};
-      query.search = authorName;
+
+      // make sure to remove the ascii marker for dead authors for the search
+      // so the special characters won't case issues
+      const given = authorGivenName.replace(`(${this.asciiDead})`, '').trim();
+      const lastName = authorLastName.replace(`(${this.asciiDead})`, '').trim();
+
+      query.search = `${given} ${lastName}`;
+      query.isAuthorSearch = true;
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -937,9 +941,6 @@ export default {
 
 <style>
 .metadata_title {
-  font-family: 'Baskervville', serif !important;
-  /* font-weight: 700 !important; */
-  font-weight: 500 !important;
   line-height: 1rem !important;
 }
 

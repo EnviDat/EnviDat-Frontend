@@ -94,11 +94,12 @@
                       }"
                       class="shrink" >
 
-                <tag-chip-author :name="authorName(author)"
-                                  :tooltipText="authorToolTipText"
-                                  :asciiDead="asciiDead"
-                                  :authorPassedInfo="authorPassedInfo"
-                                  @clicked="catchAuthorClicked(authorName(author))" />
+                <TagChipAuthor :name="authorName(author)"
+                                :tooltipText="authorToolTipText"
+                                :asciiDead="asciiDead"
+                                :authorPassedInfo="authorPassedInfo"
+                                isSmall
+                               @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
               </v-col>
             </v-row>
           </v-col>
@@ -165,6 +166,7 @@
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
+                                  :url="`mailto:${contactEmailLowerCase}`"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -188,6 +190,7 @@
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="license"
                                   :label="licenseIcon ? '' : 'License:'"
+                                  :url="licenseUrl"
                                   :icon="licenseIcon"
                                   icon-tooltip="License for the data files"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -317,7 +320,7 @@ import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
-import { getAuthorName } from '@/factories/authorFactory';
+import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
 import TagChipAuthor from '@/components/Chips/TagChipAuthor';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip';
@@ -341,6 +344,7 @@ export default {
     contactEmail: String,
     doi: String,
     license: String,
+    licenseUrl: String,
     tags: Array,
     authors: Array,
     maxTags: Number,
@@ -441,8 +445,8 @@ export default {
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
-    catchAuthorClicked(authorName) {
-      this.$emit('clickedAuthor', authorName);
+    catchAuthorClicked(authorGivenName, authorLastName) {
+      this.$emit('clickedAuthor', authorGivenName, authorLastName);
     },
     catchBackClicked() {
       this.$emit('clickedBack');
@@ -451,6 +455,8 @@ export default {
       return this.dark ? `${icon}_w` : icon;
     },
     authorName: getAuthorName,
+    authorGivenName: getAuthorGivenName,
+    authorLastName: getAuthorLastName,
   },
 };
 </script>

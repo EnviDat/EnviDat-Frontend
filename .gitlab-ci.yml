@@ -5,12 +5,13 @@ stages:
   - build
   - package
   - deploy
+  - release
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 
-workflow:
+.trigger-rules:
   rules:
     - if: >
           ($CI_COMMIT_REF_NAME == "main"
@@ -41,6 +42,9 @@ workflow:
 set-vars:
   stage: .pre
   image: docker.io/alpine:3.15
+  rules:
+    - !reference [.trigger-rules, rules]
+    - if: $CI_COMMIT_TAG
   before_script:
     - >
       apk add jq yq --no-cache
@@ -63,6 +67,7 @@ set-vars:
       dotenv: build.env
 
 run-tests:
+  extends: .trigger-rules
   stage: test
   image: docker.io/node:16
   cache:
@@ -76,6 +81,7 @@ run-tests:
     - npm run test:unit
 
 # visual-regression:
+#   extends: .trigger-rules
 #   stage: visual-regression
 #   image: docker.io/node:16
 #   cache:
@@ -89,6 +95,7 @@ run-tests:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
 modify-env:
+  extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
   cache:
@@ -129,6 +136,7 @@ modify-env:
       "
 
 image-build:
+  extends: .trigger-rules
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -163,6 +171,7 @@ image-build:
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
 tag-commit-sha:
+  extends: .trigger-rules
   stage: package
   image: docker.io/regclient/regctl:v0.3-alpine
   variables:
@@ -181,6 +190,7 @@ tag-commit-sha:
         "${IMAGE_NAME}" "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
 
 rclone-sync:
+  extends: .trigger-rules
   stage: deploy
   image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
   variables:
@@ -200,6 +210,42 @@ rclone-sync:
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
   script:
-    >
-    rclone --verbose sync
-    /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    - >
+      rclone --verbose sync
+      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+
+collect:
+  stage: release
+  image: "${INTERNAL_REG}/frontend:${VERSION}-main"
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Copying build dist to project dir"
+    - mkdir -p $CI_PROJECT_DIR
+    - mv /usr/share/nginx/html $CI_PROJECT_DIR/envidat-frontend
+    - echo "Creating frontend artifact."
+  artifacts:
+    name: frontend-${VERSION}
+    paths:
+      - ./envidat-frontend
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.13.0
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - echo "Running the release job."
+  needs:
+    - job: collect
+      artifacts: true
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: 'Frontend build'
+          url: 'https://gitlabext.wsl.ch/EnviDat/EnviDat-Frontend/-/jobs/artifacts/${CI_COMMIT_TAG}/download?job=collect'

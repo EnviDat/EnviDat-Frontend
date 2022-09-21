@@ -33,6 +33,19 @@
                                     icon-color="white"
                                     :url="link.url" />
           </v-col>
+
+          <v-col class="shrink py-1 px-2">
+            <base-rectangle-button margin-class="citationButton"
+                                   color="secondary"
+                                   button-text="Copy Citation"
+                                   tooltipText="Copy Citation to your Clipboard"
+                                   material-icon-name="content_copy"
+                                   :is-small="true"
+                                   icon-color="white"
+                                   @clicked="catchClipboardCopy"
+            />
+          </v-col>
+
         </v-row>
       </v-container>
     </v-card-actions>
@@ -80,7 +93,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { renderMarkdown } from '@/factories/stringFactory';
+import {
+  renderMarkdown,
+  stripHTML,
+} from '@/factories/stringFactory';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
 
@@ -154,6 +170,11 @@ export default {
     },
     emptyText() {
       return this.mixinMethods_getGenericProp('emptyText', 'No citation found for this dataset.');
+    },
+  },
+  methods: {
+    catchClipboardCopy() {
+      navigator.clipboard.writeText(stripHTML(this.citationText));
     },
   },
 };

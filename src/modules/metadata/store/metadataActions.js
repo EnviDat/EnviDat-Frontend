@@ -95,7 +95,7 @@ function contentFilteredByTags(value, selectedTagNames) {
 
 function createSolrQuery(searchTerm) {
 
-  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2 OR author:"*${searchTerm}*"~2`;
+  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
 
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
@@ -107,7 +107,7 @@ function createSolrQuery(searchTerm) {
   for (let i = 0; i < splits.length; i++) {
     const searchSplit = splits[i];
 
-    solrQuery += ` OR author: "*${searchSplit}*" OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
+    solrQuery += ` OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
   }
 
   // https://www.envidat.ch/query?ident=on&q=author:%22Marcia%20Phillips%22~2
@@ -167,6 +167,27 @@ function getKeywordObjects(arr) {
   return arr;
 }
 
+// Returns solr query string for author key
+// Adds anglicized umlaut characters for authors whose names include umlauts
+// to broaden search and return more search results
+function getAuthorSolrQuery(author) {
+
+  // Trim author string
+  const authorTrimmed = author.trim();
+
+  const authorSpecialChars = authorTrimmed
+                            .replace('ü', 'ue')
+                            .replace('ä', 'ae')
+                            .replace('ö', 'oe');
+
+  if (authorTrimmed === authorSpecialChars) {
+    return `author:"*${authorTrimmed}*"~1000`;
+  }
+
+  return `author:"*${authorTrimmed}*"OR"*${authorSpecialChars}*"~1000`;
+
+}
+
 // Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
 
@@ -174,6 +195,7 @@ export default {
   async [SEARCH_METADATA]({ commit }, {
     searchTerm,
     metadataConfig = {},
+    isAuthorSearch = false,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -191,15 +213,11 @@ export default {
       return;
     }
 
-    const solrQuery = createSolrQuery(originalTerm);
-
-    // using the envidat "query" action for performance boost (ckan package_search isn't performant)
-    // const queryAuthor = `query?q=title:"${searchTerm}" OR notes:"${searchTerm}" OR author:"${searchTerm}"~2&wt=json&rows=1000`;
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
-
 
     await axios
       .get(url)

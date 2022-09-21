@@ -76,6 +76,7 @@ import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadataFromExtras } from '@/factories/modeFactory';
 
 
+
 function enhanceMetadatas(store, datasets) {
   if (!(datasets instanceof Array)) {
     throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
