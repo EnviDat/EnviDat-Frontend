@@ -726,13 +726,11 @@ export default {
         query,
       });
     },
-    /**
-     * @description
-     * @param {any} authorName
-     */
-    catchAuthorClicked(authorName) {
+    catchAuthorClicked(authorGivenName, authorLastName) {
+
       const query = {};
-      query.search = authorName;
+      query.search = `${authorGivenName} ${authorLastName}`;
+      query.isAuthorSearch = true;
 
       this.$router.push({
         path: BROWSE_PATH,
