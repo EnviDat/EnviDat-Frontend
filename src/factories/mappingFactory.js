@@ -30,6 +30,24 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
+import {
+  UPDATE_METADATA_EDITING,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+
+import {
+  createLocation,
+  enhanceTags,
+  formatDate,
+  getMetadataVisibilityState,
+} from '@/factories/metaDataFactory';
+
+import { format, parse } from 'date-fns';
+
+export const DATE_PROPERTY_DATE_TYPE = 'dateType';
+export const DATE_PROPERTY_START_DATE = 'dateStart';
+export const DATE_PROPERTY_END_DATE = 'dateEnd';
+
 /**
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
@@ -77,9 +95,9 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO_DATES]: [
     // special case because the snakeCase is done before
     // only a renaming is needed
-    ['dateType','dateType'],
-    ['dateStart','date'],
-    ['dateEnd','endDate'],
+    [DATE_PROPERTY_DATE_TYPE,'dateType'],
+    [DATE_PROPERTY_START_DATE,'date'],
+    [DATE_PROPERTY_END_DATE,'endDate'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -380,3 +398,306 @@ export function getReadOnlyFieldsObject(trigger) {
 
   return null;
 }
+
+function commitEditingData(commit, eventName, data) {
+  commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+      {
+        object: eventName,
+        data,
+      },
+      { root: true },
+  );
+}
+
+function mapCustomFields(fields, frontendToBackend = true) {
+  const backendEntries = [];
+
+  if (!fields) {
+    return backendEntries;
+  }
+
+  for (let i = 0; i < fields.length; i++) {
+    let mappedEntry = null;
+    if (frontendToBackend) {
+      mappedEntry = getBackendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+    } else {
+      mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+    }
+    backendEntries.push(mappedEntry);
+  }
+
+  return backendEntries;
+}
+
+function formatDates(dates) {
+  const formattedDates = [];
+
+  for (let i = 0; i < dates.length; i++) {
+    const dateEntry = dates[i];
+
+    const entry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    entry.dateStart = formatDate(entry.dateStart) || '';
+    entry.dateEnd = formatDate(entry.dateEnd) || '';
+
+    formattedDates.push(entry);
+  }
+
+  return formattedDates;
+}
+
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  let stepKey = EDITMETADATA_MAIN_HEADER;
+  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
+  // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
+  // with additional data from other "steps"
+
+  dataObject.headerData = headerData;
+  
+  stepKey = EDITMETADATA_MAIN_DESCRIPTION;
+  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, descriptionData);
+  dataObject.descriptionData = descriptionData;
+  
+  stepKey = EDITMETADATA_KEYWORDS;
+  const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
+  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
+
+  const enhancedKeywords = {
+    ...keywordsData,
+    metadataCardTitle: headerData.metadataTitle,
+    metadataCardSubtitle: descriptionData.description,
+  }
+
+  commitEditingData(commit, stepKey, enhancedKeywords);
+  dataObject.keywordsData = keywordsData;
+
+  stepKey = EDITMETADATA_AUTHOR_LIST;
+  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  const authors = []
+  snakeCaseJSON.author.forEach((bAuthor) => {
+    const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+
+    if (typeof author.dataCredit === 'string') {
+      author.dataCredit = [author.dataCredit];
+    }
+
+    authors.push(author);
+  })
+
+  commitEditingData(commit, stepKey, { authors });
+  dataObject.authors = authors;
+
+  return dataObject;
+}
+
+function populateEditingData(commit, snakeCaseJSON) {
+
+  const dataObject = {};
+  
+  // Stepper 2: Data Resources, Info, Location
+  // const resources = createResources(metadataRecord).resources;
+
+  let stepKey = EDITMETADATA_DATA_RESOURCES;
+  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, resourceData);
+  dataObject.resourceData = resourceData;
+  
+  stepKey = EDITMETADATA_DATA_INFO;
+  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  dateInfoData.dates = formatDates(dateInfoData.dates);
+
+  const dataInfo = {
+    // for now only use the title, check how to choose it in the
+    // edit component
+    dataLicenseId: dateInfoData.dataLicenseId,
+    ...dateInfoData,
+  };
+
+  commitEditingData(commit, stepKey, dataInfo);
+  dataObject.dataInfo = dataInfo;
+
+
+  stepKey = EDITMETADATA_DATA_GEO;
+  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  const location = createLocation({
+    ...snakeCaseJSON,
+    // don't pass location directly as property because it would be
+    // returned without the parsing of geo spatial infos
+    spatial: geoData.location.geoJSON,
+  });
+
+  commitEditingData(commit, stepKey, {
+    location,
+  });
+  dataObject.location = location;
+  
+  return dataObject;
+}
+
+function populateEditingRelatedResearch(commit, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
+  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  
+  commitEditingData(commit, stepKey, rPublicationData);
+  dataObject.relatedPublicationData = rPublicationData;
+
+  stepKey = EDITMETADATA_RELATED_DATASETS;
+  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, rDatasetsData);
+  dataObject.relatedDatasetsData = rDatasetsData;
+
+  stepKey = EDITMETADATA_CUSTOMFIELDS;
+  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
+
+  commitEditingData(commit, stepKey, customFieldsData);
+  dataObject.customFieldsData = customFieldsData;
+
+  return dataObject;
+}
+
+function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
+
+  const dataObject = {};
+  
+  let stepKey = EDITMETADATA_PUBLICATION_INFO;
+  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
+
+  commitEditingData(commit, stepKey, publicationData);
+  dataObject.publicationData = publicationData;
+
+  stepKey = EDITMETADATA_ORGANIZATION;
+  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, organizationData);
+  dataObject.organizationData = organizationData;
+
+  return dataObject;
+}
+
+export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+
+  const snakeCaseJSON = convertJSON(metadataRecord, false);
+
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
+
+  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
+
+  populateEditingRelatedResearch(commit, snakeCaseJSON);
+
+  const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
+
+  // enhanced Header for the preview infos
+  const stepKey = EDITMETADATA_MAIN_HEADER;
+
+  const enhanceHeader = {
+    ...headerData,
+    keywords: keywordsData.keywords,
+    authors,
+    dataLicense: dataInfo.dataLicenseTitle,
+    doi: publicationData.doi,
+  };
+
+  commitEditingData(commit, stepKey, enhanceHeader);
+}
+
+function mapDatesForBackend(datesArray) {
+
+  if (!Array.isArray(datesArray) || datesArray.length <= 0) {
+    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, {
+      dateType: 'creation',
+      dateStart: '',
+      dateEnd: '',
+    });
+
+    return [entry];
+  }
+
+  const mappedDates = [];
+
+  for (let i = 0; i < datesArray.length; i++) {
+    const dateEntry = datesArray[i];
+
+    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    mappedDates.push(entry);
+  }
+
+  return mappedDates;
+}
+
+function cleanAuthorsForBackend(authors) {
+
+  const bAuthors = [];
+  for (let i = 0; i < authors.length; i++) {
+    const author = authors[i];
+    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
+    bAuthors.push(bAuthor);
+  }
+
+  return bAuthors;
+}
+
+const dataNeedsStringify = [
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_GEO,
+  EDITMETADATA_PUBLICATION_INFO,
+];
+
+export function mapFrontendToBackend(stepKey, frontendData) {
+
+  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
+  } else if (stepKey === EDITMETADATA_DATA_INFO) {
+    frontendData.dates = mapDatesForBackend(frontendData.dates);
+  } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
+    frontendData.customFields = mapCustomFields(frontendData.customFields);
+  }
+
+  let backendData = getBackendJSON(stepKey, frontendData);
+
+  if (dataNeedsStringify.includes(stepKey)) {
+    backendData = convertJSON(backendData, true);
+  }
+
+  return backendData;
+}
+
+export const ckanDateFormat = 'yyyy-MM-dd';
+export const enviDatDateFormat = 'dd-MM-yyyy';
+
+export function parseDateStringToCKANFormat(dateString) {
+
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = parse(dateString, enviDatDateFormat, new Date());
+  return format(parsedDate, ckanDateFormat);
+}
+
+export function parseDateStringToEnviDatFormat(dateString) {
+
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = parse(dateString, ckanDateFormat, new Date());
+  return format(parsedDate, enviDatDateFormat);
+}
+
+

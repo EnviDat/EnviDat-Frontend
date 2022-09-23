@@ -1,5 +1,5 @@
 {
-  "version": "0.6.93",
+  "version": "0.7.16",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -28,7 +28,8 @@
     },
     {
       "title": "Team",
-      "widthClass": "col-12 col-sm-6 col-md-8"
+      "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
+      "widthClass": "col-12 col-sm-6 col-md-8 col-xl-3"
     },
     {
       "title": "Community",
@@ -63,8 +64,29 @@
   },
   "maintenanceConfig": {
     "signinDisabled": false,
+    "signinRedirectActive": false,
     "messageActive": false,
     "message": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>."
+  },
+  "newsConfig": {
+    "newsActive": true,
+    "entries": [
+      {
+        "title": "Maintenance Mode Active!",
+        "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
+        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+      }
+    ]
+  },
+  "ignoredNews": {
+    "newsActive": false,
+    "entries": [
+      {
+        "title": "Maintenance Mode Active!",
+        "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
+        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+      }
+    ]
   },
   "effectsConfig": {
     "landingPageParticles": true,
@@ -75,6 +97,7 @@
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
+    "defaultLocation": {"type": "Polygon", "coordinates": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]},
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
     "customFieldsMax": 10,
@@ -82,8 +105,18 @@
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
-    "introText": "Welcome to your dashboard, manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
-    "feedbackText": "However we would be glad if you <a href=\"${this.feedbackUrl}\" target=\"_blank\">let us know about it.</a> <br/>",
+    "dashboardRedirect": false,
+    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
+    "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
+    "userEditingEnabled": true,
+    "organizationRolesText": {
+      "noOrganizationText": "You aren't assigned to an organisation yet. If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation. If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.",
+      "memberOrganizationText": "As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.",
+      "editorOrganizationText": "As an editor of an organisation you can edit datasets and create new ones.",
+      "adminOrganizationText": "As an admin of an organisation you can manage the organisation users, datasets and information.",
+      "sysadminOrganizationText": "You have System Administrator right, be careful!",
+      "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
+    },
     "showOldDashboardUrl": true
   }
 }

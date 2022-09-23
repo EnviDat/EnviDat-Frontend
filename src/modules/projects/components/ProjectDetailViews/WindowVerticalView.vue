@@ -64,7 +64,7 @@
 
             <v-card height="200" >
               <v-card-title>
-                <strong class="title">{{ sub.title }}</strong>
+                <strong class="text-h6">{{ sub.title }}</strong>
               </v-card-title>
 
               <v-card-text>

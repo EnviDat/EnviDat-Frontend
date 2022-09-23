@@ -11,27 +11,32 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
+import SigninView from '@/modules/user/components/SigninView';
+import WelcomeCard from '@/components/Cards/WelcomeCard';
 
-import SigninView from '@/modules/user/components/SigninView.vue';
-import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
-
-import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import NotFoundCard from '@/components/Cards/NotFoundCard';
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
 import authorCollection from '../public/testdata/authorCollection.json';
+import { USER_VIEWS } from './storybookFolder';
 
-export const methods = {
+const methods = {
   authors() {
     const items = Object.values(authorCollection);
     return items.splice(2, 4);
   },
 };
 
+export default {
+  title: `${USER_VIEWS} / SignIn`,
+  decorators: [],
+  parameters: {
+  },
+};
 
-storiesOf('7 User / SignIn', module)
-  .add('Welcome Card', () => ({
+
+export const WelcomeCardViews = () => ({
     components: { WelcomeCard },
     template: `
     <v-row >
@@ -76,8 +81,9 @@ storiesOf('7 User / SignIn', module)
       welcomeText: 'Welcome to your Dashboard, here you can see all your datasets.',
     }),
     methods,
-  }))
-  .add('No user datasets found', () => ({
+  });
+
+export const NoUserDatasetsViews = () => ({
     components: { NotFoundCard },
     template: `
     <v-row >
@@ -116,8 +122,9 @@ storiesOf('7 User / SignIn', module)
       },
     }),
     methods,
-  }))
-  .add('Signin View', () => ({
+  });
+
+export const SignInViews = () => ({
     components: { SigninView },
     template: `
     <v-row >
@@ -148,4 +155,4 @@ storiesOf('7 User / SignIn', module)
     </v-row>
     `,
     methods,
-  }));
+  });

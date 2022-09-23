@@ -2,7 +2,7 @@
   <v-card id="MetadataAuthors"
           ref="MetadataAuthors">
 
-    <v-card-title class="title metadata_title">
+    <v-card-title class="text-h6 metadata_title">
       {{ METADATA_AUTHORS_TITLE }}
     </v-card-title>
 
@@ -36,16 +36,34 @@
                   cols="12" sm="6"
                   class="pa-2" >
 
-            <author-card :author="author"
-                          :authorDetailsConfig="authorDetailsConfig"
-                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                          :showGenericOpenButton="author.openEvent ? true : false"
-                          :openButtonTooltip="author.openButtonTooltip"
-                          :openButtonIcon="author.openButtonIcon"
-                          :isSelected="author.isSelected"
-                          :loading="author.loading"
-                          @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" />
+            <slot name="editingAuthors"
+                  :author="author"
+                  />
+
+            <AuthorCard v-if="!hasEditingAuthorsSlot"
+                        :author="author"
+                        :authorDetailsConfig="authorDetailsConfig"
+                        :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                        :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+                        :showGenericOpenButton="author.openEvent ? true : false"
+                        :openButtonTooltip="author.openButtonTooltip"
+                        :openButtonIcon="author.openButtonIcon"
+                        :isSelected="author.isSelected"
+                        :loading="author.loading"
+                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" >
+
+              <template v-if="hasDataCredits(author.dataCredit)"
+                        #dataCreditCurrentDataset >
+
+                <ActiveDataCredits class="px-0 py-1 readableText"
+                                  :dataCredit="author.dataCredit"
+                                  :instruction="AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT"
+                                  :authorName="author.fullName"
+                                  />
+
+              </template>
+
+            </AuthorCard>
 
           </v-col>
         </v-row>
@@ -76,19 +94,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import {
+  AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
   METADATA_AUTHORS_TITLE,
 } from '@/factories/metadataConsts';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
 import { eventBus } from '@/factories/eventBus';
+import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits';
 
 export default {
   name: 'MetadataAuthors',
-  components: {
-    AuthorCard,
-    AuthorCardPlaceholder,
-  },
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
@@ -108,13 +124,12 @@ export default {
     this.observer.disconnect();
     this.showAuthors = false;
   },
-  data: () => ({
-    showAuthors: false,
-    checkedGenericProps: false,
-    observer: null,
-    METADATA_AUTHORS_TITLE,
-  }),
   computed: {
+    hasEditingAuthorsSlot() {
+      // console.log(this.$slots);
+      // console.log(this.$scopedSlots);
+      return !!this.$scopedSlots.editingAuthors;
+    },
     authors() {
       return this.mixinMethods_getGenericProp('authors');
     },
@@ -141,10 +156,29 @@ export default {
     },
   },
   methods: {
+    hasDataCredits(dataCredit) {
+      if (!dataCredit) {
+        return false;
+      }
+
+      return Object.keys(dataCredit).length > 0;
+    },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
     },
   },
+  components: {
+    ActiveDataCredits,
+    AuthorCard,
+    AuthorCardPlaceholder,
+  },
+  data: () => ({
+    showAuthors: false,
+    checkedGenericProps: false,
+    observer: null,
+    METADATA_AUTHORS_TITLE,
+    AUTHORS_DATACREDIT_CONTRIBUTION_CURRENT,
+  }),
 };
 </script>
 

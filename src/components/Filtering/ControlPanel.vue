@@ -1,4 +1,4 @@
-<template v-slot:controlPanel>
+<template>
   <v-card :style="`height: ${fixedHeight}px;`"
             id="controlPanel" >
 
@@ -9,7 +9,7 @@
               no-gutters>
 
         <v-col class="py-0"
-              cols="12" sm="10" md="9" lg="10">
+              cols="12" sm="10" md="8" lg="8">
           <small-search-bar-view class="elevation-0"
                                   :compactLayout="compactLayout"
                                   :searchTerm="searchTerm"
@@ -24,7 +24,8 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 shrink" >
+        <v-col class="py-0 shrink"
+                id="shareSearchResult" >
 
           <BaseIconButton style="opacity: 0.8;"
                           materialIconName="share"
@@ -37,14 +38,26 @@
 
         </v-col>
 
+        <v-col v-if="showSearch"
+               class="py-0 ml-4 shrink">
+
+          <BaseIconSwitch :active="isAuthorSearch"
+                          :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
+                          materialIconName="account_circle"
+                          @clicked="catchAuthorSearchClick" />
+
+        </v-col>
+
         <v-col class="hidden-xs-only py-0 fill-height" >
-          <list-control-toggle :style="`height: ${fixedHeight}px;`"
+          <list-control-toggle :style="`height: ${controlsHeight}px;`"
                                 :controls="controlsActive"
                                 :enabledControls="enabledControls"
                                 :flat="true"
                                 @controlsChanged="catchControlClick" />
         </v-col>
       </v-row>
+
+
     </v-container>
   </v-card>
 </template>
@@ -67,16 +80,24 @@
 import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
 import ListControlToggle from '@/components/Filtering/ListControlToggle';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch'
 
 export default {
-  name: 'MetadataList',
+  name: 'ControlPanel',
   props: {
     compactLayout: Boolean,
-    fixedHeight: Number,
+    fixedHeight: {
+      type: Number,
+      default: undefined,
+    },
     controlsActive: Array,
     enabledControls: Array,
     loading: Boolean,
     showSearch: Boolean,
+    isAuthorSearch: {
+      type: Boolean,
+      default: false,
+    },
     searchTerm: String,
     searchCount: Number,
     searchBarPlaceholder: String,
@@ -85,10 +106,14 @@ export default {
     SmallSearchBarView,
     ListControlToggle,
     BaseIconButton,
+    BaseIconSwitch,
   },
   methods: {
     catchSearchClicked(search) {
       this.$emit('searchClick', search);
+    },
+    catchAuthorSearchClick() {
+      this.$emit('authorSearchClick');
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
@@ -97,11 +122,28 @@ export default {
       this.$emit('controlsChanged', number);
     },
     catchShareClick() {
-      const url = `${process.env.VUE_APP_ENVIDAT_PROXY}/#${this.$route.fullPath}`;
+      // const routeData = this.$router.resolve({ path: this.$route.fullPath });
 
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(window.location);
+    },
+  },
+  computed: {
+    controlsHeight() {
+      if (this.compactLayout && !this.fixedHeight) {
+        return 36;
+      }
+
+      return this.fixedHeight;
     },
   },
 };
 
 </script>
+
+<style>
+
+.switchSmallFont label {
+  font-size: 10px !important;
+}
+
+</style>

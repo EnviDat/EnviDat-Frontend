@@ -1,17 +1,17 @@
 stages:
-  # - visual-regression
   - test
+# - visual-regression
   - config
   - build
-  - scan
   - package
   - deploy
+  - release
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
 
-workflow:
+.trigger-rules:
   rules:
     - if: >
           ($CI_COMMIT_REF_NAME == "main"
@@ -42,10 +42,13 @@ workflow:
 set-vars:
   stage: .pre
   image: docker.io/alpine:3.15
+  rules:
+    - !reference [.trigger-rules, rules]
+    - if: $CI_COMMIT_TAG
   before_script:
     - >
       apk add jq yq --no-cache
-      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
+      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
     - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
     - cat .env >> build.env
@@ -64,6 +67,7 @@ set-vars:
       dotenv: build.env
 
 run-tests:
+  extends: .trigger-rules
   stage: test
   image: docker.io/node:16
   cache:
@@ -77,6 +81,7 @@ run-tests:
     - npm run test:unit
 
 # visual-regression:
+#   extends: .trigger-rules
 #   stage: visual-regression
 #   image: docker.io/node:16
 #   cache:
@@ -90,6 +95,7 @@ run-tests:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
 modify-env:
+  extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
   cache:
@@ -105,13 +111,32 @@ modify-env:
       \"import os;
       import dotenv;
       file = '.env.production';
+      branch = os.getenv('CI_COMMIT_REF_NAME'); \
+      \
       key = 'VUE_APP_ENVIDAT_PROXY';
-      branch = os.getenv('CI_COMMIT_REF_NAME');
-      value = f'https://ckan-{branch}.envidat.ch';
+      value = 'https://envidat.ch' if branch == 'main' \
+      else f'https://ckan-{branch}.envidat.ch';
+      dotenv.set_key(file, key, value, quote_mode='never'); \
+      \
+      key = 'VUE_APP_CONFIG_URL';
+      value = 'https://frontend-config.s3-zh.os.switch.ch/prod.json' \
+      if branch == 'main' \
+      else ( \
+          f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json' \
+      );
+      dotenv.set_key(file, key, value, quote_mode='never'); \
+      \
+      key = 'VUE_APP_ENVIDAT_DOMAIN';
+      value = 'https://frontend.s3-website-zh.os.switch.ch' \
+      if branch == 'main' \
+      else ( \
+          f'https://frontend-{branch}.s3-website-zh.os.switch.ch' \
+      );
       dotenv.set_key(file, key, value, quote_mode='never')\"
       "
 
 image-build:
+  extends: .trigger-rules
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -133,56 +158,20 @@ image-build:
   script:
     - >
       /kaniko/executor
+      --force
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --target prod
       --cache=true
-      --destination "${IMAGE_NAME}-unverified"
+      --destination "${IMAGE_NAME}"
+      --build-arg APP_VERSION="${VERSION}"
       --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-image-scan:
-  stage: scan
-  image:
-    name: docker.io/aquasec/trivy:0.23.0
-    entrypoint: [""]
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
-  script:
-    - trivy --version
-    - time trivy image --clear-cache
-    - time trivy --cache-dir .trivycache/ image --download-db-only --no-progress
-    # Create report artifact
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
-      --no-progress --format template --template "@/contrib/gitlab.tpl"
-      --output "$CI_PROJECT_DIR/envidat-frontend-imgscan.json"
-      "${IMAGE_NAME}-unverified"
-    # Print full report
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 0 --ignore-unfixed
-      --no-progress "${IMAGE_NAME}"-unverified
-    # Fail on critical vulnerabilities
-    - >
-      time trivy --cache-dir .trivycache/ image --exit-code 1 --ignore-unfixed
-      --severity CRITICAL --no-progress "${IMAGE_NAME}"-unverified
-  cache:
-    key: trivy-cache
-    paths:
-      - .trivycache/
-    policy: pull-push
-  artifacts:
-    when: always
-    reports:
-      container_scanning: envidat-frontend-imgscan.json
-
-image-retag:
+tag-commit-sha:
+  extends: .trigger-rules
   stage: package
   image: docker.io/regclient/regctl:v0.3-alpine
   variables:
@@ -196,75 +185,67 @@ image-retag:
       \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
       \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
   script:
-    - >
-      regctl --verbosity debug image copy
-      "${IMAGE_NAME}-unverified" "${IMAGE_NAME}"
-    - regctl --verbosity debug tag delete "${IMAGE_NAME}-unverified"
+      - >
+        regctl --verbosity debug image copy
+        "${IMAGE_NAME}" "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
 
-.helm:
+rclone-sync:
+  extends: .trigger-rules
   stage: deploy
-  image:
-    name: docker.io/alpine/helm:3.8.0
-    entrypoint: [""]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "main"
-      when: always
+  image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+  variables:
+    GIT_STRATEGY: none
+    RCLONE_CONFIG_SWITCH_TYPE: 's3'
+    RCLONE_S3_PROVIDER: 'Other'
+    RCLONE_S3_ENV_AUTH: 'true'
   before_script:
-    - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /etc/ssl/certs/ca-certificates.crt
-    - mkdir -p /root/.config/helm/registry
-    - >
-      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf "%s:%s"
-      "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}" | base64
-      | tr -d '\n')\"}}}" > /root/.config/helm/registry/config.json
-
-create-helm-chart:
-  extends:
-    - .helm
-  stage: package
+    - apk add curl unzip --no-cache
+    - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
+    - unzip rclone-v1.59.0-linux-amd64.zip
+    - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - |
+      if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
+        BUCKET_NAME="frontend"
+      else
+        BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
+      fi
   script:
     - >
-      apk add yq --no-cache
-      --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community
-    - helm dependencies build chart
-    - yq -i '.appVersion = strenv(VERSION)' chart/Chart.yaml
-    - helm package chart
-    - CHART_VER=$(yq '.version' chart/Chart.yaml)
-    - helm push "frontend-${CHART_VER}.tgz" oci://registry.envidat.ch/envidat
+      rclone --verbose sync
+      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
 
-helm-deploy:
-  extends:
-    - .helm
+collect:
+  stage: release
+  image: "${INTERNAL_REG}/frontend:${VERSION}-main"
   rules:
-    - if: $CI_COMMIT_REF_NAME != "main"
-      when: always
+    - if: $CI_COMMIT_TAG
   variables:
     GIT_STRATEGY: none
   script:
-    - >
-      helm upgrade --install --force "frontend-${CI_COMMIT_REF_NAME}"
-      oci://registry.envidat.ch/envidat/frontend
-      --namespace "${NAMESPACE}" --create-namespace
-      --version "${CHART_VERSION}"
-      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"
-      --set image.pullPolicy="Always"
-      --set ingress.hosts[0].host="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
-      --set ingress.hosts[0].paths[0].path="/"
-      --set ingress.hosts[0].paths[0].pathType="ImplementationSpecific"
-      --set ingress.tls[0].secretName="envidat-star"
-      --set ingress.tls[0].hosts[0]="frontend-${CI_COMMIT_REF_NAME}.envidat.ch"
-      --set autoscaling.enabled=false
+    - echo "Copying build dist to project dir"
+    - mkdir -p $CI_PROJECT_DIR
+    - mv /usr/share/nginx/html $CI_PROJECT_DIR/envidat-frontend
+    - echo "Creating frontend artifact."
+  artifacts:
+    name: frontend-${VERSION}
+    paths:
+      - ./envidat-frontend
 
-helm-deploy-prod:
-  extends:
-    - .helm
-  variables:
-    GIT_STRATEGY: none
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:v0.13.0
+  rules:
+    - if: $CI_COMMIT_TAG
   script:
-    - >
-      helm upgrade --install "frontend-${CI_COMMIT_REF_NAME}"
-      oci://registry.envidat.ch/envidat/frontend
-      --namespace "${NAMESPACE}" --create-namespace
-      --version "${CHART_VERSION}"
-      --set image.tag="${VERSION}-${CI_COMMIT_REF_NAME}"
+    - echo "Running the release job."
+  needs:
+    - job: collect
+      artifacts: true
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release created using the release-cli.'
+    tag_name: $CI_COMMIT_TAG
+    assets:
+      links:
+        - name: 'Frontend build'
+          url: 'https://gitlabext.wsl.ch/EnviDat/EnviDat-Frontend/-/jobs/artifacts/${CI_COMMIT_TAG}/download?job=collect'

@@ -39,14 +39,16 @@
       <v-col class="ml-auto" >
 
         <v-row no-gutters >
+<!--
           <v-col v-if="showMapSplitButton"
                   class="shrink" >
-                <!-- style="position: absolute; top: 0; left: 45%;" -->
+                &lt;!&ndash; style="position: absolute; top: 0; left: 45%;" &ndash;&gt;
             <BaseIconButton materialIconName="vertical_split"
                             iconColor="black"
                             :fillColor="$vuetify.theme.themes.light.accent"
                             @clicked="triggerSplit" />
           </v-col>
+          -->
 
           <v-col v-if="showMapSplitCloseButton"
                   class="shrink" >
@@ -90,6 +92,7 @@
                         @clicked="showSite = !showSite" />
       </v-col>
 
+<!--
       <v-col class="pb-2 shrink" >
         <v-row no-gutters>
 
@@ -128,17 +131,20 @@
                             @changeLayer="changeLayer"
                             @changeOpacity="changeOpacity"  />
       </v-col>
+-->
 
-      <v-col v-if="featureinfo.length > 0"
-              cols="12 shrink">
+      <!--
+            <v-col v-if="featureinfo.length > 0"
+                    cols="12 shrink">
 
-        <feature-info :div-id="`${mapDivId}_graph`"
-                      :layers="layerConfig.layers"
-                      :selectedLayerName="selectedLayerName" />
+              <feature-info :div-id="`${mapDivId}_graph`"
+                            :layers="layerConfig.layers"
+                            :selectedLayerName="selectedLayerName" />
 
-          <!-- style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" -->
+          < style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" >
 
       </v-col>
+      -->
     </v-row>
 
     <div style="position: absolute; bottom: 50px;" >
@@ -169,16 +175,17 @@
     eventBus,
   } from '@/factories/eventBus';
 
-  import MapLayerControl from './MapLayerControl';
+
+  // import MapLayerControl from './MapLayerControl';
   // import Timeslider from './Timeslider';
-  import FeatureInfo from './FeatureInfo';
+  // import FeatureInfo from './FeatureInfo';
 
   export default {
     name: 'MapOverlayUI',
     components: {
-      FeatureInfo,
+      // FeatureInfo,
       // Timeslider,
-      MapLayerControl,
+      // MapLayerControl,
       BaseIconButton,
     },
     props: {
@@ -190,7 +197,10 @@
         required: true,
       },
       selectedLayerName: { type: String },
-      mapIs3D: Boolean,
+      mapIs3D: {
+        type: Boolean,
+        default: false,
+      },
       showMapSplitButton: Boolean,
       showMapSplitCloseButton: Boolean,
     },

@@ -14,6 +14,7 @@
 
 
 import { md5Hash } from '@/factories/stringFactory';
+import { clearLocalStorage } from '@/store/localStorage';
 
 import {
   GET_USER_CONTEXT,
@@ -22,6 +23,9 @@ import {
   REQUEST_TOKEN,
   REQUEST_TOKEN_ERROR,
   REQUEST_TOKEN_SUCCESS,
+  USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE_ERROR,
+  USER_EDITING_UPDATE_SUCCESS,
   USER_SIGNIN,
   USER_SIGNIN_ERROR,
   USER_SIGNIN_NAMESPACE,
@@ -33,6 +37,18 @@ import {
 } from './userMutationsConsts';
 
 
+function resetUser (state) {
+  state.signInLoading = false;
+  state.signInSuccess = false;
+  state.requestLoading = false;
+  state.requestSuccess = false;
+  state.errorType = '';
+  state.errorField = '';
+  state.errorFieldText = '';
+  state.user = null;
+  state.userLoading = false;
+}
+
 function extractError(store, reason, errorProperty = 'error') {
 
   let type = '';
@@ -43,6 +59,10 @@ function extractError(store, reason, errorProperty = 'error') {
 
   if (error) {
     type = error.__type;
+
+    if (!type) {
+      type = 'formError';
+    }
 
     switch (type) {
       case VALIDATION_ERROR: {
@@ -85,7 +105,10 @@ function enhanceUserObject(user) {
     user.emailHash = md5Hash(email);
   }
 
-  const fullName = user?.fullname || user?.fullName || '';
+  // only use the fullname from ckan api, because the "name" just put together
+  // from the email, when a User signs in the first time with dominik.haas@wsl.ch
+  // the "name" is just dominik_haas-wsl_ch and it's to usable to address
+  const fullName = user?.fullname || user?.fullName || user?.display_name || '';
 
   if (fullName) {
     user.fullName = fullName;
@@ -103,7 +126,11 @@ export default {
   [GET_USER_CONTEXT_SUCCESS](state, payload) {
     state.userLoading = false;
     const user = payload.user || null;
-    state.user = enhanceUserObject(user);
+    if (!user) {
+      resetUser(state);
+    } else {
+      state.user = enhanceUserObject(user);
+    }
   },
   [GET_USER_CONTEXT_ERROR](state, reason) {
     state.userLoading = false;
@@ -146,23 +173,34 @@ export default {
     extractError(this, reason);
   },
   [USER_SIGNOUT](state) {
-    state.signInLoading = false;
-    state.signInSuccess = false;
-    state.requestLoading = false;
-    state.requestSuccess = false;
     state.userLoading = true;
-    state.user = null;
+
+    clearLocalStorage();
 
     resetErrorObject(state);
   },
   [USER_SIGNOUT_SUCCESS](state) {
-    state.user = null;
+    resetUser(state);
 
     resetErrorObject(state);
   },
   [USER_SIGNOUT_ERROR](state, reason) {
-    state.user = null;
+    resetUser(state);
 
     extractError(this, reason);
   },
+  [USER_EDITING_UPDATE](state) {
+    state.userEditLoading = true;
+
+    resetErrorObject(state);
+  },
+  [USER_EDITING_UPDATE_SUCCESS](state) {
+    state.userEditLoading = false;
+  },
+  [USER_EDITING_UPDATE_ERROR](state, reason) {
+    state.userEditLoading = false;
+
+    extractError(this, reason);
+  },
+
 };

@@ -168,6 +168,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
       // eslint-disable-next-line no-console
       console.error(`Author json parse err: ${e}`);
     }
+  } else if (dataset.author instanceof Array) {
+    authors = dataset.author;
   }
 
   return {
@@ -175,13 +177,17 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     doi: dataset.doi,
     contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
+    licenseId: license.id,
     license: license.title,
+    licenseUrl: license.url,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
     authors,
     authorDeadInfo,
     categoryColor: dataset.categoryColor,
+    organization: dataset.organization?.name || '',
+    organizationTooltip: dataset.organization?.title || '',
   };
 }
 
@@ -279,16 +285,16 @@ export function createCitation(dataset) {
     text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
   }
 
-  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
 
   return {
     id: dataset.id,
     citationText: text,
-    citationXmlLink: `${domain}/dataset/${dataset.name}/export/datacite.xml`,
-    citationIsoXmlLink: `${domain}/dataset/${dataset.name}/export/iso19139.xml`,
-    citationGCMDXmlLink: `${domain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
-    citationBibtexXmlLink: `${domain}/dataset/${dataset.name}/export/bibtex.bib`,
-    citationRisXmlLink: `${domain}/dataset/${dataset.name}/export/ris.ris`,
+    citationXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/datacite.xml`,
+    citationIsoXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/iso19139.xml`,
+    citationGCMDXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
+    citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
+    citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
   };
 }
 
@@ -459,7 +465,16 @@ export function createResource(resource, datasetName) {
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VUE_APP_ENVIDAT_PROXY;
+
+  let fileName = resource.name;
+
+  if (!fileName && resURL) {
+    const urlSplits = resURL.split('/');
+    if (urlSplits.length > 0) {
+      fileName = urlSplits[urlSplits.length - 1];
+    }
+  }
 
   return {
     // "hash": "",
@@ -473,9 +488,9 @@ export function createResource(resource, datasetName) {
     mimetype: resource.mimetype ? resource.mimetype : '',
     cacheUrl: resource.cache_url ? resource.cache_url : '',
     doi: resource.doi,
-    name: resource.name,
+    name: fileName,
     url: resURL,
-    restrictedUrl: `${domain}/dataset/${datasetName}/resource/${resource.id}`,
+    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
     state: resource.state ? resource.state : '',
@@ -552,6 +567,19 @@ export function getOrganizationMap(organizations) {
   }
 
   return mainOrgas;
+}
+
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata?.state || null;
+  const priv = metadata?.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
 }
 
 export function createDetails(dataset) {
@@ -691,6 +719,8 @@ export const LOCATION_TYPE_MULTIPOINT = 'MultiPoint';
 export const LOCATION_TYPE_POLYGON = 'Polygon';
 export const LOCATION_TYPE_MULTIPOLYGON = 'MultiPolygon';
 export const LOCATION_TYPE_GEOMCOLLECTION = 'GeometryCollection';
+export const LOCATION_TYPE_FEATCOLLECTION = 'FeatureCollection';
+
 
 /**
  * Extract an array of coordinate arrays with swapped point coordinates for each geom
@@ -944,6 +974,7 @@ export function enhanceMetadataEntry(
  * @param {Array} metadatas
  * @param {Array} cardBGImages
  *
+ * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {

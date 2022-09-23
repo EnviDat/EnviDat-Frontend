@@ -23,7 +23,8 @@
                     :errorColor="$vuetify.theme.themes.light.errorHighlight"
                     @requestToken="catchRequestToken"
                     @signIn="catchSignIn"
-                    @signOut="catchSignOut" />
+                    @signOut="catchSignOut"
+                    @openDashboard="catchOpenDashboard" />
       </v-col>
     </v-row>
 
@@ -58,14 +59,23 @@ import {
   ACTION_USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { USER_SIGNIN_PAGENAME } from '@/router/routeConsts';
+import {
+  USER_DASHBOARD_PATH,
+  USER_SIGNIN_PAGENAME,
+} from '@/router/routeConsts';
 
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import {
+  eventBus,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
+} from '@/factories/eventBus';
+
 import SigninView from './SigninView';
+
 
 export default {
   name: 'SigninPage',
@@ -82,6 +92,9 @@ export default {
     this.checkUserSignedIn();
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
     ...mapState(
       USER_SIGNIN_NAMESPACE, [
         'userLoading',
@@ -95,6 +108,12 @@ export default {
         'errorFieldText',
       ],
     ),
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
+    },
+    dashboardRedirect() {
+      return this.userDashboardConfig?.dashboardRedirect || false;
+    },
     prefilledEmail() {
       return this.$route.query.email;
     },
@@ -133,11 +152,19 @@ export default {
           mutation: USER_SIGNIN,
         });
 
-/*
-      if (!this.errorField) {
-        this.checkUserSignedIn();
+      if (!this.errorField && !this.errorFieldText) {
+        this.redirectToDashboardIfAllowed();
       }
-*/
+    },
+    redirectToDashboardIfAllowed() {
+      if (this.dashboardRedirect) {
+        eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
+
+        this.$router.replace('/');
+
+      } else {
+        this.$router.push(USER_DASHBOARD_PATH);
+      }
     },
     catchRequestToken(email) {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
@@ -155,6 +182,9 @@ export default {
           commit: true,
           mutation: USER_SIGNOUT,
         });
+    },
+    catchOpenDashboard() {
+      this.redirectToDashboardIfAllowed();
     },
   },
   data: () => ({

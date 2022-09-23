@@ -1,32 +1,32 @@
 [
   {
     "title": "The State of Data Viz",
-    "titleImg": "./blog/images/Near-real-time-dataviz.jpg",
+    "titleImg": "https://www.envidat.ch/blog/images/Near-real-time-dataviz.jpg",
     "postFile": "EnviDat_WSLIntern_q12021.md",
     "date": "23.02.2021"
   },
   {
     "title": "Beyond Software Engineering",
-    "titleImg": "./blog/images/EnviDat_technical_team.jpg",
+    "titleImg": "https://www.envidat.ch/blog/images/EnviDat_technical_team.jpg",
     "postFile": "EnviDat_WSLIntern_q42020.md",
     "date": "18.12.2020"
   },
   {
     "title": "EnviDat & Koni",
-    "titleImg": "./blog/images/EnviDat_WSLIntern20_03_Koni.jpg",
+    "titleImg": "https://www.envidat.ch/blog/images/EnviDat_WSLIntern20_03_Koni.jpg",
     "postFile": "EnviDat_WSLIntern_q42020_Koni.md",
     "date": "18.12.2020"
   },
   {
     "title": "EnviDat supports Open Science",
-    "titleImg": "./blog/images/EnviDat_OS_Service.png",
+    "titleImg": "https://www.envidat.ch/blog/images/EnviDat_OS_Service.png",
     "postFile": "EnviDat_WSLIntern_q32020.md",
     "date": "18.09.2020"
   },
   {
     "title": "EnviDat at your service",
-    "titleImg": "./blog/images/EnviDat_landingpage.jpg",
+    "titleImg": "https://www.envidat.ch/blog/images/EnviDat_landingpage.jpg",
     "postFile": "EnviDat_WSLIntern_q12020.md",
     "date": "01.03.2020"
-  }  
+  }
 ]

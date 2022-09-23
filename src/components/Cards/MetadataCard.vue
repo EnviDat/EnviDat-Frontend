@@ -1,6 +1,8 @@
 <template>
   <v-card ripple
           hover
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
           style="height: 100%;"
           @click.native="cardClick" >
 
@@ -14,7 +16,7 @@
                   :height="flatLayout ? '55px' : $vuetify.breakpoint.smAndDown ? '90px' : '115px'" >
 
             <div v-if="!maxTitleLengthReached || $vuetify.breakpoint.xsOnly"
-                class="pa-4 headline mb-0"
+                class="pa-4 metadataTitle mb-0"
                 :class="titleClass" >
               {{ truncatedTitle }}
             </div>
@@ -23,7 +25,7 @@
                         bottom >
               <template v-slot:activator="{ on }">
                 <div v-on="on"
-                      class="pa-4 headline mb-0"
+                      class="pa-4 metadataTitle mb-0"
                       :class="titleClass" >
                   {{ truncatedTitle }}
                 </div>
@@ -85,15 +87,33 @@
                    class="pa-0">
 
         <v-row v-if="state"
-               no-gutters>
-          <v-col >
-            <MetadataStateChip :state="state" />
+               class="pb-1"
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink" >
+            <MetadataStateChip :state="state"
+                                :showOnHover="!hover" />
           </v-col>
         </v-row>
 
+<!--
+        <v-row v-if="organization"
+               class="pb-1"
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink" >
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
+                                      @organizationClicked="$emit('organizationClicked', $event)" />
+          </v-col>
+        </v-row>
+-->
+
         <v-row v-if="modeData"
-                no-gutters>
-          <v-col class="cardIcons">
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <base-icon-button isFlat
                                 isSmall
                                 color="transparent"
@@ -102,16 +122,18 @@
           </v-col>
         </v-row>
 
-        <v-row no-gutters>
-          <v-col class="cardIcons">
+        <v-row no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
         </v-row>
 
         <v-row v-if="geoJSONIcon"
-               no-gutters>
-          <v-col class="cardIcons">
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons shrink">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -121,14 +143,28 @@
       <v-container v-if="!showCardBody"
                    class="pa-0">
 
-        <v-row no-gutters>
+        <v-row no-gutters
+               class="justify-end">
+          <v-col v-if="role"
+                 class="pl-1 shrink" >
+            <UserRoleChip :role="role" />
+          </v-col>
           <v-col v-if="state"
-                 class="pl-1" >
-            <MetadataStateChip :state="state" />
+                 class="pl-1 shrink" >
+            <MetadataStateChip :state="state"
+                               :showOnHover="!hover" />
+          </v-col>
+
+          <v-col v-if="organization"
+                 class="pl-1 shrink" >
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
+                                      @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
 
           <v-col v-if="modeData"
-                 class="pl-1 cardIcons" >
+                 class="pl-1 shrink cardIcons" >
             <base-icon-button isFlat
                               isSmall
                               color="transparent"
@@ -136,13 +172,13 @@
                               :customIcon="modeEntryIcon" />
           </v-col>
 
-          <v-col class="pl-3 cardIcons" >
+          <v-col class="pl-3 shrink cardIcons" >
             <base-icon-count-view :count="resourceAmount"
                                   :icon-string="fileIconString" />
           </v-col>
 
           <v-col v-if="geoJSONIcon"
-                 class="pl-1 cardIcons" >
+                 class="pl-1 shrink cardIcons" >
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -193,6 +229,8 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
+import UserRoleChip from '@/components/Chips/UserRoleChip';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -215,13 +253,6 @@ import { stripMarkdown } from '@/factories/stringFactory';
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 
 export default {
-  components: {
-    TagChip,
-    BaseIconCountView,
-    BaseIconLabelView,
-    BaseIconButton,
-    MetadataStateChip,
-  },
   props: {
     id: String,
     title: String,
@@ -258,10 +289,26 @@ export default {
       type: String,
       default: '',
     },
+    organization: {
+      type: String,
+      default: '',
+    },
+    organizationTooltip: {
+      type: String,
+      default: '',
+    },
+    role: {
+      type: String,
+      default: '',
+    },
+    showOrganizationOnHover: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   computed: {
     showCardBody() {
-      return this.tags || !this.compactLayout;
+      return !!this.tags || !this.compactLayout;
     },
     headerImageStyle() {
       let topBorderStyle = 'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
@@ -433,7 +480,17 @@ export default {
       this.$emit('clickedTag', tagId);
     },
   },
+  components: {
+    TagChip,
+    BaseIconCountView,
+    BaseIconLabelView,
+    BaseIconButton,
+    MetadataStateChip,
+    MetadataOrganizationChip,
+    UserRoleChip,
+  },
   data: () => ({
+    hover: false,
     singleLineCss: 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
     show: false,
     showDataText: 'SHOW DATA',
@@ -473,7 +530,7 @@ export default {
     color: rgba(255,255,255,.9) !important;
   }
 
-  .headline {
+  .metadataTitle {
     /* font-family: "Baskervville", serif !important; */
     font-size: 1.2rem !important;
     line-height: 1.2rem !important;

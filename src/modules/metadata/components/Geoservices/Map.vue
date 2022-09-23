@@ -43,6 +43,7 @@
           :site="site"
           :mapHeight="mapHeight"
           :mapEditable="mapEditable"
+          :isGcnet="isGcnet"
         >
           <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
@@ -96,6 +97,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isGcnet: {
+      type: Boolean,
+      default: false,
+    },
     webpIsSupported: Boolean,
   },
   mounted() {
@@ -121,7 +126,6 @@ export default {
         } else if (this.site.type === LOCATION_TYPE_MULTIPOINT) {
           zoomDist = 15;
         }
-
         // If the centroid of the geometry is above 60° or below -60°
         // zoom out even futher
         const centroid = tCentroid(this.site);
@@ -151,8 +155,8 @@ export default {
       return this.$store.state.geoservices.timeseries;
     },
     selectedLayer() {
-      // return null;
-
+      return null;
+/*
       if (!this.layerConfig || !this.selectedLayerName) {
         return null;
       }
@@ -162,6 +166,7 @@ export default {
       layer.baseURL = this.layerConfig.baseURL;
       layer.bbox = this.layerConfig.bbox;
       return layer;
+*/
     },
   },
   methods: {

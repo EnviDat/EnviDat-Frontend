@@ -1,36 +1,36 @@
 <template>
   <v-app class="application"
-          :style="dynamicBackground">
+         :style="dynamicBackground">
 
-      <div v-show="showDecemberParticles"
-            id="christmas-canvas"
-            style="position: absolute; width: 100%; height: 100%;"></div>
+    <div v-show="showDecemberParticles"
+         id="christmas-canvas"
+         style="position: absolute; width: 100%; height: 100%;"></div>
 
-      <link v-if="showDecemberParticles"
-            rel="stylesheet"
-            href="./particles/decemberEffects.css">
+    <link v-if="showDecemberParticles"
+          rel="stylesheet"
+          href="./particles/decemberEffects.css">
 
-      <div v-for="(notification, index) in visibleNotifications()"
-          :key="`notification_${index}`"
-          :style="`position: absolute;
+    <div v-for="(notification, index) in visibleNotifications()"
+         :key="`notification_${index}`"
+         :style="`position: absolute;
                   right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
                   top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`" >
+                  z-index: ${NotificationZIndex};`">
 
-        <notification-card v-if="notification.show"
-                            :notification="notification"
-                            :height="165"
-                            :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
-                            :showCloseButton="true"
-                            @clickedClose="catchCloseClicked(notification.key)"
-                            @clickedReport="catchReportClicked(notification.key)" />
-      </div>
+      <notification-card v-if="notification.show"
+                         :notification="notification"
+                         :height="165"
+                         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
+                         :showCloseButton="true"
+                         @clickedClose="catchCloseClicked(notification.key)"
+                         @clickedReport="catchReportClicked(notification.key)"/>
+    </div>
 
     <the-navigation :style="`z-index: ${NavigationZIndex}`"
                     :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
-                    @itemClick="catchItemClicked" />
+                    @itemClick="catchItemClicked"/>
 
     <the-navigation-toolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
@@ -40,39 +40,41 @@
                             :mode="mode"
                             :modeCloseCallback="catchModeClose"
                             :signedInUser="user"
+                            :signInDisabled="signinDisabled"
                             :userNavigationItems="userMenuItems"
                             :editingDatasetName="lastEditedDataset"
                             @userMenuItemClick="catchUserItemClicked"
                             @signinClick="catchSigninClicked"
                             @homeClick="catchHomeClicked"
-                            @continueClick="catchContinueClick" />
+                            @continueClick="catchContinueClick"/>
 
     <v-main>
       <v-container class="pa-2 pa-sm-3 fill-height"
-                    fluid
-                    v-on:scroll="updateScroll()"
-                    id="appContainer"
-                    ref="appContainer"
-                    :style="pageStyle" >
+                   fluid
+                   v-on:scroll="updateScroll()"
+                   id="appContainer"
+                   ref="appContainer"
+                   :style="pageStyle">
 
         <v-row v-if="maintenanceBannerVisible"
-                id="maintenanceBanner"
-                no-gutters
-                class="pb-2">
+               id="maintenanceBanner"
+               no-gutters
+               class="pb-2">
           <v-col>
-            <TextBanner :text="maintenanceConfig.message"
+            <TextBanner :text="maintenanceBannerText"
                         confirmText="Okay"
-                        :confirmClick="() => { showMaintenanceBanner = false }" />
+                        :bannerColor="maintenanceBannerColor"
+                        :confirmClick="catchMaintenanceConfirmClick"/>
           </v-col>
         </v-row>
 
         <v-row class="fill-height"
-                id="mainPageRow" >
+               id="mainPageRow">
           <v-col class="mx-0 py-0"
-                  cols="12" >
+                 cols="12">
 
             <transition name="fade" mode="out-in">
-              <router-view />
+              <router-view/>
             </transition>
 
           </v-col>
@@ -81,15 +83,29 @@
 
       <v-dialog v-model="showReloadDialog"
                 persistent
-                max-width="300">
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="450">
 
         <ConfirmTextCard title="New Version Available!"
-                          :text="dialogVersionText()"
-                          confirmText="Reload"
-                          :confirmClick="reloadApp"
-                          cancelText="Cancel"
-                          :cancelClick="() => { reloadDialogCanceled = true }"
-                          />
+                         :text="dialogVersionText()"
+                         confirmText="Reload"
+                         :confirmClick="reloadApp"
+                         cancelText="Cancel"
+                         :cancelClick="() => { reloadDialogCanceled = true }"
+        />
+
+      </v-dialog>
+
+      <v-dialog v-model="showInfoDialog"
+                persistent
+                :style="`z-index: ${NotificationZIndex};`"
+                max-width="500">
+
+        <ConfirmTextCard :title="dialogTitle"
+                         :text="dialogMessage"
+                         confirmText="Ok"
+                         :confirmClick="dialogCallback"
+        />
 
       </v-dialog>
     </v-main>
@@ -124,12 +140,19 @@ import {
   BROWSE_PATH,
   BROWSE_PAGENAME,
   REPORT_PATH,
-  USER_SIGNIN_PATH, BLOG_PAGENAME,
+  USER_SIGNIN_PATH,
+  BLOG_PAGENAME,
+  METADATAEDIT_PAGENAME,
+  USER_DASHBOARD_PATH,
+  USER_DASHBOARD_PAGENAME,
+  USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
+
 import {
   METADATA_NAMESPACE,
   BULK_LOAD_METADATAS_CONTENT,
 } from '@/store/metadataMutationsConsts';
+
 import {
   SET_CONFIG,
   SET_APP_SCROLL_POSITION,
@@ -158,6 +181,13 @@ import NotificationCard from '@/components/Cards/NotificationCard';
 import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
 import TextBanner from '@/components/Layouts/TextBanner';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+import {
+  eventBus,
+  SHOW_DIALOG,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
+  SHOW_REDIRECT_SIGNIN_DIALOG,
+} from '@/factories/eventBus';
+
 
 export default {
   name: 'App',
@@ -166,7 +196,16 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.$on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.$on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+
     this.checkUserSignedIn();
+  },
+  beforeDestroy() {
+    eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.$off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.$off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
     this.startParticles();
@@ -226,29 +265,32 @@ export default {
       this.$store.commit(SET_APP_SCROLL_POSITION, scrollY);
     },
     updateActiveStateOnNavItems() {
-      if (this.navigationItems) {
-        for (let i = 0; i < this.navigationItems.length; i++) {
-          const item = this.navigationItems[i];
+      if (!this.navigationItems) {
+        return;
+      }
 
-          if (item.icon !== 'menu') {
-            const isActive = this.currentPage === item.pageName;
+      for (let i = 0; i < this.navigationItems.length; i++) {
+        const item = this.navigationItems[i];
 
-            if (item.subpages && item.subpages instanceof Array) {
-              let subIsActive = false;
+        if (item.icon !== 'menu') {
+          const isActive = this.currentPage === item.pageName;
 
-              item.subpages.forEach((sub) => {
-                if (!subIsActive) {
-                  subIsActive = this.currentPage === sub;
-                }
-              });
+          if (item.subpages && item.subpages instanceof Array) {
+            let subIsActive = false;
 
-              item.active = isActive || subIsActive;
-            } else {
-              item.active = isActive;
-            }
+            item.subpages.forEach((sub) => {
+              if (!subIsActive) {
+                subIsActive = this.currentPage === sub;
+              }
+            });
+
+            item.active = isActive || subIsActive;
+          } else {
+            item.active = isActive;
           }
         }
       }
+
     },
     visibleNotifications() {
       const notis = Object.values(this.notifications);
@@ -263,6 +305,12 @@ export default {
       this.menuItem.active = !this.menuItem.active;
     },
     catchItemClicked(item) {
+      if (this.signinRedirectActive && item.pageName === USER_SIGNIN_PAGENAME) {
+        this.showRedirectSignDialog();
+
+        return;
+      }
+
       if (item.pageName === 'external') {
         window.open(item.path, '_blank');
         return;
@@ -275,6 +323,14 @@ export default {
       this.navigateTo(item.path);
     },
     catchUserItemClicked(item) {
+
+      // make a redirect in case we need to disable the editing in the frontend
+      if (this.dashboardRedirect && item.pageName === USER_DASHBOARD_PAGENAME) {
+        this.showRedirectDashboardDialog();
+
+        return;
+      }
+
       this.$router.push({ name: item.pageName });
     },
     catchSearchClicked(search) {
@@ -289,12 +345,23 @@ export default {
         path: BROWSE_PATH,
       });
     },
+    catchMaintenanceConfirmClick() {
+      if (this.userIsOnEditPage) {
+        this.editMaintenanceBanner = false;
+        return;
+      }
+
+      this.showMaintenanceBanner = false;
+    },
     navigateTo(path) {
       if (this.$route.path === path) {
         return;
       }
 
-      this.$router.push({ path, query: '' });
+      this.$router.push({
+        path,
+        query: '',
+      });
     },
     catchCloseClicked(key) {
       if (!this.notifications) return;
@@ -305,9 +372,71 @@ export default {
       if (this.$route.path === REPORT_PATH) {
         return;
       }
-      this.$router.push({ path: REPORT_PATH, query: index });
+      this.$router.push({
+        path: REPORT_PATH,
+        query: index,
+      });
+    },
+    redirectMessage(componentName = 'Sign In') {
+      const userName = this.user?.name || '';
+      return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
+    },
+    handleRedirectCallBack(redirectToDashboard) {
+
+      let message = this.redirectMessage();
+      let callback = this.redirectToLegacySignin;
+
+      if (redirectToDashboard) {
+        message = this.redirectMessage('Dashboard');
+        callback = this.redirectToLegacyDashboard;
+      }
+
+      eventBus.$emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+    },
+    redirectToLegacyDashboard() {
+      const userName = this.user?.name || '';
+      window.open(`${this.ckanDomain}/user/${userName}`, '_blank');
+
+      if (this.$route.path === USER_DASHBOARD_PATH) {
+        this.$router.replace('/');
+      }
+    },
+    redirectToLegacySignin() {
+      window.open(`${this.ckanDomain}/user/reset/`, '_blank');
+    },
+    showRedirectSignDialog() {
+      this.handleRedirectCallBack(false);
+    },
+    showRedirectDashboardDialog() {
+      this.handleRedirectCallBack(true);
+    },
+    openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
+      this.dialogTitle = title;
+
+      if (!message) {
+        this.dialogMessage = this.redirectMessage();
+      } else {
+        this.dialogMessage = message;
+      }
+
+      this.dialogCallback = () => {
+        if (callback) {
+          callback();
+        }
+        this.showInfoDialog = false;
+      }
+
+      this.showInfoDialog = true;
     },
     catchSigninClicked() {
+
+      // make a redirect to the legacy website in case the sign in via the frontend doesn't work
+      if (this.signinRedirectActive) {
+        this.showRedirectSignDialog();
+
+        return;
+      }
+
       this.navigateTo(USER_SIGNIN_PATH);
     },
     catchHomeClicked() {
@@ -318,22 +447,21 @@ export default {
     },
     loadAllMetadata() {
       if (!this.loadingMetadatasContent && this.metadatasContentSize <= 0) {
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.metadataConfig);
+        this.$store.dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`, this.config);
       }
     },
     dialogVersionText() {
       return `You are using the version ${this.appVersion}, but there is are newer version available (${this.newVersion}). Please reload to get the latest verison of EnviDat.`;
     },
     setupNavItems() {
-      for (let i = 0; i < this.navigationItems.length; i++) {
-        const item = this.navigationItems[i];
-        const title = item.title.toLowerCase();
 
-        if (title === 'organizations'
-          || title === 'sign in') {
-          item.disabled = this.signinDisabled;
+      if (this.signinDisabled) {
+        const signItem = this.navigationItems.filter(item => item.path === USER_SIGNIN_PATH)[0];
+        if (signItem) {
+          signItem.disabled = true;
         }
       }
+
     },
     checkUserSignedIn() {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
@@ -356,18 +484,18 @@ export default {
       'lastEditedDatasetPath',
     ]),
     ...mapGetters(
-      METADATA_NAMESPACE, [
-        'metadataIds',
-        'metadatasContent',
-        'metadatasContentSize',
-        'loadingMetadataIds',
-        'loadingMetadatasContent',
-        'loadingCurrentMetadataContent',
-        'searchingMetadatasContent',
-        'currentMetadataContent',
-        'filteredContent',
-        'isFilteringContent',
-      ],
+        METADATA_NAMESPACE, [
+          'metadataIds',
+          'metadatasContent',
+          'metadatasContentSize',
+          'loadingMetadataIds',
+          'loadingMetadatasContent',
+          'loadingCurrentMetadataContent',
+          'searchingMetadatasContent',
+          'currentMetadataContent',
+          'filteredContent',
+          'isFilteringContent',
+        ],
     ),
     ...mapGetters({
       policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
@@ -388,17 +516,54 @@ export default {
     maintenanceConfig() {
       return this.config?.maintenanceConfig || {};
     },
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
+    },
+    signinRedirectActive() {
+      return this.maintenanceConfig?.signinRedirectActive || false;
+    },
+    dashboardRedirect() {
+      return this.userDashboardConfig?.dashboardRedirect || false;
+    },
     maintenanceBannerVisible() {
-      return this.maintenanceConfig && this.maintenanceConfig.messageActive && this.showMaintenanceBanner;
+      if (!this.maintenanceConfig.messageActive){
+        return false;
+
+      }
+
+      if (this.userIsOnEditPage) {
+        return this.editMaintenanceBanner;
+      }
+
+      if (this.currentPage !== LANDING_PAGENAME) {
+        return this.showMaintenanceBanner;
+      }
+
+      return false;
+    },
+    maintenanceBannerText() {
+      if (this.userIsOnEditPage) {
+        return this.editMaintenanceMessage;
+      }
+
+      return this.maintenanceConfig.message;
+    },
+    maintenanceBannerColor() {
+      if (this.userIsOnEditPage) {
+        return 'error';
+      }
+
+      // this will use the default defined by the TextBanner component
+      return undefined;
     },
     signinDisabled() {
-      return this.maintenanceConfig && this.maintenanceConfig.signinDisabled;
-    },
-    metadataConfig() {
-      return this.config?.metadataConfig || {};
+      return this.maintenanceConfig?.signinDisabled || false;
     },
     showDecemberParticles() {
       return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
+    },
+    userIsOnEditPage() {
+      return this.currentPage === METADATAEDIT_PAGENAME;
     },
     itIsDecember() {
       return getMonth(Date.now()) === 11;
@@ -414,7 +579,7 @@ export default {
       return this.$route.query.search;
     },
     mainPageIsScrollable() {
-      return this.currentPage === BROWSE_PAGENAME || this.currentPage === BLOG_PAGENAME;
+      return this.currentPage === BROWSE_PAGENAME;
     },
     showToolbar() {
       // return this.mainPageIsScrollable && this.mode;
@@ -445,15 +610,16 @@ export default {
       }
 
       let gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.25) 100%), url(${bgImg}) !important;`;
+      let bgStyle = 'background-position: center top !important;';
 
-      const bgStyle = `background-position: center top !important;
-                        background-repeat: repeat !important; `;
-/*
-      background-size: cover !important; `;
-*/
+      if (bgImg.includes(LANDING_PAGENAME.toLowerCase())) {
+        bgStyle += `background-size: cover !important;
+                    background-repeat: no-repeat !important; `;
+      }
 
-      if (bgImg.includes('browsepage')) {
-        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;`;
+      if (bgImg.includes(BROWSE_PAGENAME.toLowerCase())) {
+        gradient = `background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 100%), url(${bgImg}) !important;
+                    background-repeat: repeat !important; `;
       }
 
       return gradient + bgStyle;
@@ -498,22 +664,30 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
+    showInfoDialog: false,
+    dialogTitle: 'Redirect to Legacy Website!',
+    dialogMessage: '',
+    dialogCallback: () => {},
+    redirectToDashboard: false,
     appVersion: process.env.VUE_APP_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
     NotificationZIndex: 1500,
     showMaintenanceBanner: true,
+    editMaintenanceBanner: true,
     currentParticles: null,
     navigationItems,
     userMenuItems,
+    editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
   }),
 };
 </script>
 
 
-<style >
+<style>
 
 .envidatNavbar {
   position: -webkit-sticky;
@@ -619,6 +793,7 @@ export default {
   height: 1.25rem !important;
   font-size: 0.55rem !important;
 }
+
 .smallChip > .v-chip__content > .v-chip__close > .v-icon {
   font-size: 15px !important;
 }
@@ -647,5 +822,9 @@ export default {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+.application .v-overlay.v-overlay--active {
+  z-index: 1025 !important;
 }
 </style>

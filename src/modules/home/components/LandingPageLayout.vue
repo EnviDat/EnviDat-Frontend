@@ -1,12 +1,22 @@
 <template>
   <article class="landingPageGrid pa-0"
+           :class="{
+            'gridXs' : $vuetify.breakpoint.xsOnly,
+            'gridSm' : $vuetify.breakpoint.smOnly,
+           }"
            id="LandingPage">
 
-    <div class="logoGrid pa-2">
+<!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
+    
+    <div v-if="$slots.logo"
+         class="logoGrid"
+          :class="paddings" >
       <slot name="logo"></slot>
     </div>
 
-    <div class="welcomeGrid pa-2">
+    <div v-if="$slots.welcome"
+         class="welcomeGrid"
+         :class="paddings" >
       <slot name="welcome"></slot>
 
       <div class="pt-8">
@@ -14,14 +24,9 @@
       </div>
     </div>
 
-    <div class="newsGrid pa-2">
-
-      <div class="">
-        <slot name="news"></slot>
-      </div>
-    </div>
-
-    <div class="categoriesGrid pa-2">
+    <div v-if="$slots.categories"
+         class="categoriesGrid"
+         :class="paddings" >
 
         <TitleCard :title="categoriesTitle"
                     cardClass="pa-2"
@@ -33,7 +38,9 @@
 
     </div>
 
-    <div class="datasetsGrid pa-2">
+    <div v-if="$slots.datasets"
+         class="datasetsGrid"
+         :class="paddings" >
 
       <TitleCard :title="datasetsTitle"
                  cardClass="pa-2"
@@ -44,7 +51,18 @@
       </div>
     </div>
 
-    <div class="articlesGrid pa-2">
+    <div v-if="$slots.news"
+         class="newsGrid"
+         :class="paddings" >
+
+      <div class="">
+        <slot name="news"></slot>
+      </div>
+    </div>
+
+    <div v-if="$slots.articles"
+         class="articlesGrid"
+         :class="paddings" >
 
       <TitleCard :title="articlesTitle"
                  cardClass="pa-2"
@@ -79,6 +97,11 @@ export default {
     newsTitle: String,
     articlesTitle: String,
   },
+  computed: {
+    paddings() {
+      return 'pa-md-2 pt-4 pt-sm-6';
+    },
+  },
   components: {
     TitleCard,
   },
@@ -89,13 +112,47 @@ export default {
 
 .landingPageGrid {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
-  grid-template-rows: 4fr 1fr 4fr;
   gap: 10px;
+  grid-template-columns: 2fr 2fr 1fr;
+  grid-template-rows: 4fr 0.25fr auto;
   grid-template-areas:
     "Logo Welcome Categories"
     ". . ."
     "News Datasets Articles"
+
+
+}
+
+@media screen and (min-width: 1921px) {
+  .landingPageGrid {
+    grid-template-columns: 2fr 2fr 2fr 2fr;
+    grid-template-rows: 1fr 0.25fr auto;
+    grid-template-areas:
+    ". Logo Welcome Categories"
+    ". . . ."
+    ". News Datasets Articles"
+  }
+}
+
+.landingPageGrid.gridSm {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: none;
+  grid-template-areas:
+    "Welcome Welcome"
+    "News News"
+    "Datasets Categories"
+    ". Articles"
+}
+
+.landingPageGrid.gridXs {
+  grid-template-columns: 1fr;
+  grid-template-rows: none;
+  grid-template-areas:
+    "Welcome"
+    "News"
+    "Datasets"
+    "Categories"
+    "Articles"
 }
 
 .logoGrid {

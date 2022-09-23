@@ -92,17 +92,22 @@ export function countTags(datasets) {
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
-    for (let j = 0; j < dataset.tags.length; j++) {
-      const tag = dataset.tags[j];
+    if (dataset.tags) {
+      for (let j = 0; j < dataset.tags.length; j++) {
+        const tag = dataset.tags[j];
 
-      let count = 1;
-      const existingTag = tagMap.get(tag.name);
+        let count = 1;
+        const existingTag = tagMap.get(tag.name);
 
-      if (existingTag) {
-        count += existingTag.count;
+        if (existingTag) {
+          count += existingTag.count;
+        }
+
+        tagMap.set(tag.name, createTag(tag.name, {
+          tag: existingTag,
+          count,
+        }));
       }
-
-      tagMap.set(tag.name, createTag(tag.name, { tag: existingTag, count }));
     }
   }
 
@@ -134,4 +139,18 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
   }
 
   return cleandAndCounted;
+}
+
+export function enhanceTagsOrganizationDatasetFromAllDatasets(organizationDatasets, datasetMap) {
+
+  for (let i = 0; i < organizationDatasets.length; i++) {
+    const orgaDataset = organizationDatasets[i];
+
+    const dataset = datasetMap[orgaDataset.id];
+    if (dataset) {
+      orgaDataset.tags = dataset.tags;
+    }
+  }
+
+  return organizationDatasets;
 }

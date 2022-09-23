@@ -1,7 +1,14 @@
 <template>
-  <v-card raised
+  <v-card id="UserCard"
+          raised
           :width="width"
-          :height="height">
+          :height="height"
+          :loading="loading">
+
+    <template slot="progress">
+      <v-progress-linear color="primary"
+                         indeterminate />
+    </template>
 
     <div class="cardGrid fill-height"
           :style="`grid-template-rows: ${headerHeight}px 70px auto`">
@@ -10,29 +17,41 @@
         <v-img :height="headerHeight"
                 :width="width"
                 style="border-top-left-radius: 4px; border-top-right-radius: 4px;"
-                :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`" />
+               :src="userCardBanner" />
+
+<!--        :src="`https://gravatar.com/avatar/${email}?s=${gravatarImageSize}&d=identicon&r=g`"
+        -->
       </div>
 
-      <div class="title black--text mx-auto pt-8">
+      <div class="text-h6 black--text mx-auto pt-10">
         {{ userName }}
       </div>
 
-      <div class="subGrid pb-4" >
-        <div class="body-2">Datasets</div>
+      <div class="pa-4" >
+        <v-container fluid
+                      class="pa-0">
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
+            <v-col class="text-body-2">Datasets</v-col>
+            <v-col class="text-caption">{{ datasetCount }}</v-col>
+          </v-row>
 
-        <div class="body-2">Email</div>
+          <v-row no-gutters
+                 class="py-2"
+                 justify="start">
+            <v-col class="text-body-2">Email</v-col>
+            <v-col class="text-caption"><a :href="`mailto:${email}`">{{ email }}</a></v-col>
+          </v-row>
+        </v-container>
 
-        <div class="caption" >{{ datasetCount }}</div>
-
-        <div class="caption">{{ email }}</div>
       </div>
 
     </div>
 
-    <div style="position: absolute; right: 37.5%; border-radius: 50%;"
+    <div style="position: absolute; right: 39.5%; border-radius: 50%;"
           :style="`top: ${avatarTopPosition}px;`" >
       <UserAvatar :size="avatarHeight"
-                  :emailHash="emailHash"
                   :nameInitials="nameInitials"
                   class="elevation-5" />
     </div>
@@ -55,31 +74,45 @@
 */
 import UserAvatar from '@/components/Layouts/UserAvatar';
 
+
 export default {
+  name: 'UserCard',
   components: {
     UserAvatar,
   },
   props: {
     width: {
       type: Number,
-      default: 250,
+      default: undefined,
     },
     height: {
       type: Number,
-      default: 350,
+      default: 300,
     },
     userName: String,
     email: String,
     emailHash: String,
     nameInitials: String,
     datasetCount: Number,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: () => ({
     avatarHeight: 64,
   }),
   computed: {
+    userCardBanner() {
+      if (this.$store) {
+        const imgPath = 'projects/data_creator';
+        return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
+      }
+
+      return '';
+    },
     headerHeight() {
-      return this.height >= 350 ? this.height * 0.6 : this.height * 0.4;
+      return this.height >= 350 ? this.height * 0.2 : this.height * 0.4;
     },
     avatarTopPosition() {
       return this.headerHeight - this.avatarHeight * 0.5;
@@ -100,16 +133,14 @@ export default {
   }
 
   .subGrid {
-    align-content: end;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    column-gap: 5px;
+    grid-template-columns: 30% 70%;
+    column-gap: 16px;
     padding-right: 16px;
     padding-left: 16px;
   }
 
   .subGrid div {
-    place-self: center;
     word-break: break-all;
     align-content: end;
   }

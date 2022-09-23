@@ -1,7 +1,8 @@
 <template>
+
   <v-container id="MetadataMapFullscreen"
-                v-if="ready"
-                style="position: relative;" 
+               v-if="ready"
+                style="position: relative; height: 89vh;"
                 fluid
                 class="fill-height">
 
@@ -15,17 +16,21 @@
               :selectedLayerName="selectedLayer1"
               @changeLayer="setLayer"
               :site="site"
+              :mapHeight="mapHeight"
+              :isGcnet="isGcnet"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
+
       </v-col>
 
-      <v-col v-if="mapCompareActive" 
+      <v-col v-if="mapCompareActive"
               cols="6">
         <Map :layer-config="layerConfig"
               :mapDivId="mapId2"
               :selectedLayerName="selectedLayer2"
               @changeLayer="setLayer"
               :site="site"
+              :mapHeight="mapHeight"
               :showMapSplitButton="!mapCompareActive"
               :showMapSplitCloseButton="mapCompareActive" />
       </v-col>
@@ -49,7 +54,13 @@
       Map,
     },
     props: {
-      fileConfig: Object,
+      site: Object,
+      layerConfig: Object,
+      mapHeight: Number,
+      isGcnet: {
+        type: Boolean,
+        default: false,
+      },
     },
     mounted() {
       // Wait for dialog transition to complete
@@ -65,14 +76,8 @@
       if (this.map) {
         this.map.remove();
       }
-    },    
+    },
     computed: {
-      site() {
-        return this.fileConfig.site;
-      },
-      layerConfig() {
-        return this.fileConfig.layerConfig;
-      },
     },
     methods: {
       setShow3d(value) {

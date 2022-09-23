@@ -10,9 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -32,7 +29,7 @@ import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPr
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
 
-import { getTagColor } from '@/factories/metaDataFactory';
+import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
 import { getPopularTags } from '@/factories/metadataFilterMethods';
 
 import {
@@ -46,10 +43,7 @@ import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
-const unFormatedMetadataCards = { ...metadataset };
-
-// console.log(`got metadata ${!!unFormatedMetadataCards}`);
-
+const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -69,15 +63,13 @@ function getKeywordsSource(tagsSource, catCards) {
   return keywordsArray;
 }
 
-
-const keywordsTags = getKeywordsSource(storyTags, categoryCards);
-
+const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
 
 const placeholderKeywordsGenericProps = {
   // keywordsSource: tagsFromDatasets,
   metadataCardTitle: 'A Mostly Glorious Title',
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
-  existingKeywords: keywordsTags,
+  existingKeywords: tagsFromDatasets,
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
@@ -87,22 +79,25 @@ const metadataCards = [];
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   const el = unFormatedMetadataCards[i];
-
-// unFormatedMetadataCards.forEach((el) => {
   el.author = createAuthors(el);
   metadataCards.push(el);
-// });
 }
+
 
 const authorsMap = extractAuthorsMap(metadataCards);
 const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
 
+let existingAuthors = Object.values(authorsMap);
+existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
-const storybookFolder = `${METADATA_EDITING} / Main Infos`;
 
+export default {
+  title: `${METADATA_EDITING} / Main Infos`,
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf(storybookFolder, module)
-  .add('Editing Keywords & Placeholder Images', () => ({
+export const EditingKeywordsPlaceholder = () => ({
     components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
     template: `
     <v-col>
@@ -113,7 +108,19 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditKeywords :genericProps="genericProps" />
+          <EditKeywords v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditKeywords with prefilled keywords
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditKeywords v-bind="genericProps"
+                        :keywords="storyTags5"
+          />
         </v-col>
       </v-row>
 
@@ -123,7 +130,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataInfo :genericProps="genericProps" />
+          <EditDataInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -133,7 +140,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <MetadataCreationRelatedInfo :genericProps="genericProps" />
+          <MetadataCreationRelatedInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -141,9 +148,11 @@ storiesOf(storybookFolder, module)
     `,
     data: () => ({
       genericProps: placeholderKeywordsGenericProps,
+      storyTags5,
     }),
-  }))
-  .add('Edit Related Publications', () => ({
+  });
+
+export const EditRelatedPublicationViews = () => ({
     components: { EditRelatedPublications },
     template: `
     <v-col>
@@ -154,7 +163,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditRelatedPublications :genericProps="genericProps" />
+          <EditRelatedPublications v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -165,7 +174,7 @@ storiesOf(storybookFolder, module)
 
       <v-row class="py-3" >
         <v-col >
-          <EditRelatedPublications :genericProps="genericPropsFilled" />
+          <EditRelatedPublications v-bind="genericPropsFilled" />
         </v-col>
       </v-row>
 
@@ -202,9 +211,9 @@ storiesOf(storybookFolder, module)
         isVerticalLayout: true,
       },
       genericPropsFilled: {
-                id: '2',
-                labelTextarea: 'Related Publications',
-                textareaContent: `# Why user stories?
+        id: '2',
+        labelTextarea: 'Related Publications',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -228,15 +237,16 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                publications: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        publications: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Generic Textarea Preview Publications', () => ({
+  });
+
+export const GenericTextAreaPreviewPublications = () => ({
     components: { GenericTextareaPreviewLayout, MetadataPublications },
     template: `
     <v-col>
@@ -269,7 +279,7 @@ contribute something to the general goal of your product. `,
 
     </v-col> `,
     mounted() {
-        this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
     methods: {
       catchChangedText(value) {
@@ -311,10 +321,10 @@ contribute something to the general goal of your product. `,
         isVerticalLayout: true,
       },
       genericPropsFilled: {
-                id: '2',
-                columns: '',
-                labelTextarea: 'Related Publications',
-                textareaContent: `# Why user stories?
+        id: '2',
+        columns: '',
+        labelTextarea: 'Related Publications',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -338,14 +348,15 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                publications: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        publications: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Edit Image Placeholder', () => ({
+  });
+
+export const EditImagePlaceholderView = () => ({
     components: { EditImgPlaceholder },
     template: `
     <v-col>
@@ -372,8 +383,9 @@ contribute something to the general goal of your product. `,
       componentTitle: 'Test of the Edit Image Placeholder',
       disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
     }),
-  }))
-  .add('Generic Textarea Preview Metadata Body', () => ({
+  });
+
+export const GenericTextareaPreviewMetadataBodyView = () => ({
     components: { GenericTextareaPreviewLayout, MetadataBody },
     template: `
     <v-col>
@@ -428,21 +440,21 @@ contribute something to the general goal of your product. `,
     },
     data: () => ({
       genericProps: {
-                id: '1',
-                columns: '',
-                labelTextarea: 'Larry Label',
-                textareaContent: '',
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                body: {
-                  text: '',
-                },
+        id: '1',
+        columns: '',
+        labelTextarea: 'Larry Label',
+        textareaContent: '',
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        body: {
+          text: '',
+        },
       },
       genericPropsFilled: {
-                id: '2',
-                columns: '',
-                labelTextarea: 'Larry Label',
-                textareaContent: `# Why user stories?
+        id: '2',
+        columns: '',
+        labelTextarea: 'Larry Label',
+        textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
 your product, estimate development efforts in an appropriate way and prioritize
@@ -466,15 +478,16 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
-                subtitlePreview: 'Preview',
-                showPlaceholder: false,
-                body: {
-                  text: '',
-                },
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        body: {
+          text: '',
+        },
       },
     }),
-  }))
-  .add('Edit Publication Info', () => ({
+  });
+
+export const EditPublicationInfoView = () => ({
     components: { EditPublicationInfo },
     template: `
     <v-col>
@@ -532,8 +545,9 @@ contribute something to the general goal of your product. `,
           ],
       },
     }),
-  }))
-  .add('Edit Custom Fields', () => ({
+  });
+
+export const EditCustomFieldViews = () => ({
     components: { EditCustomFields },
     template: `
     <v-col>
@@ -610,8 +624,9 @@ contribute something to the general goal of your product. `,
         },
       ],
     }),
-  }))
-.add('Edit Metadata Header', () => ({
+  });
+
+export const EditMetadataHeaderViews = () => ({
     components: { EditMetadataHeader },
     template: `
     <v-col>
@@ -659,6 +674,7 @@ contribute something to the general goal of your product. `,
     data: () => ({
       emptyFirstGenericProps: {
         id: '1',
+        existingAuthors,
         metadataTitle: '',
         contactEmail: '',
         contactGivenName: '',
@@ -667,14 +683,16 @@ contribute something to the general goal of your product. `,
       },
       genericProps: {
         id: '2',
+        existingAuthors,
         metadataTitle: 'My Glorious Title',
         contactEmail: 'sarah@smith.com',
         contactGivenName: 'Sarah',
         contactSurname: 'Miller',
       },
     }),
-  }))
-.add('Edit Metadata Description', () => ({
+  });
+
+export const EditMetadataDescriptionViews = () => ({
     components: { EditDescription },
     template: `
      <v-col>
@@ -696,7 +714,7 @@ contribute something to the general goal of your product. `,
 
       <v-row class="py-3" >
         <v-col >
-          <EditDescription :genericProps="genericProps" />
+          <EditDescription :description="genericProps.description" />
         </v-col>
       </v-row>
 
@@ -733,4 +751,4 @@ contribute something to the general goal of your product. `,
         };
       },
     },
-}));
+});

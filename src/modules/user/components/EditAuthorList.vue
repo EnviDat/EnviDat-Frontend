@@ -2,7 +2,7 @@
 
   <v-container fluid
                class="pa-0"
-               id="EditMetadataAuthors" >
+               id="EditAuthorList" >
 
     <v-row >
       <v-col cols="6" >
@@ -15,16 +15,16 @@
         </v-row>
 
         <v-row v-if="!selectedAuthor" >
-          <v-col>
-            <v-card class="pa-0">
+          <v-col cols="12">
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
-
-<!--              disabled Author creation for a first "editing only" version -->
-<!--              <EditAddAuthor @createAuthor="catchCreateAuthor" />-->
-            </v-card>
-
           </v-col>
+
+          <v-col cols="12">
+<!--          For now the EditAddAuthor is a placeholder which links to the legacy website -->
+              <EditAddAuthor :metadataId="metadataId" />
+          </v-col>
+
         </v-row>
       </v-col>
 
@@ -52,13 +52,16 @@
 */
 
 import EditAuthor from '@/modules/user/components/EditAuthor';
-// import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
-
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
+import {
+  // getAuthorKey,
+  getFullAuthorsFromDataset,
+  initializeLocalAuthor,
+} from '@/factories/authorFactory';
 
-import { initializeLocalAuthor } from '@/factories/authorFactory';
 import {
   // enhanceElementsWithStrategyEvents,
   localIdProperty,
@@ -83,7 +86,7 @@ export default {
   components: {
     EditMetadataAuthors,
     EditAuthor,
-//    EditAddAuthor,
+    EditAddAuthor,
     EditAddExistingAuthor,
   },
   props: {
@@ -94,6 +97,11 @@ export default {
     authors: {
       type: Array,
       default: () => [],
+    },
+    // only used for testing via storybook
+    authorsMap: {
+      type: Object,
+      default: () => {},
     },
     loading: {
       type: Boolean,
@@ -125,6 +133,9 @@ export default {
     },
   },
   computed: {
+    metadataId() {
+      return this.$route?.params?.metadataid || '';
+    },
     existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
@@ -139,12 +150,40 @@ export default {
 
       return this.authors;
     },
+    noDataCreditAuthorsWrap() {
+      const authors = [...this.existingAuthorsWrap];
+
+      for (let i = 0; i < authors.length; i++) {
+        authors[i] = {
+          ...authors[i],
+          dataCredit: [],
+        }
+      }
+
+      return authors
+    },
+/*
+    authorsMapWrap() {
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      }
+
+      return this.authorsMap;
+    },
+    authorsMapLoading() {
+      if (!this.$store) {
+        return false;
+      }
+
+      return this.authorsMapWrap === null;
+    },
+*/
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
-        existingEnviDatUsers: this.existingAuthorsWrap,
+        existingEnviDatUsers: this.noDataCreditAuthorsWrap,
         isClearable: false,
-        loading: this.loading,
+        loading: this.loading, // || this.authorsMapLoading,
         message: this.message,
         messageDetails: this.messageDetails,
         error: this.error,
@@ -154,13 +193,15 @@ export default {
       };
     },
     authorListingGenericProps() {
+
       return {
         authors: this.authorsWrap,
         existingAuthors: this.existingAuthorsWrap,
+        loading: this.loading, // || this.authorsMapLoading,
         authorDetailsConfig: {
           showDatasetCount: false,
           showAuthorInfos: true,
-          showDataCredits: true,
+          showDataCredits: false,
           showDataCreditScore: false,
         },
       };

@@ -14,6 +14,17 @@
                          :stepNumber="currentStepIndex"
                          @stepClick="catchStepClick" />
 
+      <BaseIconButton v-if="showPreviewButton"
+                      id="PreviewMetadataButton"
+                      class="ma-auto px-4"
+                      material-icon-name="remove_red_eye"
+                      icon-color="white"
+                      color="white"
+                      outlined
+                      tooltipText="Preview Dataset"
+                      :tooltipBottom="true"
+                      @clicked="catchPreviewClick" />
+
       <BaseIconButton id="MetadataEditCloseButton"
                       class="ma-auto px-4"
                       material-icon-name="close"
@@ -30,7 +41,24 @@
       class="content fill-height pa-1 pt-0"
       :style="`background-color: ${backgroundColor}`"
     >
-      <v-card class="fill-height pa-4">
+
+      <v-card v-show="loading"
+              class="fill-height pa-4">
+
+        <v-row id="metadataListPlaceholder" >
+
+          <v-col v-for="(n, index) in 2"
+                 :key="'placeHolder_' + index"
+                 class="pa-2" >
+
+            <MetadataCardPlaceholder :dark="false" />
+          </v-col>
+        </v-row>
+
+      </v-card>
+
+      <v-card v-if="!loading"
+              class="fill-height pa-4">
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
@@ -68,6 +96,7 @@ import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 
 import StepperHeader from '@/components/Navigation/StepperHeader';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
 
 export default {
   name: 'NavigationStepper',
@@ -77,6 +106,14 @@ export default {
     subStep: String,
     stepColor: String,
     nextMajorStep: String,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    showPreviewButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   beforeMount() {
     this.setupSteps();
@@ -120,6 +157,14 @@ export default {
           substep: undefined,
         },
         query: this.$route.query,
+      }, () => {
+
+      }, (err) => {
+        // add empty onAbort to not trigger the NavigationDuplicated Error message
+        // when it's a NavigationDuplicated Error
+        if (err?.name?.toLowerCase() !== 'navigationduplicated') {
+          console.error(err);
+        }
       });
     },
     nextStep() {
@@ -153,6 +198,9 @@ export default {
     catchCloseClick() {
       this.$emit('clickedClose')
     },
+    catchPreviewClick() {
+      this.$emit('clickedPreview')
+    },
   },
   data: () => ({
     currentStep: null,
@@ -161,6 +209,7 @@ export default {
   components: {
     StepperHeader,
     BaseIconButton,
+    MetadataCardPlaceholder,
   },
 };
 </script>
@@ -180,7 +229,7 @@ export default {
 
 .headerContentGrid {
   display: grid;
-  grid-template-columns: 11fr auto;
+  grid-template-columns: 11fr 0.1fr 0.1fr;
   gap: 0;
   width: 100%;
   height: 100%;

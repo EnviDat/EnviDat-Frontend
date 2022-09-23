@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "857fc050-6352-41c4-9d9e-81bf437d6464",
+		"_postman_id": "fadc7cfd-4496-4c27-b4eb-f72409dbae2a",
 		"name": "EnviDat CKAN API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -6171,6 +6171,166 @@
 			"name": "user",
 			"item": [
 				{
+					"name": "signin",
+					"item": [
+						{
+							"name": "User List",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/user_list",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"user_list"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Sign out",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"connection": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_user_logout",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_user_logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Get Context",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/envidat_context_user_show",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"envidat_context_user_show"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User Sign in",
+							"protocolProfileBehavior": {
+								"disabledSystemHeaders": {
+									"connection": true
+								}
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_user_login?email=dominik.haas@wsl.ch&key=baafdb1a550acc0082585a86757b09f0",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_user_login"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "dominik.haas@wsl.ch"
+										},
+										{
+											"key": "key",
+											"value": "baafdb1a550acc0082585a86757b09f0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "System Admin Sign In",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_user_login?email=envidat@wsl.ch&key=5223378e7b663d2da59c7672bc59bf5b",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_user_login"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "envidat@wsl.ch"
+										},
+										{
+											"key": "key",
+											"value": "5223378e7b663d2da59c7672bc59bf5b"
+										},
+										{
+											"key": "all_fields",
+											"value": "true",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User password reset",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_perform_reset?email=dominik.haas@wsl.ch",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_perform_reset"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "dominik.haas@wsl.ch"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "user_create",
 					"request": {
 						"method": "GET",
@@ -7405,6 +7565,75 @@
 								"api",
 								"action",
 								"vocabulary_delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "geo",
+			"item": [
+				{
+					"name": "geo.admin.ch Capabilities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities",
+							"protocol": "https",
+							"host": [
+								"wms",
+								"geo",
+								"admin",
+								"ch"
+							],
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "SERVICE",
+									"value": "WMS"
+								},
+								{
+									"key": "VERSION",
+									"value": "1.3.0"
+								},
+								{
+									"key": "REQUEST",
+									"value": "GetCapabilities"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "monitior API",
+			"item": [
+				{
+					"name": "GCNET JSON Multiple call",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/data-api/gcnet/json/swisscamp/multiple/2021-07-19/2021-08-05/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"data-api",
+								"gcnet",
+								"json",
+								"swisscamp",
+								"multiple",
+								"2021-07-19",
+								"2021-08-05",
+								""
 							]
 						}
 					},

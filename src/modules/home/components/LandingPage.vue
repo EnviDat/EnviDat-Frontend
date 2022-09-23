@@ -18,7 +18,8 @@
                        :newsTitle="welcomeInfo.newsTitle"
                        :articlesTitle="welcomeInfo.articlesTitle" >
 
-      <template v-slot:logo>
+      <template v-if="$vuetify.breakpoint.mdAndUp"
+                v-slot:logo>
 
         <v-row align="center" >
 
@@ -40,20 +41,20 @@
                  :alt="alternativeText" >
           </v-col>
 
-          <v-col class="envidatTitle display-4 pl-5 hidden-md-and-down"
+          <v-col class="envidatTitle text-h1 pl-5 hidden-md-and-down"
                  style="font-size: 80px !important;" >
             {{ welcomeInfo.titleText }}
           </v-col>
 
-          <v-col class="envidatTitle display-3 pl-2 hidden-sm-and-down hidden-lg-and-up" >
+          <v-col class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up" >
             {{ welcomeInfo.titleText }}
           </v-col>
 
-          <v-col class="envidatTitle display-2 pl-2 hidden-xs-only hidden-md-and-up" >
+          <v-col class="envidatTitle text-h3 pl-2 hidden-xs-only hidden-md-and-up" >
             {{ welcomeInfo.titleText }}
           </v-col>
 
-          <v-col class="envidatTitle display-3 hidden-sm-and-up" >
+          <v-col class="envidatTitle text-h2 hidden-sm-and-up" >
             {{ welcomeInfo.titleText }}
           </v-col>
         </v-row>
@@ -73,13 +74,13 @@
       </template>
 
       <template v-slot:search>
-        <search-bar-view v-if="$vuetify.breakpoint.smAndUp"
+        <SearchBarView v-if="$vuetify.breakpoint.smAndUp"
                          :labelText="welcomeInfo.searchLabelText"
                          :buttonText="buttonText"
                          :hasButton="true"
                          @clicked="catchSearchClicked" />
 
-        <small-search-bar-view v-if="$vuetify.breakpoint.xsOnly"
+        <SmallSearchBarView v-if="$vuetify.breakpoint.xsOnly"
                                :labelText="welcomeInfo.smallSearchLabelText"
                                :buttonText="buttonText"
                                @clicked="catchSearchClicked" />
@@ -136,13 +137,13 @@
                  cols="6"
                  class="pa-2" >
 
-            <base-click-card :compact="true"
-                             :title="card.title"
-                             :img="card.img"
-                             :color="card.darkColor"
-                             :contain="card.contain"
-                             :disabled="card.disabled"
-                             @click="catchCategoryClicked(card.type)" />
+            <BaseClickCard :height="$vuetify.breakpoint.lgAndDown ? '65' : '90'"
+                           :title="card.title"
+                           :img="card.img"
+                           :color="card.darkColor"
+                           :contain="card.contain"
+                           :disabled="card.disabled"
+                           @click="catchCategoryClicked(card.type)" />
           </v-col>
         </v-row>
 
@@ -156,11 +157,12 @@
                  cols="6"
                  class="pa-2"
                  >
-            <BlogPostCard :post="post"
+            <BlogPostCard :postTitle="post.title"
+                          :titleImg="post.titleImg"
                           :loadingImg="fallbackCardImg"
                           titleCssClass="compactBlogPostCard"
                           subtitleCssClass="text-caption"
-                          height="100"
+                          :height="$vuetify.breakpoint.lgAndDown ? '75' : '100'"
                           @clicked="catchPostClick(post.postFile)"/>
           </v-col>
         </v-row>
@@ -168,25 +170,33 @@
       </template>
 
       <template v-slot:news
-                v-if="showWinterHolidayWishs || showNewYearWishs" >
+                v-if="hasActiveNews">
 
         <TitleCard :title="welcomeInfo.newsTitle"
                    cardClass="pa-2"
                    titleClass="titleCardClass"/>
 
+        <div v-for="(entry, index) in newsEntries"
+             :key="index"
+              class="pt-4 px-1">
+          <SloganCard :slogan="entry.title"
+                      :subSlogan="entry.text"
+                      :sloganImg="entry.image" />
 
-        <div class="pt-4 px-1">
+        </div>
 
-          <SloganCard v-if="showWinterHolidayWishs"
-                      slogan="Happy Holidays!"
+        <div v-if="showWinterHolidayWishs"
+             class="pt-4 px-1">
+          <SloganCard slogan="Happy Holidays!"
                       :sloganImg="winterHolidayImage"
-                      :maxHeight="275"
                       :subSlogan="decemberWishes" />
 
-          <SloganCard v-if="showNewYearWishs"
-                      slogan="Happy New Year!"
+        </div>
+
+        <div v-if="showNewYearWishs"
+             class="pt-4 px-1">
+          <SloganCard slogan="Happy New Year!"
                       :sloganImg="newYearImage"
-                      :maxHeight="300"
                       :subSlogan="newYearWishes" />
         </div>
       </template>
@@ -347,6 +357,10 @@ import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
 import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
 import TitleCard from '@/components/Cards/TitleCard';
 import BlogPostCard from '@/modules/blog/components/BlogPostCard';
+import {
+  eventBus,
+  SHOW_REDIRECT_SIGNIN_DIALOG,
+} from '@/factories/eventBus';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -395,7 +409,7 @@ export default {
     ]),
     blogPosts() {
       if (this.list?.length > 0) {
-        return this.list.slice(0, 6);
+        return this.list.slice(0, 4);
       }
 
       return this.list;
@@ -403,8 +417,22 @@ export default {
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
     },
+    hasActiveNews(){
+      return (this.config?.newsConfig?.newsActive && this.newsEntries.length > 0)
+          || this.showNewYearWishs
+          || this.showWinterHolidayWishs;
+    },
+    newsEntries(){
+      return this.config?.newsConfig?.entries || []
+    },
     showPolygonParticles() {
       return this.$vuetify.breakpoint.lgAndUp && this.effectsConfig.landingPageParticles && !this.showDecemberParticles;
+    },
+    maintenanceConfig() {
+      return this.config?.maintenanceConfig || {};
+    },
+    signinRedirectActive() {
+      return this.maintenanceConfig?.signinRedirectActive || false;
     },
     showDecemberParticles() {
       return this.effectsConfig.decemberParticles && this.itIsDecember;
@@ -432,6 +460,22 @@ export default {
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};
+    },
+    sloganButtonText() {
+/*
+      if (this.$vuetify.breakpoint.lgAndDown) {
+        return 'EXPLORE';
+      }
+*/
+
+      return 'EXPLORE DATA';
+    },
+    sloganMoreButtonText(){
+      if (this.$vuetify.breakpoint.lgAndDown) {
+        return 'ABOUT';
+      }
+
+      return 'ABOUT ENVIDAT';
     },
   },
   watch: {
@@ -466,7 +510,6 @@ export default {
       if (this.showPolygonParticles) {
         // particleOptions have to be in the folder public/particles/polygonParticleOptions.json for development
         // in production they have to be in same folder as the index.html there -> ./particles/polygonParticleOptions.json
-
         // eslint-disable-next-line no-undef
         particlesJS.load('polygon-canvas', './particles/polygonParticleOptions.json', () => {
           // console.log('polygon-canvas - particles.js config loaded');
@@ -499,8 +542,10 @@ export default {
         return;
       }
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl([cardType.toUpperCase()]);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', tagsEncoded);
+      const newTags = [cardType];
+      const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
+
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '', stringTags);
     },
     catchModeClicked(mode) {
       this.$router.push({
@@ -521,9 +566,17 @@ export default {
       this.$router.push({ path: ABOUT_PATH });
     },
     catchSigninClick() {
+
+      if (this.signinRedirectActive) {
+        // don't pass any parameters to show the default message for Sign In redirect
+        eventBus.$emit(SHOW_REDIRECT_SIGNIN_DIALOG);
+        return;
+      }
+
       if (this.$route.path === USER_SIGNIN_PATH) {
         return;
       }
+
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     redirectToDashboard() {
@@ -565,8 +618,6 @@ export default {
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
-    sloganButtonText: 'EXPLORE DATA',
-    sloganMoreButtonText: 'ABOUT ENVIDAT',
     defaultWelcomeInfo: {
       titleText: 'EnviDat',
       Slogan: 'Environmental Research Data at your Fingertips',
@@ -601,8 +652,9 @@ export default {
 <style >
 
 .compactBlogPostCard {
-  font-size: 0.9rem;
-  line-height: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.1rem;
 }
 
 </style>

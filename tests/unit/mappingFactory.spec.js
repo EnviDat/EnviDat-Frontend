@@ -6,6 +6,7 @@ import {
   convertJSON,
   getObjectInOtherCase,
   toCamelCase,
+  populateEditingComponents,
 } from '@/factories/mappingFactory';
 
 import {
@@ -22,7 +23,7 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
-import { populateEditingComponents } from '@/modules/user/store/userActions';
+
 import categoryCards from '@/store/categoryCards';
 
 const mappingTestData = require('@/../public/testdata/mappingTestData.json');
@@ -612,7 +613,7 @@ describe('populateEditingComponents', () => {
   }
 
   it('with mock commit', () => {
-    populateEditingComponents(mockCommit, mappingTestData, null, categoryCards);
+    populateEditingComponents(mockCommit, mappingTestData, categoryCards);
   });
 
 });

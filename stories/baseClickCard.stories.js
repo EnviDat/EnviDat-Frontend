@@ -9,12 +9,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 import globalMethods from '@/factories/globalMethods';
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard';
 import categoryCards from '@/store/categoryCards';
+import { CARD_VIEWS } from './storybookFolder';
 
 const jpgAssetPaths = require.context('../src/assets/', true, /\.jpg$/);
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
@@ -26,8 +25,13 @@ for (let i = 0; i < categoryCards.length; i++) {
   cardInfo.img = jpgAssets[imageKey];
 }
 
+export default {
+  title: `${CARD_VIEWS} / Click Cards`,
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () => ({
+export const CategoryCardCollectionView = () => ({
   components: { BaseClickCard },
   template: `
     <v-row>
@@ -60,4 +64,4 @@ storiesOf('3 Cards / Click Cards ', module).add('CategoryCcard Collection', () =
   data: () => ({
     categoryCards,
   }),
-}));
+});

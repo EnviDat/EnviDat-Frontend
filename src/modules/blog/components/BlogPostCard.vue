@@ -16,18 +16,19 @@
                  :aspect-ratio="1"
                  :style="`border-bottom-left-radius: 4px; border-top-left-radius: 4px;`"
                  :lazy-src="loadingImg"
-                 :src="post.titleImg"  />
+                 :src="titleImg"  />
 
         </v-col>
 
         <v-col cols="7"
-               class="px-2"
+               class="px-3"
                :class="titleCssClass"
                align-self="center" >
-          {{ post.title }}
+          {{ postTitle }}
 
-          <div :class="subtitleCssClass">
-            {{ post.date }}
+          <div v-if="postDate"
+               :class="subtitleCssClass">
+            {{ postDate }}
           </div>
         </v-col>
       </v-row>
@@ -52,7 +53,9 @@
 export default {
   name: 'BlogPostCard',
   props: {
-    post: Object,
+    postTitle: String,
+    postDate: String,
+    titleImg: String,
     loadingImg: String,
     titleCssClass: {
       type: String,

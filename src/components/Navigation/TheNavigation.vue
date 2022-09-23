@@ -13,6 +13,7 @@
   <v-navigation-drawer app
                         :permanent="!smallScreen"
                         clipped
+                        :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
                         :mini-variant="mini"
                         :value="show"
                         @change="setShow"
@@ -48,15 +49,17 @@
                   class="fill-height"
                   align="start"
                   justify="end" >
+
             <v-col cols="12"
-                    class="headline envidatNavbarTitleSmall py-0">
+                   class="text-h5 envidatNavbarTitleSmall py-0">
               {{ logoText }}
             </v-col>
+
             <v-col v-if="version"
                     cols="12"
                     class="py-0"
                     style="font-size: 8px; position: relative; left: 2px;">
-              Version {{ version }}
+              {{ versionText }}
             </v-col>
           </v-row>
         </v-list-item-content>
@@ -101,13 +104,13 @@
               </v-icon>
             </template>
 
-            <span>Version {{ version }}</span>
+            <span>{{ versionText }}</span>
           </v-tooltip>
 
         </v-list-item-icon>
 
         <v-list-item-content class="text-caption">
-          Version {{ version }}
+          {{ versionText }}
         </v-list-item-content>
 
       </v-list-item>
@@ -160,6 +163,9 @@ export default {
 
       return actives;
     },
+    versionText() {
+      return `EnviDat version: ${this.version}`;
+    },
   },
   methods: {
     setShow(value) {
@@ -172,7 +178,9 @@ export default {
       }
     },
     itemClick(item) {
-      this.$emit('itemClick', item);
+      if (!item.disabled) {
+        this.$emit('itemClick', item);
+      }
     },
   },
 };

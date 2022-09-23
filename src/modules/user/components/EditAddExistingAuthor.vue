@@ -1,6 +1,5 @@
 <template>
   <v-card id="EditAddExistingAuthor"
-          flat
           class="pa-0"
           :loading="loading" >
 
@@ -50,6 +49,7 @@
                           :errorMessages="baseUserErrorMessages"
                           :readonly="mixinMethods_isFieldReadOnly('authors')"
                           :hint="mixinMethods_readOnlyHint('authors')"
+                          @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
         </v-col>
@@ -81,7 +81,8 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import { getArrayOfFullNames } from '@/factories/authorFactory';
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -142,7 +143,7 @@ export default {
       return this.validationErrors.authors;
     },
     preselectAuthorNames() {
-      return this.previewAuthors?.length > 0 ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
+      return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
@@ -150,59 +151,75 @@ export default {
   },
   methods: {
     clearPreviews() {
-      this.previewAuthors = [];
+      // previewAuthors is expected to be null when normal instead of []
+      // because this way we know when a user removed the last author entry
+      // is null and we can show an empty selection box with the error validation
+      // not saving the users changes, but reflecting their action and show the error
+      this.previewAuthors = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
     },
     catchRemovedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
+      this.changePreviews(pickedUsers);
     },
     catchPickedUsers(pickedUsers) {
-      this.notifyChange(pickedUsers);
+      this.changePreviews(pickedUsers);
     },
-    notifyChange(authorsNames) {
-
+    changePreviews(authorsNames){
       const authors = [];
 
       authorsNames.forEach((name) => {
-        const author = this.getAuthorByName(name);
-        if (author) {
-          authors.push(author);
+        let author = this.getAuthorByName(name, this.authors);
+
+        // if the author is part of the dataset authors, pick it as it is
+        // including the existing dataCredits
+        if (!author) {
+          // if the author is newly picked, use the existing list as reference
+
+          author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
+
+        authors.push(author);
       });
 
       this.previewAuthors = authors;
+    },
+    notifyChange() {
 
-      if (this.validateProperty('authors', authors)) {
+      if (!this.previewAuthors) {
+        return;
+      }
+
+      if (this.validateProperty('authors', this.previewAuthors)) {
 
         eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_AUTHOR_LIST,
           data: {
             ...this.$props,
-            authors,
+            authors: this.previewAuthors,
           },
         });
-      } else {
-        this.previewAuthors = [];
       }
+      // DO NOT clear the preview because than the user isn't able to remove the last author
+      // this lead to a UX where the user had to add a second author to then remove the first, it
+      // changes want to be made
     },
-    getAuthorByName(fullName) {
-      const authors = this.existingEnviDatUsers;
+    getAuthorByName(fullName, authors) {
       const found = authors.filter(auth => auth.fullName === fullName);
       return found.length > 0 ? found[0] : null;
     },
   },
   data: () => ({
     labels: {
-      title: 'Change Metadata Authors',
-      instructions: 'Choose authors from any metadata entry or pick them from the list of EnviDat users.',
+      title: EDIT_METADATA_AUTHORS_TITLE,
+      instructions: 'Choose authors which from other metadata entries.',
       userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
     },
     validationErrors: {
       authors: '',
     },
-    previewAuthors: [],
+    previewAuthors: null,
   }),
   components: {
     BaseUserPicker,

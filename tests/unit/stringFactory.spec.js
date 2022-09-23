@@ -1,7 +1,13 @@
 import {
+  getResearchUnitDatasets,
   renderMarkdown,
   stripMarkdown,
 } from '@/factories/stringFactory';
+
+// import metadatas from '@/../public/testdata/full_packagelist.json';
+import researchUnits from '@/../public/researchUnits.json';
+
+const datasets = null; // metadatas.result;
 
 const markdownString = `It's been a while since the last EnviDat release, we had a bit a different focus for a while.
 Because we have released an other app: the S3 Browser which provides access to large datasets on [EnviCloud](https://envicloud.wsl.ch/)
@@ -92,6 +98,45 @@ describe('stringFactory - stripMarkdown', () => {
     expect(markOut).not.toBe('');
     expect(markOut.includes('[alt text]')).toBeTruthy();
     expect(markOut.includes(aTag)).toBeFalsy();
+  });
+
+});
+
+describe('stringFactory - getResearchUnitDatasets', () => {
+
+  it('getResearchUnitDatasets - empty', () => {
+
+    const emptyOutput = getResearchUnitDatasets();
+    expect(emptyOutput).toBe(null);
+  });
+
+  it('getResearchUnitDatasets - with input', () => {
+
+    if (!datasets) {
+      // to test it the full_package.json has to be added, which
+      // I don't want to have in the git repo! Add it manually
+      // it's the content of https://www.envidat.ch/api/action/current_package_list_with_resources?limit=1000
+      return undefined;
+    }
+
+    const researchUnitMap = getResearchUnitDatasets(researchUnits, datasets);
+    expect(researchUnitMap).toBeDefined();
+
+    let ruDatasetsCount = 0;
+
+    for (const [ruName] of researchUnitMap) {
+      const ruDatasets = researchUnitMap.get(ruName);
+      // console.log(`${ruName} has ${ruDatasets.length}`);
+      ruDatasetsCount += ruDatasets.length;
+    }
+
+    if (datasets.length !== ruDatasetsCount) {
+      console.warn(`Tested getResearchUnitDatasets() input datasets: ${datasets.length} total output: ${ruDatasetsCount}`);
+    }
+
+    expect(datasets.length === ruDatasetsCount).toBeTruthy();
+
+
   });
 
 });

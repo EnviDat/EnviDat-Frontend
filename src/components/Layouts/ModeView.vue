@@ -4,12 +4,12 @@
           no-gutters >
 
     <v-col v-if="compact"
-          class="shrink body-2 mx-1 text-no-wrap" >
+          class="shrink text-body-2 mx-1 text-no-wrap" >
       {{ modeInfoPrefix }}: {{ modeTitle }}
      </v-col>
 
     <v-col v-else
-          class="shrink title mx-1 text-no-wrap">
+          class="shrink text-h6 mx-1 text-no-wrap">
       {{ modeInfo }}
     </v-col>
 
@@ -73,7 +73,6 @@ import { getModeData } from '@/factories/modeFactory';
 
 export default {
   name: 'ModeView',
-  // TODO: Component is not in use. Moved content to TheNavigationToolbar while upgrading to vuetify2
   components: {
     BaseIconButton,
   },

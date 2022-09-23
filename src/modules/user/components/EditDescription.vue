@@ -35,7 +35,7 @@
 
       <v-row>
         <v-col cols="6">
-          <div class="text-body-1">{{ labels.descriptionInstructions }}</div>
+          <div class="text-body-1" v-html="labels.descriptionInstructions"></div>
         </v-col>
         <v-col cols="6">
           <div class="text-subtitle-1">{{ labels.subtitlePreview }}</div>
@@ -84,12 +84,13 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -147,6 +148,7 @@ export default {
       return {
         body: {
           text: this.previewDescription,
+          maxTextLength: 5000,
         },
       };
     },
@@ -154,12 +156,12 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_MAIN_DESCRIPTION);
     },
     previewDescription() {
-      return this.previewText || this.description;
+      return this.previewText !== null ? this.previewText : this.description;
     },
   },
   methods: {
     clearPreview() {
-      this.previewText = '';
+      this.previewText = null;
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -187,11 +189,11 @@ export default {
   },
   data: () => ({
     editingProperty: 'description',
-    previewText: '',
+    previewText: null,
     labels: {
-      cardTitle: 'Metadata Description',
-      labelTextarea: 'Metadata Description',
-      descriptionInstructions: 'Please enter a description for the research data.',
+      cardTitle: EDIT_METADATA_DESCRIPTION_TITLE,
+      labelTextarea: 'Research Data Description',
+      descriptionInstructions: 'Enter a description which helps other researchers to understand your data. Use <a href="https://www.markdownguide.org/cheat-sheet" target="_blank">markdown </a> to format the description and make it easier to read.',
       subtitlePreview: 'Description Preview',
     },
     validationErrors: {

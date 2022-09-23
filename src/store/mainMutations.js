@@ -3,7 +3,7 @@
  * @summary main store mutations
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2020-11-03 12:32:35
  *
  * This file is subject to the terms and conditions defined in
@@ -40,7 +40,7 @@ function disablingCategoryCards(config, categoryCards) {
     return;
   }
 
-  const signinDisabled = config && config.maintenanceConfig && config.maintenanceConfig.signinDisabled;
+  const signinDisabled = config?.maintenanceConfig?.signinDisabled || false;
 
   if (signinDisabled) {
     for (let i = 0; i < categoryCards.length; i++) {
@@ -111,7 +111,7 @@ export default {
   },
   [SET_CONFIG_ERROR](state, reason) {
     state.loadingConfig = true;
-    const notificationObj = getSpecificApiError('Config could not ge loaded!', reason);
+    const notificationObj = getSpecificApiError('Config could not be loaded!', reason);
     this.commit(ADD_USER_NOTIFICATION, notificationObj);
   },
   [CHECK_FRONTEND_VERSION](state, version) {

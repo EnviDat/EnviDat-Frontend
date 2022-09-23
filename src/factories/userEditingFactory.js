@@ -45,9 +45,19 @@ import {
 } from '@/factories/eventBus';
 
 import { localIdProperty } from '@/factories/strategyFactory';
-
-import { parse, isDate } from 'date-fns';
-import * as yup from 'yup';
+import {
+  EDIT_STEP_TITLE_MAIN_METADATA,
+  EDIT_STEP_TITLE_MAIN_PUBLICATION,
+  EDIT_STEP_TITLE_MAIN_RELATED,
+  EDIT_STEP_TITLE_MAIN_RESOURCES,
+  EDIT_STEP_TITLE_SUB_AUTHORS,
+  EDIT_STEP_TITLE_SUB_DATA,
+  EDIT_STEP_TITLE_SUB_DATES,
+  EDIT_STEP_TITLE_SUB_DESC,
+  EDIT_STEP_TITLE_SUB_GEO,
+  EDIT_STEP_TITLE_SUB_HEADER,
+  EDIT_STEP_TITLE_SUB_KEYWORDS,
+} from '@/factories/metadataConsts';
 
 
 export function updateEditingArray(
@@ -186,6 +196,7 @@ const emptyMetadataInEditing = {
     customFields: [],
   },
   [EDITMETADATA_ORGANIZATION]: {
+    allOrganizations: [],
     organization: '',
     userOrganizationsList: [],
   },
@@ -199,6 +210,7 @@ const emptyMetadataInEditing = {
       'published',
     ],
     publicationState: '',
+    visibilityState: '',
     doi: '',
     publisher: '',
     publicationYear: '',
@@ -208,25 +220,25 @@ const emptyMetadataInEditing = {
 
 const mainDetailSteps = [
   {
-    title: 'Basic Info',
+    title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
-    title: 'Description',
+    title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
     component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
-    title: 'Keywords',
+    title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
     component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
   },
   {
-    title: 'Authors',
+    title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
     component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
@@ -235,19 +247,19 @@ const mainDetailSteps = [
 
 const dataDetailSteps = [
   {
-    title: 'Data & Resources',
+    title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
     component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
-    title: 'Data Info',
+    title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
   },
   {
-    title: 'Data Location',
+    title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
     component: EditDataGeo,
@@ -256,7 +268,7 @@ const dataDetailSteps = [
 
 export const metadataCreationSteps = [
   {
-    title: 'Main Info',
+    title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
@@ -265,7 +277,7 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Data Info',
+    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
@@ -274,13 +286,13 @@ export const metadataCreationSteps = [
     color: 'white',
   },
   {
-    title: 'Related Info',
+    title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
-    title: 'Publication Info',
+    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
@@ -293,8 +305,10 @@ export function initializeSteps(steps) {
     const step = steps[i];
 
     if (step) {
+      // initialize these properties here so they are reactive
       step.readOnlyFields = null;
       step.readOnlyExplanation = null;
+      step.error = null;
 
       if (step.detailSteps) {
         step.detailSteps = initializeSteps(step.detailSteps);
@@ -306,7 +320,7 @@ export function initializeSteps(steps) {
 }
 
 export function getStepByName(eventName, steps) {
-  if (!steps) {
+  if (!eventName || !steps) {
     return null;
   }
 
@@ -326,6 +340,23 @@ export function getStepByName(eventName, steps) {
   }
 
   return null;
+}
+
+export function getStepFromRoute(route) {
+
+  const stepTitle = route?.params?.step || null;
+  const currentStep = metadataCreationSteps.filter(step => step.title === stepTitle)[0];
+
+  const detailSteps = currentStep?.detailSteps || null;
+  const subStepTitle = route?.params?.substep || null;
+
+  if (detailSteps && subStepTitle) {
+
+    const currentSubstep = detailSteps.filter(subStep => subStep.title === subStepTitle)[0];
+    return currentSubstep?.key || null;
+  }
+
+  return currentStep?.key || null;
 }
 
 export function getEmptyMetadataInEditingObject() {
@@ -377,214 +408,4 @@ export function deleteEmptyObject(index, localObjects) {
 
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
-}
-
-// eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'parseDateString', function (dateStringFormat='dd.MM.yyyy') {
-  // Helper function for yup date string parsing
-  // eslint-disable-next-line func-names
-  return this.transform(function (value, originalValue) {
-    if (originalValue === '') {
-      return null
-    }
-    if (this.isType(value)) return value;
-
-    value = parse(originalValue, dateStringFormat, new Date());
-
-    return isDate(value) ? value : originalValue;
-  });
-});
-
-// eslint-disable-next-line func-names
-yup.addMethod(yup.date, 'validateDateRange', function (dateStartField, dateEndField) {
-  // Helper function for yup date range validation
-  return this.test(
-    'validate-date-range',
-    'End date can\'t be before start date.',
-    // eslint-disable-next-line func-names, prefer-arrow-callback
-    function (_value, options) {
-      const dateStart = options.parent[dateStartField]
-      const parsedStart = isDate(dateStart) ?
-      dateStart : parse(dateStart, 'dd.MM.yyyy', new Date());
-
-      const dateEnd = options.parent[dateEndField]
-      const parsedEnd = isDate(dateEnd) ?
-      dateEnd : parse(dateEnd, 'dd.MM.yyyy', new Date());
-
-      return parsedEnd >= parsedStart;
-    }
-  );
-});
-
-const metadataInEditingValidations = {
-  [EDITMETADATA_MAIN_HEADER]: () =>
-    yup.object().shape({
-      metadataTitle: yup.string()
-        .required('Dataset title is required')
-        .min(5, 'Dataset title must be at least 5 characters'),
-      contactGivenName: yup.string()
-        .required('Contact given (first) name is required')
-        .min(3, 'Contact given (first) name must be at least 3 characters'),
-      contactSurname: yup.string()
-        .required('Contact surname is required')
-        .min(3, 'Contact surname must be at least 3 characters'),
-      contactEmail: yup.string()
-        .email('Contact email must be a valid email address')
-        .required('Contact email is required'),
-    }),
-  [EDITMETADATA_MAIN_DESCRIPTION]: () =>
-    yup.object().shape({
-      description: yup.string()
-        .required('Description is required')
-        .min(30, 'Please write at least a minimal description with 30 characters.'),
-    }),
-  [EDITMETADATA_KEYWORDS]: () =>
-    yup.object().shape({
-      keywords: yup.array()
-        .min(5, 'Please enter at least 5 keywords.'),
-    }),
-  [EDITMETADATA_AUTHOR_LIST]: () =>
-    yup.object().shape({
-      authors: yup.array()
-        .min(1, 'Please enter at least one author.'),
-    }),
-  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
-  // yup.object().shape({
-  //   isLink: yup.boolean(),
-  //   name: yup
-  //     .string()
-  //     .required('Resource name is required')
-  //     .min(5, 'Resource name must be at least 5 characters')
-  //     .notOneOf(
-  //       [yup.ref('url')],
-  //       'Title cannot be the same as the resource url',
-  //     ),
-  //   description: yup.string(),
-  //   url: yup.string().when('isLink', {
-  //     is: true,
-  //     then: yup
-  //       .string()
-  //       .url('Resource url must be valid')
-  //       .required('Resource url is required'),
-  //     otherwise: yup.string().notRequired(),
-  //   }),
-  // }),
-  [EDITMETADATA_DATA_INFO]: () =>
-    yup.object().shape({
-      dates: yup.array().of(
-        yup.object().shape({
-          dateType: yup.string('Date type must be a string.'),
-          dateStart: yup
-            .date('Start date must be a valid date.')
-            .parseDateString()
-            .validateDateRange('dateStart', 'dateEnd'),
-          dateEnd: yup
-            .date('End date must be a valid date.')
-            .parseDateString()
-            .validateDateRange('dateStart', 'dateEnd')
-            .nullable(),
-        }),
-      ),
-      dataLicenseId: yup
-      .string()
-      .test(
-        'empty-check',
-        'An data licence must be selected.',
-        dataLicenseId => dataLicenseId !== '',
-      ),
-    }),
-  [EDITMETADATA_DATA_GEO]: () =>
-    yup.object().shape({
-      geometries: yup.array().min(1, 'Editing Error: a geometry is required to be set'),
-    }),
-  [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
-    yup.object().shape({
-      relatedPublicationsText: yup.string().min(20, 'Please use at least 20 characters to describe the related publications.'),
-    }),
-  [EDITMETADATA_RELATED_DATASETS]: () =>
-    yup.object().shape({
-      relatedDatasetsText: yup.string().min(20, 'Please use at least 20 characters to describe the related datasets.'),
-    }),
-  [EDITMETADATA_ORGANIZATION]: () =>
-    yup.object().shape({
-      organizationId: yup
-      .string('organizationId must be a string.')
-      .test(
-        'empty-check',
-        'An organization must be selected.',
-        organizationId => organizationId !== '',
-        // Add validation - one of items in list
-      ),
-    }),
-  [EDITMETADATA_CUSTOMFIELDS]: () =>
-    yup.object().shape({
-      customFields: yup.array().of(
-        yup.object({
-          fieldName: yup.string().required().min(3),
-          content: yup.string().min(3),
-        }),
-      ),
-    }),
-  [EDITMETADATA_PUBLICATION_INFO]: () =>
-    yup.object().shape({
-      publicationState: yup.string().required(),
-      doi: yup.string().required().min(3),
-      publisher: yup.string().required().min(3),
-      publicationYear: yup.string().required(),
-      funders: yup.array().min(1).of(
-        yup.object().shape({
-          institution: yup.string().required().min(3),
-          grantNumber: yup.string(),
-          institutionUrl: yup.string().url('Please provide an valid link / url with starting "http://"'),
-        }),
-      ),
-    }),
-};
-
-export function getValidationMetadataEditingObject(key) {
-  const validationEntry = metadataInEditingValidations[key];
-  return validationEntry ? validationEntry() : null;
-}
-
-export function isArrayValid(array, arrayProperty, index, valueProperty, validations, errorArray) {
-  const arrayPrefix = `${arrayProperty}[${index}].${valueProperty}`;
-
-  try {
-    validations.validateSyncAt(arrayPrefix, { [arrayProperty]: array });
-  } catch (e) {
-    if (!errorArray) {
-      // return the full error is there isn't an array given,
-      // so the error can be handled differently
-      return e;
-    }
-
-    let msg = e.message;
-    msg = msg.replace(arrayPrefix, valueProperty);
-
-    errorArray[index][valueProperty] = msg;
-    return false;
-  }
-
-  errorArray[index][valueProperty] = '';
-
-  return true;
-}
-
-export function isFieldValid(property, value, validations, errorObject) {
-  try {
-    validations.validateSyncAt(property, { [property]: value });
-  } catch (e) {
-    if (!errorObject) {
-      // return the full error is there isn't an array given,
-      // so the error can be handled differently
-      return e;
-    }
-
-    errorObject[property] = e.message;
-    return false;
-  }
-
-  errorObject[property] = '';
-
-  return true;
 }

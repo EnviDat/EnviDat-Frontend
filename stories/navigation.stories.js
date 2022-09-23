@@ -12,9 +12,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// /* eslint-disable import/no-extraneous-dependencies */
-// import { action } from '@storybook/addon-actions';
-
 import TheNavigation from '@/components/Navigation/TheNavigation';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
 
@@ -24,6 +21,8 @@ import {
   navigationItems,
   userMenuItems,
 } from '@/store/navigationState';
+
+import { NAVIGATION_VIEWS } from './storybookFolder';
 
 const dominikHaas = {
   fullName: 'Dominik Haas',
@@ -42,7 +41,7 @@ const methods = {
 const appVersion = process.env.VUE_APP_VERSION;
 
 export default {
-  title: '5 Navigation / Redesigned Navigation',
+  title: `${NAVIGATION_VIEWS} / Redesigned Navigation`,
   decorators: [],
   parameters: {},
 };

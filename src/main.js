@@ -53,6 +53,29 @@ Vue.config.errorHandler = (err, vm, info) => {
 //   // vm.$store.commit(ADD_USER_NOTIFICATION, msg + ' ' + trace );
 // }
 
+const storeReference = store;
+const excludedDomains = [process.env.VUE_APP_ENVIDAT_STATIC_ROOT, process.env.VUE_APP_CONFIG_URL];
+
+axios.interceptors.request.use((config) => {
+  // Do something before request is sent
+
+  const urlIsExcluded = excludedDomains.some(domain => config.url.includes(domain));
+
+  if (!urlIsExcluded) {
+    const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
+
+    if (apiKey) {
+      config.withCredentials = true;
+      config.Authorization = apiKey;
+    }
+  }
+
+  return config;
+}, (error) => 
+  // Do something with request error
+   Promise.reject(error),
+);
+
 axios.interceptors.response.use(
   // this is called "onFulfilled"
   // Any status code that lie within the range of 2xx cause this function to trigger

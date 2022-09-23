@@ -1,7 +1,7 @@
 <template>
   <v-card id="MetadataHeader"
           :dark="dark"
-          :color="(showPlaceholder || (!showPlaceholder && !metadataTitle)) ? 'primary' : 'transparent'"  >
+          :color="(showPlaceholder || !hasContent) ? 'primary' : 'transparent'"  >
 
     <div id="headerBackground"
          :style="dynamicCardBackground" >
@@ -17,8 +17,8 @@
                       icon-color="primary"
                       color="primary"
                       outlined
-                      tool-tip-text="Close Metadata"
-                      :tool-tip-bottom="true"
+                      tooltipText="Close metadata view"
+                      :tooltipBottom="true"
                       @clicked="catchBackClicked" />
 
     <v-container fluid
@@ -26,13 +26,13 @@
     <v-row no-gutters
             style="position: relative; z-index: 1;">
 
-      <v-col v-if="metadataTitle"
+      <v-col v-if="hasContent"
               cols="12" >
         <div class="headerTitle"
               :style="`line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`"
               :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
                         'display-2': $vuetify.breakpoint.xlOnly,
-                        'display-1': $vuetify.breakpoint.mdAndUp,
+                        'text-h4': $vuetify.breakpoint.mdAndUp,
                         'headline': $vuetify.breakpoint.smOnly,
                         'subtitle-1': $vuetify.breakpoint.xsOnly,
                       }" >
@@ -45,7 +45,7 @@
         <div class="headerTitle py-3"
               :style="`color: ${$vuetify.theme.themes.light.error}`"
               :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                        'display-1': $vuetify.breakpoint.mdAndDown,
+                        'text-h4': $vuetify.breakpoint.mdAndDown,
                         'headline': $vuetify.breakpoint.smAndDown,
                       }" >
           {{ `${NotFoundTitle} '${metadataId}'` }}
@@ -94,11 +94,12 @@
                       }"
                       class="shrink" >
 
-                <tag-chip-author :name="authorName(author)"
-                                  :tooltipText="authorToolTipText"
-                                  :asciiDead="asciiDead"
-                                  :authorPassedInfo="authorPassedInfo"
-                                  @clicked="catchAuthorClicked(authorName(author))" />
+                <TagChipAuthor :name="authorName(author)"
+                                :tooltipText="authorToolTipText"
+                                :asciiDead="asciiDead"
+                                :authorPassedInfo="authorPassedInfo"
+                                isSmall
+                               @clicked="catchAuthorClicked(authorGivenName(author), authorLastName(author))" />
               </v-col>
             </v-row>
           </v-col>
@@ -163,8 +164,9 @@
 
           <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
-            <BaseIconLabelView :text="contactEmail"
+            <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
+                                  :url="`mailto:${contactEmailLowerCase}`"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -188,6 +190,7 @@
                   class="headerInfo py-0" >
             <BaseIconLabelView :text="license"
                                   :label="licenseIcon ? '' : 'License:'"
+                                  :url="licenseUrl"
                                   :icon="licenseIcon"
                                   icon-tooltip="License for the data files"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -258,17 +261,41 @@
     </v-container>
 
     <v-card-actions v-show="expanded"
-                    style="position: absolute; bottom: 0px; right: 0px; z-index: 2;">
-      <base-icon-button v-if="maxTagsReached"
-                        materialIconName="expand_more"
-                        color="primary"
-                        :iconColor="showTagsExpanded ? 'accent' : 'primary'"
-                        outlined
-                        :rotateOnClick="true"
-                        :rotateToggle="showTagsExpanded"
-                        :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
-                        :tooltipBottom="true"
-                        @clicked="showTagsExpanded = !showTagsExpanded" />
+                    class="orgaChipFullWidth"
+                    style="position: absolute; bottom: 0; right: 0; z-index: 2;">
+      <v-row no-gutters
+              align="center">
+
+        <v-col v-if="maxTagsReached"
+               class="px-1" >
+          <base-icon-button materialIconName="expand_more"
+                            color="primary"
+                            :iconColor="showTagsExpanded ? 'accent' : 'primary'"
+                            outlined
+                            :rotateOnClick="true"
+                            :rotateToggle="showTagsExpanded"
+                            :tooltipText="showTagsExpanded ? 'Hide all tags' : 'Show all tags'"
+                            :tooltipBottom="true"
+                            @clicked="showTagsExpanded = !showTagsExpanded" />
+
+        </v-col>
+
+        <v-col v-if="metadataState"
+               class="px-1" >
+          <MetadataStateChip :state="metadataState"
+                              :showOnHover="metadataState === 'published'" />
+
+        </v-col>
+
+        <v-col v-if="hasContent"
+          class="px-1" >
+          <MetadataOrganizationChip :organization="organization"
+                                    :tooltip="organizationTooltip" />
+
+        </v-col>
+
+      </v-row>
+
     </v-card-actions>
   </v-card>
 </template>
@@ -293,8 +320,10 @@ import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
-import { getAuthorName } from '@/factories/authorFactory';
-import TagChipAuthor from '../../../../components/Chips/TagChipAuthor';
+import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip';
 
 export default {
   name: 'MetadataHeader',
@@ -304,6 +333,8 @@ export default {
     TagChipPlaceholder,
     BaseIconLabelView,
     BaseIconButton,
+    MetadataOrganizationChip,
+    MetadataStateChip,
   },
   props: {
     metadataId: String,
@@ -313,6 +344,7 @@ export default {
     contactEmail: String,
     doi: String,
     license: String,
+    licenseUrl: String,
     tags: Array,
     authors: Array,
     maxTags: Number,
@@ -334,6 +366,12 @@ export default {
       default: true,
     },
     categoryColor: String,
+    organization: String,
+    organizationTooltip: String,
+    metadataState: {
+      type: String,
+      default: undefined,
+    },
   },
   data: () => ({
     showTagsExpanded: false,
@@ -346,6 +384,9 @@ export default {
     authorTagsMaxHeight: 75,
   }),
   computed: {
+    hasContent() {
+      return this.metadataTitle && !this.showPlaceholder;
+    },
     asciiDead() {
       return this.authorDeadInfo && this.authorDeadInfo.asciiDead ? this.authorDeadInfo.asciiDead : null;
     },
@@ -388,6 +429,9 @@ export default {
     doiUrl() {
       return this.doi ? `https://www.doi.org/${this.doi}` : null;
     },
+    contactEmailLowerCase() {
+      return this.contactEmail?.toLowerCase() || '';
+    },
   },
   updated() {
     this.$nextTick(() => {
@@ -401,17 +445,18 @@ export default {
     catchTagClicked(tagId) {
       this.$emit('clickedTag', tagId);
     },
-    catchAuthorClicked(authorName) {
-      this.$emit('clickedAuthor', authorName);
+    catchAuthorClicked(authorGivenName, authorLastName) {
+      this.$emit('clickedAuthor', authorGivenName, authorLastName);
     },
     catchBackClicked() {
       this.$emit('clickedBack');
     },
     iconFlip(icon) {
-      const iconflip = this.dark ? `${icon}_w` : icon;
-      return iconflip;
+      return this.dark ? `${icon}_w` : icon;
     },
     authorName: getAuthorName,
+    authorGivenName: getAuthorGivenName,
+    authorLastName: getAuthorLastName,
   },
 };
 </script>
@@ -426,7 +471,6 @@ export default {
   }
 
   .headerInfo {
-    font-family: 'Baskervville', serif !important;
     font-weight: 400;
     opacity: 0.85;
     line-height: 1rem;
@@ -438,6 +482,11 @@ export default {
   }
 
   .headerTag {
+    opacity: 0.85;
+  }
+
+  .orgaChipFullWidth .organizationChip {
+    max-width: unset !important;
     opacity: 0.85;
   }
 

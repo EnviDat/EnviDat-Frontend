@@ -9,10 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
-
 import globalMethods from '@/factories/globalMethods';
 import ProjectCard from '@/modules/projects/components/ProjectCard';
 import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder';
@@ -22,6 +18,7 @@ import {
 } from '@/factories/projectsDataFactory';
 
 import projectJSON from '../public/testdata/projects.json';
+import { CARD_VIEWS } from './storybookFolder';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
@@ -32,7 +29,7 @@ const imgName = 'c_b_forest_texture_bark2';
 const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
 const defaultImg = images[`./${imgName}.jpg`];
 
-export const methods = {
+const methods = {
 //  onCardClick: action('clicked on card'),
 //  onTagClick: action('clicked on tag'),
   projectsCardsParents() {
@@ -61,8 +58,14 @@ export const methods = {
   },
 };
 
-storiesOf('3 Cards / Projects Cards', module)
-  .add('collection of Parents', () => ({
+export default {
+  title: `${CARD_VIEWS} / Projects Cards`,
+  decorators: [],
+  parameters: {
+  },
+};
+
+export const ProjectCardsParents = () => ({
     components: { ProjectCard, ProjectCardPlaceholder },
     template: `
     <v-container grid-list-lg fluid pa-0>
@@ -94,8 +97,9 @@ storiesOf('3 Cards / Projects Cards', module)
       projectsCards,
       defaultImg,
     }),
-  }))
-  .add('collection of Children', () => ({
+  });
+
+export const ProjectCardsChildren = () => ({
     components: { ProjectCard },
     template: `
     <v-container grid-list-lg fluid pa-0>
@@ -124,4 +128,4 @@ storiesOf('3 Cards / Projects Cards', module)
       projectsCards,
       defaultImg,
     }),
-  }));
+  });

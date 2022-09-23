@@ -10,14 +10,23 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 
-import TagChip from '@/components/Chips/TagChip.vue';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import TagChip from '@/components/Chips/TagChip';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip';
 
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
+import { CHIPS } from './storybookFolder';
 
-storiesOf('4 Filtering / Keyword Tag', module)
-  .add('Tag states', () => ({
+const menuEntry = `${CHIPS} / single chips`; // / Keyword Tag`;
+
+export default {
+    title: menuEntry,
+    decorators: [],
+    parameters: {},
+};
+
+export const TagChips = () => ({
     components: { TagChip, TagChipPlaceholder },
     template: `
     <v-row >
@@ -51,4 +60,85 @@ storiesOf('4 Filtering / Keyword Tag', module)
       </v-col>
 
     </v-row>`,
-  }));
+  });
+
+export const MetadataStateChips = () => ({
+    components: { MetadataStateChip },
+    template: `
+    <v-row >
+
+      <v-col>
+        empty (fallback)
+        <MetadataStateChip />
+      </v-col>
+
+      <v-col>
+        <MetadataStateChip state="draft" />
+      </v-col>
+      
+      <v-col>
+        showOnHover
+        <MetadataStateChip state="draft"
+                           showOnHover />
+      </v-col>
+
+      <v-col>
+        <MetadataStateChip state="unpublished" />
+      </v-col>
+
+      <v-col>
+        showOnHover
+        <MetadataStateChip state="unpublished"
+                           showOnHover />
+      </v-col>
+
+      <v-col>
+        <MetadataStateChip state="published" />
+      </v-col>
+
+      <v-col>
+        showOnHover
+        <MetadataStateChip state="published"
+                           showOnHover />
+      </v-col>
+    
+    </v-row>`,
+});
+
+export const MetadataOrganizationChips = () => ({
+    components: { MetadataOrganizationChip },
+    template: `
+    <v-row >
+
+      <v-col>
+        empty (fallback)
+        <MetadataOrganizationChip />
+      </v-col>
+
+      <v-col>
+        <MetadataOrganizationChip
+            organization="ground-based-remote-sensing"
+            tooltip="Ground-based Remote Sensing"
+        />
+      </v-col>
+
+      <v-col>
+        showOnHover
+        <MetadataOrganizationChip
+            showOnHover
+            organization="trusted"
+            tooltip="Trusted Users Organization"
+        />
+      </v-col>
+
+      <v-col>
+        showOnHover
+        <MetadataOrganizationChip
+            showOnHover
+            organization="swissforestlab-swissfl"
+            tooltip="SwissFL"
+        />
+      </v-col>
+    
+    </v-row>`,
+});

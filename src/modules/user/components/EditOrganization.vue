@@ -34,16 +34,46 @@
 
       </v-row>
 
+      <v-row no-gutters align="center" >
+        <v-col class="pt-2 text-body-1">
+          Changing the Organization of a datasets is for now not possible.
+          <br>
+          Contact the Envidat team for support to make such a change.
+        </v-col>
+      </v-row>
+
+      <v-row >
+        <v-col >
+
+          <v-text-field outlined
+                        prepend-icon="home_filled"
+                        :value="selectedOrganization.title"
+                        readonly
+                        hint='This field is "readonly" only the EnviDat Team can change it.'
+                        :error-messages="validationErrors.organizationId"
+                        />
+        </v-col>
+
+<!--
+        <v-col >
+          <MetadataOrganizationChip :organization="selectedOrganization.title" />
+        </v-col>
+-->
+      </v-row>
+
+
+<!--
       <v-row>
         <v-col>
 
-          <v-text-field v-if="userOrganizationsListItems.length === 1"
-                        :value="userOrganizationsListItems[0]"
+          <v-text-field v-if="!userIsPartOfSelectedOrganization"
                         outlined
                         readonly
                         hint='This field is "readonly" because you belong to only one organization.'
                         :error-messages="validationErrors.organizationId"
                         >
+            <MetadataOrganizationChip :organization="selectedOrganization.title" />
+
           </v-text-field>
 
           <v-select     v-else
@@ -65,6 +95,7 @@
 
         </v-col>
       </v-row>
+-->
 
     </v-container>
   </v-card>
@@ -88,11 +119,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  mapState,
-} from 'vuex';
+import { mapState } from 'vuex';
 
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
@@ -101,7 +131,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import {
   USER_SIGNIN_NAMESPACE,
@@ -120,6 +150,10 @@ export default {
       default: '',
     },
     userOrganizations: {
+      type: Array,
+      default: () => [],
+    },
+    allOrganizations: {
       type: Array,
       default: () => [],
     },
@@ -152,18 +186,63 @@ export default {
       default: '',
     },
   },
-  beforeMount() {
-    if (this.user) {
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+  },
+  mounted() {
+//  beforeMount() {
+    if (this.currentUser) {
       this.fetchUserOrganisationData();
     }
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
+    currentUser() {
+      if (this.$store) {
+        return this.user;
+      }
+
+      return null;
+    },
+    userOrganizationsCount() {
+
+      if (this.allOrganizations) {
+        return this.allOrganizations.length;
+      }
+
+      if (this.$store) {
+        return this.userOrganizationsList.length;
+      }
+
+      return 0;
+    },
+    previewOrganization() {
+      return this.previewOrganizationId || this.organizationId;
+    },
+    userIsPartOfSelectedOrganization(){
+      if (!!this.selectedOrganization?.id && this.userOrganizationsList?.length > 0) {
+        const matched = this.userOrganizationsList.filter(x => x.id === this.selectedOrganization.id)[0];
+        return !!matched;
+      }
+
+      return false;
+    },
     selectedOrganization () {
       // Get organization title, filtering userOrganizationsList by organizationId prop
 
-      const userOrg = this.userOrganizationsList.filter(x => x.id === this.organizationId)[0];
+      let userOrg = null;
+
+      if (this.allOrganizations?.length > 0) {
+        userOrg = this.allOrganizations.filter(x => x.id === this.previewOrganization)[0];
+      }
+
+      if (!userOrg && this.$store && this.userOrganizationsList?.length > 0) {
+        userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
+      }
 
       if (!userOrg) {
         return this.emptySelection
@@ -177,8 +256,15 @@ export default {
     userOrganizationsListItems () {
       // Return formatted list of organizations user is member of, with id/title
 
-      if (this.userOrganizationsList) {
+      if (this.$store && this.userOrganizationsList) {
         return this.userOrganizationsList.map(org => ({
+          id: org.id,
+          title: org.title,
+        }));
+      }
+
+      if (this.allOrganizations) {
+        return this.allOrganizations.map(org => ({
           id: org.id,
           title: org.title,
         }));
@@ -191,8 +277,13 @@ export default {
     },
   },
   methods: {
+    clearPreview() {
+      this.previewOrganizationId = '';
+    },
     setOrganization(orgId) {
       // Select organization based on picked item and pass via event bus
+
+      this.previewOrganizationId = orgId;
 
       if (isFieldValid('organizationId', orgId, this.validations, this.validationErrors)) {
 
@@ -205,7 +296,7 @@ export default {
       }
     },
     fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.currentUser.id);
     },
     validateProperty(property, value) {
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -217,9 +308,10 @@ export default {
       organizationId: null,
     },
     emptySelection: {
-      'id': '',
-      'title': '',
+      id: '',
+      title: '',
     },
+    previewOrganizationId: '',
   }),
   components: {
     BaseStatusLabelView,

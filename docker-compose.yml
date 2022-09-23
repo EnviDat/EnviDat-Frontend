@@ -6,10 +6,10 @@ networks:
 
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/frontend:local"
+    image: "${INTERNAL_REG}/frontend:debug"
     build:
       context: .
-      target: local-dev
+      target: debug
       args:
         INTERNAL_REG: ${INTERNAL_REG}
         EXTERNAL_REG: ${EXTERNAL_REG}
@@ -18,8 +18,10 @@ services:
     container_name: envidat_frontend
     ports:
       - 8990:8080
+      - 9229:9229
     volumes:
       - .:/app
+      - /app/node_modules/
     networks:
       - ckan-internal
     restart: unless-stopped

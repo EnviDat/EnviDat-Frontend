@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title class="headline text-no-wrap pa-4">
+    <v-card-title class="text-h5 text-no-wrap pa-4">
       {{ title }}
     </v-card-title>
 
@@ -15,10 +15,11 @@
                             :buttonText="confirmText"
                             @clicked="confirmClick" />
 
-      <BaseRectangleButton marginClass="mx-1"
-                            :buttonText="cancelText"
-                            :isFlat="true"
-                            @clicked="cancelClick" />
+      <BaseRectangleButton v-if="cancelClick"
+                           marginClass="mx-1"
+                           :buttonText="cancelText"
+                           :isFlat="true"
+                           @clicked="cancelClick" />
 
     </v-card-actions>
 
@@ -55,7 +56,10 @@ export default {
       type: String,
       default: 'Cancel',
     },
-    cancelClick: Function,
+    cancelClick: {
+      type: Function,
+      default: undefined,
+    },
   },
   components: {
     BaseRectangleButton,

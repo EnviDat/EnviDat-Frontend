@@ -11,8 +11,8 @@
                           indeterminate />
     </template>
 
-    <v-card-title class="headline resourceHeadline white--text">
-      {{ name ? name : 'No name set' }}
+    <v-card-title class="text-h5 resourceHeadline white--text">
+      {{ resourceName }}
     </v-card-title>
 
     <v-card-text class="pt-0 white--text"
@@ -104,7 +104,7 @@
     </v-card-text>
 
     <v-card-actions class="ma-0 pa-2"
-                    style="position: absolute; bottom: 0px; right: 50px;" >
+                    style="position: absolute; bottom: 0; right: 55px;" >
 
       <base-icon-button v-if="maxDescriptionLengthReached"
                         :class="isProtected ? 'mr-2' : ''"
@@ -122,8 +122,10 @@
 
 
       <v-container v-if="showGenericOpenButton"
-                   class="ma-2 pa-0"
-                   style="position: absolute; top: 0px; right: 0px; width: 40px;">
+                   class="pa-2"
+                   style="position: absolute; right: 0; width: 55px;"
+                   :style="`${ genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;' }`">
+
         <v-row >
           <v-col cols="12" >
           <base-icon-button :materialIconName="openButtonIcon"
@@ -137,13 +139,12 @@
 
       </v-container>
 
-      <v-container fluid class="pa-2"
-                    style="position: absolute; bottom: 0px; right: 0px; width: 55px;">
+      <v-container class="pa-2"
+                    style="position: absolute; bottom: 0; right: 0; width: 55px;">
 
       <v-row v-if="!isProtected">
 
-        <v-col cols="12"
-                class="pt-1">
+        <v-col cols="12" >
           <base-icon-button :materialIconName="isFile ? 'file_download' : 'link'"
                             iconColor="black"
                             color="accent"
@@ -233,6 +234,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    genericOpenButtonBottom: {
+      type: Boolean,
+      default: false,
+    },
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
@@ -254,6 +259,14 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    resourceName() {
+      if (!this.name && !!this.url) {
+        const splits = this.url.split('/');
+        return splits[splits.length - 1];
+      }
+
+      return this.name ? this.name : 'Unnamed resource';
+    },
     scrollbarColorFront() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
     },

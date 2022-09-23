@@ -9,7 +9,7 @@
     <v-container fluid class="pa-4">
 
       <v-row>
-        <v-col class="display-2">
+        <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>
@@ -37,14 +37,14 @@
                   md="9">
 
             <v-text-field v-model="email"
-                          :error-messages="emailErrors"
+                          :error-messages="backendErrors.email"
                           label="Email"
-                          required
-                          @change="$v.email.$touch()"
+                          @input="isEmailValid()"
+                          @keyup.enter="catchRequestToken"
                           tabindex="0" />
           </v-col>
 
-          <v-col v-if="emailAddressIsValid"
+          <v-col v-if="email && emailAddressIsValid"
                   cols="12"
                   md="3"
                   id="tokenButton" >
@@ -61,13 +61,13 @@
 
         <v-row v-if="requestSuccess && email" >
           <v-col cols="12"
-                  class="caption" >
+                  class="text-caption" >
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
           </v-col>
         </v-row>
 
 
-        <v-row v-if="emailAddressIsValid"
+        <v-row v-if="email && emailAddressIsValid"
                 id="tokenRow"
                 align="center"
                 justify="space-between"
@@ -83,20 +83,20 @@
                   md="5"
                   class="pt-0">
             <v-text-field v-model="key"
-                          :error-messages="keyErrors"
+                          :error-messages="backendErrors.key"
                           :counter="keyLength"
                           label="Token"
-                          required
                           clearable
                           clear-icon="clear"
-                          @blur="$v.key.$touch()"
+                          @input="isTokenValid()"
+                          @keyup.enter="catchSignIn"
                           tabindex="0"/>
           </v-col>
 
           <v-col cols="12"
                   md="3" >
 
-            <v-btn v-show="!$v.$invalid"
+            <v-btn v-show="key && keyAddressIsValid"
                     color="primary"
                     :loading="signInRequestLoading"
                     @click="catchSignIn"
@@ -106,55 +106,43 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="formInvalid || errorField"
+        <v-row v-if="formErrorText"
                 id="errorTextRow"
                 :style="`background-color: ${errorColor};`"
                 class="mt-4" >
           <v-col cols="12"
-                  class="body-1">
+                  class="text-body-1">
             {{ formErrorText }}
           </v-col>
         </v-row>
-
-        <!-- <v-row v-if="!key || !keyErrors"
-                id="tokenButtonRow" >
-
-          <v-col v-if="!signedIn"
-                  cols="12"
-                  md="4">
-
-            <v-row no-gutters >
-              <v-col v-if="requestSuccess"
-                      cols="12"
-                      class="caption" >
-                {{ `${requestSentText} ${email}. ${requestSentText2}` }}
-              </v-col>
-
-              <v-col cols="12"
-                      :class="requestSuccess ? 'pt-3' : ''" >
-                <v-btn color="primary"
-                        :loading="requestLoading"
-                        @click="catchRequestToken">
-                  {{ tokenButtonText }}
-                </v-btn>
-              </v-col>
-
-            </v-row>
-          </v-col>
-
-        </v-row> -->
 
       </form>
 
       <v-row v-if="signedIn"
              id="signinButtonRow" >
 
-        <v-col >
+        <v-col class="shrink">
+          <BaseRectangleButton color="primary"
+                               :button-text="dashboardButtonText"
+                               @clicked="catchOpenDashboard"
+          />
+
+        </v-col>
+
+        <v-col class="shrink">
+<!--
           <v-btn color="secondary"
                  outlined
                  @click="catchSignOut">
             {{ signoutButtonText }}
           </v-btn>
+-->
+
+          <BaseRectangleButton color="secondary"
+                               :button-text="signoutButtonText"
+                               is-outlined
+                               @clicked="catchSignOut"
+          />
         </v-col>
 
       </v-row>
@@ -179,21 +167,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { validationMixin } from 'vuelidate';
-import {
- email,
- required,
- minLength,
- maxLength,
-} from 'vuelidate/lib/validators';
 
 import signInPic from '@/modules/user/assets/signin.jpg';
+import { isFieldValid } from '@/factories/userEditingValidations';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import * as yup from 'yup';
 
 const keyLength = 32;
 
 export default {
-  components: {
-  },
   props: {
     prefilledEmail: String,
     prefilledKey: String,
@@ -221,7 +203,10 @@ export default {
   },
   computed: {
     emailAddressIsValid() {
-      return !this.signedIn && !this.$v.email.$invalid && this.emailErrors.length <= 0;
+      return !this.signedIn && !this.backendErrors.email;
+    },
+    keyAddressIsValid() {
+      return !this.signedIn && !this.backendErrors.key;
     },
     tokenRequestLoading() {
       return this.requestLoading || this.signInRequestLoading;
@@ -229,60 +214,51 @@ export default {
     signInRequestLoading() {
       return this.signInLoading && !this.signInSuccess;
     },
-    emailErrors() {
-      const backendErr = this.backendErrors.email;
-      const errors = backendErr ? [backendErr] : [];
-
-      if (!this.$v.email.$dirty) return errors;
-
-      if (!this.$v.email.email) {
-        errors.push('Must be valid email');
-      }
-      if (!this.$v.email.required) {
-        errors.push('Email is required');
-      }
-
-      return errors;
-    },
-    keyErrors() {
-      const backendErr = this.backendErrors.key;
-      const errors = backendErr ? [backendErr] : [];
-
-      if (!this.$v.key.$dirty) return errors;
-
-      if (!this.$v.key.minLength || !this.$v.key.maxLength) {
-        errors.push(`Token must be ${this.keyLength} characters long`);
-      }
-
-      if (!this.$v.key.required) {
-        errors.push('Token is required.');
-      }
-
-      return errors;
-    },
     tokenButtonText() {
       return this.requestSuccess ? 'Get another token' : 'Request token';
     },
+    yupValidations: () =>
+      yup.object().shape({
+        email: yup.string()
+            .email('Email must be a valid email address')
+            .required('Email is required'),
+        key: yup.string()
+            .nullable()
+            .required('Token is required')
+            .min(32, 'Token must be 32 characters')
+            .max(32, 'Token must be 32 characters'),
+      }),
   },
   methods: {
+    isEmailValid(value) {
+      if (value) {
+        this.email = value;
+      }
+      return isFieldValid('email', this.email, this.yupValidations, this.backendErrors);
+    },
+    isTokenValid(value) {
+      if (value) {
+        this.key = value;
+      }
+      return isFieldValid('key', this.key, this.yupValidations, this.backendErrors);
+    },
     catchRequestToken() {
-      this.$v.email.$touch();
-      this.formInvalid = this.$v.email.$invalid;
 
-      if (!this.formInvalid) {
+      if (this.isEmailValid(this.email)) {
         this.$emit('requestToken', this.email);
       }
     },
     catchSignIn() {
-      this.$v.$touch();
-      this.formInvalid = this.$v.$invalid;
 
-      if (!this.formInvalid) {
+      if (this.isTokenValid(this.key) && this.isEmailValid(this.email)) {
         this.$emit('signIn', this.email, this.key);
       }
     },
     catchSignOut() {
       this.$emit('signOut');
+    },
+    catchOpenDashboard() {
+      this.$emit('openDashboard');
     },
   },
   watch: {
@@ -295,10 +271,12 @@ export default {
   data: () => ({
     signinButtonText: 'Sign In',
     signoutButtonText: 'Sign Out',
+    dashboardButtonText: 'Goto Dashboard',
     email: '',
     backendErrors: {
       email: '',
       key: '',
+      error: '',
     },
     key: '',
     formInvalid: false,
@@ -311,18 +289,9 @@ export default {
     instructionsText: 'Sign into EnviDat with your email address and the token which will be sent by email.',
     signInPic,
   }),
-  validations: {
-    email: {
-      required,
-      email,
-    },
-    key: {
-      required,
-      minLength: minLength(keyLength),
-      maxLength: maxLength(keyLength),
-    },
+  components: {
+    BaseRectangleButton,
   },
-  mixins: [validationMixin],
 };
 </script>
 

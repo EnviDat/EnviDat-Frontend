@@ -10,9 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import EditOrganization from '@/modules/user/components/EditOrganization';
 import OrganizationTree from '@/modules/user/components/OrganizationTree';
@@ -29,10 +26,13 @@ import { METADATA_EDITING } from './storybookFolder';
 const organizationsMap = getOrganizationMap(testOrganizations);
 const organizationsMap2 = { ...organizationsMap };
 
-const storybookFolder = `${METADATA_EDITING} / Organization`;
+export default {
+  title: `${METADATA_EDITING} / Organization`,
+  decorators: [],
+  parameters: {},
+};
 
-storiesOf(storybookFolder, module)
-  .add('Organization Tree view', () => ({
+export const OrganizationTreeView = () => ({
     components: { OrganizationTree },
     template: `
     <v-col>
@@ -78,11 +78,12 @@ storiesOf(storybookFolder, module)
       selectedOrga: '',
       preSelectedOrganization: 'wsl',
     }),
-  }))
-  .add('Edit Dataset Organization', () => ({
+  });
+
+export const EditDatasetOrganization = () => ({
     components: { EditOrganization },
     template: `
-      <v-col>
+    <v-col>
 
       <v-row>
         EditOrganization
@@ -90,7 +91,10 @@ storiesOf(storybookFolder, module)
 
       <v-row class='py-3' >
         <v-col >
-          <EditOrganization v-bind='genericProps' />
+          <EditOrganization :organizationId='genericProps.organizationId'
+                            :userOrganizations='genericProps.userOrganizations'
+                            :allOrganizations='genericProps.userOrganizations'
+          />
         </v-col>
       </v-row>
 
@@ -100,11 +104,14 @@ storiesOf(storybookFolder, module)
 
       <v-row class='py-3' >
         <v-col >
-          <EditOrganization v-bind='genericProps2' />
+          <EditOrganization :organizationId='genericProps2.organizationId'
+                            :userOrganizations='genericProps2.userOrganizations'
+                            :allOrganizations='genericProps2.userOrganizations'
+          />
         </v-col>
       </v-row>
 
-      </v-col>
+    </v-col>
     `,
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
@@ -138,8 +145,9 @@ storiesOf(storybookFolder, module)
               'state': 'active',
               'capacity': 'editor',
               'display_name': 'EPFL',
-              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png',
           },
+/*
           {
               'id': 'bd536a0f-d6ac-400e-923c-9dd351cb05fa',
               'name': 'trusted',
@@ -153,12 +161,13 @@ storiesOf(storybookFolder, module)
               'state': 'active',
               'capacity': 'editor',
               'display_name': 'Trusted Users Organization',
-              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png',
           },
+*/
       ],
       },
       genericProps2: {
-        organizationId: '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
+        organizationId: 'bd536a0f-d6ac-400e-923c-9dd351cb05fa',
         userOrganizations: [
           {
               'id': '0cf1daf3-4dea-4325-a9a9-ea63c659ae45',
@@ -173,7 +182,7 @@ storiesOf(storybookFolder, module)
               'state': 'active',
               'capacity': 'editor',
               'display_name': 'EPFL',
-              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png',
           },
           {
               'id': 'bd536a0f-d6ac-400e-923c-9dd351cb05fa',
@@ -188,13 +197,14 @@ storiesOf(storybookFolder, module)
               'state': 'active',
               'capacity': 'editor',
               'display_name': 'Trusted Users Organization',
-              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png'
+              'image_display_url': 'https://envidat04.wsl.ch/uploads/group/2021-04-04-210008.435647index.png',
           },
       ],
       },
     }),
-  }))
-  .add('Edit Organization component', () => ({
+  });
+
+export const EditOrganizationViews = () => ({
     components: { EditOrganizationTree },
     template: `
     <v-col>
@@ -248,4 +258,4 @@ storiesOf(storybookFolder, module)
         selectionDisabled: true,
       },
     }),
-  }));
+  });

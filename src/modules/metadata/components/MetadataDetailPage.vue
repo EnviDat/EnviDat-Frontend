@@ -69,7 +69,18 @@
       <component :is="gcnetModalComponent"
                  :currentStation="currentStation"
                  :fileObjects="fileObjects"
-                 :graphStyling="graphStyling" />
+                 :graphStyling="graphStyling"
+                 :config="config" />
+
+      <component :is="fullScreenComponent"
+                  :site="currentSite"
+                  :layerConfig="currentLayerConfig"
+                  :isGcnet="hasGcnetStationConfig"
+      />
+
+<!--
+      :mapHeight="mapHeight"
+-->
 
       <!-- prettier-ignore -->
       <component :is="filePreviewComponent"
@@ -103,35 +114,36 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 import {
-  METADATA_NAMESPACE,
-  LOAD_METADATA_CONTENT_BY_ID,
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
   EXTRACT_IDS_FROM_TEXT,
+  LOAD_METADATA_CONTENT_BY_ID,
+  METADATA_NAMESPACE,
   PUBLICATIONS_RESOLVE_IDS,
 } from '@/store/metadataMutationsConsts';
 import {
-  createHeader,
   createBody,
   createCitation,
-  createLocation,
-  createResources,
   createDetails,
   createFunding,
+  createHeader,
+  createLocation,
   createPublications,
   createRelatedDatasets,
+  createResources,
+  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
 import {
   eventBus,
-  METADATA_OPEN_MODAL,
-  METADATA_CLOSE_MODAL,
-  GCNET_OPEN_DETAIL_CHARTS,
   GCNET_INJECT_MICRO_CHARTS,
-  OPEN_TEXT_PREVIEW,
+  GCNET_OPEN_DETAIL_CHARTS,
   INJECT_MAP_FULLSCREEN,
+  METADATA_CLOSE_MODAL,
+  METADATA_OPEN_MODAL,
+  OPEN_TEXT_PREVIEW,
 } from '@/factories/eventBus';
 
 import {
@@ -180,7 +192,9 @@ export default {
     eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
     eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
-    // console.log(`register ${INJECT_MAP_FULLSCREEN}`);
+
+    this.fullScreenConfig = null;
+    this.fullScreenComponent = null;
     eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
   /**
@@ -195,6 +209,8 @@ export default {
     this.contactIcon = this.mixinMethods_getIcon('contact2');
     this.mailIcon = this.mixinMethods_getIcon('mail');
     this.licenseIcon = this.mixinMethods_getIcon('license');
+
+    window.scrollTo(0, 0);
   },
   /**
    * @description reset the scrolling to the top.
@@ -243,7 +259,7 @@ export default {
       publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
     hasGcnetStationConfig() {
-      return this.stationsConfig !== null;
+      return this.configInfos?.stationsConfigUrl !== null;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -290,11 +306,9 @@ export default {
       return fileList;
     },
     baseUrl() {
-      const url =
-        process.env.NODE_ENV === 'production'
+      return process.env.NODE_ENV === 'production'
           ? this.baseStationURL
           : this.baseStationURLTestdata;
-      return url;
     },
     /**
      * @returns {String} the metadataId from the route
@@ -346,6 +360,12 @@ export default {
 
       return this.appScrollPosition < 20;
     },
+    currentSite() {
+      return this.fullScreenConfig?.site || null;
+    },
+    currentLayerConfig() {
+      return this.fullScreenConfig?.layerConfig || null;
+    },
   },
   methods: {
     setGeoServiceLayers(location, layerConfig, wmsUrl) {
@@ -362,6 +382,7 @@ export default {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
+          ...(this.hasGcnetStationConfig) && { isGcnet: true },
         };
       }
 
@@ -395,6 +416,33 @@ export default {
         .get(url)
         .then((response) => {
           this.stationsConfig = response.data;
+
+          const stations = response.data;
+          const featureCollection = {
+            type: 'FeatureCollection',
+            features: [],
+          };
+
+          stations.forEach((geom) => {
+            featureCollection.features.push({
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [Number(geom.longitude), Number(geom.latitude)],
+              },
+              properties: {
+                alias: geom.alias,
+                name: geom.name,
+                active: geom.active,
+                elevation: geom.elevation,
+              },
+            });
+          });
+
+          // Override location with stations FeatureCollection, creating shallow copy
+          const locationOverride = { ...this.location };
+          locationOverride.geoJSON = featureCollection;
+          this.setGeoServiceLayers(locationOverride, null, null);
 
           successCallback();
         })
@@ -449,7 +497,11 @@ export default {
 
       eventBus.$emit(METADATA_OPEN_MODAL);
     },
-    showFullscreenMapModal() {
+    showFullscreenMapModal(layerConfig) {
+
+      this.modalTitle = `Fullscreen Map for ${this.header.metadataTitle}`;
+
+      this.fullScreenConfig = layerConfig;
       this.fullScreenComponent = MetadataMapFullscreen;
 
       eventBus.$emit(METADATA_OPEN_MODAL);
@@ -457,6 +509,7 @@ export default {
     closeModal() {
       this.gcnetModalComponent = null;
       this.filePreviewComponent = null;
+      this.fullScreenComponent = null;
     },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;
@@ -468,10 +521,8 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if (
-        (this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20) ||
-        this.$vuetify.breakpoint.mdAndUp
-      ) {
+      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
+        || this.$vuetify.breakpoint.mdAndUp ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
@@ -504,6 +555,8 @@ export default {
           this.$vuetify.breakpoint.smAndDown,
           this.authorDeadInfo,
         );
+
+        this.header.metadataState = getMetadataVisibilityState(currentContent);
 
         this.body = createBody(
           currentContent,
@@ -548,7 +601,7 @@ export default {
       if (this.resources?.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
-        enhanceElementsWithStrategyEvents(this.resources.resources);
+        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
@@ -596,7 +649,7 @@ export default {
       });
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
-        ...this.relatedDatasets,
+        datasets: this.relatedDatasets,
       });
 
       this.$set(components.MetadataFunding, 'genericProps', {
@@ -615,19 +668,19 @@ export default {
       this.secondCol = [
         components.MetadataResources,
         components.MetadataGeo,
-        components.MetadataDetails,
+        // components.MetadataDetails,
       ];
 
       this.singleCol = [
         components.MetadataBody,
         components.MetadataCitation,
-        components.MetadataPublications,
-        components.MetadataRelatedDatasets,
         components.MetadataResources,
-        components.MetadataFunding,
         components.MetadataGeo,
         components.MetadataAuthors,
-        components.MetadataDetails,
+        components.MetadataFunding,
+        components.MetadataPublications,
+        components.MetadataRelatedDatasets,
+        // components.MetadataDetails,
       ];
     },
     async injectMicroCharts() {
@@ -659,12 +712,10 @@ export default {
      * @param {any} tagName
      */
     catchTagClicked(tagName) {
-      const tagNames = [];
-      tagNames.push(tagName);
+      const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
 
-      const tagsEncoded = this.mixinMethods_encodeTagForUrl(tagNames);
       const query = {};
-      query.tags = tagsEncoded;
+      query.tags = stringTags;
 
       // clear the search result here, in case this metadata entry
       // was part of a full text search
@@ -675,13 +726,17 @@ export default {
         query,
       });
     },
-    /**
-     * @description
-     * @param {any} authorName
-     */
-    catchAuthorClicked(authorName) {
+    catchAuthorClicked(authorGivenName, authorLastName) {
+
       const query = {};
-      query.search = authorName;
+
+      // make sure to remove the ascii marker for dead authors for the search
+      // so the special characters won't case issues
+      const given = authorGivenName.replace(`(${this.asciiDead})`, '').trim();
+      const lastName = authorLastName.replace(`(${this.asciiDead})`, '').trim();
+
+      query.search = `${given} ${lastName}`;
+      query.isAuthorSearch = true;
 
       this.$router.push({
         path: BROWSE_PATH,
@@ -709,12 +764,12 @@ export default {
      * Either loads it from the backend via action or creates it from the localStorage.
      */
     async loadMetaDataContent() {
-      if (
-        !this.loadingMetadatasContent &&
-        !this.isCurrentIdOrName(this.metadataId)
-      ) {
+      if (!this.loadingMetadatasContent
+          && !this.isCurrentIdOrName(this.metadataId) ) {
         // in case of navigating into the page load the content directly via Id
-        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, this.metadataId);
+        await this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+          metadataId: this.metadataId,
+        });
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initiailze the components in the their loading state
@@ -745,11 +800,10 @@ export default {
      * @description watcher on idsToResolve start resolving them, if not already in the works
      */
     idsToResolve() {
-      if (
-        !this.extractingIds &&
-        this.idsToResolve?.length > 0 &&
-        !this.publicationsResolvingIds
-      ) {
+      if (!this.extractingIds
+          && this.idsToResolve?.length > 0
+          && !this.publicationsResolvingIds) {
+
         this.$store.dispatch(
           `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
           {
@@ -763,11 +817,10 @@ export default {
      * @description watcher on publicationsResolvedIds start replacing the text with the resolved texts based on the ids
      */
     publicationsResolvedIds() {
-      if (
-        !this.publicationsResolvingIds &&
-        this.publicationsResolvedIdsSize > 0 &&
-        this.idsToResolve?.length > 0
-      ) {
+      if ( !this.publicationsResolvingIds
+        && this.publicationsResolvedIdsSize > 0
+        && this.idsToResolve?.length > 0 ) {
+
         let publicationsText = this.publications?.text;
 
         if (publicationsText) {
@@ -805,15 +858,13 @@ export default {
      * if EnviDat is called via MetadataDetailPage URL directly
      */
     metadatasContent() {
-      if (
-        !this.loadingMetadatasContent &&
-        !this.loadingCurrentMetadataContent &&
-        !this.isCurrentIdOrName(this.metadataId)
-      ) {
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-          this.metadataId,
-        );
+      if (!this.loadingMetadatasContent
+          && !this.loadingCurrentMetadataContent
+          && !this.isCurrentIdOrName(this.metadataId)) {
+
+        this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+          metadataId: this.metadataId,
+        });
       }
     },
   },
@@ -871,6 +922,8 @@ export default {
     gcnetModalComponent: null,
     filePreviewComponent: null,
     filePreviewUrl: null,
+    fullScreenComponent: null,
+    fullScreenConfig: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,
@@ -888,9 +941,6 @@ export default {
 
 <style>
 .metadata_title {
-  font-family: 'Baskervville', serif !important;
-  /* font-weight: 700 !important; */
-  font-weight: 500 !important;
   line-height: 1rem !important;
 }
 

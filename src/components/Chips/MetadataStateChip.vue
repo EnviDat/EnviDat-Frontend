@@ -1,8 +1,21 @@
 <template>
   <v-chip class="stateChip"
-          small
-          :color="stateColor">
-    {{ stateText }}
+          :class="cssClasses"
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
+          :color="stateColor"
+          :style="!showContent ? 'font-size: 0.9rem;' : ''">
+
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+        <div v-on="on" >
+          {{ showContent ? stateText : stateText.substr(0, 1) }}
+        </div>
+      </template>
+
+      <span>{{ stateTooltip }}</span>
+    </v-tooltip>
+
   </v-chip>
 </template>
 
@@ -27,27 +40,57 @@ export default {
       type: String,
       default: '',
     },
+    tooltipMap: {
+      type: Object,
+      default: () => ({
+        draft: 'Draft datasets are only visible to you',
+        unpublished: 'Unpublished datasets are visible for you and your organization',
+        published: 'Published datasets are visible for everyone',
+      }),
+    },
     colorMap: {
       type: Object,
       default: () => ({
         draft: 'gray',
+        unpublished: 'warning',
         published: 'green',
-        approved: 'orange',
-        'pub_pending': 'orange',
-        'pub_requested': 'orange',
       }),
+    },
+    showOnHover: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
+    cssClasses() {
+      const classes = {
+        stateChipHover: !this.showContent,
+      }
+
+      classes['px-3'] = this.showOnHover && this.hover || !this.showOnHover;
+      classes['px-2'] = this.showOnHover && !this.hover;
+
+      return classes;
+    },
     stateText() {
       return this.state?.toUpperCase() || 'DRAFT';
     },
+    stateLowerCase() {
+      return this.state.toLowerCase();
+    },
+    stateTooltip() {
+      return this.tooltipMap[this.stateLowerCase];
+    },
     stateColor() {
-      return this.colorMap[this.state];
+      return this.colorMap[this.stateLowerCase];
+    },
+    showContent() {
+      return !this.showOnHover || (this.showOnHover && this.hover);
     },
   },
-  methods: {
-  },
+  data: () => ({
+    hover: false,
+  }),
 };
 </script>
 
@@ -55,5 +98,9 @@ export default {
   .stateChip{
     height: 1.5rem;
     font-size: 0.75rem;
+  }
+
+  .stateChipHover > .v-chip__content > div:nth-child(1) {
+    font-weight: 700;
   }
 </style>

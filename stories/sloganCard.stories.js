@@ -1,12 +1,18 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
 import SloganCard from '@/modules/home/components/SloganCard';
 
 import fingertips from '../src/assets/cards/slogan/fingertips_small.webp';
 
+import { CARD_VIEWS } from './storybookFolder';
 
-storiesOf('3 Cards / Slogan Cards', module)
-  .add('Collection of Slogan Cards', () => ({
+export default {
+  title: `${CARD_VIEWS} / Slogan Card`,
+  decorators: [],
+  parameters: {
+  },
+};
+
+export const SolganCardsCollection = () => ({
     components: { SloganCard },
     template: `
     <v-container grid-list-lg fluid pa-0>
@@ -43,4 +49,4 @@ storiesOf('3 Cards / Slogan Cards', module)
     data: () => ({
       fingertips,
     }),
-  }));
+  });

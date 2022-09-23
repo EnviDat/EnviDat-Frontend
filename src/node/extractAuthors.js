@@ -18,29 +18,29 @@ function getDataCredit(author) {
   }
 
   // key: dataCreditName, value: count
-  const dataCredits = {};
+  const dataCredit = {};
 
   if (author.data_credit instanceof Array) {
     for (let i = 0; i < author.data_credit.length; i++) {
       const credit = author.data_credit[i];
       
-      if (dataCredits[credit]) {
-        let v = dataCredits[credit];
+      if (dataCredit[credit]) {
+        let v = dataCredit[credit];
         v += 1;
-        dataCredits[credit] = v;
+        dataCredit[credit] = v;
       } else {
-        dataCredits[credit] = 1;
+        dataCredit[credit] = 1;
       }
     }
 
   } else if (typeof author.data_credit === 'string') {
-    dataCredits[author.data_credit] = 1;
+    dataCredit[author.data_credit] = 1;
   } else {
     console.log(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
     throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
-  return dataCredits;
+  return dataCredit;
 }
 
 function getAuthorName(author) {

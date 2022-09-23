@@ -7,31 +7,11 @@
     <v-container fluid
                   class="pa-0" >
 
-      <!-- <v-row class="pa-0" >
-        <v-col v-if="hasModeData" >
-          <ModeView :mode="mode"
-                    :compact="compact"
-                    :closeCallback="modeCloseCallback"/>
-        </v-col>
-
-        <v-col v-if="userIsSignedIn">
-          <user-avatar v-if="$vuetify.breakpoint.smAndUp"
-                      :clickCallback="avatarClickCallback" />
-        </v-col>
-
-        <v-progress-linear v-show="loading"
-                          indeterminate
-                          style="position: absolute; left: 0; bottom: 0;"
-                          height="2"
-                          color="primary" />
-      </v-row>
-
-    </v-container> -->
       <v-row no-gutters
               align="center"
               justify="space-between" >
 
-        <v-col cols="1">
+        <v-col cols="4" sm="2">
           <v-row no-gutters>
 
             <v-col class="shrink px-2" >
@@ -45,14 +25,12 @@
               </v-btn>
             </v-col>
 
-            <v-col class="headline envidatNavbarTitleSmall py-0">
+            <v-col class="text-h6 text-md-h5 envidatNavbarTitleSmall py-0">
               {{ logoText }}
             </v-col>
           </v-row>
 
         </v-col>
-
-        <!-- <v-spacer></v-spacer> -->
 
         <v-col v-if="hasModeData" >
           <ModeView :mode="mode"
@@ -60,19 +38,16 @@
                     :closeCallback="modeCloseCallback"/>
         </v-col>
 
-        <!-- <v-col v-if="signedInUser"
-                class="shrink"
-                cols="2">
-          <user-avatar v-if="$vuetify.breakpoint.smAndUp"
-                      :clickCallback="avatarClickCallback" />
-        </v-col> -->
-
         <v-col v-if="signedInUser"
                 class="shrink"
-                cols="2" >
+                cols="4" sm="3" md="2">
 
           <v-row align="center"
                   justify="end" >
+
+            <v-col style="text-align: right; ">
+              {{ signedInUser.fullname }}
+            </v-col>
 
             <v-col v-if="editingDatasetName"
                    class="shrink">
@@ -85,14 +60,11 @@
                               :isElevated="true"
                               :tooltipText="`Continue editing ${editingDatasetName}`"
                               :tooltipBottom="true"
+                              :overwriteHeight="24"
                               @clicked="catchContinueClick" />
             </v-col>
 
             <v-col class="shrink">
-              {{ signedInUser.fullname }}
-            </v-col>
-
-            <v-col class="shrink pl-2 pr-4">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
@@ -101,18 +73,22 @@
         </v-col>
 
         <v-col v-else
-                cols="1" >
+               class="shrink"
+               cols="4" sm="2" md="1" xl="1">
 
           <v-row align="center"
-                  justify="end" >
+                  justify="end"
+                 no-gutters >
 
-            <v-col @click="catchSigninClicked"
-                    style="cursor: pointer;">
+            <v-col @click="!signInDisabled  ? catchSigninClicked() : undefined"
+                   xl="7"
+                    :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
-                        v-on="on">
+                        v-on="on"
+                        class="text-body-2">
                     {{ signInText }}
                   </div>
                 </template>
@@ -122,14 +98,15 @@
 
             </v-col>
 
-            <v-col class="shrink"
-                    @click="catchSigninClicked" >
+            <v-col class="shrink" >
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn icon
+                         :disabled="signInDisabled"
                           color="black"
                           small
+                          @click="catchSigninClicked"
                           v-bind="attrs"
                           v-on="on" >
                     <v-icon>account_circle</v-icon>
@@ -167,6 +144,10 @@ export default {
     mode: String,
     modeCloseCallback: Function,
     signedInUser: Object,
+    signInDisabled: {
+      type: Boolean,
+      default: false,
+    },
     userNavigationItems: Array,
     editingDatasetName: {
       type: String,
@@ -186,7 +167,10 @@ export default {
       this.$emit('userMenuItemClick', item);
     },
     catchSigninClicked() {
-      this.$emit('signinClick');
+
+      if (!this.signInDisabled) {
+        this.$emit('signinClick');
+      }
     },
     catchHomeClicked() {
       this.$emit('homeClick');
@@ -202,7 +186,7 @@ export default {
     modeInfoPrefix: 'Special View',
     signInText: 'Sign In Here',
     tooltipText: 'You are in a specific view which shows data for',
-    tooltipSignIn: 'Click to sign in into EnviDat',
+    tooltipSignIn: 'Sign in to manage your research data',
   }),
   components: {
     ModeView,

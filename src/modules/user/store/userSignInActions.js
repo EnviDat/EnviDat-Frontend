@@ -16,7 +16,12 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
-  FETCH_USER_DATA,
+  ACTION_GET_USER_CONTEXT,
+  ACTION_USER_EDITING_UPDATE,
+  FETCH_USER_DATA, GET_USER_CONTEXT,
+  USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE_ERROR,
+  USER_EDITING_UPDATE_SUCCESS, USER_SIGNIN_NAMESPACE,
 } from './userMutationsConsts';
 
 
@@ -47,16 +52,55 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.get(url)
-        // await axios({ method, url, body })
-        .then((response) => {
-          if (payload.commit) {
-            commit(`${payload.mutation}_SUCCESS`, response.data.result);
-          }
-        })
-        .catch((error) => {
-          commit(`${payload.mutation}_ERROR`, error);
+    await axios.get(url, { withCredentials: true })
+      // await axios({ method, url, body })
+      .then((response) => {
+        if (payload.commit) {
+          commit(`${payload.mutation}_SUCCESS`, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(`${payload.mutation}_ERROR`, error);
+      });
+  },
+  async [USER_EDITING_UPDATE]({ commit, dispatch }, { userId, firstName, lastName, email }) {
+
+    commit(USER_EDITING_UPDATE);
+
+    const actionUrl = ACTION_USER_EDITING_UPDATE();
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+    // the userId is the minimum, only add the other data if there is
+    // data to patch
+    const postData = { id: userId };
+
+    const fullname = `${firstName} ${lastName}`.trim();
+
+    if (fullname) {
+      postData.fullname = fullname;
+    }
+
+    if (email) {
+      postData.email = email;
+    }
+
+    // the adding of the apiKey into the headers is taken care of
+    // via axios interceptor in @/src/main.js
+    try {
+      await axios.post(url, postData);
+
+      await dispatch(FETCH_USER_DATA,
+        {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
         });
+
+      commit(USER_EDITING_UPDATE_SUCCESS);
+
+    } catch (reason) {
+      commit(USER_EDITING_UPDATE_ERROR, reason);
+    }
   },
 
 };

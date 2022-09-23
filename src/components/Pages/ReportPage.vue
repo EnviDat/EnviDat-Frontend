@@ -20,11 +20,11 @@
         <v-card>
           <v-card-title :style="`background-color: ${color}`">
             <div v-if="errors"
-                  class="headline">
+                 class="text-h5">
               Report Error
             </div>
             <div v-if="feedback"
-                  class="headline">
+                 class="text-h5">
               Feedback is always welcome!
             </div>
           </v-card-title>

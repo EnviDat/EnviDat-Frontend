@@ -11,7 +11,9 @@
           :close="isCloseable"
           @click:close="$emit('closeClicked', authorName)"
           >
-    <v-icon size="24px" left>account_circle</v-icon>
+    <v-avatar left>
+      <v-icon size="24px" >account_circle</v-icon>
+    </v-avatar>
 
     {{ authorName }}
 

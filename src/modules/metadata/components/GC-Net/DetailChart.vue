@@ -5,10 +5,10 @@
 
       <v-row no-gutters
               justify="space-between">
-        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'display-1'">
-          {{ this.fileObject.chartTitle }}
+        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'text-h4'">
+          {{ fileObject.chartTitle }}
         </v-col>
-        <v-col class="title text-right" >
+        <v-col class="text-h6 text-right" >
           {{ stationName }}
         </v-col>
       </v-row>
@@ -30,13 +30,13 @@
         </v-col>
 
         <v-col v-if="!chartIsLoading && !dataAvailable && !dataError"
-                class="title pt-2 pb-1"
+                class="text-h6 pt-2 pb-1"
                 :style="`color: ${ $vuetify.theme.error };`" >
           {{ noDataText }}
         </v-col>
 
         <v-col v-if="dataError"
-                class="title"
+                class="text-h6"
                 :style="`color: ${ $vuetify.theme.error };`" >
           {{ dataError }}
         </v-col>
@@ -63,7 +63,7 @@
         </v-col>
 
         <v-col v-if="showDisclaimer && showChart"
-                class="title" style="color: red;">
+                class="text-h6" style="color: red;">
           {{ disclaimerText }}
         </v-col>
 
@@ -148,6 +148,10 @@ export default {
     },
     preload: Boolean,
     showDisclaimer: Boolean,
+    historicalEndDate: {
+      type: String,
+      default: undefined,
+    },
     convertLocalTime: Boolean,
   },
   mounted() {
@@ -163,7 +167,7 @@ export default {
   },
   computed: {
     showChart() {
-      return this.intersected && !this.chartIsLoading && this.dataAvailable;
+      return this.intersected && !this.chartIsLoading && this.dataAvailable && !this.dataError;
     },
     isRecentDataChart() {
       return this.chartId.includes('_v');
@@ -194,24 +198,23 @@ export default {
       });
     },
     loadJsonFiles(fallback = false) {
-      const baseUrl = fallback ? this.fallbackUrl : this.apiUrl;
-      const cutOffSplit = fallback ? 1 : 2;
+      const baseUrl = this.apiUrl ? this.apiUrl : this.fallbackUrl;
+      const cutOffSplit = this.apiUrl ? 2 : 1;
 
       const splits = baseUrl.split('/');
       const urlSplits = splits.slice(0, splits.length - cutOffSplit);
       const url = urlSplits.join('/');
 
-      let urlParam = `${url}/`;
-      if (fallback) {
-        urlParam += this.stationId + this.fallbackFilename;
-      } else {
-        urlParam = `${urlParam}${this.fileObject.parameters.join(',')}/`;
+      let urlParam = `${url}/${this.fileObject.parameters.join(',')}/`;
 
-        // 2 weeks for the recent data, 2 years for historical
-        const dayRange = this.isRecentDataChart ? 14 : 730;
-        urlParam = addStartEndDateUrl(urlParam, dayRange);
+      // 2 weeks for the recent data, 2 years for historical
+      let dayRange = this.isRecentDataChart ? 14 : 730;
+      if (this.isRecentDataChart && fallback) {
+        // use a 1.5 month for recent data as fallback
+        dayRange = 45;
       }
 
+      urlParam = addStartEndDateUrl(urlParam, dayRange, this.isRecentDataChart ? undefined : this.historicalEndDate);
 
       axios
       .get(urlParam)
@@ -227,7 +230,8 @@ export default {
         this.chartIsLoading = this.dataAvailable;
 
         if (fallback && !this.dataAvailable) {
-          this.dataError = `${this.noDataText} on the fallback for ${urlParam}`;
+          // this.dataError = `${this.noDataText} on the fallback for ${urlParam}`;
+          this.dataError = `${this.noDataText} for ${this.fileObject.chartTitle}`;
         } else if (!fallback && !this.dataAvailable) {
           this.loadJsonFiles(true);
         }

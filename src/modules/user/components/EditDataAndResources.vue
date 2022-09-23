@@ -22,7 +22,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -30,9 +30,9 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    This section is still under construction.
+                    Editing metadata and uploading resources is still under construction.
                     <br>
-                    Please add resources via the legacy website by clicking on the button below and logging in.
+                    Please edit resources via the legacy website by clicking on the button below.
                   </v-col>
                 </v-row>
 
@@ -78,7 +78,7 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="primary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -86,10 +86,9 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    This section is still under construction.
+                    Adding new resources is under construction.
                     <br>
-                    Please edit resources via the legacy website by clicking on the button below and logging in.
-                  </v-col>
+                    Please add resources via the legacy website by clicking on the button below.                  </v-col>
                 </v-row>
 
                 <v-row no-gutters
@@ -138,7 +137,7 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -229,7 +228,7 @@ export default {
       if (res?.length > 0) {
         const selected = res.filter((r) => r.isSelected);
 
-        if (selected?.length > 0) {
+        if (selected.length > 0) {
           selectedRes = selected[0];
         }
       }
@@ -238,7 +237,7 @@ export default {
     },
     linkAddNewResourcesCKAN() {
 //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
-      return `${this.envidatDomain}/dataset/${this.metadataId}`;
+      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
     },
     linkEditResourceCKAN() {
 //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;

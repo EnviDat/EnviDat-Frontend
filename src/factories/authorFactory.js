@@ -22,6 +22,14 @@ const authorDataCreditLevels = [
   { score: 1, lvl: 1 },
 ];
 
+export function getAuthorGivenName(author) {
+  const firstName = author?.given_name || author?.firstName || '';
+  return firstName.trim() || null;
+}
+export function getAuthorLastName(author) {
+  const lastName = author.name || author.lastName || '';
+  return lastName.trim() || null;
+}
 export function getAuthorName(author) {
   let fullName = author.fullName;
 
@@ -32,7 +40,9 @@ export function getAuthorName(author) {
     fullName = `${firstName.trim()} ${lastName.trim()}`;
   }
 
-  return fullName.trim();
+  fullName = fullName.trim();
+
+  return  fullName || null;
 }
 
 /**
@@ -80,36 +90,55 @@ export function getAuthorsString(dataset) {
   return authors.trim();
 }
 
+export function getDataCreditIcon(creditName) {
+  switch (creditName) {
+    case 'publication':
+      return 'menu_book';
+    case 'software':
+      return 'code';
+    case 'curation':
+      return 'local_library';
+    case 'collection':
+      return 'widgets';
+    case 'validation':
+      return 'record_voice_over';
+    case 'supervision':
+      return 'supervisor_account';
+    default:
+      return 'info';
+  }
+}
+
 export function getDataCredit(author) {
   if (!author.data_credit) {
     return null;
   }
 
   // key: dataCreditName, value: count
-  const dataCredits = {};
+  const dataCredit = {};
 
   if (author.data_credit instanceof Array) {
     for (let i = 0; i < author.data_credit.length; i++) {
       const credit = author.data_credit[i];
 
-      if (dataCredits[credit]) {
-        let v = dataCredits[credit];
+      if (dataCredit[credit]) {
+        let v = dataCredit[credit];
         v += 1;
-        dataCredits[credit] = v;
+        dataCredit[credit] = v;
       } else {
-        dataCredits[credit] = 1;
+        dataCredit[credit] = 1;
       }
     }
 
   } else if (typeof author.data_credit === 'string') {
-    dataCredits[author.data_credit] = 1;
+    dataCredit[author.data_credit] = 1;
   } else {
     // eslint-disable-next-line no-console
     console.error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
     // throw new Error(`Unexpected type for author.data_credit ${typeof author.data_credit}`);
   }
 
-  return dataCredits;
+  return dataCredit;
 }
 
 export function createAuthors(dataset) {
@@ -151,7 +180,12 @@ export function createAuthors(dataset) {
     //   }
     // }
 
-    const dataCredit = getDataCredit(author);
+//    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
+    let dataCredit = author.dataCredit || author.data_credit || [];
+
+    if (typeof dataCredit === 'string') {
+      dataCredit = [dataCredit];
+    }
 
     authorObjs.push({
       firstName: firstName.trim(),
@@ -172,29 +206,45 @@ export function createAuthors(dataset) {
 }
 
 function overwriteDataCredit(author, existingAuthor) {
-  const keys = Object.keys(author.dataCredit);
+  let credits = author.dataCredit || author.data_credit || [];
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    const value = author.dataCredit[key];
+  if (typeof credits === 'string') {
+    credits = [credits];
+  }
+/*
+  if (typeof credits === 'object' && !(credits instanceof Array)) {
+    credits = Object.keys(credits);
+  }
+*/
 
-    let existingValue = existingAuthor.dataCredit[key];
+  if (!existingAuthor.totalDataCredits) {
+    existingAuthor.totalDataCredits = {};
+  }
+
+  for (let i = 0; i < credits.length; i++) {
+    const key = credits[i];
+
+    let existingValue = existingAuthor.totalDataCredits[key];
 
     if (existingValue) {
-      existingValue += value;
+      existingValue += 1;
     } else {
-      existingValue = value;
+      existingValue = 1;
     }
 
     // console.log('for ' + author.name + ' set ' + key + ' ' + existingValue);
-    existingAuthor.dataCredit[key] = existingValue;
+    existingAuthor.totalDataCredits[key] = existingValue;
   }
 }
 
 export function getAuthorKey(author) {
 
   if (author?.email) {
-    return author.email.trim();
+    return author.email.trim().toLowerCase();
+  }
+
+  if (author?.id?.identifier) {
+    return author.id.identifier.trim().toLowerCase();
   }
 
   return author?.fullName?.trim().toLowerCase() || null;
@@ -203,7 +253,7 @@ export function getAuthorKey(author) {
 // TODO try using different method and compare performance
 // make 1st loop over the datasets and store the authors on the authorMap
 // then 2nd loop over the authors and do the counting of the datasets and merging
-// of the dataCredits
+// of the dataCredit
 // let noDataCredit = 0;
 
 export function extractAuthorsMap(datasets) {
@@ -227,13 +277,7 @@ export function extractAuthorsMap(datasets) {
         existingAuthor.datasetCount += author.datasetCount;
 
         if (author.dataCredit) {
-          if (existingAuthor.dataCredit) {
-            overwriteDataCredit(author, existingAuthor);
-          } else {
-            existingAuthor.dataCredit = author.dataCredit;
-          }
-//        } else {
-//          noDataCredit++;
+          overwriteDataCredit(author, existingAuthor);
         }
 
         if (author.id.identifier && author.id.identifier !== existingAuthor.id.identifier) {
@@ -248,6 +292,7 @@ export function extractAuthorsMap(datasets) {
       } else {
         // console.log('for ' + author.name + ' set ' + author.count);
         existingAuthor = author;
+        overwriteDataCredit(author, existingAuthor);
         // authorCount++;
       }
 
@@ -277,8 +322,15 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
     const authorKey = getAuthorKey(author);
 
     const fullAuthor = authorMap[authorKey];
+
     if (fullAuthor) {
-      fullAuthors.push(fullAuthor);
+      fullAuthors.push({
+          ...fullAuthor,
+          // merge / overwrite the dataCredit, because
+          // it's based on the current datasets
+          dataCredit: author.dataCredit,
+        },
+      );
     }
 
   }
@@ -286,11 +338,12 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
   return fullAuthors;
 }
 
-export function getDataCreditLevel(dataCreditScore) {
-  const entires = authorDataCreditLevels;
 
-  for (let i = 0; i < entires.length; i++) {
-    const scoreLvl = entires[i];
+export function getDataCreditLevel(dataCreditScore) {
+  const entries = authorDataCreditLevels;
+
+  for (let i = 0; i < entries.length; i++) {
+    const scoreLvl = entries[i];
     if (dataCreditScore >= scoreLvl.score) {
       return scoreLvl.lvl;
     }

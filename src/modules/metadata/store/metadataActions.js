@@ -15,8 +15,8 @@ import axios from 'axios';
 
 import {
   LOAD_METADATA_CONTENT_BY_ID,
-  LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  LOAD_METADATA_CONTENT_BY_ID_ERROR,
+  // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
+  // LOAD_METADATA_CONTENT_BY_ID_ERROR,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -95,7 +95,7 @@ function contentFilteredByTags(value, selectedTagNames) {
 
 function createSolrQuery(searchTerm) {
 
-  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2 OR author:"*${searchTerm}*"~2`;
+  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
 
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
@@ -107,7 +107,7 @@ function createSolrQuery(searchTerm) {
   for (let i = 0; i < splits.length; i++) {
     const searchSplit = splits[i];
 
-    solrQuery += ` OR author: "*${searchSplit}*" OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
+    solrQuery += ` OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
   }
 
   // https://www.envidat.ch/query?ident=on&q=author:%22Marcia%20Phillips%22~2
@@ -167,6 +167,27 @@ function getKeywordObjects(arr) {
   return arr;
 }
 
+// Returns solr query string for author key
+// Adds anglicized umlaut characters for authors whose names include umlauts
+// to broaden search and return more search results
+function getAuthorSolrQuery(author) {
+
+  // Trim author string
+  const authorTrimmed = author.trim();
+
+  const authorSpecialChars = authorTrimmed
+                            .replace('ü', 'ue')
+                            .replace('ä', 'ae')
+                            .replace('ö', 'oe');
+
+  if (authorTrimmed === authorSpecialChars) {
+    return `author:"*${authorTrimmed}*"~1000`;
+  }
+
+  return `author:"*${authorTrimmed}*"OR"*${authorSpecialChars}*"~1000`;
+
+}
+
 // Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
 
@@ -174,6 +195,7 @@ export default {
   async [SEARCH_METADATA]({ commit }, {
     searchTerm,
     metadataConfig = {},
+    isAuthorSearch = false,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -191,15 +213,11 @@ export default {
       return;
     }
 
-    const solrQuery = createSolrQuery(originalTerm);
-
-    // using the envidat "query" action for performance boost (ckan package_search isn't performant)
-    // const queryAuthor = `query?q=title:"${searchTerm}" OR notes:"${searchTerm}" OR author:"${searchTerm}"~2&wt=json&rows=1000`;
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', PROXY);
-
 
     await axios
       .get(url)
@@ -213,25 +231,38 @@ export default {
         commit(SEARCH_METADATA_ERROR, reason);
       });
   },
-  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, metadataId) {
-    commit(LOAD_METADATA_CONTENT_BY_ID);
+  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod }) {
+    // commitMethod can be given from the caller of the action to direct
+    // the output to a different store mutation then one from this module (metadataMutations)
+    const commitMethodPrefix = commitMethod || LOAD_METADATA_CONTENT_BY_ID;
+
+    commit(commitMethodPrefix, null, {
+      root: !!commitMethod,
+    });
 
     const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
     const contents = Object.values(metadatasContent);
 
     const localEntry = contents.filter(entry => entry.name === metadataId);
-    // filter() always return an array
     if (localEntry.length === 1) {
-      commit(LOAD_METADATA_CONTENT_BY_ID_SUCCESS, localEntry[0]);
+      // filter() always return an array
+      commit(`${commitMethodPrefix}_SUCCESS`, localEntry[0], {
+        root: !!commitMethod,
+      });
       return;
     }
 
     const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
 
     await axios.get(url).then((response) => {
-      commit(LOAD_METADATA_CONTENT_BY_ID_SUCCESS, response.data.result);
+      commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
+        root: !!commitMethod,
+      });
+
     }).catch((reason) => {
-      commit(LOAD_METADATA_CONTENT_BY_ID_ERROR, reason);
+      commit(`${commitMethodPrefix}_ERROR`, reason, {
+        root: !!commitMethod,
+      });
     });
   },
   async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
@@ -443,7 +474,7 @@ export default {
 
       const tags = response.data.result;
 
-      const keywordsListWordMax = userEditMetadataConfig.keywordsListWordMax || 2;
+      const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
       const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
       const keywordObjects = getKeywordObjects(filteredTags);

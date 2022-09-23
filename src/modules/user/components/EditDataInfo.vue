@@ -35,7 +35,7 @@
 
       <v-row>
         <v-col>
-          <div class="text-body-1">{{ labels.instructions }}</div>
+          <div class="text-body-1" v-html="labels.instructions" />
         </v-col>
       </v-row>
 
@@ -57,81 +57,20 @@
           </v-col>
 
           <v-col class="pl-4">
-            <template>
-              <v-menu v-model="dateStartPickerOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="auto">
 
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    :label="labels.dateStart"
-                    dense
-                    prepend-icon="date_range"
-                    :readonly="mixinMethods_isFieldReadOnly('dateStart')"
-                    :hint="mixinMethods_readOnlyHint('dateStart')"
-                    outlined
-                    :value="item.dateStart"
-                    v-on="on"
-                    :error-messages="validationErrors.dates[index].dateStart"
-                  />
-                </template>
+            <BaseStartEndDate :startDate="item.dateStart"
+                              :startDateProperty="startDateProperty"
+                              :endDate="item.dateEnd"
+                              :endDateProperty="endDateProperty"
+                              :clearableEndDate="true"
+                              @dateChange="dateChanged(index, ...arguments)"
+                              @clearClick="clearDate(index, ...arguments)"
+                              :readOnlyFields="readOnlyFields"
+                              :readOnlyExplanation="readOnlyExplanation"
+                              />
 
-                <v-date-picker
-                  locale="en-in"
-                  :readonly="mixinMethods_isFieldReadOnly('dateStart')"
-                  :hint="mixinMethods_readOnlyHint('dateStart')"
-                  @input="dateChanged(index, 'dateStart', $event)"
-                  no-title
-                  scrollable
-                  next-icon="skip_next"
-                  prev-icon="skip_previous"
-                  />
-
-              </v-menu>
-            </template>
           </v-col>
 
-          <v-col class="pl-4">
-            <template>
-              <v-menu v-model="dateEndPickerOpen"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      max-width="290px"
-                      min-width="auto">
-
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    :label="labels.dateEnd"
-                    prepend-icon="date_range"
-                    :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
-                    :hint="mixinMethods_readOnlyHint('dateEnd')"
-                    dense
-                    outlined
-                    :value="item.dateEnd"
-                    v-on="on"
-                    :error-messages="validationErrors.dates[index].dateEnd"
-                  ></v-text-field>
-                </template>
-
-                <v-date-picker
-                  locale="en-in"
-                  :readonly="mixinMethods_isFieldReadOnly('dateEnd')"
-                  :hint="mixinMethods_readOnlyHint('dateEnd')"
-                  :min="reformatDate(item.dateStart)"
-                  @input="dateChanged(index, 'dateEnd', $event)"
-                  no-title
-                  scrollable
-                  next-icon="skip_next"
-                  prev-icon="skip_previous"
-                />
-
-              </v-menu>
-            </template>
-          </v-col>
         </v-row>
 
         </v-container>
@@ -150,6 +89,7 @@
             item-value="id"
             item-text="title"
             outlined
+            hide-details
             :label="labels.dataLicense"
             :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
             :hint="mixinMethods_readOnlyHint('dataLicenseId')"
@@ -162,8 +102,8 @@
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col class="pt-0">
+      <v-row class="pl-8" >
+        <v-col >
           <v-expansion-panels focusable>
             <v-expansion-panel>
 
@@ -210,7 +150,7 @@
  *
  *
  * @summary Shows Additional Information (creation & collection dates, data license and summary)
- * @author Rebecca Kurup Buchholz
+ * @author Rebecca Kurup Buchholz, Sam Woodcock, Dominik Haas-Artho
  *
  * Created        : 2021-08-31
  * Last modified  : 2021-11-08
@@ -220,6 +160,7 @@
  */
 
 import {
+  EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -228,11 +169,17 @@ import {
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-  isArrayValid,
-} from '@/factories/userEditingFactory';
+} from '@/factories/userEditingValidations';
 
 import { renderMarkdown } from '@/factories/stringFactory';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+
+import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
+import {
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+} from '@/factories/mappingFactory';
 
 export default {
   name: 'EditDataInfo',
@@ -243,13 +190,7 @@ export default {
     },
     dates: {
       type: Array,
-      default: () => [
-        {
-          dateType: '',
-          dateStart: '',
-          dateEnd: '',
-        },
-      ],
+      default: () => [],
     },
     loading: {
       type: Boolean,
@@ -280,6 +221,12 @@ export default {
       default: '',
     },
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     selectedLicence: {
       get() {
@@ -297,7 +244,31 @@ export default {
     },
     datesField: {
       get() {
-        return this.dates;
+        const dates = this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
+
+        const createdType = 'created'
+        const createdAmount = dates.filter((dObj) => dObj.dateType === createdType).length;
+
+        if (createdAmount <= 0) {
+          dates.push({
+            [DATE_PROPERTY_DATE_TYPE]: createdType,
+            [DATE_PROPERTY_START_DATE]: '',
+            [DATE_PROPERTY_END_DATE]: '',
+          });
+        }
+
+        const collectedType = 'collected'
+        const collectedAmount = dates.filter((dObj) => dObj.dateType === collectedType).length;
+
+        if (collectedAmount <= 0) {
+          dates.push({
+            [DATE_PROPERTY_DATE_TYPE]: collectedType,
+            [DATE_PROPERTY_START_DATE]: '',
+            [DATE_PROPERTY_END_DATE]: '',
+          });
+        }
+
+        return dates;
       },
     },
     getDataLicenseLink() {
@@ -323,6 +294,16 @@ export default {
     },
   },
   methods: {
+    clearPreviews() {
+      this.previewDates = [];
+    },
+    getIsoDate(index, property) {
+      if (this.isoDates?.length > 0) {
+        return this.isoDates[index][property] || null;
+      }
+
+      return null;
+    },
     getLicenseById(id) {
       if (!id) {
         return null;
@@ -338,7 +319,7 @@ export default {
         return false;
       }
 
-      return currentLicense?.link || false;
+      return currentLicense.link || false;
     },
     markdownText(mdText) {
       return renderMarkdown(mdText);
@@ -382,78 +363,86 @@ export default {
         this.setDataLicenseInfo(value);
       }
     },
+    dateChangedTextField(index, property, value) {
+      const dateValue = this.formatToCKANDate(value);
+      this.dateChanged(index, property, dateValue);
+    },
     dateChanged(index, property, value) {
       // Update indexed object in array, with updated dates
 
-      // Close datepickers
-      this.dateStartPickerOpen = false;
-      this.dateEndPickerOpen = false;
+      const localCopy = [...this.datesField];
+      const newDates = this.updateDatesArray(localCopy, index, property, value);
 
-      const newDates = this.updateDatesArray(this.datesField, index, property, value);
+      this.previewDates = newDates;
+
+      this.setDataInfo('dates', newDates);
+
+/*
       const errorArray = this.validationErrors.dates;
 
-      if (isArrayValid(newDates, 'dates', index, property, this.validations, errorArray)) {
+      if (isArrayContentValid(newDates, 'dates', index, property, this.validations, errorArray)) {
+        console.log('valid');
         this.setDataInfo('dates', newDates);
       }
+*/
 
     },
     updateDatesArray(array, index, property, value) {
 
-      // Format dates to CKAN format "MM.DD.YYYY"
-      if (property === 'dateStart' || property === 'dateEnd') {
-        value = this.formatDate(value);
-      }
-
       const currentEntry = array[index];
+
       array[index] = {
         ...currentEntry,
         [property]: value,
       };
 
-      return array
-    },
-    formatDate(date) {
-      // Change Vuetify date format "YYYY-MM-DD" to CKAN date format "DD.MM.YYYY"
-      if (!date) {
-        return null;
+      const cleanCopy = [];
+
+      for (let i = 0; i < array.length; i++) {
+        const entry = array[i];
+        if (!!entry[DATE_PROPERTY_START_DATE]
+            || !!entry[DATE_PROPERTY_END_DATE]) {
+          cleanCopy.push(entry);
+        }
       }
-      const [year, month, day] = date.split('-');
-      return `${day}.${month}.${year}`;
+
+      return cleanCopy;
     },
-    reformatDate(date) {
-      // Change CKAN date format "DD.MM.YYYY" to Vuetify date format "YYYY-MM-DD"
-      if (!date) {
-        return null;
-      }
-      const [day, month, year] = date.split('.');
-      return `${year}-${month}-${day}`;
+    clearDate(index, property) {
+      this.dateChanged(index, property, '');
     },
   },
   components: {
+    BaseStartEndDate,
     BaseStatusLabelView,
   },
   data: () => ({
     validationErrors: {
       dataLicense: null,
-      dates: [{
-        dateType: null,
-        dateStart: null,
-        dateEnd: null,
-      }],
+      dates: [
+        {
+          dateType: null,
+          [DATE_PROPERTY_START_DATE]: null,
+          [DATE_PROPERTY_END_DATE]: null,
+        },
+        {
+          dateType: null,
+          [DATE_PROPERTY_START_DATE]: null,
+          [DATE_PROPERTY_END_DATE]: null,
+        },
+      ],
     },
     labels: {
       cardTitle: 'Additional Information about the Resources',
-      instructions:
-        'Please select dates for collection and/or creation dates. Dates are in "MM.DD.YYYY" format.',
+      instructions: 'Select a date range for the collection and / or the creation of your research data.' +
+          ' This helps researcher better to categorize your data. ' +
+          ' (Dates are in <b>"DD-MM-YYYY"</b> format).',
       instructionsCollection:
         '"Collection Date" should be used for data collected from the field.',
       instructionsCreation:
         '"Creation Date" should be used for data created from models or other sources.',
       dateType: 'Date Type',
-      dateStart: 'Start Date',
-      dateEnd: 'End Date',
-      instructionsLicense:
-        'Please select a data license from the dropdown list.',
+      instructionsLicense: 'Select a data license which reflects the terms of usage of your research data.',
       creationDate: 'Creation Date',
       collectionDate: 'Collection Date',
       dataLicense: 'Click here to select a data license',
@@ -461,8 +450,9 @@ export default {
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
     },
-    dateStartPickerOpen: false,
-    dateEndPickerOpen: false,
+    startDateProperty: DATE_PROPERTY_START_DATE,
+    endDateProperty: DATE_PROPERTY_END_DATE,
+    previewDates: [],
     dataLicenses: [
       {
         id: 'odc-odbl',

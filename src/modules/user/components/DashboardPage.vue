@@ -8,7 +8,6 @@
           class="notSignedinGrid">
 
     <NotFoundCard v-bind="notSignedInInfos"
-                  :height="notFoundCardHeight"
                   :actionButtonCallback="catchSigninClick" />
    </div>
 
@@ -18,26 +17,62 @@
     <div class="topBoard" >
 
       <IntroductionCard :userName="user.fullName"
-                        :createClickCallback="createClickCallback"
+                        :introText="userDashboardConfig.introText"
+                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
                         :existingClickCallback="existingClickCallback"
                         :editingClickCallback="editingClickCallback"
                         :editingDatasetName="lastEditedDataset"
                         :feedbackText="userDashboardConfig.feedbackText"
                         :oldDashboardUrl="oldDashboardUrl"
                         />
-<!--
-      :publishedDatasetCount="publishedDatasets.length"
-      :unpublishedDatasetCount="unpublishedDatasets.length"
-      :editingDatasetCount="editingDatasets.length"
--->
 
-      <UserCard :height="userCardHeight"
+      <UserOrganizationInfo :height="userOrgaInfoCardHeight"
+                            :width="userOrgaInfoCardWidth"
+                            :userName="user.fullName"
+                            :email="user.email"
+                            :emailHash="user.emailHash"
+                            :nameInitials="nameInitials"
+                            :organizationRoles="organizationRoles"
+                            :isCollaborator="isCollaborator" />
+
+
+      <FlipLayout v-if="userEditingEnabled"
+                  :height="userCardHeight"
+                  :width="userCardWidth"
+                  :autoButtonFlip="true" >
+
+        <template v-slot:front>
+          <UserCard :height="userCardHeight"
+                    :width="userCardWidth"
+                    :userName="user.fullName"
+                    :email="user.email"
+                    :emailHash="user.emailHash"
+                    :nameInitials="nameInitials"
+                    :datasetCount="publishedDatasets.length"
+                    :loading="userEditLoading" />
+        </template>
+
+        <template v-slot:back>
+          <EditUserProfile :height="userCardHeight"
+                           :minWidth="userCardWidth"
+                           :showPreview="false"
+                           :firstName="userFirstName"
+                           :lastName="userLastName"
+                           :email="user.email"
+                           :loading="userEditLoading" />
+        </template>
+
+      </FlipLayout>
+
+      <UserCard v-if="!userEditingEnabled"
+                :height="userCardHeight"
                 :width="userCardWidth"
                 :userName="user.fullName"
                 :email="user.email"
                 :emailHash="user.emailHash"
                 :nameInitials="nameInitials"
                 :datasetCount="publishedDatasets.length"  />
+
 
     </div>
 
@@ -50,34 +85,34 @@
                   :clickCallback="catchRefreshClick" />
 
       <MetadataList v-if="hasUserDatasets"
-                      ref="metadataList"
+                      class="datasetsOverflow px-1"
                       :listContent="filteredUserDatasets"
                       :searchCount="filteredUserDatasets.length"
-                      :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
+                      :mapFilteringPossible="false"
                       :loading="userDatasetsLoading"
                       :placeHolderAmount="placeHolderAmount"
                       @clickedTag="catchTagClicked"
                       @clickedCard="catchMetadataClicked"
-                      :selectedTagNames="selectedTagNames"
+                      :selectedTagNames="selectedUserTagNames"
                       :allTags="allUserdataTags"
                       :showPlaceholder="updatingTags"
                       @clickedTagClose="catchTagCloseClicked"
                       :defaultListControls="userListDefaultControls"
                       :enabledControls="userListEnabledControls"
                       :useDynamicHeight="false"
-                      :minMapHeight="250"
-                      :mapTopLayout="$vuetify.breakpoint.mdAndUp"
-                      :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
+                      :mapTopLayout="false"
+                      :topFilteringLayout="true"
                       :showSearch="false"
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
-                      mainScrollClass=".midBoard" />
+                      :reloadAmount="20"
+                      mainScrollClass=".midBoard > .datasetsGrid"
+      />
 
       <div v-if="!hasUserDatasets"
-            class="noUserDatasetsGrid">
+            class="noUserDatasetsGrid px-1">
         <NotFoundCard v-bind="noDatasetsInfos"
-                      :height="notFoundCardHeight"
-                      :actionButtonCallback="createClickCallback" />
+                      :actionButtonCallback="isEditorAndAbove ? createClickCallback : null" />
 
         <NotificationCard v-if="noUserDatasetsError"
                           :notification="noUserDatasetsError"
@@ -98,74 +133,59 @@
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
             id="collaboratorPlaceholders"
-            :style="`height: ${collabCardHeight + 30}px;`" >
+            class="datasetsOverflow" >
 
-         <MetadataCardPlaceholder id="orgaDataset"
-                                  class="mx-2"
-                                  v-for="n in orgaDatasetsPreview"
-                                  :key="n"
-                                  :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`" />
+         <v-row no-gutters>
+           <v-col v-for="n in orgaDatasetsPreview"
+                  :key="n"
+                  cols="2"
+                  class="pa-2" >
+
+             <MetadataCardPlaceholder id="orgaDataset" />
+           </v-col>
+         </v-row>
        </div>
 
        <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && hasCollaboratorDatasets"
             id="collaboratorDatasetCards"
-            :style="`height: ${collabCardHeight + 30}px;`" >
+            class="datasetsOverflow" >
 
-         <MetadataCard v-for="(metadata, index) in collaboratorDatasets"
-                       class="mx-2"
-                       :style="`height: ${collabCardHeight}px; width: ${collabCardWidth}px;`"
-                       :key="index"
-                       :id="metadata.id"
-                       :title="metadata.title"
-                       :subtitle="metadata.notes"
-                       :name="metadata.name"
-                       :titleImg="metadata.titleImg"
-                       :resourceCount="metadata.num_resources"
-                       :fileIconString="fileIconString"
-                       :categoryColor="metadata.categoryColor"
-                       :compactLayout="true"
-                       :state="getMetadataState(metadata)"
-                       @clickedEvent="catchMetadataClicked"
-                       @clickedTag="catchTagClicked"
-                       :showGenericOpenButton="!!metadata.openEvent"
-                       :openButtonTooltip="metadata.openButtonTooltip"
-                       :openButtonIcon="metadata.openButtonIcon"
-                       @openButtonClicked="catchEditingClick(metadata.openProperty)" />
+         <v-row no-gutters>
+           <v-col v-for="(metadata, index) in collaboratorDatasets"
+                  :key="index"
+                  cols="2"
+                  class="pa-2" >
+
+             <MetadataCard :style="`height: ${collabCardHeight}px; `"
+                           :id="metadata.id"
+                           :title="metadata.title"
+                           :subtitle="metadata.notes"
+                           :name="metadata.name"
+                           :titleImg="metadata.titleImg"
+                           :resourceCount="metadata.num_resources"
+                           :fileIconString="fileIconString"
+                           :categoryColor="metadata.categoryColor"
+                           :compactLayout="true"
+                           :state="getMetadataState(metadata)"
+                           :organization="metadata.organization.name"
+                           :organizationTooltip="metadata.organization.title"
+                           :role="metadata.role"
+                           @clickedEvent="catchMetadataClicked"
+                           @clickedTag="catchTagClicked"
+                           :showGenericOpenButton="!!metadata.openEvent"
+                           :openButtonTooltip="metadata.openButtonTooltip"
+                           :openButtonIcon="metadata.openButtonIcon"
+                           @openButtonClicked="catchEditingClick(metadata.openProperty)"
+                            />
+
+           </v-col>
+         </v-row>
+
        </div>
 
-<!--
-       <MetadataList v-if="hasCollaboratorDatasets"
-                     ref="metadataList"
-                     :listContent="collaboratorDatasets"
-                     :searchCount="collaboratorDatasets.length"
-                     :mapFilteringPossible="$vuetify.breakpoint.smAndUp"
-                     :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
-                     :placeHolderAmount="placeHolderAmount"
-                     @clickedTag="catchTagClicked"
-                     @clickedCard="catchMetadataClicked"
-                     :selectedTagNames="selectedTagNames"
-                     :allTags="allUserdataTags"
-                     :showPlaceholder="updatingTags"
-                     @clickedTagClose="catchTagCloseClicked"
-                     :defaultListControls="userListDefaultControls"
-                     :enabledControls="userListEnabledControls"
-                     :useDynamicHeight="false"
-                     :minMapHeight="250"
-                     :mapTopLayout="$vuetify.breakpoint.mdAndUp"
-                     :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
-                     :showSearch="false" />
--->
-
-       <div v-if="!hasCollaboratorDatasets"
-            class="noUserDatasetsGrid">
-         <NotFoundCard v-bind="noCollaboratorDatasetsInfos"
-                       :height="notFoundCardHeight"  />
-
-<!--
-         <NotificationCard v-if="noUserDatasetsError"
-                           :notification="noUserDatasetsError"
-                           :showCloseButton="false" />
--->
+       <div v-if="!collaboratorDatasetIdsLoading && !collaboratorDatasetsLoading && !hasCollaboratorDatasets"
+            class="noUserDatasetsGrid px-1">
+         <NotFoundCard v-bind="noCollaboratorDatasetsInfos" />
 
        </div>
 
@@ -174,59 +194,46 @@
     <div class="bottomBoard pt-2 pb-4"
          ref="userOrgaDatasets">
 
-      <TitleCard :title="`Recent Datasets of ${usersOrganisationTitle}`"
+      <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
                   :clickCallback="catchRefreshOrgaClick" />
 
-      <div v-if="userOrganizationLoading"
-            class="orgaDatasets"
-           :style="`height: ${orgaCardHeight + 30}px;`" >
+      <MetadataList v-if="hasOrgaDatasets"
+                    class="datasetsGrid px-1"
+                    :listContent="filteredOrgaDatasets"
+                    :searchCount="filteredOrgaDatasets.length"
+                    :mapFilteringPossible="false"
+                    :loading="userOrganizationLoading"
+                    :placeHolderAmount="placeHolderAmount"
+                    @clickedTag="catchOrgaTagClicked"
+                    @clickedCard="catchMetadataClicked"
+                    :selectedTagNames="selectedOrgaTagNames"
+                    :allTags="allUserOrganizationDataTags"
+                    :showPlaceholder="updatingTags"
+                    @clickedTagClose="catchOrgaTagCloseClicked"
+                    :defaultListControls="userListDefaultControls"
+                    :enabledControls="userListEnabledControls"
+                    :useDynamicHeight="false"
+                    :mapTopLayout="false"
+                    :topFilteringLayout="true"
+                    :showSearch="false"
+                    :showPublicationState="true"
+                    :defaultPublicationState="defaultPublicationState"
+                    :reloadAmount="20"
+                    :preloadingDistance="10"
+                    :showOrganizationOnHover="false"
+                    mainScrollClass=".bottomBoard > .datasetsGrid"
+                    />
 
-        <MetadataCardPlaceholder id="orgaDataset"
-                                  class="mx-2"
-                                  v-for="n in orgaDatasetsPreview"
-                                  :key="n"
-                                 :style="`height: ${orgaCardHeight}px; width: ${orgaCardWidth}px;`" />
-      </div>
-
-      <div v-if="!userOrganizationLoading && hasRecentOrgaDatasets"
-            class="orgaDatasets"
-           :style="`height: ${orgaCardHeight + 30}px;`" >
-
-        <MetadataCard v-for="(metadata, index) in userRecentOrgaDatasets"
-                      class="mx-2"
-                      :style="`height: ${orgaCardHeight}px; width: ${orgaCardWidth}px;`"
-                      :key="index"
-                      :id="metadata.id"
-                      :title="metadata.title"
-                      :subtitle="metadata.notes"
-                      :name="metadata.name"
-                      :titleImg="metadata.titleImg"
-                      :resourceCount="metadata.num_resources"
-                      :fileIconString="fileIconString"
-                      :categoryColor="metadata.categoryColor"
-                      :compactLayout="true"
-                      :state="getMetadataState(metadata)"
-                      @clickedEvent="catchMetadataClicked"
-                      @clickedTag="catchTagClicked"
-                      :showGenericOpenButton="!!metadata.openEvent"
-                      :openButtonTooltip="metadata.openButtonTooltip"
-                      :openButtonIcon="metadata.openButtonIcon"
-                      @openButtonClicked="catchEditingClick(metadata.openProperty)" />
-
-      </div>
-
-      <div v-if="!userOrganizationLoading && !hasRecentOrgaDatasets"
-            class="noOrgaDatasetsGrid">
+      <div v-if="!hasOrgaDatasets"
+            class="noOrgaDatasetsGrid px-1">
 
         <NotificationCard v-if="noOrgaDatasetsError"
                           :notification="noOrgaDatasetsError"
                           :showCloseButton="false" />
 
-        <NotFoundCard v-if="!userOrganizationsList"
-                      :height="notFoundCardHeight"
-                      v-bind="noOrganizationsInfos"  />
+        <NotFoundCard v-bind="noOrganizationsInfos"  />
       </div>
 
     </div>
@@ -262,6 +269,7 @@ import {
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASET_IDS,
   ACTION_COLLABORATOR_DATASET_IDS,
+  USER_GET_ORGANIZATIONS, USER_EDITING_UPDATE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -274,7 +282,6 @@ import {
 
 import {
   USER_DASHBOARD_PAGENAME,
-  USER_DASHBOARD_PATH,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
@@ -292,6 +299,12 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
+import { getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import {
+  getUserOrganizationRoleMap,
+  hasOrganizationRoles,
+  isMember,
+} from '@/factories/userEditingValidations';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard';
 import MetadataList from '@/components/MetadataList';
@@ -301,15 +314,21 @@ import IntroductionCard from '@/components/Cards/IntroductionCard';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import TitleCard from '@/components/Cards/TitleCard';
 import UserCard from '@/components/Cards/UserCard';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
+import FlipLayout from '@/components/Layouts/FlipLayout';
+import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
+
 import {
+  EDIT_USER_PROFILE_EVENT,
   eventBus,
   SELECT_EDITING_DATASET,
+  SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
 } from '@/factories/eventBus';
 
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+
 
 export default {
   name: 'DashboardPage',
@@ -321,9 +340,11 @@ export default {
   },
   created() {
     eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeDestroy() {
     eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -336,13 +357,21 @@ export default {
       this.fetchUserOrganisationData();
     }
   },
+  mounted() {
+    if (this.dashboardRedirect) {
+      // if the config is set to redirect to the legacy dashboard
+      eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
+    }
+  },
   computed: {
     ...mapState([
       'config',
+      'categoryCards',
     ]),
     ...mapState(USER_SIGNIN_NAMESPACE, [
       'user',
       'userLoading',
+      'userEditLoading',
     ]),
     ...mapState(USER_NAMESPACE, [
       'collaboratorDatasetIdsLoading',
@@ -351,11 +380,11 @@ export default {
       'collaboratorDatasets',
       'userOrganizationLoading',
       'userOrganizations',
-      'userRecentOrgaDatasets',
-      'userRecentOrgaDatasetsError',
+      'userOrgaDatasetsError',
       'userDatasets',
       'userDatasetsLoading',
       'userDatasetsError',
+      'userOrganizationIds',
       'lastEditedDataset',
       'lastEditedDatasetPath',
     ]),
@@ -366,15 +395,18 @@ export default {
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
+    dashboardRedirect() {
+      return this.userDashboardConfig?.dashboardRedirect || false;
+    },
     loading() {
       return this.userLoading;
     },
     noOrgaDatasetsError() {
-      if (!this.userRecentOrgaDatasetsError) {
+      if (!this.userOrgaDatasetsError) {
         return null;
       }
 
-      const errorDetail = `${this.userRecentOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
+      const errorDetail = `${this.userOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
 
       const notification = errorMessage('Error Loading Datasets From Organization', errorDetail);
       notification.timeout = 0;
@@ -399,6 +431,27 @@ export default {
     hasCollaboratorDatasets() {
       return this.collaboratorDatasets?.length > 0;
     },
+    hasOrgaDatasets() {
+      return this.userOrgaDatasetList.length > 0;
+    },
+    userOrganizationsList() {
+      const keys = Object.keys(this.userOrganizations);
+
+      if (keys.length > 0) {
+        return Object.values(this.userOrganizations);
+      }
+
+      return [];
+    },
+    userOrgaDatasetList() {
+      const datasets = [];
+
+      this.userOrganizationsList.forEach(o => {
+        datasets.push(o.packages);
+      });
+
+      return datasets.flat();
+    },
     filteredUserDatasets() {
       const filteredContent = [];
 
@@ -406,14 +459,35 @@ export default {
         return filteredContent;
       }
 
-      if (!this.selectedTagNames || this.selectedTagNames.length <= 0) {
+      if (!this.selectedUserTagNames || this.selectedUserTagNames.length <= 0) {
         return this.userDatasets;
       }
 
       for (let i = 0; i < this.userDatasets.length; i++) {
         const entry = this.userDatasets[i];
 
-        if (tagsIncludedInSelectedTags(entry.tags, this.selectedTagNames)) {
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedUserTagNames)) {
+          filteredContent.push(entry);
+        }
+      }
+
+      return filteredContent;
+    },
+    filteredOrgaDatasets() {
+      const filteredContent = [];
+
+      if (!this.hasOrgaDatasets) {
+        return filteredContent;
+      }
+
+      if (!this.selectedOrgaTagNames || this.selectedOrgaTagNames.length <= 0) {
+        return this.userOrgaDatasetList;
+      }
+
+      for (let i = 0; i < this.userOrgaDatasetList.length; i++) {
+        const entry = this.userOrgaDatasetList[i];
+
+        if (tagsIncludedInSelectedTags(entry.tags, this.selectedOrgaTagNames)) {
           filteredContent.push(entry);
         }
       }
@@ -421,103 +495,136 @@ export default {
       return filteredContent;
     },
     publishedDatasets() {
-      if (this.user.datasets) {
-        return this.user.datasets.filter(dataset => !dataset.private);
+      if (this.userDatasets) {
+        return this.userDatasets.filter(dataset => !dataset.private);
       }
 
       return [];
     },
     unpublishedDatasets() {
-      if (this.user.datasets) {
-        return this.user.datasets.filter(dataset => dataset.private);
+      if (this.userDatasets) {
+        return this.userDatasets.filter(dataset => dataset.private);
       }
 
-      return [];
-    },
-    editingDatasets() {
       return [];
     },
     nameInitials() {
       return getNameInitials(this.user);
     },
-    userOrganizationsList() {
-      const keys = this.userOrganizations ? Object.keys(this.userOrganizations) : null;
-
-      if (keys?.length > 0) {
-        return Object.values(this.userOrganizations);
-      }
-
-      return null;
-    },
     usersOrganisationTitle() {
-      if (this.userOrganizationsList?.length > 0) {
+      if (this.userOrganizationsList?.length === 1) {
         return this.userOrganizationsList[0].display_name;
       }
 
       return 'your Organizations';
     },
-    hasRecentOrgaDatasets() {
-      return this.userRecentOrgaDatasets && this.userRecentOrgaDatasets.length > 0;
-    },
-    usersOrganisationRecentDatasets() {
-      const list = this.userOrganizationsList;
-
-      if (list?.length > 0) {
-
-        const datasets = [];
-
-        for (let i = 0; i < list.length; i++) {
-          const orga = list[i];
-          const subList = orga.packages;
-
-          if (subList?.length > 0) {
-            for (let j = 0; j < subList.length; j++) {
-              const dataset = subList[j];
-              datasets.push(dataset);
-
-              if (datasets.length >= this.orgaDatasetsPreview) {
-                break;
-              }
-            }
-          }
-        }
-
-        return datasets;
-      }
-
-      return null;
-    },
     allUserdataTags() {
-      let allTags = getPopularTags(this.userDatasets);
+      const minTagCount = this.userDatasets?.length > 50 ? 10 : 1;
 
-      if (allTags.length <= 0) {
-        allTags = getPopularTags(this.userDatasets, '', 1);
-      }
+      return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
+    },
+    allUserOrganizationDataTags() {
+      const minTagCount = this.userOrgaDatasetList?.length > 50 ? 3 : 2;
 
-      if (allTags.length > this.maxFilterTags) {
-        allTags = allTags.splice(this.maxFilterTags, allTags.length - this.maxFilterTags);
-      }
-
-      return allTags;
+      return this.getPopularTagsFromDatasets(this.filteredOrgaDatasets, minTagCount, undefined, this.filteredOrgaDatasets.length);
     },
     oldDashboardUrl() {
-      return this.userDashboardConfig.showOldDashboardUrl ? `${this.domain}${this.dashboardCKANUrl}${this.user.name}` : '';
+      return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
+    },
+    userOrganizationRoles() {
+      if (this.userOrganizationsList.length <= 0) {
+        return null;
+      }
+
+      return getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+    },
+    organizationRoles() {
+      if (!this.userOrganizationRoles) {
+        return null;
+      }
+
+      const roles = [];
+      const keys = Object.keys(this.userOrganizationRoles);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        roles.push ({
+          organization: key,
+          role: this.userOrganizationRoles[key],
+        });
+      }
+
+      return roles;
+    },
+    canCreateDatasets() {
+      const roles = this.organizationRoles;
+
+      if (roles) {
+        const matchedRole = roles.filter(r => r.role === 'editor'
+            || r.role === 'admin'
+            || r.role === 'sysadmin');
+        return matchedRole.length > 0;
+      }
+
+      return false;
+    },
+    isCollaborator() {
+      return this.collaboratorDatasets?.length > 0;
+    },
+    isEditorAndAbove() {
+      return hasOrganizationRoles(this.organizationRoles) && !isMember(this.organizationRoles);
+    },
+    noDatasetsInfos() {
+      return {
+        title: 'No Datasets',
+        description: "It seems you don't have any datasets.",
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
+        actionButtonText: 'New Dataset',
+        image: UserNotFound2,
+      };
+    },
+    userEditingEnabled() {
+      return this.userDashboardConfig?.userEditingEnabled || false;
+    },
+    userFirstName() {
+      return this.user?.fullName?.split(' ')[0] || '';
+    },
+    userLastName() {
+      return this.user?.fullName?.split(' ')[1] || '';
     },
   },
   methods: {
-    getMetadataState(metadata) {
-      const state = metadata.publication_state || metadata.publicationState || undefined;
+    getPopularTagsFromDatasets(datasets, minCount = undefined, maxCount = undefined, maxTagAmount = 30) {
+      let tags = getPopularTags(datasets, '', minCount, maxCount);
 
-      return state !== undefined ? state : this.defaultPublicationState;
+      if (tags.length <= 0) {
+        tags = getPopularTags(datasets, '', 1, maxCount);
+      }
+
+      if (tags.length > this.maxFilterTags) {
+        tags = tags.splice(this.maxFilterTags, tags.length - this.maxFilterTags);
+      }
+
+      for (let j = 0; j < tags.length; j++) {
+        const tag = tags[j];
+        tag.color = getTagColor(this.categoryCards, tag.name);
+      }
+
+      tags = tags.slice(0, maxTagAmount);
+      tags = tags.sort((a, b) => a.count < b.count ? 1 : -1);
+
+      return tags;
     },
-    contentFilteredByTags(value, selectedTagNames) {
-      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedTagNames);
+    getMetadataState(metadata) {
+      return getMetadataVisibilityState(metadata);
+    },
+    contentFilteredByTags(value, selectedUserTagNames) {
+      return value.tags && tagsIncludedInSelectedTags(value.tags, selectedUserTagNames);
     },
     loadRouteTags() {
-      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedTagNames);
+      const routeTags = this.mixinMethods_loadRouteTags(this.$route.query.tags, this.selectedUserTagNames);
 
       if (routeTags) {
-        this.selectedTagNames = routeTags;
+        this.selectedUserTagNames = routeTags;
       }
     },
     fetchUserDatasets() {
@@ -544,12 +651,14 @@ export default {
           mutation: USER_GET_COLLABORATOR_DATASET_IDS,
         });
 
-      if (Array.isArray(this.collaboratorDatasetIds) && this.collaboratorDatasetIds.length > 0) {
-        await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
-      }
+      // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
-    fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+    async fetchUserOrganisationData() {
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {
@@ -570,7 +679,7 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      window.open(`${this.domain}${this.createCKANUrl}`, '_blank');
+      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
@@ -597,24 +706,19 @@ export default {
     },
     catchTagClicked(tagName) {
       if (!this.mixinMethods_isTagSelected(tagName)) {
-        this.selectedTagNames.push(tagName);
-
-        const newTags = [];
-        this.selectedTagNames.forEach(t => newTags.push(t.toLowerCase()));
-
-        this.mixinMethods_additiveChangeRoute(USER_DASHBOARD_PATH, undefined, newTags.toString());
+        this.selectedUserTagNames.push(tagName);
+      }
+    },
+    catchOrgaTagClicked(tagName) {
+      if (!this.mixinMethods_isTagSelected(tagName)) {
+        this.selectedOrgaTagNames.push(tagName);
       }
     },
     catchTagCloseClicked(tagName) {
-      this.selectedTagNames = this.selectedTagNames.filter(tag => tag !== tagName);
-
-      const newTags = [];
-
-      for (let i = 0; i < this.selectedTagNames.length; i++) {
-        newTags.push(this.selectedTagNames[i].toLowerCase());
-      }
-
-      this.mixinMethods_additiveChangeRoute(USER_DASHBOARD_PATH, undefined, newTags.toString());
+      this.selectedUserTagNames = this.selectedUserTagNames.filter(tag => tag !== tagName);
+    },
+    catchOrgaTagCloseClicked(tagName) {
+      this.selectedOrgaTagNames = this.selectedOrgaTagNames.filter(tag => tag !== tagName);
     },
     catchMetadataClicked(datasetname) {
       this.$store.commit(`${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`, this.$route);
@@ -626,43 +730,53 @@ export default {
         },
       });
     },
+    callUserUpdateAction(updateObject) {
+
+      if (updateObject.object === USER_PROFILE) {
+
+        const payload = {
+          userId: this.user.id,
+          firstName: updateObject.data.firstName,
+          lastName: updateObject.data.lastName,
+          email: updateObject.data.email,
+        };
+
+        this.$store.dispatch(
+            `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
+            payload,
+        );
+      }
+    },
   },
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    domain,
+    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',
     refreshButtonText: 'Reload Datasets',
     refreshOrgaButtonText: 'Reload Organisation Datasets',
     placeHolderAmount: 4,
-    orgaDatasetsPreview: 5,
+    orgaDatasetsPreview: 4,
     maxFilterTags: 20,
     collabCardWidth: 290,
     collabCardHeight: 115,
-    orgaCardWidth: 290,
-    orgaCardHeight: 115,
-    userCardHeight: 350,
-    notFoundCardHeight: 300,
+    userCardHeight: 400,
     userCardWidth: 300,
+    userOrgaInfoCardHeight: 400,
+    userOrgaInfoCardWidth: 400,
     showModal: false,
     left: false,
     right: false,
     headerTitle: 'Dashboard',
-    selectedTagNames: [],
+    selectedUserTagNames: [],
+    selectedOrgaTagNames: [],
     notSignedInInfos: {
       title: 'Not Signed in',
       description: 'Sign in with your email address to see your datasets.',
       actionButtonText: 'Sign in',
       image: UserNotFound1,
-    },
-    noDatasetsInfos: {
-      title: 'No Datasets',
-      description: "It seems you don't have any datasets.",
-      actionDescription: 'Get started and create a new dataset',
-      actionButtonText: 'New Dataset',
-      image: UserNotFound2,
     },
     noCollaboratorDatasetsInfos: {
       title: 'No Collaborator Datasets',
@@ -671,7 +785,7 @@ export default {
     },
     noOrganizationsInfos: {
       title: 'No Organizations Found',
-      description: "It seems that your aren't assigend to an Organisation. Ask your project or organization lead to add you as a member or even better as an editor so you can create datasets.",
+      description: "It seems that your aren't assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.",
       image: UserNotFound1,
     },
     userListDefaultControls: [
@@ -693,6 +807,9 @@ export default {
     UserCard,
     MetadataCard,
     MetadataCardPlaceholder,
+    UserOrganizationInfo,
+    FlipLayout,
+    EditUserProfile,
   },
 };
 </script>
@@ -700,6 +817,7 @@ export default {
 <style lang="sass" scoped>
   @import "~vuetify/src/styles/settings/_variables.scss"
   $gridGap: $spacer * 4
+  $maxHeight: 750px
 
   .notSignedinGrid
     display: grid
@@ -713,18 +831,22 @@ export default {
 
     .topBoard
       display: grid
-      grid-template-columns: 5fr auto
+      grid-template-columns: 4fr auto auto
       gap: $gridGap
+      overflow: hidden auto
+      max-height: $maxHeight
 
     .midBoard
       display: grid
       grid-template-rows: 36px auto
       gap: $gridGap
       transition: 1s all
+      overflow: hidden hidden
+      max-height: $maxHeight
 
-      .datasetTitleCard
-        display: grid
-        grid-template-columns: 11fr 1fr
+      .datasetsOverflow
+        overflow: hidden auto
+
 
       .noUserDatasetsGrid
         display: grid
@@ -732,22 +854,14 @@ export default {
         gap: $gridGap
 
     .bottomBoard
-      overflow: auto
       display: grid
       grid-template-rows: 36px auto
       gap: $gridGap
+      overflow: hidden auto
+      max-height: $maxHeight
 
-      .orgaDatasets
-        overflow: auto
-        display: grid
-        grid-auto-flow: column
-        justify-content: start
-
-      .orgaDatasets:first-child
-        margin-left: 0
-
-      .orgaDatasets:last-child
-        margin-right: 0
+      .datasetsGrid
+        overflow: hidden auto
 
       .noOrgaDatasetsGrid
         display: grid

@@ -1,8 +1,7 @@
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
 
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
 import categoryCards from '@/store/categoryCards';
+import { FILTERING_VIEWS } from './storybookFolder';
 
 const disabledCards = [];
 
@@ -20,8 +19,14 @@ for (let i = 0; i < categoryCards.length; i++) {
   });
 }
 
+export default {
+  title: `${FILTERING_VIEWS} / NoSearchResultsView`,
+  decorators: [],
+  parameters: {
+  },
+};
 
-storiesOf('4 Filtering / NoSearchResultsView ', module).add('NoSearchResultView', () => ({
+export const NoSearchResultViews = () => ({
   components: { NoSearchResultsView },
   template: `
     <v-row>
@@ -55,4 +60,4 @@ storiesOf('4 Filtering / NoSearchResultsView ', module).add('NoSearchResultView'
     categoryCards,
     disabledCards,
   }),
-}));
+});

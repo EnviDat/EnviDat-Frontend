@@ -21,8 +21,10 @@ const userSignInState = {
   requestSuccess: false,
   errorType: '',
   errorField: '',
+  errorFieldText: '',
   user: null,
   userLoading: false,
+  userEditLoading: false,
 };
 
 export const userSignIn = {

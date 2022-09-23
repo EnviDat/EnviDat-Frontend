@@ -32,10 +32,9 @@ import {
   createBody,
   createLocation,
   createResources,
-  convertTags,
 } from '@/factories/metaDataFactory';
 
-import { createAuthors } from '@/factories/authorFactory';
+import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
 import mailIcon from '../src/assets/icons/mail.png';
@@ -50,6 +49,7 @@ import fileIcon from '../src/assets/icons/file.png';
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
+import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
 
 // function getIcons() {
 //   const icons = new Map();
@@ -65,9 +65,6 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 
 //   return icons;
 // }
-
-metadata[0].tags = convertTags(metadata[0].tags, false);
-metadata[2].tags = convertTags(metadata[2].tags, false);
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -146,16 +143,24 @@ const genericProps4 = {
   geoJSON: location1.geoJSON,
 };
 
-const authors = createAuthors(metadata[2]);
+const authorsMap = extractAuthorsMap(metadata);
+const fullAuthors = getFullAuthorsFromDataset(authorsMap, metadata[1]);
+
 
 const genericProps5 = {
   showPlaceholder: false,
-  authors,
+  authors: fullAuthors,
+  authorDetailsConfig: {
+    showAuthorInfos: true,
+    showDataCredits: true,
+    showDataCreditScore: false,
+    showDatasetCount: false,
+  },
 };
 
 
 export default {
-  title: '6 Detail Views / Metadata',
+  title: `${DETAIL_VIEWS} / Mode View`,
   decorators: [],
   parameters: {},
 };

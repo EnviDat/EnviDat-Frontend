@@ -25,12 +25,18 @@
                     :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
                     @onScroll="storeScroll"
                     :showSearch="true"
+                    :isAuthorSearch="isAuthorSearch"
                     :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
-                    mainScrollClass=".mapLayoutContainers" />
+                    @authorSearchClick="catchAuthorSearchClick"
+                    @organizationClicked="catchOrganizationClicked"
+                    :showScrollTopButton="true"
+                    :reloadAmount="reloadAmount"
+                    :reloadDelay="vReloadDelay"
+    />
 
   </article>
 </template>
@@ -87,6 +93,8 @@ export default {
     });
   },
   mounted() {
+    this.oldIsAuthorSearch = this.isAuthorSearch;
+
     this.checkRouteChanges(null);
   },
   methods: {
@@ -106,7 +114,7 @@ export default {
       let pins = this.$route.query.pins || '';
 
       if (pins.length > 0) {
-        pins = this.mixinMethods_convertUrlStringToArray(pins);
+        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
 
         this.selectedPins = pins;
       }
@@ -127,8 +135,8 @@ export default {
 
         const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
-        // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+            stringTags, undefined, undefined, this.isAuthorSearch);
       }
     },
     catchTagCloseClicked(tagId) {
@@ -139,8 +147,8 @@ export default {
       const newTags = this.selectedTagNames.filter(tag => tag !== tagId);
       const stringTags = this.mixinMethods_convertArrayToUrlString(newTags);
 
-      // const tagsEncoded = this.mixinMethods_encodeTagForUrl(newTags);
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, stringTags);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined,
+          stringTags, undefined, undefined, this.isAuthorSearch);
     },
     catchTagCleared() {
       this.selectedTagNames = [];
@@ -148,12 +156,13 @@ export default {
     },
     catchPinnedIds(pins) {
 
-      // if ()
       this.selectedPins = pins;
 
       const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
 
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined, undefined, stringPins);
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, undefined, undefined,
+          undefined, stringPins,
+          this.isAuthorSearch);
     },
     catchMapFilterChanged(visibleIds) {
       this.mapFilterVisibleIds = visibleIds;
@@ -202,13 +211,15 @@ export default {
 
       this.loadRoutePins();
 
+      // Assign searchParameter so that it can be checked for full text searches
       const searchParameter = this.$route.query.search || '';
-      const checkSearchTriggering = searchParameter !== this.currentSearchTerm;
+
+      // True is searchParameter does not equal currentSearchTerm, else False
+      const checkSearchTriggering = searchParameter !== this.currentSearchTerm || this.isAuthorSearch !== this.oldIsAuthorSearch;
 
       if (!checkSearchTriggering) {
         // use the search parameter from the url in any case
         // if it's a back navigation it has to be set that is will appear in the searchBar component
-        // this.searchTerm = searchParameter;
         triggerClearSearch = (this.currentSearchTerm !== '' && !searchParameter) && (this.filteredContentSize !== this.metadatasContentSize);
       }
 
@@ -220,6 +231,7 @@ export default {
       }
 
       if (checkSearchTriggering) {
+
         if (searchParameter && searchParameter.length > 0) {
 
           this.metadataSearch(searchParameter, this.metadataConfig);
@@ -239,7 +251,7 @@ export default {
         // in case the tags have changed the scroll needs to be reset
         triggerScrollReset = true;
       }
-      
+
       if (triggerScrollReset && !isBackNavigation) {
         // and manually reset the scrolling
         this.resetScrollPos();
@@ -250,7 +262,7 @@ export default {
       }
 
       // always filter changes of the url except a change of the search term
-      // because due to navigation the inital filter might be needed
+      // because due to navigation the initial filter might be needed
       this.filterContent();
     },
     setScrollPos(toPos) {
@@ -269,14 +281,46 @@ export default {
       this.$store.commit(`${METADATA_NAMESPACE}/${CLEAR_SEARCH_METADATA}`);
     },
     metadataSearch(searchTerm, metadataConfig) {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, { searchTerm, metadataConfig });
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${SEARCH_METADATA}`, {
+        searchTerm,
+        metadataConfig,
+        isAuthorSearch: this.isAuthorSearch,
+      });
     },
     catchSearchClicked(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      if (this.currentSearchTerm.trim() !== search) {
+        // the search parameter needs to be '' to clear it
+
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
+          undefined, undefined, undefined,
+            this.isAuthorSearch);
+      }
     },
     catchSearchCleared() {
-      // the search parameter needs to be '' to clear it
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '');
+      // Only change route if state currentSearchTrim is not equal to an empty string
+      // to avoid redundant navigation when there are no search terms
+      if (this.currentSearchTerm.trim() !== '') {
+
+        // the search parameter needs to be '' to clear it
+        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
+        undefined, undefined, undefined,
+          this.isAuthorSearch);
+      }
+    },
+    catchAuthorSearchClick() {
+      this.oldIsAuthorSearch = this.isAuthorSearch;
+      const newIsAuthorSearchParameter = this.isAuthorSearch ? 'false' : 'true';
+
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH,
+          this.currentSearchTerm,
+          undefined, undefined, undefined,
+          newIsAuthorSearchParameter);
+
+    },
+    // eslint-disable-next-line no-unused-vars
+    catchOrganizationClicked(organization) {
+      // console.log(`clicked on ${organization}`);
     },
   },
   computed: {
@@ -301,12 +345,19 @@ export default {
       scrollPositionDelay: `${METADATA_NAMESPACE}/scrollPositionDelay`,
       browseScrollPosition: 'browseScrollPosition',
       defaultControls: 'defaultControls',
-      searchPlaceholderText: `${METADATA_NAMESPACE}/searchPlaceholderText`,
-      searchPlaceholderTextSmall: `${METADATA_NAMESPACE}/searchPlaceholderTextSmall`,
       currentSearchTerm: `${METADATA_NAMESPACE}/currentSearchTerm`,
+      vReloadAmount: `${METADATA_NAMESPACE}/vReloadAmount`,
+      vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
+      vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
+    reloadAmount() {
+      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
+    },
     metadataConfig() {
       return this.config?.metadataConfig || {};
+    },
+    isAuthorSearch() {
+      return this.$route?.query?.isAuthorSearch === 'true' || false;
     },
     enabledControls() {
       let enableds = this.preenabledControls;
@@ -318,7 +369,11 @@ export default {
       return enableds;
     },
     searchBarPlaceholder() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.searchPlaceholderText : this.searchPlaceholderTextSmall;
+      if (this.$vuetify.breakpoint.smAndDown) {
+        return this.searchPlaceholderTextSmall;
+      }
+
+      return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
     },
     // keywordsPlaceholder() {
     //   return this.searchingMetadatasContent || this.updatingTags;
@@ -382,6 +437,9 @@ export default {
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
+    searchPlaceholderTextSmall: 'Enter research search term',
+    searchPlaceholderText: 'Enter research term or topic ',
+    authorSearchPlaceholderText: 'Enter a name of an author',
     selectedTagNames: [],
     selectedPins: [],
     popularTagAmount: 10,
@@ -394,6 +452,7 @@ export default {
       LISTCONTROL_MAP_ACTIVE,
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
+    oldIsAuthorSearch: false,
   }),
 };
 </script>

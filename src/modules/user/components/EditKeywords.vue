@@ -36,7 +36,7 @@
 
 
       <v-row>
-        <v-col class="text-body-2">
+        <v-col class="text-body-1">
           <div >{{ labels.cardInstructions1 }}</div>
           <div >{{ labels.cardInstructions2 }}</div>
         </v-col>
@@ -65,6 +65,7 @@
                       @update:search-input="isKeywordValid(search)"
                       @input="isEnoughKeywords()"
                       @change="notifyChange('keywords', $event)"
+                      @blur="saveChange()"
                       @keydown="catchKeywordEntered($event)"
                       :rules="rulesKeywords"
                       >
@@ -120,7 +121,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { mapState } from 'vuex';
 
 import {
@@ -139,8 +140,11 @@ import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
-// eslint-disable-next-line import/no-cycle
-import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingFactory';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
+import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -152,10 +156,11 @@ export default {
     keywordCount: 0,
     rulesKeywords: [],
     labels: {
-      title: 'Edit Metadata Keywords',
+      title: EDIT_METADATA_KEYWORDS_TITLE,
       keywordsLabel: 'Click here to pick Keywords',
-      cardInstructions1: 'Please enter at least 5 keywords for your metadata entry.',
-      cardInstructions2: 'To use a new keyword not in dropdown list please type keyword and press enter.',
+      cardInstructions1: 'Please enter at least 5 keywords.',
+      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
+          ' To create a new keyword type it and press enter.',
       previewText: 'Metadata card preview',
     },
     defaultUserEditMetadataConfig: {
@@ -225,17 +230,21 @@ export default {
       'config',
     ]),
     userEditMetadataConfig() {
+      if (!this.$store) {
+        return this.defaultUserEditMetadataConfig;
+      }
+
       return this.config?.userEditMetadataConfig || this.defaultUserEditMetadataConfig;
     },
     keywordsCountMin() {
-      return this.config?.userEditMetadataConfig.keywordsCountMin || this.defaultUserEditMetadataConfig.keywordsCountMin;
+      return this.userEditMetadataConfig.keywordsCountMin;
     },
     keywordsListWordMax() {
-      return this.config?.userEditMetadataConfig.keywordsListWordMax || this.defaultUserEditMetadataConfig.keywordsListWordMax;
+      return this.userEditMetadataConfig.keywordsListWordMax;
     },
     keywordsField: {
       get() {
-        return this.previewKeywords?.length > 0 ? this.previewKeywords : this.keywords;
+        return this.previewKeywords.length > 0 ? this.previewKeywords : this.keywords;
       },
     },
     metadataPreviewEntry() {
@@ -287,6 +296,13 @@ export default {
     },
   },
   methods: {
+    saveChange() {
+      if (this.previewKeywords.length > 0) {
+        if (this.validateProperty('keywords', this.previewKeywords)) {
+          this.setKeywords('keywords', this.previewKeywords);
+        }
+      }
+    },
     clearPreviews() {
       this.previewKeywords = [];
     },
@@ -300,7 +316,6 @@ export default {
 
         if (this.isKeywordValid(enteredKeyword)) {
           this.catchKeywordClicked(enteredKeyword);
-          this.search = null;
         }
       }
     },
@@ -315,9 +330,8 @@ export default {
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
       const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
 
-      // Process and emit selectedKeywords to eventBus
-      this.notifyChange('keywords', selectedKeywords);
-
+      this.previewKeywords = this.processValues(selectedKeywords);
+      this.search = null;
     },
     processValues(valuesArray) {
 
@@ -334,14 +348,15 @@ export default {
 
           if (!keywordValid) {
             valuesArray.splice(i, 1);
-            // eslint-disable-next-line no-continue
-            continue;
-          }
+            i--; // decrease to ensure not skipping the next entry becduse splice changes the index
+          } else {
 
-          valuesArray[i] = {
-            name: valuesArray[i].toUpperCase().trim(),
-            color: getTagColor(catCards, valuesArray[i]),
-          };
+            valuesArray[i] = {
+              name: valuesArray[i].toUpperCase()
+                  .trim(),
+              color: getTagColor(catCards, valuesArray[i]),
+            };
+          }
         }
 
       }
@@ -356,31 +371,21 @@ export default {
       this.isEnoughKeywords();
 
       return valuesArray;
-
     },
     removeKeyword(item) {
 
       // Assign removeIndex to index of keywords object that match item
-      const removeIndex = this.keywords.indexOf(item);
+      const removeIndex = this.keywordsField.indexOf(item);
       // console.log(removeIndex);
 
       // Assign localKeywords to copy of keywords
-      const localKeywords = [...this.keywords];
+      const localKeywords = [...this.keywordsField];
 
       // Remove object with index of removeIndex from localKeywords
       localKeywords.splice(removeIndex, 1);
 
       // Process and emit localKeywords to eventBus
-      const cleanedKeywords = this.processValues(localKeywords);
-
-      this.previewKeywords = cleanedKeywords;
-
-      if (this.validateProperty('keywords', cleanedKeywords)) {
-        this.setKeywords('keywords', cleanedKeywords);
-      } else {
-        // clear the preview immediately to show the existing keywords
-        this.previewKeywords = [];
-      }
+      this.previewKeywords = this.processValues(localKeywords);
     },
     // Assign keywordCountEnough to true if keywordCount is greater than or equal to keywordsCountMin
     // Else assigns keywordCountEnough to false
@@ -388,7 +393,7 @@ export default {
       const keywordCountEnough = this.keywordCount >= this.keywordsCountMin;
 
       if (!keywordCountEnough) {
-        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keyword entries.`];
+        this.rulesKeywords = [`Please enter at least ${this.keywordsCountMin} keywords.`];
       } else {
         this.rulesKeywords = [true];
       }
@@ -413,19 +418,13 @@ export default {
     },
     notifyChange(property, value) {
 
-      const keywordsAmount = value.length;
+      // const keywordsAmount = value.length;
 
       const mergedKeywordsField = [...this.keywordsField, ...value];
 
-      const cleanedKeywordsField = this.processValues(mergedKeywordsField);
-      const cleanedAmount = cleanedKeywordsField.length;
+      // const cleanedAmount = cleanedKeywordsField.length;
 
-      this.previewKeywords = cleanedKeywordsField;
-
-      if (cleanedAmount >= keywordsAmount && this.validateProperty('keywords', cleanedKeywordsField)) {
-        this.setKeywords(property, cleanedKeywordsField);
-      }
-
+      this.previewKeywords = this.processValues(mergedKeywordsField);
     },
     setKeywords(property, value) {
       const newKeywords = {
