@@ -241,3 +241,86 @@ export function decodeArrayFromUrlString(urlString) {
   // return an empty array for the selectedTagIds
   return [];
 }
+
+export function convertCSVToJSON(csv, nullValue) {
+
+  if (!csv) {
+    return null;
+  }
+
+  let csvDataYAxesArray = [];
+  let lines = csv.split('\n');
+
+  const displayDescription = lines.filter((line) => line.startsWith('# display_description = '))
+
+  let keys = []
+  if (displayDescription.length === 1) {
+    keys = displayDescription[0].replace('# display_description = ', '').split(',')
+    const removeKeys = ['timestamp_iso']
+    csvDataYAxesArray = keys.filter(element => !removeKeys.includes(element))
+  } else {
+    console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = "');
+    return {}
+  }
+
+  // Remove NEAD metadata header lines that start with '#'
+  lines = lines.filter((line) => !line.startsWith('#'))
+
+  // Remove last line if it is an empty string
+  if (lines[lines.length -1] === '') {
+    lines.pop()
+  }
+
+  const data = lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
+
+    // TODO possibly add logic that tests that keys.length equals length of comma separated line before adding JSON object
+
+    const toAdd = {};
+
+    if (cur === nullValue) {
+      cur = null
+    }
+
+    toAdd[keys[i]] = cur;
+
+    return { ...acc, ...toAdd };
+  }, {}));
+
+  return {
+    parameters: csvDataYAxesArray,
+    data,
+  }
+}
+
+function getDataEntry(dataEntry, parameters) {
+  const entry = {};
+
+  for (let i = 0; i < parameters.length; i++) {
+    const param = parameters[i];
+    entry[param] = dataEntry[param];
+  }
+
+  return entry;
+}
+
+export function getChartSeries(parameters, dataArray, timeFrom = undefined, timeTo = undefined) {
+  const series = [];
+
+  if (!parameters) {
+    return series;
+  }
+
+  for (let i = 0; i < dataArray.length; i++) {
+    const entry = dataArray[i];
+
+    const dataEntry = getDataEntry(entry, parameters);
+
+    series.push({
+      timestamp: entry.timestamp,
+      timestamp_iso: entry.timestamp_iso,
+      ...dataEntry,
+    });
+  }
+
+  return series;
+}

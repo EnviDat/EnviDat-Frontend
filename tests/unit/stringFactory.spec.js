@@ -1,4 +1,5 @@
 import {
+  convertCSVToJSON, getChartSeries,
   getResearchUnitDatasets,
   renderMarkdown,
   stripMarkdown,
@@ -6,6 +7,8 @@ import {
 
 // import metadatas from '@/../public/testdata/full_packagelist.json';
 import researchUnits from '@/../public/researchUnits.json';
+
+const fs = require('fs');
 
 const datasets = null; // metadatas.result;
 
@@ -136,6 +139,56 @@ describe('stringFactory - getResearchUnitDatasets', () => {
 
     expect(datasets.length === ruDatasetsCount).toBeTruthy();
 
+
+  });
+
+});
+
+describe('stringFactory - getParameters from NEAD', () => {
+
+  it('convertCSVToJSON - empty', () => {
+
+    const emptyOutput = convertCSVToJSON();
+    expect(emptyOutput).toBe(null);
+  });
+
+  it('convertCSVToJSON - convert NEAD file', async () => {
+
+    const swissCampNEAD = fs.readFileSync(`${__dirname}/../../public/testdata/00-Swiss Camp 10m.csv`, { encoding: 'utf8' });
+
+    const jsonConvert = convertCSVToJSON(swissCampNEAD.toString());
+
+    expect(jsonConvert).toBeDefined();
+    expect(jsonConvert.parameters).toBeDefined();
+    expect(jsonConvert.data).toBeDefined();
+
+    const series = getChartSeries();
+    expect(series).toBeDefined();
+    expect(series.length).toBe(0);
+  });
+
+  it('convertCSVToJSON - convert NEAD file and getChartSeries()', async () => {
+
+    const swissCampNEAD = fs.readFileSync(`${__dirname}/../../public/testdata/00-Swiss Camp 10m.csv`, { encoding: 'utf8' });
+
+    const jsonConvert = convertCSVToJSON(swissCampNEAD.toString());
+
+    expect(jsonConvert).toBeDefined();
+    expect(jsonConvert.parameters).toBeDefined();
+    expect(jsonConvert.data).toBeDefined();
+
+    const firstParam = jsonConvert.parameters[0];
+    const twoParam = jsonConvert.parameters[1];
+
+    const series = getChartSeries(jsonConvert.parameters, jsonConvert.data);
+    expect(series).toBeDefined();
+    expect(series.length).not.toBe(0);
+
+    const first = series[0];
+    expect(first.timestamp || first.timestamp_iso).toBeTruthy();
+
+    expect(first[firstParam]).toBeDefined();
+    expect(first[twoParam]).toBeDefined();
 
   });
 

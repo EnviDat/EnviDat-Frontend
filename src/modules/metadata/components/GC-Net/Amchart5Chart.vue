@@ -40,6 +40,7 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 // eslint-disable-next-line camelcase
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
+import { convertCSVToJSON } from '@/factories/stringFactory';
 
 
 export default {
@@ -94,47 +95,7 @@ export default {
       return resultType.split(',')[0];
     },
     // Return JSON data from inputted CSV data, convert nullValue to null
-    convertCSVToJSON(csv, nullValue) {
 
-      let lines = csv.split('\n');
-
-      const displayDescription = lines.filter((line) => line.startsWith('# display_description = '))
-
-      let keys = []
-      if (displayDescription.length === 1) {
-        keys = displayDescription[0].replace('# display_description = ', '').split(',')
-        const removeKeys = ['timestamp_iso']
-        this.csvDataYAxesArray = keys.filter(element => !removeKeys.includes(element))
-
-      }
-      else {
-        console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = "');
-        return {}
-      }
-
-      // Remove NEAD metadata header lines that start with '#'
-      lines = lines.filter((line) => !line.startsWith('#'))
-
-      // Remove last line if it is an empty string
-      if (lines[lines.length -1] === '') {
-        lines.pop()
-      }
-
-      return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
-
-        // TODO possibly add logic that tests that keys.length equals length of comma separated line before adding JSON object
-
-        const toAdd = {};
-
-        if (cur === nullValue) {
-          cur = null
-        }
-
-        toAdd[keys[i]] = cur;
-
-        return { ...acc, ...toAdd };
-      }, {}));
-    },
     createChart(yAxisDivID, yAxisName) {
 
       const root = am5.Root.new(yAxisDivID);
@@ -174,7 +135,7 @@ export default {
               // minGridDistance: 50,
             }),
             tooltip: am5.Tooltip.new(root, {}),
-          })
+          }),
       );
 
       const yAxis = chart.yAxes.push(
@@ -182,7 +143,7 @@ export default {
             maxDeviation: 0.1,
             renderer: am5xy.AxisRendererY.new(root, {}),
             tooltip: am5.Tooltip.new(root, {}),
-          })
+          }),
       );
 
       // Set cursor
@@ -210,7 +171,7 @@ export default {
             valueYField: yAxisName,
             valueXField: this.xAxisName,
             tooltip: am5.Tooltip.new(root, {}),
-          })
+          }),
       );
 
       series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
@@ -265,8 +226,10 @@ export default {
         else if (responseType === 'text/csv') {
 
           // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
-          this.parsedData = this.convertCSVToJSON(result.response, '');
+          const jsonConvert = convertCSVToJSON(result.response, '');
 
+          this.csvDataYAxesArray = jsonConvert.parameters;
+          this.parsedData = jsonConvert.data;
           this.csvDataAvailable = true;
 
         }
@@ -279,7 +242,7 @@ export default {
       }).catch((error) => {
           this.dataLoadParseError = true;
           console.log(`Error loading data: ${error} for ${this.apiUrl}`);
-         }
+         },
       );
     },
   },
