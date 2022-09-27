@@ -3,7 +3,7 @@ module.exports = {
   root: true,
   parserOptions: {
     sourceType: 'module',
-    ecmaVersion: 2021
+    ecmaVersion: 2021,
   },
   env: { es2021: true },
   extends: [
@@ -24,11 +24,21 @@ module.exports = {
     },
   },
   // // required to lint *.vue files
-  plugins: ['vuetify', 'simple-import-sort', 'import'],
-  "ignorePatterns": ["particles.js"],
+  plugins: [
+    'vuetify',
+//    'simple-import-sort',
+  ],
+  'ignorePatterns': ['particles.js'],
   // add your custom rules here
   rules: {
-    'import/extensions': [0, { 'js': "always" }],
+    // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/extensions.md
+    'import/extensions': ['error', // warning
+      'always', {
+        'js': 'never',
+        'vue': 'never',
+      },
+    ],
+    'import/no-unresolved': 'off',
     // allow optionalDependencies
     'import/no-extraneous-dependencies': 'off',
     // allow debugger during development
@@ -46,7 +56,7 @@ module.exports = {
     'comma-dangle': ['error', 'always-multiline'],
     'jsx-quotes': ['error', 'prefer-single'],
     'quotes': ['error', 'single', {
-      avoidEscape: true
+      avoidEscape: true,
     }],
     'operator-linebreak': ['off', 'before'],
     // enforce CLRF linebreaks = 'linebreak-style' : ["error", "unix"]
@@ -57,16 +67,19 @@ module.exports = {
     'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
-    "simple-import-sort/imports": "error",
-    "simple-import-sort/exports": "error",
-    "import/first": "error",
-    "import/newline-after-import": "error",
-    "import/no-duplicates": "error",
+    'vue/no-v-text-v-html-on-component': 'off',
+/*
+    'simple-import-sort/imports': 'error',
+    'simple-import-sort/exports': 'error',
+*/
+    'import/first': 'error',
+    'import/newline-after-import': 'error',
+    'import/no-duplicates': 'error',
   },
   overrides: [{
     files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
     env: {
       jest: true,
     },
-  }]
+  }],
 };
