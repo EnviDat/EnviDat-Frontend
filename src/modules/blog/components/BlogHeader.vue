@@ -35,8 +35,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'BlogHeader',

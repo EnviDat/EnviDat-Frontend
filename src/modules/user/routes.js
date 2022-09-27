@@ -20,27 +20,30 @@ import {
   USER_SIGNIN_PATH,
 } from '@/router/routeConsts';
 
+const SigninPage = () => import('@/modules/user/components/SigninPage.vue');
+const DashboardPage = () => import('@/modules/user/components/DashboardPage.vue');
+const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPage.vue');
+
 export const userRoutes = [
   {
     path: USER_SIGNIN_PATH,
     name: USER_SIGNIN_PAGENAME,
-    component: () => import('@/modules/user/components/SigninPage.vue'),
+    component: () => SigninPage,
   },
   {
     path: USER_DASHBOARD_PATH,
     name: USER_DASHBOARD_PAGENAME,
-    component: () => import('@/modules/user/components/DashboardPage.vue'),
+    component: () => DashboardPage,
   },
   {
     path: METADATAEDIT_PATH,
     name: METADATAEDIT_PAGENAME,
-    component: () => import('@/modules/user/components/MetadataEditPage.vue'),
+    component: () => MetadataEditPage,
     children: [
       {
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
-        component: () =>
-          import('@/modules/user/components/MetadataEditPage.vue'),
+        component: () => MetadataEditPage,
       },
     ],
   },

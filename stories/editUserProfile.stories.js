@@ -12,11 +12,11 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
-import UserCard from '@/components/Cards/UserCard';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
 import { getNameInitials } from '@/factories/authorFactory';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import FlipLayout from '@/components/Layouts/FlipLayout';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import {
   EDIT_USER_PROFILE_EVENT,
   eventBus,

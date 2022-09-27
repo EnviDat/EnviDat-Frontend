@@ -51,10 +51,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import EditAuthor from '@/modules/user/components/EditAuthor';
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
-import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
+import EditAuthor from '@/modules/user/components/EditAuthor.vue';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
+import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor.vue';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
 
 import {
   // getAuthorKey,

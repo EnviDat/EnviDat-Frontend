@@ -72,7 +72,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   components: {

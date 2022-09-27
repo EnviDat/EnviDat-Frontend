@@ -131,14 +131,14 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import MetadataCard from '@/components/Cards/MetadataCard';
-import TagChip from '@/components/Chips/TagChip';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
 import catCards from '@/store/categoryCards';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
   getValidationMetadataEditingObject,

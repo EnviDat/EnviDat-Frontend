@@ -86,10 +86,10 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
 
 

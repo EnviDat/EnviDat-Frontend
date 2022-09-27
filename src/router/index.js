@@ -33,6 +33,10 @@ import { blogRoutes } from '@/modules/blog/routes';
 import { integrationRoutes } from '@/modules/integration/routes';
 import { serviceRoutes } from '@/modules/services/routes';
 
+const ReportPage = () => import('@/components/Pages/ReportPage.vue');
+const GCMDPage = () => import('@/components/Pages/GCMDPage.vue');
+const NotFoundPage = () => import('@/components/Pages/PageNotFound.vue');
+
 Vue.use(Router);
 
 const START = '/';
@@ -41,18 +45,18 @@ const routes = [
   {
     path: GCMD_PATH,
     name: GCMD_PAGENAME,
-    component: () => import(/* webpackChunkName: "gcmdPage" */ '@/components/Pages/GCMDPage'),
+    component: GCMDPage,
   },
   {
     path: REPORT_PATH,
     name: REPORT_PAGENAME,
-    component: () => import(/* webpackChunkName: "guidelinesPage", webpackPrefetch: true */ '@/components/Pages/ReportPage'),
+    component: ReportPage,
   },
-  /* The not found route needes to be last in the list! */
+  /* The not found route needs to be last in the list! */
   {
     path: '/:catchAll(.*)',
     name: PAGENOTFOUND_PAGENAME,
-    component: () => import(/* webpackChunkName: "pageNotFound", webpackPrefetch: true */ '@/components/Pages/PageNotFound'),
+    component: NotFoundPage,
   },  
 ];
 

@@ -204,13 +204,13 @@ import {
   mapGetters,
 } from 'vuex';
 import { BROWSE_PATH} from '@/router/routeConsts';
-import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView';
-import FilterMapView from '@/components/Filtering/FilterMapView';
-import ControlPanel from '@/components/Filtering/ControlPanel';
+import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
+import FilterMapView from '@/components/Filtering/FilterMapView.vue';
+import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 
-import MetadataCard from '@/components/Cards/MetadataCard';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
-import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import {
   METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
@@ -218,8 +218,8 @@ import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import MetadataListLayout from '@/components/MetadataListLayout';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 // check filtering in detail https://www.npmjs.com/package/vue2-filters

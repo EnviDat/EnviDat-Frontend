@@ -111,8 +111,8 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-import NotificationCard from '@/components/Cards/NotificationCard';
+import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 
@@ -464,7 +464,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
+    domain: process.env.VITE_ENVIDAT_DOMAIN,
     creationSteps: null,
     errorTitle: null,
     errorMessage: null,

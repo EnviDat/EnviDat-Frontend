@@ -13,20 +13,6 @@
 
 /* eslint-disable no-underscore-dangle */
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
-import EditDescription from '@/modules/user/components/EditDescription';
-
-import EditKeywords from '@/modules/user/components/EditKeywords';
-import EditAuthorList from '@/modules/user/components/EditAuthorList';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
-import EditDataInfo from '@/modules/user/components/EditDataInfo';
-import EditDataGeo from '@/modules/user/components/EditDataGeo';
-import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
-
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper';
-
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
-
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
@@ -58,6 +44,20 @@ import {
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
+
+import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
+import EditDescription from '@/modules/user/components/EditDescription.vue';
+
+import EditKeywords from '@/modules/user/components/EditKeywords.vue';
+import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
+import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
+import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
+
+import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
+
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
 
 export function updateEditingArray(

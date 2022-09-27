@@ -5,12 +5,13 @@
 
 import fs from 'fs';
 import axios from 'axios';
+// eslint-disable-next-line import/extensions
 import parseString from 'xml2js/parseString'
 
 let xml;
 
 // eslint-disable-next-line no-extend-native
-Date.prototype.addDays = function(days) {
+Date.prototype.addDays = (days) => {
   const date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
   return date;

@@ -3,10 +3,12 @@ import {
   SERVICE_PATH,
 } from '@/router/routeConsts';
 
+const ServicePage = () => import('@/modules/services/components/ServicePage.vue');
+
 export const serviceRoutes = [
   {
     path: SERVICE_PATH,
     name: SERVICE_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "servicePage" */ '@/modules/services/components/ServicePage'),
+    component: ServicePage,
   },
 ];

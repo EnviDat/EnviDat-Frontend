@@ -47,7 +47,7 @@ const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 
 /*
-const errReport = process.env.VUE_APP_ERROR_REPORTING_ENABLED;
+const errReport = process.env.VITE_ERROR_REPORTING_ENABLED;
 // the check for 'NULL' is needed because simply nothing will not work
 let errorReportingEnabled = false;
 
@@ -78,7 +78,7 @@ const initialState = {
   appScrollPosition: 0,
   browseScrollPosition: 0,
   outdatedVersion: false,
-  newVersion: process.env.VUE_APP_VERSION,
+  newVersion: process.env.VITE_VERSION,
   // config can be overloaded from the backend
   loadingConfig: false,
   config: {},

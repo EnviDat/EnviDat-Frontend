@@ -41,7 +41,7 @@ import {
 } from '@/store/mainMutationsConsts';
 
 export default {
-  name: 'GCMDPage',
+  name: GCMD_PAGENAME,
   beforeRouteEnter(to, from, next) {
     next(vm => {
       // console.log("beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
@@ -62,6 +62,7 @@ export default {
   components: {},
   data: () => ({
     PageBGImage: 'app_b_browsepage',
+    GCMD_PAGENAME,
   }),
 };
 </script>

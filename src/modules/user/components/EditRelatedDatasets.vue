@@ -84,12 +84,12 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { EDIT_METADATA_RELATED_DATASETS_TITLE } from '@/factories/metadataConsts';
 
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,

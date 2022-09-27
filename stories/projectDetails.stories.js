@@ -13,11 +13,14 @@
 // import App from '@/App.vue';
 // get Project test data and enhance it
 import mission from '@/assets/projects/mission.jpg';
-import {enhanceSubprojectsFromExtras,} from '@/factories/projectsDataFactory';
+import { enhanceSubprojectsFromExtras } from '@/factories/projectsDataFactory';
 import ProjectBody from '@/modules/projects/components/ProjectDetailViews/ProjectBody.vue';
 import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
 import ProjectHeader from '@/modules/projects/components/ProjectDetailViews/ProjectHeader.vue';
-import {LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE,} from '@/store/metadataMutationsConsts';
+import {
+  LISTCONTROL_LIST_ACTIVE,
+  LISTCONTROL_MAP_ACTIVE,
+} from '@/store/metadataMutationsConsts';
 
 import projectJSON from '../public/testdata/projects.json';
 import metadata from './js/metadata';

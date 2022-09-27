@@ -306,18 +306,6 @@ import {
   isMember,
 } from '@/factories/userEditingValidations';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard';
-import MetadataList from '@/components/MetadataList';
-import MetadataCard from '@/components/Cards/MetadataCard';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
-import IntroductionCard from '@/components/Cards/IntroductionCard';
-import NotificationCard from '@/components/Cards/NotificationCard';
-import TitleCard from '@/components/Cards/TitleCard';
-import UserCard from '@/components/Cards/UserCard';
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
-import FlipLayout from '@/components/Layouts/FlipLayout';
-import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
-
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
@@ -328,6 +316,17 @@ import {
   SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
 } from '@/factories/eventBus';
 
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import MetadataList from '@/components/MetadataList.vue';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
+import TitleCard from '@/components/Cards/TitleCard.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 
 
 export default {
@@ -751,7 +750,7 @@ export default {
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',
@@ -815,7 +814,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  @import "~vuetify/src/styles/settings/_variables.scss"
+  /* @import "~vuetify/src/styles/settings/_variables.scss" */
+  $spacer: 4px !default
   $gridGap: $spacer * 4
   $maxHeight: 750px
 

@@ -3,10 +3,12 @@ import {
   INTEGRATION_PATH,
 } from '@/router/routeConsts';
 
+const IntegrationPage = () => import('@/modules/integration/components/IntegrationPage.vue');
+
 export const integrationRoutes = [
   {
     path: INTEGRATION_PATH,
     name: INTEGRATION_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "integrationPage" */ '@/modules/integration/components/IntegrationPage'),
+    component: IntegrationPage,
   },
 ];

@@ -66,7 +66,7 @@ import {
   METADATA_OPEN_MODAL,
   METADATA_CLOSE_MODAL,
 } from '@/factories/eventBus';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'GenericModalPageLayout',

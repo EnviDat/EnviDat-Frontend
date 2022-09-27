@@ -29,11 +29,11 @@ import {
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+  ENVIDAT_PROXY = process.env.VITE_ENVIDAT_PROXY;
 }
 
 

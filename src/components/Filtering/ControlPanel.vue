@@ -65,9 +65,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView';
-import ListControlToggle from '@/components/Filtering/ListControlToggle';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
+import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { METADATADETAIL_PATH } from '@/router/routeConsts';
 
 export default {

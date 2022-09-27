@@ -6,6 +6,7 @@ const userListPath = `${inputPath}user_list_17-08-2022.json`;
 const userList = require(userListPath).result;
 
 const packageListPath = `${inputPath}all_packages.json`;
+// eslint-disable-next-line import/no-dynamic-require
 const packageList = require(packageListPath).result;
 
 const outputFileName = 'user_emails.json';

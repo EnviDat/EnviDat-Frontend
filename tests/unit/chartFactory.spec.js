@@ -3,7 +3,7 @@ import {
   getConfigUrls,
 } from '@/factories/chartFactory';
 
-import dataset from '@/../public/testdata/testResoures';
+import dataset from '@/../public/testdata/testResoures.json';
 
 
 describe('chartFactory - getConfigFiles()', () => {

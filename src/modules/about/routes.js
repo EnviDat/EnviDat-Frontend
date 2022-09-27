@@ -6,11 +6,13 @@ import {
   POLICIES_PATH,
 } from '@/router/routeConsts';
 
+const AboutPage = () => import('@/modules/about/components/AboutPage.vue');
+
 export const aboutRoutes = [
   {
     path: `${ABOUT_PATH}/:tab`,
     name: ABOUT_PAGENAME,
-    component: () => import('@/modules/about/components/AboutPage.vue'),
+    component: AboutPage,
   },
   {
     path: ABOUT_PATH,

@@ -70,6 +70,7 @@ const saveMetadataForStations = callback => {
 
     console.log(`Saving metadata for ${configEntry.aliasApi}`);
 
+    // eslint-disable-next-line no-loop-func
     getMetadata(configEntry.aliasApi, data => {
       metadataMap.set(configEntry.aliasApi, data);
       console.log(`Saved metadata for ${configEntry.aliasApi}`);

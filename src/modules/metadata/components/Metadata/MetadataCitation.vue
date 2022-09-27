@@ -81,7 +81,7 @@
 */
 
 import { renderMarkdown } from '@/factories/stringFactory';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
 
 export default {
