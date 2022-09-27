@@ -690,7 +690,27 @@ export default {
 </script>
 
 
+<!--<style lang="sass">
+@import "sass/variables.sass"
+</style>-->
+
 <style>
+
+.v-application {
+  font-family: Raleway, sans-serif !important;
+}
+
+.v-application .text-body-1,
+.v-application .text-body-2,
+.v-application .text-body-3,
+.v-application .text-h1,
+.v-application .text-h2,
+.v-application .text-h3,
+.v-application .text-h4,
+.v-application .text-h5,
+.v-application .text-h6 {
+  font-family: Raleway, sans-serif !important;
+}
 
 .envidatNavbar {
   position: -webkit-sticky;

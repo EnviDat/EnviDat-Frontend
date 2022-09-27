@@ -9,6 +9,7 @@ import cesium from 'vite-plugin-cesium'
 import eslint from 'vite-plugin-eslint'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import ViteRequireContext from '@originjs/vite-plugin-require-context'
+import { VitePluginFonts } from 'vite-plugin-fonts'
 
 import { version } from './package.json'
 // TODO exposing package.json to app is potential security risk
@@ -57,6 +58,17 @@ export default ({ mode }) => {
                   // Vuetify
                   VuetifyResolver(),
                 ],
+            }),
+            VitePluginFonts({
+              google: {
+                families: [
+                  'Baskervville',
+                  {
+                    name: 'Raleway',
+                    styles: 'wght@400;500;700',
+                  },
+                ],
+              },
             }),
             viteStaticCopy({
                 targets: [
