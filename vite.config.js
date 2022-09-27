@@ -1,17 +1,18 @@
 import fs from 'fs'
 import path from 'path'
+import vue from '@vitejs/plugin-vue2'
+
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import { defineConfig, loadEnv } from 'vite'
 import cesium from 'vite-plugin-cesium'
 import eslint from 'vite-plugin-eslint'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { createVuePlugin } from 'vite-plugin-vue2'
 import ViteRequireContext from '@originjs/vite-plugin-require-context'
 
 import { version } from './package.json'
 // TODO exposing package.json to app is potential security risk
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode.js'
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode'
 
 
 export default ({ mode }) => {
@@ -47,9 +48,9 @@ export default ({ mode }) => {
 
     return defineConfig({
         plugins: [
+            vue(),
             eslint(),
             cesium(),
-            createVuePlugin(),
             ViteRequireContext(),
             Components({
                 resolvers: [
@@ -91,12 +92,14 @@ export default ({ mode }) => {
                 '@': path.resolve(__dirname, 'src'),
                 '~': path.resolve(__dirname),
                 'cesium': path.resolve(__dirname, cesiumSource),
+                // resolve vue for vite (based on rollup) https://v2.vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds
+                'vue': 'vue/dist/vue.esm.js',
             },
         },
         build: {
             assetsDir: './static',
             chunkSizeWarningLimit: 600,
-            cssCodeSplit: false,
+            cssCodeSplit: true,
             // sourcemap: true,
             emptyOutDir: true,
         },
