@@ -23,7 +23,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 
 export default {
   name: 'TitleImageHeader',
