@@ -22,6 +22,8 @@ import {
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 import EditAuthorList from '@/modules/user/components/EditAuthorList';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import {
@@ -68,6 +70,85 @@ export default {
   decorators: [],
   parameters: {},
 };
+
+
+export const EditAddAuthorViews = () => ({
+  components: { EditAddAuthor },
+  template: `
+  <v-col>
+
+    <v-row>
+      EditAddAuthor empty
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditAddAuthor />
+      </v-col>
+    </v-row>
+
+<!--    <v-row>
+      BaseUserPicker with preSelection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :preSelected="preSelectedAuthor" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      BaseUserPicker as Card with multiple-pick, clearable and instructions
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :isClearable="true"
+                        :showAsCard="true"
+                        instructions="Pick an EnviDat user to add as an author." />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      BaseUserPicker with multiple-pick and clearable and with pre selection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :preSelected="preSelectedAuthors3"
+                        :isClearable="true" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      BaseUserPicker read only with pre selection
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <BaseUserPicker :users="authors"
+                        :multiplePick="true"
+                        :preSelected="preSelectedAuthors3"
+                        :readonly="true"
+                        hint="Testing readonly" />
+      </v-col>
+    </v-row>
+  -->
+  </v-col>
+  `,
+  methods: {
+  },
+  data: () => ({
+    authors: authorsStrings,
+    preSelectedAuthor,
+    preSelectedAuthors3,
+  }),
+});
 
 export const UserPickerViews = () => ({
   components: { BaseUserPicker },
