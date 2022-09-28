@@ -22,6 +22,8 @@
     "@amcharts/amcharts5": "^5.2.2",
     "@geoman-io/leaflet-geoman-free": "^2.11.2",
     "@metamask/jazzicon": "^2.0.0",
+    "@sentry/tracing": "^7.13.0",
+    "@sentry/vue": "^7.13.0",
     "@turf/turf": "^5.1.6",
     "amcharts3": "^3.21.15",
     "amstock3": "^3.21.15",

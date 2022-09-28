@@ -25,9 +25,12 @@ import {
   handleGenericAPIError,
 } from '@/factories/notificationFactory';
 
+import * as Sentry from '@sentry/vue';
+import { BrowserTracing } from '@sentry/tracing';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
+
 
 import App from './App';
 
@@ -37,15 +40,53 @@ Vue.use(Vue2Filters);
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 
+const key = process.env.VUE_APP_SENTRY_PUBLIC_KEY;
+const project = process.env.VUE_APP_SENTRY_PROJECT_KEY;
+const release = process.env.VUE_APP_VERSION;
+const environment = process.env.NODE_ENV;
+
+if (key && project) {
+  Sentry.init({
+    Vue,
+    dsn: `https://${key}.ingest.sentry.io/${project}`,
+    integrations: [
+      new BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        tracingOrigins: ['localhost:8080', 'https://www.envidat.ch', /^\//],
+      }),
+      /*
+            new Sentry.Integrations.GlobalHandlers(
+            {
+              onunhandledrejection: false,
+              onerror: false,
+            },
+            ),
+      */
+    ],
+    release: release.toString(),
+    environment: environment.toString(),
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    // tracesSampleRate: 1.0,
+    tracesSampleRate: 0,
+  });
+}
+
 /* eslint-disable prefer-template */
+/*
 Vue.config.errorHandler = (err, vm, info) => {
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
   // the error was found in. Only available in 2.2.0+
   // console.log('Vue errorHandler ' + err.message + ' \n ' + info + ' \n ' + err.stack);
-  const msg = err.message ? err.message : err;
-  const errStack = err.stack ? err.stack : 'No error stack available, please let the envidat team know of this Error!';
-  handleGenericError(store, msg, info, errStack);
+//  const msg = err.message ? err.message : err;
+//  const errStack = err.stack ? err.stack : 'No error stack available, please let the envidat team know of this Error!';
+
+  // handleGenericError(store, msg, info, errStack);
+
+  // Sentry.captureException(err);
 };
+*/
 
 // Vue.config.warnHandler = function (msg, vm, trace) {
 //   // `trace` is the component hierarchy trace
@@ -71,9 +112,13 @@ axios.interceptors.request.use((config) => {
   }
 
   return config;
-}, (error) => 
-  // Do something with request error
-   Promise.reject(error),
+// eslint-disable-next-line arrow-body-style
+}, (error) => {
+    // Do something with request error
+    // Sentry.captureException(error);
+
+    return Promise.reject(error);
+  },
 );
 
 axios.interceptors.response.use(
@@ -85,6 +130,8 @@ axios.interceptors.response.use(
   (error) => {
     // this is called "onRejected"
     // console.log('interceptor error ' + error);
+    // Sentry.captureException(error);
+
     if (error.status >= 500) {
       handleGenericAPIError(store, error);
     }

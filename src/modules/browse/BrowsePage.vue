@@ -96,6 +96,10 @@ export default {
     this.oldIsAuthorSearch = this.isAuthorSearch;
 
     this.checkRouteChanges(null);
+
+    const getit = window.something.something;
+    console.log(getit);
+
   },
   methods: {
     loadRouteTags() {
