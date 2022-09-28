@@ -1,3 +1,7 @@
+import * as am5 from '@amcharts/amcharts5';
+import am5themesAnimated from '@amcharts/amcharts5/themes/Animated';
+import * as am5xy from '@amcharts/amcharts5/xy';
+
 const defaultSeriesSettings = {
   lineStrokeWidth: 3,
   lineOpacity: 1,
@@ -205,9 +209,115 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   return configs;
 }
 
+function createChart(yAxisDivID, xAxisName, yAxisName, data, xAxisFormat = 'yyyy-MM-dd H:m:s\'+00:00\'') {
+
+  const root = am5.Root.new(yAxisDivID);
+
+  // Set all dates in root to UTC
+  // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
+  root.utc = true;
+
+  root.setThemes([am5themesAnimated.new(root)]);
+
+  // Create chart
+  const chart = root.container.children.push(
+    am5xy.XYChart.new(root, {
+      focusable: true,
+      panX: true,
+      panY: true,
+      wheelX: 'panX',
+      wheelY: 'zoomX',
+    }),
+  );
+
+  // const easing = am5.ease.linear;
+
+  // Create axes
+  const xAxis = chart.xAxes.push(
+    am5xy.DateAxis.new(root, {
+      maxDeviation: 0.1,
+      groupData: true,
+      groupCount: 500,
+      baseInterval: {
+        timeUnit: 'hour',
+        count: 1,
+      },
+      renderer: am5xy.AxisRendererX.new(root, {
+        // minGridDistance: 50,
+      }),
+      tooltip: am5.Tooltip.new(root, {}),
+    }),
+  );
+
+  const yAxis = chart.yAxes.push(
+    am5xy.ValueAxis.new(root, {
+      maxDeviation: 0.1,
+      renderer: am5xy.AxisRendererY.new(root, {}),
+      tooltip: am5.Tooltip.new(root, {}),
+    }),
+  );
+
+  // Set cursor
+  chart.set('cursor', am5xy.XYCursor.new(root, {
+    behavior: 'zoomX',
+    xAxis,
+  }));
+  // cursor.lineY.set('visible', false);
+
+  // Add scrollbar
+  chart.set('scrollbarX', am5.Scrollbar.new(root, {
+    orientation: 'horizontal',
+  }));
+
+/*
+  chart.appear(1000, 100);
+*/
+
+  // Add series
+  const series = chart.series.push(
+    am5xy.LineSeries.new(root, {
+      minBulletDistance: 10,
+      connect: false,
+      xAxis,
+      yAxis,
+      valueYField: yAxisName,
+      valueXField: xAxisName,
+      tooltip: am5.Tooltip.new(root, {}),
+    }),
+  );
+
+  series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+
+  series.strokes.template.setAll({
+    strokeWidth: 3,
+    templateField: 'strokeSettings',
+  });
+
+  // Make stuff animate on load
+  /*
+    series.appear(1000, 100);
+    chart.appear(1000, 100);
+  */
+
+
+  // Process data
+  const processor = am5.DataProcessor.new(root, {
+    dateFields: [xAxisName],
+    dateFormat: xAxisFormat,
+    numericFields: [yAxisName],
+  });
+
+  processor.processMany(data);
+
+  // Assign parsed/processed data to series
+  series.data.setAll(data);
+
+  return () => root.dispose();
+}
 
 export {
   createSerialChart,
+  createChart,
   defaultSeriesSettings,
   addStartEndDateUrl,
   hasData,

@@ -37,10 +37,9 @@
 
 <script>
 import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
-// eslint-disable-next-line camelcase
-import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
+
 import { convertCSVToJSON } from '@/factories/stringFactory';
+import { createChart } from '@/factories/chartFactory';
 
 
 export default {
@@ -80,12 +79,12 @@ export default {
 
     if (this.csvDataAvailable) {
       // Create multiple charts: one chart per yAxis (element) in csvDataYAxesArray for CSV data
-      this.csvDataYAxesArray.map(yAxis => this.createChart(yAxis, yAxis))
+      this.csvDataYAxesArray.map(yAxis => createChart(yAxis, this.xAxisName, yAxis, this.parsedData, this.xAxisFormat));
     }
 
     if (this.jsonDataAvailable) {
       // Create chart for JSON data
-      this.createChart(this.jsonChartDivID, this.jsonDataYAxisName);
+      createChart(this.jsonChartDivID, this.xAxisName, this.yAxisName, this.parsedData, this.xAxisFormat);
     }
 
   },
@@ -93,112 +92,6 @@ export default {
     // Return responseType 'type' from result object (only string parsed to first comma)
     getResponseType(resultType) {
       return resultType.split(',')[0];
-    },
-    // Return JSON data from inputted CSV data, convert nullValue to null
-
-    createChart(yAxisDivID, yAxisName) {
-
-      const root = am5.Root.new(yAxisDivID);
-
-      // Set all dates in root to UTC
-      // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
-      root.utc = true;
-
-      root.setThemes([
-        am5themes_Animated.new(root),
-      ]);
-
-      // Create chart
-      const chart = root.container.children.push(
-          am5xy.XYChart.new(root, {
-            focusable: true,
-            panX: true,
-            panY: true,
-            wheelX: 'panX',
-            wheelY: 'zoomX',
-          }),
-      );
-
-      // const easing = am5.ease.linear;
-
-      // Create axes
-      const xAxis = chart.xAxes.push(
-          am5xy.DateAxis.new(root, {
-            maxDeviation: 0.1,
-            groupData: true,
-            groupCount: 500,
-            baseInterval: {
-              timeUnit: 'hour',
-              count: 1,
-            },
-            renderer: am5xy.AxisRendererX.new(root, {
-              // minGridDistance: 50,
-            }),
-            tooltip: am5.Tooltip.new(root, {}),
-          }),
-      );
-
-      const yAxis = chart.yAxes.push(
-          am5xy.ValueAxis.new(root, {
-            maxDeviation: 0.1,
-            renderer: am5xy.AxisRendererY.new(root, {}),
-            tooltip: am5.Tooltip.new(root, {}),
-          }),
-      );
-
-      // Set cursor
-      chart.set('cursor', am5xy.XYCursor.new(root, {
-        behavior: 'zoomX',
-        xAxis,
-      }));
-      // cursor.lineY.set('visible', false);
-
-      // Add scrollbar
-      chart.set('scrollbarX', am5.Scrollbar.new(root, {
-        orientation: 'horizontal',
-      }));
-
-      chart.appear(1000, 100);
-
-
-      // Add series
-      const series = chart.series.push(
-          am5xy.LineSeries.new(root, {
-            minBulletDistance: 10,
-            connect: false,
-            xAxis,
-            yAxis,
-            valueYField: yAxisName,
-            valueXField: this.xAxisName,
-            tooltip: am5.Tooltip.new(root, {}),
-          }),
-      );
-
-      series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
-
-      series.strokes.template.setAll({
-        strokeWidth: 3,
-        templateField: 'strokeSettings',
-      });
-
-      // Make stuff animate on load
-      series.appear(1000, 100);
-      chart.appear(1000, 100);
-
-
-      // Process data
-      const processor = am5.DataProcessor.new(root, {
-        dateFields: [this.xAxisName],
-        dateFormat: this.xAxisFormat,
-        numericFields: [yAxisName],
-      });
-      processor.processMany(this.parsedData);
-
-      // Assign parsed/processed data to series
-      series.data.setAll(this.parsedData);
-
-      return () => root.dispose();
-
     },
     // Assign parsedData to loaded and parsed external data
     loadParseData() {
