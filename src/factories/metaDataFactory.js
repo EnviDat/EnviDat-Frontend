@@ -490,6 +490,7 @@ export function createResource(resource, datasetName) {
     doi: resource.doi,
     name: fileName,
     url: resURL,
+    urlType: resource.url_type,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,
