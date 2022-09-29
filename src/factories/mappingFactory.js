@@ -71,8 +71,8 @@ const JSONFrontendBackendRules = {
     ['lastName','name'],
     ['email','email'],
     ['dataCredit','data_credit'],
-    ['id.type','identifier_scheme'],
-    ['id.identifier','identifier'],
+    ['identifierType','identifier_scheme'],
+    ['identifier','identifier'],
     ['affiliation','affiliation'],
 /*
     ['affiliations.affiliation1','affiliation'],

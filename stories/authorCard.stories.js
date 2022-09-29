@@ -111,11 +111,20 @@ export const AuthorCardViews = () => ({
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection4" />
+        <author-card :author="authorFromCollection4"
+                     :loading="true"
+                     :show-generic-open-button="true"
+                     open-button-icon="edit"
+                     open-button-tooltip="Editing Author"
+        />
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="author2" />
+        <author-card :author="author2"
+                     :show-generic-open-button="true"
+                     open-button-icon="edit"
+                     open-button-tooltip="Editing Author"
+        />
       </v-col>      
     </v-row>
   </v-container>

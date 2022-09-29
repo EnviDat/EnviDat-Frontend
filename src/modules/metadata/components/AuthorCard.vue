@@ -189,13 +189,13 @@
                    class="authorInfo py-0"
                    :class="dark ? 'white--text' : 'black--text'">
 
-              <a v-if="(author.id.type && author.id.type === 'orcid') || isOrcId(formatIdentifier(author.id.identifier))"
-                 :href="`https://orcid.org/${formatIdentifier(author.id.identifier)}`"
+              <a v-if="(author.identifierType && author.identifierType === 'orcid') || isOrcId(author.identifier)"
+                 :href="`https://orcid.org/${formatIdentifier(author.identifier)}`"
                  rel="noopener noreferrer"
                  target="_blank">
-                {{ formatIdentifier(author.id.identifier) }}
+                {{ formatIdentifier(author.identifier) }}
               </a>
-              <div v-else>{{ formatIdentifier(author.id.identifier) }}</div>
+              <div v-else>{{ formatIdentifier(author.identifier) }}</div>
 
             </v-col>
           </v-row>
@@ -229,6 +229,7 @@
           <base-icon-button :materialIconName="openButtonIcon"
                             iconColor="black"
                             color="accent"
+                            :disabled="loading"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
                             @clicked="$emit('openButtonClicked')"/>
@@ -350,7 +351,7 @@ export default {
     cardClass() {
       return {
         accentLink: this.dataCreditLevel > 2,
-        highlighted: this.isSelected,
+        highlighted: this.isSelected || this.author?.isSelected,
       };
     },
     dark() {

@@ -415,15 +415,15 @@ export default {
     selectForEditing(this, resources, id, state.selectedResourceId, 'id');
     state.selectedResourceId = id;
   },
-  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
-    const authors = this.getters[`${USER_NAMESPACE}/authors`];
-    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
-    state.selectedAuthorId = id;
-  },
   [METADATA_CANCEL_RESOURCE_EDITING](state) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
     setSelected(this, resources, state.selectedResourceId, 'id', false);
     state.selectedResourceId = '';
+  },
+  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
+    state.selectedAuthorId = id;
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
