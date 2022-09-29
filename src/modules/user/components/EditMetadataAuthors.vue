@@ -151,8 +151,8 @@ export default {
       if (this.authorEditingEnabled) {
         editingProperties = {
           showGenericOpenButton: true,
-          openButtonIcon: 'edit',
-          openButtonTooltip: 'Editing Author',
+          openButtonIcon: author.isSelected ? 'close' : 'edit',
+          openButtonTooltip: author.isSelected ? 'Cancel author editing' : 'Edit Author',
         };
       }
 
@@ -172,7 +172,7 @@ export default {
       this.previewAuthors = null;
     },
     toggleDataCredit(author, creditName) {
-      const dCredit = [... author.dataCredit || []];
+      const dCredit = [...author.dataCredit || []];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -190,7 +190,7 @@ export default {
       let localAuthorCopy = [...this.authors];
       const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
 
-      const authorCopy = { ...authorToChange};
+      const authorCopy = { ...authorToChange };
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one

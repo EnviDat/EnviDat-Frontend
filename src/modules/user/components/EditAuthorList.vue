@@ -229,7 +229,11 @@ export default {
   },
   methods: {
     catchEditAuthorClick(author) {
-      eventBus.$emit(SELECT_EDITING_AUTHOR, author.email);
+      if (author.isSelected) {
+        eventBus.$emit(CANCEL_EDITING_AUTHOR, author.email);
+      } else {
+        eventBus.$emit(SELECT_EDITING_AUTHOR, author.email);
+      }
     },
     catchEditAuthorClose() {
       eventBus.$emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
