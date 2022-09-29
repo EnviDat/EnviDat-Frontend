@@ -12,7 +12,7 @@
  */
 
 import {
-  EDIT_USER_PROFILE,
+  EDIT_USER_PROFILE, EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -167,6 +167,25 @@ const metadataInEditingValidations = {
       email: yup.string()
         .email('Please enter a valid email address')
         .required('Email is required'),
+    }),
+  [EDITMETADATA_AUTHOR]: () =>
+    yup.object().shape({
+      authorGivenName: yup.string()
+        .required('Author given (first) name is required')
+        .min(3, 'Author given (first) name must be at least 3 characters'),
+      authorSurname: yup.string()
+        .required('Author surname is required')
+        .min(3, 'Author surname must be at least 3 characters'),
+      authorEmail: yup.string()
+        .email('Author email must be a valid email address')
+        .required('Author email is required'),
+      orcId: yup.string()
+        // e.g. 0000-0002-3862-8720
+        .nullable()
+        .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
+      affiliation: yup.string()
+        // .required('Author affiliation is required')
+        .min(3, 'Affiliation must be at least 3 characters'),
     }),
 };
 

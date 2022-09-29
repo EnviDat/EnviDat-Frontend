@@ -67,7 +67,7 @@ const JSONFrontendBackendRules = {
     ['keywords','tags'],
   ],
   [EDITMETADATA_AUTHOR]: [
-    ['firstName','given_name'],
+    ['givenName','given_name'],
     ['lastName','name'],
     ['email','email'],
     ['dataCredit','data_credit'],
