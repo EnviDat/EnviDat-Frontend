@@ -17,7 +17,10 @@ import {
   eventBus,
   EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR,
+  SAVE_EDITING_AUTHOR,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR,
+  EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -32,7 +35,7 @@ import {
 import {
   createAuthors,
   getFullAuthorsFromDataset,
-  extractAuthorsMap,
+  extractAuthorsMap, getAuthorName, createAuthor,
 } from '@/factories/authorFactory';
 
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
@@ -383,9 +386,9 @@ export const FullEditingAuthorViews = () => ({
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   beforeDestroy() {
-    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   methods: {
@@ -402,28 +405,30 @@ export const FullEditingAuthorViews = () => ({
       this.selectionId = '';
     },
     setSelected(id, selected) {
-      const auths = this.genericProps.authors;
+      const auths = this.authors;
 
       for (let i = 0; i < auths.length; i++) {
-        const r = auths[i];
+        const author = auths[i];
         // if (r.email === id) {
         //   r.isSelected = selected;
         //   this.$set(auths, i, r);
         //   return;
         // }
 
-        if (r[localIdProperty]) {
-          if (r[localIdProperty] === id) {
-            r.isSelected = selected;
-            this.$set(auths, i, r);
+        if (author[localIdProperty]) {
+          if (author[localIdProperty] === id) {
+            author.isSelected = selected;
+            this.$set(auths, i, author);
             return;
           }
-        } else if (r.email === id) {
-          r.isSelected = selected;
-          this.$set(auths, i, r);
+        } else if (author.email === id) {
+          author.isSelected = selected;
+          this.$set(auths, i, author);
           return;
         }
       }
+
+      console.log(this.authors);
     },
     saveAuthor(newAuthor) {
       newAuthor.existsOnlyLocal = false;
@@ -449,14 +454,57 @@ export const FullEditingAuthorViews = () => ({
       auths.unshift(newAuthor);
     },
     changeAuthors(updateObj) {
+      this.loading = true;
+
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
         this.authors = updateObj.data.authors;
-        // console.log('FullEditingAuthorView updated authors');
-        // console.log(this.authors);
       }
+
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+        const updatedAuthor = updateObj.data;
+
+        let changed = false;
+
+        for (let i = 0; i < this.authors.length; i++) {
+          const auth = this.authors[i];
+          const email = auth.email;
+          const fullName = auth.fullName;
+          const searchAuthorFullName = getAuthorName({
+            firstName: updatedAuthor.firstName,
+            lastName: updatedAuthor.lastName,
+          });
+          
+          if (email === updatedAuthor.email
+            || fullName === searchAuthorFullName){
+
+            const author = createAuthor(auth);
+            this.authors.push(author);
+            // use $set to make the author entry reactive
+            // this.$set(this.authors, i, author);
+
+            changed = true;
+            console.log(`Updated author ${ email } ${ fullName }`);
+            break;
+          }
+        }
+
+        if (!changed) {
+          this.authors.push(updatedAuthor);
+          // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
+        }
+      }
+
+      console.log('FullEditingAuthorView updated authors');
+      console.log(this.authors);
+
+      setTimeout(() => {
+        this.loading = false;
+        eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+      }, 2000)
     },
   },
   data: () => ({
+    loading: false,
     selectionId: '',
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,

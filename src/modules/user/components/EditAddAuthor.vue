@@ -3,6 +3,19 @@
           class="pa-0"
           :loading="loading">
 
+    <BaseIconButton v-if="showCloseButton"
+                    id="EditResourceCloseButton"
+                    class="ma-2"
+                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                    style="position: absolute; top: 0; right: 0; z-index: 2;"
+                    material-icon-name="close"
+                    icon-color="primary"
+                    color="primary"
+                    outlined
+                    tooltipText="Cancel author editing"
+                    :tooltipBottom="true"
+                    @clicked="$emit('closeClicked')" />
+
     <v-container fluid
                  class="pa-4 fill-height">
 
@@ -57,17 +70,17 @@
              class="pt-2">
         <v-col>
 
-          <v-text-field ref="authorEmail"
-                        id="authorEmail"
+          <v-text-field ref="email"
+                        id="email"
                         :label="labels.labelEmail"
                         outlined
-                        :error-messages="validationErrors.authorEmail"
+                        :error-messages="validationErrors.email"
                         prepend-icon="email"
-                        :placeholder="labels.placeholderAuthorEmail"
-                        :value="authorEmailField"
+                        :placeholder="labels.placeholderEmail"
+                        :value="emailField"
                         @focusin="focusIn($event)"
-                        @focusout="focusOut('authorEmail', $event)"
-                        @input="changeProperty('authorEmail', $event)"
+                        @focusout="focusOut('email', $event)"
+                        @input="changeProperty('email', $event)"
           />
 
         </v-col>
@@ -101,34 +114,34 @@
 
         <v-col>
 
-          <v-text-field ref="authorGivenName"
-                        id="authorGivenName"
-                        :label="labels.labelAuthorGivenName"
+          <v-text-field ref="firstName"
+                        id="firstName"
+                        :label="labels.labelFirstName"
                         outlined
-                        :error-messages="validationErrors.authorGivenName"
+                        :error-messages="validationErrors.firstName"
                         prepend-icon="person"
-                        :placeholder="labels.placeholderAuthorGivenName"
-                        :value="authorGivenNameField"
+                        :placeholder="labels.placeholderFirstName"
+                        :value="firstNameField"
                         @focusin="focusIn($event)"
-                        @focusout="focusOut('authorGivenName', $event)"
-                        @input="changeProperty('authorGivenName', $event)"
+                        @focusout="focusOut('firstName', $event)"
+                        @input="changeProperty('firstName', $event)"
           />
 
         </v-col>
 
         <v-col class="pl-4">
 
-          <v-text-field ref="authorSurname"
-                        id="authorSurname"
-                        :label="labels.labelAuthorSurname"
+          <v-text-field ref="lastName"
+                        id="lastName"
+                        :label="labels.labelLastName"
                         outlined
-                        :error-messages="validationErrors.authorSurname"
+                        :error-messages="validationErrors.lastName"
                         prepend-icon="person"
-                        :placeholder="labels.placeholderAuthorSurname"
-                        :value="authorSurnameField"
+                        :placeholder="labels.placeholderLastName"
+                        :value="lastNameField"
                         @focusin="focusIn($event)"
-                        @focusout="focusOut('authorSurname', $event)"
-                        @input="changeProperty('authorSurname', $event)"
+                        @focusout="focusOut('lastName', $event)"
+                        @input="changeProperty('lastName', $event)"
           />
 
         </v-col>
@@ -157,17 +170,17 @@
 
         <v-col class="pl-4">
 
-          <v-text-field ref="orcId"
-                        id="orcId"
-                        :label="labels.labelOrcId"
+          <v-text-field ref="identifier"
+                        id="identifier"
+                        :label="labels.labelIdentifier"
                         outlined
-                        :error-messages="validationErrors.orcId"
+                        :error-messages="validationErrors.identifier"
                         prepend-icon="person"
-                        :placeholder="labels.placeholderOrcId"
-                        :value="orcIdField"
+                        :placeholder="labels.placeholderIdentifier"
+                        :value="identifierField"
                         @focusin="focusIn($event)"
-                        @focusout="focusOut('orcId', $event)"
-                        @input="changeProperty('orcId', $event)"
+                        @focusout="focusOut('identifier', $event)"
+                        @input="changeProperty('identifier', $event)"
           />
 
         </v-col>
@@ -193,9 +206,11 @@
 
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
+import { createAuthor, getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -205,7 +220,7 @@ import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
 
 import {
-  EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR, EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
@@ -217,19 +232,19 @@ export default {
       type: String,
       default: EDIT_METADATA_ADD_AUTHOR_TITLE,
     },
-    authorGivenName: {
+    firstName: {
       type: String,
       default: '',
     },
-    authorSurname: {
+    lastName: {
       type: String,
       default: '',
     },
-    authorEmail: {
+    email: {
       type: String,
       default: '',
     },
-    orcId: {
+    identifier: {
       type: String,
       default: '',
     },
@@ -240,6 +255,10 @@ export default {
     existingAuthors: {
       type: Array,
       default: () => [],
+    },
+    showCloseButton: {
+      type: Boolean,
+      default: false,
     },
     loading: {
       type: Boolean,
@@ -272,34 +291,40 @@ export default {
   },
   mounted() {
   },
+  created() {
+    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
   computed: {
     affiliationField: {
       get() {
         return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;
       },
     },
-    authorGivenNameField: {
+    firstNameField: {
       get() {
-        return this.previews.authorGivenName !== null ? this.previews.authorGivenName : this.authorGivenName;
+        return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
       },
     },
-    authorSurnameField: {
+    lastNameField: {
       get() {
-        return this.previews.authorSurname !== null ? this.previews.authorSurname : this.authorSurname;
+        return this.previews.lastName !== null ? this.previews.lastName : this.lastName;
       },
     },
-    authorEmailField: {
+    emailField: {
       get() {
-        return this.previews.authorEmail !== null ? this.previews.authorEmail : this.authorEmail;
+        return this.previews.email !== null ? this.previews.email : this.email;
       },
     },
-    orcIdField: {
+    identifierField: {
       get() {
-        return this.previews.orcId !== null ? this.previews.orcId : this.orcId;
+        return this.previews.identifier !== null ? this.previews.identifier : this.identifier;
       },
     },
     preselectAuthorNames() {
-      const author = this.getAuthorByEmail(this.authorEmailField);
+      const author = this.getAuthorByEmail(this.emailField);
       const fullName = this.getFullName(author);
 
       return fullName ? [fullName] : [];
@@ -330,18 +355,18 @@ export default {
       return matches.length > 0;
     },
     anyUserElementsActive() {
-      return this.activeElements.authorEmail
-          || this.activeElements.authorGivenName
-          || this.activeElements.authorSurname
+      return this.activeElements.email
+          || this.activeElements.firstName
+          || this.activeElements.lastName
           || this.activeElements.affiliation
-          || this.activeElements.orcId;
+          || this.activeElements.identifier;
     },
     anyPreviewsChanged() {
-      return this.previews.authorEmail !== null
-          || this.previews.authorGivenName !== null
-          || this.previews.authorSurname !== null
+      return this.previews.email !== null
+          || this.previews.firstName !== null
+          || this.previews.lastName !== null
           || this.previews.affiliation !== null
-          || this.previews.orcId !== null;
+          || this.previews.identifier !== null;
     },
   },
   methods: {
@@ -352,7 +377,7 @@ export default {
     // Returns true if all properties are valid, else returns false
     validateAuthor(authorObject) {
 
-      const properties = ['authorEmail', 'authorGivenName', 'authorSurname', 'orcId', 'affiliation'];
+      const properties = ['email', 'firstName', 'lastName', 'identifier', 'affiliation'];
 
       // Validate fields corresponding to properties
       for (let i = 0; i < properties.length; i++) {
@@ -382,7 +407,7 @@ export default {
       this.markPropertyActive(event.target, false);
       this.markPropertyActive(event.relatedTarget, true);
       // this.delayedNotifyChange(property, event.target.value);
-      this.notifyContactChange(property, event.target.value);
+      this.notifyAuthorChange(property, event.target.value);
     },
     markPropertyActive(toElement, editing) {
       const toId = toElement?.id || null;
@@ -404,10 +429,10 @@ export default {
 
       if (this.authorIsPicked) {
         const author = this.getAuthorByName(pickedAuthorName);
-        const authorObject = this.getAuthorObject(author);
+        const authorObject = createAuthor(author);
 
-        this.fillPreviews(authorObject.authorEmail, authorObject.authorGivenName,
-            authorObject.authorSurname, authorObject.orcId, authorObject.affiliation);
+        this.fillPreviews(authorObject.email, authorObject.firstName,
+            authorObject.lastName, authorObject.identifier, authorObject.affiliation);
 
         if (this.validateAuthor(authorObject)) {
           this.setAuthorInfo(authorObject);
@@ -429,21 +454,7 @@ export default {
       const found = authors.filter(auth => auth.email === email);
       return found[0] || null;
     },
-    getAuthorObject(author) {
-
-      if (author) {
-        return {
-          authorGivenName: author.firstName?.trim(),
-          authorSurname: author.lastName?.trim(),
-          authorEmail: author.email?.trim(),
-          orcId: author.orcId?.trim(),
-          affiliation: author.affiliation?.trim(),
-        };
-      }
-
-      return null;
-    },
-    notifyContactChange(property, value) {
+    notifyAuthorChange(property, value) {
       if (this.anyUserElementsActive) {
         return;
       }
@@ -453,24 +464,26 @@ export default {
       }
 
       // default to filling all the infos from the text-field input
-      let authorObject = {
-        authorGivenName: this.authorGivenNameField,
-        authorSurname: this.authorSurnameField,
-        authorEmail: this.authorEmailField,
-        orcId: this.orcIdField,
+      // so that single text-field changes are captured too
+      let authorObject = createAuthor({
+        firstName: this.firstNameField,
+        lastName: this.lastNameField,
+        email: this.emailField,
+        identifier: this.identifierField,
         affiliation: this.affiliationField,
-      }
+      });
 
-      if (property === 'authorEmail') {
+      if (property === 'email') {
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
           // autocomplete author
-          const author = this.getAuthorByEmail(value);
-          const autoAuthorObj = this.getAuthorObject(author);
+          const autoAuthor = this.getAuthorByEmail(value);
 
-          if (autoAuthorObj) {
-            this.fillPreviews(autoAuthorObj.authorEmail, autoAuthorObj.authorGivenName,
-                autoAuthorObj.authorSurname, autoAuthorObj.orcId, autoAuthorObj.affiliation);
+          if (autoAuthor) {
+            const autoAuthorObj = createAuthor(autoAuthor);
+
+            this.fillPreviews(autoAuthorObj.email, autoAuthorObj.firstName,
+                autoAuthorObj.lastName, autoAuthorObj.identifier, autoAuthorObj.affiliation);
 
             // overwrite any infos from the text-fields with the author infos
             // from the autocomplete
@@ -481,7 +494,6 @@ export default {
           }
         }
       }
-
 
       // store all the contact infos because notifyChanges is only called
       // when the user focus leaves any of the fields, therefore all changes
@@ -494,21 +506,20 @@ export default {
     },
     setAuthorInfo(authorObject) {
 
-      const newHeaderInfo = {
-        ...this.$props,
+      const newAuthorInfo = {
         ...authorObject,
       };
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,
-        data: newHeaderInfo,
+        data: newAuthorInfo,
       });
     },
-    fillPreviews(email, given, last, orcId, affiliation) {
-      this.previews.authorEmail = email;
-      this.previews.authorGivenName = given;
-      this.previews.authorSurname = last;
-      this.previews.orcId = orcId;
+    fillPreviews(email, firstName, lastName, identifier, affiliation) {
+      this.previews.email = email;
+      this.previews.firstName = firstName;
+      this.previews.lastName = lastName;
+      this.previews.identifier = identifier;
       this.previews.affiliation = affiliation;
     },
   },
@@ -516,50 +527,52 @@ export default {
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {
-      authorEmail: null,
-      orcId: null,
+      email: null,
+      identifier: null,
       affiliation: null,
-      authorGivenName: null,
-      authorSurname: null,
+      firstName: null,
+      lastName: null,
     },
     labels: {
       // title: EDIT_METADATA_ADD_AUTHOR_TITLE,
       instructions: 'Create a new author which is not a on any Metadata entry and is not EnviDat users.',
-      labelEmail: 'Author Email',
-      labelAuthorGivenName: 'Author Given Name',
-      labelAuthorSurname: 'Author Surname',
-      labelOrcId: 'Identifier - OrcId',
+      labelEmail: 'Email',
+      labelFirstName: 'Fist Name',
+      labelLastName: 'Last Name',
+      labelIdentifier: 'Identifier - OrcId',
       labelAffiliation: 'Affiliation',
-      placeholderAuthorEmail: 'Enter author email address',
-      placeholderAuthorGivenName: 'Enter author given (first) name',
-      placeholderAuthorSurname: 'Enter author surname name',
-      placeholderOrcId: 'Enter the authors OrcId',
+      placeholderEmail: 'Enter author email address',
+      placeholderFirstName: 'Enter author first name',
+      placeholderLastName: 'Enter author last name',
+      placeholderIdentifier: 'Enter the authors OrcId',
       placeholderAffiliation: 'Enter authors affiliation',
       instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
       authorInstructions: 'Enter an email address of author.',
-      authorOr: '<strong>Or</strong> pick <br /> an author',
+      authorOr: '<strong>Or</strong> pick <br /> an existing author',
       authorAutoComplete: 'If an author is picked or found with the email address the other fields are <strong>autocompleted</strong>!',
     },
     validationProperties: [
-      'authorEmail',
-      'authorGivenName',
-      'authorSurname',
-      'orcId',
+      'email',
+      'firstName',
+      'lastName',
       'affiliation',
+/*
+      'identifier',
+*/
     ],
     validationErrors: {
-      authorEmail: null,
-      orcId: null,
+      email: null,
+      identifier: null,
       affiliation: null,
-      authorGivenName: null,
-      authorSurname: null,
+      firstName: null,
+      lastName: null,
     },
     activeElements: {
-      authorEmail: null,
-      orcId: null,
+      email: null,
+      identifier: null,
       affiliation: null,
-      authorGivenName: null,
-      authorSurname: null,
+      firstName: null,
+      lastName: null,
     },
     iconName: imageContact,
     iconMail: imageMail,
@@ -567,6 +580,7 @@ export default {
   components: {
     BaseUserPicker,
     BaseStatusLabelView,
+    BaseIconButton,
   },
 };
 </script>

@@ -126,8 +126,6 @@ export default {
   },
   computed: {
     hasEditingAuthorsSlot() {
-      // console.log(this.$slots);
-      // console.log(this.$scopedSlots);
       return !!this.$scopedSlots.editingAuthors;
     },
     authors() {

@@ -12,7 +12,8 @@
  */
 
 import {
-  EDIT_USER_PROFILE, EDITMETADATA_AUTHOR,
+  EDIT_USER_PROFILE,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -170,16 +171,16 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_AUTHOR]: () =>
     yup.object().shape({
-      authorGivenName: yup.string()
-        .required('Author given (first) name is required')
-        .min(3, 'Author given (first) name must be at least 3 characters'),
-      authorSurname: yup.string()
-        .required('Author surname is required')
-        .min(3, 'Author surname must be at least 3 characters'),
-      authorEmail: yup.string()
+      firstName: yup.string()
+        .required('Author first name is required')
+        .min(3, 'Author first name must be at least 3 characters'),
+      lastName: yup.string()
+        .required('Author last name is required')
+        .min(3, 'Author last name must be at least 3 characters'),
+      email: yup.string()
         .email('Author email must be a valid email address')
         .required('Author email is required'),
-      orcId: yup.string()
+      identifier: yup.string()
         // e.g. 0000-0002-3862-8720
         .nullable()
         .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),

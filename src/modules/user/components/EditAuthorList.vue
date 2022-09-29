@@ -6,30 +6,26 @@
 
     <v-row >
       <v-col cols="6" >
-        <v-row v-if="selectedAuthor" >
-          <v-col >
-            <EditAuthor v-bind="selectedAuthor"
-                        @closeClicked="catchEditAuthorClose"
-                        @saveAuthor="catchSaveAuthorClose"/>
-          </v-col>
-        </v-row>
 
-        <v-row v-if="!selectedAuthor" >
+        <v-row >
           <v-col cols="12">
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
           </v-col>
 
           <v-col cols="12">
-<!--          For now the EditAddAuthor is a placeholder which links to the legacy website -->
-              <EditAddAuthor :metadataId="metadataId" />
+
+              <EditAddAuthor v-bind="selectedAuthorObj"
+                             @closeClicked="catchEditAuthorClose"
+                             @saveAuthor="catchSaveAuthorClose" />
           </v-col>
 
         </v-row>
       </v-col>
 
       <v-col cols="6" >
-        <EditMetadataAuthors v-bind="authorListingGenericProps" />
+        <EditMetadataAuthors v-bind="authorListingGenericProps"
+                              @editAuthorClick="catchEditAuthorClick"/>
       </v-col>
     </v-row>
 
@@ -51,19 +47,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import EditAuthor from '@/modules/user/components/EditAuthor';
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuthor';
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
 import {
-  // getAuthorKey,
-  getFullAuthorsFromDataset,
+  getAuthorName,
   initializeLocalAuthor,
 } from '@/factories/authorFactory';
 
 import {
-  // enhanceElementsWithStrategyEvents,
   localIdProperty,
 } from '@/factories/strategyFactory';
 import {
@@ -74,7 +67,6 @@ import {
   eventBus,
   SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
-  // SELECT_EDITING_AUTHOR_PROPERTY,
 } from '@/factories/eventBus';
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
@@ -85,7 +77,6 @@ export default {
   name: 'EditAuthorList',
   components: {
     EditMetadataAuthors,
-    EditAuthor,
     EditAddAuthor,
     EditAddExistingAuthor,
   },
@@ -133,9 +124,6 @@ export default {
     },
   },
   computed: {
-    metadataId() {
-      return this.$route?.params?.metadataid || '';
-    },
     existingAuthorsWrap() {
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
@@ -220,33 +208,34 @@ export default {
 
       return selectedAuthor;
     },
+    selectedAuthorObj() {
+      if (!this.selectedAuthor) {
+        return {
+          existingAuthors: this.noDataCreditAuthorsWrap,
+        };
+      }
+
+      return {
+        titleLabel: `Editing ${getAuthorName(this.selectedAuthor)}`,
+        showCloseButton: !!this.selectedAuthor,
+        existingAuthors: this.noDataCreditAuthorsWrap,
+        email: this.selectedAuthor.email,
+        firstName: this.selectedAuthor.firstName,
+        lastName: this.selectedAuthor.lastName,
+        affiliation: this.selectedAuthor.affiliation,
+        orcId: this.selectedAuthor.identifier,
+      };
+    },
   },
   methods: {
-    initAuthor(autoSelect = true) {
-      const newAuthor = initializeLocalAuthor();
-
-      // don't do it for now to disable Author Editing
-      // enhanceElementsWithStrategyEvents([newAuthor], SELECT_EDITING_AUTHOR_PROPERTY);
-
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_AUTHOR,
-        data: newAuthor,
-      });
-
-      if (autoSelect) {
-        this.$nextTick(() => {
-          eventBus.$emit(SELECT_EDITING_AUTHOR, newAuthor[localIdProperty]);
-        });
-      }
+    catchEditAuthorClick(author) {
+      eventBus.$emit(SELECT_EDITING_AUTHOR, author.email);
     },
     catchEditAuthorClose() {
-      eventBus.$emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor);
+      eventBus.$emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
     catchSaveAuthorClose() {
       eventBus.$emit(SAVE_EDITING_AUTHOR, this.selectedAuthor);
-    },
-    catchCreateAuthor() {
-      this.initAuthor();
     },
   },
   data: () => ({

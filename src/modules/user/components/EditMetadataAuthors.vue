@@ -28,11 +28,8 @@
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
             <template #editingAuthors="{ author }" >
 
-              <AuthorCard :author="author"
-                          :authorDetailsConfig="authorDetailsConfig"
-                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                          :overrideAuthorInfosExpanded="true"
+              <AuthorCard v-bind="authorEditingProperties(author)"
+                          @openButtonClicked="catchEditAuthorClick(author)"
                           >
 
                 <template #dataCreditCurrentDataset >
@@ -142,8 +139,35 @@ export default {
         emptyTextColor: 'grey',
       };
     },
+    authorEditingEnabled() {
+      // loading in the config here?
+      return true;
+    },
   },
   methods: {
+    authorEditingProperties(author) {
+      let editingProperties = {};
+
+      if (this.authorEditingEnabled) {
+        editingProperties = {
+          showGenericOpenButton: true,
+          openButtonIcon: 'edit',
+          openButtonTooltip: 'Editing Author',
+        };
+      }
+
+      return {
+        author,
+        ...editingProperties,
+        overrideAuthorInfosExpanded: true,
+        authorDetailsConfig: this.authorDetailsConfig,
+        ...this.authorDeadInfo,
+        /*
+                  :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                  :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+        */
+      };
+    },
     clearPreviews() {
       this.previewAuthors = null;
     },
@@ -181,6 +205,9 @@ export default {
         },
       });
 
+    },
+    catchEditAuthorClick(author) {
+      this.$emit('editAuthorClick', author)
     },
   },
   data: () => ({
