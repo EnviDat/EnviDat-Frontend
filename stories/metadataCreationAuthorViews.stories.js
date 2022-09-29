@@ -17,7 +17,7 @@ import {
   eventBus,
   EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
+  SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -78,75 +78,54 @@ export const EditAddAuthorViews = () => ({
   <v-col>
 
     <v-row>
-      EditAddAuthor empty
+      EditAddAuthor with existing authors
     </v-row>
 
     <v-row class="py-3" >
       <v-col >
-        <EditAddAuthor />
-      </v-col>
-    </v-row>
-
-<!--    <v-row>
-      BaseUserPicker with preSelection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :preSelected="preSelectedAuthor" />
+        <EditAddAuthor v-bind="author"
+                        :existingAuthors="authors"
+                        :loading="loading" />
       </v-col>
     </v-row>
 
     <v-row>
-      BaseUserPicker as Card with multiple-pick, clearable and instructions
+      EditAddAuthor with the author
     </v-row>
 
     <v-row class="py-3" >
       <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :isClearable="true"
-                        :showAsCard="true"
-                        instructions="Pick an EnviDat user to add as an author." />
+        <EditAddAuthor v-bind="author"  />
       </v-col>
     </v-row>
-
-    <v-row>
-      BaseUserPicker with multiple-pick and clearable and with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :isClearable="true" />
-      </v-col>
-    </v-row>
-
-    <v-row>
-      BaseUserPicker read only with pre selection
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <BaseUserPicker :users="authors"
-                        :multiplePick="true"
-                        :preSelected="preSelectedAuthors3"
-                        :readonly="true"
-                        hint="Testing readonly" />
-      </v-col>
-    </v-row>
-  -->
+  
   </v-col>
   `,
+  created() {
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+  },
   methods: {
+    changeAuthor(updateObj) {
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+        this.loading = true;
+
+        setTimeout(() => {
+          this.author = updateObj.data;
+          this.loading = false;
+        }, 2000);
+      }
+    },
   },
   data: () => ({
-    authors: authorsStrings,
+    author: null,
+    // authors: authorsStrings,
+    authors: extractedAuthors,
     preSelectedAuthor,
     preSelectedAuthors3,
+    loading: false,
   }),
 });
 
