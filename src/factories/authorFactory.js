@@ -26,10 +26,12 @@ export function getAuthorGivenName(author) {
   const firstName = author?.given_name || author?.firstName || '';
   return firstName.trim() || null;
 }
+
 export function getAuthorLastName(author) {
   const lastName = author.name || author.lastName || '';
   return lastName.trim() || null;
 }
+
 export function getAuthorName(author) {
   let fullName = author.fullName;
 
@@ -141,65 +143,76 @@ export function getDataCredit(author) {
   return dataCredit;
 }
 
+export function createAuthor(author) {
+
+  // const nameSplits = fullName.split(' ');
+  const firstName = author.given_name || author.firstName || '';
+  const lastName = author.name || author.lastName || '';
+  const fullName = getAuthorName({ firstName, lastName });
+
+  // if (nameSplits.length > 0) {
+  //   if (nameSplits.length === 1) {
+  //     lastName = nameSplits[0].trim();
+  //   } else if (nameSplits.length === 2) {
+  //     firstName = nameSplits[0].trim();
+  //     lastName = nameSplits[1].trim();
+  //   } else if (nameSplits.length === 3) {
+  //     firstName = nameSplits[0].trim();
+  //     lastName = `${nameSplits[1].trim()} ${nameSplits[2].trim()}`;
+  //   }
+  // }
+
+//    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
+  let dataCredit = author.dataCredit || author.data_credit || [];
+
+  if (typeof dataCredit === 'string') {
+    dataCredit = [dataCredit];
+  }
+
+  return {
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    fullName,
+    datasetCount: 1,
+    affiliation: author.affiliation,
+    /*
+          // this is probably old
+          id: {
+            type: author.identifier_scheme,
+            identifier: author.identifier,
+          },
+    */
+    identifier: author.identifier,
+    email: author.email,
+    isSelected: false,
+    dataCredit,
+  };
+}
+
 export function createAuthors(dataset) {
   if (!dataset) {
     return null;
   }
 
-  let authors = null;
+  let parsedAuthors = null;
 
   if (typeof dataset.author === 'string') {
-    authors = JSON.parse(dataset.author);
+    parsedAuthors = JSON.parse(dataset.author);
   } else {
-    authors = dataset.author;
+    parsedAuthors = dataset.author;
   }
 
-  if (!authors || !(authors instanceof Array)) {
+  if (!parsedAuthors || !(parsedAuthors instanceof Array)) {
     return null;
   }
 
   const authorObjs = [];
 
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
+  for (let i = 0; i < parsedAuthors.length; i++) {
+    const parsedAuthor = parsedAuthors[i];
+    const author = createAuthor(parsedAuthor);
 
-    const fullName = getAuthorName(author);
-    // const nameSplits = fullName.split(' ');
-    const firstName = author.given_name || author.firstName || '';
-    const lastName = author.name || author.lastName || '';
-
-    // if (nameSplits.length > 0) {
-    //   if (nameSplits.length === 1) {
-    //     lastName = nameSplits[0].trim();
-    //   } else if (nameSplits.length === 2) {
-    //     firstName = nameSplits[0].trim();
-    //     lastName = nameSplits[1].trim();
-    //   } else if (nameSplits.length === 3) {
-    //     firstName = nameSplits[0].trim();
-    //     lastName = `${nameSplits[1].trim()} ${nameSplits[2].trim()}`;
-    //   }
-    // }
-
-//    const dataCredit = author.data_credit ? getDataCredit(author) : author.dataCredit;
-    let dataCredit = author.dataCredit || author.data_credit || [];
-
-    if (typeof dataCredit === 'string') {
-      dataCredit = [dataCredit];
-    }
-
-    authorObjs.push({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      fullName,
-      datasetCount: 1,
-      affiliation: author.affiliation,
-      id: {
-        type: author.identifier_scheme,
-        identifier: author.identifier,
-      },
-      email: author.email,
-      dataCredit,
-    });
+    authorObjs.push(author);
   }
 
   return authorObjs;
@@ -243,10 +256,6 @@ export function getAuthorKey(author) {
     return author.email.trim().toLowerCase();
   }
 
-  if (author?.id?.identifier) {
-    return author.id.identifier.trim().toLowerCase();
-  }
-
   return author?.fullName?.trim().toLowerCase() || null;
 }
 
@@ -280,12 +289,12 @@ export function extractAuthorsMap(datasets) {
           overwriteDataCredit(author, existingAuthor);
         }
 
-        if (author.id.identifier && author.id.identifier !== existingAuthor.id.identifier) {
-          existingAuthor.id.identifier = author.id.identifier;
+        if (author.identifier && author.identifier !== existingAuthor.identifier) {
+          existingAuthor.identifier = author.identifier;
         }
 
-        if (author.id.type && author.id.type !== existingAuthor.id.type) {
-          existingAuthor.id.type = author.id.type;
+        if (author.identifierType && author.identifierType !== existingAuthor.identifierType) {
+          existingAuthor.identifierType = author.identifierType;
         }
 
         // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
