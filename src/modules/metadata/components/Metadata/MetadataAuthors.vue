@@ -112,7 +112,8 @@ export default {
   mounted() {
     const options = this.options || {};
 
-    this.observer = new IntersectionObserver(([entry]) => {
+    this.observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
       if (entry && entry.isIntersecting) {
         this.showAuthors = true;
       }

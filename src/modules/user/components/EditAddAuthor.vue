@@ -46,19 +46,11 @@
 
       </v-row>
 
-<!--
       <v-row>
         <v-col class="text-body-1 pb-0">
           {{ labels.instructions }}
         </v-col>
       </v-row>
-
-      <v-row>
-        <v-col class="text-body-1">
-          {{ labels.instructions2 }}
-        </v-col>
-      </v-row>
--->
 
       <v-row>
         <v-col class="text-body-1">
@@ -102,15 +94,16 @@
 
       </v-row>
 
-      <v-row dense>
+      <v-row class="px-4"
+             dense>
 
-        <v-col class="pl-10 text-body-1"
+        <v-col class="text-body-1"
                v-html="labels.authorAutoComplete">
         </v-col>
       </v-row>
 
       <v-row dense
-             class="pt-2 pl-10">
+             class="pt-2 px-4">
 
         <v-col>
 
@@ -149,7 +142,7 @@
       </v-row>
 
       <v-row dense
-             class="pt-2 pl-10">
+             class="px-4">
 
         <v-col>
 
@@ -158,7 +151,7 @@
                         :label="labels.labelAffiliation"
                         outlined
                         :error-messages="validationErrors.affiliation"
-                        prepend-icon="person"
+                        prepend-icon="handshake"
                         :placeholder="labels.placeholderAffiliation"
                         :value="affiliationField"
                         @focusin="focusIn($event)"
@@ -175,7 +168,7 @@
                         :label="labels.labelIdentifier"
                         outlined
                         :error-messages="validationErrors.identifier"
-                        prepend-icon="person"
+                        prepend-icon="card_membership"
                         :placeholder="labels.placeholderIdentifier"
                         :value="identifierField"
                         @focusin="focusIn($event)"
@@ -535,7 +528,7 @@ export default {
     },
     labels: {
       // title: EDIT_METADATA_ADD_AUTHOR_TITLE,
-      instructions: 'Create a new author which is not a on any Metadata entry and is not EnviDat users.',
+      instructions: 'Create a new author which is not a on any dataset.',
       labelEmail: 'Email',
       labelFirstName: 'Fist Name',
       labelLastName: 'Last Name',
@@ -546,9 +539,8 @@ export default {
       placeholderLastName: 'Enter author last name',
       placeholderIdentifier: 'Enter the authors OrcId',
       placeholderAffiliation: 'Enter authors affiliation',
-      instructions2: 'Enter a title for your research dataset. Please make sure that title is meaningful and specific.',
       authorInstructions: 'Enter an email address of author.',
-      authorOr: '<strong>Or</strong> pick <br /> an existing author',
+      authorOr: '<strong>Or</strong><br /> pick an existing author',
       authorAutoComplete: 'If an author is picked or found with the email address the other fields are <strong>autocompleted</strong>!',
     },
     validationProperties: [
