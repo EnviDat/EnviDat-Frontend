@@ -182,7 +182,7 @@ const metadataInEditingValidations = {
         .required('Author email is required'),
       identifier: yup.string()
         // e.g. 0000-0002-3862-8720
-        .nullable()
+        .notRequired()
         .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
       affiliation: yup.string()
         // .required('Author affiliation is required')
@@ -241,6 +241,17 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
   return true;
 }
 
+/**
+ * Calls the isFieldValid function on every property of the objectToValidate. The objectToValidate and the errorObject
+ * need to have the properties as in the array of properties in the input.
+ *
+ * @param {Array<string>} properties
+ * @param {Object} objectToValidate
+ * @param validations
+ * @param {Object} errorObject
+ *
+ * @returns {boolean} false if any of the validation rules got an error
+ */
 export function isObjectValid(properties, objectToValidate, validations, errorObject) {
 
   // Validate fields corresponding to properties

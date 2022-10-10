@@ -13,14 +13,14 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import {
-  SELECT_EDITING_AUTHOR,
-  eventBus,
-  EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+  SAVE_EDITING_AUTHOR,
+  SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
@@ -30,12 +30,10 @@ import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import {
-  localIdProperty,
-} from '@/factories/strategyFactory';
-import {
   createAuthors,
-  getFullAuthorsFromDataset,
-  extractAuthorsMap, getAuthorName, createAuthor,
+  extractAuthorsMap,
+  getAuthorName,
+  getFullAuthorsFromDataset, mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
@@ -403,6 +401,7 @@ export const FullEditingAuthorViews = () => ({
     cancelEditing() {
       this.setSelected(this.selectionId, false);
       this.selectionId = '';
+      eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
     },
     setSelected(id, selected) {
       const auths = this.authors;
@@ -415,13 +414,7 @@ export const FullEditingAuthorViews = () => ({
         //   return;
         // }
 
-        if (author[localIdProperty]) {
-          if (author[localIdProperty] === id) {
-            author.isSelected = selected;
-            this.$set(auths, i, author);
-            return;
-          }
-        } else if (author.email === id) {
+        if (author.email === id) {
           author.isSelected = selected;
           this.$set(auths, i, author);
           return;
@@ -477,8 +470,10 @@ export const FullEditingAuthorViews = () => ({
           if (email === updatedAuthor.email
             || fullName === searchAuthorFullName){
 
-            const author = createAuthor(auth);
-            this.authors.push(author);
+            const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
+
+            // this.authors[i] = createAuthor(updatedAuthor);
+            this.$set(this.authors, i, mergedAuthor);
             // use $set to make the author entry reactive
             // this.$set(this.authors, i, author);
 
@@ -490,6 +485,8 @@ export const FullEditingAuthorViews = () => ({
 
         if (!changed) {
           this.authors.push(updatedAuthor);
+
+          this.selectAuthor(updatedAuthor.email);
           // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
         }
       }
@@ -500,7 +497,7 @@ export const FullEditingAuthorViews = () => ({
       setTimeout(() => {
         this.loading = false;
         eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
-      }, 2000)
+      }, 1000)
     },
   },
   data: () => ({

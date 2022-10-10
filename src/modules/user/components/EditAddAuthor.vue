@@ -3,7 +3,7 @@
           class="pa-0"
           :loading="loading">
 
-    <BaseIconButton v-if="showCloseButton"
+    <BaseIconButton v-if="isEditingAuthor"
                     id="EditResourceCloseButton"
                     class="ma-2"
                     :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
@@ -48,7 +48,7 @@
 
       <v-row>
         <v-col class="text-body-1 pb-0">
-          {{ labels.instructions }}
+          {{ editAuthorInstructions }}
         </v-col>
       </v-row>
 
@@ -76,13 +76,22 @@
           />
 
         </v-col>
+      </v-row>
 
-        <v-col class="shrink px-4 text-body-1 "
-               style="text-align: center;"
-               cols="2"
+      <v-row v-if="!isEditingAuthor"
+             no-gutters
+             dense >
+
+        <v-col class="text-body-1"
                v-html="labels.authorOr">
-          <!--        {{ labels.authorOr }} -->
+
         </v-col>
+
+      </v-row>
+
+      <v-row v-if="!isEditingAuthor"
+             dense
+             class="pt-2">
 
         <v-col>
 
@@ -249,7 +258,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    showCloseButton: {
+    isEditingAuthor: {
       type: Boolean,
       default: false,
     },
@@ -361,31 +370,17 @@ export default {
           || this.previews.affiliation !== null
           || this.previews.identifier !== null;
     },
+    editAuthorInstructions() {
+      if (this.isEditingAuthor){
+        return `Change the information of ${getAuthorName({ firstName: this.firstName, lastName: this.lastName })}`;
+      }
+
+      return 'Create a new author which is not a on any dataset.';
+    },
   },
   methods: {
     clearPreviews() {
       this.fillPreviews(null, null, null, null, null);
-    },
-    // Validate contact author properties by calling isFieldValid()
-    // Returns true if all properties are valid, else returns false
-    validateAuthor(authorObject) {
-
-      const properties = ['email', 'firstName', 'lastName', 'identifier', 'affiliation'];
-
-      // Validate fields corresponding to properties
-      for (let i = 0; i < properties.length; i++) {
-        isFieldValid(properties[i], authorObject[properties[i]], this.validations, this.validationErrors);
-      }
-
-      // Return false if any of the properties have a validation error
-      for (let i = 0; i < properties.length; i++) {
-        const prop = properties[i];
-        if (this.validationErrors[prop]) {
-          return false;
-        }
-      }
-
-      return true;
     },
     getFullName(authorObj) {
       if (!authorObj) {
@@ -427,7 +422,7 @@ export default {
         this.fillPreviews(authorObject.email, authorObject.firstName,
             authorObject.lastName, authorObject.identifier, authorObject.affiliation);
 
-        if (this.validateAuthor(authorObject)) {
+        if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
           this.setAuthorInfo(authorObject);
         }
       } else {
@@ -458,13 +453,13 @@ export default {
 
       // default to filling all the infos from the text-field input
       // so that single text-field changes are captured too
-      let authorObject = createAuthor({
+      let authorObject = {
         firstName: this.firstNameField,
         lastName: this.lastNameField,
         email: this.emailField,
         identifier: this.identifierField,
         affiliation: this.affiliationField,
-      });
+      };
 
       if (property === 'email') {
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
@@ -527,8 +522,6 @@ export default {
       lastName: null,
     },
     labels: {
-      // title: EDIT_METADATA_ADD_AUTHOR_TITLE,
-      instructions: 'Create a new author which is not a on any dataset.',
       labelEmail: 'Email',
       labelFirstName: 'Fist Name',
       labelLastName: 'Last Name',
@@ -539,18 +532,16 @@ export default {
       placeholderLastName: 'Enter author last name',
       placeholderIdentifier: 'Enter the authors OrcId',
       placeholderAffiliation: 'Enter authors affiliation',
-      authorInstructions: 'Enter an email address of author.',
-      authorOr: '<strong>Or</strong><br /> pick an existing author',
-      authorAutoComplete: 'If an author is picked or found with the email address the other fields are <strong>autocompleted</strong>!',
+      authorInstructions: 'Enter an email address of the author.',
+      authorOr: '<strong>Or</strong> pick an existing author',
+      authorAutoComplete: 'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
     },
     validationProperties: [
       'email',
       'firstName',
       'lastName',
       'affiliation',
-/*
-      'identifier',
-*/
+      // don't include the identifier here for auto validation, because it's optional
     ],
     validationErrors: {
       email: null,

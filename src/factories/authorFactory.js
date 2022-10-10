@@ -169,11 +169,13 @@ export function createAuthor(author) {
     dataCredit = [dataCredit];
   }
 
+  // console.log(`creating author from ${fullName} dataCredit: ${dataCredit} datasetCount: ${author.datasetCount}`);
+
   return {
     firstName: firstName.trim(),
     lastName: lastName.trim(),
     fullName,
-    datasetCount: 1,
+    datasetCount: author.datasetCount || 1,
     affiliation: author.affiliation,
     /*
           // this is probably old
@@ -186,7 +188,26 @@ export function createAuthor(author) {
     email: author.email,
     isSelected: false,
     dataCredit,
+    totalDataCredits: author.totalDataCredits || [],
   };
+}
+
+/**
+ * This function is merging the information from the author editing with the full author information which is provided
+ * from an existing author (build up via the extractAuthors function to build up the authors map / dictionary)
+ *
+ * @param newAuthor
+ * @param existingAuthor
+ * @returns {{firstName: *, lastName: *, identifier: *, datasetCount: (number|(function(): number)|*), affiliation: *, isSelected, fullName: *, email: *, dataCredit: *, totalDataCredits: (*|*[])}}
+ */
+export function mergeEditingAuthor(newAuthor, existingAuthor) {
+  return {
+    ...createAuthor(newAuthor),
+    isSelected: existingAuthor.isSelected,
+    dataCredit: existingAuthor.dataCredit,
+    datasetCount: existingAuthor.datasetCount,
+    totalDataCredits: existingAuthor.totalDataCredits || [],
+  }
 }
 
 export function createAuthors(dataset) {
