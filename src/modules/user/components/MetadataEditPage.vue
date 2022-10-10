@@ -61,6 +61,8 @@ import {
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
+  EDITMETADATA_AUTHOR,
+  REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import {
@@ -81,6 +83,7 @@ import {
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -326,24 +329,20 @@ export default {
     saveResource(newRes) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
     },
-    // eslint-disable-next-line no-unused-vars
     saveAuthor(newAuthor) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
 
-      let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
       const payload = {
         stepKey: updateObj.object,
         data: updateObj.data,
         id: this.$route.params.metadataid,
-      }
+      };
 
-      if (updateObj.object === EDITMETADATA_ORGANIZATION) {
-        // overwrite the action and the payload to fit the specific
-        // backend call to change the ownership of a dataset
-        action = METADATA_EDITING_PATCH_DATASET_ORGANIZATION;
-      }
+      // overwrite the action and the payload to fit the specific
+      // backend call to change the ownership of a dataset
+      const action = this.getUserAction(updateObj.object);
 
       // save the full dataObject it in the backend
       this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
@@ -356,6 +355,9 @@ export default {
         this.updateStepStatus(updateObj.object, this.creationSteps);
       });
 
+    },
+    getUserAction(stepKey) {
+      return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
@@ -482,6 +484,11 @@ export default {
       },
     },
     showSnack: false,
+    userActions: {
+      [EDITMETADATA_ORGANIZATION]: METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+      [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
+      [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
+    },
   }),
 };
 </script>

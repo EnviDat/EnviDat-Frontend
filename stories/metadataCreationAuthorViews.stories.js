@@ -18,7 +18,7 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
+  eventBus, REMOVE_EDITING_AUTHOR,
   SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -390,6 +390,17 @@ export const FullEditingAuthorViews = () => ({
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   methods: {
+    removeAuthor(email) {
+      const matches = this.authors.filter(auth => auth.email === email);
+      console.log('remove Author');
+      console.log(matches.length > 0);
+      if (matches.length > 0) {
+        const removeIndex = this.authors.indexOf(matches[0]);
+        this.authors.splice(removeIndex, 1);
+        console.log('remove index');
+        console.log(removeIndex);
+      }
+    },
     selectAuthor(id) {
       if (this.selectionId !== '') {
         this.cancelEditing();
@@ -489,6 +500,10 @@ export const FullEditingAuthorViews = () => ({
           this.selectAuthor(updatedAuthor.email);
           // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
         }
+      }
+
+      if (updateObj.object === REMOVE_EDITING_AUTHOR) {
+        this.removeAuthor(updateObj.data);
       }
 
       console.log('FullEditingAuthorView updated authors');

@@ -189,6 +189,18 @@
 
       </v-row>
 
+      <v-row v-if="isEditingAuthor" >
+        <v-col>
+          <BaseRectangleButton material-icon-name="clear"
+                                icon-color="white"
+                                color="error"
+                                button-text="Remove Author"
+                                tooltip-text="Remove this author from the dataset"
+                                @clicked="removeAuthorClick(email)"/>
+
+        </v-col>
+      </v-row>
+
     </v-container>
 
   </v-card>
@@ -224,8 +236,9 @@ import imageMail from '@/assets/icons/mail.png';
 import {
   EDITMETADATA_AUTHOR, EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
+  eventBus, REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditAddAuthor',
@@ -510,6 +523,12 @@ export default {
       this.previews.identifier = identifier;
       this.previews.affiliation = affiliation;
     },
+    removeAuthorClick(email) {
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: REMOVE_EDITING_AUTHOR,
+        data: email,
+      });
+    },
   },
   data: () => ({
     authorIsPicked: false,
@@ -561,6 +580,7 @@ export default {
     iconMail: imageMail,
   }),
   components: {
+    BaseRectangleButton,
     BaseUserPicker,
     BaseStatusLabelView,
     BaseIconButton,

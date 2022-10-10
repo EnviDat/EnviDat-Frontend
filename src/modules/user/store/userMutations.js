@@ -455,11 +455,20 @@ export default {
 
     updateAuthors(this, state, updateObj);
 
-
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
     extractError(this, reason);
+  },
+  [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const matches = authors.filter(auth => auth.email === email);
+    if (matches.length > 0) {
+      const removeIndex = authors.indexOf(matches[0]);
+      authors.splice(removeIndex, 1);
+    }
+
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
