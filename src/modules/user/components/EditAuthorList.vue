@@ -8,7 +8,8 @@
       <v-col cols="6" >
 
         <v-row >
-          <v-col cols="12">
+          <v-col v-show="!selectedAuthor"
+                 cols="12">
 
               <EditAddExistingAuthor v-bind="authorPickingGenericProps" />
           </v-col>
@@ -53,17 +54,11 @@ import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 
 import {
   getAuthorName,
-  initializeLocalAuthor,
 } from '@/factories/authorFactory';
 
 import {
-  localIdProperty,
-} from '@/factories/strategyFactory';
-import {
   CANCEL_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
@@ -217,13 +212,13 @@ export default {
 
       return {
         titleLabel: `Editing ${getAuthorName(this.selectedAuthor)}`,
-        showCloseButton: !!this.selectedAuthor,
+        isEditingAuthor: !!this.selectedAuthor,
         existingAuthors: this.noDataCreditAuthorsWrap,
         email: this.selectedAuthor.email,
         firstName: this.selectedAuthor.firstName,
         lastName: this.selectedAuthor.lastName,
         affiliation: this.selectedAuthor.affiliation,
-        orcId: this.selectedAuthor.identifier,
+        identifier: this.selectedAuthor.identifier,
       };
     },
   },
