@@ -23,7 +23,7 @@
       <v-col v-show="showZero || (!showZero && dataCreditCounts[index] > 0)"
               v-for="(creditName, index) in dataCreditNames"
               :key="index"
-              class="shrink pt-3 pt-md-4 px-md-1" >
+              class="shrink pt-3 pt-md-4" >
 
       <v-hover v-slot:default="{ hover }" >
         <v-badge class="dataCreditIcon"

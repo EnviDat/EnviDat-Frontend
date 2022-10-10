@@ -23,13 +23,15 @@
                    class="dataCreditIcon"
                    :disabled="readOnly"
                    :overlap="!hover"
+                   style="width: 28px; height: 28px;"
                    @click="catchCreditClick(creditName)"
                    :color="dark ? 'white' : 'black'" >
 
+
             <span slot="badge" >
               <v-icon :color="dark ? 'black' : 'white'"
-                      size="20px"
-                      style="left: 20px;">
+                      size="14px"
+                      style="left: 14px;">
                 checked
               </v-icon>
             </span>
