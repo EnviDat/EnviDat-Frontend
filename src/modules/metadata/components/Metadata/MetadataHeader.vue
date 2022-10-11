@@ -164,9 +164,10 @@
 
           <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
+
             <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
-                                  :url="`mailto:${contactEmailLowerCase}`"
+                                  :url="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
