@@ -67,7 +67,7 @@ const JSONFrontendBackendRules = {
     ['keywords','tags'],
   ],
   [EDITMETADATA_AUTHOR]: [
-    ['givenName','given_name'],
+    ['firstName','given_name'],
     ['lastName','name'],
     ['email','email'],
     ['dataCredit','data_credit'],
@@ -660,15 +660,18 @@ const dataNeedsStringify = [
 
 export function mapFrontendToBackend(stepKey, frontendData) {
 
+  // create a local copy to avoid mutation of vuex store objects / properties
+  const localData = { ...frontendData };
+
   if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
+    localData.authors = cleanAuthorsForBackend(localData.authors);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
-    frontendData.dates = mapDatesForBackend(frontendData.dates);
+    localData.dates = mapDatesForBackend(localData.dates);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
-    frontendData.customFields = mapCustomFields(frontendData.customFields);
+    localData.customFields = mapCustomFields(localData.customFields);
   }
 
-  let backendData = getBackendJSON(stepKey, frontendData);
+  let backendData = getBackendJSON(stepKey, localData);
 
   if (dataNeedsStringify.includes(stepKey)) {
     backendData = convertJSON(backendData, true);
