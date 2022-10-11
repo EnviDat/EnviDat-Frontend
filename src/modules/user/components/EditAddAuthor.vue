@@ -340,9 +340,14 @@ export default {
     },
     preselectAuthorNames() {
       const author = this.getAuthorByEmail(this.emailField);
-      const fullName = this.getFullName(author);
 
-      return fullName ? [fullName] : [];
+      if (author) {
+        const fullName = this.getFullName(author);
+
+        return fullName ? [fullName] : [];
+      }
+
+      return [];
     },
     fullNameUsers() {
       const localAuthors = [...this.existingAuthors];
@@ -446,7 +451,7 @@ export default {
     getAuthorByEmail(email) {
       const authors = this.existingAuthors;
       const found = authors.filter(auth => auth.email === email);
-      return found[0] || {};
+      return found[0] || null;
     },
     notifyAuthorChange(property, value) {
       if (this.anyUserElementsActive) {
@@ -468,35 +473,38 @@ export default {
       };
 
       if (property === 'email') {
+
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
-
-          // autocomplete author
-          const autoAuthor = this.getAuthorByEmail(value);
-
+          const autoAuthor = this.getAutoCompletedAuthor(value);
           if (autoAuthor) {
-            const autoAuthorObj = createAuthor(autoAuthor);
-
-            this.fillPreviews(autoAuthorObj.email, autoAuthorObj.firstName,
-                autoAuthorObj.lastName, autoAuthorObj.identifier, autoAuthorObj.affiliation);
-
-            // overwrite any infos from the text-fields with the author infos
-            // from the autocomplete
-            authorObject = autoAuthorObj;
-
-            // this makes the text-fields readonly again
-            this.authorPickerTouched = false;
+            authorObject = autoAuthor;
           }
         }
+        
       }
-
-      // store all the contact infos because notifyChanges is only called
-      // when the user focus leaves any of the fields, therefore all changes
-      // must be stored
 
       if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {
         this.setAuthorInfo(authorObject);
       }
 
+    },
+    getAutoCompletedAuthor(email) {
+
+      const autoAuthor = this.getAuthorByEmail(email);
+
+      if (autoAuthor) {
+        const autoAuthorObj = createAuthor(autoAuthor);
+
+        this.fillPreviews(autoAuthorObj.email, autoAuthorObj.firstName,
+            autoAuthorObj.lastName, autoAuthorObj.identifier, autoAuthorObj.affiliation);
+
+        // this makes the text-fields readonly again
+        this.authorPickerTouched = false;
+
+        return autoAuthorObj;
+      }
+
+      return null;
     },
     setAuthorInfo(authorObject) {
 
