@@ -89,3 +89,11 @@ export default {
   }
 
 </style>
+
+<style>
+
+.authorTag .v-chip__close {
+  color: red !important;
+}
+
+</style>
