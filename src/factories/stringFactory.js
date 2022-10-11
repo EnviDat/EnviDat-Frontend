@@ -19,6 +19,8 @@ import Crypto from 'crypto-js';
 import Cookie from 'js-cookie';
 import uuid from 'uuid';
 
+import fastJson from 'fast-json-stringify';
+
 export function renderMarkdown(markdownString, sanitizeHTML = true) {
   if (!markdownString || markdownString.length <= 0) {
     return '';
@@ -241,3 +243,10 @@ export function decodeArrayFromUrlString(urlString) {
   // return an empty array for the selectedTagIds
   return [];
 }
+
+export function JSONToString(json) {
+  const schema = {};
+  const stringify = fastJson(schema);
+  return stringify(json);
+}
+

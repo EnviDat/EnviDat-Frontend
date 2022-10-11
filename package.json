@@ -33,6 +33,7 @@
     "crypto-js": "^4.1.1",
     "css-loader": "^3.6.0",
     "date-fns": "^2.28.0",
+    "fast-json-stringify": "^5.4.0",
     "js-cookie": "^3.0.1",
     "leaflet": "^1.6.0",
     "leaflet-bing-layer": "^3.3.1",
