@@ -59,7 +59,12 @@ export function getArrayOfFullNames(userObjects) {
   const fullNameArray = [];
 
   userObjects.forEach((user) => {
-    fullNameArray.push(getAuthorName(user));
+    if (user) {
+      const fullName = getAuthorName(user);
+      if (fullName) {
+        fullNameArray.push(fullName);
+      }
+    }
   });
 
   return fullNameArray;

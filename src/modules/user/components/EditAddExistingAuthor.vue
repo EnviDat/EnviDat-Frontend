@@ -180,7 +180,9 @@ export default {
           author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
 
-        authors.push(author);
+        if (author) {
+          authors.push(author);
+        }
       });
 
       this.previewAuthors = authors;

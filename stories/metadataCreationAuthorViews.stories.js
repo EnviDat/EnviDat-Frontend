@@ -394,6 +394,7 @@ export const FullEditingAuthorViews = () => ({
       const matches = this.authors.filter(auth => auth.email === email);
       console.log('remove Author');
       console.log(matches.length > 0);
+
       if (matches.length > 0) {
         const removeIndex = this.authors.indexOf(matches[0]);
         this.authors.splice(removeIndex, 1);

@@ -448,12 +448,12 @@ export default {
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
-      return found[0] || null;
+      return found[0] || {};
     },
     getAuthorByEmail(email) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.email === email);
-      return found[0] || null;
+      return found[0] || {};
     },
     notifyAuthorChange(property, value) {
       if (this.anyUserElementsActive) {
