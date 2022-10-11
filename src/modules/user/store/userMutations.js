@@ -42,6 +42,7 @@ import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metad
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
+import { getAuthorName, mergeEditingAuthor } from '@/factories/authorFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -56,6 +57,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -432,14 +434,48 @@ export default {
   },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
 
-    author.loading = true;
+    const updatedAuthor = author;
+    updatedAuthor.loading = true;
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
-    const updateObj = {
-      object: EDITMETADATA_AUTHOR,
-      data: author,
-    };
+    let changed = false;
+    let match = false;
 
-    updateAuthors(this, state, updateObj);
+    for (let i = 0; i < authors.length; i++) {
+      match = false;
+      const auth = authors[i];
+      const email = auth.email;
+
+      if (email === updatedAuthor.email) {
+        match = true;
+      } else {
+
+        const searchAuthorFullName = getAuthorName({
+          firstName: updatedAuthor.firstName,
+          lastName: updatedAuthor.lastName,
+        });
+
+        match = auth.fullName === searchAuthorFullName;
+      }
+
+      if (match) {
+        const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
+        this._vm.$set(authors, i, mergedAuthor);
+        // use $set to make the author entry reactive
+        // this.$set(this.authors, i, author);
+
+        changed = true;
+        // console.log(`Updated author ${email} ${auth.fullName}`);
+        break;
+      }
+    }
+
+    if (!changed) {
+      // if the element doesn't exist, add it via unshift as the first entry in the list
+      // updatedAuthor.isSelected = true;
+      authors.unshift(updatedAuthor);
+      // this._vm.$set('authors', authors, authors);
+    }
 
     resetErrorObject(state);
   },
