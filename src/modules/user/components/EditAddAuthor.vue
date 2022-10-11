@@ -344,15 +344,8 @@ export default {
 
       return fullName ? [fullName] : [];
     },
-    existingAuthorsWrap() {
-      if (this.$store) {
-        return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
-      }
-
-      return this.existingAuthors;
-    },
     fullNameUsers() {
-      const localAuthors = [...this.existingAuthorsWrap];
+      const localAuthors = [...this.existingAuthors];
       return getArrayOfFullNames(localAuthors);
     },
     validations() {
@@ -446,12 +439,12 @@ export default {
 
     },
     getAuthorByName(fullName) {
-      const authors = this.existingAuthorsWrap;
+      const authors = this.existingAuthors;
       const found = authors.filter(auth => auth.fullName === fullName);
       return found[0] || {};
     },
     getAuthorByEmail(email) {
-      const authors = this.existingAuthorsWrap;
+      const authors = this.existingAuthors;
       const found = authors.filter(auth => auth.email === email);
       return found[0] || {};
     },
