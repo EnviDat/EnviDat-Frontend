@@ -32,6 +32,7 @@
         <v-row no-gutters >
 
           <v-col v-for="author in authors"
+                 v-dragging="{ item: author, list: authors, group: 'author' }"
                   :key="author.fullName"
                   cols="12" sm="6"
                   class="pa-2" >
@@ -110,6 +111,23 @@ export default {
     showPlaceholder: Boolean,
   },
   mounted() {
+    this.$dragging.$on('dragged', ({ draged, to, value }) => {
+/*
+      console.log('draged');
+      console.log(draged);
+      console.log('to');
+      console.log(to);
+*/
+      eventBus.$emit('DRAG_AUTHORS', {
+        draged,
+        to,
+      })
+    });
+
+    this.$dragging.$on('dragend', (event) => {
+      console.log('dragend');
+    });
+
     const options = this.options || {};
 
     this.observer = new IntersectionObserver((entries) => {
@@ -129,8 +147,14 @@ export default {
     hasEditingAuthorsSlot() {
       return !!this.$scopedSlots.editingAuthors;
     },
-    authors() {
-      return this.mixinMethods_getGenericProp('authors');
+    authors:{
+      get() {
+        return this.mixinMethods_getGenericProp('authors');
+      },
+      set(value) {
+        console.log('authors setter');
+        console.log(value);
+      },
     },
     authorDetailsConfig() {
       return this.mixinMethods_getGenericProp('authorDetailsConfig', {});

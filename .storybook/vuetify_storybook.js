@@ -8,6 +8,9 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 import config from '../src/plugins/vuetifyConfig';
 
+import VueDND from 'awe-dnd';
+
+Vue.use(VueDND);
 Vue.use(Vuetify);
 
 export default new Vuetify(config);

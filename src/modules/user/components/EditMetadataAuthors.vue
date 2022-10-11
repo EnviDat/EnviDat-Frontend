@@ -113,9 +113,11 @@ export default {
   },
   created() {
     eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.$on('DRAG_AUTHORS', this.changeAuthorSequence);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.$off('DRAG_AUTHORS', this.changeAuthorSequence);
   },
   computed: {
     authorsFields() {
@@ -145,6 +147,25 @@ export default {
     },
   },
   methods: {
+    changeAuthorSequence({ draged, to }) {
+
+      // try with https://github.com/SortableJS/Vue.Draggable
+
+      console.log('before swappedArray');
+      console.log(this.authors[0].firstName);
+      const fromIndex = this.authors.indexOf(draged);
+      const toIndex = this.authors.indexOf(to);
+
+      const swappedArray = [...this.authors];
+      swappedArray[toIndex] = draged;
+      swappedArray[fromIndex] = to;// this.swapElements(this.authors, fromIndex, toIndex);
+      console.log('swappedArray');
+      console.log(swappedArray[0].firstName);
+    },
+    swapElements(array, index1, index2) {
+      array[index1] = array.splice(index2, 1, array[index1])[0];
+      return array;
+    },
     authorEditingProperties(author) {
       let editingProperties = {};
 

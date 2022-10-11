@@ -25,13 +25,14 @@ import {
   handleGenericAPIError,
 } from '@/factories/notificationFactory';
 
+import VueDND from 'awe-dnd';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
 import App from './App';
 
-
+Vue.use(VueDND);
 Vue.use(InfiniteLoading /* , { options } */);
 Vue.use(Vue2Filters);
 Vue.config.productionTip = false;
