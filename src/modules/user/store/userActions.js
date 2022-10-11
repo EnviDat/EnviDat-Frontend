@@ -14,23 +14,18 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import {
-  mapFrontendToBackend,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+import { mapFrontendToBackend, populateEditingComponents } from '@/factories/mappingFactory';
 
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  ACTION_USER_COLLABORATOR_DATASETS,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
   FETCH_USER_DATA,
@@ -39,12 +34,13 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS,
-  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
+  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
@@ -52,8 +48,7 @@ import {
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  ACTION_USER_COLLABORATOR_DATASETS,
-  USER_NAMESPACE, METADATA_EDITING_REMOVE_AUTHOR,
+  USER_NAMESPACE,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -207,20 +202,26 @@ export default {
 
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
   },
-  async [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
+  [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
     commit(METADATA_EDITING_SAVE_AUTHOR, author);
 
-    const data = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
 
-    await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
       stepKey: EDITMETADATA_AUTHOR_LIST,
-      data,
+      data: newAuthorList,
       id });
 
-    // commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
   },
-  [METADATA_EDITING_REMOVE_AUTHOR]({ commit }, email) {
-    commit(METADATA_EDITING_REMOVE_AUTHOR, email);
+  [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
+    commit(METADATA_EDITING_REMOVE_AUTHOR, data);
+
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
   },
   async METADATA_EDITING_LOAD_DATASET({ dispatch }, metadataId) {
 

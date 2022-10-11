@@ -459,10 +459,8 @@ export default {
       }
 
       if (match) {
-        const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
-        this._vm.$set(authors, i, mergedAuthor);
         // use $set to make the author entry reactive
-        // this.$set(this.authors, i, author);
+        this._vm.$set(authors, i, updatedAuthor);
 
         changed = true;
         // console.log(`Updated author ${email} ${auth.fullName}`);
@@ -474,7 +472,6 @@ export default {
       // if the element doesn't exist, add it via unshift as the first entry in the list
       // updatedAuthor.isSelected = true;
       authors.unshift(updatedAuthor);
-      // this._vm.$set('authors', authors, authors);
     }
 
     resetErrorObject(state);
