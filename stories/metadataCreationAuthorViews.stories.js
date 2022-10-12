@@ -14,7 +14,7 @@
 
 import {
   CANCEL_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR, EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
@@ -34,7 +34,9 @@ import {
   createAuthors,
   extractAuthorsMap,
   getAuthorName,
-  getFullAuthorsFromDataset, mergeEditingAuthor,
+  getFullAuthorsFromDataset,
+  mergeAuthorsDataCredit,
+  mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
@@ -454,6 +456,13 @@ export const FullEditingAuthorViews = () => ({
     },
     changeAuthors(updateObj) {
       this.loading = true;
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+        const authorToMergeDataCredit = updateObj.data;
+
+        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+        this.authors = mergeAuthorsDataCredit(this.authors, authorToMergeDataCredit);
+      }
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
         this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
