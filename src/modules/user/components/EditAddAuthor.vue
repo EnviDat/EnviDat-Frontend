@@ -223,13 +223,14 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
 import { createAuthor, getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
   isObjectValid,
 } from '@/factories/userEditingValidations';
+
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
 
@@ -238,6 +239,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus, REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
+
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {

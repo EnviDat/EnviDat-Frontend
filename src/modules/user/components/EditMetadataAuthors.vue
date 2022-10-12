@@ -23,6 +23,12 @@
         </v-col>
       </v-row>
 
+      <v-row v-show="validationErrors.authors">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.error}; `">
+          {{ validationErrors.authors }}
+        </v-col>
+      </v-row>
+
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
@@ -82,6 +88,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -128,6 +135,8 @@ export default {
         }
       }
 
+      isFieldValid('authors', authors, this.validations, this.validationErrors)
+
       return authors;
     },
     metadataAuthorsObject() {
@@ -142,6 +151,9 @@ export default {
     authorEditingEnabled() {
       // loading in the config here?
       return true;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
     },
   },
   methods: {
@@ -216,6 +228,9 @@ export default {
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
+    validationErrors: {
+      authors: '',
+    },
   }),
   components: {
     MetadataAuthors,
