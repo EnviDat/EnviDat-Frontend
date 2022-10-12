@@ -2,7 +2,7 @@
   <v-card id="EditChart"
           class="pa-0"
           :height="height"
-          :loading="loading">
+          :loading="loading || loadingData">
 
     <v-container fluid
                  class="pa-4">
@@ -38,66 +38,28 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col>
+          <FilterKeywordsView :selectedTagNames="pickedParams"
+                              :allTags="fileParameters"
+                              @clickedTag="catchPickClicked"
+                              @clickedTagClose="catchCloseClicked"
+                              />
+
+        </v-col>
+      </v-row>
 
       <v-row >
         <v-col>
-          <v-autocomplete v-model="pickedParameters"
-                          :items="fileParameters"
-                          :search-input.sync="search"
-                          multiple
-                          outlined
-                          append-icon="arrow_drop_down"
-                          clear-icon="close"
-                          @blur="$emit('blur', $event)"
-          >
-<!--
-            :readonly="readonly"
-            :hint="hint"
-            :prepend-icon="prependIcon"
-            :label="pickerLabel"
-            :clearable="isClearable"
-            :error-messages="errorMessages"
-                          @change="catchPicks"
--->
-
-            <template v-slot:selection="{ item }">
-
-              <TagChip v-if="item"
-                       :name="item"
-                       :closeable="true"
-                       :isSmall="false"
-                       @clicked="catchPickClicked"
-                       @clickedClose="catchCloseClicked" />
-            </template>
-
-            <template v-slot:item="{ item }">
-
-              <TagChip v-if="item"
-                       :name="item"
-                       :isSmall="false"
-                       @clicked="catchPickClicked" />
-            </template>
-
-<!--
-            <template v-slot:no-data>
-              <v-list-item v-html="autocompleteHint" />
-            </template>
--->
-
-          </v-autocomplete>
+<!--          <div style="height: 500px; background-color: indianred;"></div>-->
+          <div :id="chartId"
+               style="height: 300px;">
+            Chart is loading here, once a parameter is selected
+          </div>
 
         </v-col>
-      </v-row>
 
-      <v-row >
-        <v-col v-for="(param, index) in pickedParams"
-                :key="index">
-          {{ param }}
-        </v-col>
-      </v-row>
-
-      <v-row >
-        <v-col v-for="(param, index) in pickedParams"
+<!--        <v-col v-for="(param, index) in pickedParams"
                :key="index"
                 cols="12">
 
@@ -106,6 +68,7 @@
             Chart {{param}}
           </div>
         </v-col>
+-->
       </v-row>
 
     </v-container>
@@ -124,8 +87,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import TagChip from '@/components/Chips/TagChip.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView';
 
 import {
   getValidationMetadataEditingObject,
@@ -329,6 +292,7 @@ export default {
     previews: {
       parameters: null,
     },
+    loadingData: false,
     pickedParameters: [],
     search: '',
     labels: {
@@ -355,7 +319,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
-    TagChip,
+    FilterKeywordsView,
   },
 };
 </script>

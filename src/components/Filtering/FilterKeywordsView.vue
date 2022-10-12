@@ -182,7 +182,7 @@ export default {
       return combinedMax >= 0 ? combinedMax : 0;
     },
   },
-  beforeMount: function beforeMount() {
+  beforeMount() {
     this.tagIcon = this.mixinMethods_getIcon('tag');
     this.tagsIcon = this.mixinMethods_getIcon('tags');
   },
