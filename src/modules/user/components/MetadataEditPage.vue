@@ -62,7 +62,8 @@ import {
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
-  REMOVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
+  REMOVE_EDITING_AUTHOR,
+  EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import {
@@ -342,7 +343,8 @@ export default {
       };
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        const currentAuthors = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+        const currentAuthors = this.$store.getters[`${USER_NAMESPACE}/authors`];
+
         // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
         // that's why it is necessary to know which have been removed via the picker and combined the three lists
         payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);

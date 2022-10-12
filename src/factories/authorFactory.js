@@ -496,13 +496,15 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
   for (let i = 0; i < removedAuthors.length; i++) {
     const authToRemove = removedAuthors[i];
 
-    if (authors.some(a => a.email === authToRemove.email)) {
-      const deleteIndex = authors.indexOf(authToRemove);
+    let deleteIndex = authors.findIndex(a => a.email === authToRemove.email);
+
+    if (deleteIndex >= 0) {
       authors.splice(deleteIndex, 1);
     }
 
-    if (newAuthors.some(a => a.email === authToRemove.email)) {
-      const deleteIndex = newAuthors.indexOf(authToRemove);
+    deleteIndex = newAuthors.findIndex(a => a.email === authToRemove.email);
+
+    if (deleteIndex >= 0) {
       newAuthors.splice(deleteIndex, 1);
     }
 
