@@ -480,3 +480,52 @@ export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
 
   return authorWithFullInfos;
 }
+
+/**
+ * Combines authors arrays, the current is the basis, removedAuthors are subtracted from the currentAuthors and the newAuthors are being added.
+ * Main usage of this function is in the context of editing authors.
+ *
+ * @param currentAuthors
+ * @param removedAuthors
+ * @param newAuthors
+ * @returns {*[]}
+ */
+export function combineAuthorLists(currentAuthors, newAuthors = [], removedAuthors = []) {
+  const authors = [...currentAuthors];
+
+  for (let i = 0; i < removedAuthors.length; i++) {
+    const authToRemove = removedAuthors[i];
+
+    if (authors.some(a => a.email === authToRemove.email)) {
+      const deleteIndex = authors.indexOf(authToRemove);
+      authors.splice(deleteIndex, 1);
+    }
+
+    if (newAuthors.some(a => a.email === authToRemove.email)) {
+      const deleteIndex = newAuthors.indexOf(authToRemove);
+      newAuthors.splice(deleteIndex, 1);
+    }
+
+  }
+
+  const authorsToMerge = newAuthors.filter(auth => authors.some(a => a.email === auth.email))
+
+  for (let i = 0; i < authorsToMerge.length; i++) {
+    const auth = authorsToMerge[i];
+
+    const mergeIndex = authors.findIndex(a => a.email === auth.email);
+    // treat the newAuthor as the "existingAuthor" so it's dataCredits are being used
+    authors[mergeIndex] = mergeEditingAuthor(authors[mergeIndex], auth);
+  }
+
+  for (let i = 0; i < newAuthors.length; i++) {
+    const auth = newAuthors[i];
+
+    if (!authors.some(a => a.email === auth.email)) {
+      authors.push(auth);
+    }
+  }
+
+
+  return authors;
+}

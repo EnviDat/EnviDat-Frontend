@@ -30,6 +30,7 @@ import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import {
+  combineAuthorLists,
   createAuthors,
   extractAuthorsMap,
   getAuthorName,
@@ -420,12 +421,6 @@ export const FullEditingAuthorViews = () => ({
 
       for (let i = 0; i < auths.length; i++) {
         const author = auths[i];
-        // if (r.email === id) {
-        //   r.isSelected = selected;
-        //   this.$set(auths, i, r);
-        //   return;
-        // }
-
         if (author.email === id) {
           author.isSelected = selected;
           this.$set(auths, i, author);
@@ -433,7 +428,6 @@ export const FullEditingAuthorViews = () => ({
         }
       }
 
-      console.log(this.authors);
     },
     saveAuthor(newAuthor) {
       newAuthor.existsOnlyLocal = false;
@@ -462,7 +456,7 @@ export const FullEditingAuthorViews = () => ({
       this.loading = true;
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.authors = updateObj.data.authors;
+        this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
       }
 
       if (updateObj.object === EDITMETADATA_AUTHOR) {

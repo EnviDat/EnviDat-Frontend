@@ -62,7 +62,7 @@ const metadataInEditingValidations = {
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
       authors: yup.array()
-        .min(1, 'Please enter at least one author.'),
+        .min(1, 'Please add at least one author.'),
     }),
   // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
   // yup.object().shape({

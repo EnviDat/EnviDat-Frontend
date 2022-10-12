@@ -62,7 +62,7 @@ import {
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
-  REMOVE_EDITING_AUTHOR,
+  REMOVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import {
@@ -118,6 +118,7 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { combineAuthorLists } from '@/factories/authorFactory';
 
 
 export default {
@@ -339,6 +340,13 @@ export default {
         data: updateObj.data,
         id: this.$route.params.metadataid,
       };
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+        const currentAuthors = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+        // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
+        // that's why it is necessary to know which have been removed via the picker and combined the three lists
+        payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
+      }
 
       // overwrite the action and the payload to fit the specific
       // backend call to change the ownership of a dataset
