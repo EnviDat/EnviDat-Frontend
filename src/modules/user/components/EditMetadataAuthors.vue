@@ -36,7 +36,7 @@
 
               <AuthorCard v-bind="authorEditingProperties(author)"
                           @openButtonClicked="catchEditAuthorClick(author)"
-                          @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
+                          @catchSearchAuthor="catchAuthorSearchClick"
                           >
 
                 <template #dataCreditCurrentDataset >

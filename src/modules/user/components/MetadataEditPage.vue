@@ -203,7 +203,7 @@ export default {
     authorsMapLoading() {
       const map = this.authorsMap;
 
-      return Object.keys(map).length <= 0;
+      return !map || Object.keys(map).length <= 0;
     },
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route);
