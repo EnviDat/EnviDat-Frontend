@@ -302,7 +302,8 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
@@ -340,7 +341,8 @@ export default {
         });
 
         if (response?.data?.result) {
-          populateEditingComponents(commit, response.data.result, categoryCards);
+          const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+          populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
         }
       })
       .catch((reason) => {

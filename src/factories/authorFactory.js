@@ -193,7 +193,7 @@ export function createAuthor(author) {
     email: author.email,
     isSelected: false,
     dataCredit,
-    totalDataCredits: author.totalDataCredits || [],
+    totalDataCredits: author.totalDataCredits || {},
   };
 }
 
@@ -208,8 +208,6 @@ export function createAuthor(author) {
 export function mergeEditingAuthor(newAuthor, existingAuthor) {
   return {
     ...createAuthor(newAuthor),
-    isSelected: existingAuthor.isSelected,
-    dataCredit: existingAuthor.dataCredit,
     datasetCount: existingAuthor.datasetCount,
     totalDataCredits: existingAuthor.totalDataCredits || [],
   }
@@ -250,11 +248,6 @@ function overwriteDataCredit(author, existingAuthor) {
   if (typeof credits === 'string') {
     credits = [credits];
   }
-/*
-  if (typeof credits === 'object' && !(credits instanceof Array)) {
-    credits = Object.keys(credits);
-  }
-*/
 
   if (!existingAuthor.totalDataCredits) {
     existingAuthor.totalDataCredits = {};
@@ -327,9 +320,13 @@ export function extractAuthorsMap(datasets) {
       } else {
         // console.log('for ' + author.name + ' set ' + author.count);
         existingAuthor = author;
+
         overwriteDataCredit(author, existingAuthor);
-        // authorCount++;
+
       }
+
+      // always clear the dataCredit because for the authorsMap only the total is relevant!
+      existingAuthor.dataCredit = [];
 
       authorMap[authorKey] = existingAuthor;
     }

@@ -598,11 +598,11 @@ export default {
 //    state.currentEditingContent = Object.values(enhancedPayload)[0];
 
     if (currentEntry) {
-//      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
       const { categoryCards } = this.getters;
 
-      populateEditingComponents(this.commit, currentEntry, categoryCards);
+      populateEditingComponents(this.commit, currentEntry, categoryCards, authorsMap);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

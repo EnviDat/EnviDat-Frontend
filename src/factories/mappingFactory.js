@@ -43,6 +43,7 @@ import {
 } from '@/factories/metaDataFactory';
 
 import { format, parse } from 'date-fns';
+import { mergeEditingAuthor } from '@/factories/authorFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -445,7 +446,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
 
   const dataObject = {};
 
@@ -489,7 +490,26 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
     authors.push(author);
   })
 
-  commitEditingData(commit, stepKey, { authors });
+  let enhanceAuthors = []
+
+  if (authorsMap && Object.keys(authorsMap).length > 0) {
+
+    for (let i = 0; i < authors.length; i++) {
+      const auth = authors[i];
+      const existingAuthor = authorsMap[auth.email];
+      let enhanced = auth;
+
+      if (existingAuthor) {
+        enhanced = mergeEditingAuthor(auth, existingAuthor);
+      }
+
+      enhanceAuthors.push(enhanced);
+    }
+  } else {
+    enhanceAuthors = authors;
+  }
+
+  commitEditingData(commit, stepKey, { authors: enhanceAuthors });
   dataObject.authors = authors;
 
   return dataObject;
@@ -588,11 +608,11 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards, authorsMap) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
 
   const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
 

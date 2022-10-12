@@ -114,7 +114,7 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject, populateEditingComponents } from '@/factories/mappingFactory';
 import NavigationStepper from '@/components/Navigation/NavigationStepper';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import { errorMessage } from '@/factories/notificationFactory';
@@ -192,7 +192,12 @@ export default {
       return this.$route.params.metadataid;
     },
     loading() {
-      return this.loadingCurrentEditingContent || !this.currentEditingContent;
+      return this.loadingCurrentEditingContent || !this.currentEditingContent || this.authorsMapLoading;
+    },
+    authorsMapLoading() {
+      const map = this.authorsMap;
+
+      return Object.keys(map).length <= 0;
     },
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route);
@@ -476,6 +481,16 @@ export default {
 
       const stepKey = getStepFromRoute(this.$route);
       this.updateStepStatus(stepKey, this.creationSteps);
+    },
+    authorsMap() {
+
+      if (this.authorsMap && Object.keys(this.authorsMap).length > 0) {
+
+        const { categoryCards } = this.$store.getters;
+
+        // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
+        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards, this.authorsMap);
+      }
     },
   },
   components: {
