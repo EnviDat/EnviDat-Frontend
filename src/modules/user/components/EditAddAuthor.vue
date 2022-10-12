@@ -383,10 +383,10 @@ export default {
     },
     editAuthorInstructions() {
       if (this.isEditingAuthor){
-        return `Change the information of ${getAuthorName({ firstName: this.firstName, lastName: this.lastName })}`;
+        return `Change the information of ${getAuthorName({ firstName: this.firstName, lastName: this.lastName })} for this dataset.`;
       }
 
-      return 'Create a new author which is not a on any dataset.';
+      return 'Create a new author which is not on any published dataset.';
     },
   },
   methods: {

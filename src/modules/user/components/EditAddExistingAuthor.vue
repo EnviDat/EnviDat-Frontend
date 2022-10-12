@@ -215,7 +215,7 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions: 'Choose from existing authors to add to your dataset.',
+      instructions: 'Here are can add authors from other published datasets to your dataset.',
       userPickInstructions: 'Pick an author from the list to add to your dataset. Start typing the name in the text field to search for an author. To remove click on the close icon of an author.',
     },
     validationErrors: {
