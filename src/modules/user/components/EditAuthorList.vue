@@ -166,7 +166,7 @@ export default {
         existingAuthors: this.existingAuthorsWrap,
         loading: this.loading, // || this.authorsMapLoading,
         authorDetailsConfig: {
-          showDatasetCount: false,
+          showDatasetCount: true,
           showAuthorInfos: true,
           showDataCredits: false,
           showDataCreditScore: false,

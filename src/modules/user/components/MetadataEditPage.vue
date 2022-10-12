@@ -63,7 +63,7 @@ import {
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT,
+  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT, AUTHOR_SEARCH_CLICK,
 } from '@/factories/eventBus';
 
 import {
@@ -99,6 +99,7 @@ import {
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
+  BROWSE_PATH,
   METADATADETAIL_PATH,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
@@ -145,6 +146,8 @@ export default {
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
     eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+
+    eventBus.$on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -156,6 +159,8 @@ export default {
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
     eventBus.$off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+
+    eventBus.$off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
     this.initializeStepsInUrl();
@@ -319,6 +324,12 @@ export default {
     },
     catchPreviewClicked() {
       const routeData = this.$router.resolve({ path:`${METADATADETAIL_PATH}/${this.metadataId}`});
+      window.open(routeData.href, '_blank');
+    },
+    catchAuthorCardAuthorSearch(fullName) {
+      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+
+      const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
       window.open(routeData.href, '_blank');
     },
     selectResource(id) {

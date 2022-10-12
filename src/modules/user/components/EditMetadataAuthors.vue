@@ -36,6 +36,7 @@
 
               <AuthorCard v-bind="authorEditingProperties(author)"
                           @openButtonClicked="catchEditAuthorClick(author)"
+                          @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
                           >
 
                 <template #dataCreditCurrentDataset >
@@ -83,6 +84,7 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 import {
+  AUTHOR_SEARCH_CLICK,
   EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
@@ -219,6 +221,9 @@ export default {
     },
     catchEditAuthorClick(author) {
       this.$emit('editAuthorClick', author)
+    },
+    catchAuthorSearchClick(fullName) {
+      eventBus.$emit(AUTHOR_SEARCH_CLICK, fullName);
     },
   },
   data: () => ({

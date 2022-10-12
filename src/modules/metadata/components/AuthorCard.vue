@@ -2,7 +2,6 @@
   <v-card class="authorCard pa-0"
           :class="cardClass"
           :style="dynamicCardBackground"
-          @click.native="cardClick"
           :loading="loading">
 
     <v-container fluid
@@ -466,10 +465,10 @@ export default {
     dataCreditsCount(credit) {
       return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
-    cardClick() {
-    },
     catchSearchAuthor(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+      console.log('AuthorCard search click');
+      this.$emit('catchSearchAuthor', search);
     },
     verticalLineStyle(color) {
       return `border-left: thick solid ${color}`;
