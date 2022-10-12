@@ -70,7 +70,7 @@
                             outlined
                             :color="dark ? 'white' : darkColor"
                             :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                            @clicked="catchSearchAuthor(author.fullName)"/>
+                            @clicked="catchSearchAuthor(author)"/>
 
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
@@ -283,7 +283,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 import { BROWSE_PATH } from '@/router/routeConsts';
 import {
   getLevelProgress,
-  getDataCreditLevel,
+  getDataCreditLevel, getAuthorName,
 } from '@/factories/authorFactory';
 
 // checkout skeleton
@@ -465,8 +465,9 @@ export default {
     dataCreditsCount(credit) {
       return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
-    catchSearchAuthor(search) {
-      this.$emit('catchSearchAuthor', search);
+    catchSearchAuthor(author) {
+      const fullName = getAuthorName(author);
+      this.$emit('catchSearchAuthor', fullName);
     },
     verticalLineStyle(color) {
       return `border-left: thick solid ${color}`;

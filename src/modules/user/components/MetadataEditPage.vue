@@ -184,6 +184,7 @@ export default {
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
+      'asciiDead',
     ]),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
