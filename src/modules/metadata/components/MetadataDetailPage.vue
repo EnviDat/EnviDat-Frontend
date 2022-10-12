@@ -739,9 +739,6 @@ export default {
         isAuthorSearch: true,
       };
 
-      console.log('catchAuthorCardAuthorSearch');
-      console.log(query);
-
       this.$router.push({
         path: BROWSE_PATH,
         query,

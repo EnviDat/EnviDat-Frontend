@@ -466,8 +466,6 @@ export default {
       return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
     catchSearchAuthor(search) {
-      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
-      console.log('AuthorCard search click');
       this.$emit('catchSearchAuthor', search);
     },
     verticalLineStyle(color) {
