@@ -16,7 +16,7 @@
 
           <v-col cols="12">
 
-              <EditAddAuthor v-bind="selectedAuthorObj"
+              <EditAddAuthor v-bind="editAddAuthorObject"
                              @closeClicked="catchEditAuthorClose"
                              @saveAuthor="catchSaveAuthorClose" />
           </v-col>
@@ -145,22 +145,6 @@ export default {
 
       return authors
     },
-/*
-    authorsMapWrap() {
-      if (this.$store) {
-        return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
-      }
-
-      return this.authorsMap;
-    },
-    authorsMapLoading() {
-      if (!this.$store) {
-        return false;
-      }
-
-      return this.authorsMapWrap === null;
-    },
-*/
     authorPickingGenericProps() {
       return {
         authors: this.authorsWrap,
@@ -203,10 +187,12 @@ export default {
 
       return selectedAuthor;
     },
-    selectedAuthorObj() {
+    editAddAuthorObject() {
       if (!this.selectedAuthor) {
         return {
           existingAuthors: this.noDataCreditAuthorsWrap,
+          readOnlyFields: this.readOnlyFields,
+          readOnlyExplanation: this.readOnlyExplanation,
         };
       }
 
@@ -219,6 +205,8 @@ export default {
         lastName: this.selectedAuthor.lastName,
         affiliation: this.selectedAuthor.affiliation,
         identifier: this.selectedAuthor.identifier,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
       };
     },
   },

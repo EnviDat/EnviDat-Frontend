@@ -67,6 +67,8 @@
                         :label="labels.labelEmail"
                         outlined
                         :error-messages="validationErrors.email"
+                        :readonly="mixinMethods_isFieldReadOnly('authors')"
+                        :hint="mixinMethods_readOnlyHint('authors')"
                         prepend-icon="email"
                         :placeholder="labels.placeholderEmail"
                         :value="emailField"
@@ -97,6 +99,8 @@
 
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
+                          :readonly="mixinMethods_isFieldReadOnly('authors')"
+                          :hint="mixinMethods_readOnlyHint('authors')"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -124,6 +128,8 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderFirstName"
                         :value="firstNameField"
+                        :readonly="mixinMethods_isFieldReadOnly('authors')"
+                        :hint="mixinMethods_readOnlyHint('authors')"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
                         @input="changeProperty('firstName', $event)"
@@ -141,6 +147,8 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderLastName"
                         :value="lastNameField"
+                        :readonly="mixinMethods_isFieldReadOnly('authors')"
+                        :hint="mixinMethods_readOnlyHint('authors')"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
                         @input="changeProperty('lastName', $event)"
@@ -163,6 +171,8 @@
                         prepend-icon="handshake"
                         :placeholder="labels.placeholderAffiliation"
                         :value="affiliationField"
+                        :readonly="mixinMethods_isFieldReadOnly('authors')"
+                        :hint="mixinMethods_readOnlyHint('authors')"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
                         @input="changeProperty('affiliation', $event)"
@@ -180,6 +190,8 @@
                         prepend-icon="card_membership"
                         :placeholder="labels.placeholderIdentifier"
                         :value="identifierField"
+                        :readonly="mixinMethods_isFieldReadOnly('authors')"
+                        :hint="mixinMethods_readOnlyHint('authors')"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
                         @input="changeProperty('identifier', $event)"
@@ -194,6 +206,7 @@
           <BaseRectangleButton material-icon-name="clear"
                                 icon-color="white"
                                 color="error"
+                               :disabled="mixinMethods_isFieldReadOnly('authors')"
                                 button-text="Remove Author"
                                 tooltip-text="Remove this author from the dataset"
                                 @clicked="removeAuthorClick(email)"/>
