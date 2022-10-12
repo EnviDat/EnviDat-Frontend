@@ -23,16 +23,20 @@
         </v-col>
       </v-row>
 
+      <v-row v-show="validationErrors.authors">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.error}; `">
+          {{ validationErrors.authors }}
+        </v-col>
+      </v-row>
+
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
             <template #editingAuthors="{ author }" >
 
-              <AuthorCard :author="author"
-                          :authorDetailsConfig="authorDetailsConfig"
-                          :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                          :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                          :overrideAuthorInfosExpanded="true"
+              <AuthorCard v-bind="authorEditingProperties(author)"
+                          @openButtonClicked="catchEditAuthorClick(author)"
+                          @catchSearchAuthor="catchAuthorSearchClick(author.fullName)"
                           >
 
                 <template #dataCreditCurrentDataset >
@@ -80,11 +84,14 @@ import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 
 import {
+  AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -131,6 +138,8 @@ export default {
         }
       }
 
+      isFieldValid('authors', authors, this.validations, this.validationErrors)
+
       return authors;
     },
     metadataAuthorsObject() {
@@ -142,13 +151,43 @@ export default {
         emptyTextColor: 'grey',
       };
     },
+    authorEditingEnabled() {
+      // loading in the config here?
+      return true;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_AUTHOR_LIST);
+    },
   },
   methods: {
+    authorEditingProperties(author) {
+      let editingProperties = {};
+
+      if (this.authorEditingEnabled) {
+        editingProperties = {
+          showGenericOpenButton: true,
+          openButtonIcon: author.isSelected ? 'close' : 'edit',
+          openButtonTooltip: author.isSelected ? 'Cancel author editing' : 'Edit Author',
+        };
+      }
+
+      return {
+        author,
+        ...editingProperties,
+        overrideAuthorInfosExpanded: true,
+        authorDetailsConfig: this.authorDetailsConfig,
+        ...this.authorDeadInfo,
+        /*
+                  :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
+                  :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
+        */
+      };
+    },
     clearPreviews() {
       this.previewAuthors = null;
     },
     toggleDataCredit(author, creditName) {
-      const dCredit = [... author.dataCredit || []];
+      const dCredit = [...author.dataCredit || []];
 
       if (!dCredit.includes(creditName)) {
         dCredit.push(creditName);
@@ -166,7 +205,7 @@ export default {
       let localAuthorCopy = [...this.authors];
       const authorToChange = localAuthorCopy.filter(a => a.email === author.email)[0];
 
-      const authorCopy = { ...authorToChange};
+      const authorCopy = { ...authorToChange };
       const newAuthor = this.toggleDataCredit(authorCopy, creditName);
 
       // replaces the existing author with the new one
@@ -175,20 +214,26 @@ export default {
       this.previewAuthors = localAuthorCopy;
 
       eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: this.stepKey,
-        data: {
-          authors: localAuthorCopy,
-        },
+        object: EDITMETADATA_AUTHOR_DATACREDIT,
+        data: newAuthor,
       });
 
     },
+    catchEditAuthorClick(author) {
+      this.$emit('editAuthorClick', author)
+    },
+    catchAuthorSearchClick(fullName) {
+      eventBus.$emit(AUTHOR_SEARCH_CLICK, fullName);
+    },
   },
   data: () => ({
-    stepKey: EDITMETADATA_AUTHOR_LIST,
-    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author by clicking on the icons.',
+    editingInstructions: 'Here is a preview list of the authors of this dataset. Edit the <a href="https://www.wsl.ch/datacredit/#feat" target="_blank">DataCRediT</a> contributions for each author directly in this list by clicking on the icons. For further editing of authors, select them with the edit icon. ',
     title: EDIT_METADATA_AUTHORSLIST_TITLE,
     editDataCreditsInstruction: AUTHORS_EDIT_CURRENT_DATACREDIT,
     previewAuthors: null,
+    validationErrors: {
+      authors: '',
+    },
   }),
   components: {
     MetadataAuthors,

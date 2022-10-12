@@ -33,6 +33,7 @@ export const EDIT_METADATA_MAIN_TITLE = 'Research Header Information';
 export const EDIT_METADATA_DESCRIPTION_TITLE = 'Research Data Description';
 export const EDIT_METADATA_KEYWORDS_TITLE = 'Research Data Keywords';
 export const EDIT_METADATA_AUTHORS_TITLE = 'Involved Authors';
+export const EDIT_METADATA_ADD_AUTHOR_TITLE = 'Add a New Author';
 
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORSLIST_TITLE = 'Author List Preview';

@@ -42,6 +42,7 @@ import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metad
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
+import { getAuthorName, mergeEditingAuthor } from '@/factories/authorFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -56,6 +57,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -415,15 +417,15 @@ export default {
     selectForEditing(this, resources, id, state.selectedResourceId, 'id');
     state.selectedResourceId = id;
   },
-  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
-    const authors = this.getters[`${USER_NAMESPACE}/authors`];
-    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
-    state.selectedAuthorId = id;
-  },
   [METADATA_CANCEL_RESOURCE_EDITING](state) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
     setSelected(this, resources, state.selectedResourceId, 'id', false);
     state.selectedResourceId = '';
+  },
+  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
+    state.selectedAuthorId = id;
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -432,14 +434,45 @@ export default {
   },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
 
-    author.loading = true;
+    const updatedAuthor = author;
+    updatedAuthor.loading = true;
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
-    const updateObj = {
-      object: EDITMETADATA_AUTHOR,
-      data: author,
-    };
+    let changed = false;
+    let match = false;
 
-    updateAuthors(this, state, updateObj);
+    for (let i = 0; i < authors.length; i++) {
+      match = false;
+      const auth = authors[i];
+      const email = auth.email;
+
+      if (email === updatedAuthor.email) {
+        match = true;
+      } else {
+
+        const searchAuthorFullName = getAuthorName({
+          firstName: updatedAuthor.firstName,
+          lastName: updatedAuthor.lastName,
+        });
+
+        match = auth.fullName === searchAuthorFullName;
+      }
+
+      if (match) {
+        // use $set to make the author entry reactive
+        this._vm.$set(authors, i, updatedAuthor);
+
+        changed = true;
+        // console.log(`Updated author ${email} ${auth.fullName}`);
+        break;
+      }
+    }
+
+    if (!changed) {
+      // if the element doesn't exist, add it via unshift as the first entry in the list
+      // updatedAuthor.isSelected = true;
+      authors.unshift(updatedAuthor);
+    }
 
     resetErrorObject(state);
   },
@@ -455,11 +488,20 @@ export default {
 
     updateAuthors(this, state, updateObj);
 
-
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
     extractError(this, reason);
+  },
+  [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const matches = authors.filter(auth => auth.email === email);
+    if (matches.length > 0) {
+      const removeIndex = authors.indexOf(matches[0]);
+      authors.splice(removeIndex, 1);
+    }
+
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
@@ -556,11 +598,11 @@ export default {
 //    state.currentEditingContent = Object.values(enhancedPayload)[0];
 
     if (currentEntry) {
-//      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
       const { categoryCards } = this.getters;
 
-      populateEditingComponents(this.commit, currentEntry, categoryCards);
+      populateEditingComponents(this.commit, currentEntry, categoryCards, authorsMap);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

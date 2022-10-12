@@ -137,6 +137,7 @@ import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
 import {
+  AUTHOR_SEARCH_CLICK,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
@@ -196,6 +197,8 @@ export default {
     this.fullScreenConfig = null;
     this.fullScreenComponent = null;
     eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+
+    eventBus.$on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -234,6 +237,8 @@ export default {
     eventBus.$off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
     eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
     eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+
+    eventBus.$off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   computed: {
     ...mapState(['config']),
@@ -725,6 +730,20 @@ export default {
         path: BROWSE_PATH,
         query,
       });
+    },
+    catchAuthorCardAuthorSearch(fullName) {
+      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+
+      const query = {
+        search: cleanFullName,
+        isAuthorSearch: true,
+      };
+
+      this.$router.push({
+        path: BROWSE_PATH,
+        query,
+      });
+
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
 

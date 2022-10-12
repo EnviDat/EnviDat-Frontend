@@ -50,7 +50,8 @@
                         :openButtonIcon="author.openButtonIcon"
                         :isSelected="author.isSelected"
                         :loading="author.loading"
-                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" >
+                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
+                        @catchSearchAuthor="catchAuthorSearchClick(author.fullName)" >
 
               <template v-if="hasDataCredits(author.dataCredit)"
                         #dataCreditCurrentDataset >
@@ -100,7 +101,10 @@ import {
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard';
 import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
-import { eventBus } from '@/factories/eventBus';
+import {
+  AUTHOR_SEARCH_CLICK,
+  eventBus,
+} from '@/factories/eventBus';
 import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits';
 
 export default {
@@ -112,7 +116,8 @@ export default {
   mounted() {
     const options = this.options || {};
 
-    this.observer = new IntersectionObserver(([entry]) => {
+    this.observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
       if (entry && entry.isIntersecting) {
         this.showAuthors = true;
       }
@@ -126,8 +131,6 @@ export default {
   },
   computed: {
     hasEditingAuthorsSlot() {
-      // console.log(this.$slots);
-      // console.log(this.$scopedSlots);
       return !!this.$scopedSlots.editingAuthors;
     },
     authors() {
@@ -165,6 +168,9 @@ export default {
     },
     catchOpenClick(event, eventProperty) {
       eventBus.$emit(event, eventProperty);
+    },
+    catchAuthorSearchClick(fullName) {
+      eventBus.$emit(AUTHOR_SEARCH_CLICK, fullName);
     },
   },
   components: {

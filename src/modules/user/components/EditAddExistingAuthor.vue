@@ -46,8 +46,7 @@
                           :multiplePick="true"
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
-                          :errorMessages="baseUserErrorMessages"
-                          :readonly="mixinMethods_isFieldReadOnly('authors')"
+                          :readonly="loading || mixinMethods_isFieldReadOnly('authors')"
                           :hint="mixinMethods_readOnlyHint('authors')"
                           @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
@@ -139,9 +138,6 @@ export default {
     baseUserPickerObject() {
       return getArrayOfFullNames(this.existingEnviDatUsers);
     },
-    baseUserErrorMessages() {
-      return this.validationErrors.authors;
-    },
     preselectAuthorNames() {
       return this.previewAuthors ? getArrayOfFullNames(this.previewAuthors) : getArrayOfFullNames(this.authors);
     },
@@ -156,6 +152,7 @@ export default {
       // is null and we can show an empty selection box with the error validation
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
+      this.removedAuthors = [];
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -167,7 +164,18 @@ export default {
       this.changePreviews(pickedUsers);
     },
     changePreviews(authorsNames){
-      const authors = [];
+      const pickedAuthors = this.getFullAuthors(authorsNames);
+      const preselectFullAuthors = this.getFullAuthors(this.preselectAuthorNames);
+
+      const removedAuthor = preselectFullAuthors.filter(existingAuthor => !pickedAuthors.some(newAuthor => newAuthor.email === existingAuthor.email))[0];
+      if (removedAuthor) {
+        this.removedAuthors.push(removedAuthor);
+      }
+
+      this.previewAuthors = pickedAuthors;
+    },
+    getFullAuthors(authorsNames) {
+      const fullAuthors = [];
 
       authorsNames.forEach((name) => {
         let author = this.getAuthorByName(name, this.authors);
@@ -180,10 +188,12 @@ export default {
           author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
 
-        authors.push(author);
+        if (author) {
+          fullAuthors.push(author);
+        }
       });
 
-      this.previewAuthors = authors;
+      return fullAuthors;
     },
     notifyChange() {
 
@@ -191,16 +201,15 @@ export default {
         return;
       }
 
-      if (this.validateProperty('authors', this.previewAuthors)) {
+      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: {
+          ...this.$props,
+          authors: this.previewAuthors,
+          removedAuthors: this.removedAuthors,
+        },
+      });
 
-        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
-          object: EDITMETADATA_AUTHOR_LIST,
-          data: {
-            ...this.$props,
-            authors: this.previewAuthors,
-          },
-        });
-      }
       // DO NOT clear the preview because than the user isn't able to remove the last author
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
@@ -213,13 +222,11 @@ export default {
   data: () => ({
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
-      instructions: 'Choose authors which from other metadata entries.',
-      userPickInstructions: 'Pick an author from the list or start typing in the text field. To remove click on the close icon of an author.',
-    },
-    validationErrors: {
-      authors: '',
+      instructions: 'Here are can add authors from other published datasets to your dataset.',
+      userPickInstructions: 'Pick an author from the list to add to your dataset. Start typing the name in the text field to search for an author. To remove click on the close icon of an author.',
     },
     previewAuthors: null,
+    removedAuthors: [],
   }),
   components: {
     BaseUserPicker,

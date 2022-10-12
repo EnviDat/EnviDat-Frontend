@@ -14,21 +14,18 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import {
-  mapFrontendToBackend,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+import { mapFrontendToBackend, populateEditingComponents } from '@/factories/mappingFactory';
 
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  ACTION_USER_COLLABORATOR_DATASETS,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
   FETCH_USER_DATA,
@@ -37,20 +34,20 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
-  METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS,
-  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
+  USER_GET_COLLABORATOR_DATASETS_SUCCESS,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_ERROR, USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  ACTION_USER_COLLABORATOR_DATASETS,
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
@@ -68,16 +65,6 @@ if (!useTestdata) {
 const sleep = (milliseconds) =>
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-
-
-/*
-function mapFrontendData(stepKey, backendData) {
-
-  const snakeCaseJSON = convertJSON(backendData, false);
-
- return getFrontendJSON(stepKey, snakeCaseJSON);
-}
-*/
 
 export default {
   async [FETCH_USER_DATA]({ commit }, payload) {
@@ -146,7 +133,7 @@ export default {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);
       });
   },
-  async [USER_GET_ORGANIZATION_IDS]({ dispatch, commit }, userId) {
+  async [USER_GET_ORGANIZATION_IDS]({ commit }, userId) {
     commit(USER_GET_ORGANIZATION_IDS);
 
     const actionUrl = ACTION_USER_ORGANIZATION_IDS();
@@ -215,14 +202,28 @@ export default {
 
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
   },
-  async [METADATA_EDITING_SAVE_AUTHOR]({ commit }, author) {
+  [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
     commit(METADATA_EDITING_SAVE_AUTHOR, author);
 
-    await sleep(2000);
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
 
-    commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
+
   },
-  async METADATA_EDITING_LOAD_DATASET({ commit, dispatch }, metadataId) {
+  [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
+    commit(METADATA_EDITING_REMOVE_AUTHOR, data);
+
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
+  },
+  async METADATA_EDITING_LOAD_DATASET({ dispatch }, metadataId) {
 
     // defining the commitMethod has the effect that mutations of this
     // module are being used with the output of the action from the metadata module
@@ -301,7 +302,8 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
@@ -339,7 +341,8 @@ export default {
         });
 
         if (response?.data?.result) {
-          populateEditingComponents(commit, response.data.result, categoryCards);
+          const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+          populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
         }
       })
       .catch((reason) => {

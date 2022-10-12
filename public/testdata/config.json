@@ -52,6 +52,7 @@
     "authorDetailsConfig": {
       "showAuthorInfos": true,
       "showDataCredits": true,
+      "showDatasetCount": true,
       "showDataCreditScore": false
     },
     "resourcesConfig": {

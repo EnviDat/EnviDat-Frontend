@@ -13,24 +13,30 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import {
-  SELECT_EDITING_AUTHOR,
-  eventBus,
-  EDITMETADATA_OBJECT_UPDATE,
   CANCEL_EDITING_AUTHOR,
-  SAVE_EDITING_AUTHOR, EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR, EDITMETADATA_AUTHOR_DATACREDIT,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus, REMOVE_EDITING_AUTHOR,
+  SAVE_EDITING_AUTHOR,
+  SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
 import EditAuthorList from '@/modules/user/components/EditAuthorList';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
 
 import {
-  localIdProperty,
-} from '@/factories/strategyFactory';
-import {
+  combineAuthorLists,
   createAuthors,
-  getFullAuthorsFromDataset,
   extractAuthorsMap,
+  getAuthorName,
+  getFullAuthorsFromDataset,
+  mergeAuthorsDataCredit,
+  mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
@@ -68,6 +74,64 @@ export default {
   decorators: [],
   parameters: {},
 };
+
+
+export const EditAddAuthorViews = () => ({
+  components: { EditAddAuthor },
+  template: `
+  <v-col>
+
+    <v-row>
+      EditAddAuthor with existing authors
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditAddAuthor v-bind="author"
+                        :existingAuthors="authors"
+                        :loading="loading" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      EditAddAuthor with the author
+    </v-row>
+
+    <v-row class="py-3" >
+      <v-col >
+        <EditAddAuthor v-bind="author"  />
+      </v-col>
+    </v-row>
+  
+  </v-col>
+  `,
+  created() {
+    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+  },
+  beforeDestroy() {
+    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+  },
+  methods: {
+    changeAuthor(updateObj) {
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+        this.loading = true;
+
+        setTimeout(() => {
+          this.author = updateObj.data;
+          this.loading = false;
+        }, 2000);
+      }
+    },
+  },
+  data: () => ({
+    author: null,
+    // authors: authorsStrings,
+    authors: extractedAuthors,
+    preSelectedAuthor,
+    preSelectedAuthors3,
+    loading: false,
+  }),
+});
 
 export const UserPickerViews = () => ({
   components: { BaseUserPicker },
@@ -323,12 +387,24 @@ export const FullEditingAuthorViews = () => ({
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   beforeDestroy() {
-    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   methods: {
+    removeAuthor(email) {
+      const matches = this.authors.filter(auth => auth.email === email);
+      console.log('remove Author');
+      console.log(matches.length > 0);
+
+      if (matches.length > 0) {
+        const removeIndex = this.authors.indexOf(matches[0]);
+        this.authors.splice(removeIndex, 1);
+        console.log('remove index');
+        console.log(removeIndex);
+      }
+    },
     selectAuthor(id) {
       if (this.selectionId !== '') {
         this.cancelEditing();
@@ -340,30 +416,20 @@ export const FullEditingAuthorViews = () => ({
     cancelEditing() {
       this.setSelected(this.selectionId, false);
       this.selectionId = '';
+      eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
     },
     setSelected(id, selected) {
-      const auths = this.genericProps.authors;
+      const auths = this.authors;
 
       for (let i = 0; i < auths.length; i++) {
-        const r = auths[i];
-        // if (r.email === id) {
-        //   r.isSelected = selected;
-        //   this.$set(auths, i, r);
-        //   return;
-        // }
-
-        if (r[localIdProperty]) {
-          if (r[localIdProperty] === id) {
-            r.isSelected = selected;
-            this.$set(auths, i, r);
-            return;
-          }
-        } else if (r.email === id) {
-          r.isSelected = selected;
-          this.$set(auths, i, r);
+        const author = auths[i];
+        if (author.email === id) {
+          author.isSelected = selected;
+          this.$set(auths, i, author);
           return;
         }
       }
+
     },
     saveAuthor(newAuthor) {
       newAuthor.existsOnlyLocal = false;
@@ -389,14 +455,72 @@ export const FullEditingAuthorViews = () => ({
       auths.unshift(newAuthor);
     },
     changeAuthors(updateObj) {
-      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.authors = updateObj.data.authors;
-        // console.log('FullEditingAuthorView updated authors');
-        // console.log(this.authors);
+      this.loading = true;
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+        const authorToMergeDataCredit = updateObj.data;
+
+        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+        this.authors = mergeAuthorsDataCredit(this.authors, authorToMergeDataCredit);
       }
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+        this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
+      }
+
+      if (updateObj.object === EDITMETADATA_AUTHOR) {
+        const updatedAuthor = updateObj.data;
+
+        let changed = false;
+
+        for (let i = 0; i < this.authors.length; i++) {
+          const auth = this.authors[i];
+          const email = auth.email;
+          const fullName = auth.fullName;
+          const searchAuthorFullName = getAuthorName({
+            firstName: updatedAuthor.firstName,
+            lastName: updatedAuthor.lastName,
+          });
+          
+          if (email === updatedAuthor.email
+            || fullName === searchAuthorFullName){
+
+            const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
+
+            // this.authors[i] = createAuthor(updatedAuthor);
+            this.$set(this.authors, i, mergedAuthor);
+            // use $set to make the author entry reactive
+            // this.$set(this.authors, i, author);
+
+            changed = true;
+            console.log(`Updated author ${ email } ${ fullName }`);
+            break;
+          }
+        }
+
+        if (!changed) {
+          this.authors.push(updatedAuthor);
+
+          this.selectAuthor(updatedAuthor.email);
+          // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
+        }
+      }
+
+      if (updateObj.object === REMOVE_EDITING_AUTHOR) {
+        this.removeAuthor(updateObj.data);
+      }
+
+      console.log('FullEditingAuthorView updated authors');
+      console.log(this.authors);
+
+      setTimeout(() => {
+        this.loading = false;
+        eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+      }, 1000)
     },
   },
   data: () => ({
+    loading: false,
     selectionId: '',
     authors: preSelectedAuthors2,
     existingAuthors: extractedAuthors,

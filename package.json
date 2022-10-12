@@ -1,8 +1,8 @@
 {
   "name": "envidat.ch",
-  "version": "0.7.33",
+  "version": "0.7.43",
   "private": true,
-  "description": "Envidat frontend with vue",
+  "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
   "scripts": {
     "serve": "vue-cli-service serve",
