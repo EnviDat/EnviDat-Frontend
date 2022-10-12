@@ -510,16 +510,6 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
 
   }
 
-  const authorsToMerge = newAuthors.filter(auth => authors.some(a => a.email === auth.email))
-
-  for (let i = 0; i < authorsToMerge.length; i++) {
-    const auth = authorsToMerge[i];
-
-    const mergeIndex = authors.findIndex(a => a.email === auth.email);
-    // treat the newAuthor as the "existingAuthor" so it's dataCredits are being used
-    authors[mergeIndex] = mergeEditingAuthor(authors[mergeIndex], auth);
-  }
-
   for (let i = 0; i < newAuthors.length; i++) {
     const auth = newAuthors[i];
 
@@ -528,6 +518,29 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
     }
   }
 
+  return authors;
+}
+
+export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
+  const authors = [...currentAuthors];
+
+  let toMerge = newAuthors;
+  if (!(newAuthors instanceof Array)) {
+    toMerge = [newAuthors];
+  }
+
+  const authorsToMerge = toMerge.filter(auth => authors.some(a => a.email === auth.email))
+
+  for (let i = 0; i < authorsToMerge.length; i++) {
+    const auth = authorsToMerge[i];
+
+    const mergeIndex = authors.findIndex(a => a.email === auth.email);
+    // treat the newAuthor as the "existingAuthor" so it's dataCredit are being used
+    authors[mergeIndex] = {
+      ...authors[mergeIndex],
+      dataCredit: auth.dataCredit,
+    };
+  }
 
   return authors;
 }

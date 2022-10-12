@@ -63,7 +63,7 @@ import {
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT,
 } from '@/factories/eventBus';
 
 import {
@@ -119,7 +119,7 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper';
 import NotificationCard from '@/components/Cards/NotificationCard';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import { combineAuthorLists } from '@/factories/authorFactory';
+import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 
 
 export default {
@@ -341,6 +341,15 @@ export default {
         data: updateObj.data,
         id: this.$route.params.metadataid,
       };
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+        const currentAuthors = this.$store.getters[`${USER_NAMESPACE}/authors`];
+        const authorToMergeDataCredit = updateObj.data;
+
+        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+        payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
+        payload.stepKey = EDITMETADATA_AUTHOR_LIST;
+      }
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
         const currentAuthors = this.$store.getters[`${USER_NAMESPACE}/authors`];
