@@ -12,6 +12,10 @@
  */
 
 import { localIdProperty } from '@/factories/strategyFactory';
+import {
+  compareAsc,
+  parseISO,
+} from 'date-fns';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -148,7 +152,7 @@ export function getDataCredit(author) {
   return dataCredit;
 }
 
-export function createAuthor(author) {
+export function createAuthor(author, lastModified = '') {
 
   // const nameSplits = fullName.split(' ');
   const firstName = author.given_name || author.firstName || '';
@@ -194,6 +198,7 @@ export function createAuthor(author) {
     isSelected: false,
     dataCredit,
     totalDataCredits: author.totalDataCredits || {},
+    lastModified,
   };
 }
 
@@ -234,7 +239,7 @@ export function createAuthors(dataset) {
 
   for (let i = 0; i < parsedAuthors.length; i++) {
     const parsedAuthor = parsedAuthors[i];
-    const author = createAuthor(parsedAuthor);
+    const author = createAuthor(parsedAuthor, dataset.metadata_modified);
 
     authorObjs.push(author);
   }
@@ -283,7 +288,6 @@ export function getAuthorKey(author) {
 // then 2nd loop over the authors and do the counting of the datasets and merging
 // of the dataCredit
 // let noDataCredit = 0;
-
 export function extractAuthorsMap(datasets) {
   if (!datasets) { return null; }
 
@@ -292,6 +296,7 @@ export function extractAuthorsMap(datasets) {
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
+    const datasetModifiedDate = parseISO(dataset.metadata_modified);
 
     const authors = createAuthors(dataset);
 
@@ -308,12 +313,24 @@ export function extractAuthorsMap(datasets) {
           overwriteDataCredit(author, existingAuthor);
         }
 
-        if (author.identifier && author.identifier !== existingAuthor.identifier) {
-          existingAuthor.identifier = author.identifier;
-        }
+        const lastDate = parseISO(existingAuthor.lastModified);
 
-        if (author.identifierType && author.identifierType !== existingAuthor.identifierType) {
-          existingAuthor.identifierType = author.identifierType;
+        if (compareAsc(lastDate, datasetModifiedDate) === 1) {
+          // compareAsc === 1 means the last modified date from the dataset is newer then the
+          // one from the author, therefore information from this datasets is newer and should be used
+          existingAuthor.lastModified = dataset.metadata_modified;
+
+          existingAuthor.firstName = author.firstName;
+          existingAuthor.lastName = author.lastName;
+          existingAuthor.fullName = author.fullName;
+
+          if (author.identifier && author.identifier !== existingAuthor.identifier) {
+            existingAuthor.identifier = author.identifier;
+          }
+
+          if (author.identifierType && author.identifierType !== existingAuthor.identifierType) {
+            existingAuthor.identifierType = author.identifierType;
+          }
         }
 
         // console.log('for ' + author.name + ' updated ' + existingAuthor.count);
@@ -322,7 +339,6 @@ export function extractAuthorsMap(datasets) {
         existingAuthor = author;
 
         overwriteDataCredit(author, existingAuthor);
-
       }
 
       // always clear the dataCredit because for the authorsMap only the total is relevant!
