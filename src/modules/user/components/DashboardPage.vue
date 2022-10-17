@@ -82,6 +82,7 @@
       <TitleCard title="My Datasets"
                   icon="refresh"
                   :tooltipText="refreshButtonText"
+                  :loading="userDatasetsLoading"
                   :clickCallback="catchRefreshClick" />
 
       <MetadataList v-if="hasUserDatasets"
@@ -129,6 +130,7 @@
        <TitleCard title="My Collaborator Datasets"
                   icon="refresh"
                   :tooltipText="refreshButtonText"
+                  :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
                   :clickCallback="catchCollaboratorRefreshClick" />
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
@@ -197,7 +199,8 @@
       <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
-                  :clickCallback="catchRefreshOrgaClick" />
+                 :loading="userOrganizationLoading"
+                 :clickCallback="catchRefreshOrgaClick" />
 
       <MetadataList v-if="hasOrgaDatasets"
                     class="datasetsGrid px-1"
