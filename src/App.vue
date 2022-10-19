@@ -1,5 +1,5 @@
 <template>
-  <v-app class="application"
+  <v-app class="application envidat-font-overwrite"
          :style="dynamicBackground">
 
     <div v-show="showDecemberParticles"
@@ -690,27 +690,20 @@ export default {
 </script>
 
 
-<!--<style lang="sass">
-@import "sass/variables.sass"
-</style>-->
+<style lang="scss">
+$font-family: 'Raleway', sans-serif;
+
+.envidat-font-overwrite {
+  .headline,
+  [class*='display-'],
+  [class*='text-'] {
+    font-family: $font-family, sans-serif !important;
+  }
+  font-family: $font-family, sans-serif !important;
+}
+</style>
 
 <style>
-
-.v-application {
-  font-family: Raleway, sans-serif !important;
-}
-
-.v-application .text-body-1,
-.v-application .text-body-2,
-.v-application .text-body-3,
-.v-application .text-h1,
-.v-application .text-h2,
-.v-application .text-h3,
-.v-application .text-h4,
-.v-application .text-h5,
-.v-application .text-h6 {
-  font-family: Raleway, sans-serif !important;
-}
 
 .envidatNavbar {
   position: -webkit-sticky;
