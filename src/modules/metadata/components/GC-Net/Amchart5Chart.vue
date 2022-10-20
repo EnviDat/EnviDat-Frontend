@@ -19,14 +19,12 @@
         </div>
       </div>
 
-      <div v-if="csvDataAvailable" >
         <div class="chart my-4"
-             v-for="yAxis in csvDataYAxesArray"
+             v-for="yAxis in params"
              :id=yAxis
              :key="yAxis">
           {{ yAxis }}
         </div>
-      </div>
 
     </v-container>
 
@@ -75,18 +73,28 @@ export default {
       this.root.dispose();
     }
   },
-  updated() {
+  computed: {
+    params() {
+      return this.csvDataYAxesArray?.slice(0, 2) || [];
+    },
+  },
+  watch: {
+    parsedData() {
+      if (this.csvDataAvailable) {
+        // Create multiple charts: one chart per yAxis (element) in csvDataYAxesArray for CSV data
+        this.$nextTick(() => {
+          this.params.every(yAxis => createChart(yAxis, this.xAxisName, yAxis, this.parsedData, this.xAxisFormat));
+        })
+      }
 
-    if (this.csvDataAvailable) {
-      // Create multiple charts: one chart per yAxis (element) in csvDataYAxesArray for CSV data
-      this.csvDataYAxesArray.map(yAxis => createChart(yAxis, this.xAxisName, yAxis, this.parsedData, this.xAxisFormat));
-    }
+      if (this.jsonDataAvailable) {
+        // Create chart for JSON data
+        this.$nextTick(() => {
+          createChart(this.jsonChartDivID, this.xAxisName, this.yAxisName, this.parsedData, this.xAxisFormat);
+        });
+      }
 
-    if (this.jsonDataAvailable) {
-      // Create chart for JSON data
-      createChart(this.jsonChartDivID, this.xAxisName, this.yAxisName, this.parsedData, this.xAxisFormat);
-    }
-
+    },
   },
   methods: {
     // Return responseType 'type' from result object (only string parsed to first comma)
@@ -102,7 +110,7 @@ export default {
         const responseType = this.getResponseType(result.type);
 
         // Parse JSON data
-        if (responseType === 'application/json') {
+        if (responseType?.includes('application/json')) {
 
           this.parsedData = am5.JSONParser.parse(result.response);
 
@@ -116,10 +124,10 @@ export default {
         }
 
         // Parse CSV data
-        else if (responseType === 'text/csv') {
+        else if (responseType?.includes('text/csv')) {
 
           // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
-          const jsonConvert = convertCSVToJSON(result.response, '');
+          const jsonConvert = convertCSVToJSON(result.response, '-999.00');
 
           this.csvDataYAxesArray = jsonConvert.parameters;
           this.parsedData = jsonConvert.data;

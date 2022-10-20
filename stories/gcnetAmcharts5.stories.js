@@ -20,8 +20,8 @@ import axios from 'axios';
 import Amcharts5 from '@/modules/metadata/components/GC-Net/Amchart5Chart.vue';
 import EditChart from '@/modules/user/components/edit/EditChart.vue';
 import { createChart } from '@/factories/chartFactory';
-import { CHART_VIEWS } from './storybookFolder';
 import * as am5 from '@amcharts/amcharts5';
+import { CHART_VIEWS } from './storybookFolder';
 
 // import neadContent from '../public/testdata/00-Swiss Camp 10m.csv';
 // import researchUnits from '../public/researchUnits.json';
@@ -50,7 +50,7 @@ export const Amcharts5SingleChart = () => ({
       <v-row style="border: solid 1px;"
               no-gutters>
         <v-col >
-          <Amcharts5 :apiUrl="this.apiUrl" />
+          <Amcharts5 :apiUrl="apiUrl" />
         </v-col>
       </v-row>
     
@@ -59,7 +59,8 @@ export const Amcharts5SingleChart = () => ({
   computed: {
   },
   data: () => ({
-    apiUrl: 'https://www.envidat.ch/data-api/gcnet/nead/swisscamp/end/empty/2020-11-03/2020-11-06/',
+    // apiUrl: 'https://www.envidat.ch/data-api/gcnet/nead/swisscamp/end/empty/2020-11-03/2020-11-06/',
+    apiUrl: 'https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/00-Swiss Camp 10m.csv',
   }),
 });
 
@@ -80,8 +81,8 @@ export const Amcharts5MultipleCharts = () => ({
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :jsonChartDivID="this.chartdiv1"
-                       :apiUrl="this.apiUrl1"
+            <Amcharts5 :jsonChartDivID="chartdiv1"
+                       :apiUrl="apiUrl1"
                        />
           </v-col>
         </v-row>
@@ -89,8 +90,8 @@ export const Amcharts5MultipleCharts = () => ({
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :jsonChartDivID="this.chartdiv2"
-                       :apiUrl="this.apiUrl2"
+            <Amcharts5 :jsonChartDivID="chartdiv2"
+                       :apiUrl="apiUrl2"
                        />
           </v-col>
         </v-row>
@@ -98,8 +99,8 @@ export const Amcharts5MultipleCharts = () => ({
         <v-row style="border: solid 1px;"
                no-gutters>
           <v-col >
-            <Amcharts5 :jsonChartDivID="this.chartdiv3"
-                       :apiUrl="this.apiUrl3"
+            <Amcharts5 :jsonChartDivID="chartdiv3"
+                       :apiUrl="apiUrl3"
                         />
           </v-col>
         </v-row>
@@ -136,7 +137,7 @@ export const Amcharts5LargeData = () => ({
       <v-row style="border: solid 1px;"
              no-gutters>
         <v-col >
-          <Amcharts5 :apiUrl="this.apiUrl1"  />
+          <Amcharts5 :apiUrl="apiUrl1"  />
         </v-col>
       </v-row>
       
@@ -289,7 +290,7 @@ export const EditingParameterViews = () => ({
       am5.net.load(url).then((result) => {
 
         // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
-        const responseType = this.getResponseType(result.type);
+        const responseType = result.type.split(',')[0];
 
         // Parse JSON data
         if (responseType === 'application/json') {

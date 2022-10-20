@@ -310,16 +310,18 @@ export function getChartSeries(parameters, dataArray, timeFrom = undefined, time
     return series;
   }
 
-  for (let i = 0; i < dataArray.length; i++) {
-    const entry = dataArray[i];
+  if (dataArray) {
+    for (let i = 0; i < dataArray.length; i++) {
+      const entry = dataArray[i];
 
-    const dataEntry = getDataEntry(entry, parameters);
+      const dataEntry = getDataEntry(entry, parameters);
 
-    series.push({
-      timestamp: entry.timestamp,
-      timestamp_iso: entry.timestamp_iso,
-      ...dataEntry,
-    });
+      series.push({
+        timestamp: entry.timestamp,
+        timestamp_iso: entry.timestamp_iso,
+        ...dataEntry,
+      });
+    }
   }
 
   return series;

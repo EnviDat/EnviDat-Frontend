@@ -61,7 +61,7 @@ export const DetailChartViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <DetailChart :apiUrl="currentStation.envidatConfig.apiUrl"
+          <DetailChart :apiUrl="apiUrl"
                         :fallbackUrl="currentStation.envidatConfig.fallbackUrl"
                         :fallbackFilename="fileObject.fileName"
                         :stationName="currentStation.name"
@@ -170,6 +170,7 @@ export const DetailChartViews = () => ({
       fileObjects,
       graphStyling,
       seriesSettings: defaultSeriesSettings,
+      apiUrl: 'https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/00-Swiss Camp 10m.csv',
     }),
 });
 

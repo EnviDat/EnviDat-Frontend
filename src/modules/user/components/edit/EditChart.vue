@@ -103,8 +103,18 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import { convertCSVToJSON, getChartSeries } from '@/factories/stringFactory';
-import { createChart } from '@/factories/chartFactory';
+import {
+  createChart,
+  createDateAxis,
+  createDynamicChart,
+  createScrollbar,
+  createValueAxis,
+  createXYCursor,
+  getLineSeriesFromJSON,
+} from '@/factories/chartFactory';
 import axios from 'axios';
+import { createTag } from '@/factories/metadataFilterMethods';
+import * as am5 from '@amcharts/amcharts5';
 
 
 export default {
@@ -158,8 +168,11 @@ export default {
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    this.disponseChart();
   },
   async mounted() {
+    this.loadingData = false;
+
     this.neadJSON = await this.loadDataInJson(this.dataUrl);
   },
   computed: {
@@ -174,7 +187,19 @@ export default {
       return [this.pickedParameters];
     },
     fileParameters() {
-      return this.neadJSON?.parameters || [];
+/*
+      const selecteds = [];
+
+      ['param1', 'param2', 'param3'].every(element => selecteds.push(createTag(element)));
+
+      return selecteds;
+*/
+      const params = this.neadJSON?.parameters || [];
+      const paramTags = [];
+
+      params.every(element => paramTags.push(createTag(element)));
+
+      return paramTags;
     },
   },
   methods: {
@@ -264,14 +289,72 @@ export default {
 
       this.$emit('pickedParameters', this.pickedParameters);
     },
-    loadChart(param) {
-      const index = this.neadJSON?.parameters.indexOf(param);
-      const series = getChartSeries([this.neadJSON?.parameters[index]], this.neadJSON?.data);
+    loadChart(params, data) {
+      if (!params || params.length <= 0 || !data || data.length <= 0) {
+        return;
+      }
 
-      createChart(`chart_${param}`, 'timestamp_iso', this.neadJSON?.parameters[index], series, this.xAxisFormat);
+      if (params.length <= 2) {
+        return;
+      }
+
+      if (this.chart) {
+        this.disponseChart();
+      }
+
+      if (!this.chartRoot) {
+        this.chartRoot = am5.Root.new(this.chartId);
+      }
+
+      if (!this.chart) {
+
+        this.chart = createDynamicChart(this.chartId, this.chartRoot);
+
+        this.yAxis = this.chart.yAxes.push(createValueAxis(this.chartRoot));
+        this.xAxis = this.chart.xAxes.push(createDateAxis(this.chartRoot));
+
+        // Set cursor
+        this.chart.set('cursor', createXYCursor(this.chartRoot, this.xAxis));
+        this.chart.set('scrollbarX', createScrollbar(this.chartRoot));
+
+        for (let i = 0; i < params.length; i++) {
+          const param = params[i];
+
+          const series = getLineSeriesFromJSON(this.chartRoot,
+            data,
+            {
+              xAxis: this.xAxis,
+              yAxis: this.yAxis,
+              valueXField: 'timestamp_iso',
+              valueYField: param,
+              // dateFormat: xAxisFormat,
+            });
+
+          this.chart.series.push(series);
+        }
+      }
+
+    },
+    disponseChart() {
+      if (this.chart) {
+
+        this.chart.dispose();
+        console.log('chart isDisposed');
+        console.log(this.chart.isDisposed());
+
+        this.chartRoot.dispose();
+        console.log('chartRoot isDisposed');
+        console.log(this.chartRoot.isDisposed());
+
+        this.chart = null
+        this.chartRoot = null;
+      }
     },
     async loadDataInJson(url) {
+      this.loadingData = true;
       const neadContent = await axios.get(url);
+
+      this.loadingData = false;
 
       return convertCSVToJSON(neadContent.data, '-999.0');
     },
@@ -279,14 +362,16 @@ export default {
   watch: {
     pickedParameters() {
       this.$nextTick(() => {
-        for (let i = 0; i < this.pickedParameters?.length || 0; i++) {
-          const param = this.pickedParameters[i];
-          this.loadChart(param);
-        }
+        this.loadChart(this.pickedParameters, this.neadJSON?.data);
       });
     },
   },
   data: () => ({
+    chartId: 'multiparam_chart',
+    chart: null,
+    chartRoot: null,
+    yAxis: null,
+    xAxis: null,
     dataUrl: 'https://os.zhdk.cloud.switch.ch/envicloud/gcnet/data/wsl-geus-cooperation/L1/00-Swiss Camp 10m.csv',
     neadJSON: null,
     previews: {
@@ -297,7 +382,7 @@ export default {
     search: '',
     labels: {
       cardTitle: 'Edit Data Preview Chart',
-      instructions: 'Pick a parameter to be used in the chart to preview your research data.',
+      instructions: 'Pick parameters to be used in the chart to preview your research data.',
     },
 /*
     validationProperties: [

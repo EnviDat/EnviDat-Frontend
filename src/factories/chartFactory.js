@@ -209,6 +209,110 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   return configs;
 }
 
+export function getLineSeriesFromJSON(root, data, {
+  xAxis, yAxis,
+  valueXField, valueYField,
+  minDistance = 0,
+  connect = false,
+  dateFormat = 'yyyy-MM-dd H:m:s\'+00:00\'',
+}) {
+  const series =
+    am5xy.LineSeries.new(root, {
+      minBulletDistance: 10,
+      xAxis,
+      yAxis,
+      valueXField,
+      valueYField,
+      minDistance,
+      connect,
+      tooltip: am5.Tooltip.new(root, {}),
+    });
+
+  series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
+
+  series.strokes.template.setAll({
+    strokeWidth: 3,
+    templateField: 'strokeSettings',
+  });
+
+  // Process data
+  const processor = am5.DataProcessor.new(root, {
+    dateFields: [valueXField],
+    dateFormat,
+    numericFields: [valueYField],
+  });
+
+  processor.processMany(data);
+
+  // Assign parsed/processed data to series
+  series.data.setAll(data);
+
+  return series;
+}
+
+export function createValueAxis(root, maxDeviation = 0.1) {
+  return am5xy.ValueAxis.new(root, {
+    maxDeviation,
+    renderer: am5xy.AxisRendererY.new(root, {}),
+    tooltip: am5.Tooltip.new(root, {}),
+  });
+}
+
+export function createDateAxis(root, groupData = true, groupCount = 500, maxDeviation = 0.1, minGridDistance = 50) {
+  return am5xy.DateAxis.new(root, {
+    maxDeviation,
+    groupData,
+    groupCount,
+    baseInterval: {
+      timeUnit: 'hour',
+      count: 1,
+    },
+    renderer: am5xy.AxisRendererX.new(root, {
+      minGridDistance,
+    }),
+    tooltip: am5.Tooltip.new(root, {}),
+  });
+}
+
+export function createXYCursor(root, xAxis) {
+  return am5xy.XYCursor.new(root, {
+    behavior: 'zoomX',
+    xAxis,
+  })
+}
+
+export function createScrollbar(root) {
+  return am5.Scrollbar.new(root, {
+    orientation: 'horizontal',
+  });
+}
+
+export function createXYChart(root) {
+  return am5xy.XYChart.new(root, {
+    focusable: true,
+    panX: true,
+    panY: true,
+    wheelX: 'panX',
+    wheelY: 'zoomX',
+  });
+}
+
+export function createDynamicChart(yAxisDivID, chartRoot = null) {
+
+  const root = chartRoot || am5.Root.new(yAxisDivID);
+
+  // Set all dates in root to UTC
+  // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
+  root.utc = true;
+
+  root.setThemes([am5themesAnimated.new(root)]);
+
+  const chart = createXYChart(root);
+  root.container.children.push(chart);
+
+  return chart;
+}
+
 function createChart(yAxisDivID, xAxisName, yAxisName, data, xAxisFormat = 'yyyy-MM-dd H:m:s\'+00:00\'') {
 
   const root = am5.Root.new(yAxisDivID);
@@ -219,59 +323,24 @@ function createChart(yAxisDivID, xAxisName, yAxisName, data, xAxisFormat = 'yyyy
 
   root.setThemes([am5themesAnimated.new(root)]);
 
-  // Create chart
-  const chart = root.container.children.push(
-    am5xy.XYChart.new(root, {
-      focusable: true,
-      panX: true,
-      panY: true,
-      wheelX: 'panX',
-      wheelY: 'zoomX',
-    }),
-  );
+  const chart = createXYChart(root);
+  root.container.children.push(chart);
 
   // const easing = am5.ease.linear;
 
-  // Create axes
-  const xAxis = chart.xAxes.push(
-    am5xy.DateAxis.new(root, {
-      maxDeviation: 0.1,
-      groupData: true,
-      groupCount: 500,
-      baseInterval: {
-        timeUnit: 'hour',
-        count: 1,
-      },
-      renderer: am5xy.AxisRendererX.new(root, {
-        // minGridDistance: 50,
-      }),
-      tooltip: am5.Tooltip.new(root, {}),
-    }),
-  );
-
-  const yAxis = chart.yAxes.push(
-    am5xy.ValueAxis.new(root, {
-      maxDeviation: 0.1,
-      renderer: am5xy.AxisRendererY.new(root, {}),
-      tooltip: am5.Tooltip.new(root, {}),
-    }),
-  );
+  const xAxis = chart.xAxes.push(createDateAxis(root));
+  const yAxis = chart.yAxes.push(createValueAxis(root));
 
   // Set cursor
-  chart.set('cursor', am5xy.XYCursor.new(root, {
-    behavior: 'zoomX',
-    xAxis,
-  }));
+  chart.set('cursor', createXYCursor(root, xAxis));
   // cursor.lineY.set('visible', false);
 
   // Add scrollbar
-  chart.set('scrollbarX', am5.Scrollbar.new(root, {
-    orientation: 'horizontal',
-  }));
+  chart.set('scrollbarX', createScrollbar(root));
 
-/*
-  chart.appear(1000, 100);
-*/
+  /*
+    chart.appear(1000, 100);
+  */
 
   // Add series
   const series = chart.series.push(
