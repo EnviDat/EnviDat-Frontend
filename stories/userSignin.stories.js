@@ -18,7 +18,7 @@ import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 import { USER_VIEWS } from './storybookFolder';
 
 const methods = {

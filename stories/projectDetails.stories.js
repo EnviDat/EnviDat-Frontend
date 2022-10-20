@@ -22,7 +22,7 @@ import {
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-import projectJSON from '../public/testdata/projects.json';
+import projectJSON from './testdata/projects.json';
 import metadata from './js/metadata';
 import {DETAIL_VIEWS} from './storybookFolder';
 

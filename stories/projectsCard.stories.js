@@ -17,7 +17,7 @@ import {
 import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
-import projectJSON from '../public/testdata/projects.json';
+import projectJSON from './testdata/projects.json';
 import { CARD_VIEWS } from './storybookFolder';
 
 

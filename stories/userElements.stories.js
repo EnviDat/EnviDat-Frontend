@@ -23,7 +23,7 @@ import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 
 import seedrandom from 'seedrandom';
 import jazzicons from '@metamask/jazzicon';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 
 import { USER_VIEWS } from './storybookFolder';
 

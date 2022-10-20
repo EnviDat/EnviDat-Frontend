@@ -20,7 +20,7 @@ import {
   enhanceSubprojectsFromExtras,
 } from '@/factories/projectsDataFactory';
 
-import projectJSON from '../public/testdata/projects.json';
+import projectJSON from './testdata/projects.json';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;

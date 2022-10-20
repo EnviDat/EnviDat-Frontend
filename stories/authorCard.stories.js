@@ -12,7 +12,7 @@ import {
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 import { CARD_VIEWS } from './storybookFolder';
 
 import unFormatedMetadataCards from './js/metadata';

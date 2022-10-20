@@ -21,7 +21,7 @@ import {
   EDIT_USER_PROFILE_EVENT,
   eventBus,
 } from '@/factories/eventBus';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 import { METADATA_EDITING } from './storybookFolder';
 
 const keys = Object.keys(authorCollection);

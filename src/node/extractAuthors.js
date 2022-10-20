@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import * as packageJson from '../../public/testdata/packagelist.json';
+import * as packageJson from '../../stories/testdata/packagelist.json';
 
 const metadataList = packageJson.result;
 

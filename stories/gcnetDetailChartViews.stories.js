@@ -17,8 +17,8 @@
 
 import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart.vue';
 import { defaultSeriesSettings } from '@/factories/chartFactory';
-import stationParameters from '../public/testdata/stationParameters.json';
-import stationsConfig from '../public/testdata/stationsConfig.json';
+import stationParameters from './testdata/stationParameters.json';
+import stationsConfig from './testdata/stationsConfig.json';
 
 import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList.vue';
 import { GCNET_VIEWS } from './storybookFolder';
