@@ -85,7 +85,12 @@ export default {
     },
   },
   beforeMount() {
-    const imgPaths = import.meta.glob('@/assets/cards/*.jpg', { eager: true, as: 'url' });
+
+    const iconImgPath = require.context('@/assets/cards/', false, /\.jpg$/);
+    const iconImages = this.mixinMethods_importImages(iconImgPath);
+
+/*
+    const imgPaths = import.meta.glob('@/assets/cards/!*.jpg', { eager: true, as: 'url' });
     const imgCache = {};
 
     for (const path in imgPaths) {
@@ -95,8 +100,9 @@ export default {
         })
       }
     }
+*/
 
-    this.cardImgs = imgCache;
+    this.cardImgs = iconImages; // imgCache;
   },
   mounted() {
     let that = this;

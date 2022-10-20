@@ -15,25 +15,8 @@ import { CARD_VIEWS } from './storybookFolder';
 
 Vue.mixin(globalMethods);
 
-function getIcons() {
-  const icons = new Map();
-  const imgPaths = import.meta.glob('../src/assets/icons/*.png')
-
-  for (const path in imgPaths) {
-    if (path) {
-      imgPaths[path]().then((mod) => {
-          const splits = path.split('/');
-          let key = splits[splits.length - 1];
-          key = key.replace('.png', '');
-          icons.set(key, path);
-      })
-    }
-  }
-
-  return icons;
-}
-
-const iconFiles = getIcons();
+const iconImgPath = require.context('../src/assets/icons/', false, /\.png$/);
+const iconFiles = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 // let str = '';
 // for (const [key, value] of iconFiles) {

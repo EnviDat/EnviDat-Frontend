@@ -181,13 +181,13 @@
 import 'uplot/dist/uPlot.min.css';
 
 import axios from 'axios';
-import { format,min } from 'date-fns';
+import {format, min} from 'date-fns';
 import uPlot from 'uplot/dist/uPlot.esm';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { addStartEndDateUrl, hasData } from '@/factories/chartFactory';
-import { eventBus, GCNET_OPEN_DETAIL_CHARTS } from '@/factories/eventBus';
+import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
+import {eventBus, GCNET_OPEN_DETAIL_CHARTS} from '@/factories/eventBus';
 
 export default {
   name: 'MicroChart',
@@ -218,18 +218,8 @@ export default {
   },
   beforeMount() {
 
-    const imgPaths = import.meta.glob('@/assets/logo/*.png', { eager: true, as: 'url' });
-    const imgCache = {};
-
-    for (const path in imgPaths) {
-      if (path) {
-        imgPaths[path]().then((img) => {
-          imgCache[path] = img.default
-        })
-      }
-    }
-
-    this.logoImgs = imgCache;
+    const iconImgPath = require.context('@/assets/logo/', false, /\.png$/);
+    this.logoImgs = this.mixinMethods_importImages(iconImgPath);
   },
   mounted() {
     let that = this;
