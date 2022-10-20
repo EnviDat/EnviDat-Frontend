@@ -7,10 +7,11 @@ import vuetify from './vuetify_storybook';
 // eslint-disable-next-line no-unused-vars
 import App from '../src/App.vue';
 
-// import Vue from 'vue';
-// import globalMethods from '../src/factories/globalMethods';
+// const Vue = require ('vue').default;
+import Vue from 'vue';
+import globalMethods from '../src/factories/globalMethods';
 
-// Vue.mixin(globalMethods);
+Vue.mixin(globalMethods);
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
 export const parameters = {
@@ -37,6 +38,19 @@ export const decorators = [
     `,
   }),
 ];
+
+/*
+export const parameters = {
+  actions: { argTypesRegex: "^on[A-Z].*" },
+  controls: {
+    matchers: {
+      color: /(background|color)$/i,
+      date: /Date$/,
+    },
+  },
+}
+*/
+
 
 /*export const decorators = [
 //addDecorator(() => (

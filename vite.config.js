@@ -1,19 +1,19 @@
-import fs from 'fs'
-import path from 'path'
-import vue from '@vitejs/plugin-vue2'
+import fs from 'fs';
+import path from 'path';
+import vue from '@vitejs/plugin-vue2';
 
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
-import { defineConfig, loadEnv } from 'vite'
-import cesium from 'vite-plugin-cesium'
-import eslint from 'vite-plugin-eslint'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import ViteRequireContext from '@originjs/vite-plugin-require-context'
-import { VitePluginFonts } from 'vite-plugin-fonts'
+import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig, loadEnv } from 'vite';
+import cesium from 'vite-plugin-cesium';
+import eslint from 'vite-plugin-eslint';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import ViteRequireContext from '@originjs/vite-plugin-require-context';
+import { VitePluginFonts } from 'vite-plugin-fonts';
 
-import { version } from './package.json'
+import { version } from './package.json';
 // TODO exposing package.json to app is potential security risk
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode'
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 
 export default ({ mode }) => {
@@ -22,25 +22,25 @@ export default ({ mode }) => {
 
     if (isProd) {
         const fileName = `version_${version}.txt`;
-        const existingFilePaths = path.resolve(__dirname, 'public/')
+        const existingFilePaths = path.resolve(__dirname, 'public/');
 
         const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
 
         // delete any existing files with version_ as prefix to make sure only the latest version is created
         for (let i = 0; i < existingVersionFiles.length; i++) {
-        const file = existingVersionFiles[i];
-        const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
-        console.log(`Going to delete version file: ${fullPath}`);
-        fs.unlinkSync(fullPath);
+            const file = existingVersionFiles[i];
+            const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
+            console.log(`Going to delete version file: ${fullPath}`);
+            fs.unlinkSync(fullPath);
         }
 
         const filePath = path.resolve(__dirname, 'public/', `${fileName}`);
 
         try {
-        fs.writeFileSync(filePath, version);
-        console.log(`Created version file ${fileName} for easy build version highlight.`);
+            fs.writeFileSync(filePath, version);
+            console.log(`Created version file ${fileName} for easy build version highlight.`);
         } catch (err) {
-        console.log(`Tried to created file ${fileName}. Error: ${err}`);
+            console.log(`Tried to created file ${fileName}. Error: ${err}`);
         }
     }
 
