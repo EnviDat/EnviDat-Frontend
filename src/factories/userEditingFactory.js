@@ -50,14 +50,15 @@ import EditDescription from '@/modules/user/components/EditDescription.vue';
 
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+
+// import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
+// import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
 
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
 
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
+// import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
 
 export function updateEditingArray(
@@ -249,7 +250,8 @@ const dataDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
-    component: EditDataAndResources,
+    // component: EditDataAndResources,
+    component: import('@/modules/user/components/EditDataAndResources.vue'),
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
@@ -288,13 +290,15 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
-    component: MetadataCreationRelatedInfo,
+    // component: MetadataCreationRelatedInfo,
+    component: import('@/modules/user/components/MetadataCreationRelatedInfo.vue'),
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
-    component: MetadataCreationPublicationInfo,
+    // component: MetadataCreationPublicationInfo,
+    component: import('@/modules/user/components/MetadataCreationPublicationInfo.vue'),
     key: EDITMETADATA_PUBLICATION_INFO,
   },
 ];

@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     metadataId() {
-      return this.$route.params.metadataid;
+      return this.$route?.params?.metadataid || undefined;
     },
   },
   methods: {
@@ -84,6 +84,11 @@ export default {
       return step.genericProps;
     },
     catchStepClick(stepTitle) {
+      if (!this.$route) {
+        // storybook context
+        return;
+      }
+
       const params = this.$route.params;
       params.substep = stepTitle;
 
