@@ -9,7 +9,9 @@
     "serve-debug": "vite --debug",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0 --port 8080",
-    "test": "jest",
+    "test": "vitest",
+    "test-dev": "vitest watch",
+    "coverage": "vitest run --coverage",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "extract-authors": "node src/node/extractAuthors.js",
@@ -17,7 +19,6 @@
     "full-build": "vite build && build-storybook",
     "storybook": "start-storybook -p 6006 --loglevel warn",
     "storybook-debug": "start-storybook -p 6006 --loglevel silly",
-    "test:debug": "node --inspect-brk=9229 ./node_modules/.bin/jest --no-cache --runInBand",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
@@ -70,7 +71,7 @@
     "@storybook/testing-library": "^0.0.13",
     "@storybook/vue": "^6.5.12",
     "@vitejs/plugin-vue2": "^2.0.0",
-    "@vue/test-utils": "^1.1.2",
+    "@vitest/ui": "^0.24.3",
     "babel-loader": "^8.2.5",
     "chromatic": "^6.0.4",
     "eslint": "^8.20.0",
@@ -82,7 +83,6 @@
     "eslint-plugin-storybook": "^0.6.1",
     "eslint-plugin-vue": "^9.2.0",
     "eslint-plugin-vuetify": "^1.1.0",
-    "jest": "^24.9.0",
     "prettier": "^1.16.4",
     "prism-react-renderer": "^0.1.7",
     "prismjs": "^1.27.0",
@@ -92,6 +92,7 @@
     "vite-plugin-cesium": "^1.2.19",
     "vite-plugin-eslint": "^1.7.0",
     "vite-plugin-static-copy": "^0.9.0",
+    "vitest": "^0.24.3",
     "vuetify-loader": "^1.9.2"
   },
   "browserslist": [

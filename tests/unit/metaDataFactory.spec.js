@@ -1,58 +1,67 @@
+/* eslint-disable no-unused-vars,no-unused-expressions */
+import { describe, expect, it } from 'vitest';
+
 import {
-  createHeader,
   createBody,
-  createFunding,
   createCitation,
+  createDetails,
+  createFunding,
+  createHeader,
   createLicense,
   createLocation,
   createPublications,
-  createDetails,
   createResource,
   enhanceTags,
-  formatDate,
   enhanceTitleImg,
+  formatDate,
 } from '@/factories/metaDataFactory';
 
 
-import packagelist from '@/../public/testdata/packagelist.json';
 import categoryCards from '@/store/categoryCards';
+import packagelist from '../../stories/testdata/packagelist.json';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
 //   metadatasContent[entry.id] = entry;
 // });
 
+
 describe('metaDataFactory - createHeader', () => {
   it('empty', () => {
     const header = createHeader(undefined);
-    expect(header).toBeNull();
+    expect(header).to.be.null;
   });
 
-  it('with dataset', () => {
+  it.concurrent('with dataset', () => {
     const dataset = packagelist.result[2];
 
     const header = createHeader(dataset);
 
-    expect(header).toBeDefined();
-    expect(header.metadataTitle).toBeDefined();
-    expect(header.doi).toBeDefined();
-    expect(header.contactName).toBeDefined();
-    expect(header.contactEmail).toBeDefined();
-    expect(header.license).toBeDefined();
-    expect(header.tags).toBeDefined();
-    expect(header.titleImg).toBe(dataset.titleImg);
-    expect(header.maxTags).toBeDefined();
-    expect(header.authors).toBeDefined();
+    expect(header).to.have.property('metadataTitle');
+    expect(header).to.have.property('doi');
+    expect(header).to.have.property('contactName');
+    expect(header).to.have.property('license');
+
+    expect(header).to.have.property('tags');
+    expect(header.tags).to.be.an('array');
+    expect(header.tags).to.have.lengthOf.at.least(5);
+
+    expect(header).to.have.property('titleImg');
+    expect(header).to.have.property('maxTags');
+
+    expect(header).to.have.property('authors');
+    expect(header.authors).to.be.an('array');
+    expect(header.authors).to.have.lengthOf.at.least(1);
   });
 });
 
 describe('metaDataFactory - createBody', () => {
   it('empty', () => {
     const body = createBody(undefined);
-    expect(body).toBeNull();
+    expect(body).to.be.null;
   });
 
-  it('with dataset', () => {
+  it.concurrent('with dataset', () => {
     const dataset = packagelist.result[3];
 
     const body = createBody(dataset);
@@ -72,6 +81,7 @@ describe('metaDataFactory - createBody', () => {
   });
 });
 
+/*
 describe('metaDataFactory - createFunding', () => {
   it('empty', () => {
     const funding = createFunding(undefined);
@@ -304,3 +314,4 @@ describe('metaDataFactory - formatDate', () => {
     expect(date).toBe('15. Aug 2017 15:25');
   });
 });
+*/

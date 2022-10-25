@@ -44,7 +44,7 @@ export default ({ mode }) => {
         }
     }
 
-    console.log(`starting server | version: ${version} | prod: ${isProd}`);
+    console.log(`starting server | version: ${version} | mode: ${mode}`);
 
 
     return defineConfig({
