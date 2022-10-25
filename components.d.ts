@@ -112,6 +112,7 @@ declare module 'vue' {
     VSelect: typeof import('vuetify/lib')['VSelect']
     VSheet: typeof import('vuetify/lib')['VSheet']
     VSlideYTransition: typeof import('vuetify/lib')['VSlideYTransition']
+    VSnackbar: typeof import('vuetify/lib')['VSnackbar']
     VSpacer: typeof import('vuetify/lib')['VSpacer']
     VStepper: typeof import('vuetify/lib')['VStepper']
     VStepperHeader: typeof import('vuetify/lib')['VStepperHeader']

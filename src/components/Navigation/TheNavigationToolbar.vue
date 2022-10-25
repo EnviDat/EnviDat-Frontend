@@ -40,7 +40,7 @@
 
         <v-col v-if="signedInUser"
                 class="shrink"
-                cols="4" sm="3" md="2">
+                cols="4" sm="4" md="3" xl="2">
 
           <v-row align="center"
                   justify="end" >
@@ -74,7 +74,7 @@
 
         <v-col v-else
                class="shrink"
-               cols="4" sm="2" md="1" xl="1">
+               cols="4" sm="3" md="2" xl="1">
 
           <v-row align="center"
                   justify="end"
