@@ -251,7 +251,7 @@ const dataDetailSteps = [
     title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
     // component: EditDataAndResources,
-    component: import('@/modules/user/components/EditDataAndResources.vue'),
+    component: () => import('@/modules/user/components/EditDataAndResources.vue'),
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
@@ -291,14 +291,14 @@ export const metadataCreationSteps = [
     title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
     // component: MetadataCreationRelatedInfo,
-    component: import('@/modules/user/components/MetadataCreationRelatedInfo.vue'),
+    component: () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue'),
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     // component: MetadataCreationPublicationInfo,
-    component: import('@/modules/user/components/MetadataCreationPublicationInfo.vue'),
+    component: () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue'),
     key: EDITMETADATA_PUBLICATION_INFO,
   },
 ];
