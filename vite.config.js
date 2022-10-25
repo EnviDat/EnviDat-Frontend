@@ -11,9 +11,9 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import { VitePluginFonts } from 'vite-plugin-fonts';
 
-import { version } from './package.json';
-// TODO exposing package.json to app is potential security risk
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
+
+const version = process.env.npm_package_version;
 
 
 export default ({ mode }) => {
@@ -92,6 +92,7 @@ export default ({ mode }) => {
         ],
         define: {
             'process.env': loadEnv(mode, process.cwd()),
+          'import.meta.env.VITE_VERSION': JSON.stringify(version),
         },
         optimizeDeps: {
             include: ['vuetify', 'vuex-persist'],
@@ -113,6 +114,9 @@ export default ({ mode }) => {
             cssCodeSplit: true,
             // sourcemap: true,
             emptyOutDir: true,
+          define: {
+            'import.meta.env.VITE_VERSION': JSON.stringify(version),
+          },
         },
         server: {
             host: '0.0.0.0',

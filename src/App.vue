@@ -674,7 +674,7 @@ export default {
     dialogMessage: '',
     dialogCallback: () => {},
     redirectToDashboard: false,
-    appVersion: process.env.VITE_VERSION,
+    appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
