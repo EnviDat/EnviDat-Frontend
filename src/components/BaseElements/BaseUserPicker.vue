@@ -33,7 +33,7 @@
             <TagChipAuthor
               v-if="item"
               :name="item"
-              :isSmall="false"
+              :isSmall="true"
               :isCloseable="authorsCloseable"
               @closeClicked="catchCloseClicked"
             />
@@ -44,7 +44,7 @@
               v-if="item"
               :name="item"
               @clicked="catchPickClicked"
-              :isSmall="false"
+              :isSmall="true"
             />
           </template>
 

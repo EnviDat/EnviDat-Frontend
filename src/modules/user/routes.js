@@ -28,22 +28,22 @@ export const userRoutes = [
   {
     path: USER_SIGNIN_PATH,
     name: USER_SIGNIN_PAGENAME,
-    component: () => SigninPage,
+    component: SigninPage,
   },
   {
     path: USER_DASHBOARD_PATH,
     name: USER_DASHBOARD_PAGENAME,
-    component: () => DashboardPage,
+    component: DashboardPage,
   },
   {
     path: METADATAEDIT_PATH,
     name: METADATAEDIT_PAGENAME,
-    component: () => MetadataEditPage,
+    component: MetadataEditPage,
     children: [
       {
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
-        component: () => MetadataEditPage,
+        component: MetadataEditPage,
       },
     ],
   },
