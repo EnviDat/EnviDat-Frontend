@@ -1,28 +1,32 @@
 <template>
-  <v-chip
-    class="authorTag"
-    :class="{
-      'white--text': highlighted,
-      smallChip: $vuetify.breakpoint.smAndDown,
-    }"
-    :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
-    @click.stop="clicked"
-    :small="isSmall"
-    close-icon="close"
-    :close="isCloseable"
-    @click:close="$emit('closeClicked', authorName)"
-  >
-    <v-icon size="24px" left>account_circle</v-icon>
+  <v-chip class="authorTag"
+          :class="{
+            'white--text': highlighted,
+            'smallChip': $vuetify.breakpoint.smAndDown,
+            }"
+          :style="{'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+          @click.stop="clicked"
+          :small="isSmall"
+          close-icon="close"
+          :close="isCloseable"
+          @click:close="$emit('closeClicked', authorName)"
+          >
+    <v-avatar left>
+      <v-icon size="24px" >account_circle</v-icon>
+    </v-avatar>
 
     {{ authorName }}
 
-    <v-tooltip v-if="authorIsDead" bottom>
+    <v-tooltip v-if="authorIsDead"
+                bottom>
       <template v-slot:activator="{ on }">
-        <v-icon v-on="on" x-small>hourglass_empty</v-icon>
+        <v-icon v-on="on" x-small >hourglass_empty</v-icon>
       </template>
       {{ authorPassedInfo }}
     </v-tooltip>
+
   </v-chip>
+
 </template>
 
 <script>
@@ -37,7 +41,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
 export default {
   props: {
@@ -54,14 +58,10 @@ export default {
   },
   computed: {
     authorIsDead() {
-      return this.asciiDead && this.name
-        ? this.name.includes(this.asciiDead)
-        : false;
+      return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;
     },
     authorName() {
-      return this.authorIsDead
-        ? this.name.replace(`(${this.asciiDead})`, '')
-        : this.name;
+      return this.authorIsDead ? this.name.replace(`(${this.asciiDead})`, '') : this.name;
     },
   },
   methods: {
@@ -73,17 +73,27 @@ export default {
 </script>
 
 <style scoped>
-.authorTag {
-  opacity: 0.85;
-  background-color: #f8f8f8 !important;
-  margin: 0px 2px !important;
+
+  .authorTag {
+    opacity: 0.85;
+    background-color: #f8f8f8 !important;
+    margin: 0px 2px !important;
+  }
+
+  .authorTag > .v-chip__content > .v-avatar {
+    margin-left: -12px !important;
+  }
+
+  .authorTag > .v-chip__content > .v-avatar > .v-icon {
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
+</style>
+
+<style>
+
+.authorTag .v-chip__close {
+  color: red !important;
 }
 
-.authorTag > .v-chip__content > .v-avatar {
-  margin-left: -12px !important;
-}
-
-.authorTag > .v-chip__content > .v-avatar > .v-icon {
-  color: rgba(0, 0, 0, 0.87) !important;
-}
 </style>

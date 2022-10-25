@@ -21,7 +21,7 @@ import {
   FETCH_USER_DATA, GET_USER_CONTEXT,
   USER_EDITING_UPDATE,
   USER_EDITING_UPDATE_ERROR,
-  USER_EDITING_UPDATE_SUCCESS, USER_SIGNIN_NAMESPACE,
+  USER_EDITING_UPDATE_SUCCESS,
 } from './userMutationsConsts';
 
 
@@ -29,11 +29,11 @@ import {
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
-  API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VITE_ENVIDAT_PROXY;
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
 
 

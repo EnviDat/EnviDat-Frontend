@@ -12,17 +12,15 @@
  */
 
 import axios from 'axios';
-
 import { urlRewrite } from '@/factories/apiFactory';
-import {
-  mapFrontendToBackend,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
+
+import { mapFrontendToBackend, populateEditingComponents } from '@/factories/mappingFactory';
+
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
-import {
-  LOAD_METADATA_CONTENT_BY_ID,
-  METADATA_NAMESPACE,
-} from '@/store/metadataMutationsConsts';
+
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
@@ -36,8 +34,8 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
-  METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   USER_GET_COLLABORATOR_DATASETS,
@@ -47,7 +45,8 @@ import {
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_ERROR, USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_NAMESPACE,
 } from './userMutationsConsts';
@@ -59,22 +58,14 @@ let ENVIDAT_PROXY = '';
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
-  API_BASE = '/api/action/';
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
   ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
 
-const sleep = milliseconds =>
-  /* eslint-disable no-promise-executor-return */
-  new Promise(resolve => setTimeout(resolve, milliseconds));
+const sleep = (milliseconds) =>
+  // eslint-disable-next-line no-promise-executor-return
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
 
-/*
-function mapFrontendData(stepKey, backendData) {
-
-  const snakeCaseJSON = convertJSON(backendData, false);
-
- return getFrontendJSON(stepKey, snakeCaseJSON);
-}
-*/
 
 export default {
   async [FETCH_USER_DATA]({ commit }, payload) {
@@ -83,8 +74,7 @@ export default {
     const body = payload.body || {};
 
     // unpack the action because it might be wrapped to provide a test url
-    const actionUrl =
-      typeof payload.action === 'function' ? payload.action() : payload.action;
+    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
 
     let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
@@ -92,15 +82,14 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios
-      .get(url)
+    await axios.get(url)
       // await axios({ method, url, body })
-      .then(response => {
+      .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         commit(`${payload.mutation}_ERROR`, error);
       });
   },
@@ -130,18 +119,18 @@ export default {
 
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
-    await axios
-      .get(url)
-      .then(response => {
+    await axios.get(url)
+      .then((response) => {
         if (useTestdata && typeof response.data === 'string') {
           response.data = JSON.parse(response.data);
         }
-        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS, {
-          datasets: response.data.result.results,
-          collaboratorIds,
-        });
+        commit(USER_GET_COLLABORATOR_DATASETS_SUCCESS,
+          {
+            datasets: response.data.result.results,
+            collaboratorIds,
+          });
       })
-      .catch(error => {
+      .catch((error) => {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);
       });
   },
@@ -157,12 +146,11 @@ export default {
       url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
     }
 
-    await axios
-      .get(url)
-      .then(response => {
+    await axios.get(url)
+      .then((response) => {
         commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
       })
-      .catch(error => {
+      .catch((error) => {
         commit(USER_GET_ORGANIZATION_IDS_ERROR, error);
       });
   },
@@ -197,13 +185,13 @@ export default {
     }
 
     await Promise.all(requests)
-      .then(responses => {
+      .then((responses) => {
         for (let i = 0; i < responses.length; i++) {
           const response = responses[i];
           commit(USER_GET_ORGANIZATIONS_SUCCESS, response.data.result);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
   },
@@ -215,26 +203,40 @@ export default {
 
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
   },
-  async [METADATA_EDITING_SAVE_AUTHOR]({ commit }, author) {
+  [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
     commit(METADATA_EDITING_SAVE_AUTHOR, author);
 
-    await sleep(2000);
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
 
-    commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
+
+  },
+  [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
+    commit(METADATA_EDITING_REMOVE_AUTHOR, data);
+
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
   },
   async METADATA_EDITING_LOAD_DATASET({ dispatch }, metadataId) {
+
     // defining the commitMethod has the effect that mutations of this
     // module are being used with the output of the action from the metadata module
-    await dispatch(
-      `${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`,
-      {
-        metadataId,
-        commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
-      },
-      { root: true },
+    await dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
+      metadataId,
+      commitMethod: `${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`,
+    },
+    { root: true },
     );
+
   },
-  /*
+/*
   async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
 
     commit(METADATA_EDITING_PATCH_DATASET_PROPERTY, stepKey);
@@ -275,10 +277,8 @@ export default {
       });
   },
 */
-  async [METADATA_EDITING_PATCH_DATASET_OBJECT](
-    { commit },
-    { stepKey, data, id },
-  ) {
+  async [METADATA_EDITING_PATCH_DATASET_OBJECT]({ commit }, { stepKey, data, id }) {
+
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
     const apiKey = this.state.userSignIn.user?.apikey || null;
@@ -290,32 +290,31 @@ export default {
     const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
 
-    await axios
-      .post(url, postData, {
+    await axios.post(url, postData,
+      {
         headers: {
           Authorization: apiKey,
         },
       })
-      .then(response => {
+      .then((response) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
           stepKey,
           message: 'Changes saved',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
           stepKey,
           reason,
         });
       });
   },
-  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION](
-    { commit },
-    { stepKey, id, data },
-  ) {
+  async [METADATA_EDITING_PATCH_DATASET_ORGANIZATION]({ commit }, { stepKey, id, data }) {
+
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
     const apiKey = this.state.userSignIn.user?.apikey || null;
@@ -329,13 +328,13 @@ export default {
       organization_id: data.organizationId,
     };
 
-    await axios
-      .post(url, postData, {
+    await axios.post(url, postData,
+      {
         headers: {
           Authorization: apiKey,
         },
       })
-      .then(response => {
+      .then((response) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS, {
           stepKey,
           message: 'Organization changed',
@@ -343,14 +342,11 @@ export default {
         });
 
         if (response?.data?.result) {
-          populateEditingComponents(
-            commit,
-            response.data.result,
-            categoryCards,
-          );
+          const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+          populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
         }
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
           stepKey,
           reason,

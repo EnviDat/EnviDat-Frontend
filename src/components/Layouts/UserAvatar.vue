@@ -3,6 +3,10 @@
             :size="size"
             style="box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important" >
 
+    <v-img v-if="showGravatar"
+           id="gravatarIcon"
+           :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'intentional_Gravatar_Error' }&r=g`"
+           @error="imageError" />
     <!--
     <v-img v-if="!showGravatar && showAvaaatarIcons"
            id="avaaatarIcons"
@@ -16,21 +20,19 @@
           :style="`opacity: 0.75; height: ${size}px;`">
     </div>
 
-    <span
-      v-if="showInitials"
-      class="white--text"
-      style="position: absolute;"
-      :class="initialsTextClass"
-      >{{ nameInitials }}</span
+    <span v-if="showInitials"
+          class="white--text"
+          style="position: absolute;"
+          :class="initialsTextClass"
+          >{{ nameInitials }}</span
     >
 
-    <v-icon
-      v-if="showFallbackAccountIcon"
-      color="black"
-      :small="size <= 20"
-      :large="size > 40 && size < 128"
-      :x-large="size >= 128"
-      >account_circle</v-icon
+    <v-icon v-if="showFallbackAccountIcon"
+            color="black"
+            :small="size <= 20"
+            :large="size > 40 && size < 128"
+            :x-large="size >= 128"
+            >account_circle</v-icon
     >
   </v-avatar>
 </template>

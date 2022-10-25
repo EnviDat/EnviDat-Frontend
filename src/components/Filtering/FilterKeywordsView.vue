@@ -9,7 +9,7 @@
         <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon shrink">
-              <v-icon size="24px" color="black !important">style</v-icon>
+              <v-icon size="24px" color="black">style</v-icon>
             </v-col>
 
             <v-col v-if="showPlaceholder" class="grow pl-0">

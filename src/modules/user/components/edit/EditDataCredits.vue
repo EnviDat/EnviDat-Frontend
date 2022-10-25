@@ -1,58 +1,59 @@
 <template>
-  <v-container
-    id="EditDataCredits"
-    class="px-0 py-1 readableText"
-    fluid
-    style="min-height: 67px;"
-  >
+  <v-container id="EditDataCredits"
+               class="px-0 py-1 readableText"
+               fluid
+               style="min-height: 67px;">
+
     <v-row no-gutters>
-      <v-col cols="12" :class="dark ? 'white--text' : 'black--text'">
+      <v-col cols="12"
+             :class="dark ? 'white--text' : 'black--text'" >
         {{ instruction }}
       </v-col>
     </v-row>
 
     <v-row no-gutters>
-      <v-col
-        v-for="(creditName, index) in allDataCredits"
-        :key="index"
-        class="shrink pt-3 pt-md-4 px-md-1"
-      >
-        <v-hover v-slot:default="{ hover }">
-          <v-badge
-            :value="isActive(creditName)"
-            class="dataCreditIcon"
-            :disabled="readOnly"
-            :overlap="!hover"
-            @click="catchCreditClick(creditName)"
-            :color="dark ? 'white' : 'black'"
-          >
-            <span slot="badge">
-              <v-icon
-                :color="dark ? 'black' : 'white'"
-                size="20px"
-                style="left: 20px;"
-              >
+
+      <v-col v-for="(creditName, index) in allDataCredits"
+             :key="index"
+             class="shrink pt-3 pt-md-4 px-md-1" >
+
+        <v-hover v-slot:default="{ hover }" >
+
+          <v-badge :value="isActive(creditName)"
+                   class="dataCreditIcon"
+                   :disabled="readOnly"
+                   :overlap="!hover"
+                   style="width: 28px; height: 28px;"
+                   @click="catchCreditClick(creditName)"
+                   :color="dark ? 'white' : 'black'" >
+
+
+            <span slot="badge" >
+              <v-icon :color="dark ? 'black' : 'white'"
+                      size="14px"
+                      style="left: 14px; bottom: 1px;">
                 checked
               </v-icon>
             </span>
 
-            <v-tooltip bottom>
+            <v-tooltip bottom >
               <template v-slot:activator="{ on }">
-                <v-icon
-                  v-on="on"
-                  class="pa-1"
-                  :color="creditIconColor(creditName)"
-                  :disabled="readOnly"
-                  @click="catchCreditClick(creditName)"
-                >
+                <v-icon v-on="on"
+                        class="pa-1"
+                        :color="creditIconColor(creditName)"
+                        :disabled="readOnly"
+                        @click="catchCreditClick(creditName)" >
                   {{ iconLookup(creditName) }}
                 </v-icon>
-              </template>
+              </template >
 
               <div v-html="iconTooltip(creditName)" />
+
             </v-tooltip>
           </v-badge>
         </v-hover>
+
+
       </v-col>
     </v-row>
   </v-container>
@@ -70,7 +71,8 @@ import { getDataCreditIcon } from '@/factories/authorFactory';
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
+
 
 export default {
   name: 'EditDataCredits',
@@ -83,7 +85,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    allDataCredits: {
+    allDataCredits:  {
       type: Array,
       default: () => [
         'software',
@@ -107,8 +109,10 @@ export default {
       default: false,
     },
   },
-  mounted() {},
-  computed: {},
+  mounted() {
+  },
+  computed: {
+  },
   methods: {
     creditIconColor(creditName) {
       const active = this.isActive(creditName);
@@ -127,32 +131,34 @@ export default {
       return 'black';
     },
     iconTooltip(creditName) {
+
       const active = this.isActive(creditName);
 
       if (!active) {
         return `No <b>${creditName}</b> contribution`;
       }
 
-      return `${
-        this.authorName ? this.authorName : 'Author'
-      } has <b>${creditName}</b> contribution for this dataset`;
+      return `${this.authorName ? this.authorName : 'Author'} has <b>${creditName}</b> contribution for this dataset`;
     },
-    catchCreditClick(creditName) {
-      this.$emit('creditClick', creditName);
+    catchCreditClick(creditName){
+      this.$emit('creditClick', creditName)
     },
-    isActive(creditName) {
+    isActive(creditName){
       return this.dataCredit?.includes(creditName) || false;
     },
     iconLookup(creditName) {
       return getDataCreditIcon(creditName);
     },
   },
-  data: () => ({}),
-  components: {},
+  data: () => ({
+  }),
+  components: {
+  },
 };
 </script>
 
 <style scoped>
+
 .dataCreditIcon {
   opacity: 0.75;
 }

@@ -22,8 +22,8 @@
       <control-panel :compactLayout="true"
                       :searchTerm="searchTerm"
                       :showSearch="showSearch"
-                      :showSearchCount="true"
                       :searchCount="searchCount"
+                      :isAuthorSearch="isAuthorSearch"
                       :fixedHeight="36"
                       :searchBarPlaceholder="searchBarPlaceholder"
                       :loading="loading"
@@ -31,7 +31,9 @@
                       :enabledControls="enabledControls"
                       @searchClick="catchSearchClicked"
                       @searchCleared="catchSearchCleared"
-                      @controlsChanged="controlsChanged" />
+                      @controlsChanged="controlsChanged"
+                      @authorSearchClick="catchAuthorSearchClick"
+                      />
 
     </template>
 
@@ -97,8 +99,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           :state="getMetadataState(metadatasContent[pinnedId])"
-                          :organization="metadata.organization.name"
-                          :organizationTooltip="metadata.organization.title"
+                          :organization="metadatasContent[pinnedId].organization.name"
+                          :organizationTooltip="metadatasContent[pinnedId].organization.title"
                           :showOrganizationOnHover="showOrganizationOnHover"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
@@ -249,6 +251,10 @@ export default {
     showSearch: Boolean,
     searchTerm: String,
     searchCount: Number,
+    isAuthorSearch: {
+      type: Boolean,
+      default: false,
+    },
     searchBarPlaceholder: String,
     mainScrollClass: {
       type: String,
@@ -342,14 +348,16 @@ export default {
       );
     },
     cardGridClass() {
+      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
+
       if (this.isActiveControl(LISTCONTROL_LIST_ACTIVE)) {
         return {
           'col-12': true,
+          'col-lg-6': !mapActive,
           'col-xl-6': true,
         };
       }
       
-      const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
       const compactLayout = this.isCompactLayout;
 
       return {
@@ -561,6 +569,8 @@ export default {
       this.showMapFilter = mapToggled;
 
       this.controlsActive = controlsActive;
+
+      this.resetVirtualContent();
     },
     setScrollPos(toPos) {
       if (this.useDynamicHeight) {
@@ -581,6 +591,9 @@ export default {
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
+    },
+    catchAuthorSearchClick() {
+      this.$emit('authorSearchClick');
     },
     resetVirtualContent() {
       // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);

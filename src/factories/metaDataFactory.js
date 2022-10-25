@@ -166,6 +166,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
       // eslint-disable-next-line no-console
       console.error(`Author json parse err: ${e}`);
     }
+  } else if (dataset.author instanceof Array) {
+    authors = dataset.author;
   }
 
   return {
@@ -173,7 +175,9 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     doi: dataset.doi,
     contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
+    licenseId: license.id,
     license: license.title,
+    licenseUrl: license.url,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
@@ -484,6 +488,7 @@ export function createResource(resource, datasetName) {
     doi: resource.doi,
     name: fileName,
     url: resURL,
+    urlType: resource.url_type,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
     restricted: resource.restricted ? resource.restricted : '',
     format: fileFormat,

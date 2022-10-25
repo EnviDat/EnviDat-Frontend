@@ -11,8 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { format, parse } from 'date-fns';
-
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
@@ -31,17 +29,21 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
+
+import {
+  UPDATE_METADATA_EDITING,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+
 import {
   createLocation,
   enhanceTags,
   formatDate,
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
-import {
-  UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
 
+import { format, parse } from 'date-fns';
+import { mergeEditingAuthor } from '@/factories/authorFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -70,8 +72,8 @@ const JSONFrontendBackendRules = {
     ['lastName','name'],
     ['email','email'],
     ['dataCredit','data_credit'],
-    ['id.type','identifier_scheme'],
-    ['id.identifier','identifier'],
+    ['identifierType','identifier_scheme'],
+    ['identifier','identifier'],
     ['affiliation','affiliation'],
 /*
     ['affiliations.affiliation1','affiliation'],
@@ -444,7 +446,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
 
   const dataObject = {};
 
@@ -454,13 +456,13 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
-
+  
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
-
+  
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
   const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
@@ -488,7 +490,26 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
     authors.push(author);
   })
 
-  commitEditingData(commit, stepKey, { authors });
+  let enhanceAuthors = []
+
+  if (authorsMap && Object.keys(authorsMap).length > 0) {
+
+    for (let i = 0; i < authors.length; i++) {
+      const auth = authors[i];
+      const existingAuthor = authorsMap[auth.email];
+      let enhanced = auth;
+
+      if (existingAuthor) {
+        enhanced = mergeEditingAuthor(auth, existingAuthor);
+      }
+
+      enhanceAuthors.push(enhanced);
+    }
+  } else {
+    enhanceAuthors = authors;
+  }
+
+  commitEditingData(commit, stepKey, { authors: enhanceAuthors });
   dataObject.authors = authors;
 
   return dataObject;
@@ -497,7 +518,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 function populateEditingData(commit, snakeCaseJSON) {
 
   const dataObject = {};
-
+  
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
@@ -506,7 +527,7 @@ function populateEditingData(commit, snakeCaseJSON) {
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;
-
+  
   stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -537,7 +558,7 @@ function populateEditingData(commit, snakeCaseJSON) {
     location,
   });
   dataObject.location = location;
-
+  
   return dataObject;
 }
 
@@ -547,7 +568,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
   const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
-
+  
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
@@ -570,7 +591,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
 
   const dataObject = {};
-
+  
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
@@ -587,11 +608,11 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards, authorsMap) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
+  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
 
   const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
 
@@ -659,15 +680,18 @@ const dataNeedsStringify = [
 
 export function mapFrontendToBackend(stepKey, frontendData) {
 
+  // create a local copy to avoid mutation of vuex store objects / properties
+  const localData = { ...frontendData };
+
   if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    frontendData.authors = cleanAuthorsForBackend(frontendData.authors);
+    localData.authors = cleanAuthorsForBackend(localData.authors);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
-    frontendData.dates = mapDatesForBackend(frontendData.dates);
+    localData.dates = mapDatesForBackend(localData.dates);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
-    frontendData.customFields = mapCustomFields(frontendData.customFields);
+    localData.customFields = mapCustomFields(localData.customFields);
   }
 
-  let backendData = getBackendJSON(stepKey, frontendData);
+  let backendData = getBackendJSON(stepKey, localData);
 
   if (dataNeedsStringify.includes(stepKey)) {
     backendData = convertJSON(backendData, true);
@@ -698,3 +722,5 @@ export function parseDateStringToEnviDatFormat(dateString) {
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
   return format(parsedDate, enviDatDateFormat);
 }
+
+

@@ -249,7 +249,7 @@ export default {
     dateCreatedIcon: String,
     lastModifiedIcon: String,
     isProtected: Boolean,
-    fileExtensionIcon: Map,
+    fileExtensionIcon: Object,
     metadataContact: String,
     downloadActive: {
       type: Boolean,
@@ -400,14 +400,14 @@ export default {
     },
     lookupExtensionIcon() {
       const lookUp = `file${this.format.toLowerCase()}`;
-      let icon = this.fileExtensionIcon.get(lookUp);
+      let icon = this.fileExtensionIcon[`./${lookUp}`];
 
       if (!icon && this.audioFormats.includes(this.format)) {
-        icon = this.fileExtensionIcon.get('fileAudio');
+        icon = this.fileExtensionIcon['./fileAudio'];
       }
 
       if (!icon) {
-        icon = this.fileExtensionIcon.get('file');
+        icon = this.fileExtensionIcon['./file'];
       }
 
       // console.log(`icon ${icon}`);

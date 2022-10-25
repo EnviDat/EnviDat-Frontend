@@ -80,7 +80,6 @@ export const ProjectCardsParents = () => ({
           :defaultImg="defaultImg"
           :description="project.description"
           :subProjects="project.subProjects"
-          @cardClick="onCardClick"
         />
       </v-col>
 
@@ -111,7 +110,6 @@ export const ProjectCardsChildren = () => ({
           :defaultImg="defaultImg"
           :description="project.description"
           :subProjects="project.subProjects"
-          @cardClick="onCardClick"
         />
       </v-col>
 

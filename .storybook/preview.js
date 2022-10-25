@@ -7,7 +7,6 @@ import vuetify from './vuetify_storybook';
 // eslint-disable-next-line no-unused-vars
 import App from '../src/App.vue';
 
-// const Vue = require ('vue').default;
 import Vue from 'vue';
 import globalMethods from '../src/factories/globalMethods';
 

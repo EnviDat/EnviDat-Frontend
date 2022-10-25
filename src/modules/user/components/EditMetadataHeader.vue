@@ -487,9 +487,9 @@ export default {
         const author = this.getAuthorByName(pickedAuthorName);
         const authorObject = this.getAuthorObject(author);
 
-        this.previews.contactGivenName = authorObject.contactGivenName;
-        this.previews.contactSurname = authorObject.contactSurname;
-        this.previews.contactEmail = authorObject.contactEmail;
+        this.previews.contactGivenName = authorObject?.contactGivenName;
+        this.previews.contactSurname = authorObject?.contactSurname;
+        this.previews.contactEmail = authorObject?.contactEmail;
 
         if (this.validateAuthor(authorObject)) {
           this.setFullContactInfos(authorObject);
@@ -506,12 +506,12 @@ export default {
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
-      return found[0] || null;
+      return found[0] || {};
     },
     getAuthorByEmail(email) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.email === email);
-      return found[0] || null;
+      return found[0] || {};
     },
     getAuthorByNameProp(property, value) {
 

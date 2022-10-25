@@ -97,6 +97,9 @@ export default {
         noWrap: true,
       });
     },
+    isMapEditable() {
+      return this.mapEditable;
+    },
   },
   methods: {
     removeSite() {
@@ -507,7 +510,7 @@ export default {
     map: null,
     mapLayer: null,
     basemapLayer: null,
-    isMapEditable: JSON.parse(JSON.stringify(this.mapEditable)),
+    // isMapEditable: JSON.parse(JSON.stringify(this.mapEditable)),
     markers: [],
     markerIcon,
     markerIcon2x,

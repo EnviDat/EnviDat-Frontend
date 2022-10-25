@@ -27,11 +27,6 @@ for (let i = 0; i < tags.length; i++) {
 
 const initialState = {
   /**
-   * The placeholder text for the search bars
-   */
-  searchPlaceholderTextSmall: 'Enter research search term',
-  searchPlaceholderText: 'Enter research term, topic or name of an author',
-  /**
    * metadataIds properties are used for step by step loading all the metadata
    */
   loadingMetadataIds: false,
@@ -103,8 +98,6 @@ export const metadata = {
   namespaced: true,
   state: initialState,
   getters: {
-    searchPlaceholderTextSmall: state => state.searchPlaceholderTextSmall,
-    searchPlaceholderText: state => state.searchPlaceholderText,
     loadingMetadataIds: state => state.loadingMetadataIds,
     loadingMetadatasContent: state => state.loadingMetadatasContent,
     metadataIds: state => state.metadataIds,

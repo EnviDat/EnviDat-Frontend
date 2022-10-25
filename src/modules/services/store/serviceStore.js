@@ -51,7 +51,7 @@ export const service = {
 
       let url = `${staticRoot}/service/servicelist.json?nocache=${new Date().getTime()}`;
 
-      if (process.env.NODE_ENV === 'development' && useTestdata) {
+      if (import.meta.env.DEV && useTestdata) {
         url = './testdata/servicelist.json';
       }
 

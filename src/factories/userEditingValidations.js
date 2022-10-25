@@ -15,6 +15,7 @@ import * as yup from 'yup';
 
 import {
   EDIT_USER_PROFILE,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
@@ -62,7 +63,7 @@ const metadataInEditingValidations = {
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
       authors: yup.array()
-        .min(1, 'Please enter at least one author.'),
+        .min(1, 'Please add at least one author.'),
     }),
   // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
   // yup.object().shape({
@@ -169,6 +170,25 @@ const metadataInEditingValidations = {
         .email('Please enter a valid email address')
         .required('Email is required'),
     }),
+  [EDITMETADATA_AUTHOR]: () =>
+    yup.object().shape({
+      firstName: yup.string()
+        .required('Author first name is required')
+        .min(3, 'Author first name must be at least 3 characters'),
+      lastName: yup.string()
+        .required('Author last name is required')
+        .min(3, 'Author last name must be at least 3 characters'),
+      email: yup.string()
+        .email('Author email must be a valid email address')
+        .required('Author email is required'),
+      identifier: yup.string()
+        // e.g. 0000-0002-3862-8720
+        .notRequired()
+        .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
+      affiliation: yup.string()
+        // .required('Author affiliation is required')
+        .min(3, 'Affiliation must be at least 3 characters'),
+    }),
 };
 
 
@@ -222,6 +242,17 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
   return true;
 }
 
+/**
+ * Calls the isFieldValid function on every property of the objectToValidate. The objectToValidate and the errorObject
+ * need to have the properties as in the array of properties in the input.
+ *
+ * @param {Array<string>} properties
+ * @param {Object} objectToValidate
+ * @param validations
+ * @param {Object} errorObject
+ *
+ * @returns {boolean} false if any of the validation rules got an error
+ */
 export function isObjectValid(properties, objectToValidate, validations, errorObject) {
 
   // Validate fields corresponding to properties

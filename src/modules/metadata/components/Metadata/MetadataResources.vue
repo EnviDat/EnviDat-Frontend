@@ -1,90 +1,88 @@
 <template>
-  <v-card id="MetadataResources" :class="{ ['pt-2']: this.isOnTop }">
-    <v-card-title>
-      <v-row justify="end" no-gutters>
+  <v-card id="MetadataResources"
+          :class="{ ['pt-2']: this.isOnTop }" >
+
+    <v-card-title class="pa-4 pb-2">
+      <v-row justify="end"
+              no-gutters>
         <v-col class="text-h6 metadata_title grow">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
-        <v-col
-          v-if="!showPlaceholder && resources && resources.length > 0"
-          class="shrink resourcesIcons pt-2"
-        >
-          <base-icon-count-view
-            :count="resources.length"
-            :icon-string="fileIcon"
-          />
+        <v-col v-if="!showPlaceholder && resources && resources.length > 0"
+                class="shrink resourcesIcons" >
+          <base-icon-count-view :count="resources.length"
+                                :icon-string="fileIcon" />
         </v-col>
       </v-row>
     </v-card-title>
 
-    <v-container
-      v-if="showPlaceholder"
-      id="resourcePlaceholderList"
-      fluid
-      class="pa-2 pt-0"
-    >
-      <v-row no-gutters>
-        <v-col v-for="n in 2" :key="n" cols="12" sm="6" class="pa-2">
+
+    <v-container v-if="showPlaceholder"
+                  id="resourcePlaceholderList"
+                  fluid
+                  class="pa-2 pt-0" >
+      <v-row no-gutters >
+        <v-col v-for="n in 2"
+                :key="n"
+                cols="12" sm="6"
+                class="pa-2" >
+
           <ResourceCardPlaceholder />
         </v-col>
       </v-row>
     </v-container>
 
-    <v-container
-      v-if="
-        !showPlaceholder && availableResources && availableResources.length > 0
-      "
-      id="resourceList"
-      fluid
-      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
-      class="heightAndScroll pa-2 pt-0"
-    >
-      <v-row v-if="injectedComponent && injectAtStart" no-gutters>
-        <component
-          :is="injectedComponent"
-          :stationConfig="injectedComponentConfig"
-        />
+    <v-container v-if="!showPlaceholder && availableResources && availableResources.length > 0"
+                  id="resourceList"
+                  fluid
+                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+                  class="heightAndScroll pa-2 pt-0" >
+
+      <v-row v-if="injectedComponent && injectAtStart"
+              no-gutters >
+        <component :is="injectedComponent"
+                    :stationConfig="injectedComponentConfig" />
       </v-row>
 
-      <v-row no-gutters>
-        <v-col
-          v-for="res in availableResources"
-          :key="res.id"
-          cols="12"
-          :sm="availableResources.length > 1 ? 6 : 12"
-          class="pa-2"
-        >
-          <ResourceCard
-            v-bind="res"
-            :key="res.id"
-            :doiIcon="doiIcon"
-            :fileSizeIcon="fileSizeIcon"
-            :dateCreatedIcon="dateCreatedIcon"
-            :lastModifiedIcon="lastModifiedIcon"
-            :twoColumnLayout="twoColumnLayout"
-            :downloadActive="resourcesConfig.downloadActive"
-            :showGenericOpenButton="res.openEvent ? true : false"
-            :genericOpenButtonBottom="true"
-            :openButtonTooltip="res.openButtonTooltip"
-            :openButtonIcon="res.openButtonIcon"
-            :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"
-            @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)"
-          />
+      <v-row no-gutters >
+
+        <v-col v-for="res in availableResources"
+                :key="res.id"
+                cols="12"
+                :sm="availableResources.length > 1 ? 6 : 12"
+                class="pa-2" >
+
+          <ResourceCard v-bind="res"
+                          :key="res.id"
+                          :doiIcon="doiIcon"
+                          :fileSizeIcon="fileSizeIcon"
+                          :dateCreatedIcon="dateCreatedIcon"
+                          :lastModifiedIcon="lastModifiedIcon"
+                          :twoColumnLayout="twoColumnLayout"
+                          :downloadActive="resourcesConfig.downloadActive"
+                          :showGenericOpenButton="res.openEvent ? true : false"
+                          :genericOpenButtonBottom="true"
+                          :openButtonTooltip="res.openButtonTooltip"
+                          :openButtonIcon="res.openButtonIcon"
+                          :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"
+                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
 
-      <v-row v-if="injectedComponent && !injectAtStart" no-gutters>
-        <component :is="injectedComponent" :config="injectedComponentConfig" />
+      <v-row v-if="injectedComponent && !injectAtStart"
+              no-gutters >
+        <component :is="injectedComponent"
+                    :config="injectedComponentConfig" />
       </v-row>
+
     </v-container>
 
-    <v-card-text
-      v-if="!showPlaceholder && (!resources || resources.length <= 0)"
-      :style="`color: ${emptyTextColor}};`"
-    >
+    <v-card-text v-if="!showPlaceholder && (!resources || resources.length <= 0)"
+                  :style="`color: ${emptyTextColor}};`" >
       {{ emptyText }}
     </v-card-text>
+
   </v-card>
 </template>
 
@@ -100,15 +98,16 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
+
 import {
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   INJECT_RESOURCE_STRATEGY,
 } from '@/factories/eventBus';
-import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
 import ResourceCard from '../ResourceCard.vue';
 import ResourceCardPlaceholder from '../ResourceCardPlaceholder.vue';
@@ -176,18 +175,13 @@ export default {
       return this.mixinMethods_getGenericProp('lastModifiedIcon');
     },
     scrollbarColorFront() {
-      return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
-        : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp(
-        'emptyText',
-        'No resources found for this dataset',
-      );
+      return this.mixinMethods_getGenericProp('emptyText', 'No resources found for this dataset');
     },
     emptyTextColor() {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
@@ -197,11 +191,7 @@ export default {
     readMore() {
       this.showAllResources = !this.showAllResources;
     },
-    injectComponent(
-      injectedComponent,
-      injectedComponentConfig,
-      injectAtStart = true,
-    ) {
+    injectComponent(injectedComponent, injectedComponentConfig, injectAtStart = true) {
       this.injectedComponent = injectedComponent;
       this.injectedComponentConfig = injectedComponentConfig;
       this.injectAtStart = injectAtStart;
@@ -227,9 +217,14 @@ export default {
 </script>
 
 <style scoped>
-.heightAndScroll {
-  max-height: 750px;
-  overflow-y: auto !important;
-  scrollbar-width: thin;
-}
+
+  .heightAndScroll {
+    max-height: 750px;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+  }
+
+  .resourcesIcons {
+    opacity: 0.5;
+  }
 </style>

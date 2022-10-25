@@ -20,6 +20,7 @@ import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import UserCard from '@/components/Cards/UserCard.vue';
 import UserMenu from '@/modules/user/components/UserMenu.vue';
 import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
+import TitleCard from '@/components/Cards/TitleCard.vue';
 
 import seedrandom from 'seedrandom';
 import jazzicons from '@metamask/jazzicon';
@@ -39,6 +40,49 @@ export default {
   },
 };
 
+
+export const TitleCardViews = () => ({
+  components: { TitleCard },
+  template: `
+    <v-row >
+
+    <v-col cols="12">
+      TitleCard empty
+    </v-col>
+
+    <v-col cols="12">
+      <TitleCard title="Title only TitleCard" />
+    </v-col>
+
+    <v-col cols="12">
+      TitleCard with refresh icon
+    </v-col>
+
+    <v-col >
+      <TitleCard title="My Datasets"
+                 icon="refresh"
+                 tooltipText="Click here to refresh"
+                 :clickCallback="() => {}" />
+    </v-col>
+
+    <v-col cols="12">
+      TitleCard with refresh icon
+    </v-col>
+
+    <v-col >
+      <TitleCard title="My Datasets"
+                 icon="refresh"
+                 tooltipText="Click here to refresh"
+                 :loading="true"
+                 :clickCallback="() => {}" />
+    </v-col>
+
+
+
+    </v-row>
+  `,
+});
+
 export const UserMenuViews = () => ({
   components: { UserMenu },
   template: `
@@ -47,13 +91,13 @@ export const UserMenuViews = () => ({
       <v-col cols="12">
         Click on the avatar
       </v-col>
-
+    
       <v-col class="shrink">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
 
       <v-col class="shrink">
-        <UserMenu :navItems="userMenuItems"
+        <UserMenu :navItems="userMenuItems" 
                   :user-object="user" />
       </v-col>
 
@@ -91,7 +135,7 @@ export const JazzIconsViews = () => ({
   template: `
     <v-row >
 
-
+   
       <v-col class="shrink"
              id="jazzIcon"
              ref="jazzIcon">
@@ -106,7 +150,7 @@ export const JazzIconsViews = () => ({
              id="jazzIcon3"
              ref="jazzIcon3">
       </v-col>
-
+    
     </v-row>
     `,
   mounted() {
@@ -264,6 +308,7 @@ export const UserCardViews = () => ({
                   :name-initials="index > 1 ? getNameInitials(author) : null"
                   :emailHash="index > 2 ? '7e6b6dca84df35a663ba4518360095a8' : null"
                   :datasetCount="author.datasetCount"
+                  :loading="index === authors().length - 1"
                   />
       </v-col>
 

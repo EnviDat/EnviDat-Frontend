@@ -99,14 +99,13 @@ export default ({ mode }) => {
         base: './',
         // runtimeCompiler: true,
         resolve: {
-            alias: {
+            alias: [
                 // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
-                '@': path.resolve(__dirname, 'src'),
-                '~': path.resolve(__dirname),
-                'cesium': path.resolve(__dirname, cesiumSource),
-                // resolve vue for vite (based on rollup) https://v2.vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds
-                'vue': 'vue/dist/vue.esm.js',
-            },
+              { find: '@', replacement: path.resolve(__dirname, 'src') },
+              { find: '~', replacement: path.resolve(__dirname) },
+              { find: 'cesium', replacement: path.resolve(__dirname, cesiumSource) },
+              { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
+            ],
         },
         build: {
             assetsDir: './static',

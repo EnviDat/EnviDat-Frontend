@@ -133,7 +133,7 @@ export const USER_EDITING_UPDATE_SUCCESS = 'USER_EDITING_UPDATE_SUCCESS';
 export const USER_EDITING_UPDATE_ERROR = 'USER_EDITING_UPDATE_ERROR';
 
 export const ACTION_USER_EDITING_UPDATE = () => {
-  if (process.env.NODE_ENV === 'development' && useTestdata) {
+  if (import.meta.env.DEV && useTestdata) {
     return './testdata/user_patch.json';
   }
 
@@ -176,6 +176,8 @@ export const METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR =
   'METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR';
 export const METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS =
   'METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS';
+
+export const METADATA_EDITING_REMOVE_AUTHOR = 'METADATA_EDITING_REMOVE_AUTHOR';
 
 export const ACTION_METADATA_EDITING_PATCH_DATASET = () => {
   if (import.meta.env.DEV && useTestdata) {

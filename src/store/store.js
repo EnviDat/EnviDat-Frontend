@@ -148,8 +148,7 @@ try {
   }
 }
 
-
-if (process.env.NODE_ENV === 'test') {
+if (import.meta.env.MODE === 'test') {
   loadImages(store);
 } else {
   checkWebpFeatureAsync('lossy', (feature, isSupported) => {

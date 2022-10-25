@@ -23,6 +23,8 @@ import {
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
+import EditResource from '@/modules/user/components/EditResource.vue';
+
 import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
@@ -31,6 +33,8 @@ import {
 import unFormatedMetadataCards from './js/metadata';
 import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
 
+
+// const apiFactory = require('@/factories/apiFactory');
 
 const metadataCards = [];
 
@@ -49,6 +53,88 @@ export default {
   decorators: [],
   parameters: {},
 };
+
+
+
+export const EditResourceViews = () => ({
+  components: { EditResource },
+  template: `
+    <v-col>
+
+      <v-row>
+        EditResource empty and with resource1
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditResource  />
+        </v-col>
+
+        <v-col >
+          <EditResource v-bind="resource1" />
+        </v-col>
+
+      </v-row>
+
+      <v-row>
+        EditResource with resource2
+      </v-row>
+
+      <v-row class="py-3" >
+        
+        <v-col >
+          <EditResource v-bind="resource2" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditResource with resource3
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditResource v-bind="resource3" />
+        </v-col>
+      </v-row>
+    
+    </v-col>
+    `,
+  created() {
+    eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+  },
+  beforeDestroy() {
+    eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+  },
+  methods: {
+    selectResource(id) {
+      this.emptyFirstGenericProps = {
+        ...this.emptyFirstGenericProps,
+        selectionId: id,
+      };
+    },
+    // editComponentsChanged(updateObj) {
+    //   if (updateObj.data.id === this.genericProps.id) {
+    //     this.genericProps = updateObj.data;
+    //   }
+    //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
+    //     this.emptyFirstGenericProps = updateObj.data;
+    //   }
+    // },
+  },
+  data: () => ({
+    emptyFirstGenericProps: {
+      id: '1',
+      resources: [],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
+      },
+    },
+    resource1: metadataCards[0].resources[0],
+    resource2: metadataCards[0].resources[1],
+    resource3: metadataCards[2].resources[0],
+  }),
+});
 
 export const EditResourcesList = () => ({
     components: { EditMetadataResources },
@@ -73,7 +159,7 @@ export const EditResourcesList = () => ({
         <v-col >
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
-      </v-row>
+      </v-row>    
     </v-col>
     `,
     created() {

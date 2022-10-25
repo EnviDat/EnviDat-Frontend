@@ -26,7 +26,7 @@ import polygonIcon from '../src/assets/icons/polygons.png';
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
-import { CARD_VIEWS, LABLE_VIEWS } from './storybookFolder';
+import { CARD_VIEWS } from './storybookFolder';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 

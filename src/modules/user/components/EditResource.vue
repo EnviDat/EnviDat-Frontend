@@ -20,6 +20,10 @@
             <div class="text-h5">{{ labels.title }}</div>
           </v-col>
 
+          <v-col cols="12" style="background-color: orange;">
+            This component is unfinished!
+          </v-col>
+
           <v-col cols="12">
             <div class="text-body-1">{{ labels.instructions }}</div>
           </v-col>
@@ -77,14 +81,14 @@
               prepend-icon="insert_drive_file"
               value=" "
             >
-              <template v-slot:append>
-                <v-col class="justify-content">
-                  <v-row no-gutters class="pb-2">{{ fileNameField }}</v-row>
+              <template v-slot:append style="justfiy-content: flex-end">
+                <v-col>
+                  <v-row no-gutters class="pb-2">{{ urlField || fileNameField }}</v-row>
                   <v-row no-gutters>
-                    <img
+                    <v-img :src="urlField || fileNameField"
                       ref="filePreview"
                       style="max-height: 100%; max-width: 100%"
-                    />
+                     alt="resource image preview"/>
                   </v-row>
                 </v-col>
               </template>
@@ -104,6 +108,7 @@
           </v-col>
         </v-row>
 
+<!--
         <v-row no-gutters>
           <v-col cols="12">
             <v-text-field
@@ -115,6 +120,7 @@
             />
           </v-col>
         </v-row>
+-->
 
         <v-row no-gutters>
           <v-col cols="6" class="pr-4">
@@ -187,15 +193,18 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import fileSizeIcon from '@/assets/icons/fileSize.png';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { getCurrentDate } from '@/factories/metaDataFactory';
+
 import {
-  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
-import { getCurrentDate } from '@/factories/metaDataFactory';
+
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
+import fileSizeIcon from '@/assets/icons/fileSize.png';
 
 export default {
   name: 'EditResource',
@@ -220,7 +229,7 @@ export default {
       type: File,
       default: null,
     },
-    url_type: {
+    urlType: {
       type: String,
       default: null,
     },
@@ -233,6 +242,10 @@ export default {
       default: getCurrentDate(),
     },
     format: {
+      type: String,
+      default: '',
+    },
+    mimetype: {
       type: String,
       default: '',
     },
@@ -315,7 +328,7 @@ export default {
       },
     },
     isImage() {
-      return this.file?.type.includes('image');
+      return this.file?.type.includes('image') || this.mimetype?.includes('image') || false;
     },
     isLink() {
       return !!this.url && this.urlType !== 'upload';
@@ -388,7 +401,7 @@ export default {
     labels: {
       title: 'Edit Selected Resource',
       instructions:
-        'Change information about this resource, make sure to describe all the details so others know about this resource contains.',
+        'Change information about this resource, make sure to describe all the details so others know what this resource contains.',
       subInstructions: 'For files larger then 5GB contact the envidat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',

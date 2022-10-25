@@ -1,16 +1,34 @@
 /* eslint-disable no-underscore-dangle */
 /**
- * user store mutations
- *
- * @summary user store mutations
- * @author Dominik Haas-Artho
- *
- * Created at     : 2020-07-14 16:51:52
+* user store mutations
+*
+* @summary user store mutations
+* @author Dominik Haas-Artho
+*
+* Created at     : 2020-07-14 16:51:52
  * Last modified  : 2021-08-18 10:14:35
- *
- * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
- */
+*
+* This file is subject to the terms and conditions defined in
+* file 'LICENSE.txt', which is part of this source code package.
+*/
+
+import {
+  enhanceMetadatas,
+  enhanceTags,
+} from '@/factories/metaDataFactory';
+
+import {
+  selectForEditing,
+  setSelected,
+  updateAuthors,
+  updateResource,
+} from '@/factories/userEditingFactory';
+
+import { getCollaboratorCapacity, isUserGroupAdmin } from '@/factories/userEditingValidations';
+
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+
+import { populateEditingComponents } from '@/factories/mappingFactory';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -19,23 +37,12 @@ import {
   eventBus,
   SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/eventBus';
-import { populateEditingComponents } from '@/factories/mappingFactory';
-import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
+
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import {
-  selectForEditing,
-  setSelected,
-  updateAuthors,
-  updateResource,
-} from '@/factories/userEditingFactory';
-import {
-  getCollaboratorCapacity,
-  isUserGroupAdmin,
-} from '@/factories/userEditingValidations';
-import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import { SET_CONFIG } from '@/store/mainMutationsConsts';
+import { getAuthorName, mergeEditingAuthor } from '@/factories/authorFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -50,6 +57,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -75,16 +83,16 @@ import {
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE,
+  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
   VALIDATION_ERROR,
 } from './userMutationsConsts';
 
+
 function extractError(store, reason, errorProperty = 'error') {
+
   let type = '';
   let field = '';
-  let msg =
-    'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
 
   if (reason?.response && reason.response.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText}
@@ -120,12 +128,12 @@ function extractError(store, reason, errorProperty = 'error') {
 }
 
 function createErrorMessage(reason) {
-  let msg =
-    'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
   let details = '';
 
   if (reason?.response) {
-    /*
+
+/*
     if (reason.response.status !== 200) {
       eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
           reason.response.status || -1,
@@ -143,10 +151,10 @@ function createErrorMessage(reason) {
       msg += ' Validation Error';
     }
 
-    const errorObj =
-      reason.response.data?.error || reason.response.error || null;
+    const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
+
       if (errorObj.__type) {
         details += `${errorObj.__type}: `;
       }
@@ -162,6 +170,7 @@ function createErrorMessage(reason) {
           details += `${key} ${errorObj[key]} `;
         }
       }
+
     } else {
       details += reason.response.statusText;
     }
@@ -208,10 +217,7 @@ export default {
 
     const datasets = enhanceMetadataFromCategories(this, payload.datasets);
 
-    enhanceElementsWithStrategyEvents(
-      datasets,
-      SELECT_EDITING_DATASET_PROPERTY,
-    );
+    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
     // use the $set to make sure updates are triggered
     this._vm.$set(state, 'userDatasets', datasets);
@@ -256,10 +262,7 @@ export default {
 
     resetErrorObject(state);
   },
-  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](
-    state,
-    { datasets, collaboratorIds },
-  ) {
+  [USER_GET_COLLABORATOR_DATASETS_SUCCESS](state, { datasets, collaboratorIds } ) {
     state.collaboratorDatasetsLoading = false;
 
     for (let i = 0; i < datasets.length; i++) {
@@ -269,12 +272,12 @@ export default {
 
     datasets = enhanceMetadataFromCategories(this, datasets);
 
-    enhanceElementsWithStrategyEvents(
-      datasets,
-      SELECT_EDITING_DATASET_PROPERTY,
-    );
+    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
-    const collaboratorDatasets = [...state.collaboratorDatasets, ...datasets];
+    const collaboratorDatasets = [
+      ...state.collaboratorDatasets,
+      ...datasets,
+    ];
 
     // use the $set to make sure updates are triggered
     this._vm.$set(state, 'collaboratorDatasets', collaboratorDatasets);
@@ -337,23 +340,17 @@ export default {
     const orgaId = payload?.id || payload?.name;
 
     if (payload?.packages.length > 0) {
-      const metadataContents =
-        this.state[METADATA_NAMESPACE]?.metadatasContent || {};
 
-      payload.packages = enhanceTagsOrganizationDatasetFromAllDatasets(
-        payload.packages,
-        metadataContents,
-      );
+      const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
+
+      payload.packages = enhanceTagsOrganizationDatasetFromAllDatasets(payload.packages, metadataContents);
 
       payload.packages = enhanceMetadataFromCategories(this, payload.packages);
 
       const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
 
       if (isUserGroupAdmin(userId, payload)) {
-        enhanceElementsWithStrategyEvents(
-          payload.packages,
-          SELECT_EDITING_DATASET_PROPERTY,
-        );
+        enhanceElementsWithStrategyEvents(payload.packages, SELECT_EDITING_DATASET_PROPERTY);
       }
     }
 
@@ -368,7 +365,7 @@ export default {
     extractError(this, reason, 'userOrgaDatasetsError');
   },
   [UPDATE_METADATA_EDITING](state, payload) {
-    /*
+/*
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
       updateResource(this, state, payload);
     } else
@@ -383,9 +380,11 @@ export default {
         ...current,
         ...payload.data,
       };
+
     }
   },
   [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
+
     resource.loading = true;
     const updateObj = {
       object: EDITMETADATA_DATA_RESOURCES,
@@ -397,6 +396,7 @@ export default {
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, resource) {
+
     resource.loading = false;
     resource.existsOnlyLocal = false;
     const updateObj = {
@@ -409,6 +409,7 @@ export default {
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_RESOURCE_ERROR](state, reason) {
+
     extractError(this, reason);
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
@@ -416,15 +417,15 @@ export default {
     selectForEditing(this, resources, id, state.selectedResourceId, 'id');
     state.selectedResourceId = id;
   },
-  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
-    const authors = this.getters[`${USER_NAMESPACE}/authors`];
-    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
-    state.selectedAuthorId = id;
-  },
   [METADATA_CANCEL_RESOURCE_EDITING](state) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
     setSelected(this, resources, state.selectedResourceId, 'id', false);
     state.selectedResourceId = '';
+  },
+  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
+    state.selectedAuthorId = id;
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -432,18 +433,51 @@ export default {
     state.selectedAuthorId = '';
   },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
-    author.loading = true;
 
-    const updateObj = {
-      object: EDITMETADATA_AUTHOR,
-      data: author,
-    };
+    const updatedAuthor = author;
+    updatedAuthor.loading = true;
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
-    updateAuthors(this, state, updateObj);
+    let changed = false;
+    let match = false;
+
+    for (let i = 0; i < authors.length; i++) {
+      match = false;
+      const auth = authors[i];
+      const email = auth.email;
+
+      if (email === updatedAuthor.email) {
+        match = true;
+      } else {
+
+        const searchAuthorFullName = getAuthorName({
+          firstName: updatedAuthor.firstName,
+          lastName: updatedAuthor.lastName,
+        });
+
+        match = auth.fullName === searchAuthorFullName;
+      }
+
+      if (match) {
+        // use $set to make the author entry reactive
+        this._vm.$set(authors, i, updatedAuthor);
+
+        changed = true;
+        // console.log(`Updated author ${email} ${auth.fullName}`);
+        break;
+      }
+    }
+
+    if (!changed) {
+      // if the element doesn't exist, add it via unshift as the first entry in the list
+      // updatedAuthor.isSelected = true;
+      authors.unshift(updatedAuthor);
+    }
 
     resetErrorObject(state);
   },
   [METADATA_EDITING_SAVE_AUTHOR_SUCCESS](state, author) {
+
     author.loading = false;
     author.existsOnlyLocal = false;
 
@@ -459,6 +493,16 @@ export default {
   [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
     extractError(this, reason);
   },
+  [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const matches = authors.filter(auth => auth.email === email);
+    if (matches.length > 0) {
+      const removeIndex = authors.indexOf(matches[0]);
+      authors.splice(removeIndex, 1);
+    }
+
+  },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
   },
@@ -466,10 +510,7 @@ export default {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
   },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](
-    state,
-    { stepKey, message },
-  ) {
+  [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](state, { stepKey, message }) {
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     editingObject.message = message;
@@ -492,6 +533,7 @@ export default {
     }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
     editingObject.message = null;
@@ -500,6 +542,7 @@ export default {
     editingObject.errorDetails = null;
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
     editingObject.message = message;
@@ -511,6 +554,7 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
 
@@ -551,14 +595,14 @@ export default {
 
     const currentEntry = enhanceMetadataFromCategories(this, payload);
     state.currentEditingContent = currentEntry;
-    //    state.currentEditingContent = Object.values(enhancedPayload)[0];
+//    state.currentEditingContent = Object.values(enhancedPayload)[0];
 
     if (currentEntry) {
-      //      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
 
       const { categoryCards } = this.getters;
 
-      populateEditingComponents(this.commit, currentEntry, categoryCards);
+      populateEditingComponents(this.commit, currentEntry, categoryCards, authorsMap);
     }
   },
   [METADATA_EDITING_LOAD_DATASET_ERROR](state, reason) {

@@ -31,7 +31,7 @@ describe('authorFactory - createAuthors', () => {
       expect(author.lastName).toBeDefined();
       expect(author.datasetCount).toBeGreaterThanOrEqual(1);
       expect(author.affiliation).toBeDefined();
-      expect(author.id).toBeDefined();
+      expect(author.identifier).toBeDefined();
       expect(author.email).toBeDefined();
       expect(author.dataCredit).toBeDefined();
     }
@@ -63,7 +63,7 @@ describe('authorFactory - extractAuthorsMap', () => {
       expect(author.lastName).toBeDefined();
       expect(author.datasetCount).toBeGreaterThanOrEqual(1);
       expect(author.affiliation).toBeDefined();
-      expect(author.id).toBeDefined();
+      expect(author.identifier).toBeDefined();
       expect(author.email).toBeDefined();
       expect(author.dataCredit).toBeDefined();
     }

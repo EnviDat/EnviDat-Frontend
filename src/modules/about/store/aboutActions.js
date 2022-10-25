@@ -25,12 +25,16 @@ import {
   GET_POLICIES_SUCCESS,
 } from '@/modules/about/store/aboutMutationsConsts';
 
+const staticRoot = import.meta.env.VITE_ENVIDAT_STATIC_ROOT;
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+
 export default {
   [GET_GUIDELINES]({ commit }) {
     commit(GET_GUIDELINES);
 
-    let url = `${process.env.VITE_ENVIDAT_STATIC_ROOT}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/guidelines.md';
     }
 
@@ -45,8 +49,9 @@ export default {
   [GET_POLICIES]({ commit }) {
     commit(GET_POLICIES);
 
-    let url = `${process.env.VITE_ENVIDAT_STATIC_ROOT}/policies/policies.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/policies/policies.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/policies.md';
     }
 
@@ -62,8 +67,9 @@ export default {
   [GET_DMP]({ commit }) {
     commit(GET_DMP);
 
-    let url = `${process.env.VITE_ENVIDAT_STATIC_ROOT}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/dmp.md';
     }
 

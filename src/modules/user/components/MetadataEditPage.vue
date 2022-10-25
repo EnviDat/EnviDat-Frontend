@@ -61,6 +61,9 @@ import {
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
+  EDITMETADATA_AUTHOR,
+  REMOVE_EDITING_AUTHOR,
+  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT, AUTHOR_SEARCH_CLICK,
 } from '@/factories/eventBus';
 
 import {
@@ -81,6 +84,7 @@ import {
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_RESOURCE,
   METADATA_EDITING_SELECT_AUTHOR,
@@ -95,6 +99,7 @@ import {
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
+  BROWSE_PATH,
   METADATADETAIL_PATH,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
@@ -110,11 +115,12 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
-import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
+import { getReadOnlyFieldsObject, populateEditingComponents } from '@/factories/mappingFactory';
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 
 
 export default {
@@ -140,6 +146,8 @@ export default {
     eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
     eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+
+    eventBus.$on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeDestroy() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -151,6 +159,8 @@ export default {
     eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
     eventBus.$off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+
+    eventBus.$off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
     this.initializeStepsInUrl();
@@ -174,6 +184,7 @@ export default {
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
+      'asciiDead',
     ]),
     ...mapGetters(USER_NAMESPACE, ['resources', 'authors']),
     ...mapGetters(METADATA_NAMESPACE, [
@@ -187,7 +198,12 @@ export default {
       return this.$route.params.metadataid;
     },
     loading() {
-      return this.loadingCurrentEditingContent || !this.currentEditingContent;
+      return this.loadingCurrentEditingContent || !this.currentEditingContent || this.authorsMapLoading;
+    },
+    authorsMapLoading() {
+      const map = this.authorsMap;
+
+      return !map || Object.keys(map).length <= 0;
     },
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route);
@@ -311,6 +327,12 @@ export default {
       const routeData = this.$router.resolve({ path:`${METADATADETAIL_PATH}/${this.metadataId}`});
       window.open(routeData.href, '_blank');
     },
+    catchAuthorCardAuthorSearch(fullName) {
+      const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
+
+      const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
+      window.open(routeData.href, '_blank');
+    },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
@@ -326,24 +348,37 @@ export default {
     saveResource(newRes) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
     },
-    // eslint-disable-next-line no-unused-vars
     saveAuthor(newAuthor) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
 
-      let action = METADATA_EDITING_PATCH_DATASET_OBJECT;
       const payload = {
         stepKey: updateObj.object,
         data: updateObj.data,
         id: this.$route.params.metadataid,
+      };
+
+      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+        const currentAuthors = this.$store.getters[`${USER_NAMESPACE}/authors`];
+        const authorToMergeDataCredit = updateObj.data;
+
+        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+        payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
+        payload.stepKey = EDITMETADATA_AUTHOR_LIST;
       }
 
-      if (updateObj.object === EDITMETADATA_ORGANIZATION) {
-        // overwrite the action and the payload to fit the specific
-        // backend call to change the ownership of a dataset
-        action = METADATA_EDITING_PATCH_DATASET_ORGANIZATION;
+      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+        const currentAuthors = this.$store.getters[`${USER_NAMESPACE}/authors`];
+
+        // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
+        // that's why it is necessary to know which have been removed via the picker and combined the three lists
+        payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
       }
+
+      // overwrite the action and the payload to fit the specific
+      // backend call to change the ownership of a dataset
+      const action = this.getUserAction(updateObj.object);
 
       // save the full dataObject it in the backend
       this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
@@ -356,6 +391,9 @@ export default {
         this.updateStepStatus(updateObj.object, this.creationSteps);
       });
 
+    },
+    getUserAction(stepKey) {
+      return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
     },
     getGenericPropsForStep(key) {
       return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
@@ -456,6 +494,16 @@ export default {
       const stepKey = getStepFromRoute(this.$route);
       this.updateStepStatus(stepKey, this.creationSteps);
     },
+    authorsMap() {
+
+      if (this.authorsMap && Object.keys(this.authorsMap).length > 0) {
+
+        const { categoryCards } = this.$store.getters;
+
+        // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
+        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards, this.authorsMap);
+      }
+    },
   },
   components: {
     NavigationStepper,
@@ -464,7 +512,7 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    domain: process.env.VITE_ENVIDAT_DOMAIN,
+    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     creationSteps: null,
     errorTitle: null,
     errorMessage: null,
@@ -482,6 +530,11 @@ export default {
       },
     },
     showSnack: false,
+    userActions: {
+      [EDITMETADATA_ORGANIZATION]: METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+      [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
+      [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
+    },
   }),
 };
 </script>

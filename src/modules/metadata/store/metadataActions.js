@@ -13,47 +13,53 @@
 
 import axios from 'axios';
 
-import { urlRewrite } from '@/factories/apiFactory';
-import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
 import {
-  getEnabledTags,
-  getPopularTags,
-  tagsIncludedInSelectedTags,
-} from '@/factories/metadataFilterMethods';
-import {
-  getSelectedTagsMergedWithHidden,
-  getTagsMergedWithExtras,
-} from '@/factories/modeFactory';
-import metadataTags from '@/modules/metadata/store/metadataTags';
-import catCards from '@/store/categoryCards';
-import {
-  BULK_LOAD_METADATAS_CONTENT,
-  BULK_LOAD_METADATAS_CONTENT_ERROR,
-  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  FILTER_METADATA,
-  FILTER_METADATA_ERROR,
-  FILTER_METADATA_SUCCESS,
   LOAD_METADATA_CONTENT_BY_ID,
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_EXISTING_AUTHORS,
-  METADATA_UPDATE_EXISTING_KEYWORDS,
-  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
-  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
   // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
   // LOAD_METADATA_CONTENT_BY_ID_ERROR,
   SEARCH_METADATA,
-  SEARCH_METADATA_ERROR,
   SEARCH_METADATA_SUCCESS,
+  SEARCH_METADATA_ERROR,
+  BULK_LOAD_METADATAS_CONTENT,
+  BULK_LOAD_METADATAS_CONTENT_SUCCESS,
+  BULK_LOAD_METADATAS_CONTENT_ERROR,
   UPDATE_TAGS,
   UPDATE_TAGS_ERROR,
   UPDATE_TAGS_SUCCESS,
+  FILTER_METADATA,
+  FILTER_METADATA_SUCCESS,
+  FILTER_METADATA_ERROR,
+  METADATA_NAMESPACE,
+  PUBLICATIONS_RESOLVE_IDS,
+  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
+  PUBLICATIONS_RESOLVE_IDS_ERROR,
+  EXTRACT_IDS_FROM_TEXT,
+  EXTRACT_IDS_FROM_TEXT_SUCCESS,
+  EXTRACT_IDS_FROM_TEXT_ERROR,
+  METADATA_UPDATE_EXISTING_AUTHORS,
+  METADATA_UPDATE_EXISTING_KEYWORDS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
+  METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
 } from '@/store/metadataMutationsConsts';
+
+import catCards from '@/store/categoryCards';
+
+import {
+  tagsIncludedInSelectedTags,
+  getEnabledTags,
+  getPopularTags,
+} from '@/factories/metadataFilterMethods';
+import {
+  getTagsMergedWithExtras,
+  getSelectedTagsMergedWithHidden,
+} from '@/factories/modeFactory';
+import { urlRewrite } from '@/factories/apiFactory';
+import {
+  getTagColor,
+  sortObjectArray,
+} from '@/factories/metaDataFactory';
+
+import metadataTags from '@/modules/metadata/store/metadataTags';
 /*
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
@@ -88,7 +94,8 @@ function contentFilteredByTags(value, selectedTagNames) {
 }
 
 function createSolrQuery(searchTerm) {
-  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2 OR author:"*${searchTerm}*"~2`;
+
+  const overallSearchString = `title:"*${searchTerm}*"~2 OR notes:"*${searchTerm}*"~2`;
 
   const splits = searchTerm.split(' ');
   if (splits.length <= 0) {
@@ -100,7 +107,7 @@ function createSolrQuery(searchTerm) {
   for (let i = 0; i < splits.length; i++) {
     const searchSplit = splits[i];
 
-    solrQuery += ` OR author: "*${searchSplit}*" OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
+    solrQuery += ` OR title: "*${searchSplit}*" OR notes: "*${searchSplit}*"`;
   }
 
   // https://www.envidat.ch/query?ident=on&q=author:%22Marcia%20Phillips%22~2
@@ -125,17 +132,15 @@ function localSearch(searchTerm, datasets) {
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
 
-    const match1 =
-      dataset.title.includes(term1) ||
-      dataset.author.includes(term1) ||
-      dataset.notes.includes(term1);
+    const match1 = dataset.title.includes(term1)
+      || dataset.author.includes(term1)
+      || dataset.notes.includes(term1);
 
     let match2 = true;
     if (check2Terms) {
-      match2 =
-        dataset.title.includes(term2) ||
-        dataset.author.includes(term2) ||
-        dataset.notes.includes(term2);
+      match2 = dataset.title.includes(term2)
+        || dataset.author.includes(term2)
+        || dataset.notes.includes(term2);
     }
 
     if (match1 && match2) {
@@ -148,27 +153,50 @@ function localSearch(searchTerm, datasets) {
 
 // Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
-  return arr.filter(
-    item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item),
-  );
+  return arr.filter(item => item.trim().split(' ').length <= maxWords && !/^\d/.test(item));
 }
 
 // Return array with each element converted to object with name and assigned color
 function getKeywordObjects(arr) {
   for (let i = 0; i < arr.length; i++) {
     arr[i] = {
-      name: arr[i],
-      color: getTagColor(catCards, arr[i]),
-    };
+              name: arr[i],
+              color: getTagColor(catCards, arr[i]),
+            };
   }
   return arr;
+}
+
+// Returns solr query string for author key
+// Adds anglicized umlaut characters for authors whose names include umlauts
+// to broaden search and return more search results
+function getAuthorSolrQuery(author) {
+
+  // Trim author string
+  const authorTrimmed = author.trim();
+
+  const authorSpecialChars = authorTrimmed
+                            .replace('ü', 'ue')
+                            .replace('ä', 'ae')
+                            .replace('ö', 'oe');
+
+  if (authorTrimmed === authorSpecialChars) {
+    return `author:"*${authorTrimmed}*"~1000`;
+  }
+
+  return `author:"*${authorTrimmed}*"OR"*${authorSpecialChars}*"~1000`;
+
 }
 
 // Returns array of objects in ascending order by 'name' key
 // Name values converted to upper case so that comparisons are case insensitive
 
 export default {
-  async [SEARCH_METADATA]({ commit }, { searchTerm, metadataConfig = {} }) {
+  async [SEARCH_METADATA]({ commit }, {
+    searchTerm,
+    metadataConfig = {},
+    isAuthorSearch = false,
+  }) {
     const originalTerm = searchTerm.trim();
 
     commit(SEARCH_METADATA, searchTerm);
@@ -185,10 +213,7 @@ export default {
       return;
     }
 
-    const solrQuery = createSolrQuery(originalTerm);
-
-    // using the envidat "query" action for performance boost (ckan package_search isn't performant)
-    // const queryAuthor = `query?q=title:"${searchTerm}" OR notes:"${searchTerm}" OR author:"${searchTerm}"~2&wt=json&rows=1000`;
+    const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
@@ -196,19 +221,17 @@ export default {
 
     await axios
       .get(url)
-      .then(response => {
+      .then((response) => {
+
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
         });
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(SEARCH_METADATA_ERROR, reason);
       });
   },
-  async [LOAD_METADATA_CONTENT_BY_ID](
-    { commit },
-    { metadataId, commitMethod },
-  ) {
+  async [LOAD_METADATA_CONTENT_BY_ID]({ commit }, { metadataId, commitMethod }) {
     // commitMethod can be given from the caller of the action to direct
     // the output to a different store mutation then one from this module (metadataMutations)
     const commitMethodPrefix = commitMethod || LOAD_METADATA_CONTENT_BY_ID;
@@ -217,9 +240,7 @@ export default {
       root: !!commitMethod,
     });
 
-    const metadatasContent = this.getters[
-      `${METADATA_NAMESPACE}/metadatasContent`
-    ];
+    const metadatasContent = this.getters[`${METADATA_NAMESPACE}/metadatasContent`];
     const contents = Object.values(metadatasContent);
 
     const localEntry = contents.filter(entry => entry.name === metadataId);
@@ -233,29 +254,24 @@ export default {
 
     const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
 
-    await axios
-      .get(url)
-      .then(response => {
-        commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
-          root: !!commitMethod,
-        });
-      })
-      .catch(reason => {
-        commit(`${commitMethodPrefix}_ERROR`, reason, {
-          root: !!commitMethod,
-        });
+    await axios.get(url).then((response) => {
+      commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
+        root: !!commitMethod,
       });
+
+    }).catch((reason) => {
+      commit(`${commitMethodPrefix}_ERROR`, reason, {
+        root: !!commitMethod,
+      });
+    });
   },
   async [BULK_LOAD_METADATAS_CONTENT]({ dispatch, commit }, config = {}) {
     commit(BULK_LOAD_METADATAS_CONTENT);
 
     const metadataConfig = config.metadataConfig || {};
 
-    let url = urlRewrite(
-      'current_package_list_with_resources?limit=1000&offset=0',
-      API_BASE,
-      PROXY,
-    );
+    let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
+                API_BASE, PROXY);
 
     if (import.meta.env.DEV && useTestdata) {
       url = './testdata/packagelist.json';
@@ -268,9 +284,8 @@ export default {
       url = localFileUrl;
     }
 
-    await axios
-      .get(url)
-      .then(response => {
+    await axios.get(url)
+      .then((response) => {
         // commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.response.docs, showRestrictedContent);
         commit(BULK_LOAD_METADATAS_CONTENT_SUCCESS, response.data.result);
 
@@ -278,15 +293,12 @@ export default {
         dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
 
         // make sure the existingKeywords list is up-2-date
-        dispatch(
-          METADATA_UPDATE_EXISTING_KEYWORDS,
-          config.userEditMetadataConfig,
-        );
+        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
 
         // for the case when loaded up on landingpage
         return dispatch(FILTER_METADATA, { selectedTagNames: [] });
       })
-      .catch(reason => {
+      .catch((reason) => {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
       });
   },
@@ -295,9 +307,7 @@ export default {
     //   return;
     // }
 
-    const filteredContent = this.getters[
-      `${METADATA_NAMESPACE}/filteredContent`
-    ];
+    const filteredContent = this.getters[`${METADATA_NAMESPACE}/filteredContent`];
     const allTags = this.getters[`${METADATA_NAMESPACE}/allTags`];
 
     if (!filteredContent || !allTags) {
@@ -307,64 +317,47 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-      let allWithExtras = [];
+        let allWithExtras = [];
 
-      const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
-      if (mergedExtraTags) {
-        const popularTags = getPopularTags(
-          filteredContent,
-          'SWISS FOREST LAB',
-          5,
-          filteredContent.length,
-        );
-        const mergedWithPopulars = [
-          ...mergedExtraTags,
-          ...popularTags.slice(0, 15),
-        ];
+        const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
+        if (mergedExtraTags) {
+          const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
+          const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
 
-        const mergedWithoutDublicates = mergedWithPopulars.filter(
-          (item, pos, self) =>
-            self.findIndex(v => v.name === item.name) === pos,
-        );
-        // tags with the same count as the content have no use, remove them
-        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-        allWithExtras = mergedWithoutDublicates;
-      } else {
-        allWithExtras = metadataTags;
-      }
+          const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+          // tags with the same count as the content have no use, remove them
+          // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
+          allWithExtras = mergedWithoutDublicates;
+        } else {
+          allWithExtras = metadataTags;
+        }
 
-      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
+        const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);
     }
   },
   // eslint-disable-next-line consistent-return
-  [FILTER_METADATA](
-    { dispatch, commit },
-    { selectedTagNames = [], selectedPins = [], mode },
-  ) {
+  [FILTER_METADATA]({ dispatch, commit }, {
+    selectedTagNames = [],
+    selectedPins= [],
+    mode,
+  }) {
     commit(FILTER_METADATA);
 
-    const mergedWithHiddenNames = getSelectedTagsMergedWithHidden(
-      mode,
-      selectedTagNames,
-    );
+    const mergedWithHiddenNames = getSelectedTagsMergedWithHidden(mode, selectedTagNames);
     if (mergedWithHiddenNames) {
       selectedTagNames = mergedWithHiddenNames;
     }
     let content = [];
     // console.log("filteredMetadataContent");
 
-    const isSearchResultContent = this.getters[
-      `${METADATA_NAMESPACE}/searchingMetadatasContentOK`
-    ];
+    const isSearchResultContent = this.getters[`${METADATA_NAMESPACE}/searchingMetadatasContentOK`];
 
     try {
       if (isSearchResultContent) {
-        const searchContent = this.getters[
-          `${METADATA_NAMESPACE}/searchedMetadatasContent`
-        ];
+        const searchContent = this.getters[`${METADATA_NAMESPACE}/searchedMetadatasContent`];
         const searchContentSize = contentSize(searchContent);
 
         if (searchContentSize > 0) {
@@ -402,13 +395,13 @@ export default {
 
     const currentIdsToResolve = idsToResolve;
     const requests = [];
-    currentIdsToResolve.forEach(id => {
+    currentIdsToResolve.forEach((id) => {
       const url = resolveBaseUrl + id;
       requests.push(axios.get(url));
     });
 
     Promise.all(requests)
-      .then(responses => {
+      .then((responses) => {
         let resolvedPublications = {};
 
         for (let i = 0; i < responses.length; i++) {
@@ -421,15 +414,14 @@ export default {
           resolvedPublications,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         commit(PUBLICATIONS_RESOLVE_IDS_ERROR, error);
       });
   },
-  [EXTRACT_IDS_FROM_TEXT](
-    { commit },
-    { text, idDelimiter = '', idPrefix = '' },
-  ) {
+  [EXTRACT_IDS_FROM_TEXT]({ commit }, { text, idDelimiter = '', idPrefix = '' }) {
+
     if (text) {
+
       commit(EXTRACT_IDS_FROM_TEXT);
 
       try {
@@ -440,7 +432,7 @@ export default {
 
         const ids = [];
 
-        hasValidIds.forEach(match => {
+        hasValidIds.forEach((match) => {
           let idOnly = match;
           if (idPrefix) {
             idOnly = idOnly.replace(idPrefix, '');
@@ -457,6 +449,7 @@ export default {
     }
   },
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
+
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
     let existingAuthors = Object.values(authorsMap);
 
@@ -468,10 +461,8 @@ export default {
 
     commit(METADATA_UPDATE_EXISTING_AUTHORS, existingAuthors);
   },
-  async [METADATA_UPDATE_EXISTING_KEYWORDS](
-    { commit },
-    userEditMetadataConfig = {},
-  ) {
+  async [METADATA_UPDATE_EXISTING_KEYWORDS]({ commit }, userEditMetadataConfig = {}) {
+
     commit(METADATA_UPDATE_EXISTING_KEYWORDS);
 
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
@@ -479,25 +470,23 @@ export default {
 
     const url = urlRewrite('tag_list', API_BASE, PROXY);
 
-    await axios
-      .get(url)
-      .then(response => {
-        const tags = response.data.result;
+    await axios.get(url).then((response) => {
 
-        const keywordsListWordMax =
-          userEditMetadataConfig?.keywordsListWordMax || 2;
-        const filteredTags = getfilteredArray(tags, keywordsListWordMax);
+      const tags = response.data.result;
 
-        const keywordObjects = getKeywordObjects(filteredTags);
+      const keywordsListWordMax = userEditMetadataConfig?.keywordsListWordMax || 2;
+      const filteredTags = getfilteredArray(tags, keywordsListWordMax);
 
-        const mergedKeywords = existingKeywords.concat(keywordObjects);
+      const keywordObjects = getKeywordObjects(filteredTags);
 
-        const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
+      const mergedKeywords = existingKeywords.concat(keywordObjects);
 
-        commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
-      })
-      .catch(reason => {
-        commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
-      });
+      const sortedKeywords = sortObjectArray(mergedKeywords, 'name');
+
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS, sortedKeywords);
+
+    }).catch((reason) => {
+      commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
+    });
   },
 };

@@ -99,8 +99,9 @@ export default {
      * @param {String} tags encoded string
      * @param {String} mode which defines the mode for the special view
      * @param {Array} pins array of ids for the pinned metadatas
+     * @param {String} isAuthorSearch if true the search term will only be compared against authors
      */
-    mixinMethods_additiveChangeRoute(basePath, search, tags, mode = undefined, pins = undefined) {
+    mixinMethods_additiveChangeRoute(basePath, search, tags, mode = undefined, pins = undefined, isAuthorSearch = undefined) {
       const query = {};
       Object.assign(query, this.$route.query);
 
@@ -120,12 +121,16 @@ export default {
         query.pins = pins;
       }
 
+      if (isAuthorSearch !== undefined) {
+        query.isAuthorSearch = typeof isAuthorSearch !== 'string' ? isAuthorSearch.toString() : isAuthorSearch;
+      }
+
       this.$router.push({
         path: basePath,
         query,
       });
     },
-    mixinMethods_convertUrlStringToArray(string) {
+    mixinMethods_convertUrlStringToArray(string, toUpperCase = true, toLowerCase = false) {
       if (!string) {
         return [];
       }
@@ -133,16 +138,28 @@ export default {
       const splits = string.split(',');
 
       for (let i = 0; i < splits.length; i++) {
-        splits[i] = splits[i].toUpperCase();
+        if (toUpperCase) {
+          splits[i] = splits[i].toUpperCase();
+        }
+
+        if (toLowerCase) {
+          splits[i] = splits[i].toLowerCase();
+        }
       }
 
       return splits;
     },
-    mixinMethods_convertArrayToUrlString(array) {
+    mixinMethods_convertArrayToUrlString(array, toUpperCase = true, toLowerCase = false) {
 
       let str = '';
       for (let i = 0; i < array.length; i++) {
-        str += `${array[i].toUpperCase()},`;
+        if (toUpperCase) {
+          str += `${array[i].toUpperCase()},`;
+        }
+
+        if (toLowerCase) {
+          str += `${array[i].toLowerCase()},`;
+        }
       }
 
       // remove the last comma
