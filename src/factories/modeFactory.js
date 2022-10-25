@@ -26,7 +26,7 @@ async function getSwissflLogo() {
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = require.context('../assets/modes/swissfl', false, /\.png$/);
+  const swissflPngs = require.context('@/assets/modes/swissfl', false, /\.png$/);
   const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
   // const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
   // const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);

@@ -15,7 +15,7 @@ import { CARD_VIEWS } from './storybookFolder';
 
 Vue.mixin(globalMethods);
 
-const iconImgPath = require.context('../src/assets/icons/', false, /\.png$/);
+const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
 const iconFiles = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 // let str = '';

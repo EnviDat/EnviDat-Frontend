@@ -92,13 +92,13 @@ module.exports = {
       // resolve: (await import('../vite.config.js')).default.resolve,
 */
       resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '../src'),
-          // '~': path.resolve(__dirname),
-          'cesium': path.resolve(__dirname, cesiumSource),
+        alias: [
+          { find: '@', replacement: path.resolve(__dirname, '../src') },
+          { find: '~', replacement: path.resolve(__dirname) },
+          { find: 'cesium', replacement: path.resolve(__dirname, cesiumSource) },
           // resolve vue for vite (based on rollup) https://v2.vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds
-          'vue': 'vue/dist/vue.esm.js',
-        },
+          { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
+        ],
       },
     });
   },

@@ -39,10 +39,10 @@ import globalMethods from '@/factories/globalMethods';
 import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
+const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
-const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
+const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
 const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 

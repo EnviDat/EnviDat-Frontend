@@ -115,7 +115,7 @@ export function loadImages(store, isSupported = false) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = require.context('../assets/', true, /\.webp$/)
+  const webpAssetPaths = require.context('@/assets/', true, /\.webp$/)
   const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths) : null;
 
   if (webpAssets) {
