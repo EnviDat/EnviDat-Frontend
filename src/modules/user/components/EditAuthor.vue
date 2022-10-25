@@ -128,8 +128,8 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 
 export default {

@@ -70,8 +70,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
   EDITMETADATA_AUTHOR_LIST,

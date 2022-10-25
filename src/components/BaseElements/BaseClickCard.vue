@@ -1,44 +1,43 @@
 <template>
-  <v-card ripple
-          hover
-          raised
-          :height="height"
-          :disabled="disabled"
-          @click.native="clicked" >
-
-    <v-container class="pa-0" >
-      <v-row align="center"
-              no-gutters >
+  <v-card
+    ripple
+    hover
+    raised
+    :height="height"
+    :disabled="disabled"
+    @click.native="clicked"
+  >
+    <v-container class="pa-0">
+      <v-row align="center" no-gutters>
         <!-- Image -->
-        <v-col class="py-0"
-                cols="4"
-                sm="5">
-          <v-img class="imagezoom"
-                 :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
-                  :contain="contain"
-                  :height="height"
-                  style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
-                  :src="img" />
+        <v-col class="py-0" cols="4" sm="5">
+          <v-img
+            class="imagezoom"
+            :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
+            :contain="contain"
+            :height="height"
+            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
+            :src="img"
+          />
         </v-col>
 
         <!-- Text -->
-        <v-col class="px-0"
-                cols="8"
-                sm="7" >
-          <div class="px-3 baseClickCardTitle"
-                :class="{ 'compactTitle': $vuetify.breakpoint.xl }" >
+        <v-col class="px-0" cols="8" sm="7">
+          <div
+            class="px-3 baseClickCardTitle"
+            :class="{ compactTitle: $vuetify.breakpoint.xl }"
+          >
             {{ title }}
           </div>
 
-          <div v-if="color"
-                class="py-0 my-0 "
-                :style="`height: 5px; background-color: ${color};`" >
-          </div>
-
+          <div
+            v-if="color"
+            class="py-0 my-0 "
+            :style="`height: 5px; background-color: ${color};`"
+          ></div>
         </v-col>
       </v-row>
     </v-container>
-
   </v-card>
 </template>
 
@@ -92,30 +91,29 @@ export default {
 </script>
 
 <style scoped>
+.baseClickCardTitle {
+  font-size: 1rem !important;
+  overflow: inherit !important;
+  text-overflow: inherit !important;
+  max-height: inherit !important;
+  line-height: 1.1em !important;
+}
 
-  .baseClickCardTitle {
+@media screen and (max-width: 1920px) {
+  .compactTitle {
     font-size: 1rem !important;
-    overflow: inherit !important;
-    text-overflow: inherit !important;
-    max-height: inherit !important;
+    line-height: 1.3em !important;
+  }
+}
+
+@media screen and (min-width: 1921px) {
+  .compactTitle {
+    font-size: 1.1rem !important;
     line-height: 1.1em !important;
   }
+}
 
-  @media screen and (max-width: 1920px) {
-    .compactTitle {
-      font-size: 1rem !important;
-      line-height: 1.3em !important;
-    }
-  }
-
-  @media screen and (min-width: 1921px) {
-    .compactTitle {
-      font-size: 1.1rem !important;
-      line-height: 1.1em !important;
-    }
-  }
-
-  .v-card__media img {
-    width: inherit !important;
-  }
+.v-card__media img {
+  width: inherit !important;
+}
 </style>

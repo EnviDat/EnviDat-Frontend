@@ -1,5 +1,5 @@
 <template>
-  <v-app class="application"
+  <v-app class="application envidat-font-overwrite"
          :style="dynamicBackground">
 
     <div v-show="showDecemberParticles"
@@ -166,7 +166,8 @@ import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA, USER_NAMESPACE,
+  FETCH_USER_DATA,
+  USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -175,18 +176,19 @@ import {
   userMenuItems,
 } from '@/store/navigationState';
 
-import TheNavigation from '@/components/Navigation/TheNavigation';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
-import NotificationCard from '@/components/Cards/NotificationCard';
-import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
-import TextBanner from '@/components/Layouts/TextBanner';
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 import {
   eventBus,
   SHOW_DIALOG,
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
+
+import TheNavigation from '@/components/Navigation/TheNavigation.vue';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
+import ConfirmTextCard from '@/components/Cards/ConfirmTextCard.vue';
+import TextBanner from '@/components/Layouts/TextBanner.vue';
+import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
 
 export default {
@@ -410,6 +412,7 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
+    // eslint-disable-next-line default-param-last
     openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
       this.dialogTitle = title;
 
@@ -664,14 +667,14 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
     dialogTitle: 'Redirect to Legacy Website!',
     dialogMessage: '',
     dialogCallback: () => {},
     redirectToDashboard: false,
-    appVersion: process.env.VUE_APP_VERSION,
+    appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
@@ -686,6 +689,19 @@ export default {
 };
 </script>
 
+
+<style lang="scss">
+$font-family: 'Raleway', sans-serif;
+
+.envidat-font-overwrite {
+  .headline,
+  [class*='display-'],
+  [class*='text-'] {
+    font-family: $font-family, sans-serif !important;
+  }
+  font-family: $font-family, sans-serif !important;
+}
+</style>
 
 <style>
 

@@ -116,8 +116,8 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import { getReadOnlyFieldsObject, populateEditingComponents } from '@/factories/mappingFactory';
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-import NotificationCard from '@/components/Cards/NotificationCard';
+import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';

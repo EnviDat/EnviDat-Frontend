@@ -316,15 +316,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import TagChip from '@/components/Chips/TagChip';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
-import TagChipAuthor from '@/components/Chips/TagChipAuthor';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 export default {
   name: 'MetadataHeader',

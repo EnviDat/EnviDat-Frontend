@@ -9,8 +9,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataCard from '@/components/Cards/MetadataCard';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
@@ -26,7 +26,7 @@ import polygonIcon from '../src/assets/icons/polygons.png';
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
-import { CARD_VIEWS, LABLE_VIEWS } from './storybookFolder';
+import { CARD_VIEWS } from './storybookFolder';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 

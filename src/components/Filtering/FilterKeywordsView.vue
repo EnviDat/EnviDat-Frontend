@@ -1,88 +1,81 @@
 <template>
-  <v-card raised
-          id="FilterKeywordsView" >
-
-    <v-container class="pa-2 fill-height"
-                fluid >
-      <v-row class="fill-height"
-              :no-gutters="$vuetify.breakpoint.smAndUp" >
-
-        <v-col v-if="!filterExpanded"
-                class="hidden-sm-and-up px-2"
-                cols="12" >
+  <v-card raised id="FilterKeywordsView">
+    <v-container class="pa-2 fill-height" fluid>
+      <v-row class="fill-height" :no-gutters="$vuetify.breakpoint.smAndUp">
+        <v-col v-if="!filterExpanded" class="hidden-sm-and-up px-2" cols="12">
           <div class="mx-3">Filter for Keywords</div>
         </v-col>
 
-        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
-                cols="12" >
-          <v-row >
-
-            <v-col class="metadataInfoIcon shrink" >
-              <v-icon size="24px" color="black !important">style</v-icon>
+        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp" cols="12">
+          <v-row>
+            <v-col class="metadataInfoIcon shrink">
+              <v-icon size="24px" color="black">style</v-icon>
             </v-col>
 
-            <v-col v-if="showPlaceholder"
-                    class="grow pl-0" >
-
-              <tag-chip-placeholder v-for="n in 6"
-                                    :key="n"
-                                    class="envidatChip" />
+            <v-col v-if="showPlaceholder" class="grow pl-0">
+              <tag-chip-placeholder
+                v-for="n in 6"
+                :key="n"
+                class="envidatChip"
+              />
             </v-col>
 
-            <v-col v-if="!showPlaceholder"
-                    class="grow pl-0" >
-
-              <tag-chip v-for="tag in unselectedTags"
-                        :key="tag.name"
-                        :name="tag.name"
-                        :selectable="tag.enabled"
-                        :highlighted="false"
-                        :closeable="false"
-                        :color="tag.color"
-                        @clicked="catchTagClicked(tag.name)" />
+            <v-col v-if="!showPlaceholder" class="grow pl-0">
+              <tag-chip
+                v-for="tag in unselectedTags"
+                :key="tag.name"
+                :name="tag.name"
+                :selectable="tag.enabled"
+                :highlighted="false"
+                :closeable="false"
+                :color="tag.color"
+                @clicked="catchTagClicked(tag.name)"
+              />
             </v-col>
           </v-row>
         </v-col>
 
-        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
-                class="pt-1"
-                cols="12" >
-          <v-row >
-
-            <v-col class="metadataInfoIcon shrink" >
+        <v-col
+          v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
+          class="pt-1"
+          cols="12"
+        >
+          <v-row>
+            <v-col class="metadataInfoIcon shrink">
               <v-img :src="tagIcon" height="24" width="24" />
             </v-col>
 
-            <v-col v-if="selectedTags.length > 0"
-                    class="grow pl-0" >
-
-              <tag-chip v-for="tag in selectedTags"
-                        :key="tag.name"
-                        :name="tag.name"
-                        :selectable="true"
-                        :highlighted="true"
-                        :closeable="true"
-                        @clickedClose="catchTagCloseClicked(tag.name)"
-                        @clicked="catchTagCloseClicked(tag.name)" />
+            <v-col v-if="selectedTags.length > 0" class="grow pl-0">
+              <tag-chip
+                v-for="tag in selectedTags"
+                :key="tag.name"
+                :name="tag.name"
+                :selectable="true"
+                :highlighted="true"
+                :closeable="true"
+                @clickedClose="catchTagCloseClicked(tag.name)"
+                @clicked="catchTagCloseClicked(tag.name)"
+              />
             </v-col>
-
           </v-row>
         </v-col>
       </v-row>
     </v-container>
 
-      <base-icon-button v-if="$vuetify.breakpoint.xsOnly"
-                        :count="selectedTags.length"
-                        style="position: absolute; bottom: 0px; right: 0px;"
-                        material-icon-name="expand_more"
-                        color="secondary"
-                        icon-color="secondary"
-                        class="ma-1"
-                        :outlined="true"
-                        :is-small="true"
-                        :rotate-on-click="true"
-                        :rotate-toggle="filterExpanded"
-                        @clicked="catchExpandClicked" />
+    <base-icon-button
+      v-if="$vuetify.breakpoint.xsOnly"
+      :count="selectedTags.length"
+      style="position: absolute; bottom: 0px; right: 0px;"
+      material-icon-name="expand_more"
+      color="secondary"
+      icon-color="secondary"
+      class="ma-1"
+      :outlined="true"
+      :is-small="true"
+      :rotate-on-click="true"
+      :rotate-toggle="filterExpanded"
+      @clicked="catchExpandClicked"
+    />
   </v-card>
 </template>
 
@@ -101,11 +94,10 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import { createTag } from '@/factories/metadataFilterMethods';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import TagChip from '@/components/Chips/TagChip';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
 
 export default {
   name: 'FilterKeywordsView',
@@ -137,7 +129,7 @@ export default {
     unselectedTags() {
       const unselectedTags = [];
 
-      this.allTags.forEach((element) => {
+      this.allTags.forEach(element => {
         if (element.enabled && !this.mixinMethods_isTagSelected(element.name)) {
           unselectedTags.push(element);
         }
@@ -150,7 +142,10 @@ export default {
       // tag JSON object
       const selecteds = [];
 
-      if (this.selectedTagNames !== undefined && this.selectedTagNames.length > 0) {
+      if (
+        this.selectedTagNames !== undefined &&
+        this.selectedTagNames.length > 0
+      ) {
         for (let i = 0; i < this.selectedTagNames.length; i++) {
           const element = this.selectedTagNames[i];
 
@@ -161,7 +156,10 @@ export default {
       return selecteds;
     },
     maxTagNumber() {
-      return this.getTagMaxAmout(this.selectedTags, this.maxSelectedTagsTextLength);
+      return this.getTagMaxAmout(
+        this.selectedTags,
+        this.maxSelectedTagsTextLength,
+      );
     },
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;

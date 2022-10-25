@@ -60,7 +60,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
         // "dataDateFormat": "MMM DD, YYYY JJ:NN"
       },
-      categoryField: 'timestamp_iso',    
+      categoryField: 'timestamp_iso',
       categoryAxis: {
         parseDates: true,
         // "minPeriod": recentData ? "hh" : "DD",
@@ -83,7 +83,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         //   event: 'init',
         //   method: () => {
         //     doneCallback(chart.dataProvider.length);
-        //     // console.log("init finished"); 
+        //     // console.log("init finished");
         //   },
         // },
       ],
@@ -175,7 +175,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
     configs = {};
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
     // stationParametersUrl = ''; // testStationParametersUrl;
 
@@ -207,10 +207,10 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
 
 
 export {
+  addStartEndDateUrl,
   createSerialChart,
   defaultSeriesSettings,
-  addStartEndDateUrl,
-  hasData,
   getConfigFiles,
   getConfigUrls,
+  hasData,
 };

@@ -231,9 +231,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
@@ -253,7 +254,6 @@ import {
   eventBus, REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'EditAddAuthor',

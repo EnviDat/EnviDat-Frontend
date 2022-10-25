@@ -82,7 +82,7 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import MetadataList from '@/components/MetadataList';
+import MetadataList from '@/components/MetadataList.vue';
 
 export default {
   name: 'BrowsePage',

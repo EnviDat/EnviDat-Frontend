@@ -18,12 +18,10 @@ import {
   encryptString,
   GetEncryptedKeyFromCookie,
 } from '@/factories/stringFactory';
-
 import {
   ENVIDAT_USER_SIGNIN_COOKIE,
   ENVIDAT_USER_SIGNIN_MODULE,
 } from '@/store/storeConsts';
-
 
 // const encryptionEnabled = true;
 const cookieName = ENVIDAT_USER_SIGNIN_COOKIE;
@@ -31,7 +29,6 @@ const storageKey = ENVIDAT_USER_SIGNIN_MODULE;
 const encryptedKey = GetEncryptedKeyFromCookie(cookieName);
 
 function getVuexPersist() {
-
   return new VuexPersist({
     storage: {
       getItem: () => {
@@ -39,7 +36,7 @@ function getVuexPersist() {
         const store = window.localStorage.getItem(storageKey);
 
         if (store) {
-/*
+          /*
           if (!encryptionEnabled) {
             return store;
           }
@@ -56,7 +53,7 @@ function getVuexPersist() {
         return store;
       },
       setItem: (key, value) => {
-/*
+        /*
         if (!encryptionEnabled) {
           return window.localStorage.setItem(storageKey, value);
         }

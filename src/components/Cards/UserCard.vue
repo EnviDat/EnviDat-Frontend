@@ -72,7 +72,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import UserAvatar from '@/components/Layouts/UserAvatar';
+import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 
 
 export default {

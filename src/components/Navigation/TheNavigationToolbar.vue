@@ -40,7 +40,7 @@
 
         <v-col v-if="signedInUser"
                 class="shrink"
-                cols="4" sm="3" md="2">
+                cols="4" sm="4" md="3" xl="2">
 
           <v-row align="center"
                   justify="end" >
@@ -74,7 +74,7 @@
 
         <v-col v-else
                class="shrink"
-               cols="4" sm="2" md="1" xl="1">
+               cols="4" sm="3" md="2" xl="1">
 
           <v-row align="center"
                   justify="end"
@@ -82,12 +82,14 @@
 
             <v-col @click="!signInDisabled  ? catchSigninClicked() : undefined"
                    xl="7"
+                   class="px-1"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
                         v-on="on"
+                        style="text-align: right;"
                         class="text-body-2">
                     {{ signInText }}
                   </div>
@@ -132,10 +134,10 @@
 </template>
 
 <script>
-import ModeView from '@/components/Layouts/ModeView';
+import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
-import UserMenu from '@/modules/user/components/UserMenu';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import UserMenu from '@/modules/user/components/UserMenu.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'TheNavigationToolbar',

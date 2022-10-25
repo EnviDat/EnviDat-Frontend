@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 /**
  * FlipLayout.vue

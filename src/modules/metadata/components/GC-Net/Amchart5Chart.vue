@@ -1,19 +1,15 @@
 <template>
-
   <div class="chart" :id="this.chartdivID"></div>
-
 </template>
 
 <script>
 import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
 // eslint-disable-next-line camelcase
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
-
+import * as am5xy from '@amcharts/amcharts5/xy';
 
 export default {
-
-  name: 'Amcharts5',
+  name: 'Amchart5Chart',
 
   props: {
     chartdivID: {
@@ -27,7 +23,8 @@ export default {
     // },
     apiUrl: {
       type: String,
-      default: 'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+      default:
+        'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
     },
     xAxisName: {
       type: String,
@@ -43,66 +40,64 @@ export default {
   },
 
   mounted() {
-
     const root = am5.Root.new(this.chartdivID);
 
     // Set all dates in root to UTC
     // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
     root.utc = true;
 
-    root.setThemes([
-      am5themes_Animated.new(root),
-    ]);
+    /* eslint-disable camelcase */
+    root.setThemes([am5themes_Animated.new(root)]);
 
     // Create chart
     const chart = root.container.children.push(
-        am5xy.XYChart.new(root, {
-          focusable: true,
-          panX: true,
-          panY: true,
-          wheelX: 'panX',
-          wheelY: 'zoomX',
-        })
+      am5xy.XYChart.new(root, {
+        focusable: true,
+        panX: true,
+        panY: true,
+        wheelX: 'panX',
+        wheelY: 'zoomX',
+      }),
     );
 
     const easing = am5.ease.linear;
 
     // Create axes
     const xAxis = chart.xAxes.push(
-        am5xy.DateAxis.new(root, {
-          maxDeviation: 0.1,
-          groupData: true,
-          groupCount: 500,
-          baseInterval: {
-            timeUnit: 'hour',
-            count: 1,
-          },
-          renderer: am5xy.AxisRendererX.new(root, {
-            // minGridDistance: 50,
-          }),
-          tooltip: am5.Tooltip.new(root, {}),
-        })
+      am5xy.DateAxis.new(root, {
+        maxDeviation: 0.1,
+        groupData: true,
+        groupCount: 500,
+        baseInterval: {
+          timeUnit: 'hour',
+          count: 1,
+        },
+        renderer: am5xy.AxisRendererX.new(root, {
+          // minGridDistance: 50,
+        }),
+        tooltip: am5.Tooltip.new(root, {}),
+      }),
     );
 
     const yAxis = chart.yAxes.push(
-        am5xy.ValueAxis.new(root, {
-          maxDeviation: 0.1,
-          renderer: am5xy.AxisRendererY.new(root, {}),
-          tooltip: am5.Tooltip.new(root, {}),
-        })
+      am5xy.ValueAxis.new(root, {
+        maxDeviation: 0.1,
+        renderer: am5xy.AxisRendererY.new(root, {}),
+        tooltip: am5.Tooltip.new(root, {}),
+      }),
     );
 
     // Add series
     const series = chart.series.push(
-        am5xy.LineSeries.new(root, {
-          minBulletDistance: 10,
-          connect: false,
-          xAxis,
-          yAxis,
-          valueYField: this.yAxisName,
-          valueXField: this.xAxisName,
-          tooltip: am5.Tooltip.new(root, {}),
-        })
+      am5xy.LineSeries.new(root, {
+        minBulletDistance: 10,
+        connect: false,
+        xAxis,
+        yAxis,
+        valueYField: this.yAxisName,
+        valueXField: this.xAxisName,
+        tooltip: am5.Tooltip.new(root, {}),
+      }),
     );
 
     series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
@@ -128,64 +123,68 @@ export default {
     //     }),
     //   }));
 
-
     series.strokes.template.setAll({
       strokeWidth: 3,
       templateField: 'strokeSettings',
     });
 
-
     // Load and parse external data
-    am5.net.load(this.apiUrl).then((result) => {
+    am5.net
+      .load(this.apiUrl)
+      .then(result => {
+        // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
+        const responseType = this.getResponseType(result.type);
 
-      // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
-      const responseType = this.getResponseType(result.type)
+        let data = [];
 
-      let data = []
+        if (responseType === 'application/json') {
+          data = am5.JSONParser.parse(result.response);
+        } else if (responseType === 'text/csv') {
+          // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
+          // data = this.convertCSVToJSON(result.response, '-999')
+          data = this.convertCSVToJSON(result.response, '');
+          // console.log(data)
+        } else {
+          console.log(
+            `Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`,
+          );
+        }
 
-      if (responseType === 'application/json') {
-        data = am5.JSONParser.parse(result.response);
-      }
-      else if (responseType === 'text/csv') {
-        // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
-        // data = this.convertCSVToJSON(result.response, '-999')
-        data = this.convertCSVToJSON(result.response, '')
-        // console.log(data)
-      }
-      else {
-        console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
-      }
+        // Process data
+        const processor = am5.DataProcessor.new(root, {
+          dateFields: [this.xAxisName],
+          dateFormat: this.xAxisFormat,
+          numericFields: [this.yAxisName],
+        });
+        processor.processMany(data);
 
-      // Process data
-      const processor = am5.DataProcessor.new(root, {
-        dateFields: [this.xAxisName],
-        dateFormat: this.xAxisFormat,
-        numericFields: [this.yAxisName],
+        // Assign parsed/processed data to series
+        series.data.setAll(data);
+      })
+      .catch(result => {
+        console.log(`Error loading ${result.xhr.responseURL}`);
       });
-      processor.processMany(data);
-
-      // Assign parsed/processed data to series
-      series.data.setAll(data);
-
-    }).catch((result) => {
-      console.log(`Error loading ${result.xhr.responseURL}`);
-    });
 
     // Add cursor
-    const cursor = chart.set('cursor', am5xy.XYCursor.new(root, {
-      xAxis,
-    }));
+    const cursor = chart.set(
+      'cursor',
+      am5xy.XYCursor.new(root, {
+        xAxis,
+      }),
+    );
     // cursor.lineY.set('visible', false);
 
     // Add scrollbar
-    chart.set('scrollbarX', am5.Scrollbar.new(root, {
-      orientation: 'horizontal',
-    }));
+    chart.set(
+      'scrollbarX',
+      am5.Scrollbar.new(root, {
+        orientation: 'horizontal',
+      }),
+    );
 
-  // Make stuff animate on load
+    // Make stuff animate on load
     series.appear(1000, 100);
     chart.appear(1000, 100);
-
   },
 
   beforeDestroy() {
@@ -201,68 +200,69 @@ export default {
     },
     // Return JSON data from inputted CSV data, convert nullValue to null
     convertCSVToJSON(csv, nullValue) {
-
       let lines = csv.split('\n');
 
-
       // TEST DEV BLOCK //
-      const displayDescription = lines.filter((line) => line.startsWith('# display_description = '))
+      const displayDescription = lines.filter(line =>
+        line.startsWith('# display_description = '),
+      );
 
-      let keys = []
+      let keys = [];
       if (displayDescription.length === 1) {
-        keys = displayDescription[0].replace('# display_description = ', '').split(',')
+        keys = displayDescription[0]
+          .replace('# display_description = ', '')
+          .split(',');
       }
       // TODO refine error handling
       else {
-        console.log('Error parsing NEAD file because header does not have a row that starts with: "# display_description = "');
-        return {}
+        console.log(
+          'Error parsing NEAD file because header does not have a row that starts with: "# display_description = "',
+        );
+        return {};
       }
 
       // TEST code for removing NEAD metadata header lines that start with '#'
-      lines = lines.filter((line) => !line.startsWith('#'))
-
+      lines = lines.filter(line => !line.startsWith('#'));
 
       // TEST END DEV BLOCK //
 
-
       // Remove last line if it is an empty string
-      if (lines[lines.length -1] === '') {
-        lines.pop()
+      if (lines[lines.length - 1] === '') {
+        lines.pop();
       }
 
       // TEST comment this out
       // const keys = lines[0].split(',');
 
-      return lines.slice(1).map(line => line.split(',').reduce((acc, cur, i) => {
+      return lines.slice(1).map(line =>
+        line.split(',').reduce((acc, cur, i) => {
+          // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
 
-        // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
+          const toAdd = {};
 
-        const toAdd = {};
+          if (cur === nullValue) {
+            cur = null;
+          }
 
-        if (cur === nullValue) {
-          cur = null
-        }
+          toAdd[keys[i]] = cur;
 
-        toAdd[keys[i]] = cur;
-
-        return { ...acc, ...toAdd };
-      }, {}));
+          return { ...acc, ...toAdd };
+        }, {}),
+      );
     },
   },
-
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
 .chart {
   width: 100%;
   height: 350px;
 }
-
 </style>

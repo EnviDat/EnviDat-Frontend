@@ -1,18 +1,13 @@
 <template>
-  <v-container class="pa-0"
-                fluid
-                tag="article"
-                id="GcNetPage" >
-
+  <v-container class="pa-0" fluid tag="article" id="GcNetPage">
     <v-row>
       <v-col>
         <DetailChartsList />
       </v-col>
     </v-row>
 
-    <v-row >
-      <v-col >
-
+    <v-row>
+      <v-col>
         <!-- <MicroChart :station="station"
                       :image="stationImg(station.alias)"
                       :fileValueMapping="fileValueMapping"
@@ -20,25 +15,19 @@
                       @detailClick="(stationID) => { changeCurrentStation(stationID); }" /> -->
 
         <MicroChart />
-
       </v-col>
 
-      <v-col >
-
-        <DetailChart  />
-                    <!-- :stationName="currentStation.name"
+      <v-col>
+        <DetailChart />
+        <!-- :stationName="currentStation.name"
                     :chartId="chartId(fileObject.fileName)"
                     :valueFieldMapping="valueFieldMapping"
                     :preload="fileObject.preload"
                     :showDisclaimer="fileObject.showDisclaimer"
                     :convertLocalTime="convertLocalTime"
                     :key="fileObject.fileName + reRenderKey" -->
-
       </v-col>
-
     </v-row>
-
-
   </v-container>
 </template>
 
@@ -56,20 +45,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
-import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
-
+import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart.vue';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
+import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
 
 export default {
   name: 'GcNetPage',
-  beforeMount() {
-  },
-  mounted() {
-  },
-  beforeDestroy() {
-  },
+  beforeMount() {},
+  mounted() {},
+  beforeDestroy() {},
   computed: {
     // ...mapState([
     //   'config',
@@ -85,18 +69,14 @@ export default {
     //   metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
     // }),
   },
-  methods: {
-  },
+  methods: {},
   components: {
     DetailChart,
     MicroChart,
     DetailChartsList,
   },
-  data: () => ({
-  }),
+  data: () => ({}),
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

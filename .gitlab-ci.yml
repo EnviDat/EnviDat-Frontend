@@ -113,12 +113,12 @@ modify-env:
       file = '.env.production';
       branch = os.getenv('CI_COMMIT_REF_NAME'); \
       \
-      key = 'VUE_APP_ENVIDAT_PROXY';
+      key = 'VITE_ENVIDAT_PROXY';
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
       dotenv.set_key(file, key, value, quote_mode='never'); \
       \
-      key = 'VUE_APP_CONFIG_URL';
+      key = 'VITE_CONFIG_URL';
       value = 'https://frontend-config.s3-zh.os.switch.ch/prod.json' \
       if branch == 'main' \
       else ( \
@@ -126,7 +126,7 @@ modify-env:
       );
       dotenv.set_key(file, key, value, quote_mode='never'); \
       \
-      key = 'VUE_APP_ENVIDAT_DOMAIN';
+      key = 'VITE_ENVIDAT_DOMAIN';
       value = 'https://frontend.s3-website-zh.os.switch.ch' \
       if branch == 'main' \
       else ( \

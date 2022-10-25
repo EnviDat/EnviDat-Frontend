@@ -23,7 +23,6 @@ const aboutState = {
   dmpLoading: false,
 };
 
-
 export const about = {
   namespaced: true,
   state: aboutState,

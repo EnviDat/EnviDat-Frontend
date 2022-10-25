@@ -16,5 +16,4 @@ export const GET_BLOG_POST_ERROR = 'GET_BLOG_POST_ERROR';
 
 export const CLOSE_BLOG_POST = 'CLOSE_BLOG_POST';
 
-
 export const BLOG_NAMESPACE = 'blog';

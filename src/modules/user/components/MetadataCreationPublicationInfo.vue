@@ -96,11 +96,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganization from '@/modules/user/components/EditOrganization';
+import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
 // import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   eventBus,
@@ -166,7 +166,7 @@ export default {
     },
   },
   data: () => ({
-    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
   }),
   components: {
     //  EditOrganizationTree,

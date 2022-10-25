@@ -1,110 +1,116 @@
 <template>
-  <v-container class="fill-height pa-0"
-                id="MetadataListLayoutComponent"
-                fluid >
-
-    <v-row v-if="mapLayout"
-            class="fill-height" >
-
-      <v-col class="py-0 pr-2 flex-column"
-              cols="4" >
-
-        <v-row no-gutters >
-          <v-col id="metadataListLayoutFiltering_map"
-                ref="metadataListLayoutFiltering" >
+  <v-container class="fill-height pa-0" id="MetadataListLayoutComponent" fluid>
+    <v-row v-if="mapLayout" class="fill-height">
+      <v-col class="py-0 pr-2 flex-column" cols="4">
+        <v-row no-gutters>
+          <v-col
+            id="metadataListLayoutFiltering_map"
+            ref="metadataListLayoutFiltering"
+          >
             <slot name="filterKeywords" />
           </v-col>
         </v-row>
 
-        <v-row no-gutters >
-          <v-col class="pt-4 "
-                :style="useDynamicHeight ? `height: calc(100vh - ${keywordHeight}px);` : ''" >
-
-            <slot name="filterMap"/>
+        <v-row no-gutters>
+          <v-col
+            class="pt-4 "
+            :style="
+              useDynamicHeight
+                ? `height: calc(100vh - ${keywordHeight}px);`
+                : ''
+            "
+          >
+            <slot name="filterMap" />
           </v-col>
         </v-row>
       </v-col>
 
-      <v-col class="py-0 pl-2"
-              cols="8" >
-
+      <v-col class="py-0 pl-2" cols="8">
         <v-row ref="controlPanel">
-          <v-col class="hidden-xs-only"
-                  id="controlPanel"
-                  key="controlPanel"
-                  cols="12">
+          <v-col
+            class="hidden-xs-only"
+            id="controlPanel"
+            key="controlPanel"
+            cols="12"
+          >
             <slot name="controlPanel" />
           </v-col>
         </v-row>
 
-        <v-row class="mt-2" >
-          <v-col cols="12"
-                  id="metadataListScroll_mapLayout"
-                  ref="metadataListScroll"
-                  class="mapLayoutContainers"
-                  v-on:scroll="onScroll()"
-                  :class="useDynamicHeight ? 'listScroll' : ''"
-                  :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight }px);` : ''">
-
+        <v-row class="mt-2">
+          <v-col
+            cols="12"
+            id="metadataListScroll_mapLayout"
+            ref="metadataListScroll"
+            class="mapLayoutContainers"
+            v-on:scroll="onScroll()"
+            :class="useDynamicHeight ? 'listScroll' : ''"
+            :style="
+              useDynamicHeight
+                ? `height: calc(100vh - ${filteringComponentsHeight}px);`
+                : ''
+            "
+          >
             <slot name="metadataListPlaceholder" />
 
             <slot name="metadataListLayout" />
-
           </v-col>
         </v-row>
       </v-col>
-
     </v-row>
 
-    <v-row v-if="!mapLayout"
-            id="metadataListLayoutFiltering_no_map"
-            ref="metadataListLayoutFiltering"
-            no-gutters>
-
-      <v-col class="hidden-sm-and-up pb-2"
-              cols="12"
-              key="controlPanel_smallscreen" >
+    <v-row
+      v-if="!mapLayout"
+      id="metadataListLayoutFiltering_no_map"
+      ref="metadataListLayoutFiltering"
+      no-gutters
+    >
+      <v-col
+        class="hidden-sm-and-up pb-2"
+        cols="12"
+        key="controlPanel_smallscreen"
+      >
         <slot name="controlPanel" />
       </v-col>
 
-      <v-col class="pb-2"
-              cols="12"
-              key="filterKeywords" >
+      <v-col class="pb-2" cols="12" key="filterKeywords">
         <slot name="filterKeywords" />
       </v-col>
 
-      <v-col class="hidden-xs-only pb-2"
-              cols="12"
-              key="controlPanel" >
+      <v-col class="hidden-xs-only pb-2" cols="12" key="controlPanel">
         <slot name="controlPanel" />
       </v-col>
 
-      <v-col v-if="showMapFilter && mapFilteringPossible"
-              cols="12"
-              :style="minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'"
-              key="filterMap" >
+      <v-col
+        v-if="showMapFilter && mapFilteringPossible"
+        cols="12"
+        :style="
+          minMapHeight ? `min-height: ${minMapHeight}px;` : 'height: 100%;'
+        "
+        key="filterMap"
+      >
         <slot name="filterMap" />
       </v-col>
-
     </v-row>
 
-    <v-row v-if="!mapLayout"
-            class=""
-            no-gutters >
-
-      <v-col ref="metadataListScroll"
-              id="metadataListScroll_no_mapLayout"
-              class="noMapLayoutContainers mt-2 mb-4"
-              v-on:scroll="onScroll()"
-              :class="useDynamicHeight ? 'listScroll' : ''"
-              :style="useDynamicHeight ? `height: calc(100vh - ${filteringComponentsHeight }px);` : ''" >
-
+    <v-row v-if="!mapLayout" class="" no-gutters>
+      <v-col
+        ref="metadataListScroll"
+        id="metadataListScroll_no_mapLayout"
+        class="noMapLayoutContainers mt-2 mb-4"
+        v-on:scroll="onScroll()"
+        :class="useDynamicHeight ? 'listScroll' : ''"
+        :style="
+          useDynamicHeight
+            ? `height: calc(100vh - ${filteringComponentsHeight}px);`
+            : ''
+        "
+      >
         <slot name="metadataListPlaceholder" />
 
         <slot name="metadataListLayout" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -121,7 +127,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'MetadataListLayout',
@@ -141,7 +147,11 @@ export default {
   },
   computed: {
     mapLayout() {
-      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.breakpoint.mdAndUp;
+      return (
+        !this.topFilteringLayout &&
+        this.showMapFilter &&
+        this.$vuetify.breakpoint.mdAndUp
+      );
     },
   },
   methods: {
@@ -151,27 +161,42 @@ export default {
       let padding = 0;
 
       if (this.mapLayout && this.$refs && this.$refs.controlPanel) {
-        searchViewHeight = this.$refs.controlPanel.clientHeight ? this.$refs.controlPanel.clientHeight : searchViewHeight;
+        searchViewHeight = this.$refs.controlPanel.clientHeight
+          ? this.$refs.controlPanel.clientHeight
+          : searchViewHeight;
       }
 
-      if (!this.mapLayout && this.$refs && this.$refs.metadataListLayoutFiltering) {
-        searchViewHeight = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : searchViewHeight;
+      if (
+        !this.mapLayout &&
+        this.$refs &&
+        this.$refs.metadataListLayoutFiltering
+      ) {
+        searchViewHeight = this.$refs.metadataListLayoutFiltering.clientHeight
+          ? this.$refs.metadataListLayoutFiltering.clientHeight
+          : searchViewHeight;
         padding = 16;
       }
 
-      this.filteringComponentsHeight = searchViewHeight + TheNavigationToolbar + padding;
+      this.filteringComponentsHeight =
+        searchViewHeight + TheNavigationToolbar + padding;
     },
     setKeywordHeight() {
       const TheNavigationToolbar = 36;
       const padding = 16;
       let keywordHeight = 150;
 
-      if (this.showMapFilter && this.$refs && this.$refs.metadataListLayoutFiltering) {
-        keywordHeight = this.$refs.metadataListLayoutFiltering.clientHeight ? this.$refs.metadataListLayoutFiltering.clientHeight : keywordHeight;
+      if (
+        this.showMapFilter &&
+        this.$refs &&
+        this.$refs.metadataListLayoutFiltering
+      ) {
+        keywordHeight = this.$refs.metadataListLayoutFiltering.clientHeight
+          ? this.$refs.metadataListLayoutFiltering.clientHeight
+          : keywordHeight;
       }
 
       this.keywordHeight = keywordHeight + TheNavigationToolbar + padding;
-    },    
+    },
     setScrollPos(toPos) {
       if (this.$refs && this.$refs.metadataListScroll) {
         this.$refs.metadataListScroll.scrollTop = toPos;
@@ -189,18 +214,17 @@ export default {
 </script>
 
 <style scoped>
+.listScroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
 
-  .listScroll {
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-  }
-  
-  .noMapLayoutContainers > .container {
-    padding: 16px 4px 0px 4px;
-  }
+.noMapLayoutContainers > .container {
+  padding: 16px 4px 0px 4px;
+}
 
-  .mapLayoutContainers > .container {
-    padding: 0px 4px 0px 4px;
-  }
+.mapLayoutContainers > .container {
+  padding: 0px 4px 0px 4px;
+}
 </style>

@@ -1,50 +1,55 @@
 <template>
-  <v-card ripple
-          hover
-          :expanded="expanded">
-
-    <v-container class="pa-0"
-                  @click="toggleExpand">
-
+  <v-card ripple hover :expanded="expanded">
+    <v-container class="pa-0" @click="toggleExpand">
       <v-row no-gutters class="pa-0">
-
         <v-col cols="5">
-          <v-img class="imagezoom"
-                  :contain="contain"
-                  :height=" $vuetify.breakpoint.xsOnly ? minHeight + 'px' : maxHeight + 'px' "
-                  :style="`border-bottom-left-radius: ${expanded ? 0 : 4}px; border-top-left-radius: 4px;`"
-                  :src="img" />
+          <v-img
+            class="imagezoom"
+            :contain="contain"
+            :height="
+              $vuetify.breakpoint.xsOnly ? minHeight + 'px' : maxHeight + 'px'
+            "
+            :style="
+              `border-bottom-left-radius: ${
+                expanded ? 0 : 4
+              }px; border-top-left-radius: 4px;`
+            "
+            :src="img"
+          />
         </v-col>
 
-        <v-col cols="7" class="text-h5 cardTitle px-4"
-               align-self="center" >
+        <v-col cols="7" class="text-h5 cardTitle px-4" align-self="center">
           {{ title }}
         </v-col>
       </v-row>
 
-      <v-card-actions class="ma-0 pa-2"
-                      style="position: absolute; bottom: 5px; right: 5px;">
-
-        <base-icon-button materialIconName="expand_more"
-                          :outlined="true"
-                          color="transparent"
-                          :iconColor="expanded ? 'accent' : 'primary'"
-                          :rotateOnClick="true"
-                          :rotateToggle="expanded"
-                          :tooltipText="expanded ? 'Hide info' : 'Show info'"
-                          @clicked="toggleExpand" />
+      <v-card-actions
+        class="ma-0 pa-2"
+        style="position: absolute; bottom: 5px; right: 5px;"
+      >
+        <base-icon-button
+          materialIconName="expand_more"
+          :outlined="true"
+          color="transparent"
+          :iconColor="expanded ? 'accent' : 'primary'"
+          :rotateOnClick="true"
+          :rotateToggle="expanded"
+          :tooltipText="expanded ? 'Hide info' : 'Show info'"
+          @clicked="toggleExpand"
+        />
       </v-card-actions>
     </v-container>
 
     <v-slide-y-transition>
-      <v-card-text v-if="expanded"
-                    class="py-4 readableText"
-                    v-html="markdownText">
+      <v-card-text
+        v-if="expanded"
+        class="py-4 readableText"
+      >
+        <div v-html="markdownText"></div>
       </v-card-text>
     </v-slide-y-transition>
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -60,8 +65,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
 
 export default {
   name: 'ExpandableCard',
@@ -93,17 +98,16 @@ export default {
 </script>
 
 <style scoped>
+.cardTitle {
+  font-family: 'Baskervville', serif !important;
+}
 
-  .cardTitle {
-    font-family: "Baskervville", serif !important;
-  }
+.compactTitle {
+  font-size: 15px !important;
+  line-height: 1.3em !important;
+}
 
-  .compactTitle {
-    font-size: 15px !important;
-    line-height: 1.3em !important;
-  }
-
-  .v-card__media img {
-    width: inherit !important;
-  }
+.v-card__media img {
+  width: inherit !important;
+}
 </style>

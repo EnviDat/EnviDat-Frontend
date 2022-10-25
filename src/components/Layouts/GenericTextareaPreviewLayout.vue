@@ -1,62 +1,52 @@
 <template>
-
   <div>
-
-
     <div v-if="isVerticalLayout">
-
       <v-row>
-
         <v-col :cols="columns">
-          <v-textarea  :label="labelTextarea"
-                        outlined
-                        auto-grow
-                        :readonly="readonly"
-                        :hint="hint"
-                        :prepend-icon="prependIcon"
-                        :error-messages="validationError"
-                        :value="textareaContent"
-                         @input="catchInputedText($event)"
-                         @change="catchChangedText($event)"
-                        >
+          <v-textarea
+            :label="labelTextarea"
+            outlined
+            auto-grow
+            :readonly="readonly"
+            :hint="hint"
+            :prepend-icon="prependIcon"
+            :error-messages="validationError"
+            :value="textareaContent"
+            @input="catchInputedText($event)"
+            @change="catchChangedText($event)"
+          >
           </v-textarea>
         </v-col>
-
       </v-row>
 
-
-      <v-row v-if="subtitlePreview" >
-        <v-col :cols="columns"
-                class="text-subtitle-1">
+      <v-row v-if="subtitlePreview">
+        <v-col :cols="columns" class="text-subtitle-1">
           {{ subtitlePreview }}
         </v-col>
       </v-row>
-
 
       <v-row>
         <v-col :cols="columns">
           <slot />
         </v-col>
       </v-row>
-
     </div>
 
-
     <v-row v-if="!isVerticalLayout">
-
-      <v-col >
-        <v-textarea  :label="labelTextarea"
-                      outlined
-                      auto-grow
-                      :error-messages="validationError"
-                      :value="textareaContent"
-                       @input="catchInputedText($event)"
-                       @change="catchChangedText($event)"
-                      >
+      <v-col>
+        <v-textarea
+          :label="labelTextarea"
+          outlined
+          auto-grow
+          :error-messages="validationError"
+          :value="textareaContent"
+          @input="catchInputedText($event)"
+          @change="catchChangedText($event)"
+        >
         </v-textarea>
       </v-col>
 
-      <v-col >
+      <v-col>
         <v-row v-if="subtitlePreview">
           <v-col class="text-subtitle-1">
             {{ subtitlePreview }}
@@ -64,17 +54,13 @@
         </v-row>
 
         <v-row>
-          <v-col >
+          <v-col>
             <slot />
           </v-col>
         </v-row>
       </v-col>
-
-      </v-row>
-
-
+    </v-row>
   </div>
-
 </template>
 
 <script>
@@ -89,7 +75,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'GenericTextareaPreviewLayout',
@@ -140,6 +126,4 @@ export default {
     },
   },
 };
-
-
 </script>

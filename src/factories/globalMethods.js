@@ -16,6 +16,11 @@
 import { Object } from 'core-js';
 
 import {
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metaDataFactory';
+import {
   DIVERSITY,
   FOREST,
   HAZARD,
@@ -23,12 +28,6 @@ import {
   METEO,
   SNOW,
 } from '@/store/categoriesConsts';
-
-import {
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_POLYGON,
-} from '@/factories/metaDataFactory';
 
 
 export default {
@@ -181,9 +180,13 @@ export default {
       if (state.webpIsSupported) {
         const webpImg = state.webpAssets[`${imageKey}.webp`];
 
+        // console.log(`resolving ${imageKey} found ${webpImg}`);
+
         if (webpImg) {
           return webpImg;
         }
+
+        console.warn(`Wanted to get ${imageKey}, but didn't find it`);
       }
 
       return state.jpgAssets[`${imageKey}.jpg`];
@@ -196,6 +199,7 @@ export default {
      */
     mixinMethods_getIcon(iconName) {
       const iconKey = `./${iconName}.png`;
+
       return this.$store?.getters?.iconImages[iconKey] || null;
     },
     /**
@@ -213,23 +217,57 @@ export default {
     /**
      * Loads the file path to given images into a Map.
      *
-     * @param {Map<string, string>} imgs imageContext which is loaded via require.context() (ex. require.context('./assets/', false, /\.jpg$/);)
+     * @param {Map<string, string>} imgs imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
      * @param {String} checkForString
      *
      * @return {Map<string, string>} Image cache
      */
-    mixinMethods_importImages(imgs, checkForString) {
-      if (!imgs) {
+    mixinMethods_importImages(imgPaths, checkForString) {
+      if (!imgPaths) {
         // console.log(`Got empty imgs for ${checkForString}`);
         return null;
       }
       const imgCache = {};
 
-      imgs.keys().forEach((key) => {
+      imgPaths.keys().forEach((key) => {
         if (!checkForString || (checkForString && key.includes(checkForString))) {
-          imgCache[key] = imgs(key);
+          // imgCache[key] = imgPaths(key).default;
+
+          const imgPath = imgPaths(key)?.default || '';
+          const imgUrl = new URL(imgPath, import.meta.url)
+          imgCache[key] = imgUrl.href;
         }
       });
+
+      return imgCache;
+    },
+    /**
+     * Loads the file path to given images into a Map.
+     *
+     * @param {Map<string, string>} imgsPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
+     * @param {String} checkForString
+     *
+     * @return {Map<string, string>} Image cache
+     */
+    mixinMethods_importGlobImages(imgPaths, checkForString) {
+      if (!imgPaths) {
+        // console.log(`Got empty imgs for ${checkForString}`);
+        return null;
+      }
+      const imgCache = {};
+
+      for (const path in imgPaths) {
+        if (path) {
+          if (!checkForString || (checkForString && path.includes(checkForString))) {
+
+            const splits = path.split('/');
+            const imgName = splits[splits.length - 1];
+
+            const imgUrl = new URL(path, import.meta.url)
+            imgCache[imgName] = imgUrl.href;
+          }
+        }
+      }
 
       return imgCache;
     },
@@ -274,7 +312,7 @@ export default {
       const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
       const f = Math.floor(Math.log(a) / Math.log(c));
 
-      return parseFloat((a / Math.pow(c, f)).toFixed(b)) + ' ' + e[f];
+      return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};

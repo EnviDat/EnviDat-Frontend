@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditDataGeo from '@/modules/user/components/EditDataGeo';
+import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
 import { createLocation } from '@/factories/metaDataFactory';
 import { METADATA_EDITING } from './storybookFolder';
 

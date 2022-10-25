@@ -5,7 +5,7 @@
 <script>
 /**
  * The user module to route the subpages
- * 
+ *
  * @summary user module
  * @author Dominik Haas-Artho
  *

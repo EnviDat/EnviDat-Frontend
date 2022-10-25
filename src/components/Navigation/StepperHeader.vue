@@ -1,31 +1,34 @@
 <template>
   <div id="StepperHeader">
-
-    <v-stepper v-model="currentStep"
-                :value="stepNumber"
-               :height="height"
-                style="background: transparent; box-shadow: unset !important;" >
-
+    <v-stepper
+      v-model="currentStep"
+      :value="stepNumber"
+      :height="height"
+      style="background: transparent; box-shadow: unset !important;"
+    >
       <v-stepper-header :style="`height: ${height}px; `">
-
         <template v-for="(step, index) in steps">
-
-          <v-stepper-step :key="`step-${index}`"
-                          :id="`step-${index}`"
-                          :color="getStepIconColor(step, index)"
-                          editable
-                          edit-icon="check"
-                          error-icon="error"
-                          :complete="step.completed"
-                          :step="(index + 1)"
-                          :rules="[() => !step.error]"
-                          class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
-                          style="border-radius: 4px;"
-                          :style="`background-color: ${getStepBackgroundColor(step)};
-                                   border: solid black ${stepColor === 'white' ? 1 : 0}px;`"
-                          @click="catchStepClick(step)"
-                          >
-<!--            <v-container fluid class="pa-0">
+          <v-stepper-step
+            :key="`step-${index}`"
+            :id="`step-${index}`"
+            :color="getStepIconColor(step, index)"
+            editable
+            edit-icon="check"
+            error-icon="error"
+            :complete="step.completed"
+            :step="index + 1"
+            :rules="[() => !step.error]"
+            class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
+            style="border-radius: 4px;"
+            :style="
+              `background-color: ${getStepBackgroundColor(step)};
+                                   border: solid black ${
+                                     stepColor === 'white' ? 1 : 0
+                                   }px;`
+            "
+            @click="catchStepClick(step)"
+          >
+            <!--            <v-container fluid class="pa-0">
             <v-row no-gutters>
               <v-col class=""
                       :cols="step.error ? 4 : undefined">
@@ -38,18 +41,20 @@
             </v-row>
             </v-container>-->
             {{ step.title }}
-            <div v-if="step.error" ><small>{{ step.error }}</small></div>
-
+            <div v-if="step.error">
+              <small>{{ step.error }}</small>
+            </div>
           </v-stepper-step>
 
-          <v-divider v-if="index !== (steps.length - 1)"
-                      :key="index"
-                      color="accent"
-                      class="mx-3" />
+          <v-divider
+            v-if="index !== steps.length - 1"
+            :key="index"
+            color="accent"
+            class="mx-3"
+          />
         </template>
       </v-stepper-header>
     </v-stepper>
-
   </div>
 </template>
 
@@ -98,15 +103,13 @@ export default {
       this.currentStep = this.stepNumber + 1;
     },
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     catchStepClick(step) {
       this.$emit('stepClick', step.title);
     },
     getStepIconColor(step, index) {
-      if (this.currentStep === (index + 1)) {
+      if (this.currentStep === index + 1) {
         return this.activeColor;
       }
 
@@ -121,7 +124,6 @@ export default {
       return this.inactiveColor;
     },
     getStepBackgroundColor(step) {
-
       if (step.error) {
         return 'white';
       }
@@ -132,14 +134,12 @@ export default {
   data: () => ({
     currentStep: -1,
   }),
-  components: {
-  },
+  components: {},
 };
 </script>
 
 <style scoped>
-  .blackTextStepIcon > .v-stepper__step__step > .v-icon {
-    color: black !important;
-  }
-
+.blackTextStepIcon > .v-stepper__step__step > .v-icon {
+  color: black !important;
+}
 </style>

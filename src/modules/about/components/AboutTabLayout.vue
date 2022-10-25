@@ -1,32 +1,33 @@
 <template>
-
-  <v-row no-gutters
-          :class="{'px-4': $vuetify.breakpoint.mdAndUp,
-                  'px-3': $vuetify.breakpoint.sm }" >
-
-    <v-col class="pt-3" cols="12" >
-      <img-and-text-layout :img="titleImage"
-                            :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
-                            :title="title" />
+  <v-row
+    no-gutters
+    :class="{
+      'px-4': $vuetify.breakpoint.mdAndUp,
+      'px-3': $vuetify.breakpoint.sm,
+    }"
+  >
+    <v-col class="pt-3" cols="12">
+      <img-and-text-layout
+        :img="titleImage"
+        :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+        :title="title"
+      />
     </v-col>
 
-    <v-col v-show="loading"
-            class="pt-5" 
-            cols="12">
+    <v-col v-show="loading" class="pt-5" cols="12">
       {{ loadingText }}
     </v-col>
 
-    <v-col v-if="!loading && markdownContent"
-            cols="12"
-            class="pt-5"
-            v-html="markdownContent">
-
+    <v-col
+      v-if="!loading && markdownContent"
+      cols="12"
+      class="pt-5"
+    >
+      <div v-html="markdownContent"></div>
     </v-col>
 
     <slot v-if="hasSoltConent" />
-
   </v-row>
-
 </template>
 
 <script>
@@ -40,7 +41,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 
 export default {
   name: 'AboutTabLayout',

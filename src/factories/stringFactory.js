@@ -11,12 +11,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import remark from 'remark';
-import stripMarkdownLib from 'strip-markdown';
-import htmlLib from 'remark-html';
-import remarkStripHtmlLib from 'remark-strip-html';
 import Crypto from 'crypto-js';
 import Cookie from 'js-cookie';
+import remark from 'remark';
+import htmlLib from 'remark-html';
+import remarkStripHtmlLib from 'remark-strip-html';
+import stripMarkdownLib from 'strip-markdown';
 import uuid from 'uuid';
 
 export function renderMarkdown(markdownString, sanitizeHTML = true) {
@@ -88,11 +88,9 @@ export function decryptString(string, encryptionKey) {
 }
 
 export function GetEncryptedKeyFromCookie(cookieName) {
-  const isProd = process.env.NODE_ENV === 'production';
-
   // Get the encryption token from cookie or generate a new one.
   const encryptionToken = Cookie.get(cookieName, {
-    domain: isProd ? '.envidat.ch' : 'localhost',
+    domain: import.meta.env.PROD ? '.envidat.ch' : 'localhost',
   }) || uuid.v4();
 
   // Store the encryption token in a secure cookie.
@@ -100,7 +98,7 @@ export function GetEncryptedKeyFromCookie(cookieName) {
     secure: true,
     sameSite: 'lax',
     expires: 7,
-    domain: isProd ? '.envidat.ch' : 'localhost',
+    domain: import.meta.env.PROD ? '.envidat.ch' : 'localhost',
   });
 
   return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();

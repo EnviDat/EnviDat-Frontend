@@ -99,13 +99,13 @@ import {
   METADATA_AUTHORS_TITLE,
 } from '@/factories/metadataConsts';
 
-import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
+import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder.vue';
 import {
   AUTHOR_SEARCH_CLICK,
   eventBus,
 } from '@/factories/eventBus';
-import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits';
+import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.vue';
 
 export default {
   name: 'MetadataAuthors',

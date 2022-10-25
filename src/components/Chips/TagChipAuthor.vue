@@ -2,9 +2,9 @@
   <v-chip class="authorTag"
           :class="{
             'white--text': highlighted,
-            'smallChip': $vuetify.breakpoint.smAndDown,
-            }"
-          :style="{'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+            smallChip: $vuetify.breakpoint.smAndDown,
+           }"
+          :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
           @click.stop="clicked"
           :small="isSmall"
           close-icon="close"

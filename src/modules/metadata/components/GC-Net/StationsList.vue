@@ -1,31 +1,30 @@
 <template>
-  <v-container class="pa-1" fluid >
-
-    <v-row  >
-
+  <v-container class="pa-1" fluid>
+    <v-row>
       <!-- Domi: For single line only the "xs12" css-class is needed  -->
-      <v-col class="my-1" cols="6" md="3" lg="2"
-              
-              v-for="station in $store.getters.stations"
-              :key="station.name"
-              v-show="station.active" >
-
-        <base-click-card :title="station.name"
-                        v-on:clicked="station.alias ? listClick(station.name) : ''"
-                        :style="backgroundColor(station)"
-                        :img="stationImg(station.alias)"
-                        :disabled="!station.alias"
-                        />
-                        <!-- Domi: remove randomImg and added Station Img
+      <v-col
+        class="my-1"
+        cols="6"
+        md="3"
+        lg="2"
+        v-for="station in $store.getters.stations"
+        :key="station.name"
+        v-show="station.active"
+      >
+        <base-click-card
+          :title="station.name"
+          v-on:clicked="station.alias ? listClick(station.name) : ''"
+          :style="backgroundColor(station)"
+          :img="stationImg(station.alias)"
+          :disabled="!station.alias"
+        />
+        <!-- Domi: remove randomImg and added Station Img
                           :randomImgPosition="true"
                           :img="randomImg(station.elevation + station.alias)"
                           -->
-
       </v-col>
-
     </v-row>
   </v-container>
-
 </template>
 
 <script>
@@ -42,14 +41,9 @@ export default {
     BaseClickCard,
   },
   beforeMount() {
-    const imgs = require.context('@/assets/cards', false, /\.jpg$/);
-    const imgCache = {};
 
-    imgs.keys().forEach((key) => {
-      imgCache[key] = imgs(key);
-    });
-
-    this.cardImgs = imgCache;
+    const iconImgPath = require.context('@/assets/cards/', false, /\.jpg$/);
+    this.cardImgs = this.mixinMethods_importImages(iconImgPath);
   },
   methods: {
     backgroundColor(station) {
@@ -86,9 +80,6 @@ export default {
     },
   },
 };
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

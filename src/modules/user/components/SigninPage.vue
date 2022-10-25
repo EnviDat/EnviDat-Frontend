@@ -1,35 +1,35 @@
-<template >
-
-  <v-container fluid
-                id="SigninPage"
-                key="SigninPage"
-                tag="article"
-                class="pa-0">
+<template>
+  <v-container
+    fluid
+    id="SigninPage"
+    key="SigninPage"
+    tag="article"
+    class="pa-0"
+  >
     <v-row no-gutters>
       <v-col>
-
-        <signinView :prefilledEmail="prefilledEmail"
-                    :prefilledKey="prefilledKey"
-                    :signInLoading="signInLoading"
-                    :signInSuccess="signInSuccess"
-                    :signedIn="user !== null"
-                    :signedInColor="$vuetify.theme.themes.light.highlight"
-                    :signedInEmail="user ? user.email : null"
-                    :requestLoading="requestLoading"
-                    :requestSuccess="requestSuccess"
-                    :formErrorText="errorText"
-                    :errorFieldText="errorFieldText"
-                    :errorField="errorField"
-                    :errorColor="$vuetify.theme.themes.light.errorHighlight"
-                    @requestToken="catchRequestToken"
-                    @signIn="catchSignIn"
-                    @signOut="catchSignOut"
-                    @openDashboard="catchOpenDashboard" />
+        <signinView
+          :prefilledEmail="prefilledEmail"
+          :prefilledKey="prefilledKey"
+          :signInLoading="signInLoading"
+          :signInSuccess="signInSuccess"
+          :signedIn="user !== null"
+          :signedInColor="$vuetify.theme.themes.light.highlight"
+          :signedInEmail="user ? user.email : null"
+          :requestLoading="requestLoading"
+          :requestSuccess="requestSuccess"
+          :formErrorText="errorText"
+          :errorFieldText="errorFieldText"
+          :errorField="errorField"
+          :errorColor="$vuetify.theme.themes.light.errorHighlight"
+          @requestToken="catchRequestToken"
+          @signIn="catchSignIn"
+          @signOut="catchSignOut"
+          @openDashboard="catchOpenDashboard"
+        />
       </v-col>
     </v-row>
-
   </v-container>
-
 </template>
 
 <script>
@@ -39,48 +39,41 @@
  * @summary Login page
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-07-14 14:18:32 
+ * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-19 17:58:07
  */
 
 import { mapState } from 'vuex';
 
+import { eventBus, SHOW_REDIRECT_DASHBOARD_DIALOG } from '@/factories/eventBus';
 import {
-  USER_SIGNIN_NAMESPACE,
-  GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA,
-  USER_SIGNIN,
-  ACTION_USER_SIGNIN,
-  REQUEST_TOKEN,
   ACTION_REQUEST_TOKEN,
-  VALIDATION_ERROR,
-  USER_SIGNOUT,
+  ACTION_USER_SIGNIN,
   ACTION_USER_SIGNOUT,
+  FETCH_USER_DATA,
+  GET_USER_CONTEXT,
+  REQUEST_TOKEN,
+  USER_SIGNIN,
+  USER_SIGNIN_NAMESPACE,
+  USER_SIGNOUT,
+  VALIDATION_ERROR,
 } from '@/modules/user/store/userMutationsConsts';
-
 import {
   USER_DASHBOARD_PATH,
   USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
-
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import {
-  eventBus,
-  SHOW_REDIRECT_DASHBOARD_DIALOG,
-} from '@/factories/eventBus';
-
-import SigninView from './SigninView';
-
+import SigninView from './SigninView.vue';
 
 export default {
   name: 'SigninPage',
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, USER_SIGNIN_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
@@ -92,22 +85,18 @@ export default {
     this.checkUserSignedIn();
   },
   computed: {
-    ...mapState([
-      'config',
+    ...mapState(['config']),
+    ...mapState(USER_SIGNIN_NAMESPACE, [
+      'userLoading',
+      'signInLoading',
+      'signInSuccess',
+      'requestLoading',
+      'requestSuccess',
+      'user',
+      'errorType',
+      'errorField',
+      'errorFieldText',
     ]),
-    ...mapState(
-      USER_SIGNIN_NAMESPACE, [
-        'userLoading',
-        'signInLoading',
-        'signInSuccess',
-        'requestLoading',
-        'requestSuccess',
-        'user',
-        'errorType',
-        'errorField',
-        'errorFieldText',
-      ],
-    ),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -121,9 +110,7 @@ export default {
       return this.$route.query.key;
     },
     errorText() {
-
       if (this.errorFieldText) {
-
         if (this.errorType === VALIDATION_ERROR) {
           return `A field was filled incorrectly: ${this.errorFieldText}`;
         }
@@ -136,21 +123,22 @@ export default {
   },
   methods: {
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_GET_USER_CONTEXT,
-          commit: true,
-          mutation: GET_USER_CONTEXT,
-        });
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_GET_USER_CONTEXT,
+        commit: true,
+        mutation: GET_USER_CONTEXT,
+      });
     },
     async catchSignIn(email, key) {
-      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+      await this.$store.dispatch(
+        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
           action: ACTION_USER_SIGNIN,
           body: { email, key },
           commit: true,
           mutation: USER_SIGNIN,
-        });
+        },
+      );
 
       if (!this.errorField && !this.errorFieldText) {
         this.redirectToDashboardIfAllowed();
@@ -161,27 +149,24 @@ export default {
         eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
 
         this.$router.replace('/');
-
       } else {
         this.$router.push(USER_DASHBOARD_PATH);
       }
     },
     catchRequestToken(email) {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_REQUEST_TOKEN,
-          body: { email },
-          commit: true,
-          mutation: REQUEST_TOKEN,
-        });
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_REQUEST_TOKEN,
+        body: { email },
+        commit: true,
+        mutation: REQUEST_TOKEN,
+      });
     },
     catchSignOut() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
-        {
-          action: ACTION_USER_SIGNOUT,
-          commit: true,
-          mutation: USER_SIGNOUT,
-        });
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action: ACTION_USER_SIGNOUT,
+        commit: true,
+        mutation: USER_SIGNOUT,
+      });
     },
     catchOpenDashboard() {
       this.redirectToDashboardIfAllowed();
@@ -193,7 +178,4 @@ export default {
 };
 </script>
 
-
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

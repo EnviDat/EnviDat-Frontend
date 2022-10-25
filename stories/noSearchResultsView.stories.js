@@ -1,5 +1,5 @@
 
-import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView';
+import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import categoryCards from '@/store/categoryCards';
 import { FILTERING_VIEWS } from './storybookFolder';
 

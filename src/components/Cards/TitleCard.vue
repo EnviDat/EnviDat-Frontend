@@ -1,28 +1,41 @@
 <template>
   <v-card class="datasetTitleCard"
           :class="cardClass"
-          style="align-self: center;">
+          style="align-self: center;" >
 
-      <div :class="titleClass" >{{ title }}</div>
+    <v-progress-linear v-if="loading"
+                       color="primary"
+                       absolute
+                       indeterminate />
 
-      <!-- <BaseRectangleButton v-if="buttonText"
-                        style="justify-self: end;"
-                        :materialIconName="icon"
-                        :tooltipText="tooltipText"
-                        @clicked="clickCallback" /> -->
+    <v-container fluid
+                 class="px-2 py-0 fill-height">
 
-      <BaseIconButton v-if="clickCallback"
-                        style="justify-self: end;"
-                        :materialIconName="icon"
-                        :tooltipText="tooltipText"
-                        @clicked="clickCallback" />
+      <v-row no-gutters >
+        <v-col cols="12">
+          <div :class="titleClass" >{{ title }}</div>
+        </v-col>
+
+      </v-row>
+    </v-container>
+
+    <div v-if="clickCallback"
+         style="position: absolute; right: 8px;">
+
+      <BaseIconButton :overwriteHeight="32"
+                      :materialIconName="icon"
+                      :tooltipText="tooltipText"
+                      @clicked="clickCallback" />
+    </div>
+
+
   </v-card>
 </template>
 
 
 <script>
 /**
- * NotFoundCard is used to communicate that the users has no
+ * TitleCard is used to communicate that the users has no
  * datasets.
  *
  * @summary card with img, title, description and button to add datasets
@@ -34,8 +47,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-// import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'TitleCard',
@@ -43,14 +56,14 @@ export default {
     title: String,
     cardClass: {
       type: String,
-      default: 'px-2 py-0',
+      default: '',
     },
     titleClass: {
       type: String,
       default: 'text-h6',
     },
     icon: String,
-    // buttonText: String,
+    loading: Boolean,
     tooltipText: String,
     clickCallback: Function,
   },
@@ -61,16 +74,16 @@ export default {
   data: () => ({
   }),  
   components: {
-    // BaseRectangleButton,
     BaseIconButton,
   },
 };
 </script>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
 
-  .datasetTitleCard
-    display: grid
-    grid-template-columns: 11fr 1fr
+  .datasetTitleCard {
+    display: grid;
+    grid-template-columns: 11fr 1fr;
+  }
 
 </style>

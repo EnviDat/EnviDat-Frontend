@@ -119,9 +119,9 @@ import {
   GET_BLOG_POST,
 } from '@/modules/blog/store/blogMutationsConsts';
 
-import BlogHeader from '@/modules/blog/components/BlogHeader';
-import BlogPost from '@/modules/blog/components/BlogPost';
-import BlogPostCard from '@/modules/blog/components/BlogPostCard';
+import BlogHeader from '@/modules/blog/components/BlogHeader.vue';
+import BlogPost from '@/modules/blog/components/BlogPost.vue';
+import BlogPostCard from '@/modules/blog/components/BlogPostCard.vue';
 
 export default {
   name: BLOG_PAGENAME,

@@ -22,8 +22,8 @@ const serviceState = {
   list: [],
 };
 
-const staticRoot = process.env.VUE_APP_ENVIDAT_STATIC_ROOT;
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const staticRoot = process.env.VITE_ENVIDAT_STATIC_ROOT;
+const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
 
 export const service = {
   namespaced: true,
@@ -51,7 +51,7 @@ export const service = {
 
       let url = `${staticRoot}/service/servicelist.json?nocache=${new Date().getTime()}`;
 
-      if (process.env.NODE_ENV === 'development' && useTestdata) {
+      if (import.meta.env.DEV && useTestdata) {
         url = './testdata/servicelist.json';
       }
 

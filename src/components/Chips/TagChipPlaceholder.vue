@@ -1,7 +1,9 @@
 <template>
-  <v-chip class="placeholder_chip" >
-    <div style="width: 35px;"
-          class="skeleton skeleton-size-small skeleton-color-concrete skeleton-animation-shimmer" >
+  <v-chip class="placeholder_chip">
+    <div
+      style="width: 35px;"
+      class="skeleton skeleton-size-small skeleton-color-concrete skeleton-animation-shimmer"
+    >
       <div class="bone bone-type-text bone-style-steps" />
     </div>
   </v-chip>
@@ -19,21 +21,18 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
-  props: {
-  },
-  computed: {
-  },
-  methods: {
-  },
+  props: {},
+  computed: {},
+  methods: {},
 };
 </script>
 
 <style scoped>
-  .placeholder_chip{
-    height: 1.5rem;
-    font-size: 0.75rem;
-  }
+.placeholder_chip {
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
 </style>

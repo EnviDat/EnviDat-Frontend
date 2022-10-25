@@ -1,49 +1,55 @@
 <template>
-  <div @mouseover="hovered = true"
-       @mouseleave="hovered = false"
-       style="cursor: pointer;">
-
+  <div
+    @mouseover="hovered = true"
+    @mouseleave="hovered = false"
+    style="cursor: pointer;"
+  >
     <!-- Top of Card -->
-    <v-card ripple
-            :height="headerCardHeight"
-            :class="`elevation-${hovered ? 5 : 3}`"
-            style="z-index: 1;"
-            @click.native="cardClick">
-
-      <v-row style="max-width: 100%; background-color: white; border-radius: 2px;"
-             no-gutters
-             class="ma-0 fill-height pa-0 no-gutters">
+    <v-card
+      ripple
+      :height="headerCardHeight"
+      :class="`elevation-${hovered ? 5 : 3}`"
+      style="z-index: 1;"
+      @click.native="cardClick"
+    >
+      <v-row
+        style="max-width: 100%; background-color: white; border-radius: 2px;"
+        no-gutters
+        class="ma-0 fill-height pa-0 no-gutters"
+      >
         <v-col class="pa-0" cols="6">
-          <v-img class="imagezoom"
-                  style="border-radius: 2px 0px 0px 2px;"
-                 :contain="headerImg ? headerImg.width > headerImg.height : false"
-                 :cover="headerImg ? headerImg.width < headerImg.height : false"
-                 :height="headerCardHeight"
-                 :src="headerImg ? headerImg.src : ''"
-                 :lazy-src="defaultImg"
+          <v-img
+            class="imagezoom"
+            style="border-radius: 2px 0px 0px 2px;"
+            :contain="headerImg ? headerImg.width > headerImg.height : false"
+            :cover="headerImg ? headerImg.width < headerImg.height : false"
+            :height="headerCardHeight"
+            :src="headerImg ? headerImg.src : ''"
+            :lazy-src="defaultImg"
           />
         </v-col>
 
         <v-col class="ma-auto px-4" cols="6">
-          <div class="text-h6"
-               style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
-               :class="dark ? 'white--text' : 'black--text'"
+          <div
+            class="text-h6"
+            style="word-break: break-word; line-height: 1!important; letter-spacing: .02em !important;"
+            :class="dark ? 'white--text' : 'black--text'"
           >
             {{ truncatedTitle }}
           </div>
         </v-col>
-
       </v-row>
     </v-card>
 
     <!-- Bottom of Card -->
-    <v-card ripple
-            height="100%"
-            style="z-index: 0; top: -2px;"
-            :class="`elevation-${hovered ? 5 : 2}`"
-            class="mx-2"
-            @click.native="cardClick">
-
+    <v-card
+      ripple
+      height="100%"
+      style="z-index: 0; top: -2px;"
+      :class="`elevation-${hovered ? 5 : 2}`"
+      class="mx-2"
+      @click.native="cardClick"
+    >
       <v-card-text class="text">
         {{ truncatedDescription }}
       </v-card-text>
@@ -52,32 +58,32 @@
         <strong>Subprojects</strong>
       </v-card-text>
 
-      <v-card-text v-if="subProjects"
-                    class="heightScrollProjectCard" >
-
-        <v-row v-for="sub in subProjects"
-                :key="sub.id"
-                align="center"
-                class="pr-2" 
-                no-gutters>
-
+      <v-card-text v-if="subProjects" class="heightScrollProjectCard">
+        <v-row
+          v-for="sub in subProjects"
+          :key="sub.id"
+          align="center"
+          class="pr-2"
+          no-gutters
+        >
           <v-col cols="11" class="py-0 text">{{ sub.title }}</v-col>
 
           <v-col class="py-0" cols="1">
-            <base-icon-button materialIconName="find_in_page"
-                              color="transparent"
-                              iconColor="secondary"
-                              :tooltipText="`Open Subproject ${sub.title}`"
-                              tooltipBottom
-                              :isSmall="true"
-                              @clicked="subprojectClick(sub.id)"/>
+            <base-icon-button
+              materialIconName="find_in_page"
+              color="transparent"
+              iconColor="secondary"
+              :tooltipText="`Open Subproject ${sub.title}`"
+              tooltipBottom
+              :isSmall="true"
+              @clicked="subprojectClick(sub.id)"
+            />
           </v-col>
         </v-row>
       </v-card-text>
     </v-card>
   </div>
 </template>
-
 
 <script>
 /**
@@ -93,12 +99,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-
-  // checkout skeleton
-  // https://github.com/ToxicJojo/SkeletonPlaceholder
+// checkout skeleton
+// https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
   name: 'ProjectCard',
@@ -153,7 +158,6 @@ export default {
     },
     truncatedDescription() {
       if (this.description !== undefined && this.description.length > 0) {
-
         const cleanSubtitle = stripMarkdown(this.description);
 
         if (cleanSubtitle) {
@@ -182,17 +186,17 @@ export default {
 </script>
 
 <style scoped>
-  .text {
-    line-height: 1.5;
-    font-family: Raleway, sans-serif !important;
-    letter-spacing: .02em !important;
-    font-size: 12px;
-    color: rgba(0,0,0,.87) !important;
-  }
+.text {
+  line-height: 1.5;
+  font-family: Raleway, sans-serif !important;
+  letter-spacing: 0.02em !important;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
 
-  .heightScrollProjectCard {
-    max-height: 125px;
-    overflow-y: auto !important;
-    scrollbar-width: thin;
-  }  
+.heightScrollProjectCard {
+  max-height: 125px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 </style>

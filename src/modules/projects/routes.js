@@ -1,19 +1,22 @@
 import {
-  PROJECTS_PATH,
-  PROJECTS_PAGENAME,
-  PROJECT_DETAIL_PATH,
   PROJECT_DETAIL_PAGENAME,
+  PROJECT_DETAIL_PATH,
+  PROJECTS_PAGENAME,
+  PROJECTS_PATH,
 } from '@/router/routeConsts';
+
+const ProjectsPage = () => import('@/modules/projects/components/ProjectsPage.vue');
+const ProjectDetailPage = () => import('@/modules/projects/components/ProjectDetailPage.vue');
 
 export const projectsRoutes = [
   {
     path: PROJECTS_PATH,
     name: PROJECTS_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "projectsPage" */ '@/modules/projects/components/ProjectsPage'),
+    component: ProjectsPage,
   },
   {
     path: `${PROJECT_DETAIL_PATH}/:id`,
     name: PROJECT_DETAIL_PAGENAME,
-    component: () => import(/* webpackPrefetch: true, webpackChunkName: "projectDetailPage" */ '@/modules/projects/components/ProjectDetailPage'),
+    component: ProjectDetailPage,
   },
 ];

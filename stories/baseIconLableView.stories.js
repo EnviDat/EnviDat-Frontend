@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import fileIcon from '../src/assets/icons/fileAudio.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
 import { LABLE_VIEWS } from './storybookFolder';

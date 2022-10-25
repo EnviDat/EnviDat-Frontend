@@ -1,14 +1,15 @@
 <template>
   <v-card>
-    
-          <!-- :style="`height: ${iframeScreenHeight()}px; height: 75vh; overflow: auto;`" -->
+    <!-- :style="`height: ${iframeScreenHeight()}px; height: 75vh; overflow: auto;`" -->
     <div
-          :style="`height: ${iframeScreenHeight()}px; height: ${height}; overflow: hidden;`"
-          class="pa-1"
-          id="map_svg"
-          ref="map_svg"
-          v-html="mapHTML">
-
+      :style="
+        `height: ${iframeScreenHeight()}px; height: ${height}; overflow: hidden;`
+      "
+      class="pa-1"
+      id="map_svg"
+      ref="map_svg"
+    >
+      <div v-html="mapHTML"></div>
     </div>
   </v-card>
 </template>
@@ -28,7 +29,6 @@ export default {
     mapHTML,
   }),
   mounted() {
-
     const that = this;
     const links = this.$el.querySelectorAll('#map_svg svg > g > g > a');
 
@@ -42,11 +42,11 @@ export default {
       }
     }
 
-    links.forEach((el) => {
+    links.forEach(el => {
       const url = el.getAttribute('xlink:href');
       if (url) {
         // el.addEventListener('click', that.stationClick(url));
-        el.onclick = function () {
+        el.onclick = function() {
           that.mapClick(url);
         };
         el.removeAttribute('xlink:href');
@@ -56,7 +56,7 @@ export default {
 
     if (this.currentStation) {
       this.highlightStation(this.currentStation);
-    }    
+    }
   },
   watch: {
     currentStation() {
@@ -67,14 +67,16 @@ export default {
   },
   methods: {
     highlightStation(station) {
-        const links = this.$el.querySelectorAll('#map_svg svg > g > g > a');
+      const links = this.$el.querySelectorAll('#map_svg svg > g > g > a');
 
-        links.forEach((el) => {
-          el.classList.remove('current');
-        });
+      links.forEach(el => {
+        el.classList.remove('current');
+      });
 
-        const stationLink = this.$el.querySelector(`#map_svg svg > g > g > a#${station.alias}`);
-        stationLink.classList.add('current');
+      const stationLink = this.$el.querySelector(
+        `#map_svg svg > g > g > a#${station.alias}`,
+      );
+      stationLink.classList.add('current');
     },
     iframeScreenHeight() {
       return window.innerHeight - 150;
@@ -84,9 +86,6 @@ export default {
     },
   },
 };
-
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

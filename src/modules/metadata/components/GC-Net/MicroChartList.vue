@@ -1,33 +1,36 @@
 <template>
-  <v-container fluid
-                class="fill-height pa-0"
-                id="MicroChartList" >
-
-    <v-row no-gutters >
-
-      <v-col v-for="station in stations"
-              :key="`${station.id}_${station.alias}`"
-              class="pa-2"
-              cols="12"
-              sm="6" >
-
-        <MicroChart :station="station"
-                    :image="station.envidatConfig.previewImageUrl"
-                    :apiUrl="station.envidatConfig.apiUrl"
-                    :fallbackUrl="station.envidatConfig.fallbackUrl"
-                    :downloadAllUrl="downloadAllUrl(station)"
-                    :parameter="station.envidatConfig.graphParameter"
-                    :chartHeight="45"
-                    @detailClick="(stationID) => { changeCurrentStation(stationID); }" />
+  <v-container fluid class="fill-height pa-0" id="MicroChartList">
+    <v-row no-gutters>
+      <v-col
+        v-for="station in stations"
+        :key="`${station.id}_${station.alias}`"
+        class="pa-2"
+        cols="12"
+        sm="6"
+      >
+        <MicroChart
+          :station="station"
+          :image="station.envidatConfig.previewImageUrl"
+          :apiUrl="station.envidatConfig.apiUrl"
+          :fallbackUrl="station.envidatConfig.fallbackUrl"
+          :downloadAllUrl="downloadAllUrl(station)"
+          :parameter="station.envidatConfig.graphParameter"
+          :chartHeight="45"
+          @detailClick="
+            stationID => {
+              changeCurrentStation(stationID);
+            }
+          "
+        />
       </v-col>
-
     </v-row>
   </v-container>
 </template>
 
 <script>
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
 import { mapState } from 'vuex';
+
+import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
 
 export default {
   name: 'MicroChartList',
@@ -38,9 +41,7 @@ export default {
     MicroChart,
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     stations() {
       const stations = [];
 
@@ -58,17 +59,8 @@ export default {
     },
   },
   // beforeMount() {
-  //   const imgs = require.context('@/assets/stations/small', false, /\.jpg$/);
-  //   const imgCache = {};
-
-  //   imgs.keys().forEach((key) => {
-  //     imgCache[key] = imgs(key);
-  //   });
-
-  //   this.cardImgs = imgCache;
   // },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     mapStationClick(stationUrl) {
       const splits = stationUrl.split('/');
@@ -87,7 +79,10 @@ export default {
         return '';
       }
 
-      return currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${currentStation?.aliasApi}/end/empty/`;
+      return (
+        currentStation?.envidatConfig?.downloadAllUrl ||
+        `https://www.envidat.ch/data-api/gcnet/nead/${currentStation?.aliasApi}/end/empty/`
+      );
     },
   },
   data: () => ({
@@ -96,6 +91,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

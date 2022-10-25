@@ -152,24 +152,24 @@ import {
   getPreviewStrategyFromUrl,
 } from '@/factories/strategyFactory';
 
-import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout';
-import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList';
-import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList';
+import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
+import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout.vue';
+import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
+import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
 
 import { rewind as tRewind } from '@turf/turf';
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
-import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets';
-import MetadataHeader from './Metadata/MetadataHeader';
-import MetadataBody from './Metadata/MetadataBody';
-import MetadataResources from './Metadata/MetadataResources';
-import MetadataDetails from './Metadata/MetadataDetails';
-import MetadataCitation from './Metadata/MetadataCitation';
-import MetadataPublications from './Metadata/MetadataPublications';
-import MetadataFunding from './Metadata/MetadataFunding';
-import MetadataAuthors from './Metadata/MetadataAuthors';
-import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen';
+import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
+import MetadataHeader from './Metadata/MetadataHeader.vue';
+import MetadataBody from './Metadata/MetadataBody.vue';
+import MetadataResources from './Metadata/MetadataResources.vue';
+import MetadataDetails from './Metadata/MetadataDetails.vue';
+import MetadataCitation from './Metadata/MetadataCitation.vue';
+import MetadataPublications from './Metadata/MetadataPublications.vue';
+import MetadataFunding from './Metadata/MetadataFunding.vue';
+import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen.vue';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -311,9 +311,7 @@ export default {
       return fileList;
     },
     baseUrl() {
-      return process.env.NODE_ENV === 'production'
-          ? this.baseStationURL
-          : this.baseStationURLTestdata;
+      return import.meta.env.PROD ? this.baseStationURL : this.baseStationURLTestdata;
     },
     /**
      * @returns {String} the metadataId from the route

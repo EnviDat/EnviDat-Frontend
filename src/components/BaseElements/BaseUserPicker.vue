@@ -1,60 +1,62 @@
 <template>
-  <v-card id="BaseUserPicker"
-            :class="showAsCard ? 'pa-4' : 'pa-0'"
-            :flat="!showAsCard" >
-
-    <v-row v-if="instructions"
-           no-gutters>
-      <v-col class="text-body-1 pa-0 pb-4" >
+  <v-card
+    id="BaseUserPicker"
+    :class="showAsCard ? 'pa-4' : 'pa-0'"
+    :flat="!showAsCard"
+  >
+    <v-row v-if="instructions" no-gutters>
+      <v-col class="text-body-1 pa-0 pb-4">
         {{ instructions }}
       </v-col>
     </v-row>
 
     <v-row no-gutters>
       <v-col>
-        <v-autocomplete v-model="pickedUsers"
-                        :items="users"
-                        outlined
-                        append-icon="arrow_drop_down"
-                        :readonly="readonly"
-                        :hint="hint"
-                        :prepend-icon="prependIcon"
-                        :label="pickerLabel"
-                        :multiple="multiplePick"
-                        :clearable="isClearable"
-                        :search-input.sync="search"
-                        :error-messages="errorMessages"
-                        clear-icon="close"
-                        @change="catchPicks"
-                        @blur="$emit('blur', $event)"
-                        >
-
+        <v-autocomplete
+          v-model="pickedUsers"
+          :items="users"
+          outlined
+          append-icon="arrow_drop_down"
+          :readonly="readonly"
+          :hint="hint"
+          :prepend-icon="prependIcon"
+          :label="pickerLabel"
+          :multiple="multiplePick"
+          :clearable="isClearable"
+          :search-input.sync="search"
+          :error-messages="errorMessages"
+          clear-icon="close"
+          @change="catchPicks"
+          @blur="$emit('blur', $event)"
+        >
           <template v-slot:selection="{ item }">
-            <TagChipAuthor v-if="item"
-                           :name="item"
-                           :isSmall="false"
-                           :isCloseable="authorsCloseable"
-                           @closeClicked="catchCloseClicked"/>
+            <TagChipAuthor
+              v-if="item"
+              :name="item"
+              :isSmall="true"
+              :isCloseable="authorsCloseable"
+              @closeClicked="catchCloseClicked"
+            />
           </template>
 
           <template v-slot:item="{ item }">
-            <TagChipAuthor v-if="item"
-                           :name="item"
-                           @clicked="catchPickClicked"
-                           :isSmall="false" />
+            <TagChipAuthor
+              v-if="item"
+              :name="item"
+              @clicked="catchPickClicked"
+              :isSmall="true"
+            />
           </template>
 
           <template v-slot:no-data>
-            <v-list-item v-html="autocompleteHint" />
+            <v-list-item>
+              <div v-html="autocompleteHint"></div>
+            </v-list-item>
           </template>
-
         </v-autocomplete>
-
       </v-col>
     </v-row>
-
   </v-card>
-
 </template>
 
 <script>
@@ -67,8 +69,8 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import TagChipAuthor from '@/components/Chips/TagChipAuthor';
+ */
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 
 export default {
   name: 'BaseUserPicker',
@@ -119,16 +121,14 @@ export default {
 
       return `No author name matching "<strong>${this.search}</strong>".`;
     },
-
   },
   methods: {
     updatePreselection() {
       if (this.preSelected?.length > 0) {
-
         if (this.multiplePick) {
           this.pickedUsers = [];
 
-          this.preSelected.forEach((authorName) => {
+          this.preSelected.forEach(authorName => {
             // if (typeof author === 'object') {
             this.pickedUsers.push(authorName);
             // } else {
@@ -148,7 +148,6 @@ export default {
       }
 
       if (this.multiplePick) {
-
         const remains = this.pickedUsers.filter(value => value !== authorName);
 
         if (remains?.length > 0) {
@@ -163,18 +162,16 @@ export default {
       this.$emit('removedUsers', this.pickedUsers);
     },
     catchPickClicked(pickedItem) {
-
-      if (this.multiplePick){
-
+      if (this.multiplePick) {
         // if (Array.isArray(this.pickedUsers)) {
-          if (!this.pickedUsers.includes(pickedItem)) {
-            this.pickedUsers.push(pickedItem);
-/*
+        if (!this.pickedUsers.includes(pickedItem)) {
+          this.pickedUsers.push(pickedItem);
+          /*
           } else {
             const index = this.pickedUsers.indexOf(pickedItem);
             this.pickedUsers.splice(index, 1);
 */
-          }
+        }
         // }
       } else {
         this.pickedUsers = pickedItem;
@@ -198,6 +195,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

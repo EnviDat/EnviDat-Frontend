@@ -2,36 +2,21 @@
 import Vue from 'vue';
 
 import globalMethods from '@/factories/globalMethods';
+import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
+import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
-import ResourceCard from '@/modules/metadata/components/ResourceCard';
-import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder';
-
-import fileSizeIcon from '../src/assets/icons/fileSize.png';
-import doiIcon from '../src/assets/icons/doi.png';
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
 import lastModifiedIcon from '../src/assets/icons/dateModified.png';
+import doiIcon from '../src/assets/icons/doi.png';
+import fileSizeIcon from '../src/assets/icons/fileSize.png';
 import unFormatedMetadataCards from './js/metadata';
 import { CARD_VIEWS } from './storybookFolder';
 
 
 Vue.mixin(globalMethods);
 
-function getIcons() {
-  const icons = new Map();
-
-  const imgPaths = require.context('../src/assets/icons/', false, /\.png$/);
-
-  imgPaths.keys().forEach((iconFileName) => {
-    const splits = iconFileName.split('/');
-    let key = splits[splits.length - 1];
-    key = key.replace('.png', '');
-    icons.set(key, iconFileName);
-  });
-
-  return icons;
-}
-
-const iconFiles = getIcons();
+const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
+const iconFiles = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 // let str = '';
 // for (const [key, value] of iconFiles) {

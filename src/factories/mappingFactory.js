@@ -185,7 +185,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (process.env.NODE_ENV === 'develop') {
+          if (import.meta.env.DEV) {
             if (e instanceof SyntaxError) {
               // eslint-disable-next-line no-console
               console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
@@ -232,12 +232,12 @@ export function toSnakeCase(inputString) {
 
 /**
  * Code from https://stackoverflow.com/a/61375162/2733509
- * @param {String} snake_case_string
+ * @param {String} snakeCaseString
  * @returns {String} camelCaseString
  */
 // eslint-disable-next-line camelcase
-export function toCamelCase(snake_case_string) {
-  return snake_case_string
+export function toCamelCase(snakeCaseString) {
+  return snakeCaseString
       // .toLowerCase()
       .replace(/([-_][a-z])/g, group => group
           .toUpperCase()

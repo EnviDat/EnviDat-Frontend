@@ -45,7 +45,7 @@
 
 
 <script>
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

@@ -1,6 +1,6 @@
 
-import packagelist from '@/../public/testdata/packagelist';
-import projectJSON from '@/../public/testdata/projects';
+import packagelist from '@/../public/testdata/packagelist.json';
+import projectJSON from '@/../public/testdata/projects.json';
 import {
   enhanceSubprojectsFromExtras,
   enhanceProjectDatasets,

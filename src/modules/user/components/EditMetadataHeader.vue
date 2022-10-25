@@ -108,7 +108,6 @@
                style="text-align: center;"
                cols="2"
                v-html="labels.authorOr">
-          <!--        {{ labels.authorOr }} -->
         </v-col>
 
         <v-col>
@@ -216,9 +215,9 @@ import {
 
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
-import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader';
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';

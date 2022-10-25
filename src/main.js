@@ -12,7 +12,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import 'babel-polyfill';
 import Vue from 'vue';
 
 import axios from 'axios';
@@ -25,11 +24,11 @@ import {
   handleGenericAPIError,
 } from '@/factories/notificationFactory';
 
+import App from '@/App.vue';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
-import App from './App';
 
 
 Vue.use(InfiniteLoading /* , { options } */);
@@ -54,7 +53,7 @@ Vue.config.errorHandler = (err, vm, info) => {
 // }
 
 const storeReference = store;
-const excludedDomains = [process.env.VUE_APP_ENVIDAT_STATIC_ROOT, process.env.VUE_APP_CONFIG_URL];
+const excludedDomains = [process.env.VITE_ENVIDAT_STATIC_ROOT, process.env.VITE_CONFIG_URL];
 
 axios.interceptors.request.use((config) => {
   // Do something before request is sent

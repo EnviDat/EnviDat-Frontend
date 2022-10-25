@@ -1,6 +1,5 @@
-import WMSCapabilities from 'wms-capabilities';
 import axios from 'axios';
-
+import WMSCapabilities from 'wms-capabilities';
 
 /**
  * Iterate through tree (recursively) and update fields to required form
@@ -22,14 +21,13 @@ function customizeProperties(ogcLayer, level, maxLevel) {
   if (ogcLayer.Layer && ogcLayer.Layer.length > 0) {
     level++;
     if (!maxLevel || level <= maxLevel) {
-      ogcLayer.Layer.forEach((child) => {
+      ogcLayer.Layer.forEach(child => {
         dt.layers.push(customizeProperties(child, level, maxLevel));
       });
     }
   }
   return dt;
 }
-
 
 /**
  * Convert XML to JSON and Customize properties
@@ -63,6 +61,5 @@ function createWmsCatalog(url) {
     .then(response => getTree(response))
     .catch(e => ({ error: `WMS Error: ${e}`, url }));
 }
-
 
 export { createWmsCatalog };

@@ -100,7 +100,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
 import {
@@ -109,8 +109,8 @@ import {
   INJECT_RESOURCE_STRATEGY,
 } from '@/factories/eventBus';
 
-import ResourceCard from '../ResourceCard';
-import ResourceCardPlaceholder from '../ResourceCardPlaceholder';
+import ResourceCard from '../ResourceCard.vue';
+import ResourceCardPlaceholder from '../ResourceCardPlaceholder.vue';
 
 export default {
   name: 'MetadataResources',

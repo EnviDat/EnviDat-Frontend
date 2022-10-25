@@ -278,9 +278,8 @@ import {
   AUTHORS_DATACREDIT_SCORE,
 } from '@/factories/metadataConsts';
 
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import { BROWSE_PATH } from '@/router/routeConsts';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   getLevelProgress,
   getDataCreditLevel, getAuthorName,
@@ -448,7 +447,7 @@ export default {
         return false;
       }
 
-      return id.match(RegExp(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g));
+      return id.match(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g);
     },
     formatIdentifier(id) {
       if (!id) {

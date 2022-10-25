@@ -4,7 +4,7 @@
  * @summary organizations store actions
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2020-11-03 22:04:06
  *
  * This file is subject to the terms and conditions defined in
@@ -12,18 +12,17 @@
  */
 
 import axios from 'axios';
+
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
   GET_ORGANIZATIONS,
-  GET_ORGANIZATIONS_SUCCESS,
   GET_ORGANIZATIONS_ERROR,
+  GET_ORGANIZATIONS_SUCCESS,
 } from './organizationsMutationsConsts';
 
-
-const API_BASE = process.env.VUE_APP_API_BASE_URL || '/api/action/';
-const ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
-
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+const ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 
 export default {
   // eslint-disable-next-line no-unused-vars
@@ -43,11 +42,11 @@ export default {
     //     { root: true });
     // }
 
-    // if (process.env.NODE_ENV === 'development') {
+    // if (import.meta.env.DEV) {
     //   url = './testdata/projects.json';
     // }
 
-/*
+    /*
     const localFileUrl = projectsConfig.localFileUrl;
     const loadLocalFile = projectsConfig.loadLocalFile;
 
@@ -56,11 +55,12 @@ export default {
     }
 */
 
-    await axios.get(url)
-      .then((response) => {
+    await axios
+      .get(url)
+      .then(response => {
         commit(GET_ORGANIZATIONS_SUCCESS, response.data.result);
       })
-      .catch((reason) => {
+      .catch(reason => {
         commit(GET_ORGANIZATIONS_ERROR, reason);
       });
   },

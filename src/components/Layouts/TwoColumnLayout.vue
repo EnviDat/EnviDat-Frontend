@@ -1,15 +1,10 @@
 <template>
-  <v-row style="z-index: 0;"
-          no-gutters >
-
-    <v-col :class="firstColWidth"
-            class="pt-0" >
+  <v-row style="z-index: 0;" no-gutters>
+    <v-col :class="firstColWidth" class="pt-0">
       <slot name="leftColumn" />
     </v-col>
 
-    <v-col v-if="secondColumn"
-            class="pt-0"
-            :class="secondColWidth" >
+    <v-col v-if="secondColumn" class="pt-0" :class="secondColWidth">
       <slot name="rightColumn" />
     </v-col>
   </v-row>
@@ -30,11 +25,10 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
-  components: {
-  },
+  components: {},
   props: {
     firstColumn: Array,
     secondColumn: Array,
@@ -42,33 +36,47 @@ export default {
   },
   computed: {
     firstColWidth() {
-      let bindings = this.secondColumn && this.secondColumn.length > 0 ? { 'col-6': true } : { 'col-12': true };
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'col-6': true }
+          : { 'col-12': true };
 
       bindings = Object.assign(bindings, this.leftOrFullWidth);
 
       return bindings;
     },
     secondColWidth() {
-      let bindings = this.secondColumn && this.secondColumn.length > 0 ? { 'col-6': true } : {};
+      let bindings =
+        this.secondColumn && this.secondColumn.length > 0
+          ? { 'col-6': true }
+          : {};
 
       bindings = Object.assign(bindings, this.rightOrFullWidth);
 
       return bindings;
     },
     textFontSizeStyle() {
-      return this.textFontSize ? `font-size: ${this.textFontSize}px !important;` : '';
+      return this.textFontSize
+        ? `font-size: ${this.textFontSize}px !important;`
+        : '';
     },
     leftOrFullWidth() {
-      return this.firstColumn && this.firstColumn.length > 0 ? this.halfWidthLeft : this.fullWidthPadding;
+      return this.firstColumn && this.firstColumn.length > 0
+        ? this.halfWidthLeft
+        : this.fullWidthPadding;
     },
     rightOrFullWidth() {
-      return this.secondColumn && this.secondColumn.length > 0 ? this.halfWidthRight : this.fullWidthPadding;
+      return this.secondColumn && this.secondColumn.length > 0
+        ? this.halfWidthRight
+        : this.fullWidthPadding;
     },
     fullwidthPadding() {
       const cssClasses = {};
 
-      if (this.$vuetify.breakpoint.mdAndUp
-        && this.$vuetify.breakpoint.lgAndDown) {
+      if (
+        this.$vuetify.breakpoint.mdAndUp &&
+        this.$vuetify.breakpoint.lgAndDown
+      ) {
         cssClasses['px-2'] = true;
       } else if (this.$vuetify.breakpoint.lgAndUp) {
         cssClasses['px-3'] = true;
@@ -101,7 +109,7 @@ export default {
     },
   },
   updated() {
-    this.$children.forEach((child) => {
+    this.$children.forEach(child => {
       child.$forceUpdate();
     });
   },

@@ -11,13 +11,13 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import ControlPanel from '@/components/Filtering/ControlPanel';
+import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch'
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 
 const menuEntry = '4 Filtering / filtering control panels';
 

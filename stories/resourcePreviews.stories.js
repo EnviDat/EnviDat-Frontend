@@ -11,7 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
+import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
 import { CARD_VIEWS } from './storybookFolder';
 
 // const readme1 = './testdata/bender2020_readme.txt';

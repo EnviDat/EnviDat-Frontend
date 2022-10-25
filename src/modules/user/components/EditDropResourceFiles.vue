@@ -1,11 +1,6 @@
 <template>
-  <v-card id="EditDropResourceFiles"
-            class="pa-4"
-            flat>
-
-    <v-container fluid
-                  class="pa-0">
-
+  <v-card id="EditDropResourceFiles" class="pa-4" flat>
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
@@ -32,13 +27,13 @@
 
       <v-row justify="end">
         <v-col class="shrink">
-          <BaseRectangleButton :disabled="createButtonDisabled"
-                                :buttonText="labels.createButtonTextS"
-                                @clicked="createButtonClick" />
+          <BaseRectangleButton
+            :disabled="createButtonDisabled"
+            :buttonText="labels.createButtonTextS"
+            @clicked="createButtonClick"
+          />
         </v-col>
       </v-row>
-
-
     </v-container>
   </v-card>
 </template>
@@ -53,17 +48,16 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import BaseFileDropField from '@/components/BaseElements/BaseFileDropField';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+ */
+import BaseFileDropField from '@/components/BaseElements/BaseFileDropField.vue';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'EditDropResourceFiles',
   props: {
     genericProps: Object,
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     checkCreateButtonDisabled() {
       this.createButtonDisabled = this.files?.length <= 0;
@@ -79,7 +73,8 @@ export default {
   data: () => ({
     labels: {
       title: 'Create Resource from Files',
-      instructions: 'Drag and drop a file here to create a new resource and upload it. For files with a file size < 5 GB.',
+      instructions:
+        'Drag and drop a file here to create a new resource and upload it. For files with a file size < 5 GB.',
       subInstructions: 'For files larger then 5GB contact the envidat team.',
       createButtonTextS: 'Create Resource',
       createButtonTextP: 'Create Resources',
@@ -94,7 +89,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

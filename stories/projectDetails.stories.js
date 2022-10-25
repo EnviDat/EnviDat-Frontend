@@ -9,37 +9,26 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import globalMethods from '@/factories/globalMethods';
-
-import ProjectHeader from '@/modules/projects/components/ProjectDetailViews/ProjectHeader';
-import ProjectBody from '@/modules/projects/components/ProjectDetailViews/ProjectBody';
-import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets';
-
+// import for css classes
+// import App from '@/App.vue';
+// get Project test data and enhance it
+import mission from '@/assets/projects/mission.jpg';
+import { enhanceSubprojectsFromExtras } from '@/factories/projectsDataFactory';
+import ProjectBody from '@/modules/projects/components/ProjectDetailViews/ProjectBody.vue';
+import ProjectDatasets from '@/modules/projects/components/ProjectDetailViews/ProjectDatasets.vue';
+import ProjectHeader from '@/modules/projects/components/ProjectDetailViews/ProjectHeader.vue';
 import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-// import for css classes
-// import App from '@/App.vue';
-
-// get Project test data and enhance it
-import {
-  enhanceSubprojectsFromExtras,
-} from '@/factories/projectsDataFactory';
-
-import projectJSON from '../public/testdata/projects.json';
+import projectJSON from './testdata/projects.json';
 import metadata from './js/metadata';
-import { DETAIL_VIEWS } from './storybookFolder';
+import {DETAIL_VIEWS} from './storybookFolder';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
 
-
-const imgPaths = require.context('../src/assets/projects/', false, /\.jpg$/);
-const imgName = 'mission';
-const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
-const defaultImg = images[`./${imgName}.jpg`];
 
 const header1 = projects[5];
 const header2 = projects[6];
@@ -104,7 +93,7 @@ export const ProjectHeaderViews = () => ({
       header1,
       header2,
       header3,
-      defaultImg,
+      defaultImg: mission,
     }),
   });
 

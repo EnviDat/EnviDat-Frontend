@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"
+      style="scroll-behavior: smooth; overflow: hidden;">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="icon" href="/favicon.ico" />
+
+    <script src="https://www.wsl.ch/gcnet/amcharts/amcharts.js"></script>
+    <script src="https://www.wsl.ch/gcnet/amcharts/serial.js"></script>
+    <script src="https://www.wsl.ch/gcnet/amcharts/plugins/responsive/responsive.min.js"></script>
+
+    <script src="/particles/particles.js"></script>
+
+    <style>
+        .pulse {
+            border-radius: 50%;
+            box-shadow: 0 0 1px 1px #0000001a;
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% {
+                box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+            }
+            100% {
+                box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+            }
+        }
+    </style>
+
+    <title>Envidat</title>
+  </head>
+  <body>
+    <noscript>
+      <strong>We're sorry envidat.ch doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+    </noscript>
+    <div id="app">
+        <div style="margin-top: 10%;">
+            <div style="width: 128px; margin: auto; " class="pulse">
+                <img src="./src/assets/logo/EnviDat_logo_128.png" alt="EnviDat logo" />
+            </div>
+            <div style="width: 128px; margin: auto; padding-top: 25px;">Loading EnviDat...</div>
+        </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -10,9 +10,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
-import EditOrganization from '@/modules/user/components/EditOrganization';
-import OrganizationTree from '@/modules/user/components/OrganizationTree';
+import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree.vue';
+import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,

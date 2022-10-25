@@ -16,14 +16,15 @@
 
 import { getNameInitials } from '@/factories/authorFactory';
 
-import UserAvatar from '@/components/Layouts/UserAvatar';
-import UserCard from '@/components/Cards/UserCard';
-import UserMenu from '@/modules/user/components/UserMenu';
-import MetadataCube from '@/components/BaseElements/MetadataCube';
+import UserAvatar from '@/components/Layouts/UserAvatar.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
+import UserMenu from '@/modules/user/components/UserMenu.vue';
+import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
+import TitleCard from '@/components/Cards/TitleCard.vue';
 
 import seedrandom from 'seedrandom';
 import jazzicons from '@metamask/jazzicon';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 
 import { USER_VIEWS } from './storybookFolder';
 
@@ -38,6 +39,49 @@ export default {
   parameters: {
   },
 };
+
+
+export const TitleCardViews = () => ({
+  components: { TitleCard },
+  template: `
+    <v-row >
+
+    <v-col cols="12">
+      TitleCard empty
+    </v-col>
+
+    <v-col cols="12">
+      <TitleCard title="Title only TitleCard" />
+    </v-col>
+
+    <v-col cols="12">
+      TitleCard with refresh icon
+    </v-col>
+
+    <v-col >
+      <TitleCard title="My Datasets"
+                 icon="refresh"
+                 tooltipText="Click here to refresh"
+                 :clickCallback="() => {}" />
+    </v-col>
+
+    <v-col cols="12">
+      TitleCard with refresh icon
+    </v-col>
+
+    <v-col >
+      <TitleCard title="My Datasets"
+                 icon="refresh"
+                 tooltipText="Click here to refresh"
+                 :loading="true"
+                 :clickCallback="() => {}" />
+    </v-col>
+
+
+
+    </v-row>
+  `,
+});
 
 export const UserMenuViews = () => ({
   components: { UserMenu },
@@ -264,6 +308,7 @@ export const UserCardViews = () => ({
                   :name-initials="index > 1 ? getNameInitials(author) : null"
                   :emailHash="index > 2 ? '7e6b6dca84df35a663ba4518360095a8' : null"
                   :datasetCount="author.datasetCount"
+                  :loading="index === authors().length - 1"
                   />
       </v-col>
 

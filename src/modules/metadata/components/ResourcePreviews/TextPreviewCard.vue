@@ -1,27 +1,33 @@
 <template>
-  <v-card id="TextPreviewCard" >
-
-    <v-card-text v-if="fileContent && !enableMarkdown" 
-                  style="white-space: break-spaces;">
+  <v-card id="TextPreviewCard">
+    <v-card-text
+      v-if="fileContent && !enableMarkdown"
+      style="white-space: break-spaces;"
+    >
       {{ fileContent }}
     </v-card-text>
 
-    <v-card-text v-if="fileContent && enableMarkdown"
-                  v-html="markdownText" />
+    <v-card-text v-if="fileContent && enableMarkdown">
+      <div v-html="markdownText"></div>
+    </v-card-text>
 
-    <v-card-text v-if="errorObject"
-                  :style="`color: ${$vuetify.theme.themes.light.error};`">
+    <v-card-text
+      v-if="errorObject"
+      :style="`color: ${$vuetify.theme.themes.light.error};`"
+    >
       {{ errorObject.title }}
       <br />
       {{ errorObject.message }}
     </v-card-text>
 
-    <v-card-text v-show="loading" >
-      <div class='skeleton skeleton-animation-shimmer' style="height: 100%;" >
-        <div style="width: 100%; min-height: 100%; " class='bone bone-type-paragrah'></div>
+    <v-card-text v-show="loading">
+      <div class="skeleton skeleton-animation-shimmer" style="height: 100%;">
+        <div
+          style="width: 100%; min-height: 100%; "
+          class="bone bone-type-paragrah"
+        ></div>
       </div>
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -29,7 +35,7 @@
 /**
  * TextPreviewCard.vue a card which previews a text resource
  *
- * @summary renders text 
+ * @summary renders text
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 14:11:27
@@ -37,11 +43,10 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import axios from 'axios';
-import { 
-  renderMarkdown,
-} from '@/factories/stringFactory';
+
+import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: 'TextPreviewCard',
@@ -62,7 +67,6 @@ export default {
     },
     errorObject() {
       if (this.fileError) {
-
         if (!this.url) {
           return {
             title: 'No file provided for the Preview!',
@@ -87,22 +91,22 @@ export default {
 
       return null;
     },
-
   },
   methods: {
     getFileContent() {
       this.loading = true;
 
       if (this.url) {
-        axios.get(this.url)
-        .then((response) => {
-          this.loading = false;
-          this.fileContent = response.data;
-        })
-        .catch((reason) => {
-          this.loading = false;
-          this.fileError = reason;
-        });
+        axios
+          .get(this.url)
+          .then(response => {
+            this.loading = false;
+            this.fileContent = response.data;
+          })
+          .catch(reason => {
+            this.loading = false;
+            this.fileError = reason;
+          });
       } else {
         this.fileContent = this.content;
         this.loading = false;
@@ -117,6 +121,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

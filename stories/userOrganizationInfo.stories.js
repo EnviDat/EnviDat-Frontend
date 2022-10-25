@@ -15,9 +15,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 
-import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
+import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 import { getNameInitials } from '@/factories/authorFactory';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 
 import { USER_VIEWS } from './storybookFolder';
 
@@ -51,7 +51,7 @@ export const UserOrganizationInfoViews = () => ({
                               :organizationRoles="roleArray(index)"
         />
       </v-col>
-    
+
     </v-row>
     `,
   computed: {
@@ -135,4 +135,3 @@ export const UserOrganizationInfoViews = () => ({
 */
   }),
 });
-

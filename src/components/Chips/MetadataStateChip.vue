@@ -1,21 +1,21 @@
 <template>
-  <v-chip class="stateChip"
-          :class="cssClasses"
-          @mouseover="hover = true"
-          @mouseleave="hover = false"
-          :color="stateColor"
-          :style="!showContent ? 'font-size: 0.9rem;' : ''">
-
+  <v-chip
+    class="stateChip"
+    :class="cssClasses"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    :color="stateColor"
+    :style="!showContent ? 'font-size: 0.9rem;' : ''"
+  >
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <div v-on="on" >
+        <div v-on="on">
           {{ showContent ? stateText : stateText.substr(0, 1) }}
         </div>
       </template>
 
       <span>{{ stateTooltip }}</span>
     </v-tooltip>
-
   </v-chip>
 </template>
 
@@ -31,7 +31,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'MetadataStateChip',
@@ -44,7 +44,8 @@ export default {
       type: Object,
       default: () => ({
         draft: 'Draft datasets are only visible to you',
-        unpublished: 'Unpublished datasets are visible for you and your organization',
+        unpublished:
+          'Unpublished datasets are visible for you and your organization',
         published: 'Published datasets are visible for everyone',
       }),
     },
@@ -65,9 +66,9 @@ export default {
     cssClasses() {
       const classes = {
         stateChipHover: !this.showContent,
-      }
+      };
 
-      classes['px-3'] = this.showOnHover && this.hover || !this.showOnHover;
+      classes['px-3'] = (this.showOnHover && this.hover) || !this.showOnHover;
       classes['px-2'] = this.showOnHover && !this.hover;
 
       return classes;
@@ -95,12 +96,12 @@ export default {
 </script>
 
 <style scoped>
-  .stateChip{
-    height: 1.5rem;
-    font-size: 0.75rem;
-  }
+.stateChip {
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
 
-  .stateChipHover > .v-chip__content > div:nth-child(1) {
-    font-weight: 700;
-  }
+.stateChipHover > .v-chip__content > div:nth-child(1) {
+  font-weight: 700;
+}
 </style>

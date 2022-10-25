@@ -9,25 +9,20 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import globalMethods from '@/factories/globalMethods';
-import ProjectCard from '@/modules/projects/components/ProjectCard';
-import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder';
 // get Project test data and enhance it
+import bark2 from '@/assets/cards/forest/c_b_forest_texture_bark2.jpg';
 import {
   enhanceSubprojectsFromExtras,
 } from '@/factories/projectsDataFactory';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
+import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
-import projectJSON from '../public/testdata/projects.json';
+import projectJSON from './testdata/projects.json';
 import { CARD_VIEWS } from './storybookFolder';
+
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
-
-
-const imgPaths = require.context('../src/assets/cards/forest/', false, /\.jpg$/);
-const imgName = 'c_b_forest_texture_bark2';
-const images = globalMethods.methods.mixinMethods_importImages(imgPaths, imgName);
-const defaultImg = images[`./${imgName}.jpg`];
 
 const methods = {
 //  onCardClick: action('clicked on card'),
@@ -85,7 +80,6 @@ export const ProjectCardsParents = () => ({
           :defaultImg="defaultImg"
           :description="project.description"
           :subProjects="project.subProjects"
-          @cardClick="onCardClick"
         />
       </v-col>
 
@@ -95,7 +89,7 @@ export const ProjectCardsParents = () => ({
     methods,
     data: () => ({
       projectsCards,
-      defaultImg,
+      defaultImg: bark2,
     }),
   });
 
@@ -116,7 +110,6 @@ export const ProjectCardsChildren = () => ({
           :defaultImg="defaultImg"
           :description="project.description"
           :subProjects="project.subProjects"
-          @cardClick="onCardClick"
         />
       </v-col>
 
@@ -126,6 +119,6 @@ export const ProjectCardsChildren = () => ({
     methods,
     data: () => ({
       projectsCards,
-      defaultImg,
+      defaultImg: bark2,
     }),
   });

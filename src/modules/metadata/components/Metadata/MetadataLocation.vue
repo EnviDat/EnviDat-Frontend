@@ -4,21 +4,29 @@
       {{ METADATA_LOCATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="!hasGeom && !hasMapService" class="pa-4 pt-0" :style="`color: ${emptyTextColor};`">
+    <v-card-text
+      v-if="!hasGeom && !hasMapService"
+      class="pa-4 pt-0"
+      :style="`color: ${emptyTextColor};`"
+    >
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-else-if="hasGeom || hasMapService && catalog" class="pa-4 pt-0" >
-
-      <metadata-location-cesium v-show="show3d"
-                                v-bind="mapSize"
-                                :geom="geom"
-                                :bbox="bbox"
-                                :centroid="centroid"
-                                :zoomExtent="zoomExtent"
-                                :color="color"
-                                :fillAlpha="fillAlpha"
-                                :outline-width="outlineWidth">
+    <v-card-text
+      v-else-if="hasGeom || (hasMapService && catalog)"
+      class="pa-4 pt-0"
+    >
+      <metadata-location-cesium
+        v-show="show3d"
+        v-bind="mapSize"
+        :geom="geom"
+        :bbox="bbox"
+        :centroid="centroid"
+        :zoomExtent="zoomExtent"
+        :color="color"
+        :fillAlpha="fillAlpha"
+        :outline-width="outlineWidth"
+      >
         <v-btn v-if="enabled3d" fab small @click="show3d = false">2D</v-btn>
       </metadata-location-cesium>
 
@@ -35,7 +43,9 @@
       >
         <v-menu v-if="hasMapService" offset-x right top>
           <template v-slot:activator="{ on }">
-            <v-btn icon small fab v-on="on" class="white elevation-4"><v-icon>layers</v-icon></v-btn>
+            <v-btn icon small fab v-on="on" class="white elevation-4"
+              ><v-icon>layers</v-icon></v-btn
+            >
           </template>
           <metadata-location-catalog
             :selected="selectedMapService ? selectedMapService.id : null"
@@ -46,27 +56,24 @@
         <v-btn v-if="enabled3d" fab small @click="show3d = true">3D</v-btn>
       </metadata-location-leaflet>
     </v-card-text>
-
   </v-card>
 </template>
 
 <script>
-
 import {
- rewind as tRewind,
- centroid as tCentroid,
- distance as tDistance,
- buffer as tBuffer,
- envelope as tEnvelope,
+  buffer as tBuffer,
+  centroid as tCentroid,
+  distance as tDistance,
+  envelope as tEnvelope,
+  rewind as tRewind,
 } from '@turf/turf';
 
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
-import MetadataLocationCatalog from './MetadataLocationCatalog';
+
 import { createWmsCatalog } from '../GeoservicesMVP/catalogWms';
-
-// const MetadataLocationCesium = () => import('./MetadataLocationCesium');
-const MetadataLocationLeaflet = () => import('./MetadataLocationLeaflet');
-
+import MetadataLocationCatalog from './MetadataLocationCatalog.vue';
+// import MetadataLocationCesium from './MetadataLocationCesium.vue';
+import MetadataLocationLeaflet from './MetadataLocationLeaflet.vue';
 
 export default {
   name: 'MetadataLocation',
@@ -97,7 +104,10 @@ export default {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No location found for this dataset.');
+      return this.mixinMethods_getGenericProp(
+        'emptyText',
+        'No location found for this dataset.',
+      );
     },
     geom() {
       return this.genericProps ? tRewind(this.genericProps.geoJSON) : null;
@@ -114,7 +124,10 @@ export default {
     zoomExtent() {
       let extent = null;
       if (!this.hasMapService) {
-        let dist = tDistance(this.bbox.geometry.coordinates[0][0], this.bbox.geometry.coordinates[0][2]);
+        let dist = tDistance(
+          this.bbox.geometry.coordinates[0][0],
+          this.bbox.geometry.coordinates[0][2],
+        );
         if (dist === 0) {
           dist = 100;
         }
@@ -122,7 +135,7 @@ export default {
           dist = 10000;
         }
 
-        let enve = tBuffer(this.bbox, ((dist + 1) / 4), { units: 'kilometers' });
+        let enve = tBuffer(this.bbox, (dist + 1) / 4, { units: 'kilometers' });
         enve = tEnvelope(enve);
         extent = {
           minX: enve.geometry.coordinates[0][0][0],
@@ -158,7 +171,11 @@ export default {
       const mdWidth = 500;
 
       let width = lgWidth;
-      if (this.$vuetify.breakpoint.xsOnly) { width = mdWidth; } else if (this.$vuetify.breakpoint.mdAndDown) { width = fullWidth; }
+      if (this.$vuetify.breakpoint.xsOnly) {
+        width = mdWidth;
+      } else if (this.$vuetify.breakpoint.mdAndDown) {
+        width = fullWidth;
+      }
 
       let height = heightMd;
       if (this.$vuetify.breakpoint.smAndDown) {
@@ -176,7 +193,7 @@ export default {
     genericProps() {
       createWmsCatalog(this.genericProps.mapService.url)
         // eslint-disable-next-line no-return-assign
-        .then((res) => {
+        .then(res => {
           this.catalog = res;
           this.selectMapService(this.catalog.children[0]);
         });
@@ -185,6 +202,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

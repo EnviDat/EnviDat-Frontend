@@ -1,58 +1,67 @@
 <template>
+  <v-row align="center" justify="end" no-gutters class="fill-height">
+    <v-btn-toggle
+      v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
+      v-model="controlsActive"
+      class="fill-height"
+      borderless
+      tile
+      dense
+    >
+      <v-btn
+        @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
+        class="controlButton"
+        :class="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
+        text
+      >
+        <v-icon>map</v-icon>
+      </v-btn>
+    </v-btn-toggle>
 
-    <v-row align="center"
-            justify="end"
-            no-gutters
-            class="fill-height" >
+    <v-btn-toggle
+      v-if="
+        isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
+          isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)
+      "
+      v-model="controlsActive"
+      class="fill-height ml-2"
+      tile
+      borderless
+      dense
+    >
+      <v-btn
+        v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
+        @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
+        class="controlButton"
+        :class="isActiveControl(LISTCONTROL_LIST_ACTIVE) ? 'secondary' : ''"
+        text
+      >
+        <v-icon>view_headline</v-icon>
+      </v-btn>
 
-        <v-btn-toggle v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
-                      v-model="controlsActive"
-                      class="fill-height"
-                      borderless
-                      tile
-                      dense >
-          <v-btn @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
-                  class="controlButton"
-                  :class="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
-                  text >
-            <v-icon>map</v-icon>
-          </v-btn>
-        </v-btn-toggle>
+      <v-btn
+        v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+        @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
+        class="controlButton"
+        :class="
+          isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''
+        "
+        text
+      >
+        <v-icon>view_comfortable</v-icon>
+      </v-btn>
 
-        <v-btn-toggle v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)
-                        || isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-                      v-model="controlsActive"
-                      class="fill-height ml-2"
-                      tile
-                      borderless
-                      dense >
-
-          <v-btn v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
-                  @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
-                  class="controlButton"
-                  :class="isActiveControl(LISTCONTROL_LIST_ACTIVE) ? 'secondary' : ''"
-                  text >
-            <v-icon >view_headline</v-icon>
-          </v-btn>
-
-          <v-btn v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-                  @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
-                  class="controlButton"
-                  :class="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
-                  text >
-            <v-icon >view_comfortable</v-icon>
-          </v-btn>
-
-          <v-btn v-if="isEnabledControl(3)"
-                  @click="catchControlClick(3)"
-                  class="controlButton"
-                  :class="isActiveControl(3) ? 'highlight' : ''"
-                  text >
-            <v-icon >view_stream</v-icon>
-          </v-btn>
-
-        </v-btn-toggle>
-    </v-row>
+      <v-btn
+        v-if="isEnabledControl(3)"
+        @click="catchControlClick(3)"
+        class="controlButton"
+        :class="isActiveControl(3) ? 'highlight' : ''"
+        text
+      >
+        <v-icon>view_stream</v-icon>
+      </v-btn>
+    </v-btn-toggle>
+  </v-row>
 </template>
 
 <script>
@@ -68,11 +77,11 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import {
+  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
-  LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
 export default {
@@ -112,7 +121,9 @@ export default {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
     },
     isEnabledControl(number) {
-      return this.enabledControls ? this.enabledControls.includes(number) : false;
+      return this.enabledControls
+        ? this.enabledControls.includes(number)
+        : false;
     },
     catchControlClick(number) {
       this.$emit('controlsChanged', number);
@@ -122,7 +133,6 @@ export default {
 </script>
 
 <style>
-
 .envidatControlInfos.small > .v-input__control {
   min-height: 32px !important;
 }
@@ -131,7 +141,7 @@ export default {
 }
 
 .envidatControlInfos > .v-input__slot {
-    margin: 0 !important;
+  margin: 0 !important;
 }
 
 .envidatControlInfos > .v-input__append-outer {
@@ -142,5 +152,4 @@ export default {
   min-width: 36px !important;
   height: 100% !important;
 }
-
 </style>

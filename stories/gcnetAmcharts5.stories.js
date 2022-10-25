@@ -15,7 +15,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-property-newline */
 
-import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart';
+import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart.vue';
 import { CHART_VIEWS } from './storybookFolder';
 
 export default {
@@ -41,11 +41,11 @@ export const Amcharts5SingleChart = () => ({
               no-gutters>
         <v-col >
           <Amcharts5 :chartdivID="this.chartdiv"
-                     :apiUrl="this.apiUrl" 
+                     :apiUrl="this.apiUrl"
                      :yAxisName="this.yAxisName" />
         </v-col>
       </v-row>
-    
+
     </v-col>
     `,
   computed: {
@@ -137,7 +137,7 @@ export const Amcharts5LargeData = () => ({
                      :yAxisName="this.yAxisName" />
         </v-col>
       </v-row>
-      
+
     </v-col>
     </div>
   `,

@@ -1,10 +1,12 @@
-<template  id="MetadataPublications">
-  <expandable-text-layout :title="METADATA_PUBLICATIONS_TITLE"
-                          v-bind="publications"
-                          :showPlaceholder="loading"
-                          :emptyTextColor="emptyTextColor"
-                          :emptyText="emptyText"
-                          class="relatedPubList"/>
+<template id="MetadataPublications">
+  <expandable-text-layout
+    :title="METADATA_PUBLICATIONS_TITLE"
+    v-bind="publications"
+    :showPlaceholder="loading"
+    :emptyTextColor="emptyTextColor"
+    :emptyText="emptyText"
+    class="relatedPubList"
+  />
 </template>
 
 <script>
@@ -19,9 +21,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 
 export default {
@@ -35,7 +37,11 @@ export default {
   },
   computed: {
     loading() {
-      return this.showPlaceholder || this.extractingIds || this.publicationsResolvingIds;
+      return (
+        this.showPlaceholder ||
+        this.extractingIds ||
+        this.publicationsResolvingIds
+      );
     },
     publications() {
       return this.mixinMethods_getGenericProp('publications');
@@ -44,17 +50,22 @@ export default {
       return this.mixinMethods_getGenericProp('extractingIds', false);
     },
     publicationsResolvingIds() {
-      return this.mixinMethods_getGenericProp('publicationsResolvingIds', false);
+      return this.mixinMethods_getGenericProp(
+        'publicationsResolvingIds',
+        false,
+      );
     },
     emptyTextColor() {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'grey');
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No related publications available for this dataset.');
+      return this.mixinMethods_getGenericProp(
+        'emptyText',
+        'No related publications available for this dataset.',
+      );
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     METADATA_PUBLICATIONS_TITLE,
   }),
@@ -62,7 +73,7 @@ export default {
 </script>
 
 <style scoped>
-  .relatedPubList .readableText ul > * + * {
-    padding: 5px 0px;
-  }
+.relatedPubList .readableText ul > * + * {
+  padding: 5px 0px;
+}
 </style>

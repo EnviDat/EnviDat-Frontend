@@ -5,45 +5,41 @@
  * @summary function factory for mode methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2019-11-22 14:10:55
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import { createTag } from '@/factories/metadataFilterMethods';
-
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
-import {
-  swissFLTag,
-  swissFLExtraTags,
-} from '@/modules/metadata/store/swissForestLabTags';
-
+import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
+import { createTag } from '@/factories/metadataFilterMethods';
+import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
+import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
-function getSwissflLogo() {
-  // use the relative path to the assets, because it will run in unit tests
-  const swissflImages = require.context('../assets/modes/swissfl', false, /\.jpg$/);
-  const imgLogo = globalMethods.methods.mixinMethods_importImages(swissflImages, 'logo');
-  return imgLogo['./logo.jpg'];
+/*
+async function getSwissflLogo() {
+  const img = await import('../assets/modes/swissfl/logo.jpg')
+  return img
 }
+*/
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = require.context('../assets/modes/swissfl', false, /\.png$/);
+  const swissflPngs = require.context('@/assets/modes/swissfl', false, /\.png$/);
   const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
+  // const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
+  // const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);
+
   const icons = Object.values(iconImgs);
-  const swissflIconMap = {
+  return {
     dataset: icons[0],
     infrastructure: icons[1],
     model: icons[2],
   };
-
-  return swissflIconMap;
 }
 
-const swissflLogo = getSwissflLogo();
-const swissflIcons = getSwissflIcons();
+// const swissflLogo = getSwissflLogo();
 
 const swissflMode = {
   name: SWISSFL_MODE,
@@ -52,7 +48,7 @@ const swissflMode = {
   mainTag: swissFLTag,
   extraTags: swissFLExtraTags,
   logo: swissflLogo,
-  icons: swissflIcons,
+  icons: getSwissflIcons(),
   extrasKey: 'swissFL_type',
 };
 

@@ -23,11 +23,12 @@ import {
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
-import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors';
-import EditAuthorList from '@/modules/user/components/EditAuthorList';
-import EditAddAuthor from '@/modules/user/components/EditAddAuthor';
+import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
+import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
+import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
-import BaseUserPicker from '@/components/BaseElements/BaseUserPicker';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import {
   combineAuthorLists,
@@ -39,7 +40,6 @@ import {
   mergeEditingAuthor,
 } from '@/factories/authorFactory';
 
-import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';

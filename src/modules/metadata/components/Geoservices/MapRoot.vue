@@ -1,10 +1,12 @@
 <template>
-  <v-container id="MapComponent" fluid class="fill-height pa-0">
+  <v-container id="MapRoot" fluid class="fill-height pa-0">
     <MapOverlayUI
-      :style="`position: absolute; top: 0;
+      :style="
+        `position: absolute; top: 0;
                         z-index: 1000;
                         width: ${showMapSplitCloseButton ? '50' : '95'}%;
-                        height: 95%; `"
+                        height: 95%; `
+      "
       :baseMapLayerName="currentBaseMapLayer"
       :layerConfig="layerConfig"
       :site="site"
@@ -53,26 +55,25 @@
 </template>
 
 <script>
-import { MAP_TOGGLE_BASE_LAYER, eventBus } from '@/factories/eventBus';
-
 import {
   buffer as tBuffer,
   centroid as tCentroid,
   envelope as tEnvelope,
 } from '@turf/turf';
 
+import { eventBus,MAP_TOGGLE_BASE_LAYER } from '@/factories/eventBus';
 import {
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_GEOMCOLLECTION,
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
 } from '@/factories/metaDataFactory';
 
-import MapLeaflet from './MapLeaflet';
-import MapCesium from './MapCesium';
-import MapOverlayUI from './MapOverlayUI';
+import MapCesium from './MapCesium.vue';
+import MapLeaflet from './MapLeaflet.vue';
+import MapOverlayUI from './MapOverlayUI.vue';
 
 export default {
-  name: 'Map',
+  name: 'MapRoot',
   components: {
     MapCesium,
     MapLeaflet,
@@ -156,7 +157,7 @@ export default {
     },
     selectedLayer() {
       return null;
-/*
+      /*
       if (!this.layerConfig || !this.selectedLayerName) {
         return null;
       }

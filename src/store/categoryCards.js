@@ -12,14 +12,13 @@
  */
 
 import {
-  FOREST,
-  SNOW,
-  LAND,
-  HAZARD,
   DIVERSITY,
+  FOREST,
+  HAZARD,
+  LAND,
   METEO,
+  SNOW,
 } from '@/store/categoriesConsts';
-
 // import snowImg from '@/assets/cards/c_b_snow_icy2_small.jpg';
 // import woodImg from '@/assets/cards/c_b_forest_topdown3_small.jpg';
 // import landImg from '@/assets/cards/c_b_landscape_view_small.jpg';
@@ -28,7 +27,6 @@ import {
 // import meteoImg from '@/assets/cards/c_b_c_b_clouds_lighting_small.jpg';
 // import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 // import swissFLLogo from '@/assets/cards/swiss_forest_lab_logo.jpg';
-
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
 export default [

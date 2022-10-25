@@ -19,11 +19,10 @@ const blogState = {
   postContent: null,
 };
 
-
 export const blog = {
   namespaced: true,
   state: blogState,
-/*
+  /*
   getters: {
     loadingList: state => state.loadingList,
     blogPostList: state => state.list,

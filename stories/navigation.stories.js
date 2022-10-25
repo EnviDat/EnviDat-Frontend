@@ -12,8 +12,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import TheNavigation from '@/components/Navigation/TheNavigation';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
+import TheNavigation from '@/components/Navigation/TheNavigation.vue';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
@@ -33,12 +33,14 @@ const dominikHaas = {
   id: '929b0bc7-bfe7-4248-b90c-21f547ffe9d9',
 };
 
+/*
 const methods = {
-//  onMenuClick: action('clicked on menu'),
-//  onSearchClick: action('clicked on search'),
-//  onLoginClick: action('clicked on login'),
+  onMenuClick: action('clicked on menu'),
+  onSearchClick: action('clicked on search'),
+  onLoginClick: action('clicked on login'),
 };
-const appVersion = process.env.VUE_APP_VERSION;
+*/
+const appVersion = import.meta.env.VITE_VERSION;
 
 export default {
   title: `${NAVIGATION_VIEWS} / Redesigned Navigation`,
@@ -65,18 +67,15 @@ export const Menu = () => ({
     navigationItems,
     appVersion,
   }),
-  methods,
+  // methods,
 });
 
 export const ToolbarwithMode = () => ({
   components: { TheNavigationToolbar },
   template: `
       <the-navigation-toolbar :mode="SWISSFL_MODE"
-                              v-on:menuClick="onMenuClick"
-                              v-on:searchClick="onSearchClick"
-                              v-on:loginClick="onLoginClick"
             />`,
-  methods,
+  // methods,
   data: () => ({
     SWISSFL_MODE,
   }),
@@ -87,11 +86,8 @@ export const ToolbarSignedin = () => ({
   template: `
     <the-navigation-toolbar :signedInUser="dominikHaas"
                             :userNavigationItems="userMenuItems"
-                            v-on:menuClick="onMenuClick"
-                            v-on:searchClick="onSearchClick"
-                            v-on:loginClick="onLoginClick"
           />`,
-  methods,
+  // methods,
   data: () => ({
     dominikHaas,
     userMenuItems,
@@ -101,18 +97,17 @@ export const ToolbarSignedin = () => ({
 export const MenuAndToolbar = () => ({
   components: { TheNavigation, TheNavigationToolbar },
   template: `
-    <the-navigation :navigationItems="navigationItems" />
-
-    <the-navigation-toolbar :signedInUser="dominikHaas"
-                            :userNavigationItems="userMenuItems"
-                            v-on:menuClick="onMenuClick"
-                            v-on:searchClick="onSearchClick"
-                            v-on:loginClick="onLoginClick" />
+    <div>
+      <the-navigation :navigationItems="navigationItems" />
+  
+      <the-navigation-toolbar :signedInUser="dominikHaas"
+                              :userNavigationItems="userMenuItems" />
+    </div>
   `,
   data: () => ({
     dominikHaas,
     navigationItems,
     userMenuItems,
   }),
-  methods,
+  // methods,
 });

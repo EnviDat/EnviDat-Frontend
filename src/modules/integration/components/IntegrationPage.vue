@@ -95,9 +95,9 @@ import {
   GET_INTEGRATION_LIST,
 } from '@/modules/integration/store/integrationMutationsConsts';
 
-import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout';
-import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
-import ImageTextCard from '@/components/Layouts/ImageTextCard';
+import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
+import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
+import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 
 export default {
   name: INTEGRATION_PAGENAME,

@@ -66,10 +66,10 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
-const API_BASE = process.env.VUE_APP_API_BASE_URL || '/api/action/';
+const PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -273,7 +273,7 @@ export default {
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
                 API_BASE, PROXY);
 
-    if (process.env.NODE_ENV === 'development' && useTestdata) {
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/packagelist.json';
     }
 

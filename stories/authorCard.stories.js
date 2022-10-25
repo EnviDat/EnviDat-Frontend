@@ -5,14 +5,14 @@ import {
 } from '@storybook/addon-knobs';
 */
 
-import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import authorCollection from '../public/testdata/authorCollection.json';
+import authorCollection from './testdata/authorCollection.json';
 import { CARD_VIEWS } from './storybookFolder';
 
 import unFormatedMetadataCards from './js/metadata';
@@ -88,8 +88,8 @@ export const AuthorCardViews = () => ({
       <v-col cols="12" md="4" pt-5 >
 
         <author-card :author="authorFromCollection" />
-      </v-col>      
-      
+      </v-col>
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" />
       </v-col>

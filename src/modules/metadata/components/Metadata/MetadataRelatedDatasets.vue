@@ -1,11 +1,13 @@
-<template >
-  <expandable-text-layout  id="MetadataRelatedDatasets"
-                           :title="METADATA_DATASETS_TITLE"
-                           v-bind="datasets"
-                          :showPlaceholder="showPlaceholder"
-                          :emptyTextColor="emptyTextColor"
-                          :emptyText="emptyText"
-                          class="relatedPubList" />
+<template>
+  <expandable-text-layout
+    id="MetadataRelatedDatasets"
+    :title="METADATA_DATASETS_TITLE"
+    v-bind="datasets"
+    :showPlaceholder="showPlaceholder"
+    :emptyTextColor="emptyTextColor"
+    :emptyText="emptyText"
+    class="relatedPubList"
+  />
 </template>
 
 <script>
@@ -20,9 +22,9 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout';
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
 
 export default {
@@ -39,14 +41,16 @@ export default {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'grey');
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No related datasets available for this dataset.');
+      return this.mixinMethods_getGenericProp(
+        'emptyText',
+        'No related datasets available for this dataset.',
+      );
     },
     datasets() {
       return this.mixinMethods_getGenericProp('datasets');
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     METADATA_DATASETS_TITLE,
   }),
@@ -54,7 +58,7 @@ export default {
 </script>
 
 <style scoped>
-  .relatedPubList .readableText ul > * + * {
-    padding: 5px 0;
-  }
+.relatedPubList .readableText ul > * + * {
+  padding: 5px 0;
+}
 </style>

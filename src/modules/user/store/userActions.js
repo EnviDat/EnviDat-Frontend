@@ -55,14 +55,15 @@ import {
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
-  API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
 
 const sleep = (milliseconds) =>
+  // eslint-disable-next-line no-promise-executor-return
   new Promise((resolve) => setTimeout(resolve, milliseconds));
 
 

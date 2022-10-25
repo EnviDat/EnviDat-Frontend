@@ -79,9 +79,9 @@ import {
   EDIT_METADATA_AUTHORSLIST_TITLE,
 } from '@/factories/metadataConsts';
 
-import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors';
-import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import EditDataCredits from '@/modules/user/components/edit/EditDataCredits';
+import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
+import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
 import {
   AUTHOR_SEARCH_CLICK,

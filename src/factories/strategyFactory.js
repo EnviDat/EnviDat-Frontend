@@ -1,14 +1,14 @@
-import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard';
+import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
 
 import {
-  OPEN_TEXT_PREVIEW,
   INJECT_TEXT_PREVIEW,
-  SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-  SELECT_EDITING_AUTHOR_PROPERTY,
+  OPEN_TEXT_PREVIEW,
   SELECT_EDITING_AUTHOR,
+  SELECT_EDITING_AUTHOR_PROPERTY,
   SELECT_EDITING_DATASET,
   SELECT_EDITING_DATASET_PROPERTY,
+  SELECT_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from './eventBus';
 
 export const localIdProperty = 'localId';

@@ -22,7 +22,12 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon
+                      color="secondary"
+                      style="animation: progress-circular-rotate 3s linear infinite"
+                      x-large
+                      >settings</v-icon
+                    >
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -30,32 +35,34 @@
                   </v-col>
 
                   <v-col class="pt-2 text-body-1">
-                    Editing metadata and uploading resources is still under construction.
-                    <br>
-                    Please edit resources via the legacy website by clicking on the button below.
+                    Editing metadata and uploading resources is still under
+                    construction.
+                    <br />
+                    Please edit resources via the legacy website by clicking on
+                    the button below.
                   </v-col>
                 </v-row>
 
-                <v-row no-gutters
-                       class="pt-6" >
-
+                <v-row no-gutters class="pt-6">
                   <v-col class="pr-2 text-left">
-                    <BaseRectangleButton buttonText="Edit Resources"
-                                         color="secondary"
-                                         :url="linkEditResourceCKAN" />
-
+                    <BaseRectangleButton
+                      buttonText="Edit Resources"
+                      color="secondary"
+                      :url="linkEditResourceCKAN"
+                    />
                   </v-col>
 
                   <v-col class="pr-2 text-right">
-                    <BaseRectangleButton buttonText="Deselect Resource"
-                                         color="error"
-                                          @clicked="catchEditResourceClose"/>
+                    <BaseRectangleButton
+                      buttonText="Deselect Resource"
+                      color="error"
+                      @clicked="catchEditResourceClose"
+                    />
                   </v-col>
                 </v-row>
               </v-container>
             </v-card>
             <!-- TEMPORARY PLACEHOLDER END -->
-
           </v-col>
         </v-row>
 
@@ -78,7 +85,12 @@
 
                 <v-row no-gutters align="center" class="pt-6">
                   <v-col cols="1">
-                    <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                    <v-icon
+                      color="secondary"
+                      style="animation: progress-circular-rotate 3s linear infinite"
+                      x-large
+                      >settings</v-icon
+                    >
                   </v-col>
 
                   <v-col class="text-h5" cols="11">
@@ -87,18 +99,18 @@
 
                   <v-col class="pt-2 text-body-1">
                     Adding new resources is under construction.
-                    <br>
-                    Please add resources via the legacy website by clicking on the button below.                  </v-col>
+                    <br />
+                    Please add resources via the legacy website by clicking on
+                    the button below.
+                  </v-col>
                 </v-row>
 
-                <v-row no-gutters
-                       class="pt-6"
-                        justify="end">
-
-                  <BaseRectangleButton buttonText="Add Resources"
-                                       color="secondary"
-                                       :url="linkAddNewResourcesCKAN" />
-
+                <v-row no-gutters class="pt-6" justify="end">
+                  <BaseRectangleButton
+                    buttonText="Add Resources"
+                    color="secondary"
+                    :url="linkAddNewResourcesCKAN"
+                  />
                 </v-row>
               </v-container>
             </v-card>
@@ -124,28 +136,26 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import {
   CANCEL_EDITING_RESOURCE,
-  SAVE_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
-  SELECT_EDITING_RESOURCE_PROPERTY,
   eventBus,
+  SAVE_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
-
+import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 // import { initializeLocalResource } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-
-import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles';
-// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl';
-// import EditResource from '@/modules/user/components/EditResource';
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
+// import EditResource from '@/modules/user/components/EditResource.vue';
 
 export default {
   name: 'EditDataAndResources',
@@ -197,7 +207,11 @@ export default {
   mounted() {
     // Add editing button to resource card
     if (Array.isArray(this.resources) && this.resources.length > 0) {
-      enhanceElementsWithStrategyEvents(this.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+      enhanceElementsWithStrategyEvents(
+        this.resources,
+        SELECT_EDITING_RESOURCE_PROPERTY,
+        true,
+      );
     }
   },
   beforeDestroy() {},
@@ -226,7 +240,7 @@ export default {
       const res = this.resources;
 
       if (res?.length > 0) {
-        const selected = res.filter((r) => r.isSelected);
+        const selected = res.filter(r => r.isSelected);
 
         if (selected.length > 0) {
           selectedRes = selected[0];
@@ -236,11 +250,11 @@ export default {
       return selectedRes;
     },
     linkAddNewResourcesCKAN() {
-//      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
+      //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
       return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
     },
     linkEditResourceCKAN() {
-//      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
+      //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
       return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
     },
     validations() {
@@ -248,7 +262,7 @@ export default {
     },
   },
   methods: {
-/*
+    /*
     createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
@@ -300,7 +314,12 @@ export default {
       eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
     },
     validateField(field) {
-      isFieldValid(field.property,field.value,this.validations,this.validationErrors);
+      isFieldValid(
+        field.property,
+        field.value,
+        this.validations,
+        this.validationErrors,
+      );
     },
   },
   data: () => ({
@@ -311,7 +330,7 @@ export default {
       description: null,
       url: null,
     },
-    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
   }),
 };
 </script>
