@@ -82,12 +82,14 @@
 
             <v-col @click="!signInDisabled  ? catchSigninClicked() : undefined"
                    xl="7"
+                   class="px-1"
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <div v-bind="attrs"
                         v-on="on"
+                        style="text-align: right;"
                         class="text-body-2">
                     {{ signInText }}
                   </div>
