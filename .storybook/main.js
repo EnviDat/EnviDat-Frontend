@@ -16,7 +16,9 @@ const cesiumSource = '../node_modules/cesium/Source';
 
 module.exports = {
   "stories": [
-    "../stories/**/*.stories.@(js)"
+    "../stories/**/*.stories.mdx",
+    "../stories/**/*.stories.@(js|jsx|ts|tsx)",
+//    "../stories/**/*.stories.@(js)"
   ],
 //  "../stories/**/*.stories.mdx",
 //  "../stories/**/*.stories.@(js|jsx|ts|tsx)"
