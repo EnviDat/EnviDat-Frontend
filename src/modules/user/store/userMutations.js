@@ -270,13 +270,13 @@ export default {
       dSet.role = getCollaboratorCapacity(dSet.id, collaboratorIds);
     }
 
-    datasets = enhanceMetadataFromCategories(this, datasets);
+    const enhancedDatasets = enhanceMetadataFromCategories(this, datasets) || [];
 
-    enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
+    enhanceElementsWithStrategyEvents(enhancedDatasets, SELECT_EDITING_DATASET_PROPERTY);
 
     const collaboratorDatasets = [
       ...state.collaboratorDatasets,
-      ...datasets,
+      ...enhancedDatasets,
     ];
 
     // use the $set to make sure updates are triggered
