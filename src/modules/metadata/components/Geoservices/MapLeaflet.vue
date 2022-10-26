@@ -170,10 +170,10 @@ export default {
       if (isGcnet) {
         this.siteLayer.eachLayer(layer => {
           layer.bindTooltip(
-            `<div">
-            <b>${layer.feature.properties.name}</b>
-            <p>
-            Elevation: ${layer.feature.properties.elevation}
+            `<div>
+              <b>${layer.feature.properties.name}</b>
+              <br/>
+              Elevation: ${layer.feature.properties.elevation}
             </div>
             `,
             {
