@@ -131,8 +131,5 @@ export default {
 </script>
 
 <style scoped>
-.bodyTitle {
-  font-family: 'Baskervville', serif !important;
-  font-weight: 700 !important;
-}
+
 </style>

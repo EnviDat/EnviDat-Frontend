@@ -31,7 +31,7 @@
                       dark
                       small
                       :class="dark ? 'white--text' : 'black--text'">
-                hourglass_empty
+                hourglass_bottom
               </v-icon>
             </template>
 
@@ -431,7 +431,11 @@ export default {
               background-position: center, center; background-size: cover;`;
     },
     authorIsDead() {
-      return this.asciiDead && this.author.fullName ? this.author.fullName.match(this.asciiDead) : false;
+      if (!this.asciiDead) {
+        return false;
+      }
+
+      return this.author?.firstName?.includes(this.asciiDead) || this.author?.lastName?.includes(this.asciiDead) || false;
     },
   },
   methods: {

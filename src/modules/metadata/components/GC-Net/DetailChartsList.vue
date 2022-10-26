@@ -28,23 +28,23 @@
         </v-row>
       </v-col>
 
-      <v-col
+      <v-col v-show="currentStation && fileObjects.length > 0"
         cols="9"
         class="px-1 scrollableList"
         ref="scrollableList"
         id="scrollableList"
         v-scroll.self="onScroll"
       >
-        <v-row v-if="currentStation && fileObjects.length > 0" no-gutters>
+        <v-row v-for="fileObject in fileObjects"
+               :key="fileObject.fileName"
+               :ref="chartCardId(fileObject)"
+               :id="chartCardId(fileObject)"
+               no-gutters
+        >
           <!-- :ref="fileObject.fileName" -->
 
-          <v-col
-            v-for="fileObject in fileObjects"
-            :key="fileObject.fileName"
-            :ref="chartCardId(fileObject)"
-            :id="chartCardId(fileObject)"
-            cols="12"
-            class="py-2"
+          <v-col cols="12"
+                  class="py-2"
           >
             <DetailChart
               :apiUrl="currentStation.envidatConfig.apiUrl"
@@ -364,7 +364,6 @@ export default {
 <style scoped>
 .scrollableList {
   overflow: auto scroll;
-  /* height: 100vh; */
-  max-height: 850px;
+  height: calc(100vh - 132px);
 }
 </style>

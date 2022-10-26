@@ -20,7 +20,7 @@
     <v-tooltip v-if="authorIsDead"
                 bottom>
       <template v-slot:activator="{ on }">
-        <v-icon v-on="on" x-small >hourglass_empty</v-icon>
+        <v-icon v-on="on" x-small >hourglass_bottom</v-icon>
       </template>
       {{ authorPassedInfo }}
     </v-tooltip>

@@ -640,9 +640,7 @@ export default {
 </script>
 
 <style scoped>
-.envidatTitle {
-  font-family: 'Baskervville', serif !important;
-}
+
 </style>
 
 <style>

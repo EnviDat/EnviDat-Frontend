@@ -139,10 +139,4 @@ export default {
 
 <style scoped>
 
-  .headerTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-  }
-
 </style>

@@ -17,7 +17,7 @@
         align="center"
         no-gutters
       >
-        <v-col class="grow" :class="mdScreen ? 'caption' : 'body-2'">
+        <v-col class="grow" :class="mdScreen ? 'text-caption' : 'body-2'">
           {{ highlightedText }}
         </v-col>
 
@@ -37,7 +37,7 @@
       <div
         v-if="!topLayout"
         class="my-0"
-        :class="mdScreen ? 'caption' : 'body-2'"
+        :class="mdScreen ? 'text-caption' : 'body-2'"
       >
         {{ highlightedText }}
       </div>

@@ -464,13 +464,6 @@ export default {
 
 <style scoped>
 
-  .headerTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  }
-
   .headerInfo {
     font-weight: 400;
     opacity: 0.85;

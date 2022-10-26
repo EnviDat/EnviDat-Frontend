@@ -52,6 +52,7 @@
 import dataCreatorImg from '@/modules/projects/assets/data_creator.jpg';
 
 export default {
+  name: 'DataProducerCard',
   props: {
     titleText: String,
     loginText: String,
@@ -77,7 +78,5 @@ export default {
 </script>
 
 <style scoped>
-.dataproducer_title {
-  font-family: 'Baskervville', serif !important;
-}
+
 </style>

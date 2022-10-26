@@ -18,7 +18,7 @@
           />
         </v-col>
 
-        <v-col cols="7" class="text-h5 cardTitle px-4" align-self="center">
+        <v-col cols="7" class="text-h5 px-4" align-self="center">
           {{ title }}
         </v-col>
       </v-row>
@@ -98,14 +98,6 @@ export default {
 </script>
 
 <style scoped>
-.cardTitle {
-  font-family: 'Baskervville', serif !important;
-}
-
-.compactTitle {
-  font-size: 15px !important;
-  line-height: 1.3em !important;
-}
 
 .v-card__media img {
   width: inherit !important;

@@ -39,7 +39,7 @@
 
         <v-col :cols="currentColumnNum" class="pa-2">
           <v-row no-gutters>
-            <v-col class="text-h5 v-card__title" style="font-weight: 700;">
+            <v-col class="text-h5 v-card__title" >
               {{ station.name }}
             </v-col>
           </v-row>
@@ -113,7 +113,7 @@
 
               <v-row no-gutters>
                 <BaseStatusLabelView
-                  v-if="infoObject"
+                  v-if="infoObject && !errorObject"
                   :loading="chartIsLoading"
                   :statusIcon="infoObject.icon"
                   :statusColor="infoObject.icon"
@@ -262,8 +262,8 @@ export default {
     infoObject() {
       if (this.isFallback) {
         return {
-          title: 'Recent data unavailable, fallback data is shown',
-          message: `The main data at ${this.apiUrl} could not been loaded. Data from ${this.fallbackUrl} is shown.`,
+          title: 'No data since 2 weeks',
+          message: 'No data for this station since 2 weeks, showing older data.',
           icon: 'info',
         };
       }
@@ -284,9 +284,7 @@ export default {
     errorObject() {
       if (this.dataError) {
         return {
-          title: `Chart ${
-            this.isFallback ? 'fallback' : ''
-          } data could not been loaded`,
+          title: 'Chart data for preview could not been loaded',
           message: this.dataError,
           icon: 'error',
         };
@@ -341,17 +339,13 @@ export default {
       this.chartIsLoading = true;
       this.isFallback = isFallback;
 
-      if (!isFallback) {
-        url = addStartEndDateUrl(url);
-      }
+      // 2 weeks for the recent data, 2 years for historical
+      const dayRange = isFallback ? 45 : 14;
+      const apiUrl = addStartEndDateUrl(url, dayRange);
 
       axios
-        .get(url)
+        .get(apiUrl)
         .then(response => {
-          this.chartIsLoading = false;
-        this.chartIsLoading = false;
-          this.chartIsLoading = false;
-        this.chartIsLoading = false;
           this.chartIsLoading = false;
           this.data = response.data;
 
@@ -360,17 +354,17 @@ export default {
 
             this.setFirstParameterData(this.data);
           } else if (isFallback) {
-            this.dataError = `${this.noDataText} on the fallback for ${this.fallbackUrl}`;
+            this.dataError = this.noDataText;
           } else {
-            this.loadJsonFiles(this.fallbackUrl, true);
+            this.loadJsonFiles(url, true);
           }
         })
         .catch(error => {
           if (isFallback) {
             this.chartIsLoading = false;
-            this.dataError = `${error.message} on the fallback for ${this.fallbackUrl}`;
+            this.dataError = error.message;
           } else {
-            this.loadJsonFiles(this.fallbackUrl, true);
+            this.loadJsonFiles(url, true);
           }
         });
     },
@@ -575,7 +569,7 @@ export default {
   data: () => ({
     microChart: null,
     dataError: '',
-    noDataText: 'No preview data available',
+    noDataText: 'No preview data available, click on the chart icon to see all data.',
     chartIsLoading: true,
     isFallback: false,
     imageError: false,

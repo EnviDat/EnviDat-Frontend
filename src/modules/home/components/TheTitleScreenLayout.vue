@@ -95,9 +95,6 @@ export default {
 </script>
 
 <style scoped>
-.envidatTitle {
-  font-family: 'Baskervville', serif !important;
-}
 
 .mt-md-pct {
   margin-top: 15%;

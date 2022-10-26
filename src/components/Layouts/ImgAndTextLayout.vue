@@ -2,7 +2,7 @@
   <v-col cols="12" class="pa-0" style="position: relative;">
     <v-row class="text-container" align="center" justify="center">
       <v-col
-        class="text-center text"
+        class="text-center text headerTitle"
         cols="12"
         :class="{
           'display-3': $vuetify.breakpoint.mdAndUp,
@@ -49,8 +49,7 @@ export default {
 
 <style scoped>
 .text {
-  font-family: 'Baskervville', serif !important;
-  letter-spacing: 0em !important;
+  letter-spacing: 0 !important;
   text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
 }
 .text-container {
