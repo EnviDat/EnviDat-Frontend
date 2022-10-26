@@ -694,12 +694,23 @@ export default {
 $font-family: 'Raleway', sans-serif;
 
 .envidat-font-overwrite {
-  .headline,
+  font-family: $font-family, sans-serif !important;
+
   [class*='display-'],
   [class*='text-'] {
     font-family: $font-family, sans-serif !important;
   }
-  font-family: $font-family, sans-serif !important;
+
+  [class*='headerTitle'] {
+    font-family: 'Baskervville', serif !important;
+    font-weight: 400;
+    opacity: 1;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+  }
+
+  [class*='envidatTitle'] {
+    font-family: 'Baskervville', serif !important;
+  }
 }
 </style>
 
@@ -771,8 +782,7 @@ $font-family: 'Raleway', sans-serif;
 }
 
 .envidatTitle {
-  font-family: "Baskervville", serif !important;
-  letter-spacing: 0em !important;
+  letter-spacing: 0 !important;
 }
 
 .metadataInfoIcon,

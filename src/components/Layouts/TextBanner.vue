@@ -78,7 +78,5 @@ export default {
 </script>
 
 <style scoped>
-.dataproducer_title {
-  font-family: 'Baskervville', serif !important;
-}
+
 </style>
