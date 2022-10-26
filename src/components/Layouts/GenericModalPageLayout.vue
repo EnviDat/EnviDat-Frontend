@@ -6,7 +6,7 @@
             persistent
             style="z-index: 1030;">
 
-    <v-card class="modalHeight pa-0 ml-15" >
+    <v-card class="pa-0 ml-15" >
 
       <v-sheet flat
                dark
@@ -102,10 +102,5 @@ export default {
 
 
 <style scoped>
-
-  .modalHeight {
-    height: calc(100vh - 90px);
-    max-height: 95% !important;
-  }
 
 </style>

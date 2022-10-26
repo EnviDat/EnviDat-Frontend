@@ -716,6 +716,10 @@ $font-family: 'Raleway', sans-serif;
 
 <style>
 
+.v-dialog:not(.v-dialog--fullscreen) {
+  max-height: 95% !important;
+}
+
 .envidatNavbar {
   position: -webkit-sticky;
   position: sticky;
