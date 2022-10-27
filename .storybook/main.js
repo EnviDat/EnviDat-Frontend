@@ -13,6 +13,7 @@ const VitePluginFonts = require('vite-plugin-fonts').default;
 
 const cesiumSource = '../node_modules/cesium/Source';
 
+const version = process.env.npm_package_version;
 
 module.exports = {
   "stories": [
@@ -99,6 +100,13 @@ module.exports = {
           // resolve vue for vite (based on rollup) https://v2.vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds
           { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
         ],
+      },
+      build: {
+        minify: false,
+        sourcemap: false,
+        define: {
+          'import.meta.env.VITE_VERSION': JSON.stringify(version),
+        },
       },
     });
   },
