@@ -1,7 +1,12 @@
 <template>
-  <div class="v-badge">
-    {{ text }}
-    <span></span>
+  
+  <div class="shinyBadge"
+        :style="isSmall ? '' : ''"
+        :class="isSmall ? 'v-btn v-size--x-small px-2 pt-2 smallBadge' : ''">
+
+    {{ upperText }}
+
+    <span v-if="showShine"></span>
   </div>
 </template>
 
@@ -13,25 +18,47 @@ export default {
       type: String,
       required: true,
     },
+    isSmall: {
+      type: Boolean,
+      default: false,
+    },
+    showShine: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  computed: {
+    upperText() {
+      return this.text.toUpperCase();
+    },
   },
 };
 </script>
 
 <style scoped >
 
-.v-badge {
+.shinyBadge {
   position: relative;
+  display: inline-block;
+  line-height: 0.5rem;
   text-decoration: none;
   padding: 8px 16px;
   color: white;
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(#6D67B9, #5747AC);
+  background: linear-gradient(#35a89d, #00897b);
   border-radius: 999px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   user-select: none;
+  font-size: 0.7rem;
 }
-.v-badge span {
+
+.smallBadge {
+  font-size: 0.5rem;
+  line-height: 0.25rem;
+}
+
+.shinyBadge span {
   width: 25px;
   height: 25px;
   position: absolute;
@@ -40,23 +67,24 @@ export default {
   transform: rotate(-20deg);
   filter: blur(0.5px);
 }
-.v-badge span:before, .v-badge span:after {
+.shinyBadge span:before, .shinyBadge span:after {
   content: "";
   position: absolute;
 }
-.v-badge span:before {
+.shinyBadge span:before {
   width: 1px;
   height: 100%;
   left: 12px;
   background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.7), transparent);
 }
-.v-badge span:after {
+.shinyBadge span:after {
   width: 100%;
   height: 1px;
   top: 12px;
   background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.7), transparent);
 }
-.v-badge:before {
+
+.shinyBadge:before {
   content: "";
   position: absolute;
   z-index: -1;

@@ -11,35 +11,45 @@
 
 import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
-import { BUTTONS_VIEWS } from './storybookFolder';
+import { CHIPS } from './storybookFolder';
 
 export default {
-  title: `${BUTTONS_VIEWS} / Shiny Badges`,
+  title: `${CHIPS} / Shiny Badges`,
   decorators: [],
   parameters: {},
 };
+/*
 const version = import.meta.env.VITE_VERSION;
+*/
 
 export const BaseShinyBadgeViews = () => ({
     components: { BaseShinyBadge },
     template: `
     <v-row style="border: solid 1px; background-color: grey;">
-      <v-col cols="1" >
+    
+      <v-col >
         <BaseShinyBadge text="some long text" />
       </v-col>
 
-
-      <v-col cols="1">
+      <v-col >
         <BaseShinyBadge text="v_0.7.5"  />
       </v-col>
 
-      <v-col cols="1">
+      <v-col >
+        <BaseShinyBadge text="v_0.7.5" :isSmall="true" />
+      </v-col>
+
+      <v-col >
+        <BaseShinyBadge text="v_0.7.5" :isSmall="true" :showShine="false" />
+      </v-col>
+
+      <v-col >
         <BaseShinyBadge :text="version"  />
       </v-col>
     
     </v-row>`,
     data: () => ({
-      version,
+      version : 'version',
     }),
   });
 
