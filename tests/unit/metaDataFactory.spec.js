@@ -1,3 +1,5 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   createHeader,
   createBody,
@@ -14,8 +16,8 @@ import {
 } from '@/factories/metaDataFactory';
 
 
-import packagelist from '@/../public/testdata/packagelist.json';
 import categoryCards from '@/store/categoryCards';
+import packagelist from '@/../stories/testdata/packagelist.json';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {

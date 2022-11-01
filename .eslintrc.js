@@ -5,13 +5,17 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 2021,
   },
-  env: { es2021: true },
+  env: {
+    es2021: true,
+    'vitest-globals/env': true,
+  },
   extends: [
     'airbnb-base',
     'plugin:vue/essential',
     'plugin:import/recommended',
     'prettier',
     'plugin:storybook/recommended',
+    'plugin:vitest-globals/recommended',
   ],
   settings: {
     'import/resolver': {
@@ -76,10 +80,4 @@ module.exports = {
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
   },
-  overrides: [{
-    files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
-    env: {
-      jest: true,
-    },
-  }],
 };

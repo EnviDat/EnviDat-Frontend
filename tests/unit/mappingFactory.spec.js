@@ -1,4 +1,4 @@
-// noinspection DuplicatedCode
+import { it, describe, expect } from 'vitest';
 
 import {
   getBackendJSON,

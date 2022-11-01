@@ -78,7 +78,7 @@ run-tests:
   before_script:
     - npm install
   script:
-    - npm run test:unit
+    - npm run test
 
 # visual-regression:
 #   extends: .trigger-rules
@@ -116,15 +116,11 @@ modify-env:
       key = 'VITE_ENVIDAT_PROXY';
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
-      dotenv.set_key(file, key, value, quote_mode='never'); \
+      dotenv.set_key(file, key, value, quote_mode='never');
       \
       key = 'VITE_CONFIG_URL';
-      value = 'https://frontend-config.s3-zh.os.switch.ch/prod.json' \
-      if branch == 'main' \
-      else ( \
-          f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json' \
-      );
-      dotenv.set_key(file, key, value, quote_mode='never'); \
+      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json';
+      dotenv.set_key(file, key, value, quote_mode='never');
       \
       key = 'VITE_ENVIDAT_DOMAIN';
       value = 'https://frontend.s3-website-zh.os.switch.ch' \

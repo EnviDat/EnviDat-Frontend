@@ -1,3 +1,5 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   getWebpImagePathWithFallback,
 } from '@/factories/enhancementsFactory';
@@ -43,5 +45,5 @@ describe('enhancementsFactory - getWebpImagePathWithFallback', () => {
     const webpRelative = getWebpImagePathWithFallback(imagePathWithExt, true);
     expect(webpRelative).toBe(expectedImagePathWithExt);
   });
-  
+
 });
