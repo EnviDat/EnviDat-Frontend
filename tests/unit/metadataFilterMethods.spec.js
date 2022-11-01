@@ -1,3 +1,5 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   createTag,
   countTags,
@@ -25,7 +27,7 @@ it('metadataFilterMethods Tag - creation - defaults', () => {
 
 it('metadataFilterMethods Tag - creation - options tag overload', () => {
   const existingTag = {
- name: 'dude', enabled: false, color: '#ffffff', count: 5, 
+ name: 'dude', enabled: false, color: '#ffffff', count: 5,
 };
   const tag = createTag(existingTag.name, { tag: existingTag });
   expect(tag.name).toBe(existingTag.name);
@@ -61,7 +63,7 @@ function getMockDatasets(two = false, three = false, four = false) {
   if (four) {
     return [{ tags: tags1 }, { tags: tags2 }, { tags: tags1 }, { tags: tags2 }];
   }
-  
+
   return [{ tags: tags1 }];
 }
 

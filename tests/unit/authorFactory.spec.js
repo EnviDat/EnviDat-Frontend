@@ -1,10 +1,12 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 
-import packagelist from '@/../public/testdata/packagelist.json';
+import packagelist from '@/../stories/testdata/packagelist.json';
 
 // const metadatasContent = {};
 // packagelist.result.forEach((entry) => {
@@ -58,7 +60,7 @@ describe('authorFactory - extractAuthorsMap', () => {
       const author = authorMap[authorFullName];
 
       // console.log('authorFullName: ' + authorFullName + ' fullName: ' + author.fullName + ' firstName: ' + author.firstName + ' lastName: ' + author.lastName);
-            
+
       expect(author.firstName).toBeDefined();
       expect(author.lastName).toBeDefined();
       expect(author.datasetCount).toBeGreaterThanOrEqual(1);
@@ -88,7 +90,7 @@ describe('authorFactory - getFullAuthorsFromDataset', () => {
 
     for (let i = 0; i < fullAuthors.length; i++) {
       const author = fullAuthors[i];
-      
+
       expect(author.firstName).toBeDefined();
       expect(author.lastName).toBeDefined();
       expect(author.datasetCount).toBeGreaterThanOrEqual(1);
