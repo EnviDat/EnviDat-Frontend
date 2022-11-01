@@ -1,10 +1,11 @@
+import { it, describe, expect } from 'vitest';
 
-import packagelist from '@/../public/testdata/packagelist.json';
-import projectJSON from '@/../public/testdata/projects.json';
 import {
   enhanceSubprojectsFromExtras,
   enhanceProjectDatasets,
 } from '@/factories/projectsDataFactory';
+import packagelist from '@/../stories/testdata/packagelist.json';
+import projectJSON from '@/../stories/testdata/projects.json';
 
 const metadatasContent = {};
 packagelist.result.forEach((entry) => {

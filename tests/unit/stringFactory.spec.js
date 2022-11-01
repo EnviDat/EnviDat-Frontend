@@ -1,3 +1,5 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   getResearchUnitDatasets,
   renderMarkdown,
@@ -43,7 +45,7 @@ describe('stringFactory - renderMarkdown', () => {
     expect(markOut.includes(hrTag)).toBeTruthy();
     expect(markOut.includes(aTag)).toBeTruthy();
   });
-  
+
 });
 
 describe('stringFactory - stripMarkdown', () => {
