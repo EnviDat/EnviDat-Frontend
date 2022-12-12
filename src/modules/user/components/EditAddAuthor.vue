@@ -495,7 +495,7 @@ export default {
             authorObject = autoAuthor;
           }
         }
-        
+
       }
 
       if (isObjectValid(this.validationProperties, authorObject, this.validations, this.validationErrors)) {

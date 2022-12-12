@@ -120,8 +120,8 @@ function writeUsersToFile(data, fileName) {
     }
 
     return console.log(`Users extracted to ${outputPath}${fileName}. Wrote ${data.length} lines.`);
-  }); 
-  
+  });
+
 }
 
 function getCSVData (userMap) {
@@ -162,4 +162,3 @@ const userMap = genericExtractUser(packageList, getDataMaintainer);
 const csvString = getCSVData(userMap);
 
 writeUsersToFile(csvString, outputPath + outputDataMaintainersCSV);
-

@@ -47,7 +47,7 @@ export const EditUserViews = () => ({
 
       <v-col cols="6">
         {{ user1.fullName + ' Edit User Profile' }}
-        <EditUserProfile :firstName="user1.firstName" 
+        <EditUserProfile :firstName="user1.firstName"
                           :lastName="user1.lastName"
                           :email="user1.email"
                           />
@@ -71,7 +71,7 @@ export const EditUserViews = () => ({
                          error-details="Some Validation Error Text"
         />
       </v-col>
-    
+
     </v-row>
     `,
   data: () => ({
@@ -116,7 +116,7 @@ export const UserCardEditingViews = () => ({
                              :email="author.email"
             />
           </template>
-          
+
         </FlipLayout>
       </v-col>
 
@@ -181,7 +181,7 @@ export const UserCardEditingViews = () => ({
 
         </FlipLayout>
       </v-col>
-        
+
     </v-row>
     `,
   created() {
@@ -211,4 +211,3 @@ export const UserCardEditingViews = () => ({
     user1,
   }),
 });
-

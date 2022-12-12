@@ -1,6 +1,6 @@
 This dataset contains the data acquired during the expedition to Princess Elisabeth Antarctica Station in December 2016 and January 2017.
 
-The data is organized in four folders. Each folder is a .zip file. 
+The data is organized in four folders. Each folder is a .zip file.
 
 
 meteo.zip

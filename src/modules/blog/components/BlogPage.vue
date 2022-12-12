@@ -177,7 +177,7 @@ export default {
   methods: {
     checkRouteChanges() {
       const post = this.$route.params?.post || null;
-      
+
       if (post) {
         this.loadPost(post);
       } else {

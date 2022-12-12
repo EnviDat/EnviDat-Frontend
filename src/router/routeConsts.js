@@ -52,4 +52,3 @@ export const INTEGRATION_PATH = '/integration';
 export const INTEGRATION_PAGENAME = 'IntegrationPage';
 export const SERVICE_PATH = '/services';
 export const SERVICE_PAGENAME = 'ServicePage';
-

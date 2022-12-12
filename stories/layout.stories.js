@@ -39,7 +39,7 @@ export const TextCardListLayoutViews = () => ({
     <v-col cols="12">
       Empty TextCardListLayout
     </v-col>
-  
+
     <v-col cols="12">
       <TextCardListLayout  />
     </v-col>
