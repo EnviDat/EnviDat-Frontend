@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fadc7cfd-4496-4c27-b4eb-f72409dbae2a",
+		"_postman_id": "7e339397-1570-4ee2-a2c1-f4a039ce3f67",
 		"name": "EnviDat CKAN API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -3262,7 +3262,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/action/package_show?id=t_files",
+							"raw": "{{host}}/api/action/package_show?id=",
 							"host": [
 								"{{host}}"
 							],
@@ -3274,7 +3274,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "t_files",
+									"value": "",
 									"description": "(string) – the id or name of the dataset"
 								},
 								{
@@ -3347,7 +3347,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/action/package_show?id=metadata-test-4",
+							"raw": "{{host}}/api/action/package_show?id=",
 							"host": [
 								"{{host}}"
 							],
@@ -3359,7 +3359,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "metadata-test-4"
+									"value": ""
 								}
 							]
 						}
@@ -3465,7 +3465,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/action/package_revision_list?id={{test-package-id}}",
+							"raw": "{{host}}/api/action/package_revision_list?id=",
 							"host": [
 								"{{host}}"
 							],
@@ -3477,7 +3477,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "{{test-package-id}}",
+									"value": "",
 									"description": "REQUIRED (string) – the id or name of the dataset"
 								}
 							]
@@ -3587,7 +3587,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/action/package_activity_list?id=6e29a235-5a8b-451e-a229-54faab70761a",
+							"raw": "{{host}}/api/action/package_activity_list?id=",
 							"host": [
 								"{{host}}"
 							],
@@ -3599,7 +3599,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "6e29a235-5a8b-451e-a229-54faab70761a",
+									"value": "",
 									"description": "REQUIRED (string) – the id or name of the package"
 								},
 								{
@@ -6171,166 +6171,6 @@
 			"name": "user",
 			"item": [
 				{
-					"name": "signin",
-					"item": [
-						{
-							"name": "User List",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/user_list",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"user_list"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "User Sign out",
-							"protocolProfileBehavior": {
-								"disabledSystemHeaders": {
-									"connection": true
-								}
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/passwordless_user_logout",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"passwordless_user_logout"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "User Get Context",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/envidat_context_user_show",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"envidat_context_user_show"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "User Sign in",
-							"protocolProfileBehavior": {
-								"disabledSystemHeaders": {
-									"connection": true
-								}
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/passwordless_user_login?email=dominik.haas@wsl.ch&key=baafdb1a550acc0082585a86757b09f0",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"passwordless_user_login"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": "dominik.haas@wsl.ch"
-										},
-										{
-											"key": "key",
-											"value": "baafdb1a550acc0082585a86757b09f0"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "System Admin Sign In",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/passwordless_user_login?email=envidat@wsl.ch&key=5223378e7b663d2da59c7672bc59bf5b",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"passwordless_user_login"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": "envidat@wsl.ch"
-										},
-										{
-											"key": "key",
-											"value": "5223378e7b663d2da59c7672bc59bf5b"
-										},
-										{
-											"key": "all_fields",
-											"value": "true",
-											"disabled": true
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "User password reset",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{host}}/api/action/passwordless_perform_reset?email=dominik.haas@wsl.ch",
-									"host": [
-										"{{host}}"
-									],
-									"path": [
-										"api",
-										"action",
-										"passwordless_perform_reset"
-									],
-									"query": [
-										{
-											"key": "email",
-											"value": "dominik.haas@wsl.ch"
-										}
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
 					"name": "user_create",
 					"request": {
 						"method": "GET",
@@ -6429,7 +6269,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"ec1285a1-55e8-496d-9d0b-10e9f2d33d17\",\n\t\"state\": \"active\",\n\t\"email\": \"default@ckan-sandbox.nrelcloud.org\"\n}"
+							"raw": "{\n\t\"id\": \"e2be166d-dcdd-4ce3-9c11-095c3291abc7\",\n\t\"state\": \"active\",\n\t\"email\": \"samuel.woodcock@wsl.ch\"\n}"
 						},
 						"url": {
 							"raw": "{{host}}/api/action/user_update",
@@ -7385,6 +7225,98 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "api_token_list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/action/api_token_list",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"api_token_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_token_create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user",
+									"value": "",
+									"description": "(string) – name or id of the user who owns new API Token",
+									"type": "default"
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "(string) – distinctive name for API Token",
+									"type": "default"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/action/api_token_create",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"api_token_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "api_token_revoke",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "",
+									"description": "(string) – Token to remove(required if jti not specified).",
+									"type": "default"
+								},
+								{
+									"key": "jti",
+									"value": "",
+									"description": "(string) – Id of the token to remove(overrides token if specified).",
+									"type": "default",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/action/api_token_revoke",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"action",
+								"api_token_revoke"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -7565,75 +7497,6 @@
 								"api",
 								"action",
 								"vocabulary_delete"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "geo",
-			"item": [
-				{
-					"name": "geo.admin.ch Capabilities",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities",
-							"protocol": "https",
-							"host": [
-								"wms",
-								"geo",
-								"admin",
-								"ch"
-							],
-							"path": [
-								""
-							],
-							"query": [
-								{
-									"key": "SERVICE",
-									"value": "WMS"
-								},
-								{
-									"key": "VERSION",
-									"value": "1.3.0"
-								},
-								{
-									"key": "REQUEST",
-									"value": "GetCapabilities"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "monitior API",
-			"item": [
-				{
-					"name": "GCNET JSON Multiple call",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}/data-api/gcnet/json/swisscamp/multiple/2021-07-19/2021-08-05/",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"data-api",
-								"gcnet",
-								"json",
-								"swisscamp",
-								"multiple",
-								"2021-07-19",
-								"2021-08-05",
-								""
 							]
 						}
 					},
@@ -8544,6 +8407,21 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -8567,11 +8445,12 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "http://localhost:8989"
+			"value": "https://100.119.124.105",
+			"disabled": true
 		},
 		{
-			"key": "api-key",
-			"value": "",
+			"key": "host",
+			"value": "https://envidat.ch",
 			"type": "default"
 		}
 	]
