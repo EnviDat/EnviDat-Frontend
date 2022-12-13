@@ -10,7 +10,7 @@
         {{ badgesLabel }}
       </v-col>
     </v-row>
-    
+
     <v-row no-gutters>
       <v-col v-if="!hasDataCreditCounts"
               cols="12"
@@ -51,7 +51,7 @@
           </v-tooltip>
         </v-badge>
       </v-hover>
-        
+
       </v-col>
     </v-row>
   </v-container>

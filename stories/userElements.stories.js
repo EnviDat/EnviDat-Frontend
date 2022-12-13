@@ -91,13 +91,13 @@ export const UserMenuViews = () => ({
       <v-col cols="12">
         Click on the avatar
       </v-col>
-    
+
       <v-col class="shrink">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
 
       <v-col class="shrink">
-        <UserMenu :navItems="userMenuItems" 
+        <UserMenu :navItems="userMenuItems"
                   :user-object="user" />
       </v-col>
 
@@ -135,7 +135,7 @@ export const JazzIconsViews = () => ({
   template: `
     <v-row >
 
-   
+
       <v-col class="shrink"
              id="jazzIcon"
              ref="jazzIcon">
@@ -150,7 +150,7 @@ export const JazzIconsViews = () => ({
              id="jazzIcon3"
              ref="jazzIcon3">
       </v-col>
-    
+
     </v-row>
     `,
   mounted() {

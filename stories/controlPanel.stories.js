@@ -91,7 +91,7 @@ export const ControlPanelViews = () => ({
       <v-col cols="12">
         No search Compact layout
       </v-col>
-      
+
       <v-col>
         <ControlPanel :compactLayout="true"
                       searchTerm="Prefilled search"
@@ -128,11 +128,11 @@ export const ControlPanelViews = () => ({
                       searchTerm="Mathias Gerber"
         />
       </v-col>
-      
+
       <v-col cols="12">
         Prefilled search with search count
       </v-col>
-      
+
       <v-col>
         <ControlPanel searchTerm="Prefilled search"
                       :showSearch="true"
@@ -181,7 +181,7 @@ export const ControlPanelViews = () => ({
                       :controlsActive="controlsActive"
                       :enabledControls="preEnabledControls" />
       </v-col>
-    
+
     </v-row>`,
   data: () => ({
     preEnabledControls: [
@@ -192,4 +192,3 @@ export const ControlPanelViews = () => ({
     controlsActive: [LISTCONTROL_COMPACT_LAYOUT_ACTIVE],
   }),
 });
-

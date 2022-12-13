@@ -81,7 +81,7 @@ export const EditResourceViews = () => ({
       </v-row>
 
       <v-row class="py-3" >
-        
+
         <v-col >
           <EditResource v-bind="resource2" />
         </v-col>
@@ -96,7 +96,7 @@ export const EditResourceViews = () => ({
           <EditResource v-bind="resource3" />
         </v-col>
       </v-row>
-    
+
     </v-col>
     `,
   created() {
@@ -159,7 +159,7 @@ export const EditResourcesList = () => ({
         <v-col >
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
-      </v-row>    
+      </v-row>
     </v-col>
     `,
     created() {

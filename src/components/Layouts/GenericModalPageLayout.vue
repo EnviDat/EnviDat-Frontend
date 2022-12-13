@@ -39,7 +39,7 @@
 
       <v-card-text class="pa-0"
                     :style="autoScroll ? 'overflow: auto;' : 'overflow: hidden;'" >
-        
+
         <slot name="default" />
 
       </v-card-text>
@@ -91,7 +91,7 @@ export default {
     },
     openClicked() {
       this.showDialog = true;
-    },    
+    },
   },
   components: { BaseIconButton },
   data: () => ({

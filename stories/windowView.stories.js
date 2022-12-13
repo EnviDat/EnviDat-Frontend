@@ -53,7 +53,7 @@ storiesOf('6 Detail Views / Window Slider', module)
       <v-col cols="12" class="py-2" >
         <window-vertical-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
       </v-col>
-      
+
     </v-row>
     `,
     methods,
@@ -82,7 +82,7 @@ storiesOf('6 Detail Views / Window Slider', module)
       <v-col cols="12" class="py-2" >
         <window-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
       </v-col>
-      
+
     </v-row>
     `,
     methods,

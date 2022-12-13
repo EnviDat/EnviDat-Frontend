@@ -39,7 +39,7 @@
 
     <template v-slot:filterMap>
       <filter-map-view :content="listContent"
-                        :minMapHeight="minMapHeight" 
+                        :minMapHeight="minMapHeight"
                         :pinnedIds="pinnedIds"
                         :topLayout="mapTopLayout"
                         :mode="mode"
@@ -357,7 +357,7 @@ export default {
           'col-xl-6': true,
         };
       }
-      
+
       const compactLayout = this.isCompactLayout;
 
       return {

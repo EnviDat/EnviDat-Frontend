@@ -5,7 +5,7 @@
  * @summary function factory for project object enhancing methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2020-10-22 16:03:29
  *
  * This file is subject to the terms and conditions defined in
@@ -55,7 +55,7 @@ export function enhanceSubprojectsFromExtras(projects) {
 
     for (let j = 0; j < project.extras.length; j++) {
       const extra = project.extras[j];
-      
+
       if (extra.key === 'subprojects') {
         assignSubprojects(project, extra, projects);
       } else if (extra.key === 'parent') {
