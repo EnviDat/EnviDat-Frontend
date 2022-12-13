@@ -456,13 +456,13 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
-  
+
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
   const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
-  
+
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
   const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
@@ -518,7 +518,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
 function populateEditingData(commit, snakeCaseJSON) {
 
   const dataObject = {};
-  
+
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
@@ -527,7 +527,7 @@ function populateEditingData(commit, snakeCaseJSON) {
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;
-  
+
   stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -558,7 +558,7 @@ function populateEditingData(commit, snakeCaseJSON) {
     location,
   });
   dataObject.location = location;
-  
+
   return dataObject;
 }
 
@@ -568,7 +568,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
   const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
-  
+
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
@@ -591,7 +591,7 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
 
   const dataObject = {};
-  
+
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
   const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
@@ -722,5 +722,3 @@ export function parseDateStringToEnviDatFormat(dateString) {
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
   return format(parsedDate, enviDatDateFormat);
 }
-
-

@@ -70,12 +70,12 @@ export default {
       }
 
       let height = 36;
-      
+
       if (this.isSmall) {
         height = 28;
       } else if (this.isElevated) {
         height = 40;
-      } 
+      }
 
       return height;
     },
@@ -83,7 +83,7 @@ export default {
       const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
       return this.active ? secondary : 'lightgray';
     },
-  },  
+  },
 };
 
 </script>

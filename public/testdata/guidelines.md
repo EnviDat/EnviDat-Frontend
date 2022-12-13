@@ -4,7 +4,7 @@
 
 #### Preamble
 
-The EnviDat guidelines for publishing research data are subject to change by EnviDat at any time and without notice. The updated guidelines will be posted on the EnviDat website. For any questions, please contact EnviDat support at [envidat@wsl.ch](mailto:envidat@wsl.ch). 
+The EnviDat guidelines for publishing research data are subject to change by EnviDat at any time and without notice. The updated guidelines will be posted on the EnviDat website. For any questions, please contact EnviDat support at [envidat@wsl.ch](mailto:envidat@wsl.ch).
 
 <br />
 
@@ -25,11 +25,11 @@ The WSL data policy requires you to register (i.e., document with metadata) your
 -   Curated
 -   Quality-controlled
 -   Documented, and thus reusable
--   Publication-ready 
+-   Publication-ready
 
 <br />
 
-This should be the normal case for projects having followed a DMP.  
+This should be the normal case for projects having followed a DMP.
 In any case, please note that we **donâ€™t serve** :
 
 -   Data â€œdumpsâ€ (undocumented, non-quality-controlled)
@@ -99,7 +99,7 @@ Please provide between 5 to 10 keywords; avoid combinations of multiple words in
 
  You have to actively choose a license for your data:
 
--   The WSL Data Policy asks data users to **attribute and precludes data redistribution unless otherwise agreed with data originators**: 
+-   The WSL Data Policy asks data users to **attribute and precludes data redistribution unless otherwise agreed with data originators**:
     _Users may not share WSL research data or place them in data repositories that are accessible to third parties without the prior consent of the WSL data producers. Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents. WSL reserves the right to use its research data itself or make it accessible to third parties for reuse._
 -   The Open Database License (ODC-ODbL) asks data users to **attribute**, **share-alike** and **keep open**; (see <https://opendatacommons.org/licenses/odbl/>) for details.
 -   "Other" license. In this case, please define in the description all rights, permissions and restrictions that you would like the users of the research data to adhere to.
@@ -137,9 +137,9 @@ Please provide between 5 to 10 keywords; avoid combinations of multiple words in
     -   Additional data files can also be added.
 
 <br />
-<br /> 
-    
+<br />
+
 For any questions, please contact EnviDat support at mailto:envidat@wsl.ch.
 
-<br /> 
-<br /> 
+<br />
+<br />

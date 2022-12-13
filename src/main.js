@@ -17,6 +17,16 @@ import Vue from 'vue';
 import axios from 'axios';
 import Vue2Filters from 'vue2-filters';
 import InfiniteLoading from 'vue-infinite-loading';
+
+import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
+import { getWebAutoInstrumentations } from '@opentelemetry/auto-instrumentations-web';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { ZoneContextManager } from '@opentelemetry/context-zone';
+import { Resource } from '@opentelemetry/resources';
+import { SemanticResourceAttributes } from '@opentelemetry/semantic-conventions';
+
 import store from '@/store/store';
 
 import {
@@ -29,8 +39,6 @@ import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
-
-
 Vue.use(InfiniteLoading /* , { options } */);
 Vue.use(Vue2Filters);
 Vue.config.productionTip = false;
@@ -42,7 +50,9 @@ Vue.config.errorHandler = (err, vm, info) => {
   // the error was found in. Only available in 2.2.0+
   // console.log('Vue errorHandler ' + err.message + ' \n ' + info + ' \n ' + err.stack);
   const msg = err.message ? err.message : err;
-  const errStack = err.stack ? err.stack : 'No error stack available, please let the envidat team know of this Error!';
+  const errStack = err.stack
+    ? err.stack
+    : 'No error stack available, please let the envidat team know of this Error!';
   handleGenericError(store, msg, info, errStack);
 };
 
@@ -53,26 +63,33 @@ Vue.config.errorHandler = (err, vm, info) => {
 // }
 
 const storeReference = store;
-const excludedDomains = [process.env.VITE_ENVIDAT_STATIC_ROOT, process.env.VITE_CONFIG_URL];
+const excludedDomains = [
+  process.env.VITE_ENVIDAT_STATIC_ROOT,
+  process.env.VITE_CONFIG_URL,
+];
 
-axios.interceptors.request.use((config) => {
-  // Do something before request is sent
+axios.interceptors.request.use(
+  config => {
+    // Do something before request is sent
 
-  const urlIsExcluded = excludedDomains.some(domain => config.url.includes(domain));
+    const urlIsExcluded = excludedDomains.some(domain =>
+      config.url.includes(domain),
+    );
 
-  if (!urlIsExcluded) {
-    const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
+    if (!urlIsExcluded) {
+      const apiKey = storeReference?.state?.userSignIn?.user?.apikey || null;
 
-    if (apiKey) {
-      config.withCredentials = true;
-      config.Authorization = apiKey;
+      if (apiKey) {
+        config.withCredentials = true;
+        config.Authorization = apiKey;
+      }
     }
-  }
 
-  return config;
-}, (error) => 
-  // Do something with request error
-   Promise.reject(error),
+    return config;
+  },
+  error =>
+    // Do something with request error
+    Promise.reject(error),
 );
 
 axios.interceptors.response.use(
@@ -81,7 +98,7 @@ axios.interceptors.response.use(
   // Do something with response data
   // console.log('interceptor got ' + response.status);
   response => response,
-  (error) => {
+  error => {
     // this is called "onRejected"
     // console.log('interceptor error ' + error);
     if (error.status >= 500) {
@@ -94,6 +111,40 @@ axios.interceptors.response.use(
   },
 );
 
+// OTEL Instrumentation
+function initOtel(otelUrl) {
+  const exporter = new OTLPTraceExporter({
+    url: otelUrl,
+  });
+  const provider = new WebTracerProvider({
+    resource: new Resource({
+      [SemanticResourceAttributes.SERVICE_NAME]: process.env.VITE_OTEL_NAME,
+    }),
+  });
+  provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+  provider.register({
+    contextManager: new ZoneContextManager(),
+  });
+
+  registerInstrumentations({
+    instrumentations: [
+      getWebAutoInstrumentations({
+        // load custom configuration for xml-http-request instrumentation
+        '@opentelemetry/instrumentation-xml-http-request': {
+          propagateTraceHeaderCorsUrls: [/.+/g],
+        },
+        // load custom configuration for fetch instrumentation
+        '@opentelemetry/instrumentation-fetch': {
+          propagateTraceHeaderCorsUrls: [/.+/g],
+        },
+      }),
+    ],
+  });
+}
+const otelUrl = process.env.VITE_OTEL_ENDPOINT;
+if (otelUrl !== 'NULL') {
+  initOtel(otelUrl);
+}
 
 /* eslint-disable no-new */
 new Vue({

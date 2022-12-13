@@ -99,7 +99,7 @@ export const MenuAndToolbar = () => ({
   template: `
     <div>
       <the-navigation :navigationItems="navigationItems" />
-  
+
       <the-navigation-toolbar :signedInUser="dominikHaas"
                               :userNavigationItems="userMenuItems" />
     </div>

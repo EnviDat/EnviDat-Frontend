@@ -102,7 +102,7 @@ export const EditAddAuthorViews = () => ({
         <EditAddAuthor v-bind="author"  />
       </v-col>
     </v-row>
-  
+
   </v-col>
   `,
   created() {
@@ -199,7 +199,7 @@ export const UserPickerViews = () => ({
                         hint="Testing readonly" />
       </v-col>
     </v-row>
-  
+
   </v-col>
   `,
   methods: {
@@ -258,7 +258,7 @@ export const EditingDataCreditViews = () => ({
         />
       </v-col>
     </v-row>
-    
+
     <v-row>
       readonly EditDataCredits
     </v-row>
@@ -272,7 +272,7 @@ export const EditingDataCreditViews = () => ({
                          :readOnly="true" />
       </v-col>
     </v-row>
-  
+
   </v-col>
   `,
   methods: {
@@ -481,7 +481,7 @@ export const FullEditingAuthorViews = () => ({
             firstName: updatedAuthor.firstName,
             lastName: updatedAuthor.lastName,
           });
-          
+
           if (email === updatedAuthor.email
             || fullName === searchAuthorFullName){
 

@@ -217,7 +217,7 @@ export default {
       if (stepFromRoute instanceof Array) {
         stepFromRoute = stepFromRoute[0];
       }
-      
+
       return stepFromRoute || '';
     },
     routeSubStep() {

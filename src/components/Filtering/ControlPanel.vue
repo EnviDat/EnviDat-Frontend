@@ -3,7 +3,7 @@
             id="controlPanel" >
 
     <v-container class="px-2 py-0 fill-height"
-                    fluid> 
+                    fluid>
       <v-row align="center"
               justify="space-between"
               no-gutters>

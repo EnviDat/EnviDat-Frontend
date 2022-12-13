@@ -84,7 +84,7 @@ export const AuthorCardViews = () => ({
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="emptyAuthor" />
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
 
         <author-card :author="authorFromCollection" />
@@ -97,7 +97,7 @@ export const AuthorCardViews = () => ({
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" />
       </v-col>
@@ -105,7 +105,7 @@ export const AuthorCardViews = () => ({
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" :isSelected="true" />
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection3" :loading="true" />
       </v-col>
@@ -125,7 +125,7 @@ export const AuthorCardViews = () => ({
                      open-button-icon="edit"
                      open-button-tooltip="Editing Author"
         />
-      </v-col>      
+      </v-col>
     </v-row>
   </v-container>
   `,
