@@ -852,6 +852,107 @@
 					]
 				},
 				{
+					"name": "passwordless_api",
+					"item": [
+						{
+							"name": "request_api_token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "",
+											"description": "Email of user.",
+											"type": "default"
+										},
+										{
+											"key": "key",
+											"value": "",
+											"description": "Reset key for user.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_request_api_token",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_request_api_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "revoke_api_token",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "token",
+											"value": "",
+											"description": "(string) – Token to remove.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_revoke_api_token",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_revoke_api_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "request_reset_key",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "email",
+											"value": "",
+											"description": "Email of user.",
+											"type": "default"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_request_reset_key",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_request_reset_key"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "datacite_publication",
 					"item": [
 						{
@@ -6312,14 +6413,32 @@
 							"query": [
 								{
 									"key": "q",
-									"value": null,
-									"description": "(string) – restrict the users returned to those whose names contain a string (optional)",
+									"value": "",
+									"description": "(string) – filter the users returned to those whose names contain a string (optional)",
 									"disabled": true
 								},
 								{
 									"key": "order_by",
 									"value": null,
-									"description": "(string) – which field to sort the list by (optional, default: 'name'). Can be any user field or edits (i.e. number_of_edits)",
+									"description": "(string) – which field to sort the list by (optional, default: 'display_name'). Users can be sorted by 'id', 'name', 'fullname', 'display_name', 'created', 'about', 'sysadmin' or 'number_created_packages'.",
+									"disabled": true
+								},
+								{
+									"key": "email ",
+									"value": "",
+									"description": "(string) – filter the users returned to those whose email match a string (optional) (you must be a sysadmin to use this filter)",
+									"disabled": true
+								},
+								{
+									"key": "all_fields",
+									"value": null,
+									"description": "(bool) – return full user dictionaries instead of just names. (optional, default: True)",
+									"disabled": true
+								},
+								{
+									"key": "include_site_user",
+									"value": null,
+									"description": "(bool) – add site_user to the result (optional, default: False)",
 									"disabled": true
 								}
 							]
@@ -6364,30 +6483,6 @@
 							]
 						},
 						"description": "[API Documentation 2.6.3](http://docs.ckan.org/en/ckan-2.6.3/api/index.html#ckan.logic.action.get.organization_list_for_user)"
-					},
-					"response": []
-				},
-				{
-					"name": "user_list",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "{{host}}/api/action/user_list",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"api",
-								"action",
-								"user_list"
-							]
-						}
 					},
 					"response": []
 				},
@@ -8445,12 +8540,13 @@
 	"variable": [
 		{
 			"key": "host",
-			"value": "https://100.119.124.105",
+			"value": "https://envidat.ch",
+			"type": "default",
 			"disabled": true
 		},
 		{
 			"key": "host",
-			"value": "https://envidat.ch",
+			"value": "http://localhost:8989",
 			"type": "default"
 		}
 	]
