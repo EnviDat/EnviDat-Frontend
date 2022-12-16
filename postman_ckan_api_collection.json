@@ -949,6 +949,25 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "get_user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/api/action/passwordless_get_user",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"api",
+										"action",
+										"passwordless_get_user"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
