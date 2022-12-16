@@ -6310,7 +6310,7 @@
 							}
 						],
 						"url": {
-							"raw": "{{host}}/api/action/user_show?id=default",
+							"raw": "{{host}}/api/action/user_show",
 							"host": [
 								"{{host}}"
 							],
@@ -6322,8 +6322,9 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "default",
-									"description": "(string) – the id or name of the user (optional)"
+									"value": "",
+									"description": "(string) – the id or name of the user (optional)",
+									"disabled": true
 								},
 								{
 									"key": "user_obj",
@@ -7358,6 +7359,18 @@
 									"key": "name",
 									"value": "",
 									"description": "(string) – distinctive name for API Token",
+									"type": "default"
+								},
+								{
+									"key": "expires_in",
+									"value": "7",
+									"description": "(int) – value for expiry, e.g. 7 days with unit 86400 (available with api_token_expire plugin)",
+									"type": "default"
+								},
+								{
+									"key": "unit",
+									"value": "86400",
+									"description": "(int) – units for expiry, in seconds, e.g. 86400=1 day (available with api_token_expire plugin)",
 									"type": "default"
 								}
 							]
