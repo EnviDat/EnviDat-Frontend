@@ -5,7 +5,7 @@
           :height="height"
           :loading="loading">
 
-    <template slot="progress">
+    <template v-slot:progress>
       <v-progress-linear color="primary"
                          indeterminate />
     </template>

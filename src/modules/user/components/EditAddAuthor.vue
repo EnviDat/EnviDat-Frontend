@@ -19,7 +19,7 @@
     <v-container fluid
                  class="pa-4 fill-height">
 
-      <template slot="progress">
+      <template v-slot:progress>
         <v-progress-linear color="primary"
                            indeterminate/>
       </template>

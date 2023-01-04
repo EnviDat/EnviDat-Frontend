@@ -19,7 +19,13 @@
                     envidatBadge: count <= 9,
                   }"
                 >
-                  <span slot="badge">{{ count }}</span>
+<!--
+                  <template v-slot:badge>
+-->
+                    <span >{{ count }}</span>
+<!--
+                  </template>
+-->
                 </v-badge>
               </v-col>
 
@@ -55,8 +61,8 @@
                 envidatBadgeBigNumber: count > 9,
                 envidatBadge: count <= 9,
               }"
+              :content="count"
             >
-              <span slot="badge">{{ count }}</span>
             </v-badge>
           </v-col>
 

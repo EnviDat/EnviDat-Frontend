@@ -13,23 +13,29 @@
           </v-item>
         </div>
 
-        <v-item v-for="(sub, index) in subProjects" :key="'nav_' + index">
-          <div slot-scope="{ active, toggle }">
+        <v-item v-for="(sub, index) in subProjects" :key="'nav_' + index"
+                v-slot:default="{ active, toggle }">
+<!--
+          <div >
+-->
             <v-tooltip top>
-              <v-btn
-                slot="activator"
-                :input-value="active"
-                icon
-                @click="toggle"
-              >
-                <v-icon>{{
-                  active ? 'arrow_right' : 'arrow_drop_down'
-                }}</v-icon>
-              </v-btn>
+              <template v-slot:activator >
+                <v-btn
+                  :input-value="active"
+                  icon
+                  @click="toggle"
+                >
+                  <v-icon>{{
+                    active ? 'arrow_right' : 'arrow_drop_down'
+                  }}</v-icon>
+                </v-btn>
 
-              <span>{{ sub.title }}</span>
+                <span>{{ sub.title }}</span>
+              </template>
             </v-tooltip>
+<!--
           </div>
+-->
         </v-item>
       </v-item-group>
 

@@ -27,14 +27,11 @@
                    @click="catchCreditClick(creditName)"
                    :color="dark ? 'white' : 'black'" >
 
-
-            <span slot="badge" >
-              <v-icon :color="dark ? 'black' : 'white'"
-                      size="14px"
-                      style="left: 14px; bottom: 1px;">
-                checked
-              </v-icon>
-            </span>
+            <v-icon :color="dark ? 'black' : 'white'"
+                    size="14px"
+                    style="left: 14px; bottom: 1px;">
+              checked
+            </v-icon>
 
             <v-tooltip bottom >
               <template v-slot:activator="{ on }">

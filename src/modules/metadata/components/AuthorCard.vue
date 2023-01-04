@@ -7,7 +7,7 @@
     <v-container fluid
                  class="pa-4">
 
-      <template slot="progress">
+      <template v-slot:progress>
         <v-progress-linear color="primary"
                            indeterminate/>
       </template>
@@ -75,8 +75,7 @@
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
                    style="top: -25px; right: -2px;">
-              <span slot="badge"
-                    :class="!dark ? 'white--text' : 'black--text'">
+              <span :class="!dark ? 'white--text' : 'black--text'">
                     {{ author.datasetCount }}
               </span>
           </v-badge>

@@ -29,12 +29,17 @@
         <v-badge class="dataCreditIcon"
                   bordered
                   :overlap="!hover"
-                  :color="badgeColor">
+                  :color="badgeColor"
+                 :content="dataCreditCounts[index]"
+        >
 
-          <span slot="badge"
-                :class="!dark ? 'white--text' : 'black--text'" >
-                {{ dataCreditCounts[index] }}
-          </span>
+<!--
+          <template v-slot:badge >
+            <span :class="!dark ? 'white&#45;&#45;text' : 'black&#45;&#45;text'" >
+                  {{ dataCreditCounts[index] }}
+            </span>
+          </template>
+-->
 
           <v-tooltip bottom >
             <template v-slot:activator="{ on }">

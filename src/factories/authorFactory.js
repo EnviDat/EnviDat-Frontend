@@ -11,11 +11,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { localIdProperty } from '@/factories/strategyFactory';
 import {
   compareAsc,
   parseISO,
 } from 'date-fns';
+import { localIdProperty } from '@/factories/strategyFactory';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },

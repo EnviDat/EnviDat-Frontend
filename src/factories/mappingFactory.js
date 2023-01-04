@@ -11,6 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { format, parse } from 'date-fns';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
@@ -42,7 +43,6 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { format, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';

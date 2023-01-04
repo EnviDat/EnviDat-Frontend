@@ -131,7 +131,9 @@ export default {
   },
   computed: {
     hasEditingAuthorsSlot() {
-      return !!this.$scopedSlots.editingAuthors;
+      // correct refactoring??
+      // check https://v3-migration.vuejs.org/breaking-changes/slots-unification.html#_3-x-syntax
+      return !!this.$slots.editingAuthors();
     },
     authors() {
       return this.mixinMethods_getGenericProp('authors');

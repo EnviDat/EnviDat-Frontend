@@ -1,6 +1,6 @@
 <template>
   <v-banner two-line :color="bannerColor">
-    <v-avatar slot="icon" color="secondary" size="24">
+    <v-avatar color="secondary" size="24">
       <v-icon
         color="white"
         style="animation: progress-circular-rotate 3s linear infinite"

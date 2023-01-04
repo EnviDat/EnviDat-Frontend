@@ -150,11 +150,11 @@
                             @infinite="infiniteHandler"
                             :force-use-infinite-wrapper="dynamicMainScrollClass" >
 
-            <div slot="no-results">
+            <div v-slot:no-results>
             </div>
 
             <div v-if="showScrollTopButton"
-                 slot="no-more">
+                 v-slot:no-more>
               <BaseRectangleButton :buttonText="scrollTopButtonText"
                                     :isSmall="true"
                                     :isFlat="true"
@@ -162,7 +162,7 @@
             </div>
 
             <div v-if="!showScrollTopButton"
-                 slot="no-more">
+                 v-slot:no-more>
             </div>
 
           </infinite-loading>

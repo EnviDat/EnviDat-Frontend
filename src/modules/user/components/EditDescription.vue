@@ -6,7 +6,7 @@
     <v-container fluid
                   class="pa-4">
 
-      <template slot="progress">
+      <template v-slot:progress>
         <v-progress-linear color="primary"
                            indeterminate />
       </template>
