@@ -12,6 +12,7 @@
  */
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
+/*
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 
@@ -20,3 +21,9 @@ import config from './vuetifyConfig';
 Vue.use(Vuetify);
 
 export default new Vuetify(config);
+*/
+
+import  'vuetify/styles';
+import { createVuetify } from 'vuetify';
+
+export default createVuetify();

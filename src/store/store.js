@@ -11,7 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { about } from '@/modules/about/store/aboutStore';
@@ -40,10 +39,10 @@ import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+const jpgAssets = null; // globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
 const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
+const iconImages = null; // globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 
 /*
@@ -56,7 +55,6 @@ if (typeof errReport === 'string') {
 }
 */
 
-Vue.use(Vuex);
 
 const initialState = {
   webpIsSupported: false,

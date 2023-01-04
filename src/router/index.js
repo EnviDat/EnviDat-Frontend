@@ -12,8 +12,11 @@
  */
 
 /* eslint-disable prefer-template */
-import Vue from 'vue';
-import Router from 'vue-router';
+import {
+  createRouter,
+  createWebHashHistory,
+} from 'vue-router';
+
 import {
   GCMD_PATH,
   GCMD_PAGENAME,
@@ -29,15 +32,12 @@ import { projectsRoutes } from '@/modules/projects/routes';
 import { aboutRoutes } from '@/modules/about/routes';
 
 import { userRoutes } from '@/modules/user/routes';
+
 import { blogRoutes } from '@/modules/blog/routes';
-import { integrationRoutes } from '@/modules/integration/routes';
-import { serviceRoutes } from '@/modules/services/routes';
 
-const ReportPage = () => import('@/components/Pages/ReportPage.vue');
-const GCMDPage = () => import('@/components/Pages/GCMDPage.vue');
-const NotFoundPage = () => import('@/components/Pages/PageNotFound.vue');
-
-Vue.use(Router);
+const gcmdPage = () => import('@/components/Pages/GCMDPage.vue');
+const reportPage = () => import('@/components/Pages/ReportPage.vue');
+const pageNotFound = () => import('@/components/Pages/PageNotFound.vue');
 
 const START = '/';
 const trailingSlashRE = /\/?$/;
@@ -45,23 +45,24 @@ const routes = [
   {
     path: GCMD_PATH,
     name: GCMD_PAGENAME,
-    component: GCMDPage,
+    component: gcmdPage,
   },
   {
     path: REPORT_PATH,
     name: REPORT_PAGENAME,
-    component: ReportPage,
+    component: reportPage,
   },
-  /* The not found route needs to be last in the list! */
+  /* The not found route needes to be last in the list! */
   {
     path: '/:catchAll(.*)',
     name: PAGENOTFOUND_PAGENAME,
-    component: NotFoundPage,
+    component: pageNotFound,
   },
 ];
 
 
-export default new Router({
+export default createRouter({
+  history: createWebHashHistory(),
   routes: [
     ...homeRoutes,
     ...browseRoutes,
@@ -70,8 +71,6 @@ export default new Router({
     ...aboutRoutes,
     ...userRoutes,
     ...blogRoutes,
-    ...integrationRoutes,
-    ...serviceRoutes,
     ...routes,
   ],
   scrollBehavior(to, from, savedPosition) {
