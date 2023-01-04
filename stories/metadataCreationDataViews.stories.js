@@ -102,7 +102,7 @@ export const EditResourceViews = () => ({
   created() {
     eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   methods: {
@@ -165,7 +165,7 @@ export const EditResourcesList = () => ({
     created() {
       eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     methods: {
@@ -286,7 +286,7 @@ export const EditDataAndResourcesListViews = () => ({
       eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
       eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
       eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);

@@ -149,7 +149,7 @@ export default {
 
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);

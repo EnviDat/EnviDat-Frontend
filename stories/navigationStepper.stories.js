@@ -51,7 +51,7 @@ export const NavigationStepperViews = () => ({
   created() {
     eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {

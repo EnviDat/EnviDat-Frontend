@@ -226,7 +226,7 @@ export default {
   /**
    * @description
    */
-  beforeDestroy() {
+  beforeUnmount() {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 

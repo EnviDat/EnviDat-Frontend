@@ -186,7 +186,7 @@ export const EditRelatedPublicationViews = () => ({
     mounted() {
       this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -421,7 +421,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
     mounted() {
         this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -516,7 +516,7 @@ export const EditPublicationInfoView = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -576,7 +576,7 @@ export const EditCustomFieldViews = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -657,7 +657,7 @@ export const EditMetadataHeaderViews = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {

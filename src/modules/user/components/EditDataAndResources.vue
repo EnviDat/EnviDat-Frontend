@@ -214,7 +214,7 @@ export default {
       );
     }
   },
-  beforeDestroy() {},
+  beforeUnmount() {},
   computed: {
     selectedName() {
       return this.selectedResource.name;

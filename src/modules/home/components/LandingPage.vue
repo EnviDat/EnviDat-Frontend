@@ -374,7 +374,7 @@ export default {
 
     this.initPolygonParticles();
   },
-  destroyed() {
+  unmounted() {
     this.stopParticles();
   },
   computed: {

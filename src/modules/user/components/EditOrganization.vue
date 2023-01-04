@@ -182,7 +182,7 @@ export default {
       this.fetchUserOrganisationData();
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {

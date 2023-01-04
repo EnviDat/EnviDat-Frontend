@@ -131,7 +131,7 @@ export default {
     this.strategyProperty = null;
     eventBus.on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.injectedComponent = null;
     eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
 

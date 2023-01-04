@@ -160,7 +160,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.saveButtonEnabled) {
       this.updateGeometriesInMetadata();
     }

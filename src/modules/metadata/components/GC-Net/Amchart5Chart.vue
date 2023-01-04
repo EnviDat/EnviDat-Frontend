@@ -187,7 +187,7 @@ export default {
     chart.appear(1000, 100);
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.root) {
       this.root.dispose();
     }

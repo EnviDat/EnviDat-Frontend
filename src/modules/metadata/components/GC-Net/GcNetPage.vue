@@ -53,7 +53,7 @@ export default {
   name: 'GcNetPage',
   beforeMount() {},
   mounted() {},
-  beforeDestroy() {},
+  beforeUnmount() {},
   computed: {
     // ...mapState([
     //   'config',

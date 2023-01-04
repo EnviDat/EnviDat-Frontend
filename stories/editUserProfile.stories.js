@@ -187,7 +187,7 @@ export const UserCardEditingViews = () => ({
   created() {
     eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   computed: {

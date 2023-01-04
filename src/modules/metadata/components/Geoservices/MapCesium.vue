@@ -93,7 +93,7 @@ export default {
 
     this.setupMap();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(MAP_ZOOM_IN, this.zoomIn);
     eventBus.off(MAP_ZOOM_OUT, this.zoomOut);
     eventBus.off(MAP_ZOOM_CENTER, this.triggerCenter);

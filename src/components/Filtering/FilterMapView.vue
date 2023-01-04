@@ -98,7 +98,7 @@ export default {
   mounted() {
     this.setupMap();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.map) {
       this.map.remove();
     }

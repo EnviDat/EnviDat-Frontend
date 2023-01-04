@@ -112,7 +112,7 @@ export default {
       that = null;
     }, this.initialDelay);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.clearCharts();
   },
   methods: {

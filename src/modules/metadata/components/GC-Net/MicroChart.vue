@@ -233,7 +233,7 @@ export default {
       that = null;
     }, this.delay);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.clearChart();
   },
   computed: {

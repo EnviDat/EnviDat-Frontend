@@ -204,7 +204,7 @@ export default {
 
     this.checkUserSignedIn();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);

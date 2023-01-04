@@ -80,7 +80,7 @@ export default {
   created() {
     eventBus.on(METADATA_OPEN_MODAL, this.openClicked);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(METADATA_OPEN_MODAL, this.openClicked);
   },
   methods: {

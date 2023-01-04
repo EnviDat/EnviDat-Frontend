@@ -344,7 +344,7 @@ export default {
     eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
     eventBus.on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SELECT_EDITING_DATASET, this.catchEditingClick);
     eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },

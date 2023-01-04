@@ -166,8 +166,8 @@ export default {
       this.registeryIntersectionObserver();
     }
   },
-  beforeDestroy() {
-    // console.log('DetailChart: beforeDestroy method ' + this.chartId);
+  beforeUnmount() {
+    // console.log('DetailChart: beforeUnmount method ' + this.chartId);
     this.clearChart();
   },
   computed: {

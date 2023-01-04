@@ -11,7 +11,7 @@ export default {
   mounted() {
     this.$emit('add', this.data);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.$emit('remove', this.data.id);
   },
 };

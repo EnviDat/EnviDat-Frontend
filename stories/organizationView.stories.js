@@ -61,7 +61,7 @@ export const OrganizationTreeView = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     methods: {
@@ -116,7 +116,7 @@ export const EditDatasetOrganization = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
@@ -234,7 +234,7 @@ export const EditOrganizationViews = () => ({
     created() {
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
