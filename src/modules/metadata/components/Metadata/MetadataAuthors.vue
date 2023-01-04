@@ -167,10 +167,10 @@ export default {
       return Object.keys(dataCredit).length > 0;
     },
     catchOpenClick(event, eventProperty) {
-      eventBus.$emit(event, eventProperty);
+      eventBus.emit(event, eventProperty);
     },
     catchAuthorSearchClick(fullName) {
-      eventBus.$emit(AUTHOR_SEARCH_CLICK, fullName);
+      eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
     },
   },
   components: {

@@ -396,7 +396,7 @@ export default {
       return getMetadataVisibilityState(metadata);
     },
     catchOpenClick(event, eventProperty) {
-      eventBus.$emit(event, eventProperty);
+      eventBus.emit(event, eventProperty);
     },
     getGeoJSONIcon(location) {
       return this.mixinMethods_getGeoJSONIcon(location?.geoJSON?.type);

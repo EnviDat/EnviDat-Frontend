@@ -322,10 +322,10 @@ export default {
   mounted() {
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     affiliationField: {
@@ -527,7 +527,7 @@ export default {
         ...authorObject,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,
         data: newAuthorInfo,
       });
@@ -540,7 +540,7 @@ export default {
       this.previews.affiliation = affiliation;
     },
     removeAuthorClick(email) {
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: REMOVE_EDITING_AUTHOR,
         data: email,
       });

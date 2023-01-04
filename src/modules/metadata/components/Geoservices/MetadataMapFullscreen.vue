@@ -68,12 +68,12 @@ export default {
       this.ready = true;
     }, 250);
 
-    eventBus.$on(MAP_COMPARE_START, this.startSplit);
-    eventBus.$on(MAP_COMPARE_END, this.quitSplit);
+    eventBus.on(MAP_COMPARE_START, this.startSplit);
+    eventBus.on(MAP_COMPARE_END, this.quitSplit);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_COMPARE_START, this.startSplit);
-    eventBus.$off(MAP_COMPARE_END, this.quitSplit);
+    eventBus.off(MAP_COMPARE_START, this.startSplit);
+    eventBus.off(MAP_COMPARE_END, this.quitSplit);
 
     if (this.map) {
       this.map.remove();

@@ -116,7 +116,7 @@ export default {
     this.setupSteps();
   },
   mounted() {
-    eventBus.$on(EDITMETADATA_NEXT_MAJOR_STEP, this.catchStepClick);
+    eventBus.on(EDITMETADATA_NEXT_MAJOR_STEP, this.catchStepClick);
   },
   computed: {
     backgroundColor() {

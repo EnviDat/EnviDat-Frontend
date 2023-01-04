@@ -105,10 +105,10 @@ export default {
     webpIsSupported: Boolean,
   },
   mounted() {
-    eventBus.$on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
+    eventBus.on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
   beforeDestroy() {
-    eventBus.$off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
+    eventBus.off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
   computed: {
     maxExtent() {

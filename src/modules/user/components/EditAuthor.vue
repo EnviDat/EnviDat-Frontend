@@ -247,7 +247,7 @@ export default {
         fullName: `${fistN.trim()} ${lastN.trim()}`,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_AUTHOR,
         data: newAuthor,
       });

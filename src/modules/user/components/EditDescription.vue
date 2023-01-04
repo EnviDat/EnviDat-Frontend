@@ -130,10 +130,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     genericTextAreaObject() {
@@ -181,7 +181,7 @@ export default {
         [this.editingProperty]: value,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_DESCRIPTION,
         data: newDescription,
       });

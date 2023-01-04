@@ -213,16 +213,16 @@ export default {
   methods: {
     catchEditAuthorClick(author) {
       if (author.isSelected) {
-        eventBus.$emit(CANCEL_EDITING_AUTHOR, author.email);
+        eventBus.emit(CANCEL_EDITING_AUTHOR, author.email);
       } else {
-        eventBus.$emit(SELECT_EDITING_AUTHOR, author.email);
+        eventBus.emit(SELECT_EDITING_AUTHOR, author.email);
       }
     },
     catchEditAuthorClose() {
-      eventBus.$emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
+      eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
     catchSaveAuthorClose() {
-      eventBus.$emit(SAVE_EDITING_AUTHOR, this.selectedAuthor);
+      eventBus.emit(SAVE_EDITING_AUTHOR, this.selectedAuthor);
     },
   },
   data: () => ({

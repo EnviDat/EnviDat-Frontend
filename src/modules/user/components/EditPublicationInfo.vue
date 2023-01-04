@@ -501,7 +501,7 @@ export default {
         [property]: value,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: this.stepKey,
         data: newPublicationInfo,
         property: property.toString(),

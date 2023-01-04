@@ -562,7 +562,7 @@ export default {
     catchSigninClick() {
       if (this.signinRedirectActive) {
         // don't pass any parameters to show the default message for Sign In redirect
-        eventBus.$emit(SHOW_REDIRECT_SIGNIN_DIALOG);
+        eventBus.emit(SHOW_REDIRECT_SIGNIN_DIALOG);
         return;
       }
 

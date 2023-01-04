@@ -158,13 +158,13 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {
       this.updateGeometriesInMetadata();
     }
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   computed: {
     genericProps() {
@@ -244,7 +244,7 @@ export default {
     commitGeometries(updatedLocation) {
       this.saveButtonInProgress = true;
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
           location: updatedLocation,

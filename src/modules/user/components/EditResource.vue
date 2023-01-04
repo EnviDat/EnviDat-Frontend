@@ -366,7 +366,7 @@ export default {
         lastModified: getCurrentDate(),
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_RESOURCES,
         data: newGenericProps,
       });

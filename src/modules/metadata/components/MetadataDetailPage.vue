@@ -186,19 +186,19 @@ export default {
     });
   },
   created() {
-    eventBus.$on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+    eventBus.on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
 
     this.filePreviewUrl = null;
     this.filePreviewComponent = null;
-    eventBus.$on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+    eventBus.on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
 
-    eventBus.$on(METADATA_CLOSE_MODAL, this.closeModal);
+    eventBus.on(METADATA_CLOSE_MODAL, this.closeModal);
 
     this.fullScreenConfig = null;
     this.fullScreenComponent = null;
-    eventBus.$on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
 
-    eventBus.$on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -230,15 +230,15 @@ export default {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 
-    eventBus.$off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
+    eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
 
     this.filePreviewUrl = null;
     this.filePreviewComponent = null;
-    eventBus.$off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
-    eventBus.$off(METADATA_CLOSE_MODAL, this.closeModal);
-    eventBus.$off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
+    eventBus.off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+    eventBus.off(METADATA_CLOSE_MODAL, this.closeModal);
+    eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
 
-    eventBus.$off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   computed: {
     ...mapState(['config']),
@@ -484,7 +484,7 @@ export default {
         this.currentStation ? this.currentStation.name : ''
       } station`;
 
-      eventBus.$emit(METADATA_OPEN_MODAL);
+      eventBus.emit(METADATA_OPEN_MODAL);
     },
 
     showFilePreviewModal(url) {
@@ -498,16 +498,16 @@ export default {
 
       this.modalTitle = `Preview of ${fileName}`;
 
-      eventBus.$emit(METADATA_OPEN_MODAL);
+      eventBus.emit(METADATA_OPEN_MODAL);
     },
     showFullscreenMapModal(layerConfig) {
 
-      this.modalTitle = `Fullscreen Map for ${this.header.metadataTitle}`;
+      this.modalTitle = `Fullscreen Map for ${this.header?.metadataTitle}`;
 
       this.fullScreenConfig = layerConfig;
       this.fullScreenComponent = MetadataMapFullscreen;
 
-      eventBus.$emit(METADATA_OPEN_MODAL);
+      eventBus.emit(METADATA_OPEN_MODAL);
     },
     closeModal() {
       this.gcnetModalComponent = null;
@@ -687,7 +687,7 @@ export default {
       ];
     },
     async injectMicroCharts() {
-      eventBus.$emit(
+      eventBus.emit(
         GCNET_INJECT_MICRO_CHARTS,
         this.$options.components.MicroChartList,
         this.stationsConfig,

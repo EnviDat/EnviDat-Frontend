@@ -1,10 +1,6 @@
-import Vue from 'vue';
+import mitt from 'mitt'
 
-export const eventBus = new Vue();
-// {
-// name: 'eventBus',
-// }
-eventBus.$name = 'eventBus';
+export const eventBus = mitt();
 
 export const METADATA_OPEN_MODAL = 'METADATA_OPEN_MODAL';
 export const METADATA_CLOSE_MODAL = 'METADATA_CLOSE_MODAL';

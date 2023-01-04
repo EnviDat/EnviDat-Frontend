@@ -135,7 +135,7 @@ function createErrorMessage(reason) {
 
 /*
     if (reason.response.status !== 200) {
-      eventBus.$emit(EDITMETADATA_NETWORK_ERROR,
+      eventBus.emit(EDITMETADATA_NETWORK_ERROR,
           reason.response.status || -1,
           reason.response.statusText || '',
           reason.response.data?.error?.message || '');
@@ -547,7 +547,7 @@ export default {
     editingObject.loading = false;
     editingObject.message = message;
 
-    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
@@ -562,7 +562,7 @@ export default {
     editingObject.error = errorObj.message;
     editingObject.errorDetails = errorObj.details;
 
-    eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     this.dispatch(SET_CONFIG);
 

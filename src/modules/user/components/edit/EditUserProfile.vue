@@ -202,10 +202,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     firstNameField() {
@@ -311,7 +311,7 @@ export default {
           ...userObject,
         };
 
-        eventBus.$emit(EDIT_USER_PROFILE_EVENT, {
+        eventBus.emit(EDIT_USER_PROFILE_EVENT, {
           object: USER_PROFILE,
           data: userInfo,
         });

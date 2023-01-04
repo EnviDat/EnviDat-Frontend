@@ -111,7 +111,7 @@ export default {
       const nextIndex = this.currentStepIndex + 1;
 
       if (nextIndex > this.steps.length - 1) {
-        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
+        eventBus.emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
         return;
       }
 

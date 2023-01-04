@@ -78,16 +78,16 @@ export default {
     },
   },
   created() {
-    eventBus.$on(METADATA_OPEN_MODAL, this.openClicked);
+    eventBus.on(METADATA_OPEN_MODAL, this.openClicked);
   },
   beforeDestroy() {
-    eventBus.$off(METADATA_OPEN_MODAL, this.openClicked);
+    eventBus.off(METADATA_OPEN_MODAL, this.openClicked);
   },
   methods: {
     closeClicked() {
       this.showDialog = false;
 
-      eventBus.$emit(METADATA_CLOSE_MODAL);
+      eventBus.emit(METADATA_CLOSE_MODAL);
     },
     openClicked() {
       this.showDialog = true;

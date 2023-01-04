@@ -146,7 +146,7 @@ export default {
     },
     redirectToDashboardIfAllowed() {
       if (this.dashboardRedirect) {
-        eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
+        eventBus.emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
 
         this.$router.replace('/');
       } else {

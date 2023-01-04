@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     triggerFullscreen() {
-      eventBus.$emit(INJECT_MAP_FULLSCREEN, {
+      eventBus.emit(INJECT_MAP_FULLSCREEN, {
         site: this.site,
         layerConfig: this.layerConfig,
       });

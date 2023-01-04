@@ -162,7 +162,7 @@ export default {
   },
   methods: {
     submitEdittedMetadata() {
-      eventBus.$emit(METADATA_EDITING_FINISH_CLICK);
+      eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
   },
   data: () => ({

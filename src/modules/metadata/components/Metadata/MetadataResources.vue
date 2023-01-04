@@ -125,19 +125,19 @@ export default {
   },
   created() {
     this.injectedComponent = null;
-    eventBus.$on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
+    eventBus.on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
 
     this.strategyEvent = null;
     this.strategyProperty = null;
-    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
+    eventBus.on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
   beforeDestroy() {
     this.injectedComponent = null;
-    eventBus.$off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
+    eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
 
     this.strategyEvent = null;
     this.strategyProperty = null;
-    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
+    eventBus.on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
   computed: {
     doi() {
@@ -201,7 +201,7 @@ export default {
       this.strategyProperty = strategyProperty;
     },
     catchOpenClick(event, eventProperty) {
-      eventBus.$emit(event, eventProperty);
+      eventBus.emit(event, eventProperty);
     },
   },
   data: () => ({

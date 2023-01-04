@@ -87,16 +87,16 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
-    eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
-    eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.on(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.on(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.on(MAP_ZOOM_CENTER, this.triggerCenter);
 
     this.setupMap();
   },
   beforeDestroy() {
-    eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
-    eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
-    eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.off(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.off(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.off(MAP_ZOOM_CENTER, this.triggerCenter);
 
     this.viewer.destroy();
   },

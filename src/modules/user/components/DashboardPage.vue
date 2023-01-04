@@ -341,12 +341,12 @@ export default {
     });
   },
   created() {
-    eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
-    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
+    eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeDestroy() {
-    eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
-    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
+    eventBus.off(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -362,7 +362,7 @@ export default {
   mounted() {
     if (this.dashboardRedirect) {
       // if the config is set to redirect to the legacy dashboard
-      eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
+      eventBus.emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
     }
   },
   computed: {

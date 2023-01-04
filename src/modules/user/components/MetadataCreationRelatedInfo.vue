@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     nextStep() {
-      eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
+      eventBus.emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
     },
   },
   data: () => ({

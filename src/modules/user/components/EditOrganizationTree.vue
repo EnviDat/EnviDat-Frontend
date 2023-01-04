@@ -75,7 +75,7 @@ export default {
         organization,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_ORGANIZATION,
         data: newGenericProps,
       });

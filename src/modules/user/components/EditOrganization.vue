@@ -174,7 +174,7 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   mounted() {
     //  beforeMount() {
@@ -183,7 +183,7 @@ export default {
     }
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
@@ -292,7 +292,7 @@ export default {
           x => x.id === orgId,
         )[0].id;
 
-        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_ORGANIZATION,
           data: { organizationId: newOrgId },
         });

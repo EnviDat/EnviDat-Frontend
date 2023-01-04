@@ -137,30 +137,30 @@ export default {
   created() {
     this.creationSteps = initializeSteps(metadataCreationSteps);
 
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
-    eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
-    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
-    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
-    eventBus.$on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
+    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
 
-    eventBus.$on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-    eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
-    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
-    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
-    eventBus.$off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
+    eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
+    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
+    eventBus.off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
 
-    eventBus.$off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
     this.initializeStepsInUrl();

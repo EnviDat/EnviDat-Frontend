@@ -295,23 +295,23 @@ export default {
         true,
       );
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_RESOURCES,
         data: newRes,
       });
 
       if (autoSelect) {
         this.$nextTick(() => {
-          eventBus.$emit(SELECT_EDITING_RESOURCE, newRes.id);
+          eventBus.emit(SELECT_EDITING_RESOURCE, newRes.id);
         });
       }
     },
  */
     catchEditResourceClose() {
-      eventBus.$emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
+      eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
     catchSaveResourceClose() {
-      eventBus.$emit(SAVE_EDITING_RESOURCE, this.selectedResource);
+      eventBus.emit(SAVE_EDITING_RESOURCE, this.selectedResource);
     },
     validateField(field) {
       isFieldValid(

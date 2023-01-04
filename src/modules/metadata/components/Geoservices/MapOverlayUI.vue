@@ -258,26 +258,26 @@ export default {
       this.$emit('changeLayer', layerName);
     },
     triggerZoomIn() {
-      eventBus.$emit(MAP_ZOOM_IN, this.mapDivId);
+      eventBus.emit(MAP_ZOOM_IN, this.mapDivId);
     },
     triggerZoomOut() {
-      eventBus.$emit(MAP_ZOOM_OUT, this.mapDivId);
+      eventBus.emit(MAP_ZOOM_OUT, this.mapDivId);
     },
     triggerZoomCenter() {
-      eventBus.$emit(MAP_ZOOM_CENTER, this.mapDivId);
+      eventBus.emit(MAP_ZOOM_CENTER, this.mapDivId);
     },
     triggerSplit() {
-      eventBus.$emit(MAP_COMPARE_START, this.mapDivId);
+      eventBus.emit(MAP_COMPARE_START, this.mapDivId);
       this.triggerZoomCenter();
     },
     triggerSplitEnd() {
-      eventBus.$emit(MAP_COMPARE_END, this.mapDivId);
+      eventBus.emit(MAP_COMPARE_END, this.mapDivId);
     },
     toggle3D() {
       this.$emit('toggleMapIn3D');
     },
     toggleBaseMap() {
-      eventBus.$emit(MAP_TOGGLE_BASE_LAYER, this.mapDivId);
+      eventBus.emit(MAP_TOGGLE_BASE_LAYER, this.mapDivId);
     },
   },
 };

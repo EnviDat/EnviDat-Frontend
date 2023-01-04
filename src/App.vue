@@ -198,16 +198,16 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
-    eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
-    eventBus.$on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.on(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     this.checkUserSignedIn();
   },
   beforeDestroy() {
-    eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
-    eventBus.$off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.off(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
     this.startParticles();
@@ -393,7 +393,7 @@ export default {
         callback = this.redirectToLegacyDashboard;
       }
 
-      eventBus.$emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+      eventBus.emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';

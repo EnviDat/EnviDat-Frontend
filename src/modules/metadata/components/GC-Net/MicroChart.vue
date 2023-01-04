@@ -560,7 +560,7 @@ export default {
       };
     },
     catchDetailClick(stationId) {
-      eventBus.$emit(GCNET_OPEN_DETAIL_CHARTS, stationId);
+      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, stationId);
     },
     downloadData() {
       window.open(this.downloadAllUrl, '_blank');

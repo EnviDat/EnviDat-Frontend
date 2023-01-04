@@ -59,9 +59,9 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_ZOOM_IN, this.zoomIn);
-    eventBus.$on(MAP_ZOOM_OUT, this.zoomOut);
-    eventBus.$on(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.on(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.on(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.on(MAP_ZOOM_CENTER, this.triggerCenter);
 
     this.setupMap();
 
@@ -70,9 +70,9 @@ export default {
     }
   },
   beforeDestroy() {
-    eventBus.$off(MAP_ZOOM_IN, this.zoomIn);
-    eventBus.$off(MAP_ZOOM_OUT, this.zoomOut);
-    eventBus.$off(MAP_ZOOM_CENTER, this.triggerCenter);
+    eventBus.off(MAP_ZOOM_IN, this.zoomIn);
+    eventBus.off(MAP_ZOOM_OUT, this.zoomOut);
+    eventBus.off(MAP_ZOOM_CENTER, this.triggerCenter);
 
     if (this.map) {
       this.map.remove();
@@ -395,7 +395,7 @@ export default {
 
       const layerArray = this.map.pm.getGeomanLayers();
       const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
-      eventBus.$emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
+      eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
     },
     getCustomLeafletStyle() {
       const iconOptions = L.Icon.Default.prototype.options;
@@ -481,7 +481,7 @@ export default {
       // });
     },
     catchGcnetStationClick(stationAlias) {
-      eventBus.$emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
+      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
     },
     // tempFunction() {
     //   const geoms = this.map.pm.getGeomanLayers()
