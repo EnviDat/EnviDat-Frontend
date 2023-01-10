@@ -58,7 +58,7 @@
                       append-icon="arrow_drop_down"
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
-                      :search-input.sync="search"
+                      :search-input="search"
                       :readonly="mixinMethods_isFieldReadOnly('keywords')"
                       :hint="mixinMethods_readOnlyHint('keywords')"
                       :error-messages="validationErrors.keywords"
@@ -69,6 +69,10 @@
                       @keydown="catchKeywordEntered($event)"
                       :rules="rulesKeywords"
                       >
+
+<!--
+            :search-input.sync="search"
+-->
 
             <template v-slot:selection="{ item }" >
               <TagChip  :name="item.name"

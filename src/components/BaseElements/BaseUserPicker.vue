@@ -23,12 +23,16 @@
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
-          :search-input.sync="search"
+          :search-input="search"
           :error-messages="errorMessages"
           clear-icon="close"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
         >
+<!--
+          :search-input.sync="search"
+-->
+
           <template v-slot:selection="{ item }">
             <TagChipAuthor
               v-if="item"

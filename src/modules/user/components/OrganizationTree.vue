@@ -16,8 +16,8 @@
       <v-treeview
         :items="items"
         :search="search"
-        :open.sync="open"
-        :active.sync="active"
+        :open="open"
+        :active="active"
         item-disabled="locked"
         dense
         activatable
@@ -25,6 +25,12 @@
         hoverable
         @update:active="catchActiveClick"
       >
+
+<!--
+        :open.sync="open"
+        :active.sync="active"
+-->
+
         <template v-slot:prepend="{ item }">
           <v-btn
             v-if="item.children && item.children.length > 0"
