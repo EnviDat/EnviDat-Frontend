@@ -1,5 +1,6 @@
 <template>
   <div id="StepperHeader">
+<!--
     <v-stepper
       v-model="currentStep"
       :value="stepNumber"
@@ -28,7 +29,7 @@
             "
             @click="catchStepClick(step)"
           >
-            <!--            <v-container fluid class="pa-0">
+            &lt;!&ndash;            <v-container fluid class="pa-0">
             <v-row no-gutters>
               <v-col class=""
                       :cols="step.error ? 4 : undefined">
@@ -39,7 +40,7 @@
                 <small>{{ step.error }}</small>
               </v-col>
             </v-row>
-            </v-container>-->
+            </v-container>&ndash;&gt;
             {{ step.title }}
             <div v-if="step.error">
               <small>{{ step.error }}</small>
@@ -55,6 +56,7 @@
         </template>
       </v-stepper-header>
     </v-stepper>
+-->
   </div>
 </template>
 

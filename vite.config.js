@@ -53,6 +53,7 @@ export default ({ mode }) => {
           compilerOptions: {
             compatConfig: {
               MODE: 2,
+              COMPILER_V_BIND_OBJECT_ORDER: false,
             },
           },
         },
