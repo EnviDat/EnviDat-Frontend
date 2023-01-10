@@ -31,6 +31,10 @@ if (otelUrl !== 'NULL') {
 }
 
 
+// resources for vue 3 & vuetify 3 upgrade:
+// https://v3-migration.vuejs.org/
+// and check the rules for https://github.com/gxmari007/vite-plugin-eslint
+
 app
   .use(vuetify)
   .use(router)
