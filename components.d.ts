@@ -2,7 +2,7 @@
 // We suggest you to commit this file into source control
 // Read more: https://github.com/vuejs/core/pull/3399
 export {}
-
+        
 declare module 'vue' {
   export interface GlobalComponents {
     BaseClickCard: typeof import('./src/components/BaseElements/BaseClickCard.vue')['default']
@@ -74,7 +74,6 @@ declare module 'vue' {
     VBadge: typeof import('vuetify/lib')['VBadge']
     VBanner: typeof import('vuetify/lib')['VBanner']
     VBtn: typeof import('vuetify/lib')['VBtn']
-    VBtnToggle: typeof import('vuetify/lib')['VBtnToggle']
     VCard: typeof import('vuetify/lib')['VCard']
     VCardActions: typeof import('vuetify/lib')['VCardActions']
     VCardText: typeof import('vuetify/lib')['VCardText']
@@ -91,12 +90,9 @@ declare module 'vue' {
     VExpansionPanelContent: typeof import('vuetify/lib')['VExpansionPanelContent']
     VExpansionPanelHeader: typeof import('vuetify/lib')['VExpansionPanelHeader']
     VExpansionPanels: typeof import('vuetify/lib')['VExpansionPanels']
-    VForm: typeof import('vuetify/lib')['VForm']
     VHover: typeof import('vuetify/lib')['VHover']
     VIcon: typeof import('vuetify/lib')['VIcon']
     VImg: typeof import('vuetify/lib')['VImg']
-    VItem: typeof import('vuetify/lib')['VItem']
-    VItemGroup: typeof import('vuetify/lib')['VItemGroup']
     VList: typeof import('vuetify/lib')['VList']
     VListItem: typeof import('vuetify/lib')['VListItem']
     VListItemAction: typeof import('vuetify/lib')['VListItemAction']
@@ -110,23 +106,13 @@ declare module 'vue' {
     VProgressLinear: typeof import('vuetify/lib')['VProgressLinear']
     VRow: typeof import('vuetify/lib')['VRow']
     VSelect: typeof import('vuetify/lib')['VSelect']
-    VSheet: typeof import('vuetify/lib')['VSheet']
-    VSlideYTransition: typeof import('vuetify/lib')['VSlideYTransition']
-    VSnackbar: typeof import('vuetify/lib')['VSnackbar']
     VSpacer: typeof import('vuetify/lib')['VSpacer']
     VStepper: typeof import('vuetify/lib')['VStepper']
     VStepperHeader: typeof import('vuetify/lib')['VStepperHeader']
     VStepperStep: typeof import('vuetify/lib')['VStepperStep']
-    VTab: typeof import('vuetify/lib')['VTab']
-    VTabItem: typeof import('vuetify/lib')['VTabItem']
-    VTabs: typeof import('vuetify/lib')['VTabs']
-    VTabsItems: typeof import('vuetify/lib')['VTabsItems']
     VTextarea: typeof import('vuetify/lib')['VTextarea']
     VTextField: typeof import('vuetify/lib')['VTextField']
     VTooltip: typeof import('vuetify/lib')['VTooltip']
-    VTreeview: typeof import('vuetify/lib')['VTreeview']
-    VWindow: typeof import('vuetify/lib')['VWindow']
-    VWindowItem: typeof import('vuetify/lib')['VWindowItem']
     WelcomeCard: typeof import('./src/components/Cards/WelcomeCard.vue')['default']
   }
 }
