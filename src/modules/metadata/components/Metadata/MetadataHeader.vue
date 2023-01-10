@@ -233,7 +233,7 @@
                       class="shrink" >
                 <tag-chip class="headerTag shrink"
                           :name="'...'"
-                          @click.native="showTagsExpanded = !showTagsExpanded" />
+                          @click="showTagsExpanded = !showTagsExpanded" />
               </v-col>
             </v-row>
           </v-col>

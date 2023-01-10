@@ -1,6 +1,6 @@
 <template>
   <v-tooltip
-    v-bind="{ [tooltipPosition]: true }"
+    v-bind="{ tooltipPosition: true }"
     :disabled="$vuetify.breakpoint.smAndDown || !tooltipText"
   >
     <template v-slot:activator="{ on }">

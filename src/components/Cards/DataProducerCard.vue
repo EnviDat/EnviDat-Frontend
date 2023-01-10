@@ -20,15 +20,15 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn v-if="loggedIn" large color="primary" @click.native="enterclick">
+      <v-btn v-if="loggedIn" large color="primary" @click="enterclick">
         {{ loggedinText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click.native="singupclick">
+      <v-btn v-if="!loggedIn" large color="primary" @click="singupclick">
         {{ signupText }}
       </v-btn>
 
-      <v-btn v-if="!loggedIn" large color="primary" @click.native="loginclick">
+      <v-btn v-if="!loggedIn" large color="primary" @click="loginclick">
         {{ loginText }}
       </v-btn>
     </v-card-actions>

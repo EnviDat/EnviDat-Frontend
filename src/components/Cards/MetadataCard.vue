@@ -5,7 +5,7 @@
     @mouseover="hover = true"
     @mouseleave="hover = false"
     style="height: 100%;"
-    @click.native="cardClick"
+    @click="cardClick"
   >
     <!-- <v-card-title primary-title class="pa-0"> -->
 

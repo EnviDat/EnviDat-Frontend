@@ -7,7 +7,7 @@
           :dark="dark"
           :color="showPlaceholder ? 'primary' : 'white'" >
 
-    <div v-bind="{['style'] : dynamicCardBackground }" >
+    <div :style="dynamicCardBackground" >
       <!-- this loads the background image -->
     </div>
 

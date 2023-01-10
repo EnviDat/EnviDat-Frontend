@@ -25,7 +25,7 @@
           :color="color ? color : disabled ? '' : 'primary'"
           :href="url"
           :disabled="disabled"
-          v-bind="{ ['target']: '_blank' }"
+          v-bind="{ target: '_blank' }"
           @click.stop="onClick"
         >
           <div v-if="customIcon">
@@ -64,7 +64,7 @@
       :color="color ? color : disabled ? '' : 'primary'"
       :href="url"
       :disabled="disabled"
-      v-bind="{ ['target']: '_blank' }"
+      v-bind="{ target: '_blank' }"
       @click.stop="onClick"
     >
       <div v-if="customIcon" class="iconCentering">

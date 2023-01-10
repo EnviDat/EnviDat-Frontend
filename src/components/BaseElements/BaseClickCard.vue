@@ -5,7 +5,7 @@
     raised
     :height="height"
     :disabled="disabled"
-    @click.native="clicked"
+    @click="clicked"
   >
     <v-container class="pa-0">
       <v-row align="center" no-gutters>

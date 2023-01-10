@@ -10,7 +10,7 @@
       :height="headerCardHeight"
       :class="`elevation-${hovered ? 5 : 3}`"
       style="z-index: 1;"
-      @click.native="cardClick"
+      @click="cardClick"
     >
       <v-row
         style="max-width: 100%; background-color: white; border-radius: 2px;"
@@ -48,7 +48,7 @@
       style="z-index: 0; top: -2px;"
       :class="`elevation-${hovered ? 5 : 2}`"
       class="mx-2"
-      @click.native="cardClick"
+      @click="cardClick"
     >
       <v-card-text class="text">
         {{ truncatedDescription }}
