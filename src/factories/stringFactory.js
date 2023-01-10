@@ -13,11 +13,12 @@
 
 import Crypto from 'crypto-js';
 import Cookie from 'js-cookie';
-import remark from 'remark';
+import { remark } from 'remark';
 import htmlLib from 'remark-html';
 import remarkStripHtmlLib from 'remark-strip-html';
 import stripMarkdownLib from 'strip-markdown';
-import uuid from 'uuid';
+// import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export function renderMarkdown(markdownString, sanitizeHTML = true) {
   if (!markdownString || markdownString.length <= 0) {
@@ -91,7 +92,7 @@ export function GetEncryptedKeyFromCookie(cookieName) {
   // Get the encryption token from cookie or generate a new one.
   const encryptionToken = Cookie.get(cookieName, {
     domain: import.meta.env.PROD ? '.envidat.ch' : 'localhost',
-  }) || uuid.v4();
+  }) || uuidv4();
 
   // Store the encryption token in a secure cookie.
   Cookie.set(cookieName, encryptionToken, {
