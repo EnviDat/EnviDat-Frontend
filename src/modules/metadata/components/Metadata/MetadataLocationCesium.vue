@@ -32,6 +32,7 @@
 
 <script>
 /* eslint-disable new-cap */
+/*
 import 'cesium/Widgets/widgets.css';
 
 import Color from 'cesium/Core/Color';
@@ -43,6 +44,7 @@ import HorizontalOrigin from 'cesium/Scene/HorizontalOrigin';
 import SceneMode from 'cesium/Scene/SceneMode';
 import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
 import Viewer from 'cesium/Widgets/Viewer/Viewer';
+*/
 import { mapState } from 'vuex';
 
 import marker from '@/assets/map/marker-icon.png';
