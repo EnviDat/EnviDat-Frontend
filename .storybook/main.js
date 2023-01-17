@@ -17,9 +17,9 @@ const cesiumSource = '../node_modules/@cesium/engine/Source'
 const version = process.env.npm_package_version;
 
 module.exports = {
-  "stories": [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)",
+  stories: [
+    '../stories/**/*.stories.mdx',
+    '../stories/**/*.stories.@(js|jsx|ts|tsx)',
 //    "../stories/**/*.stories.@(js)"
   ],
 //  "../stories/**/*.stories.mdx",

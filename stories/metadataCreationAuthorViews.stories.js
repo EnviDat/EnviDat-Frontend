@@ -42,7 +42,6 @@ import {
 
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
-import { METADATA_EDITING } from './storybookFolder';
 
 const metadataCards = [];
 
@@ -70,7 +69,7 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
 export default {
-  title: `${METADATA_EDITING} / Author Infos`,
+  title: '9 Editing Metadata / Author Infos',
   decorators: [],
   parameters: {},
 };

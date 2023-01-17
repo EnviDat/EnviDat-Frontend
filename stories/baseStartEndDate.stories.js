@@ -11,10 +11,9 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
-import { BASE_ELEMENTS } from './storybookFolder';
 
 export default {
-  title: `${BASE_ELEMENTS} / BaseStartEndDate`,
+  title: '1 Base Elements / Start End Date picker',
   decorators: [],
   parameters: {},
 };

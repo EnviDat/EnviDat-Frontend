@@ -21,13 +21,12 @@ import {
 
 import { getOrganizationMap } from '@/factories/metaDataFactory';
 import testOrganizations from './js/organizations';
-import { METADATA_EDITING } from './storybookFolder';
 
 const organizationsMap = getOrganizationMap(testOrganizations);
 const organizationsMap2 = { ...organizationsMap };
 
 export default {
-  title: `${METADATA_EDITING} / Organization`,
+  title: '5 Navigation / Organization',
   decorators: [],
   parameters: {},
 };

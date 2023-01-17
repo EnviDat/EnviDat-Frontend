@@ -3,10 +3,9 @@ import SloganCard from '@/modules/home/components/SloganCard.vue';
 
 import fingertips from '../src/assets/cards/slogan/fingertips_small.webp';
 
-import { CARD_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${CARD_VIEWS} / Slogan Card`,
+  title: '3 Cards / Slogan Card',
   decorators: [],
   parameters: {
   },

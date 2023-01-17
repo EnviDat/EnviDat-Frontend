@@ -11,10 +11,9 @@
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
-import { FILTERING_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${FILTERING_VIEWS} / SearchBarView`,
+  title: '4 Filtering / SearchBarView',
   decorators: [],
   parameters: {
   },

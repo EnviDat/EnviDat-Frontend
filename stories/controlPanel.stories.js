@@ -19,10 +19,9 @@ import {
 } from '@/store/metadataMutationsConsts';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 
-const menuEntry = '4 Filtering / filtering control panels';
 
 export default {
-    title: menuEntry,
+    title: '4 Filtering / filtering control panels',
     decorators: [],
     parameters: {},
 };

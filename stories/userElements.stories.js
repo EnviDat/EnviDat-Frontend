@@ -26,7 +26,6 @@ import seedrandom from 'seedrandom';
 import jazzicons from '@metamask/jazzicon';
 import authorCollection from './testdata/authorCollection.json';
 
-import { USER_VIEWS } from './storybookFolder';
 
 const userMenuItems = [
   { title: 'dashboard', icon: 'dashboard', toolTip: 'My Dashboard', active: false, path: 'dashboard', pageName: 'UserDashboard' },
@@ -34,7 +33,7 @@ const userMenuItems = [
 ];
 
 export default {
-  title: `${USER_VIEWS} / User Elements`,
+  title: '7 User / User Elements',
   decorators: [],
   parameters: {
   },

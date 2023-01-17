@@ -10,7 +10,6 @@ import lastModifiedIcon from '../src/assets/icons/dateModified.png';
 import doiIcon from '../src/assets/icons/doi.png';
 import fileSizeIcon from '../src/assets/icons/fileSize.png';
 import unFormatedMetadataCards from './js/metadata';
-import { CARD_VIEWS } from './storybookFolder';
 
 
 Vue.mixin(globalMethods);
@@ -35,7 +34,7 @@ const methods = {
 };
 
 export default {
-  title: `${CARD_VIEWS} / Resource Cards`,
+  title: '3 Cards / Resource Cards',
   decorators: [],
   parameters: {
   },

@@ -17,7 +17,6 @@ import {
 } from '@/factories/projectsDataFactory';
 
 import projectJSON from './testdata/projects.json';
-import { DETAIL_VIEWS } from './storybookFolder';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
@@ -25,12 +24,8 @@ const projects = enhancedProjects;
 const projectDetail1 = projects[6];
 const projectDetail2 = projects[3];
 
-export const methods = {
-  // onCardClick: action('clicked on card'),
-};
-
 export default {
-  title: `${DETAIL_VIEWS} / Window Slider`,
+  title: '6 Detail Views / Window Slider',
   decorators: [],
   parameters: {},
 };
@@ -58,7 +53,6 @@ export const WindowVertical = () => ({
 
   </v-row>
   `,
-  methods,
   data: () => ({
     projectDetail1,
     projectDetail2,
@@ -88,7 +82,6 @@ export const Window = () => ({
 
   </v-row>
   `,
-  methods,
   data: () => ({
     projectDetail1,
     projectDetail2,

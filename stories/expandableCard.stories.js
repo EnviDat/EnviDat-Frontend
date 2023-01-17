@@ -18,7 +18,6 @@ import handsSmall from '../src/assets/about/hands_small.jpg';
 import orga from '../src/assets/about/EnviDat_organigram.png';
 import conceptSmall from '../src/assets/about/concept_small.jpg';
 import communitySmall from '../src/assets/about/community_small.jpg';
-import { CARD_VIEWS, METADATA_EDITING } from './storybookFolder';
 
 const computed = {
   missionImg() {
@@ -62,7 +61,7 @@ const computed = {
 };
 
 export default {
-  title: `${CARD_VIEWS} / Expandable Cards`,
+  title: '3 Cards / Expandable Cards',
   decorators: [],
   parameters: {},
 };

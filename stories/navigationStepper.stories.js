@@ -25,10 +25,9 @@ import {
   getStepByName,
 } from '@/factories/userEditingFactory';
 
-import { NAVIGATION_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${NAVIGATION_VIEWS} / NavigationStepper`,
+  title: '5 Navigation / NavigationStepper',
   decorators: [],
   parameters: {},
 };

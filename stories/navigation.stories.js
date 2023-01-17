@@ -22,7 +22,6 @@ import {
   userMenuItems,
 } from '@/store/navigationState';
 
-import { NAVIGATION_VIEWS } from './storybookFolder';
 
 const dominikHaas = {
   fullName: 'Dominik Haas',
@@ -42,7 +41,7 @@ const methods = {
 const appVersion = import.meta.env.VITE_VERSION;
 
 export default {
-  title: `${NAVIGATION_VIEWS} / Redesigned Navigation`,
+  title: '5 Navigation / Redesigned Navigation',
   decorators: [],
   parameters: {},
 };

@@ -42,7 +42,6 @@ import {
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
-import { METADATA_EDITING } from './storybookFolder';
 
 const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
@@ -93,7 +92,7 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
 export default {
-  title: `${METADATA_EDITING} / Main Infos`,
+  title: '9 Editing Metadata / Main Infos',
   decorators: [],
   parameters: {},
 };
