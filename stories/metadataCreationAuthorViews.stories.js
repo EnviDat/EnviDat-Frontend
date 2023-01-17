@@ -416,7 +416,7 @@ export const FullEditingAuthorViews = () => ({
     cancelEditing() {
       this.setSelected(this.selectionId, false);
       this.selectionId = '';
-      eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
     },
     setSelected(id, selected) {
       const auths = this.authors;
@@ -515,7 +515,7 @@ export const FullEditingAuthorViews = () => ({
 
       setTimeout(() => {
         this.loading = false;
-        eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
       }, 1000)
     },
   },
