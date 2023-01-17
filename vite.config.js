@@ -96,7 +96,7 @@ export default ({ mode }) => {
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
         },
         optimizeDeps: {
-            include: ['vuetify', 'vuex-persist'],
+            include: ['vuetify'],
         },
         base: './',
         // runtimeCompiler: true,
