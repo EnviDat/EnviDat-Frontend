@@ -21,7 +21,6 @@ import stationParameters from './testdata/stationParameters.json';
 import stationsConfig from './testdata/stationsConfig.json';
 
 import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList.vue';
-import { GCNET_VIEWS } from './storybookFolder';
 
 const stations = stationsConfig;
 const fileObjects = stationParameters.fileObjects;
@@ -29,7 +28,7 @@ const graphStyling = stationParameters.graphStyling;
 
 
 export default {
-  title: `${GCNET_VIEWS} / Detail Charts`,
+  title: '12 Chart Views / Detail Charts',
   component: DetailChartsList,
   decorators: [],
   parameters: {

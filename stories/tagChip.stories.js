@@ -16,12 +16,10 @@ import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
-import { CHIPS } from './storybookFolder';
 
-const menuEntry = `${CHIPS} / single chips`; // / Keyword Tag`;
 
 export default {
-    title: menuEntry,
+    title: '10 Chips / single chips',
     decorators: [],
     parameters: {},
 };

@@ -18,11 +18,10 @@ import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 
 import dataCreatorImg from '@/assets/cards/data_creator_small.jpg'
 import integrationlist from './testdata/integrationlist.json';
-import { LAYOUT_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${LAYOUT_VIEWS} / Page layouts`,
+  title: '13 Layouts / Page layouts',
   // component: TextCardListLayout,
   decorators: [],
   parameters: {},

@@ -49,7 +49,6 @@ import fileIcon from '../src/assets/icons/file.png';
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
-import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -145,7 +144,7 @@ const genericProps5 = {
 
 
 export default {
-  title: `${DETAIL_VIEWS} / Mode View`,
+  title: '6 Detail Views / Mode View',
   decorators: [],
   parameters: {},
 };

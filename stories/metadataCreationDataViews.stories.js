@@ -31,7 +31,6 @@ import {
   localIdProperty,
 } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
-import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
 
 
 // const apiFactory = require('@/factories/apiFactory');
@@ -49,7 +48,7 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 // });
 
 export default {
-  title: `${METADATA_EDITING} / Data Infos`,
+  title: '9 Editing Metadata / Data Infos',
   decorators: [],
   parameters: {},
 };

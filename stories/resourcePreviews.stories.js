@@ -12,13 +12,12 @@
  */
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-import { CARD_VIEWS } from './storybookFolder';
 
 // const readme1 = './testdata/bender2020_readme.txt';
 // const readme2 = './testdata/10-16904-envidat-30_readme.txt';
 
 export default {
-  title: `${CARD_VIEWS} / Resource Previews`,
+  title: '3 Cards / Resource Previews',
   decorators: [],
   parameters: {
   },
