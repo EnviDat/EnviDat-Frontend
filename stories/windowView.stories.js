@@ -9,10 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-// import { action } from '@storybook/addon-actions';
-
 import WindowVerticalView from '@/modules/projects/components/ProjectDetailViews/WindowVerticalView.vue';
 import WindowView from '@/modules/projects/components/ProjectDetailViews/WindowView.vue';
 
@@ -21,6 +17,7 @@ import {
 } from '@/factories/projectsDataFactory';
 
 import projectJSON from './testdata/projects.json';
+import { DETAIL_VIEWS } from './storybookFolder';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
@@ -32,62 +29,68 @@ export const methods = {
   // onCardClick: action('clicked on card'),
 };
 
-storiesOf('6 Detail Views / Window Slider', module)
-  .add('Window Vertical View', () => ({
-    components: { WindowVerticalView },
-    template: `
-    <v-row >
+export default {
+  title: `${DETAIL_VIEWS} / Window Slider`,
+  decorators: [],
+  parameters: {},
+};
 
-      <v-col cols="12" class="py-2" >
-        <window-vertical-view :showPlaceholder="false" />
-      </v-col>
+export const WindowVertical = () => ({
+  components: { WindowVerticalView },
+  template: `
+  <v-row >
 
-      <v-col cols="12" class="py-2" >
-        <window-vertical-view :showPlaceholder="true" />
-      </v-col>
+    <v-col cols="12" class="py-2" >
+      <window-vertical-view :showPlaceholder="false" />
+    </v-col>
 
-      <v-col cols="12" class="py-2" >
-        <window-vertical-view :subProjects="projectDetail1.subProjects" :metadatas="projectDetail1.packages" />
-      </v-col>
+    <v-col cols="12" class="py-2" >
+      <window-vertical-view :showPlaceholder="true" />
+    </v-col>
 
-      <v-col cols="12" class="py-2" >
-        <window-vertical-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
-      </v-col>
+    <v-col cols="12" class="py-2" >
+      <window-vertical-view :subProjects="projectDetail1.subProjects" :metadatas="projectDetail1.packages" />
+    </v-col>
 
-    </v-row>
-    `,
-    methods,
-    data: () => ({
-      projectDetail1,
-      projectDetail2,
-    }),
-  }))
-  .add('Window View', () => ({
-    components: { WindowView },
-    template: `
-    <v-row >
+    <v-col cols="12" class="py-2" >
+      <window-vertical-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
+    </v-col>
 
-      <v-col cols="12" class="py-2" >
-        <window-view :showPlaceholder="false" />
-      </v-col>
+  </v-row>
+  `,
+  methods,
+  data: () => ({
+    projectDetail1,
+    projectDetail2,
+  }),
+})
 
-      <v-col cols="12" class="py-2" >
-        <window-view :showPlaceholder="true" />
-      </v-col>
+export const Window = () => ({
+  components: { WindowView },
+  template: `
+  <v-row >
 
-      <v-col cols="12" class="py-2" >
-        <window-view :subProjects="projectDetail1.subProjects" :metadatas="projectDetail1.packages" />
-      </v-col>
+    <v-col cols="12" class="py-2" >
+      <window-view :showPlaceholder="false" />
+    </v-col>
 
-      <v-col cols="12" class="py-2" >
-        <window-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
-      </v-col>
+    <v-col cols="12" class="py-2" >
+      <window-view :showPlaceholder="true" />
+    </v-col>
 
-    </v-row>
-    `,
-    methods,
-    data: () => ({
-      projectDetail1,
-      projectDetail2,
-    }),
-  }));
+    <v-col cols="12" class="py-2" >
+      <window-view :subProjects="projectDetail1.subProjects" :metadatas="projectDetail1.packages" />
+    </v-col>
+
+    <v-col cols="12" class="py-2" >
+      <window-view :subProjects="projectDetail2.subProjects" :metadatas="projectDetail2.packages" />
+    </v-col>
+
+  </v-row>
+  `,
+  methods,
+  data: () => ({
+    projectDetail1,
+    projectDetail2,
+  }),
+})

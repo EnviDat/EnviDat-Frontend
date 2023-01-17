@@ -10,8 +10,6 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
 import ExpandableCard from '../src/modules/about/components/ExpandableCard.vue';
 import teamSmall from '../src/assets/about/team_small.jpg';
 import mission from '../src/assets/projects/mission.jpg';
