@@ -12,12 +12,10 @@
 */
 
 import Crypto from 'crypto-js';
-import Cookie from 'js-cookie';
 import remark from 'remark';
 import htmlLib from 'remark-html';
 import remarkStripHtmlLib from 'remark-strip-html';
 import stripMarkdownLib from 'strip-markdown';
-import uuid from 'uuid';
 
 export function renderMarkdown(markdownString, sanitizeHTML = true) {
   if (!markdownString || markdownString.length <= 0) {
@@ -69,47 +67,9 @@ export function extractBodyIntoUrl(url, body) {
   return url;
 }
 
-export function encryptString(string, encryptionKey) {
-  const encrypted = Crypto.AES.encrypt(string, encryptionKey);
-  return encrypted.toString();
-}
-
-/**
- *
- * @param string
- * @param encryptionKey
- * @returns {any}
- * @throws SyntaxError
- */
-export function decryptString(string, encryptionKey) {
-  const bytes = Crypto.AES.decrypt(string, encryptionKey);
-
-  return JSON.parse(bytes.toString(Crypto.enc.Utf8));
-}
-
-export function GetEncryptedKeyFromCookie(cookieName) {
-  // Get the encryption token from cookie or generate a new one.
-  const encryptionToken = Cookie.get(cookieName, {
-    domain: import.meta.env.PROD ? '.envidat.ch' : 'localhost',
-  }) || uuid.v4();
-
-  // Store the encryption token in a secure cookie.
-  Cookie.set(cookieName, encryptionToken, {
-    secure: true,
-    sameSite: 'lax',
-    expires: 7,
-    domain: import.meta.env.PROD ? '.envidat.ch' : 'localhost',
-  });
-
-  return Crypto.SHA3(encryptionToken, { outputLength: 512 }).toString();
-}
-
 export function md5Hash(string) {
   return Crypto.MD5(string).toString();
 }
-
-
-
 
 function fillMapWithArray(key, value, map) {
   const existingArrayValue = map.get(key);

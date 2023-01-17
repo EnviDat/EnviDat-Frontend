@@ -36,7 +36,6 @@ import {
 } from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
-import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
 const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
@@ -122,7 +121,7 @@ function createStore() {
     mutations,
     actions,
     modules,
-    plugins: [localStoragePlugin.plugin],
+    plugins: [],
   });
 }
 
@@ -138,11 +137,6 @@ try {
 
     console.log('restoreState error');
     console.log(e);
-
-    // clear it to make sure the app boots with a clean state
-    clearLocalStorage();
-
-    console.info('cleared local storage');
 
     store = createStore();
   }
