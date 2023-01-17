@@ -54,7 +54,7 @@ export default {
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.get(url, { withCredentials: true })
+    await axios.get(url)
       // await axios({ method, url, body })
       .then((response) => {
         if (payload.commit) {
@@ -74,7 +74,7 @@ export default {
     const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    await axios.post(url, body, {withCredentials: true})
+    await axios.post(url, body)
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);

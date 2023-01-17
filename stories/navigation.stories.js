@@ -26,7 +26,6 @@ import { NAVIGATION_VIEWS } from './storybookFolder';
 
 const dominikHaas = {
   fullName: 'Dominik Haas',
-  apikey: 'a_secrect_thing',
   email: 'dominik.haas@wsl.ch',
   firstName: 'dominik',
   lastName: 'Haas',
