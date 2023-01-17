@@ -49,12 +49,13 @@ import { eventBus, SHOW_REDIRECT_DASHBOARD_DIALOG } from '@/factories/eventBus';
 import {
   ACTION_GET_USER_CONTEXT,
   ACTION_REQUEST_TOKEN,
-  ACTION_USER_SIGNIN,
+  ACTION_API_TOKEN,
   ACTION_USER_SIGNOUT,
   FETCH_USER_DATA,
+  EXCHANGE_TOKENS,
   GET_USER_CONTEXT,
-  REQUEST_TOKEN,
-  USER_SIGNIN,
+  RESET_KEY,
+  API_TOKEN,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
   VALIDATION_ERROR,
@@ -131,16 +132,23 @@ export default {
     },
     async catchSignIn(email, key) {
       await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        `${USER_SIGNIN_NAMESPACE}/${EXCHANGE_TOKENS}`,
         {
-          action: ACTION_USER_SIGNIN,
+          action: ACTION_API_TOKEN,
           body: { email, key },
           commit: true,
-          mutation: USER_SIGNIN,
+          mutation: API_TOKEN,
         },
       );
 
       if (!this.errorField && !this.errorFieldText) {
+        // Get user context
+        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });
+        // Then redirect with context set
         this.redirectToDashboardIfAllowed();
       }
     },
@@ -154,11 +162,11 @@ export default {
       }
     },
     catchRequestToken(email) {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${EXCHANGE_TOKENS}`, {
         action: ACTION_REQUEST_TOKEN,
         body: { email },
         commit: true,
-        mutation: REQUEST_TOKEN,
+        mutation: RESET_KEY,
       });
     },
     catchSignOut() {
