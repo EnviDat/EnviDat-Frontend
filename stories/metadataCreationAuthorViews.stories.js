@@ -106,10 +106,10 @@ export const EditAddAuthorViews = () => ({
   </v-col>
   `,
   created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
   methods: {
     changeAuthor(updateObj) {
@@ -318,10 +318,10 @@ export const EditAuthorsListViews = () => ({
   </v-col>
   `,
   created() {
-    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   beforeDestroy() {
-    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   methods: {
     selectAuthor(id) {
@@ -381,16 +381,16 @@ export const FullEditingAuthorViews = () => ({
     </v-col>
   `,
   created() {
-    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   beforeDestroy() {
-    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   methods: {
     removeAuthor(email) {

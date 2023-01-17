@@ -49,10 +49,10 @@ export const NavigationStepperViews = () => ({
   </v-row>
   `,
   created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
     getStepByName,

@@ -181,13 +181,13 @@ export const EditRelatedPublicationViews = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
       this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {
@@ -416,13 +416,13 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
 
     </v-col> `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
         this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {
@@ -514,10 +514,10 @@ export const EditPublicationInfoView = () => ({
 
     </v-col> `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       // TODO find a way to have filled in example generate more rows
@@ -574,10 +574,10 @@ export const EditCustomFieldViews = () => ({
 
     </v-col> `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {
@@ -655,10 +655,10 @@ export const EditMetadataHeaderViews = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {

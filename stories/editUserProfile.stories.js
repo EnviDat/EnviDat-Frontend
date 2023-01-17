@@ -185,10 +185,10 @@ export const UserCardEditingViews = () => ({
     </v-row>
     `,
   created() {
-    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+    eventBus.on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   beforeDestroy() {
-    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+    eventBus.off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   computed: {
     author() {

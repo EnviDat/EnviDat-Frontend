@@ -59,10 +59,10 @@ export const OrganizationTreeView = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     methods: {
       showSelectedOrga(updateObj) {
@@ -114,10 +114,10 @@ export const EditDatasetOrganization = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
       updateOrga(updateObj) {
@@ -232,10 +232,10 @@ export const EditOrganizationViews = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
       updateOrga(updateObj) {

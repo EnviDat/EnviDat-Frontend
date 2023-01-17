@@ -100,10 +100,10 @@ export const EditResourceViews = () => ({
     </v-col>
     `,
   created() {
-    eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   beforeDestroy() {
-    eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
   },
   methods: {
     selectResource(id) {
@@ -163,10 +163,10 @@ export const EditResourcesList = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     beforeDestroy() {
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     methods: {
       selectResource(id) {
@@ -281,16 +281,16 @@ export const EditDataAndResourcesListViews = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
-      eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
       genericProps() {
