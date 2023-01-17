@@ -19,7 +19,7 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_INFO, EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -146,6 +146,9 @@ const metadataInEditingValidations = {
         .min(3),
       publicationYear: yup.string()
         .required(),
+    }),
+  [EDITMETADATA_FUNDING_INFO]: () =>
+    yup.object().shape({
       funders: yup.array()
         .required().min(1, 'Provide at least one entry about funding of the research.').of(
         yup.object().shape({

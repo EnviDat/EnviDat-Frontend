@@ -19,6 +19,7 @@ import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditFunding from '@/modules/user/components/EditFunding.vue';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
@@ -257,9 +258,9 @@ export const GenericTextAreaPreviewPublications = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout :genericProps="genericProps"
+          <GenericTextareaPreviewLayout v-bind="genericProps"
                                         @changedText="catchChangedText($event)" >
-            <metadata-publications :genericProps="publicationsObject" />
+            <metadata-publications v-bind="publicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -270,9 +271,9 @@ export const GenericTextAreaPreviewPublications = () => ({
 
       <v-row class="py-3" >
         <v-col >
-         <GenericTextareaPreviewLayout :genericProps="genericPropsFilled"
+         <GenericTextareaPreviewLayout v-bind="genericPropsFilled"
                                         @changedText="catchChangedFilledText($event)" >
-            <metadata-publications :genericProps="filledPublicationsObject" />
+            <metadata-publications v-bind="filledPublicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -396,8 +397,8 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout  :genericProps="genericProps"  >
-            <metadata-body :genericProps="genericProps" />
+          <GenericTextareaPreviewLayout  v-bind="genericProps"  >
+            <metadata-body v-bind="genericProps" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -408,8 +409,8 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
 
       <v-row class="py-3" >
         <v-col >
-         <GenericTextareaPreviewLayout  :genericProps="genericPropsFilled"  >
-            <metadata-body :genericProps="genericPropsFilled" />
+         <GenericTextareaPreviewLayout  v-bind="genericPropsFilled"  >
+            <metadata-body v-bind="genericPropsFilled" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -508,7 +509,7 @@ export const EditPublicationInfoView = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditPublicationInfo :genericProps="genericPropsFilled" />
+          <EditPublicationInfo v-bind="genericPropsFilled" />
         </v-col>
       </v-row>
 
@@ -520,32 +521,74 @@ export const EditPublicationInfoView = () => ({
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
-      // TODO find a way to have filled in example generate more rows
       editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          this.genericPropsFilled = updateObj.data;
-        }
+        this.genericPropsFilled = updateObj.data;
       },
     },
     data: () => ({
       genericPropsFilled: {
-          id: 1,
-          funders: [
-            {
-              organization: 'WSL',
-              grantNumber: 'XYZ',
-              link: 'https://www.wsl.ch',
-            },
-           {
-                organization: 'NSF',
-                grantNumber: '123',
-                link: 'https://www.superduper.ch',
-            },
-
-          ],
+        id: 1,
       },
     }),
   });
+
+export const EditFundingView = () => ({
+  components: { EditFunding },
+  template: `
+    <v-col>
+
+      <v-row>
+        Edit Funding fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditFunding />
+        </v-col>
+      </v-row>
+
+       <v-row>
+        Edit Funding fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditFunding v-bind="genericPropsFilled" />
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+//      if (updateObj.data.id === this.genericPropsFilled.id) {
+        this.genericPropsFilled.funders = updateObj.data.funders;
+//      }
+    },
+  },
+  data: () => ({
+    genericPropsFilled: {
+      id: 1,
+      funders: [
+        {
+          institution: 'WSL',
+          grantNumber: 'XYZ',
+          institutionUrl: 'https://www.wsl.ch',
+        },
+        {
+          institution: 'NSF',
+          grantNumber: '123',
+          institutionUrl: 'https://www.superduper.ch',
+        },
+      ],
+    },
+  }),
+});
 
 export const EditCustomFieldViews = () => ({
     components: { EditCustomFields },
@@ -558,7 +601,7 @@ export const EditCustomFieldViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditCustomFields :genericProps="emptyFirstGenericProps" />
+          <EditCustomFields v-bind="emptyFirstGenericProps" />
         </v-col>
       </v-row>
 
@@ -568,7 +611,7 @@ export const EditCustomFieldViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditCustomFields :genericProps="genericProps" />
+          <EditCustomFields v-bind="genericProps" />
         </v-col>
       </v-row>
 

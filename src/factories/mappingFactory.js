@@ -21,6 +21,7 @@ import {
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -128,6 +129,8 @@ const JSONFrontendBackendRules = {
     ['doi','doi'],
     ['publisher','publication.publisher'],
     ['publicationYear','publication.publication_year'],
+  ],
+  [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
   ],
 };
@@ -155,6 +158,8 @@ export function convertJSONArray(array, recursive) {
   return parsedArray;
 }
 
+const jsonStartRegex = /^\s*(\{|\[)/;
+
 export function convertJSON(data, stringify, recursive = false) {
   const properties = Object.keys(data);
   const flatObj = {};
@@ -177,7 +182,7 @@ export function convertJSON(data, stringify, recursive = false) {
     } else {
 
       // eslint-disable-next-line no-lonely-if
-      if (typeof value === 'string') {
+      if (typeof value === 'string' && jsonStartRegex.test(value)) {
         try {
           const parsedValue = JSON.parse(value);
           if (parsedValue && typeof parsedValue === 'object') {
@@ -599,6 +604,12 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   commitEditingData(commit, stepKey, publicationData);
   dataObject.publicationData = publicationData;
 
+  stepKey = EDITMETADATA_FUNDING_INFO;
+  const fundingData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, fundingData);
+  dataObject.fundingData = fundingData;
+
   stepKey = EDITMETADATA_ORGANIZATION;
   const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
 
@@ -675,7 +686,8 @@ const dataNeedsStringify = [
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_INFO, // still needed without funding info?
+  EDITMETADATA_FUNDING_INFO,
 ];
 
 export function mapFrontendToBackend(stepKey, frontendData) {

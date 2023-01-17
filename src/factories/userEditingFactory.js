@@ -20,6 +20,7 @@ import {
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -215,6 +216,8 @@ const emptyMetadataInEditing = {
     doi: '',
     publisher: '',
     publicationYear: '',
+  },
+  [EDITMETADATA_FUNDING_INFO]: {
     funders: [],
   },
 };
