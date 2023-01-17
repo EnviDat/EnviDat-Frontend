@@ -9,12 +9,17 @@
 
       <v-row>
         <v-col cols="12">
+          <BaseFileDropField />
+<!--
           <DragDrop :uppy="uppy"
                     v-on:ondragover="logEvent"
                     v-on:ondragleave="logEvent"
                     v-on:ondrop="logEvent" />
+-->
 
+<!--
           <StatusBar :uppy="uppy" />
+-->
         </v-col>
       </v-row>
     </v-container>
@@ -34,14 +39,16 @@
  */
 import axios from 'axios';
 
-import { DragDrop, StatusBar } from '@uppy/vue';
+/*
+import {
+  DragDrop,
+  // StatusBar,
+} from '@uppy/vue';
 
 import '@uppy/core/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
-
-import AwsS3Multipart from '@uppy/aws-s3-multipart';
-import GoldenRetriever from '@uppy/golden-retriever';
+// import '@uppy/status-bar/dist/style.css';
+*/
 
 import {
   // USER_NAMESPACE,
@@ -51,12 +58,13 @@ import {
 import {
   destoryUppyInstance,
   getUppyInstance,
-  initiateMultipart,
-  listUploadedParts,
-  requestPresignedUrls,
-  abortMultipart,
-  completeMultipart,
 } from '@/factories/uploadFactory';
+
+import BaseFileDropField from '@/components/BaseElements/BaseFileDropField.vue';
+
+/*
+const uppy = getUppyInstance();
+*/
 
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
@@ -84,9 +92,10 @@ export default {
   methods: {
     setupUppy() {
       if (this.uppy === null) {
-        this.uppy = getUppyInstance(this.userApiKey);
+        this.uppy = getUppyInstance();
       }
 
+/*
       this.uppy
         .use(GoldenRetriever, { serviceWorker: true })
         .use(AwsS3Multipart, {
@@ -101,6 +110,7 @@ export default {
           abortMultipartUpload: abortMultipart,
           completeMultipartUpload: completeMultipart,
         });
+*/
 
       // this.$options.components.DragDrop.o
 
@@ -193,8 +203,11 @@ export default {
     domain,
   }),
   components: {
+    BaseFileDropField,
+/*
     DragDrop,
-    StatusBar,
+    // StatusBar,
+*/
   },
 };
 </script>
