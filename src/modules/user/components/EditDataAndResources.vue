@@ -16,53 +16,12 @@
 
         <v-row v-if="!selectedResource">
           <v-col>
-            <!-- <v-card class="pa-0">
+             <v-card class="pa-0">
               <EditDropResourceFiles @createResources="createResourceFromFiles" />
 
               <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-            </v-card> -->
-
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Add New Resource</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon
-                      color="secondary"
-                      style="animation: progress-circular-rotate 3s linear infinite"
-                      x-large
-                      >settings</v-icon
-                    >
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Adding new resources is under construction.
-                    <br />
-                    Please add resources via the legacy website by clicking on
-                    the button below.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters class="pt-6" justify="end">
-                  <BaseRectangleButton
-                    buttonText="Add Resources"
-                    color="secondary"
-                    :url="linkAddNewResourcesCKAN"
-                  />
-                </v-row>
-              </v-container>
             </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
+
           </v-col>
         </v-row>
       </v-col>
@@ -84,12 +43,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
 import {
   CANCEL_EDITING_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_OBJECT_UPDATE,
   eventBus,
-  SAVE_EDITING_RESOURCE,
+  SAVE_EDITING_RESOURCE, SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -101,18 +60,18 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
-// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
+import { initializeLocalResource } from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditDataAndResources',
   components: {
     EditMetadataResources,
-    // EditDropResourceFiles,
-    // EditPasteResourceUrl,
+    EditDropResourceFiles,
+    EditPasteResourceUrl,
     EditResource,
-    BaseRectangleButton,
   },
   props: {
     resources: {
@@ -210,7 +169,6 @@ export default {
     },
   },
   methods: {
-    /*
     createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
@@ -254,7 +212,6 @@ export default {
         });
       }
     },
- */
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },

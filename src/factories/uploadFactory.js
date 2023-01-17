@@ -19,7 +19,7 @@ const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 let uppyInstance = null;
 let apiKey = null;
-let currentResourceId = undefined;
+let currentResourceId;
 
 const uppyId = 'resource-upload';
 const defaultRestrictions = {
