@@ -28,8 +28,9 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
-import 'cesium/Widgets/widgets.css';
+/* eslint-disable no-unused-vars, import/extensions */
+// import 'cesium/Build/Cesium/Widgets/widgets.css';
+import '@cesium/widgets/Source/widgets.css';
 
 import { buffer as tBuffer, envelope as tEnvelope } from '@turf/turf';
 import Cartesian2 from 'cesium/Core/Cartesian2';
@@ -48,7 +49,8 @@ import OpenStreetMapImageryProvider from 'cesium/Scene/OpenStreetMapImageryProvi
 import SceneMode from 'cesium/Scene/SceneMode';
 import VerticalOrigin from 'cesium/Scene/VerticalOrigin';
 /* eslint-disable new-cap */
-import Viewer from 'cesium/Widgets/Viewer/Viewer';
+// import Viewer from 'cesium/Build/Cesium/Widgets/Viewer/Viewer';
+import Viewer from '@cesium/widgets/Source/Viewer/Viewer';
 import { mapState } from 'vuex';
 
 import marker from '@/assets/map/marker-icon.png';

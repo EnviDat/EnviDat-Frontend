@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import WebMapServiceImageryProvider from 'cesium/Scene/WebMapServiceImageryProvider';
 
 export function cesiumLayer(config) {

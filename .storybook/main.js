@@ -11,7 +11,8 @@ const cesium = require('vite-plugin-cesium').default;
 const { viteStaticCopy } = require('vite-plugin-static-copy');
 const VitePluginFonts = require('vite-plugin-fonts').default;
 
-const cesiumSource = '../node_modules/cesium/Source';
+// const cesiumSource = '../node_modules/cesium/Source'
+const cesiumSource = '../node_modules/@cesium/engine/Source'
 
 const version = process.env.npm_package_version;
 

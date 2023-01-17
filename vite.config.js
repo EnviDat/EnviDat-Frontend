@@ -18,7 +18,8 @@ const version = process.env.npm_package_version;
 
 export default ({ mode }) => {
     const isProd = mode === 'production'
-    const cesiumSource = 'node_modules/cesium/Source'
+    const cesiumSource = 'node_modules/@cesium/engine/Source'
+    // const cesiumSource = 'node_modules/cesium/Source'
 
     if (isProd) {
         const fileName = `version_${version}.txt`;
