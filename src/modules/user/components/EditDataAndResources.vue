@@ -5,64 +5,12 @@
         <v-row v-if="selectedResource">
           <v-col>
             <!-- prettier-ignore -->
-            <!-- <EditResource v-bind="selectedResource"
+             <EditResource v-bind="selectedResource"
                                @closeClicked="catchEditResourceClose"
                                @saveResource="catchSaveResourceClose"
                                @triggerValidateField="validateField"
-                               :validationErrors="validationErrors" /> -->
+                               :validationErrors="validationErrors" />
 
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Edit Selected Resource</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon
-                      color="secondary"
-                      style="animation: progress-circular-rotate 3s linear infinite"
-                      x-large
-                      >settings</v-icon
-                    >
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Editing metadata and uploading resources is still under
-                    construction.
-                    <br />
-                    Please edit resources via the legacy website by clicking on
-                    the button below.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters class="pt-6">
-                  <v-col class="pr-2 text-left">
-                    <BaseRectangleButton
-                      buttonText="Edit Resources"
-                      color="secondary"
-                      :url="linkEditResourceCKAN"
-                    />
-                  </v-col>
-
-                  <v-col class="pr-2 text-right">
-                    <BaseRectangleButton
-                      buttonText="Deselect Resource"
-                      color="error"
-                      @clicked="catchEditResourceClose"
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
           </v-col>
         </v-row>
 
@@ -155,7 +103,7 @@ import {
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 // import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 // import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
-// import EditResource from '@/modules/user/components/EditResource.vue';
+import EditResource from '@/modules/user/components/EditResource.vue';
 
 export default {
   name: 'EditDataAndResources',
@@ -163,7 +111,7 @@ export default {
     EditMetadataResources,
     // EditDropResourceFiles,
     // EditPasteResourceUrl,
-    // EditResource,
+    EditResource,
     BaseRectangleButton,
   },
   props: {

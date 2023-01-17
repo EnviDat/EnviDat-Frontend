@@ -31,7 +31,7 @@ import {
   localIdProperty,
 } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
-import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
+import { METADATA_EDITING } from './storybookFolder';
 
 
 // const apiFactory = require('@/factories/apiFactory');
@@ -274,7 +274,7 @@ export const EditDataAndResourcesListViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataAndResources :genericProps="genericProps" />
+          <EditDataAndResources v-bind="genericProps" />
         </v-col>
       </v-row>
 
