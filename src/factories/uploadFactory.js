@@ -14,11 +14,13 @@
 
 import Uppy from '@uppy/core';
 import axios from 'axios';
+import GoldenRetriever from '@uppy/golden-retriever';
+import AwsS3Multipart from '@uppy/aws-s3-multipart';
 
 const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 let uppyInstance = null;
-let apiKey = null;
+// let apiKey = null;
 let currentResourceId;
 
 const uppyId = 'resource-upload';
@@ -28,22 +30,6 @@ const defaultRestrictions = {
   minNumberOfFiles: 1,
 };
 
-function createUppyInstance(autoProceed = true, debug = false, restrictions = defaultRestrictions) {
-
-  const uppy =  new Uppy();
-
-  uppy.setOptions({
-    // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
-    // in this case the singleton creation (prevention of multiple instances) via getUppyInstance() needs to be changed
-    id: uppyId,
-    autoProceed,
-    debug,
-    // logger: Uppy.debugLogger,
-    restrictions,
-  });
-
-  return uppy;
-}
 
 export async function initiateMultipart(file) {
   // this.$store.dispatch(
@@ -72,7 +58,7 @@ const files = {
   try {
     const res = await axios.post(url, payload, {
       headers: {
-        Authorization: apiKey,
+        withCredentials: true,
       },
     });
 
@@ -100,7 +86,7 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
   try {
     const res = await axios.post(url, payload, {
       headers: {
-        Authorization: apiKey,
+        withCredentials: true,
       },
     });
     return {
@@ -127,7 +113,7 @@ export async function completeMultipart(file, uploadData) {
   try {
     const res = await axios.post(url, payload, {
       headers: {
-        Authorization: apiKey,
+        withCredentials: true,
       },
     });
     return { location: await res.data.result.url };
@@ -149,7 +135,7 @@ export async function abortMultipart(file, uploadData) {
     // const res =
     await axios.post(url, payload, {
       headers: {
-        Authorization: apiKey,
+        withCredentials: true,
       },
     });
     // console.log(
@@ -175,10 +161,12 @@ export async function listUploadedParts(file, { uploadId, key }) {
   try {
     const res = await axios.post(url, payload, {
       headers: {
-        Authorization: apiKey,
+        withCredentials: true,
       },
     });
+
     console.log(`Multipart parts: ${res.data.result}`);
+
     return res.data.result;
   } catch (error) {
     console.log(`Listing multipart parts failed: ${error}`);
@@ -188,43 +176,6 @@ export async function listUploadedParts(file, { uploadId, key }) {
 
 export function hasUppyInstance () {
   return uppyInstance !== null;
-}
-
-export function getUppyInstance(userApiKey) {
-  apiKey = userApiKey;
-
-  if (hasUppyInstance()) {
-    return uppyInstance;
-  }
-
-  uppyInstance = createUppyInstance();
-
-/*
-  const testing = process.env.NODE_ENV === 'test';
-
-  if (!testing) {
-    uppyInstance
-      .use(GoldenRetriever, { serviceWorker: true })
-      .use(AwsS3Multipart, {
-        limit: 4,
-        getChunkSize(file) {
-          // at least 25MB per request, at most 500 requests
-          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-        },
-        createMultipartUpload: initiateMultipart,
-        prepareUploadParts: requestPresignedUrls,
-        listParts: listUploadedParts,
-        abortMultipartUpload: abortMultipart,
-        completeMultipartUpload: completeMultipart,
-      })
-
-  }
-*/
-
-  // uppyInstance.on('upload-complete', this.$emit('uploadComplete', 'Done'));
-
-
-  return uppyInstance;
 }
 
 export function setCurrentResourceId(id) {
@@ -262,10 +213,78 @@ export function unSubscribeOnUppyEvent(event, callback) {
 }
 
 export function destoryUppyInstance() {
-  apiKey = null;
+  // apiKey = null;
 
   // this will cancel all pending uploads
   uppyInstance.close();
 
   uppyInstance = null;
+}
+
+function createUppyInstance(autoProceed = true, debug = false, restrictions = defaultRestrictions) {
+
+  const uppy =  new Uppy();
+
+  uppy.setOptions({
+    // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
+    // in this case the singleton creation (prevention of multiple instances) via getUppyInstance() needs to be changed
+    id: uppyId,
+    autoProceed,
+    debug,
+    // logger: Uppy.debugLogger,
+    restrictions,
+  });
+
+  uppy
+    .use(GoldenRetriever, { serviceWorker: true })
+    .use(AwsS3Multipart, {
+      limit: 4,
+      getChunkSize(file) {
+        // at least 25MB per request, at most 500 requests
+        return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+      },
+      createMultipartUpload: initiateMultipart,
+      prepareUploadParts: requestPresignedUrls,
+      listParts: listUploadedParts,
+      abortMultipartUpload: abortMultipart,
+      completeMultipartUpload: completeMultipart,
+    })
+
+  /*
+  const testing = process.env.NODE_ENV === 'test';
+
+  if (!testing) {
+    uppy
+      .use(GoldenRetriever, { serviceWorker: true })
+      .use(AwsS3Multipart, {
+        limit: 4,
+        getChunkSize(file) {
+          // at least 25MB per request, at most 500 requests
+          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+        },
+        createMultipartUpload: initiateMultipart,
+        prepareUploadParts: requestPresignedUrls,
+        listParts: listUploadedParts,
+        abortMultipartUpload: abortMultipart,
+        completeMultipartUpload: completeMultipart,
+      })
+
+  }
+*/
+
+  // uppy.on('upload-complete', this.$emit('uploadComplete', 'Done'));
+
+  return uppy;
+}
+
+export function getUppyInstance() {
+  // apiKey = userApiKey;
+
+  if (hasUppyInstance()) {
+    return uppyInstance;
+  }
+
+  uppyInstance = createUppyInstance();
+
+  return uppyInstance;
 }
