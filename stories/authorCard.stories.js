@@ -13,7 +13,7 @@ import {
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
 import authorCollection from './testdata/authorCollection.json';
-import { CARD_VIEWS } from './storybookFolder';
+import { within, userEvent } from '@storybook/testing-library';
 
 import unFormatedMetadataCards from './js/metadata';
 
@@ -42,10 +42,48 @@ const methods = {
 
 
 export default {
-  title: `${CARD_VIEWS}`,
+  title: '3 Cards / Author Cards',
+  component: AuthorCard,
   decorators: [],
   parameters: {},
 };
+
+const Template = (args, { argTypes }) => ({
+  components: { AuthorCard },
+  props: Object.keys(argTypes),
+  template: '<AuthorCard v-bind="$props" />',
+});
+
+export const SingleCard = Template.bind({});
+SingleCard.args = {
+  loading: true,
+  author: {
+    firstName: 'Dominik',
+    lastName: 'Haas',
+    datasetCount: 7,
+    affiliation: 'WSL',
+    identifier: '0000-0003-3878-1845',
+    email: 'dominik.haas@wsl.ch',
+    totalDataCredits: {
+      collection: 1,
+      validation: 2,
+      curation: 3,
+      software: 4,
+      publication: 5,
+      supervision: 6,
+    },
+  },
+};
+
+/*
+SingleCard.play = async ({canvasElement}) => {
+  const canvas = within('div#authorCard');
+  canvas.get
+  // const clickCard = await canvas.getByText('Dominik');
+  await userEvent.click(canvas);
+}
+*/
+
 
 export const AuthorCardViews = () => ({
   components: {

@@ -22,13 +22,17 @@ module.exports = {
     '../stories/**/*.stories.@(js|jsx|ts|tsx)',
 //    "../stories/**/*.stories.@(js)"
   ],
-//  "../stories/**/*.stories.mdx",
-//  "../stories/**/*.stories.@(js|jsx|ts|tsx)"
-//  "addons": [
-//    "@storybook/addon-links",
-//    "@storybook/addon-essentials",
-//    "@storybook/addon-storysource"
-//  ],
+  addons: [
+    '@storybook/addon-essentials',
+    '@storybook/addon-interactions',
+/*
+    "@storybook/addon-links",
+    "@storybook/addon-storysource",
+*/
+  ],
+  features: {
+    interactionsDebugger: true,
+  },
   framework: "@storybook/vue",
   core: { builder: "@storybook/builder-vite" },
   async viteFinal(config, { configType }) {
