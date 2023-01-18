@@ -15,13 +15,18 @@
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <v-col>
-             <v-card class="pa-0">
-              <EditDropResourceFiles @createResources="createResourceFromFiles" />
+<!--
+          <v-col cols="12">
+            <EditMultiDropResourceFiles @createResources="createResourceFromFiles" />
+          </v-col>
+-->
 
-              <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-            </v-card>
+          <v-col cols="12">
+            <EditDropResourceFiles @createResources="createResourceFromFiles" />
+          </v-col>
 
+          <v-col cols="12">
+            <EditPasteResourceUrl @createResources="createResourceFromUrl" />
           </v-col>
         </v-row>
       </v-col>
@@ -61,6 +66,7 @@ import {
 } from '@/factories/userEditingValidations';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import { initializeLocalResource } from '@/factories/metaDataFactory';
@@ -70,6 +76,7 @@ export default {
   components: {
     EditMetadataResources,
     EditDropResourceFiles,
+    // EditMultiDropResourceFiles,
     EditPasteResourceUrl,
     EditResource,
   },

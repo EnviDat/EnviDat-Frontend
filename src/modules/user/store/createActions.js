@@ -14,16 +14,22 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
+/*
 import {
-  mapFrontendToBackend,
+//  mapFrontendToBackend,
   populateEditingComponents,
 } from '@/factories/mappingFactory';
+*/
 
 import {
-  ACTION_METADATA_EDITING_PATCH_DATASET,
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
   METADATA_CREATION_RESOURCE_ERROR,
+  ACTION_METADATA_CREATION_RESOURCE,
+  METADATA_DELETE_RESOURCE,
+  ACTION_METADATA_DELETE_RESOURCE,
+  METADATA_DELETE_RESOURCE_SUCCESS,
+  METADATA_DELETE_RESOURCE_ERROR, METADATA_EDITING_SAVE_RESOURCE,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -39,38 +45,97 @@ if (!useTestdata) {
 
 
 export default {
-  async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
+  // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
+  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file }) {
 
-    commit(METADATA_CREATION_RESOURCE, stepKey);
+    commit(METADATA_CREATION_RESOURCE, metadataId);
 
+/*
     const apiKey = this.state.userSignIn.user?.apikey || null;
     const categoryCards = this.state.categoryCards;
+*/
 
-    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
+    const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const postData = mapFrontendToBackend(stepKey, data);
+    // const postData = mapFrontendToBackend(stepKey, data);
+
+    const postData = {
+      package_id: metadataId,
+      url: file.name,
+      description: null,
+      format: file.extension,
+      mimetype: file.type,
+      name: file.name,
+      size: file.size,
+      url_type: 'upload',
+      'resource_size-size_value': file.size / 1024 / 1024,
+      'resource_size-size_units': 'mb',
+      'restricted-level': null,
+      'restricted-allowed_users': null,
+      'restricted-shared_secret': null,
+      doi: null,
+      // publication_state: null,
+      multipart_name: file.name,
+    };
+
+
+    try {
+      const response = await axios.post(url, postData,
+        {
+          headers: {
+            // Authorization: apiKey,
+          },
+        });
+
+      const resource = response.data.result;
+
+      commit(METADATA_CREATION_RESOURCE_SUCCESS, {
+        stepKey: METADATA_CREATION_RESOURCE,
+        resource,
+        message: 'Resource created',
+        // details: `Changes saved ${stepKey} data for ${id}`,
+      });
+
+    } catch(reason) {
+      commit(METADATA_CREATION_RESOURCE_ERROR, {
+        // stepKey,
+        reason,
+      });
+    }
+  },
+  async [METADATA_DELETE_RESOURCE]({ commit }, resourceId) {
+    commit(METADATA_DELETE_RESOURCE);
+
+    const postData = {
+      id: resourceId,
+    };
+
+    const actionUrl = ACTION_METADATA_DELETE_RESOURCE();
+    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
     await axios.post(url, postData,
       {
         headers: {
-          Authorization: apiKey,
+          // Authorization: apiKey,
         },
       })
       .then((response) => {
-        commit(METADATA_CREATION_RESOURCE_SUCCESS, {
-          stepKey,
-          message: 'Changes saved',
+        commit(METADATA_DELETE_RESOURCE_SUCCESS, {
+          // stepKey,
+          message: 'Resource deleted',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        return true;
       })
       .catch((reason) => {
-        commit(METADATA_CREATION_RESOURCE_ERROR, {
-          stepKey,
+        commit(METADATA_DELETE_RESOURCE_ERROR, {
+          // stepKey,
           reason,
         });
+
+        return false;
       });
   },
 };

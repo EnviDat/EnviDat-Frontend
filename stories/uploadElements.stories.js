@@ -14,37 +14,29 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-import { METADATA_EDITING } from './storybookFolder';
+import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 export default {
-  title: `${METADATA_EDITING} / Upload Elements`,
+  title: '9 Editing Metadata / Upload Elements',
   decorators: [],
   parameters: {
   },
 };
 
+const metadataId = 'storybook_testing_metadataId';
 
-export const EditDropResourceFilesViews = () => ({
+export const EditDropResourceFilesView = () => ({
   components: { EditDropResourceFiles },
-  template: `
-    <v-row >
+  template: '<EditDropResourceFiles :metadataId="metadataId" /> ',
+  data: () => ({
+    metadataId,
+  }),
+});
 
-    <v-col cols="12">
-      EditDropResourceFiles empty
-    </v-col>
-
-    <v-col cols="12">
-      <EditDropResourceFiles  />
-    </v-col>
-
-    <v-col cols="12">
-      TitleCard with props I don't know yet
-    </v-col>
-
-    <v-col >
-      <EditDropResourceFiles  />
-    </v-col>
-
-    </v-row>
-  `,
+export const EditMultiDropResourceFilesView = () => ({
+  components: { EditMultiDropResourceFiles },
+  template: '<EditMultiDropResourceFiles :metadataId="metadataId" /> ',
+  data: () => ({
+    metadataId,
+  }),
 });

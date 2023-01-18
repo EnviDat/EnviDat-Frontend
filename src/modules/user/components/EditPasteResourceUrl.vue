@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditPasteResourceUrl" class="pa-4" flat>
+  <v-card id="EditPasteResourceUrl" class="pa-4" >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">

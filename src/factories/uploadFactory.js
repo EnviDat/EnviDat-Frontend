@@ -12,16 +12,34 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import Uppy from '@uppy/core';
+import Uppy, { debugLogger } from '@uppy/core';
 import axios from 'axios';
 import GoldenRetriever from '@uppy/golden-retriever';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
+import Tus from '@uppy/tus';
 
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
+import {
+  METADATA_CREATION_RESOURCE, METADATA_DELETE_RESOURCE,
+  METADATA_UPLOAD_FILE,
+  METADATA_UPLOAD_FILE_INIT,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+
+import { urlRewrite } from '@/factories/apiFactory';
+
+
+let API_BASE = '';
+let ENVIDAT_PROXY = '';
+
+const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = '/api/action/';
+  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+}
 
 let uppyInstance = null;
-// let apiKey = null;
-let currentResourceId;
+let storeReference = null;
 
 const uppyId = 'resource-upload';
 const defaultRestrictions = {
@@ -32,25 +50,25 @@ const defaultRestrictions = {
 
 
 export async function initiateMultipart(file) {
-  // this.$store.dispatch(
-  //   `${USER_NAMESPACE}/METADATA_EDITING_MULTIPART_UPLOAD_INIT`,
-  //   payload,
-  // );
 
-/*
-const files = {
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.type,
-  }
-  this.$emit('createResources', files);
-*/
+  const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
 
-  const url = `${domain}/api/action/cloudstorage_initiate_multipart`;
+  await storeReference?.dispatch(
+    `${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`,
+    {
+      metadataId,
+      file,
+    },
+  );
+
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  const actionUrl = 'cloudstorage_initiate_multipart';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
   const payload = {
     // id: await this.createCKANResource(file),
-    id: currentResourceId,
+    id: resourceId,
     name: file.name,
     size: file.size,
   };
@@ -61,6 +79,11 @@ const files = {
         withCredentials: true,
       },
     });
+
+    const fileId = res.data.result.id;
+    const key = res.data.result.name;
+
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, { fileId, key });
 
     return {
       uploadId: res.data.result.id,
@@ -74,10 +97,13 @@ const files = {
 
 export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
 
-  const url = `${domain}/api/action/cloudstorage_get_presigned_url_list_multipart`;
+  const actionUrl = 'cloudstorage_get_presigned_url_list_multipart';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   const payload = {
-    id: currentResourceId,
+    id: resourceId,
     uploadId,
     partNumbersList: partNumbers,
     filename: file.name,
@@ -89,6 +115,7 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
         withCredentials: true,
       },
     });
+
     return {
       presignedUrls: res.data.result.presignedUrls,
       // headers: {
@@ -102,10 +129,13 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
 }
 
 export async function completeMultipart(file, uploadData) {
-  const url = `${domain}/api/action/cloudstorage_finish_multipart`;
+
+  const actionUrl = 'cloudstorage_finish_multipart';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   const payload = {
-    id: currentResourceId,
+    id: resourceId,
     uploadId: uploadData.uploadId,
     partInfo: JSON.stringify(uploadData.parts),
   };
@@ -124,11 +154,16 @@ export async function completeMultipart(file, uploadData) {
 }
 
 export async function abortMultipart(file, uploadData) {
-  const url = `${domain}/api/action/cloudstorage_abort_multipart`;
+
+  const actionUrl = 'cloudstorage_abort_multipart';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  const deletedInCKAN = await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_DELETE_RESOURCE}`, { resourceId });
 
   const payload = {
-    id: currentResourceId,
-    deletedInCKAN: await this.deleteCKANResource(),
+    id: resourceId,
+    deletedInCKAN,
   };
 
   try {
@@ -151,7 +186,9 @@ export async function abortMultipart(file, uploadData) {
 }
 
 export async function listUploadedParts(file, { uploadId, key }) {
-  const url = `${domain}/api/action/cloudstorage_multipart_list_parts`;
+
+  const actionUrl = 'cloudstorage_multipart_list_parts';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
   const payload = {
     uploadId,
@@ -178,10 +215,7 @@ export function hasUppyInstance () {
   return uppyInstance !== null;
 }
 
-export function setCurrentResourceId(id) {
-  currentResourceId = id;
-}
-
+/*
 export function addFile(fileName, filepath, filedata) {
 
   if (hasUppyInstance()) {
@@ -199,6 +233,7 @@ export function addFile(fileName, filepath, filedata) {
     });
   }
 }
+*/
 
 export function subscribeOnUppyEvent(event, callback) {
   if (hasUppyInstance()) {
@@ -212,16 +247,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
   }
 }
 
-export function destoryUppyInstance() {
-  // apiKey = null;
-
-  // this will cancel all pending uploads
-  uppyInstance.close();
-
-  uppyInstance = null;
-}
-
-function createUppyInstance(autoProceed = true, debug = false, restrictions = defaultRestrictions) {
+function createUppyInstance(height = 300, autoProceed = true, debug = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
 
@@ -231,11 +257,15 @@ function createUppyInstance(autoProceed = true, debug = false, restrictions = de
     id: uppyId,
     autoProceed,
     debug,
-    // logger: Uppy.debugLogger,
+    logger: debugLogger,
     restrictions,
+    height,
   });
 
   uppy
+    .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
+
+/*
     .use(GoldenRetriever, { serviceWorker: true })
     .use(AwsS3Multipart, {
       limit: 4,
@@ -248,43 +278,37 @@ function createUppyInstance(autoProceed = true, debug = false, restrictions = de
       listParts: listUploadedParts,
       abortMultipartUpload: abortMultipart,
       completeMultipartUpload: completeMultipart,
-    })
-
-  /*
-  const testing = process.env.NODE_ENV === 'test';
-
-  if (!testing) {
-    uppy
-      .use(GoldenRetriever, { serviceWorker: true })
-      .use(AwsS3Multipart, {
-        limit: 4,
-        getChunkSize(file) {
-          // at least 25MB per request, at most 500 requests
-          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-        },
-        createMultipartUpload: initiateMultipart,
-        prepareUploadParts: requestPresignedUrls,
-        listParts: listUploadedParts,
-        abortMultipartUpload: abortMultipart,
-        completeMultipartUpload: completeMultipart,
-      })
-
-  }
+    });
 */
+
 
   // uppy.on('upload-complete', this.$emit('uploadComplete', 'Done'));
 
   return uppy;
 }
 
-export function getUppyInstance() {
-  // apiKey = userApiKey;
+export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, debug = true, restrictions = undefined) {
+
+  // need to be stored for later usage for some multipart functions
+  storeReference = store;
+  storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, { metadataId })
 
   if (hasUppyInstance()) {
     return uppyInstance;
   }
 
-  uppyInstance = createUppyInstance();
+  uppyInstance = createUppyInstance(height, autoProceed, debug, restrictions);
 
   return uppyInstance;
 }
+
+export function destoryUppyInstance() {
+  if (hasUppyInstance()) {
+    // uppyInstance.close({ reason: 'unmount' });
+    uppyInstance.close();
+    uppyInstance = null;
+  }
+
+  storeReference = null;
+}
+

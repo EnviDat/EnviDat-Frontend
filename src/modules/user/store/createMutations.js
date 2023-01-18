@@ -24,20 +24,28 @@ import {
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
+  METADATA_CREATION_RESOURCE_ERROR,
   USER_NAMESPACE,
+  METADATA_UPLOAD_FILE,
+  METADATA_UPLOAD_FILE_INIT,
+  METADATA_UPLOAD_FILE_SUCCESS,
 } from './userMutationsConsts';
 
 
 
 
 export default {
-  [METADATA_CREATION_RESOURCE](state, resource) {
-    resource.loading = true;
+  [METADATA_CREATION_RESOURCE](state, metadataId) {
+    // resource.loading = true;
+    state.uploadLoading = true;
+    state.uploadResource = null;
+
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
 
     resource.loading = false;
     resource.message = message;
+    state.uploadResource = resource;
 /*
     const payload = {
       object: EDITMETADATA_DATA_RESOURCES,
@@ -60,8 +68,28 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
 
   },
-  [METADATA_CREATION_RESOURCE_SUCCESS](state, reason) {
+  [METADATA_CREATION_RESOURCE_ERROR](state, reason) {
+    state.uploadLoading = false;
 
     extractError(this, reason);
   },
+  [METADATA_UPLOAD_FILE_INIT](state, metadataId) {
+    state.uploadMetadataId = metadataId;
+  },
+  [METADATA_UPLOAD_FILE](state, { fileId, key}) {
+    state.uploadFileId = fileId;
+    state.uploadKey = key;
+  },
+  [METADATA_UPLOAD_FILE_SUCCESS](state) {
+    state.uploadLoading = false;
+    state.uploadFileId = null;
+    state.uploadKey = null;
+    state.uploadMetadataId = null;
+  },
+/*
+  [METADATA_UPLOAD_FILE_ERROR](state, { fileId, key}) {
+    state.uploadFileId = fileId;
+    state.uploadKey = key;
+  },
+*/
 };

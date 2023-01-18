@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditDropResourceFiles" class="pa-4" flat>
+  <v-card id="EditDropResourceFiles" class="pa-4" >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -9,19 +9,29 @@
 
       <v-row>
         <v-col cols="12">
-          <BaseFileDropField />
-<!--
-          <DragDrop :uppy="uppy"
-                    v-on:ondragover="logEvent"
-                    v-on:ondragleave="logEvent"
-                    v-on:ondrop="logEvent" />
--->
-
-<!--
-          <StatusBar :uppy="uppy" />
--->
+          <div class="text-body-1">{{ labels.instructions }}</div>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col cols="12">
+
+          <DragDrop :uppy="uppy"
+                    @onDragOver="logEvent"
+                    @onDragLeave="logEvent"
+                    @onDrop="logEvent" />
+
+          <StatusBar :uppy="uppy" />
+
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <div class="text-body-1 highlight">{{ labels.instruction2 }}</div>
+        </v-col>
+      </v-row>
+
     </v-container>
   </v-card>
 </template>
@@ -37,36 +47,22 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import axios from 'axios';
 
-/*
 import {
   DragDrop,
-  // StatusBar,
+  StatusBar,
 } from '@uppy/vue';
 
 import '@uppy/core/dist/style.css';
 import '@uppy/drag-drop/dist/style.css';
-// import '@uppy/status-bar/dist/style.css';
-*/
-
-import {
-  // USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
-
-import {
-  destoryUppyInstance,
-  getUppyInstance,
-} from '@/factories/uploadFactory';
-
-import BaseFileDropField from '@/components/BaseElements/BaseFileDropField.vue';
+import '@uppy/status-bar/dist/style.css';
 
 /*
-const uppy = getUppyInstance();
+import Uppy, { debugLogger } from '@uppy/core';
+import Tus from '@uppy/tus';
 */
+import { destoryUppyInstance, getUppyInstance, subscribeOnUppyEvent } from '@/factories/uploadFactory';
 
-const domain = process.env.VUE_APP_ENVIDAT_PROXY;
 
 export default {
   name: 'EditDropResourceFiles',
@@ -74,48 +70,32 @@ export default {
     metadataId: String,
   },
   mounted() {
-    this.setupUppy();
+    subscribeOnUppyEvent('complete', this.emitEvent);
   },
   beforeDestroy() {
+    // this.uppy.close({ reason: 'unmount' });
     destoryUppyInstance();
-    this.uppy = null;
   },
   computed: {
-    userApiKey() {
-      if (this.$store) {
-        return this.$store.getters[`${USER_SIGNIN_NAMESPACE}/getUserApiKey`];
-      }
+    uppy () {
+      return getUppyInstance(this.metadataId, this.$store);
 
-      return null;
+/*
+      return new Uppy({
+          logger: debugLogger,
+          restrictions: {
+            maxNumberOfFiles: 1,
+          },
+      })
+      .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' }); // .use(DropTarget, { target: document.body });
+*/
     },
   },
   methods: {
-    setupUppy() {
-      if (this.uppy === null) {
-        this.uppy = getUppyInstance();
-      }
-
-/*
-      this.uppy
-        .use(GoldenRetriever, { serviceWorker: true })
-        .use(AwsS3Multipart, {
-          limit: 4,
-          getChunkSize(file) {
-            // at least 25MB per request, at most 500 requests
-            return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-          },
-          createMultipartUpload: initiateMultipart,
-          prepareUploadParts: requestPresignedUrls,
-          listParts: listUploadedParts,
-          abortMultipartUpload: abortMultipart,
-          completeMultipartUpload: completeMultipart,
-        });
-*/
-
-      // this.$options.components.DragDrop.o
-
-
+    emitEvent(event) {
+      this.$emit(event);
     },
+/*
     async createCKANResource(file) {
       // this.$store.dispatch(
       //   `${USER_NAMESPACE}/METADATA_EDITING_POST_RESOURCE`,
@@ -187,27 +167,25 @@ export default {
         return error;
       }
     },
+    */
     logEvent(event) {
       console.log(`Got event ${event}`);
       console.log(event);
     },
   },
   data: () => ({
-    uppy: null,
     labels: {
-      title: 'Create Resource from Files',
+      title: 'Create Resource from File',
+      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file',
+      instruction2: 'After uploading make sure to rename the resources!',
     },
     resourceId: null,
     fileName: null,
     fileSize: null,
-    domain,
   }),
   components: {
-    BaseFileDropField,
-/*
     DragDrop,
-    // StatusBar,
-*/
+    StatusBar,
   },
 };
 </script>

@@ -57,6 +57,11 @@ const userState = {
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadLoading: false,
+  uploadFileId: null,
+  uploadKey: null,
+  uploadResource: null,
+  uploadMetadataId: null,
 };
 
 
@@ -83,6 +88,10 @@ export const user = {
 
       return filteredContent;
     },
+    uploadFileId: state => state.uploadFileId,
+    uploadResource: state => state.uploadResource,
+    uploadResourceId: state => state.uploadResource.id,
+    uploadMetadataId: state => state.uploadMetadataId,
   },
   mutations: {
     ...mutations,
