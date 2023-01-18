@@ -5,36 +5,47 @@
         <v-row v-if="selectedResource">
           <v-col>
             <!-- prettier-ignore -->
-             <EditResource v-bind="selectedResource"
-                               @closeClicked="catchEditResourceClose"
-                               @saveResource="catchSaveResourceClose"
-                               @triggerValidateField="validateField"
-                               :validationErrors="validationErrors" />
+            <EditResource v-bind="selectedResource"
+                          @closeClicked="catchEditResourceClose"
+                          @saveResource="catchSaveResourceClose"
+                          @triggerValidateField="validateField"
+                          :validationErrors="validationErrors"/>
 
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
-<!--
-          <v-col cols="12">
-            <EditMultiDropResourceFiles @createResources="createResourceFromFiles" />
-          </v-col>
--->
+          <!--
+                    <v-col cols="12">
+                      <EditMultiDropResourceFiles @createResources="createResourceFromFiles" />
+                    </v-col>
+          -->
 
           <v-col cols="12">
-            <EditDropResourceFiles @createResources="createResourceFromFiles" />
+            <EditDropResourceFiles @createResources="createResourceFromFiles"/>
           </v-col>
 
           <v-col cols="12">
-            <EditPasteResourceUrl @createResources="createResourceFromUrl" />
+            <EditPasteResourceUrl @createResources="createResourceFromUrl"/>
           </v-col>
         </v-row>
       </v-col>
 
       <v-col cols="6">
-        <EditMetadataResources v-bind="metadataResourcesGenericProps" />
+        <EditMetadataResources v-bind="metadataResourcesGenericProps"/>
       </v-col>
     </v-row>
+
+    <v-snackbar
+        :value="!!uploadProgessText"
+        bottom
+        elevation="24"
+    >
+      <v-icon color="highlight">checkmark</v-icon>
+      {{ uploadProgessText }}
+
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -70,6 +81,7 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import { initializeLocalResource } from '@/factories/metaDataFactory';
+import { subscribeOnUppyEvent, unSubscribeOnUppyEvent } from '@/factories/uploadFactory';
 
 export default {
   name: 'EditDataAndResources',
@@ -119,16 +131,26 @@ export default {
     },
   },
   mounted() {
+    subscribeOnUppyEvent('upload', this.uploadStarted);
+    subscribeOnUppyEvent('progress', this.uploadProgress);
+    subscribeOnUppyEvent('complete', this.uploadCompleted);
+    subscribeOnUppyEvent('error', this.uploadError);
+
     // Add editing button to resource card
     if (Array.isArray(this.resources) && this.resources.length > 0) {
       enhanceElementsWithStrategyEvents(
-        this.resources,
-        SELECT_EDITING_RESOURCE_PROPERTY,
-        true,
+          this.resources,
+          SELECT_EDITING_RESOURCE_PROPERTY,
+          true,
       );
     }
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    unSubscribeOnUppyEvent('upload', this.uploadStarted);
+    unSubscribeOnUppyEvent('progress', this.uploadProgress);
+    unSubscribeOnUppyEvent('complete', this.uploadCompleted);
+    unSubscribeOnUppyEvent('error', this.uploadError);
+  },
   computed: {
     selectedName() {
       return this.selectedResource.name;
@@ -176,6 +198,31 @@ export default {
     },
   },
   methods: {
+    uploadStarted({ id, fileIDs }) {
+      // data object consists of `id` with upload ID and `fileIDs` array
+      // with file IDs in current upload
+      // data: { id, fileIDs }
+      console.log(`Starting upload ${id} for files ${fileIDs}`);
+      this.uploadProgessText = `Starting upload file ${fileIDs}`;
+      this.uploadProgressIcon = 'check_box_outline_blank';
+    },
+    uploadProgress(progress) {
+      console.log(`upload progress: ${progress}`);
+      this.uploadProgessText = `upload progress: ${progress}`;
+      this.uploadProgressIcon = 'check';
+    },
+    uploadCompleted(result) {
+      console.log('successful files:', result.successful)
+      console.log('failed files:', result.failed)
+      this.uploadProgessText = 'Upload successful';
+      this.uploadProgressIcon = 'check_circle';
+    },
+    uploadError(error) {
+      console.log('failed files:', error)
+      this.uploadProgessText = `Upload failed ${error}`;
+      this.uploadProgressIcon = 'report_gmailerrorred';
+    },
+
     createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
@@ -195,7 +242,7 @@ export default {
     },
     getMetadataId() {
       const metadataId =
-        this.metadataId || `local_MetadataId_${this.localResCounter}`;
+          this.metadataId || `local_MetadataId_${this.localResCounter}`;
       this.localResCounter++;
       return metadataId;
     },
@@ -203,9 +250,9 @@ export default {
       const newRes = initializeLocalResource(metadataId, file, url);
 
       enhanceElementsWithStrategyEvents(
-        [newRes],
-        SELECT_EDITING_RESOURCE_PROPERTY,
-        true,
+          [newRes],
+          SELECT_EDITING_RESOURCE_PROPERTY,
+          true,
       );
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
@@ -227,10 +274,10 @@ export default {
     },
     validateField(field) {
       isFieldValid(
-        field.property,
-        field.value,
-        this.validations,
-        this.validationErrors,
+          field.property,
+          field.value,
+          this.validations,
+          this.validationErrors,
       );
     },
   },
@@ -243,6 +290,8 @@ export default {
       url: null,
     },
     envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    uploadProgessText: null,
+    uploadProgressIcon: '',
   }),
 };
 </script>

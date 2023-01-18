@@ -61,7 +61,7 @@ import '@uppy/status-bar/dist/style.css';
 import Uppy, { debugLogger } from '@uppy/core';
 import Tus from '@uppy/tus';
 */
-import { destoryUppyInstance, getUppyInstance, subscribeOnUppyEvent } from '@/factories/uploadFactory';
+import { destoryUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
 
 
 export default {
@@ -70,7 +70,6 @@ export default {
     metadataId: String,
   },
   mounted() {
-    subscribeOnUppyEvent('complete', this.emitEvent);
   },
   beforeDestroy() {
     // this.uppy.close({ reason: 'unmount' });
@@ -92,7 +91,10 @@ export default {
     },
   },
   methods: {
-    emitEvent(event) {
+    resourceCreated(event) {
+      this.$emit(event);
+    },
+    uploadComplete(event) {
       this.$emit(event);
     },
 /*
