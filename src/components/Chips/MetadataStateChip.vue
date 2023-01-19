@@ -46,6 +46,7 @@ export default {
         draft: 'Draft datasets are only visible to you',
         unpublished:
           'Unpublished datasets are visible for you and your organization',
+        pending: 'Publication request received, dataset is not yet visible for everyone',
         published: 'Published datasets are visible for everyone',
       }),
     },
@@ -54,6 +55,7 @@ export default {
       default: () => ({
         draft: 'gray',
         unpublished: 'warning',
+        pending: 'blue',
         published: 'green',
       }),
     },
