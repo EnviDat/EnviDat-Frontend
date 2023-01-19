@@ -53,6 +53,24 @@ to handle the response and it's content accordingly.
 
 Check the CKAN actions and their details here: <https://docs.ckan.org/en/2.8/api/index.html>
 
+## Proxying CKAN
+
+- Due to CORS and sameSite cookies, the CKAN instance must accessed from the same domain as the frontend.
+- This can be achieved by running both the frontend and CKAN on localhost (see https://gitlabext.wsl.ch/EnviDat/ckan-container.git).
+- Alternatively, if the CKAN instance is running on a remote server, the traffic can be proxied to be accessible from localhost.
+
+- Create the file `.ckan-proxy.secret`:
+```dotenv
+CKAN_HOST=<DOMAIN_OR_IP>:<PORT>
+```
+
+- Run the proxy:
+```bash
+docker compose -f docker-compose.proxy.yml up -d
+```
+
+- Access CKAN at localhost:8989 or include in .env.development.
+
 # Config
 
 The config.json can be used to inject configurations from the server side into the frontend without rebuilding the project.
