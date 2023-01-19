@@ -9,28 +9,28 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+ import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 
 
-export default {
-  title: '10 Chips / EditPublicationStatus',
-  component: EditPublicationStatus,
-  decorators: [],
-  parameters: {},
-  argTypes: { onClick: { action: 'clicked' } },
-};
+ export default {
+   title: '10 Chips / EditPublicationStatus',
+   component: EditPublicationStatus,
+   decorators: [],
+   parameters: {},
+   argTypes: { onClick: { action: 'clicked' } },
+ };
 
 
-const Template = (args, {argTypes}) => ({
-  components: { EditPublicationStatus },
-  props: Object.keys(argTypes),
-  template: '<EditPublicationStatus v-bind="$props"  />',
-});
+ const Template = (args, {argTypes}) => ({
+   components: { EditPublicationStatus },
+   props: Object.keys(argTypes),
+   template: '<EditPublicationStatus v-bind="$props"  />',
+ });
 
 
-export const PublicationStatus = Template.bind({});
+ export const PublicationStatus = Template.bind({});
 
-PublicationStatus.args = {
-  publicationState: 'draft',
-  loading: false,
-}
+ PublicationStatus.args = {
+   publicationState: 'draft',
+   loading: false,
+ }

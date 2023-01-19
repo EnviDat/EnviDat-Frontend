@@ -9,68 +9,68 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+ import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 
-export default {
-  title: '10 Chips / MetadataStateChip',
-  component: MetadataStateChip,
-  decorators: [],
-  parameters: {},
-};
+ export default {
+   title: '10 Chips / MetadataStateChip',
+   component: MetadataStateChip,
+   decorators: [],
+   parameters: {},
+ };
 
-const states = [
-  'draft', 'unpublished', 'pending', 'published',
-]
-export const MetadataState_AllStates = () => ({
-  components: { MetadataStateChip },
-  template: `
-    <div>
-      <v-row v-for="(state, index) in states"
-             :key="index">
-        <v-col >
-          {{ state }} state
-        </v-col>
-        <v-col>
-          <MetadataStateChip :state="state" />
-        </v-col>
-      </v-row>
-    </div>
-  `,
-  data: () => ({
-    states,
-  }),
-})
+ const states = [
+   'draft', 'unpublished', 'pending', 'published',
+ ]
+ export const MetadataState_AllStates = () => ({
+   components: { MetadataStateChip },
+   template: `
+     <div>
+       <v-row v-for="(state, index) in states"
+              :key="index">
+         <v-col >
+           {{ state }} state
+         </v-col>
+         <v-col>
+           <MetadataStateChip :state="state" />
+         </v-col>
+       </v-row>
+     </div>
+   `,
+   data: () => ({
+     states,
+   }),
+ })
 
-/*
-const Template = (args, {argTypes}) => ({
-  components: { MetadataStateChip },
-  props: Object.keys(argTypes),
-  // template: '<MetadataStateChip v-bind="$props" />',
-});
+ /*
+ const Template = (args, {argTypes}) => ({
+   components: { MetadataStateChip },
+   props: Object.keys(argTypes),
+   // template: '<MetadataStateChip v-bind="$props" />',
+ });
 
 
-export const MetadataStateDraft = Template.bind({});
-MetadataStateDraft.args = {
-  state: 'draft',
-  showOnHover: false,
-}
+ export const MetadataStateDraft = Template.bind({});
+ MetadataStateDraft.args = {
+   state: 'draft',
+   showOnHover: false,
+ }
 
-export const MetadataStateUnpublished = Template.bind({});
-MetadataStateUnpublished.args = {
-  state: 'unpublished',
-  showOnHover: false,
-}
+ export const MetadataStateUnpublished = Template.bind({});
+ MetadataStateUnpublished.args = {
+   state: 'unpublished',
+   showOnHover: false,
+ }
 
-export const MetadataStatePending = Template.bind({});
-MetadataStatePending.args = {
-  state: 'pending',
-  showOnHover: false,
-}
+ export const MetadataStatePending = Template.bind({});
+ MetadataStatePending.args = {
+   state: 'pending',
+   showOnHover: false,
+ }
 
-export const MetadataStatePublished = Template.bind({});
-MetadataStatePublished.args = {
-  state: 'published',
-  showOnHover: false,
-}
-*/
+ export const MetadataStatePublished = Template.bind({});
+ MetadataStatePublished.args = {
+   state: 'published',
+   showOnHover: false,
+ }
+ */
