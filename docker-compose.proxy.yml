@@ -17,8 +17,6 @@ services:
       - envidat-frontend
     env_file:
       - .ckan-proxy.secret
-    environment:
-      - CKAN_HOST=100.100.208.83:8989
     ports:
       - "8991:80"
     networks:
