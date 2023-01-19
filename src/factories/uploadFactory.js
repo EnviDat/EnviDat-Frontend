@@ -15,6 +15,7 @@
 import Uppy, { debugLogger } from '@uppy/core';
 import axios from 'axios';
 import GoldenRetriever from '@uppy/golden-retriever';
+import AwsS3 from '@uppy/aws-s3';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
 import Tus from '@uppy/tus';
 
@@ -249,18 +250,33 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
   uppy
     // .use(GoldenRetriever, { serviceWorker: true })
     .use(GoldenRetriever, { })
-    .use(AwsS3Multipart, {
-      limit: 4,
-      getChunkSize(file) {
-        // at least 25MB per request, at most 500 requests
-        return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-      },
-      createMultipartUpload: initiateMultipart,
-      prepareUploadParts: requestPresignedUrls,
-      listParts: listUploadedParts,
-      abortMultipartUpload: abortMultipart,
-      completeMultipartUpload: completeMultipart,
-    });
+
+
+  uppy.on('file-added', (newFile) => {
+
+    if (newFile.size >= 1024 * 1024 * 6) {
+
+      uppy.removePlugin(AwsS3);
+      uppy.use(AwsS3Multipart, {
+        limit: 4,
+        getChunkSize(file) {
+          // at least 25MB per request, at most 500 requests
+          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+        },
+        createMultipartUpload: initiateMultipart,
+        prepareUploadParts: requestPresignedUrls,
+        listParts: listUploadedParts,
+        abortMultipartUpload: abortMultipart,
+        completeMultipartUpload: completeMultipart,
+      });
+    } else {
+      uppy.removePlugin(AwsS3Multipart);
+      uppy.use(AwsS3, {
+
+      });
+    }
+  });
+
   /*
       .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
   */
