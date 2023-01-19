@@ -45,21 +45,9 @@ export default {
 
     resource.loading = false;
     resource.message = message;
+
     state.uploadResource = resource;
-/*
-    const payload = {
-      object: EDITMETADATA_DATA_RESOURCES,
-      data: resource,
-    };
-
-    this[EDITMETADATA_DATA_RESOURCES](state, payload);
-*/
-
-/*
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
-    editingObject.message = message;
-*/
+    state.metadataInEditing[stepKey] = resource;
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

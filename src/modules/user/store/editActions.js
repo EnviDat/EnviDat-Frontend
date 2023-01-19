@@ -24,6 +24,8 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
+import { EDITMETADATA_DATA_RESOURCES } from '@/factories/eventBus';
+
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
   ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
@@ -56,10 +58,20 @@ const sleep = (milliseconds) =>
 
 
 export default {
-  async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
+  async [METADATA_EDITING_SAVE_RESOURCE]({ commit, dispatch }, { stepKey, data, id }) {
+    const resource = data;
     commit(METADATA_EDITING_SAVE_RESOURCE, resource);
 
-    await sleep(2000);
+    const metadataId = id;
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
+    // after saving the resource to the list in the state
+    // call the action to save it in the backend
+    await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_DATA_RESOURCES,
+      data: resources,
+      id: metadataId,
+    });
 
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
   },
@@ -127,7 +139,7 @@ export default {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
 
-    const apiKey = this.state.userSignIn.user?.apikey || null;
+    // const apiKey = this.state.userSignIn.user?.apikey || null;
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
@@ -139,7 +151,7 @@ export default {
     await axios.post(url, postData,
       {
         headers: {
-          Authorization: apiKey,
+          // Authorization: apiKey,
         },
       })
       .then((response) => {

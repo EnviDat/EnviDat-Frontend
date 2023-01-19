@@ -106,13 +106,14 @@ export default {
   [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, resource) {
 
     resource.loading = false;
-    resource.existsOnlyLocal = false;
+/*
     const updateObj = {
       object: EDITMETADATA_DATA_RESOURCES,
       data: resource,
     };
 
     updateResource(this, state, updateObj);
+*/
 
     resetErrorObject(state);
   },
@@ -122,6 +123,7 @@ export default {
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
     selectForEditing(this, resources, id, state.selectedResourceId, 'id');
     state.selectedResourceId = id;
   },

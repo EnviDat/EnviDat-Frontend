@@ -58,6 +58,7 @@ import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
 // import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
 
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 // import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
@@ -95,7 +96,8 @@ export function updateEditingArray(
 }
 
 export function updateResource(store, state, payload) {
-  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
+  // const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
   const newRes = payload.data;
 
   updateEditingArray(store, resources, newRes, 'id');
@@ -161,6 +163,22 @@ export function selectForEditing(
 
   setSelected(store, elementList, id, propertyToCompare, true);
 }
+
+export function getSelectedElement(elementList) {
+  let selectedRes = null;
+  const res = elementList;
+
+  if (res?.length > 0) {
+    const selected = res.filter(r => r.isSelected);
+
+    if (selected.length > 0) {
+      selectedRes = selected[0];
+    }
+  }
+
+  return selectedRes;
+}
+
 
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {

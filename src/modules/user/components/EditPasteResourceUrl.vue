@@ -64,7 +64,7 @@ export default {
       // this.createButtonDisabled = !this.urlRegex.test(this.url);
     },
     createButtonClick() {
-      this.$emit('createResources', this.url);
+      this.$emit('createUrlResources', this.url);
     },
   },
   data: () => ({

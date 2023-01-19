@@ -63,7 +63,9 @@ import {
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT, AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_DATACREDIT,
+  AUTHOR_SEARCH_CLICK, EDITMETADATA_DATA_RESOURCE,
 } from '@/factories/eventBus';
 
 import {
@@ -140,7 +142,7 @@ export default {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+    // eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
@@ -153,7 +155,7 @@ export default {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    // eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
     eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
@@ -333,9 +335,6 @@ export default {
       const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
       window.open(routeData.href, '_blank');
     },
-    selectResource(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
-    },
     selectAuthor(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
     },
@@ -346,7 +345,11 @@ export default {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
     },
     saveResource(newRes) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+      // this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+      this.editComponentsChanged({
+        object: EDITMETADATA_DATA_RESOURCE,
+        data: newRes,
+      });
     },
     saveAuthor(newAuthor) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
@@ -534,6 +537,7 @@ export default {
       [EDITMETADATA_ORGANIZATION]: METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
       [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
       [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
+      [EDITMETADATA_DATA_RESOURCE]: METADATA_EDITING_SAVE_RESOURCE,
     },
   }),
 };

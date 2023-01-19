@@ -21,6 +21,7 @@ import {
 } from '@/factories/mappingFactory';
 */
 
+import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -29,24 +30,24 @@ import {
   METADATA_DELETE_RESOURCE,
   ACTION_METADATA_DELETE_RESOURCE,
   METADATA_DELETE_RESOURCE_SUCCESS,
-  METADATA_DELETE_RESOURCE_ERROR, METADATA_EDITING_SAVE_RESOURCE,
+  METADATA_DELETE_RESOURCE_ERROR,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
-  API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
 
 
 export default {
   // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
-  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file }) {
+  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file, fileUrl }) {
 
     commit(METADATA_CREATION_RESOURCE, metadataId);
 
@@ -59,17 +60,19 @@ export default {
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
     // const postData = mapFrontendToBackend(stepKey, data);
+    const size = file.size || 0;
+    const name = file.name || file || fileUrl;
 
     const postData = {
       package_id: metadataId,
-      url: file.name,
+      url: fileUrl || file.name || file,
       description: null,
-      format: file.extension,
-      mimetype: file.type,
-      name: file.name,
-      size: file.size,
+      format: file.extension || 'url',
+      mimetype: file.type || '',
+      name,
+      size,
       url_type: 'upload',
-      'resource_size-size_value': file.size / 1024 / 1024,
+      'resource_size-size_value': size / 1024 / 1024,
       'resource_size-size_units': 'mb',
       'restricted-level': null,
       'restricted-allowed_users': null,
@@ -81,17 +84,12 @@ export default {
 
 
     try {
-      const response = await axios.post(url, postData,
-        {
-          headers: {
-            // Authorization: apiKey,
-          },
-        });
+      const response = await axios.post(url, postData);
 
       const resource = response.data.result;
 
       commit(METADATA_CREATION_RESOURCE_SUCCESS, {
-        stepKey: METADATA_CREATION_RESOURCE,
+        stepKey: EDITMETADATA_DATA_RESOURCE,
         resource,
         message: 'Resource created',
         // details: `Changes saved ${stepKey} data for ${id}`,

@@ -22,11 +22,14 @@
           -->
 
           <v-col cols="12">
-            <EditDropResourceFiles @createResources="createResourceFromFiles"/>
+            <EditDropResourceFiles :metadataId="metadataId" />
+<!--
+            No need to listen to events from the component, events are emitted from uppy directly
+-->
           </v-col>
 
           <v-col cols="12">
-            <EditPasteResourceUrl @createResources="createResourceFromUrl"/>
+            <EditPasteResourceUrl @createUrlResources="createResourceFromUrl"/>
           </v-col>
         </v-row>
       </v-col>
@@ -62,9 +65,11 @@
 
 import {
   CANCEL_EDITING_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_OBJECT_UPDATE,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
-  SAVE_EDITING_RESOURCE, SELECT_EDITING_RESOURCE,
+  SAVE_EDITING_RESOURCE,
+  SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -80,8 +85,14 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 // import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
-import { initializeLocalResource } from '@/factories/metaDataFactory';
-import { subscribeOnUppyEvent, unSubscribeOnUppyEvent } from '@/factories/uploadFactory';
+import { getFileFormat, initializeLocalResource } from '@/factories/metaDataFactory';
+import { getUppyInstance, subscribeOnUppyEvent, unSubscribeOnUppyEvent } from '@/factories/uploadFactory';
+import {
+  METADATA_CREATION_RESOURCE,
+  METADATA_EDITING_PATCH_DATASET_OBJECT, METADATA_EDITING_SAVE_RESOURCE, METADATA_EDITING_SELECT_RESOURCE,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+import { getSelectedElement } from '@/factories/userEditingFactory';
 
 export default {
   name: 'EditDataAndResources',
@@ -97,10 +108,12 @@ export default {
       type: Array,
       default: () => [],
     },
+/*
     metadataId: {
       type: String,
       default: '',
     },
+*/
     loading: {
       type: Boolean,
       default: false,
@@ -152,14 +165,8 @@ export default {
     unSubscribeOnUppyEvent('error', this.uploadError);
   },
   computed: {
-    selectedName() {
-      return this.selectedResource.name;
-    },
-    selectedDescription() {
-      return this.selectedResource.name;
-    },
-    selectedUrl() {
-      return this.selectedResource.name;
+    metadataId() {
+      return this.$route.params.metadataid;
     },
     metadataResourcesGenericProps() {
       return {
@@ -172,18 +179,7 @@ export default {
       };
     },
     selectedResource() {
-      let selectedRes = null;
-      const res = this.resources;
-
-      if (res?.length > 0) {
-        const selected = res.filter(r => r.isSelected);
-
-        if (selected.length > 0) {
-          selectedRes = selected[0];
-        }
-      }
-
-      return selectedRes;
+      return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
@@ -216,22 +212,87 @@ export default {
       console.log('failed files:', result.failed)
       this.uploadProgessText = 'Upload successful';
       this.uploadProgressIcon = 'check_circle';
+
+      // resource exists already, get it from uploadResource
+      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+      // preselect it for the user to directly edit it
+      this.selectResourceAndUpdateList(newRes);
     },
     uploadError(error) {
       console.log('failed files:', error)
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
+      const uppy = getUppyInstance();
+      uppy.cancelAll({ reason: error});
     },
-
-    createResourceFromUrl(url) {
+    async createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
 
-      const metadataId = this.getMetadataId();
+      const metadataId = this.metadataId;
 
-      this.initResource(metadataId, null, url);
+      // create resource from url
+      await this.$store?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
+        metadataId,
+        // file: url,
+        fileUrl: url,
+      });
+
+      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+      // get new resource and adjust the name
+      let resName = url;
+      const splits = url.split('/');
+      if (splits.length > 0) {
+        resName = splits[splits.length - 1];
+      }
+
+      // changed the name to the last part of the url, because urls can be very long
+      newRes.name = resName;
+
+      this.selectResourceAndUpdateList(newRes);
+/*
+      this.$nextTick(() => {
+        eventBus.emit(SELECT_EDITING_RESOURCE, newRes.id);
+      });
+*/
+
+    },
+    selectResourceAndUpdateList(resource) {
+
+      // make resource selectable
+      enhanceElementsWithStrategyEvents(
+          [resource],
+          SELECT_EDITING_RESOURCE_PROPERTY,
+          true,
+      );
+
+      // preselect it so the user can directly edit details
+      // eventBus.emit(SELECT_EDITING_RESOURCE, resource.id);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, resource.id);
+
+      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
+
+      // is this.selectedResource set?
+
+/*
+      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
+
+      // is the needed? shouldn't be right!?
+
+      // populate the new list of resources
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_RESOURCES,
+        data: resources,
+      });
+*/
+
     },
     createResourceFromFiles(files) {
       // console.log(`createResourceFromFiles ${files}`);
+
+
+/*
       const metadataId = this.getMetadataId();
 
       for (let i = 0; i < files.length; i++) {
@@ -239,6 +300,7 @@ export default {
 
         this.initResource(metadataId, file, null, i === files.length - 1);
       }
+*/
     },
     getMetadataId() {
       const metadataId =

@@ -31,11 +31,11 @@ import { urlRewrite } from '@/factories/apiFactory';
 let API_BASE = '';
 let ENVIDAT_PROXY = '';
 
-const useTestdata = process.env.VUE_APP_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
-  API_BASE = '/api/action/';
-  ENVIDAT_PROXY = process.env.VUE_APP_ENVIDAT_PROXY;
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
 
 let uppyInstance = null;
@@ -58,6 +58,7 @@ export async function initiateMultipart(file) {
     {
       metadataId,
       file,
+      // fileUrl: file.id,
     },
   );
 
@@ -74,11 +75,7 @@ export async function initiateMultipart(file) {
   };
 
   try {
-    const res = await axios.post(url, payload, {
-      headers: {
-        withCredentials: true,
-      },
-    });
+    const res = await axios.post(url, payload);
 
     const fileId = res.data.result.id;
     const key = res.data.result.name;
@@ -110,14 +107,13 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
   };
 
   try {
-    const res = await axios.post(url, payload, {
-      headers: {
-        withCredentials: true,
-      },
-    });
+    const res = await axios.post(url, payload);
 
+    const presignedUrls = res.data.result.presignedUrls;
+    console.log('presignedUrls');
+    console.log(presignedUrls);
     return {
-      presignedUrls: res.data.result.presignedUrls,
+      presignedUrls,
       // headers: {
       //   'Content-Type': 'application/octet-stream',
       // },
@@ -141,11 +137,7 @@ export async function completeMultipart(file, uploadData) {
   };
 
   try {
-    const res = await axios.post(url, payload, {
-      headers: {
-        withCredentials: true,
-      },
-    });
+    const res = await axios.post(url, payload);
     return { location: await res.data.result.url };
   } catch (error) {
     console.error(`Multipart completion failed: ${error}`);
@@ -168,11 +160,7 @@ export async function abortMultipart(file, uploadData) {
 
   try {
     // const res =
-    await axios.post(url, payload, {
-      headers: {
-        withCredentials: true,
-      },
-    });
+    await axios.post(url, payload);
     // console.log(
     //   `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
     // );
@@ -196,11 +184,7 @@ export async function listUploadedParts(file, { uploadId, key }) {
   };
 
   try {
-    const res = await axios.post(url, payload, {
-      headers: {
-        withCredentials: true,
-      },
-    });
+    const res = await axios.post(url, payload);
 
     console.log(`Multipart parts: ${res.data.result}`);
 
@@ -263,10 +247,8 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
   });
 
   uppy
-    .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
-
-/*
-    .use(GoldenRetriever, { serviceWorker: true })
+    // .use(GoldenRetriever, { serviceWorker: true })
+    .use(GoldenRetriever, { })
     .use(AwsS3Multipart, {
       limit: 4,
       getChunkSize(file) {
@@ -279,7 +261,9 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
       abortMultipartUpload: abortMultipart,
       completeMultipartUpload: completeMultipart,
     });
-*/
+  /*
+      .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
+  */
 
 
   // uppy.on('upload-complete', this.$emit('uploadComplete', 'Done'));
@@ -289,9 +273,11 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
 
 export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, debug = true, restrictions = undefined) {
 
+  console.log('metadataId')
+  console.log(metadataId)
   // need to be stored for later usage for some multipart functions
   storeReference = store;
-  storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, { metadataId })
+  storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, metadataId);
 
   if (hasUppyInstance()) {
     return uppyInstance;
