@@ -1,8 +1,8 @@
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
 
 import {
-  INJECT_TEXT_PREVIEW,
   OPEN_TEXT_PREVIEW,
+  OPEN_DATA_PREVIEW_IFRAME,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR_PROPERTY,
   SELECT_EDITING_DATASET,
@@ -18,7 +18,6 @@ export const clickStrategies = [
     fileExtensions: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    injectEvent: INJECT_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
     fallbackProperty: '',
@@ -95,17 +94,25 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
   for (let i = 0; i < elementList.length; i++) {
     const entry = elementList[i];
+    const entryPreviewProperty = entry.previewUrl ? 'previewUrl' : previewProperty
 
     let strat = null;
-    if (entriesAreResources && previewProperty === 'url') {
+    if (entriesAreResources && entryPreviewProperty === 'previewUrl') {
+      strat = {
+        openEvent: OPEN_DATA_PREVIEW_IFRAME,
+        icon: 'preview',
+        tooltip: 'Click for a preview of this resource',
+        fallbackProperty: '',
+      };
+    } else if (entriesAreResources && entryPreviewProperty === 'url') {
       strat = getPreviewStrategyFromUrl(entry.url);
     } else {
-      strat = getPreviewStrategy(previewProperty);
+      strat = getPreviewStrategy(entryPreviewProperty);
     }
 
     if (strat) {
       entry.openEvent = strat.openEvent;
-      const idValue = entry[previewProperty];
+      const idValue = entry[entryPreviewProperty];
       entry.openProperty = idValue || entry[strat.fallbackProperty];
       entry.openButtonIcon = strat.icon;
       entry.openButtonTooltip = strat.tooltip;

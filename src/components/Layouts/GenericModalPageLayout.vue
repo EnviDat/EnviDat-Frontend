@@ -85,9 +85,8 @@ export default {
   },
   methods: {
     closeClicked() {
-      this.showDialog = false;
-
       eventBus.emit(METADATA_CLOSE_MODAL);
+      this.showDialog = false;
     },
     openClicked() {
       this.showDialog = true;
