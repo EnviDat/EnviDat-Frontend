@@ -86,16 +86,10 @@
       <component :is="textPreviewComponent"
                  :url="textPreviewUrl" />
 
-
-    </GenericModalPageLayout>
-
-    <!-- prettier-ignore -->
-    <GenericModalPageLayout :title="modalTitle"
-                            :autoScroll="false" >
-
       <!-- prettier-ignore -->
       <component :is="dataIframeComponent"
                  :url="dataPreviewUrl" />
+
 
     </GenericModalPageLayout>
   </v-container>
