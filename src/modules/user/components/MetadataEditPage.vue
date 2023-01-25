@@ -142,7 +142,7 @@ export default {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    // eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
@@ -155,7 +155,7 @@ export default {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
-    // eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
     eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
@@ -334,6 +334,9 @@ export default {
 
       const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
       window.open(routeData.href, '_blank');
+    },
+    selectResource(id) {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
     selectAuthor(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);

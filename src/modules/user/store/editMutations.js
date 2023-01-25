@@ -14,6 +14,7 @@
 
 
 import {
+  getSelectedElement,
   selectForEditing,
   setSelected,
   updateAuthors,
@@ -25,7 +26,6 @@ import { populateEditingComponents } from '@/factories/mappingFactory';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_RESOURCES,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -73,9 +73,7 @@ function resetErrorObject(state) {
 export default {
   [UPDATE_METADATA_EDITING](state, payload) {
 
-    if (payload.object === EDITMETADATA_DATA_RESOURCES) {
-      updateResource(this, state, payload.data);
-    } else if (payload.object === EDITMETADATA_AUTHOR) {
+    if (payload.object === EDITMETADATA_AUTHOR) {
       updateAuthors(this, state, payload.data);
     } else {
       const current = state.metadataInEditing[payload.object];
@@ -115,8 +113,9 @@ export default {
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
 
-    selectForEditing(this, resources, id, state.selectedResourceId, 'id');
-    state.selectedResourceId = id;
+    const previousId = getSelectedElement(resources)?.id || '';
+
+    selectForEditing(this, resources, id, previousId, 'id');
   },
   [METADATA_EDITING_SELECT_AUTHOR](state, id) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -125,8 +124,8 @@ export default {
   },
   [METADATA_CANCEL_RESOURCE_EDITING](state) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
-    setSelected(this, resources, state.selectedResourceId, 'id', false);
-    state.selectedResourceId = '';
+    const previousId = getSelectedElement(resources)?.id || '';
+    setSelected(this, resources, previousId, 'id', false);
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
