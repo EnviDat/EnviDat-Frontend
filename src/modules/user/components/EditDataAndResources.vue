@@ -66,10 +66,8 @@
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
-  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -85,11 +83,11 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 // import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
-import { getFileFormat, initializeLocalResource } from '@/factories/metaDataFactory';
+
 import { getUppyInstance, subscribeOnUppyEvent, unSubscribeOnUppyEvent } from '@/factories/uploadFactory';
 import {
   METADATA_CREATION_RESOURCE,
-  METADATA_EDITING_PATCH_DATASET_OBJECT, METADATA_EDITING_SAVE_RESOURCE, METADATA_EDITING_SELECT_RESOURCE,
+  METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 import { getSelectedElement } from '@/factories/userEditingFactory';
@@ -199,7 +197,8 @@ export default {
       // with file IDs in current upload
       // data: { id, fileIDs }
       console.log(`Starting upload ${id} for files ${fileIDs}`);
-      this.uploadProgessText = `Starting upload file ${fileIDs}`;
+      // this.uploadProgessText = `Starting upload file ${fileIDs}`;
+      this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
     },
     uploadProgress(progress) {
@@ -208,21 +207,38 @@ export default {
       this.uploadProgressIcon = 'check';
     },
     uploadCompleted(result) {
+      const oks = result.successful?.length || 0;
+      const fails = result.failed?.length || 0;
+
       console.log('successful files:', result.successful)
       console.log('failed files:', result.failed)
-      this.uploadProgessText = 'Upload successful';
-      this.uploadProgressIcon = 'check_circle';
+
+      let message = '';
+      if (oks > 0) {
+        message += `${oks} uploads successful`;
+        this.uploadProgressIcon = 'check_circle';
+      }
+      if (fails > 0) {
+        message += `${fails} failed uploads`;
+        this.uploadProgressIcon = 'report_gmailerrorred';
+      }
+
+      this.uploadProgessText = message;
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       // preselect it for the user to directly edit it
-      this.selectResourceAndUpdateList(newRes);
+      if(newRes) {
+        this.selectResourceAndUpdateList(newRes);
+      }
     },
     uploadError(error) {
       console.log('failed files:', error)
+
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
+
       const uppy = getUppyInstance();
       uppy.cancelAll({ reason: error});
     },
@@ -236,6 +252,7 @@ export default {
         metadataId,
         // file: url,
         fileUrl: url,
+        autoSelect: true,
       });
 
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -260,13 +277,6 @@ export default {
     },
     selectResourceAndUpdateList(resource) {
 
-      // make resource selectable
-      enhanceElementsWithStrategyEvents(
-          [resource],
-          SELECT_EDITING_RESOURCE_PROPERTY,
-          true,
-      );
-
       // preselect it so the user can directly edit details
       // eventBus.emit(SELECT_EDITING_RESOURCE, resource.id);
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, resource.id);
@@ -287,46 +297,6 @@ export default {
       });
 */
 
-    },
-    createResourceFromFiles(files) {
-      // console.log(`createResourceFromFiles ${files}`);
-
-
-/*
-      const metadataId = this.getMetadataId();
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        this.initResource(metadataId, file, null, i === files.length - 1);
-      }
-*/
-    },
-    getMetadataId() {
-      const metadataId =
-          this.metadataId || `local_MetadataId_${this.localResCounter}`;
-      this.localResCounter++;
-      return metadataId;
-    },
-    initResource(metadataId, file, url, autoSelect = true) {
-      const newRes = initializeLocalResource(metadataId, file, url);
-
-      enhanceElementsWithStrategyEvents(
-          [newRes],
-          SELECT_EDITING_RESOURCE_PROPERTY,
-          true,
-      );
-
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_RESOURCES,
-        data: newRes,
-      });
-
-      if (autoSelect) {
-        this.$nextTick(() => {
-          eventBus.emit(SELECT_EDITING_RESOURCE, newRes.id);
-        });
-      }
     },
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);

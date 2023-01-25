@@ -15,12 +15,15 @@
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   eventBus,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
   extractError,
 } from '@/modules/user/store/mutationFactory';
 
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { updateResource } from '@/factories/userEditingFactory';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -32,8 +35,6 @@ import {
 } from './userMutationsConsts';
 
 
-
-
 export default {
   [METADATA_CREATION_RESOURCE](state, metadataId) {
     // resource.loading = true;
@@ -41,13 +42,23 @@ export default {
     state.uploadResource = null;
 
   },
-  [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
+  [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message, autoSelect }) {
 
+    // make resource selectable
+    enhanceElementsWithStrategyEvents(
+      [resource],
+      SELECT_EDITING_RESOURCE_PROPERTY,
+      true,
+    );
+
+    resource.isSelected = autoSelect;
     resource.loading = false;
     resource.message = message;
 
     state.uploadResource = resource;
     state.metadataInEditing[stepKey] = resource;
+
+    updateResource(this, state, resource)
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

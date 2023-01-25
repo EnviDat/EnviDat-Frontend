@@ -95,17 +95,15 @@ export function updateEditingArray(
   elementList.unshift(newElement);
 }
 
-export function updateResource(store, state, payload) {
+export function updateResource(store, state, newRes) {
   const resources = store.getters[`${USER_NAMESPACE}/resources`];
   // const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
-  const newRes = payload.data;
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
-export function updateAuthors(store, state, payload) {
+export function updateAuthors(store, state, newAuthors) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
-  const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors, 'email');
 }

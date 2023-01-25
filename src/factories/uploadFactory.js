@@ -93,6 +93,57 @@ export async function initiateMultipart(file) {
   }
 }
 
+export async function getSinglePresignedUrl(file) {
+
+  const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+
+  await storeReference?.dispatch(
+    `${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`,
+    {
+      metadataId,
+      file,
+      // fileUrl: file.id,
+    },
+  );
+
+
+  const actionUrl = 'cloudstorage_get_presigned_url_multipart';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+  const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  const payload = {
+    id: resourceId,
+    // uploadId,
+    // partNumbersList: partNumbers,
+    upload: {
+      filename: file.name,
+    },
+  };
+
+  try {
+    const res = await axios.post(url, payload);
+
+    const signedUrl = res.data.result; // .signed_url;
+    console.log('res.data.result');
+    console.log(res.data.result);
+
+    return {
+      method: 'POST',
+      url: signedUrl,
+      // fields: '',
+      headers: {
+        'Content-Type': file.type,
+      },
+    }
+
+  } catch (error) {
+    console.error(`getSinglePresignedUrl failed: ${error}`);
+    return error;
+  }
+
+}
+
 export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
 
   const actionUrl = 'cloudstorage_get_presigned_url_list_multipart';
@@ -115,12 +166,9 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
     console.log(presignedUrls);
     return {
       presignedUrls,
-      // headers: {
-      //   'Content-Type': 'application/octet-stream',
-      // },
     };
   } catch (error) {
-    console.error(`Presigning urls failed: ${error}`);
+    console.error(`requestPresignedUrls failed: ${error}`);
     return error;
   }
 }
@@ -232,6 +280,17 @@ export function unSubscribeOnUppyEvent(event, callback) {
   }
 }
 
+/*
+function awsS3Parameters(file) {
+  return {
+    method: 'POST',
+    url: '',
+    fields: '',
+    headers: '',
+  }
+}
+*/
+
 function createUppyInstance(height = 300, autoProceed = true, debug = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
@@ -247,17 +306,38 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
     height,
   });
 
+  uppy.use(AwsS3Multipart, {
+    id: 'multipart-aws',
+    limit: 4,
+    getChunkSize(file) {
+      // at least 25MB per request, at most 500 requests
+      return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
+    },
+    createMultipartUpload: initiateMultipart,
+    prepareUploadParts: requestPresignedUrls,
+    listParts: listUploadedParts,
+    abortMultipartUpload: abortMultipart,
+    completeMultipartUpload: completeMultipart,
+  });
+
+/*
   uppy
     // .use(GoldenRetriever, { serviceWorker: true })
     .use(GoldenRetriever, { })
+*/
 
 
+/*
   uppy.on('file-added', (newFile) => {
 
     if (newFile.size >= 1024 * 1024 * 6) {
 
-      uppy.removePlugin(AwsS3);
+      const awsS3Plugin = uppy.getPlugin('AwsS3');
+      if (awsS3Plugin) {
+        uppy.removePlugin(AwsS3);
+      }
       uppy.use(AwsS3Multipart, {
+        id: 'multipart-aws',
         limit: 4,
         getChunkSize(file) {
           // at least 25MB per request, at most 500 requests
@@ -270,13 +350,21 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
         completeMultipartUpload: completeMultipart,
       });
     } else {
-      uppy.removePlugin(AwsS3Multipart);
-      uppy.use(AwsS3, {
 
+      const awsS3Plugin = uppy.getPlugin('multipart-aws');
+      if (awsS3Plugin) {
+        uppy.removePlugin(AwsS3Multipart);
+      }
+
+      uppy.use(AwsS3, {
+        id: 'AwsS3',
+        // companionUrl: ENVIDAT_PROXY,
+        getUploadParameters: getSinglePresignedUrl,
       });
     }
   });
 
+*/
   /*
       .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
   */

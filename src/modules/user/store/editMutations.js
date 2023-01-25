@@ -12,10 +12,6 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  enhanceMetadatas,
-  enhanceTags,
-} from '@/factories/metaDataFactory';
 
 import {
   selectForEditing,
@@ -78,9 +74,9 @@ export default {
   [UPDATE_METADATA_EDITING](state, payload) {
 
     if (payload.object === EDITMETADATA_DATA_RESOURCES) {
-      updateResource(this, state, payload);
+      updateResource(this, state, payload.data);
     } else if (payload.object === EDITMETADATA_AUTHOR) {
-      updateAuthors(this, state, payload);
+      updateAuthors(this, state, payload.data);
     } else {
       const current = state.metadataInEditing[payload.object];
 
@@ -94,12 +90,7 @@ export default {
   [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
 
     resource.loading = true;
-    const updateObj = {
-      object: EDITMETADATA_DATA_RESOURCES,
-      data: resource,
-    };
-
-    updateResource(this, state, updateObj);
+    updateResource(this, state, resource);
 
     resetErrorObject(state);
   },
@@ -146,12 +137,7 @@ export default {
 
     author.loading = true;
 
-    const updateObj = {
-      object: EDITMETADATA_AUTHOR,
-      data: author,
-    };
-
-    updateAuthors(this, state, updateObj);
+    updateAuthors(this, state, author);
 
     resetErrorObject(state);
   },
@@ -160,12 +146,7 @@ export default {
     author.loading = false;
     author.existsOnlyLocal = false;
 
-    const updateObj = {
-      object: EDITMETADATA_AUTHOR,
-      data: author,
-    };
-
-    updateAuthors(this, state, updateObj);
+    updateAuthors(this, state, author);
 
 
     resetErrorObject(state);

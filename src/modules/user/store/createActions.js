@@ -47,7 +47,7 @@ if (!useTestdata) {
 
 export default {
   // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
-  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file, fileUrl }) {
+  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file, fileUrl, autoSelect = false }) {
 
     commit(METADATA_CREATION_RESOURCE, metadataId);
 
@@ -92,6 +92,7 @@ export default {
         stepKey: EDITMETADATA_DATA_RESOURCE,
         resource,
         message: 'Resource created',
+        autoSelect,
         // details: `Changes saved ${stepKey} data for ${id}`,
       });
 
