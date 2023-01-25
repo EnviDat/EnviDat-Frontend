@@ -498,6 +498,7 @@ export function createResource(resource, datasetName) {
     position: resource.position ? resource.position : '',
     revisionId: resource.revision_id ? resource.revision_id : '',
     isProtected,
+    previewUrl: resource.preview_url ? resource.preview_url : '',
   };
 }
 

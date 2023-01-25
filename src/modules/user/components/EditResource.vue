@@ -81,7 +81,7 @@
               prepend-icon="insert_drive_file"
               value=" "
             >
-              <template v-slot:append style="justfiy-content: flex-end">
+              <template v-slot:append>
                 <v-col>
                   <v-row no-gutters class="pb-2">{{ urlField || fileNameField }}</v-row>
                   <v-row no-gutters>
@@ -253,6 +253,10 @@ export default {
       type: String,
       default: '',
     },
+    previewUrl: {
+      type: String,
+      default: '',
+    },
     doi: {
       type: String,
       default: '',
@@ -329,6 +333,9 @@ export default {
     },
     isImage() {
       return this.file?.type.includes('image') || this.mimetype?.includes('image') || false;
+    },
+    isPreviewUrl() {
+      return this.previewUrl !== '';
     },
     isLink() {
       return !!this.url && this.urlType !== 'upload';

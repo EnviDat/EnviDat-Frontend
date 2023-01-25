@@ -63,7 +63,7 @@
 
     <!-- prettier-ignore -->
     <GenericModalPageLayout :title="modalTitle"
-                            :autoScroll="filePreviewComponent !== null" >
+                            :autoScroll="textPreviewComponent !== null" >
 
       <!-- prettier-ignore -->
       <component :is="gcnetModalComponent"
@@ -83,8 +83,12 @@
 -->
 
       <!-- prettier-ignore -->
-      <component :is="filePreviewComponent"
-                 :url="filePreviewUrl" />
+      <component :is="textPreviewComponent"
+                 :url="textPreviewUrl" />
+
+      <!-- prettier-ignore -->
+      <component :is="dataIframeComponent"
+                 :url="dataPreviewUrl" />
 
 
     </GenericModalPageLayout>
@@ -145,6 +149,7 @@ import {
   METADATA_CLOSE_MODAL,
   METADATA_OPEN_MODAL,
   OPEN_TEXT_PREVIEW,
+  OPEN_DATA_PREVIEW_IFRAME,
 } from '@/factories/eventBus';
 
 import {
@@ -158,6 +163,7 @@ import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsL
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
 
 import { rewind as tRewind } from '@turf/turf';
+import DataPreviewIframe from '@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
@@ -188,9 +194,13 @@ export default {
   created() {
     eventBus.on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
 
-    this.filePreviewUrl = null;
-    this.filePreviewComponent = null;
-    eventBus.on(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+    this.textPreviewUrl = null;
+    this.textPreviewComponent = null;
+    eventBus.on(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
+
+    this.dataPreviewUrl = null;
+    this.dataIframeComponent = null;
+    eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
 
     eventBus.on(METADATA_CLOSE_MODAL, this.closeModal);
 
@@ -232,9 +242,13 @@ export default {
 
     eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
 
-    this.filePreviewUrl = null;
-    this.filePreviewComponent = null;
-    eventBus.off(OPEN_TEXT_PREVIEW, this.showFilePreviewModal);
+    this.textPreviewUrl = null;
+    this.textPreviewComponent = null;
+    this.dataPreviewUrl = null;
+    this.dataIframeComponent = null;
+
+    eventBus.off(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
+    eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.off(METADATA_CLOSE_MODAL, this.closeModal);
     eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
 
@@ -487,11 +501,11 @@ export default {
       eventBus.emit(METADATA_OPEN_MODAL);
     },
 
-    showFilePreviewModal(url) {
+    showTextPreviewModal(url) {
       const strat = getPreviewStrategyFromUrl(url);
 
-      this.filePreviewComponent = strat.component;
-      this.filePreviewUrl = url;
+      this.textPreviewComponent = strat.component;
+      this.textPreviewUrl = url;
 
       const splits = url.split('/');
       const fileName = splits[splits.length - 1];
@@ -500,6 +514,16 @@ export default {
 
       eventBus.emit(METADATA_OPEN_MODAL);
     },
+
+    showDataPreviewIframe(previewUrl) {
+      this.dataIframeComponent = DataPreviewIframe;
+      this.dataPreviewUrl = previewUrl;
+
+      this.modalTitle = 'Data preview';
+
+      eventBus.emit(METADATA_OPEN_MODAL);
+    },
+
     showFullscreenMapModal(layerConfig) {
 
       this.modalTitle = `Fullscreen Map for ${this.header?.metadataTitle}`;
@@ -510,8 +534,9 @@ export default {
       eventBus.emit(METADATA_OPEN_MODAL);
     },
     closeModal() {
+      this.dataIframeComponent = null;
       this.gcnetModalComponent = null;
-      this.filePreviewComponent = null;
+      this.textPreviewComponent = null;
       this.fullScreenComponent = null;
     },
     reRenderComponents() {
@@ -937,8 +962,10 @@ export default {
     licenseIcon: null,
     modalTitle: '',
     gcnetModalComponent: null,
-    filePreviewComponent: null,
-    filePreviewUrl: null,
+    textPreviewComponent: null,
+    textPreviewUrl: null,
+    dataIframeComponent: null,
+    dataPreviewUrl: null,
     fullScreenComponent: null,
     fullScreenConfig: null,
     eventBus,

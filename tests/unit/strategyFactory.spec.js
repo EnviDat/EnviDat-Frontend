@@ -23,7 +23,6 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
     expect(strategy.fileExtensions).toBeDefined();
     expect(strategy.component).toBeDefined();
     expect(strategy.openEvent).toBeDefined();
-    expect(strategy.injectEvent).toBeDefined();
   });
 
   it('markdown file extension .md', () => {
@@ -34,7 +33,6 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
     expect(strategy.fileExtensions).toBeDefined();
     expect(strategy.component).toBeDefined();
     expect(strategy.openEvent).toBeDefined();
-    expect(strategy.injectEvent).toBeDefined();
   });
 
   it('unkown file extension .xyz', () => {
