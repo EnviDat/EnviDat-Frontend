@@ -15,7 +15,6 @@
 import Uppy, { debugLogger } from '@uppy/core';
 import axios from 'axios';
 import GoldenRetriever from '@uppy/golden-retriever';
-import AwsS3 from '@uppy/aws-s3';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
 import Tus from '@uppy/tus';
 
@@ -115,7 +114,7 @@ export async function getSinglePresignedUrl(file) {
   const payload = {
     id: resourceId,
     // uploadId,
-    // partNumbersList: partNumbers,
+    // partNumber: partNumbers,
     upload: {
       filename: file.name,
     },
@@ -144,9 +143,9 @@ export async function getSinglePresignedUrl(file) {
 
 }
 
-export async function requestPresignedUrls(file, partData) {
+export async function requestPresignedUrl(file, partData) {
 
-  const actionUrl = 'cloudstorage_get_presigned_url_list_multipart';
+  const actionUrl = 'cloudstorage_get_presigned_url_multipart';
   const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
@@ -154,21 +153,22 @@ export async function requestPresignedUrls(file, partData) {
   const payload = {
     id: resourceId,
     uploadId: partData.uploadId,
-    partNumbersList: partData.parts,
+    partNumber: partData.partNumber,
     filename: file.name,
   };
 
   try {
     const res = await axios.post(url, payload);
 
-    const presignedUrls = res.data.result.presignedUrls;
-    console.log('presignedUrls');
-    console.log(presignedUrls);
+    const presignedUrl = res.data.result;
+    console.log('presignedUrl');
+    console.log(presignedUrl);
     return {
-      presignedUrls,
+      'url': presignedUrl,
+      'headers': {},
     };
   } catch (error) {
-    console.error(`requestPresignedUrls failed: ${error}`);
+    console.error(`requestPresignedUrl failed: ${error}`);
     return error;
   }
 }
@@ -314,7 +314,7 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
       return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
     },
     createMultipartUpload: initiateMultipart,
-    prepareUploadParts: requestPresignedUrls,
+    signPart: requestPresignedUrl,
     listParts: listUploadedParts,
     abortMultipartUpload: abortMultipart,
     completeMultipartUpload: completeMultipart,
@@ -344,7 +344,7 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
           return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
         },
         createMultipartUpload: initiateMultipart,
-        prepareUploadParts: requestPresignedUrls,
+        signPart: requestPresignedUrl,
         listParts: listUploadedParts,
         abortMultipartUpload: abortMultipart,
         completeMultipartUpload: completeMultipart,
@@ -401,4 +401,3 @@ export function destoryUppyInstance() {
 
   storeReference = null;
 }
-
