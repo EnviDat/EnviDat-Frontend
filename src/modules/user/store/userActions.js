@@ -9,14 +9,22 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
+import { mapFrontendToBackend, populateEditingComponents } from '@/factories/mappingFactory';
+
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
+import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+
+import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
+
 import {
+  ACTION_METADATA_EDITING_PATCH_DATASET,
+  ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_COLLABORATOR_DATASETS,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
@@ -41,6 +49,7 @@ import {
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
+  USER_NAMESPACE,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -206,7 +215,11 @@ export default {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
   },
+  // eslint-disable-next-line no-unused-vars
+  async [METADATA_EDITING_SAVE_RESOURCE]({ commit }, resource) {
+    commit(METADATA_EDITING_SAVE_RESOURCE, resource);
 
+    await sleep(2000);
 
     commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, resource);
   },
