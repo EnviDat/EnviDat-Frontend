@@ -144,7 +144,7 @@ export async function getSinglePresignedUrl(file) {
 
 }
 
-export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
+export async function requestPresignedUrls(file, partData) {
 
   const actionUrl = 'cloudstorage_get_presigned_url_list_multipart';
   const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
@@ -153,8 +153,8 @@ export async function requestPresignedUrls(file, { uploadId, partNumbers }) {
 
   const payload = {
     id: resourceId,
-    uploadId,
-    partNumbersList: partNumbers,
+    uploadId: partData.uploadId,
+    partNumbersList: partData.parts,
     filename: file.name,
   };
 
