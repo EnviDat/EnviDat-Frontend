@@ -69,7 +69,15 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
+  UPLOAD_ERROR,
+  UPLOAD_STATE_RESET,
+  UPLOAD_STATE_RESOURCE_CREATED,
+  UPLOAD_STATE_RESOURCE_RENAMED,
+  UPLOAD_STATE_UPLOAD_COMPLETED,
+  UPLOAD_STATE_UPLOAD_PROGRESS,
+  UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
+
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 // import { initializeLocalResource } from '@/factories/metaDataFactory';
@@ -200,11 +208,15 @@ export default {
       // this.uploadProgessText = `Starting upload file ${fileIDs}`;
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
+
+      eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
     },
     uploadProgress(progress) {
-      console.log(`upload progress: ${progress}`);
+      // console.log(`upload progress: ${progress}`);
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
+
+      eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
     },
     uploadCompleted(result) {
       const oks = result.successful?.length || 0;
@@ -223,15 +235,23 @@ export default {
         this.uploadProgressIcon = 'report_gmailerrorred';
       }
 
+      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
+
       this.uploadProgessText = message;
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
+      if (newRes) {
+        this.renameResource(newRes);
+      }
+
+/*
       // preselect it for the user to directly edit it
       if(newRes) {
         this.selectResourceAndUpdateList(newRes);
       }
+*/
     },
     uploadError(error) {
       console.log('failed files:', error)
@@ -241,6 +261,8 @@ export default {
 
       const uppy = getUppyInstance();
       uppy.cancelAll({ reason: error});
+
+      eventBus.emit(UPLOAD_ERROR, { error });
     },
     async createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
@@ -257,23 +279,31 @@ export default {
 
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
+      if (newRes) {
+        this.renameResource(newRes);
+      }
+    },
+    renameResource(resource) {
       // get new resource and adjust the name
-      let resName = url;
-      const splits = url.split('/');
+      let resName = resource.url;
+      const splits = resource.url.split('/');
       if (splits.length > 0) {
         resName = splits[splits.length - 1];
+
+        const extSplits = resName.split('.');
+        if (extSplits.length === 1) {
+          resName = extSplits[0];
+        } else if (extSplits.length > 1) {
+          resName = extSplits[extSplits.length - 1];
+        }
       }
 
       // changed the name to the last part of the url, because urls can be very long
-      newRes.name = resName;
+      resource.name = resName;
 
-      this.selectResourceAndUpdateList(newRes);
-/*
-      this.$nextTick(() => {
-        eventBus.emit(SELECT_EDITING_RESOURCE, newRes.id);
-      });
-*/
+      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
 
+      eventBus.emit(UPLOAD_STATE_RESOURCE_RENAMED, { id: UPLOAD_STATE_RESOURCE_RENAMED });
     },
     selectResourceAndUpdateList(resource) {
 

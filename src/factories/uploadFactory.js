@@ -14,9 +14,11 @@
 
 import Uppy, { debugLogger } from '@uppy/core';
 import axios from 'axios';
-import GoldenRetriever from '@uppy/golden-retriever';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
+/*
+import GoldenRetriever from '@uppy/golden-retriever';
 import Tus from '@uppy/tus';
+*/
 
 import {
   METADATA_CREATION_RESOURCE, METADATA_DELETE_RESOURCE,
@@ -26,6 +28,12 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
+import {
+  eventBus,
+  UPLOAD_ERROR,
+  UPLOAD_STATE_RESET,
+  UPLOAD_STATE_RESOURCE_CREATED,
+} from '@/factories/eventBus';
 
 
 let API_BASE = '';
@@ -51,6 +59,8 @@ const defaultRestrictions = {
 
 export async function initiateMultipart(file) {
 
+  eventBus.emit(UPLOAD_STATE_RESET);
+
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
 
   await storeReference?.dispatch(
@@ -63,6 +73,12 @@ export async function initiateMultipart(file) {
   );
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
+
+  if (resourceId) {
+    eventBus.emit(UPLOAD_STATE_RESOURCE_CREATED, { id: UPLOAD_STATE_RESOURCE_CREATED });
+  } else {
+    eventBus.emit(UPLOAD_ERROR, { error: 'Resource creation failed' });
+  }
 
   const actionUrl = 'cloudstorage_initiate_multipart';
   const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
@@ -187,6 +203,7 @@ export async function completeMultipart(file, uploadData) {
 
   try {
     const res = await axios.post(url, payload);
+
     return { location: await res.data.result.url };
   } catch (error) {
     console.error(`Multipart completion failed: ${error}`);
