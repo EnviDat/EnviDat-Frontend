@@ -24,7 +24,10 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import { EDITMETADATA_DATA_RESOURCES } from '@/factories/eventBus';
+import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCES,
+} from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
@@ -34,6 +37,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
   METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
   METADATA_EDITING_SAVE_RESOURCE,
@@ -81,6 +85,16 @@ export default {
     await sleep(2000);
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+  },
+  [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
+    commit(METADATA_EDITING_REMOVE_AUTHOR, data);
+
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+
+    dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
   },
   async METADATA_EDITING_LOAD_DATASET({ dispatch }, metadataId) {
 
@@ -161,7 +175,8 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        populateEditingComponents(commit, response.data.result, categoryCards);
+        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
+        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {

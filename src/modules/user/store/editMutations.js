@@ -50,6 +50,7 @@ import {
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
+  METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
@@ -119,8 +120,8 @@ export default {
   },
   [METADATA_EDITING_SELECT_AUTHOR](state, id) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
-    selectForEditing(this, authors, id, state.selectedAuthorId, 'email');
-    state.selectedAuthorId = id;
+    const previousEmail = getSelectedElement(authors)?.email || '';
+    selectForEditing(this, authors, id, previousEmail, 'email');
   },
   [METADATA_CANCEL_RESOURCE_EDITING](state) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
@@ -129,8 +130,8 @@ export default {
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
-    setSelected(this, authors, state.selectedAuthorId, 'email', false);
-    state.selectedAuthorId = '';
+    const previousEmail = getSelectedElement(authors)?.email || '';
+    setSelected(this, authors, previousEmail, 'email', false);
   },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
 
@@ -152,6 +153,15 @@ export default {
   },
   [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
     extractError(this, reason);
+  },
+  [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const matches = authors.filter(auth => auth.email === email);
+    if (matches.length > 0) {
+      const removeIndex = authors.indexOf(matches[0]);
+      authors.splice(removeIndex, 1);
+    }
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
