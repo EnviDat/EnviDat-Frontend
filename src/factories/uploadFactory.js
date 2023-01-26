@@ -139,9 +139,7 @@ export async function getSinglePresignedUrl(file) {
   try {
     const res = await axios.post(url, payload);
 
-    const signedUrl = res.data.result; // .signed_url;
-    console.log('res.data.result');
-    console.log(res.data.result);
+    const signedUrl = res.data.result;
 
     return {
       method: 'POST',
@@ -177,8 +175,7 @@ export async function requestPresignedUrl(file, partData) {
     const res = await axios.post(url, payload);
 
     const presignedUrl = res.data.result;
-    console.log('presignedUrl');
-    console.log(presignedUrl);
+
     return {
       'url': presignedUrl,
       'headers': {},
@@ -394,8 +391,6 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
 
 export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, debug = true, restrictions = undefined) {
 
-  console.log('metadataId')
-  console.log(metadataId)
   // need to be stored for later usage for some multipart functions
   storeReference = store;
   storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, metadataId);

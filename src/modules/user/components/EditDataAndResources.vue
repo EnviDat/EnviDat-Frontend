@@ -68,10 +68,7 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   eventBus,
   SAVE_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
   UPLOAD_ERROR,
-  UPLOAD_STATE_RESET,
-  UPLOAD_STATE_RESOURCE_CREATED,
   UPLOAD_STATE_RESOURCE_RENAMED,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
@@ -79,8 +76,7 @@ import {
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-// import { initializeLocalResource } from '@/factories/metaDataFactory';
+
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
@@ -155,14 +151,6 @@ export default {
     subscribeOnUppyEvent('complete', this.uploadCompleted);
     subscribeOnUppyEvent('error', this.uploadError);
 
-    // Add editing button to resource card
-    if (Array.isArray(this.resources) && this.resources.length > 0) {
-      enhanceElementsWithStrategyEvents(
-          this.resources,
-          SELECT_EDITING_RESOURCE_PROPERTY,
-          true,
-      );
-    }
   },
   beforeDestroy() {
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
@@ -239,12 +227,19 @@ export default {
 
       this.uploadProgessText = message;
 
+
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
-      if (newRes) {
-        this.renameResource(newRes);
-      }
+      this.$nextTick(() => {
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
+      });
+
+      /*
+            if (newRes) {
+              this.renameResource(newRes);
+            }
+      */
 
 /*
       // preselect it for the user to directly edit it
@@ -277,13 +272,17 @@ export default {
         autoSelect: true,
       });
 
+      // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       if (newRes) {
         this.renameResource(newRes);
       }
     },
-    renameResource(resource) {
+    renameResource(newRes) {
+      // create a local copy because it might come directly from the $store
+      const resource = {... newRes};
+
       // get new resource and adjust the name
       let resName = resource.url;
       const splits = resource.url.split('/');

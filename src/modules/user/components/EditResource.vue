@@ -20,10 +20,6 @@
             <div class="text-h5">{{ labels.title }}</div>
           </v-col>
 
-          <v-col cols="12" style="background-color: orange;">
-            This component is unfinished!
-          </v-col>
-
           <v-col cols="12">
             <div class="text-body-1">{{ labels.instructions }}</div>
           </v-col>
@@ -72,7 +68,17 @@
         </v-row>
 
         <v-row v-if="!isLink && isImage" no-gutters>
-          <v-col cols="12">
+          <v-col cols="2"
+                  class="pt-3 pb-4 px-4">
+            <v-img :src="urlField || fileNameField"
+                   ref="filePreview"
+                   style="max-height: 100%; max-width: 100%; cursor: pointer;"
+                   @click="catchImageClick"
+                   alt="resource image preview"/>
+          </v-col>
+
+          <v-col cols="10"
+                class="pt-3 pb-4">
             <v-text-field
               :label="labels.fileName"
               outlined
@@ -80,19 +86,8 @@
               selele
               prepend-icon="insert_drive_file"
               value=" "
-            >
-              <template v-slot:append>
-                <v-col>
-                  <v-row no-gutters class="pb-2">{{ urlField || fileNameField }}</v-row>
-                  <v-row no-gutters>
-                    <v-img :src="urlField || fileNameField"
-                      ref="filePreview"
-                      style="max-height: 100%; max-width: 100%"
-                     alt="resource image preview"/>
-                  </v-row>
-                </v-col>
-              </template>
-            </v-text-field>
+              />
+
           </v-col>
         </v-row>
 
@@ -123,7 +118,7 @@
 -->
 
         <v-row no-gutters>
-          <v-col cols="6" class="pr-4">
+          <v-col class="pr-4">
             <v-text-field
               :label="labels.format"
               outlined
@@ -132,7 +127,7 @@
             />
           </v-col>
 
-          <v-col cols="6">
+          <v-col class="pr-4">
             <v-text-field
               :label="labels.size"
               outlined
@@ -140,10 +135,12 @@
               :value="sizeField"
             />
           </v-col>
+<!--
         </v-row>
 
         <v-row no-gutters>
-          <v-col cols="6" class="pr-4">
+-->
+          <v-col class="pr-4">
             <v-text-field
               :label="labels.created"
               outlined
@@ -152,7 +149,7 @@
             />
           </v-col>
 
-          <v-col cols="6">
+          <v-col class="pr-4">
             <v-text-field
               :label="labels.lastModified"
               outlined
@@ -402,6 +399,9 @@ export default {
         property,
         value,
       });
+    },
+    catchImageClick() {
+      console.log('click');
     },
   },
   data: () => ({

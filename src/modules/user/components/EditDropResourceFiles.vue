@@ -23,35 +23,32 @@
         </v-col>
       </v-row>
 
-<!--
-      <v-row>
-        <v-col cols="12">
-          <div class="text-body-1 highlight">{{ labels.instruction2 }}</div>
-        </v-col>
-      </v-row>
--->
-
-      <v-row>
+      <v-row class="px-10">
         <v-col v-for="(state, index) in states"
                 :key="index"
-               cols="3">
+               :class="index >= states.length - 1 ? 'shrink' : ''"
+               >
           <v-row style="align-items: center;">
             <v-col class="shrink">
-              <v-chip :color="getStateColor(state)" >
+              <v-chip :color="getStateColor(state)" small>
                 {{ state.name }}
               </v-chip>
             </v-col>
 
             <v-col v-if="index < states.length - 1"
-                   class="pa-0"
-                    style="height: 5px; max-width: 40px; ">
-              <v-progress-linear style="width: 40px;"
-                                 :color="getIndicatorColor(state)"
+                   class="pa-0" >
+              <v-progress-linear :color="getIndicatorColor(state)"
                                  :indeterminate="getIndicatorLoading(state)"
                                  :value="getIndicatorValue(state)"
               />
               </v-col>
           </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12">
+          <div class="text-body-1">{{ labels.instruction2 }}</div>
         </v-col>
       </v-row>
 
@@ -172,28 +169,18 @@ export default {
         this.currentState =this.states[index];
       }
 
-/*
-      const next = index + 1;
-
-      if (autoNextPending && next <= this.states.length - 1) {
-        this.states[next].state = 'pending';
-      }
-*/
     },
   },
   data: () => ({
     labels: {
       title: 'Create Resource from File',
       instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file',
-      instruction2: 'After uploading make sure to rename the resources!',
+      instruction2: 'After uploading make sure to rename the resource and add a description.',
     },
     resourceId: null,
     fileName: null,
     fileSize: null,
-    currentState: {
-      id: UPLOAD_STATE_UPLOAD_PROGRESS,
-      name: 'uploading file',
-    },
+    currentState: null,
     states: [
       {
         id: UPLOAD_STATE_RESOURCE_CREATED,
@@ -204,12 +191,8 @@ export default {
         name: 'upload started',
       },
       {
-        id: UPLOAD_STATE_UPLOAD_PROGRESS,
-        name: 'uploading file',
-      },
-      {
-        id: UPLOAD_STATE_RESOURCE_RENAMED,
-        name: 'renamed resource',
+        id: UPLOAD_STATE_UPLOAD_COMPLETED,
+        name: 'upload finished',
       },
     ],
   }),

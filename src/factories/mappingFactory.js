@@ -30,6 +30,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
@@ -46,6 +47,7 @@ import {
 
 import { format, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -549,6 +551,12 @@ function populateEditingData(commit, snakeCaseJSON) {
 
   let stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  enhanceElementsWithStrategyEvents(
+    resourceData.resources,
+    SELECT_EDITING_RESOURCE_PROPERTY,
+    true,
+  );
 
   commitEditingData(commit, stepKey, resourceData);
   dataObject.resourceData = resourceData;
