@@ -470,19 +470,19 @@ export default {
       step.error = null;
       return true;
     },
-    showSnackMessage(status, statusMessage, message) {
+    showSnackMessage({ status, statusMessage, details }) {
 
       const id = this.currentEditingContent?.id || null;
       const name = this.currentEditingContent?.name || null;
 
       if (id && name) {
         statusMessage = statusMessage.replace(id, `"${name}"`);
-        message = message.replace(id, `"${name}"`);
+        details = details.replace(id, `"${name}"`);
       }
 
       const predefinedErrors = this.backendErrorList[status];
       this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${statusMessage} ${message} ${predefinedErrors?.details || ''}`;
+      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details || ''}`;
 
       this.showSnack = true;
     },
@@ -502,7 +502,8 @@ export default {
     },
     authorsMap() {
 
-      if (this.authorsMap && Object.keys(this.authorsMap).length > 0) {
+      if (this.currentEditingContent
+        && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
 
         const { categoryCards } = this.$store.getters;
 

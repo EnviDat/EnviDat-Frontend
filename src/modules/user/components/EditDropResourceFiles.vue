@@ -86,8 +86,8 @@ import {
   eventBus,
   UPLOAD_STATE_RESET,
   UPLOAD_STATE_RESOURCE_CREATED,
-  UPLOAD_STATE_RESOURCE_RENAMED,
-  UPLOAD_STATE_UPLOAD_COMPLETED, UPLOAD_STATE_UPLOAD_PROGRESS,
+  UPLOAD_STATE_RESOURCE_UPDATED,
+  UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
 
@@ -102,7 +102,7 @@ export default {
     eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.on(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
     eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-    eventBus.on(UPLOAD_STATE_RESOURCE_RENAMED, this.changeState);
+    eventBus.on(UPLOAD_STATE_RESOURCE_UPDATED, this.changeState);
   },
   mounted() {
   },
@@ -111,7 +111,7 @@ export default {
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-    eventBus.off(UPLOAD_STATE_RESOURCE_RENAMED, this.changeState);
+    eventBus.off(UPLOAD_STATE_RESOURCE_UPDATED, this.changeState);
 
     destoryUppyInstance();
   },
@@ -193,6 +193,10 @@ export default {
       {
         id: UPLOAD_STATE_UPLOAD_COMPLETED,
         name: 'upload finished',
+      },
+      {
+        id: UPLOAD_STATE_RESOURCE_UPDATED,
+        name: 'resource updated',
       },
     ],
   }),

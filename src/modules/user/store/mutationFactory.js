@@ -14,6 +14,10 @@
 
 import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
 
+import {
+  EDITMETADATA_NETWORK_ERROR,
+  eventBus,
+} from '@/factories/eventBus';
 import { VALIDATION_ERROR } from './userMutationsConsts';
 
 
@@ -59,24 +63,17 @@ export function extractError(store, reason, errorProperty = 'error') {
 export function createErrorMessage(reason) {
   let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
   let details = '';
+  let status = 500;
 
   if (reason?.response) {
 
-/*
-    if (reason.response.status !== 200) {
-      eventBus.emit(EDITMETADATA_NETWORK_ERROR,
-          reason.response.status || -1,
-          reason.response.statusText || '',
-          reason.response.data?.error?.message || '');
-    }
-*/
-
+    status = reason.response.status;
     msg = 'Saving failed ';
-    if (reason.response.status === 403) {
+    if (status === 403) {
       msg += ' you are not authorized';
     }
 
-    if (reason.response.status === 409) {
+    if (status === 409) {
       msg += ' Validation Error';
     }
 
@@ -106,6 +103,13 @@ export function createErrorMessage(reason) {
   } else if (reason?.message) {
     details = reason.message;
   }
+
+
+  eventBus.emit(EDITMETADATA_NETWORK_ERROR, {
+    status,
+    statusMessage: msg || '',
+    details: details || '',
+  });
 
   return {
     message: msg,

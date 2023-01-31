@@ -90,22 +90,39 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_DATA_RESOURCE]: [
     ['metadataId','package_id'],
+    ['cacheLastUpdated','cache_last_updated'],
+    ['cacheUrl','cache_url'],
+    ['created','created'],
+    ['description','description'],
+    ['doi','doi'],
+    ['format','format'],
+    ['hash','hash'],
+    ['id','id'],
+    ['lastModified','last_modified'],
+    ['mimetype','mimetype'],
+    ['mimetypeInner','mimetype_inner'],
+    ['metadataModified','metadata_modified'],
+    ['multipartName','multipart_name'],
+    ['name','name'],
+    ['packageId','package_id'],
+    ['position','position'],
+    ['publicationState','publication_state'],
+    ['restricted','restricted'],
+    /*
+        ['restrictedLevel','restricted-level'],
+        ['restrictedAllowedUsers','restricted-allowed_users'],
+        ['restrictedSharedSecret','restricted-shared_secret'],
+    */
+    ['resourceSize','resource_size'],
+    ['resourceType','resource_type'],
+    /*
+        ['resourceSizeValue','resource_size-size_value'],
+        ['resourceSizeUnits','resource_size-size_units'],
+    */
+    ['size','size'],
+    ['state','state'],
     ['url','url'],
     ['urlType','url_type'],
-    ['description','description'],
-    ['id','id'],
-    ['mimetypeInner','mimetype_inner'],
-    ['mimetype','mimetype'],
-    ['name','name'],
-    ['size','size'],
-    ['doi','doi'],
-    ['publicationState','publication_state'],
-    ['multipartName','multipart_name'],
-    ['resourceSizeValue','resource_size-size_value'],
-    ['resourceSizeUnits','resource_size-size_units'],
-    ['restrictedLevel','restricted-level'],
-    ['restrictedAllowedUsers','restricted-allowed_users'],
-    ['restrictedSharedSecret','restricted-shared_secret'],
   ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
@@ -709,6 +726,18 @@ function cleanAuthorsForBackend(authors) {
   return bAuthors;
 }
 
+function cleanResourcesForBackend(resources) {
+
+  const bResources = [];
+  for (let i = 0; i < resources.length; i++) {
+    const res = resources[i];
+    const bRes = getBackendJSON(EDITMETADATA_DATA_RESOURCE, res);
+    bResources.push(bRes);
+  }
+
+  return bResources;
+}
+
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_AUTHOR_LIST,
@@ -723,7 +752,9 @@ export function mapFrontendToBackend(stepKey, frontendData) {
   // create a local copy to avoid mutation of vuex store objects / properties
   const localData = { ...frontendData };
 
-  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+  if (stepKey === EDITMETADATA_DATA_RESOURCES) {
+    localData.resources = cleanResourcesForBackend(localData.resources);
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
     localData.authors = cleanAuthorsForBackend(localData.authors);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
     localData.dates = mapDatesForBackend(localData.dates);

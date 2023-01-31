@@ -64,6 +64,7 @@ const sleep = (milliseconds) =>
 export default {
   async [METADATA_EDITING_SAVE_RESOURCE]({ commit, dispatch }, { stepKey, data, id }) {
     const resource = data;
+    // saving of this resource into the list of resources happens here:
     commit(METADATA_EDITING_SAVE_RESOURCE, resource);
 
     const metadataId = id;
@@ -73,7 +74,7 @@ export default {
     // call the action to save it in the backend
     await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
       stepKey: EDITMETADATA_DATA_RESOURCES,
-      data: resources,
+      data: { resources },
       id: metadataId,
     });
 
@@ -96,7 +97,7 @@ export default {
       data: newAuthorList,
       id });
   },
-  async METADATA_EDITING_LOAD_DATASET({ dispatch }, metadataId) {
+  async [METADATA_EDITING_LOAD_DATASET]({ dispatch }, metadataId) {
 
     // defining the commitMethod has the effect that mutations of this
     // module are being used with the output of the action from the metadata module

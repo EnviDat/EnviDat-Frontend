@@ -14,17 +14,9 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import { mapFrontendToBackend, populateEditingComponents } from '@/factories/mappingFactory';
-
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-import { LOAD_METADATA_CONTENT_BY_ID, METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-
-import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
-
 import {
-  ACTION_METADATA_EDITING_PATCH_DATASET,
-  ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
   ACTION_USER_COLLABORATOR_DATASETS,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
@@ -40,7 +32,6 @@ import {
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_NAMESPACE,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata

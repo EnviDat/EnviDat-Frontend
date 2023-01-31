@@ -89,63 +89,6 @@ function extractError(store, reason, errorProperty = 'error') {
   store._vm.$set(store.state, errorProperty, msg);
 }
 
-function createErrorMessage(reason) {
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
-  let details = '';
-
-  if (reason?.response) {
-
-/*
-    if (reason.response.status !== 200) {
-      eventBus.emit(EDITMETADATA_NETWORK_ERROR,
-          reason.response.status || -1,
-          reason.response.statusText || '',
-          reason.response.data?.error?.message || '');
-    }
-*/
-
-    msg = 'Saving failed ';
-    if (reason.response.status === 403) {
-      msg += ' you are not authorized';
-    }
-
-    if (reason.response.status === 409) {
-      msg += ' Validation Error';
-    }
-
-    const errorObj = reason.response.data?.error || reason.response.error || null;
-
-    if (errorObj) {
-
-      if (errorObj.__type) {
-        details += `${errorObj.__type}: `;
-      }
-
-      if (errorObj.message) {
-        details += errorObj.message;
-      } else if (errorObj.__junk) {
-        details += errorObj.__junk;
-      } else {
-        const errKeys = Object.keys(errorObj);
-        for (let i = 0; i < errKeys.length; i++) {
-          const key = errKeys[i];
-          details += `${key} ${errorObj[key]} `;
-        }
-      }
-
-    } else {
-      details += reason.response.statusText;
-    }
-  } else if (reason?.message) {
-    details = reason.message;
-  }
-
-  return {
-    message: msg,
-    details,
-  };
-}
-
 function resetErrorObject(state) {
   state.error = null;
   state.errorType = '';

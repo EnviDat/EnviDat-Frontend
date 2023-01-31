@@ -21,7 +21,9 @@ import Tus from '@uppy/tus';
 */
 
 import {
-  METADATA_CREATION_RESOURCE, METADATA_DELETE_RESOURCE,
+  METADATA_CREATION_RESOURCE,
+  METADATA_DELETE_RESOURCE,
+  METADATA_EDITING_SAVE_RESOURCE,
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
   USER_NAMESPACE,
@@ -29,10 +31,11 @@ import {
 
 import { urlRewrite } from '@/factories/apiFactory';
 import {
+  EDITMETADATA_DATA_RESOURCE,
   eventBus,
   UPLOAD_ERROR,
   UPLOAD_STATE_RESET,
-  UPLOAD_STATE_RESOURCE_CREATED,
+  UPLOAD_STATE_RESOURCE_CREATED, UPLOAD_STATE_RESOURCE_UPDATED,
 } from '@/factories/eventBus';
 
 
@@ -186,6 +189,29 @@ export async function requestPresignedUrl(file, partData) {
   }
 }
 
+export async function updateResourceWithFileUrl(fileUrl, store) {
+
+  const metadataId = store?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+  const newRes = store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+  // create a local copy because it might come directly from the $store
+  const resource = {
+    ...newRes,
+    url: fileUrl,
+  };
+
+  // let the regular saving of a resource take over, instead
+  // eventBus.emit(SAVE_EDITING_RESOURCE, resource);
+
+  await store?.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, {
+    object: EDITMETADATA_DATA_RESOURCE,
+    data: resource,
+    id: metadataId,
+  });
+
+  eventBus.emit(UPLOAD_STATE_RESOURCE_UPDATED, { id: UPLOAD_STATE_RESOURCE_UPDATED });
+}
+
 export async function completeMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_finish_multipart';
@@ -200,8 +226,9 @@ export async function completeMultipart(file, uploadData) {
 
   try {
     const res = await axios.post(url, payload);
+    const fileUrl = res.data?.result?.url || null
 
-    return { location: await res.data.result.url };
+    return { location: fileUrl };
   } catch (error) {
     console.error(`Multipart completion failed: ${error}`);
     return error;

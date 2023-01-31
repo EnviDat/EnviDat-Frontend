@@ -69,7 +69,7 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   UPLOAD_ERROR,
-  UPLOAD_STATE_RESOURCE_RENAMED,
+  UPLOAD_STATE_RESOURCE_UPDATED,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
@@ -88,7 +88,13 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 
-import { getUppyInstance, subscribeOnUppyEvent, unSubscribeOnUppyEvent } from '@/factories/uploadFactory';
+import {
+  getUppyInstance,
+  subscribeOnUppyEvent,
+  unSubscribeOnUppyEvent,
+  updateResourceWithFileUrl,
+} from '@/factories/uploadFactory';
+
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
@@ -192,8 +198,10 @@ export default {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
+/*
       console.log(`Starting upload ${id} for files ${fileIDs}`);
-      // this.uploadProgessText = `Starting upload file ${fileIDs}`;
+*/
+
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
 
@@ -201,22 +209,29 @@ export default {
     },
     uploadProgress(progress) {
       // console.log(`upload progress: ${progress}`);
+/*
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
+*/
 
       eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
     },
-    uploadCompleted(result) {
+    async uploadCompleted(result) {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
+/*
       console.log('successful files:', result.successful)
       console.log('failed files:', result.failed)
+*/
 
       let message = '';
+      let uploadURL = null;
       if (oks > 0) {
         message += `${oks} uploads successful`;
         this.uploadProgressIcon = 'check_circle';
+
+        uploadURL = result.successful[0]?.uploadURL || null;
       }
       if (fails > 0) {
         message += `${fails} failed uploads`;
@@ -228,6 +243,19 @@ export default {
       this.uploadProgessText = message;
 
 
+      if (uploadURL) {
+        await updateResourceWithFileUrl(uploadURL, this.$store);
+/*
+        const resources = this.$store?.getters[`${USER_NAMESPACE}/resources`];
+
+        console.log('after updateResourceWithFileUrl')
+        console.log(resources)
+*/
+      }
+
+      // reset uppy to be able to upload another file
+      this.resetUppy()
+
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
@@ -235,21 +263,11 @@ export default {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
       });
 
-      /*
-            if (newRes) {
-              this.renameResource(newRes);
-            }
-      */
-
-/*
-      // preselect it for the user to directly edit it
-      if(newRes) {
-        this.selectResourceAndUpdateList(newRes);
-      }
-*/
     },
     uploadError(error) {
+/*
       console.log('failed files:', error)
+*/
 
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
@@ -258,6 +276,15 @@ export default {
       uppy.cancelAll({ reason: error});
 
       eventBus.emit(UPLOAD_ERROR, { error });
+    },
+    resetUppy() {
+      const uppy = getUppyInstance();
+      const files = uppy.getFiles();
+      if (files.length === 1) {
+        uppy.removeFile(files[0].id);
+      } else if(files.length > 1) {
+        uppy.cancelAll();
+      }
     },
     async createResourceFromUrl(url) {
       // console.log(`createResourceFromUrl ${url}`);
@@ -302,7 +329,7 @@ export default {
 
       eventBus.emit(SAVE_EDITING_RESOURCE, resource);
 
-      eventBus.emit(UPLOAD_STATE_RESOURCE_RENAMED, { id: UPLOAD_STATE_RESOURCE_RENAMED });
+      eventBus.emit(UPLOAD_STATE_RESOURCE_UPDATED, { id: UPLOAD_STATE_RESOURCE_UPDATED });
     },
     selectResourceAndUpdateList(resource) {
 
