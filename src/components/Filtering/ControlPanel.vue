@@ -135,13 +135,9 @@ export default {
       return this.enabledControls?.length > 0;
     },
     controlsHeight() {
-      if (this.compactLayout) {
+      if (this.compactLayout || !this.fixedHeight) {
         return '36px';
-      }
-
-      if (!this.fixedHeight) {
-        return '100%';
-      }
+      } 
 
       return `${this.fixedHeight}px`;
     },
