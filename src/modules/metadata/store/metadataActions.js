@@ -31,9 +31,6 @@ import {
   FILTER_METADATA_SUCCESS,
   FILTER_METADATA_ERROR,
   METADATA_NAMESPACE,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -387,34 +384,6 @@ export default {
     } catch (error) {
       commit(FILTER_METADATA_ERROR, error);
     }
-  },
-  [PUBLICATIONS_RESOLVE_IDS]({ commit }, { idsToResolve, resolveBaseUrl }) {
-    commit(PUBLICATIONS_RESOLVE_IDS);
-
-    const currentIdsToResolve = idsToResolve;
-    const requests = [];
-    currentIdsToResolve.forEach((id) => {
-      const url = resolveBaseUrl + id;
-      requests.push(axios.get(url));
-    });
-
-    Promise.all(requests)
-      .then((responses) => {
-        let resolvedPublications = {};
-
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          resolvedPublications = { ...resolvedPublications, ...response.data };
-        }
-
-        commit(PUBLICATIONS_RESOLVE_IDS_SUCCESS, {
-          idsToResolve: currentIdsToResolve,
-          resolvedPublications,
-        });
-      })
-      .catch((error) => {
-        commit(PUBLICATIONS_RESOLVE_IDS_ERROR, error);
-      });
   },
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
 

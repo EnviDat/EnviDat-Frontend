@@ -86,10 +86,6 @@ const initialState = {
   aboutPageBackRoute: null,
   asciiDead: '&#8224;',
   authorPassedInfo: 'Sadly this author has passed away.',
-  publicationsResolvingIds: false,
-  publicationsResolvedIds: {},
-  extractingIds: false,
-  idsToResolve: [],
   existingAuthors: [],
   existingKeywords: [],
 };
@@ -143,10 +139,6 @@ export const metadata = {
     aboutPageBackRoute: state => state.aboutPageBackRoute,
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
-    publicationsResolvedIdsSize: state =>
-      state.publicationsResolvedIds !== null
-        ? Object.keys(state.publicationsResolvedIds).length
-        : 0,
     existingAuthors: state => state.existingAuthors,
     existingKeywords: state => state.existingKeywords,
     getCitationListFromIds: state => datasetIds => {

@@ -120,7 +120,6 @@ import {
   CLEAR_SEARCH_METADATA,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
-  PUBLICATIONS_RESOLVE_IDS,
 } from '@/store/metadataMutationsConsts';
 import {
   createBody,
@@ -243,12 +242,6 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(METADATA_NAMESPACE, [
-      'extractingIds',
-      'idsToResolve',
-      'publicationsResolvingIds',
-      'publicationsResolvedIds',
-    ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -262,7 +255,6 @@ export default {
       appScrollPosition: 'appScrollPosition',
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
-      publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
     hasGcnetStationConfig() {
       return this.configInfos?.stationsConfigUrl !== null;
@@ -647,8 +639,6 @@ export default {
       this.$set(components.MetadataPublications, 'genericProps', {
         ...this.publications,
         metadataConfig: this.metadataConfig,
-        extractingIds: this.extractingIds,
-        publicationsResolvingIds: this.publicationsResolvingIds,
       });
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
@@ -802,47 +792,6 @@ export default {
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {
         this.setGeoServiceLayers(null, null, null);
-      }
-    },
-    /**
-     * @description watcher on idsToResolve start resolving them, if not already in the works
-     */
-    idsToResolve() {
-      if (!this.extractingIds
-          && this.idsToResolve?.length > 0
-          && !this.publicationsResolvingIds) {
-
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
-          {
-            idsToResolve: this.idsToResolve,
-            resolveBaseUrl: this.publicationsConfig?.resolveBaseUrl,
-          },
-        );
-      }
-    },
-    /**
-     * @description watcher on publicationsResolvedIds start replacing the text with the resolved texts based on the ids
-     */
-    publicationsResolvedIds() {
-      if ( !this.publicationsResolvingIds
-        && this.publicationsResolvedIdsSize > 0
-        && this.idsToResolve?.length > 0 ) {
-
-        let publicationsText = this.publications?.text;
-
-        if (publicationsText) {
-          const keys = Object.keys(this.publicationsResolvedIds);
-
-          keys.forEach((id) => {
-            const text = this.publicationsResolvedIds[id];
-            if (text) {
-              publicationsText = publicationsText.replace(id, text);
-            }
-          });
-
-          this.publications.text = publicationsText;
-        }
       }
     },
     /**
