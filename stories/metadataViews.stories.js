@@ -390,7 +390,7 @@ export const MetadataLocationViews = () => ({
   }),
 });
 
-export const MetadataPublicationsViews = () => ({
+export const MetadataRelatedPublicationsViews = () => ({
   components: { MetadataPublications },
   template: `
   <v-row >
@@ -417,12 +417,20 @@ export const MetadataPublicationsViews = () => ({
       <metadata-publications v-bind="publications3"
                              :allDatasets="allDatasets" />
     </v-col>
+
+    <v-col cols="8" class="py-3">
+      <metadata-publications v-bind="publications4"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
   
   </v-row>
   `,
   updated() {
   },
   data: () => ({
+    maxTextLength: 1200,
     genericProp: {
       ...publications1,
       showPlaceholder: false,
@@ -437,6 +445,9 @@ export const MetadataPublicationsViews = () => ({
     },
     publications3: {
       text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n',
+    },
+    publications4: {
+      text: `https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 `,
     },
     allDatasets: envidat_packages.result,
     genericPropsPublications: {

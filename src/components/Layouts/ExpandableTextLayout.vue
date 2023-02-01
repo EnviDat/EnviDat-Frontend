@@ -99,10 +99,14 @@ export default {
       default: 'red',
     },
     cardClass: String,
+    sanitizeHTML: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     markdownText() {
-      return renderMarkdown(this.fullText, false);
+      return renderMarkdown(this.fullText, this.sanitizeHTML);
     },
     fullText() {
       if (this.text) {

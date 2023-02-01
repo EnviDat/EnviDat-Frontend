@@ -1016,29 +1016,48 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
   );
 }
 
-export function extractPIDsFromText(text, idDelimiter = ':', idPrefix = '*') {
+/**
+ * extracts all urls from a string
+ * @param {String}text
+ * @returns {*|*[]}
+ */
+export function extractUrlsFromText(text) {
   if (!text) {
     return null;
   }
-  // const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
-  // \**[a-zA-Z]+:\d+
-  // eslint-disable-next-line no-useless-escape
-  const regExStr = `\\${idPrefix}*[a-zA-Z]+${idDelimiter}\\d+`;
+
+  // const regExStr = '/[A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+';
+  const regExStr = '[A-Za-z]+://[A-Za-z0-9-_]+.[A-Za-z0-9-_:%&;?#/.=]+';
   const regEx = new RegExp(regExStr, 'gm');
-  const validIds = text.match(regEx) || [];
-  // console.log(`hasValidIds ${validIds?.length}`);
 
-  const PIDs = [];
+  return text.match(regEx) || [];
+}
 
-  validIds.forEach((match) => {
-    let idOnly = match;
-    if (idPrefix) {
-      idOnly = idOnly.replace(idPrefix, '');
+/**
+ *
+ * @param urls
+ * @param idDelimiter
+ * @returns {null|Map<string, string>} Map keys are the url with the PID as value
+ */
+export function extractPIDsFromUrls(urls, idDelimiter = ':') {
+  if (!urls || urls?.length <= 0) {
+    return null;
+  }
+
+  // regEx to determine if any url contains a PID from DORA
+  // /[a-zA-Z]+:\d+/g
+  const regExStr = `[a-zA-Z]+${idDelimiter}\\d+`;
+  const regEx = new RegExp(regExStr, 'g');
+  const pidMap = new Map();
+
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    const validIds = url.match(regEx);
+
+    if (validIds?.length > 0) {
+      pidMap.set(url, validIds[0]);
     }
+  }
 
-    PIDs.push(idOnly.trim());
-    // console.log(`Found match, group ${groupIndex}: ${match}`);
-  });
-
-  return PIDs;
+  return pidMap;
 }

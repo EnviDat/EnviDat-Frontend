@@ -1,10 +1,12 @@
 <template id="MetadataPublications">
   <expandable-text-layout
     :title="METADATA_PUBLICATIONS_TITLE"
-    :text="replacedText || resolvedCitations"
+    :text="replacedText || resolvedCitations(text)"
     :showPlaceholder="loading"
     :emptyTextColor="emptyTextColor"
     :emptyText="emptyText"
+    :maxTextLength="maxTextLength"
+    :sanitizeHTML="false"
     class="relatedPubList"
   />
 </template>
@@ -26,7 +28,10 @@
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import { mapState } from 'vuex';
-import { extractPIDsFromText } from '@/factories/metaDataFactory';
+import {
+  extractPIDsFromUrls,
+  extractUrlsFromText,
+} from '@/factories/metaDataFactory';
 import axios from 'axios';
 
 export default {
@@ -79,31 +84,45 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return 'https://www.envidat.ch/dora/';
-      // return this.publicationsConfig?.resolveBaseUrl;
+      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids/';
     },
-    resolvedCitations(){
-      const pids = extractPIDsFromText(this.text);
-
-      if (pids?.length > 0) {
-        this.resolvePids(this.text, pids);
-      }
-
-      return this.text;
+    extractedUrls() {
+      return extractUrlsFromText(this.text);
+    },
+    extractedPIDMap() {
+      return extractPIDsFromUrls(this.extractedUrls);
     },
   },
   methods: {
-    async resolvePids(text, pids) {
+    resolvedCitations(text){
 
+      if (!this.isResolving && this.extractedPIDMap?.size > 0) {
+        this.resolvePIDs(text, this.extractedPIDMap);
+      }
+
+      return text;
+    },
+    /**
+     * 
+     * @param text
+     * @param {null|Map<string, string>} pidMap
+     * @returns {Promise<void>}
+     */
+    async resolvePIDs(text, pidMap) {
+      if (!text || !pidMap) {
+        return;
+      }
+
+      this.replaceMap = {};
       this.resolveError = null;
       this.replacedText = null;
       let newText = null;
       this.isResolving = true;
 
       const requests = [];
-      pids.forEach((id) => {
-        const url = this.resolveBaseUrl + id;
-        requests.push(axios.get(url));
+      pidMap.forEach((pid, url) => {
+        const resolveServiceUrl = this.resolveBaseUrl + pid;
+        requests.push(axios.get(resolveServiceUrl));
       });
 
       try {
@@ -115,8 +134,8 @@ export default {
           resolvedPubs = { ...resolvedPubs, ...response.data };
         }
 
-        const resolvedPublications = this.resolvedCitationText(resolvedPubs, pids);
-        newText = this.replacePidsInText(text, resolvedPublications, pids);
+        const citationMap = this.resolvedCitationText(resolvedPubs, pidMap);
+        newText = this.replacePIDsInText(text, citationMap, pidMap);
 
       } catch (e) {
         this.resolveError = e;
@@ -126,29 +145,43 @@ export default {
 
       this.replacedText = newText;
     },
-    resolvedCitationText(resolvedPubs, pids) {
-      const newPubs = {};
+    /**
+     *
+     * @param resolvedPubs
+     * @param pidMap
+     * @returns {Map<any, any>} Map keys are the PID with the citation text as value
+     */
+    resolvedCitationText(resolvedPubs, pidMap) {
+      const citationMap = new Map();
 
-      pids.forEach((id) => {
-        const resolvedObject = resolvedPubs[id];
-        const text = resolvedObject?.citation?.ACS;
-        if (text) {
-          newPubs[id] = text;
+      pidMap.forEach((pid, url) => {
+        const resolvedObject = resolvedPubs[pid];
+        const acsCitation = resolvedObject?.citation?.ACS;
+        if (acsCitation) {
+          citationMap.set(pid, acsCitation);
         }
       });
 
-      return newPubs;
+      return citationMap;
     },
-    replacePidsInText(text, resolvedPublications, pids) {
+    /**
+     *
+     * @param text
+     * @param {Map<any, any>} citationMap Map keys are the PID with the citation text as value
+     * @param {Map<string, string>} pidMap Map keys are the url with the PID as value
+     * @returns {*}
+     */
+    replacePIDsInText(text, citationMap, pidMap) {
 
       let newText = text;
 
       if (text) {
 
-        pids.forEach((id) => {
-          const citation = resolvedPublications[id];
+        pidMap.forEach((pid, url) => {
+          const citation = citationMap.get(pid);
           if (citation) {
-            newText = newText.replace(id, citation);
+            // newText = `<p>${newText.replace(url, citation)}  </p>`;
+            newText = newText.replace(url, `${citation} \n`);
           }
         });
 
@@ -184,6 +217,7 @@ export default {
     isResolving: false,
     resolveError: null,
     replacedText: null,
+    replaceMap: {},
   }),
 };
 </script>
