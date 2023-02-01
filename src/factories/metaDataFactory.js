@@ -262,18 +262,18 @@ export function createCitation(dataset) {
 
   let text = `${authors.trim()} `;
 
-  if (publication && publication.publication_year) {
-    text += `(${publication.publication_year}). `;
-  }
-
   text += `${dataset.title}. `;
 
   if (publication && publication.publisher) {
-    text += ` ${publication.publisher}. `;
+    text += ` <span style="font-style: italic;" >${publication.publisher}</span> `;
+  }
+
+  if (publication && publication.publication_year) {
+    text += ` <span style="font-weight: bold;" >${publication.publication_year}</span>, `;
   }
 
   if (dataset.doi) {
-    text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
+    text += ` <a href="https://www.doi.org/${dataset.doi}" target="_blank">https://www.doi.org/${dataset.doi}</a>. `;
   }
 
   const ckanDomain = process.env.VITE_ENVIDAT_PROXY;

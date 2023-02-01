@@ -7,6 +7,7 @@
     :emptyTextColor="emptyTextColor"
     :emptyText="emptyText"
     :maxTextLength="maxTextLength"
+    :sanitizeHTML="false"
     class="relatedPubList"
   />
 </template>
