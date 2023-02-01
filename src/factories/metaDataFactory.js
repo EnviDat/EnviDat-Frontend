@@ -260,9 +260,11 @@ export function createCitation(dataset) {
     publication = JSON.parse(dataset.publication);
   }
 
+  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+
   let text = `${authors.trim()} `;
 
-  text += `${dataset.title}. `;
+  text += ` <span style="font-weight: bold;" >${dataset.title}.</span> `;
 
   if (publication && publication.publisher) {
     text += ` <span style="font-style: italic;" >${publication.publisher}</span> `;
@@ -276,7 +278,7 @@ export function createCitation(dataset) {
     text += ` <a href="https://www.doi.org/${dataset.doi}" target="_blank">https://www.doi.org/${dataset.doi}</a>. `;
   }
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
 
   return {
     id: dataset.id,
