@@ -102,7 +102,7 @@ export default {
   },
   computed: {
     markdownText() {
-      return renderMarkdown(this.fullText);
+      return renderMarkdown(this.fullText, false);
     },
     fullText() {
       if (this.text) {

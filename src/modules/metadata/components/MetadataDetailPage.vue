@@ -39,6 +39,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
+                     v-bind="entry.genericProps"
                      :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
@@ -53,6 +54,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
+                     v-bind="entry.genericProps"
                      :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
@@ -116,7 +118,6 @@ import {
 import {
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
-  EXTRACT_IDS_FROM_TEXT,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
   PUBLICATIONS_RESOLVE_IDS,
@@ -580,7 +581,6 @@ export default {
         this.details = createDetails(currentContent);
 
         this.publications = createPublications(currentContent);
-        this.startExtractingIds();
 
         this.relatedDatasets = createRelatedDatasets(currentContent);
 
@@ -645,14 +645,14 @@ export default {
       });
 
       this.$set(components.MetadataPublications, 'genericProps', {
-        publications: this.publications,
+        ...this.publications,
         metadataConfig: this.metadataConfig,
         extractingIds: this.extractingIds,
         publicationsResolvingIds: this.publicationsResolvingIds,
       });
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
-        datasets: this.relatedDatasets,
+        ...this.relatedDatasets,
       });
 
       this.$set(components.MetadataFunding, 'genericProps', {
@@ -692,15 +692,6 @@ export default {
         this.$options.components.MicroChartList,
         this.stationsConfig,
       );
-    },
-    startExtractingIds() {
-      if (this.publicationsConfig?.resolveIds && !this.extractingIds) {
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${EXTRACT_IDS_FROM_TEXT}`, {
-          text: this.publications?.text,
-          idDelimiter: this.publicationsConfig?.idDelimiter,
-          idPrefix: this.publicationsConfig?.idPrefix,
-        });
-      }
     },
     /**
      * @description

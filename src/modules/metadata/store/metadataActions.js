@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * metadata store actions
  *
@@ -33,9 +34,6 @@ import {
   PUBLICATIONS_RESOLVE_IDS,
   PUBLICATIONS_RESOLVE_IDS_SUCCESS,
   PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -417,36 +415,6 @@ export default {
       .catch((error) => {
         commit(PUBLICATIONS_RESOLVE_IDS_ERROR, error);
       });
-  },
-  [EXTRACT_IDS_FROM_TEXT]({ commit }, { text, idDelimiter = '', idPrefix = '' }) {
-
-    if (text) {
-
-      commit(EXTRACT_IDS_FROM_TEXT);
-
-      try {
-        const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
-        const regEx = new RegExp(regExStr, 'gm');
-        const hasValidIds = text.match(regEx) || [];
-        // console.log(`hasValidIds ${hasValidIds?.length}`);
-
-        const ids = [];
-
-        hasValidIds.forEach((match) => {
-          let idOnly = match;
-          if (idPrefix) {
-            idOnly = idOnly.replace(idPrefix, '');
-          }
-
-          ids.push(idOnly.trim());
-          // console.log(`Found match, group ${groupIndex}: ${match}`);
-        });
-
-        commit(EXTRACT_IDS_FROM_TEXT_SUCCESS, ids);
-      } catch (e) {
-        commit(EXTRACT_IDS_FROM_TEXT_ERROR, e);
-      }
-    }
   },
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
 

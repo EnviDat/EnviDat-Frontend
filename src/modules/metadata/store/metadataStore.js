@@ -13,7 +13,7 @@
 
 // import createPersist from 'vuex-localstorage';
 
-import { getTagColor } from '@/factories/metaDataFactory';
+import { getCitationList, getTagColor } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
 import actions from './metadataActions';
@@ -149,6 +149,11 @@ export const metadata = {
         : 0,
     existingAuthors: state => state.existingAuthors,
     existingKeywords: state => state.existingKeywords,
+    getCitationListFromIds: state => datasetIds => {
+      const datasets = Object.values(state.metadatasContent);
+
+      return getCitationList(datasets, datasetIds);
+    },
   },
   mutations,
   actions,

@@ -39,9 +39,6 @@ import {
   PUBLICATIONS_RESOLVE_IDS,
   PUBLICATIONS_RESOLVE_IDS_SUCCESS,
   PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -254,20 +251,6 @@ export default {
     state.publicationsResolvingIds = false;
 
     const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while resolving the ids: ${reason.message}.`, reason.stack);
-    this.commit(ADD_USER_NOTIFICATION, errObj);
-  },
-  [EXTRACT_IDS_FROM_TEXT](state) {
-    state.extractingIds = true;
-    state.idsToResolve = [];
-  },
-  [EXTRACT_IDS_FROM_TEXT_SUCCESS](state, payload) {
-    state.extractingIds = false;
-    state.idsToResolve = payload;
-  },
-  [EXTRACT_IDS_FROM_TEXT_ERROR](state, reason) {
-    state.extractingIds = false;
-
-    const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 /*

@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataRelatedDatasets :genericProps="datasetObject" />
+          <MetadataRelatedDatasets v-bind="datasetObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -148,10 +148,8 @@ export default {
     },
     datasetObject() {
       return {
-        datasets: {
-          text: this.previewRelatedDatasetsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewRelatedDatasetsText,
+        maxTextLength: 2000,
       };
     },
     validations() {

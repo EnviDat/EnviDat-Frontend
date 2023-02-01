@@ -17,14 +17,7 @@ import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
 import { localIdProperty } from '@/factories/strategyFactory';
-import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  METEO,
-  SNOW,
-} from '@/store/categoriesConsts';
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -220,7 +213,7 @@ export function createRelatedDatasets(dataset) {
 
   return {
     text: dataset.related_datasets,
-    maxTextLength: 500,
+    maxTextLength: 1000,
   };
 }
 
@@ -294,6 +287,23 @@ export function createCitation(dataset) {
     citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
     citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
   };
+}
+
+export function getCitationList(datasets, datasetIds) {
+  if (!datasets || datasets.length <= 0) {
+    return null;
+  }
+
+  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name || datasetIds.includes(d.id)));
+
+  const citations = [];
+
+  for (let i = 0; i < datasetMatches.length; i++) {
+    const c = createCitation(datasetMatches[i]);
+    citations.push(c);
+  }
+
+  return citations;
 }
 
 export function createPublishingInfo(dataset) {
@@ -1004,4 +1014,31 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
   return arrOfObjects.sort((a, b) =>
     b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
   );
+}
+
+export function extractPIDsFromText(text, idDelimiter = ':', idPrefix = '*') {
+  if (!text) {
+    return null;
+  }
+  // const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
+  // \**[a-zA-Z]+:\d+
+  // eslint-disable-next-line no-useless-escape
+  const regExStr = `\\${idPrefix}*[a-zA-Z]+${idDelimiter}\\d+`;
+  const regEx = new RegExp(regExStr, 'gm');
+  const validIds = text.match(regEx) || [];
+  // console.log(`hasValidIds ${validIds?.length}`);
+
+  const PIDs = [];
+
+  validIds.forEach((match) => {
+    let idOnly = match;
+    if (idPrefix) {
+      idOnly = idOnly.replace(idPrefix, '');
+    }
+
+    PIDs.push(idOnly.trim());
+    // console.log(`Found match, group ${groupIndex}: ${match}`);
+  });
+
+  return PIDs;
 }
