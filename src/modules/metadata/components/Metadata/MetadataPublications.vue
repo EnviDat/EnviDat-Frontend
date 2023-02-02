@@ -29,10 +29,7 @@
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import { mapState } from 'vuex';
-import {
-  extractPIDsFromUrls,
-  extractUrlsFromText,
-} from '@/factories/metaDataFactory';
+import { extractPIDMapFromText } from '@/factories/metaDataFactory';
 import axios from 'axios';
 
 export default {
@@ -72,12 +69,6 @@ export default {
     publications() {
       return this.mixinMethods_getGenericProp('publications');
     },
-    publicationsResolvingIds() {
-      return this.mixinMethods_getGenericProp(
-        'publicationsResolvingIds',
-        false,
-      );
-    },
     metadataConfig() {
       return this.$store ? this.config?.metadataConfig || {} : {};
     },
@@ -87,23 +78,12 @@ export default {
     resolveBaseUrl() {
       return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids/';
     },
-    extractedUrls() {
-      return extractUrlsFromText(this.text);
-    },
     extractedPIDMap() {
-      return extractPIDsFromUrls(this.extractedUrls);
+      return extractPIDMapFromText(this.text);
     },
     resolvingStatusText() {
       if (this.resolveError) {
         return `Publication could not be resolved because: ${this.resolveError}`;
-      }
-
-      if (this.isResolving) {
-        return 'Publications resolving on going';
-      }
-
-      if (!this.isResolving && this.replacedText && this.extractedPIDMap?.size > 0) {
-        return 'Publications are resolved';
       }
 
       return '';
@@ -114,7 +94,11 @@ export default {
 
       if (!this.isResolving && !this.resolveError
           && this.extractedPIDMap?.size > 0) {
-        this.resolvePIDs(text, this.extractedPIDMap);
+
+        this.isResolving = true;
+        this.$nextTick(() => {
+          this.resolvePIDs(text, this.extractedPIDMap);
+        })
       }
 
       return text;
@@ -136,22 +120,13 @@ export default {
       let newText = null;
       this.isResolving = true;
 
-      const requests = [];
-      pidMap.forEach((pid, url) => {
-        const resolveServiceUrl = this.resolveBaseUrl + pid;
-        requests.push(axios.get(resolveServiceUrl));
-      });
-
       try {
-        const responses = await Promise.all(requests);
-        let resolvedPubs = {};
+        // get url which works with multiple PIDs
+        const doraUrl = this.getDoraUrl(pidMap);
 
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          resolvedPubs = { ...resolvedPubs, ...response.data };
-        }
+        const response = await axios.get(doraUrl);
 
-        const citationMap = this.resolvedCitationText(resolvedPubs, pidMap);
+        const citationMap = this.resolvedCitationText(response.data, pidMap);
         newText = this.replacePIDsInText(text, citationMap, pidMap);
 
       } catch (e) {
@@ -206,29 +181,18 @@ export default {
 
       return newText;
     },
-  },
-/*
-  watch: {
-    /!**
-     * @description watcher on idsToResolve start resolving them, if not already in the works
-     *!/
-    idsToResolve() {
-      if (this.idsToResolve?.length > 0
-          && !this.publicationsResolvingIds) {
-        
-        const ids = extractPIDsFromText(this.text)
+    getDoraUrl(pidMap) {
+      let fullUrl = this.resolveBaseUrl;
 
-        this.$store.dispatch(
-            `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
-            {
-              idsToResolve: this.idsToResolve,
-              resolveBaseUrl: this.publicationsConfig?.resolveBaseUrl,
-            },
-        );
-      }
+      pidMap.forEach((pid, url) => {
+        fullUrl += `${pid}|`;
+      });
+
+      fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+
+      return fullUrl;
     },
   },
-*/
   data: () => ({
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,

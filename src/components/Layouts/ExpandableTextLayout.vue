@@ -13,22 +13,20 @@
       </div>
     </v-card-title>
 
+    <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
+      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
+        <div class="bone bone-type-multiline bone-style-paragraph" />
+      </div>
+    </v-card-text>
+
     <v-card-text
-      v-if="fullText"
+      v-if="!showPlaceholder && fullText"
       ref="text"
       :usedMaxTextLength="maxTextLength"
       class="pa-4 pt-0 heightAndScroll readableText"
       :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
     >
       <div v-html="markdownText"></div>
-    </v-card-text>
-
-    <v-card-text v-if="showPlaceholder && !fullText" class="pa-4 pt-0">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
     </v-card-text>
 
     <v-card-text

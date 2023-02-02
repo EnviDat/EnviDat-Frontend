@@ -265,18 +265,12 @@ export function createCitation(dataset) {
     publication = JSON.parse(dataset.publication);
   }
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
-
-  let text = `${authors.trim()} `;
-
-  text += ` <span style="font-weight: bold;" >${dataset.title}.</span> `;
-
   if (publication && publication.publisher) {
     text += ` <span style="font-style: italic;" >${publication.publisher}</span> `;
   }
 
-  if (publication && publication.publication_year) {
-    text += ` <span style="font-weight: bold;" >${publication.publication_year}</span>, `;
+  if (publication && publication.publication_year || publication.publicationYear) {
+    text += ` <span style="font-weight: bold;" >${publication.publication_year || publication.publicationYear}</span>, `;
   }
 
   if (dataset.doi) {
@@ -1037,10 +1031,10 @@ export function sanitizeUrls(url) {
  */
 export function extractUrlsFromText(text) {
   if (!text) {
-    return null;
+    return [];
   }
 
-  const textWithUrls = sanitizeUrls(text);
+  const textWithUrls = text;
   // const regExStr = '/[A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+';
   const regExStr = '[A-Za-z]+://[A-Za-z0-9-_]+.[A-Za-z0-9-_:%&;?#/.=]+';
   const regEx = new RegExp(regExStr, 'gm');
@@ -1051,27 +1045,100 @@ export function extractUrlsFromText(text) {
 /**
  *
  * @param urls
- * @param idDelimiter
- * @returns {null|Map<string, string>} Map keys are the url with the PID as value
+ * @returns {Map<any, any>} Map keys are the url with the PID as value
  */
-export function extractPIDsFromUrls(urls, idDelimiter = ':') {
-  if (!urls || urls?.length <= 0) {
-    return null;
+export function extractPIDsFromUrls(urls) {
+  const pidMap = new Map();
+
+  if (urls?.length <= 0) {
+    return pidMap;
   }
 
   // regEx to determine if any url contains a PID from DORA
-  // /[a-zA-Z]+:\d+/g
-  const regExStr = `[a-zA-Z]+${idDelimiter}\\d+`;
+  // /[a-zA-Z]+(:|%3A)\d+/g
+  // PID delimiter is typically ':' but this can be changed via browser url and copy paste
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
   const regEx = new RegExp(regExStr, 'g');
-  const pidMap = new Map();
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i];
-    const validIds = url.match(regEx);
+    const matches = url.match(regEx);
 
-    if (validIds?.length > 0) {
-      pidMap.set(url, validIds[0]);
+    if (matches) {
+      const pid = matches[0];
+
+      if (pid) {
+        const cleanPID = sanitizeUrls(pid);
+        pidMap.set(url, cleanPID);
+      }
     }
+  }
+
+  return pidMap;
+}
+
+export function extractPIDsFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const pidMatches = text.match(regEx) || [];
+
+  pidMatches.forEach((match) => {
+    pidMap.set(match, match);
+  });
+
+  return pidMap;
+}
+
+/**
+ * returns a map with keys which are PIDs or Urls from the text and the values are the PIDs
+ *
+ * @param {string} text
+ * @returns {Map<string, string>} Map keys are the url or a PID with the PID as value
+ */
+export function extractPIDMapFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const urls = extractUrlsFromText(text);
+  const urlsPIDMap = extractPIDsFromUrls(urls);
+
+  urlsPIDMap.forEach((value, key) => {
+    pidMap.set(key, value);
+  });
+
+  // also extract all PIDs from the whole text to catch PIDs with don't have an url
+  const onlyPIDs = extractPIDsFromText(text);
+
+  const urlsPIDValues = Array.from(urlsPIDMap.values());
+
+  if (urlsPIDValues && urlsPIDValues.length > 0) {
+
+    // in case there are urls in the text, make sure not to overwrite any
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      if (!urlsPIDValues.includes(cleanPID)) {
+        pidMap.set(key, cleanPID);
+      }
+    });
+  } else {
+
+    // in case there are only ids merged as well
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      pidMap.set(key, cleanPID);
+    });
   }
 
   return pidMap;

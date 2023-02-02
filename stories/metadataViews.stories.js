@@ -467,6 +467,20 @@ export const MetadataRelatedPublicationsViews = () => ({
                              :maxTextLength="maxTextLength"
       />
     </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications text="* wsl:21835 \n * wsl%3A22390"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications v-bind="publications6"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
   
   </v-row>
   `,
@@ -493,7 +507,10 @@ export const MetadataRelatedPublicationsViews = () => ({
       text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ',
     },
     publications5: {
-      text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\\r\\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664\\r\\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+      text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+    },
+    publications6: {
+      text: '* wsl:21835 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
     },
     allDatasets: envidat_packages.result,
     genericPropsPublications: {
