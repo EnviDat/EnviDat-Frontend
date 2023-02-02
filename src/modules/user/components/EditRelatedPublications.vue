@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataPublications :genericProps="publicationsObject" />
+          <MetadataPublications v-bind="publicationsObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -149,10 +149,8 @@ export default {
     },
     publicationsObject() {
       return {
-        publications: {
-          text: this.previewPublicationsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewPublicationsText,
+        maxTextLength: 2000,
       };
     },
     validations() {

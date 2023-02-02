@@ -510,7 +510,7 @@ export const MetadataRelatedPublicationsViews = () => ({
       text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
     },
     publications6: {
-      text: '* wsl:21835 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+      text: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
     },
     allDatasets: envidat_packages.result,
     genericPropsPublications: {

@@ -20,6 +20,7 @@ import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
@@ -152,6 +153,10 @@ export const EditingKeywordsPlaceholder = () => ({
     }),
   });
 
+export const EditRelatedDatasetsViews = () => ({
+
+})
+
 export const EditRelatedPublicationViews = () => ({
     components: { EditRelatedPublications },
     template: `
@@ -184,7 +189,7 @@ export const EditRelatedPublicationViews = () => ({
       eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
-      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.relatedPublicationsText = this.textareaContent;
     },
     beforeDestroy() {
       eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
@@ -202,17 +207,6 @@ export const EditRelatedPublicationViews = () => ({
       },
     },
     data: () => ({
-      genericProps: {
-        id: '1',
-        labelTextarea: 'Related Publications',
-        relatedPublicationsText: '',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        isVerticalLayout: true,
-      },
-      genericPropsFilled: {
-        id: '2',
-        labelTextarea: 'Related Publications',
         textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
@@ -237,11 +231,22 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
+      genericProps: {
+          relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+/*
+        id: '1',
+        labelTextarea: 'Related Publications',
         subtitlePreview: 'Preview',
         showPlaceholder: false,
-        publications: {
-          text: '',
-        },
+        isVerticalLayout: true,
+*/
+      },
+      genericPropsFilled: {
+        id: '2',
+        labelTextarea: 'Related Publications',
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
       },
     }),
   });
@@ -257,9 +262,9 @@ export const GenericTextAreaPreviewPublications = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <GenericTextareaPreviewLayout :genericProps="genericProps"
+          <GenericTextareaPreviewLayout v-bind="genericProps"
                                         @changedText="catchChangedText($event)" >
-            <metadata-publications :genericProps="publicationsObject" />
+            <metadata-publications v-bind="publicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -270,9 +275,9 @@ export const GenericTextAreaPreviewPublications = () => ({
 
       <v-row class="py-3" >
         <v-col >
-         <GenericTextareaPreviewLayout :genericProps="genericPropsFilled"
+         <GenericTextareaPreviewLayout v-bind="genericPropsFilled"
                                         @changedText="catchChangedFilledText($event)" >
-            <metadata-publications :genericProps="filledPublicationsObject" />
+            <metadata-publications v-bind="filledPublicationsObject" />
           </GenericTextareaPreviewLayout>
         </v-col>
       </v-row>
@@ -298,16 +303,12 @@ export const GenericTextAreaPreviewPublications = () => ({
     computed: {
       publicationsObject() {
         return {
-          publications: {
             text: this.genericProps.relatedPublicationsText,
-          },
         };
       },
       filledPublicationsObject() {
         return {
-          publications: {
             text: this.genericPropsFilled.relatedPublicationsText,
-          },
         };
       },
     },
