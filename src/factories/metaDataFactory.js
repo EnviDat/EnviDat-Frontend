@@ -15,7 +15,7 @@
 import { format, formatISO, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
-import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
+import {getAuthorName, getAuthorsCitationString, getAuthorsString} from '@/factories/authorFactory';
 import { localIdProperty } from '@/factories/strategyFactory';
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
@@ -252,7 +252,12 @@ export function createCitation(dataset) {
     return null;
   }
 
-  const authors = getAuthorsString(dataset);
+  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+
+  const authors = getAuthorsCitationString(dataset);
+  const title = dataset.title;
+
+  let text = `${authors.trim()}  <span style="font-weight: bold;" >${title}.</span> `;
 
   let { publication } = dataset;
 

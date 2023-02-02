@@ -34,7 +34,7 @@ import {
   createResources,
 } from '@/factories/metaDataFactory';
 
-import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
 import mailIcon from '../src/assets/icons/mail.png';
@@ -48,6 +48,8 @@ import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
+import gcnetDataset from "./js/gcnetDataset";
+import citationTesting from "./js/citationTesting";
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
 
@@ -58,6 +60,8 @@ const largeHeader = createHeader(metadata[2], false);
 
 const citation1 = createCitation(metadata[0]);
 const citation2 = createCitation(metadata[2]);
+const citation3 = createCitation(gcnetDataset);
+const citation4 = createCitation(citationTesting);
 
 const genericProps1 = {
   showPlaceholder: false,
@@ -79,6 +83,28 @@ const genericProps2 = {
   citationGCMDXmlLink: citation2.citationGCMDXmlLink,
   citationBibtexXmlLink: citation2.citationBibtexXmlLink,
   citationRisXmlLink: citation2.citationRisXmlLink,
+};
+
+const citationGenericProps3 = {
+  showPlaceholder: false,
+  id: citation3.id,
+  citationText: citation3.citationText,
+  citationXmlLink: citation3.citationBibtexXmlLink,
+  citationIsoXmlLink: citation3.citationIsoXmlLink,
+  citationGCMDXmlLink: citation3.citationGCMDXmlLink,
+  citationBibtexXmlLink: citation3.citationBibtexXmlLink,
+  citationRisXmlLink: citation3.citationRisXmlLink,
+};
+
+const citationGenericProps4 = {
+  showPlaceholder: false,
+  id: citation4.id,
+  citationText: citation4.citationText,
+  citationXmlLink: citation4.citationBibtexXmlLink,
+  citationIsoXmlLink: citation4.citationIsoXmlLink,
+  citationGCMDXmlLink: citation4.citationGCMDXmlLink,
+  citationBibtexXmlLink: citation4.citationBibtexXmlLink,
+  citationRisXmlLink: citation4.citationRisXmlLink,
 };
 
 const details1 = createDetails(metadata[0]);
@@ -303,6 +329,14 @@ export const MetadataCitationViews = () => ({
       <metadata-citation :genericProps="genericProps2" />
     </v-col>
 
+    <v-col cols="6" class="py-3">
+      <metadata-citation :genericProps="citationGenericProps3" />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-citation :genericProps="citationGenericProps4" />
+    </v-col>
+
   </v-row>
   `,
   updated() {
@@ -317,6 +351,8 @@ export const MetadataCitationViews = () => ({
       showPlaceholder: true,
       fixedHeight: false,
     },
+    citationGenericProps3,
+    citationGenericProps4,
   }),
 });
 
