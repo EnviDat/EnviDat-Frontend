@@ -7,6 +7,7 @@
     :emptyText="emptyText"
     :maxTextLength="maxTextLength"
     :sanitizeHTML="false"
+    :statusText="resolvingStatusText"
     class="relatedPubList"
   />
 </template>
@@ -92,11 +93,27 @@ export default {
     extractedPIDMap() {
       return extractPIDsFromUrls(this.extractedUrls);
     },
+    resolvingStatusText() {
+      if (this.resolveError) {
+        return `Publication could not be resolved because: ${this.resolveError}`;
+      }
+
+      if (this.isResolving) {
+        return 'Publications resolving on going';
+      }
+
+      if (!this.isResolving && this.replacedText && this.extractedPIDMap?.size > 0) {
+        return 'Publications are resolved';
+      }
+
+      return '';
+    },
   },
   methods: {
     resolvedCitations(text){
 
-      if (!this.isResolving && this.extractedPIDMap?.size > 0) {
+      if (!this.isResolving && !this.resolveError
+          && this.extractedPIDMap?.size > 0) {
         this.resolvePIDs(text, this.extractedPIDMap);
       }
 

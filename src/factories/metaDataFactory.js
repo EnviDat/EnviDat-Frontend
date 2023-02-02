@@ -1018,6 +1018,13 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
   );
 }
 
+export function sanitizeUrls(url) {
+  if (!url){
+    return null;
+  }
+
+  return url.replaceAll('%3A', ':');
+}
 /**
  * extracts all urls from a string
  * @param {String}text
@@ -1028,11 +1035,12 @@ export function extractUrlsFromText(text) {
     return null;
   }
 
+  const textWithUrls = sanitizeUrls(text);
   // const regExStr = '/[A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+';
   const regExStr = '[A-Za-z]+://[A-Za-z0-9-_]+.[A-Za-z0-9-_:%&;?#/.=]+';
   const regEx = new RegExp(regExStr, 'gm');
 
-  return text.match(regEx) || [];
+  return textWithUrls.match(regEx) || [];
 }
 
 /**
