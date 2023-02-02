@@ -164,7 +164,6 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
-import MetadataDetails from './Metadata/MetadataDetails.vue';
 import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
@@ -539,7 +538,6 @@ export default {
       this.citation = null;
       this.resources = null;
       this.location = null;
-      this.details = null;
       this.publications = null;
       this.relatedDatasets = null;
       this.funding = null;
@@ -569,8 +567,6 @@ export default {
         this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
         this.location = createLocation(currentContent);
-
-        this.details = createDetails(currentContent);
 
         this.publications = createPublications(currentContent);
 
@@ -627,9 +623,6 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      this.$set(components.MetadataDetails, 'genericProps', {
-        details: this.details,
-      });
       this.$set(components.MetadataAuthors, 'genericProps', {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
@@ -661,7 +654,6 @@ export default {
       this.secondCol = [
         components.MetadataResources,
         components.MetadataGeo,
-        // components.MetadataDetails,
       ];
 
       this.singleCol = [
@@ -673,7 +665,6 @@ export default {
         components.MetadataFunding,
         components.MetadataPublications,
         components.MetadataRelatedDatasets,
-        // components.MetadataDetails,
       ];
     },
     async injectMicroCharts() {
@@ -829,7 +820,6 @@ export default {
     MetadataHeader,
     MetadataBody,
     MetadataResources,
-    MetadataDetails,
     MetadataCitation,
     MetadataPublications,
     MetadataRelatedDatasets,
@@ -860,7 +850,6 @@ export default {
     citation: null,
     resources: null,
     location: null,
-    details: null,
     publications: null,
     relatedDatasets: null,
     funding: null,
