@@ -599,10 +599,7 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        this.authors = getFullAuthorsFromDataset(
-          this.authorsMap,
-          currentContent,
-        );
+        this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
       }
     },
     setMetadataContent() {
@@ -622,7 +619,10 @@ export default {
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);
       this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', this.citation);
+      this.$set(components.MetadataCitation, 'genericProps', {
+        ...this.citation,
+        showPlaceholder: this.showPlaceholder,
+      });
 
       this.configInfos = getConfigUrls(this.configInfos);
 
@@ -652,6 +652,7 @@ export default {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
         authorDeadInfo: this.authorDeadInfo,
+        showPlaceholder: this.showPlaceholder,
       });
 
       this.$set(components.MetadataPublications, 'genericProps', {
