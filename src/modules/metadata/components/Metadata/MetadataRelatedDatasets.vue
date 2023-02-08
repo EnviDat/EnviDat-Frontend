@@ -1,15 +1,44 @@
 <template>
   <expandable-text-layout
-    id="MetadataRelatedDatasets"
-    :title="METADATA_DATASETS_TITLE"
-    :text="getCitationsFromRelatedDatasets(text)"
-    :showPlaceholder="showPlaceholder || resolvingText"
-    :emptyTextColor="emptyTextColor"
-    :emptyText="emptyText"
-    :maxTextLength="maxTextLength"
-    :sanitizeHTML="false"
-    class="relatedPubList"
+      id="MetadataRelatedDatasets"
+      :title="METADATA_DATASETS_TITLE"
+      :text="getCitationsFromRelatedDatasets(text)"
+      :showPlaceholder="showPlaceholder"
+      :emptyTextColor="emptyTextColor"
+      :emptyText="emptyText"
+      :maxTextLength="maxTextLength"
+      :sanitizeHTML="false"
+      class="relatedPubList"
   />
+<!--
+  <v-card flat>
+
+    <v-card-text>
+      <expandable-text-layout
+        id="MetadataRelatedDatasets"
+        :title="METADATA_DATASETS_TITLE"
+        :text="getCitationsFromRelatedDatasets(text)"
+        :showPlaceholder="showPlaceholder"
+        :emptyTextColor="emptyTextColor"
+        :emptyText="emptyText"
+        :maxTextLength="maxTextLength"
+        :sanitizeHTML="false"
+        class="relatedPubList"
+      />
+    </v-card-text>
+
+    <v-card-text v-if="relatedMetadata.length > 0">
+      <v-row>
+        <v-col v-for="(dataset, index) in relatedMetadata"
+                  :key="index">
+          <MetadataCard v-bind="dataset"
+          ></MetadataCard>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+-->
+
 </template>
 
 <script>
@@ -30,7 +59,7 @@ import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue'
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
 import { mapGetters } from 'vuex';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
-import { getCitationList } from '@/factories/metaDataFactory';
+import { extractDatasetIdsFromText, getCitationList } from '@/factories/metaDataFactory';
 
 export default {
   name: 'MetadataRelatedDatasets',
@@ -63,36 +92,19 @@ export default {
   },
   computed: {
     ...mapGetters(METADATA_NAMESPACE, [
-      'allMetadatas',
       'getCitationListFromIds',
     ]),
+    relatedDatasetIds() {
+      return extractDatasetIdsFromText(this.text);
+    },
   },
   methods: {
-    getDatasetIdsFromText(text) {
-      const matches = text.match(/\/#\/metadata\/[a-zA-Za_\d]+/gm);
-      const ids = [];
-
-      if (matches) {
-        for (let i = 0; i < matches.length; i++) {
-
-          const match = matches[i];
-          const splits = match.split('/');
-
-          if (splits.length > 0) {
-            const id = splits[splits.length - 1];
-            ids.push(id);
-          }
-        }
-      }
-
-      return ids;
-    },
     getCitationsFromRelatedDatasets(text) {
       if (!text) {
         return '';
       }
 
-      const ids = this.getDatasetIdsFromText(text);
+      const ids = this.relatedDatasetIds;
 
       if (ids.length <= 0){
         return text;
@@ -113,41 +125,9 @@ export default {
 
       return citationText;
     },
-/*
-    async LoadCitationsFromDORA(text) {
-      if (!text) {
-        return '';
-      }
-
-      this.resolvingText = true;
-
-      const ids = this.getDatasetIdsFromText(text);
-      const DOIs = this.getDOIsFromDatasets(ids);
-
-    },
-    getDOIsFromDatasets(datasetIds) {
-      const DOIs = [];
-
-      if (datasetIds.length <= 0){
-
-        const datasetMatches = this.allMetadatas.filter((d) => datasetIds.includes(d.name || datasetIds.includes(d.id)));
-
-        for (let i = 0; i < datasetMatches.length; i++) {
-          const doi = datasetMatches[i].doi;
-          if (doi) {
-            DOIs.push(doi);
-          }
-        }
-      }
-
-      return DOIs;
-    },
-*/
   },
   data: () => ({
     METADATA_DATASETS_TITLE,
-    resolvedText: null,
-    resolvingText: false,
   }),
 };
 </script>

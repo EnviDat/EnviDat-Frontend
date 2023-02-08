@@ -193,6 +193,13 @@ export default {
       return fullUrl;
     },
   },
+  watch: {
+    text() {
+      if (this.text !== this.replacedText) {
+        this.replacedText = '';
+      }
+    },
+  },
   data: () => ({
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,

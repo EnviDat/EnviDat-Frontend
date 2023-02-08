@@ -277,7 +277,9 @@ export function createCitation(dataset) {
     text += ` <a href="https://www.doi.org/${dataset.doi}" target="_blank">https://www.doi.org/${dataset.doi}</a>. `;
   }
 
+/*
   text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
+*/
 
   return {
     id: dataset.id,
@@ -291,13 +293,14 @@ export function createCitation(dataset) {
 }
 
 export function getCitationList(datasets, datasetIds) {
+  const citations = [];
+
   if (!datasets || datasets.length <= 0) {
-    return null;
+    return citations;
   }
 
-  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name || datasetIds.includes(d.id)));
+  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name) || datasetIds.includes(d.id));
 
-  const citations = [];
 
   for (let i = 0; i < datasetMatches.length; i++) {
     const c = createCitation(datasetMatches[i]);
@@ -1142,4 +1145,30 @@ export function extractPIDMapFromText(text) {
   }
 
   return pidMap;
+}
+
+export function extractDatasetIdsFromText(text) {
+  const ids = [];
+
+  if (!text) {
+    return ids;
+  }
+
+  const regExStr = '/#/metadata/[a-zA-Za_-\\d]+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const matches = text.match(regEx) || [];
+
+  for (let i = 0; i < matches.length; i++) {
+
+    const match = matches[i];
+    const splits = match.split('/');
+
+    if (splits.length > 0) {
+      const id = splits[splits.length - 1];
+      ids.push(id);
+    }
+  }
+
+  return ids;
 }
