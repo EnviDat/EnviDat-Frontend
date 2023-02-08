@@ -148,9 +148,16 @@ export default {
 
       pidMap.forEach((pid, url) => {
         const resolvedObject = resolvedPubs[pid];
-        const acsCitation = resolvedObject?.citation?.ACS;
-        if (acsCitation) {
-          citationMap.set(pid, acsCitation);
+
+        // don't use the ACS or APA or any property explicit of the citation
+        // if any time the style of the citation is changed, the code would fail
+        // in this generic way, the first citation will be used no matter the name
+        const citationObj = resolvedObject?.citation || {};
+        const keys = Object.keys(citationObj);
+        const genericCitation = citationObj[keys[0]];
+
+        if (genericCitation) {
+          citationMap.set(pid, genericCitation);
         }
       });
 
