@@ -10,35 +10,42 @@
  */
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
+import { INITIAL_VIEWPORTS, DEFAULT_VIEWPORT } from '@storybook/addon-viewport';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
   title: '4 Filtering / SearchBarView',
   decorators: [],
   parameters: {
+    viewport: {
+      viewports: INITIAL_VIEWPORTS,
+      defaultViewport: DEFAULT_VIEWPORT,
+    },
   },
 };
 
-export const BasicSearchViews = () => ({
-    components: { SearchBarView },
-    template: `
-    <search-bar-view labelText="Search for something"
-                    buttonText="SEARCH"
-                    hasButton
-                    @clicked="onClick"
-                    @searchCleared="onClear" />`,
-    methods: {
-      onClick(searchTerm) {
-        console.log(`clicked search for "${searchTerm}"`);
-      },
-      onClear() {
-        console.log(`cleared Search ${this.searchTerm}`);
-      },
-    },
-    data: () => ({
-      searchTerm: '',
-    }),
-  });
+const Template = (args, { argTypes }) => ({
+  components: { SearchBarView },
+  props: Object.keys(argTypes),
+  template: '<search-bar-view v-bind="$props" />',
+});
+
+export const BasicSearchBar = Template.bind({});
+BasicSearchBar.args = {
+  labelText: 'Search for something',
+  buttonText: 'SEARCH',
+  hasButton: true,
+};
+
+export const BasicSearchBarhMobile = Template.bind({});
+BasicSearchBarhMobile.args = { ...BasicSearchBar.args };
+
+BasicSearchBarhMobile.parameters = {
+  viewport: {
+    defaultViewport: 'iphone5',
+  },
+};
+
 
 export const SmallSearchViews = () => ({
     components: { SmallSearchBarView },

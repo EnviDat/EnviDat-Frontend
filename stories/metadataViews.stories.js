@@ -52,7 +52,7 @@ import gcnetDataset from "./js/gcnetDataset";
 import citationTesting from "./js/citationTesting";
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 
-import envidat_packages from '../public/testdata/packagelist.json';
+import envidat_packages from './testdata/packagelist.json';
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
@@ -688,12 +688,35 @@ export const MetadataAuthorsViews = () => ({
     </v-col>
 
     <v-col cols="12" md="6" class="py-3">
-      <metadata-authors :genericProps="genericProps5" />
+      <metadata-authors v-bind="genericProps6" />
     </v-col>
 
+    <v-col cols="12" class="py-3">
+      <metadata-authors :genericProps="genericProps5" />
+    </v-col>
+  
   </v-row>
   `,
+  mounted() {
+    setTimeout(() => {
+      this.initialLoading = false;
+    }, 3000)
+  },
+  computed: {
+    genericProps6() {
+      if (this.initialLoading) {
+        return {
+          showPlaceholder: true,
+        }
+      }
+
+      return {
+        genericProps: this.genericProps5,
+      };
+    },
+  },
   data: () => ({
+    initialLoading: true,
     genericProps5,
     genericPropsPlaceholder: {
       authors: [],

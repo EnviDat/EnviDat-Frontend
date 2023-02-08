@@ -179,14 +179,14 @@ export const EditRelatedDatasetsViews = () => ({
     </v-col>
     `,
     created() {
-        eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+        eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
         this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
         this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
     },
     beforeDestroy() {
-        eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+        eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
         editComponentsChanged(updateObj) {
