@@ -13,7 +13,7 @@
 
 // import createPersist from 'vuex-localstorage';
 
-import { getTagColor } from '@/factories/metaDataFactory';
+import { getCitationList, getTagColor } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
 import actions from './metadataActions';
@@ -86,10 +86,6 @@ const initialState = {
   aboutPageBackRoute: null,
   asciiDead: '&#8224;',
   authorPassedInfo: 'Sadly this author has passed away.',
-  publicationsResolvingIds: false,
-  publicationsResolvedIds: {},
-  extractingIds: false,
-  idsToResolve: [],
   existingAuthors: [],
   existingKeywords: [],
 };
@@ -143,12 +139,13 @@ export const metadata = {
     aboutPageBackRoute: state => state.aboutPageBackRoute,
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
-    publicationsResolvedIdsSize: state =>
-      state.publicationsResolvedIds !== null
-        ? Object.keys(state.publicationsResolvedIds).length
-        : 0,
     existingAuthors: state => state.existingAuthors,
     existingKeywords: state => state.existingKeywords,
+    getCitationListFromIds: state => datasetIds => {
+      const datasets = Object.values(state.metadatasContent);
+
+      return getCitationList(datasets, datasetIds);
+    },
   },
   mutations,
   actions,

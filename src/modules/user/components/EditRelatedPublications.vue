@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataPublications :genericProps="publicationsObject" />
+          <MetadataPublications v-bind="publicationsObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -149,10 +149,8 @@ export default {
     },
     publicationsObject() {
       return {
-        publications: {
-          text: this.previewPublicationsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewPublicationsText,
+        maxTextLength: 2000,
       };
     },
     validations() {
@@ -192,7 +190,7 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add references to other related publications which are relevant to this research data. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
+      cardInstructions: 'Add links to other publications via DORA link (ex. https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:22390 or directly via the DORA permanent ID ex. wsl:29664)',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {

@@ -39,6 +39,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
+                     v-bind="entry.genericProps"
                      :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
@@ -53,6 +54,7 @@
 
           <!-- prettier-ignore -->
           <component :is="entry"
+                     v-bind="entry.genericProps"
                      :generic-props="entry.genericProps"
                      :show-placeholder="showPlaceholder" />
           </v-col>
@@ -120,10 +122,8 @@ import {
 import {
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
-  EXTRACT_IDS_FROM_TEXT,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
-  PUBLICATIONS_RESOLVE_IDS,
 } from '@/store/metadataMutationsConsts';
 import {
   createBody,
@@ -170,7 +170,6 @@ import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/Meta
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
-import MetadataDetails from './Metadata/MetadataDetails.vue';
 import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
@@ -256,12 +255,6 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(METADATA_NAMESPACE, [
-      'extractingIds',
-      'idsToResolve',
-      'publicationsResolvingIds',
-      'publicationsResolvedIds',
-    ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -275,7 +268,6 @@ export default {
       appScrollPosition: 'appScrollPosition',
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
-      publicationsResolvedIdsSize: `${METADATA_NAMESPACE}/publicationsResolvedIdsSize`,
     }),
     hasGcnetStationConfig() {
       return this.configInfos?.stationsConfigUrl !== null;
@@ -571,7 +563,6 @@ export default {
       this.citation = null;
       this.resources = null;
       this.location = null;
-      this.details = null;
       this.publications = null;
       this.relatedDatasets = null;
       this.funding = null;
@@ -602,10 +593,7 @@ export default {
 
         this.location = createLocation(currentContent);
 
-        this.details = createDetails(currentContent);
-
         this.publications = createPublications(currentContent);
-        this.startExtractingIds();
 
         this.relatedDatasets = createRelatedDatasets(currentContent);
 
@@ -660,9 +648,6 @@ export default {
         resourcesConfig: this.resourcesConfig,
       });
 
-      this.$set(components.MetadataDetails, 'genericProps', {
-        details: this.details,
-      });
       this.$set(components.MetadataAuthors, 'genericProps', {
         authors: this.authors,
         authorDetailsConfig: this.authorDetailsConfig,
@@ -670,14 +655,12 @@ export default {
       });
 
       this.$set(components.MetadataPublications, 'genericProps', {
-        publications: this.publications,
+        ...this.publications,
         metadataConfig: this.metadataConfig,
-        extractingIds: this.extractingIds,
-        publicationsResolvingIds: this.publicationsResolvingIds,
       });
 
       this.$set(components.MetadataRelatedDatasets, 'genericProps', {
-        datasets: this.relatedDatasets,
+        ...this.relatedDatasets,
       });
 
       this.$set(components.MetadataFunding, 'genericProps', {
@@ -696,7 +679,6 @@ export default {
       this.secondCol = [
         components.MetadataResources,
         components.MetadataGeo,
-        // components.MetadataDetails,
       ];
 
       this.singleCol = [
@@ -708,7 +690,6 @@ export default {
         components.MetadataFunding,
         components.MetadataPublications,
         components.MetadataRelatedDatasets,
-        // components.MetadataDetails,
       ];
     },
     async injectMicroCharts() {
@@ -717,15 +698,6 @@ export default {
         this.$options.components.MicroChartList,
         this.stationsConfig,
       );
-    },
-    startExtractingIds() {
-      if (this.publicationsConfig?.resolveIds && !this.extractingIds) {
-        this.$store.dispatch(`${METADATA_NAMESPACE}/${EXTRACT_IDS_FROM_TEXT}`, {
-          text: this.publications?.text,
-          idDelimiter: this.publicationsConfig?.idDelimiter,
-          idPrefix: this.publicationsConfig?.idPrefix,
-        });
-      }
     },
     /**
      * @description
@@ -839,47 +811,6 @@ export default {
       }
     },
     /**
-     * @description watcher on idsToResolve start resolving them, if not already in the works
-     */
-    idsToResolve() {
-      if (!this.extractingIds
-          && this.idsToResolve?.length > 0
-          && !this.publicationsResolvingIds) {
-
-        this.$store.dispatch(
-          `${METADATA_NAMESPACE}/${PUBLICATIONS_RESOLVE_IDS}`,
-          {
-            idsToResolve: this.idsToResolve,
-            resolveBaseUrl: this.publicationsConfig?.resolveBaseUrl,
-          },
-        );
-      }
-    },
-    /**
-     * @description watcher on publicationsResolvedIds start replacing the text with the resolved texts based on the ids
-     */
-    publicationsResolvedIds() {
-      if ( !this.publicationsResolvingIds
-        && this.publicationsResolvedIdsSize > 0
-        && this.idsToResolve?.length > 0 ) {
-
-        let publicationsText = this.publications?.text;
-
-        if (publicationsText) {
-          const keys = Object.keys(this.publicationsResolvedIds);
-
-          keys.forEach((id) => {
-            const text = this.publicationsResolvedIds[id];
-            if (text) {
-              publicationsText = publicationsText.replace(id, text);
-            }
-          });
-
-          this.publications.text = publicationsText;
-        }
-      }
-    },
-    /**
      * @description react on changes of the route (browser back / forward click)
      */
     $route: function watchRouteChanges() {
@@ -914,7 +845,6 @@ export default {
     MetadataHeader,
     MetadataBody,
     MetadataResources,
-    MetadataDetails,
     MetadataCitation,
     MetadataPublications,
     MetadataRelatedDatasets,
@@ -945,7 +875,6 @@ export default {
     citation: null,
     resources: null,
     location: null,
-    details: null,
     publications: null,
     relatedDatasets: null,
     funding: null,

@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataRelatedDatasets :genericProps="datasetObject" />
+          <MetadataRelatedDatasets v-bind="datasetObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -130,6 +130,11 @@ export default {
       type: String,
       default: '',
     },
+    allDatasets: {
+      // this is only for testing & implementation via storybook
+      type: Array,
+      default: () => [],
+    },
   },
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
@@ -148,10 +153,9 @@ export default {
     },
     datasetObject() {
       return {
-        datasets: {
-          text: this.previewRelatedDatasetsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewRelatedDatasetsText,
+        maxTextLength: 2000,
+        allDatasets: this.allDatasets,
       };
     },
     validations() {
@@ -191,7 +195,8 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: 'Add references to other related research datasets which are relevant to this one. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
+      cardInstructions: `Add links to other EnviDat datasets which are relevant to this one (ex. https://www.envidat.ch/#/metadata/eur11).
+          Or add others links and use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.`,
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {

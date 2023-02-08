@@ -21,6 +21,7 @@ import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
@@ -153,6 +154,75 @@ export const EditingKeywordsPlaceholder = () => ({
     }),
   });
 
+export const EditRelatedDatasetsViews = () => ({
+    components: { EditRelatedDatasets },
+    template: `
+    <v-col>
+
+      <v-row>
+        Edit Related Datasets fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditRelatedDatasets v-bind="genericProps" 
+                                :allDatasets="allDatasets" />
+        </v-col>
+      </v-row>
+
+
+      <v-row>
+        Edit Related Datasets fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditRelatedDatasets v-bind="genericPropsFilled"
+                                :allDatasets="allDatasets" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+    created() {
+        eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    mounted() {
+        this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
+        this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
+    },
+    beforeDestroy() {
+        eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+        editComponentsChanged(updateObj) {
+            if (updateObj.data.id === this.genericProps.id) {
+                this.genericProps = updateObj.data;
+                // this.genericProps.publications.text = this.genericProps.textareaContent;
+            }
+            if (updateObj.data.id === this.genericPropsFilled.id) {
+                this.genericPropsFilled = updateObj.data;
+                // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
+            }
+        },
+    },
+    data: () => ({
+        relatedDatasetsText: '',
+        relatedDatasetsText2: `https://www.envidat.ch/#/metadata/total_basal_area-2
+            https://www.envidat.ch/#/metadata/salvage_logging_star-186
+        `,
+        allDatasets: unFormatedMetadataCards,
+        genericProps: {
+            relatedDatasetsText: '',
+            id: '1',
+        },
+        genericPropsFilled: {
+            id: '2',
+            relatedDatasetsText: '',
+        },
+    }),
+})
+
 export const EditRelatedPublicationViews = () => ({
     components: { EditRelatedPublications },
     template: `
@@ -185,35 +255,25 @@ export const EditRelatedPublicationViews = () => ({
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     mounted() {
-      this.genericPropsFilled.publications.text = this.genericPropsFilled.textareaContent;
+      this.genericPropsFilled.relatedPublicationsText = this.textareaContent;
     },
     beforeDestroy() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {
+          console.log(updateObj);
         if (updateObj.data.id === this.genericProps.id) {
           this.genericProps = updateObj.data;
          // this.genericProps.publications.text = this.genericProps.textareaContent;
         }
         if (updateObj.data.id === this.genericPropsFilled.id) {
-          this.genericPropsFilled = updateObj.data;
-          // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
+          // this.genericPropsFilled = updateObj.data;
+          this.genericPropsFilled.relatedPublicationsText = updateObj.data;
         }
       },
     },
     data: () => ({
-      genericProps: {
-        id: '1',
-        labelTextarea: 'Related Publications',
-        relatedPublicationsText: '',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        isVerticalLayout: true,
-      },
-      genericPropsFilled: {
-        id: '2',
-        labelTextarea: 'Related Publications',
         textareaContent: `# Why user stories?
 &nbsp;
 User Stories can help you to constantly improve the value of
@@ -238,11 +298,22 @@ Define what functionality each user expects. How she’s going to interact with 
 It should either improve the UX, increase retention rates,
 shorten users’ journey to the issue solution or whatever. Each Story should
 contribute something to the general goal of your product. `,
+      genericProps: {
+        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        id: '1',
+/*
+      labelTextarea: 'Related Publications',
+      subtitlePreview: 'Preview',
+      showPlaceholder: false,
+      isVerticalLayout: true,
+*/
+      },
+      genericPropsFilled: {
+        id: '2',
+        labelTextarea: 'Related Publications',
         subtitlePreview: 'Preview',
         showPlaceholder: false,
-        publications: {
-          text: '',
-        },
+        relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
       },
     }),
   });
@@ -299,16 +370,12 @@ export const GenericTextAreaPreviewPublications = () => ({
     computed: {
       publicationsObject() {
         return {
-          publications: {
             text: this.genericProps.relatedPublicationsText,
-          },
         };
       },
       filledPublicationsObject() {
         return {
-          publications: {
             text: this.genericPropsFilled.relatedPublicationsText,
-          },
         };
       },
     },

@@ -15,16 +15,9 @@
 import { format, formatISO, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
-import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
+import {getAuthorName, getAuthorsCitationString, getAuthorsString} from '@/factories/authorFactory';
 import { localIdProperty } from '@/factories/strategyFactory';
-import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  METEO,
-  SNOW,
-} from '@/store/categoriesConsts';
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -220,7 +213,7 @@ export function createRelatedDatasets(dataset) {
 
   return {
     text: dataset.related_datasets,
-    maxTextLength: 500,
+    maxTextLength: 1000,
   };
 }
 
@@ -259,7 +252,12 @@ export function createCitation(dataset) {
     return null;
   }
 
-  const authors = getAuthorsString(dataset);
+  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+
+  const authors = getAuthorsCitationString(dataset);
+  const title = dataset.title;
+
+  let text = `${authors.trim()}  <span style="font-weight: bold;" >${title}.</span> `;
 
   let { publication } = dataset;
 
@@ -267,23 +265,21 @@ export function createCitation(dataset) {
     publication = JSON.parse(dataset.publication);
   }
 
-  let text = `${authors.trim()} `;
-
-  if (publication && publication.publication_year) {
-    text += `(${publication.publication_year}). `;
+  if (publication && publication.publisher) {
+    text += ` <span style="font-style: italic;" >${publication.publisher}</span> `;
   }
 
-  text += `${dataset.title}. `;
-
-  if (publication && publication.publisher) {
-    text += ` ${publication.publisher}. `;
+  if (publication && publication.publication_year || publication.publicationYear) {
+    text += ` <span style="font-weight: bold;" >${publication.publication_year || publication.publicationYear}</span>, `;
   }
 
   if (dataset.doi) {
-    text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
+    text += ` <a href="https://www.doi.org/${dataset.doi}" target="_blank">https://www.doi.org/${dataset.doi}</a>. `;
   }
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+/*
+  text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
+*/
 
   return {
     id: dataset.id,
@@ -294,6 +290,24 @@ export function createCitation(dataset) {
     citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
     citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
   };
+}
+
+export function getCitationList(datasets, datasetIds) {
+  const citations = [];
+
+  if (!datasets || datasets.length <= 0) {
+    return citations;
+  }
+
+  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name) || datasetIds.includes(d.id));
+
+
+  for (let i = 0; i < datasetMatches.length; i++) {
+    const c = createCitation(datasetMatches[i]);
+    citations.push(c);
+  }
+
+  return citations;
 }
 
 export function createPublishingInfo(dataset) {
@@ -1005,4 +1019,157 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
   return arrOfObjects.sort((a, b) =>
     b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
   );
+}
+
+export function sanitizeUrls(url) {
+  if (!url){
+    return null;
+  }
+
+  return url.replaceAll('%3A', ':');
+}
+/**
+ * extracts all urls from a string
+ * @param {String}text
+ * @returns {*|*[]}
+ */
+export function extractUrlsFromText(text) {
+  if (!text) {
+    return [];
+  }
+
+  const textWithUrls = text;
+  // const regExStr = '/[A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+';
+  const regExStr = '[A-Za-z]+://[A-Za-z0-9-_]+.[A-Za-z0-9-_:%&;?#/.=]+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  return textWithUrls.match(regEx) || [];
+}
+
+/**
+ *
+ * @param urls
+ * @returns {Map<any, any>} Map keys are the url with the PID as value
+ */
+export function extractPIDsFromUrls(urls) {
+  const pidMap = new Map();
+
+  if (urls?.length <= 0) {
+    return pidMap;
+  }
+
+  // regEx to determine if any url contains a PID from DORA
+  // /[a-zA-Z]+(:|%3A)\d+/g
+  // PID delimiter is typically ':' but this can be changed via browser url and copy paste
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+  const regEx = new RegExp(regExStr, 'g');
+
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    const matches = url.match(regEx);
+
+    if (matches) {
+      const pid = matches[0];
+
+      if (pid) {
+        const cleanPID = sanitizeUrls(pid);
+        pidMap.set(url, cleanPID);
+      }
+    }
+  }
+
+  return pidMap;
+}
+
+export function extractPIDsFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const pidMatches = text.match(regEx) || [];
+
+  pidMatches.forEach((match) => {
+    pidMap.set(match, match);
+  });
+
+  return pidMap;
+}
+
+/**
+ * returns a map with keys which are PIDs or Urls from the text and the values are the PIDs
+ *
+ * @param {string} text
+ * @returns {Map<string, string>} Map keys are the url or a PID with the PID as value
+ */
+export function extractPIDMapFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const urls = extractUrlsFromText(text);
+  const urlsPIDMap = extractPIDsFromUrls(urls);
+
+  urlsPIDMap.forEach((value, key) => {
+    pidMap.set(key, value);
+  });
+
+  // also extract all PIDs from the whole text to catch PIDs with don't have an url
+  const onlyPIDs = extractPIDsFromText(text);
+
+  const urlsPIDValues = Array.from(urlsPIDMap.values());
+
+  if (urlsPIDValues && urlsPIDValues.length > 0) {
+
+    // in case there are urls in the text, make sure not to overwrite any
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      if (!urlsPIDValues.includes(cleanPID)) {
+        pidMap.set(key, cleanPID);
+      }
+    });
+  } else {
+
+    // in case there are only ids merged as well
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      pidMap.set(key, cleanPID);
+    });
+  }
+
+  return pidMap;
+}
+
+export function extractDatasetIdsFromText(text) {
+  const ids = [];
+
+  if (!text) {
+    return ids;
+  }
+
+  const regExStr = '/#/metadata/[a-zA-Za_-\\d]+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const matches = text.match(regEx) || [];
+
+  for (let i = 0; i < matches.length; i++) {
+
+    const match = matches[i];
+    const splits = match.split('/');
+
+    if (splits.length > 0) {
+      const id = splits[splits.length - 1];
+      ids.push(id);
+    }
+  }
+
+  return ids;
 }
