@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataRelatedDatasets :genericProps="datasetObject" />
+          <MetadataRelatedDatasets v-bind="datasetObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -130,6 +130,11 @@ export default {
       type: String,
       default: '',
     },
+    allDatasets: {
+      // this is only for testing & implementation via storybook
+      type: Array,
+      default: () => [],
+    },
   },
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
@@ -144,21 +149,21 @@ export default {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.relatedDatasetsText,
         isVerticalLayout: true,
+        placeholderTextarea: this.labels.placeholder,
       };
     },
     datasetObject() {
       return {
-        datasets: {
-          text: this.previewRelatedDatasetsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewRelatedDatasetsText,
+        maxTextLength: 2000,
+        allDatasets: this.allDatasets,
       };
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_RELATED_DATASETS);
     },
     previewRelatedDatasetsText() {
-      return this.previewText ? this.previewText : this.relatedDatasetsText;
+      return this.previewText || this.relatedDatasetsText;
     },
   },
   methods: {
@@ -191,7 +196,10 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: 'Add references to other related research datasets which are relevant to this one. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
+      cardInstructions: `Add links to other EnviDat datasets that are relevant to this one. Or add others links and use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.
+                            Click into the text area for examples.`,
+      placeholder: 'Example entries: \n * dataset-for-ogrs-2018-publication\n' +
+          ' * https://www.envidat.ch/#/metadata/dataset-for-ogrs-2018-publication ',
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {

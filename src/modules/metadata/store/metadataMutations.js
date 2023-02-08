@@ -36,12 +36,6 @@ import {
   SET_ABOUT_PAGE_BACK_URL,
   SET_VIRTUAL_LIST_INDEX,
   SWISSFL_MODE,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -227,48 +221,6 @@ export default {
   },
   [SET_VIRTUAL_LIST_INDEX](state, payload) {
     state.vIndex = payload;
-  },
-  [PUBLICATIONS_RESOLVE_IDS](state) {
-    state.publicationsResolvingIds = true;
-    state.publicationsResolvedIds = {};
-  },
-  [PUBLICATIONS_RESOLVE_IDS_SUCCESS](state, { idsToResolve, resolvedPublications }) {
-    state.publicationsResolvingIds = false;
-    let publicationsResolvedIds = null;
-
-    if (idsToResolve) {
-      publicationsResolvedIds = {};
-
-      idsToResolve.forEach((id) => {
-        const resolvedObject = resolvedPublications[id];
-        const text = resolvedObject?.citation?.ACS; // jshint ignore:line
-        if (text) {
-          publicationsResolvedIds[id] = text;
-        }
-      });
-    }
-
-    state.publicationsResolvedIds = publicationsResolvedIds;
-  },
-  [PUBLICATIONS_RESOLVE_IDS_ERROR](state, reason) {
-    state.publicationsResolvingIds = false;
-
-    const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while resolving the ids: ${reason.message}.`, reason.stack);
-    this.commit(ADD_USER_NOTIFICATION, errObj);
-  },
-  [EXTRACT_IDS_FROM_TEXT](state) {
-    state.extractingIds = true;
-    state.idsToResolve = [];
-  },
-  [EXTRACT_IDS_FROM_TEXT_SUCCESS](state, payload) {
-    state.extractingIds = false;
-    state.idsToResolve = payload;
-  },
-  [EXTRACT_IDS_FROM_TEXT_ERROR](state, reason) {
-    state.extractingIds = false;
-
-    const errObj = warningMessage(`${METADATA_PUBLICATIONS_TITLE} Error`, `Error while extracting ids from text: ${reason.message}.`, reason.stack);
-    this.commit(ADD_USER_NOTIFICATION, errObj);
   },
 /*
   [METADATA_CREATE_NEW_AUTHOR](state, newAuthor) {

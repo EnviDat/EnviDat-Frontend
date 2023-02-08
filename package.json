@@ -1,6 +1,6 @@
 {
   "name": "envidat.ch",
-  "version": "0.7.52",
+  "version": "0.7.521",
   "private": true,
   "description": "EnviDat frontend with vue",
   "author": "Dominik Haas-Artho",
@@ -46,6 +46,7 @@
     "material-design-icons-iconfont": "^6.7.0",
     "mitt": "^3.0.0",
     "remark": "^13.0.0",
+    "remark-breaks": "^3.0.2",
     "remark-html": "^13.0.2",
     "remark-strip-html": "^1.0.2",
     "seedrandom": "^3.0.5",

@@ -13,6 +13,7 @@
 
 import Crypto from 'crypto-js';
 import remark from 'remark';
+import remarkBreaks from 'remark-breaks';
 import htmlLib from 'remark-html';
 import remarkStripHtmlLib from 'remark-strip-html';
 import stripMarkdownLib from 'strip-markdown';
@@ -22,7 +23,13 @@ export function renderMarkdown(markdownString, sanitizeHTML = true) {
     return '';
   }
 
-  const strippedMDFile = remark().use(htmlLib, { sanitize: sanitizeHTML}).processSync(markdownString);
+  const strippedMDFile = remark({
+      gfm: true,
+      commonmark: true,
+  })
+  .use(remarkBreaks)
+  .use(htmlLib, { sanitize: sanitizeHTML}).processSync(markdownString);
+
   return strippedMDFile.contents;
 }
 

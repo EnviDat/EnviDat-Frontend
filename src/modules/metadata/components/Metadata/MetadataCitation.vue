@@ -6,9 +6,8 @@
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="citationText"
+    <v-card-text v-if="!showPlaceholder && citationText"
                   class="readableText px-4 py-0"
-                  style="font-style: italic; "
                   v-html="markdownText" >
 
     </v-card-text>
@@ -114,7 +113,7 @@ export default {
   }),
   computed: {
     markdownText() {
-      return renderMarkdown(this.citationText);
+      return renderMarkdown(this.citationText, false);
     },
     citationText() {
       return this.mixinMethods_getGenericProp('citationText');
