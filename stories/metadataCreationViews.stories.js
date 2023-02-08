@@ -160,23 +160,18 @@ export const EditRelatedDatasetsViews = () => ({
     <v-col>
 
       <v-row>
+        <v-col cols="6">
         Edit Related Datasets fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditRelatedDatasets v-bind="genericProps" 
-                                :allDatasets="allDatasets" />
         </v-col>
       </v-row>
 
-
-      <v-row>
-        Edit Related Datasets fields filled
-      </v-row>
-
       <v-row class="py-3" >
-        <v-col >
+        <v-col cols="6">
+          <EditRelatedDatasets v-bind="genericProps" 
+                                :allDatasets="allDatasets" />
+        </v-col>
+        
+        <v-col cols="6">
           <EditRelatedDatasets v-bind="genericPropsFilled"
                                 :allDatasets="allDatasets" />
         </v-col>
@@ -254,15 +249,11 @@ export const EditRelatedPublicationViews = () => ({
     created() {
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    mounted() {
-      this.genericPropsFilled.relatedPublicationsText = this.textareaContent;
-    },
     beforeDestroy() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
       editComponentsChanged(updateObj) {
-          console.log(updateObj);
         if (updateObj.data.id === this.genericProps.id) {
           this.genericProps = updateObj.data;
          // this.genericProps.publications.text = this.genericProps.textareaContent;
@@ -274,46 +265,17 @@ export const EditRelatedPublicationViews = () => ({
       },
     },
     data: () => ({
-        textareaContent: `# Why user stories?
-&nbsp;
-User Stories can help you to constantly improve the value of
-your product, estimate development efforts in an appropriate way and prioritize
-feature development during the MVP and post-MVP stages.
-&nbsp;
-# How user stories
-&nbsp;
-## 1. Step think about "Who" - type of user
-&nbsp;
-Try to omit using such a role as simply
-“the user”. It can be applied to any person - from your customers to admins -
-and, therefore, it doesn’t reflect the personality of particular target groups,
-the way they interact with the application. You can create personas.
-&nbsp;
-## 2. Step think about the "What" - function, UI & UX
-&nbsp;
-Define what functionality each user expects. How she’s going to interact with the app.
-&nbsp;
-## 3. Step think about the "Why" - added value
-&nbsp;
-It should either improve the UX, increase retention rates,
-shorten users’ journey to the issue solution or whatever. Each Story should
-contribute something to the general goal of your product. `,
       genericProps: {
-        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
         id: '1',
-/*
-      labelTextarea: 'Related Publications',
-      subtitlePreview: 'Preview',
-      showPlaceholder: false,
-      isVerticalLayout: true,
-*/
       },
       genericPropsFilled: {
         id: '2',
         labelTextarea: 'Related Publications',
         subtitlePreview: 'Preview',
         showPlaceholder: false,
-        relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
       },
     }),
   });
@@ -330,6 +292,7 @@ export const GenericTextAreaPreviewPublications = () => ({
       <v-row class="py-3" >
         <v-col >
           <GenericTextareaPreviewLayout v-bind="genericProps"
+                                        placeholderTextarea ="Use a PID here"
                                         @changedText="catchChangedText($event)" >
             <metadata-publications v-bind="publicationsObject" />
           </GenericTextareaPreviewLayout>
@@ -370,12 +333,12 @@ export const GenericTextAreaPreviewPublications = () => ({
     computed: {
       publicationsObject() {
         return {
-            text: this.genericProps.relatedPublicationsText,
+          relatedPublicationsText: this.genericProps.textareaContent,
         };
       },
       filledPublicationsObject() {
         return {
-            text: this.genericPropsFilled.relatedPublicationsText,
+          relatedPublicationsText: this.genericPropsFilled.textareaContent,
         };
       },
     },
@@ -384,7 +347,7 @@ export const GenericTextAreaPreviewPublications = () => ({
         id: '1',
         columns: '',
         labelTextarea: 'Related Publications',
-        relatedPublicationsText: '',
+        textareaContent: '',
         subtitlePreview: 'Preview',
         isVerticalLayout: true,
       },

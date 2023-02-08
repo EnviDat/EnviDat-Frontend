@@ -149,6 +149,7 @@ export default {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.relatedDatasetsText,
         isVerticalLayout: true,
+        placeholderTextarea: this.labels.placeholder,
       };
     },
     datasetObject() {
@@ -162,7 +163,7 @@ export default {
       return getValidationMetadataEditingObject(EDITMETADATA_RELATED_DATASETS);
     },
     previewRelatedDatasetsText() {
-      return this.previewText ? this.previewText : this.relatedDatasetsText;
+      return this.previewText || this.relatedDatasetsText;
     },
   },
   methods: {
@@ -195,8 +196,10 @@ export default {
     EDIT_METADATA_RELATED_DATASETS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATED_DATASETS_TITLE,
-      cardInstructions: `Add links to other EnviDat datasets which are relevant to this one (ex. https://www.envidat.ch/#/metadata/eur11).
-          Or add others links and use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.`,
+      cardInstructions: `Add links to other EnviDat datasets that are relevant to this one. Or add others links and use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.
+                            Click into the text area for examples.`,
+      placeholder: 'Example entries: \n * dataset-for-ogrs-2018-publication\n' +
+          ' * https://www.envidat.ch/#/metadata/dataset-for-ogrs-2018-publication ',
       subtitlePreview: 'Related Datasets Preview',
     },
     validationErrors: {
