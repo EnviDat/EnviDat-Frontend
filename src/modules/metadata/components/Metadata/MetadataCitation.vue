@@ -6,7 +6,7 @@
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="citationText"
+    <v-card-text v-if="!showPlaceholder && citationText"
                   class="readableText px-4 py-0"
                   v-html="markdownText" >
 

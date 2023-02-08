@@ -107,7 +107,7 @@ const metadataInEditingValidations = {
         .string()
         .nullable()
         .transform((value, originalValue) => originalValue === '' ? null : value)
-        .min(20, 'Please use at least 20 characters to describe the related publications.'),
+        .min(8, 'Please use at least 8 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
@@ -115,7 +115,7 @@ const metadataInEditingValidations = {
         .string()
         .nullable()
         .transform((value, originalValue) => originalValue === '' ? null : value)
-        .min(20, 'Please use at least 20 characters to describe the related datasets.'),
+        .min(8, 'Please use at least 8 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({

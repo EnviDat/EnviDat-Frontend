@@ -58,6 +58,7 @@
                       append-icon="arrow_drop_down"
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
+                      :placeholder="labels.placeholder"
                       :search-input.sync="search"
                       :readonly="mixinMethods_isFieldReadOnly('keywords')"
                       :hint="mixinMethods_readOnlyHint('keywords')"
@@ -157,7 +158,8 @@ export default {
     rulesKeywords: [],
     labels: {
       title: EDIT_METADATA_KEYWORDS_TITLE,
-      keywordsLabel: 'Click here to pick Keywords',
+      keywordsLabel: 'Keywords',
+      placeholder: 'Pick keywords from the list or type in a new keyword',
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
           ' To create a new keyword type it and press enter.',

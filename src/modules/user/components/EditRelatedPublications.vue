@@ -145,6 +145,7 @@ export default {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.relatedPublicationsText,
         isVerticalLayout: true,
+        placeholderTextarea: this.labels.placeholder,
       };
     },
     publicationsObject() {
@@ -190,7 +191,9 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add links to other publications via DORA link (ex. https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:22390 or directly via the DORA permanent ID ex. wsl:29664)',
+      cardInstructions: 'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
+      placeholder: 'Example entries: \n  * wsl:18753 \n' +
+          ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {
