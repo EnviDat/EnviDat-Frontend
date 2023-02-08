@@ -172,7 +172,7 @@ const genericProps5 = {
 
 
 export default {
-  title: '6 Detail Views / Mode View',
+  title: '6 Detail Views / Metadata Detail Page View',
   decorators: [],
   parameters: {},
 };

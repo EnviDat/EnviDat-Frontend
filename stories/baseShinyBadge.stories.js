@@ -11,10 +11,8 @@
 
 import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
-import { CHIPS } from './storybookFolder';
-
 export default {
-  title: `${CHIPS} / Shiny Badges`,
+  title: '1 Base Elements / Shiny Badges',
   decorators: [],
   parameters: {},
 };
