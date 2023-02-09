@@ -12,8 +12,8 @@ import {
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
+import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 import authorCollection from './testdata/authorCollection.json';
-import { CARD_VIEWS } from './storybookFolder';
 
 import unFormatedMetadataCards from './js/metadata';
 
@@ -42,10 +42,73 @@ const methods = {
 
 
 export default {
-  title: `${CARD_VIEWS}`,
+  title: '3 Cards / Author Cards',
   decorators: [],
-  parameters: {},
+  parameters: {
+    viewport: {
+      viewports: MINIMAL_VIEWPORTS,
+    },
+  },
 };
+
+const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
+const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
+const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
+
+const Template = (args, { argTypes }) => ({
+  components: { AuthorCard },
+  props: Object.keys(argTypes),
+  template: '<AuthorCard v-bind="$props" />',
+});
+
+/*
+export const Empty = Template.bind({});
+*/
+
+
+export const Author1 = Template.bind({});
+Author1.args = { author: authorFromCollection };
+
+const authorLoadsOfDatacredit = {
+  firstName: 'Felix',
+    lastName: 'Gugerli',
+    fullName: 'Felix Gugerli',
+    datasetCount: 7,
+    affiliation: 'WSL',
+    id: {
+    identifier: '0000-0003-3878-1845',
+  },
+  email: 'felix.gugerli@wsl.ch',
+    totalDataCredits: {
+    collection: 10,
+      validation: 3,
+      curation: 12,
+      software: 10,
+      publication: 15,
+      supervision: 1,
+  },
+};
+
+export const AuthorManyDataCredit = Template.bind({});
+AuthorManyDataCredit.args = { author: authorLoadsOfDatacredit };
+
+export const AuthorCardInfosExpanded = Template.bind({});
+AuthorCardInfosExpanded.args = {
+  ...AuthorManyDataCredit.args,
+  overrideAuthorInfosExpanded: true,
+};
+
+export const MobileAuthorCard = Template.bind({});
+MobileAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+MobileAuthorCard.parameters = mobileViewportParams;
+
+export const MobileLargeAuthorCard = Template.bind({});
+MobileLargeAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+MobileLargeAuthorCard.parameters = mobileLargeViewportParams;
+
+export const TabletAuthorCard = Template.bind({});
+TabletAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+TabletAuthorCard.parameters = tabletViewportParams;
 
 export const AuthorCardViews = () => ({
   components: {
@@ -81,7 +144,7 @@ export const AuthorCardViews = () => ({
   <v-container grid-list-lg fluid pa-0>
     <v-row>
 
-      <v-col cols="12" md="4" pt-5 >
+<!--      <v-col cols="12" md="4" pt-5 >
         <author-card :author="emptyAuthor" />
       </v-col>
 
@@ -92,7 +155,7 @@ export const AuthorCardViews = () => ({
 
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" />
-      </v-col>
+      </v-col>-->
 
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
@@ -141,25 +204,7 @@ export const AuthorCardViews = () => ({
       'collection',
       'software',
     ],
-    author: {
-      firstName: 'Felix',
-      lastName: 'Gugerli',
-      fullName: 'Felix Gugerli',
-      datasetCount: 7,
-      affiliation: 'WSL',
-      id: {
-        identifier: '0000-0003-3878-1845',
-      },
-      email: 'felix.gugerli@wsl.ch',
-      totalDataCredits: {
-        collection: 10,
-        validation: 3,
-        curation: 12,
-        software: 10,
-        publication: 15,
-        supervision: 1,
-      },
-    },
+    author: authorLoadsOfDatacredit,
     author2: {
       firstName: 'Felix',
       lastName: 'Gugerli',
