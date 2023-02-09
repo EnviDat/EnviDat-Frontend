@@ -285,6 +285,27 @@ export async function listUploadedParts(file, { uploadId, key }) {
   }
 }
 
+export async  function getPresignedUrlForDownload(resourceId) {
+
+  const actionUrl = 'get_presigned_url_download';
+  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const payload = { id: resourceId };
+
+  try {
+    const res = await axios.post(url, payload);
+
+    const preSignedUrl = res.data.result.signed_url || res.data.result;
+
+    console.log(`Presigned Url: ${preSignedUrl}`);
+    return preSignedUrl;
+
+  } catch (error) {
+    console.log(`Getting presigned url for download failed: ${error}`);
+    return error;
+  }
+
+}
+
 export function hasUppyInstance () {
   return uppyInstance !== null;
 }
