@@ -13,19 +13,34 @@ import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import globalMethods from '@/factories/globalMethods';
+import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import baseTags from '@/modules/metadata/store/metadataTags';
+import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
 import metadata from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
 enhanceMetadatas(metadata, cardBGImages, categoryCards);
 
+
+const popularTags = getPopularTags(metadata, undefined, 1);
+const mergedWithPopulars = [...baseTags, ...popularTags.slice(0, 15)];
+const allTags = getEnabledTags(mergedWithPopulars, metadata);
+
 export default {
-  title: '6 Detail Views / Metadata List View',
+  title: '6 Detail Views / Metadata List',
   component: MetadataList,
   decorators: [],
-  parameters: {},
+  parameters: {
+    viewport: {
+      viewports: MINIMAL_VIEWPORTS,
+    },
+  },
 };
 
+const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
+const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
+const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { MetadataList },
@@ -39,31 +54,46 @@ EmptyMetadataList.args = {
   categoryCards,
 }
 
+
 export const ListLoading = Template.bind({});
 ListLoading.args = {
+  ...EmptyMetadataList.args,
   loading: true,
   showSearch: true,
 }
 
-export const ListOnly = Template.bind({});
-ListOnly.args = {
+export const MinimalList = Template.bind({});
+MinimalList.args = {
+  ...EmptyMetadataList.args,
   listContent: metadata,
   showSearch: true,
-}
+  allTags,
+};
 
-/*
-export const MetadataListEmpty = () => ({
-    components: { MetadataList },
-    template: `
-    <v-row style="border: solid 1px; background-color: grey;">
-    
-      <v-col >
-        <MetadataList />
-      </v-col>
-    
-    </v-row>`,
-    data: () => ({
-    }),
-  });
-*/
+export const MobileEmptyMetadataList = Template.bind({});
+MobileEmptyMetadataList.args = { ...EmptyMetadataList.args };
+MobileEmptyMetadataList.parameters = mobileViewportParams;
 
+export const MobileListLoading = Template.bind({});
+MobileListLoading.args = { ... ListLoading.args };
+MobileListLoading.parameters = mobileViewportParams;
+
+export const MobileMinimalListSmall = Template.bind({});
+MobileMinimalListSmall.args = { ...MinimalList.args };
+MobileMinimalListSmall.parameters = mobileViewportParams;
+
+export const MobileMinimalListLarge = Template.bind({});
+MobileMinimalListLarge.args = { ...MinimalList.args };
+MobileMinimalListLarge.parameters = mobileLargeViewportParams;
+
+export const TabletEmptyMetadataList = Template.bind({});
+TabletEmptyMetadataList.args = { ...EmptyMetadataList.args };
+TabletEmptyMetadataList.parameters = tabletViewportParams;
+
+export const TabletListLoading = Template.bind({});
+TabletListLoading.args = { ... ListLoading.args };
+TabletListLoading.parameters = tabletViewportParams;
+
+export const TabletMinimalList = Template.bind({});
+TabletMinimalList.args = { ...MinimalList.args };
+TabletMinimalList.parameters = tabletViewportParams;
