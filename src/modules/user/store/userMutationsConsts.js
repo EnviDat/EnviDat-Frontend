@@ -14,7 +14,38 @@ const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 export const GET_USER_CONTEXT = 'GET_USER_CONTEXT';
 export const GET_USER_CONTEXT_ERROR = 'GET_USER_CONTEXT_ERROR';
 export const GET_USER_CONTEXT_SUCCESS = 'GET_USER_CONTEXT_SUCCESS';
+
 export const ACTION_GET_USER_CONTEXT = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/envidat_context_user_show.json';
+  }
+
+  return 'envidat_context_user_show';
+};
+
+export const USER_SIGNIN = 'USER_SIGNIN';
+export const USER_SIGNIN_ERROR = 'USER_SIGNIN_ERROR';
+export const USER_SIGNIN_SUCCESS = 'USER_SIGNIN_SUCCESS';
+export const ACTION_USER_SIGNIN = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/passwordless_user_login.json';
+  }
+
+  return 'passwordless_user_login';
+};
+
+export const REQUEST_TOKEN = 'REQUEST_TOKEN';
+export const REQUEST_TOKEN_ERROR = 'REQUEST_TOKEN_ERROR';
+export const REQUEST_TOKEN_SUCCESS = 'REQUEST_TOKEN_SUCCESS';
+export const ACTION_REQUEST_TOKEN = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/passwordless_perform_reset.json';
+  }
+
+  return 'passwordless_perform_reset';
+};
+
+export const ACTION_GET_USER_CONTEXT_TOKEN = () => {
   if (import.meta.env.DEV && useTestdata) {
     return './testdata/passwordless_get_user.json';
   }
@@ -22,9 +53,11 @@ export const ACTION_GET_USER_CONTEXT = () => {
   return 'passwordless_get_user';
 };
 
+/*
 export const API_TOKEN = 'API_TOKEN';
 export const API_TOKEN_ERROR = 'API_TOKEN_ERROR';
 export const API_TOKEN_SUCCESS = 'API_TOKEN_SUCCESS';
+*/
 export const ACTION_API_TOKEN = () => {
   if (import.meta.env.DEV && useTestdata) {
     return './testdata/passwordless_request_api_token.json';
@@ -33,10 +66,12 @@ export const ACTION_API_TOKEN = () => {
   return 'passwordless_request_api_token';
 };
 
+/*
 export const RESET_KEY = 'RESET_KEY';
 export const RESET_KEY_ERROR = 'RESET_KEY_ERROR';
 export const RESET_KEY_SUCCESS = 'RESET_KEY_SUCCESS';
-export const ACTION_REQUEST_TOKEN = () => {
+*/
+export const ACTION_REQUEST_TOKEN_RESET = () => {
   if (import.meta.env.DEV && useTestdata) {
     return './testdata/passwordless_request_reset_key.json';
   }
@@ -47,7 +82,16 @@ export const ACTION_REQUEST_TOKEN = () => {
 export const USER_SIGNOUT = 'USER_SIGNOUT';
 export const USER_SIGNOUT_ERROR = 'USER_SIGNOUT_ERROR';
 export const USER_SIGNOUT_SUCCESS = 'USER_SIGNOUT_SUCCESS';
+
 export const ACTION_USER_SIGNOUT = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/passwordless_user_logout.json';
+  }
+
+  return 'passwordless_user_logout';
+};
+
+export const ACTION_USER_SIGNOUT_REVOKE_TOKEN = () => {
   if (import.meta.env.DEV && useTestdata) {
     return './testdata/passwordless_revoke_api_token.json';
   }
@@ -59,7 +103,9 @@ export const VALIDATION_ERROR = 'Validation Error';
 export const NOT_AUTHORIZED_ERROR = 'NotAuthorized';
 
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
+/*
 export const EXCHANGE_TOKENS = 'EXCHANGE_TOKENS';
+*/
 
 export const ACTION_COLLABORATOR_DATASET_IDS = () => {
   if (import.meta.env.DEV && useTestdata) {

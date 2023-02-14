@@ -52,13 +52,16 @@ import {
   ACTION_API_TOKEN,
   ACTION_USER_SIGNOUT,
   FETCH_USER_DATA,
-  EXCHANGE_TOKENS,
   GET_USER_CONTEXT,
-  RESET_KEY,
-  API_TOKEN,
+  REQUEST_TOKEN,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
   VALIDATION_ERROR,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_REQUEST_TOKEN_RESET,
+  ACTION_USER_SIGNIN,
+  USER_SIGNIN,
+  ACTION_USER_SIGNOUT_REVOKE_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
 import {
   USER_DASHBOARD_PATH,
@@ -104,6 +107,9 @@ export default {
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
+    },
     prefilledEmail() {
       return this.$route.query.email;
     },
@@ -124,27 +130,36 @@ export default {
   },
   methods: {
     checkUserSignedIn() {
+
+      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_GET_USER_CONTEXT,
+        action,
         commit: true,
         mutation: GET_USER_CONTEXT,
       });
     },
     async catchSignIn(email, key) {
+      const action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
+
       await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${EXCHANGE_TOKENS}`,
+        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
         {
-          action: ACTION_API_TOKEN,
+          action,
           body: { email, key },
           commit: true,
-          mutation: API_TOKEN,
+          mutation: USER_SIGNIN,
         },
       );
 
       if (!this.errorField && !this.errorFieldText) {
+        const contextAction = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+
         // Get user context
-        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-          action: ACTION_GET_USER_CONTEXT,
+        await this.$store.dispatch(
+        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: contextAction,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
@@ -162,16 +177,20 @@ export default {
       }
     },
     catchRequestToken(email) {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${EXCHANGE_TOKENS}`, {
-        action: ACTION_REQUEST_TOKEN,
+      const action = this.useTokenSignin ? ACTION_REQUEST_TOKEN_RESET : ACTION_REQUEST_TOKEN;
+
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+        action,
         body: { email },
         commit: true,
-        mutation: RESET_KEY,
+        mutation: REQUEST_TOKEN,
       });
     },
     catchSignOut() {
+      const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_USER_SIGNOUT,
+        action,
         commit: true,
         mutation: USER_SIGNOUT,
       });

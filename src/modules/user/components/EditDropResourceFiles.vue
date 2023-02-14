@@ -23,7 +23,7 @@
         </v-col>
       </v-row>
 
-      <v-row class="px-10">
+      <v-row class="px-5">
         <v-col v-for="(state, index) in states"
                 :key="index"
                :class="index >= states.length - 1 ? 'shrink' : ''"

@@ -21,7 +21,6 @@ import {
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_USER_ORGANIZATIONS,
   FETCH_USER_DATA,
-  EXCHANGE_TOKENS,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
   USER_GET_COLLABORATOR_DATASETS_SUCCESS,
@@ -67,25 +66,6 @@ export default {
 
     await axios.get(url)
       // await axios({ method, url, body })
-      .then((response) => {
-        if (payload.commit) {
-          commit(`${payload.mutation}_SUCCESS`, response.data.result);
-        }
-      })
-      .catch((error) => {
-        commit(`${payload.mutation}_ERROR`, error);
-      });
-  },
-  async [EXCHANGE_TOKENS]({ commit }, payload) {
-    commit(payload.mutation);
-
-    const body = payload.body || {};
-
-    // unpack the action because it might be wrapped to provide a test url
-    const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-
-    await axios.post(url, body)
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
