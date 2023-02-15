@@ -51,7 +51,7 @@ import {
   ACTION_REQUEST_TOKEN,
   ACTION_API_TOKEN,
   ACTION_USER_SIGNOUT,
-  FETCH_USER_DATA,
+  SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
   REQUEST_TOKEN,
   USER_SIGNIN_NAMESPACE,
@@ -127,19 +127,14 @@ export default {
 
       return '';
     },
-    requestMethod() {
-      return this.useTokenSignin ? 'post' : 'get';
-    },
   },
   methods: {
     checkUserSignedIn() {
-
       const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
 
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
         commit: true,
-        method: this.requestMethod,
         mutation: GET_USER_CONTEXT,
       });
     },
@@ -147,12 +142,11 @@ export default {
       const action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
 
       await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
           body: { email, key },
           commit: true,
-          method: this.requestMethod,
           mutation: USER_SIGNIN,
         },
       );
@@ -162,11 +156,10 @@ export default {
 
         // Get user context
         await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action: contextAction,
           commit: true,
-          method: this.requestMethod,
           mutation: GET_USER_CONTEXT,
         });
         // Then redirect with context set
@@ -185,21 +178,19 @@ export default {
     catchRequestToken(email) {
       const action = this.useTokenSignin ? ACTION_REQUEST_TOKEN_RESET : ACTION_REQUEST_TOKEN;
 
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
         body: { email },
         commit: true,
-        method: this.requestMethod,
         mutation: REQUEST_TOKEN,
       });
     },
     catchSignOut() {
       const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
 
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
         commit: true,
-        method: this.requestMethod,
         mutation: USER_SIGNOUT,
       });
     },

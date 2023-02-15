@@ -18,11 +18,11 @@ import { extractBodyIntoUrl } from '@/factories/stringFactory';
 import {
   ACTION_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
-  FETCH_USER_DATA,
+  SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
   USER_EDITING_UPDATE,
   USER_EDITING_UPDATE_ERROR,
-  USER_EDITING_UPDATE_SUCCESS,
+  USER_EDITING_UPDATE_SUCCESS, requestMethodsForLoginActions,
 } from './userMutationsConsts';
 
 
@@ -39,17 +39,17 @@ if (!useTestdata) {
 
 
 export default {
-  async [FETCH_USER_DATA]({ commit }, payload) {
+  async [SIGNIN_USER_ACTION]({ commit }, payload) {
     commit(payload.mutation);
 
-    const data = payload.body || {};
-    const method = payload.method || 'get';
+    const data = payload.body || undefined;
+    const method = requestMethodsForLoginActions(payload.action);
 
     // unpack the action because it might be wrapped to provide a test url
     const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
 
     let url = actionUrl;
-    if (method.toLowerCase() === 'get') {
+    if (method.toLowerCase() === 'get' && data) {
       url = extractBodyIntoUrl(actionUrl, data);
     }
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
@@ -91,7 +91,7 @@ export default {
     try {
       await axios.post(url, postData);
 
-      await dispatch(FETCH_USER_DATA,
+      await dispatch(SIGNIN_USER_ACTION,
         {
           action: ACTION_GET_USER_CONTEXT,
           commit: true,

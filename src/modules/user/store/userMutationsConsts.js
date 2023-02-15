@@ -103,9 +103,7 @@ export const VALIDATION_ERROR = 'Validation Error';
 export const NOT_AUTHORIZED_ERROR = 'NotAuthorized';
 
 export const FETCH_USER_DATA = 'FETCH_USER_DATA';
-/*
-export const EXCHANGE_TOKENS = 'EXCHANGE_TOKENS';
-*/
+export const SIGNIN_USER_ACTION = 'SIGNIN_USER_ACTION';
 
 export const ACTION_COLLABORATOR_DATASET_IDS = () => {
   if (import.meta.env.DEV && useTestdata) {
@@ -261,3 +259,27 @@ export const METADATA_DELETE_RESOURCE_SUCCESS = 'METADATA_DELETE_RESOURCE_SUCCES
 
 export const USER_NAMESPACE = 'user';
 export const USER_SIGNIN_NAMESPACE = 'userSignIn';
+
+
+const requests = {
+  get:[
+    ACTION_GET_USER_CONTEXT_TOKEN,
+    ACTION_GET_USER_CONTEXT,
+    ACTION_REQUEST_TOKEN,
+    ACTION_USER_SIGNIN,
+    ACTION_USER_SIGNOUT_REVOKE_TOKEN,
+    ACTION_USER_SIGNOUT,
+  ],
+  post: [
+    ACTION_REQUEST_TOKEN_RESET,
+    ACTION_API_TOKEN,
+  ],
+}
+
+export function requestMethodsForLoginActions(action) {
+
+  const keys = Object.keys(requests);
+  const matches = keys.filter((key) => requests[key].includes(action));
+
+  return matches[0];
+}
