@@ -116,14 +116,6 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
-/**
- * @returns {String} ISO Formated Date String from now
- */
-export function getCurrentDate() {
-  const now = new Date();
-  const isoFormatted = formatISO(now);
-  return formatDate(isoFormatted);
-}
 
 export function createLicense(dataset) {
   if (!dataset) {
@@ -344,80 +336,6 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
-let localResoureID = 0;
-
-export function initializeLocalResource(metadataId, file = null, url = '') {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : getFileFormat(file);
-  let resourceName = isLink ? '' : file.name;
-  const fileName = isLink ? '' : file.name;
-  const size = !isLink ? file.size : 0;
-
-  if (!isLink) {
-    const splits = resourceName.split('.');
-    resourceName = splits[0];
-  }
-
-  localResoureID++;
-
-  const now = getCurrentDate();
-
-  return {
-    metadataId,
-    name: resourceName,
-    fileName,
-    file,
-    size,
-    id: `resoureId_${localResoureID}`,
-    [localIdProperty]: `resoureId_${localResoureID}`,
-    url_type: isLink ? '' : 'upload',
-    format: resourceFormat,
-    url,
-    existsOnlyLocal: true,
-    created: now,
-    lastModified: now,
-    loading: false,
-  };
-}
-
-export function createLocalResource(
-  metadataId,
-  name,
-  description,
-  file,
-  fileFormat = '',
-  size = 0,
-  url = '',
-  doi = '',
-  restricted = false,
-) {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : fileFormat;
-
-  const created = getCurrentDate();
-
-  return {
-    description,
-    metadataId,
-    url_type: isLink ? '' : 'upload',
-    id: '',
-    size,
-    // mimetype: resource.mimetype ? resource.mimetype : '',
-    // cacheUrl: resource.cache_url ? resource.cache_url : '',
-    doi,
-    name,
-    url,
-    restricted,
-    format: resourceFormat,
-    existsOnlyLocal: true,
-    // state: resource.state ? resource.state : '',
-    created,
-    lastModified: created,
-    // position: resource.position ? resource.position : '',
-    // revisionId: resource.revision_id ? resource.revision_id : '',
-    isProtected: restricted,
-  };
-}
 
 export function createResource(resource, datasetName) {
   if (!resource) {

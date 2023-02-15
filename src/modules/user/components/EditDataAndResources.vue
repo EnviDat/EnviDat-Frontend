@@ -8,8 +8,8 @@
             <EditResource v-bind="selectedResource"
                           @closeClicked="catchEditResourceClose"
                           @saveResource="catchSaveResourceClose"
-                          @triggerValidateField="validateField"
-                          :validationErrors="validationErrors"/>
+                          @previewImageClicked="showFullScreenImage"
+            />
 
           </v-col>
         </v-row>
@@ -80,7 +80,6 @@ import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
 } from '@/factories/userEditingValidations';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
@@ -92,7 +91,6 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
-  updateResourceWithFileUrl,
 } from '@/factories/uploadFactory';
 
 import {
@@ -166,7 +164,7 @@ export default {
   },
   computed: {
     metadataId() {
-      return this.$route.params.metadataid;
+      return this.$route?.params?.metadataid || null;
     },
     metadataResourcesGenericProps() {
       return {
@@ -226,12 +224,16 @@ export default {
 */
 
       let message = '';
+/*
       let uploadURL = null;
+*/
       if (oks > 0) {
         message += `${oks} uploads successful`;
         this.uploadProgressIcon = 'check_circle';
 
+/*
         uploadURL = result.successful[0]?.uploadURL || null;
+*/
       }
       if (fails > 0) {
         message += `${fails} failed uploads`;
@@ -243,15 +245,15 @@ export default {
       this.uploadProgessText = message;
 
 
+/*
       if (uploadURL) {
         await updateResourceWithFileUrl(uploadURL, this.$store);
-/*
         const resources = this.$store?.getters[`${USER_NAMESPACE}/resources`];
 
         console.log('after updateResourceWithFileUrl')
         console.log(resources)
-*/
       }
+*/
 
       // reset uppy to be able to upload another file
       this.resetUppy()
@@ -357,26 +359,16 @@ export default {
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
-    catchSaveResourceClose() {
-      eventBus.emit(SAVE_EDITING_RESOURCE, this.selectedResource);
+    catchSaveResourceClose(resourceProps) {
+      eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
-    validateField(field) {
-      isFieldValid(
-          field.property,
-          field.value,
-          this.validations,
-          this.validationErrors,
-      );
+    showFullScreenImage() {
+
     },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
-    validationErrors: {
-      name: null,
-      description: null,
-      url: null,
-    },
     envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
     uploadProgessText: null,
     uploadProgressIcon: '',
