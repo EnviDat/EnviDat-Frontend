@@ -1,7 +1,6 @@
 <template>
   
   <div class="shinyBadge"
-        :style="isSmall ? '' : ''"
         :class="isSmall ? 'v-btn v-size--x-small px-2 pt-2 smallBadge' : ''">
 
     {{ upperText }}

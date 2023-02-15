@@ -127,7 +127,7 @@ export default {
   }),
   computed: {
     unselectedTags() {
-      if (!this.allTags || this.allTags?.length <= 0){
+      if (!this.allTags){
         return [];
       }
 

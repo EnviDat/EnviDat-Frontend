@@ -110,7 +110,7 @@ export const TabletAuthorCard = Template.bind({});
 TabletAuthorCard.args = { ...AuthorCardInfosExpanded.args };
 TabletAuthorCard.parameters = tabletViewportParams;
 
-export const AuthorCardViews = () => ({
+export const AuthorCardList = () => ({
   components: {
     AuthorCard,
     DataCreditLayout,

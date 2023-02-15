@@ -128,7 +128,6 @@ import {
 import {
   createBody,
   createCitation,
-  createDetails,
   createFunding,
   createHeader,
   createLocation,

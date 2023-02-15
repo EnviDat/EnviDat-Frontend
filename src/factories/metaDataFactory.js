@@ -257,25 +257,24 @@ export function createCitation(dataset) {
   const authors = getAuthorsCitationString(dataset);
   const title = dataset.title;
 
-  let text = `${authors.trim()}  <span style="font-weight: bold;" >${title}.</span> `;
-
   let { publication } = dataset;
 
-  if (typeof dataset.publication === 'string') {
-    publication = JSON.parse(dataset.publication);
+  if (publication && typeof publication === 'string') {
+    try {
+      publication = JSON.parse(publication);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  if (publication && publication.publisher) {
-    text += ` <span style="font-style: italic;" >${publication.publisher}</span> `;
-  }
+  const publisher = publication?.publisher || '';
+  const year = publication?.publication_year || publication?.publicationYear || '';
+  const doi = dataset.doi || '';
 
-  if (publication && publication.publication_year || publication.publicationYear) {
-    text += ` <span style="font-weight: bold;" >${publication.publication_year || publication.publicationYear}</span>, `;
-  }
-
-  if (dataset.doi) {
-    text += ` <a href="https://www.doi.org/${dataset.doi}" target="_blank">https://www.doi.org/${dataset.doi}</a>. `;
-  }
+  let text = `${authors.trim()}  <span style="font-weight: bold;" >${title}.</span> `;
+  text += ` <span style="font-style: italic;" >${publisher}</span> `;
+  text += ` <span style="font-weight: bold;" >${year}</span>, `;
+  text += ` <a href="https://www.doi.org/${doi}" target="_blank">https://www.doi.org/${doi}</a>. `;
 
 /*
   text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
@@ -965,6 +964,7 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
 /**
  * @param {Object} metadataEntry
  * @param {Array} cardBGImages
+ * @param {Array} categoryCards
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
@@ -1125,7 +1125,7 @@ export function extractPIDMapFromText(text) {
 
   const urlsPIDValues = Array.from(urlsPIDMap.values());
 
-  if (urlsPIDValues && urlsPIDValues.length > 0) {
+  if (urlsPIDValues.length > 0) {
 
     // in case there are urls in the text, make sure not to overwrite any
     onlyPIDs.forEach((value, key) => {

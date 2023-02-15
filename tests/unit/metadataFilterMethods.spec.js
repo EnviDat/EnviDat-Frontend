@@ -1,4 +1,4 @@
-import { it, describe, expect } from 'vitest';
+import { it, expect } from 'vitest';
 
 import {
   createTag,

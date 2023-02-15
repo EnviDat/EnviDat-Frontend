@@ -59,10 +59,7 @@ import {
 
 import globalMethods from '@/factories/globalMethods';
 
-import {
-  METADATA_PUBLICATIONS_TITLE,
-  METADATA_KEYWORDS_TITLE,
-} from '@/factories/metadataConsts';
+import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';

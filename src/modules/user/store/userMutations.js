@@ -42,7 +42,7 @@ import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metad
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
-import { getAuthorName, mergeEditingAuthor } from '@/factories/authorFactory';
+import { getAuthorName } from '@/factories/authorFactory';
 import {
   CLEAR_METADATA_EDITING,
   METADATA_CANCEL_AUTHOR_EDITING,

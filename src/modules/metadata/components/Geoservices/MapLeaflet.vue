@@ -291,10 +291,12 @@ export default {
       }
     },
     setupMap() {
+/*
       if (this.isGcnet) {
         // Disable editing
         this.isMapEditable = false;
       }
+*/
 
       this.map = new L.Map(this.$refs.map, {
         zoomControl: false,
