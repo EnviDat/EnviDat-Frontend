@@ -45,7 +45,7 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { format, parse } from 'date-fns';
+import { format, formatISO, isValid, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
@@ -781,6 +781,11 @@ export function parseDateStringToCKANFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, enviDatDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, ckanDateFormat);
 }
 
@@ -791,5 +796,47 @@ export function parseDateStringToEnviDatFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, enviDatDateFormat);
 }
+
+// ex. 2023-02-14T11:00:31.518140
+export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
+
+/**
+ *
+ * @param {Date} date
+ * @returns {string|null}
+ */
+export function formatDateTimeToCKANFormat(date) {
+
+  if (!date) {
+    return null;
+  }
+
+  return format(date, ckanDateTimeFormat);
+}
+
+/**
+ *
+ * @param {string} dateString
+ * @returns {string|null}
+ */
+export function parseDateStringToReadableFormat(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = parse(dateString, ckanDateTimeFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
+  return formatDate(parsedDate);
+}
+

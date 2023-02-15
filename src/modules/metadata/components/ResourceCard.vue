@@ -98,7 +98,7 @@
 
             <base-icon-label-view
               v-if="created"
-              :text="created"
+              :text="readableCreated"
               :label="dateCreatedIcon ? '' : 'Created at:'"
               :icon="dateCreatedIcon"
               icon-tooltip="Date of file creation"
@@ -107,7 +107,7 @@
 
             <base-icon-label-view
               v-if="lastModified"
-              :text="lastModified"
+              :text="readableLastModified"
               :label="lastModifiedIcon ? '' : 'Modified at:'"
               :icon="lastModifiedIcon"
               icon-tooltip="Date of last modification"
@@ -223,6 +223,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
+import { formatDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'ResourceCard',
@@ -284,6 +285,12 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    readableCreated() {
+      return formatDate(this.created) || this.created;
+    },
+    readableLastModified() {
+      return formatDate(this.lastModified) || this.lastModified;
+    },
     resourceName() {
       if (!this.name && !!this.url) {
         const splits = this.url.split('/');

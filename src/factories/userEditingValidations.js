@@ -19,7 +19,9 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO, EDITMETADATA_FUNDING_INFO,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -31,6 +33,8 @@ import {
 
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+
+const convertEmptyStringToNull = (value, originalValue) => originalValue === '' ? null : value;
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -65,27 +69,28 @@ const metadataInEditingValidations = {
       authors: yup.array()
         .min(1, 'Please add at least one author.'),
     }),
-  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
-  // yup.object().shape({
-  //   isLink: yup.boolean(),
-  //   name: yup
-  //     .string()
-  //     .required('Resource name is required')
-  //     .min(5, 'Resource name must be at least 5 characters')
-  //     .notOneOf(
-  //       [yup.ref('url')],
-  //       'Title cannot be the same as the resource url',
-  //     ),
-  //   description: yup.string(),
-  //   url: yup.string().when('isLink', {
-  //     is: true,
-  //     then: yup
-  //       .string()
-  //       .url('Resource url must be valid')
-  //       .required('Resource url is required'),
-  //     otherwise: yup.string().notRequired(),
-  //   }),
-  // }),
+  [EDITMETADATA_DATA_RESOURCE]: () =>
+    yup.object().shape({
+      isLink: yup.boolean(),
+      name: yup.string()
+        .required('Resource name is required')
+        .min(5, 'Resource name must be at least 5 characters')
+        .notOneOf(
+          [yup.ref('url')],
+          'Title cannot be the same as the resource url',
+        ),
+      description: yup.string()
+        .nullable()
+        .transform(convertEmptyStringToNull)
+        .min(20, 'Please write at least a minimal description with 20 characters.'),
+      url: yup.string().when('isLink', {
+        is: true,
+        then: yup.string()
+          .url('Resource url must be valid')
+          .required('Resource url is required'),
+        otherwise: yup.string().notRequired(),
+      }),
+  }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
@@ -103,18 +108,16 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
-      relatedPublicationsText: yup
-        .string()
+      relatedPublicationsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .transform(convertEmptyStringToNull)
         .min(20, 'Please use at least 20 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
-      relatedDatasetsText: yup
-        .string()
+      relatedDatasetsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .transform(convertEmptyStringToNull)
         .min(20, 'Please use at least 20 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
@@ -156,7 +159,7 @@ const metadataInEditingValidations = {
           grantNumber: yup.string(),
           institutionUrl: yup.string()
             .nullable()
-            .transform((value, originalValue) => originalValue === '' ? null : value)
+            .transform(convertEmptyStringToNull)
             .matches(urlRegex, 'Please provide an valid link / url.'),
         }),
       ),

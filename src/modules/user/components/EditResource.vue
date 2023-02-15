@@ -1,5 +1,9 @@
 <template>
-  <v-card id="EditResource" :key="id" class="pa-4">
+  <v-card id="EditResource"
+          :key="id"
+          :loading="loading"
+          class="pa-0">
+
     <!-- prettier-ignore -->
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
@@ -13,17 +17,43 @@
                     :tooltipBottom="true"
                     @clicked="$emit('closeClicked')" />
 
+
     <v-form ref="editResourceForm">
-      <v-container fluid class="pa-0">
+      <v-container fluid class="pa-4">
+
+        <template slot="progress">
+          <v-progress-linear color="primary" indeterminate />
+        </template>
+
         <v-row>
-          <v-col cols="12">
-            <div class="text-h5">{{ labels.title }}</div>
+          <v-col cols="6" class="text-h5">
+            {{ labels.title }}
           </v-col>
 
-          <v-col cols="12">
-            <div class="text-body-1">{{ labels.instructions }}</div>
+          <v-col v-if="message">
+            <BaseStatusLabelView
+                statusIcon="check"
+                statusColor="success"
+                :statusText="message"
+                :expandedText="messageDetails"
+            />
+          </v-col>
+          <v-col v-if="error">
+            <BaseStatusLabelView
+                statusIcon="error"
+                statusColor="error"
+                :statusText="error"
+                :expandedText="errorDetails"
+            />
           </v-col>
         </v-row>
+
+        <v-row>
+          <v-col cols="12">
+            <div class="text-subtitle-1">{{ labels.instructions }}</div>
+          </v-col>
+        </v-row>
+
 
         <v-row no-gutters class="pt-4">
           <v-col cols="12">
@@ -36,6 +66,11 @@
               v-model="resourceNameField"
               :error-messages="validationErrors.name"
             />
+
+<!--
+            :readonly="mixinMethods_isFieldReadOnly('resourceName')"
+-->
+
           </v-col>
         </v-row>
 
@@ -53,45 +88,43 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="isLink" no-gutters>
-          <v-col cols="12">
-            <v-text-field
-              :label="labels.url"
-              ref="url"
-              outlined
-              prepend-icon="link"
-              :disabled="loading"
-              v-model="urlField"
-              :error-messages="validationErrors.url"
-            />
-          </v-col>
-        </v-row>
-
-        <v-row v-if="!isLink && isImage" no-gutters>
-          <v-col cols="2"
+        <v-row no-gutters>
+          <v-col v-if="showImagePreview"
+                 cols="4"
                   class="pt-3 pb-4 px-4">
-            <v-img :src="urlField || fileNameField"
+            <v-img :src="urlField"
                    ref="filePreview"
                    style="max-height: 100%; max-width: 100%; cursor: pointer;"
                    @click="catchImageClick"
                    alt="resource image preview"/>
           </v-col>
 
-          <v-col cols="10"
-                class="pt-3 pb-4">
-            <v-text-field
-              :label="labels.fileName"
-              outlined
-              readonly
-              selele
-              prepend-icon="insert_drive_file"
-              value=" "
+          <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
+            <v-textarea v-if="isLongUrl"
+                        :label="isLink ? labels.url : labels.fileName"
+                        outlined
+                        auto-grow
+                        readonly
+                        :disabled="loading"
+                        :value="urlField"
+                        :error-messages="validationErrors.url"
+            />
+
+            <v-text-field v-else
+                          :label="isLink ? labels.url : labels.fileName"
+                          outlined
+                          readonly
+                          :disabled="loading"
+                          :value="urlField"
+                          :error-messages="validationErrors.url"
               />
 
           </v-col>
         </v-row>
 
-        <v-row v-if="!isLink && !isImage" no-gutters>
+<!--
+        <v-row v-if="!isLink && !isImage"
+               no-gutters>
           <v-col cols="12">
             <v-text-field
               :label="labels.fileName"
@@ -102,6 +135,7 @@
             />
           </v-col>
         </v-row>
+-->
 
 <!--
         <v-row no-gutters>
@@ -123,6 +157,8 @@
               :label="labels.format"
               outlined
               readonly
+              :prepend-icon="isLink ? 'link' : 'insert_drive_file'"
+              :disabled="loading"
               :value="format"
             />
           </v-col>
@@ -132,29 +168,28 @@
               :label="labels.size"
               outlined
               readonly
+              :disabled="loading"
               :value="sizeField"
             />
           </v-col>
-<!--
-        </v-row>
 
-        <v-row no-gutters>
--->
           <v-col class="pr-4">
             <v-text-field
               :label="labels.created"
               outlined
               readonly
-              :value="created"
+              :disabled="loading"
+              :value="readableCreated"
             />
           </v-col>
 
-          <v-col class="pr-4">
+          <v-col >
             <v-text-field
               :label="labels.lastModified"
               outlined
               readonly
-              :value="lastModified"
+              :disabled="loading"
+              :value="readableLastModified"
             />
           </v-col>
         </v-row>
@@ -190,18 +225,16 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { getCurrentDate } from '@/factories/metaDataFactory';
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  EDITMETADATA_DATA_RESOURCES,
-  eventBus,
-} from '@/factories/eventBus';
+import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
+import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from '@/factories/userEditingValidations';
+import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
+import { formatDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditResource',
@@ -218,10 +251,12 @@ export default {
       type: String,
       default: '',
     },
+/*
     fileName: {
       type: String,
       default: '',
     },
+*/
     file: {
       type: File,
       default: null,
@@ -232,11 +267,11 @@ export default {
     },
     created: {
       type: String,
-      default: getCurrentDate(),
+      default: undefined,
     },
     lastModified: {
       type: String,
-      default: getCurrentDate(),
+      default: undefined,
     },
     format: {
       type: String,
@@ -260,19 +295,35 @@ export default {
     },
     size: {
       type: Number,
-      default: 0,
+      default: undefined,
     },
     loading: {
       type: Boolean,
       default: false,
     },
-    validationErrors: {
-      type: Object,
-      default: () => ({
-        name: null,
-        description: null,
-        url: null,
-      }),
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
+    },
+    readOnlyFields: {
+      type: Array,
+      default: () => [],
+    },
+    readOnlyExplanation: {
+      type: String,
+      default: '',
     },
   },
   mounted() {
@@ -287,11 +338,9 @@ export default {
       set(value) {
         this.localDescription = value;
 
-        this.checkFieldIsValid('description', value);
+        const valid = this.validateField('description', value);
 
-        if (!this.validationErrors.description) {
-          this.notifyChange('description', value);
-        }
+        this.checkSaveButtonEnabled(valid);
       },
     },
     resourceNameField: {
@@ -301,32 +350,57 @@ export default {
       set(value) {
         this.localName = value;
 
-        this.checkFieldIsValid('name', value);
+        const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
 
-        if (!this.validationErrors.name) {
-          this.notifyChange('name', value);
+        if (nameEqualsUrl) {
+          this.validationErrors.name = 'Resource name can not be the same as the link.';
+          this.checkSaveButtonEnabled(false);
+          return;
         }
+
+        const valid = this.validateField('name', value);
+
+        this.checkSaveButtonEnabled(valid);
       },
     },
     urlField: {
       get() {
+        if (this.file) {
+          this.loadImagePreview(this.file);
+        }
         return this.url;
       },
       set(value) {
-        this.checkFieldIsValid('url', value);
+        const valid = this.validateField('url', value);
 
-        if (!this.validationErrors.url) {
-          this.notifyChange('url', value);
-        }
+        this.checkSaveButtonEnabled(valid);
       },
     },
     fileNameField: {
       get() {
-        if (this.file) {
-          this.loadImagePreview(this.file);
-        }
-        return this.fileName;
+        return this.file;
       },
+    },
+    sizeField: {
+      get() {
+        const size = this.size;
+        if (!size) {
+          return '';
+        }
+
+        let sizeNumber = 0;
+        if (size) {
+          sizeNumber = Number.parseInt(size, 10);
+        }
+
+        return this.mixinMethods_formatBytes(sizeNumber);
+      },
+    },
+    readableCreated() {
+      return formatDate(this.created) || this.created;
+    },
+    readableLastModified() {
+      return formatDate(this.lastModified) || this.lastModified;
     },
     isImage() {
       return this.file?.type.includes('image') || this.mimetype?.includes('image') || false;
@@ -337,48 +411,42 @@ export default {
     isLink() {
       return !!this.url && this.urlType !== 'upload';
     },
-    sizeField: {
-      get() {
-        const size = this.size;
-
-        let sizeNumber = 0;
-        if (size) {
-          sizeNumber = Number.parseInt(size, 10);
-        }
-
-        return this.mixinMethods_formatBytes(sizeNumber);
-      },
+    showImagePreview() {
+      return !this.isLink && this.isImage;
+    },
+    isLongUrl() {
+      return this.url?.length > 100;
+    },
+    validations() {
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCE);
     },
   },
   methods: {
-    checkSaveButtonEnabled() {
-      const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
-      const enabled =
-        !!this.localName && !!this.localDescription && !nameEqualsUrl;
-
-      if (this.isLink) {
-        // validate the whole form to make sure it's
-        this.$refs.editResourceForm.validate();
+    checkSaveButtonEnabled(validField) {
+      if (!validField) {
+        this.saveButtonEnabled = false;
+        return;
       }
 
-      this.saveButtonEnabled = enabled;
-    },
-    notifyChange(property, value) {
-      const newGenericProps = {
-        ...this.$props,
-        property: value,
-        lastModified: getCurrentDate(),
-      };
+      // not test the local fields to ensure the content of both fields is valid
+      // to show the save button
+      const descriptionAndNameValid = isObjectValid(['description', 'name'], {
+        description: this.localDescription,
+        name: this.localName,
+      }, this.validations, this.validationErrors);
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_RESOURCES,
-        data: newGenericProps,
-      });
-
-      this.checkSaveButtonEnabled();
+      this.saveButtonEnabled = descriptionAndNameValid;
     },
     saveResourceClick() {
-      this.$emit('saveResource');
+
+      const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());
+
+      const newGenericProps = {
+        ...this.$props,
+        lastModified: ckanIsoFormat,
+      };
+
+      this.$emit('saveResource', newGenericProps);
     },
     loadImagePreview(file) {
       const vm = this;
@@ -394,14 +462,16 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    checkFieldIsValid(property, value) {
-      this.$emit('triggerValidateField', {
-        property,
-        value,
-      });
-    },
     catchImageClick() {
-      console.log('click');
+      this.$emit('previewImageClicked');
+    },
+    validateField(property, value) {
+      return isFieldValid(
+          property,
+          value,
+          this.validations,
+          this.validationErrors,
+      );
     },
   },
   data: () => ({
@@ -424,6 +494,11 @@ export default {
     fileSizeIcon,
     localDescription: '',
     localName: '',
+    validationErrors: {
+      name: null,
+      description: null,
+      url: null,
+    },
   }),
   components: {
     BaseRectangleButton,

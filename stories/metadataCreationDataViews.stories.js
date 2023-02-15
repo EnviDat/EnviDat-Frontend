@@ -11,7 +11,7 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE,
+  CANCEL_EDITING_RESOURCE, EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
@@ -66,60 +66,63 @@ export const EditResourceViews = () => ({
       </v-row>
 
       <v-row class="py-3" >
-        <v-col >
+        <v-col cols="6">
           <EditResource  />
         </v-col>
 
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource1" />
         </v-col>
 
       </v-row>
 
       <v-row>
-        EditResource with resource2
+        EditResource with resource2 & resource 3
       </v-row>
 
       <v-row class="py-3" >
 
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource2" />
         </v-col>
-      </v-row>
 
-      <v-row>
-        EditResource with resource3
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource3" />
         </v-col>
       </v-row>
 
+      <v-row>
+        EditResource with resource 4
+      </v-row>
+
+      <v-row class="py-3" >
+
+        <v-col cols="6">
+          <EditResource v-bind="resource4" />
+        </v-col>
+
+      </v-row>
+    
     </v-col>
     `,
   created() {
-    eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   beforeDestroy() {
-    eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
-    selectResource(id) {
-      this.emptyFirstGenericProps = {
-        ...this.emptyFirstGenericProps,
-        selectionId: id,
-      };
+    editComponentsChanged(updateObj) {
+      this.resource1 = updateObj.data;
     },
-    // editComponentsChanged(updateObj) {
-    //   if (updateObj.data.id === this.genericProps.id) {
-    //     this.genericProps = updateObj.data;
-    //   }
-    //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-    //     this.emptyFirstGenericProps = updateObj.data;
-    //   }
-    // },
+  },
+  computed: {
+    resource4() {
+      return {
+        ...this.resource3,
+        loading: true,
+      }
+    },
   },
   data: () => ({
     emptyFirstGenericProps: {
@@ -130,8 +133,8 @@ export const EditResourceViews = () => ({
         downloadActive: false,
       },
     },
-    resource1: metadataCards[0].resources[0],
-    resource2: metadataCards[0].resources[1],
+    resource1: { ... metadataCards[0].resources[1] },
+    resource2: metadataCards[0].resources[0],
     resource3: metadataCards[2].resources[0],
   }),
 });
