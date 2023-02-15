@@ -42,7 +42,7 @@ export default {
   async [SIGNIN_USER_ACTION]({ commit }, payload) {
     commit(payload.mutation);
 
-    const data = payload.body || undefined;
+    let data = payload.body || undefined;
     const method = requestMethodsForLoginActions(payload.action);
 
     // unpack the action because it might be wrapped to provide a test url
@@ -51,6 +51,8 @@ export default {
     let url = actionUrl;
     if (method.toLowerCase() === 'get' && data) {
       url = extractBodyIntoUrl(actionUrl, data);
+      // reset the data to avoid being part of the post data in the request
+      data = undefined;
     }
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
