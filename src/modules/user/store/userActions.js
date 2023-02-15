@@ -53,22 +53,18 @@ export default {
   async [FETCH_USER_DATA]({ commit }, payload) {
     commit(payload.mutation);
 
-    const data = payload.body || {};
-    const method = payload.method || 'get';
+    const body = payload.body || {};
 
     // unpack the action because it might be wrapped to provide a test url
     const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
 
-    let url = actionUrl;
-    if (method.toLowerCase() === 'get') {
-      url = extractBodyIntoUrl(actionUrl, data);
-    }
+    let url = extractBodyIntoUrl(actionUrl, body);
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
 
-    await axios.request({ url, method, data })
+    await axios.get(url)
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
