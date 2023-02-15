@@ -127,6 +127,9 @@ export default {
 
       return '';
     },
+    requestMethod() {
+      return this.useTokenSignin ? 'post' : 'get';
+    },
   },
   methods: {
     checkUserSignedIn() {
@@ -136,6 +139,7 @@ export default {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
         action,
         commit: true,
+        method: this.requestMethod,
         mutation: GET_USER_CONTEXT,
       });
     },
@@ -148,6 +152,7 @@ export default {
           action,
           body: { email, key },
           commit: true,
+          method: this.requestMethod,
           mutation: USER_SIGNIN,
         },
       );
@@ -161,6 +166,7 @@ export default {
         {
           action: contextAction,
           commit: true,
+          method: this.requestMethod,
           mutation: GET_USER_CONTEXT,
         });
         // Then redirect with context set
@@ -183,6 +189,7 @@ export default {
         action,
         body: { email },
         commit: true,
+        method: this.requestMethod,
         mutation: REQUEST_TOKEN,
       });
     },
@@ -192,6 +199,7 @@ export default {
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
         action,
         commit: true,
+        method: this.requestMethod,
         mutation: USER_SIGNOUT,
       });
     },
