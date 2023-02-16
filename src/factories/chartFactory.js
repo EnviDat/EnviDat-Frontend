@@ -214,3 +214,32 @@ export {
   getConfigUrls,
   hasData,
 };
+
+export function getFeatureCollectionFromGcNetStations(stations) {
+  const featureCollection = {
+    type: 'FeatureCollection',
+    features: [],
+  };
+
+  if (!stations) {
+    return featureCollection;
+  }
+
+  stations.forEach((geom) => {
+    featureCollection.features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [Number(geom.longitude), Number(geom.latitude)],
+      },
+      properties: {
+        alias: geom.alias,
+        name: geom.name,
+        active: geom.active,
+        elevation: geom.elevation,
+      },
+    });
+  });
+
+  return featureCollection;
+}

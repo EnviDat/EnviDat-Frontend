@@ -63,37 +63,6 @@
       </template>
     </two-column-layout>
 
-    <!-- prettier-ignore -->
-    <GenericModalPageLayout :title="modalTitle"
-                            :autoScroll="textPreviewComponent !== null" >
-
-      <!-- prettier-ignore -->
-      <component :is="gcnetModalComponent"
-                 :currentStation="currentStation"
-                 :fileObjects="fileObjects"
-                 :graphStyling="graphStyling"
-                 :config="config" />
-
-      <component :is="fullScreenComponent"
-                  :site="currentSite"
-                  :layerConfig="currentLayerConfig"
-                  :isGcnet="hasGcnetStationConfig"
-      />
-
-<!--
-      :mapHeight="mapHeight"
--->
-
-      <!-- prettier-ignore -->
-      <component :is="textPreviewComponent"
-                 :url="textPreviewUrl" />
-
-      <!-- prettier-ignore -->
-      <component :is="dataIframeComponent"
-                 :url="dataPreviewUrl" />
-
-
-    </GenericModalPageLayout>
   </v-container>
 </template>
 
@@ -137,32 +106,23 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
-import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
+import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
-  INJECT_MAP_FULLSCREEN,
-  METADATA_CLOSE_MODAL,
-  METADATA_OPEN_MODAL,
-  OPEN_TEXT_PREVIEW,
-  OPEN_DATA_PREVIEW_IFRAME,
+  GCNET_PREPARE_DETAIL_CHARTS,
 } from '@/factories/eventBus';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  getPreviewStrategyFromUrl,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-import GenericModalPageLayout from '@/components/Layouts/GenericModalPageLayout.vue';
 import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
 
 import { rewind as tRewind } from '@turf/turf';
-import DataPreviewIframe from '@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue';
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
@@ -190,22 +150,7 @@ export default {
     });
   },
   created() {
-    eventBus.on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
-
-    this.textPreviewUrl = null;
-    this.textPreviewComponent = null;
-    eventBus.on(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
-
-    this.dataPreviewUrl = null;
-    this.dataIframeComponent = null;
-    eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
-
-    eventBus.on(METADATA_CLOSE_MODAL, this.closeModal);
-
-    this.fullScreenConfig = null;
-    this.fullScreenComponent = null;
-    eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-
+    eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   /**
@@ -238,18 +183,7 @@ export default {
     // clean current metadata to make be empty for the next to load up
     this.$store.commit(`${METADATA_NAMESPACE}/${CLEAN_CURRENT_METADATA}`);
 
-    eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
-
-    this.textPreviewUrl = null;
-    this.textPreviewComponent = null;
-    this.dataPreviewUrl = null;
-    this.dataIframeComponent = null;
-
-    eventBus.off(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
-    eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
-    eventBus.off(METADATA_CLOSE_MODAL, this.closeModal);
-    eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
-
+    eventBus.off(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   computed: {
@@ -426,26 +360,7 @@ export default {
           this.stationsConfig = response.data;
 
           const stations = response.data;
-          const featureCollection = {
-            type: 'FeatureCollection',
-            features: [],
-          };
-
-          stations.forEach((geom) => {
-            featureCollection.features.push({
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [Number(geom.longitude), Number(geom.latitude)],
-              },
-              properties: {
-                alias: geom.alias,
-                name: geom.name,
-                active: geom.active,
-                elevation: geom.elevation,
-              },
-            });
-          });
+          const featureCollection = getFeatureCollectionFromGcNetStations(stations);
 
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
@@ -481,54 +396,6 @@ export default {
       }
 
       return null;
-    },
-    showGCNetModal(stationId) {
-      this.currentStation = this.getCurrentStation(stationId);
-      this.gcnetModalComponent = this.$options.components.DetailChartsList;
-      this.modalTitle = `Sensor measurements for ${
-        this.currentStation ? this.currentStation.name : ''
-      } station`;
-
-      eventBus.emit(METADATA_OPEN_MODAL);
-    },
-
-    showTextPreviewModal(url) {
-      const strat = getPreviewStrategyFromUrl(url);
-
-      this.textPreviewComponent = strat.component;
-      this.textPreviewUrl = url;
-
-      const splits = url.split('/');
-      const fileName = splits[splits.length - 1];
-
-      this.modalTitle = `Preview of ${fileName}`;
-
-      eventBus.emit(METADATA_OPEN_MODAL);
-    },
-
-    showDataPreviewIframe(previewUrl) {
-      this.dataIframeComponent = DataPreviewIframe;
-      this.dataPreviewUrl = previewUrl;
-
-      this.modalTitle = 'Data preview';
-
-      eventBus.emit(METADATA_OPEN_MODAL);
-    },
-
-    showFullscreenMapModal(layerConfig) {
-
-      this.modalTitle = `Fullscreen Map for ${this.header?.metadataTitle}`;
-
-      this.fullScreenConfig = layerConfig;
-      this.fullScreenComponent = MetadataMapFullscreen;
-
-      eventBus.emit(METADATA_OPEN_MODAL);
-    },
-    closeModal() {
-      this.dataIframeComponent = null;
-      this.gcnetModalComponent = null;
-      this.textPreviewComponent = null;
-      this.fullScreenComponent = null;
     },
     reRenderComponents() {
       // this.keyHash = Date.now().toString;
@@ -692,12 +559,22 @@ export default {
         components.MetadataRelatedDatasets,
       ];
     },
+    prepareGCNetChartModal(stationId) {
+      this.currentStation = this.getCurrentStation(stationId);
+
+      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, {
+        currentStation: this.currentStation,
+        fileObjects: this.fileObjects,
+        graphStyling: this.graphStyling,
+        config: this.config,
+      });
+    },
     async injectMicroCharts() {
       eventBus.emit(
-        GCNET_INJECT_MICRO_CHARTS,
-        this.$options.components.MicroChartList,
-        this.stationsConfig,
-      );
+        GCNET_INJECT_MICRO_CHARTS, {
+          component: this.$options.components.MicroChartList,
+          config: this.stationsConfig,
+        });
     },
     /**
      * @description
@@ -852,7 +729,6 @@ export default {
     TwoColumnLayout,
     MetadataAuthors,
     MetadataGeo,
-    GenericModalPageLayout,
     DetailChartsList,
     MicroChartList,
     MetadataMapFullscreen,

@@ -74,35 +74,7 @@ export const DetailChartViews = () => ({
 
         </v-col>
       </v-row>
-
-      <v-row class="py-3"
-      >
-        Station 4 DetailChartsList
-      </v-row>
-
-      <v-row style="border: solid 1px;"
-             no-gutters>
-        <v-col >
-          <DetailChartsList :currentStation="station4"
-                            :fileObjects="fileObjects"
-                            :graphStyling="graphStyling" />
-        </v-col>
-      </v-row>
-
-      <v-row class="py-3"
-      >
-        Station 8 DetailChartsList
-      </v-row>
-
-      <v-row style="border: solid 1px;"
-             no-gutters>
-        <v-col >
-          <DetailChartsList :currentStation="station8"
-                            :fileObjects="fileObjects"
-                            :graphStyling="graphStyling" />
-        </v-col>
-      </v-row>
-
+    
     </v-col>
     `,
     computed: {
@@ -195,6 +167,34 @@ export const DetailChartsListViews = () => ({
         </v-col>
       </v-row>
 
+      <v-row class="py-3"
+      >
+        Station 4 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station4"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3"
+      >
+        Station 8 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station8"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+    
     </v-col>
     `,
   computed: {
@@ -203,6 +203,12 @@ export const DetailChartsListViews = () => ({
     },
     station2() {
       return this.stations[1];
+    },
+    station4() {
+      return this.stations[3];
+    },
+    station8() {
+      return this.stations[7];
     },
   },
   // methods,

@@ -2,7 +2,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 /**
- * @summary story of SigninPage sandbox testing
+ * @summary story of layouts sandbox testing
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51

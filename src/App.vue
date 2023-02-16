@@ -108,6 +108,8 @@
         />
 
       </v-dialog>
+
+      <GenericFullScreenModal :auto-scroll="true"/>
     </v-main>
 
   </v-app>
@@ -177,6 +179,7 @@ import {
 
 import {
   eventBus,
+  OPEN_FULLSCREEN_MODAL,
   SHOW_DIALOG,
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
@@ -188,7 +191,7 @@ import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import ConfirmTextCard from '@/components/Cards/ConfirmTextCard.vue';
 import TextBanner from '@/components/Layouts/TextBanner.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
-
+import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
 
 export default {
   name: 'App',
@@ -197,6 +200,7 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
@@ -204,6 +208,7 @@ export default {
     this.checkUserSignedIn();
   },
   beforeDestroy() {
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
@@ -430,6 +435,12 @@ export default {
 
       this.showInfoDialog = true;
     },
+    emitOpenModal() {
+      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+    },
+    openGenericFullscreen() {
+      this.showModal = true;
+    },
     catchSigninClicked() {
 
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
@@ -646,6 +657,7 @@ export default {
     NotificationCard,
     ConfirmTextCard,
     TextBanner,
+    GenericFullScreenModal,
   },
   watch: {
     config() {
@@ -669,6 +681,7 @@ export default {
     ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
+    showModal: false,
     dialogTitle: 'Redirect to Legacy Website!',
     dialogMessage: '',
     dialogCallback: () => {},
