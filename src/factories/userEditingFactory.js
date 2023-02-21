@@ -74,10 +74,9 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[localIdProperty] === newElement[localIdProperty]
-                || el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
-      // make sure to merged the elements, because ex. an author
+      // make sure to merge the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
       // are passed down ex. the EditAuthor component
       const mergedElement = {

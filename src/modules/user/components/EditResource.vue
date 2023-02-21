@@ -443,6 +443,8 @@ export default {
 
       const newGenericProps = {
         ...this.$props,
+        description: this.localDescription,
+        name: this.localName,
         lastModified: ckanIsoFormat,
       };
 

@@ -128,6 +128,8 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
+import { mapState } from 'vuex';
+
 export default {
   name: 'EditDataAndResources',
   components: {
@@ -196,7 +198,12 @@ export default {
     unSubscribeOnUppyEvent('error', this.uploadError);
   },
   computed: {
+    ...mapState(['config']),
     resourceUploadActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
+      }
+
       return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
     metadataId() {

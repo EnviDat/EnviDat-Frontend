@@ -281,6 +281,16 @@ export const EditDataAndResourcesListViews = () => ({
         </v-col>
       </v-row>
 
+      <v-row>
+        EditDataAndResources Component resourceUploadActive: true
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataAndResources v-bind="genericProps2" />
+        </v-col>
+      </v-row>
+    
     </v-col>
     `,
     created() {
@@ -296,6 +306,11 @@ export const EditDataAndResourcesListViews = () => ({
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
+      userEditMetadataConfig() {
+        return {
+          resourceUploadActive: true,
+        };
+      },
       genericProps() {
         return {
           resources: this.resources,
@@ -303,6 +318,16 @@ export const EditDataAndResourcesListViews = () => ({
           resourcesConfig: {
             downloadActive: false,
           },
+        };
+      },
+      genericProps2() {
+        return {
+          resources: this.resources,
+          selectionId: this.selectionId,
+          resourcesConfig: {
+            downloadActive: false,
+          },
+          userEditMetadataConfig: this.userEditMetadataConfig,
         };
       },
     },
