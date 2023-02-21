@@ -3,13 +3,28 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col>
+          <v-col v-if="resourceUploadActive" >
             <!-- prettier-ignore -->
             <EditResource v-bind="selectedResource"
                           @closeClicked="catchEditResourceClose"
                           @saveResource="catchSaveResourceClose"
                           @previewImageClicked="showFullScreenImage"
             />
+          </v-col>
+
+          <v-col v-if="!resourceUploadActive" >
+            <EditResourceRedirect title="Edit Selected Resource"
+                                  :text="editResourceRedirectText"
+                                  buttonText="Edit Resources"
+                                  :buttonUrl="linkEditResourceCKAN"
+            >
+              <BaseRectangleButton
+                  buttonText="Deselect Resource"
+                  color="warning"
+                  @clicked="catchEditResourceClose"
+              />
+
+            </EditResourceRedirect>
 
           </v-col>
         </v-row>
@@ -21,16 +36,28 @@
                     </v-col>
           -->
 
-          <v-col cols="12">
+          <v-col v-if="resourceUploadActive"
+                 cols="12">
             <EditDropResourceFiles :metadataId="metadataId" />
 <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
           </v-col>
 
-          <v-col cols="12">
+          <v-col v-if="resourceUploadActive"
+                 cols="12">
             <EditPasteResourceUrl @createUrlResources="createResourceFromUrl"/>
           </v-col>
+
+          <v-col v-if="!resourceUploadActive"
+                 cols="12">
+            <EditResourceRedirect title="Add New Resource"
+                                  :text="addResourceRedirectText"
+                                  buttonText="Add Resources"
+                                  :buttonUrl="linkAddNewResourcesCKAN"
+            />
+          </v-col>
+
         </v-row>
       </v-col>
 
@@ -86,6 +113,7 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 // import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
+import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
 
 import {
   getUppyInstance,
@@ -108,6 +136,7 @@ export default {
     // EditMultiDropResourceFiles,
     EditPasteResourceUrl,
     EditResource,
+    EditResourceRedirect,
   },
   props: {
     resources: {
@@ -148,6 +177,10 @@ export default {
       type: String,
       default: '',
     },
+    userEditMetadataConfig: {
+      type: Object,
+      default: undefined,
+    },
   },
   mounted() {
     subscribeOnUppyEvent('upload', this.uploadStarted);
@@ -163,6 +196,9 @@ export default {
     unSubscribeOnUppyEvent('error', this.uploadError);
   },
   computed: {
+    resourceUploadActive() {
+      return this.userEditMetadataConfig?.resourceUploadActive || false;
+    },
     metadataId() {
       return this.$route?.params?.metadataid || null;
     },
@@ -372,6 +408,14 @@ export default {
     envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
     uploadProgessText: null,
     uploadProgressIcon: '',
+    editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
+                    <br />
+                    Please edit resources via the legacy website by clicking on
+                    the button below.`,
+    addResourceRedirectText: `Adding new resources is not available.
+                    <br />
+                    Please add resources via the legacy website by clicking on
+                    the button below.`,
   }),
 };
 </script>

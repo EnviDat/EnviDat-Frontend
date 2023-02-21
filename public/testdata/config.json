@@ -101,6 +101,7 @@
     "defaultLocation": {"type": "Polygon", "coordinates": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]},
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
+    "resourceUploadActive": false,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
@@ -118,6 +119,7 @@
       "sysadminOrganizationText": "You have System Administrator right, be careful!",
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
+    "useTokenSignin": false,
     "showOldDashboardUrl": true
   }
 }
