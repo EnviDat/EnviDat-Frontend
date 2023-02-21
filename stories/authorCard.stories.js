@@ -247,3 +247,78 @@ export const AuthorCardList = () => ({
 });
 
 // stories.addDecorator(withKnobs);
+
+
+export const backgroundTest = () => ({
+  components: {
+  },
+  template: `
+    <v-row>
+      
+      <v-col cols="12" md="4" pt-5 >
+        <div>
+          <v-icon>menu_book</v-icon>
+          <v-icon>local_library</v-icon>
+          <v-icon>code</v-icon>
+          <v-icon>widgets</v-icon>
+          <v-icon>record_voice_over</v-icon>
+          <v-icon>supervision_account</v-icon>
+        </div>
+        
+<!--
+        <div style="width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
+          <div v-for="(index) in 10" 
+               :key="index"
+                :style="getStyle(index, 300, 300)" >
+            <v-icon>widgets</v-icon>
+          </div>
+
+          <div v-for="(index) in 10"
+               :key="index * 100"
+               :style="getStyle(index, 300, 300, -60)" >
+            <v-icon>code</v-icon>
+          </div>
+          
+        </div>
+-->
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
+          <div v-for="(index) in 10"
+               :key="index">
+            <v-icon>widgets</v-icon>
+          </div>
+
+<!--
+          <div v-for="(index) in 10"
+               :key="index * 100"
+               :style="getStyle(index, 300, 300, -60)" >
+            <v-icon>code</v-icon>
+          </div>
+-->
+
+        </div>        
+      </v-col>
+
+    </v-row>
+  `,
+  computed: {
+  },
+  methods: {
+    getStyle(index, maxWidth, maxHeight, start = 0) {
+      const size = 30;
+      let pos = index * size + start;
+      if (pos > maxWidth) {
+        pos -= maxWidth;
+      }
+      let tPos = index * size + start;
+      if (tPos > maxHeight) {
+        tPos -= maxHeight;
+      }
+
+      // return `position: relative; opacity: 0.25; top: ${tPos}px; left: ${pos}px; width: ${size}px; height: ${size}px;`;
+      return `transform: translate(${pos}px, ${tPos}px); opacity: 0.25; width: ${size}px; height: ${size}px;`;
+    },
+  },
+  data: () => ({
+  }),
+});

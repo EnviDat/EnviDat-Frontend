@@ -1,5 +1,6 @@
 <template>
   <v-card class="authorCard pa-0"
+          id="AuthorCard"
           :class="cardClass"
           :style="dynamicCardBackground"
           :loading="loading">
@@ -289,7 +290,7 @@ import {
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
-  name: 'EditDataCredits',
+  name: 'AuthorCard',
   components: {
     DataCreditLayout,
     BaseIconButton,
