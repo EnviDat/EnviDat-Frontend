@@ -641,8 +641,6 @@ function populateEditingResources(commit, snakeCaseJSON) {
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
 
-  resourceData.resources = cleanListForFrontend(resourceData.resources, EDITMETADATA_DATA_RESOURCE);
-
   enhanceElementsWithStrategyEvents(
     resourceData.resources,
     SELECT_EDITING_RESOURCE_PROPERTY,
