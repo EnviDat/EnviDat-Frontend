@@ -27,7 +27,8 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 px-sm-1 shrink"
+        <v-col v-if="showSearch"
+               class="py-0 px-sm-1 shrink"
                 id="shareSearchResult" >
 
           <BaseIconButton style="opacity: 0.8;"
