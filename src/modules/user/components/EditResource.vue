@@ -122,36 +122,8 @@
           </v-col>
         </v-row>
 
-<!--
-        <v-row v-if="!isLink && !isImage"
-               no-gutters>
-          <v-col cols="12">
-            <v-text-field
-              :label="labels.fileName"
-              outlined
-              readonly
-              prepend-icon="insert_drive_file"
-              v-model="fileNameField"
-            />
-          </v-col>
-        </v-row>
--->
-
-<!--
-        <v-row no-gutters>
-          <v-col cols="12">
-            <v-text-field
-              :label="labels.doi"
-              outlined
-              readonly
-              prepend-icon="fingerprint"
-              :value="doi"
-            />
-          </v-col>
-        </v-row>
--->
-
-        <v-row no-gutters>
+        <v-row no-gutters
+              class="pt-3">
           <v-col class="pr-4">
             <v-text-field
               :label="labels.format"
@@ -199,6 +171,42 @@
           <div class="text-body-1">{{ labels.subInstructions }}</div>
         </v-col>
       </v-row> -->
+
+        <v-row no-gutters>
+          <v-col v-html="labels.restrictedInstructions">
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters
+               class="pt-3">
+          <v-col >
+            <v-text-field
+                :label="labels.restricted"
+                outlined
+                readonly
+                :prepend-icon="restrictedField === 'public' ? 'lock_open' : 'lock'"
+                :disabled="loading"
+                :value="restrictedField"
+            />
+          </v-col>
+
+        </v-row>
+
+        <v-row v-if="allowedUsers"
+               no-gutters
+               class="pt-3">
+          <v-col >
+            <v-text-field
+                :label="labels.restrictedAllowedUsers"
+                outlined
+                readonly
+                prepend-icon="lock_person"
+                :disabled="loading"
+                :value="allowedUsers"
+            />
+          </v-col>
+
+        </v-row>
 
         <v-row no-gutters justify="end">
           <v-col class="shrink">
@@ -295,6 +303,10 @@ export default {
     },
     size: {
       type: Number,
+      default: undefined,
+    },
+    restricted: {
+      type: Object,
       default: undefined,
     },
     loading: {
@@ -396,6 +408,43 @@ export default {
         return this.mixinMethods_formatBytes(sizeNumber);
       },
     },
+    restrictedField: {
+      get() {
+        let restrictionLvl = 'restricted';
+
+        if (this.restricted) {
+
+          if (typeof this.restricted === 'string') {
+            const restrictedObj = JSON.parse(this.restricted);
+            restrictionLvl = restrictedObj.level;
+          } else {
+            restrictionLvl = this.restricted.level;
+          }
+        }
+
+        return restrictionLvl;
+      },
+/*
+      set() {
+
+      }
+*/
+    },
+    allowedUsers() {
+      let users;
+
+      if (this.restricted) {
+
+        if (typeof this.restricted === 'string') {
+          const restrictedObj = JSON.parse(this.restricted);
+          users = restrictedObj.allowedUsers || restrictedObj.allowed_users;
+        } else {
+          users = this.restricted.allowedUsers || this.restricted.allowed_users;
+        }
+      }
+
+      return users;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -491,6 +540,9 @@ export default {
       lastModified: 'Last modified time',
       size: 'File size',
       format: 'File format',
+      restricted: 'Access restrictions',
+      restrictedInstructions: 'Restricted Access is not available for editing yet. Please contact the EnviDat team (<a mailto="envidat@wsl.ch">envidat@wsl.ch</a>) if a resource can not be publicly accessed.',
+      restrictedAllowedUsers: 'Access only for specific users',
     },
     saveButtonEnabled: false,
     fileSizeIcon,

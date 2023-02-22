@@ -133,7 +133,7 @@ export const EditResourceViews = () => ({
         downloadActive: false,
       },
     },
-    resource1: { ... metadataCards[0].resources[1] },
+    resource1: { ... metadataCards[0].resources[0] },
     resource2: metadataCards[0].resources[0],
     resource3: metadataCards[2].resources[0],
   }),

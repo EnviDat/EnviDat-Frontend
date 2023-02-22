@@ -81,7 +81,7 @@ export default [
         'package_id': 'fb851074-a421-47bf-802f-f03493c57041',
         'position': 0,
         'resource_type': null,
-        'restricted': '{"allowed_users": "", "level": "public"}',
+        'restricted': '{"allowed_users": "marco_moretti-wsl_ch,joan_casanelles-wsl_ch", "level": "public"}',
         'size': null,
         'state': 'active',
         'url': 'http://www.lfi.ch/resultate/resultateliste-en.php?p=theme&zigrNr=2&invNr=250',
