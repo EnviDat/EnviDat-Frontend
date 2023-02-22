@@ -393,6 +393,30 @@ export function getFrontendJSON(stepKey, data) {
   return frontEndJson;
 }
 
+function cleanListForBackend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    const cleaned = getBackendJSON(mappingKey, element);
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
+function cleanListForFrontend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    const cleaned = getFrontendJSON(mappingKey, element);
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
 export function cleanSpatialInfo(spatial) {
   const rules = JSONFrontendBackendRules[EDITMETADATA_DATA_GEO_SPATIAL];
 
@@ -490,7 +514,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -520,7 +544,14 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   commitEditingData(commit, stepKey, enhancedKeywords);
   dataObject.keywordsData = keywordsData;
 
-  stepKey = EDITMETADATA_AUTHOR_LIST;
+  return dataObject;
+}
+
+function populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap) {
+
+  const dataObject = {};
+
+  const stepKey = EDITMETADATA_AUTHOR_LIST;
   // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const authors = []
@@ -559,26 +590,14 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   return dataObject;
 }
 
-function populateEditingData(commit, snakeCaseJSON) {
+function populateEditingDataInfo(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
-  let stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
-
-  enhanceElementsWithStrategyEvents(
-    resourceData.resources,
-    SELECT_EDITING_RESOURCE_PROPERTY,
-    true,
-  );
-
-  commitEditingData(commit, stepKey, resourceData);
-  dataObject.resourceData = resourceData;
-
-  stepKey = EDITMETADATA_DATA_INFO;
+  let stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   dateInfoData.dates = formatDates(dateInfoData.dates);
@@ -609,6 +628,30 @@ function populateEditingData(commit, snakeCaseJSON) {
   });
   dataObject.location = location;
 
+  return dataObject;
+}
+
+function populateEditingResources(commit, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  // Stepper 2: Data Resources, Info, Location
+  // const resources = createResources(metadataRecord).resources;
+
+  const stepKey = EDITMETADATA_DATA_RESOURCES;
+  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+
+  resourceData.resources = cleanListForFrontend(resourceData.resources, EDITMETADATA_DATA_RESOURCE);
+
+  enhanceElementsWithStrategyEvents(
+    resourceData.resources,
+    SELECT_EDITING_RESOURCE_PROPERTY,
+    true,
+  );
+
+  commitEditingData(commit, stepKey, resourceData);
+  dataObject.resourceData = resourceData;
+  
   return dataObject;
 }
 
@@ -668,9 +711,13 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
+  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
 
-  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
+  const { authors } = populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap);
+
+  const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+
+  populateEditingResources(commit, snakeCaseJSON);
 
   populateEditingRelatedResearch(commit, snakeCaseJSON);
 
@@ -714,29 +761,6 @@ function mapDatesForBackend(datesArray) {
   return mappedDates;
 }
 
-function cleanAuthorsForBackend(authors) {
-
-  const bAuthors = [];
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
-    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
-    bAuthors.push(bAuthor);
-  }
-
-  return bAuthors;
-}
-
-function cleanResourcesForBackend(resources) {
-
-  const bResources = [];
-  for (let i = 0; i < resources.length; i++) {
-    const res = resources[i];
-    const bRes = getBackendJSON(EDITMETADATA_DATA_RESOURCE, res);
-    bResources.push(bRes);
-  }
-
-  return bResources;
-}
 
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
@@ -753,9 +777,9 @@ export function mapFrontendToBackend(stepKey, frontendData) {
   const localData = { ...frontendData };
 
   if (stepKey === EDITMETADATA_DATA_RESOURCES) {
-    localData.resources = cleanResourcesForBackend(localData.resources);
+    localData.resources = cleanListForBackend(localData.resources, EDITMETADATA_DATA_RESOURCE);
   } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    localData.authors = cleanAuthorsForBackend(localData.authors);
+    localData.authors = cleanListForBackend(localData.authors, EDITMETADATA_AUTHOR);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
     localData.dates = mapDatesForBackend(localData.dates);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
