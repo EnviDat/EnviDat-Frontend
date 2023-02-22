@@ -176,72 +176,125 @@
                class="pt-3 px-2"
                align="center" >
           <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="!isRestricted"
-                            :disabled="true"
-                            :materialIconName="isRestricted ? 'check_circle_outline' : 'check_circle'"
-                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
+            <BaseIconSwitch :active="isPublicField"
+                            :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
+                            :tooltipText="isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo"
+                            @clicked="isPublicField = !isPublicField"
             />
           </v-col>
 
           <v-col >
-            {{ isRestricted ? restrictedDetails : labels.isPublicInfo }}
+            {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo}}
           </v-col>
 
         </v-row>
 
-        <v-row v-if="isRestricted"
+        <v-row v-if="isRestrictedField"
                no-gutters
                class="px-2 pt-3"
                align="center">
 
           <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="isAllowedUsers"
-                            :disabled="true"
-                            materialIconName="lock_person"
-                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
+            <BaseIconSwitch :active="isSameOrganizationField"
+                            materialIconName="home_filled"
+                            :tooltipText="isSameOrganizationField ? labels.isRestrictedInfo : labels.isPublicInfo"
+                            @clicked="isSameOrganizationField = !isSameOrganizationField"
             />
           </v-col>
 
           <v-col >
-            {{ isAllowedUsers ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
+            {{ isSameOrganizationField ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
           </v-col>
         </v-row>
 
-        <v-row v-if="isAllowedUsers"
+        <v-row v-if="isRestrictedField"
+               no-gutters
+               class="px-2 pt-3"
+               align="center">
+
+          <v-col class="shrink pl-1 pr-4">
+            <BaseIconSwitch :active="hasAllowedUsersField"
+                            materialIconName="lock_person"
+                            :tooltipText="hasAllowedUsersField ? labels.isRestrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo"
+                            @clicked="hasAllowedUsersField = !hasAllowedUsersField"
+            />
+          </v-col>
+
+          <v-col >
+            {{ hasAllowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
+          </v-col>
+        </v-row>
+
+        <v-row v-if="isRestrictedField && hasAllowedUsersField"
                no-gutters
                class="px-2 pt-3">
           <v-col >
             <v-text-field
                 :label="labels.isRestrictedAllowedUsersInfo"
                 outlined
-                readonly
                 hide-details
                 prepend-icon="lock_person"
                 :disabled="loading"
-                :value="allowedUsers"
+                v-model="allowedUsersField"
             />
           </v-col>
 
         </v-row>
 
-        <v-row v-if="isRestricted"
+
+<!--
+        <v-row v-if="isRestrictedField"
                no-gutters
                class="px-2 pt-3"
                align="center">
 
           <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="isSameOrganization"
-                            :disabled="true"
+            <BaseIconSwitch :active="isSameOrganizationField"
                             materialIconName="home_filled"
-                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
+                            :tooltipText="isSameOrganizationField ? labels.isRestrictedInfo : labels.isPublicInfo"
+                            @clicked="isSameOrganizationField = !isSameOrganizationField"
             />
           </v-col>
 
           <v-col >
-            {{ isSameOrganization ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
+            {{ isSameOrganizationField ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
           </v-col>
         </v-row>
 
+        <v-row v-if="isSameOrganizationField"
+               no-gutters
+               class="px-2 pt-3">
+          <v-col >
+            {{ !!allowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
+          </v-col>
+        </v-row>
+
+        <v-row v-if="isSameOrganizationField"
+               no-gutters
+               class="px-2 pt-3">
+          <v-col >
+            <v-text-field
+                :label="labels.isRestrictedAllowedUsersInfo"
+                outlined
+                hide-details
+                prepend-icon="lock_person"
+                :disabled="loading"
+                v-model="allowedUsersField"
+            />
+          </v-col>
+
+        </v-row>
+-->
+
+
+        <v-row>
+          <v-col>
+            getRestrictedObject: {{ getRestrictedObject() }}
+          </v-col>
+          <v-col>
+            writeRestrictionLvl: {{ writeRestrictionLvl }}
+          </v-col>
+        </v-row>
 
         <v-row no-gutters
                class="pt-4"
@@ -378,16 +431,14 @@ export default {
     },
   },
   mounted() {
-    this.localName = this.resourceNameField;
-    this.localDescription = this.descriptionField;
   },
   computed: {
     descriptionField: {
       get() {
-        return this.description;
+        return this.previews.description !== null ? this.previews.description : this.description;
       },
       set(value) {
-        this.localDescription = value;
+        this.previews.description = value;
 
         const valid = this.validateField('description', value);
 
@@ -396,12 +447,12 @@ export default {
     },
     resourceNameField: {
       get() {
-        return this.name;
+        return this.previews.name !== null ? this.previews.name : this.name;
       },
       set(value) {
-        this.localName = value;
+        this.previews.name = value;
 
-        const nameEqualsUrl = this.isLink ? this.localName === this.url : false;
+        const nameEqualsUrl = this.isLink ? value === this.url : false;
 
         if (nameEqualsUrl) {
           this.validationErrors.name = 'Resource name can not be the same as the link.';
@@ -427,11 +478,6 @@ export default {
         this.checkSaveButtonEnabled(valid);
       },
     },
-    fileNameField: {
-      get() {
-        return this.file;
-      },
-    },
     sizeField: {
       get() {
         const size = this.size;
@@ -441,40 +487,47 @@ export default {
 
         let sizeNumber = 0;
         if (size) {
-          sizeNumber = Number.parseInt(size, 10);
+          sizeNumber = Number.parseInt(size.toString(), 10);
         }
 
         return this.mixinMethods_formatBytes(sizeNumber);
       },
     },
-    restrictedField: {
+    accessRestrictionLvl: {
       get() {
-        let restrictionLvl = 'public';
+        let restrictionLvl;
 
         if (this.restricted) {
 
           if (typeof this.restricted === 'string') {
-            const restrictedObj = JSON.parse(this.restricted);
+            let restrictedObj = {};
+            try {
+              restrictedObj = JSON.parse(this.restricted);
+            } catch (e) {
+              console.error(`Error while parsing restricted info: ${e}`);
+            }
             restrictionLvl = restrictedObj.level;
           } else {
             restrictionLvl = this.restricted.level;
           }
         }
 
-        return restrictionLvl;
+        return restrictionLvl || this.publicAccessLevelValue;
       },
     },
-    openAccessDetails() {
-      const text = this.isRestricted ? this.labels.openAccessPreferedInstructions : this.labels.openAccessInstructions;
-
-      return renderMarkdown(text);
+    isPublicField: {
+      get() {
+        const level = this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
+        return level === this.publicAccessLevelValue; // && !this.hasAllowedUsersField;
+      },
+      set(value) {
+        this.previews.restrictedLevel = value ? this.publicAccessLevelValue : this.anyOrganizationAccessLevelValue;
+      },
     },
-    isRestricted() {
-      if (this.isAllowedUsers) {
-        return true;
-      }
-
-      return this.restrictedField !== 'public';
+    isRestrictedField: {
+      get() {
+        return !this.isPublicField;
+      },
     },
     allowedUsers() {
       let users;
@@ -482,7 +535,14 @@ export default {
       if (this.restricted) {
 
         if (typeof this.restricted === 'string') {
-          const restrictedObj = JSON.parse(this.restricted);
+
+          let restrictedObj = {};
+          try {
+            restrictedObj = JSON.parse(this.restricted);
+          } catch (e) {
+            console.error(`Error while parsing allowedUsers info: ${e}`);
+          }
+
           users = restrictedObj.allowedUsers || restrictedObj.allowed_users;
         } else {
           users = this.restricted.allowedUsers || this.restricted.allowed_users;
@@ -491,23 +551,101 @@ export default {
 
       return users;
     },
-    isAllowedUsers() {
-      return !!this.allowedUsers;
+    sharedSecret() {
+      let sharedSecret;
+
+      if (this.restricted) {
+
+        if (typeof this.restricted === 'string') {
+
+          let restrictedObj = {};
+          try {
+            restrictedObj = JSON.parse(this.restricted);
+          } catch (e) {
+            console.error(`Error while parsing allowedUsers info: ${e}`);
+          }
+
+          sharedSecret = restrictedObj.sharedSecret || restrictedObj.shared_secret;
+        } else {
+          sharedSecret = this.restricted.sharedSecret || this.restricted.shared_secret;
+        }
+      }
+
+      return sharedSecret;
     },
-    isSameOrganization() {
-      return this.restrictedField === 'same_organization';
+    hasAllowedUsersField: {
+      get() {
+        return this.previews.hasAllowedUsers !== null ? this.previews.hasAllowedUsers : !!this.allowedUsers;
+      },
+      set(value) {
+        this.previews.hasAllowedUsers = value;
+        this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
+      },
+    },
+    allowedUsersField: {
+      get() {
+        return this.previews.allowedUsers !== null ? this.previews.allowedUsers : this.allowedUsers;
+      },
+      set(value) {
+        this.previews.allowedUsers = value;
+      },
+    },
+    isSameOrganizationField: {
+      get() {
+        const level = this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
+        return level === this.sameOrganizationAccessLevelValue;
+
+/*
+        if (this.previews.isSameOrganization !== null) {
+          return this.previews.isSameOrganization;
+        }
+
+        return this.accessRestrictionLvl === this.sameOrganizationAccessLevelValue;
+*/
+      },
+      set(value) {
+        this.previews.isSameOrganization = value;
+        this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
+      },
+    },
+    sharedSecretField: {
+      get() {
+        return this.previews.sharedSecret !== null ? this.previews.sharedSecret : this.sharedSecret;
+      },
+    },
+    writeRestrictionLvl() {
+      if (this.isPublicField) {
+        return this.publicAccessLevelValue;
+      }
+
+/*
+      if ((this.hasAllowedUsersField && this.allowedUsersField) || this.isSameOrganizationField) {
+        return this.sameOrganizationAccessLevelValue;
+      }
+*/
+
+      if (this.isSameOrganizationField) {
+        return this.sameOrganizationAccessLevelValue;
+      }
+
+      return this.anyOrganizationAccessLevelValue;
+    },
+    openAccessDetails() {
+      const text = this.isPublicField ? this.labels.openAccessInstructions : this.labels.openAccessPreferedInstructions;
+
+      return renderMarkdown(text);
     },
     restrictedDetails() {
 
-      if (this.isAllowedUsers && !this.isSameOrganization) {
+      if (this.hasAllowedUsersField && !this.isSameOrganizationField) {
         return this.labels.isRestrictedAllowedUsersInfo;
       }
 
-      if (this.isAllowedUsers && this.isSameOrganization) {
+      if (this.hasAllowedUsersField && this.isSameOrganizationField) {
         return `${this.labels.isRestrictedAllowedUsersInfo} and ${this.labels.isSameOrganizationInfo}`;
       }
 
-      if (this.isSameOrganization) {
+      if (this.isSameOrganizationField) {
         return this.labels.isSameOrganizationInfo;
       }
 
@@ -542,14 +680,21 @@ export default {
         return;
       }
 
-      // not test the local fields to ensure the content of both fields is valid
+      // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
       const descriptionAndNameValid = isObjectValid(['description', 'name'], {
-        description: this.localDescription,
-        name: this.localName,
+        description: this.descriptionField,
+        name: this.resourceNameField,
       }, this.validations, this.validationErrors);
 
       this.saveButtonEnabled = descriptionAndNameValid;
+    },
+    getRestrictedObject() {
+      return {
+        allowedUsers: this.allowedUsersField || '',
+        level: this.writeRestrictionLvl,
+        sharedSecret: this.sharedSecretField || '',
+      };
     },
     saveResourceClick() {
 
@@ -557,9 +702,10 @@ export default {
 
       const newGenericProps = {
         ...this.$props,
-        description: this.localDescription,
-        name: this.localName,
+        description: this.descriptionField,
+        name: this.resourceNameField,
         lastModified: ckanIsoFormat,
+        restricted: this.getRestrictedObject(),
       };
 
       this.$emit('saveResource', newGenericProps);
@@ -589,8 +735,26 @@ export default {
           this.validationErrors,
       );
     },
+    clearPreviews() {
+      this.previews.name = null;
+      this.previews.description = null;
+      this.previews.restrictedLevel = null;
+      this.previews.hasAllowedUsers = null;
+      this.previews.allowedUsers = null;
+      this.previews.isSameOrganization = null;
+      this.previews.sharedSecret = null;
+    },
   },
   data: () => ({
+    previews: {
+      name: null,
+      description: null,
+      restrictedLevel: null,
+      hasAllowedUsers: null,
+      allowedUsers: null,
+      isSameOrganization: null,
+      sharedSecret: null,
+    },
     labels: {
       title: 'Edit Selected Resource',
       instructions:
@@ -610,8 +774,9 @@ export default {
       openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends Open Access to research data! Please make your data available to everyone unless it really contains sensitive data.',
       restrictedInstructions: 'Restricted Access is not available for editing yet. Please contact the EnviDat team (<a mailto="envidat@wsl.ch">envidat@wsl.ch</a>) if a resource can not be publicly accessed.',
       isPublicInfo: 'Resource openly accessible to everyone',
+      isNotPublicInfo: 'Resource has restricted accessibility',
       isRestrictedInfo: 'Resource is only accessible to users which are signed in',
-      isRestrictedAllowedUsersInfo: 'Resource is accessible to specific users',
+      isRestrictedAllowedUsersInfo: 'Grant specific users access',
       isSameOrganizationInfo: 'Resource is accessible to users in the same organization as the dataset',
       restrictedAllowedUsersInfo: 'Access is restricted to the following users',
       restrictedNotAllowedUsersInfo: 'Access is not restricted on a per user basis',
@@ -620,13 +785,14 @@ export default {
     },
     saveButtonEnabled: false,
     fileSizeIcon,
-    localDescription: '',
-    localName: '',
     validationErrors: {
       name: null,
       description: null,
       url: null,
     },
+    publicAccessLevelValue: 'public',
+    sameOrganizationAccessLevelValue: 'same_organization',
+    anyOrganizationAccessLevelValue: 'any_organization',
   }),
   components: {
     BaseRectangleButton,
