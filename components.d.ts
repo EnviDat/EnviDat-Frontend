@@ -95,6 +95,8 @@ declare module 'vue' {
     VHover: typeof import('vuetify/lib')['VHover']
     VIcon: typeof import('vuetify/lib')['VIcon']
     VImg: typeof import('vuetify/lib')['VImg']
+    VItem: typeof import('vuetify/lib')['VItem']
+    VItemGroup: typeof import('vuetify/lib')['VItemGroup']
     VList: typeof import('vuetify/lib')['VList']
     VListItem: typeof import('vuetify/lib')['VListItem']
     VListItemAction: typeof import('vuetify/lib')['VListItemAction']
@@ -122,6 +124,9 @@ declare module 'vue' {
     VTextarea: typeof import('vuetify/lib')['VTextarea']
     VTextField: typeof import('vuetify/lib')['VTextField']
     VTooltip: typeof import('vuetify/lib')['VTooltip']
+    VTreeview: typeof import('vuetify/lib')['VTreeview']
+    VWindow: typeof import('vuetify/lib')['VWindow']
+    VWindowItem: typeof import('vuetify/lib')['VWindowItem']
     WelcomeCard: typeof import('./src/components/Cards/WelcomeCard.vue')['default']
   }
 }

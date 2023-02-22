@@ -22,6 +22,7 @@ import {
 */
 
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
+import { mapFrontendToBackend } from '@/factories/mappingFactory';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -47,40 +48,14 @@ if (!useTestdata) {
 
 export default {
   // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
-  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, file, fileUrl, autoSelect = false }) {
+  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, data, autoSelect = false }) {
 
     commit(METADATA_CREATION_RESOURCE, metadataId);
-
-/*
-    const apiKey = this.state.userSignIn.user?.apikey || null;
-    const categoryCards = this.state.categoryCards;
-*/
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    // const postData = mapFrontendToBackend(stepKey, data);
-    const size = file.size || 0;
-    const name = file.name || file || fileUrl;
-
-    const postData = {
-      package_id: metadataId,
-      url: fileUrl || file.name || file,
-      description: null,
-      format: file.extension || 'url',
-      mimetype: file.type || '',
-      name,
-      size,
-      url_type: 'upload',
-      'resource_size-size_value': size / 1024 / 1024,
-      'resource_size-size_units': 'mb',
-      'restricted-level': null,
-      'restricted-allowed_users': null,
-      'restricted-shared_secret': null,
-      doi: null,
-      // publication_state: null,
-      multipart_name: file.name,
-    };
+    const postData = mapFrontendToBackend(EDITMETADATA_DATA_RESOURCE, data);
 
 
     try {

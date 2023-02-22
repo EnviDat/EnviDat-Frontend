@@ -59,21 +59,49 @@ const defaultRestrictions = {
   minNumberOfFiles: 1,
 };
 
+function getNewResourceFromFile(metadataId, file) {
+  const name = file.name || file;
+  const size = file.size || 0;
 
+  const restricted = JSON.stringify({
+    allowed_users: '',
+    shared_secret: '',
+    level: 'public',
+  });
+
+  return {
+    package_id: metadataId,
+    url: file.name || file,
+    format: file.extension || 'url',
+    mimetype: file.type || '',
+    name,
+    description: null,
+    size,
+    url_type: 'upload',
+    resource_size: JSON.stringify({
+      size_units: 'mb',
+      size_value: size / 1024 / 1024,
+    }),
+    restricted,
+    doi: null,
+    // state: ?,
+    // private: ?
+    // publication_state: null,
+    multipart_name: file.name,
+  };
+
+}
 export async function initiateMultipart(file) {
 
   eventBus.emit(UPLOAD_STATE_RESET);
 
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+  const newResource = getNewResourceFromFile(metadataId, file);
 
-  await storeReference?.dispatch(
-    `${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`,
-    {
-      metadataId,
-      file,
-      // fileUrl: file.id,
-    },
-  );
+  await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
+    metadataId,
+    data: newResource,
+  });
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
