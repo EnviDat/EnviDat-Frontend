@@ -55,7 +55,6 @@ export default {
 };
 
 
-
 export const EditResourceViews = () => ({
   components: { EditResource },
   template: `
@@ -119,7 +118,7 @@ export const EditResourceViews = () => ({
   computed: {
     resource4() {
       return {
-        ...this.resource3,
+        ...metadataCards[2].resources[2],
         loading: true,
       }
     },
@@ -134,7 +133,7 @@ export const EditResourceViews = () => ({
       },
     },
     resource1: { ... metadataCards[0].resources[0] },
-    resource2: metadataCards[0].resources[0],
+    resource2: metadataCards[0].resources[1],
     resource3: metadataCards[2].resources[0],
   }),
 });

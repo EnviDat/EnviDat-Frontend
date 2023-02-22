@@ -166,40 +166,56 @@
           </v-col>
         </v-row>
 
-        <!-- <v-row>
-        <v-col cols="12">
-          <div class="text-body-1">{{ labels.subInstructions }}</div>
-        </v-col>
-      </v-row> -->
-
-        <v-row no-gutters>
-          <v-col v-html="labels.restrictedInstructions">
+        <v-row no-gutters
+               class="pt-3 " >
+          <v-col v-html="openAccessDetails">
           </v-col>
         </v-row>
 
         <v-row no-gutters
-               class="pt-3">
-          <v-col >
-            <v-text-field
-                :label="labels.restricted"
-                outlined
-                readonly
-                :prepend-icon="restrictedField === 'public' ? 'lock_open' : 'lock'"
-                :disabled="loading"
-                :value="restrictedField"
+               class="pt-3 px-2"
+               align="center" >
+          <v-col class="shrink pl-1 pr-4">
+            <BaseIconSwitch :active="!isRestricted"
+                            :disabled="true"
+                            :materialIconName="isRestricted ? 'check_circle_outline' : 'check_circle'"
+                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
             />
+          </v-col>
+
+          <v-col >
+            {{ isRestricted ? restrictedDetails : labels.isPublicInfo }}
           </v-col>
 
         </v-row>
 
-        <v-row v-if="allowedUsers"
+        <v-row v-if="isRestricted"
                no-gutters
-               class="pt-3">
+               class="px-2 pt-3"
+               align="center">
+
+          <v-col class="shrink pl-1 pr-4">
+            <BaseIconSwitch :active="isAllowedUsers"
+                            :disabled="true"
+                            materialIconName="lock_person"
+                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
+            />
+          </v-col>
+
+          <v-col >
+            {{ isAllowedUsers ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
+          </v-col>
+        </v-row>
+
+        <v-row v-if="isAllowedUsers"
+               no-gutters
+               class="px-2 pt-3">
           <v-col >
             <v-text-field
-                :label="labels.restrictedAllowedUsers"
+                :label="labels.isRestrictedAllowedUsersInfo"
                 outlined
                 readonly
+                hide-details
                 prepend-icon="lock_person"
                 :disabled="loading"
                 :value="allowedUsers"
@@ -208,7 +224,28 @@
 
         </v-row>
 
-        <v-row no-gutters justify="end">
+        <v-row v-if="isRestricted"
+               no-gutters
+               class="px-2 pt-3"
+               align="center">
+
+          <v-col class="shrink pl-1 pr-4">
+            <BaseIconSwitch :active="isSameOrganization"
+                            :disabled="true"
+                            materialIconName="home_filled"
+                            :tooltipText="isRestricted ? labels.isRestrictedInfo : labels.isPublicInfo"
+            />
+          </v-col>
+
+          <v-col >
+            {{ isSameOrganization ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
+          </v-col>
+        </v-row>
+
+
+        <v-row no-gutters
+               class="pt-4"
+               justify="end">
           <v-col class="shrink">
             <!-- prettier-ignore -->
             <BaseRectangleButton :disabled="!saveButtonEnabled"
@@ -238,11 +275,13 @@ import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
 import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from '@/factories/userEditingValidations';
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { formatDate } from '@/factories/metaDataFactory';
+import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
   name: 'EditResource',
@@ -410,7 +449,7 @@ export default {
     },
     restrictedField: {
       get() {
-        let restrictionLvl = 'restricted';
+        let restrictionLvl = 'public';
 
         if (this.restricted) {
 
@@ -424,11 +463,18 @@ export default {
 
         return restrictionLvl;
       },
-/*
-      set() {
+    },
+    openAccessDetails() {
+      const text = this.isRestricted ? this.labels.openAccessPreferedInstructions : this.labels.openAccessInstructions;
 
+      return renderMarkdown(text);
+    },
+    isRestricted() {
+      if (this.isAllowedUsers) {
+        return true;
       }
-*/
+
+      return this.restrictedField !== 'public';
     },
     allowedUsers() {
       let users;
@@ -445,6 +491,28 @@ export default {
 
       return users;
     },
+    isAllowedUsers() {
+      return !!this.allowedUsers;
+    },
+    isSameOrganization() {
+      return this.restrictedField === 'same_organization';
+    },
+    restrictedDetails() {
+
+      if (this.isAllowedUsers && !this.isSameOrganization) {
+        return this.labels.isRestrictedAllowedUsersInfo;
+      }
+
+      if (this.isAllowedUsers && this.isSameOrganization) {
+        return `${this.labels.isRestrictedAllowedUsersInfo} and ${this.labels.isSameOrganizationInfo}`;
+      }
+
+      if (this.isSameOrganization) {
+        return this.labels.isSameOrganizationInfo;
+      }
+
+      return this.labels.isRestrictedInfo;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },
@@ -453,9 +521,6 @@ export default {
     },
     isImage() {
       return this.file?.type.includes('image') || this.mimetype?.includes('image') || false;
-    },
-    isPreviewUrl() {
-      return this.previewUrl !== '';
     },
     isLink() {
       return !!this.url && this.urlType !== 'upload';
@@ -541,8 +606,17 @@ export default {
       size: 'File size',
       format: 'File format',
       restricted: 'Access restrictions',
+      openAccessInstructions: 'Resource is Open Access, great!',
+      openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends Open Access to research data! Please make your data available to everyone unless it really contains sensitive data.',
       restrictedInstructions: 'Restricted Access is not available for editing yet. Please contact the EnviDat team (<a mailto="envidat@wsl.ch">envidat@wsl.ch</a>) if a resource can not be publicly accessed.',
-      restrictedAllowedUsers: 'Access only for specific users',
+      isPublicInfo: 'Resource openly accessible to everyone',
+      isRestrictedInfo: 'Resource is only accessible to users which are signed in',
+      isRestrictedAllowedUsersInfo: 'Resource is accessible to specific users',
+      isSameOrganizationInfo: 'Resource is accessible to users in the same organization as the dataset',
+      restrictedAllowedUsersInfo: 'Access is restricted to the following users',
+      restrictedNotAllowedUsersInfo: 'Access is not restricted on a per user basis',
+      restrictedSameOrganizationInfo: 'Access is restricted to users in the same organization as the dataset is',
+      restrictedNotSameOrganizationInfo: 'Access is not restricted based on the users assigend organization',
     },
     saveButtonEnabled: false,
     fileSizeIcon,
@@ -557,6 +631,7 @@ export default {
   components: {
     BaseRectangleButton,
     BaseIconButton,
+    BaseIconSwitch,
   },
 };
 </script>
