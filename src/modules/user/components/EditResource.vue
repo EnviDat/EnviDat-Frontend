@@ -177,6 +177,7 @@
                align="center" >
           <v-col class="shrink pl-1 pr-4">
             <BaseIconSwitch :active="isPublicField"
+                            :disabled="!editingRestrictingActive"
                             :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
                             :tooltipText="isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo"
                             @clicked="isPublicField = !isPublicField"
@@ -196,6 +197,7 @@
 
           <v-col class="shrink pl-1 pr-4">
             <BaseIconSwitch :active="isSameOrganizationField"
+                            :disabled="!editingRestrictingActive"
                             materialIconName="home_filled"
                             :tooltipText="isSameOrganizationField ? labels.isRestrictedInfo : labels.isPublicInfo"
                             @clicked="isSameOrganizationField = !isSameOrganizationField"
@@ -214,6 +216,7 @@
 
           <v-col class="shrink pl-1 pr-4">
             <BaseIconSwitch :active="hasAllowedUsersField"
+                            :disabled="!editingRestrictingActive"
                             materialIconName="lock_person"
                             :tooltipText="hasAllowedUsersField ? labels.isRestrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo"
                             @clicked="hasAllowedUsersField = !hasAllowedUsersField"
@@ -287,12 +290,21 @@
 -->
 
 
+<!--
         <v-row>
           <v-col>
             getRestrictedObject: {{ getRestrictedObject() }}
           </v-col>
           <v-col>
             writeRestrictionLvl: {{ writeRestrictionLvl }}
+          </v-col>
+        </v-row>
+-->
+
+        <v-row v-if="!editingRestrictingActive"
+               class="py-2">
+          <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning};`" >
+            {{ labels.editingRestrictingUnavailableInfo }}
           </v-col>
         </v-row>
 
@@ -429,10 +441,17 @@ export default {
       type: String,
       default: '',
     },
+    userEditMetadataConfig: {
+      type: Object,
+      default: undefined,
+    },
   },
   mounted() {
   },
   computed: {
+    editingRestrictingActive() {
+      return this.userEditMetadataConfig?.editingRestrictingActive || false;
+    },
     descriptionField: {
       get() {
         return this.previews.description !== null ? this.previews.description : this.description;
@@ -782,6 +801,7 @@ export default {
       restrictedNotAllowedUsersInfo: 'Access is not restricted on a per user basis',
       restrictedSameOrganizationInfo: 'Access is restricted to users in the same organization as the dataset is',
       restrictedNotSameOrganizationInfo: 'Access is not restricted based on the users assigend organization',
+      editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available. Please contact the EnviDat team if you need to make changes.'
     },
     saveButtonEnabled: false,
     fileSizeIcon,

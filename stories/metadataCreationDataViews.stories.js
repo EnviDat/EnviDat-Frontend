@@ -54,8 +54,11 @@ export default {
   parameters: {},
 };
 
+const userEditMetadataConfig = {
+  editingRestrictingActive: true,
+};
 
-export const EditResourceViews = () => ({
+  export const EditResourceViews = () => ({
   components: { EditResource },
   template: `
     <v-col>
@@ -132,9 +135,18 @@ export const EditResourceViews = () => ({
         downloadActive: false,
       },
     },
-    resource1: { ... metadataCards[0].resources[0] },
-    resource2: metadataCards[0].resources[1],
-    resource3: metadataCards[2].resources[0],
+    resource1: {
+      ... metadataCards[0].resources[0],
+      userEditMetadataConfig,
+    },
+    resource2: {
+      ...metadataCards[0].resources[1],
+      userEditMetadataConfig,
+    },
+    resource3: {
+      ...metadataCards[2].resources[0],
+      userEditMetadataConfig,
+    },
   }),
 });
 
