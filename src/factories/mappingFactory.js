@@ -405,7 +405,7 @@ function cleanListForBackend(elementList, mappingKey) {
   return cleanedElements;
 }
 
-function cleanListForFrontend(elementList, mappingKey) {
+export function cleanListForFrontend(elementList, mappingKey) {
 
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {

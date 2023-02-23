@@ -59,7 +59,7 @@ const defaultRestrictions = {
   minNumberOfFiles: 1,
 };
 
-function getNewResourceFromFile(metadataId, file) {
+function createNewResourceForFileUpload(metadataId, file) {
   const name = file.name || file;
   const size = file.size || 0;
 
@@ -70,24 +70,28 @@ function getNewResourceFromFile(metadataId, file) {
   });
 
   return {
-    package_id: metadataId,
+    packageId: metadataId,
     url: file.name || file,
     format: file.extension || 'url',
     mimetype: file.type || '',
     name,
     description: null,
     size,
-    url_type: 'upload',
-    resource_size: JSON.stringify({
+    urlType: 'upload',
+    resourceSize: JSON.stringify({
       size_units: 'mb',
       size_value: size / 1024 / 1024,
+/*
+      sizeUnits: 'mb',
+      sizeValue: size / 1024 / 1024,
+*/
     }),
     restricted,
     doi: null,
     // state: ?,
     // private: ?
-    // publication_state: null,
-    multipart_name: file.name,
+    // publicationState: null,
+    multipartName: file.name,
   };
 
 }
@@ -96,7 +100,7 @@ export async function initiateMultipart(file) {
   eventBus.emit(UPLOAD_STATE_RESET);
 
   const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
-  const newResource = getNewResourceFromFile(metadataId, file);
+  const newResource = createNewResourceForFileUpload(metadataId, file);
 
   await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
     metadataId,

@@ -11,8 +11,8 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE, EDITMETADATA_DATA_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
+  CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
@@ -25,11 +25,12 @@ import EditDataAndResources from '@/modules/user/components/EditDataAndResources
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 
-import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
   localIdProperty,
 } from '@/factories/strategyFactory';
+
+import { cleanListForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
 import { METADATA_EDITING } from './storybookFolder';
 
@@ -42,11 +43,11 @@ const metadataCards = [];
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   const dataset = unFormatedMetadataCards[i];
-  const resources = createResources(dataset);
-  resources.resources = enhanceElementsWithStrategyEvents(resources.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(resources);
 }
-// });
+
 
 export default {
   title: `${METADATA_EDITING} / Data Infos`,
@@ -63,6 +64,7 @@ const userEditMetadataConfig = {
   template: `
     <v-col>
 
+<!--
       <v-row>
         EditResource empty and with resource1
       </v-row>
@@ -77,6 +79,7 @@ const userEditMetadataConfig = {
         </v-col>
 
       </v-row>
+-->
 
       <v-row>
         EditResource with resource2 & resource 3
@@ -121,7 +124,7 @@ const userEditMetadataConfig = {
   computed: {
     resource4() {
       return {
-        ...metadataCards[2].resources[2],
+        ...metadataCards[2][2],
         loading: true,
       }
     },
@@ -136,15 +139,15 @@ const userEditMetadataConfig = {
       },
     },
     resource1: {
-      ... metadataCards[0].resources[0],
+      ... metadataCards[0][0],
       userEditMetadataConfig,
     },
     resource2: {
-      ...metadataCards[0].resources[1],
+      ...metadataCards[0][1],
       userEditMetadataConfig,
     },
     resource3: {
-      ...metadataCards[2].resources[0],
+      ...metadataCards[2][0],
       userEditMetadataConfig,
     },
   }),
