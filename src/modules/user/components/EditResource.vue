@@ -726,12 +726,14 @@ export default {
 
       this.saveButtonEnabled = descriptionAndNameValid;
     },
-    getRestrictedObject() {
-      return {
+    getRestrictedJSONString() {
+      const obj = {
         allowedUsers: this.allowedUsersField || '',
         level: this.writeRestrictionLvl,
         sharedSecret: this.sharedSecretField || '',
       };
+
+      return JSON.stringify(obj);
     },
     saveResourceClick() {
 
@@ -742,7 +744,7 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
-        restricted: this.getRestrictedObject(),
+        restricted: this.getRestrictedJSONString(),
       };
 
       this.$emit('saveResource', newGenericProps);
