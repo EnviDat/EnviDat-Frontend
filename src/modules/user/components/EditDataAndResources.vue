@@ -229,7 +229,7 @@ export default {
       }
 
       return {
-        ...this.this.selectedResource,
+        ...this.selectedResource,
         userEditMetadataConfig,
       };
     },

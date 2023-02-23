@@ -559,6 +559,8 @@ export default {
       },
       set(value) {
         this.previews.restrictedLevel = value ? this.publicAccessLevelValue : this.anyOrganizationAccessLevelValue;
+
+        this.checkSaveButtonEnabled(true);
       },
     },
     isRestrictedField: {
@@ -617,6 +619,7 @@ export default {
       set(value) {
         this.previews.hasAllowedUsers = value;
         this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
+        this.checkSaveButtonEnabled(true);
       },
     },
     allowedUsersField: {
@@ -643,6 +646,7 @@ export default {
       set(value) {
         this.previews.isSameOrganization = value;
         this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
+        this.checkSaveButtonEnabled(true);
       },
     },
     sharedSecretField: {
