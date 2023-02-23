@@ -103,12 +103,26 @@
             </div>
 
 
-            <v-img v-show="!loadingImagePreview"
+            <v-img v-show="!loadingImagePreview && !imagePreviewError"
                    :src="urlField"
                    ref="filePreview"
                    style="max-height: 100%; max-width: 100%; cursor: pointer;"
                    @click="catchImageClick"
                    alt="resource image preview"/>
+
+            <div v-if="!loadingImagePreview && imagePreviewError"
+                 class="imagePreviewErrorContainer">
+
+              <v-img id="curtain"
+                     :src="notFoundImg"
+                     style="max-height: 100%; max-width: 100%; opacity: 0.25;"
+                     alt="resource image could not be loaded!"/>
+
+              <div id="backdrop"
+                   class="pa-4 text-body-1">Image preview could not be loaded! </div>
+            </div>
+
+
           </v-col>
 
           <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
@@ -359,6 +373,8 @@ import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
+
+import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 
 export default {
   name: 'EditResource',
@@ -750,8 +766,9 @@ export default {
       this.$emit('saveResource', newGenericProps);
     },
     loadImagePreview(url) {
-      const vm = this;
+      this.imagePreviewError = null;
       this.loadingImagePreview = true;
+      const vm = this;
       const reader = new FileReader();
 
       try {
@@ -763,6 +780,7 @@ export default {
 
         reader.readAsDataURL(url);
       } catch (e) {
+        this.imagePreviewError = e;
         console.error(`Loading image preview failed: ${e}`);
       } finally {
         this.loadingImagePreview = false;
@@ -800,6 +818,7 @@ export default {
       sharedSecret: null,
     },
     loadingImagePreview: false,
+    imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
       instructions:
@@ -839,6 +858,7 @@ export default {
     publicAccessLevelValue: 'public',
     sameOrganizationAccessLevelValue: 'same_organization',
     anyOrganizationAccessLevelValue: 'any_organization',
+    notFoundImg,
   }),
   components: {
     BaseRectangleButton,
@@ -848,4 +868,15 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.imagePreviewErrorContainer {
+  display: grid;
+}
+
+#backdrop, #curtain {
+  grid-area: 1/1;
+}
+
+#backdrop {  }
+#curtain {  }
+</style>
