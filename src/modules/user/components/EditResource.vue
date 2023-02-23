@@ -15,14 +15,14 @@
                     outlined
                     tooltipText="Cancel Resource Editing"
                     :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')" />
+                    @clicked="$emit('closeClicked')"/>
 
 
     <v-form ref="editResourceForm">
       <v-container fluid class="pa-4">
 
         <template slot="progress">
-          <v-progress-linear color="primary" indeterminate />
+          <v-progress-linear color="primary" indeterminate/>
         </template>
 
         <v-row>
@@ -91,8 +91,20 @@
         <v-row no-gutters>
           <v-col v-if="showImagePreview"
                  cols="4"
-                  class="pt-3 pb-4 px-4">
-            <v-img :src="urlField"
+                 class="pt-3 pb-4 pr-4">
+
+            <div v-show="loadingImagePreview"
+                 class="skeleton skeleton-animation-shimmer"
+                style="height: 100%; width: 100%; "
+            >
+              <div style="width: 100%; min-height: 100%; "
+                  class="bone bone-type-image"
+              ></div>
+            </div>
+
+
+            <v-img v-show="!loadingImagePreview"
+                   :src="urlField"
                    ref="filePreview"
                    style="max-height: 100%; max-width: 100%; cursor: pointer;"
                    @click="catchImageClick"
@@ -110,14 +122,14 @@
                         :error-messages="validationErrors.url"
             />
 
-            <v-text-field v-else
+            <v-text-field v-if="!isLongUrl"
                           :label="isLink ? labels.url : labels.fileName"
                           outlined
                           readonly
                           :disabled="loading"
                           :value="urlField"
                           :error-messages="validationErrors.url"
-              />
+            />
 
           </v-col>
         </v-row>
@@ -167,14 +179,14 @@
         </v-row>
 
         <v-row no-gutters
-               class="pt-3 " >
+               class="pt-3 ">
           <v-col v-html="openAccessDetails">
           </v-col>
         </v-row>
 
         <v-row no-gutters
                class="pt-3 px-2"
-               align="center" >
+               align="center">
           <v-col class="shrink pl-1 pr-4">
             <BaseIconSwitch :active="isPublicField"
                             :disabled="!editingRestrictingActive"
@@ -184,8 +196,8 @@
             />
           </v-col>
 
-          <v-col >
-            {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo}}
+          <v-col>
+            {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo }}
           </v-col>
 
         </v-row>
@@ -223,7 +235,7 @@
             />
           </v-col>
 
-          <v-col >
+          <v-col>
             {{ hasAllowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
           </v-col>
         </v-row>
@@ -231,7 +243,7 @@
         <v-row v-if="isRestrictedField && hasAllowedUsersField"
                no-gutters
                class="px-2 pt-3">
-          <v-col >
+          <v-col>
             <v-text-field
                 :label="labels.isRestrictedAllowedUsersInfo"
                 outlined
@@ -316,7 +328,7 @@
             <BaseRectangleButton :disabled="!saveButtonEnabled"
                                  :loading="loading"
                                  :buttonText="labels.createButtonText"
-                                 @clicked="saveResourceClick" />
+                                 @clicked="saveResourceClick"/>
           </v-col>
         </v-row>
       </v-container>
@@ -362,16 +374,6 @@ export default {
     name: {
       type: String,
       default: '',
-    },
-/*
-    fileName: {
-      type: String,
-      default: '',
-    },
-*/
-    file: {
-      type: File,
-      default: null,
     },
     urlType: {
       type: String,
@@ -486,8 +488,8 @@ export default {
     },
     urlField: {
       get() {
-        if (this.file) {
-          this.loadImagePreview(this.file);
+        if (this.url && this.showImagePreview) {
+          this.loadImagePreview(this.url);
         }
         return this.url;
       },
@@ -677,13 +679,29 @@ export default {
       return formatDate(this.lastModified) || this.lastModified;
     },
     isImage() {
-      return this.file?.type.includes('image') || this.mimetype?.includes('image') || false;
+      return this.mimetype?.includes('image') || false;
     },
     isLink() {
-      return !!this.url && this.urlType !== 'upload';
+      return this.urlType !== 'upload';
     },
     showImagePreview() {
-      return !this.isLink && this.isImage;
+      if (!this.isImage) {
+        return false;
+      }
+
+      const mimeSplits = this.mimetype.split('/');
+      const urlSplits = this.url.split('.');
+
+      if (mimeSplits.length <= 0 || urlSplits.length <= 0) {
+        return false;
+      }
+
+      const mimeExt = mimeSplits[mimeSplits.length - 1];
+      const urlExt = urlSplits[urlSplits.length - 1];
+      if (mimeExt === 'jpeg') {
+        return urlExt === 'jpg' || urlExt === 'jpeg';
+      }
+      return mimeExt === urlExt;
     },
     isLongUrl() {
       return this.url?.length > 100;
@@ -729,18 +747,23 @@ export default {
 
       this.$emit('saveResource', newGenericProps);
     },
-    loadImagePreview(file) {
+    loadImagePreview(url) {
       const vm = this;
-      if (file.type.includes('image')) {
-        const reader = new FileReader();
+      this.loadingImagePreview = true;
+      const reader = new FileReader();
+
+      try {
         reader.onload = () => {
           const imageRefs = vm.$refs.filePreview;
-          const imageRef =
-            imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
           imageRef.src = reader.result;
         };
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(url);
+      } catch (e) {
+        console.error(`Loading image preview failed: ${e}`);
+      } finally {
+        this.loadingImagePreview = false;
       }
     },
     catchImageClick() {
@@ -774,6 +797,7 @@ export default {
       isSameOrganization: null,
       sharedSecret: null,
     },
+    loadingImagePreview: false,
     labels: {
       title: 'Edit Selected Resource',
       instructions:
@@ -801,7 +825,7 @@ export default {
       restrictedNotAllowedUsersInfo: 'Access is not restricted on a per user basis',
       restrictedSameOrganizationInfo: 'Access is restricted to users in the same organization as the dataset is',
       restrictedNotSameOrganizationInfo: 'Access is not restricted based on the users assigend organization',
-      editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available. Please contact the EnviDat team if you need to make changes.'
+      editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
     },
     saveButtonEnabled: false,
     fileSizeIcon,
