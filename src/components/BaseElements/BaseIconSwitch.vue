@@ -14,7 +14,7 @@
              >
           <v-icon v-if="materialIconName"
                   :color="active ? 'primary' : 'gray'"
-                  style="top: -1px; left: 1px;">
+                  style="top: 0; left: 1px;">
             {{ materialIconName }}
           </v-icon>
 
