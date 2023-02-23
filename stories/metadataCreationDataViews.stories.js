@@ -13,6 +13,7 @@
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
@@ -212,7 +213,7 @@ export const EditResourcesList = () => ({
       },
       genericProps: {
         id: '2',
-        resources: metadataCards[2].resources,
+        resources: metadataCards[2],
         selectionId: -1,
         resourcesConfig: {
           downloadActive: false,
@@ -417,7 +418,7 @@ export const EditDataAndResourcesListViews = () => ({
       },
     },
     data: () => ({
-      resources: metadataCards[0].resources,
+      resources: metadataCards[0],
       selectionId: -1,
     }),
   });

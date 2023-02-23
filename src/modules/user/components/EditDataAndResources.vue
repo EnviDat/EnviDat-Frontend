@@ -5,7 +5,7 @@
         <v-row v-if="selectedResource">
           <v-col v-if="resourceUploadActive" >
             <!-- prettier-ignore -->
-            <EditResource v-bind="selectedResource"
+            <EditResource v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
                           @saveResource="catchSaveResourceClose"
                           @previewImageClicked="showFullScreenImage"
@@ -217,6 +217,20 @@ export default {
         },
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
+    editResourceObject() {
+      let userEditMetadataConfig;
+
+      if (this.$store) {
+        userEditMetadataConfig = this.config?.userEditMetadataConfig;
+      } else {
+        userEditMetadataConfig = this.userEditMetadataConfig;
+      }
+
+      return {
+        ...this.this.selectedResource,
+        userEditMetadataConfig,
       };
     },
     selectedResource() {
