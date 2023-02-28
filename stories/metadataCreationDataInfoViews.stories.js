@@ -16,6 +16,7 @@ import {
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
 } from '@/factories/mappingFactory';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 
 export default {
@@ -36,6 +37,19 @@ const Template = (args, { argTypes }) => ({
   components: { EditDataInfo },
   props: Object.keys(argTypes),
   template: '<EditDataInfo v-bind="$props" />',
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
+  },
+  methods: {
+    updateDataInfo (dataObject) {
+      if (dataObject.data.dataLicenseId) {
+        this.$props.dataLicenseId = dataObject.data.dataLicenseId;
+      }
+    },
+  },
 });
 
 const datesArrayEmpty = [{
@@ -47,18 +61,18 @@ const datesArrayEmpty = [{
 const datesArrayFilled = [
   {
     [DATE_PROPERTY_DATE_TYPE]: 'collected',
-    [DATE_PROPERTY_START_DATE]: '01-08-2006',
-    [DATE_PROPERTY_END_DATE]: '06-09-2007',
+    [DATE_PROPERTY_START_DATE]: '2023-02-28',
+    [DATE_PROPERTY_END_DATE]: '2023-03-01',
   },
   {
     [DATE_PROPERTY_DATE_TYPE]: 'created',
-    [DATE_PROPERTY_START_DATE]: '01-08-2006',
-    [DATE_PROPERTY_END_DATE]: '06-09-2007',
+    [DATE_PROPERTY_START_DATE]: '2023-01-05',
+    [DATE_PROPERTY_END_DATE]: '2023-05-05',
   },
   {
     [DATE_PROPERTY_DATE_TYPE]: 'collected',
-    [DATE_PROPERTY_START_DATE]: '01-08-2006',
-    [DATE_PROPERTY_END_DATE]: '06-09-2007',
+    [DATE_PROPERTY_START_DATE]: '2023-08-01',
+    [DATE_PROPERTY_END_DATE]: '2023-09-01',
   },
 ];
 

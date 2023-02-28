@@ -47,7 +47,7 @@
             :hint="mixinMethods_readOnlyHint('dataLicenseId')"
             prepend-icon="data_usage"
             append-icon="arrow_drop_down"
-            :value="selectedLicence"
+            :value="selectedLicense"
             @input="changeLicense($event)"
             :error-messages="validationErrors.dataLicense"
           />
@@ -64,7 +64,7 @@
               </v-expansion-panel-header>
               <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
               <v-expansion-panel-content
-                  class="pa-0 pa-md-2 licensePanel">
+                  class="pa-1 pa-md-2 licensePanel">
                 <div v-html="getDataLicenseSummary" />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -74,18 +74,18 @@
 
       <v-row>
         <v-col>
-          <div v-if="!this.selectedLicence" class="text-body-3">
+          <div v-if="!selectedLicense" class="text-body-3">
             {{ this.getDataLicenseLink }}
           </div>
 
           <div
-            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
+            v-if="selectedLicense && this.dataLicenseLinkExists()"
             class="text-body-3"
           >
             {{ this.labels.dataLicenseEmail }}
           </div>
           <div
-            v-if="this.selectedLicence && this.dataLicenseLinkExists()"
+            v-if="selectedLicense && this.dataLicenseLinkExists()"
             class="text-body-3"
           >
             <a v-bind:href="this.getDataLicenseLink" target="_blank">{{
@@ -170,38 +170,37 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
-    selectedLicence: {
+    selectedLicense: {
       get() {
         if (!this.dataLicenseId) {
           return '';
         }
 
-        const dataLicense = this.getLicenseById(this.dataLicenseId);
+        const dataLicense = this.currentDataLicense;
 
         return {
-          id: dataLicense.id,
-          title: dataLicense.title,
+          id: dataLicense?.id,
+          title: dataLicense?.title,
         };
       },
+    },
+    currentDataLicense() {
+      return this.getLicenseById(this.dataLicenseId);
     },
     getDataLicenseLink() {
       if (!this.dataLicenseId) {
         return 'Please select a data license above to view link for more detailed information.';
       }
 
-      const currentLicense = this.getLicenseById(this.dataLicenseId);
-
-      return currentLicense?.link || 'Data license information unavailable.';
+      return this.currentDataLicense?.link || 'Data license information unavailable.';
     },
     getDataLicenseSummary() {
       if (!this.dataLicenseId) {
         return 'Please select a data license above to view data license summary.';
       }
 
-      const currentLicense = this.getLicenseById(this.dataLicenseId);
-
       return (
-        this.markdownText(currentLicense?.summary) ||
+        this.markdownText(this.currentDataLicense?.summary) ||
         'Data summary information unavailable.'
       );
     },
@@ -254,9 +253,7 @@ export default {
     changeLicense(value) {
       const property = 'dataLicenseId';
 
-      if (
-        isFieldValid(property, value, this.validations, this.validationErrors)
-      ) {
+      if (isFieldValid(property, value, this.validations, this.validationErrors)) {
         this.setDataLicenseInfo(value);
       }
     },

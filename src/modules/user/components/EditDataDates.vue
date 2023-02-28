@@ -49,9 +49,16 @@
               dense
           >
             <v-col cols="4"
-                    class="pt-2">
+                   md="6"
+                   class="pt-2 pr-2 shrink">
+              <div class="text-body-1">
+                {{ item.dateType }}
+              </div>
+
+<!--
               <v-icon>category</v-icon>
               {{ item.dateType }}
+-->
 <!--
               <v-text-field
                   dense
@@ -71,6 +78,7 @@
                   :endDate="item.dateEnd"
                   :endDateProperty="endDateProperty"
                   :clearableEndDate="true"
+                  rowLayout
                   @dateChange="dateChanged(index, ...arguments)"
                   @clearClick="clearDate(index, ...arguments)"
                   :readOnlyFields="readOnlyFields"
@@ -115,10 +123,7 @@ import {
 } from '@/factories/mappingFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
 // eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-  isFieldValid,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditDataDates',
