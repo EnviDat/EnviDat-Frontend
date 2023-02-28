@@ -22,7 +22,6 @@ import {
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 
 import { createResources } from '@/factories/metaDataFactory';
@@ -203,64 +202,6 @@ export const EditResourcesList = () => ({
     }),
   });
 
-export const EditDataInfoViews = () => ({
-  components: { EditDataInfo },
-  template: `
-    <v-col>
-
-      <v-row>
-        EditDataInfo Component Unfilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayEmpty" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditDataInfo Component Prefilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  computed: {
-  },
-  methods: {
-  },
-    data: () => ({
-      datesArrayEmpty: [
-        {
-          dateType: '',
-          date: '',
-          dateEnd: '',
-        },
-      ],
-      datesArrayFilled: [
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-      ],
-    }),
-  });
 
 export const EditDataAndResourcesListViews = () => ({
     components: { EditDataAndResources },

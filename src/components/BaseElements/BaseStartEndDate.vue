@@ -1,6 +1,7 @@
 <template>
   <v-row no-gutters>
-    <v-col cols="6">
+    <v-col cols="12"
+            md="6">
       <v-text-field
         v-if="isReadonly(startDateProperty)"
         :label="labels.startDate"
@@ -71,7 +72,10 @@
       </v-menu>
     </v-col>
 
-    <v-col cols="6" class="pl-4">
+    <v-col cols="12"
+           md="6"
+           class="pl-md-4">
+
       <v-text-field
         v-if="isReadonly(endDateProperty)"
         :label="labels.endDate"
