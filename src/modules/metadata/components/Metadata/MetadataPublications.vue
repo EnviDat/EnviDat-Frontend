@@ -76,7 +76,7 @@ export default {
       return this.metadataConfig?.publicationsConfig || {};
     },
     resolveBaseUrl() {
-      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids/';
+      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
     },
     extractedPIDMap() {
       return extractPIDMapFromText(this.text);

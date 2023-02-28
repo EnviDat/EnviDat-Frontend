@@ -271,9 +271,10 @@ export function createCitation(dataset) {
   const year = publication?.publication_year || publication?.publicationYear || '';
   const doi = dataset.doi || '';
 
-  let text = `${authors.trim()}  <span style="font-weight: bold;" >${title}.</span> `;
-  text += ` <span style="font-style: italic;" >${publisher}</span> `;
-  text += ` <span style="font-weight: bold;" >${year}</span>, `;
+  let text = `${authors.trim()}`;
+  text += ` (${year}).`;
+  text += ` ${title}. `;
+  text += ` <span style="font-style: italic;" >${publisher}.</span> `;
   text += ` <a href="https://www.doi.org/${doi}" target="_blank">https://www.doi.org/${doi}</a>. `;
 
 /*

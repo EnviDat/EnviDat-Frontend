@@ -134,7 +134,7 @@ export function getAuthorsCitationString(dataset) {
 
     for (let i = 0; i < (authors.length || 19); i++) {
       const element = authors[i];
-      authorString += ` ${getAuthorNameCitation(element)};`;
+      authorString += ` ${getAuthorNameCitation(element)},`;
     }
 
     // cut of the last ';'
