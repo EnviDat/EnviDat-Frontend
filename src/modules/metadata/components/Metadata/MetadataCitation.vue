@@ -36,8 +36,8 @@
           <v-col class="shrink py-1 px-2">
             <base-rectangle-button margin-class="citationButton"
                                    color="secondary"
-                                   button-text="Copy Citation"
-                                   tooltipText="Copy Citation to your Clipboard"
+                                   button-text="Copy"
+                                   tooltipText="Copy citation text to your clipboard"
                                    material-icon-name="content_copy"
                                    :is-small="true"
                                    icon-color="white"
