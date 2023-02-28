@@ -270,12 +270,13 @@ export function createCitation(dataset) {
   const publisher = publication?.publisher || '';
   const year = publication?.publication_year || publication?.publicationYear || '';
   const doi = dataset.doi || '';
+  const doiUrl = `https://www.doi.org/${doi}`;
 
   let text = `${authors.trim()}`;
   text += ` (${year}).`;
   text += ` ${title}. `;
   text += ` <span style="font-style: italic;" >${publisher}.</span> `;
-  text += ` <a href="https://www.doi.org/${doi}" target="_blank">https://www.doi.org/${doi}</a>. `;
+  text += ` <a href="${doiUrl}" target="_blank">${doiUrl}</a>. `;
 
 /*
   text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
@@ -284,6 +285,8 @@ export function createCitation(dataset) {
   return {
     id: dataset.id,
     citationText: text,
+    doi,
+    doiUrl,
     citationXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/datacite.xml`,
     citationIsoXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/iso19139.xml`,
     citationGCMDXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
