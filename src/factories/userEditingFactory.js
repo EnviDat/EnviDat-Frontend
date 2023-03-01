@@ -46,20 +46,6 @@ import {
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import EditDescription from '@/modules/user/components/EditDescription.vue';
-
-import EditKeywords from '@/modules/user/components/EditKeywords.vue';
-import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
-
-// import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-// import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
-
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
-
-// import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
 
 export function updateEditingArray(

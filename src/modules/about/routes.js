@@ -10,17 +10,21 @@ import store from '@/store/store';
 
 const AboutPage = () => import('@/modules/about/components/AboutPage.vue');
 
+const beforeEnter = (to, from, next)=> {
+  const moduleKey = 'about';
+  if (store.state[moduleKey]) {
+    return;
+  }
+  const importFun = () => import('@/modules/about/store/aboutStore');
+  importStoreModule(store, moduleKey, importFun).then(() => { next() });
+}
+
 export const aboutRoutes = [
   {
     path: `${ABOUT_PATH}/:tab`,
     name: ABOUT_PAGENAME,
     component: AboutPage,
-    // props: true,
-    beforeEnter: (to, from, next) => {
-      const importFun = () => import('@/modules/about/store/aboutStore');
-      importStoreModule(store, 'about', importFun)
-        .then(() => { next() });
-    },
+    beforeEnter,
   },
   {
     path: ABOUT_PATH,
