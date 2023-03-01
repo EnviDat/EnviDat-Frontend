@@ -226,25 +226,29 @@ const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
-    component: EditMetadataHeader,
+    // component: EditMetadataHeader,
+    component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
     title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
-    component: EditDescription,
+    // component: EditDescription,
+    component: () => import('@/modules/user/components/EditDescription.vue'),
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
     title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
-    component: EditKeywords,
+    // component: EditKeywords,
+    component: () => import('@/modules/user/components/EditKeywords.vue'),
     key: EDITMETADATA_KEYWORDS,
   },
   {
     title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
-    component: EditAuthorList,
+    // component: EditAuthorList,
+    component: () => import('@/modules/user/components/EditAuthorList.vue'),
     key: EDITMETADATA_AUTHOR_LIST,
   },
 ];
@@ -261,13 +265,15 @@ const dataDetailSteps = [
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
-    component: EditDataInfo,
+    // component: EditDataInfo,
+    component: () => import('@/modules/user/components/EditDataInfo.vue'),
   },
   {
     title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
-    component: EditDataGeo,
+    // component: EditDataGeo,
+    component: () => import('@/modules/user/components/EditDataGeo.vue'),
   },
 ];
 
@@ -275,7 +281,8 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
-    component: MetadataGenericSubStepper,
+    // component: MetadataGenericSubStepper,
+    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
     key: EDITMETADATA_MAIN,
     detailSteps: mainDetailSteps,
     stepTitle: mainDetailSteps[0].title,
@@ -284,7 +291,8 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
-    component: MetadataGenericSubStepper,
+    // component: MetadataGenericSubStepper,
+    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
     key: EDITMETADATA_DATA,
     detailSteps: dataDetailSteps,
     stepTitle: dataDetailSteps[0].title,

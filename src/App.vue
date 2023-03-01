@@ -161,8 +161,6 @@ import {
   HIDE_NOTIFICATIONS,
 } from '@/store/mainMutationsConsts';
 
-import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
-import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
 import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
@@ -187,11 +185,12 @@ import {
 
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
-import NotificationCard from '@/components/Cards/NotificationCard.vue';
-import ConfirmTextCard from '@/components/Cards/ConfirmTextCard.vue';
-import TextBanner from '@/components/Layouts/TextBanner.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
-import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
+
+const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
+const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
+const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
+const NotificationCard = () => import('@/components/Cards/NotificationCard.vue');
 
 export default {
   name: 'App',
@@ -434,9 +433,6 @@ export default {
       }
 
       this.showInfoDialog = true;
-    },
-    emitOpenModal() {
-      eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
     openGenericFullscreen() {
       this.showModal = true;

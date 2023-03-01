@@ -43,29 +43,6 @@
 
           <component :is="currentComponent"
                     v-bind="genericProps" />
-<!--
-          <component :is="gcnetModalComponent"
-                     :currentStation="currentStation"
-                     :fileObjects="fileObjects"
-                     :graphStyling="graphStyling"
-                     :config="config" />
-
-          <component :is="fullScreenComponent"
-                     :site="currentSite"
-                     :layerConfig="currentLayerConfig"
-                     :isGcnet="hasGcnetStationConfig"
-          />
-
-          &lt;!&ndash;
-                :mapHeight="mapHeight"
-          &ndash;&gt;
-
-          <component :is="textPreviewComponent"
-                     :url="textPreviewUrl" />
-
-          <component :is="dataIframeComponent"
-                     :url="dataPreviewUrl" />
--->
 
       </v-card-text>
     </v-card>
@@ -100,8 +77,9 @@ import {
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getPreviewStrategy, getPreviewStrategyFromUrlExtension } from '@/factories/strategyFactory';
-import MetadataMapFullscreen from '@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
+
+const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
+const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');
 
 export default {
   name: 'GenericFullScreenModal',
