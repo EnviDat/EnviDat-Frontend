@@ -1,7 +1,6 @@
 /* eslint-disable object-property-newline */
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
-import { FilledList, MobileFilledList } from '~/stories/editRelatedPublicationsLists.stories';
 
 /**
  * @summary story of all the MetadataDetailViews for sandbox testing

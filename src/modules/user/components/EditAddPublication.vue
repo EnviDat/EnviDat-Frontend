@@ -4,23 +4,11 @@
                class="pa-0"
   >
 
-<!--
-    <v-row>
-      <v-col >
-        <div class="text-subtitle-1"
-             v-html="labels.cardInstructions">
-
-        </div>
-      </v-col>
-    </v-row>
--->
-
     <v-row no-gutters
             align="center"
-            align-content="center"
-            class="pt-4"
             :dense="dense">
-      <v-col >
+      <v-col cols="12"
+              md="auto">
         <v-text-field
             v-model="pidField"
             :label="labels.pId"
@@ -33,11 +21,15 @@
         />
       </v-col>
 
-      <v-col class="text-h6 px-4 shrink" >
+      <v-col cols="12"
+             md="auto"
+             style="text-align: center;"
+              class="text-h6 px-md-4 shrink" >
         Or
       </v-col>
 
-      <v-col>
+      <v-col cols="12"
+             md="auto">
         <v-text-field
             v-model="doiField"
             :label="labels.dataObjectIdentifier"
@@ -58,11 +50,12 @@
 
       </v-col>
 
-      <v-col class="pl-4 shrink">
+      <v-col cols="auto"
+             class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton material-icon-name="add"
                         :fillColor="$vuetify.theme.themes.light.primary"
                         icon-color="white"
-                        :is-small="dense"
+                        :is-small="dense && $vuetify.breakpoint.mdAndUp"
                         @clicked="addClick"
         />
 
