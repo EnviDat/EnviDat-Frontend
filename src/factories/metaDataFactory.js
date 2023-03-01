@@ -15,9 +15,10 @@
 import { format, formatISO, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
-import {getAuthorName, getAuthorsCitationString, getAuthorsString} from '@/factories/authorFactory';
+import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
 import { localIdProperty } from '@/factories/strategyFactory';
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+import axios from 'axios';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -1105,6 +1106,112 @@ export function extractPIDsFromText(text) {
 }
 
 /**
+ *
+ * @param text
+ * @param {Map<any, any>} citationMap Map keys are the PID with the citation text as value
+ * @param {Map<string, string>} pidMap Map keys are the url with the PID as value
+ * @returns {*}
+ */
+export function replacePIDsInText(text, citationMap, pidMap) {
+
+  let newText = text;
+
+  if (text) {
+
+    pidMap.forEach((pid, url) => {
+      const citation = citationMap.get(pid);
+      if (citation) {
+        // newText = `<p>${newText.replace(url, citation)}  </p>`;
+        newText = newText.replace(url, `${citation} <br /> <br />`);
+      }
+    });
+
+  }
+
+  return newText;
+}
+
+function getGenericCitation(resolvedObject) {
+  // don't use the ACS or APA or any property explicit of the citation
+  // if any time the style of the citation is changed, the code would fail
+  // in this generic way, the first citation will be used no matter the name
+  const citationObj = resolvedObject?.citation || {};
+  const keys = Object.keys(citationObj);
+  return citationObj[keys[0]];
+}
+
+function getGenericCitationObject(citationInfo) {
+  const genericCitation = getGenericCitation(citationInfo);
+
+  let abstractTitle = 'Abstract';
+  if (citationInfo.object_url) {
+    abstractTitle += ` provided by <a href="${citationInfo.object_url}" target="_blank" >DORA</a>:`;
+  } else {
+    abstractTitle += ':';
+  }
+
+  return {
+    citation: genericCitation || null,
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : null,
+    doraSiteUrl: citationInfo.object_url,
+    doi: citationInfo.doi,
+    doiUrl: `https://www.doi.org/${citationInfo.doi}`,
+  };
+}
+/**
+ *
+ * @param resolvedPubs
+ * @param pidMap
+ * @returns {Map<any, any>} Map keys are the PID with the citation text as value
+ */
+export function resolvedCitationText(resolvedPubs, pidMap) {
+  const citationTextMap = new Map();
+
+  pidMap.forEach((pid, url) => {
+    const resolvedObject = resolvedPubs[pid];
+
+    const genericCitation = getGenericCitation(resolvedObject);
+
+    if (genericCitation) {
+      citationTextMap.set(pid, genericCitation);
+    }
+  });
+
+  return citationTextMap;
+}
+
+export function getPidCitationObjectMap(citationObjs) {
+
+  const citationMap = new Map();
+  const pids = Object.entries(citationObjs);
+
+  pids.forEach(entry => {
+    const [pid, citationInfo] = entry;
+
+    const citationObj = getGenericCitationObject(citationInfo);
+    citationMap.set(pid, citationObj);
+  });
+
+
+  return citationMap;
+}
+
+export function getDoiCitationObjectMap(doiObjs) {
+  if (!doiObjs) {
+    return null;
+  }
+
+  const citationMap = new Map();
+
+  doiObjs.forEach((citationInfo, index) => {
+    const citationObj = getGenericCitationObject(citationInfo);
+    citationMap.set(citationObj.doi, citationObj);
+  });
+
+  return citationMap;
+}
+
+/**
  * returns a map with keys which are PIDs or Urls from the text and the values are the PIDs
  *
  * @param {string} text
@@ -1150,6 +1257,70 @@ export function extractPIDMapFromText(text) {
   }
 
   return pidMap;
+}
+
+const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+
+export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
+  let fullUrl = resolveBaseUrl || fallbackPIDUrl;
+
+  pidMap.forEach((pid, url) => {
+    fullUrl += `${pid}|`;
+  });
+
+  fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+
+  return fullUrl;
+}
+
+const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
+
+export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
+  let fullUrl = resolveBaseUrl || fallbackDoiUrl;
+
+  doiMap.forEach((doi, url) => {
+    fullUrl += `${doi.replace('/', '~slsh~')}|`;
+  });
+
+  fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+
+  return fullUrl;
+}
+export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+  if (!doiMap) {
+    return null;
+  }
+
+  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+
+  const response = await axios.get(doraUrl);
+  return response.data;
+}
+
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+  if (!pidMap) {
+    return null;
+  }
+
+  // get url which works with multiple PIDs
+  const doraUrl = getDoraPidsUrl(pidMap, resolveBaseUrl);
+
+  const response = await axios.get(doraUrl);
+  return response.data;
+}
+
+export async function resolvePidCitationObjectsViaDora(pidMap) {
+
+  const citationObj = await resolvePIDsViaDora(pidMap);
+
+  return getPidCitationObjectMap(citationObj);
+}
+
+export async function resolveDoiCitationObjectsViaDora(doiMap) {
+
+  const citationObj = await resolveDOIsViaDora(doiMap);
+
+  return getDoiCitationObjectMap(citationObj);
 }
 
 export function extractDatasetIdsFromText(text) {

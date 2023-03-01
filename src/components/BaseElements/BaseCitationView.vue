@@ -11,7 +11,6 @@
         <v-row no-gutters>
           <v-col cols="12">
             <v-menu
-                :disabled="!abstract"
                 open-on-hover
                 open-on-click
                 :close-on-click="false"
@@ -22,8 +21,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
                     style="width: 36px; height: 36px;"
-                    color="primary"
-                    :disabled="!abstract"
+                    :color="abstract ? 'primary' : 'gray'"
                     v-bind="attrs"
                     v-on="on"
                 >
@@ -33,8 +31,8 @@
 
               <div class="pa-4"
                    style="background-color: white;"
-                   v-html="abstract">
-
+                   v-html="abstract"
+                   >
               </div>
 
             </v-menu>
@@ -75,13 +73,22 @@
 export default {
   name: 'BaseCitationView',
   props: {
-    abstract: String,
+    abstract: {
+      type: String,
+      default: undefined,
+    },
     citation: {
       type: String,
       default: 'No citation found',
     },
-    doi: String,
-    doiUrl: String,
+    doi: {
+      type: String,
+      default: undefined,
+    },
+    doiUrl: {
+      type: String,
+      default: undefined,
+    },
   },
   computed: {
   },

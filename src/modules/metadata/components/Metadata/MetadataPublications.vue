@@ -29,7 +29,12 @@
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import { mapState } from 'vuex';
-import { extractPIDMapFromText } from '@/factories/metaDataFactory';
+import {
+  extractPIDMapFromText,
+  getDoraPidsUrl,
+  replacePIDsInText,
+  resolvedCitationText,
+} from '@/factories/metaDataFactory';
 import axios from 'axios';
 
 export default {
@@ -122,12 +127,12 @@ export default {
 
       try {
         // get url which works with multiple PIDs
-        const doraUrl = this.getDoraUrl(pidMap);
+        const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
 
         const response = await axios.get(doraUrl);
 
-        const citationMap = this.resolvedCitationText(response.data, pidMap);
-        newText = this.replacePIDsInText(text, citationMap, pidMap);
+        const citationMap = resolvedCitationText(response.data, pidMap);
+        newText = replacePIDsInText(text, citationMap, pidMap);
 
       } catch (e) {
         this.resolveError = e;
@@ -136,68 +141,6 @@ export default {
       }
 
       this.replacedText = newText;
-    },
-    /**
-     *
-     * @param resolvedPubs
-     * @param pidMap
-     * @returns {Map<any, any>} Map keys are the PID with the citation text as value
-     */
-    resolvedCitationText(resolvedPubs, pidMap) {
-      const citationMap = new Map();
-
-      pidMap.forEach((pid, url) => {
-        const resolvedObject = resolvedPubs[pid];
-
-        // don't use the ACS or APA or any property explicit of the citation
-        // if any time the style of the citation is changed, the code would fail
-        // in this generic way, the first citation will be used no matter the name
-        const citationObj = resolvedObject?.citation || {};
-        const keys = Object.keys(citationObj);
-        const genericCitation = citationObj[keys[0]];
-
-        if (genericCitation) {
-          citationMap.set(pid, genericCitation);
-        }
-      });
-
-      return citationMap;
-    },
-    /**
-     *
-     * @param text
-     * @param {Map<any, any>} citationMap Map keys are the PID with the citation text as value
-     * @param {Map<string, string>} pidMap Map keys are the url with the PID as value
-     * @returns {*}
-     */
-    replacePIDsInText(text, citationMap, pidMap) {
-
-      let newText = text;
-
-      if (text) {
-
-        pidMap.forEach((pid, url) => {
-          const citation = citationMap.get(pid);
-          if (citation) {
-            // newText = `<p>${newText.replace(url, citation)}  </p>`;
-            newText = newText.replace(url, `${citation} \n`);
-          }
-        });
-
-      }
-
-      return newText;
-    },
-    getDoraUrl(pidMap) {
-      let fullUrl = this.resolveBaseUrl;
-
-      pidMap.forEach((pid, url) => {
-        fullUrl += `${pid}|`;
-      });
-
-      fullUrl = fullUrl.substring(0, fullUrl.length - 1);
-
-      return fullUrl;
     },
   },
   watch: {

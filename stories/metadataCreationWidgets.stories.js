@@ -1,6 +1,7 @@
 /* eslint-disable object-property-newline */
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
+import { FilledList, MobileFilledList } from '~/stories/editRelatedPublicationsLists.stories';
 
 /**
  * @summary story of all the MetadataDetailViews for sandbox testing
@@ -76,66 +77,15 @@ FilledDoiWithPreview.args = {
   dense: true,
   ...citation2,
 }
-/*
-export const EditRelatedPublicationViews = () => ({
-    components: { EditRelatedPublications },
-    template: `
-    <v-col>
 
-      <v-row>
-        Edit Related Publications fields unfilled
-      </v-row>
+export const MobileFilledDoiWithPreview = Template.bind({});
+MobileFilledDoiWithPreview.args = { ...FilledDoiWithPreview.args };
+MobileFilledDoiWithPreview.parameters = mobileViewportParams;
 
-      <v-row class="py-3" >
-        <v-col >
-          <EditRelatedPublications v-bind="genericProps" />
-        </v-col>
-      </v-row>
+export const MobileLargeFilledPidWithPreview = Template.bind({});
+MobileLargeFilledPidWithPreview.args = { ...FilledPidWithPreview.args };
+MobileLargeFilledPidWithPreview.parameters = mobileLargeViewportParams;
 
-
-      <v-row>
-        Edit Related Publications fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditRelatedPublications v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-         // this.genericProps.publications.text = this.genericProps.textareaContent;
-        }
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          // this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.relatedPublicationsText = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      genericProps: {
-        relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        id: '1',
-      },
-      genericPropsFilled: {
-        id: '2',
-        labelTextarea: 'Related Publications',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
-      },
-    }),
-  });
-*/
+export const TabletFilledDoiWithPreview = Template.bind({});
+TabletFilledDoiWithPreview.args = { ...FilledDoiWithPreview.args };
+TabletFilledDoiWithPreview.parameters = tabletViewportParams;

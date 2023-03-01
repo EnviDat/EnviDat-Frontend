@@ -4,6 +4,7 @@
                class="pa-0"
   >
 
+<!--
     <v-row>
       <v-col >
         <div class="text-subtitle-1"
@@ -12,6 +13,7 @@
         </div>
       </v-col>
     </v-row>
+-->
 
     <v-row no-gutters
             align="center"
@@ -27,6 +29,7 @@
             outlined
             hide-details
             prepend-icon="account_circle"
+            @input="pidChange"
         />
       </v-col>
 
@@ -43,6 +46,7 @@
             outlined
             hide-details
             prepend-icon="fingerprint"
+            @input="doiChange"
         />
   <!--
             @change="doiField = $event"
@@ -54,7 +58,7 @@
 
       </v-col>
 
-      <v-col class="pl-4 ">
+      <v-col class="pl-4 shrink">
         <BaseIconButton material-icon-name="add"
                         :fillColor="$vuetify.theme.themes.light.primary"
                         icon-color="white"
@@ -66,6 +70,7 @@
     </v-row>
 
 
+<!--
     <v-row no-gutters
            class="pt-4">
       <v-col >
@@ -74,6 +79,7 @@
           />
       </v-col>
     </v-row>
+-->
 
     <v-row no-gutters
           class="pt-4">
@@ -112,9 +118,8 @@
 
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
+import { resolveDoiCitationObjectsViaDora, resolvePidCitationObjectsViaDora } from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditAddPublication',
@@ -127,6 +132,18 @@ export default {
       type: String,
       default: undefined,
     },
+    abstract: {
+      type: String,
+      default: undefined,
+    },
+    citation: {
+      type: String,
+      default: undefined,
+    },
+    doiUrl: {
+      type: String,
+      default: undefined,
+    },
     loading: {
       type: Boolean,
       default: false,
@@ -135,18 +152,13 @@ export default {
       type: Boolean,
       default: false,
     },
-    abstract: {
-      type: String,
-      default: undefined
-    },
-    citation: {
-      type: String,
-      default: undefined
-    },
-    doiUrl: {
-      type: String,
-      default: undefined
-    },
+  },
+  mounted() {
+    if (this.pid) {
+      this.pidChange(this.pid);
+    } else if (this.doi) {
+      this.doiChange(this.doi);
+    }
   },
   computed: {
     pidField: {
@@ -169,14 +181,48 @@ export default {
     },
     citationViewProps() {
       return {
-        doi: this.doiField,
-        doiUrl: this.doiUrl,
-        citation: this.citation,
-        abstract: this.abstract,
+        doi: this.previewCitation?.doi || this.doi,
+        doiUrl: this.previewCitation?.doiUrl || this.doiUrl,
+        citation: this.previewCitation?.citation || this.citation,
+        abstract: this.previewCitation?.abstract || this.abstract,
       };
     },
   },
   methods: {
+    pidChange(pid) {
+      if (!this.isResolving) {
+        this.resolvePIDs(pid);
+      }
+    },
+    doiChange(doi) {
+      if (!this.isResolving) {
+        this.resolveDOIs(doi);
+      }
+    },
+    async resolvePIDs(pid) {
+      this.previewCitation = null;
+      this.isResolving = true;
+
+      const pidMap = new Map();
+      pidMap.set(pid, pid);
+      
+      const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
+      this.previewCitation = citationMap.get(pid);
+
+      this.isResolving = false;
+    },
+    async resolveDOIs(doi) {
+      this.previewCitation = null;
+      this.isResolving = true;
+
+      const doiMap = new Map();
+      doiMap.set(doi, doi);
+
+      const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
+      this.previewCitation = citationMap.get(doi);
+
+      this.isResolving = false;
+    },
     addClick() {
       this.$emit('addClicked', {
         pid: this.pidField,
@@ -185,6 +231,8 @@ export default {
     },
   },
   data: () => ({
+    isResolving: false,
+    previewCitation: null,
     previewPID: null,
     previewDOI: null,
     editingProperty: 'relatedPublicationsText',
@@ -201,7 +249,6 @@ export default {
   }),
   components: {
     BaseIconButton,
-    BaseStatusLabelView,
   },
 };
 
