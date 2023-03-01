@@ -5,6 +5,8 @@ import {
   GUIDELINES_PATH,
   POLICIES_PATH,
 } from '@/router/routeConsts';
+import { importStoreModule } from '@/factories/enhancementsFactory';
+import store from '@/store/store';
 
 const AboutPage = () => import('@/modules/about/components/AboutPage.vue');
 
@@ -13,6 +15,12 @@ export const aboutRoutes = [
     path: `${ABOUT_PATH}/:tab`,
     name: ABOUT_PAGENAME,
     component: AboutPage,
+    // props: true,
+    beforeEnter: (to, from, next) => {
+      const importFun = () => import('@/modules/about/store/aboutStore');
+      importStoreModule(store, 'about', importFun)
+        .then(() => { next() });
+    },
   },
   {
     path: ABOUT_PATH,

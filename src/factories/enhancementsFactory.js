@@ -123,5 +123,14 @@ export function loadImages(store, isSupported = false) {
   }
 
   store.commit(UPDATE_CATEGORYCARD_IMAGES);
+}
 
+export const importStoreModule = async (store, moduleKey, importFunction) => {
+  await importFunction()
+    .then((importObject) => {
+      const module = importObject[moduleKey];
+      if (!store.state[moduleKey]) {
+        store.registerModule(moduleKey, module);
+      }
+    });
 }

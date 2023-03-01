@@ -507,11 +507,6 @@ export default {
         ],
     ),
     ...mapGetters({
-      policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
-      guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
-      projectsLoading: `${PROJECTS_NAMESPACE}/loading`,
-    }),
-    ...mapGetters({
       currentPage: 'currentPage',
       appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
@@ -581,8 +576,7 @@ export default {
       return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent
-          || this.projectsLoading || this.policiesLoading || this.guidelinesLoading;
+      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
     },
     searchTerm() {
       return this.$route.query.search;
