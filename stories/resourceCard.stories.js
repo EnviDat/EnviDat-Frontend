@@ -28,10 +28,6 @@ const metadataCards = unFormatedMetadataCards;
 
 metadataCards[2].resources[0].loading = true;
 
-const methods = {
-//  onCardClick: action('clicked on card'),
-//  onTagClick: action('clicked on tag'),
-};
 
 export default {
   title: '3 Cards / Resource Cards',
@@ -54,7 +50,7 @@ export const ResourceCardCollection = () => ({
                               :dateCreatedIcon="dateCreatedIcon"
                               :lastModifiedIcon="lastModifiedIcon"
                               :fileExtensionIcon="iconFiles"
-                              @clicked="onCardClick" />
+                               />
       </v-col>
 
       <v-col cols="4" class="pa-2"
@@ -67,7 +63,7 @@ export const ResourceCardCollection = () => ({
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
                         :isProtected="true"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
       <v-col cols="6" class="pa-2"
@@ -79,7 +75,7 @@ export const ResourceCardCollection = () => ({
                         :dateCreatedIcon="dateCreatedIcon"
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
       <v-col cols="12" class="pa-2" >
@@ -96,12 +92,11 @@ export const ResourceCardCollection = () => ({
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
                         :downloadActive="false"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
     </v-row>
     `,
-    methods,
     data: () => ({
       metadataCards,
       doiIcon,
@@ -130,12 +125,11 @@ export const ResourceCardWithPreview = () => ({
                               :showGenericOpenButton="true"
                               :genericOpenButtonBottom="true"
                               openButtonTooltip="Open File in Preview"
-                              @clicked="onCardClick" />
+                               />
       </v-col>
 
     </v-row>
     `,
-    methods,
     data: () => ({
       metadataCards,
       doiIcon,
@@ -171,6 +165,5 @@ export const ResourceCardPlaceholders = () => ({
 
     </v-row>
     `,
-    methods,
     data: () => ({}),
   });
