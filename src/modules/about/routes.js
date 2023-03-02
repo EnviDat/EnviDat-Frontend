@@ -12,9 +12,6 @@ const AboutPage = () => import('@/modules/about/components/AboutPage.vue');
 
 const beforeEnter = (to, from, next)=> {
   const moduleKey = 'about';
-  if (store.state[moduleKey]) {
-    return;
-  }
   const importFun = () => import('@/modules/about/store/aboutStore');
   importStoreModule(store, moduleKey, importFun).then(() => { next() });
 }

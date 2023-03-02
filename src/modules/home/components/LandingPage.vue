@@ -338,6 +338,8 @@ import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
+import store from '@/store/store';
+import { importStoreModule } from '@/factories/enhancementsFactory';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -360,8 +362,20 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
+  beforeCreate() {
+    const importFun = () => import('@/modules/blog/store/blogStore');
+    importStoreModule(store, 'blog', importFun)
+    .then(() => {
+      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+    });
+
+  },
+  created() {
+    this.$store.watch((state) => state.blog,(value, oldValue) => {
+      this.blogModuleLoaded = !!value;
+    });
+  },
   beforeMount() {
-    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
     this.fileIconString = this.mixinMethods_getIcon('file');
     this.fallbackCardImg = this.mixinMethods_getWebpImage(
@@ -385,11 +399,13 @@ export default {
     ]),
     ...mapState(BLOG_NAMESPACE, ['list']),
     blogPosts() {
-      if (this.list?.length > 0) {
-        return this.list.slice(0, 4);
+      if (this.blogModuleLoaded) {
+        if (this.list?.length > 0) {
+          return this.list.slice(0, 4);
+        }
       }
 
-      return this.list;
+      return [];
     },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
@@ -610,6 +626,7 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    blogModuleLoaded: false,
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',

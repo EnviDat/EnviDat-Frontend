@@ -13,9 +13,6 @@ const ProjectDetailPage = () => import('@/modules/projects/components/ProjectDet
 
 const beforeEnter = (to, from, next)=> {
   const moduleKey = 'projects';
-  if (store.state[moduleKey]) {
-    return;
-  }
   const importFun = () => import('@/modules/projects/store/projectsStore');
   importStoreModule(store, moduleKey, importFun).then(() => { next() });
 }

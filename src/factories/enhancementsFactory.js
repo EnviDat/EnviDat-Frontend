@@ -126,11 +126,19 @@ export function loadImages(store, isSupported = false) {
 }
 
 export const importStoreModule = async (store, moduleKey, importFunction) => {
+
+  if (store.state[moduleKey]) {
+    return;
+  }
+
   await importFunction()
     .then((importObject) => {
       const module = importObject[moduleKey];
-      if (!store.state[moduleKey]) {
-        store.registerModule(moduleKey, module);
-      }
+      store.registerModule(moduleKey, module);
+      // console.log(`registered ${moduleKey}`);
+    })
+    .catch((reason) => {
+      console.log(`error registering ${moduleKey}`);
+      console.error(reason);
     });
 }
