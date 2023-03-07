@@ -660,8 +660,13 @@ export default {
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
         // this call is to initiailze the components in the their loading state
-        this.createMetadataContent();
-        this.setMetadataContent();
+        this.$nextTick(() => {
+          this.createMetadataContent();
+
+          this.$nextTick(() => {
+            this.setMetadataContent();
+          });
+        });
       }
     },
   },

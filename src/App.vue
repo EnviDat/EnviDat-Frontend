@@ -654,7 +654,10 @@ export default {
       if (!this.loadingConfig) {
         this.setupNavItems();
         this.loadAllMetadata();
-        this.startParticles();
+
+        this.$nextTick(() => {
+          this.startParticles();
+        });
       }
     },
     notifications() {

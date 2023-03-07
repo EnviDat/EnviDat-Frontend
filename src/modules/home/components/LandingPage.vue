@@ -393,7 +393,7 @@ export default {
     this.stopParticles();
   },
   computed: {
-    ...mapState(['categoryCards', 'config']),
+    ...mapState(['categoryCards', 'config', 'loadingConfig']),
     ...mapGetters(METADATA_NAMESPACE, [
       'loadingMetadatasContent',
       'recentMetadata',
