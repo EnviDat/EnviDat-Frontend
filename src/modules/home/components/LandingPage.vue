@@ -21,15 +21,16 @@
       <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
         <v-row align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
-            <img :src="mdLogo" :alt="alternativeText" />
+            <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
+
           </v-col>
 
           <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
-            <img :src="smLogo" :alt="alternativeText" />
+            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
           </v-col>
 
           <v-col class="hidden-sm-and-up" cols="3">
-            <img :src="smLogo" :alt="alternativeText" />
+            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
           </v-col>
 
           <v-col
@@ -306,7 +307,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import smLogo from '@/assets/logo/EnviDat_logo_64.png';
 import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
-import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
+
 import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
@@ -651,7 +652,6 @@ export default {
     fallbackCardImg: null,
     smLogo,
     mdLogo,
-    lgLogo,
   }),
 };
 </script>
