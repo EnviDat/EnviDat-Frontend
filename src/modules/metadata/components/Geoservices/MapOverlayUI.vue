@@ -64,17 +64,6 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters class="pt-3">
-      <v-col class="shrink">
-        <BaseIconButton
-          color="black"
-          :fillColor="$vuetify.theme.themes.light.accent"
-          @clicked="toggle3D"
-        >
-          {{ mapIs3D ? '2D' : '3D' }}
-        </BaseIconButton>
-      </v-col>
-    </v-row>
 
     <v-row v-if="layerConfig" class="d-flex flex-column" no-gutters>
       <v-col v-if="site" cols="1" class="py-2 shrink">
@@ -149,7 +138,7 @@
         style="width: 48px; height: 48px;"
         @click="toggleBaseMap"
       >
-        <img width="40" height="40" :src="baseMapImage" class="ma-1" />
+        <img width="40" height="40" :src="baseMapImage" class="ma-1"  alt="toggle map tiles"/>
       </v-card>
     </div>
   </div>
@@ -167,9 +156,6 @@ import {
   MAP_ZOOM_OUT,
 } from '@/factories/eventBus';
 
-// import MapLayerControl from './MapLayerControl.vue';
-// import TimeSlider from './TimeSlider.vue';
-// import FeatureInfo from './FeatureInfo.vue';
 
 export default {
   name: 'MapOverlayUI',

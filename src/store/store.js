@@ -15,7 +15,6 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { metadata } from '@/modules/metadata/store/metadataStore';
-import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
@@ -82,7 +81,6 @@ const initialState = {
 
 const modules = {
   metadata,
-  geoservices,
   user,
   userSignIn,
   organizations,

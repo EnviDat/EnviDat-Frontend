@@ -68,9 +68,10 @@ import {
   rewind as tRewind,
 } from '@turf/turf';
 
+
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 
-import { createWmsCatalog } from '../GeoservicesMVP/catalogWms';
+// import { createWmsCatalog } from '../GeoservicesMVP/catalogWms';
 import MetadataLocationCatalog from './MetadataLocationCatalog.vue';
 // import MetadataLocationCesium from './MetadataLocationCesium.vue';
 import MetadataLocationLeaflet from './MetadataLocationLeaflet.vue';
@@ -190,6 +191,7 @@ export default {
     },
   },
   watch: {
+/*
     genericProps() {
       createWmsCatalog(this.genericProps.mapService.url)
         // eslint-disable-next-line no-return-assign
@@ -198,6 +200,7 @@ export default {
           this.selectMapService(this.catalog.children[0]);
         });
     },
+*/
   },
 };
 </script>

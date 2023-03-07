@@ -22,21 +22,8 @@
 
     <v-row no-gutters class="fill-height">
       <v-col class="fill-height">
-        <map-cesium
-          v-if="mapIn3D"
-          :baseMapLayerName="currentBaseMapLayer"
-          :wmsLayer="selectedLayer"
-          :map-div-id="mapDivId"
-          :opacity="opacity"
-          :site="site"
-          :max-extent="maxExtent"
-          :mapHeight="mapHeight"
-        >
-          <!-- :featureInfoPts="featureinfo" -->
-        </map-cesium>
 
         <map-leaflet
-          v-if="!mapIn3D"
           :baseMapLayerName="currentBaseMapLayer"
           :wmsLayer="selectedLayer"
           :max-extent="maxExtent"
@@ -68,14 +55,13 @@ import {
   LOCATION_TYPE_POINT,
 } from '@/factories/metaDataFactory';
 
-import MapCesium from './MapCesium.vue';
+
 import MapLeaflet from './MapLeaflet.vue';
 import MapOverlayUI from './MapOverlayUI.vue';
 
 export default {
   name: 'MapRoot',
   components: {
-    MapCesium,
     MapLeaflet,
     MapOverlayUI,
   },

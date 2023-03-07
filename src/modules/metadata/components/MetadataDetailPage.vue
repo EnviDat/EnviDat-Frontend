@@ -123,8 +123,9 @@ import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsL
 import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
 
 import { rewind as tRewind } from '@turf/turf';
+
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
-import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
+// import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
@@ -310,23 +311,19 @@ export default {
     },
   },
   methods: {
-    setGeoServiceLayers(location, layerConfig, wmsUrl) {
+    setGeoServiceLayers(location, layerConfig) {
       try {
         location = location ? tRewind(location.geoJSON) : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }
 
-      if (wmsUrl) {
-        this.fetchWmsConfig(wmsUrl);
-      } else {
         this.geoServiceConfig = {
           site: location,
           layerConfig,
           error: this.geoServiceLayersError,
           ...(this.hasGcnetStationConfig) && { isGcnet: true },
         };
-      }
 
       this.geoServiceConfig = {
         ...this.geoServiceConfig,
@@ -365,7 +362,7 @@ export default {
           // Override location with stations FeatureCollection, creating shallow copy
           const locationOverride = { ...this.location };
           locationOverride.geoJSON = featureCollection;
-          this.setGeoServiceLayers(locationOverride, null, null);
+          this.setGeoServiceLayers(locationOverride, null);
 
           successCallback();
         })
@@ -506,7 +503,7 @@ export default {
         // the setting of the MetadataGeo genericProps is done via watch on the geoServiceLayers
         this.loadGeoServiceLayers(this.configInfos.geoConfigUrl);
       } else {
-        this.setGeoServiceLayers(this.location, null, null);
+        this.setGeoServiceLayers(this.location, null);
       }
 
       this.$set(components.MetadataResources, 'genericProps', {
@@ -668,23 +665,17 @@ export default {
         this.setMetadataContent();
       }
     },
-    fetchWmsConfig(url) {
-      createWmsCatalog(url).then((res) => {
-        this.setGeoServiceLayers(this.location, res, null);
-      });
-    },
   },
   watch: {
     geoServiceLayers() {
       this.setGeoServiceLayers(
         this.location,
         this.geoServiceLayers,
-        this.geoServiceLayers?.wmsUrl,
       );
     },
     geoServiceLayersError() {
       if (this.geoServiceLayersError) {
-        this.setGeoServiceLayers(null, null, null);
+        this.setGeoServiceLayers(null, null);
       }
     },
     /**

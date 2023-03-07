@@ -5,9 +5,7 @@ import vue from '@vitejs/plugin-vue2';
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
-import cesium from 'vite-plugin-cesium';
 import eslint from 'vite-plugin-eslint';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import { VitePluginFonts } from 'vite-plugin-fonts';
 
@@ -18,8 +16,6 @@ const version = process.env.npm_package_version;
 
 export default ({ mode }) => {
     const isProd = mode === 'production'
-    const cesiumSource = 'node_modules/@cesium/engine/Source'
-    // const cesiumSource = 'node_modules/cesium/Source'
 
     if (isProd) {
         const fileName = `version_${version}.txt`;
@@ -52,7 +48,6 @@ export default ({ mode }) => {
         plugins: [
             vue(),
             eslint(),
-            cesium(),
             ViteRequireContext(),
             Components({
                 resolvers: [
@@ -71,25 +66,6 @@ export default ({ mode }) => {
                 ],
               },
             }),
-            viteStaticCopy({
-                targets: [
-                  {
-                    src: path.join(cesiumSource, '../Build/Cesium/Workers'),
-                    dest: 'Workers',
-                  },
-                  {
-                    src: path.join(cesiumSource, 'Assets'),
-                    dest: 'Assets',
-                    globOptions: {
-                      ignore: ['Images/**', 'Textures/**', 'IAU2006_XYS/**'],
-                    },
-                  },
-                  {
-                    src: 'node_modules/amcharts3/amcharts/images',
-                    dest: 'amcharts/images',
-                  },
-                ],
-            }),
         ],
         define: {
             'process.env': loadEnv(mode, process.cwd()),
@@ -105,7 +81,6 @@ export default ({ mode }) => {
                 // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
-              { find: 'cesium', replacement: path.resolve(__dirname, cesiumSource) },
               { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
             ],
         },
