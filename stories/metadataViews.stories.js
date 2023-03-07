@@ -18,7 +18,7 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
-import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation.vue';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
@@ -145,14 +145,8 @@ const location1 = createLocation(metadata[2]);
 
 const genericProps4 = {
   showPlaceholder: false,
-  id: location1.id,
-  name: location1.name,
-  title: location1.title,
-  pointArray: location1.pointArray,
-  isPolygon: location1.isPolygon,
-  isPoint: location1.isPoint,
-  isMultiPoint: location1.isMultiPoint,
-  geoJSON: location1.geoJSON,
+  site: location1.geomCollection,
+  mapHeight: 450,
 };
 
 const authorsMap = extractAuthorsMap(metadata);
@@ -395,26 +389,21 @@ export const MetadataDetailsViews = () => ({
 });
 
 export const MetadataLocationViews = () => ({
-  components: { MetadataLocation },
+  components: { MetadataGeo },
   template: `
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-location :genericProps="genericProps4" />
+      <MetadataGeo :genericProps="genericProps4" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-location :genericProps="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      <MetadataGeo :genericProps="genericPropsPlaceholder"
+                    :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
   </v-row>
   `,
-  updated() {
-    this.$children.forEach((child) => {
-      child.$forceUpdate();
-    });
-  },
   data: () => ({
     genericProps4,
     genericPropsPlaceholder: {

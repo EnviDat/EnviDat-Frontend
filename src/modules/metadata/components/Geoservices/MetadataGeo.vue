@@ -82,19 +82,19 @@ export default {
       return this.genericProps?.layerConfig;
     },
     isGcnet() {
-      return this.genericProps?.isGcnet;
+      return this.genericProps?.isGcnet || false;
     },
     mapHeight() {
-      return this.genericProps?.mapHeight;
+      return this.genericProps?.mapHeight || 450;
     },
     mapEditable() {
-      return this.genericProps?.mapEditable;
+      return this.genericProps?.mapEditable || false;
     },
     mapDivId() {
-      return this.genericProps?.mapDivId;
+      return this.genericProps?.mapDivId || 'metadata-map-small';
     },
     showFullscreenButton() {
-      return this.genericProps?.showFullscreenButton;
+      return this.genericProps?.showFullscreenButton || false;
     },
   },
   methods: {
