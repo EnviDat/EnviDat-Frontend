@@ -75,7 +75,6 @@
 </template>
 
 <script>
-import { isNumber } from '@turf/turf';
 import formatISO from 'date-fns/formatISO';
 import isAfter from 'date-fns/isAfter';
 import parseISO from 'date-fns/parseISO';
@@ -316,7 +315,13 @@ export default {
         if (!this.paramExclusion.includes(key)) {
           const name = this.graphStyling[key].titleString.trim();
           const lastChar = name.substring(name.length - 2);
-          const cutOff = isNumber(lastChar);
+          let cutOff = false;
+          try {
+            const lastDigit = Number.parseInt(lastChar, 2);
+            cutOff = Number.isInteger(lastDigit);
+          } catch (e) {
+            console.log(`lastDigit parse failed: ${e}`);
+          }
 
           if (!this.listHasSimilarString(paramList, stringToCheck)) {
             buttons[key] = {
