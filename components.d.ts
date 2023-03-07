@@ -5,6 +5,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    BaseCitationView: typeof import('./src/components/BaseElements/BaseCitationView.vue')['default']
     BaseClickCard: typeof import('./src/components/BaseElements/BaseClickCard.vue')['default']
     BaseFileDropField: typeof import('./src/components/BaseElements/BaseFileDropField.vue')['default']
     BaseIconButton: typeof import('./src/components/BaseElements/BaseIconButton.vue')['default']
@@ -12,6 +13,7 @@ declare module 'vue' {
     BaseIconLabelView: typeof import('./src/components/BaseElements/BaseIconLabelView.vue')['default']
     BaseIconSwitch: typeof import('./src/components/BaseElements/BaseIconSwitch.vue')['default']
     BaseRectangleButton: typeof import('./src/components/BaseElements/BaseRectangleButton.vue')['default']
+    BaseShinyBadge: typeof import('./src/components/BaseElements/BaseShinyBadge.vue')['default']
     BaseStartEndDate: typeof import('./src/components/BaseElements/BaseStartEndDate.vue')['default']
     BaseStatusLabelView: typeof import('./src/components/BaseElements/BaseStatusLabelView.vue')['default']
     BaseTitleImg: typeof import('./src/components/BaseElements/BaseTitleImg.vue')['default']
@@ -28,7 +30,7 @@ declare module 'vue' {
     FilterMapWidgetLayout: typeof import('./src/components/Filtering/FilterMapWidgetLayout.vue')['default']
     FlipLayout: typeof import('./src/components/Layouts/FlipLayout.vue')['default']
     GCMDPage: typeof import('./src/components/Pages/GCMDPage.vue')['default']
-    GenericModalPageLayout: typeof import('./src/components/Layouts/GenericModalPageLayout.vue')['default']
+    GenericFullScreenModal: typeof import('./src/components/Layouts/GenericFullScreenModal.vue')['default']
     GenericTextareaPreviewLayout: typeof import('./src/components/Layouts/GenericTextareaPreviewLayout.vue')['default']
     GenericTextLayout: typeof import('./src/components/Layouts/GenericTextLayout.vue')['default']
     ImageTextCard: typeof import('./src/components/Layouts/ImageTextCard.vue')['default']
@@ -91,12 +93,9 @@ declare module 'vue' {
     VExpansionPanelContent: typeof import('vuetify/lib')['VExpansionPanelContent']
     VExpansionPanelHeader: typeof import('vuetify/lib')['VExpansionPanelHeader']
     VExpansionPanels: typeof import('vuetify/lib')['VExpansionPanels']
-    VForm: typeof import('vuetify/lib')['VForm']
     VHover: typeof import('vuetify/lib')['VHover']
     VIcon: typeof import('vuetify/lib')['VIcon']
     VImg: typeof import('vuetify/lib')['VImg']
-    VItem: typeof import('vuetify/lib')['VItem']
-    VItemGroup: typeof import('vuetify/lib')['VItemGroup']
     VList: typeof import('vuetify/lib')['VList']
     VListItem: typeof import('vuetify/lib')['VListItem']
     VListItemAction: typeof import('vuetify/lib')['VListItemAction']
@@ -124,9 +123,6 @@ declare module 'vue' {
     VTextarea: typeof import('vuetify/lib')['VTextarea']
     VTextField: typeof import('vuetify/lib')['VTextField']
     VTooltip: typeof import('vuetify/lib')['VTooltip']
-    VTreeview: typeof import('vuetify/lib')['VTreeview']
-    VWindow: typeof import('vuetify/lib')['VWindow']
-    VWindowItem: typeof import('vuetify/lib')['VWindowItem']
     WelcomeCard: typeof import('./src/components/Cards/WelcomeCard.vue')['default']
   }
 }

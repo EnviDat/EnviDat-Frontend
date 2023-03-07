@@ -2,7 +2,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 /**
- * @summary story of SigninPage sandbox testing
+ * @summary story of layouts sandbox testing
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
@@ -18,11 +18,10 @@ import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 
 import dataCreatorImg from '@/assets/cards/data_creator_small.jpg'
 import integrationlist from './testdata/integrationlist.json';
-import { LAYOUT_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${LAYOUT_VIEWS} / Page layouts`,
+  title: '13 Layouts / Page layouts',
   // component: TextCardListLayout,
   decorators: [],
   parameters: {},

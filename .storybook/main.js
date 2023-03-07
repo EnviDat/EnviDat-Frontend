@@ -6,29 +6,21 @@ const { VuetifyResolver } = require('unplugin-vue-components/resolvers');
 const Components = require('unplugin-vue-components/vite');
 const ViteRequireContext = require('@originjs/vite-plugin-require-context').default;
 
-const cesium = require('vite-plugin-cesium').default;
 // const eslint = require('vite-plugin-eslint').default;
-const { viteStaticCopy } = require('vite-plugin-static-copy');
 const VitePluginFonts = require('vite-plugin-fonts').default;
 
-// const cesiumSource = '../node_modules/cesium/Source'
-const cesiumSource = '../node_modules/@cesium/engine/Source'
 
 const version = process.env.npm_package_version;
 
 module.exports = {
-  "stories": [
-    "../stories/**/*.stories.mdx",
-    "../stories/**/*.stories.@(js|jsx|ts|tsx)",
-//    "../stories/**/*.stories.@(js)"
+  stories: [
+    // '../stories/**/*.stories.mdx',
+    '../stories/**/*.stories.@(js|jsx|ts|tsx)',
   ],
-//  "../stories/**/*.stories.mdx",
-//  "../stories/**/*.stories.@(js|jsx|ts|tsx)"
-//  "addons": [
-//    "@storybook/addon-links",
-//    "@storybook/addon-essentials",
-//    "@storybook/addon-storysource"
-//  ],
+  addons: [
+    '@storybook/addon-essentials',
+    // '@storybook/addon-storysource',
+  ],
   framework: "@storybook/vue",
   core: { builder: "@storybook/builder-vite" },
   async viteFinal(config, { configType }) {
@@ -47,7 +39,6 @@ module.exports = {
              VuetifyResolver(),
            ],
         }),
-        cesium(),
         // eslint(),
         VitePluginFonts({
           google: {
@@ -59,29 +50,6 @@ module.exports = {
               },
             ],
           },
-        }),
-        viteStaticCopy({
-          targets: [
-/*
-            {
-              src: path.join(cesiumSource, '../Build/Cesium/Workers'),
-              dest: 'Workers',
-            },
-            {
-              src: path.join(cesiumSource, 'Assets'),
-              dest: 'Assets',
-              globOptions: {
-                ignore: ['Images/!**', 'Textures/!**', 'IAU2006_XYS/!**'],
-              },
-            },
-*/
-/*
-            {
-              src: 'node_modules/amcharts3/amcharts/images',
-              dest: 'amcharts/images',
-            },
-*/
-          ],
         }),
       ],
 /*
@@ -97,7 +65,6 @@ module.exports = {
         alias: [
           { find: '@', replacement: path.resolve(__dirname, '../src') },
           { find: '~', replacement: path.resolve(__dirname) },
-          { find: 'cesium', replacement: path.resolve(__dirname, cesiumSource) },
           // resolve vue for vite (based on rollup) https://v2.vuejs.org/v2/guide/installation.html#Explanation-of-Different-Builds
           { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
         ],

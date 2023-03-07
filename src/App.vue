@@ -108,6 +108,8 @@
         />
 
       </v-dialog>
+
+      <GenericFullScreenModal :auto-scroll="true"/>
     </v-main>
 
   </v-app>
@@ -159,8 +161,6 @@ import {
   HIDE_NOTIFICATIONS,
 } from '@/store/mainMutationsConsts';
 
-import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
-import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
 import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
@@ -177,6 +177,7 @@ import {
 
 import {
   eventBus,
+  OPEN_FULLSCREEN_MODAL,
   SHOW_DIALOG,
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
@@ -184,11 +185,12 @@ import {
 
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
-import NotificationCard from '@/components/Cards/NotificationCard.vue';
-import ConfirmTextCard from '@/components/Cards/ConfirmTextCard.vue';
-import TextBanner from '@/components/Layouts/TextBanner.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
+const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
+const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
+const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
+const NotificationCard = () => import('@/components/Cards/NotificationCard.vue');
 
 export default {
   name: 'App',
@@ -197,6 +199,7 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
@@ -204,6 +207,7 @@ export default {
     this.checkUserSignedIn();
   },
   beforeDestroy() {
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
@@ -430,6 +434,9 @@ export default {
 
       this.showInfoDialog = true;
     },
+    openGenericFullscreen() {
+      this.showModal = true;
+    },
     catchSigninClicked() {
 
       // make a redirect to the legacy website in case the sign in via the frontend doesn't work
@@ -501,11 +508,6 @@ export default {
           'isFilteringContent',
         ],
     ),
-    ...mapGetters({
-      policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
-      guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
-      projectsLoading: `${PROJECTS_NAMESPACE}/loading`,
-    }),
     ...mapGetters({
       currentPage: 'currentPage',
       appBGImage: 'appBGImage',
@@ -579,8 +581,7 @@ export default {
       return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent
-          || this.projectsLoading || this.policiesLoading || this.guidelinesLoading;
+      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
     },
     searchTerm() {
       return this.$route.query.search;
@@ -651,13 +652,17 @@ export default {
     NotificationCard,
     ConfirmTextCard,
     TextBanner,
+    GenericFullScreenModal,
   },
   watch: {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
         this.loadAllMetadata();
-        this.startParticles();
+
+        this.$nextTick(() => {
+          this.startParticles();
+        });
       }
     },
     notifications() {
@@ -674,6 +679,7 @@ export default {
     ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
+    showModal: false,
     dialogTitle: 'Redirect to Legacy Website!',
     dialogMessage: '',
     dialogCallback: () => {},

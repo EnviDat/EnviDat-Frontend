@@ -22,23 +22,9 @@
 
     <v-row no-gutters class="fill-height">
       <v-col class="fill-height">
-        <map-cesium
-          v-if="mapIn3D"
-          :baseMapLayerName="currentBaseMapLayer"
-          :wmsLayer="selectedLayer"
-          :map-div-id="mapDivId"
-          :opacity="opacity"
-          :site="site"
-          :max-extent="maxExtent"
-          :mapHeight="mapHeight"
-        >
-          <!-- :featureInfoPts="featureinfo" -->
-        </map-cesium>
 
         <map-leaflet
-          v-if="!mapIn3D"
           :baseMapLayerName="currentBaseMapLayer"
-          :wmsLayer="selectedLayer"
           :max-extent="maxExtent"
           :map-div-id="mapDivId"
           :opacity="opacity"
@@ -47,7 +33,6 @@
           :mapEditable="mapEditable"
           :isGcnet="isGcnet"
         >
-          <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
       </v-col>
     </v-row>
@@ -68,14 +53,13 @@ import {
   LOCATION_TYPE_POINT,
 } from '@/factories/metaDataFactory';
 
-import MapCesium from './MapCesium.vue';
+
 import MapLeaflet from './MapLeaflet.vue';
 import MapOverlayUI from './MapOverlayUI.vue';
 
 export default {
   name: 'MapRoot',
   components: {
-    MapCesium,
     MapLeaflet,
     MapOverlayUI,
   },
@@ -151,23 +135,6 @@ export default {
       }
 
       return extent;
-    },
-    featureinfo() {
-      return this.$store.state.geoservices.timeseries;
-    },
-    selectedLayer() {
-      return null;
-      /*
-      if (!this.layerConfig || !this.selectedLayerName) {
-        return null;
-      }
-      const layer = this.layerConfig.layers.find(
-        (l) => l.name === this.selectedLayerName,
-      );
-      layer.baseURL = this.layerConfig.baseURL;
-      layer.bbox = this.layerConfig.bbox;
-      return layer;
-*/
     },
   },
   methods: {

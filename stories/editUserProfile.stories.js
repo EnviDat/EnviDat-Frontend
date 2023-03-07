@@ -22,7 +22,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import authorCollection from './testdata/authorCollection.json';
-import { METADATA_EDITING } from './storybookFolder';
 
 const keys = Object.keys(authorCollection);
 const user1 =  authorCollection[keys[1]];
@@ -30,7 +29,7 @@ const user2 =  authorCollection[keys[2]];
 
 
 export default {
-  title: `${METADATA_EDITING} / User Profile`,
+  title: '9 Editing Metadata / User Profile',
   decorators: [],
   parameters: {},
 };

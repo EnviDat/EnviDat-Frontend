@@ -14,16 +14,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { about } from '@/modules/about/store/aboutStore';
-import { projects } from '@/modules/projects/store/projectsStore';
 import { metadata } from '@/modules/metadata/store/metadataStore';
-import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
-import { blog } from '@/modules/blog/store/blogStore';
-import { integration } from '@/modules/integration/store/integrationStore';
-import { service } from '@/modules/services/store/serviceStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -87,15 +81,9 @@ const initialState = {
 
 const modules = {
   metadata,
-  about,
-  projects,
-  geoservices,
   user,
   userSignIn,
   organizations,
-  blog,
-  integration,
-  service,
 };
 
 function createStore() {
@@ -135,8 +123,10 @@ try {
     // if there is an error for the initial loading
     // Syntax Error from parsing the json
 
+    // eslint-disable-next-line no-console
     console.log('restoreState error');
-    console.log(e);
+    // eslint-disable-next-line no-console
+    console.error(e);
 
     store = createStore();
   }

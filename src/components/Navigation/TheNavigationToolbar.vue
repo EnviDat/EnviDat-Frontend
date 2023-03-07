@@ -20,7 +20,9 @@
                       small
                       @click.stop="catchHomeClicked" >
                       <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->
-                <img :src="EnviDatLogo"
+                <v-img :src="EnviDatLogo"
+                     height="32"
+                     width="32"
                       alt="envidat_logo" />
               </v-btn>
             </v-col>

@@ -13,8 +13,6 @@ import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import globalMethods from '@/factories/globalMethods';
 import categoryCards from '@/store/categoryCards';
 
-import { CARD_VIEWS } from './storybookFolder';
-
 const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/)
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
@@ -26,7 +24,7 @@ for (let i = 0; i < categoryCards.length; i++) {
 }
 
 export default {
-  title: `${CARD_VIEWS} / Click Cards`,
+  title: '3 Cards / Click Cards',
   decorators: [],
   parameters: {},
 };

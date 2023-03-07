@@ -14,11 +14,10 @@
 
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import { USER_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${USER_VIEWS} / SignIn`,
+  title: '7 User / SignIn',
   component: IntroductionCard,
   decorators: [],
   parameters: {},

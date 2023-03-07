@@ -1,4 +1,5 @@
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
+import DataPreviewIframe from '@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue';
 
 import {
   OPEN_TEXT_PREVIEW,
@@ -9,13 +10,15 @@ import {
   SELECT_EDITING_DATASET_PROPERTY,
   SELECT_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE_PROPERTY,
+  SHOW_DATA_PREVIEW_PROPERTY,
 } from './eventBus';
+
 
 export const localIdProperty = 'localId';
 
 export const clickStrategies = [
   {
-    fileExtensions: ['txt', 'md'],
+    strategyKeys: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
     icon: 'preview',
@@ -23,43 +26,52 @@ export const clickStrategies = [
     fallbackProperty: '',
   },
   {
-    fileExtensions: [SELECT_EDITING_RESOURCE_PROPERTY],
+    strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
     icon: 'edit',
     tooltip: 'Click to select this resource for editing',
     fallbackProperty: localIdProperty,
   },
   {
-    fileExtensions: [SELECT_EDITING_AUTHOR_PROPERTY],
+    strategyKeys: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
     icon: 'edit',
     tooltip: 'Click to select this author for editing',
     fallbackProperty: localIdProperty,
   },
   {
-    fileExtensions: [SELECT_EDITING_DATASET_PROPERTY],
+    strategyKeys: [SELECT_EDITING_DATASET_PROPERTY],
     openEvent: SELECT_EDITING_DATASET,
     icon: 'edit',
     tooltip: 'Click to edit this dataset',
     fallbackProperty: localIdProperty,
   },
+  {
+    strategyKeys: [SHOW_DATA_PREVIEW_PROPERTY],
+    component: DataPreviewIframe,
+    openEvent: OPEN_DATA_PREVIEW_IFRAME,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this resource',
+    fallbackProperty: '',
+  },
 ];
 
-export function getPreviewStrategy(extensions) {
+export function getPreviewStrategy(strategyKeys) {
 
-  if (extensions) {
+  if (!strategyKeys) {
+    return null;
+  }
 
-    if (!(extensions instanceof Array)) {
-      extensions = [extensions];
-    }
+  if (!(strategyKeys instanceof Array)) {
+    strategyKeys = [strategyKeys];
+  }
 
-    for (let i = 0; i < extensions.length; i++) {
-      const ext = extensions[i];
-      const filteredStrat = clickStrategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
+  for (let i = 0; i < strategyKeys.length; i++) {
+    const ext = strategyKeys[i];
+    const filteredStrat = clickStrategies.filter(strat => strat.strategyKeys.indexOf(ext) !== -1);
 
-      if (filteredStrat.length > 0) {
-        return filteredStrat[0];
-      }
+    if (filteredStrat.length > 0) {
+      return filteredStrat[0];
     }
   }
 
@@ -76,11 +88,11 @@ export function getUrlExtension(url) {
   return splits[splits.length - 1];
 }
 
-export function getPreviewStrategyFromUrl(url) {
-  const resExtension = getUrlExtension(url);
+export function getPreviewStrategyFromUrlExtension(url) {
+  const fileExtension = getUrlExtension(url);
 
-  if (resExtension) {
-    return getPreviewStrategy(resExtension);
+  if (fileExtension) {
+    return getPreviewStrategy(fileExtension);
   }
 
   return null;
@@ -94,18 +106,12 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
   for (let i = 0; i < elementList.length; i++) {
     const entry = elementList[i];
-    const entryPreviewProperty = entry.previewUrl ? 'previewUrl' : previewProperty
+    const entryPreviewProperty = entry.previewUrl ? SHOW_DATA_PREVIEW_PROPERTY : previewProperty
 
     let strat = null;
-    if (entriesAreResources && entryPreviewProperty === 'previewUrl') {
-      strat = {
-        openEvent: OPEN_DATA_PREVIEW_IFRAME,
-        icon: 'preview',
-        tooltip: 'Click for a preview of this resource',
-        fallbackProperty: '',
-      };
-    } else if (entriesAreResources && entryPreviewProperty === 'url') {
-      strat = getPreviewStrategyFromUrl(entry.url);
+    if (entriesAreResources && entryPreviewProperty === 'url') {
+      // get the click strategy based on the url file extension
+      strat = getPreviewStrategyFromUrlExtension(entry.url);
     } else {
       strat = getPreviewStrategy(entryPreviewProperty);
     }

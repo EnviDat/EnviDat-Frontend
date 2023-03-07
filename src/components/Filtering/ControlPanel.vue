@@ -2,14 +2,17 @@
   <v-card :style="`height: ${fixedHeight}px;`"
             id="controlPanel" >
 
-    <v-container class="px-2 py-0 fill-height"
+    <v-container class="px-1 px-sm-2 py-0 fill-height"
                     fluid>
       <v-row align="center"
               justify="space-between"
               no-gutters>
 
         <v-col class="py-0"
-              cols="12" sm="10" md="8" lg="8">
+                cols="8"
+                :sm="hasEnabledControls ? 8 : 10"
+                md="8"
+               lg="8">
           <small-search-bar-view class="elevation-0"
                                   :compactLayout="compactLayout"
                                   :searchTerm="searchTerm"
@@ -24,7 +27,8 @@
                                   @searchCleared="catchSearchCleared" />
         </v-col>
 
-        <v-col class="py-0 shrink"
+        <v-col v-if="showSearch"
+               class="py-0 px-sm-1 shrink"
                 id="shareSearchResult" >
 
           <BaseIconButton style="opacity: 0.8;"
@@ -39,7 +43,7 @@
         </v-col>
 
         <v-col v-if="showSearch"
-               class="py-0 ml-4 shrink">
+               class="py-0 ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
@@ -49,7 +53,7 @@
         </v-col>
 
         <v-col class="hidden-xs-only py-0 fill-height" >
-          <list-control-toggle :style="`height: ${controlsHeight}px;`"
+          <list-control-toggle :style="`height: ${controlsHeight};`"
                                 :controls="controlsActive"
                                 :enabledControls="enabledControls"
                                 :flat="true"
@@ -128,12 +132,15 @@ export default {
     },
   },
   computed: {
+    hasEnabledControls() {
+      return this.enabledControls?.length > 0;
+    },
     controlsHeight() {
-      if (this.compactLayout && !this.fixedHeight) {
-        return 36;
-      }
+      if (this.compactLayout || !this.fixedHeight) {
+        return '36px';
+      } 
 
-      return this.fixedHeight;
+      return `${this.fixedHeight}px`;
     },
   },
 };

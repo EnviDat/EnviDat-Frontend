@@ -13,29 +13,22 @@
  */
 
 import Vue from 'vue';
-
-import Vue2Filters from 'vue2-filters';
 import InfiniteLoading from 'vue-infinite-loading';
 
 import store from '@/store/store';
 import App from '@/App.vue';
-import { initAxios, initOtel } from '@/init';
+import { initAxios } from '@/init';
 
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
 Vue.use(InfiniteLoading /* , { options } */);
-Vue.use(Vue2Filters);
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 
 initAxios(Vue, store);
 
-const otelUrl = process.env.VITE_OTEL_ENDPOINT;
-if (otelUrl !== 'NULL') {
-  initOtel(otelUrl);
-}
 
 /* eslint-disable no-new */
 new Vue({

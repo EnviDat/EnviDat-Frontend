@@ -47,7 +47,7 @@
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "https://www.envidat.ch/dora/"
+      "resolveBaseUrl": "https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/"
     },
     "authorDetailsConfig": {
       "showAuthorInfos": true,

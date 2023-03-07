@@ -107,7 +107,6 @@ import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 import {
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
-  INJECT_RESOURCE_STRATEGY,
 } from '@/factories/eventBus';
 
 import ResourceCard from '../ResourceCard.vue';
@@ -127,18 +126,10 @@ export default {
   created() {
     this.injectedComponent = null;
     eventBus.on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
-
-    this.strategyEvent = null;
-    this.strategyProperty = null;
-    eventBus.on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
   beforeDestroy() {
     this.injectedComponent = null;
     eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
-
-    this.strategyEvent = null;
-    this.strategyProperty = null;
-    eventBus.on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
   },
   computed: {
     doi() {
@@ -192,14 +183,10 @@ export default {
     readMore() {
       this.showAllResources = !this.showAllResources;
     },
-    injectComponent(injectedComponent, injectedComponentConfig, injectAtStart = true) {
-      this.injectedComponent = injectedComponent;
-      this.injectedComponentConfig = injectedComponentConfig;
+    injectComponent({ component, config, injectAtStart = true }) {
+      this.injectedComponent = component;
+      this.injectedComponentConfig = config;
       this.injectAtStart = injectAtStart;
-    },
-    injectStrategy(strategyEvent, strategyProperty) {
-      this.strategyEvent = strategyEvent;
-      this.strategyProperty = strategyProperty;
     },
     catchOpenClick(event, eventProperty) {
       eventBus.emit(event, eventProperty);
@@ -209,8 +196,6 @@ export default {
     injectedComponent: null,
     injectAtStart: true,
     injectedComponentConfig: null,
-    strategyEvent: null,
-    strategyProperty: null,
     showAllResources: false,
     METADATA_RESOURCES_TITLE,
   }),

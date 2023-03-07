@@ -1,5 +1,6 @@
 <template>
-  <v-container class="fill-height pa-0" id="MetadataListLayoutComponent" fluid>
+  <v-container class="fill-height pa-0"
+               id="MetadataListLayoutComponent" fluid>
     <v-row v-if="mapLayout" class="fill-height">
       <v-col class="py-0 pr-2 flex-column" cols="4">
         <v-row no-gutters>

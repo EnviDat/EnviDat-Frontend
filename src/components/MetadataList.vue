@@ -50,6 +50,7 @@
 
     <template v-slot:metadataListPlaceholder>
       <v-container v-show="loading"
+                   class="px-0 px-sm-2"
                     fluid >
       <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
 
@@ -69,6 +70,7 @@
 
     <template v-slot:metadataListLayout >
       <v-container v-if="!loading"
+                   class="px-0 px-sm-2"
                   fluid >
       <!-- don't use class with paddings here, it's being used in the MetadataListLayout component -->
 
@@ -201,10 +203,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+/*
 import {
   mapState,
   mapGetters,
 } from 'vuex';
+*/
 import { BROWSE_PATH} from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
@@ -214,7 +218,7 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import {
-  METADATA_NAMESPACE,
+//  METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
@@ -232,7 +236,10 @@ export default {
     listContent: Array,
     prePinnedIds: Array,
     mapFilteringPossible: Boolean,
-    placeHolderAmount: Number,
+    placeHolderAmount: {
+      type: Number,
+      default: 4,
+    },
     selectedTagNames: Array,
     allTags: Array,
     mapTopLayout: {
@@ -288,6 +295,18 @@ export default {
       type: Boolean,
       default: undefined,
     },
+    updatingTags: {
+      type: Boolean,
+      default: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    categoryCards: {
+      type: Array,
+      default: () => [],
+    },
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -307,18 +326,17 @@ export default {
     this.infiniteHandler();
   },
   computed: {
+/*
     ...mapState([
       'categoryCards',
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-      searchedMetadatasContent: `${METADATA_NAMESPACE}/searchedMetadatasContent`,
       searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
-      searchingMetadatasContentOK: `${METADATA_NAMESPACE}/searchingMetadatasContentOK`,
       loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
-      updatingTags: `${METADATA_NAMESPACE}/updatingTags`,
       isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
     }),
+*/
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
@@ -341,12 +359,14 @@ export default {
 
       return this.prePinnedIds;
     },
+/*
     loading() {
       return (this.loadingMetadatasContent
             || this.isFilteringContent
             || this.searchingMetadatasContent
       );
     },
+*/
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
 

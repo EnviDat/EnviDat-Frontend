@@ -10,7 +10,6 @@ import lastModifiedIcon from '../src/assets/icons/dateModified.png';
 import doiIcon from '../src/assets/icons/doi.png';
 import fileSizeIcon from '../src/assets/icons/fileSize.png';
 import unFormatedMetadataCards from './js/metadata';
-import { CARD_VIEWS } from './storybookFolder';
 
 
 Vue.mixin(globalMethods);
@@ -29,13 +28,9 @@ const metadataCards = unFormatedMetadataCards;
 
 metadataCards[2].resources[0].loading = true;
 
-const methods = {
-//  onCardClick: action('clicked on card'),
-//  onTagClick: action('clicked on tag'),
-};
 
 export default {
-  title: `${CARD_VIEWS} / Resource Cards`,
+  title: '3 Cards / Resource Cards',
   decorators: [],
   parameters: {
   },
@@ -55,7 +50,7 @@ export const ResourceCardCollection = () => ({
                               :dateCreatedIcon="dateCreatedIcon"
                               :lastModifiedIcon="lastModifiedIcon"
                               :fileExtensionIcon="iconFiles"
-                              @clicked="onCardClick" />
+                               />
       </v-col>
 
       <v-col cols="4" class="pa-2"
@@ -68,7 +63,7 @@ export const ResourceCardCollection = () => ({
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
                         :isProtected="true"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
       <v-col cols="6" class="pa-2"
@@ -80,7 +75,7 @@ export const ResourceCardCollection = () => ({
                         :dateCreatedIcon="dateCreatedIcon"
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
       <v-col cols="12" class="pa-2" >
@@ -97,12 +92,11 @@ export const ResourceCardCollection = () => ({
                         :lastModifiedIcon="lastModifiedIcon"
                         :fileExtensionIcon="iconFiles"
                         :downloadActive="false"
-                        @clicked="onCardClick" />
+                         />
       </v-col>
 
     </v-row>
     `,
-    methods,
     data: () => ({
       metadataCards,
       doiIcon,
@@ -131,12 +125,11 @@ export const ResourceCardWithPreview = () => ({
                               :showGenericOpenButton="true"
                               :genericOpenButtonBottom="true"
                               openButtonTooltip="Open File in Preview"
-                              @clicked="onCardClick" />
+                               />
       </v-col>
 
     </v-row>
     `,
-    methods,
     data: () => ({
       metadataCards,
       doiIcon,
@@ -172,6 +165,5 @@ export const ResourceCardPlaceholders = () => ({
 
     </v-row>
     `,
-    methods,
     data: () => ({}),
   });

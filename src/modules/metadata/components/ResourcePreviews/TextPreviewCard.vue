@@ -55,7 +55,7 @@ export default {
     content: String,
     enableMarkdown: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   mounted() {

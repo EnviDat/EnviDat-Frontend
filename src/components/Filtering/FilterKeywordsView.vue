@@ -127,6 +127,12 @@ export default {
   }),
   computed: {
     unselectedTags() {
+      if (!this.allTags){
+        return [];
+      }
+
+      return this.allTags.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name) );
+/*
       const unselectedTags = [];
 
       this.allTags.forEach(element => {
@@ -136,6 +142,7 @@ export default {
       });
 
       return unselectedTags;
+*/
     },
     selectedTags() {
       // always get the selected as a subset of the allTags because they are the full

@@ -13,6 +13,7 @@ import {
   enhanceTags,
   formatDate,
   enhanceTitleImg,
+  extractPIDMapFromText,
 } from '@/factories/metaDataFactory';
 
 
@@ -304,5 +305,27 @@ describe('metaDataFactory - formatDate', () => {
     const date = formatDate(ckanDate);
     expect(date).toBeDefined();
     expect(date).toBe('15. Aug 2017 15:25');
+  });
+});
+
+const text = 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n';
+const text2 = 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ';
+const text3 = '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382';
+const text4 = '* wsl:21835 * wsl%3A22390';
+const text5 = '* wsl:21835 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ';
+
+
+describe('metaDataFactory - extractPIDMapFromText', () => {
+  it('empty', () => {
+    const pids = extractPIDMapFromText();
+    expect(pids).toBeDefined();
+    expect(pids.size).toBe(0);
+  });
+
+  it('with text with dora url', () => {
+
+    const pids = extractPIDMapFromText(text);
+    expect(pids).toBeDefined();
+    expect(pids.size > 0).toBeTruthy();
   });
 });

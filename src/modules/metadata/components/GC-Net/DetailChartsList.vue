@@ -75,7 +75,6 @@
 </template>
 
 <script>
-import { isNumber } from '@turf/turf';
 import formatISO from 'date-fns/formatISO';
 import isAfter from 'date-fns/isAfter';
 import parseISO from 'date-fns/parseISO';
@@ -316,7 +315,13 @@ export default {
         if (!this.paramExclusion.includes(key)) {
           const name = this.graphStyling[key].titleString.trim();
           const lastChar = name.substring(name.length - 2);
-          const cutOff = isNumber(lastChar);
+          let cutOff = false;
+          try {
+            const lastDigit = Number.parseInt(lastChar, 2);
+            cutOff = Number.isInteger(lastDigit);
+          } catch (e) {
+            console.log(`lastDigit parse failed: ${e}`);
+          }
 
           if (!this.listHasSimilarString(paramList, stringToCheck)) {
             buttons[key] = {
@@ -330,11 +335,7 @@ export default {
       return Object.values(buttons);
     },
     downloadButton() {
-      return [
-        {
-          buttonText: 'Download Data',
-        },
-      ];
+      return [{ buttonText: 'Download Data' }];
     },
     stationId() {
       return `${this.currentStation.id}_${
@@ -343,12 +344,14 @@ export default {
           : this.currentStation.name
       }`;
     },
+    downloadSubtitle() {
+      return 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format.';
+      // return 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format. Data after <insert date> not quality controlled.';
+    },
   },
   data: () => ({
     paramExclusion: ['swout', 'netrad'],
     contentTableTitle: 'Show specific measurement',
-    downloadSubtitle:
-      'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format. Data after <insert date> not quality controlled.',
     loadingStation: false,
     stationImg: null,
     stationPreloadImage: null,

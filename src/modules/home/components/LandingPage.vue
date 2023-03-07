@@ -21,15 +21,16 @@
       <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
         <v-row align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
-            <img :src="mdLogo" :alt="alternativeText" />
+            <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
+
           </v-col>
 
           <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
-            <img :src="smLogo" :alt="alternativeText" />
+            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
           </v-col>
 
           <v-col class="hidden-sm-and-up" cols="3">
-            <img :src="smLogo" :alt="alternativeText" />
+            <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
           </v-col>
 
           <v-col
@@ -306,7 +307,7 @@ import { mapGetters, mapState } from 'vuex';
 
 import smLogo from '@/assets/logo/EnviDat_logo_64.png';
 import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
-import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
+
 import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
@@ -338,6 +339,8 @@ import {
   METADATA_NAMESPACE,
   SET_DETAIL_PAGE_BACK_URL,
 } from '@/store/metadataMutationsConsts';
+import store from '@/store/store';
+import { importStoreModule } from '@/factories/enhancementsFactory';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -360,8 +363,20 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
     });
   },
+  beforeCreate() {
+    const importFun = () => import('@/modules/blog/store/blogStore');
+    importStoreModule(store, 'blog', importFun)
+    .then(() => {
+      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+    });
+
+  },
+  created() {
+    this.$store.watch((state) => state.blog,(value) => {
+      this.blogModuleLoaded = !!value;
+    });
+  },
   beforeMount() {
-    this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
     this.fileIconString = this.mixinMethods_getIcon('file');
     this.fallbackCardImg = this.mixinMethods_getWebpImage(
@@ -378,18 +393,20 @@ export default {
     this.stopParticles();
   },
   computed: {
-    ...mapState(['categoryCards', 'config']),
+    ...mapState(['categoryCards', 'config', 'loadingConfig']),
     ...mapGetters(METADATA_NAMESPACE, [
       'loadingMetadatasContent',
       'recentMetadata',
     ]),
     ...mapState(BLOG_NAMESPACE, ['list']),
     blogPosts() {
-      if (this.list?.length > 0) {
-        return this.list.slice(0, 4);
+      if (this.blogModuleLoaded) {
+        if (this.list?.length > 0) {
+          return this.list.slice(0, 4);
+        }
       }
 
-      return this.list;
+      return [];
     },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
@@ -610,6 +627,7 @@ export default {
     BlogPostCard,
   },
   data: () => ({
+    blogModuleLoaded: false,
     PageBGImage: 'app_b_landingpage',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
@@ -634,7 +652,6 @@ export default {
     fallbackCardImg: null,
     smLogo,
     mdLogo,
-    lgLogo,
   }),
 };
 </script>

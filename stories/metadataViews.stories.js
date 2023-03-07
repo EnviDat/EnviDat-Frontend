@@ -18,7 +18,7 @@ import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeade
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataCitation from '@/modules/metadata/components/Metadata/MetadataCitation.vue';
 import MetadataDetails from '@/modules/metadata/components/Metadata/MetadataDetails.vue';
-import MetadataLocation from '@/modules/metadata/components/Metadata/MetadataLocation.vue';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
@@ -34,7 +34,7 @@ import {
   createResources,
 } from '@/factories/metaDataFactory';
 
-import { createAuthors, extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
 import mailIcon from '../src/assets/icons/mail.png';
@@ -48,14 +48,19 @@ import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhance in the storybook config
 import metadata from './js/metadata';
+import gcnetDataset from "./js/gcnetDataset";
+import citationTesting from "./js/citationTesting";
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
-import { DETAIL_VIEWS, LABLE_VIEWS } from './storybookFolder';
+
+import envidat_packages from './testdata/packagelist.json';
 
 const smallHeader = createHeader(metadata[0], true);
 const largeHeader = createHeader(metadata[2], false);
 
 const citation1 = createCitation(metadata[0]);
 const citation2 = createCitation(metadata[2]);
+const citation3 = createCitation(gcnetDataset);
+const citation4 = createCitation(citationTesting);
 
 const genericProps1 = {
   showPlaceholder: false,
@@ -77,6 +82,28 @@ const genericProps2 = {
   citationGCMDXmlLink: citation2.citationGCMDXmlLink,
   citationBibtexXmlLink: citation2.citationBibtexXmlLink,
   citationRisXmlLink: citation2.citationRisXmlLink,
+};
+
+const citationGenericProps3 = {
+  showPlaceholder: false,
+  id: citation3.id,
+  citationText: citation3.citationText,
+  citationXmlLink: citation3.citationBibtexXmlLink,
+  citationIsoXmlLink: citation3.citationIsoXmlLink,
+  citationGCMDXmlLink: citation3.citationGCMDXmlLink,
+  citationBibtexXmlLink: citation3.citationBibtexXmlLink,
+  citationRisXmlLink: citation3.citationRisXmlLink,
+};
+
+const citationGenericProps4 = {
+  showPlaceholder: false,
+  id: citation4.id,
+  citationText: citation4.citationText,
+  citationXmlLink: citation4.citationBibtexXmlLink,
+  citationIsoXmlLink: citation4.citationIsoXmlLink,
+  citationGCMDXmlLink: citation4.citationGCMDXmlLink,
+  citationBibtexXmlLink: citation4.citationBibtexXmlLink,
+  citationRisXmlLink: citation4.citationRisXmlLink,
 };
 
 const details1 = createDetails(metadata[0]);
@@ -118,14 +145,8 @@ const location1 = createLocation(metadata[2]);
 
 const genericProps4 = {
   showPlaceholder: false,
-  id: location1.id,
-  name: location1.name,
-  title: location1.title,
-  pointArray: location1.pointArray,
-  isPolygon: location1.isPolygon,
-  isPoint: location1.isPoint,
-  isMultiPoint: location1.isMultiPoint,
-  geoJSON: location1.geoJSON,
+  site: location1.geomCollection,
+  mapHeight: 450,
 };
 
 const authorsMap = extractAuthorsMap(metadata);
@@ -145,7 +166,7 @@ const genericProps5 = {
 
 
 export default {
-  title: `${DETAIL_VIEWS} / Mode View`,
+  title: '6 Detail Views / Metadata Detail Page View',
   decorators: [],
   parameters: {},
 };
@@ -301,6 +322,14 @@ export const MetadataCitationViews = () => ({
       <metadata-citation :genericProps="genericProps2" />
     </v-col>
 
+    <v-col cols="6" class="py-3">
+      <metadata-citation :genericProps="citationGenericProps3" />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-citation :genericProps="citationGenericProps4" />
+    </v-col>
+
   </v-row>
   `,
   updated() {
@@ -315,6 +344,8 @@ export const MetadataCitationViews = () => ({
       showPlaceholder: true,
       fixedHeight: false,
     },
+    citationGenericProps3,
+    citationGenericProps4,
   }),
 });
 
@@ -358,26 +389,21 @@ export const MetadataDetailsViews = () => ({
 });
 
 export const MetadataLocationViews = () => ({
-  components: { MetadataLocation },
+  components: { MetadataGeo },
   template: `
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-location :genericProps="genericProps4" />
+      <MetadataGeo :genericProps="genericProps4" />
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-location :genericProps="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
+      <MetadataGeo :genericProps="genericPropsPlaceholder"
+                    :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
   </v-row>
   `,
-  updated() {
-    this.$children.forEach((child) => {
-      child.$forceUpdate();
-    });
-  },
   data: () => ({
     genericProps4,
     genericPropsPlaceholder: {
@@ -388,56 +414,101 @@ export const MetadataLocationViews = () => ({
   }),
 });
 
-export const MetadataPublicationsViews = () => ({
+export const MetadataRelatedPublicationsViews = () => ({
   components: { MetadataPublications },
   template: `
   <v-row >
 
     <v-col cols="6" class="py-3">
-      <metadata-publications :genericProps="genericPropsEmpty"
+      <metadata-publications v-bind="genericPropsEmpty"
                               :showPlaceholder="genericPropsEmpty.showPlaceholder"/>
     </v-col>
 
     <v-col cols="6" class="py-3">
-      <metadata-publications :genericProps="genericPropsPlaceholder"
+      <metadata-publications v-bind="genericPropsPlaceholder"
                               :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <metadata-publications :genericProps="genericPropsPublications" />
+      <metadata-publications v-bind="genericPropsPublications" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <metadata-publications :genericProps="genericPropsPublications" />
+      <metadata-publications v-bind="genericPropsPublications" />
     </v-col>
 
+    <v-col cols="6" class="py-3">
+      <metadata-publications v-bind="publications3"
+                             :allDatasets="allDatasets" />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications v-bind="publications4"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications v-bind="publications5"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications text="* wsl:21835 \n * wsl%3A22390"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
+
+    <v-col cols="6" class="py-3">
+      <metadata-publications v-bind="publications6"
+                             :allDatasets="allDatasets"
+                             :maxTextLength="maxTextLength"
+      />
+    </v-col>
+  
   </v-row>
   `,
   updated() {
   },
   data: () => ({
+    maxTextLength: 1200,
     genericProp: {
-      publications: publications1,
+      ...publications1,
       showPlaceholder: false,
     },
     genericPropsPlaceholder: {
-      publications: null,
+      text: null,
       showPlaceholder: true,
     },
     genericPropsEmpty: {
-      publications: publications2,
+      ...publications2,
       showPlaceholder: false,
     },
+    publications3: {
+      text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249\n',
+    },
+    publications4: {
+      text: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:21248 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32593 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32246 \n https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:32611 ',
+    },
+    publications5: {
+      text: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+    },
+    publications6: {
+      text: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+    },
+    allDatasets: envidat_packages.result,
     genericPropsPublications: {
       showPlaceholder: false,
-      publications: {
-        title: 'Related Publications',
-        text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
-        Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
-        Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
-        Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. A diam maecenas sed enim ut sem viverra. Ac felis donec et odio pellentesque diam volutpat commodo. Risus commodo viverra maecenas accumsan lacus vel facilisis. Vitae aliquet nec ullamcorper sit amet. Ullamcorper malesuada proin libero nunc consequat. Arcu vitae elementum curabitur vitae nunc sed velit dignissim sodales. Et tortor consequat id porta nibh venenatis. Lectus mauris ultrices eros in cursus. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Justo donec enim diam vulputate ut pharetra sit. Sit amet luctus venenatis lectus magna fringilla. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Orci dapibus ultrices in iaculis nunc sed augue lacus.
-        `,
-      },
+      title: 'Related Publications',
+      text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
+      Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
+      Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
+      Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. A diam maecenas sed enim ut sem viverra. Ac felis donec et odio pellentesque diam volutpat commodo. Risus commodo viverra maecenas accumsan lacus vel facilisis. Vitae aliquet nec ullamcorper sit amet. Ullamcorper malesuada proin libero nunc consequat. Arcu vitae elementum curabitur vitae nunc sed velit dignissim sodales. Et tortor consequat id porta nibh venenatis. Lectus mauris ultrices eros in cursus. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Justo donec enim diam vulputate ut pharetra sit. Sit amet luctus venenatis lectus magna fringilla. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Orci dapibus ultrices in iaculis nunc sed augue lacus.
+      `,
     },
   }),
 });
@@ -456,13 +527,18 @@ export const MetadataRelatedDatasetsViews = () => ({
     </v-col>
 
     <v-col cols="4" class="py-3">
-      <MetadataRelatedDatasets :genericProps="genericProps" />
+      <MetadataRelatedDatasets v-bind="genericProps" />
     </v-col>
 
     <v-col cols="8" class="py-3">
-      <MetadataRelatedDatasets :genericProps="genericProps" />
+      <MetadataRelatedDatasets :text="text2"
+                                :allDatasets="allDatasets"/>
     </v-col>
 
+    <v-col cols="8" class="py-3">
+      <MetadataRelatedDatasets :text="text3" />
+    </v-col>
+  
   </v-row>
   `,
   computed: {
@@ -474,11 +550,19 @@ export const MetadataRelatedDatasetsViews = () => ({
     },
   },
   data: () => ({
+    text3: 'https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:14249',
+    text2: `https://www.envidat.ch/#/metadata/chelsa_trace
+            https://www.envidat.ch/#/metadata/chelsacruts
+            https://www.envidat.ch/#/metadata/chelsa_trace
+            https://www.envidat.ch/#/metadata/eur11
+            https://www.envidat.ch/#/metadata/chelsa_cmip5_ts
+    `,
     text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cursus turpis massa tincidunt dui ut. Proin sagittis nisl rhoncus mattis rhoncus urna neque viverra. Quis enim lobortis scelerisque fermentum dui. Neque egestas congue quisque egestas. Malesuada proin libero nunc consequat interdum varius sit amet mattis. Volutpat blandit aliquam etiam erat. Tempor id eu nisl nunc. Lacus suspendisse faucibus interdum posuere lorem ipsum dolor sit amet. Ultricies mi eget mauris pharetra et ultrices. Eu consequat ac felis donec et odio pellentesque diam volutpat. Fames ac turpis egestas integer. Faucibus interdum posuere lorem ipsum dolor sit amet. Cursus euismod quis viverra nibh cras. Condimentum id venenatis a condimentum vitae sapien pellentesque habitant morbi. At elementum eu facilisis sed odio morbi quis. Ut sem viverra aliquet eget sit amet tellus.
     Proin nibh nisl condimentum id venenatis. Parturient montes nascetur ridiculus mus mauris vitae ultricies leo integer. Id eu nisl nunc mi ipsum faucibus vitae aliquet nec. Eu mi bibendum neque egestas congue quisque egestas diam. Eu volutpat odio facilisis mauris sit amet massa vitae tortor. Porttitor lacus luctus accumsan tortor posuere ac ut consequat. Sed velit dignissim sodales ut. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Sodales ut eu sem integer vitae. Ipsum nunc aliquet bibendum enim facilisis gravida neque convallis a. Augue lacus viverra vitae congue. Eget sit amet tellus cras adipiscing enim eu turpis. Pharetra vel turpis nunc eget lorem. Cras sed felis eget velit aliquet sagittis.
     Sagittis nisl rhoncus mattis rhoncus urna. Vehicula ipsum a arcu cursus vitae. Sed elementum tempus egestas sed. Nec nam aliquam sem et tortor. Enim lobortis scelerisque fermentum dui faucibus in ornare quam viverra. Massa eget egestas purus viverra accumsan in. Integer eget aliquet nibh praesent. Ut placerat orci nulla pellentesque dignissim enim sit amet. Amet venenatis urna cursus eget. Nunc pulvinar sapien et ligula. Vel pharetra vel turpis nunc eget lorem dolor. Felis donec et odio pellentesque diam. Porttitor rhoncus dolor purus non enim.
     Facilisi etiam dignissim diam quis enim lobortis scelerisque fermentum. A diam maecenas sed enim ut sem viverra. Ac felis donec et odio pellentesque diam volutpat commodo. Risus commodo viverra maecenas accumsan lacus vel facilisis. Vitae aliquet nec ullamcorper sit amet. Ullamcorper malesuada proin libero nunc consequat. Arcu vitae elementum curabitur vitae nunc sed velit dignissim sodales. Et tortor consequat id porta nibh venenatis. Lectus mauris ultrices eros in cursus. Tellus integer feugiat scelerisque varius morbi enim nunc faucibus a. Justo donec enim diam vulputate ut pharetra sit. Sit amet luctus venenatis lectus magna fringilla. Vulputate ut pharetra sit amet aliquam id diam maecenas ultricies. Orci dapibus ultrices in iaculis nunc sed augue lacus.
     `,
+    allDatasets: envidat_packages.result,
   }),
 });
 
@@ -593,12 +677,35 @@ export const MetadataAuthorsViews = () => ({
     </v-col>
 
     <v-col cols="12" md="6" class="py-3">
-      <metadata-authors :genericProps="genericProps5" />
+      <metadata-authors v-bind="genericProps6" />
     </v-col>
 
+    <v-col cols="12" class="py-3">
+      <metadata-authors :genericProps="genericProps5" />
+    </v-col>
+  
   </v-row>
   `,
+  mounted() {
+    setTimeout(() => {
+      this.initialLoading = false;
+    }, 3000)
+  },
+  computed: {
+    genericProps6() {
+      if (this.initialLoading) {
+        return {
+          showPlaceholder: true,
+        }
+      }
+
+      return {
+        genericProps: this.genericProps5,
+      };
+    },
+  },
   data: () => ({
+    initialLoading: true,
     genericProps5,
     genericPropsPlaceholder: {
       authors: [],

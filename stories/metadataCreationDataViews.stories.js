@@ -33,7 +33,6 @@ import {
 
 import { cleanListForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
-import { METADATA_EDITING } from './storybookFolder';
 
 
 // const apiFactory = require('@/factories/apiFactory');
@@ -51,7 +50,7 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 
 
 export default {
-  title: `${METADATA_EDITING} / Data Infos`,
+  title: '9 Editing Metadata / Data Infos',
   decorators: [],
   parameters: {},
 };

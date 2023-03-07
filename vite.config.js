@@ -5,11 +5,10 @@ import vue from '@vitejs/plugin-vue2';
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
-import cesium from 'vite-plugin-cesium';
 import eslint from 'vite-plugin-eslint';
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import { VitePluginFonts } from 'vite-plugin-fonts';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
@@ -18,8 +17,6 @@ const version = process.env.npm_package_version;
 
 export default ({ mode }) => {
     const isProd = mode === 'production'
-    const cesiumSource = 'node_modules/@cesium/engine/Source'
-    // const cesiumSource = 'node_modules/cesium/Source'
 
     if (isProd) {
         const fileName = `version_${version}.txt`;
@@ -52,7 +49,6 @@ export default ({ mode }) => {
         plugins: [
             vue(),
             eslint(),
-            cesium(),
             ViteRequireContext(),
             Components({
                 resolvers: [
@@ -71,32 +67,17 @@ export default ({ mode }) => {
                 ],
               },
             }),
-            viteStaticCopy({
-                targets: [
-                  {
-                    src: path.join(cesiumSource, '../Build/Cesium/Workers'),
-                    dest: 'Workers',
-                  },
-                  {
-                    src: path.join(cesiumSource, 'Assets'),
-                    dest: 'Assets',
-                    globOptions: {
-                      ignore: ['Images/**', 'Textures/**', 'IAU2006_XYS/**'],
-                    },
-                  },
-                  {
-                    src: 'node_modules/amcharts3/amcharts/images',
-                    dest: 'amcharts/images',
-                  },
-                ],
-            }),
+          visualizer({
+            filename: './dist/buildStats.html',
+            title : 'EnviDat Build Visualizer',
+          }),
         ],
         define: {
             'process.env': loadEnv(mode, process.cwd()),
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
         },
         optimizeDeps: {
-            include: ['vuetify'],
+          include: ['vuetify'],
         },
         base: './',
         // runtimeCompiler: true,
@@ -105,16 +86,71 @@ export default ({ mode }) => {
                 // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
-              { find: 'cesium', replacement: path.resolve(__dirname, cesiumSource) },
-              { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
+              { find: '@turf/turf', replacement: '@turf/turf/dist/es/index.js' },
+              { find: 'turf-jsts', replacement: 'turf-jsts/jsts.min.js' },
+              { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
+              { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+              { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
+              { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
+              { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
+              { find: 'vue', replacement: 'vue/dist/vue.min.js' },
             ],
         },
         build: {
-            assetsDir: './static',
-            chunkSizeWarningLimit: 600,
-            cssCodeSplit: true,
-            // sourcemap: true,
-            emptyOutDir: true,
+          assetsDir: './static',
+          chunkSizeWarningLimit: 500,
+          cssCodeSplit: true,
+          minify: true,
+          // sourcemap: true,
+          emptyOutDir: true,
+          rollupOptions: {
+            output: {
+              // eslint-disable-next-line consistent-return
+              manualChunks: (id) => {
+                if (id.includes('skeleton-placeholder')) {
+                  return 'vendor_skeleton';
+                }
+                if (id.includes('leaflet')) {
+                  return 'vendor_leaflet';
+                }
+                if (id.includes('src/factories')) {
+                  return 'envidat_factories';
+                }
+                if (id.includes('vuetify')) {
+                  return 'vendor_vuetify';
+                }
+                if (id.includes('vue-router')) {
+                  return 'vendor_vue-router';
+                }
+                if (id.includes('vuex')) {
+                  return 'vendor_vuex';
+                }
+                if (id.includes('vue') && !id.includes('.vue')) {
+                  return 'vendor_vue';
+                }
+                if (id.includes('turf')) {
+                  return 'vendor_turf';
+                }
+                if (id.includes('axios')) {
+                  return 'vendor_axios';
+                }
+                if (id.includes('date-fns')) {
+                  return 'vendor_date_fns';
+                }
+                if (id.includes('yup')) {
+                  return 'vendor_yup';
+                }
+                if (id.includes('amchart') || id.includes('uplot')) {
+                  return 'vendor_charts';
+                }
+
+                // all other node_modules
+                if (id.includes('node_modules')) {
+                  return 'vendors';
+                }
+              },
+            },
+          },
           define: {
             'import.meta.env.VITE_VERSION': JSON.stringify(version),
           },

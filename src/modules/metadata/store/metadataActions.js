@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * metadata store actions
  *
@@ -30,12 +31,6 @@ import {
   FILTER_METADATA_SUCCESS,
   FILTER_METADATA_ERROR,
   METADATA_NAMESPACE,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -388,64 +383,6 @@ export default {
       return dispatch(UPDATE_TAGS, mode);
     } catch (error) {
       commit(FILTER_METADATA_ERROR, error);
-    }
-  },
-  [PUBLICATIONS_RESOLVE_IDS]({ commit }, { idsToResolve, resolveBaseUrl }) {
-    commit(PUBLICATIONS_RESOLVE_IDS);
-
-    const currentIdsToResolve = idsToResolve;
-    const requests = [];
-    currentIdsToResolve.forEach((id) => {
-      const url = resolveBaseUrl + id;
-      requests.push(axios.get(url));
-    });
-
-    Promise.all(requests)
-      .then((responses) => {
-        let resolvedPublications = {};
-
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          resolvedPublications = { ...resolvedPublications, ...response.data };
-        }
-
-        commit(PUBLICATIONS_RESOLVE_IDS_SUCCESS, {
-          idsToResolve: currentIdsToResolve,
-          resolvedPublications,
-        });
-      })
-      .catch((error) => {
-        commit(PUBLICATIONS_RESOLVE_IDS_ERROR, error);
-      });
-  },
-  [EXTRACT_IDS_FROM_TEXT]({ commit }, { text, idDelimiter = '', idPrefix = '' }) {
-
-    if (text) {
-
-      commit(EXTRACT_IDS_FROM_TEXT);
-
-      try {
-        const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
-        const regEx = new RegExp(regExStr, 'gm');
-        const hasValidIds = text.match(regEx) || [];
-        // console.log(`hasValidIds ${hasValidIds?.length}`);
-
-        const ids = [];
-
-        hasValidIds.forEach((match) => {
-          let idOnly = match;
-          if (idPrefix) {
-            idOnly = idOnly.replace(idPrefix, '');
-          }
-
-          ids.push(idOnly.trim());
-          // console.log(`Found match, group ${groupIndex}: ${match}`);
-        });
-
-        commit(EXTRACT_IDS_FROM_TEXT_SUCCESS, ids);
-      } catch (e) {
-        commit(EXTRACT_IDS_FROM_TEXT_ERROR, e);
-      }
     }
   },
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {

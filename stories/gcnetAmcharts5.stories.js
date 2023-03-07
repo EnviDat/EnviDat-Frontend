@@ -16,10 +16,9 @@
 /* eslint-disable object-property-newline */
 
 import Amcharts5 from '../src/modules/metadata/components/GC-Net/Amchart5Chart.vue';
-import { CHART_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${CHART_VIEWS} / AmChart5 Tests`,
+  title: '12 Chart Views / AmChart5 Tests',
   component: Amcharts5,
   decorators: [],
   parameters: {},

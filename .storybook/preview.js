@@ -29,7 +29,7 @@ export const decorators = [
     template: `
     <v-app style="font-family: 'Raleway, sans-serif' !important;">
       <v-main>
-        <v-container fluid >
+        <v-container fluid class="pa-0">
           <story/>
         </v-container>
       </v-main>

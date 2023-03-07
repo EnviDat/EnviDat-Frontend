@@ -46,21 +46,6 @@ import {
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
-import EditDescription from '@/modules/user/components/EditDescription.vue';
-
-import EditKeywords from '@/modules/user/components/EditKeywords.vue';
-import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
-
-// import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
-// import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
-
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-
-// import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
 
 
 export function updateEditingArray(
@@ -74,9 +59,10 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[localIdProperty] === newElement[localIdProperty]
+                || el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
-      // make sure to merge the elements, because ex. an author
+      // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
       // are passed down ex. the EditAuthor component
       const mergedElement = {
@@ -94,15 +80,16 @@ export function updateEditingArray(
   elementList.unshift(newElement);
 }
 
-export function updateResource(store, state, newRes) {
-  const resources = store.getters[`${USER_NAMESPACE}/resources`];
-  // const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+export function updateResource(store, state, payload) {
+  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
+  const newRes = payload.data;
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
-export function updateAuthors(store, state, newAuthors) {
+export function updateAuthors(store, state, payload) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
+  const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors, 'email');
 }
@@ -160,22 +147,6 @@ export function selectForEditing(
 
   setSelected(store, elementList, id, propertyToCompare, true);
 }
-
-export function getSelectedElement(elementList) {
-  let selectedRes = null;
-  const res = elementList;
-
-  if (res?.length > 0) {
-    const selected = res.filter(r => r.isSelected);
-
-    if (selected.length > 0) {
-      selectedRes = selected[0];
-    }
-  }
-
-  return selectedRes;
-}
-
 
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
@@ -241,25 +212,29 @@ const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
-    component: EditMetadataHeader,
+    // component: EditMetadataHeader,
+    component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
     title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
-    component: EditDescription,
+    // component: EditDescription,
+    component: () => import('@/modules/user/components/EditDescription.vue'),
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
     title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
-    component: EditKeywords,
+    // component: EditKeywords,
+    component: () => import('@/modules/user/components/EditKeywords.vue'),
     key: EDITMETADATA_KEYWORDS,
   },
   {
     title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
-    component: EditAuthorList,
+    // component: EditAuthorList,
+    component: () => import('@/modules/user/components/EditAuthorList.vue'),
     key: EDITMETADATA_AUTHOR_LIST,
   },
 ];
@@ -276,13 +251,15 @@ const dataDetailSteps = [
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
-    component: EditDataInfo,
+    // component: EditDataInfo,
+    component: () => import('@/modules/user/components/EditDataInfo.vue'),
   },
   {
     title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
-    component: EditDataGeo,
+    // component: EditDataGeo,
+    component: () => import('@/modules/user/components/EditDataGeo.vue'),
   },
 ];
 
@@ -290,7 +267,8 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
-    component: MetadataGenericSubStepper,
+    // component: MetadataGenericSubStepper,
+    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
     key: EDITMETADATA_MAIN,
     detailSteps: mainDetailSteps,
     stepTitle: mainDetailSteps[0].title,
@@ -299,7 +277,8 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
-    component: MetadataGenericSubStepper,
+    // component: MetadataGenericSubStepper,
+    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
     key: EDITMETADATA_DATA,
     detailSteps: dataDetailSteps,
     stepTitle: dataDetailSteps[0].title,
