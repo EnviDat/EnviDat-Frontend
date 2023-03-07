@@ -25,7 +25,6 @@
 
         <map-leaflet
           :baseMapLayerName="currentBaseMapLayer"
-          :wmsLayer="selectedLayer"
           :max-extent="maxExtent"
           :map-div-id="mapDivId"
           :opacity="opacity"
@@ -34,7 +33,6 @@
           :mapEditable="mapEditable"
           :isGcnet="isGcnet"
         >
-          <!-- :featureInfoPts="featureinfo" -->
         </map-leaflet>
       </v-col>
     </v-row>
@@ -137,23 +135,6 @@ export default {
       }
 
       return extent;
-    },
-    featureinfo() {
-      return this.$store.state.geoservices.timeseries;
-    },
-    selectedLayer() {
-      return null;
-      /*
-      if (!this.layerConfig || !this.selectedLayerName) {
-        return null;
-      }
-      const layer = this.layerConfig.layers.find(
-        (l) => l.name === this.selectedLayerName,
-      );
-      layer.baseURL = this.layerConfig.baseURL;
-      layer.bbox = this.layerConfig.bbox;
-      return layer;
-*/
     },
   },
   methods: {

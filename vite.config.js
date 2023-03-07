@@ -72,7 +72,7 @@ export default ({ mode }) => {
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
         },
         optimizeDeps: {
-            include: ['vuetify'],
+          include: ['vuetify'],
         },
         base: './',
         // runtimeCompiler: true,
@@ -82,6 +82,11 @@ export default ({ mode }) => {
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
               { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
+              { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
+              { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
+              { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
+              { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
+              { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
             ],
         },
         build: {

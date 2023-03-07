@@ -125,7 +125,6 @@ import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.
 import { rewind as tRewind } from '@turf/turf';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
-// import { createWmsCatalog } from '@/modules/metadata/components/Geoservices/catalogWms';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
