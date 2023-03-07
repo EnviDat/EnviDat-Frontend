@@ -8,6 +8,7 @@ import { defineConfig, loadEnv } from 'vite';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import { VitePluginFonts } from 'vite-plugin-fonts';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
@@ -66,6 +67,10 @@ export default ({ mode }) => {
                 ],
               },
             }),
+          visualizer({
+            filename: './dist/buildStats.html',
+            title : 'EnviDat Build Visualizer',
+          }),
         ],
         define: {
             'process.env': loadEnv(mode, process.cwd()),
