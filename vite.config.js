@@ -85,11 +85,60 @@ export default ({ mode }) => {
             ],
         },
         build: {
-            assetsDir: './static',
-            chunkSizeWarningLimit: 600,
-            cssCodeSplit: true,
-            // sourcemap: true,
-            emptyOutDir: true,
+          assetsDir: './static',
+          chunkSizeWarningLimit: 500,
+          cssCodeSplit: true,
+          minify: true,
+          // sourcemap: true,
+          emptyOutDir: true,
+          rollupOptions: {
+            output: {
+              // eslint-disable-next-line consistent-return
+              manualChunks: (id) => {
+                if (id.includes('skeleton-placeholder')) {
+                  return 'vendor_skeleton';
+                }
+                if (id.includes('leaflet')) {
+                  return 'vendor_leaflet';
+                }
+                if (id.includes('src/factories')) {
+                  return 'envidat_factories';
+                }
+                if (id.includes('vuetify')) {
+                  return 'vendor_vuetify';
+                }
+                if (id.includes('vue-router')) {
+                  return 'vendor_vue-router';
+                }
+                if (id.includes('vuex')) {
+                  return 'vendor_vuex';
+                }
+                if (id.includes('vue') && !id.includes('.vue')) {
+                  return 'vendor_vue';
+                }
+                if (id.includes('turf')) {
+                  return 'vendor_turf';
+                }
+                if (id.includes('axios')) {
+                  return 'vendor_axios';
+                }
+                if (id.includes('date-fns')) {
+                  return 'vendor_date_fns';
+                }
+                if (id.includes('yup')) {
+                  return 'vendor_yup';
+                }
+                if (id.includes('amchart') || id.includes('uplot')) {
+                  return 'vendor_charts';
+                }
+
+                // all other node_modules
+                if (id.includes('node_modules')) {
+                  return 'vendors';
+                }
+              },
+            },
+          },
           define: {
             'import.meta.env.VITE_VERSION': JSON.stringify(version),
           },
