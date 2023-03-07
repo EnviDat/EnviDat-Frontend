@@ -1167,7 +1167,7 @@ function getGenericCitationObject(citationInfo) {
 export function resolvedCitationText(resolvedPubs, pidMap) {
   const citationTextMap = new Map();
 
-  pidMap.forEach((pid, url) => {
+  pidMap.forEach((pid) => {
     const resolvedObject = resolvedPubs[pid];
 
     const genericCitation = getGenericCitation(resolvedObject);
@@ -1203,7 +1203,7 @@ export function getDoiCitationObjectMap(doiObjs) {
 
   const citationMap = new Map();
 
-  doiObjs.forEach((citationInfo, index) => {
+  doiObjs.forEach((citationInfo) => {
     const citationObj = getGenericCitationObject(citationInfo);
     citationMap.set(citationObj.doi, citationObj);
   });

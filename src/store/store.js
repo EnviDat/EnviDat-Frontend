@@ -123,8 +123,10 @@ try {
     // if there is an error for the initial loading
     // Syntax Error from parsing the json
 
+    // eslint-disable-next-line no-console
     console.log('restoreState error');
-    console.log(e);
+    // eslint-disable-next-line no-console
+    console.error(e);
 
     store = createStore();
   }

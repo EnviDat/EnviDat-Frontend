@@ -13,11 +13,9 @@ import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
-import axios from 'axios';
 import {
   map as createMap,
   icon as createIcon,
-  Util,
   tileLayer,
   Icon,
   geoJSON,
