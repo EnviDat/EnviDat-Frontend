@@ -423,9 +423,9 @@ export function deleteEmptyObject(index, localObjects) {
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
 }
+// const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
 // eslint-disable-next-line no-useless-escape
-const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
-
+const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
 export function getUserAutocompleteList(userList) {
 
   const cleanedList = userList.filter((user) => {
