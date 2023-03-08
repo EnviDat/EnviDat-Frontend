@@ -222,25 +222,6 @@
                align="center">
 
           <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="isSameOrganizationField"
-                            :disabled="!editingRestrictingActive"
-                            materialIconName="home_filled"
-                            :tooltipText="isSameOrganizationField ? labels.isRestrictedInfo : labels.isPublicInfo"
-                            @clicked="isSameOrganizationField = !isSameOrganizationField"
-            />
-          </v-col>
-
-          <v-col >
-            {{ isSameOrganizationField ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
-          </v-col>
-        </v-row>
-
-        <v-row v-if="isRestrictedField"
-               no-gutters
-               class="px-2 pt-3"
-               align="center">
-
-          <v-col class="shrink pl-1 pr-4">
             <BaseIconSwitch :active="hasAllowedUsersField"
                             :disabled="!editingRestrictingActive"
                             materialIconName="lock_person"
@@ -263,9 +244,13 @@
                 outlined
                 hide-details
                 prepend-icon="lock_person"
-                :disabled="loading"
+                :disabled="!editingRestrictingActive"
                 v-model="allowedUsersField"
             />
+          </v-col>
+
+          <v-col>
+            <BaseUserPicker :users="envidatUsers"/>
           </v-col>
 
         </v-row>
@@ -558,7 +543,7 @@ export default {
         return level === this.publicAccessLevelValue; // && !this.hasAllowedUsersField;
       },
       set(value) {
-        this.previews.restrictedLevel = value ? this.publicAccessLevelValue : this.anyOrganizationAccessLevelValue;
+        this.previews.restrictedLevel = value ? this.publicAccessLevelValue : this.sameOrganizationAccessLevelValue;
 
         this.checkSaveButtonEnabled(true);
       },
