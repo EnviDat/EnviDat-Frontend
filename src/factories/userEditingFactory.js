@@ -45,6 +45,7 @@ import {
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 
 
@@ -59,8 +60,7 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[localIdProperty] === newElement[localIdProperty]
-                || el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -80,16 +80,14 @@ export function updateEditingArray(
   elementList.unshift(newElement);
 }
 
-export function updateResource(store, state, payload) {
-  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
-  const newRes = payload.data;
+export function updateResource(store, state, newRes) {
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
-export function updateAuthors(store, state, payload) {
+export function updateAuthors(store, state, newAuthors) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
-  const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors, 'email');
 }
