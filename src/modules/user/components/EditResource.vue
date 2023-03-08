@@ -238,76 +238,28 @@
         <v-row v-if="isRestrictedField && hasAllowedUsersField"
                no-gutters
                class="px-2 pt-3">
-          <v-col>
-            <v-text-field
-                :label="labels.isRestrictedAllowedUsersInfo"
-                outlined
-                hide-details
-                prepend-icon="lock_person"
-                :disabled="!editingRestrictingActive"
-                v-model="allowedUsersField"
-            />
-          </v-col>
 
           <v-col>
-            <BaseUserPicker :users="envidatUsers"/>
-          </v-col>
-
-        </v-row>
-
-
-<!--
-        <v-row v-if="isRestrictedField"
-               no-gutters
-               class="px-2 pt-3"
-               align="center">
-
-          <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="isSameOrganizationField"
-                            materialIconName="home_filled"
-                            :tooltipText="isSameOrganizationField ? labels.isRestrictedInfo : labels.isPublicInfo"
-                            @clicked="isSameOrganizationField = !isSameOrganizationField"
-            />
-          </v-col>
-
-          <v-col >
-            {{ isSameOrganizationField ? labels.restrictedSameOrganizationInfo : labels.restrictedNotSameOrganizationInfo }}
-          </v-col>
-        </v-row>
-
-        <v-row v-if="isSameOrganizationField"
-               no-gutters
-               class="px-2 pt-3">
-          <v-col >
-            {{ !!allowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
-          </v-col>
-        </v-row>
-
-        <v-row v-if="isSameOrganizationField"
-               no-gutters
-               class="px-2 pt-3">
-          <v-col >
-            <v-text-field
-                :label="labels.isRestrictedAllowedUsersInfo"
-                outlined
-                hide-details
-                prepend-icon="lock_person"
-                :disabled="loading"
-                v-model="allowedUsersField"
+            <BaseUserPicker :users="envidatUserNameStrings"
+                            :pickerLabel="labels.isRestrictedAllowedUsersInfo"
+                            multiplePick
+                            prependIcon="key"
+                            userTagsCloseable
+                            :preSelected="preSelectedAllowedUsers"
+                            @removedUsers="changeAllowedUsers"
+                            @pickedUsers="changeAllowedUsers"
             />
           </v-col>
 
         </v-row>
--->
-
 
 <!--
         <v-row>
           <v-col>
-            getRestrictedObject: {{ getRestrictedObject() }}
+            getRestrictedObject: {{ getRestrictedJSONString() }}
           </v-col>
           <v-col>
-            writeRestrictionLvl: {{ writeRestrictionLvl }}
+            allowedUsers: {{ allowedUsersField }}
           </v-col>
         </v-row>
 -->
@@ -354,12 +306,22 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
-import { getValidationMetadataEditingObject, isFieldValid, isObjectValid } from '@/factories/userEditingValidations';
+import {
+  getValidationMetadataEditingObject,
+  isFieldValid,
+  isObjectValid,
+} from '@/factories/userEditingValidations';
+
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
 import { formatDate } from '@/factories/metaDataFactory';
 import { renderMarkdown } from '@/factories/stringFactory';
 
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
+import {
+  getAllowedUsersString,
+  getRestrictedUserNames,
+  getUserAutocompleteList,
+} from '@/factories/userEditingFactory';
 
 export default {
   name: 'EditResource',
@@ -415,6 +377,10 @@ export default {
     restricted: {
       type: Object,
       default: undefined,
+    },
+    envidatUsers: {
+      type: Array,
+      default: () => [],
     },
     loading: {
       type: Boolean,
@@ -603,7 +569,6 @@ export default {
       },
       set(value) {
         this.previews.hasAllowedUsers = value;
-        this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
         this.checkSaveButtonEnabled(true);
       },
     },
@@ -613,6 +578,7 @@ export default {
       },
       set(value) {
         this.previews.allowedUsers = value;
+        this.checkSaveButtonEnabled(true);
       },
     },
     isSameOrganizationField: {
@@ -655,6 +621,13 @@ export default {
       }
 
       return this.anyOrganizationAccessLevelValue;
+    },
+    envidatUserNameStrings() {
+      return getUserAutocompleteList(this.envidatUsers);
+    },
+    preSelectedAllowedUsers() {
+      // match with the user.name but make sure the fullname or display_name is shown
+      return getRestrictedUserNames(this.allowedUsersField, this.envidatUsers);
     },
     openAccessDetails() {
       const text = this.isPublicField ? this.labels.openAccessInstructions : this.labels.openAccessPreferedInstructions;
@@ -724,16 +697,18 @@ export default {
 
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
-      const descriptionAndNameValid = isObjectValid(['description', 'name'], {
-        description: this.descriptionField,
-        name: this.resourceNameField,
-      }, this.validations, this.validationErrors);
+      const descriptionAndNameValid = isObjectValid(['description', 'name'],
+        {
+          description: this.descriptionField,
+          name: this.resourceNameField,
+        },
+        this.validations, this.validationErrors);
 
       this.saveButtonEnabled = descriptionAndNameValid;
     },
     getRestrictedJSONString() {
       const obj = {
-        allowedUsers: this.allowedUsersField || '',
+        allowedUsers: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
         level: this.writeRestrictionLvl,
         sharedSecret: this.sharedSecretField || '',
       };
@@ -777,6 +752,9 @@ export default {
     },
     catchImageClick() {
       this.$emit('previewImageClicked');
+    },
+    changeAllowedUsers(pickedUserNames) {
+      this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
     },
     validateField(property, value) {
       return isFieldValid(
@@ -824,15 +802,15 @@ export default {
       format: 'File format',
       restricted: 'Access restrictions',
       openAccessInstructions: 'Resource is Open Access, great!',
-      openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends Open Access to research data! Please make your data available to everyone unless it really contains sensitive data.',
+      openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends providing "Open Access" to research data! Please make your data available to everyone without a barrier, unless it contains sensitive data.',
       restrictedInstructions: 'Restricted Access is not available for editing yet. Please contact the EnviDat team (<a mailto="envidat@wsl.ch">envidat@wsl.ch</a>) if a resource can not be publicly accessed.',
       isPublicInfo: 'Resource openly accessible to everyone',
-      isNotPublicInfo: 'Resource has restricted accessibility',
+      isNotPublicInfo: 'Resource has restricted accessibility, only users from the same organization have access',
       isRestrictedInfo: 'Resource is only accessible to users which are signed in',
       isRestrictedAllowedUsersInfo: 'Grant specific users access',
       isSameOrganizationInfo: 'Resource is accessible to users in the same organization as the dataset',
-      restrictedAllowedUsersInfo: 'Access is restricted to the following users',
-      restrictedNotAllowedUsersInfo: 'Access is not restricted on a per user basis',
+      restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
+      restrictedNotAllowedUsersInfo: 'No access is granted on a per user basis',
       restrictedSameOrganizationInfo: 'Access is restricted to users in the same organization as the dataset is',
       restrictedNotSameOrganizationInfo: 'Access is not restricted based on the users assigend organization',
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',

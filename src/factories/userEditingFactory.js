@@ -48,7 +48,6 @@ import {
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 
-
 export function updateEditingArray(
   store,
   elementList,
@@ -423,4 +422,53 @@ export function deleteEmptyObject(index, localObjects) {
 
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
+}
+// eslint-disable-next-line no-useless-escape
+const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
+
+export function getUserAutocompleteList(userList) {
+
+  const cleanedList = userList.filter((user) => {
+
+    const match = user.name.match(exludeRegEx);
+
+    if (match && match[0] && match[0].length === user.name?.length) {
+      return false;
+    }
+
+    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullname?.toLowerCase() === 'admin');
+  });
+
+
+  return cleanedList.map((user) => user.fullname || user.display_name);
+}
+
+export function getRestrictedUserNames(allowedUsersString, envidatUsers) {
+  if (!allowedUsersString || !envidatUsers) {
+    return [];
+  }
+
+  const splits = allowedUsersString.split(',');
+  let usersString;
+  if (splits.length > 0) {
+    usersString = splits;
+  } else {
+    usersString = [allowedUsersString]
+  }
+
+  const allowedUsers = envidatUsers.filter((user) => usersString.includes(user.name));
+
+  return allowedUsers.map((user) => user.fullname || user.display_name);
+}
+
+export function getAllowedUsersString(userFullNameArray, envidatUsers) {
+  if (!userFullNameArray || !envidatUsers) {
+    return [];
+  }
+
+  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullname || user.display_name));
+
+  const allowedUsers = allowedUserObjs.map((user) => user.name);
+
+  return allowedUsers.join(',');
 }

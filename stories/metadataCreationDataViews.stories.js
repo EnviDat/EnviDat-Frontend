@@ -33,9 +33,9 @@ import {
 
 import { cleanListForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
+import userList from './testdata/user_list.json';
 
-
-// const apiFactory = require('@/factories/apiFactory');
+const envidatUsers = userList?.result || [];
 
 const metadataCards = [];
 
@@ -126,6 +126,7 @@ const userEditMetadataConfig = {
       return {
         ...metadataCards[2][2],
         loading: true,
+        envidatUsers,
       }
     },
   },
@@ -141,14 +142,17 @@ const userEditMetadataConfig = {
     resource1: {
       ... metadataCards[0][0],
       userEditMetadataConfig,
+      envidatUsers,
     },
     resource2: {
       ...metadataCards[0][1],
       userEditMetadataConfig,
+      envidatUsers,
     },
     resource3: {
       ...metadataCards[2][0],
       userEditMetadataConfig,
+      envidatUsers,
     },
   }),
 });
