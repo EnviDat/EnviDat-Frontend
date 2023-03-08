@@ -19,7 +19,8 @@
       :articlesTitle="welcomeInfo.articlesTitle"
     >
       <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
-        <v-row align="center">
+        <v-row no-gutters
+               align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
             <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
 
