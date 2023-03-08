@@ -122,6 +122,8 @@ import {
 } from '@/factories/uploadFactory';
 
 import {
+  ACTION_GET_USER_LIST,
+  FETCH_USER_DATA, GET_USER_LIST,
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
@@ -199,6 +201,7 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers']),
     resourceUploadActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
@@ -249,6 +252,20 @@ export default {
     },
   },
   methods: {
+    async loadEnvidatUsers() {
+      if (!this.envidatUsers) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+          {
+            action: ACTION_GET_USER_LIST,
+            body: {
+              id: this.user.id,
+              include_datasets: true,
+            },
+            commit: true,
+            mutation: GET_USER_LIST,
+          });
+      }
+    },
     uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload

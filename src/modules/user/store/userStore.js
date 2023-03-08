@@ -60,6 +60,8 @@ const userState = {
   uploadKey: null,
   uploadResource: null,
   uploadMetadataId: null,
+  envidatUsers: null,
+  envidatUsersError: null,
 };
 
 

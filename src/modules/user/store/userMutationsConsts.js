@@ -11,6 +11,18 @@
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
+export const GET_USER_LIST = 'GET_USER_LIST';
+export const GET_USER_LIST_ERROR = 'GET_USER_LIST_ERROR';
+export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
+
+export const ACTION_GET_USER_LIST = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/user_list.json';
+  }
+
+  return 'user_list';
+};
+
 export const GET_USER_CONTEXT = 'GET_USER_CONTEXT';
 export const GET_USER_CONTEXT_ERROR = 'GET_USER_CONTEXT_ERROR';
 export const GET_USER_CONTEXT_SUCCESS = 'GET_USER_CONTEXT_SUCCESS';

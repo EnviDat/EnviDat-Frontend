@@ -12,11 +12,6 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  enhanceMetadatas,
-  enhanceTags,
-} from '@/factories/metaDataFactory';
-
 import { getCollaboratorCapacity, isUserGroupAdmin } from '@/factories/userEditingValidations';
 
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
@@ -26,6 +21,7 @@ import {
 } from '@/factories/eventBus';
 
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
+import { enhanceMetadataFromCategories } from '@/modules/user/store/mutationFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import {
@@ -47,6 +43,9 @@ import {
   USER_GET_ORGANIZATIONS_SUCCESS,
   USER_SIGNIN_NAMESPACE,
   VALIDATION_ERROR,
+  GET_USER_LIST,
+  GET_USER_LIST_SUCCESS,
+  GET_USER_LIST_ERROR,
 } from './userMutationsConsts';
 
 
@@ -95,22 +94,18 @@ function resetErrorObject(state) {
   state.errorField = '';
 }
 
-function enhanceMetadataFromCategories(store, metadatas) {
-  let datasets = metadatas;
-  const isArrayInput = Array.isArray(datasets);
-  if (!isArrayInput) {
-    datasets = [datasets];
-  }
-
-  const { cardBGImages, categoryCards } = store.getters;
-
-  datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
-
-  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
-  return isArrayInput ? enhanced : enhanced[0];
-}
 
 export default {
+  [GET_USER_LIST](state) {
+    state.envidatUsers = null;
+    state.envidatUsersError = null;
+  },
+  [GET_USER_LIST_SUCCESS](state, payload) {
+    state.envidatUsers = payload;
+  },
+  [GET_USER_LIST_ERROR](reason) {
+    extractError(this, reason, 'envidatUsersError');
+  },
   [USER_GET_DATASETS](state) {
     state.userDatasetsLoading = true;
     state.userDatasetsError = null;
