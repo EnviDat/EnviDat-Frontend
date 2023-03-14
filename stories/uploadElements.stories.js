@@ -13,8 +13,10 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
+import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
 export default {
   title: '9 Editing Metadata / Upload Elements',
@@ -40,3 +42,15 @@ export const EditMultiDropResourceFilesView = () => ({
     metadataId,
   }),
 });
+
+const EditResourcePasteUrlTemplate = (args, { argTypes }) => ({
+  components: { EditResourcePasteUrl },
+  props: Object.keys(argTypes),
+  template: '<EditResourcePasteUrl v-bind="$props" />',
+});
+
+export const EmptyEditResourcePasteUrl = EditResourcePasteUrlTemplate.bind({});
+
+/*
+export const EmptyEditResourcePasteUrl = EditResourcePasteUrlTemplate.bind({});
+*/

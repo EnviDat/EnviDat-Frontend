@@ -205,19 +205,20 @@ export default {
     /**
      * Loads the path to the icon image representing a file extension
      *
-     * @param {*} iconName
-     * @return {string} relative file path to the icon image file
+     * @param {*} fileExtension
+     * @return {string|null} relative file path to the icon image file
      */
     mixinMethods_getIconFileExtension(fileExtension) {
       const ext = fileExtension.toLowerCase();
       const iconKey = `./file${ext}.png`;
 
-      return this.$store.getters.iconImages[iconKey];
+      const iconString = this.$store.getters.iconImages[iconKey];
+      return iconString || null;
     },
     /**
      * Loads the file path to given images into a Map.
      *
-     * @param {Map<string, string>} imgs imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
+     * @param {Map<string, string>} imgPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
      * @param {String} checkForString
      *
      * @return {Map<string, string>} Image cache

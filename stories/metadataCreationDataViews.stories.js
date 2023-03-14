@@ -64,7 +64,6 @@ const userEditMetadataConfig = {
   template: `
     <v-col>
 
-<!--
       <v-row>
         EditResource empty and with resource1
       </v-row>
@@ -79,7 +78,6 @@ const userEditMetadataConfig = {
         </v-col>
 
       </v-row>
--->
 
       <v-row>
         EditResource with resource2 & resource 3
