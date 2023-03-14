@@ -223,7 +223,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
-import { formatDate } from '@/factories/metaDataFactory';
+import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'ResourceCard',
@@ -343,7 +343,7 @@ export default {
         sizeNumber = Number.parseInt(this.size, 10);
       }
 
-      return this.mixinMethods_formatBytes(sizeNumber);
+      return formatBytes(sizeNumber);
     },
     isLink() {
       return (

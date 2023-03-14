@@ -296,24 +296,6 @@ export default {
 
       return this.genericProps[propName] ? this.genericProps[propName] : defaultValue;
     },
-    /**
-     *
-     * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-     * @param {*} a
-     * @param {*} b
-     */
-    mixinMethods_formatBytes(a, b = 2) {
-      /* eslint-disable prefer-template */
-      /* eslint-disable no-restricted-properties */
-      if (a === 0) return '0 Bytes';
-
-      const c = 1024;
-
-      const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      const f = Math.floor(Math.log(a) / Math.log(c));
-
-      return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
-    },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};
 

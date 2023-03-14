@@ -1266,3 +1266,23 @@ export function extractDatasetIdsFromText(text) {
 
   return ids;
 }
+
+/**
+ *
+ * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+ * @param {*} a
+ * @param {*} b
+ */
+export function formatBytes(a, b = 2) {
+  /* eslint-disable prefer-template */
+  /* eslint-disable no-restricted-properties */
+  if (a === 0) return '0 Bytes';
+
+  const c = 1024;
+
+  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const f = Math.floor(Math.log(a) / Math.log(c));
+
+  return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
+}
+
