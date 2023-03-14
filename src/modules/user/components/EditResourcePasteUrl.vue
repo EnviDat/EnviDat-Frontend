@@ -1,5 +1,5 @@
 <template>
-  <v-card id="EditPasteResourceUrl" class="pa-4" >
+  <v-card id="EditResourcePasteUrl" class="pa-4" >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -54,7 +54,7 @@
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
-  name: 'EditPasteResourceUrl',
+  name: 'EditResourcePasteUrl',
   props: {
     genericProps: Object,
   },
@@ -71,7 +71,7 @@ export default {
     url: '',
     labels: {
       title: 'Create Resource From Link',
-      instructions: 'Paste a link to create a new resource.',
+      instructions: 'Paste a link to create a new resource. Make sure add the file format and size afterwards.',
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },

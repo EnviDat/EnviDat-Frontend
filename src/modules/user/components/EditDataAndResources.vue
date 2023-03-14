@@ -46,7 +46,7 @@
 
           <v-col v-if="resourceUploadActive"
                  cols="12">
-            <EditPasteResourceUrl @createUrlResources="createResourceFromUrl"/>
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
           </v-col>
 
           <v-col v-if="!resourceUploadActive"
@@ -111,7 +111,7 @@ import {
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 // import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
-import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
 
@@ -138,7 +138,7 @@ export default {
     EditMetadataResources,
     EditDropResourceFiles,
     // EditMultiDropResourceFiles,
-    EditPasteResourceUrl,
+    EditResourcePasteUrl,
     EditResource,
     EditResourceRedirect,
   },
