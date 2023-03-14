@@ -48,9 +48,9 @@ if (!useTestdata) {
 
 export default {
   // async [METADATA_CREATION_RESOURCE]({ commit }, { stepKey, data, id }) {
-  async [METADATA_CREATION_RESOURCE]({ commit }, { metadataId, data, autoSelect = false }) {
+  async [METADATA_CREATION_RESOURCE]({ commit }, { data }) {
 
-    commit(METADATA_CREATION_RESOURCE, metadataId);
+    commit(METADATA_CREATION_RESOURCE);
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
@@ -67,7 +67,6 @@ export default {
         stepKey: EDITMETADATA_DATA_RESOURCE,
         resource,
         message: 'Resource created',
-        autoSelect,
         // details: `Changes saved ${stepKey} data for ${id}`,
       });
 

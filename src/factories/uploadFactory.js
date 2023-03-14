@@ -59,10 +59,7 @@ const defaultRestrictions = {
   minNumberOfFiles: 1,
 };
 
-function createNewResourceForFileUpload(metadataId, file) {
-  const name = file.name || file;
-  const size = file.size || 0;
-
+function createNewBaseResource(metadataId) {
   const restricted = JSON.stringify({
     allowed_users: '',
     shared_secret: '',
@@ -71,30 +68,61 @@ function createNewResourceForFileUpload(metadataId, file) {
 
   return {
     packageId: metadataId,
-    url: file.name || file,
-    format: file.extension || 'url',
-    mimetype: file.type || '',
-    name,
     description: null,
-    size,
-    urlType: 'upload',
-    resourceSize: JSON.stringify({
-      size_units: 'mb',
-      size_value: size / 1024 / 1024,
-/*
-      sizeUnits: 'mb',
-      sizeValue: size / 1024 / 1024,
-*/
-    }),
     restricted,
     doi: null,
     // state: ?,
     // private: ?
     // publicationState: null,
+  };
+}
+
+function createNewResourceForFileUpload(metadataId, file) {
+
+  const baseResourceProperties = createNewBaseResource(metadataId);
+
+  const name = file.name || file;
+  const size = file.size || 0;
+
+  return {
+    ...baseResourceProperties,
+    url: file.name || file,
+    format: file.extension || '',
+    mimetype: file.type || '',
+    name,
+    description: null,
+    size,
+    urlType: 'upload',
     multipartName: file.name,
   };
 
 }
+
+export function createNewResourceForUrl(metadataId, url) {
+
+  const splits = url.split('/');
+  const resourceName = splits.length > 0 ? splits[splits.length - 1] : url;
+
+  const baseResourceProperties = createNewBaseResource(metadataId);
+
+  return {
+    ...baseResourceProperties,
+    url,
+    url_type: null,
+    format: '',
+    name: resourceName,
+    resourceSize: JSON.stringify({
+      size_units: 'kb',
+      size_value: '0',
+    }),
+/*
+    resource_size: "{\"size_units\": \"kb\", \"size_value\": \"\"}",
+    size_value: size / 1024 / 1024,
+*/
+  };
+
+}
+
 export async function initiateMultipart(file) {
 
   eventBus.emit(UPLOAD_STATE_RESET);
@@ -103,7 +131,6 @@ export async function initiateMultipart(file) {
   const newResource = createNewResourceForFileUpload(metadataId, file);
 
   await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
-    metadataId,
     data: newResource,
   });
 
@@ -484,7 +511,7 @@ export function getUppyInstance(metadataId, store, height = 300, autoProceed = t
   return uppyInstance;
 }
 
-export function destoryUppyInstance() {
+export function destroyUppyInstance() {
   if (hasUppyInstance()) {
     // uppyInstance.close({ reason: 'unmount' });
     uppyInstance.close();
@@ -493,3 +520,4 @@ export function destoryUppyInstance() {
 
   storeReference = null;
 }
+

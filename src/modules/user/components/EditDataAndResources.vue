@@ -119,6 +119,7 @@ import {
   getUppyInstance,
   subscribeOnUppyEvent,
   unSubscribeOnUppyEvent,
+  createNewResourceForUrl,
 } from '@/factories/uploadFactory';
 
 import {
@@ -367,20 +368,17 @@ export default {
 
       const metadataId = this.metadataId;
 
+      const newResource = createNewResourceForUrl(metadataId, url);
+
       // create resource from url
       await this.$store?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
-        metadataId,
-        // file: url,
-        fileUrl: url,
-        autoSelect: true,
+        data: newResource,
       });
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
-      if (newRes) {
-        this.renameResource(newRes);
-      }
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
     },
     renameResource(newRes) {
       // create a local copy because it might come directly from the $store

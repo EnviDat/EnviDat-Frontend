@@ -36,13 +36,13 @@ import {
 
 
 export default {
-  [METADATA_CREATION_RESOURCE](state, metadataId) {
+  [METADATA_CREATION_RESOURCE](state) {
     // resource.loading = true;
     state.uploadLoading = true;
     state.uploadResource = null;
 
   },
-  [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message, autoSelect }) {
+  [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
 
     // make resource selectable
     enhanceElementsWithStrategyEvents(
@@ -51,7 +51,6 @@ export default {
       true,
     );
 
-    resource.isSelected = autoSelect;
     resource.loading = false;
     resource.message = message;
 

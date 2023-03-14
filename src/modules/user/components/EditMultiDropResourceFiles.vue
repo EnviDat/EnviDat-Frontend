@@ -49,7 +49,7 @@
 import { Dashboard } from '@uppy/vue';
 import '@uppy/core/dist/style.css';
 import '@uppy/dashboard/dist/style.css';
-import { destoryUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
+import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
 
 
 export default {
@@ -60,7 +60,7 @@ export default {
   mounted() {
   },
   beforeDestroy() {
-    destoryUppyInstance();
+    destroyUppyInstance();
   },
   computed: {
 

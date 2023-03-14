@@ -81,7 +81,7 @@ import '@uppy/status-bar/dist/style.css';
 import Uppy, { debugLogger } from '@uppy/core';
 import Tus from '@uppy/tus';
 */
-import { destoryUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
+import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
 import {
   eventBus,
   UPLOAD_STATE_RESET,
@@ -113,7 +113,7 @@ export default {
     eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
     eventBus.off(UPLOAD_STATE_RESOURCE_UPDATED, this.changeState);
 
-    destoryUppyInstance();
+    destroyUppyInstance();
   },
   computed: {
     uppy () {
