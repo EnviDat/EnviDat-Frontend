@@ -18,272 +18,336 @@
                     @clicked="$emit('closeClicked')"/>
 
 
-    <v-form ref="editResourceForm">
-      <v-container fluid class="pa-4">
+    <v-container fluid class="pa-4">
 
-        <template slot="progress">
-          <v-progress-linear color="primary" indeterminate/>
-        </template>
+      <template slot="progress">
+        <v-progress-linear color="primary" indeterminate/>
+      </template>
 
-        <v-row>
-          <v-col cols="6" class="text-h5">
-            {{ labels.title }}
-          </v-col>
+      <v-row>
+        <v-col cols="6" class="text-h5">
+          {{ labels.title }}
+        </v-col>
 
-          <v-col v-if="message">
-            <BaseStatusLabelView
-                statusIcon="check"
-                statusColor="success"
-                :statusText="message"
-                :expandedText="messageDetails"
-            />
-          </v-col>
-          <v-col v-if="error">
-            <BaseStatusLabelView
-                statusIcon="error"
-                statusColor="error"
-                :statusText="error"
-                :expandedText="errorDetails"
-            />
-          </v-col>
-        </v-row>
+        <v-col v-if="message">
+          <BaseStatusLabelView
+              statusIcon="check"
+              statusColor="success"
+              :statusText="message"
+              :expandedText="messageDetails"
+          />
+        </v-col>
+        <v-col v-if="error">
+          <BaseStatusLabelView
+              statusIcon="error"
+              statusColor="error"
+              :statusText="error"
+              :expandedText="errorDetails"
+          />
+        </v-col>
+      </v-row>
 
-        <v-row>
-          <v-col cols="12">
-            <div class="text-subtitle-1">{{ labels.instructions }}</div>
-          </v-col>
-        </v-row>
+      <v-row>
+        <v-col cols="12">
+          <div class="text-subtitle-1">{{ labels.instructions }}</div>
+        </v-col>
+      </v-row>
 
 
-        <v-row no-gutters class="pt-4">
-          <v-col cols="12">
-            <v-text-field
-              :label="labels.resourceName"
-              ref="resourceName"
-              outlined
-              required
-              :disabled="loading"
-              v-model="resourceNameField"
-              :error-messages="validationErrors.name"
-            />
+      <v-row id="resourceName"
+             no-gutters class="pt-4">
+        <v-col cols="12">
+          <v-text-field
+            :label="labels.resourceName"
+            ref="resourceName"
+            outlined
+            required
+            :disabled="loading"
+            v-model="resourceNameField"
+            :error-messages="validationErrors.name"
+          />
 
 <!--
-            :readonly="mixinMethods_isFieldReadOnly('resourceName')"
+          :readonly="mixinMethods_isFieldReadOnly('resourceName')"
 -->
 
-          </v-col>
-        </v-row>
+        </v-col>
+      </v-row>
 
-        <v-row no-gutters>
-          <v-col cols="12">
-            <v-textarea
-              :label="labels.description"
-              ref="description"
-              outlined
-              auto-grow
-              :disabled="loading"
-              v-model="descriptionField"
-              :error-messages="validationErrors.description"
-            />
-          </v-col>
-        </v-row>
+      <v-row id="description"
+             no-gutters
+              class="pt-2">
+        <v-col cols="12">
 
-        <v-row no-gutters>
-          <v-col v-if="showImagePreview"
-                 cols="4"
-                 class="pt-3 pb-4 pr-4">
+          <v-textarea
+            :label="labels.description"
+            outlined
+            auto-grow
+            :disabled="loading"
+            v-model="descriptionField"
+            :error-messages="validationErrors.description"
+          />
 
-            <div v-show="loadingImagePreview"
-                 class="skeleton skeleton-animation-shimmer"
-                style="height: 100%; width: 100%; "
-            >
-              <div style="width: 100%; min-height: 100%; "
-                  class="bone bone-type-image"
-              ></div>
-            </div>
+        </v-col>
+      </v-row>
 
+      <v-row id="resourceUrl"
+             no-gutters
+             class="pt-2">
+        <v-col v-if="showImagePreview"
+               cols="4"
+               class="pt-3 pb-4 pr-4">
 
-            <v-img v-show="!loadingImagePreview && !imagePreviewError"
-                   :src="urlField"
-                   ref="filePreview"
-                   style="max-height: 100%; max-width: 100%; cursor: pointer;"
-                   @click="catchImageClick"
-                   alt="resource image preview"/>
-
-            <div v-if="!loadingImagePreview && imagePreviewError"
-                 class="imagePreviewErrorContainer">
-
-              <v-img id="curtain"
-                     :src="notFoundImg"
-                     style="max-height: 100%; max-width: 100%; opacity: 0.25;"
-                     alt="resource image could not be loaded!"/>
-
-              <div id="backdrop"
-                   class="pa-4 text-body-1">Image preview could not be loaded! </div>
-            </div>
+          <div v-show="loadingImagePreview"
+               class="skeleton skeleton-animation-shimmer"
+              style="height: 100%; width: 100%; "
+          >
+            <div style="width: 100%; min-height: 100%; "
+                class="bone bone-type-image"
+            ></div>
+          </div>
 
 
-          </v-col>
+          <v-img v-show="!loadingImagePreview && !imagePreviewError"
+                 :src="urlField"
+                 ref="filePreview"
+                 style="max-height: 100%; max-width: 100%; cursor: pointer;"
+                 @click="catchImageClick"
+                 alt="resource image preview"/>
 
-          <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
-            <v-textarea v-if="isLongUrl"
+          <div v-if="!loadingImagePreview && imagePreviewError"
+               class="imagePreviewErrorContainer">
+
+            <v-img id="curtain"
+                   :src="notFoundImg"
+                   style="max-height: 100%; max-width: 100%; opacity: 0.25;"
+                   alt="resource image could not be loaded!"/>
+
+            <div id="backdrop"
+                 class="pa-4 text-body-1">Image preview could not be loaded! </div>
+          </div>
+
+
+        </v-col>
+
+        <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
+          <v-textarea v-if="isLongUrl"
+                      :label="isLink ? labels.url : labels.fileName"
+                      outlined
+                      auto-grow
+                      readonly
+                      dense
+                      hide-details
+                      :disabled="loading"
+                      :value="urlField"
+                      :error-messages="validationErrors.url"
+          />
+
+          <v-text-field v-if="!isLongUrl"
                         :label="isLink ? labels.url : labels.fileName"
                         outlined
-                        auto-grow
                         readonly
+                        dense
+                        hide-details
                         :disabled="loading"
                         :value="urlField"
                         :error-messages="validationErrors.url"
-            />
+          />
 
-            <v-text-field v-if="!isLongUrl"
-                          :label="isLink ? labels.url : labels.fileName"
-                          outlined
-                          readonly
-                          :disabled="loading"
-                          :value="urlField"
-                          :error-messages="validationErrors.url"
-            />
+        </v-col>
+      </v-row>
 
-          </v-col>
-        </v-row>
+      <v-row id="format"
+             no-gutters
+            class="pt-5">
 
-        <v-row no-gutters
-              class="pt-3">
-          <v-col class="pr-4">
-            <v-text-field
-              :label="labels.format"
-              outlined
-              readonly
-              :prepend-icon="isLink ? 'link' : 'insert_drive_file'"
-              :disabled="loading"
-              :value="format"
-            />
-          </v-col>
+        <v-col cols="12"
+                md="6"
+                class="pr-md-4">
 
-          <v-col class="pr-4">
-            <v-text-field
-              :label="labels.size"
-              outlined
-              readonly
-              :disabled="loading"
-              :value="sizeField"
-            />
-          </v-col>
+          <v-row no-gutters >
+            <v-col class="shrink pt-2">
+              <img class="customIcon"
+                   :src="fileFormatIcon"
+                   width="24"
+                   height="24"
+                   alt="file extension icon" />
+            </v-col>
 
-          <v-col class="pr-4">
-            <v-text-field
-              :label="labels.created"
-              outlined
-              readonly
-              :disabled="loading"
-              :value="readableCreated"
-            />
-          </v-col>
+            <v-col class="pl-2">
+              <v-text-field
+                  :label="labels.format"
+                  outlined
+                  dense
+                  hide-details="auto"
+                  :disabled="loading"
+                  @change="formatField = $event"
+                  :value="formatField"
+                  :error-messages="validationErrors.format"
+              />
+            </v-col>
+          </v-row>
+        </v-col>
 
-          <v-col >
-            <v-text-field
-              :label="labels.lastModified"
-              outlined
-              readonly
-              :disabled="loading"
-              :value="readableLastModified"
-            />
-          </v-col>
-        </v-row>
+        <v-col id="size"
+               cols="12"
+               md="6"
+               class="pt-2 pt-md-0">
 
-        <v-row no-gutters
-               class="pt-3 ">
-          <v-col v-html="openAccessDetails">
-          </v-col>
-        </v-row>
+          <v-row no-gutters >
+            <v-col class="shrink pt-2">
+              <img class="customIcon"
+                   :src="fileSizeIcon"
+                   width="24"
+                   height="24"
+                   alt="file size icon" />
+            </v-col>
 
-        <v-row no-gutters
-               class="pt-3 px-2"
-               align="center">
-          <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="isPublicField"
-                            :disabled="!editingRestrictingActive"
-                            :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
-                            :tooltipText="isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo"
-                            @clicked="isPublicField = !isPublicField"
-            />
-          </v-col>
+            <v-col class="pl-2" >
+              <v-text-field
+                  :label="labels.size"
+                  outlined
+                  dense
+                  hide-details="auto"
+                  :disabled="!isLink || loading"
+                  @change="sizeField = $event"
+                  :value="isLink ? sizeField : sizeFieldText"
+                  :error-messages="validationErrors.size"
+              />
+            </v-col>
+            <v-col class="pl-2">
+              <v-select :items="labels.sizeFormatList"
+                        v-model="sizeFormatField"
+                        label="File size format"
+                        outlined
+                        dense
+                        hide-details="auto"
+                        :disabled="!isLink || loading"
+                        :error-messages="validationErrors.sizeFormat"
+              />
+            </v-col>
+          </v-row>
 
-          <v-col>
-            {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo }}
-          </v-col>
 
-        </v-row>
+        </v-col>
+      </v-row>
 
-        <v-row v-if="isRestrictedField"
-               no-gutters
-               class="px-2 pt-3"
-               align="center">
+      <v-row id="dates"
+             no-gutters
+             align="center"
+             class="pt-3">
 
-          <v-col class="shrink pl-1 pr-4">
-            <BaseIconSwitch :active="hasAllowedUsersField"
-                            :disabled="!editingRestrictingActive"
-                            materialIconName="lock_person"
-                            :tooltipText="hasAllowedUsersField ? labels.isRestrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo"
-                            @clicked="hasAllowedUsersField = !hasAllowedUsersField"
-            />
-          </v-col>
+        <v-col cols="12"
+               md="6"
+               class="pr-md-4">
+          <v-text-field
+            :label="labels.created"
+            prepend-icon="date_range"
+            outlined
+            readonly
+            dense
+            hide-details
+            :disabled="loading"
+            :value="readableCreated"
+          />
+        </v-col>
 
-          <v-col>
-            {{ hasAllowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
-          </v-col>
-        </v-row>
+        <v-col cols="12"
+               md="6"
+                class="pt-2 pt-md-0">
+          <v-text-field
+            :label="labels.lastModified"
+            prepend-icon="update"
+            outlined
+            readonly
+            dense
+            hide-details
+            :disabled="loading"
+            :value="readableLastModified"
+          />
+        </v-col>
+      </v-row>
 
-        <v-row v-if="isRestrictedField && hasAllowedUsersField"
-               no-gutters
-               class="px-2 pt-3">
+      <v-row no-gutters
+             class="pt-5 ">
+        <v-col v-html="openAccessDetails">
+        </v-col>
+      </v-row>
 
-          <v-col>
-            <BaseUserPicker :users="envidatUserNameStrings"
-                            :pickerLabel="labels.isRestrictedAllowedUsersInfo"
-                            multiplePick
-                            prependIcon="key"
-                            userTagsCloseable
-                            :preSelected="preSelectedAllowedUsers"
-                            @removedUsers="changeAllowedUsers"
-                            @pickedUsers="changeAllowedUsers"
-            />
-          </v-col>
+      <v-row no-gutters
+             class="pt-3 px-2"
+             align="center">
+        <v-col class="shrink pl-1 pr-4">
+          <BaseIconSwitch :active="isPublicField"
+                          :disabled="!editingRestrictingActive"
+                          :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
+                          :tooltipText="isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo"
+                          @clicked="isPublicField = !isPublicField"
+          />
+        </v-col>
 
-        </v-row>
+        <v-col>
+          {{ isPublicField ? labels.isPublicInfo : labels.isNotPublicInfo }}
+        </v-col>
 
-<!--
-        <v-row>
-          <v-col>
-            getRestrictedObject: {{ getRestrictedJSONString() }}
-          </v-col>
-          <v-col>
-            allowedUsers: {{ allowedUsersField }}
-          </v-col>
-        </v-row>
--->
+      </v-row>
 
-        <v-row v-if="!editingRestrictingActive"
-               class="py-2">
-          <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning};`" >
-            {{ labels.editingRestrictingUnavailableInfo }}
-          </v-col>
-        </v-row>
+      <v-row v-if="isRestrictedField"
+             no-gutters
+             class="px-2 pt-3"
+             align="center">
 
-        <v-row no-gutters
-               class="pt-4"
-               justify="end">
-          <v-col class="shrink">
-            <!-- prettier-ignore -->
-            <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                 :loading="loading"
-                                 :buttonText="labels.createButtonText"
-                                 @clicked="saveResourceClick"/>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
+        <v-col class="shrink pl-1 pr-4">
+          <BaseIconSwitch :active="hasAllowedUsersField"
+                          :disabled="!editingRestrictingActive"
+                          materialIconName="lock_person"
+                          :tooltipText="hasAllowedUsersField ? labels.isRestrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo"
+                          @clicked="hasAllowedUsersField = !hasAllowedUsersField"
+          />
+        </v-col>
+
+        <v-col>
+          {{ hasAllowedUsersField ? labels.restrictedAllowedUsersInfo : labels.restrictedNotAllowedUsersInfo }}
+        </v-col>
+      </v-row>
+
+      <v-row v-if="isRestrictedField && hasAllowedUsersField"
+             no-gutters
+             class="px-2 pt-3">
+
+        <v-col>
+          <BaseUserPicker :users="envidatUserNameStrings"
+                          :pickerLabel="labels.isRestrictedAllowedUsersInfo"
+                          multiplePick
+                          prependIcon="key"
+                          userTagsCloseable
+                          :preSelected="preSelectedAllowedUsers"
+                          @removedUsers="changeAllowedUsers"
+                          @pickedUsers="changeAllowedUsers"
+          />
+        </v-col>
+
+      </v-row>
+
+      <v-row v-if="!editingRestrictingActive"
+             class="py-2">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning};`" >
+          {{ labels.editingRestrictingUnavailableInfo }}
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters
+             class="pt-4"
+             justify="end">
+        <v-col class="shrink">
+          <!-- prettier-ignore -->
+          <BaseRectangleButton :disabled="!saveButtonEnabled"
+                               :loading="loading"
+                               :buttonText="labels.createButtonText"
+                               @clicked="saveResourceClick"/>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-card>
 </template>
 
@@ -306,10 +370,11 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
+import fileIcon from '@/assets/icons/file.png';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
-  isObjectValid,
+  isObjectValidCheckAllProps,
 } from '@/factories/userEditingValidations';
 
 import { formatDateTimeToCKANFormat } from '@/factories/mappingFactory';
@@ -322,6 +387,7 @@ import {
   getRestrictedUserNames,
   getUserAutocompleteList,
 } from '@/factories/userEditingFactory';
+
 
 export default {
   name: 'EditResource',
@@ -372,6 +438,10 @@ export default {
     },
     size: {
       type: Number,
+      default: undefined,
+    },
+    sizeFormat: {
+      type: String,
       default: undefined,
     },
     restricted: {
@@ -460,25 +530,70 @@ export default {
         }
         return this.url;
       },
+/*
       set(value) {
         const valid = this.validateField('url', value);
 
         this.checkSaveButtonEnabled(valid);
       },
+*/
     },
     sizeField: {
       get() {
-        const size = this.size;
-        if (!size) {
-          return '';
+        return this.previews.size !== null ? this.previews.size : this.size;
+      },
+      set(value) {
+        const valid = this.validateField('size', value);
+
+        if (valid) {
+          this.previews.size = value;
         }
 
-        let sizeNumber = 0;
-        if (size) {
-          sizeNumber = Number.parseInt(size.toString(), 10);
+        this.checkSaveButtonEnabled(valid);
+      },
+    },
+    sizeFieldText: {
+      get() {
+        const size = this.sizeField;
+
+        const multiplier = this.getFileSizeFormatIndex(size);
+
+        return `${(size / 1024 ** multiplier).toFixed(2)}`;
+      },
+    },
+    sizeFormatField: {
+      get() {
+        if (this.isLink) {
+          return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.sizeFormat;
         }
 
-        return this.mixinMethods_formatBytes(sizeNumber);
+        return this.previews.sizeFormat !== null ? this.previews.sizeFormat : this.getFileSizeFormat(this.size);
+      },
+      set(value) {
+        const valid = this.validateField('sizeFormat', value);
+
+        if (valid) {
+          this.previews.sizeFormat = value;
+        }
+
+        this.checkSaveButtonEnabled(valid);
+      },
+    },
+    formatField: {
+      get() {
+        const pFormat = this.previews.format;
+
+        const formatString = pFormat || this.format || '';
+        return formatString.toLowerCase();
+      },
+      set(value) {
+
+        const valid = this.validateField('format', value);
+        if (valid) {
+          this.previews.format = value;
+        }
+
+        this.checkSaveButtonEnabled(valid);
       },
     },
     accessRestrictionLvl: {
@@ -541,28 +656,6 @@ export default {
 
       return users;
     },
-    sharedSecret() {
-      let sharedSecret;
-
-      if (this.restricted) {
-
-        if (typeof this.restricted === 'string') {
-
-          let restrictedObj = {};
-          try {
-            restrictedObj = JSON.parse(this.restricted);
-          } catch (e) {
-            console.error(`Error while parsing allowedUsers info: ${e}`);
-          }
-
-          sharedSecret = restrictedObj.sharedSecret || restrictedObj.shared_secret;
-        } else {
-          sharedSecret = this.restricted.sharedSecret || this.restricted.shared_secret;
-        }
-      }
-
-      return sharedSecret;
-    },
     hasAllowedUsersField: {
       get() {
         return this.previews.hasAllowedUsers !== null ? this.previews.hasAllowedUsers : !!this.allowedUsers;
@@ -600,11 +693,6 @@ export default {
         this.checkSaveButtonEnabled(true);
       },
     },
-    sharedSecretField: {
-      get() {
-        return this.previews.sharedSecret !== null ? this.previews.sharedSecret : this.sharedSecret;
-      },
-    },
     writeRestrictionLvl() {
       if (this.isPublicField) {
         return this.publicAccessLevelValue;
@@ -633,22 +721,6 @@ export default {
       const text = this.isPublicField ? this.labels.openAccessInstructions : this.labels.openAccessPreferedInstructions;
 
       return renderMarkdown(text);
-    },
-    restrictedDetails() {
-
-      if (this.hasAllowedUsersField && !this.isSameOrganizationField) {
-        return this.labels.isRestrictedAllowedUsersInfo;
-      }
-
-      if (this.hasAllowedUsersField && this.isSameOrganizationField) {
-        return `${this.labels.isRestrictedAllowedUsersInfo} and ${this.labels.isSameOrganizationInfo}`;
-      }
-
-      if (this.isSameOrganizationField) {
-        return this.labels.isSameOrganizationInfo;
-      }
-
-      return this.labels.isRestrictedInfo;
     },
     readableCreated() {
       return formatDate(this.created) || this.created;
@@ -687,8 +759,38 @@ export default {
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCE);
     },
+    fileFormatIcon() {
+      // isLink ? 'link' : 'insert_drive_file'
+      if (!this.$store) {
+        return this.fileIcon;
+      }
+
+      return this.mixinMethods_getIconFileExtension(this.formatField) || this.fileIcon;
+    },
   },
   methods: {
+    getFileSizeFormat(size) {
+      return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size) - 1];
+    },
+    getFileSizeFormatIndex(size) {
+      if (!size || size === 0) {
+        return null;
+      }
+
+      if (size < 1024) {
+        return 0;
+      }
+
+      let convertedSized = size / 1024;
+      let index = 0;
+
+      while(convertedSized > 1) {
+        convertedSized /= 1024;
+        index++;
+      }
+
+      return index;
+    },
     checkSaveButtonEnabled(validField) {
       if (!validField) {
         this.saveButtonEnabled = false;
@@ -697,20 +799,32 @@ export default {
 
       // not test the preview fields to ensure the content of both fields is valid
       // to show the save button
-      const descriptionAndNameValid = isObjectValid(['description', 'name'],
-        {
-          description: this.descriptionField,
-          name: this.resourceNameField,
-        },
-        this.validations, this.validationErrors);
+      const objectToValidate = {
+        description: this.descriptionField,
+        name: this.resourceNameField,
+        format: this.formatField,
+        size: this.sizeField || 0,
+        sizeFormat: this.sizeFormatField,
+      }
 
-      this.saveButtonEnabled = descriptionAndNameValid;
+      this.saveButtonEnabled = isObjectValidCheckAllProps(
+          objectToValidate,
+          this.validations, this.validationErrors);
     },
     getRestrictedJSONString() {
       const obj = {
-        allowedUsers: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
+        allowed_users: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
         level: this.writeRestrictionLvl,
-        sharedSecret: this.sharedSecretField || '',
+        shared_secret: '',
+      };
+
+      return JSON.stringify(obj);
+    },
+    getResourceSizeJSONString() {
+
+      const obj = {
+        size_value: this.isLink ? this.sizeField.toString() : '',
+        size_units: this.isLink ? this.sizeFormatField.toLowerCase() : '',
       };
 
       return JSON.stringify(obj);
@@ -725,6 +839,10 @@ export default {
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
         restricted: this.getRestrictedJSONString(),
+        format: this.formatField.toLowerCase(),
+        // don't set the "size" directly because this is done
+        // via the file upload
+        resourceSize: this.getResourceSizeJSONString(),
       };
 
       this.$emit('saveResource', newGenericProps);
@@ -738,7 +856,7 @@ export default {
       try {
         reader.onload = () => {
           const imageRefs = vm.$refs.filePreview;
-          const imageRef = imageRefs instanceof Array ? imageRefs[0] : imageRefs;
+          const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
           imageRef.src = reader.result;
         };
 
@@ -765,13 +883,10 @@ export default {
       );
     },
     clearPreviews() {
-      this.previews.name = null;
-      this.previews.description = null;
-      this.previews.restrictedLevel = null;
-      this.previews.hasAllowedUsers = null;
-      this.previews.allowedUsers = null;
-      this.previews.isSameOrganization = null;
-      this.previews.sharedSecret = null;
+      const keys = Object.keys(this.previews);
+      keys.forEach((key) => {
+        this.previews[key] = null;
+      });
     },
   },
   data: () => ({
@@ -782,7 +897,9 @@ export default {
       hasAllowedUsers: null,
       allowedUsers: null,
       isSameOrganization: null,
-      sharedSecret: null,
+      format: null,
+      size: null,
+      sizeFormat: null,
     },
     loadingImagePreview: false,
     imagePreviewError: null,
@@ -799,6 +916,7 @@ export default {
       created: 'Create at',
       lastModified: 'Last modified time',
       size: 'File size',
+      sizeFormatList: ['KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
       restricted: 'Access restrictions',
       openAccessInstructions: 'Resource is Open Access, great!',
@@ -817,10 +935,14 @@ export default {
     },
     saveButtonEnabled: false,
     fileSizeIcon,
+    fileIcon,
     validationErrors: {
       name: null,
       description: null,
       url: null,
+      format: null,
+      size: null,
+      sizeFormat: null,
     },
     publicAccessLevelValue: 'public',
     sameOrganizationAccessLevelValue: 'same_organization',
@@ -846,4 +968,9 @@ export default {
 
 #backdrop {  }
 #curtain {  }
+
+.customIcon {
+  opacity: 0.5;
+}
+
 </style>

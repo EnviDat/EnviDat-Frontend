@@ -34,7 +34,11 @@ import {
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
 
+const digitsOnly = (value) => /^\d+$/.test(value)
+
 const convertEmptyStringToNull = (value, originalValue) => originalValue === '' ? null : value;
+
+const convertToZero = (value) => Number.isNaN(value) ? 0 : value;
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -83,6 +87,15 @@ const metadataInEditingValidations = {
         .nullable()
         .transform(convertEmptyStringToNull)
         .min(20, 'Please write at least a minimal description with 20 characters.'),
+      format: yup.string()
+        .nullable()
+        .min(2, 'Format has to be at least 2 characters long.'),
+      size: yup.number('size must be a number')
+        .transform(convertToZero)
+        .test('empty-check', 'File size must be a number greater than 0', size => size !== 0)
+        .moreThan(0, 'File size be more than 0'),
+      sizeFormat: yup.string()
+        .required('Pick a file size'),
       url: yup.string().when('isLink', {
         is: true,
         then: yup.string()
@@ -275,6 +288,11 @@ export function isObjectValid(properties, objectToValidate, validations, errorOb
   }
 
   return true;
+}
+
+export function isObjectValidCheckAllProps(objectToValidate, validations, errorObject) {
+  const keys = Object.keys(objectToValidate);
+  return isObjectValid(keys, objectToValidate, validations, errorObject);
 }
 
 export function getUserOrganizationRoleMap(userId, organizations) {
