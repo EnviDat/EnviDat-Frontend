@@ -45,7 +45,7 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { format, formatISO, isValid, parse } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
 import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
@@ -862,3 +862,18 @@ export function parseDateStringToReadableFormat(dateString) {
   return formatDate(parsedDate);
 }
 
+export function mergeResourceSizeForFrontend(resource) {
+  const mergedResourceSize = {};
+
+  const isLink = resource.urlType !== 'upload';
+  const resourceSize = resource.resourceSize || resource.resource_size || null;
+
+  if (resourceSize) {
+    const resourceSizeObj = JSON.parse(resourceSize);
+
+    mergedResourceSize.size = isLink ? Number.parseFloat(resourceSizeObj.size_value) : resource.size;
+    mergedResourceSize.sizeFormat = isLink ? resourceSizeObj.size_units?.toUpperCase() : undefined;
+  }
+  
+  return mergedResourceSize;
+}

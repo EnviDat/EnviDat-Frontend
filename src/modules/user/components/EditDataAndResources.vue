@@ -129,9 +129,11 @@ import {
   METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mapState } from 'vuex';
+import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 export default {
   name: 'EditDataAndResources',
@@ -232,8 +234,18 @@ export default {
         userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
+      let mergedSize = {};
+      try {
+        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
+      } catch (e) {
+        console.log('mergeResourceSizeForFrontend failed:');
+        console.error(e);
+        // TODO Error tracking
+      }
+
       return {
         ...this.selectedResource,
+        ...mergedSize,
         userEditMetadataConfig,
       };
     },

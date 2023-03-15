@@ -31,7 +31,7 @@ import {
   localIdProperty,
 } from '@/factories/strategyFactory';
 
-import { cleanListForFrontend } from '@/factories/mappingFactory';
+import { cleanListForFrontend, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
 import userList from './testdata/user_list.json';
 
@@ -139,16 +139,19 @@ const userEditMetadataConfig = {
     },
     resource1: {
       ... metadataCards[0][0],
+      ...mergeResourceSizeForFrontend(metadataCards[0][0]),
       userEditMetadataConfig,
       envidatUsers,
     },
     resource2: {
       ...metadataCards[0][1],
+      ...mergeResourceSizeForFrontend(metadataCards[0][1]),
       userEditMetadataConfig,
       envidatUsers,
     },
     resource3: {
       ...metadataCards[2][0],
+      ...mergeResourceSizeForFrontend(metadataCards[2][0]),
       userEditMetadataConfig,
       envidatUsers,
     },
