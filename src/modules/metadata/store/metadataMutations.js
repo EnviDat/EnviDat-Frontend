@@ -64,7 +64,7 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
-import { enhanceMetadataFromExtras } from '@/factories/modeFactory';
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 
 
@@ -82,7 +82,7 @@ function enhanceMetadatas(store, datasets) {
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
     dataset = enhanceMetadataEntry(dataset, cardBGImgs, categoryCards);
-    dataset = enhanceMetadataFromExtras(SWISSFL_MODE, dataset);
+    dataset = enhanceMetadataWithModeExtras(SWISSFL_MODE, dataset);
 
     dataset = enhanceTags(dataset, categoryCards);
 

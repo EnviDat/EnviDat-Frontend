@@ -142,10 +142,10 @@ import {
   EDITMETADATA_DATA_RESOURCES,
   eventBus,
   SAVE_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
+
 } from '@/factories/eventBus';
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
 // import { initializeLocalResource } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {

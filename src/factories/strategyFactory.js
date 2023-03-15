@@ -2,19 +2,21 @@ import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/Text
 import DataPreviewIframe from '@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue';
 
 import {
-  OPEN_TEXT_PREVIEW,
   OPEN_DATA_PREVIEW_IFRAME,
+  OPEN_TEXT_PREVIEW,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_AUTHOR_PROPERTY,
   SELECT_EDITING_DATASET,
-  SELECT_EDITING_DATASET_PROPERTY,
   SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
-  SHOW_DATA_PREVIEW_PROPERTY,
 } from './eventBus';
 
 
 export const localIdProperty = 'localId';
+
+export const SELECT_EDITING_RESOURCE_PROPERTY = 'id';
+export const SHOW_DATA_PREVIEW_PROPERTY = 'previewUrl';
+export const SHOW_DATA_PREVIEW_KEY_PREFIX = 'resourcePreview';
+export const SELECT_EDITING_AUTHOR_PROPERTY = 'email';
+export const SELECT_EDITING_DATASET_PROPERTY = 'name';
 
 export const clickStrategies = [
   {
@@ -126,4 +128,26 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
   }
 
   return elementList;
+}
+
+export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
+  if (!metdataExtras || !resources) return null;
+
+  if (typeof metdataExtras === 'object'
+    && metdataExtras instanceof Array) {
+
+    const extrasKeys = Object.key(metdataExtras);
+
+    for (let i = 0; i < resources.length; i++) {
+      const resource = resources[i];
+      const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
+
+      if (extrasKeys.includes(enhanceKey)) {
+        resource[SHOW_DATA_PREVIEW_PROPERTY] = metdataExtras[enhanceKey];
+      }
+    }
+
+  }
+
+  return resources;
 }

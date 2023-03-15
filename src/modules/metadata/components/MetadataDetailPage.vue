@@ -105,8 +105,14 @@ import {
   createResources,
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
+
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
-import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
+
+import {
+  getConfigFiles,
+  getConfigUrls,
+  getFeatureCollectionFromGcNetStations,
+} from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -116,7 +122,10 @@ import {
   GCNET_PREPARE_DETAIL_CHARTS,
 } from '@/factories/eventBus';
 
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  enhanceResourcesWithMetadataExtras,
+} from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
@@ -477,6 +486,8 @@ export default {
         this.configInfos = getConfigFiles(this.resources.resources);
 
         enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
+
+        enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
       }
 
       this.$set(components.MetadataHeader, 'genericProps', this.header);

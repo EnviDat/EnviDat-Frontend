@@ -26,7 +26,7 @@ import {
 
 import { getCollaboratorCapacity, isUserGroupAdmin } from '@/factories/userEditingValidations';
 
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
 
 import { populateEditingComponents } from '@/factories/mappingFactory';
 
@@ -35,7 +35,7 @@ import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_RESOURCES,
   eventBus,
-  SELECT_EDITING_DATASET_PROPERTY,
+
 } from '@/factories/eventBus';
 
 import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';

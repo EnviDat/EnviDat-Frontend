@@ -18,7 +18,7 @@ import {
   INJECT_MAP_FULLSCREEN,
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
-  SHOW_DATA_PREVIEW_PROPERTY,
+
 } from '@/factories/eventBus';
 import { createLocation } from '@/factories/metaDataFactory';
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
@@ -27,6 +27,7 @@ import txtPreviewFile from './js/previewTextFile.txt';
 import stationsConfig from './testdata/stationsConfig.json';
 import gcnetDataset from './js/gcnetDataset';
 import stationParameters from './testdata/stationParameters.json'
+import { SHOW_DATA_PREVIEW_PROPERTY } from '@/factories/strategyFactory';
 
 const gcNetLocation = createLocation(gcnetDataset);
 const fileObjects = stationParameters.fileObjects;

@@ -17,7 +17,7 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
+
 } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
@@ -28,7 +28,7 @@ import EditResource from '@/modules/user/components/EditResource.vue';
 import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
-  localIdProperty,
+  localIdProperty, SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 import unFormatedMetadataCards from './js/metadata';
 
