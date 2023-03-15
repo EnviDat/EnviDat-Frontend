@@ -18,8 +18,8 @@ import {
   INJECT_MAP_FULLSCREEN,
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
-
 } from '@/factories/eventBus';
+
 import { createLocation } from '@/factories/metaDataFactory';
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 import txtPreviewFile from './js/previewTextFile.txt';
@@ -90,10 +90,7 @@ const loadGcNetCharts = () => {
 
 const loadDataPreview = () => {
   const url = 'http://pointclouds.s3-website-zh.os.switch.ch/20220321_Ramerenwald_Benchmark/vis/Ramerenwald_Benchmark_FP05/Ramerenwald_Benchmark_FP05.html';
-  eventBus.emit(OPEN_DATA_PREVIEW_IFRAME, {
-    previewProperty: SHOW_DATA_PREVIEW_PROPERTY,
-    url,
-  });
+  eventBus.emit(OPEN_DATA_PREVIEW_IFRAME, url);
 }
 
 const Template = (args, { argTypes }) => ({

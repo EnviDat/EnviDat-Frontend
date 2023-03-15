@@ -76,7 +76,11 @@ import {
 } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { getPreviewStrategy, getPreviewStrategyFromUrlExtension } from '@/factories/strategyFactory';
+import {
+  getPreviewStrategy,
+  getPreviewStrategyFromUrlExtension,
+  SHOW_DATA_PREVIEW_PROPERTY,
+} from '@/factories/strategyFactory';
 
 const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
 const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');
@@ -137,9 +141,9 @@ export default {
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
-    showDataPreviewIframe({ previewProperty, url }) {
+    showDataPreviewIframe(url) {
 
-      const previewStrat = getPreviewStrategy(previewProperty);
+      const previewStrat = getPreviewStrategy(SHOW_DATA_PREVIEW_PROPERTY);
       this.currentComponent = previewStrat.component;
       this.genericProps = { url };
 

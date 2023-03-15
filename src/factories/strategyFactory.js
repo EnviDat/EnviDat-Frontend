@@ -108,19 +108,18 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
   for (let i = 0; i < elementList.length; i++) {
     const entry = elementList[i];
-    const entryPreviewProperty = entry.previewUrl ? SHOW_DATA_PREVIEW_PROPERTY : previewProperty
 
     let strat = null;
-    if (entriesAreResources && entryPreviewProperty === 'url') {
+    if (entriesAreResources && previewProperty === 'url') {
       // get the click strategy based on the url file extension
       strat = getPreviewStrategyFromUrlExtension(entry.url);
     } else {
-      strat = getPreviewStrategy(entryPreviewProperty);
+      strat = getPreviewStrategy(previewProperty);
     }
 
     if (strat) {
       entry.openEvent = strat.openEvent;
-      const idValue = entry[entryPreviewProperty];
+      const idValue = entry[previewProperty];
       entry.openProperty = idValue || entry[strat.fallbackProperty];
       entry.openButtonIcon = strat.icon;
       entry.openButtonTooltip = strat.tooltip;
@@ -136,18 +135,20 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
   if (typeof metdataExtras === 'object'
     && metdataExtras instanceof Array) {
 
-    const extrasKeys = Object.keys(metdataExtras);
-
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
       const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
 
-      if (extrasKeys.includes(enhanceKey)) {
-        resource[SHOW_DATA_PREVIEW_PROPERTY] = metdataExtras[enhanceKey];
+      const matches = metdataExtras.filter((entry) => entry.key === enhanceKey);
+
+      if (matches.length > 0) {
+        resource[SHOW_DATA_PREVIEW_PROPERTY] = matches[0].value;
       }
     }
 
   }
+
+  enhanceElementsWithStrategyEvents(resources, SHOW_DATA_PREVIEW_PROPERTY);
 
   return resources;
 }
