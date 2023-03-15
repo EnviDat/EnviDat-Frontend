@@ -340,7 +340,7 @@ export default {
       this.isFallback = isFallback;
 
       // 2 weeks for the recent data, 2 years for historical
-      const dayRange = isFallback ? 45 : 14;
+      const dayRange = isFallback ? 730 : 14;
       const apiUrl = addStartEndDateUrl(url, dayRange);
 
       axios

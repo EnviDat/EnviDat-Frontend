@@ -128,8 +128,6 @@ import {
 } from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-import DetailChartsList from '@/modules/metadata/components/GC-Net/DetailChartsList.vue';
-import MicroChartList from '@/modules/metadata/components/GC-Net/MicroChartList.vue';
 
 import { rewind as tRewind } from '@turf/turf';
 
@@ -142,7 +140,6 @@ import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
-import MetadataMapFullscreen from './Geoservices/MetadataMapFullscreen.vue';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
@@ -577,9 +574,11 @@ export default {
       });
     },
     async injectMicroCharts() {
+      const MicroChartList = (await import ('@/modules/metadata/components/GC-Net/MicroChartList.vue')).default;
+
       eventBus.emit(
         GCNET_INJECT_MICRO_CHARTS, {
-          component: this.$options.components.MicroChartList,
+          component: MicroChartList,
           config: this.stationsConfig,
         });
     },
@@ -735,9 +734,6 @@ export default {
     TwoColumnLayout,
     MetadataAuthors,
     MetadataGeo,
-    DetailChartsList,
-    MicroChartList,
-    MetadataMapFullscreen,
   },
   data: () => ({
     PageBGImage: 'app_b_browsepage',
