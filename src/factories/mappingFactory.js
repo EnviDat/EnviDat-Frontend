@@ -669,7 +669,7 @@ function populateEditingResources(commit, snakeCaseJSON) {
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
   const resources = cleanListForFrontend(resourceData.resources, EDITMETADATA_DATA_RESOURCE);
 
-  for (let i = 0; i < ; i++) {
+  for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
   }
 
