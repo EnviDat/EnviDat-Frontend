@@ -1,28 +1,29 @@
 <template>
   <v-tooltip bottom
-              id="BaseIconSwitch">
+              id="BaseIconSwitch" >
 
     <template v-slot:activator="{ on }">
 
       <div v-on="on"
-           style="position: relative; ">
+           style="position: relative; width: 44px; " >
 
         <div class="authorSwitch"
-             :style="active ? 'left: -2px;' : 'left: 18px;'"
-             @click="$emit('clicked', $event)"
+             :class="disabled ? '': 'authorSwitchClickable'"
+             :style="active ? 'left: -5px;' : 'left: 21px;'"
+             @click="emitClick"
              >
           <v-icon v-if="materialIconName"
                   :color="active ? 'primary' : 'gray'"
-                  style="top: -4px; left: -2px;">
+                  style="top: 0; left: 1px;">
             {{ materialIconName }}
           </v-icon>
 
         </div>
 
         <div class="authorSwitchHover"
-             :style="active ? 'left: -7px;' : 'left: 13px;'" />
+             :style="active ? 'left: -10px;' : 'left: 16px;'" />
 
-        <div style="width: 38px; height: 14px; border-radius: 8px;"
+        <div style="width: 44px; height: 14px; border-radius: 8px;"
              :style="`background-color: ${bgColor};`"
               class="" />
 
@@ -57,6 +58,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     materialIconName: String,
     tooltipText: String,
   },
@@ -64,24 +69,18 @@ export default {
     hoverBadge: false,
   }),
   computed: {
-    height() {
-      if (this.overwriteHeight) {
-        return this.overwriteHeight;
-      }
-
-      let height = 36;
-
-      if (this.isSmall) {
-        height = 28;
-      } else if (this.isElevated) {
-        height = 40;
-      }
-
-      return height;
-    },
     bgColor() {
       const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
       return this.active ? secondary : 'lightgray';
+    },
+  },
+  methods: {
+    emitClick(event) {
+      if (this.disabled){
+        return;
+      }
+      
+      this.$emit('clicked', event);
     },
   },
 };
@@ -95,7 +94,7 @@ export default {
   box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
 }
 
-.authorSwitch:hover {
+.authorSwitchClickable:hover {
   cursor: pointer;
 }
 
@@ -104,9 +103,9 @@ export default {
   transition: 0.3s all ease-in-out;
   border-radius: 50%;
   background-color: #fff;
-  top: -3px;
-  height: 20px;
-  width: 20px;
+  top: -6px;
+  height: 26px;
+  width: 26px;
 }
 
 .authorSwitch:hover + .authorSwitchHover {
@@ -115,10 +114,10 @@ export default {
 
 .authorSwitchHover {
   visibility: hidden;
-  top: -8px;
+  top: -11px;
   background-color: rgba(33, 33, 33, 0.2);
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   z-index: 0;
 }
 

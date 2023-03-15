@@ -11,15 +11,22 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
-import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
+
 
 import actions from './userActions';
+import editActions from './editActions';
+import createActions from './createActions';
+
 import mutations from './userMutations';
+import editMutations from './editMutations';
+import createMutations from './createMutations';
 
 const userState = {
   error: null,
@@ -45,19 +52,24 @@ const userState = {
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
   metadataInEditing: getEmptyMetadataInEditingObject(),
-  selectedResourceId: '',
-  selectedAuthorId: '',
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadLoading: false,
+  uploadFileId: null,
+  uploadKey: null,
+  uploadResource: null,
+  uploadMetadataId: null,
+  envidatUsers: null,
+  envidatUsersError: null,
 };
+
 
 export const user = {
   namespaced: true,
   state: userState,
   getters: {
-    resources: state =>
-      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
+    resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
     authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
     getMetadataEditingObject: state => key => state.metadataInEditing[key],
     filteredDatasets: (state, getters) => {
@@ -68,10 +80,7 @@ export const user = {
         for (let i = 0; i < content.length; i++) {
           const entry = content[i];
 
-          if (
-            entry.tags &&
-            tagsIncludedInSelectedTags(entry.tags, state.filteringTagNames)
-          ) {
+          if (entry.tags && tagsIncludedInSelectedTags(entry.tags, state.filteringTagNames)) {
             filteredContent.push(entry);
           }
         }
@@ -79,7 +88,19 @@ export const user = {
 
       return filteredContent;
     },
+    uploadFileId: state => state.uploadFileId,
+    uploadResource: state => state.uploadResource,
+    uploadResourceId: state => state.uploadResource.id,
+    uploadMetadataId: state => state.uploadMetadataId,
   },
-  mutations,
-  actions,
+  mutations: {
+    ...mutations,
+    ...editMutations,
+    ...createMutations,
+  },
+  actions: {
+    ...actions,
+    ...editActions,
+    ...createActions,
+  },
 };

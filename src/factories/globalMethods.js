@@ -205,19 +205,20 @@ export default {
     /**
      * Loads the path to the icon image representing a file extension
      *
-     * @param {*} iconName
-     * @return {string} relative file path to the icon image file
+     * @param {*} fileExtension
+     * @return {string|null} relative file path to the icon image file
      */
     mixinMethods_getIconFileExtension(fileExtension) {
       const ext = fileExtension.toLowerCase();
       const iconKey = `./file${ext}.png`;
 
-      return this.$store.getters.iconImages[iconKey];
+      const iconString = this.$store.getters.iconImages[iconKey];
+      return iconString || null;
     },
     /**
      * Loads the file path to given images into a Map.
      *
-     * @param {Map<string, string>} imgs imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
+     * @param {Map<string, string>} imgPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
      * @param {String} checkForString
      *
      * @return {Map<string, string>} Image cache
@@ -295,24 +296,6 @@ export default {
       }
 
       return this.genericProps[propName] ? this.genericProps[propName] : defaultValue;
-    },
-    /**
-     *
-     * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-     * @param {*} a
-     * @param {*} b
-     */
-    mixinMethods_formatBytes(a, b = 2) {
-      /* eslint-disable prefer-template */
-      /* eslint-disable no-restricted-properties */
-      if (a === 0) return '0 Bytes';
-
-      const c = 1024;
-
-      const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      const f = Math.floor(Math.log(a) / Math.log(c));
-
-      return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};

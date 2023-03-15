@@ -1,5 +1,6 @@
 <template>
-  <v-card id="EditPasteResourceUrl" class="pa-4" flat>
+  <v-card id="EditResourcePasteUrl"
+          class="pa-4" >
     <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
@@ -22,6 +23,7 @@
             prepend-icon="link"
             clearable
             clear-icon="close"
+            :error-messages="validationErrors.url"
             @input="checkCreateButtonDisabled"
           />
         </v-col>
@@ -52,28 +54,40 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import * as yup from 'yup';
+import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 export default {
-  name: 'EditPasteResourceUrl',
+  name: 'EditResourcePasteUrl',
   props: {
     genericProps: Object,
   },
   computed: {},
   methods: {
     checkCreateButtonDisabled() {
-      // this.createButtonDisabled = !this.urlRegex.test(this.url);
+
+      const urlSchema = yup.object({
+        url: yup.string()
+            .url('Please enter a valid URL.'),
+      });
+      const objToValidate = { url: this.url };
+
+      this.createButtonDisabled = !isObjectValidCheckAllProps(objToValidate, urlSchema, this.validationErrors);
     },
     createButtonClick() {
-      this.$emit('createResources', this.url);
+      this.$emit('createUrlResources', this.url);
     },
   },
   data: () => ({
     url: '',
     labels: {
       title: 'Create Resource From Link',
-      instructions: 'Paste a link to create a new resource.',
+      instructions: 'Paste a link to create a new resource. Make sure add the file format and size afterwards.',
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
+    },
+    validationErrors: {
+      url: null,
     },
     createButtonDisabled: true,
   }),

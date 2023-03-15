@@ -45,7 +45,7 @@ import {
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
-
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 
 export function updateEditingArray(
@@ -59,8 +59,7 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[localIdProperty] === newElement[localIdProperty]
-                || el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -80,16 +79,14 @@ export function updateEditingArray(
   elementList.unshift(newElement);
 }
 
-export function updateResource(store, state, payload) {
-  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
-  const newRes = payload.data;
+export function updateResource(store, state, newRes) {
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
-export function updateAuthors(store, state, payload) {
+export function updateAuthors(store, state, newAuthors) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
-  const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors, 'email');
 }
@@ -147,6 +144,22 @@ export function selectForEditing(
 
   setSelected(store, elementList, id, propertyToCompare, true);
 }
+
+export function getSelectedElement(elementList) {
+  let selectedRes = null;
+  const res = elementList;
+
+  if (res?.length > 0) {
+    const selected = res.filter(r => r.isSelected);
+
+    if (selected.length > 0) {
+      selectedRes = selected[0];
+    }
+  }
+
+  return selectedRes;
+}
+
 
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
@@ -409,4 +422,53 @@ export function deleteEmptyObject(index, localObjects) {
 
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
+}
+// const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
+// eslint-disable-next-line no-useless-escape
+const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+export function getUserAutocompleteList(userList) {
+
+  const cleanedList = userList.filter((user) => {
+
+    const match = user.name.match(exludeRegEx);
+
+    if (match && match[0] && match[0].length === user.name?.length) {
+      return false;
+    }
+
+    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullname?.toLowerCase() === 'admin');
+  });
+
+
+  return cleanedList.map((user) => user.fullname || user.display_name);
+}
+
+export function getRestrictedUserNames(allowedUsersString, envidatUsers) {
+  if (!allowedUsersString || !envidatUsers) {
+    return [];
+  }
+
+  const splits = allowedUsersString.split(',');
+  let usersString;
+  if (splits.length > 0) {
+    usersString = splits;
+  } else {
+    usersString = [allowedUsersString]
+  }
+
+  const allowedUsers = envidatUsers.filter((user) => usersString.includes(user.name));
+
+  return allowedUsers.map((user) => user.fullname || user.display_name);
+}
+
+export function getAllowedUsersString(userFullNameArray, envidatUsers) {
+  if (!userFullNameArray || !envidatUsers) {
+    return [];
+  }
+
+  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullname || user.display_name));
+
+  const allowedUsers = allowedUserObjs.map((user) => user.name);
+
+  return allowedUsers.join(',');
 }

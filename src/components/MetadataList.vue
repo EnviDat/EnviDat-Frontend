@@ -528,8 +528,7 @@ export default {
 
         if (res.restricted !== undefined
         && (res.restricted.allowed_users !== undefined
-            || (res.restricted.level !== undefined
-                && res.restricted.level !== 'public'))) {
+            || res.restricted.level !== 'public')) {
           return true;
         }
       }

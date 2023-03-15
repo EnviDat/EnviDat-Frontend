@@ -14,7 +14,6 @@ import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import { createCitation } from '@/factories/metaDataFactory';
 
 import metadata from './js/metadata';
-import citationTesting from './js/citationTesting';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 

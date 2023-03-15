@@ -5,7 +5,7 @@
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
                     :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
-                    style="position: absolute; top: 0px; right: 0px; z-index: 2;"
+                    style="position: absolute; top: 0; right: 0; z-index: 2;"
                     material-icon-name="close"
                     icon-color="primary"
                     color="primary"
@@ -130,6 +130,7 @@ import {
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { getAuthorName } from '@/factories/authorFactory';
 
 
 export default {
@@ -237,14 +238,15 @@ export default {
       this.checkSaveButtonEnabled();
 
       // if any changes the name was made make sure the changes are part of the fullName
-      const fistN = property === 'firstName' ? value : this.firstNameField;
-      const lastN = property === 'lastName' ? value : this.lastNameField;
+      const firstName = property === 'firstName' ? value : this.firstNameField;
+      const lastName = property === 'lastName' ? value : this.lastNameField;
+      const fullName = getAuthorName({ firstName, lastName });
 
       // eslint-disable-next-line no-unused-vars
       const newAuthor = {
         ...this.$props,
         [property]: value,
-        fullName: `${fistN.trim()} ${lastN.trim()}`,
+        fullName,
       };
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {

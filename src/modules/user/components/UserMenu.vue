@@ -33,12 +33,15 @@
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
 import {
-  ACTION_USER_SIGNOUT,
-  FETCH_USER_DATA,
+  ACTION_GET_USER_CONTEXT,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_USER_SIGNOUT, ACTION_USER_SIGNOUT_REVOKE_TOKEN,
+  SIGNIN_USER_ACTION,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
-import { USER_SIGNOUT_PATH } from '@/router/routeConsts';
+import { LANDING_PATH, USER_SIGNOUT_PATH } from '@/router/routeConsts';
+import { mapState } from 'vuex';
 
 export default {
   name: 'UserMenu',
@@ -54,18 +57,30 @@ export default {
     UserAvatar,
   },
   computed: {
+    ...mapState(['config']),
     nameInitials() {
       return getNameInitials(this.userObject);
     },
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
+    },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
+    },
   },
   methods: {
-    menuClick(item) {
+    async menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-          action: ACTION_USER_SIGNOUT,
+        const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+
+        await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+          action,
           commit: true,
           mutation: USER_SIGNOUT,
         });
+
+        await this.$router?.push(LANDING_PATH);
+
         return;
       }
 

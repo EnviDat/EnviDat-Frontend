@@ -56,6 +56,25 @@ export const BaseIconSwitches = () => ({
     </v-col>
 
     <v-col cols="12">
+      BaseIconSwitch with lock icon
+    </v-col>
+
+    <v-col class="shrink">
+      <BaseIconSwitch :active="true"
+                      materialIconName="lock"
+                      tooltipText="access restricted" />
+    </v-col>
+
+    <v-col cols="12">
+      BaseIconSwitch with lock open icon
+    </v-col>
+
+    <v-col class="shrink">
+      <BaseIconSwitch materialIconName="lock_open"
+                      tooltipText="access public" />
+    </v-col>
+    
+    <v-col cols="12">
       BaseIconSwitch active clickable
     </v-col>
 
@@ -71,10 +90,10 @@ export const BaseIconSwitches = () => ({
     </v-col>
 
     <v-col class="shrink">
-      <BaseIconSwitch :active="active"
+      <BaseIconSwitch :active="active2"
                       materialIconName="account_circle"
                       tooltipText="Author search tool tip"
-                      @clicked="active = !active"/>
+                      @clicked="active2 = !active2"/>
     </v-col>
     
     <v-col cols="12">
@@ -85,13 +104,14 @@ export const BaseIconSwitches = () => ({
       <BaseIconSwitch :active="active"
                       materialIconName="info"
                       tooltipText="notification tool tip"
-                      @clicked="active = !active"/>
+                      @clicked="active2 = !active2"/>
     </v-col>
 
   </v-row>
   `,
   data: () => ({
     active: false,
+    active2: false,
   }),
 })
 

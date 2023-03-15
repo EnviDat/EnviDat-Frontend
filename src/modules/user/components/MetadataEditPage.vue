@@ -63,7 +63,10 @@ import {
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_AUTHOR_DATACREDIT, AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_AUTHOR_DATACREDIT,
+  AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_DATA_RESOURCE,
 } from '@/factories/eventBus';
 
 import {
@@ -346,7 +349,11 @@ export default {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
     },
     saveResource(newRes) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+      // this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+      this.editComponentsChanged({
+        object: EDITMETADATA_DATA_RESOURCE,
+        data: newRes,
+      });
     },
     saveAuthor(newAuthor) {
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
@@ -464,19 +471,19 @@ export default {
       step.error = null;
       return true;
     },
-    showSnackMessage(status, statusMessage, message) {
+    showSnackMessage({ status, statusMessage, details }) {
 
       const id = this.currentEditingContent?.id || null;
       const name = this.currentEditingContent?.name || null;
 
       if (id && name) {
         statusMessage = statusMessage.replace(id, `"${name}"`);
-        message = message.replace(id, `"${name}"`);
+        details = details.replace(id, `"${name}"`);
       }
 
       const predefinedErrors = this.backendErrorList[status];
       this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${statusMessage} ${message} ${predefinedErrors?.details || ''}`;
+      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details || ''}`;
 
       this.showSnack = true;
     },
@@ -496,7 +503,8 @@ export default {
     },
     authorsMap() {
 
-      if (this.authorsMap && Object.keys(this.authorsMap).length > 0) {
+      if (this.currentEditingContent
+        && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
 
         const { categoryCards } = this.$store.getters;
 
@@ -534,6 +542,7 @@ export default {
       [EDITMETADATA_ORGANIZATION]: METADATA_EDITING_PATCH_DATASET_ORGANIZATION,
       [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
       [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
+      [EDITMETADATA_DATA_RESOURCE]: METADATA_EDITING_SAVE_RESOURCE,
     },
   }),
 };

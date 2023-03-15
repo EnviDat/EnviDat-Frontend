@@ -165,8 +165,8 @@ import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA,
-  USER_NAMESPACE,
+  SIGNIN_USER_ACTION,
+  USER_NAMESPACE, ACTION_GET_USER_CONTEXT_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -473,9 +473,11 @@ export default {
 
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
-          action: ACTION_GET_USER_CONTEXT,
+          action,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
@@ -528,6 +530,9 @@ export default {
     },
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
+    },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){

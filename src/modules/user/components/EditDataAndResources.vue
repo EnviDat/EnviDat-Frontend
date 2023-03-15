@@ -3,126 +3,79 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col>
+          <v-col v-if="resourceUploadActive" >
             <!-- prettier-ignore -->
-            <!-- <EditResource v-bind="selectedResource"
-                               @closeClicked="catchEditResourceClose"
-                               @saveResource="catchSaveResourceClose"
-                               @triggerValidateField="validateField"
-                               :validationErrors="validationErrors" /> -->
+            <EditResource v-bind="editResourceObject"
+                          @closeClicked="catchEditResourceClose"
+                          @saveResource="catchSaveResourceClose"
+                          @previewImageClicked="showFullScreenImage"
+            />
+          </v-col>
 
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Edit Selected Resource</div>
-                  </v-col>
-                </v-row>
+          <v-col v-if="!resourceUploadActive" >
+            <EditResourceRedirect title="Edit Selected Resource"
+                                  :text="editResourceRedirectText"
+                                  buttonText="Edit Resources"
+                                  :buttonUrl="linkEditResourceCKAN"
+            >
+              <BaseRectangleButton
+                  buttonText="Deselect Resource"
+                  color="warning"
+                  @clicked="catchEditResourceClose"
+              />
 
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon
-                      color="secondary"
-                      style="animation: progress-circular-rotate 3s linear infinite"
-                      x-large
-                      >settings</v-icon
-                    >
-                  </v-col>
+            </EditResourceRedirect>
 
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Editing metadata and uploading resources is still under
-                    construction.
-                    <br />
-                    Please edit resources via the legacy website by clicking on
-                    the button below.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters class="pt-6">
-                  <v-col class="pr-2 text-left">
-                    <BaseRectangleButton
-                      buttonText="Edit Resources"
-                      color="secondary"
-                      :url="linkEditResourceCKAN"
-                    />
-                  </v-col>
-
-                  <v-col class="pr-2 text-right">
-                    <BaseRectangleButton
-                      buttonText="Deselect Resource"
-                      color="error"
-                      @clicked="catchEditResourceClose"
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
           </v-col>
         </v-row>
 
         <v-row v-if="!selectedResource">
-          <v-col>
-            <!-- <v-card class="pa-0">
-              <EditDropResourceFiles @createResources="createResourceFromFiles" />
+          <!--
+                    <v-col cols="12">
+                      <EditMultiDropResourceFiles @createResources="createResourceFromFiles" />
+                    </v-col>
+          -->
 
-              <EditPasteResourceUrl @createResources="createResourceFromUrl" />
-            </v-card> -->
-
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Add New Resource</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-                  <v-col cols="1">
-                    <v-icon
-                      color="secondary"
-                      style="animation: progress-circular-rotate 3s linear infinite"
-                      x-large
-                      >settings</v-icon
-                    >
-                  </v-col>
-
-                  <v-col class="text-h5" cols="11">
-                    Coming Soon!
-                  </v-col>
-
-                  <v-col class="pt-2 text-body-1">
-                    Adding new resources is under construction.
-                    <br />
-                    Please add resources via the legacy website by clicking on
-                    the button below.
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters class="pt-6" justify="end">
-                  <BaseRectangleButton
-                    buttonText="Add Resources"
-                    color="secondary"
-                    :url="linkAddNewResourcesCKAN"
-                  />
-                </v-row>
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
+          <v-col v-if="resourceUploadActive"
+                 cols="12">
+            <EditDropResourceFiles :metadataId="metadataId" />
+<!--
+            No need to listen to events from the component, events are emitted from uppy directly
+-->
           </v-col>
+
+          <v-col v-if="resourceUploadActive"
+                 cols="12">
+            <EditResourcePasteUrl @createUrlResources="createResourceFromUrl"/>
+          </v-col>
+
+          <v-col v-if="!resourceUploadActive"
+                 cols="12">
+            <EditResourceRedirect title="Add New Resource"
+                                  :text="addResourceRedirectText"
+                                  buttonText="Add Resources"
+                                  :buttonUrl="linkAddNewResourcesCKAN"
+            />
+          </v-col>
+
         </v-row>
       </v-col>
 
       <v-col cols="6">
-        <EditMetadataResources v-bind="metadataResourcesGenericProps" />
+        <EditMetadataResources v-bind="metadataResourcesGenericProps"/>
       </v-col>
     </v-row>
+
+    <v-snackbar
+        :value="!!uploadProgessText"
+        bottom
+        elevation="24"
+    >
+      <v-icon color="highlight">checkmark</v-icon>
+      {{ uploadProgessText }}
+
+    </v-snackbar>
+
   </v-container>
 </template>
 
@@ -136,45 +89,73 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+
 import {
   CANCEL_EDITING_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   eventBus,
   SAVE_EDITING_RESOURCE,
-
+  UPLOAD_ERROR,
+  UPLOAD_STATE_RESOURCE_UPDATED,
+  UPLOAD_STATE_UPLOAD_COMPLETED,
+  UPLOAD_STATE_UPLOAD_PROGRESS,
+  UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
+
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
-import { enhanceElementsWithStrategyEvents, SELECT_EDITING_RESOURCE_PROPERTY } from '@/factories/strategyFactory';
-// import { initializeLocalResource } from '@/factories/metaDataFactory';
+
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
 } from '@/factories/userEditingValidations';
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
-// import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-// import EditPasteResourceUrl from '@/modules/user/components/EditPasteResourceUrl.vue';
-// import EditResource from '@/modules/user/components/EditResource.vue';
+import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
+// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
+import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
+import EditResource from '@/modules/user/components/EditResource.vue';
+import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
+
+import {
+  getUppyInstance,
+  subscribeOnUppyEvent,
+  unSubscribeOnUppyEvent,
+  createNewResourceForUrl,
+} from '@/factories/uploadFactory';
+
+import {
+  ACTION_GET_USER_LIST,
+  FETCH_USER_DATA, GET_USER_LIST,
+  METADATA_CREATION_RESOURCE,
+  METADATA_EDITING_SELECT_RESOURCE,
+  USER_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+
+import { getSelectedElement } from '@/factories/userEditingFactory';
+
+import { mapState } from 'vuex';
+import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 export default {
   name: 'EditDataAndResources',
   components: {
     EditMetadataResources,
-    // EditDropResourceFiles,
-    // EditPasteResourceUrl,
-    // EditResource,
-    BaseRectangleButton,
+    EditDropResourceFiles,
+    // EditMultiDropResourceFiles,
+    EditResourcePasteUrl,
+    EditResource,
+    EditResourceRedirect,
   },
   props: {
     resources: {
       type: Array,
       default: () => [],
     },
+/*
     metadataId: {
       type: String,
       default: '',
     },
+*/
     loading: {
       type: Boolean,
       default: false,
@@ -203,27 +184,36 @@ export default {
       type: String,
       default: '',
     },
+    userEditMetadataConfig: {
+      type: Object,
+      default: undefined,
+    },
   },
   mounted() {
-    // Add editing button to resource card
-    if (Array.isArray(this.resources) && this.resources.length > 0) {
-      enhanceElementsWithStrategyEvents(
-        this.resources,
-        SELECT_EDITING_RESOURCE_PROPERTY,
-        true,
-      );
-    }
+    subscribeOnUppyEvent('upload', this.uploadStarted);
+    subscribeOnUppyEvent('progress', this.uploadProgress);
+    subscribeOnUppyEvent('complete', this.uploadCompleted);
+    subscribeOnUppyEvent('error', this.uploadError);
+
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    unSubscribeOnUppyEvent('upload', this.uploadStarted);
+    unSubscribeOnUppyEvent('progress', this.uploadProgress);
+    unSubscribeOnUppyEvent('complete', this.uploadCompleted);
+    unSubscribeOnUppyEvent('error', this.uploadError);
+  },
   computed: {
-    selectedName() {
-      return this.selectedResource.name;
+    ...mapState(['config']),
+    ...mapState(USER_NAMESPACE, ['envidatUsers']),
+    resourceUploadActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
+      }
+
+      return this.userEditMetadataConfig?.resourceUploadActive || false;
     },
-    selectedDescription() {
-      return this.selectedResource.name;
-    },
-    selectedUrl() {
-      return this.selectedResource.name;
+    metadataId() {
+      return this.$route?.params?.metadataid || null;
     },
     metadataResourcesGenericProps() {
       return {
@@ -235,19 +225,32 @@ export default {
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
-    selectedResource() {
-      let selectedRes = null;
-      const res = this.resources;
+    editResourceObject() {
+      let userEditMetadataConfig;
 
-      if (res?.length > 0) {
-        const selected = res.filter(r => r.isSelected);
-
-        if (selected.length > 0) {
-          selectedRes = selected[0];
-        }
+      if (this.$store) {
+        userEditMetadataConfig = this.config?.userEditMetadataConfig;
+      } else {
+        userEditMetadataConfig = this.userEditMetadataConfig;
       }
 
-      return selectedRes;
+      let mergedSize = {};
+      try {
+        mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
+      } catch (e) {
+        console.log('mergeResourceSizeForFrontend failed:');
+        console.error(e);
+        // TODO Error tracking
+      }
+
+      return {
+        ...this.selectedResource,
+        ...mergedSize,
+        userEditMetadataConfig,
+      };
+    },
+    selectedResource() {
+      return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
@@ -262,75 +265,205 @@ export default {
     },
   },
   methods: {
-    /*
-    createResourceFromUrl(url) {
-      // console.log(`createResourceFromUrl ${url}`);
-
-      const metadataId = this.getMetadataId();
-
-      this.initResource(metadataId, null, url);
-    },
-    createResourceFromFiles(files) {
-      // console.log(`createResourceFromFiles ${files}`);
-      const metadataId = this.getMetadataId();
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        this.initResource(metadataId, file, null, i === files.length - 1);
+    async loadEnvidatUsers() {
+      if (!this.envidatUsers) {
+        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+          {
+            action: ACTION_GET_USER_LIST,
+            body: {
+              id: this.user.id,
+              include_datasets: true,
+            },
+            commit: true,
+            mutation: GET_USER_LIST,
+          });
       }
     },
-    getMetadataId() {
-      const metadataId =
-        this.metadataId || `local_MetadataId_${this.localResCounter}`;
-      this.localResCounter++;
-      return metadataId;
+    uploadStarted({ id, fileIDs }) {
+      // data object consists of `id` with upload ID and `fileIDs` array
+      // with file IDs in current upload
+      // data: { id, fileIDs }
+/*
+      console.log(`Starting upload ${id} for files ${fileIDs}`);
+*/
+
+      this.uploadProgessText = 'Starting upload file';
+      this.uploadProgressIcon = 'check_box_outline_blank';
+
+      eventBus.emit(UPLOAD_STATE_UPLOAD_STARTED, { id: UPLOAD_STATE_UPLOAD_STARTED });
     },
-    initResource(metadataId, file, url, autoSelect = true) {
-      const newRes = initializeLocalResource(metadataId, file, url);
+    uploadProgress(progress) {
+      // console.log(`upload progress: ${progress}`);
+/*
+      this.uploadProgessText = `upload progress: ${progress}`;
+      this.uploadProgressIcon = 'check';
+*/
 
-      enhanceElementsWithStrategyEvents(
-        [newRes],
-        SELECT_EDITING_RESOURCE_PROPERTY,
-        true,
-      );
+      eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
+    },
+    async uploadCompleted(result) {
+      const oks = result.successful?.length || 0;
+      const fails = result.failed?.length || 0;
 
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_RESOURCES,
-        data: newRes,
+/*
+      console.log('successful files:', result.successful)
+      console.log('failed files:', result.failed)
+*/
+
+      let message = '';
+/*
+      let uploadURL = null;
+*/
+      if (oks > 0) {
+        message += `${oks} uploads successful`;
+        this.uploadProgressIcon = 'check_circle';
+
+/*
+        uploadURL = result.successful[0]?.uploadURL || null;
+*/
+      }
+      if (fails > 0) {
+        message += `${fails} failed uploads`;
+        this.uploadProgressIcon = 'report_gmailerrorred';
+      }
+
+      eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
+
+      this.uploadProgessText = message;
+
+
+/*
+      if (uploadURL) {
+        await updateResourceWithFileUrl(uploadURL, this.$store);
+        const resources = this.$store?.getters[`${USER_NAMESPACE}/resources`];
+
+        console.log('after updateResourceWithFileUrl')
+        console.log(resources)
+      }
+*/
+
+      // reset uppy to be able to upload another file
+      this.resetUppy()
+
+      // resource exists already, get it from uploadResource
+      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+      this.$nextTick(() => {
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
       });
 
-      if (autoSelect) {
-        this.$nextTick(() => {
-          eventBus.emit(SELECT_EDITING_RESOURCE, newRes.id);
-        });
+    },
+    uploadError(error) {
+/*
+      console.log('failed files:', error)
+*/
+
+      this.uploadProgessText = `Upload failed ${error}`;
+      this.uploadProgressIcon = 'report_gmailerrorred';
+
+      const uppy = getUppyInstance();
+      uppy.cancelAll({ reason: error});
+
+      eventBus.emit(UPLOAD_ERROR, { error });
+    },
+    resetUppy() {
+      const uppy = getUppyInstance();
+      const files = uppy.getFiles();
+      if (files.length === 1) {
+        uppy.removeFile(files[0].id);
+      } else if(files.length > 1) {
+        uppy.cancelAll();
       }
     },
- */
+    async createResourceFromUrl(url) {
+      // console.log(`createResourceFromUrl ${url}`);
+
+      const metadataId = this.metadataId;
+
+      const newResource = createNewResourceForUrl(metadataId, url);
+
+      // create resource from url
+      await this.$store?.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_RESOURCE}`, {
+        data: newResource,
+      });
+
+      // resource exists already, get it from uploadResource
+      const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
+
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
+    },
+    renameResource(newRes) {
+      // create a local copy because it might come directly from the $store
+      const resource = {... newRes};
+
+      // get new resource and adjust the name
+      let resName = resource.url;
+      const splits = resource.url.split('/');
+      if (splits.length > 0) {
+        resName = splits[splits.length - 1];
+
+        const extSplits = resName.split('.');
+        if (extSplits.length === 1) {
+          resName = extSplits[0];
+        } else if (extSplits.length > 1) {
+          resName = extSplits[extSplits.length - 1];
+        }
+      }
+
+      // changed the name to the last part of the url, because urls can be very long
+      resource.name = resName;
+
+      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
+
+      eventBus.emit(UPLOAD_STATE_RESOURCE_UPDATED, { id: UPLOAD_STATE_RESOURCE_UPDATED });
+    },
+    selectResourceAndUpdateList(resource) {
+
+      // preselect it so the user can directly edit details
+      // eventBus.emit(SELECT_EDITING_RESOURCE, resource.id);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, resource.id);
+
+      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
+
+      // is this.selectedResource set?
+
+/*
+      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
+
+      // is the needed? shouldn't be right!?
+
+      // populate the new list of resources
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_DATA_RESOURCES,
+        data: resources,
+      });
+*/
+
+    },
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
-    catchSaveResourceClose() {
-      eventBus.emit(SAVE_EDITING_RESOURCE, this.selectedResource);
+    catchSaveResourceClose(resourceProps) {
+      eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
-    validateField(field) {
-      isFieldValid(
-        field.property,
-        field.value,
-        this.validations,
-        this.validationErrors,
-      );
+    showFullScreenImage() {
+
     },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
-    validationErrors: {
-      name: null,
-      description: null,
-      url: null,
-    },
     envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    uploadProgessText: null,
+    uploadProgressIcon: '',
+    editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
+                    <br />
+                    Please edit resources via the legacy website by clicking on
+                    the button below.`,
+    addResourceRedirectText: `Adding new resources is not available.
+                    <br />
+                    Please add resources via the legacy website by clicking on
+                    the button below.`,
   }),
 };
 </script>

@@ -15,24 +15,24 @@
  import { md5Hash } from '@/factories/stringFactory';
 
  import {
-   GET_USER_CONTEXT,
-   GET_USER_CONTEXT_ERROR,
-   GET_USER_CONTEXT_SUCCESS,
-   RESET_KEY,
-   RESET_KEY_ERROR,
-   RESET_KEY_SUCCESS,
-   USER_EDITING_UPDATE,
-   USER_EDITING_UPDATE_ERROR,
-   USER_EDITING_UPDATE_SUCCESS,
-   API_TOKEN,
-   API_TOKEN_ERROR,
-   USER_SIGNIN_NAMESPACE,
-   API_TOKEN_SUCCESS,
-   USER_SIGNOUT,
-   USER_SIGNOUT_ERROR,
-   USER_SIGNOUT_SUCCESS,
-   VALIDATION_ERROR,
- } from './userMutationsConsts';
+  GET_USER_CONTEXT,
+  GET_USER_CONTEXT_ERROR,
+  GET_USER_CONTEXT_SUCCESS,
+  USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE_ERROR,
+  USER_EDITING_UPDATE_SUCCESS,
+  USER_SIGNIN_NAMESPACE,
+  USER_SIGNOUT,
+  USER_SIGNOUT_ERROR,
+  USER_SIGNOUT_SUCCESS,
+  VALIDATION_ERROR,
+  USER_SIGNIN,
+  USER_SIGNIN_SUCCESS,
+  USER_SIGNIN_ERROR,
+  REQUEST_TOKEN,
+  REQUEST_TOKEN_SUCCESS,
+  REQUEST_TOKEN_ERROR,
+} from './userMutationsConsts';
 
  function resetUser(state) {
    state.signInLoading = false;
@@ -133,24 +133,24 @@
 
      extractError(this, reason);
    },
-   [API_TOKEN](state) {
+   [USER_SIGNIN](state) {
      state.signInLoading = true;
 
      resetErrorObject(state);
    },
-   [API_TOKEN_SUCCESS](state, payload) {
+   [USER_SIGNIN_SUCCESS](state, payload) {
      state.signInLoading = false;
      state.signInSuccess = true;
      const user = payload.user;
      state.user = enhanceUserObject(user);
    },
-   [API_TOKEN_ERROR](state, reason) {
+   [USER_SIGNIN_ERROR](state, reason) {
      state.signInLoading = false;
      state.signInSuccess = false;
 
      extractError(this, reason);
    },
-   [RESET_KEY](state) {
+   [REQUEST_TOKEN](state) {
      state.requestLoading = true;
      state.requestSuccess = false;
      state.signInLoading = false;
@@ -158,11 +158,11 @@
 
      resetErrorObject(state);
    },
-   [RESET_KEY_SUCCESS](state, payload) {
+   [REQUEST_TOKEN_SUCCESS](state, payload) {
      state.requestLoading = false;
      state.requestSuccess = payload && payload.message === 'success';
    },
-   [RESET_KEY_ERROR](state, reason) {
+   [REQUEST_TOKEN_ERROR](state, reason) {
      state.requestLoading = false;
      state.requestSuccess = false;
 

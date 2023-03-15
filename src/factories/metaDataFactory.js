@@ -110,14 +110,6 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
-/**
- * @returns {String} ISO Formated Date String from now
- */
-export function getCurrentDate() {
-  const now = new Date();
-  const isoFormatted = formatISO(now);
-  return formatDate(isoFormatted);
-}
 
 export function createLicense(dataset) {
   if (!dataset) {
@@ -362,80 +354,6 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
-let localResoureID = 0;
-
-export function initializeLocalResource(metadataId, file = null, url = '') {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : getFileFormat(file);
-  let resourceName = isLink ? '' : file.name;
-  const fileName = isLink ? '' : file.name;
-  const size = !isLink ? file.size : 0;
-
-  if (!isLink) {
-    const splits = resourceName.split('.');
-    resourceName = splits[0];
-  }
-
-  localResoureID++;
-
-  const now = getCurrentDate();
-
-  return {
-    metadataId,
-    name: resourceName,
-    fileName,
-    file,
-    size,
-    id: `resoureId_${localResoureID}`,
-    [localIdProperty]: `resoureId_${localResoureID}`,
-    url_type: isLink ? '' : 'upload',
-    format: resourceFormat,
-    url,
-    existsOnlyLocal: true,
-    created: now,
-    lastModified: now,
-    loading: false,
-  };
-}
-
-export function createLocalResource(
-  metadataId,
-  name,
-  description,
-  file,
-  fileFormat = '',
-  size = 0,
-  url = '',
-  doi = '',
-  restricted = false,
-) {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : fileFormat;
-
-  const created = getCurrentDate();
-
-  return {
-    description,
-    metadataId,
-    url_type: isLink ? '' : 'upload',
-    id: '',
-    size,
-    // mimetype: resource.mimetype ? resource.mimetype : '',
-    // cacheUrl: resource.cache_url ? resource.cache_url : '',
-    doi,
-    name,
-    url,
-    restricted,
-    format: resourceFormat,
-    existsOnlyLocal: true,
-    // state: resource.state ? resource.state : '',
-    created,
-    lastModified: created,
-    // position: resource.position ? resource.position : '',
-    // revisionId: resource.revision_id ? resource.revision_id : '',
-    isProtected: restricted,
-  };
-}
 
 export function createResource(resource, datasetName) {
   if (!resource) {
@@ -501,22 +419,20 @@ export function createResource(resource, datasetName) {
     // url_type: "upload",
     id: resource.id,
     size: resource.size ? resource.size : 0,
-    mimetype: resource.mimetype ? resource.mimetype : '',
-    cacheUrl: resource.cache_url ? resource.cache_url : '',
+    mimetype: resource.mimetype || '',
     doi: resource.doi,
     name: fileName,
     url: resURL,
     urlType: resource.url_type,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
-    restricted: resource.restricted ? resource.restricted : '',
+    restricted: resource.restricted || '',
     format: fileFormat,
-    state: resource.state ? resource.state : '',
+    state: resource.state || '',
     created,
     lastModified: modified,
-    position: resource.position ? resource.position : '',
-    revisionId: resource.revision_id ? resource.revision_id : '',
+    position: resource.position || '',
     isProtected,
-    previewUrl: resource.preview_url ? resource.preview_url : '',
+    previewUrl: resource.previewUrl || resource.preview_url || null,
   };
 }
 
@@ -1348,3 +1264,23 @@ export function extractDatasetIdsFromText(text) {
 
   return ids;
 }
+
+/**
+ *
+ * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+ * @param {*} a
+ * @param {*} b
+ */
+export function formatBytes(a, b = 2) {
+  /* eslint-disable prefer-template */
+  /* eslint-disable no-restricted-properties */
+  if (a === 0) return '0 Bytes';
+
+  const c = 1024;
+
+  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const f = Math.floor(Math.log(a) / Math.log(c));
+
+  return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
+}
+

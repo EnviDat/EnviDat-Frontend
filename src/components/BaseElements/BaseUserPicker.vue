@@ -34,7 +34,7 @@
               v-if="item"
               :name="item"
               :isSmall="true"
-              :isCloseable="authorsCloseable"
+              :isCloseable="userTagsCloseable"
               @closeClicked="catchCloseClicked"
             />
           </template>
@@ -78,6 +78,10 @@ export default {
     users: Array,
     preSelected: Array,
     multiplePick: Boolean,
+    pickerLabel: {
+      type: String,
+      default: 'Click here to pick an EnviDat author',
+    },
     isClearable: {
       type: Boolean,
       default: false,
@@ -88,7 +92,7 @@ export default {
       type: String,
       default: 'account_box',
     },
-    authorsCloseable: {
+    userTagsCloseable: {
       type: Boolean,
       default: true,
     },
@@ -116,10 +120,10 @@ export default {
   computed: {
     autocompleteHint() {
       if (!this.search) {
-        return 'Start typing for author autocompletion.';
+        return 'Start typing for autocompletion.';
       }
 
-      return `No author name matching "<strong>${this.search}</strong>".`;
+      return `No name matching "<strong>${this.search}</strong>".`;
     },
   },
   methods: {
@@ -185,7 +189,6 @@ export default {
     },
   },
   data: () => ({
-    pickerLabel: 'Click here to pick an EnviDat author',
     pickedUsers: [],
     search: '',
   }),

@@ -20,7 +20,10 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
+  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE_SIZE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESTRICTED,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -29,6 +32,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
@@ -43,8 +47,9 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { format, parse } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
+import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -84,6 +89,42 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
+  ],
+  [EDITMETADATA_DATA_RESOURCE]: [
+    ['metadataId','package_id'],
+    ['cacheLastUpdated','cache_last_updated'],
+    ['cacheUrl','cache_url'],
+    ['created','created'],
+    ['description','description'],
+    ['doi','doi'],
+    ['format','format'],
+    ['hash','hash'],
+    ['id','id'],
+    ['lastModified','last_modified'],
+    ['mimetype','mimetype'],
+    ['mimetypeInner','mimetype_inner'],
+    ['metadataModified','metadata_modified'],
+    ['multipartName','multipart_name'],
+    ['name','name'],
+    ['packageId','package_id'],
+    ['position','position'],
+    ['publicationState','publication_state'],
+    ['restricted','restricted'],
+    ['resourceSize','resource_size'],
+    ['resourceType','resource_type'],
+    ['size','size'],
+    ['state','state'],
+    ['url','url'],
+    ['urlType','url_type'],
+  ],
+  [EDITMETADATA_DATA_RESOURCE_SIZE]: [
+    ['sizeValue','size_value'],
+    ['sizeUnits','size_units'],
+  ],
+  [EDITMETADATA_DATA_RESTRICTED]: [
+    ['allowedUsers','allowed_users'],
+    ['level','level'],
+    ['sharedSecret','shared_secret'],
   ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
@@ -354,6 +395,65 @@ export function getFrontendJSON(stepKey, data) {
   return frontEndJson;
 }
 
+function cleanListForBackend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    const cleaned = getBackendJSON(mappingKey, element);
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
+export function cleanListForFrontend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    const cleaned = getFrontendJSON(mappingKey, element);
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
+export function cleanResourceForFrontend(resource) {
+
+  let resSize = resource.resourceSize;
+
+  if (typeof resSize === 'string') {
+    try {
+      resSize = JSON.parse(resSize);
+    } catch (e) {
+      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      resSize = { size_value: '', size_units: '' };
+    }
+  }
+
+  const cleanedResSize = getFrontendJSON(EDITMETADATA_DATA_RESOURCE_SIZE, resSize);
+
+  let restricted = resource.restricted;
+
+  if (typeof restricted === 'string') {
+    try {
+      restricted = JSON.parse(restricted);
+    } catch (e) {
+      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      restricted = { allowed_users: '', level: 'public', shared_secret: '' };
+    }
+  }
+
+  const cleanedRestricted = getFrontendJSON(EDITMETADATA_DATA_RESTRICTED, restricted);
+  
+  return {
+    ...resource,
+    resourceSize: cleanedResSize,
+    restricted: cleanedRestricted,
+  }
+}
+
 export function cleanSpatialInfo(spatial) {
   const rules = JSONFrontendBackendRules[EDITMETADATA_DATA_GEO_SPATIAL];
 
@@ -451,7 +551,7 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -481,7 +581,14 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   commitEditingData(commit, stepKey, enhancedKeywords);
   dataObject.keywordsData = keywordsData;
 
-  stepKey = EDITMETADATA_AUTHOR_LIST;
+  return dataObject;
+}
+
+function populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap) {
+
+  const dataObject = {};
+
+  const stepKey = EDITMETADATA_AUTHOR_LIST;
   // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
 
   const authors = []
@@ -520,20 +627,14 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   return dataObject;
 }
 
-function populateEditingData(commit, snakeCaseJSON) {
+function populateEditingDataInfo(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
-  let stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
-
-  commitEditingData(commit, stepKey, resourceData);
-  dataObject.resourceData = resourceData;
-
-  stepKey = EDITMETADATA_DATA_INFO;
+  let stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
   dateInfoData.dates = formatDates(dateInfoData.dates);
@@ -564,6 +665,33 @@ function populateEditingData(commit, snakeCaseJSON) {
   });
   dataObject.location = location;
 
+  return dataObject;
+}
+
+function populateEditingResources(commit, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  // Stepper 2: Data Resources, Info, Location
+  // const resources = createResources(metadataRecord).resources;
+
+  const stepKey = EDITMETADATA_DATA_RESOURCES;
+  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const resources = resourceData.resources;
+
+  for (let i = 0; i < resources.length; i++) {
+      resources[i] = cleanResourceForFrontend(resources[i]);
+  }
+
+  enhanceElementsWithStrategyEvents(
+    resources,
+    SELECT_EDITING_RESOURCE_PROPERTY,
+    true,
+  );
+
+  commitEditingData(commit, stepKey, resourceData);
+  dataObject.resourceData = resourceData;
+  
   return dataObject;
 }
 
@@ -623,9 +751,13 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
+  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
 
-  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
+  const { authors } = populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap);
+
+  const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+
+  populateEditingResources(commit, snakeCaseJSON);
 
   populateEditingRelatedResearch(commit, snakeCaseJSON);
 
@@ -669,17 +801,6 @@ function mapDatesForBackend(datesArray) {
   return mappedDates;
 }
 
-function cleanAuthorsForBackend(authors) {
-
-  const bAuthors = [];
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
-    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
-    bAuthors.push(bAuthor);
-  }
-
-  return bAuthors;
-}
 
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
@@ -695,8 +816,10 @@ export function mapFrontendToBackend(stepKey, frontendData) {
   // create a local copy to avoid mutation of vuex store objects / properties
   const localData = { ...frontendData };
 
-  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    localData.authors = cleanAuthorsForBackend(localData.authors);
+  if (stepKey === EDITMETADATA_DATA_RESOURCES) {
+    localData.resources = cleanListForBackend(localData.resources, EDITMETADATA_DATA_RESOURCE);
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    localData.authors = cleanListForBackend(localData.authors, EDITMETADATA_AUTHOR);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
     localData.dates = mapDatesForBackend(localData.dates);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
@@ -722,6 +845,11 @@ export function parseDateStringToCKANFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, enviDatDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, ckanDateFormat);
 }
 
@@ -732,5 +860,79 @@ export function parseDateStringToEnviDatFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, enviDatDateFormat);
+}
+
+// ex. 2023-02-14T11:00:31.518140
+export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
+
+/**
+ *
+ * @param {Date} date
+ * @returns {string|null}
+ */
+export function formatDateTimeToCKANFormat(date) {
+
+  if (!date) {
+    return null;
+  }
+
+  return format(date, ckanDateTimeFormat);
+}
+
+/**
+ *
+ * @param {string} dateString
+ * @returns {string|null}
+ */
+export function parseDateStringToReadableFormat(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = parse(dateString, ckanDateTimeFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
+  return formatDate(parsedDate);
+}
+
+export function mergeResourceSizeForFrontend(resource) {
+  const mergedResourceSize = {};
+
+  const isLink = resource.urlType !== 'upload';
+  const resourceSize = resource.resourceSize || null;
+
+  if (resourceSize) {
+    let size;
+    let sizeFormat;
+
+    if (isLink) {
+      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
+
+      try {
+        size = Number.parseFloat(resourceSize.sizeValue);
+      } catch (e) {
+        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
+      }
+
+      if (Number.isNaN(size)) {
+        size = undefined;
+      }
+    } else {
+      size = resource.size;
+    }
+
+    mergedResourceSize.size = size;
+    mergedResourceSize.sizeFormat = sizeFormat;
+  }
+  
+  return mergedResourceSize;
 }

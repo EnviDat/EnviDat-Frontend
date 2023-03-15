@@ -51,6 +51,7 @@
                 :key="res.id"
                 cols="12"
                 :sm="availableResources.length > 1 ? 6 : 12"
+                :order="res.position"
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
