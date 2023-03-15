@@ -136,7 +136,7 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
   if (typeof metdataExtras === 'object'
     && metdataExtras instanceof Array) {
 
-    const extrasKeys = Object.key(metdataExtras);
+    const extrasKeys = Object.keys(metdataExtras);
 
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
