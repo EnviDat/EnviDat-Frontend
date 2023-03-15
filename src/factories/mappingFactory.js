@@ -667,9 +667,14 @@ function populateEditingResources(commit, snakeCaseJSON) {
 
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const resources = cleanListForFrontend(resourceData.resources, EDITMETADATA_DATA_RESOURCE);
+
+  for (let i = 0; i < ; i++) {
+    resources[i] = cleanResourceForFrontend(resources[i]);
+  }
 
   enhanceElementsWithStrategyEvents(
-    resourceData.resources,
+    resources,
     SELECT_EDITING_RESOURCE_PROPERTY,
     true,
   );
@@ -893,7 +898,7 @@ export function mergeResourceSizeForFrontend(resource) {
   const mergedResourceSize = {};
 
   const isLink = resource.urlType !== 'upload';
-  const resourceSize = resource.resourceSize || resource.resource_size || null;
+  const resourceSize = resource.resourceSize || null;
 
   if (resourceSize) {
     const resourceSizeObj = JSON.parse(resourceSize);
