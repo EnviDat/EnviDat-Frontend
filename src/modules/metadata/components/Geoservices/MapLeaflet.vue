@@ -31,7 +31,7 @@ import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
 import {
   eventBus,
-  GCNET_OPEN_DETAIL_CHARTS,
+  GCNET_PREPARE_DETAIL_CHARTS,
   MAP_GEOMETRY_MODIFIED,
   MAP_ZOOM_CENTER,
   MAP_ZOOM_IN,
@@ -410,7 +410,7 @@ export default {
       // });
     },
     catchGcnetStationClick(stationAlias) {
-      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
+      eventBus.emit(GCNET_PREPARE_DETAIL_CHARTS, stationAlias);
     },
     // tempFunction() {
     //   const geoms = this.map.pm.getGeomanLayers()
