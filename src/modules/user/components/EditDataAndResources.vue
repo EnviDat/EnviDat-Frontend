@@ -349,7 +349,7 @@ export default {
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
       this.$nextTick(() => {
-        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
 
     },
@@ -390,7 +390,7 @@ export default {
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes.id);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
     },
     renameResource(newRes) {
       // create a local copy because it might come directly from the $store

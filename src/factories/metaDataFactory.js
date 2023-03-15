@@ -354,44 +354,42 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
+export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
+  if (!resource || !resourceOrganizationID || !signedInUserName || !signedInUserOrganizationIds) return false;
 
-export function createResource(resource, datasetName) {
+  let allowedUsers;
+  const restrictedInfo = resource.restricted;
+  let isProtected = !restrictedInfo;
+
+  if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
+    try {
+      const restrictedObj = JSON.parse(restrictedInfo);
+      isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
+      allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
+      // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
+    } catch (err) {
+      isProtected = !restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+    }
+  }
+
+  if (isProtected && signedInUserOrganizationIds.length > 0) {
+    isProtected = !signedInUserOrganizationIds.includes(resourceOrganizationID);
+  }
+
+  if (isProtected && allowedUsers.length > 0) {
+    const names = getAllowedUserNamesArray(allowedUsers);
+    isProtected = !names.includes(signedInUserName);
+  }
+
+  return isProtected;
+}
+
+export function createResource(resource, datasetName, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
   if (!resource) {
     return null;
   }
 
-  let isProtected = false;
-  let restrictedUsers;
-  let restrictedObj = false;
-
-  if (
-    resource.restricted &&
-    typeof resource.restricted === 'string' &&
-    resource.restricted.length > 0
-  ) {
-    try {
-      restrictedObj = JSON.parse(resource.restricted);
-      isProtected = restrictedObj.level !== 'public';
-      restrictedUsers = restrictedObj.allowed_users !== '';
-      // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
-    } catch (err) {
-      isProtected = !resource.restricted.includes('public');
-    }
-  }
-
-  let resURL = resource.url;
-
-  if (
-    isProtected ||
-    (typeof restrictedUsers === 'boolean' && restrictedUsers === true)
-  ) {
-    const splits = resource.url.split('resource');
-    if (splits && splits.length > 0) {
-      resURL = splits[0];
-    } else {
-      resURL = '';
-    }
-  }
+  const isProtected = isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds);
 
   let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
@@ -401,6 +399,7 @@ export function createResource(resource, datasetName) {
 
   const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
 
+  const resURL = resource.url;
   let fileName = resource.name;
 
   if (!fileName && resURL) {
@@ -432,14 +431,17 @@ export function createResource(resource, datasetName) {
     lastModified: modified,
     position: resource.position || '',
     isProtected,
-    previewUrl: resource.previewUrl || resource.preview_url || null,
+    previewUrl: resource.previewUrl || null,
   };
 }
 
-export function createResources(dataset) {
+export function createResources(dataset, signedInUser, signedInUserOrganizationIds) {
   if (!dataset) {
     return null;
   }
+
+  const organizationID = dataset.organization?.id;
+  const signedInUserName = signedInUser?.name;
 
   const resources = [];
 
@@ -456,7 +458,7 @@ export function createResources(dataset) {
 
   if (dataset.resources) {
     dataset.resources.forEach((element) => {
-      const res = createResource(element, dataset.name);
+      const res = createResource(element, dataset.name, organizationID, signedInUserName, signedInUserOrganizationIds);
       res.metadataContact = contactEmail;
 
       resources.push(res);

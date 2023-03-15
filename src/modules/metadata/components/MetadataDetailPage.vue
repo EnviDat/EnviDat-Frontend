@@ -85,6 +85,11 @@ import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
 import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
 import {
+  USER_GET_ORGANIZATION_IDS,
+  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
+} from '@/modules/user/store/userMutationsConsts';
+import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
@@ -181,6 +186,10 @@ export default {
     this.loadMetaDataContent();
 
     window.scrollTo(0, 0);
+
+    this.$nextTick(() => {
+      this.fetchUserOrganisationData();
+    });
   },
   /**
    * @description
@@ -194,6 +203,12 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapState(USER_SIGNIN_NAMESPACE, [
+      'user',
+    ]),
+    ...mapState(USER_NAMESPACE, [
+      'userOrganizationIds',
+    ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
       metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,
@@ -452,7 +467,8 @@ export default {
 
         this.citation = createCitation(currentContent);
 
-        this.resources = createResources(currentContent);
+        this.loadResources();
+
         this.resources.doiIcon = this.doiIcon;
         this.resources.fileSizeIcon = this.fileSizeIcon;
         this.resources.fileIcon = this.fileIcon;
@@ -467,8 +483,42 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
+        this.loadAuthors(currentContent);
       }
+    },
+    loadAuthors(currentContent) {
+      const { components } = this.$options;
+
+      this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
+
+      this.$set(components.MetadataAuthors, 'genericProps', {
+        authors: this.authors,
+        authorDetailsConfig: this.authorDetailsConfig,
+        authorDeadInfo: this.authorDeadInfo,
+        showPlaceholder: this.showPlaceholder,
+      });
+
+    },
+    loadResources() {
+      const { components } = this.$options;
+      const currentContent = this.currentMetadataContent;
+
+      this.resources = createResources(currentContent, this.user, this.userOrganizationIds);
+
+      if (this.resources?.resources) {
+        this.configInfos = getConfigFiles(this.resources.resources);
+
+        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
+        enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
+      }
+
+      this.$nextTick(() => {
+        this.$set(components.MetadataResources, 'genericProps', {
+          ...this.resources,
+          resourcesConfig: this.resourcesConfig,
+        });
+      });
+
     },
     setMetadataContent() {
       const { components } = this.$options;
@@ -478,21 +528,6 @@ export default {
         stationParametersUrl: null,
         geoUrl: null,
       };
-
-      if (this.resources?.resources) {
-        this.configInfos = getConfigFiles(this.resources.resources);
-
-        enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-
-        enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
-      }
-
-      this.$set(components.MetadataHeader, 'genericProps', this.header);
-      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
-      this.$set(components.MetadataCitation, 'genericProps', {
-        ...this.citation,
-        showPlaceholder: this.showPlaceholder,
-      });
 
       this.configInfos = getConfigUrls(this.configInfos);
 
@@ -513,15 +548,10 @@ export default {
         this.setGeoServiceLayers(this.location, null);
       }
 
-      this.$set(components.MetadataResources, 'genericProps', {
-        ...this.resources,
-        resourcesConfig: this.resourcesConfig,
-      });
-
-      this.$set(components.MetadataAuthors, 'genericProps', {
-        authors: this.authors,
-        authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
+      this.$set(components.MetadataHeader, 'genericProps', this.header);
+      this.$set(components.MetadataBody, 'genericProps', { body: this.body });
+      this.$set(components.MetadataCitation, 'genericProps', {
+        ...this.citation,
         showPlaceholder: this.showPlaceholder,
       });
 
@@ -679,6 +709,9 @@ export default {
         });
       }
     },
+    fetchUserOrganisationData() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+    },
   },
   watch: {
     geoServiceLayers() {
@@ -702,7 +735,7 @@ export default {
      * @description watch the currentMetadataContent when it is the same as the url
      * the components will be filled with the metdata contents
      */
-    async currentMetadataContent() {
+    currentMetadataContent() {
       if (this.isCurrentIdOrName(this.metadataId)) {
         this.createMetadataContent();
         this.setMetadataContent();

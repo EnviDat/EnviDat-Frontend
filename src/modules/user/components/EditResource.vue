@@ -384,8 +384,10 @@ import { renderMarkdown } from '@/factories/stringFactory';
 import notFoundImg from '@/modules/user/assets/imageNotFound.jpg';
 import {
   getAllowedUsersString,
-  getRestrictedUserNames,
+  getAllowedUserNames,
   getUserAutocompleteList,
+  ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
+  ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
 
 
@@ -608,16 +610,16 @@ export default {
           }
         }
 
-        return restrictionLvl || this.publicAccessLevelValue;
+        return restrictionLvl || ACCESS_LEVEL_PUBLIC_VALUE;
       },
     },
     isPublicField: {
       get() {
         const level = this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
-        return level === this.publicAccessLevelValue; // && !this.hasAllowedUsersField;
+        return level === ACCESS_LEVEL_PUBLIC_VALUE; // && !this.hasAllowedUsersField;
       },
       set(value) {
-        this.previews.restrictedLevel = value ? this.publicAccessLevelValue : this.sameOrganizationAccessLevelValue;
+        this.previews.restrictedLevel = value ? ACCESS_LEVEL_PUBLIC_VALUE : ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
 
         this.checkSaveButtonEnabled(true);
       },
@@ -669,17 +671,17 @@ export default {
     },
     writeRestrictionLvl() {
       if (this.isPublicField) {
-        return this.publicAccessLevelValue;
+        return ACCESS_LEVEL_PUBLIC_VALUE;
       }
 
-      return this.sameOrganizationAccessLevelValue;
+      return ACCESS_LEVEL_SAMEORGANIZATION_VALUE;
     },
     envidatUserNameStrings() {
       return getUserAutocompleteList(this.envidatUsers);
     },
     preSelectedAllowedUsers() {
       // match with the user.name but make sure the fullname or display_name is shown
-      return getRestrictedUserNames(this.allowedUsersField, this.envidatUsers);
+      return getAllowedUserNames(this.allowedUsersField, this.envidatUsers);
     },
     openAccessDetails() {
       const text = this.isPublicField ? this.labels.openAccessInstructions : this.labels.openAccessPreferedInstructions;
@@ -737,7 +739,7 @@ export default {
       return this.labels.sizeFormatList[this.getFileSizeFormatIndex(size) - 1];
     },
     getFileSizeFormatIndex(size) {
-      if (!size || size === 0) {
+      if (!size) {
         return null;
       }
 
@@ -907,8 +909,6 @@ export default {
       size: null,
       sizeFormat: null,
     },
-    publicAccessLevelValue: 'public',
-    sameOrganizationAccessLevelValue: 'same_organization',
     notFoundImg,
   }),
   components: {

@@ -31,7 +31,6 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import { localIdProperty } from '@/factories/strategyFactory';
 import {
   EDIT_STEP_TITLE_MAIN_METADATA,
   EDIT_STEP_TITLE_MAIN_PUBLICATION,
@@ -46,6 +45,10 @@ import {
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+
+
+export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
+export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
 
 
 export function updateEditingArray(
@@ -121,7 +124,7 @@ export function setSelected(
 
     // check for newly created entries (local only)
     // with the localIdProperty first
-    const match = element[localIdProperty] === id || element[propertyToCompare] === id;
+    const match = element[propertyToCompare] === id;
 
     if (match) {
       element.isSelected = selected;
@@ -430,7 +433,7 @@ export function getUserAutocompleteList(userList) {
 
   const cleanedList = userList.filter((user) => {
 
-    const match = user.name.match(exludeRegEx);
+    const match = user.name?.match(exludeRegEx);
 
     if (match && match[0] && match[0].length === user.name?.length) {
       return false;
@@ -443,8 +446,13 @@ export function getUserAutocompleteList(userList) {
   return cleanedList.map((user) => user.fullname || user.display_name);
 }
 
-export function getRestrictedUserNames(allowedUsersString, envidatUsers) {
-  if (!allowedUsersString || !envidatUsers) {
+/**
+ * Spilts the allowed users string into an array
+ * @param allowedUsersString
+ * @returns {*[]}
+ */
+export function getAllowedUserNamesArray(allowedUsersString) {
+  if (!allowedUsersString) {
     return [];
   }
 
@@ -456,14 +464,39 @@ export function getRestrictedUserNames(allowedUsersString, envidatUsers) {
     usersString = [allowedUsersString]
   }
 
+  return usersString;
+}
+
+/**
+ * Return an array of the full names of the allowed users
+ *
+ * @param allowedUsersString
+ * @param envidatUsers
+ * @returns {*[]}
+ */
+export function getAllowedUserNames(allowedUsersString, envidatUsers) {
+  if (!allowedUsersString || !envidatUsers) {
+    return [];
+  }
+
+  const usersString = getAllowedUserNamesArray(allowedUsersString);
+
   const allowedUsers = envidatUsers.filter((user) => usersString.includes(user.name));
 
   return allowedUsers.map((user) => user.fullname || user.display_name);
 }
 
+/**
+ * Returns a string of the allowed users names (only the name attribute of the user object)
+ * separted by ","
+ *
+ * @param userFullNameArray
+ * @param envidatUsers
+ * @returns {string}
+ */
 export function getAllowedUsersString(userFullNameArray, envidatUsers) {
   if (!userFullNameArray || !envidatUsers) {
-    return [];
+    return '';
   }
 
   const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullname || user.display_name));
