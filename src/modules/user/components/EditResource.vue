@@ -530,13 +530,6 @@ export default {
         }
         return this.url;
       },
-/*
-      set(value) {
-        const valid = this.validateField('url', value);
-
-        this.checkSaveButtonEnabled(valid);
-      },
-*/
     },
     sizeField: {
       get() {
@@ -674,41 +667,12 @@ export default {
         this.checkSaveButtonEnabled(true);
       },
     },
-    isSameOrganizationField: {
-      get() {
-        const level = this.previews.restrictedLevel !== null ? this.previews.restrictedLevel : this.accessRestrictionLvl;
-        return level === this.sameOrganizationAccessLevelValue;
-
-/*
-        if (this.previews.isSameOrganization !== null) {
-          return this.previews.isSameOrganization;
-        }
-
-        return this.accessRestrictionLvl === this.sameOrganizationAccessLevelValue;
-*/
-      },
-      set(value) {
-        this.previews.isSameOrganization = value;
-        this.previews.restrictedLevel = value ? this.sameOrganizationAccessLevelValue : this.anyOrganizationAccessLevelValue;
-        this.checkSaveButtonEnabled(true);
-      },
-    },
     writeRestrictionLvl() {
       if (this.isPublicField) {
         return this.publicAccessLevelValue;
       }
 
-/*
-      if ((this.hasAllowedUsersField && this.allowedUsersField) || this.isSameOrganizationField) {
-        return this.sameOrganizationAccessLevelValue;
-      }
-*/
-
-      if (this.isSameOrganizationField) {
-        return this.sameOrganizationAccessLevelValue;
-      }
-
-      return this.anyOrganizationAccessLevelValue;
+      return this.sameOrganizationAccessLevelValue;
     },
     envidatUserNameStrings() {
       return getUserAutocompleteList(this.envidatUsers);
@@ -896,7 +860,6 @@ export default {
       restrictedLevel: null,
       hasAllowedUsers: null,
       allowedUsers: null,
-      isSameOrganization: null,
       format: null,
       size: null,
       sizeFormat: null,
@@ -946,7 +909,6 @@ export default {
     },
     publicAccessLevelValue: 'public',
     sameOrganizationAccessLevelValue: 'same_organization',
-    anyOrganizationAccessLevelValue: 'any_organization',
     notFoundImg,
   }),
   components: {
