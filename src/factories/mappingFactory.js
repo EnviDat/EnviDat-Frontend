@@ -21,7 +21,9 @@ import {
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
   EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE_SIZE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESTRICTED,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -108,21 +110,21 @@ const JSONFrontendBackendRules = {
     ['position','position'],
     ['publicationState','publication_state'],
     ['restricted','restricted'],
-    /*
-        ['restrictedLevel','restricted-level'],
-        ['restrictedAllowedUsers','restricted-allowed_users'],
-        ['restrictedSharedSecret','restricted-shared_secret'],
-    */
     ['resourceSize','resource_size'],
     ['resourceType','resource_type'],
-    /*
-        ['resourceSizeValue','resource_size-size_value'],
-        ['resourceSizeUnits','resource_size-size_units'],
-    */
     ['size','size'],
     ['state','state'],
     ['url','url'],
     ['urlType','url_type'],
+  ],
+  [EDITMETADATA_DATA_RESOURCE_SIZE]: [
+    ['sizeValue','size_value'],
+    ['sizeUnits','size_units'],
+  ],
+  [EDITMETADATA_DATA_RESTRICTED]: [
+    ['allowedUsers','allowed_users'],
+    ['level','level'],
+    ['sharedSecret','shared_secret'],
   ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
@@ -415,6 +417,31 @@ export function cleanListForFrontend(elementList, mappingKey) {
   }
 
   return cleanedElements;
+}
+
+export function cleanResourceForFrontend(resource) {
+
+  let resSize = resource.resourceSize;
+
+  if (typeof resSize === 'string') {
+    resSize = JSON.parse(resSize);
+  }
+
+  const cleanedResSize = getFrontendJSON(resSize, EDITMETADATA_DATA_RESOURCE_SIZE);
+
+  let restricted = resource.restricted;
+
+  if (typeof restricted === 'string') {
+    restricted = JSON.parse(restricted);
+  }
+
+  const cleanedRestricted = getFrontendJSON(restricted, EDITMETADATA_DATA_RESTRICTED);
+  
+  return {
+    ...resource,
+    ...cleanedResSize,
+    ...cleanedRestricted,
+  }
 }
 
 export function cleanSpatialInfo(spatial) {
