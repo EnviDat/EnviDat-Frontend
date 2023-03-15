@@ -1,7 +1,7 @@
 import { it, describe, expect } from 'vitest';
 import {
-  addFile,
-  getUppyInstance, subscribeOnUppyEvent,
+  getUppyInstance,
+  subscribeOnUppyEvent,
 } from '@/factories/uploadFactory';
 
 const fs = require('fs');

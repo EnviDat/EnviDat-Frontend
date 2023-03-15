@@ -107,7 +107,7 @@ export function createErrorMessage(reason) {
 
   eventBus.emit(EDITMETADATA_NETWORK_ERROR, {
     status,
-    statusMessage: msg || '',
+    statusMessage: msg,
     details: details || '',
   });
 

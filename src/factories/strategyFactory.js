@@ -25,28 +25,24 @@ export const clickStrategies = [
     openEvent: OPEN_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
-    fallbackProperty: '',
   },
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
     icon: 'edit',
     tooltip: 'Click to select this resource for editing',
-    fallbackProperty: localIdProperty,
   },
   {
     strategyKeys: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
     icon: 'edit',
     tooltip: 'Click to select this author for editing',
-    fallbackProperty: localIdProperty,
   },
   {
     strategyKeys: [SELECT_EDITING_DATASET_PROPERTY],
     openEvent: SELECT_EDITING_DATASET,
     icon: 'edit',
     tooltip: 'Click to edit this dataset',
-    fallbackProperty: localIdProperty,
   },
   {
     strategyKeys: [SHOW_DATA_PREVIEW_PROPERTY],
@@ -54,7 +50,6 @@ export const clickStrategies = [
     openEvent: OPEN_DATA_PREVIEW_IFRAME,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
-    fallbackProperty: '',
   },
 ];
 
@@ -119,8 +114,7 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
     if (strat) {
       entry.openEvent = strat.openEvent;
-      const idValue = entry[previewProperty];
-      entry.openProperty = idValue || entry[strat.fallbackProperty];
+      entry.openProperty = entry[previewProperty];
       entry.openButtonIcon = strat.icon;
       entry.openButtonTooltip = strat.tooltip;
     }

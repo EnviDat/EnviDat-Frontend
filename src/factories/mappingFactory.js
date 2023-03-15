@@ -32,7 +32,6 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
-  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import {
@@ -49,7 +48,10 @@ import {
 
 import { format, isValid, parse } from 'date-fns';
 import { mergeEditingAuthor } from '@/factories/authorFactory';
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  SELECT_EDITING_RESOURCE_PROPERTY,
+} from '@/factories/strategyFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -584,7 +586,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap) {
+function populateEditingAuthors(commit, snakeCaseJSON, authorsMap) {
 
   const dataObject = {};
 
@@ -751,9 +753,9 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
+  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
 
-  const { authors } = populateEditingAuthors(commit, categoryCards, snakeCaseJSON, authorsMap);
+  const { authors } = populateEditingAuthors(commit, snakeCaseJSON, authorsMap);
 
   const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 

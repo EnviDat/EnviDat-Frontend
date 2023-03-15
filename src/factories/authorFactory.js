@@ -11,7 +11,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { localIdProperty } from '@/factories/strategyFactory';
 import {
   compareAsc,
   parseISO,
@@ -507,28 +506,6 @@ export function getNameInitials(userObject) {
   return '';
 }
 
-let localAuthorID = 0;
-
-export function initializeLocalAuthor() {
-  localAuthorID++;
-
-  const newAuthor = {
-    firstName: 'unknown',
-    lastName: '',
-    affiliation: '',
-    id: {
-      type: '',
-      identifier: '',
-    },
-    email: '',
-    existsOnlyLocal: true,
-    loading: false,
-  };
-
-  newAuthor[localIdProperty] = `authorId_${localAuthorID}`;
-
-  return newAuthor;
-}
 
 export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
   const authorWithFullInfos = [];

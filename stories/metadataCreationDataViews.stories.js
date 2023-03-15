@@ -28,7 +28,8 @@ import EditResource from '@/modules/user/components/EditResource.vue';
 
 import {
   enhanceElementsWithStrategyEvents,
-  localIdProperty, SELECT_EDITING_RESOURCE_PROPERTY,
+  localIdProperty,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
 import { cleanListForFrontend, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';

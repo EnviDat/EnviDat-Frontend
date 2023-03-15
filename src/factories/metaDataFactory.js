@@ -12,13 +12,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { format, formatISO, parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
-import { localIdProperty } from '@/factories/strategyFactory';
+
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 import axios from 'axios';
+import {
+  ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUserNamesArray,
+} from '@/factories/userEditingFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -694,7 +698,7 @@ function getGeomCollectionPointArray(geometries) {
  * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
  * @returns {Object} GeoJSON of GeometryCollection type
  */
-export function parseAsGeomCollection(geomArray, propertiesObj={}) {
+export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
 
   if (!geomArray) {
     return null;
@@ -945,12 +949,13 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
 }
 
 export function sanitizeUrls(url) {
-  if (!url){
+  if (!url) {
     return null;
   }
 
   return url.replaceAll('%3A', ':');
 }
+
 /**
  * extracts all urls from a string
  * @param {String}text
@@ -1076,6 +1081,7 @@ function getGenericCitationObject(citationInfo) {
     doiUrl: `https://www.doi.org/${citationInfo.doi}`,
   };
 }
+
 /**
  *
  * @param resolvedPubs
@@ -1204,6 +1210,7 @@ export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
 
   return fullUrl;
 }
+
 export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
   if (!doiMap) {
     return null;
@@ -1283,6 +1290,6 @@ export function formatBytes(a, b = 2) {
   const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const f = Math.floor(Math.log(a) / Math.log(c));
 
-  return parseFloat((a / c**f).toFixed(b)) + ' ' + e[f];
+  return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
 
