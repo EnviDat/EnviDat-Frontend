@@ -21,7 +21,8 @@
 
  const states = [
    'draft', 'unpublished', 'pending', 'published',
- ]
+ ];
+
  export const MetadataState_AllStates = () => ({
    components: { MetadataStateChip },
    template: `
