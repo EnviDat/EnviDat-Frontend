@@ -424,23 +424,33 @@ export function cleanResourceForFrontend(resource) {
   let resSize = resource.resourceSize;
 
   if (typeof resSize === 'string') {
-    resSize = JSON.parse(resSize);
+    try {
+      resSize = JSON.parse(resSize);
+    } catch (e) {
+      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      resSize = { size_value: '', size_units: '' };
+    }
   }
 
-  const cleanedResSize = getFrontendJSON(resSize, EDITMETADATA_DATA_RESOURCE_SIZE);
+  const cleanedResSize = getFrontendJSON(EDITMETADATA_DATA_RESOURCE_SIZE, resSize);
 
   let restricted = resource.restricted;
 
   if (typeof restricted === 'string') {
-    restricted = JSON.parse(restricted);
+    try {
+      restricted = JSON.parse(restricted);
+    } catch (e) {
+      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      restricted = { allowed_users: '', level: 'public', shared_secret: '' };
+    }
   }
 
-  const cleanedRestricted = getFrontendJSON(restricted, EDITMETADATA_DATA_RESTRICTED);
+  const cleanedRestricted = getFrontendJSON(EDITMETADATA_DATA_RESTRICTED, restricted);
   
   return {
     ...resource,
-    ...cleanedResSize,
-    ...cleanedRestricted,
+    resourceSize: cleanedResSize,
+    restricted: cleanedRestricted,
   }
 }
 
@@ -667,10 +677,10 @@ function populateEditingResources(commit, snakeCaseJSON) {
 
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
-  const resources = cleanListForFrontend(resourceData.resources, EDITMETADATA_DATA_RESOURCE);
+  const resources = resourceData.resources;
 
   for (let i = 0; i < resources.length; i++) {
-    resources[i] = cleanResourceForFrontend(resources[i]);
+      resources[i] = cleanResourceForFrontend(resources[i]);
   }
 
   enhanceElementsWithStrategyEvents(
@@ -901,10 +911,27 @@ export function mergeResourceSizeForFrontend(resource) {
   const resourceSize = resource.resourceSize || null;
 
   if (resourceSize) {
-    const resourceSizeObj = JSON.parse(resourceSize);
+    let size;
+    let sizeFormat;
 
-    mergedResourceSize.size = isLink ? Number.parseFloat(resourceSizeObj.size_value) : resource.size;
-    mergedResourceSize.sizeFormat = isLink ? resourceSizeObj.size_units?.toUpperCase() : undefined;
+    if (isLink) {
+      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
+
+      try {
+        size = Number.parseFloat(resourceSize.sizeValue);
+      } catch (e) {
+        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
+      }
+
+      if (Number.isNaN(size)) {
+        size = undefined;
+      }
+    } else {
+      size = resource.size;
+    }
+
+    mergedResourceSize.size = size;
+    mergedResourceSize.sizeFormat = sizeFormat;
   }
   
   return mergedResourceSize;
