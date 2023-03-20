@@ -228,29 +228,29 @@ const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
-    // component: EditMetadataHeader,
     component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
+    // component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
     title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
-    // component: EditDescription,
     component: () => import('@/modules/user/components/EditDescription.vue'),
+    // component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
     title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
-    // component: EditKeywords,
     component: () => import('@/modules/user/components/EditKeywords.vue'),
+    // component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
   },
   {
     title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
-    // component: EditAuthorList,
     component: () => import('@/modules/user/components/EditAuthorList.vue'),
+    // component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
   },
 ];
@@ -267,15 +267,15 @@ const dataDetailSteps = [
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
-    // component: EditDataInfo,
     component: () => import('@/modules/user/components/EditDataInfo.vue'),
+    // component: EditDataInfo,
   },
   {
     title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
-    // component: EditDataGeo,
     component: () => import('@/modules/user/components/EditDataGeo.vue'),
+    // component: EditDataGeo,
   },
 ];
 

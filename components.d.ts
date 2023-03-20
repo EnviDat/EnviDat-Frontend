@@ -7,6 +7,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseCitationView: typeof import('./src/components/BaseElements/BaseCitationView.vue')['default']
     BaseClickCard: typeof import('./src/components/BaseElements/BaseClickCard.vue')['default']
+    BaseDatePicker: typeof import('./src/components/BaseElements/BaseDatePicker.vue')['default']
     BaseFileDropField: typeof import('./src/components/BaseElements/BaseFileDropField.vue')['default']
     BaseIconButton: typeof import('./src/components/BaseElements/BaseIconButton.vue')['default']
     BaseIconCountView: typeof import('./src/components/BaseElements/BaseIconCountView.vue')['default']

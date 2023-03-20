@@ -25,7 +25,6 @@ import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
@@ -76,7 +75,7 @@ export default {
 };
 
 export const EditingKeywordsPlaceholder = () => ({
-    components: { EditKeywords, EditDataInfo, MetadataCreationRelatedInfo },
+    components: { EditKeywords },
     template: `
     <v-col>
 
@@ -99,26 +98,6 @@ export const EditingKeywordsPlaceholder = () => ({
           <EditKeywords v-bind="genericProps"
                         :keywords="storyTags5"
           />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditDataInfo with Placeholder
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        MetadataCreationRelatedInfo with Placeholder
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <MetadataCreationRelatedInfo v-bind="genericProps" />
         </v-col>
       </v-row>
 
@@ -735,4 +714,27 @@ contribute something to the general goal of your product. `,
         };
       },
     },
+});
+
+export const MetadataCreationRelatedInfoStep = () => ({
+  components: { MetadataCreationRelatedInfo },
+  template: `
+    <v-col>
+    
+      <v-row>
+        MetadataCreationRelatedInfo with Placeholder
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <MetadataCreationRelatedInfo v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+  data: () => ({
+    genericProps: placeholderKeywordsGenericProps,
+    storyTags5,
+  }),
 });
