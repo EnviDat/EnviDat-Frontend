@@ -111,8 +111,12 @@
 
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
-import { resolveDoiCitationObjectsViaDora, resolvePidCitationObjectsViaDora } from '@/factories/metaDataFactory';
+import {
+  resolveDoiCitationObjectsViaDora,
+  resolvePidCitationObjectsViaDora,
+} from '@/factories/metaDataFactory';
 
 export default {
   name: 'EditAddPublication',
@@ -198,9 +202,15 @@ export default {
 
       const pidMap = new Map();
       pidMap.set(pid, pid);
-      
-      const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
-      this.previewCitation = citationMap.get(pid);
+
+      try {
+        const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
+        this.previewCitation = citationMap.get(pid);
+      } catch (e) {
+        this.previewCitation = {
+          citation: `Resolving citation was not possible ${e}`,
+        };
+      }
 
       this.isResolving = false;
     },
@@ -211,8 +221,14 @@ export default {
       const doiMap = new Map();
       doiMap.set(doi, doi);
 
-      const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
-      this.previewCitation = citationMap.get(doi);
+      try {
+        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
+        this.previewCitation = citationMap.get(doi);
+      } catch (e) {
+        this.previewCitation = {
+          citation: `Resolving citation was not possible ${e}`,
+        };
+      }
 
       this.isResolving = false;
     },
@@ -242,6 +258,7 @@ export default {
   }),
   components: {
     BaseIconButton,
+    BaseCitationView,
   },
 };
 

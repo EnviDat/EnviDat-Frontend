@@ -1,9 +1,5 @@
-/* eslint-disable object-property-newline */
-import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
-import relatedPublicCitationTesting from './js/relatedPublicCitation';
-
 /**
- * @summary story of all the MetadataDetailViews for sandbox testing
+ * @summary story of the widgets for editing workflow views
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
  * Created at     : 2019-10-23 16:34:51
@@ -12,6 +8,10 @@ import relatedPublicCitationTesting from './js/relatedPublicCitation';
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
+/* eslint-disable object-property-newline */
+import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
+import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 export default {
   title: '9 Editing Metadata / Add Related Publication Widget',

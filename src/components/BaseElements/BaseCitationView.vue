@@ -7,7 +7,7 @@
            align="start">
 
       <v-col cols="2"
-              md="1">
+              sm="auto">
         <v-row no-gutters>
           <v-col cols="12">
             <v-menu

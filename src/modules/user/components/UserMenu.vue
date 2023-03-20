@@ -33,9 +33,8 @@
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
 import {
-  ACTION_GET_USER_CONTEXT,
-  ACTION_GET_USER_CONTEXT_TOKEN,
-  ACTION_USER_SIGNOUT, ACTION_USER_SIGNOUT_REVOKE_TOKEN,
+  ACTION_USER_SIGNOUT,
+  ACTION_USER_SIGNOUT_REVOKE_TOKEN,
   SIGNIN_USER_ACTION,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,

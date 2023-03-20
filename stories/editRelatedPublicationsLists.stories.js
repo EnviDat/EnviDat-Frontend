@@ -13,7 +13,6 @@ import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
 import metadata from './js/metadata';
-import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 
 export default {

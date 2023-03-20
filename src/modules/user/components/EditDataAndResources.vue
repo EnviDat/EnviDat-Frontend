@@ -135,6 +135,8 @@ import { getSelectedElement } from '@/factories/userEditingFactory';
 import { mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
+const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
+
 export default {
   name: 'EditDataAndResources',
   components: {
@@ -144,6 +146,7 @@ export default {
     EditResourcePasteUrl,
     EditResource,
     EditResourceRedirect,
+    BaseRectangleButton,
   },
   props: {
     resources: {
