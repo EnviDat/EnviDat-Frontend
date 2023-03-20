@@ -87,7 +87,7 @@ import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
 import {
   USER_GET_ORGANIZATION_IDS,
   USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE,
+  USER_SIGNIN_NAMESPACE, USER_SIGNIN_SUCCESS,
 } from '@/modules/user/store/userMutationsConsts';
 import {
   SET_APP_BACKGROUND,
@@ -163,6 +163,32 @@ export default {
   created() {
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+
+    this.$store.watch((state) => state.userSignIn,(value) => {
+      console.log('userSignIn change:');
+      console.log(value);
+    });
+
+    this.$store.watch((state) => state.user,(value) => {
+      console.log('user change:');
+      console.log(value);
+    });
+
+    if (!this.user) {
+      this.$store.subscribe((mutation, state) => {
+        if (mutation.type === `${USER_SIGNIN_NAMESPACE}/${USER_SIGNIN_SUCCESS}`) {
+          console.log('got user?');
+          console.log(state.user);
+
+          this.$nextTick(() => {
+            this.fetchUserOrganisationData();
+          });
+        }
+
+        console.log(mutation.type)
+        console.log(mutation.payload)
+      })
+    }
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -187,9 +213,6 @@ export default {
 
     window.scrollTo(0, 0);
 
-    this.$nextTick(() => {
-      this.fetchUserOrganisationData();
-    });
   },
   /**
    * @description
@@ -203,11 +226,12 @@ export default {
   },
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_SIGNIN_NAMESPACE, [
-      'user',
-    ]),
     ...mapState(USER_NAMESPACE, [
       'userOrganizationIds',
+    ]),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, [
+      'user',
+      'userLoading',
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -753,6 +777,11 @@ export default {
         this.$store.dispatch(`${METADATA_NAMESPACE}/${LOAD_METADATA_CONTENT_BY_ID}`, {
           metadataId: this.metadataId,
         });
+      }
+    },
+    userLoading() {
+      if (!this.userLoading && this.user?.id) {
+        this.fetchUserOrganisationData();
       }
     },
   },
