@@ -36,42 +36,26 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-container fluid
-                     class="py-2 px-4 "
+      <v-row dense class="pt-4">
+
+        <v-col v-for="(item, index) in datesField"
+            :key="`${item}_${index}`"
+               cols="12"
+               md="6"
+               sm="4"
         >
-<!--
-          class="py-2 px-4 heightAndScroll"
--->
-          <v-row
-              v-for="(item, index) in datesField"
-              :key="`${item}_${index}`"
-              dense
-          >
-            <v-col cols="4"
-                   md="6"
-                   class="pt-2 pr-2 shrink">
+          <v-row no-gutters dense>
+
+            <v-col cols="5"
+                   class="pt-2 px-sm-2 shrink">
               <div class="text-body-1">
                 {{ item.dateType }}
               </div>
 
-<!--
-              <v-icon>category</v-icon>
-              {{ item.dateType }}
--->
-<!--
-              <v-text-field
-                  dense
-                  readonly
-                  outlined
-                  prepend-icon="category"
-                  :value="item.dateType"
-                  :error-messages="validationErrors.dates[index].dateType"
-              />
--->
             </v-col>
 
-            <v-col class="">
+            <v-col cols="7" >
+
               <BaseStartEndDate
                   :startDate="item.dateStart"
                   :startDateProperty="startDateProperty"
@@ -85,8 +69,9 @@
                   :readOnlyExplanation="readOnlyExplanation"
               />
             </v-col>
+
           </v-row>
-        </v-container>
+        </v-col>
       </v-row>
 
     </v-container>

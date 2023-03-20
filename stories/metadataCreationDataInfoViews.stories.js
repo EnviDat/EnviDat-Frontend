@@ -71,7 +71,12 @@ const datesArrayFilled = [
   },
   {
     [DATE_PROPERTY_DATE_TYPE]: 'collected',
-    [DATE_PROPERTY_START_DATE]: '2023-08-01',
+    [DATE_PROPERTY_START_DATE]: '2019-08-01',
+    [DATE_PROPERTY_END_DATE]: '2023-09-01',
+  },
+  {
+    [DATE_PROPERTY_DATE_TYPE]: 'modeled',
+    [DATE_PROPERTY_START_DATE]: '2021-08-01',
     [DATE_PROPERTY_END_DATE]: '2023-09-01',
   },
 ];
