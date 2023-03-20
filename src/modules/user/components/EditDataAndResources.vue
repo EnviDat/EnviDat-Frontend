@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="6">
         <v-row v-if="selectedResource">
-          <v-col v-if="resourceUploadActive" >
+          <v-col v-if="resourceEditingActive" >
             <!-- prettier-ignore -->
             <EditResource v-bind="editResourceObject"
                           @closeClicked="catchEditResourceClose"
@@ -12,7 +12,7 @@
             />
           </v-col>
 
-          <v-col v-if="!resourceUploadActive" >
+          <v-col v-if="!resourceEditingActive" >
             <EditResourceRedirect title="Edit Selected Resource"
                                   :text="editResourceRedirectText"
                                   buttonText="Edit Resources"
@@ -214,6 +214,13 @@ export default {
       }
 
       return this.userEditMetadataConfig?.resourceUploadActive || false;
+    },
+    resourceEditingActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.resourceEditingActive || false;
+      }
+
+      return this.userEditMetadataConfig?.resourceEditingActive || false;
     },
     metadataId() {
       return this.$route?.params?.metadataid || null;
