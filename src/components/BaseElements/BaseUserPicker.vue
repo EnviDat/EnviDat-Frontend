@@ -16,6 +16,7 @@
           v-model="pickedUsers"
           :items="users"
           outlined
+          :dense="dense"
           append-icon="arrow_drop_down"
           :readonly="readonly"
           :hint="hint"
@@ -95,6 +96,10 @@ export default {
     userTagsCloseable: {
       type: Boolean,
       default: true,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
     },
     errorMessages: {
       type: String,

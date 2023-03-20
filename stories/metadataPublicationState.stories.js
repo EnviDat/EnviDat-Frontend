@@ -23,7 +23,7 @@
    'draft', 'unpublished', 'pending', 'published',
  ];
 
- export const MetadataState_AllStates = () => ({
+ export const MetadataStateAllStates = () => ({
    components: { MetadataStateChip },
    template: `
      <div>

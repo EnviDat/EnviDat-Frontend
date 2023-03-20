@@ -15,7 +15,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
 import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
@@ -31,14 +30,8 @@ import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPr
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 
-import { getTagColor, sortObjectArray } from '@/factories/metaDataFactory';
+import { getTagColor } from '@/factories/metaDataFactory';
 import { getPopularTags } from '@/factories/metadataFilterMethods';
-
-import {
-  createAuthors,
-  getFullAuthorsFromDataset,
-  extractAuthorsMap,
-} from '@/factories/authorFactory';
 
 import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
@@ -74,22 +67,6 @@ const placeholderKeywordsGenericProps = {
   componentTitle: 'Metadata Keywords',
   disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
 };
-
-
-const metadataCards = [];
-
-for (let i = 0; i < unFormatedMetadataCards.length; i++) {
-  const el = unFormatedMetadataCards[i];
-  el.author = createAuthors(el);
-  metadataCards.push(el);
-}
-
-
-const authorsMap = extractAuthorsMap(metadataCards);
-const authors = getFullAuthorsFromDataset(authorsMap, metadataCards[1]);
-
-let existingAuthors = Object.values(authorsMap);
-existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
 export default {
@@ -698,71 +675,6 @@ export const EditCustomFieldViews = () => ({
     }),
   });
 
-export const EditMetadataHeaderViews = () => ({
-    components: { EditMetadataHeader },
-    template: `
-    <v-col>
-
-      <v-row>
-        Edit Metadata Header fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataHeader v-bind="emptyFirstGenericProps" />
-        </v-col>
-      </v-row>
-
-
-      <v-row>
-        Edit Metadata Header fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditMetadataHeader v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        // this.emptyFirstGenericProps = updateObj.data;
-        if (updateObj.data?.id === this.emptyFirstGenericProps.id) {
-          this.emptyFirstGenericProps = updateObj.data;
-        }
-        if (updateObj.data?.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      emptyFirstGenericProps: {
-        id: '1',
-        existingAuthors,
-        metadataTitle: '',
-        contactEmail: '',
-        contactGivenName: '',
-        contactSurname: '',
-        existingEnviDatUsers: authors,
-      },
-      genericProps: {
-        id: '2',
-        existingAuthors,
-        metadataTitle: 'My Glorious Title',
-        contactEmail: 'sarah@smith.com',
-        contactGivenName: 'Sarah',
-        contactSurname: 'Miller',
-      },
-    }),
-  });
 
 export const EditMetadataDescriptionViews = () => ({
     components: { EditDescription },
