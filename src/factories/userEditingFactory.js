@@ -47,6 +47,20 @@ import {
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 
+const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
+const EditDescription = () => import('@/modules/user/components/EditDescription.vue');
+const EditKeywords = () => import('@/modules/user/components/EditKeywords.vue');
+const EditAuthorList = () => import('@/modules/user/components/EditAuthorList.vue');
+
+const EditDataAndResources = () => import('@/modules/user/components/EditDataAndResources.vue');
+const EditDataInfo = () => import('@/modules/user/components/EditDataInfo.vue');
+const EditDataGeo = () => import('@/modules/user/components/EditDataGeo.vue');
+
+const MetadataGenericSubStepper = () => import('@/modules/user/components/MetadataGenericSubStepper.vue');
+const MetadataCreationRelatedInfo = () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue');
+const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
+
+
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
 export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
 
@@ -228,29 +242,26 @@ const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
-    component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
-    // component: EditMetadataHeader,
+    // component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
+    component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
   {
     title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
-    component: () => import('@/modules/user/components/EditDescription.vue'),
-    // component: EditDescription,
+    component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
   },
   {
     title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
-    component: () => import('@/modules/user/components/EditKeywords.vue'),
-    // component: EditKeywords,
+    component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
   },
   {
     title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
-    component: () => import('@/modules/user/components/EditAuthorList.vue'),
-    // component: EditAuthorList,
+    component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
   },
 ];
@@ -259,23 +270,20 @@ const dataDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
-    // component: EditDataAndResources,
-    component: () => import('@/modules/user/components/EditDataAndResources.vue'),
+    component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
   },
   {
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
-    component: () => import('@/modules/user/components/EditDataInfo.vue'),
-    // component: EditDataInfo,
+    component: EditDataInfo,
   },
   {
     title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
-    component: () => import('@/modules/user/components/EditDataGeo.vue'),
-    // component: EditDataGeo,
+    component: EditDataGeo,
   },
 ];
 
@@ -283,8 +291,7 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_METADATA,
     completed: false,
-    // component: MetadataGenericSubStepper,
-    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
+    component: MetadataGenericSubStepper,
     key: EDITMETADATA_MAIN,
     detailSteps: mainDetailSteps,
     stepTitle: mainDetailSteps[0].title,
@@ -293,8 +300,7 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
-    // component: MetadataGenericSubStepper,
-    component: () => import('@/modules/user/components/MetadataGenericSubStepper.vue'),
+    component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
     detailSteps: dataDetailSteps,
     stepTitle: dataDetailSteps[0].title,
@@ -303,15 +309,13 @@ export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
-    // component: MetadataCreationRelatedInfo,
-    component: () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue'),
+    component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
   },
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
-    // component: MetadataCreationPublicationInfo,
-    component: () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue'),
+    component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
   },
 ];
