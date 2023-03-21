@@ -229,6 +229,7 @@ export const MetadataHeaderViews = () => ({
           :contactIcon="contactIcon"
           :mailIcon="mailIcon"
           :licenseIcon="licenseIcon"
+          show-edit-button
         />
       </v-col>
     </v-row>
