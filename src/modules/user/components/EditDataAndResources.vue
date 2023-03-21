@@ -127,12 +127,12 @@ import {
   FETCH_USER_DATA, GET_USER_LIST,
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
-  USER_NAMESPACE,
+  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
-import { mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
@@ -198,6 +198,9 @@ export default {
     subscribeOnUppyEvent('complete', this.uploadCompleted);
     subscribeOnUppyEvent('error', this.uploadError);
 
+    this.$nextTick(() => {
+      this.loadEnvidatUsers();
+    });
   },
   beforeDestroy() {
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
@@ -207,6 +210,10 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    ...mapGetters(USER_SIGNIN_NAMESPACE, [
+      'user',
+      'userLoading',
+    ]),
     ...mapState(USER_NAMESPACE, ['envidatUsers']),
     resourceUploadActive() {
       if (this.$store) {
@@ -257,6 +264,7 @@ export default {
         ...this.selectedResource,
         ...mergedSize,
         userEditMetadataConfig,
+        envidatUsers: this.envidatUsers,
       };
     },
     selectedResource() {
@@ -275,9 +283,9 @@ export default {
     },
   },
   methods: {
-    async loadEnvidatUsers() {
-      if (!this.envidatUsers) {
-        await this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+    loadEnvidatUsers() {
+      if (!this.envidatUsers && this.user && this.$store) {
+        this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
           {
             action: ACTION_GET_USER_LIST,
             body: {
