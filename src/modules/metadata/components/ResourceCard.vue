@@ -122,29 +122,26 @@
       class="ma-0 pa-2"
       style="position: absolute; bottom: 0; right: 55px;"
     >
-      <base-icon-button
-        v-if="maxDescriptionLengthReached"
-        :class="isProtected ? 'mr-2' : ''"
-        material-icon-name="expand_more"
-        :iconColor="showFullDescription ? 'primary' : 'accent'"
-        color="accent"
-        :fillColor="
-          showFullDescription ? $vuetify.theme.themes.light.accent : ''
-        "
-        outlined
-        :rotateOnClick="true"
-        :rotateToggle="showFullDescription"
-        :tooltipText="
-          showFullDescription
-            ? 'Hide full description'
-            : 'Show full description'
-        "
-        @clicked="showFullDescription = !showFullDescription"
+      <base-icon-button v-if="maxDescriptionLengthReached"
+                        :class="isProtected ? 'mr-2' : ''"
+                        material-icon-name="expand_more"
+                        :iconColor="showFullDescription ? 'primary' : 'accent'"
+                        color="accent"
+                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
+                        outlined
+                        :rotateOnClick="true"
+                        :rotateToggle="showFullDescription"
+                        :tooltipText="
+                          showFullDescription
+                            ? 'Hide full description'
+                            : 'Show full description'
+                        "
+                        @clicked="showFullDescription = !showFullDescription"
       />
     </v-card-actions>
 
     <v-container
-      v-if="showGenericOpenButton"
+      v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px;"
       :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
