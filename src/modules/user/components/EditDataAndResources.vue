@@ -96,7 +96,6 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   UPLOAD_ERROR,
-  UPLOAD_STATE_RESOURCE_UPDATED,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
@@ -284,7 +283,7 @@ export default {
   },
   methods: {
     loadEnvidatUsers() {
-      if (!this.envidatUsers && this.user && this.$store) {
+      if (this.$store && !this.envidatUsers && this.user) {
         this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
           {
             action: ACTION_GET_USER_LIST,
@@ -301,9 +300,7 @@ export default {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-/*
       console.log(`Starting upload ${id} for files ${fileIDs}`);
-*/
 
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
@@ -312,10 +309,8 @@ export default {
     },
     uploadProgress(progress) {
       // console.log(`upload progress: ${progress}`);
-/*
       this.uploadProgessText = `upload progress: ${progress}`;
       this.uploadProgressIcon = 'check';
-*/
 
       eventBus.emit(UPLOAD_STATE_UPLOAD_PROGRESS, { id: UPLOAD_STATE_UPLOAD_PROGRESS, progress });
     },
@@ -323,10 +318,8 @@ export default {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
-/*
       console.log('successful files:', result.successful)
       console.log('failed files:', result.failed)
-*/
 
       let message = '';
 /*
@@ -366,9 +359,9 @@ export default {
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
-      });
+      }, 500);
 
     },
     uploadError(error) {
@@ -408,55 +401,9 @@ export default {
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
 
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
-    },
-    renameResource(newRes) {
-      // create a local copy because it might come directly from the $store
-      const resource = {... newRes};
-
-      // get new resource and adjust the name
-      let resName = resource.url;
-      const splits = resource.url.split('/');
-      if (splits.length > 0) {
-        resName = splits[splits.length - 1];
-
-        const extSplits = resName.split('.');
-        if (extSplits.length === 1) {
-          resName = extSplits[0];
-        } else if (extSplits.length > 1) {
-          resName = extSplits[extSplits.length - 1];
-        }
-      }
-
-      // changed the name to the last part of the url, because urls can be very long
-      resource.name = resName;
-
-      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
-
-      eventBus.emit(UPLOAD_STATE_RESOURCE_UPDATED, { id: UPLOAD_STATE_RESOURCE_UPDATED });
-    },
-    selectResourceAndUpdateList(resource) {
-
-      // preselect it so the user can directly edit details
-      // eventBus.emit(SELECT_EDITING_RESOURCE, resource.id);
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, resource.id);
-
-      eventBus.emit(SAVE_EDITING_RESOURCE, resource);
-
-      // is this.selectedResource set?
-
-/*
-      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
-
-      // is the needed? shouldn't be right!?
-
-      // populate the new list of resources
-      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_RESOURCES,
-        data: resources,
+      this.$nextTick(() => {
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
-*/
-
     },
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);

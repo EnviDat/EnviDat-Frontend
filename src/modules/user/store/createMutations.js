@@ -26,6 +26,7 @@ import {
 
 import { updateResource } from '@/factories/userEditingFactory';
 
+import { cleanResourceForFrontend, getFrontendJSON } from '@/factories/mappingFactory';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -45,6 +46,10 @@ export default {
 
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
+
+    // convert properties and stringified json to match the frontend structure
+    resource = getFrontendJSON(stepKey, resource);
+    resource = cleanResourceForFrontend(resource);
 
     // make resource selectable
     enhanceElementsWithStrategyEvents(

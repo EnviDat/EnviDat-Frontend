@@ -397,12 +397,62 @@ export function getFrontendJSON(stepKey, data) {
   return frontEndJson;
 }
 
+
+function stringifyResourceForBackend(resource) {
+  let resourceSize = resource.resource_size;
+
+  if (typeof resourceSize === 'object') {
+    try {
+      resourceSize = JSON.stringify({
+        size_value: resourceSize.size_value?.toString() || '',
+        size_units: resourceSize.size_units?.toString().toLowerCase() || '',
+      });
+    } catch (e) {
+      console.error(`Tried stringify resourceSize ${e}`);
+      resourceSize = JSON.stringify({
+        size_value: '',
+        size_units: '',
+      });
+    }
+  }
+
+  let restricted = resource.restricted;
+
+  if (typeof restricted === 'object') {
+    try {
+      restricted = JSON.stringify({
+        level: restricted.level?.toString() || 'public',
+        allowed_users: restricted.allowed_users?.toString() || '',
+        shared_secret: restricted.shared_secret?.toString() || '',
+      });
+    } catch (e) {
+      console.error(`Tried stringify restricted ${e}`);
+      restricted = JSON.stringify({
+        level: 'public',
+        allowed_users: '',
+        shared_secret: '',
+      });
+    }
+  }
+
+  return {
+    ...resource,
+    resourceSize,
+    restricted,
+  }
+}
+
 function cleanListForBackend(elementList, mappingKey) {
 
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
-    const cleaned = getBackendJSON(mappingKey, element);
+    let cleaned = getBackendJSON(mappingKey, element);
+
+    if (mappingKey === EDITMETADATA_DATA_RESOURCE) {
+      cleaned = stringifyResourceForBackend(cleaned);
+    }
+
     cleanedElements.push(cleaned);
   }
 

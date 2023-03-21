@@ -780,24 +780,6 @@ export default {
           objectToValidate,
           this.validations, this.validationErrors);
     },
-    getRestrictedJSONString() {
-      const obj = {
-        allowed_users: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
-        level: this.writeRestrictionLvl,
-        shared_secret: '',
-      };
-
-      return JSON.stringify(obj);
-    },
-    getResourceSizeJSONString() {
-
-      const obj = {
-        size_value: this.isLink ? this.sizeField.toString() : '',
-        size_units: this.isLink ? this.sizeFormatField.toLowerCase() : '',
-      };
-
-      return JSON.stringify(obj);
-    },
     saveResourceClick() {
 
       const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());
@@ -807,11 +789,18 @@ export default {
         description: this.descriptionField,
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
-        restricted: this.getRestrictedJSONString(),
+        restricted: {
+          allowedUsers: this.hasAllowedUsersField ? this.allowedUsersField || '' : '',
+          level: this.writeRestrictionLvl,
+          sharedSecret: '',
+        },
         format: this.formatField.toLowerCase(),
         // don't set the "size" directly because this is done
         // via the file upload
-        resourceSize: this.getResourceSizeJSONString(),
+        resourceSize: {
+          sizeValue: this.isLink ? this.sizeField.toString() : '',
+          sizeUnits: this.isLink ? this.sizeFormatField.toLowerCase() : '',
+        },
       };
 
       this.$emit('saveResource', newGenericProps);
