@@ -10,16 +10,14 @@
  */
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
   title: '4 Filtering / SearchBarView',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 

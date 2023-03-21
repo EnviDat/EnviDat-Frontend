@@ -10,7 +10,7 @@
  */
 
 // eslint-disable-next-line import/extensions
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
 import {
   eventBus,
@@ -49,15 +49,10 @@ export default {
   // component: TextCardListLayout,
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const loadTextPreview = () => {
   eventBus.emit(OPEN_TEXT_PREVIEW, txtPreviewFile);

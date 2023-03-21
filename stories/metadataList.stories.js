@@ -13,7 +13,7 @@ import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import globalMethods from '@/factories/globalMethods';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
 import metadata from './js/metadata';
@@ -32,15 +32,9 @@ export default {
   component: MetadataList,
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
-
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { MetadataList },

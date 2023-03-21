@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
 import metadata from './js/metadata';
@@ -19,19 +19,11 @@ export default {
   title: '9 Editing Metadata / Related Publication List',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-
 const relatedPubText = metadata[2].related_publications;
-
-
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { EditRelatedPublicationsList },

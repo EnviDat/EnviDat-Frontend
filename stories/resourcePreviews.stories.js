@@ -12,7 +12,8 @@
  */
 
 import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+
 
 // const readme1 = './testdata/bender2020_readme.txt';
 // const readme2 = './testdata/10-16904-envidat-30_readme.txt';
@@ -21,15 +22,10 @@ export default {
   title: '3 Cards / Resource Previews',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { TextPreviewCard },

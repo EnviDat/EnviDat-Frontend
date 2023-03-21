@@ -12,16 +12,15 @@
 /* eslint-disable object-property-newline */
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
   title: '9 Editing Metadata / Add Related Publication Widget',
   decorators: [],
-  parameters: {},
+  parameters: {
+    ...envidatViewportParameters,
+  },
 };
-
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const keys = Object.keys(relatedPublicCitationTesting);
 

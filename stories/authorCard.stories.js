@@ -12,7 +12,7 @@ import {
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import authorCollection from './testdata/authorCollection.json';
 
 import unFormatedMetadataCards from './js/metadata';
@@ -45,15 +45,10 @@ export default {
   title: '3 Cards / Author Cards',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { AuthorCard },

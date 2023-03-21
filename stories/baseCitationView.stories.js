@@ -9,7 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import { createCitation } from '@/factories/metaDataFactory';
 
@@ -21,9 +21,7 @@ export default {
   title: '1 Base Elements / Citation View',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
@@ -46,10 +44,6 @@ const citation2 = {
 const citation2 = createCitation(metadata[2]);
 const citation4 = createCitation(citationTesting);
 */
-
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { BaseCitationView },

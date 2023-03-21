@@ -11,7 +11,7 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import BaseDatePicker from '@/components/BaseElements/BaseDatePicker.vue';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 /*
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 */
@@ -20,15 +20,9 @@ export default {
   title: '1 Base Elements / Date picker',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
-
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 
 const Template = (args, { argTypes }) => ({

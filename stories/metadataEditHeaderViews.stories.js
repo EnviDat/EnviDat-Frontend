@@ -22,7 +22,7 @@ import {
 } from '@/factories/authorFactory';
 
 import categoryCards from '@/store/categoryCards';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadataset from './js/metadata';
 
 const unFormatedMetadataCards = metadataset;
@@ -53,15 +53,10 @@ export default {
   title: '9 Editing Metadata / Metadata Header Views',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const EditMetadataHeaderTemplate = (args, { argTypes }) => ({
   components: { EditMetadataHeader },

@@ -10,7 +10,7 @@
  */
 
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import { MINIMAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
@@ -23,15 +23,10 @@ export default {
   title: '9 Editing Metadata / Data Info Views',
   decorators: [],
   parameters: {
-    viewport: {
-      viewports: MINIMAL_VIEWPORTS,
-    },
+    ...envidatViewportParameters,
   },
 };
 
-const mobileViewportParams =  { viewport: { defaultViewport: 'mobile1' } };
-const mobileLargeViewportParams = { viewport: {defaultViewport: 'mobile2' } };
-const tabletViewportParams = { viewport: { defaultViewport: 'tablet' } };
 
 const Template = (args, { argTypes }) => ({
   components: { EditDataInfo },
@@ -51,12 +46,6 @@ const Template = (args, { argTypes }) => ({
     },
   },
 });
-
-const datesArrayEmpty = [{
-  [DATE_PROPERTY_DATE_TYPE]: '',
-  [DATE_PROPERTY_START_DATE]: '',
-  [DATE_PROPERTY_END_DATE]: '',
-}];
 
 const datesArrayFilled = [
   {
@@ -82,7 +71,6 @@ const datesArrayFilled = [
 ];
 
 export const EditDataInfoEmpty = Template.bind({});
-EditDataInfoEmpty.args = { dates: datesArrayEmpty };
 export const EditDataInfoFilled = Template.bind({});
 EditDataInfoFilled.args = {
   dates: datesArrayFilled,
