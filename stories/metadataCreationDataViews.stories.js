@@ -50,7 +50,7 @@ for (let i = 0; i < unFormatedMetadataCards.length; i++) {
 
 
 export default {
-  title: '9 Editing Metadata / Data Infos',
+  title: '9 Editing Metadata / Resource Views',
   decorators: [],
   parameters: {},
 };

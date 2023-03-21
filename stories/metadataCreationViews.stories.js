@@ -19,11 +19,8 @@ import EditDescription from '@/modules/user/components/EditDescription.vue';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
-import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
-import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
@@ -36,7 +33,6 @@ import storyTags from '@/modules/metadata/store/metadataTags';
 import categoryCards from '@/store/categoryCards';
 import metadataset from './js/metadata';
 
-const unFormatedMetadataCards = metadataset;
 const tagsFromDatasets = getPopularTags(metadataset, '', 1);
 
 for (let i = 0; i < tagsFromDatasets.length; i++) {
@@ -106,132 +102,6 @@ export const EditingKeywordsPlaceholder = () => ({
     data: () => ({
       genericProps: placeholderKeywordsGenericProps,
       storyTags5,
-    }),
-  });
-
-export const EditRelatedDatasetsViews = () => ({
-    components: { EditRelatedDatasets },
-    template: `
-    <v-col>
-
-      <v-row>
-        <v-col cols="6">
-        Edit Related Datasets fields unfilled
-        </v-col>
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col cols="6">
-          <EditRelatedDatasets v-bind="genericProps" 
-                                :allDatasets="allDatasets" />
-        </v-col>
-        
-        <v-col cols="6">
-          <EditRelatedDatasets v-bind="genericPropsFilled"
-                                :allDatasets="allDatasets" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-        eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    mounted() {
-        this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
-        this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
-    },
-    beforeDestroy() {
-        eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-        editComponentsChanged(updateObj) {
-            if (updateObj.data.id === this.genericProps.id) {
-                this.genericProps = updateObj.data;
-                // this.genericProps.publications.text = this.genericProps.textareaContent;
-            }
-            if (updateObj.data.id === this.genericPropsFilled.id) {
-                this.genericPropsFilled = updateObj.data;
-                // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
-            }
-        },
-    },
-    data: () => ({
-        relatedDatasetsText: '',
-        relatedDatasetsText2: `https://www.envidat.ch/#/metadata/total_basal_area-2
-            https://www.envidat.ch/#/metadata/salvage_logging_star-186
-        `,
-        allDatasets: unFormatedMetadataCards,
-        genericProps: {
-            relatedDatasetsText: '',
-            id: '1',
-        },
-        genericPropsFilled: {
-            id: '2',
-            relatedDatasetsText: '',
-        },
-    }),
-})
-
-export const EditRelatedPublicationViews = () => ({
-    components: { EditRelatedPublications },
-    template: `
-    <v-col>
-
-      <v-row>
-        Edit Related Publications fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditRelatedPublications v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-
-      <v-row>
-        Edit Related Publications fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditRelatedPublications v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data.id === this.genericProps.id) {
-          this.genericProps = updateObj.data;
-         // this.genericProps.publications.text = this.genericProps.textareaContent;
-        }
-        if (updateObj.data.id === this.genericPropsFilled.id) {
-          // this.genericPropsFilled = updateObj.data;
-          this.genericPropsFilled.relatedPublicationsText = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      genericProps: {
-        relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        id: '1',
-      },
-      genericPropsFilled: {
-        id: '2',
-        labelTextarea: 'Related Publications',
-        subtitlePreview: 'Preview',
-        showPlaceholder: false,
-        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
-        // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
-      },
     }),
   });
 
@@ -714,27 +584,4 @@ contribute something to the general goal of your product. `,
         };
       },
     },
-});
-
-export const MetadataCreationRelatedInfoStep = () => ({
-  components: { MetadataCreationRelatedInfo },
-  template: `
-    <v-col>
-    
-      <v-row>
-        MetadataCreationRelatedInfo with Placeholder
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <MetadataCreationRelatedInfo v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  data: () => ({
-    genericProps: placeholderKeywordsGenericProps,
-    storyTags5,
-  }),
 });

@@ -20,7 +20,7 @@ import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 
 
 export default {
-  title: '9 Editing Metadata / Data Infos',
+  title: '9 Editing Metadata / Data Info Views',
   decorators: [],
   parameters: {
     viewport: {

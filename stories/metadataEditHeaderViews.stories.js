@@ -50,7 +50,7 @@ existingAuthors = sortObjectArray(existingAuthors, 'lastName');
 
 
 export default {
-  title: '9 Editing Metadata / Main Infos / Edit Metadata Header',
+  title: '9 Editing Metadata / Metadata Header Views',
   decorators: [],
   parameters: {
     viewport: {
