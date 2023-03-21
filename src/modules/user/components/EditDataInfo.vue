@@ -4,14 +4,12 @@
 
     <v-row>
       <v-col cols="12"
-             md="5"
-             lg="4">
+             md="5" >
         <EditDataDates :dates="dates" />
       </v-col>
 
       <v-col cols="12"
-             md="7"
-             lg="8">
+             md="7" >
         <EditDataLicense :dataLicenseId="dataLicenseId" />
       </v-col>
     </v-row>
