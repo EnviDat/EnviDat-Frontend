@@ -46,8 +46,7 @@
                           :multiplePick="true"
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
-                          :readonly="loading || mixinMethods_isFieldReadOnly('authors')"
-                          :hint="mixinMethods_readOnlyHint('authors')"
+                          :hint="labels.authorPickHint"
                           @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
@@ -223,7 +222,8 @@ export default {
     labels: {
       title: EDIT_METADATA_AUTHORS_TITLE,
       instructions: 'Here are can add authors from other published datasets to your dataset.',
-      userPickInstructions: 'Pick an author from the list to add to your dataset. Start typing the name in the text field to search for an author. To remove click on the close icon of an author.',
+      userPickInstructions: 'Pick an author from the list to add to your dataset. To remove click on the close icon of an author.',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
     removedAuthors: [],

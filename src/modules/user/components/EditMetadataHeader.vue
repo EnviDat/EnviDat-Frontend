@@ -234,6 +234,7 @@
 
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
+                          :hint="labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -777,6 +778,7 @@ export default {
       placeholderContactSurname: 'Enter contact surname name here',
       previewText: 'Metadata Header Preview',
       authorDropdown: 'Click here and start typing to select an existing EnviDat author',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     validationProperties: [
       'contactEmail',

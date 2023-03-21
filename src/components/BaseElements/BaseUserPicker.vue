@@ -20,12 +20,14 @@
           append-icon="arrow_drop_down"
           :readonly="readonly"
           :hint="hint"
+          :persistent-hint="!!hint"
           :prepend-icon="prependIcon"
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
           :search-input.sync="search"
           :error-messages="errorMessages"
+          :menu-props="menuOptions"
           clear-icon="close"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
@@ -129,6 +131,11 @@ export default {
       }
 
       return `No name matching "<strong>${this.search}</strong>".`;
+    },
+    menuOptions() {
+      return {
+        transition: 'fade-transition',
+      }
     },
   },
   methods: {

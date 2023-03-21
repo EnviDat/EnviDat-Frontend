@@ -99,8 +99,7 @@
 
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
-                          :readonly="mixinMethods_isFieldReadOnly('authors')"
-                          :hint="mixinMethods_readOnlyHint('authors')"
+                          :hint="labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -570,6 +569,7 @@ export default {
       authorInstructions: 'Enter an email address of the author.',
       authorOr: '<strong>Or</strong> pick an existing author',
       authorAutoComplete: 'If an author is picked or found with the email address these fields are <strong>autocompleted</strong>!',
+      authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     validationProperties: [
       'email',

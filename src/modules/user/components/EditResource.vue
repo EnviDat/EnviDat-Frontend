@@ -315,12 +315,14 @@
              no-gutters
              class="px-2 pt-3">
 
-        <v-col>
+        <v-col cols="12"
+                class="pt-2">
           <BaseUserPicker :users="envidatUserNameStrings"
                           :pickerLabel="labels.isRestrictedAllowedUsersInfo"
                           multiplePick
                           prependIcon="key"
                           userTagsCloseable
+                          :hint="labels.allowedUsersTypingInfo"
                           :preSelected="preSelectedAllowedUsers"
                           @removedUsers="changeAllowedUsers"
                           @pickedUsers="changeAllowedUsers"
@@ -368,6 +370,7 @@ import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue';
+import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 
 import fileSizeIcon from '@/assets/icons/fileSize.png';
 import fileIcon from '@/assets/icons/file.png';
@@ -886,16 +889,14 @@ export default {
       restricted: 'Access restrictions',
       openAccessInstructions: 'Resource is Open Access, great!',
       openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends providing "Open Access" to research data! Please make your data available to everyone without a barrier, unless it contains sensitive data.',
-      restrictedInstructions: 'Restricted Access is not available for editing yet. Please contact the EnviDat team (<a mailto="envidat@wsl.ch">envidat@wsl.ch</a>) if a resource can not be publicly accessed.',
       isPublicInfo: 'Resource openly accessible to everyone',
-      isNotPublicInfo: 'Resource has restricted accessibility, only users from the same organization have access',
+      isNotPublicInfo: 'Resource has restricted accessibility, only signed in users from the same organization have access',
       isRestrictedInfo: 'Resource is only accessible to users which are signed in',
       isRestrictedAllowedUsersInfo: 'Grant specific users access',
+      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an envidat user.',
       isSameOrganizationInfo: 'Resource is accessible to users in the same organization as the dataset',
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       restrictedNotAllowedUsersInfo: 'No access is granted on a per user basis',
-      restrictedSameOrganizationInfo: 'Access is restricted to users in the same organization as the dataset is',
-      restrictedNotSameOrganizationInfo: 'Access is not restricted based on the users assigend organization',
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
     },
     saveButtonEnabled: false,
@@ -912,6 +913,7 @@ export default {
     notFoundImg,
   }),
   components: {
+    BaseUserPicker,
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
