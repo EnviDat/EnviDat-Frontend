@@ -86,8 +86,7 @@ import {
   eventBus,
   UPLOAD_STATE_RESET,
   UPLOAD_STATE_RESOURCE_CREATED,
-  UPLOAD_STATE_RESOURCE_UPDATED,
-  UPLOAD_STATE_UPLOAD_COMPLETED,
+  UPLOAD_STATE_UPLOAD_COMPLETED, UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
 
@@ -101,8 +100,8 @@ export default {
     eventBus.on(UPLOAD_STATE_RESET, this.resetState);
     eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.on(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
+    eventBus.on(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
     eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-    eventBus.on(UPLOAD_STATE_RESOURCE_UPDATED, this.changeState);
   },
   mounted() {
   },
@@ -110,8 +109,8 @@ export default {
     eventBus.off(UPLOAD_STATE_RESET, this.resetState);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
+    eventBus.off(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
-    eventBus.off(UPLOAD_STATE_RESOURCE_UPDATED, this.changeState);
 
     destroyUppyInstance();
   },
@@ -161,12 +160,15 @@ export default {
       this.currentState = null;
     },
     changeState(event) {
+      console.log('changeState');
       const { id } = event;
-      // console.log(event);
+      console.log(event);
 
       const index = this.states.findIndex(((s) => s.id === id));
       if (index >= 0) {
-        this.currentState =this.states[index];
+        this.currentState = this.states[index];
+        console.log('currentState');
+        console.log(this.currentState.name);
       }
 
     },
@@ -183,20 +185,20 @@ export default {
     currentState: null,
     states: [
       {
-        id: UPLOAD_STATE_RESOURCE_CREATED,
-        name: 'create resource',
-      },
-      {
         id: UPLOAD_STATE_UPLOAD_STARTED,
         name: 'upload started',
       },
       {
-        id: UPLOAD_STATE_UPLOAD_COMPLETED,
-        name: 'upload finished',
+        id: UPLOAD_STATE_RESOURCE_CREATED,
+        name: 'resource created',
       },
       {
-        id: UPLOAD_STATE_RESOURCE_UPDATED,
-        name: 'resource updated',
+        id: UPLOAD_STATE_UPLOAD_PROGRESS,
+        name: 'uploading file',
+      },
+      {
+        id: UPLOAD_STATE_UPLOAD_COMPLETED,
+        name: 'upload finished',
       },
     ],
   }),
