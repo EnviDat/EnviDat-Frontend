@@ -21,6 +21,19 @@
                       :tooltipBottom="true"
                       @clicked="catchBackClicked" />
 
+    <base-icon-button id="MetadataHeaderEditButton"
+                      v-if="showEditButton"
+                      class="ma-2"
+                      :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                      style="position: absolute; top: 0; right: 46px; z-index: 2;"
+                      material-icon-name="edit"
+                      :fillColor="$vuetify.theme.themes.light.accent"
+                      iconColor="black"
+                      color="accent"
+                      tooltipText="Edit metadata"
+                      :tooltipBottom="true"
+                      @clicked="catchEditClicked" />
+
     <v-container fluid
                   class="pa-4">
     <v-row no-gutters
@@ -366,6 +379,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    showEditButton: {
+      type: Boolean,
+      default: false,
+    },
     categoryColor: String,
     organization: String,
     organizationTooltip: String,
@@ -451,6 +468,9 @@ export default {
     },
     catchBackClicked() {
       this.$emit('clickedBack');
+    },
+    catchEditClicked() {
+      this.$emit('clickedEdit');
     },
     iconFlip(icon) {
       return this.dark ? `${icon}_w` : icon;

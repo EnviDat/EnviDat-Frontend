@@ -361,9 +361,9 @@ export function getFileFormat(file) {
 export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
   if (!resource || !resourceOrganizationID || !signedInUserName || !signedInUserOrganizationIds) return false;
 
-  let allowedUsers;
+  let allowedUsers = '';
   const restrictedInfo = resource.restricted;
-  let isProtected = !restrictedInfo;
+  let isProtected = false;
 
   if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
     try {

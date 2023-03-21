@@ -18,6 +18,8 @@
                           :licenseIcon="licenseIcon"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
+                          :showEditButton="showEditButton"
+                          @clickedEdit="catchEditClicked"
                           @clickedAuthor="catchAuthorClicked"
                           @checkSize="resize"
                           :expanded="headerExpanded" />
@@ -83,11 +85,13 @@
 
 import axios from 'axios';
 import { mapGetters, mapState } from 'vuex';
-import { BROWSE_PATH, METADATADETAIL_PAGENAME } from '@/router/routeConsts';
+import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 import {
+  ACTION_USER_SHOW,
+  FETCH_USER_DATA, USER_GET_DATASETS,
   USER_GET_ORGANIZATION_IDS,
   USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE, USER_SIGNIN_SUCCESS,
+  USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 import {
   SET_APP_BACKGROUND,
@@ -164,31 +168,6 @@ export default {
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
 
-    this.$store.watch((state) => state.userSignIn,(value) => {
-      console.log('userSignIn change:');
-      console.log(value);
-    });
-
-    this.$store.watch((state) => state.user,(value) => {
-      console.log('user change:');
-      console.log(value);
-    });
-
-    if (!this.user) {
-      this.$store.subscribe((mutation, state) => {
-        if (mutation.type === `${USER_SIGNIN_NAMESPACE}/${USER_SIGNIN_SUCCESS}`) {
-          console.log('got user?');
-          console.log(state.user);
-
-          this.$nextTick(() => {
-            this.fetchUserOrganisationData();
-          });
-        }
-
-        console.log(mutation.type)
-        console.log(mutation.payload)
-      })
-    }
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -213,6 +192,10 @@ export default {
 
     window.scrollTo(0, 0);
 
+    this.$nextTick(() => {
+      this.fetchUserOrganisationData();
+      this.fetchUserDatasets();
+    });
   },
   /**
    * @description
@@ -227,6 +210,7 @@ export default {
   computed: {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, [
+      'userDatasets',
       'userOrganizationIds',
     ]),
     ...mapGetters(USER_SIGNIN_NAMESPACE, [
@@ -347,11 +331,16 @@ export default {
 
       return this.appScrollPosition < 20;
     },
-    currentSite() {
-      return this.fullScreenConfig?.site || null;
-    },
-    currentLayerConfig() {
-      return this.fullScreenConfig?.layerConfig || null;
+    showEditButton() {
+      const userId = this.user?.id;
+
+      if (!userId || this.userDatasets?.length <= 0) {
+        return false;
+      }
+
+      const matches = this.userDatasets.filter(dSet => dSet.name === this.metadataId || dSet.id === this.metadataId);
+
+      return matches.length > 0;
     },
   },
   methods: {
@@ -710,6 +699,17 @@ export default {
         path: BROWSE_PATH,
       });
     },
+    catchEditClicked() {
+      this.$router.push({
+        name: METADATAEDIT_PAGENAME,
+        params: {
+          metadataid: this.metadataId,
+        },
+        query: {
+          backPath: this.$route.fullPath,
+        },
+      });
+    },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.
      * Either loads it from the backend via action or creates it from the localStorage.
@@ -734,7 +734,29 @@ export default {
       }
     },
     fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      const userId = this.user?.id;
+      if (!userId){
+        return;
+      }
+
+      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
+    },
+    fetchUserDatasets() {
+      const userId = this.user?.id;
+      if (!userId){
+        return;
+      }
+
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+          {
+            action: ACTION_USER_SHOW,
+            body: {
+              id: userId,
+              include_datasets: true,
+            },
+            commit: true,
+            mutation: USER_GET_DATASETS,
+          });
     },
   },
   watch: {
@@ -780,8 +802,9 @@ export default {
       }
     },
     userLoading() {
-      if (!this.userLoading && this.user?.id) {
+      if (!this.userLoading && this.userOrganizationIds?.length <= 0) {
         this.fetchUserOrganisationData();
+        this.fetchUserDatasets();
       }
     },
   },
