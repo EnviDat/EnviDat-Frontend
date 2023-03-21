@@ -103,20 +103,24 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
   for (let i = 0; i < elementList.length; i++) {
     const entry = elementList[i];
+    const idValue = entry[previewProperty];
 
-    let strat = null;
-    if (entriesAreResources && previewProperty === 'url') {
-      // get the click strategy based on the url file extension
-      strat = getPreviewStrategyFromUrlExtension(entry.url);
-    } else {
-      strat = getPreviewStrategy(previewProperty);
-    }
+    if (idValue) {
 
-    if (strat) {
-      entry.openEvent = strat.openEvent;
-      entry.openProperty = entry[previewProperty];
-      entry.openButtonIcon = strat.icon;
-      entry.openButtonTooltip = strat.tooltip;
+      let strat = null;
+      if (entriesAreResources && previewProperty === 'url') {
+        // get the click strategy based on the url file extension
+        strat = getPreviewStrategyFromUrlExtension(entry.url);
+      } else {
+        strat = getPreviewStrategy(previewProperty);
+      }
+
+      if (strat) {
+        entry.openEvent = strat.openEvent;
+        entry.openProperty = idValue;
+        entry.openButtonIcon = strat.icon;
+        entry.openButtonTooltip = strat.tooltip;
+      }
     }
   }
 
