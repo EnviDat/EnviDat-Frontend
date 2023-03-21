@@ -43,6 +43,7 @@
                cols="12"
                md="6"
                sm="4"
+               :class="(index + 1) % 2 === 0 ? 'pl-4 pr-0' : 'px-0'"
         >
           <v-row no-gutters dense>
 
@@ -159,9 +160,7 @@ export default {
           this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
 
         const createdType = 'created';
-        const createdAmount = dates.filter(
-          dObj => dObj.dateType === createdType,
-        ).length;
+        const createdAmount = dates.filter(dObj => dObj.dateType === createdType).length;
 
         if (createdAmount <= 0) {
           dates.push({
@@ -172,9 +171,7 @@ export default {
         }
 
         const collectedType = 'collected';
-        const collectedAmount = dates.filter(
-          dObj => dObj.dateType === collectedType,
-        ).length;
+        const collectedAmount = dates.filter(dObj => dObj.dateType === collectedType).length;
 
         if (collectedAmount <= 0) {
           dates.push({
