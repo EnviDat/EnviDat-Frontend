@@ -1,6 +1,3 @@
-import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-import DataPreviewIframe from '@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue';
-
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
@@ -9,6 +6,9 @@ import {
   SELECT_EDITING_RESOURCE,
 } from './eventBus';
 
+const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
+const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
+const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
 
 export const localIdProperty = 'localId';
 
@@ -25,6 +25,13 @@ export const clickStrategies = [
     openEvent: OPEN_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
+  },
+  {
+    strategyKeys: ['jpg', 'png', 'jpeg'],
+    component: ImagePreviewCard,
+    openEvent: OPEN_TEXT_PREVIEW,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this image',
   },
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
