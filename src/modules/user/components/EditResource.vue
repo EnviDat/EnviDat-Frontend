@@ -113,6 +113,7 @@
                  ref="filePreview"
                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
                  @click="catchImageClick"
+                 @error="catchImageLoadError"
                  alt="resource image preview"/>
 
           <div v-if="!loadingImagePreview && imagePreviewError"
@@ -809,16 +810,14 @@ export default {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
       const vm = this;
-      const reader = new FileReader();
 
       try {
-        reader.onload = () => {
+        vm.$nextTick(() =>{
           const imageRefs = vm.$refs.filePreview;
           const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
-          imageRef.src = reader.result;
-        };
 
-        reader.readAsDataURL(url);
+          imageRef.src = url;
+        })
       } catch (e) {
         this.imagePreviewError = e;
         console.error(`Loading image preview failed: ${e}`);
@@ -828,6 +827,9 @@ export default {
     },
     catchImageClick() {
       this.$emit('previewImageClicked');
+    },
+    catchImageLoadError(event) {
+      this.imagePreviewError = event;
     },
     changeAllowedUsers(pickedUserNames) {
       this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);
