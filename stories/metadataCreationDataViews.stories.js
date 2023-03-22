@@ -31,11 +31,15 @@ import {
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import { cleanListForFrontend, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
+import { cleanListForFrontend, enhanceUserObject, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
 import userList from './testdata/user_list.json';
 
 const envidatUsers = userList?.result || [];
+
+for (let i = 0; i < envidatUsers.length; i++) {
+  envidatUsers[i] = enhanceUserObject(envidatUsers[i]);
+}
 
 const metadataCards = [];
 
