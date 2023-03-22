@@ -21,18 +21,20 @@ import {
   updateResource,
 } from '@/factories/userEditingFactory';
 
-import { populateEditingComponents } from '@/factories/mappingFactory';
+import { cleanResourceForFrontend, getFrontendJSON, populateEditingComponents } from '@/factories/mappingFactory';
 
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCE,
   eventBus,
 } from '@/factories/eventBus';
 
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
 
 import {
-  createErrorMessage, enhanceMetadataFromCategories,
+  createErrorMessage,
+  enhanceMetadataFromCategories,
   extractError,
 } from '@/modules/user/store/mutationFactory';
 
@@ -93,13 +95,15 @@ export default {
 
     resetErrorObject(state);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, message }) {
+  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
 
-    const resource = state.metadataInEditing[stepKey];
-    resource.loading = false;
-    resource.message = message;
+    let fResource = getFrontendJSON(stepKey, resource);
+    fResource = cleanResourceForFrontend(fResource)
+    fResource.loading = false;
+    fResource.message = message;
+    state.metadataInEditing[stepKey] = fResource;
 
-    updateResource(this, state, resource); // still needed?
+    updateResource(this, state, fResource); // still needed?
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
@@ -113,7 +117,7 @@ export default {
     resource.error = errorObj.message;
     resource.errorDetails = errorObj.details;
 
-    // this.dispatch(SET_CONFIG);
+    updateResource(this, state, resource); // still needed?
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
@@ -123,7 +127,9 @@ export default {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
 
     const previousId = getSelectedElement(resources)?.id || '';
-    selectForEditing(this, resources, id, previousId, 'id');
+    const selectedResource = selectForEditing(this, resources, id, previousId, 'id');
+
+    state.metadataInEditing[EDITMETADATA_DATA_RESOURCE] = selectedResource;
   },
   [METADATA_EDITING_SELECT_AUTHOR](state, id) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -136,6 +142,10 @@ export default {
 
     const previousId = getSelectedElement(resources)?.id || '';
     setSelected(this, resources, previousId, 'id', false);
+
+    const selectedResource = state.metadataInEditing[EDITMETADATA_DATA_RESOURCE];
+    selectedResource.id = null;
+    selectedResource.isSelected = false;
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -157,7 +167,6 @@ export default {
     author.existsOnlyLocal = false;
 
     updateAuthors(this, state, author);
-
 
     resetErrorObject(state);
   },

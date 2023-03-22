@@ -784,8 +784,8 @@ export default {
 
       const ckanIsoFormat = formatDateTimeToCKANFormat(new Date());
 
-      const newGenericProps = {
-        ...this.$props,
+      const newResourceProps = {
+        id: this.id,
         description: this.descriptionField,
         name: this.resourceNameField,
         lastModified: ckanIsoFormat,
@@ -803,7 +803,7 @@ export default {
         },
       };
 
-      this.$emit('saveResource', newGenericProps);
+      this.$emit('saveResource', newResourceProps);
     },
     loadImagePreview(url) {
       this.imagePreviewError = null;

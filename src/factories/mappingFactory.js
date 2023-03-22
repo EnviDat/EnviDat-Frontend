@@ -437,7 +437,7 @@ export function stringifyResourceForBackend(resource) {
 
   return {
     ...resource,
-    resourceSize,
+    resource_size: resourceSize,
     restricted,
   }
 }

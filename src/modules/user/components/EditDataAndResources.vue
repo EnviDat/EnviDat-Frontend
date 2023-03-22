@@ -91,7 +91,8 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE,
+  CANCEL_EDITING_RESOURCE, EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   eventBus,
   SAVE_EDITING_RESOURCE,
@@ -104,15 +105,14 @@ import {
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
 // eslint-disable-next-line import/no-cycle
-import {
-  getValidationMetadataEditingObject,
-} from '@/factories/userEditingValidations';
+import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
+
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
-// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
+// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 import {
   getUppyInstance,
@@ -123,13 +123,15 @@ import {
 
 import {
   ACTION_GET_USER_LIST,
-  FETCH_USER_DATA, GET_USER_LIST,
+  FETCH_USER_DATA,
+  GET_USER_LIST,
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
-  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
+  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
-import { getSelectedElement } from '@/factories/userEditingFactory';
+// import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
@@ -267,7 +269,14 @@ export default {
       };
     },
     selectedResource() {
-      return getSelectedElement(this.resources);
+      // return getSelectedElement(this.resources);
+      const resource = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_DATA_RESOURCE);
+
+      if (resource?.id) {
+        return resource;
+      }
+      
+      return null;
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;

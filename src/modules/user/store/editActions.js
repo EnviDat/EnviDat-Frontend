@@ -150,6 +150,7 @@ export default {
         console.log(response);
         commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
           stepKey,
+          resource: response.data.result,
           message: 'Resource saved',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });

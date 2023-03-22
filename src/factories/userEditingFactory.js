@@ -146,9 +146,11 @@ export function setSelected(
     if (match) {
       element.isSelected = selected;
       store._vm.$set(elementList, i, element);
-      return;
+      return element;
     }
   }
+
+  return null;
 }
 
 export function selectForEditing(
@@ -162,7 +164,7 @@ export function selectForEditing(
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
 
-  setSelected(store, elementList, id, propertyToCompare, true);
+  return setSelected(store, elementList, id, propertyToCompare, true);
 }
 
 export function getSelectedElement(elementList) {
