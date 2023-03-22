@@ -93,27 +93,27 @@ export default {
 
     resetErrorObject(state);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { resource, message }) {
+  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, message }) {
 
+    const resource = state.metadataInEditing[stepKey];
     resource.loading = false;
     resource.message = message;
-    updateResource(this, state, resource);
 
-/*
+    updateResource(this, state, resource); // still needed?
+
     setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, METADATA_EDITING_SAVE_RESOURCES);
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
-*/
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
 
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
+    const resource = state.metadataInEditing[stepKey];
+    resource.loading = false;
     const errorObj = createErrorMessage(reason);
-    editingObject.error = errorObj.message;
-    editingObject.errorDetails = errorObj.details;
+    resource.error = errorObj.message;
+    resource.errorDetails = errorObj.details;
 
-    this.dispatch(SET_CONFIG);
+    // this.dispatch(SET_CONFIG);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);

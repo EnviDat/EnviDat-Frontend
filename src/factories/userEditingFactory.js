@@ -19,6 +19,7 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -44,7 +45,9 @@ import {
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
+
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import { createNewBaseResource } from '@/factories/uploadFactory';
 
 
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
@@ -177,6 +180,7 @@ export function getSelectedElement(elementList) {
   return selectedRes;
 }
 
+const emptyResource = createNewBaseResource('');
 
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
@@ -196,6 +200,9 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_RESOURCES]: {
     resources: [],
+  },
+  [EDITMETADATA_DATA_RESOURCE]: {
+    ...emptyResource,
   },
   [EDITMETADATA_DATA_INFO]: {
     dates: [],

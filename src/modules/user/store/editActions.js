@@ -15,8 +15,10 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
+  getBackendJSON,
   mapFrontendToBackend,
   populateEditingComponents,
+  stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
 
 import {
@@ -24,10 +26,7 @@ import {
   METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 
-import {
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_RESOURCE,
-} from '@/factories/eventBus';
+import { EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 
 import {
   ACTION_METADATA_EDITING_PATCH_DATASET,
@@ -44,8 +43,6 @@ import {
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
-  METADATA_EDITING_SAVE_RESOURCE,
-  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
@@ -66,29 +63,6 @@ const sleep = (milliseconds) =>
 
 
 export default {
-  async [METADATA_EDITING_SAVE_RESOURCE]({ commit, dispatch }, { data }) {
-
-    // saving of this resource into the list of resources happens here:
-/*
-    commit(METADATA_EDITING_SAVE_RESOURCE, data);
-*/
-
-  /*
-      const metadataId = id;
-      const resources = this.getters[`${USER_NAMESPACE}/resources`];
-  */
-
-    // after saving the resource to the list in the state
-    // call the action to save it in the backend
-    await dispatch(METADATA_EDITING_PATCH_RESOURCE, {
-      stepKey: EDITMETADATA_DATA_RESOURCE,
-      data,
-    });
-
-/*
-    commit(METADATA_EDITING_SAVE_RESOURCE_SUCCESS, data);
-*/
-  },
   async [METADATA_EDITING_SAVE_AUTHOR]({ commit }, author) {
     commit(METADATA_EDITING_SAVE_AUTHOR, author);
 
@@ -118,47 +92,6 @@ export default {
     );
 
   },
-/*
-  async [METADATA_EDITING_PATCH_DATASET_PROPERTY]({ commit }, { stepKey, id, property, value}) {
-
-    commit(METADATA_EDITING_PATCH_DATASET_PROPERTY, stepKey);
-
-    // eslint-disable-next-line no-unreachable
-    const apiKey = this.state.userSignIn.user?.apikey || null;
-
-    const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    let url = actionUrl;
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    if (useTestdata) {
-      // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-    }
-    const snakeCaseProperty = toSnakeCase(property);
-
-    await axios.post(url, {
-      id,
-      [snakeCaseProperty]: value,
-      },
-      {
-        headers: {
-          Authorization: apiKey,
-        },
-      })
-      .then((response) => {
-        commit(METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS, {
-          stepKey,
-          message: `${property} saved ${response.data.result[property]}`,
-        });
-      })
-      .catch((reason) => {
-        commit(METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR, {
-          stepKey,
-          reason,
-        });
-      });
-  },
-*/
   async [METADATA_EDITING_PATCH_DATASET_OBJECT]({ commit }, { stepKey, data, id }) {
 
     commit(METADATA_EDITING_PATCH_DATASET_OBJECT, stepKey);
@@ -198,23 +131,33 @@ export default {
 
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
+/*
     const categoryCards = this.state.categoryCards;
+*/
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const postData = mapFrontendToBackend(stepKey, data);
+    // create a local copy to avoid mutation of vuex store objects / properties
+    const localData = { ...data };
+    const cleaned = getBackendJSON(stepKey, localData);
+    const postData = stringifyResourceForBackend(cleaned);
 
     await axios.post(url, postData)
       .then((response) => {
+
+        console.log('response');
+        console.log(response);
         commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
           stepKey,
-          message: 'Changes saved',
+          message: 'Resource saved',
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
+/*
         const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
         populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
+*/
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_RESOURCE_ERROR, {

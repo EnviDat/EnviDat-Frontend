@@ -23,7 +23,6 @@ import Tus from '@uppy/tus';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_DELETE_RESOURCE,
-  METADATA_EDITING_SAVE_RESOURCE,
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
   USER_NAMESPACE,
@@ -31,11 +30,10 @@ import {
 
 import { urlRewrite } from '@/factories/apiFactory';
 import {
-  EDITMETADATA_DATA_RESOURCE,
   eventBus,
   UPLOAD_ERROR,
   UPLOAD_STATE_RESET,
-  UPLOAD_STATE_RESOURCE_CREATED, UPLOAD_STATE_RESOURCE_UPDATED,
+  UPLOAD_STATE_RESOURCE_CREATED,
 } from '@/factories/eventBus';
 
 
@@ -59,26 +57,45 @@ const defaultRestrictions = {
   minNumberOfFiles: 1,
 };
 
-function createNewBaseResource(metadataId) {
+/**
+ * returns a resource object with all the properties most will be filled by the backend.
+ * Some specific ones have to be set depending on the usage of a file upload or a linking of
+ * a resource via url
+ *
+ * @param metadataId
+ * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: null, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, position: number, state: string, last_modified: string, doi: null, resourceType: null}}
+ */
+export function createNewBaseResource(metadataId) {
+
   return {
-    packageId: metadataId,
-    description: null,
-    doi: null,
+    cacheLastUpdated: null,
+    cacheUrl: null,
+    created: '', // set by the backend
+    description: '',
+    doi: '',
     format: '',
-    url: '',
-    urlType: null,
+    hast: '',
+    id: '',
+    lastModified: '',
+    mimetype: null,
+    mimetypeInner: null,
+    name: '',
+    packageId: metadataId,
+    position: 0,
+    resourceSize: {
+      sizeUnits: 'kb',
+      sizeValue: '',
+    },
+    resourceType: null,
     restricted: {
       allowedUsers: '',
       sharedSecret: '',
       level: 'public',
     },
-    resourceSize: {
-      sizeUnits: 'kb',
-      sizeValue: '',
-    },
-    // state: ?,
-    // private: ?
-    // publicationState: null,
+    size: null,
+    state: '',
+    url: '',
+    urlType: null,
   };
 }
 
@@ -141,7 +158,6 @@ export async function initiateMultipart(file) {
   const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
   const payload = {
-    // id: await this.createCKANResource(file),
     id: resourceId,
     name: file.name,
     size: file.size,

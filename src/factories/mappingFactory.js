@@ -398,7 +398,7 @@ export function getFrontendJSON(stepKey, data) {
 }
 
 
-function stringifyResourceForBackend(resource) {
+export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
 
   if (typeof resourceSize === 'object') {
@@ -442,7 +442,7 @@ function stringifyResourceForBackend(resource) {
   }
 }
 
-function cleanListForBackend(elementList, mappingKey) {
+export function cleanListForBackend(elementList, mappingKey) {
 
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
@@ -732,7 +732,7 @@ function populateEditingResources(commit, snakeCaseJSON) {
   const resources = resourceData.resources;
 
   for (let i = 0; i < resources.length; i++) {
-      resources[i] = cleanResourceForFrontend(resources[i]);
+    resources[i] = cleanResourceForFrontend(resources[i]);
   }
 
   enhanceElementsWithStrategyEvents(
