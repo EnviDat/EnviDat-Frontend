@@ -60,17 +60,22 @@ const defaultRestrictions = {
 };
 
 function createNewBaseResource(metadataId) {
-  const restricted = JSON.stringify({
-    allowed_users: '',
-    shared_secret: '',
-    level: 'public',
-  });
-
   return {
     packageId: metadataId,
     description: null,
-    restricted,
     doi: null,
+    format: '',
+    url: '',
+    urlType: null,
+    restricted: {
+      allowedUsers: '',
+      sharedSecret: '',
+      level: 'public',
+    },
+    resourceSize: {
+      sizeUnits: 'kb',
+      sizeValue: '',
+    },
     // state: ?,
     // private: ?
     // publicationState: null,
@@ -90,7 +95,6 @@ function createNewResourceForFileUpload(metadataId, file) {
     format: file.extension || '',
     mimetype: file.type || '',
     name,
-    description: null,
     size,
     urlType: 'upload',
     multipartName: file.name,
@@ -108,17 +112,8 @@ export function createNewResourceForUrl(metadataId, url) {
   return {
     ...baseResourceProperties,
     url,
-    url_type: null,
     format: '',
     name: resourceName,
-    resourceSize: JSON.stringify({
-      size_units: 'kb',
-      size_value: '0',
-    }),
-/*
-    resource_size: "{\"size_units\": \"kb\", \"size_value\": \"\"}",
-    size_value: size / 1024 / 1024,
-*/
   };
 
 }
@@ -248,6 +243,7 @@ export async function requestPresignedUrl(file, partData) {
   }
 }
 
+/*
 export async function updateResourceWithFileUrl(fileUrl, store) {
 
   const metadataId = store?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
@@ -270,6 +266,7 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 
   eventBus.emit(UPLOAD_STATE_RESOURCE_UPDATED, { id: UPLOAD_STATE_RESOURCE_UPDATED });
 }
+*/
 
 export async function completeMultipart(file, uploadData) {
 

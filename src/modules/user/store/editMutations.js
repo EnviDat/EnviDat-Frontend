@@ -50,13 +50,13 @@ import {
   METADATA_EDITING_PATCH_DATASET_PROPERTY,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
   METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
+  METADATA_EDITING_PATCH_RESOURCE,
+  METADATA_EDITING_PATCH_RESOURCE_ERROR,
+  METADATA_EDITING_PATCH_RESOURCE_SUCCESS,
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
-  METADATA_EDITING_SAVE_RESOURCE,
-  METADATA_EDITING_SAVE_RESOURCE_ERROR,
-  METADATA_EDITING_SAVE_RESOURCE_SUCCESS,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
@@ -86,30 +86,38 @@ export default {
 
     }
   },
-  [METADATA_EDITING_SAVE_RESOURCE](state, resource) {
+  [METADATA_EDITING_PATCH_RESOURCE](state, resource) {
 
     resource.loading = true;
     updateResource(this, state, resource);
 
     resetErrorObject(state);
   },
-  [METADATA_EDITING_SAVE_RESOURCE_SUCCESS](state, resource) {
+  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { resource, message }) {
 
     resource.loading = false;
+    resource.message = message;
+    updateResource(this, state, resource);
+
 /*
-    const updateObj = {
-      object: EDITMETADATA_DATA_RESOURCES,
-      data: resource,
-    };
-
-    updateResource(this, state, updateObj);
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, METADATA_EDITING_SAVE_RESOURCES);
+    }, state.metadataSavingMessageTimeoutTime);
 */
-
-    resetErrorObject(state);
   },
-  [METADATA_EDITING_SAVE_RESOURCE_ERROR](state, reason) {
+  [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
 
-    extractError(this, reason);
+    const editingObject = state.metadataInEditing[stepKey];
+    editingObject.loading = false;
+    const errorObj = createErrorMessage(reason);
+    editingObject.error = errorObj.message;
+    editingObject.errorDetails = errorObj.details;
+
+    this.dispatch(SET_CONFIG);
+
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
+    }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_SELECT_RESOURCE](state, id) {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
