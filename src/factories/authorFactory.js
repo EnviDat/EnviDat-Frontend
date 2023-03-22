@@ -499,8 +499,8 @@ export function getNameInitials(userObject) {
     return getInitials(userObject.firstName, userObject.lastName);
   }
 
-  if (userObject.name && userObject.fullname) {
-    return getInitials(userObject.name, userObject.fullname);
+  if (userObject.name && userObject.fullName) {
+    return getInitials(userObject.name, userObject.fullName);
   }
 
   return '';

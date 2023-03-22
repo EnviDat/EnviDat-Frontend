@@ -21,18 +21,20 @@ import {
   updateResource,
 } from '@/factories/userEditingFactory';
 
-import { populateEditingComponents } from '@/factories/mappingFactory';
+import { cleanResourceForFrontend, getFrontendJSON, populateEditingComponents } from '@/factories/mappingFactory';
 
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCE,
   eventBus,
 } from '@/factories/eventBus';
 
 import { SET_CONFIG } from '@/store/mainMutationsConsts';
 
 import {
-  createErrorMessage, enhanceMetadataFromCategories,
+  createErrorMessage,
+  enhanceMetadataFromCategories,
   extractError,
 } from '@/modules/user/store/mutationFactory';
 
@@ -93,27 +95,29 @@ export default {
 
     resetErrorObject(state);
   },
-  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, message }) {
+  [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
 
-    const resource = state.metadataInEditing[stepKey];
-    resource.loading = false;
-    resource.message = message;
+    let fResource = getFrontendJSON(stepKey, resource);
+    fResource = cleanResourceForFrontend(fResource)
+    fResource.loading = false;
+    fResource.message = message;
 
-    updateResource(this, state, resource); // still needed?
+    updateResource(this, state, fResource);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+    const selectedResource = getSelectedElement(resources);
 
-    const resource = state.metadataInEditing[stepKey];
-    resource.loading = false;
-    const errorObj = createErrorMessage(reason);
-    resource.error = errorObj.message;
-    resource.errorDetails = errorObj.details;
-
-    // this.dispatch(SET_CONFIG);
+    if (selectedResource) {
+      selectedResource.loading = false;
+      const errorObj = createErrorMessage(reason);
+      selectedResource.error = errorObj.message;
+      selectedResource.errorDetails = errorObj.details;
+    }
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
@@ -157,7 +161,6 @@ export default {
     author.existsOnlyLocal = false;
 
     updateAuthors(this, state, author);
-
 
     resetErrorObject(state);
   },

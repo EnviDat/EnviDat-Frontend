@@ -182,8 +182,6 @@ export function getSelectedElement(elementList) {
   return selectedRes;
 }
 
-const emptyResource = createNewBaseResource('');
-
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
     metadataTitle: '',
@@ -202,9 +200,6 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_RESOURCES]: {
     resources: [],
-  },
-  [EDITMETADATA_DATA_RESOURCE]: {
-    ...emptyResource,
   },
   [EDITMETADATA_DATA_INFO]: {
     dates: [],
