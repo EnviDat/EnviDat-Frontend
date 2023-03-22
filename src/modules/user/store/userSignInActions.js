@@ -80,10 +80,10 @@ export default {
     // data to patch
     const postData = { id: userId };
 
-    const fullname = `${firstName} ${lastName}`.trim();
+    const fullName = `${firstName} ${lastName}`.trim();
 
-    if (fullname) {
-      postData.fullname = fullname;
+    if (fullName) {
+      postData.fullname = fullName;
     }
 
     if (email) {

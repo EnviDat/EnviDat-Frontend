@@ -146,9 +146,11 @@ export function setSelected(
     if (match) {
       element.isSelected = selected;
       store._vm.$set(elementList, i, element);
-      return;
+      return element;
     }
   }
+
+  return null;
 }
 
 export function selectForEditing(
@@ -162,7 +164,7 @@ export function selectForEditing(
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
 
-  setSelected(store, elementList, id, propertyToCompare, true);
+  return setSelected(store, elementList, id, propertyToCompare, true);
 }
 
 export function getSelectedElement(elementList) {
@@ -450,11 +452,11 @@ export function getUserAutocompleteList(userList) {
       return false;
     }
 
-    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullname?.toLowerCase() === 'admin');
+    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullName?.toLowerCase() === 'admin');
   });
 
 
-  return cleanedList.map((user) => user.fullname || user.display_name);
+  return cleanedList.map((user) => user.fullName || user.displayName);
 }
 
 /**
@@ -494,7 +496,7 @@ export function getAllowedUserNames(allowedUsersString, envidatUsers) {
 
   const allowedUsers = envidatUsers.filter((user) => usersString.includes(user.name));
 
-  return allowedUsers.map((user) => user.fullname || user.display_name);
+  return allowedUsers.map((user) => user.fullName || user.displayName);
 }
 
 /**
@@ -510,7 +512,7 @@ export function getAllowedUsersString(userFullNameArray, envidatUsers) {
     return '';
   }
 
-  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullname || user.display_name));
+  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullName || user.displayName));
 
   const allowedUsers = allowedUserObjs.map((user) => user.name);
 

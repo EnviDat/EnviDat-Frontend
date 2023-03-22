@@ -29,6 +29,8 @@ import {
 } from '@/modules/user/store/mutationFactory';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
+import { enhanceUserObject } from '@/factories/mappingFactory';
+
 import {
   USER_GET_COLLABORATOR_DATASET_IDS,
   USER_GET_COLLABORATOR_DATASET_IDS_ERROR,
@@ -67,7 +69,13 @@ export default {
     state.envidatUsersError = null;
   },
   [GET_USER_LIST_SUCCESS](state, payload) {
-    state.envidatUsers = payload;
+    const users = payload;
+
+    for (let i = 0; i < users.length; i++) {
+      users[i] = enhanceUserObject(users[i]);
+    }
+
+    state.envidatUsers = users;
   },
   [GET_USER_LIST_ERROR](reason) {
     extractError(this, reason, 'envidatUsersError');

@@ -48,7 +48,7 @@
                   justify="end" >
 
             <v-col style="text-align: right; ">
-              {{ signedInUser.fullname }}
+              {{ signedInUser.fullName }}
             </v-col>
 
             <v-col v-if="editingDatasetName"

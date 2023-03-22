@@ -12,9 +12,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
- import { md5Hash } from '@/factories/stringFactory';
+import { enhanceUserObject } from '@/factories/mappingFactory';
 
- import {
+import {
   GET_USER_CONTEXT,
   GET_USER_CONTEXT_ERROR,
   GET_USER_CONTEXT_SUCCESS,
@@ -95,23 +95,6 @@
    state.errorFieldText = '';
  }
 
- function enhanceUserObject(user) {
-   const email = user?.email || null;
-   if (email) {
-     user.emailHash = md5Hash(email);
-   }
-
-   // only use the fullname from ckan api, because the "name" just put together
-   // from the email, when a User signs in the first time with dominik.haas@wsl.ch
-   // the "name" is just dominik_haas-wsl_ch and it's to usable to address
-   const fullName = user?.fullname || user?.fullName || user?.display_name || '';
-
-   if (fullName) {
-     user.fullName = fullName;
-   }
-
-   return user;
- }
 
  export default {
    [GET_USER_CONTEXT](state) {
@@ -121,7 +104,9 @@
    },
    [GET_USER_CONTEXT_SUCCESS](state, payload) {
      state.userLoading = false;
+
      const user = payload.user || null;
+
      if (!user) {
        resetUser(state);
      } else {

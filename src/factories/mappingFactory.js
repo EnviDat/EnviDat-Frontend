@@ -32,6 +32,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  USER_OBJECT,
 } from '@/factories/eventBus';
 
 import {
@@ -52,6 +53,8 @@ import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
+
+import { md5Hash } from '@/factories/stringFactory';
 
 export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
@@ -175,6 +178,25 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
+  ],
+  [USER_OBJECT]: [
+    ['id','id'],
+    ['name','name'],
+    ['fullName','fullname'],
+    ['email','email'],
+    ['apikey','apikey'],
+    ['resetKey','reset_key'],
+    ['created','created'],
+    ['about','about'],
+    ['activityStreamsEmailNotifications','activity_streams_email_notifications'],
+    ['sysadmin','sysadmin'],
+    ['state','state'],
+    ['imageUrl','image_url'],
+    ['displayName','display_name'],
+    ['emailHash','email_hash'],
+    ['numberCreatedPackages','number_created_packages'],
+    ['pluginExtras','plugin_extras'],
+    ['imageDisplayUrl','image_display_url'],
   ],
 };
 
@@ -988,3 +1010,23 @@ export function mergeResourceSizeForFrontend(resource) {
   
   return mergedResourceSize;
 }
+
+export function enhanceUserObject(user) {
+
+  const cleanUser = getFrontendJSON(USER_OBJECT, user);
+
+  const email = cleanUser?.email || null;
+  if (email) {
+    cleanUser.emailHash = md5Hash(email);
+  }
+
+  // only use the fullname from ckan api, because the "name" is not usable to show the users
+  const fullName = cleanUser?.fullName || cleanUser?.displayName || '';
+
+  if (fullName) {
+    cleanUser.fullName = fullName;
+  }
+
+  return cleanUser;
+}
+
