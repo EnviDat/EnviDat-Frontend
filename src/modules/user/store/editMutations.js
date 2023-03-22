@@ -101,23 +101,23 @@ export default {
     fResource = cleanResourceForFrontend(fResource)
     fResource.loading = false;
     fResource.message = message;
-    state.metadataInEditing[stepKey] = fResource;
 
-    updateResource(this, state, fResource); // still needed?
+    updateResource(this, state, fResource);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+    const selectedResource = getSelectedElement(resources);
 
-    const resource = state.metadataInEditing[stepKey];
-    resource.loading = false;
-    const errorObj = createErrorMessage(reason);
-    resource.error = errorObj.message;
-    resource.errorDetails = errorObj.details;
-
-    updateResource(this, state, resource); // still needed?
+    if (selectedResource) {
+      selectedResource.loading = false;
+      const errorObj = createErrorMessage(reason);
+      selectedResource.error = errorObj.message;
+      selectedResource.errorDetails = errorObj.details;
+    }
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
@@ -127,9 +127,7 @@ export default {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
 
     const previousId = getSelectedElement(resources)?.id || '';
-    const selectedResource = selectForEditing(this, resources, id, previousId, 'id');
-
-    state.metadataInEditing[EDITMETADATA_DATA_RESOURCE] = selectedResource;
+    selectForEditing(this, resources, id, previousId, 'id');
   },
   [METADATA_EDITING_SELECT_AUTHOR](state, id) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
@@ -142,10 +140,6 @@ export default {
 
     const previousId = getSelectedElement(resources)?.id || '';
     setSelected(this, resources, previousId, 'id', false);
-
-    const selectedResource = state.metadataInEditing[EDITMETADATA_DATA_RESOURCE];
-    selectedResource.id = null;
-    selectedResource.isSelected = false;
   },
   [METADATA_CANCEL_AUTHOR_EDITING](state) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];

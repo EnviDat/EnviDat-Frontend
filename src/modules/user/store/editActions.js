@@ -131,10 +131,6 @@ export default {
 
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
-/*
-    const categoryCards = this.state.categoryCards;
-*/
-
     const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
@@ -146,8 +142,6 @@ export default {
     await axios.post(url, postData)
       .then((response) => {
 
-        console.log('response');
-        console.log(response);
         commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
           stepKey,
           resource: response.data.result,
@@ -155,10 +149,6 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-/*
-        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
-*/
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_RESOURCE_ERROR, {

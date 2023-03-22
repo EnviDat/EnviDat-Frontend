@@ -104,9 +104,6 @@ import {
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
-// eslint-disable-next-line import/no-cycle
-import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
-
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
@@ -131,7 +128,7 @@ import {
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
-// import { getSelectedElement } from '@/factories/userEditingFactory';
+import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
@@ -269,14 +266,7 @@ export default {
       };
     },
     selectedResource() {
-      // return getSelectedElement(this.resources);
-      const resource = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_DATA_RESOURCE);
-
-      if (resource?.id) {
-        return resource;
-      }
-      
-      return null;
+      return getSelectedElement(this.resources);
     },
     linkAddNewResourcesCKAN() {
       //      return `${this.envidatDomain}/dataset/resources/${this.metadataId}`;
@@ -285,9 +275,6 @@ export default {
     linkEditResourceCKAN() {
       //      return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}/edit`;
       return `${this.envidatDomain}/dataset/${this.metadataId}/resource/${this.selectedResource.id}`;
-    },
-    validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_DATA_RESOURCES);
     },
   },
   methods: {
