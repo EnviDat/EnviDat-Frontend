@@ -131,28 +131,34 @@ export default {
     showTextPreviewModal(url) {
 
       const previewStrat = getPreviewStrategyFromUrlExtension(url);
-      this.currentComponent = previewStrat.component;
-      this.genericProps = { url };
 
-      const splits = url.split('/');
-      const fileName = splits[splits.length - 1];
+      if (previewStrat) {
+        this.currentComponent = previewStrat.component;
+        this.genericProps = { url };
 
-      this.modalTitle = `Preview of ${fileName}`;
+        const splits = url.split('/');
+        const fileName = splits[splits.length - 1];
 
-      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+        this.modalTitle = `Preview of ${fileName}`;
+
+        eventBus.emit(OPEN_FULLSCREEN_MODAL);
+      }
     },
     showDataPreviewIframe(url) {
 
       const previewStrat = getPreviewStrategy(SHOW_DATA_PREVIEW_PROPERTY);
-      this.currentComponent = previewStrat.component;
-      this.genericProps = { url };
 
-      const splits = url.split('/');
-      const fileName = splits[splits.length - 1];
+      if (previewStrat) {
+        this.currentComponent = previewStrat.component;
+        this.genericProps = { url };
 
-      this.modalTitle = `Data Preview of ${fileName}`;
+        const splits = url.split('/');
+        const fileName = splits[splits.length - 1];
 
-      eventBus.emit(OPEN_FULLSCREEN_MODAL);
+        this.modalTitle = `Data Preview of ${fileName}`;
+
+        eventBus.emit(OPEN_FULLSCREEN_MODAL);
+      }
     },
     showFullscreenMapModal({ site, layerConfig }) {
 

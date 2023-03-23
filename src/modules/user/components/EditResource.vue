@@ -826,7 +826,7 @@ export default {
       }
     },
     catchImageClick() {
-      this.$emit('previewImageClicked');
+      this.$emit('previewImageClicked', this.url);
     },
     catchImageLoadError(event) {
       this.imagePreviewError = event;

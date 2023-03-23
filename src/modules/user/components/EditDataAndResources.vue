@@ -91,10 +91,9 @@
  */
 
 import {
-  CANCEL_EDITING_RESOURCE, EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_DATA_RESOURCE,
-  EDITMETADATA_DATA_RESOURCES,
   eventBus,
+  CANCEL_EDITING_RESOURCE,
+  OPEN_TEXT_PREVIEW,
   SAVE_EDITING_RESOURCE,
   UPLOAD_ERROR,
   UPLOAD_STATE_UPLOAD_COMPLETED,
@@ -407,8 +406,11 @@ export default {
     catchSaveResourceClose(resourceProps) {
       eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
-    showFullScreenImage() {
-
+    showFullScreenImage(url) {
+      if (url) {
+        this.$emit('previewImageClicked', this.url);
+        eventBus.emit(OPEN_TEXT_PREVIEW, this.url);
+      }
     },
   },
   data: () => ({
