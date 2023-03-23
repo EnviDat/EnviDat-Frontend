@@ -464,6 +464,12 @@ export default {
       this.funding = null;
       this.authors = null;
 
+      this.configInfos = {
+        stationsConfigUrl: null,
+        stationParametersUrl: null,
+        geoUrl: null,
+      };
+
       if (currentContent && currentContent.title !== undefined) {
         this.header = createHeader(
           currentContent,
@@ -482,12 +488,6 @@ export default {
 
         this.loadResources();
 
-        this.resources.doiIcon = this.doiIcon;
-        this.resources.fileSizeIcon = this.fileSizeIcon;
-        this.resources.fileIcon = this.fileIcon;
-        this.resources.dateCreatedIcon = this.dateCreatedIcon;
-        this.resources.lastModifiedIcon = this.lastModifiedIcon;
-
         this.location = createLocation(currentContent);
 
         this.publications = createPublications(currentContent);
@@ -504,11 +504,14 @@ export default {
 
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
-      this.$set(components.MetadataAuthors, 'genericProps', {
-        authors: this.authors,
-        authorDetailsConfig: this.authorDetailsConfig,
-        authorDeadInfo: this.authorDeadInfo,
-        showPlaceholder: this.showPlaceholder,
+      this.$nextTick(() => {
+
+        this.$set(components.MetadataAuthors, 'genericProps', {
+          authors: this.authors,
+          authorDetailsConfig: this.authorDetailsConfig,
+          authorDeadInfo: this.authorDeadInfo,
+          showPlaceholder: this.showPlaceholder,
+        });
       });
 
     },
@@ -518,6 +521,12 @@ export default {
 
       this.resources = createResources(currentContent, this.user, this.userOrganizationIds);
 
+      this.resources.doiIcon = this.doiIcon;
+      this.resources.fileSizeIcon = this.fileSizeIcon;
+      this.resources.fileIcon = this.fileIcon;
+      this.resources.dateCreatedIcon = this.dateCreatedIcon;
+      this.resources.lastModifiedIcon = this.lastModifiedIcon;
+
       if (this.resources?.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
@@ -526,6 +535,7 @@ export default {
       }
 
       this.$nextTick(() => {
+
         this.$set(components.MetadataResources, 'genericProps', {
           ...this.resources,
           resourcesConfig: this.resourcesConfig,
@@ -535,12 +545,6 @@ export default {
     },
     setMetadataContent() {
       const { components } = this.$options;
-
-      this.configInfos = {
-        stationsConfigUrl: null,
-        stationParametersUrl: null,
-        geoUrl: null,
-      };
 
       this.configInfos = getConfigUrls(this.configInfos);
 
@@ -784,7 +788,9 @@ export default {
     currentMetadataContent() {
       if (this.isCurrentIdOrName(this.metadataId)) {
         this.createMetadataContent();
-        this.setMetadataContent();
+        this.$nextTick(() => {
+          this.setMetadataContent();
+        });
       }
     },
     /**

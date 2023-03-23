@@ -164,16 +164,14 @@ function getConfigFiles(resources) {
 
 // eslint-disable-next-line no-unused-vars
 function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
-  // eslint-disable-next-line prefer-const
-  let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
-  // eslint-disable-next-line prefer-const
-  let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
-  // eslint-disable-next-line prefer-const
-  let geoConfigUrl = configs?.geoServicesConfig?.url || null;
 
   if (!configs) {
     configs = {};
   }
+
+  const stationsConfigUrl = configs.gcnetStationsConfig?.url || null;
+  const stationParametersUrl = configs.gcnetStationParameters?.url || null;
+  let geoConfigUrl = configs.geoServicesConfig?.url || null;
 
   if (import.meta.env.DEV) {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
