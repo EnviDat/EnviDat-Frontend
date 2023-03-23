@@ -10,7 +10,6 @@
  */
 
 // eslint-disable-next-line import/extensions
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
 import {
   eventBus,
@@ -22,6 +21,7 @@ import {
 
 import { createLocation } from '@/factories/metaDataFactory';
 import { getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import txtPreviewFile from './js/previewTextFile.txt';
 
 import stationsConfig from './testdata/stationsConfig.json';
@@ -87,6 +87,11 @@ const loadDataPreview = () => {
   eventBus.emit(OPEN_DATA_PREVIEW_IFRAME, url);
 }
 
+const loadImagePreview = () => {
+  const url = 'https://www.envidat.ch/dataset/fea7c28b-0a5b-4f38-b3df-c1ce66c2cf43/resource/15eb26e6-46a4-43e6-8cdb-fd7072968eb3/download/leb.jpg';
+  eventBus.emit(OPEN_TEXT_PREVIEW, url);
+}
+
 const Template = (args, { argTypes }) => ({
   components: { GenericFullScreenModal },
   props: Object.keys(argTypes),
@@ -95,7 +100,9 @@ const Template = (args, { argTypes }) => ({
       @click="$props.buttonClick" >
       {{ $props.buttonText }}
     </v-btn>
+    
     <GenericFullScreenModal v-bind="$props" />
+  
   </div>`,
 });
 
@@ -172,3 +179,10 @@ MobileLargeDataPreviewModal.parameters = mobileLargeViewportParams;
 export const TabletDataPreviewModal = Template.bind({});
 TabletDataPreviewModal.args = { ...DataPreviewModal.args };
 TabletDataPreviewModal.parameters = tabletViewportParams;
+
+
+export const ImagePreviewModal = Template.bind({});
+ImagePreviewModal.args = {
+  buttonClick: loadImagePreview,
+  buttonText: 'load image preview',
+};
