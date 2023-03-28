@@ -20,7 +20,7 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
     const strategy = getPreviewStrategy('txt');
 
     expect(strategy).toBeDefined();
-    expect(strategy.fileExtensions).toBeDefined();
+    expect(strategy.strategyKeys).toBeDefined();
     expect(strategy.component).toBeDefined();
     expect(strategy.openEvent).toBeDefined();
   });
@@ -30,7 +30,7 @@ describe('PreviewStrategies - getPreviewStrategy()', () => {
     const strategy = getPreviewStrategy('md');
 
     expect(strategy).toBeDefined();
-    expect(strategy.fileExtensions).toBeDefined();
+    expect(strategy.strategyKeys).toBeDefined();
     expect(strategy.component).toBeDefined();
     expect(strategy.openEvent).toBeDefined();
   });

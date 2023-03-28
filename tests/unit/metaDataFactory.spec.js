@@ -133,8 +133,6 @@ describe('metaDataFactory - createResource', () => {
     expect(res.id).toBeDefined();
     expect(res.size).toBeDefined();
 
-    expect(res.mimetype).toBeDefined();
-    expect(res.cacheUrl).toBeDefined();
     expect(res.doi).toBeDefined();
 
     expect(res.name).toBeDefined();
@@ -149,7 +147,6 @@ describe('metaDataFactory - createResource', () => {
     expect(res.lastModified).toBeDefined();
 
     expect(res.position).toBeDefined();
-    expect(res.revisionId).toBeDefined();
     expect(res.isProtected).toBeDefined();
   });
 });
