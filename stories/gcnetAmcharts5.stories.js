@@ -21,7 +21,6 @@ import Amcharts5 from '@/modules/metadata/components/GC-Net/Amchart5Chart.vue';
 import EditChart from '@/modules/user/components/edit/EditChart.vue';
 import { createChart } from '@/factories/chartFactory';
 import * as am5 from '@amcharts/amcharts5';
-import { CHART_VIEWS } from './storybookFolder';
 
 // import neadContent from '../public/testdata/00-Swiss Camp 10m.csv';
 // import researchUnits from '../public/researchUnits.json';

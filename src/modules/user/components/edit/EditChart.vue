@@ -49,6 +49,12 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col>
+          <v-select :items="ChartTypes" ></v-select>
+        </v-col>
+      </v-row>
+
       <v-row >
         <v-col>
 <!--          <div style="height: 500px; background-color: indianred;"></div>-->
@@ -87,31 +93,31 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
 
 import {
   getValidationMetadataEditingObject,
-  isFieldValid,
-  isObjectValid,
 } from '@/factories/userEditingValidations';
+
 import {
-  USER_PROFILE,
   EDIT_USER_PROFILE,
-  EDIT_USER_PROFILE_EVENT,
   EDITMETADATA_CLEAR_PREVIEW,
   eventBus,
 } from '@/factories/eventBus';
-import { convertCSVToJSON, getChartSeries } from '@/factories/stringFactory';
+
+import { convertCSVToJSON } from '@/factories/stringFactory';
+
 import {
-  createChart,
   createDateAxis,
   createDynamicChart,
   createScrollbar,
   createValueAxis,
   createXYCursor,
   getLineSeriesFromJSON,
+  ChartTypes,
 } from '@/factories/chartFactory';
+
 import axios from 'axios';
 import { createTag } from '@/factories/metadataFilterMethods';
 import * as am5 from '@amcharts/amcharts5';
@@ -164,10 +170,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
     this.disponseChart();
   },
   async mounted() {
@@ -384,6 +390,7 @@ export default {
       cardTitle: 'Edit Data Preview Chart',
       instructions: 'Pick parameters to be used in the chart to preview your research data.',
     },
+    ChartTypes,
 /*
     validationProperties: [
       'firstName',

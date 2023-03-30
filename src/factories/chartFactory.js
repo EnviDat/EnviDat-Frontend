@@ -19,6 +19,36 @@ const defaultSeriesSettings = {
   numberFormat: '#.0',
 };
 
+export const DefaultSettings = {
+  focusable: true,
+  panX: true,
+  panY: true,
+  wheelX: 'panX',
+  wheelY: 'zoomX',
+};
+
+export const DefaultChartSetting = {
+  type: 'XYChart',
+  settings: {
+    ...DefaultSettings,
+  },
+};
+
+export const ChartTypes = [
+  'flow',
+  'funnel',
+  'hierarchy',
+  'map',
+  'percent',
+  'pie',
+  'radar',
+  'stock',
+  'venn',
+  'worldcloud',
+  'xy',
+];
+
+
 // eslint-disable-next-line no-unused-vars
 const createSerialChart = function createSerialChart(selector, unit, graphs, chartData, delay, doneCallback, errorCallback, recentData, localTimeConversion) {
 
@@ -286,13 +316,7 @@ export function createScrollbar(root) {
 }
 
 export function createXYChart(root) {
-  return am5xy.XYChart.new(root, {
-    focusable: true,
-    panX: true,
-    panY: true,
-    wheelX: 'panX',
-    wheelY: 'zoomX',
-  });
+  return am5xy.XYChart.new(root, DefaultSettings);
 }
 
 export function createDynamicChart(yAxisDivID, chartRoot = null) {
