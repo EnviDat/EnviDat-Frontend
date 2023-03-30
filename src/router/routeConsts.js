@@ -4,7 +4,7 @@
  * @summary constants for the routing.
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:23 
+ * Created at     : 2019-10-23 16:34:23
  * Last modified  : 2021-07-29 09:16:23
  *
  * This file is subject to the terms and conditions defined in
@@ -52,4 +52,3 @@ export const INTEGRATION_PATH = '/integration';
 export const INTEGRATION_PAGENAME = 'IntegrationPage';
 export const SERVICE_PATH = '/services';
 export const SERVICE_PAGENAME = 'ServicePage';
-

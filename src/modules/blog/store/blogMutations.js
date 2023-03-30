@@ -11,19 +11,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  GET_BLOG_LIST,
-  GET_BLOG_LIST_SUCCESS,
-  GET_BLOG_LIST_ERROR,
-  GET_BLOG_POST,
-  GET_BLOG_POST_SUCCESS,
-  GET_BLOG_POST_ERROR,
-  CLOSE_BLOG_POST,
-} from '@/modules/blog/store/blogMutationsConsts';
-
-import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 import { getSpecificApiError } from '@/factories/notificationFactory';
-
+import {
+  CLOSE_BLOG_POST,
+  GET_BLOG_LIST,
+  GET_BLOG_LIST_ERROR,
+  GET_BLOG_LIST_SUCCESS,
+  GET_BLOG_POST,
+  GET_BLOG_POST_ERROR,
+  GET_BLOG_POST_SUCCESS,
+} from '@/modules/blog/store/blogMutationsConsts';
+import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
 export default {
   [GET_BLOG_LIST](state) {
@@ -47,7 +45,6 @@ export default {
     state.postContent = null;
   },
   [GET_BLOG_POST_SUCCESS](state, { postFile, postContent }) {
-
     const posts = state.list;
 
     for (let i = 0; i < posts.length; i++) {

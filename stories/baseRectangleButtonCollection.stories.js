@@ -9,14 +9,39 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import { BUTTONS_VIEWS } from './storybookFolder';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
-  title: `${BUTTONS_VIEWS} / Rectangle Collection`,
+  title: '1 Base Elements / Rectangle Buttons Collection',
+  component: BaseRectangleButton,
   decorators: [],
   parameters: {},
 };
+
+const Template = (args, { argTypes }) => ({
+  components: { BaseRectangleButton },
+  props: Object.keys(argTypes),
+  template: '<BaseRectangleButton v-bind="$props" />',
+});
+
+export const SingleButton = Template.bind({});
+SingleButton.args = {
+  buttonText: 'Single Button',
+  isOutlined: true,
+  materialIconName: 'edit',
+}
+
+/*
+SingleButton.play = async ({canvasElement}) => {
+  const canvas = within(canvasElement);
+
+  const btn = canvas.getByText('Single Button', {
+    selector: 'span',
+  });
+
+  await expect(btn).toBeInTheDocument();
+}
+*/
 
 
 export const ButtonsCollectionViews = () => ({
@@ -27,82 +52,82 @@ export const ButtonsCollectionViews = () => ({
       <v-col cols="4">
         <base-rectangle-button
           buttonText="normal button"
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="normal button"
           isOutlined
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="normal button"
           isFlat
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
         <base-rectangle-button
           buttonText="secondary color"
           color="secondary"
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="secondary color"
           color="secondary"
           isOutlined
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="secondary color"
           color="secondary"
           isFlat
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
         <base-rectangle-button
           buttonText="accent color"
           color="accent"
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="accent color"
           color="accent"
           isOutlined
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="accent color"
           color="accent"
           isFlat
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
         <base-rectangle-button
           buttonText="small button"
           isSmall
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="small button"
           isSmall
           isOutlined
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="small button"
           isSmall
           isFlat
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
@@ -110,14 +135,14 @@ export const ButtonsCollectionViews = () => ({
           buttonText="small button"
           isSmall
           disabled
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="small button"
           isSmall
           isOutlined
-          disabled />       
+          disabled />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
@@ -125,42 +150,42 @@ export const ButtonsCollectionViews = () => ({
           isSmall
           isFlat
           disabled
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
         <base-rectangle-button
           buttonText="Xs small button"
           isXsSmall
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="Xs small button"
           isXsSmall
           isOutlined
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="Xs small button"
           isXsSmall
           isFlat
-          tooltipText="Text for the tool tip" />       
+          tooltipText="Text for the tool tip" />
       </v-col>
 
       <v-col cols="4">
         <base-rectangle-button
           buttonText="button with icon"
           materialIconName="edit"
-          iconColor="white" />       
+          iconColor="white" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="button with icon"
           materialIconName="add"
           iconColor="secondary"
-          isOutlined />       
+          isOutlined />
       </v-col>
 
 
@@ -169,7 +194,7 @@ export const ButtonsCollectionViews = () => ({
           buttonText="button with icon"
           materialIconName="search"
           isFlat
-          disabled />       
+          disabled />
       </v-col>
 
       <v-col cols="4">
@@ -200,6 +225,6 @@ export const ButtonsCollectionViews = () => ({
           isXsSmall
           tooltipText="Text for the tool tip"  />
       </v-col>
-      
+
     </v-row>`,
   });

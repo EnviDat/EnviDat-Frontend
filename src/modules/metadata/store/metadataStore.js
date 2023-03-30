@@ -13,14 +13,12 @@
 
 // import createPersist from 'vuex-localstorage';
 
-import { getTagColor } from '@/factories/metaDataFactory';
-
+import { getCitationList, getTagColor } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
-import mutations from './metadataMutations';
 import actions from './metadataActions';
+import mutations from './metadataMutations';
 import tags from './metadataTags';
-
 
 for (let i = 0; i < tags.length; i++) {
   const tag = tags[i];
@@ -88,10 +86,6 @@ const initialState = {
   aboutPageBackRoute: null,
   asciiDead: '&#8224;',
   authorPassedInfo: 'Sadly this author has passed away.',
-  publicationsResolvingIds: false,
-  publicationsResolvedIds: {},
-  extractingIds: false,
-  idsToResolve: [],
   existingAuthors: [],
   existingKeywords: [],
 };
@@ -105,15 +99,20 @@ export const metadata = {
     metadataIds: state => state.metadataIds,
     metadatasContent: state => state.metadatasContent,
     recentMetadata: (state, getters) => {
-      if (state.loadingMetadatasContent ||
-          (!state.loadingMetadatasContent && !state.metadatasContentOK)) {
+      if (
+        state.loadingMetadatasContent ||
+        (!state.loadingMetadatasContent && !state.metadatasContentOK)
+      ) {
         return [];
       }
 
       return getters.allMetadatas.slice(0, 4);
     },
     allMetadatas: state => Object.values(state.metadatasContent),
-    metadatasContentSize: state => (state.metadatasContent !== undefined ? Object.keys(state.metadatasContent).length : 0),
+    metadatasContentSize: state =>
+      state.metadatasContent !== undefined
+        ? Object.keys(state.metadatasContent).length
+        : 0,
     authorsMap: state => state.authorsMap,
     searchedMetadatasContent: state => state.searchedMetadatasContent,
     searchingMetadatasContent: state => state.searchingMetadatasContent,
@@ -123,7 +122,10 @@ export const metadata = {
     currentMetadataContent: state => state.currentMetadataContent,
     isFilteringContent: state => state.isFilteringContent,
     filteredContent: state => state.filteredContent,
-    filteredContentSize: state => (state.filteredContent !== undefined ? Object.keys(state.filteredContent).length : 0),
+    filteredContentSize: state =>
+      state.filteredContent !== undefined
+        ? Object.keys(state.filteredContent).length
+        : 0,
     vIndex: state => state.vIndex,
     vReloadAmount: state => state.vReloadAmount,
     vReloadAmountMobile: state => state.vReloadAmountMobile,
@@ -137,9 +139,13 @@ export const metadata = {
     aboutPageBackRoute: state => state.aboutPageBackRoute,
     asciiDead: state => state.asciiDead,
     authorPassedInfo: state => state.authorPassedInfo,
-    publicationsResolvedIdsSize: state => (state.publicationsResolvedIds !== null ? Object.keys(state.publicationsResolvedIds).length : 0),
     existingAuthors: state => state.existingAuthors,
     existingKeywords: state => state.existingKeywords,
+    getCitationListFromIds: state => datasetIds => {
+      const datasets = Object.values(state.metadatasContent);
+
+      return getCitationList(datasets, datasetIds);
+    },
   },
   mutations,
   actions,

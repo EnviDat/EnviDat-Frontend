@@ -11,15 +11,14 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import SigninView from '@/modules/user/components/SigninView';
-import WelcomeCard from '@/components/Cards/WelcomeCard';
+import SigninView from '@/modules/user/components/SigninView.vue';
+import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard';
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
-import authorCollection from '../public/testdata/authorCollection.json';
-import { USER_VIEWS } from './storybookFolder';
+import authorCollection from './testdata/authorCollection.json';
 
 const methods = {
   authors() {
@@ -29,7 +28,7 @@ const methods = {
 };
 
 export default {
-  title: `${USER_VIEWS} / SignIn`,
+  title: '7 User / SignIn',
   decorators: [],
   parameters: {
   },

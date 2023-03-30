@@ -1,93 +1,106 @@
 <template>
-  <div :style="`height: ${height}px; `"
-        @mouseover="hoverBadge = true"
-        @mouseleave="hoverBadge = false">
-
-    <v-tooltip v-if="$vuetify.breakpoint.mdAndUp && tooltipText"
-                v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }" >
-
+  <div
+    :style="`height: ${height}px; `"
+    @mouseover="hoverBadge = true"
+    @mouseleave="hoverBadge = false"
+  >
+    <v-tooltip
+      v-if="$vuetify.breakpoint.mdAndUp && tooltipText"
+      v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
+    >
       <template v-slot:activator="{ on }">
-        <v-btn v-on="on"
-               :style="{ height: `${height}px`, width: `${height}px`, backgroundColor: fillColor ? fillColor : '' }"
-                style="margin: 0 !important;"
-                :icon="!isElevated"
-                :fab="isElevated"
-                :small="(isSmall || isElevated) && !(isSmall && isElevated)"
-                :x-small="isSmall && isElevated"
-                :outlined="outlined"
-                :color="color ? color : disabled ? '' : 'primary'"
-                :href="url"
-                :disabled="disabled"
-                v-bind="{['target'] : '_blank' }"
-                @click.stop="onClick" >
-
-
-          <div v-if="customIcon">
-
-            <img class="envidatIcon"
-                :alt="`${customIcon} icon`"
-                :src="customIcon" >
-          </div>
-
-          <v-icon v-if="materialIconName"
-                  :color="iconColor ? iconColor : 'primary'"
-                  :style="rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''" >
-            {{ materialIconName }}
-          </v-icon>
-
-          <slot v-else>
-          </slot>
-        </v-btn>
-      </template >
-
-      <span>{{ tooltipText }}</span>
-    </v-tooltip>
-
-    <v-btn v-else
-           :style="{backgroundColor: fillColor ? fillColor : ''}"
+        <v-btn
+          v-on="on"
+          :style="{
+            height: `${height}px`,
+            width: `${height}px`,
+            backgroundColor: fillColor ? fillColor : '',
+          }"
           style="margin: 0 !important;"
           :icon="!isElevated"
           :fab="isElevated"
-          :small="isSmall || isElevated"
+          :small="(isSmall || isElevated) && !(isSmall && isElevated)"
+          :x-small="isSmall && isElevated"
           :outlined="outlined"
           :color="color ? color : disabled ? '' : 'primary'"
           :href="url"
           :disabled="disabled"
-          v-bind="{['target'] : '_blank' }"
-          @click.stop="onClick" >
+          v-bind="{ ['target']: '_blank' }"
+          @click.stop="onClick"
+        >
+          <div v-if="customIcon">
+            <img
+              class="envidatIcon"
+              :alt="`${customIcon} icon`"
+              :src="customIcon"
+            />
+          </div>
 
-      <div v-if="customIcon"
-            class="iconCentering" >
+          <v-icon
+            v-if="materialIconName"
+            :color="iconColor ? iconColor : 'primary'"
+            :style="
+              rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
+            "
+          >
+            {{ materialIconName }}
+          </v-icon>
 
-        <img class="envidatIcon"
-            :alt="`${customIcon} icon`"
-            :src="customIcon" >
+          <slot v-else> </slot>
+        </v-btn>
+      </template>
+
+      <span>{{ tooltipText }}</span>
+    </v-tooltip>
+
+    <v-btn
+      v-else
+      :style="{ backgroundColor: fillColor ? fillColor : '' }"
+      style="margin: 0 !important;"
+      :icon="!isElevated"
+      :fab="isElevated"
+      :small="isSmall || isElevated"
+      :outlined="outlined"
+      :color="color ? color : disabled ? '' : 'primary'"
+      :href="url"
+      :disabled="disabled"
+      v-bind="{ ['target']: '_blank' }"
+      @click.stop="onClick"
+    >
+      <div v-if="customIcon" class="iconCentering">
+        <img
+          class="envidatIcon"
+          :alt="`${customIcon} icon`"
+          :src="customIcon"
+        />
       </div>
 
-      <v-icon v-if="materialIconName"
-              :color="iconColor ? iconColor : 'primary'"
-              :style="rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''" >
+      <v-icon
+        v-if="materialIconName"
+        :color="iconColor ? iconColor : 'primary'"
+        :style="
+          rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
+        "
+      >
         {{ materialIconName }}
       </v-icon>
-      
-      <slot v-else>
-      </slot>
 
+      <slot v-else> </slot>
     </v-btn>
 
-    <v-badge v-if="count > 0"
-            :overlap="!isSmall"
-            :left="isSmall"
-            :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
-            color="highlight"
-            :class="{ envidatBadgeBigNumber : count > 9,
-                      envidatBadge: count <= 9 }"
-            @click.stop="onClick" >
-      <span slot="badge" class="black--text" >
+    <v-badge
+      v-if="count > 0"
+      :overlap="!isSmall"
+      :left="isSmall"
+      :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
+      color="highlight"
+      :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
+      @click.stop="onClick"
+    >
+      <span slot="badge" class="black--text">
         {{ count }}
       </span>
     </v-badge>
-
   </div>
 </template>
 
@@ -150,21 +163,20 @@ export default {
       }
 
       let height = 36;
-      
+
       if (this.isSmall) {
         height = 28;
       } else if (this.isElevated) {
         height = 40;
-      } 
+      }
 
       return height;
     },
-  },  
+  },
   methods: {
     onClick() {
       this.$emit('clicked');
     },
   },
 };
-
 </script>

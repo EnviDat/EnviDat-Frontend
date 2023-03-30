@@ -1,52 +1,55 @@
 <template>
-  <v-card id="OrganizationTree"
-            class="pa-4" >
-
-      
+  <v-card id="OrganizationTree" class="pa-4">
     <v-sheet class="pa-4 primary lighten-2">
-      <v-text-field v-model="search"
-                    label="Search Company Directory"
-                    dark
-                    flat
-                    solo-inverted
-                    hide-details
-                    clearable
-                    clear-icon="close"
-                    />
+      <v-text-field
+        v-model="search"
+        label="Search Company Directory"
+        dark
+        flat
+        solo-inverted
+        hide-details
+        clearable
+        clear-icon="close"
+      />
     </v-sheet>
     <v-card-text>
-      <v-treeview :items="items"
-                  :search="search"
-                  :open.sync="open"
-                  :active.sync="active"
-                  item-disabled="locked"
-                  dense
-                  activatable
-                  rounded
-                  hoverable
-                  @update:active="catchActiveClick"
-                  >
-
+      <v-treeview
+        :items="items"
+        :search="search"
+        :open.sync="open"
+        :active.sync="active"
+        item-disabled="locked"
+        dense
+        activatable
+        rounded
+        hoverable
+        @update:active="catchActiveClick"
+      >
         <template v-slot:prepend="{ item }">
-          <v-btn v-if="item.children && item.children.length > 0" 
-                  icon
-                  @click.stop="catchOpenClick(item)">
-            <v-icon :style="!open.includes(item.id) ? '' : 'transform: rotate(90deg);' ">arrow_right</v-icon>
+          <v-btn
+            v-if="item.children && item.children.length > 0"
+            icon
+            @click.stop="catchOpenClick(item)"
+          >
+            <v-icon
+              :style="
+                !open.includes(item.id) ? '' : 'transform: rotate(90deg);'
+              "
+              >arrow_right</v-icon
+            >
           </v-btn>
         </template>
 
         <!-- <template v-slot:label="{ item, active }"> -->
         <template v-slot:label="{ item }">
           <!-- <div @click="catchActiveClick(item)"> -->
-          <div >
+          <div>
             {{ item.name }}
           </div>
         </template>
-
       </v-treeview>
     </v-card-text>
-
-  </v-card>  
+  </v-card>
 </template>
 
 <script>
@@ -59,11 +62,11 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'OrganizationTree',
-  props: {  
+  props: {
     preSelectedOrganization: String,
     organizationsMap: Object,
     selectionDisabled: Boolean,
@@ -102,7 +105,6 @@ export default {
             children,
             locked: this.selectionDisabled,
           });
-          
         }
 
         return orgItems;
@@ -124,10 +126,10 @@ export default {
             if (!this.active.includes(item.id)) {
               this.active.push(item.id);
             }
-            
+
             return true;
           }
-          
+
           if (item.children?.length > 0) {
             const found = this.setActiveItem(item.children, name);
             if (found) {
@@ -150,7 +152,6 @@ export default {
       }
     },
     catchActiveClick(arrayActive) {
-
       const activeId = arrayActive[0];
       let activeItem = null;
       if (activeId) {
@@ -169,7 +170,7 @@ export default {
         itemId = this.getParentIdFromChild(activeId);
         const parentItem = this.getItemById(this.items, itemId);
 
-        activeItem = this.getItemById(parentItem.children, activeId);        
+        activeItem = this.getItemById(parentItem.children, activeId);
       }
 
       return activeItem;
@@ -180,7 +181,7 @@ export default {
     },
     getParentIdFromChild(childId) {
       const splits = childId.split('_');
-      
+
       return `${this.parentIdPrefix}_${splits[1]}`;
     },
   },
@@ -191,12 +192,8 @@ export default {
     childIdPrefix: 'child',
     parentIdPrefix: 'parent',
   }),
-  components: {
-  },  
+  components: {},
 };
 </script>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

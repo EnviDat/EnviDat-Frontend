@@ -14,23 +14,27 @@
 import axios from 'axios';
 
 import {
-  GET_GUIDELINES,
-  GET_GUIDELINES_SUCCESS,
-  GET_GUIDELINES_ERROR,
-  GET_POLICIES,
-  GET_POLICIES_SUCCESS,
-  GET_POLICIES_ERROR,
   GET_DMP,
-  GET_DMP_SUCCESS,
   GET_DMP_ERROR,
+  GET_DMP_SUCCESS,
+  GET_GUIDELINES,
+  GET_GUIDELINES_ERROR,
+  GET_GUIDELINES_SUCCESS,
+  GET_POLICIES,
+  GET_POLICIES_ERROR,
+  GET_POLICIES_SUCCESS,
 } from '@/modules/about/store/aboutMutationsConsts';
+
+const staticRoot = import.meta.env.VITE_ENVIDAT_STATIC_ROOT;
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 export default {
   [GET_GUIDELINES]({ commit }) {
     commit(GET_GUIDELINES);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/guidelines.md';
     }
 
@@ -38,39 +42,43 @@ export default {
       .then((response) => {
         commit(GET_GUIDELINES_SUCCESS, response.data);
       })
-      .catch((reason) => {
+      .catch(reason => {
         commit(GET_GUIDELINES_ERROR, reason);
       });
   },
   [GET_POLICIES]({ commit }) {
     commit(GET_POLICIES);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/policies/policies.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/policies/policies.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/policies.md';
     }
 
-    axios.get(url)
-      .then((response) => {
+    axios
+      .get(url)
+      .then(response => {
         commit(GET_POLICIES_SUCCESS, response.data);
       })
-      .catch((reason) => {
+      .catch(reason => {
         commit(GET_POLICIES_ERROR, reason);
       });
   },
   [GET_DMP]({ commit }) {
     commit(GET_DMP);
 
-    let url = `${process.env.VUE_APP_ENVIDAT_STATIC_ROOT}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
-    if (process.env.NODE_ENV === 'development') {
+    let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
+
+    if (import.meta.env.DEV && useTestdata) {
       url = './testdata/dmp.md';
     }
 
-    axios.get(url)
-      .then((response) => {
+    axios
+      .get(url)
+      .then(response => {
         commit(GET_DMP_SUCCESS, response.data);
       })
-      .catch((reason) => {
+      .catch(reason => {
         commit(GET_DMP_ERROR, reason);
       });
   },

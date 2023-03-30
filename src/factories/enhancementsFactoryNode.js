@@ -11,7 +11,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-const fs = require('fs');
+import fs from 'fs';
 
 /**
  * Get all files in a folder with a specific prefix. This function only works in the
@@ -48,6 +48,6 @@ function getFilesWithPrefix(path, prefix = '') {
   return foundFiles;
 }
 
-module.exports = {
+export {
   getFilesWithPrefix,
 };

@@ -1,7 +1,6 @@
 <template>
-  <v-row >
-    <v-col cols="12"
-            class="warning py-4">
+  <v-row>
+    <v-col cols="12" class="warning py-4">
       <div class="text-h6">{{ noResultText }}</div>
     </v-col>
 
@@ -9,29 +8,30 @@
       <div class="text-body-1">{{ suggestionText }}</div>
     </v-col>
 
-    <v-col cols="12" >
-      <v-container class="pa-0"
-                  fluid>
+    <v-col cols="12">
+      <v-container class="pa-0" fluid>
         <v-row no-gutters>
-
-          <v-col v-for="card in categoryCards"
-                  :key="card.title"
-                  cols="6" md="4"
-                  class="pa-2" >
-
-              <base-click-card :title="card.title"
-                                :img="card.img"
-                                :color="card.darkColor"
-                                :contain="card.contain"
-                                :disabled="card.disabled"
-                                @click="catchCategoryClicked(card.type)" />
+          <v-col
+            v-for="card in categoryCards"
+            :key="card.title"
+            cols="6"
+            md="4"
+            class="pa-2"
+          >
+            <base-click-card
+              :title="card.title"
+              :img="card.img"
+              :color="card.darkColor"
+              :contain="card.contain"
+              :disabled="card.disabled"
+              @click="catchCategoryClicked(card.type)"
+            />
           </v-col>
         </v-row>
       </v-container>
     </v-col>
   </v-row>
 </template>
-
 
 <script>
 /**
@@ -48,12 +48,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseClickCard from '@/components/BaseElements/BaseClickCard';
+import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 
 export default {
   name: 'NoSearchResultView',
   props: {
-    categoryCards: Array,
+    categoryCards: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -61,8 +64,7 @@ export default {
       suggestionText: 'Change the criteria or try one of these categories',
     };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     catchCategoryClicked(cardTitle) {
       this.$emit('clicked', cardTitle);

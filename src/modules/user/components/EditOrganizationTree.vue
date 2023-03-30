@@ -1,8 +1,5 @@
 <template>
-
-  <v-card id="EditOrganizationTree"
-          class="pa-4">
-
+  <v-card id="EditOrganizationTree" class="pa-4">
     <v-row>
       <v-col cols="12">
         <div class="text-h5">
@@ -13,23 +10,23 @@
 
     <v-row>
       <v-col>
-        <v-text-field readonly
-                      outlined
-                      label="Organization"
-                      :value="organization"
-                      />
+        <v-text-field
+          readonly
+          outlined
+          label="Organization"
+          :value="organization"
+        />
       </v-col>
     </v-row>
 
-    <OrganizationTree :organizationsMap="organizationsMap"
-                      :preSelectedOrganization="organization"
-                      :selectionDisabled="selectionDisabled"
-                      @organizationChanged="catchOrganizationChanged" />
-
+    <OrganizationTree
+      :organizationsMap="organizationsMap"
+      :preSelectedOrganization="organization"
+      :selectionDisabled="selectionDisabled"
+      @organizationChanged="catchOrganizationChanged"
+    />
   </v-card>
-
 </template>
-
 
 <script>
 /**
@@ -44,17 +41,15 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-
-import OrganizationTree from '@/modules/user/components/OrganizationTree';
+ */
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
 } from '@/factories/eventBus';
-
 import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
+import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 
 export default {
   name: 'EditOrganizationTree',
@@ -72,17 +67,15 @@ export default {
       default: false,
     },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     catchOrganizationChanged(organization) {
-
       const newGenericProps = {
         ...this.$props,
         organization,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_ORGANIZATION,
         data: newGenericProps,
       });
@@ -95,6 +88,4 @@ export default {
     OrganizationTree,
   },
 };
-
-
 </script>

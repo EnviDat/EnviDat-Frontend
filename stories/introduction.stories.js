@@ -14,11 +14,10 @@
 
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
-import { USER_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${USER_VIEWS} / SignIn`,
+  title: '7 User / SignIn',
   component: IntroductionCard,
   decorators: [],
   parameters: {},
@@ -47,7 +46,7 @@ export const IntroductionCardViews = () => ({
       <IntroductionCard :userName="userName"
                         :createClickCallback="createClickMethod"
                         :publishedDatasetCount="123"
-                        :unpublishedDatasetCount="2" 
+                        :unpublishedDatasetCount="2"
                         :editingDatasetCount="1" />
     </v-col>
 
@@ -55,10 +54,10 @@ export const IntroductionCardViews = () => ({
       <IntroductionCard :userName="userName"
                         :createClickCallback="createClickMethod"
                         :publishedDatasetCount="123"
-                        :unpublishedDatasetCount="2" 
+                        :unpublishedDatasetCount="2"
                         :editingDatasetCount="1" />
     </v-col>
-    
+
   </v-row>
   `,
   data: () => ({

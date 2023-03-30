@@ -1,68 +1,61 @@
 <template>
-
-  <v-card id="EditOrganization"
-          class="pa-0"
-          :loading="loading" >
-
-    <v-container fluid
-                 class="pa-4" >
-
+  <v-card id="EditOrganization" class="pa-0" :loading="loading">
+    <v-container fluid class="pa-4">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
-            {{ EDIT_ORGANIZATION_TITLE }}
+        <v-col cols="6" class="text-h5">
+          {{ EDIT_ORGANIZATION_TITLE }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
-      <v-row no-gutters align="center" >
+      <v-row no-gutters align="center">
         <v-col class="pt-2 text-body-1">
           Changing the Organization of a datasets is for now not possible.
-          <br>
+          <br />
           Contact the Envidat team for support to make such a change.
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col >
-
-          <v-text-field outlined
-                        prepend-icon="home_filled"
-                        :value="selectedOrganization.title"
-                        readonly
-                        hint='This field is "readonly" only the EnviDat Team can change it.'
-                        :error-messages="validationErrors.organizationId"
-                        />
+      <v-row>
+        <v-col>
+          <v-text-field
+            outlined
+            prepend-icon="home_filled"
+            :value="selectedOrganization.title"
+            readonly
+            hint='This field is "readonly" only the EnviDat Team can change it.'
+            :error-messages="validationErrors.organizationId"
+          />
         </v-col>
 
-<!--
+        <!--
         <v-col >
           <MetadataOrganizationChip :organization="selectedOrganization.title" />
         </v-col>
 -->
       </v-row>
 
-
-<!--
+      <!--
       <v-row>
         <v-col>
 
@@ -96,12 +89,9 @@
         </v-col>
       </v-row>
 -->
-
     </v-container>
   </v-card>
-
 </template>
-
 
 <script>
 /**
@@ -117,30 +107,27 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import { mapState } from 'vuex';
 
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   eventBus,
 } from '@/factories/eventBus';
-
+import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-
 import {
-  USER_SIGNIN_NAMESPACE,
-  USER_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
+  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import { EDIT_ORGANIZATION_TITLE } from '@/factories/metadataConsts';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
 
 export default {
   name: 'EditOrganization',
@@ -187,16 +174,16 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   mounted() {
-//  beforeMount() {
+    //  beforeMount() {
     if (this.currentUser) {
       this.fetchUserOrganisationData();
     }
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
@@ -209,7 +196,6 @@ export default {
       return null;
     },
     userOrganizationsCount() {
-
       if (this.allOrganizations) {
         return this.allOrganizations.length;
       }
@@ -223,29 +209,38 @@ export default {
     previewOrganization() {
       return this.previewOrganizationId || this.organizationId;
     },
-    userIsPartOfSelectedOrganization(){
-      if (!!this.selectedOrganization?.id && this.userOrganizationsList?.length > 0) {
-        const matched = this.userOrganizationsList.filter(x => x.id === this.selectedOrganization.id)[0];
+    userIsPartOfSelectedOrganization() {
+      if (
+        !!this.selectedOrganization?.id &&
+        this.userOrganizationsList?.length > 0
+      ) {
+        const matched = this.userOrganizationsList.filter(
+          x => x.id === this.selectedOrganization.id,
+        )[0];
         return !!matched;
       }
 
       return false;
     },
-    selectedOrganization () {
+    selectedOrganization() {
       // Get organization title, filtering userOrganizationsList by organizationId prop
 
       let userOrg = null;
 
       if (this.allOrganizations?.length > 0) {
-        userOrg = this.allOrganizations.filter(x => x.id === this.previewOrganization)[0];
+        userOrg = this.allOrganizations.filter(
+          x => x.id === this.previewOrganization,
+        )[0];
       }
 
       if (!userOrg && this.$store && this.userOrganizationsList?.length > 0) {
-        userOrg = this.userOrganizationsList.filter(x => x.id === this.previewOrganization)[0];
+        userOrg = this.userOrganizationsList.filter(
+          x => x.id === this.previewOrganization,
+        )[0];
       }
 
       if (!userOrg) {
-        return this.emptySelection
+        return this.emptySelection;
       }
 
       return {
@@ -253,7 +248,7 @@ export default {
         title: userOrg.title,
       };
     },
-    userOrganizationsListItems () {
+    userOrganizationsListItems() {
       // Return formatted list of organizations user is member of, with id/title
 
       if (this.$store && this.userOrganizationsList) {
@@ -270,7 +265,7 @@ export default {
         }));
       }
 
-      return [this.emptySelection]
+      return [this.emptySelection];
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_ORGANIZATION);
@@ -285,21 +280,37 @@ export default {
 
       this.previewOrganizationId = orgId;
 
-      if (isFieldValid('organizationId', orgId, this.validations, this.validationErrors)) {
+      if (
+        isFieldValid(
+          'organizationId',
+          orgId,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
+        const newOrgId = this.userOrganizationsList.filter(
+          x => x.id === orgId,
+        )[0].id;
 
-        const newOrgId = this.userOrganizationsList.filter(x => x.id === orgId)[0].id;
-
-        eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+        eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_ORGANIZATION,
-          data: {organizationId: newOrgId},
+          data: { organizationId: newOrgId },
         });
       }
     },
     fetchUserOrganisationData() {
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.currentUser.id);
+      this.$store.dispatch(
+        `${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
+        this.currentUser.id,
+      );
     },
     validateProperty(property, value) {
-      return isFieldValid(property, value, this.validations, this.validationErrors)
+      return isFieldValid(
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
+      );
     },
   },
   data: () => ({
@@ -317,6 +328,4 @@ export default {
     BaseStatusLabelView,
   },
 };
-
-
 </script>

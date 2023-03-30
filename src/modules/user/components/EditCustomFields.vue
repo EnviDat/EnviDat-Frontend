@@ -1,36 +1,32 @@
 <template>
-  <v-card id="EditCustomFields"
-          class="pa-0"
-          :loading="loading" >
-
-    <v-container fluid
-                  class="pa-4" >
-
+  <v-card id="EditCustomFields" class="pa-0" :loading="loading">
+    <v-container fluid class="pa-4">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
+        <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
 
-        <v-col v-if="error"  >
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
-
       </v-row>
 
       <v-row>
@@ -39,57 +35,60 @@
         </v-col>
       </v-row>
 
-      <v-row v-for="(item, index) in customFieldsProp"
-          :key="`${item}_${index}`"
-           no-gutters
-          :class="index === 0 ? 'pt-4' : 'py-1'" >
-
-        <v-col class="pr-2" >
-          <v-text-field :label="labels.labelFieldName"
-                        outlined
-                        dense
-                        :readonly="mixinMethods_isFieldReadOnly('fieldName')"
-                        :hint="mixinMethods_readOnlyHint('fieldName')"
-                        :error-messages="validationErrors.customFieldsList[index].fieldName"
-                        :value="item.fieldName"
-                        @change="notifyChange(index, 'fieldName', $event)"
-                        />
+      <v-row
+        v-for="(item, index) in customFieldsProp"
+        :key="`${item}_${index}`"
+        no-gutters
+        :class="index === 0 ? 'pt-4' : 'py-1'"
+      >
+        <v-col class="pr-2">
+          <v-text-field
+            :label="labels.labelFieldName"
+            outlined
+            dense
+            :readonly="mixinMethods_isFieldReadOnly('fieldName')"
+            :hint="mixinMethods_readOnlyHint('fieldName')"
+            :error-messages="validationErrors.customFieldsList[index].fieldName"
+            :value="item.fieldName"
+            @change="notifyChange(index, 'fieldName', $event)"
+          />
         </v-col>
 
-        <v-col class="pl-2" >
-          <v-text-field :label="labels.labelContent"
-                        outlined
-                        dense
-                        :readonly="mixinMethods_isFieldReadOnly('content')"
-                        :hint="mixinMethods_readOnlyHint('content')"
-                        :error-messages="validationErrors.customFieldsList[index].content"
-                        :value="item.content"
-                        @change="notifyChange(index, 'content', $event)"
-                        />
+        <v-col class="pl-2">
+          <v-text-field
+            :label="labels.labelContent"
+            outlined
+            dense
+            :readonly="mixinMethods_isFieldReadOnly('content')"
+            :hint="mixinMethods_readOnlyHint('content')"
+            :error-messages="validationErrors.customFieldsList[index].content"
+            :value="item.content"
+            @change="notifyChange(index, 'content', $event)"
+          />
         </v-col>
 
         <v-col class="shrink px-1">
-          <BaseIconButton material-icon-name="clear"
-                          icon-color="red"
-                          :disabled="index >= customFieldsProp.length -1"
-                          @clicked="deleteEntry(index) "/>
-
+          <BaseIconButton
+            material-icon-name="clear"
+            icon-color="red"
+            :disabled="index >= customFieldsProp.length - 1"
+            @clicked="deleteEntry(index)"
+          />
         </v-col>
       </v-row>
 
       <v-row v-if="maxCustomFieldsReached">
         <v-col cols="12">
-          <div class="text-subtitle-2"><span class="red--text">{{ this.maxCustomFieldsMessage }}</span></div>
+          <div class="text-subtitle-2">
+            <span class="red--text">{{ this.maxCustomFieldsMessage }}</span>
+          </div>
         </v-col>
       </v-row>
-
     </v-container>
   </v-card>
-
 </template>
 
 <script>
-
 /**
  * @summary shows the custom field names and contents
  * @author Rebecca Kurup Buchholz
@@ -101,25 +100,23 @@
  */
 import { mapState } from 'vuex';
 
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-
-import {
-  getValidationMetadataEditingObject,
-  isArrayContentValid, isFieldValid,
-} from '@/factories/userEditingValidations';
-
 import {
   deleteEmptyObject,
   isMaxLength,
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import {
+  getValidationMetadataEditingObject,
+  isArrayContentValid,
+  isFieldValid,
+} from '@/factories/userEditingValidations';
 
 export default {
   name: 'EditCustomFields',
@@ -127,15 +124,18 @@ export default {
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',
-      cardInstructions: 'Advanced custom data fields. These are fields for special internal use cases.',
+      cardInstructions:
+        'Advanced custom data fields. These are fields for special internal use cases.',
       labelFieldName: 'Field Name',
       labelContent: 'Content',
     },
     validationErrors: {
-      customFieldsList: [{
-        fieldName: '',
-        content: '',
-      }],
+      customFieldsList: [
+        {
+          fieldName: '',
+          content: '',
+        },
+      ],
       customFieldArray: null,
     },
     defaultUserEditMetadataConfig: {
@@ -181,9 +181,7 @@ export default {
     },
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     maxCustomFields() {
       let max = this.defaultUserEditMetadataConfig.customFieldsMax;
 
@@ -198,13 +196,13 @@ export default {
         let fields = [...this.customFields];
 
         if (fields.length <= 0) {
-          fields = [{...this.emptyEntry}];
+          fields = [{ ...this.emptyEntry }];
         } else {
           this.addEmptyFieldObj(fields);
         }
 
         // fields.sort((a, b) => a.fieldName > b.fieldName);
-        
+
         return fields;
       },
     },
@@ -217,7 +215,6 @@ export default {
   },
   methods: {
     addEmptyFieldObj(localFields) {
-
       const lastCustomFieldObj = localFields[localFields.length - 1];
 
       const lastCustomFieldName = lastCustomFieldObj?.fieldName;
@@ -231,22 +228,22 @@ export default {
       // Else if addCustomField is true and localFields is greater than or equal to maxCustomFields then assign maxCustomFieldsReached to true
       // Else if localFields is less than maxCustomFields then assign maxCustomFieldsReached to false
       if (addCustomField && localFields.length < this.maxCustomFields) {
-        localFields.push({...this.emptyEntry});
+        localFields.push({ ...this.emptyEntry });
 
-        const sizeDiff = localFields.length - this.validationErrors.customFieldsList.length;
+        const sizeDiff =
+          localFields.length - this.validationErrors.customFieldsList.length;
 
         for (let i = 0; i < sizeDiff; i++) {
-          this.validationErrors.customFieldsList.push({...this.emptyEntry});
+          this.validationErrors.customFieldsList.push({ ...this.emptyEntry });
         }
       }
     },
-     // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
-     // Emit filledCustomFieldsArray to eventBus
+    // Assign filledCustomFieldsArray to a copy of customFieldsArray with last empty custom field object removed
+    // Emit filledCustomFieldsArray to eventBus
     checkEnoughEntries(localFields) {
-
       const lastCustomField = localFields[localFields.length - 1];
 
-       // Assign isEmpty to true if all values in lastCustomField are null or empty strings, else assign isEmpty to false
+      // Assign isEmpty to true if all values in lastCustomField are null or empty strings, else assign isEmpty to false
       const isEmpty = isObjectEmpty(lastCustomField);
 
       // If isEmpty is true and filledCustomFieldsArray has at least one item then remove last element of array
@@ -266,14 +263,12 @@ export default {
       };
     },
     setCustomFields(value) {
-
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_CUSTOMFIELDS,
         data: { customFields: value },
       });
     },
     deleteEntry(index) {
-
       const localCopy = [...this.customFieldsProp];
       const errorArray = this.validationErrors.customFieldsList;
 
@@ -284,19 +279,23 @@ export default {
       // the last entry is always unused, removed it before saving
       this.removeUnusedEntry(localCopy);
 
-      const arrayIsValid = isFieldValid('customFields', localCopy, this.validations, this.validationErrors, 'customFieldArray');
+      const arrayIsValid = isFieldValid(
+        'customFields',
+        localCopy,
+        this.validations,
+        this.validationErrors,
+        'customFieldArray',
+      );
 
-      if (arrayIsValid ) {
+      if (arrayIsValid) {
         this.setCustomFields(localCopy);
 
         if (errorArray.length > 1) {
           errorArray.splice(index, 1);
         }
       }
-
     },
     removeUnusedEntry(localfunders) {
-
       const lastFunder = localfunders[localfunders.length - 1];
 
       // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
@@ -309,7 +308,6 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     notifyChange(index, property, value) {
-
       const localCopy = [...this.customFieldsProp];
       const errorArray = this.validationErrors.customFieldsList;
 
@@ -325,12 +323,25 @@ export default {
 
       let arrayIsValid = false;
       if (deleted) {
-        arrayIsValid = isFieldValid('customFields', localCopy, this.validations, this.validationErrors, 'customFieldArray');
+        arrayIsValid = isFieldValid(
+          'customFields',
+          localCopy,
+          this.validations,
+          this.validationErrors,
+          'customFieldArray',
+        );
       } else {
-        arrayIsValid = isArrayContentValid(localCopy, 'customFields', index, property, this.validations, errorArray);
+        arrayIsValid = isArrayContentValid(
+          localCopy,
+          'customFields',
+          index,
+          property,
+          this.validations,
+          errorArray,
+        );
       }
 
-      if (arrayIsValid ) {
+      if (arrayIsValid) {
         this.setCustomFields(localCopy);
 
         if (deleted) {
@@ -339,10 +350,12 @@ export default {
             errorArray.splice(index, 1);
           }
         }
-
       }
 
-      this.maxCustomFieldsReached = isMaxLength(this.maxCustomFields, localCopy);
+      this.maxCustomFieldsReached = isMaxLength(
+        this.maxCustomFields,
+        localCopy,
+      );
     },
   },
   components: {
@@ -352,5 +365,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

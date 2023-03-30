@@ -1,8 +1,5 @@
 <template>
-  <v-container id="MetadataGenericSubStepper"
-               fluid
-               class="pa-0">
-
+  <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
     <v-row no-gutters>
       <v-col offset="1" cols="10">
         <!-- prettier-ignore -->
@@ -17,11 +14,13 @@
 
     <v-row class="fill-height">
       <v-col v-if="currentStep" cols="12">
-        <component :is="currentStep.component"
-                    v-bind="getGenericPropsForStep(currentStep)"
-                    :metadataId="metadataId"
-                    :readOnlyFields="currentStep.readOnlyFields"
-                    :readOnlyExplanation="currentStep.readOnlyExplanation" />
+        <component
+          :is="currentStep.component"
+          v-bind="getGenericPropsForStep(currentStep)"
+          :metadataId="metadataId"
+          :readOnlyFields="currentStep.readOnlyFields"
+          :readOnlyExplanation="currentStep.readOnlyExplanation"
+        />
       </v-col>
 
       <v-col v-if="!currentStep" cols="12">
@@ -53,10 +52,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
-
-import StepperHeader from '@/components/Navigation/StepperHeader';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
@@ -72,39 +70,48 @@ export default {
   },
   computed: {
     metadataId() {
-      return this.$route.params.metadataid;
+      return this.$route?.params?.metadataid || undefined;
     },
   },
   methods: {
     getGenericPropsForStep(step) {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](step.key);
       }
 
       return step.genericProps;
     },
     catchStepClick(stepTitle) {
+      if (!this.$route) {
+        // storybook context
+        return;
+      }
+
       const params = this.$route.params;
       params.substep = stepTitle;
 
-      this.$router.push({
-        params,
-        query: this.$route.query,
-      }, () => {
-
-      }, (err) => {
-        // add empty onAbort to not trigger the NavigationDuplicated Error message
-        // when it's a NavigationDuplicated Error
-        if (err?.name?.toLowerCase() !== 'navigationduplicated') {
-          console.error(err);
-        }
-      });
+      this.$router.push(
+        {
+          params,
+          query: this.$route.query,
+        },
+        () => {},
+        err => {
+          // add empty onAbort to not trigger the NavigationDuplicated Error message
+          // when it's a NavigationDuplicated Error
+          if (err?.name?.toLowerCase() !== 'navigationduplicated') {
+            console.error(err);
+          }
+        },
+      );
     },
     nextStep() {
       const nextIndex = this.currentStepIndex + 1;
 
       if (nextIndex > this.steps.length - 1) {
-        eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
+        eventBus.emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
         return;
       }
 

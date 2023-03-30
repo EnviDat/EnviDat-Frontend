@@ -52,7 +52,7 @@
                                       :hint="mixinMethods_readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
-          <MetadataPublications :genericProps="publicationsObject" />
+          <MetadataPublications v-bind="publicationsObject" />
         </GenericTextareaPreviewLayout>
 
       </v-col>
@@ -85,12 +85,12 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 
-import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout';
-import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications';
+import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
+import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -133,10 +133,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
     genericTextAreaObject() {
@@ -145,14 +145,13 @@ export default {
         labelTextarea: this.labels.labelTextarea,
         textareaContent: this.relatedPublicationsText,
         isVerticalLayout: true,
+        placeholderTextarea: this.labels.placeholder,
       };
     },
     publicationsObject() {
       return {
-        publications: {
-          text: this.previewPublicationsText,
-          maxTextLength: 2000,
-        },
+        text: this.previewPublicationsText,
+        maxTextLength: 2000,
       };
     },
     validations() {
@@ -180,7 +179,7 @@ export default {
     },
     setRelatedPublicationsText(value) {
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_RELATED_PUBLICATIONS,
         data: { [this.editingProperty]: value },
       });
@@ -192,7 +191,9 @@ export default {
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {
       labelTextarea: EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
-      cardInstructions: 'Add references to other related publications which are relevant to this research data. Use <a href="https://www.markdownguide.org/basic-syntax/#links" target="_blank">markdown</a> to format link to make them clickable.',
+      cardInstructions: 'Add DORA links to other publications, you can find them on <a href="https://www.dora.lib4ri.ch/wsl/" target="_blank">dora lib4ri</a> or directly enter DORA permanent IDs ex. wsl:29664). Click into the text arena for examples.',
+      placeholder: 'Example entries: \n  * wsl:18753 \n' +
+          ' * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:18753 ',
       subtitlePreview: 'Related Publications Preview',
     },
     validationErrors: {

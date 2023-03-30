@@ -1,0 +1,290 @@
+{
+   "fileObjects": [
+      {
+         "apiSuffix": "airtemp1",
+         "parameters": [
+            "airtemp1",
+            "airtemp2"
+         ],
+         "fileName": "temp_v.json",
+         "chartTitle": "Air Temperatures Recent Days",
+         "numberFormat": "##  °C",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "airtemp1",
+         "parameters": [
+            "airtemp1",
+            "airtemp2"
+         ],
+         "fileName": "temp.json",
+         "chartTitle": "Air Temperatures Historical Data",
+         "numberFormat": "##  °C",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "windspeed1",
+         "parameters": [
+            "windspeed1",
+            "windspeed2"
+         ],
+         "fileName": "ws_v.json",
+         "chartTitle": "Wind Speed Recent Days",
+         "numberFormat": "###  m/s",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "windspeed1",
+         "parameters": [
+            "windspeed1",
+            "windspeed2"
+         ],
+         "fileName": "ws.json",
+         "chartTitle": "Wind Speed Historical Data",
+         "numberFormat": "###  m/s",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "winddir1",
+         "parameters": [
+            "winddir1",
+            "winddir2"
+         ],
+         "fileName": "wd_v.json",
+         "chartTitle": "Wind Direction Recent Days",
+         "numberFormat": "###  °",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "winddir1",
+         "parameters": [
+            "winddir1",
+            "winddir2"
+         ],
+         "fileName": "wd.json",
+         "chartTitle": "Wind Direction Historical Data",
+         "numberFormat": "###  °",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "rh1",
+         "parameters": [
+            "rh1",
+            "rh2"
+         ],
+         "fileName": "rh_v.json",
+         "chartTitle": "Relative Humidity Recent Days",
+         "numberFormat": "##  %",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false,
+         "seriesNumberFormat": "#."
+      },
+      {
+         "apiSuffix": "rh1",
+         "parameters": [
+            "rh1",
+            "rh2"
+         ],
+         "fileName": "rh.json",
+         "chartTitle": "Relative Humidity Historical Data",
+         "numberFormat": "##  %",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false,
+         "seriesNumberFormat": "#."
+      },
+      {
+         "apiSuffix": "netrad",
+         "parameters": [
+            "swin",
+            "swout",
+            "netrad"
+         ],
+         "fileName": "rad_v.json",
+         "chartTitle": "Radiation Recent Days",
+         "numberFormat": "###  W/m²",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "netrad",
+         "parameters": [
+            "swin",
+            "swout",
+            "netrad"
+         ],
+         "fileName": "rad.json",
+         "chartTitle": "Radiation Historical Data",
+         "numberFormat": "###  W/m²",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "sh1",
+         "parameters": [
+            "sh1",
+            "sh2"
+         ],
+         "fileName": "sheight_v.json",
+         "chartTitle": "Snow Heights Recent Days",
+         "numberFormat": "#.##  m",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false,
+         "seriesNumberFormat": "#.00"
+      },
+      {
+         "apiSuffix": "sh1",
+         "parameters": [
+            "sh1",
+            "sh2"
+         ],
+         "fileName": "sheight.json",
+         "chartTitle": "Snow Heights Historical Data",
+         "numberFormat": "#.##  m",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "pressure",
+         "parameters": [
+            "pressure"
+         ],
+         "fileName": "press_v.json",
+         "chartTitle": "Air Pressure Recent Days",
+         "numberFormat": "###  mbar",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "pressure",
+         "parameters": [
+            "pressure"
+         ],
+         "fileName": "press.json",
+         "chartTitle": "Air Pressure Historical Data",
+         "numberFormat": "###  mbar",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "battvolt",
+         "parameters": [
+            "battvolt"
+         ],
+         "fileName": "battvolt_v.json",
+         "chartTitle": "Battery Voltage Recent Days",
+         "numberFormat": "## V",
+         "dateFormatTime": true,
+         "preload": true,
+         "showDisclaimer": false
+      },
+      {
+         "apiSuffix": "battvolt",
+         "parameters": [
+            "battvolt"
+         ],
+         "fileName": "battvolt.json",
+         "chartTitle": "Battery Voltage Historical Data",
+         "numberFormat": "## V",
+         "dateFormatTime": false,
+         "preload": true,
+         "showDisclaimer": false
+      }
+   ],
+   "graphStyling": {
+      "airtemp1": {
+         "color": "#D48E00",
+         "negativeColor": "#00CED4",
+         "titleString": "Thermocouple 1",
+         "precision": 1
+      },
+      "airtemp2": {
+         "color": "#D26200",
+         "negativeColor": "#07AACD",
+         "titleString": "Thermocouple 2",
+         "precision": 1
+      },
+      "windspeed1": {
+         "color": "#046401",
+         "titleString": "Wind-speed 1",
+         "precision": 1
+      },
+      "windspeed2": {
+         "color": "#5ED352",
+         "titleString": "Wind-speed 2",
+         "precision": 1
+      },
+      "winddir1": {
+         "color": "#046401",
+         "titleString": "Wind-direction 1",
+         "precision": 1
+      },
+      "winddir2": {
+         "color": "#2FCE32",
+         "titleString": "Wind-direction 2",
+         "precision": 1
+      },
+      "rh1": {
+         "color": "#1DAFD7",
+         "titleString": "Relative humidity 1"
+      },
+      "rh2": {
+         "color": "#393DA3",
+         "titleString": "Relative humidity 2"
+      },
+      "swin": {
+         "color": "#E79F32",
+         "titleString": "Short-wave incoming",
+         "precision": 1
+      },
+      "swout": {
+         "color": "#9A6008",
+         "titleString": "Short-wave outgoing",
+         "precision": 1
+      },
+      "netrad": {
+         "color": "#1C5197",
+         "titleString": "Net radiation",
+         "precision": 1
+      },
+      "sh1": {
+         "color": "#679DE2",
+         "titleString": "Snow height 1",
+         "precision": 2
+      },
+      "sh2": {
+         "color": "#3375CD",
+         "titleString": "Snow height 2",
+         "precision": 2
+      },
+      "pressure": {
+         "color": "#FF01FF",
+         "titleString": "Atmospheric pressure",
+         "precision": 1
+      },
+      "battvolt": {
+         "color": "#27AE61",
+         "titleString": "Battery voltage",
+         "precision": 1
+      }
+   }
+}

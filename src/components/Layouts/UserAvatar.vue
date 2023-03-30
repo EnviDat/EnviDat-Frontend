@@ -5,10 +5,9 @@
 
     <v-img v-if="showGravatar"
            id="gravatarIcon"
-           :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'somethingWhichThrowsAnError' }&r=g`"
+           :src="`https://gravatar.com/avatar/${emailHash}?s=${size}&d=${ defaultGravatar ? defaultGravatar : 'intentional_Gravatar_Error' }&r=g`"
            @error="imageError" />
-
-<!--
+    <!--
     <v-img v-if="!showGravatar && showAvaaatarIcons"
            id="avaaatarIcons"
           :src="avataaarUrl"
@@ -24,14 +23,17 @@
     <span v-if="showInitials"
           class="white--text"
           style="position: absolute;"
-          :class="initialsTextClass" >{{ nameInitials }}</span>
+          :class="initialsTextClass"
+          >{{ nameInitials }}</span
+    >
 
     <v-icon v-if="showFallbackAccountIcon"
             color="black"
             :small="size <= 20"
             :large="size > 40 && size < 128"
-            :x-large="size >= 128" >account_circle</v-icon>
-
+            :x-large="size >= 128"
+            >account_circle</v-icon
+    >
   </v-avatar>
 </template>
 
@@ -49,12 +51,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import jazzicons from '@metamask/jazzicon';
-import { getAvataaarUrl } from '@/store/avataaars';
 import seedrandom from 'seedrandom';
 
+import { getAvataaarUrl } from '@/store/avataaars';
+
 export default {
-  components: {
-  },
+  components: {},
   props: {
     nameInitials: String,
     emailHash: String,

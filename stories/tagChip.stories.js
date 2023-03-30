@@ -11,17 +11,15 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import TagChip from '@/components/Chips/TagChip';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip';
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
-import { CHIPS } from './storybookFolder';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 
-const menuEntry = `${CHIPS} / single chips`; // / Keyword Tag`;
 
 export default {
-    title: menuEntry,
+    title: '10 Chips / single chips',
     decorators: [],
     parameters: {},
 };
@@ -75,7 +73,7 @@ export const MetadataStateChips = () => ({
       <v-col>
         <MetadataStateChip state="draft" />
       </v-col>
-      
+
       <v-col>
         showOnHover
         <MetadataStateChip state="draft"
@@ -101,7 +99,7 @@ export const MetadataStateChips = () => ({
         <MetadataStateChip state="published"
                            showOnHover />
       </v-col>
-    
+
     </v-row>`,
 });
 
@@ -139,6 +137,6 @@ export const MetadataOrganizationChips = () => ({
             tooltip="SwissFL"
         />
       </v-col>
-    
+
     </v-row>`,
 });

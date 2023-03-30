@@ -7,7 +7,7 @@
       </v-col>
 
       <v-col cols="4.5">
-        <EditRelatedDatasets v-bind="editRelatedDatasetsProps"/>
+        <EditRelatedDatasets v-bind="editRelatedDatasetsProps" />
       </v-col>
 
       <v-col cols="3">
@@ -41,20 +41,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
-
-import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications';
-import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets';
-import EditCustomFields from '@/modules/user/components/EditCustomFields';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import {
   EDITMETADATA_CUSTOMFIELDS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
   EDITMETADATA_NEXT_MAJOR_STEP,
   EDITMETADATA_RELATED_DATASETS,
+  EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
+import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
+import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
+import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
+import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 export default {
   name: 'MetadataCreationRelatedInfo',
@@ -72,21 +71,27 @@ export default {
   computed: {
     relatedPublicationsText() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_PUBLICATIONS);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_RELATED_PUBLICATIONS);
       }
 
       return '';
     },
     relatedDatasetsText() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_RELATED_DATASETS);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_RELATED_DATASETS);
       }
 
       return '';
     },
     customFields() {
       if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_CUSTOMFIELDS);
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_CUSTOMFIELDS);
       }
 
       return [];
@@ -115,7 +120,7 @@ export default {
   },
   methods: {
     nextStep() {
-      eventBus.$emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
+      eventBus.emit(EDITMETADATA_NEXT_MAJOR_STEP, this.nextMajorStep);
     },
   },
   data: () => ({

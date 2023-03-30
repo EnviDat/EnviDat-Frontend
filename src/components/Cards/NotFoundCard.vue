@@ -1,46 +1,39 @@
 <template>
-  <v-card id="NotFoundCard"
-          :height="height"
-          class="pa-0 notFoundGrid" >
-
-    <v-img :src="notFoundImage"
-            :max-height="height"
-            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;" />
+  <v-card id="NotFoundCard" :height="height" class="pa-0 notFoundGrid">
+    <v-img
+      :src="notFoundImage"
+      :max-height="height"
+      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
+    />
 
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col class="text-h3">
           {{ title }}
         </v-col>
       </v-row>
 
-      <v-row >
-        <v-col cols="12"
-                class="text-md-h6 text-xs-body-1" >
+      <v-row>
+        <v-col cols="12" class="text-md-h6 text-xs-body-1">
           {{ description }}
         </v-col>
       </v-row>
 
       <v-row justify="space-between">
-        <v-col v-if="actionDescription"
-                class="text-body-1" >
+        <v-col v-if="actionDescription" class="text-body-1">
           {{ actionDescription }}
         </v-col>
 
-        <v-col v-if="actionButtonText && actionButtonCallback"
-                class="shrink" >
-          <base-rectangle-button :button-text="actionButtonText"
-                                  @clicked="actionButtonCallback" />
+        <v-col v-if="actionButtonText && actionButtonCallback" class="shrink">
+          <base-rectangle-button
+            :button-text="actionButtonText"
+            @clicked="actionButtonCallback"
+          />
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
-
 </template>
-
 
 <script>
 /**
@@ -56,9 +49,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import userNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
-
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 
 export default {
   name: 'NotFoundCard',
@@ -73,7 +65,8 @@ export default {
     },
     description: {
       type: String,
-      default: 'Ups we have trouble showing you want you were looking for. Try reloading the page.',
+      default:
+        'Ups we have trouble showing you want you were looking for. Try reloading the page.',
     },
     actionDescription: String,
     actionButtonText: String,
@@ -85,11 +78,10 @@ export default {
       return this.image ? this.image : this.userNotFound1;
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     userNotFound1,
-  }),  
+  }),
   components: {
     BaseRectangleButton,
   },
@@ -97,8 +89,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .notFoundGrid {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-  }
+.notFoundGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
 </style>

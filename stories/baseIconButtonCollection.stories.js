@@ -9,15 +9,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import fileIcon from '../src/assets/icons/file.png';
 import contact2Icon from '../src/assets/icons/contact2.png';
-import { BUTTONS_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${BUTTONS_VIEWS} / Icon buttons`,
+  title: '1 Base Elements / Icon buttons',
   decorators: [],
   parameters: {},
 };
@@ -83,7 +82,7 @@ export const IconsWithCountBadeViews = () => ({
     template: `
     <v-row style="border: solid 1px;">
 
-      <v-col cols="2" >
+      <v-col class="shrink" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
                                 :iconString="fileIcon"
@@ -92,7 +91,7 @@ export const IconsWithCountBadeViews = () => ({
         <!-- /div -->
       </v-col>
 
-      <v-col cols="2" >
+      <v-col class="shrink" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
                                 :iconString="contact2Icon"

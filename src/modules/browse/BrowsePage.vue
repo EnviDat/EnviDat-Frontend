@@ -36,6 +36,10 @@
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
                     :reloadDelay="vReloadDelay"
+                    :updatingTags="updatingTags"
+                    :loading="loading"
+                    :metadatasContent="metadatasContent"
+                    :categoryCards="categoryCards"
     />
 
   </article>
@@ -82,7 +86,7 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import MetadataList from '@/components/MetadataList';
+import MetadataList from '@/components/MetadataList.vue';
 
 export default {
   name: 'BrowsePage',
@@ -326,6 +330,7 @@ export default {
   computed: {
     ...mapState([
       'config',
+      'categoryCards',
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -350,6 +355,12 @@ export default {
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
       vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
+    loading() {
+      return (this.loadingMetadatasContent
+          || this.isFilteringContent
+          || this.searchingMetadatasContent
+      );
+    },
     reloadAmount() {
       return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },

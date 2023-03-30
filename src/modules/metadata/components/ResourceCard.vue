@@ -1,40 +1,49 @@
 <template>
-  <v-card :id="`resourceCard_${id}`"
-          :color="cardColor"
-          class="metadataResourceCard"
-          :class="isSelected ? 'highlighted' : ''"
-          style="height: 100%;"
-          :loading="loading" >
-
+  <v-card
+    :id="`resourceCard_${id}`"
+    :color="cardColor"
+    class="metadataResourceCard"
+    :class="isSelected ? 'highlighted' : ''"
+    style="height: 100%;"
+    :loading="loading"
+  >
     <template slot="progress">
-      <v-progress-linear color="accent"
-                          indeterminate />
+      <v-progress-linear color="accent" indeterminate />
     </template>
 
     <v-card-title class="text-h5 resourceHeadline white--text">
       {{ resourceName }}
     </v-card-title>
 
-    <v-card-text class="pt-0 white--text"
-                  :class="{
-                    'pb-5': !showFullDescription,
-                    'pb-10': showFullDescription,
-                    'pr-2': showFullDescription,
-                    'pb-md-3': !showFullDescription,
-                    'pb-md-10': showFullDescription,
-                    }" >
-
-      <v-container class="pa-0"
-                    fluid >
-        <v-row no-gutters >
-          <v-col v-if="showFullDescription || (!showFullDescription && !maxDescriptionLengthReached)"
-                  class="readableText resourceCardText heightAndScroll"
-                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
-                  v-html="markdownText" >
+    <v-card-text
+      class="pt-0 white--text"
+      :class="{
+        'pb-5': !showFullDescription,
+        'pb-10': showFullDescription,
+        'pr-2': showFullDescription,
+        'pb-md-3': !showFullDescription,
+        'pb-md-10': showFullDescription,
+      }"
+    >
+      <v-container class="pa-0" fluid>
+        <v-row no-gutters>
+          <v-col
+            v-if="
+              showFullDescription ||
+                (!showFullDescription && !maxDescriptionLengthReached)
+            "
+            class="readableText resourceCardText heightAndScroll"
+            :style="
+              `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
+            "
+          >
+            <div v-html="markdownText"></div>
           </v-col>
 
-          <v-col v-if="!showFullDescription && maxDescriptionLengthReached"
-                  class="readableText resourceCardText" >
+          <v-col
+            v-if="!showFullDescription && maxDescriptionLengthReached"
+            class="readableText resourceCardText"
+          >
             {{ markdownTextTruncated }}
           </v-col>
 
@@ -52,60 +61,67 @@
           </v-col> -->
         </v-row>
 
-        <v-row v-if="!showFullDescription"
-                no-gutters >
-          <v-col >
-            <v-divider :dark="dark"
-                        class="my-2" />
+        <v-row v-if="!showFullDescription" no-gutters>
+          <v-col>
+            <v-divider :dark="dark" class="my-2" />
           </v-col>
         </v-row>
 
-        <v-row v-if="!showFullDescription"
-                no-gutters >
-          <v-col class="resourceInfo" >
-            <base-icon-label-view v-if="doi"
-                                  :text="doi"
-                                  :label="doiIcon ? '' : 'DOI:'"
-                                  :icon="doiIcon"
-                                  icon-tooltip="Data Object Identifier"
-                                  :align-left="twoColumnLayout" />
+        <v-row v-if="!showFullDescription" no-gutters>
+          <v-col class="resourceInfo">
+            <base-icon-label-view
+              v-if="doi"
+              :text="doi"
+              :label="doiIcon ? '' : 'DOI:'"
+              :icon="doiIcon"
+              icon-tooltip="Data Object Identifier"
+              :align-left="twoColumnLayout"
+            />
 
-            <base-icon-label-view v-if="format"
-                                  :text="format"
-                                  :label="extensionIcon ? '' : 'File format:'"
-                                  :icon="extensionIcon"
-                                  icon-tooltip="Format of the file"
-                                  :align-left="twoColumnLayout" />
+            <base-icon-label-view
+              v-if="format"
+              :text="format"
+              :label="extensionIcon ? '' : 'File format:'"
+              :icon="extensionIcon"
+              icon-tooltip="Format of the file"
+              :align-left="twoColumnLayout"
+            />
 
-            <base-icon-label-view v-if="size"
-                                  :text="formatedBytes"
-                                  :label="fileSizeIcon ? '' : 'File size:'"
-                                  :icon="fileSizeIcon"
-                                  icon-tooltip="Filesize"
-                                  :align-left="twoColumnLayout" />
+            <base-icon-label-view
+              v-if="size"
+              :text="formatedBytes"
+              :label="fileSizeIcon ? '' : 'File size:'"
+              :icon="fileSizeIcon"
+              icon-tooltip="Filesize"
+              :align-left="twoColumnLayout"
+            />
 
-            <base-icon-label-view v-if="created"
-                                  :text="created"
-                                  :label="dateCreatedIcon ? '' : 'Created at:'"
-                                  :icon="dateCreatedIcon"
-                                  icon-tooltip="Date of file creation"
-                                  :align-left="twoColumnLayout" />
+            <base-icon-label-view
+              v-if="created"
+              :text="readableCreated"
+              :label="dateCreatedIcon ? '' : 'Created at:'"
+              :icon="dateCreatedIcon"
+              icon-tooltip="Date of file creation"
+              :align-left="twoColumnLayout"
+            />
 
-            <base-icon-label-view v-if="lastModified"
-                                  :text="lastModified"
-                                  :label="lastModifiedIcon ? '' : 'Modified at:'"
-                                  :icon="lastModifiedIcon"
-                                  icon-tooltip="Date of last modification"
-                                  :align-left="twoColumnLayout" />
+            <base-icon-label-view
+              v-if="lastModified"
+              :text="readableLastModified"
+              :label="lastModifiedIcon ? '' : 'Modified at:'"
+              :icon="lastModifiedIcon"
+              icon-tooltip="Date of last modification"
+              :align-left="twoColumnLayout"
+            />
           </v-col>
         </v-row>
-
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-2"
-                    style="position: absolute; bottom: 0; right: 55px;" >
-
+    <v-card-actions
+      class="ma-0 pa-2"
+      style="position: absolute; bottom: 0; right: 55px;"
+    >
       <base-icon-button v-if="maxDescriptionLengthReached"
                         :class="isProtected ? 'mr-2' : ''"
                         material-icon-name="expand_more"
@@ -115,68 +131,78 @@
                         outlined
                         :rotateOnClick="true"
                         :rotateToggle="showFullDescription"
-                        :tooltipText="showFullDescription ? 'Hide full description' : 'Show full description'"
-                        @clicked="showFullDescription = !showFullDescription" />
-
+                        :tooltipText="
+                          showFullDescription
+                            ? 'Hide full description'
+                            : 'Show full description'
+                        "
+                        @clicked="showFullDescription = !showFullDescription"
+      />
     </v-card-actions>
 
+    <v-container
+      v-if="showGenericOpenButton && !isProtected"
+      class="pa-2"
+      style="position: absolute; right: 0; width: 55px;"
+      :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
+    >
+      <v-row>
+        <v-col cols="12">
+          <base-icon-button
+            :materialIconName="openButtonIcon"
+            iconColor="black"
+            color="accent"
+            :isElevated="true"
+            :tooltipText="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
 
-      <v-container v-if="showGenericOpenButton"
-                   class="pa-2"
-                   style="position: absolute; right: 0; width: 55px;"
-                   :style="`${ genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;' }`">
-
-        <v-row >
-          <v-col cols="12" >
-          <base-icon-button :materialIconName="openButtonIcon"
-                            iconColor="black"
-                            color="accent"
-                            :isElevated="true"
-                            :tooltipText="openButtonTooltip"
-                            @clicked="$emit('openButtonClicked')" />
-          </v-col>
-        </v-row>
-
-      </v-container>
-
-      <v-container class="pa-2"
-                    style="position: absolute; bottom: 0; right: 0; width: 55px;">
-
+    <v-container
+      class="pa-2"
+      style="position: absolute; bottom: 0; right: 0; width: 55px;"
+    >
       <v-row v-if="!isProtected">
-
-        <v-col cols="12" >
-          <base-icon-button :materialIconName="isFile ? 'file_download' : 'link'"
-                            iconColor="black"
-                            color="accent"
-                            :isElevated="true"
-                            :tooltipText="isFile ? 'Download file' : 'Open link'"
-                            :url="url"
-                            :disabled="!downloadActive" />
+        <v-col cols="12">
+          <base-icon-button
+            :materialIconName="isFile ? 'file_download' : 'link'"
+            iconColor="black"
+            color="accent"
+            :isElevated="true"
+            :tooltipText="isFile ? 'Download file' : 'Open link'"
+            :url="url"
+            :disabled="!downloadActive"
+          />
         </v-col>
       </v-row>
 
       <v-row v-if="isProtected">
         <v-col>
-          <div class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
-                :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'" >
+          <div
+            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
+            :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
+          >
+            <v-icon
+              class="pl-1 pt-1"
+              :class="downloadActive ? 'iconCircle' : ''"
+              :disabled="!downloadActive"
+              >shield</v-icon
+            >
 
-            <v-icon class="pl-1 pt-1"
-                    :class="downloadActive ? 'iconCircle' : ''"
-                    :disabled="!downloadActive">shield</v-icon>
-
-            <p v-if="downloadActive"
-                class="pt-2 lockedText black--text protectedLink"
-                v-html="protectedText">
-            </p>
+            <div
+              v-if="downloadActive"
+              class="pt-2 lockedText black--text protectedLink"
+            >
+              <p v-html="protectedText"></p>
+            </div>
           </div>
         </v-col>
       </v-row>
-
-      </v-container>
-
+    </v-container>
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -190,14 +216,11 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import {
-  stripMarkdown,
-  renderMarkdown,
- } from '@/factories/stringFactory';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
+ */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
+import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'ResourceCard',
@@ -224,7 +247,7 @@ export default {
     dateCreatedIcon: String,
     lastModifiedIcon: String,
     isProtected: Boolean,
-    fileExtensionIcon: Map,
+    fileExtensionIcon: Object,
     metadataContact: String,
     downloadActive: {
       type: Boolean,
@@ -259,6 +282,12 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    readableCreated() {
+      return formatDate(this.created) || this.created;
+    },
+    readableLastModified() {
+      return formatDate(this.lastModified) || this.lastModified;
+    },
     resourceName() {
       if (!this.name && !!this.url) {
         const splits = this.url.split('/');
@@ -268,7 +297,9 @@ export default {
       return this.name ? this.name : 'Unnamed resource';
     },
     scrollbarColorFront() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+      return this.$vuetify
+        ? this.$vuetify.theme.themes.light.highlight
+        : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';
@@ -289,7 +320,10 @@ export default {
         const strippedMarkdown = stripMarkdown(this.description.trim());
 
         if (strippedMarkdown) {
-          return `${strippedMarkdown.substring(0, this.maxDescriptionLength)}...`;
+          return `${strippedMarkdown.substring(
+            0,
+            this.maxDescriptionLength,
+          )}...`;
         }
 
         return '';
@@ -306,13 +340,22 @@ export default {
         sizeNumber = Number.parseInt(this.size, 10);
       }
 
-      return this.mixinMethods_formatBytes(sizeNumber);
+      return formatBytes(sizeNumber);
     },
     isLink() {
-      return this.format && (this.format.toLowerCase() === 'link' || this.format.toLowerCase() === 'url');
+      return (
+        this.format &&
+        (this.format.toLowerCase() === 'link' ||
+          this.format.toLowerCase() === 'url')
+      );
     },
     isFile() {
-      let isFile = (!this.format || !(this.format.toLowerCase() === 'link' || this.format.toLowerCase() === 'url'));
+      let isFile =
+        !this.format ||
+        !(
+          this.format.toLowerCase() === 'link' ||
+          this.format.toLowerCase() === 'url'
+        );
 
       if (isFile && this.url) {
         const splits = this.url.split('/');
@@ -323,7 +366,9 @@ export default {
       return isFile;
     },
     maxDescriptionLengthReached() {
-      return this.description && this.description.length > this.maxDescriptionLength;
+      return (
+        this.description && this.description.length > this.maxDescriptionLength
+      );
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
@@ -334,7 +379,6 @@ export default {
     },
     extensionIcon() {
       if (this.$store) {
-
         if (this.audioFormats.includes(this.format)) {
           return this.mixinMethods_getIcon('Audio');
         }
@@ -360,106 +404,103 @@ export default {
     },
     lookupExtensionIcon() {
       const lookUp = `file${this.format.toLowerCase()}`;
-      let icon = this.fileExtensionIcon.get(lookUp);
+      let icon = this.fileExtensionIcon[`./${lookUp}`];
 
       if (!icon && this.audioFormats.includes(this.format)) {
-        icon = this.fileExtensionIcon.get('fileAudio');
+        icon = this.fileExtensionIcon['./fileAudio'];
       }
 
       if (!icon) {
-        icon = this.fileExtensionIcon.get('file');
+        icon = this.fileExtensionIcon['./file'];
       }
 
       // console.log(`icon ${icon}`);
       return icon;
     },
   },
-  methods: {
-
-  },
+  methods: {},
 };
 </script>
 
 <style scoped>
+.resourceHeadline {
+  line-height: 1.5rem;
+}
 
-  .resourceHeadline {
-    line-height: 1.5rem;
-  }
+.black_title {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
 
-  .black_title {
-    color: rgba(0,0,0,.87) !important;
-  }
+.white_title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
 
-  .white_title {
-    color: rgba(255,255,255,.9) !important;
-  }
+.heightAndScroll {
+  max-height: 400px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 
-  .heightAndScroll {
-    max-height: 400px;
-    overflow-y: auto !important;
-    scrollbar-width: thin;
-  }
+.fabPosition {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
 
-  .fabPosition {
-    position: absolute;
-    bottom: 0px; right: 0px;
-  }
+.fabMenu {
+  width: 48px;
+  height: 48px;
+  background-color: #ffd740;
+  border-radius: 50%;
+  /* transition: .1s; */
+}
 
-  .fabMenu {
-    width: 48px;
-    height: 48px;
-    background-color: #FFD740;
-    border-radius: 50%;
-    /* transition: .1s; */
-  }
+.fabMenuDisabled {
+  opacity: 0.5;
+  background-color: grey !important;
+}
 
-  .fabMenuDisabled {
-    opacity: 0.5;
-    background-color: grey !important;
-  }
+.fabMenuHover:hover,
+.fabMenuHover:active {
+  background: #fff;
+  min-width: 160px;
+  min-height: 160px;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px 3px;
+  display: inherit;
+}
 
-  .fabMenuHover:hover,
-  .fabMenuHover:active {
-    background: #FFF;
-    min-width: 160px;
-    min-height: 160px;
-    width: 100%;
-    height: 100%;
-    border-radius: 3px 3px;
-    display: inherit;
-  }
+.fabMenuHover:hover .v-icon,
+.fabMenuHover:active .v-icon {
+  border: 1px solid grey;
+  border-radius: 50%;
+  padding: 0 4px 4px 0;
+}
 
-  .fabMenuHover:hover .v-icon,
-  .fabMenuHover:active .v-icon {
-    border: 1px solid grey;
-    border-radius: 50%;
-    padding: 0 4px 4px 0;
-  }
+.lockedText {
+  display: none;
+  opacity: 0;
+}
 
-  .lockedText {
-    display: none;
-    opacity: 0;
-  }
+.fabMenuHover:hover .lockedText,
+.fabMenuHover:active .lockedText {
+  display: inherit;
+  opacity: 1;
+}
 
-  .fabMenuHover:hover .lockedText,
-  .fabMenuHover:active .lockedText {
-    display: inherit;
-    opacity: 1;
-  }
+.resourceInfo {
+  font-size: 12px !important;
+  line-height: 0.8rem !important;
+  opacity: 0.9;
+}
 
-  .resourceInfo {
-    font-size: 12px !important;
-    line-height: 0.8rem !important;
-    opacity: 0.9;
-  }
+.protectedLink {
+  font-size: 12px;
+  overflow: hidden;
+}
 
-  .protectedLink {
-    font-size: 12px;
-    overflow: hidden;
-  }
-
-  .highlighted {
-    box-shadow: #ffd740 0px 0px 5px 5px !important;
-  }
-
+.highlighted {
+  box-shadow: #ffd740 0px 0px 5px 5px !important;
+}
 </style>

@@ -10,11 +10,10 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate';
-import { BASE_ELEMENTS } from './storybookFolder';
+import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
 
 export default {
-  title: `${BASE_ELEMENTS} / BaseStartEndDate`,
+  title: '1 Base Elements / Start End Date picker',
   decorators: [],
   parameters: {},
 };
@@ -28,7 +27,7 @@ export const BaseStartEndDateViews = () => ({
       <v-col cols="12">
         empty interaction, with no logic in from the parent component!
       </v-col>
-    
+
       <v-col cols="12">
         <BaseStartEndDate  />
       </v-col>
@@ -36,7 +35,7 @@ export const BaseStartEndDateViews = () => ({
       <v-col cols="12">
         prefilled interaction
       </v-col>
-      
+
       <v-col cols="12">
         <BaseStartEndDate :start-date="startDate1"
                           :startDateProperty="startDateProperty"
@@ -50,7 +49,7 @@ export const BaseStartEndDateViews = () => ({
       </v-col>
 
       <v-col cols="12">
-        fields Readonly 
+        fields Readonly
       </v-col>
 
       <v-col cols="12">
@@ -61,6 +60,23 @@ export const BaseStartEndDateViews = () => ({
                           :readOnlyFields="readOnlyFields"
                           :readOnlyExplanation="readOnlyExplanation"
                           />
+      </v-col>
+
+      <v-col cols="12">
+        prefilled interaction in row layout
+      </v-col>
+
+      <v-col cols="12">
+        <BaseStartEndDate :start-date="startDate1"
+                          :startDateProperty="startDateProperty"
+                          :end-date="endDate1"
+                          :endDateProperty="endDateProperty"
+                          :clearableStartDate="true"
+                          :clearableEndDate="true"
+                          rowLayout
+                          @dateChange="dateChange(1, ...arguments)"
+                          @clearClick="catchClearClick"
+        />
       </v-col>
     
     </v-row>
@@ -75,8 +91,10 @@ export const BaseStartEndDateViews = () => ({
   },
   methods: {
     catchClearClick(dateProperty) {
+/*
       console.log('Got catchClearClick');
       console.log(dateProperty);
+*/
 
       if (dateProperty === this.startDateProperty) {
         this.startDate1 = '';
@@ -86,10 +104,12 @@ export const BaseStartEndDateViews = () => ({
       }
     },
     dateChange(index, dateProperty, newDate) {
+/*
       console.log('Got new date');
       console.log(index);
       console.log(dateProperty);
       console.log(newDate);
+*/
 
       if (dateProperty === this.startDateProperty) {
         this.startDate1 = newDate;

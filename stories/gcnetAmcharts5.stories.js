@@ -29,7 +29,7 @@ import { CHART_VIEWS } from './storybookFolder';
 // console.log(neadContent);
 
 export default {
-  title: `${CHART_VIEWS} / AmChart5 Tests`,
+  title: '12 Chart Views / AmChart5 Tests',
   component: Amcharts5,
   decorators: [],
   parameters: {},
@@ -53,7 +53,7 @@ export const Amcharts5SingleChart = () => ({
           <Amcharts5 :apiUrl="apiUrl" />
         </v-col>
       </v-row>
-    
+
     </v-col>
     `,
   computed: {
@@ -140,7 +140,7 @@ export const Amcharts5LargeData = () => ({
           <Amcharts5 :apiUrl="apiUrl1"  />
         </v-col>
       </v-row>
-      
+
     </v-col>
     </div>
   `,

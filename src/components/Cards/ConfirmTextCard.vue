@@ -11,21 +11,22 @@
     <v-card-actions class="pa-4 pt-0">
       <v-spacer />
 
-      <BaseRectangleButton marginClass="mx-1"
-                            :buttonText="confirmText"
-                            @clicked="confirmClick" />
+      <BaseRectangleButton
+        marginClass="mx-1"
+        :buttonText="confirmText"
+        @clicked="confirmClick"
+      />
 
-      <BaseRectangleButton v-if="cancelClick"
-                           marginClass="mx-1"
-                           :buttonText="cancelText"
-                           :isFlat="true"
-                           @clicked="cancelClick" />
-
+      <BaseRectangleButton
+        v-if="cancelClick"
+        marginClass="mx-1"
+        :buttonText="cancelText"
+        :isFlat="true"
+        @clicked="cancelClick"
+      />
     </v-card-actions>
-
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -34,13 +35,13 @@
  * @summary text card with ok / cancel button
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-02 11:24:00 
+ * Created at     : 2019-10-02 11:24:00
  * Last modified  : 2020-10-27 22:37:22
  *
  * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package. 
+ * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'ConfirmTextCard',
@@ -79,9 +80,5 @@ export default {
 </script>
 
 <style scoped>
-
-  .dataproducer_title {
-    font-family: 'Baskervville', serif !important;
-  }
 
 </style>

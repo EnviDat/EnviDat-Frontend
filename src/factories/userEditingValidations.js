@@ -11,12 +11,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import * as yup from 'yup';
+
 import {
   EDIT_USER_PROFILE,
+  EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -26,9 +31,13 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import * as yup from 'yup';
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+
+
+const convertEmptyStringToNull = (value, originalValue) => originalValue === '' ? null : value;
+
+const convertToZero = (value) => Number.isNaN(value) ? 0 : value;
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -61,29 +70,39 @@ const metadataInEditingValidations = {
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
       authors: yup.array()
-        .min(1, 'Please enter at least one author.'),
+        .min(1, 'Please add at least one author.'),
     }),
-  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
-  // yup.object().shape({
-  //   isLink: yup.boolean(),
-  //   name: yup
-  //     .string()
-  //     .required('Resource name is required')
-  //     .min(5, 'Resource name must be at least 5 characters')
-  //     .notOneOf(
-  //       [yup.ref('url')],
-  //       'Title cannot be the same as the resource url',
-  //     ),
-  //   description: yup.string(),
-  //   url: yup.string().when('isLink', {
-  //     is: true,
-  //     then: yup
-  //       .string()
-  //       .url('Resource url must be valid')
-  //       .required('Resource url is required'),
-  //     otherwise: yup.string().notRequired(),
-  //   }),
-  // }),
+  [EDITMETADATA_DATA_RESOURCE]: () =>
+    yup.object().shape({
+      isLink: yup.boolean(),
+      name: yup.string()
+        .required('Resource name is required')
+        .min(5, 'Resource name must be at least 5 characters')
+        .notOneOf(
+          [yup.ref('url')],
+          'Title cannot be the same as the resource url',
+        ),
+      description: yup.string()
+        .nullable()
+        .transform(convertEmptyStringToNull)
+        .min(20, 'Please write at least a minimal description with 20 characters.'),
+      format: yup.string()
+        .nullable()
+        .min(2, 'Format has to be at least 2 characters long.'),
+      size: yup.number('size must be a number')
+        .transform(convertToZero)
+        .test('empty-check', 'File size must be a number greater than 0', size => size !== 0)
+        .moreThan(0, 'File size be more than 0'),
+      sizeFormat: yup.string()
+        .required('Pick a file size'),
+      url: yup.string().when('isLink', {
+        is: true,
+        then: yup.string()
+          .url('Resource url must be valid')
+          .required('Resource url is required'),
+        otherwise: yup.string().notRequired(),
+      }),
+  }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
@@ -101,18 +120,16 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
-      relatedPublicationsText: yup
-        .string()
+      relatedPublicationsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .transform(convertEmptyStringToNull)
         .min(20, 'Please use at least 20 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
-      relatedDatasetsText: yup
-        .string()
+      relatedDatasetsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
+        .transform(convertEmptyStringToNull)
         .min(20, 'Please use at least 20 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
@@ -144,6 +161,9 @@ const metadataInEditingValidations = {
         .min(3),
       publicationYear: yup.string()
         .required(),
+    }),
+  [EDITMETADATA_FUNDING_INFO]: () =>
+    yup.object().shape({
       funders: yup.array()
         .required().min(1, 'Provide at least one entry about funding of the research.').of(
         yup.object().shape({
@@ -151,7 +171,7 @@ const metadataInEditingValidations = {
           grantNumber: yup.string(),
           institutionUrl: yup.string()
             .nullable()
-            .transform((value, originalValue) => originalValue === '' ? null : value)
+            .transform(convertEmptyStringToNull)
             .matches(urlRegex, 'Please provide an valid link / url.'),
         }),
       ),
@@ -167,6 +187,25 @@ const metadataInEditingValidations = {
       email: yup.string()
         .email('Please enter a valid email address')
         .required('Email is required'),
+    }),
+  [EDITMETADATA_AUTHOR]: () =>
+    yup.object().shape({
+      firstName: yup.string()
+        .required('Author first name is required')
+        .min(3, 'Author first name must be at least 3 characters'),
+      lastName: yup.string()
+        .required('Author last name is required')
+        .min(3, 'Author last name must be at least 3 characters'),
+      email: yup.string()
+        .email('Author email must be a valid email address')
+        .required('Author email is required'),
+      identifier: yup.string()
+        // e.g. 0000-0002-3862-8720
+        .notRequired()
+        .min(19, 'OrcId must be at least 19 characters, like 0000-0002-3862-8720'),
+      affiliation: yup.string()
+        // .required('Author affiliation is required')
+        .min(3, 'Affiliation must be at least 3 characters'),
     }),
 };
 
@@ -221,6 +260,17 @@ export function isFieldValid(property, value, validations, errorObject, errorPro
   return true;
 }
 
+/**
+ * Calls the isFieldValid function on every property of the objectToValidate. The objectToValidate and the errorObject
+ * need to have the properties as in the array of properties in the input.
+ *
+ * @param {Array<string>} properties
+ * @param {Object} objectToValidate
+ * @param validations
+ * @param {Object} errorObject
+ *
+ * @returns {boolean} false if any of the validation rules got an error
+ */
 export function isObjectValid(properties, objectToValidate, validations, errorObject) {
 
   // Validate fields corresponding to properties
@@ -237,6 +287,11 @@ export function isObjectValid(properties, objectToValidate, validations, errorOb
   }
 
   return true;
+}
+
+export function isObjectValidCheckAllProps(objectToValidate, validations, errorObject) {
+  const keys = Object.keys(objectToValidate);
+  return isObjectValid(keys, objectToValidate, validations, errorObject);
 }
 
 export function getUserOrganizationRoleMap(userId, organizations) {
@@ -308,4 +363,3 @@ export function getCollaboratorCapacity(datasetId, collaboratorIdEntries) {
 
   return '';
 }
-

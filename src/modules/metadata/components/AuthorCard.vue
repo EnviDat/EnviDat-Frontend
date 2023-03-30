@@ -1,8 +1,8 @@
 <template>
   <v-card class="authorCard pa-0"
+          id="AuthorCard"
           :class="cardClass"
           :style="dynamicCardBackground"
-          @click.native="cardClick"
           :loading="loading">
 
     <v-container fluid
@@ -32,7 +32,7 @@
                       dark
                       small
                       :class="dark ? 'white--text' : 'black--text'">
-                hourglass_empty
+                hourglass_bottom
               </v-icon>
             </template>
 
@@ -71,7 +71,7 @@
                             outlined
                             :color="dark ? 'white' : darkColor"
                             :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                            @clicked="catchSearchAuthor(author.fullName)"/>
+                            @clicked="catchSearchAuthor(author)"/>
 
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
@@ -189,13 +189,13 @@
                    class="authorInfo py-0"
                    :class="dark ? 'white--text' : 'black--text'">
 
-              <a v-if="(author.id.type && author.id.type === 'orcid') || isOrcId(formatIdentifier(author.id.identifier))"
-                 :href="`https://orcid.org/${formatIdentifier(author.id.identifier)}`"
+              <a v-if="(author.identifierType && author.identifierType === 'orcid') || isOrcId(author.identifier)"
+                 :href="`https://orcid.org/${formatIdentifier(author.identifier)}`"
                  rel="noopener noreferrer"
                  target="_blank">
-                {{ formatIdentifier(author.id.identifier) }}
+                {{ formatIdentifier(author.identifier) }}
               </a>
-              <div v-else>{{ formatIdentifier(author.id.identifier) }}</div>
+              <div v-else>{{ formatIdentifier(author.identifier) }}</div>
 
             </v-col>
           </v-row>
@@ -229,6 +229,7 @@
           <base-icon-button :materialIconName="openButtonIcon"
                             iconColor="black"
                             color="accent"
+                            :disabled="loading"
                             :isElevated="true"
                             :tooltipText="openButtonTooltip"
                             @clicked="$emit('openButtonClicked')"/>
@@ -278,19 +279,18 @@ import {
   AUTHORS_DATACREDIT_SCORE,
 } from '@/factories/metadataConsts';
 
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import { BROWSE_PATH } from '@/router/routeConsts';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
   getLevelProgress,
-  getDataCreditLevel,
+  getDataCreditLevel, getAuthorName,
 } from '@/factories/authorFactory';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
-  name: 'EditDataCredits',
+  name: 'AuthorCard',
   components: {
     DataCreditLayout,
     BaseIconButton,
@@ -350,7 +350,7 @@ export default {
     cardClass() {
       return {
         accentLink: this.dataCreditLevel > 2,
-        highlighted: this.isSelected,
+        highlighted: this.isSelected || this.author?.isSelected,
       };
     },
     dark() {
@@ -432,7 +432,11 @@ export default {
               background-position: center, center; background-size: cover;`;
     },
     authorIsDead() {
-      return this.asciiDead && this.author.fullName ? this.author.fullName.match(this.asciiDead) : false;
+      if (!this.asciiDead) {
+        return false;
+      }
+
+      return this.author?.firstName?.includes(this.asciiDead) || this.author?.lastName?.includes(this.asciiDead) || false;
     },
   },
   methods: {
@@ -448,7 +452,7 @@ export default {
         return false;
       }
 
-      return id.match(RegExp(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g));
+      return id.match(/^[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/g);
     },
     formatIdentifier(id) {
       if (!id) {
@@ -465,10 +469,9 @@ export default {
     dataCreditsCount(credit) {
       return this.author.totalDataCredits ? this.author.totalDataCredits[credit] : '';
     },
-    cardClick() {
-    },
-    catchSearchAuthor(search) {
-      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
+    catchSearchAuthor(author) {
+      const fullName = getAuthorName(author);
+      this.$emit('catchSearchAuthor', fullName);
     },
     verticalLineStyle(color) {
       return `border-left: thick solid ${color}`;

@@ -12,17 +12,16 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
-import UserCard from '@/components/Cards/UserCard';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
 import { getNameInitials } from '@/factories/authorFactory';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import FlipLayout from '@/components/Layouts/FlipLayout';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import {
   EDIT_USER_PROFILE_EVENT,
   eventBus,
 } from '@/factories/eventBus';
-import authorCollection from '../public/testdata/authorCollection.json';
-import { METADATA_EDITING } from './storybookFolder';
+import authorCollection from './testdata/authorCollection.json';
 
 const keys = Object.keys(authorCollection);
 const user1 =  authorCollection[keys[1]];
@@ -30,7 +29,7 @@ const user2 =  authorCollection[keys[2]];
 
 
 export default {
-  title: `${METADATA_EDITING} / User Profile`,
+  title: '9 Editing Metadata / User Profile',
   decorators: [],
   parameters: {},
 };
@@ -47,7 +46,7 @@ export const EditUserViews = () => ({
 
       <v-col cols="6">
         {{ user1.fullName + ' Edit User Profile' }}
-        <EditUserProfile :firstName="user1.firstName" 
+        <EditUserProfile :firstName="user1.firstName"
                           :lastName="user1.lastName"
                           :email="user1.email"
                           />
@@ -71,7 +70,7 @@ export const EditUserViews = () => ({
                          error-details="Some Validation Error Text"
         />
       </v-col>
-    
+
     </v-row>
     `,
   data: () => ({
@@ -116,7 +115,7 @@ export const UserCardEditingViews = () => ({
                              :email="author.email"
             />
           </template>
-          
+
         </FlipLayout>
       </v-col>
 
@@ -181,14 +180,14 @@ export const UserCardEditingViews = () => ({
 
         </FlipLayout>
       </v-col>
-        
+
     </v-row>
     `,
   created() {
-    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+    eventBus.on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   beforeDestroy() {
-    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+    eventBus.off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   computed: {
     author() {
@@ -211,4 +210,3 @@ export const UserCardEditingViews = () => ({
     user1,
   }),
 });
-

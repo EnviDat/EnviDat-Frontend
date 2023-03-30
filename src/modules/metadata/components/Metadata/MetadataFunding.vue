@@ -4,7 +4,7 @@
     <v-card-title class="metadata_title text-h6">
       {{ METADATA_FUNDING_TITLE }}
     </v-card-title>
-    
+
     <v-card-title v-if="showPlaceholder" >
       <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
             style="width: 100%;">
@@ -22,7 +22,7 @@
           {{ preText }}
         </v-col>
       </v-row>
-      
+
       <v-row >
         <v-col v-for="(item, index) in fundingItems"
                 :key="index"

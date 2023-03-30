@@ -21,6 +21,19 @@
                       :tooltipBottom="true"
                       @clicked="catchBackClicked" />
 
+    <base-icon-button id="MetadataHeaderEditButton"
+                      v-if="showEditButton"
+                      class="ma-2"
+                      :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                      style="position: absolute; top: 0; right: 46px; z-index: 2;"
+                      material-icon-name="edit"
+                      :fillColor="$vuetify.theme.themes.light.accent"
+                      iconColor="black"
+                      color="accent"
+                      tooltipText="Edit metadata"
+                      :tooltipBottom="true"
+                      @clicked="catchEditClicked" />
+
     <v-container fluid
                   class="pa-4">
     <v-row no-gutters
@@ -164,9 +177,10 @@
 
           <v-col cols="6" lg="3"
                   class="headerInfo py-0" >
+
             <BaseIconLabelView :text="contactEmailLowerCase"
                                   :label="mailIcon ? '' : 'Contact Email:'"
-                                  :url="`mailto:${contactEmailLowerCase}`"
+                                  :url="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''"
                                   :icon="mailIcon"
                                   icon-tooltip="Email address of the main contact"
                                   :compactLayout="$vuetify.breakpoint.xs"
@@ -315,15 +329,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import TagChip from '@/components/Chips/TagChip';
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import TagChip from '@/components/Chips/TagChip.vue';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
-import TagChipAuthor from '@/components/Chips/TagChipAuthor';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 export default {
   name: 'MetadataHeader',
@@ -364,6 +378,10 @@ export default {
     showCloseButton: {
       type: Boolean,
       default: true,
+    },
+    showEditButton: {
+      type: Boolean,
+      default: false,
     },
     categoryColor: String,
     organization: String,
@@ -451,6 +469,9 @@ export default {
     catchBackClicked() {
       this.$emit('clickedBack');
     },
+    catchEditClicked() {
+      this.$emit('clickedEdit');
+    },
     iconFlip(icon) {
       return this.dark ? `${icon}_w` : icon;
     },
@@ -462,13 +483,6 @@ export default {
 </script>
 
 <style scoped>
-
-  .headerTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
-  }
 
   .headerInfo {
     font-weight: 400;

@@ -1,57 +1,61 @@
 <template>
   <v-card id="MetadataDetails">
-
     <v-card-title class="text-h6 metadata_title">
       {{ METADATA_DETAILS_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="details && details.length > 0"
-                  class="pa-4 pt-0 readableText">
+    <v-card-text
+      v-if="details && details.length > 0"
+      class="pa-4 pt-0 readableText"
+    >
       <v-form>
-        <div v-for="val in details"
-              :key="val.label"
-              class="mt-2" >
-          <v-text-field v-if="isSingleText(val.text)"
-                        :id="val.label"
-                        :label="val.label"
-                        :name="val.label"
-                        :value="replaceAuthorDeadInfo(val.text)"
-                        hide-details
-                        readonly />
+        <div v-for="val in details" :key="val.label" class="mt-2">
+          <v-text-field
+            v-if="isSingleText(val.text)"
+            :id="val.label"
+            :label="val.label"
+            :name="val.label"
+            :value="replaceAuthorDeadInfo(val.text)"
+            hide-details
+            readonly
+          />
 
-          <v-textarea v-if="!isSingleText(val.text)"
-                      :id="val.label"
-                      :label="val.label"
-                      :name="val.label"
-                      :value="replaceAuthorDeadInfo(val.text)"
-                      hide-details
-                      readonly />
+          <v-textarea
+            v-if="!isSingleText(val.text)"
+            :id="val.label"
+            :label="val.label"
+            :name="val.label"
+            :value="replaceAuthorDeadInfo(val.text)"
+            hide-details
+            readonly
+          />
         </div>
       </v-form>
     </v-card-text>
 
-    <v-card-text v-if="!showPlaceholder && (!details || details.length <= 0)"
-                  :style="`color: ${emptyTextColor};`"
-                  class="pa-4 pt-0 readableText">
+    <v-card-text
+      v-if="!showPlaceholder && (!details || details.length <= 0)"
+      :style="`color: ${emptyTextColor};`"
+      class="pa-4 pt-0 readableText"
+    >
       {{ emptyText }}
     </v-card-text>
 
-    <v-card-text v-if="showPlaceholder"
-                  class="pa-4 pt-0">
-      <v-row v-for="n in 5"
-            :key="n + 'label'"
-            no-gutters >
+    <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
+      <v-row v-for="n in 5" :key="n + 'label'" no-gutters>
+        <div
+          class="flex xs2 pr-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
+        >
+          <div class="bone bone-type-text " />
+        </div>
 
-          <div class="flex xs2 pr-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
-            <div class="bone bone-type-text " />
-          </div>
-
-          <div class="flex xs10 pl-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
-            <div class="bone bone-type-text " />
-          </div>
+        <div
+          class="flex xs10 pl-2 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
+        >
+          <div class="bone bone-type-text " />
+        </div>
       </v-row>
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -68,14 +72,12 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 import { METADATA_DETAILS_TITLE } from '@/factories/metadataConsts';
-
 
 export default {
   name: 'MetadataDetails',
-  components: {
-  },
+  components: {},
   props: {
     genericProps: Object,
     showPlaceholder: Boolean,
@@ -95,7 +97,10 @@ export default {
       return this.mixinMethods_getGenericProp('emptyTextColor', 'red');
     },
     emptyText() {
-      return this.mixinMethods_getGenericProp('emptyText', 'No details found for this dataset.');
+      return this.mixinMethods_getGenericProp(
+        'emptyText',
+        'No details found for this dataset.',
+      );
     },
   },
   methods: {
@@ -104,7 +109,12 @@ export default {
         return '';
       }
 
-      return text.replace(`(${this.authorDeadInfo ? this.authorDeadInfo.asciiDead : ''})`, '').trim();
+      return text
+        .replace(
+          `(${this.authorDeadInfo ? this.authorDeadInfo.asciiDead : ''})`,
+          '',
+        )
+        .trim();
     },
     isSingleText: function isSingleText(text) {
       if (!text || text.length <= 0) {
@@ -123,5 +133,4 @@ export default {
     },
   },
 };
-
 </script>

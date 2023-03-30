@@ -1,30 +1,24 @@
 <template>
-  <v-card id="UserOrganizationInfo"
-          raised
-          :width="width"
-          :height="height">
-
-    <div class="cardGrid fill-height" >
-
-      <div class="avatarGrid py-4 pl-4 pr-2" >
-
+  <v-card id="UserOrganizationInfo" raised :width="width" :height="height">
+    <div class="cardGrid fill-height">
+      <div class="avatarGrid py-4 pl-4 pr-2">
         <div class="text-h6">
           {{ title }}
         </div>
 
-        <UserAvatar :size="avatarHeight"
-                    :nameInitials="nameInitials"
-                    class="elevation-5" />
-
+        <UserAvatar
+          :size="avatarHeight"
+          :nameInitials="nameInitials"
+          class="elevation-5"
+        />
       </div>
 
-      <div class="infoGrid pa-4 pt-0"
-            :style="!hasARole ? 'grid-template-rows: auto !important;' : ''">
-
-        <div v-if="hasARole"
-             class="roleGrid " >
-
-          <div class="pb-1" >
+      <div
+        class="infoGrid pa-4 pt-0"
+        :style="!hasARole ? 'grid-template-rows: auto !important;' : ''"
+      >
+        <div v-if="hasARole" class="roleGrid ">
+          <div class="pb-1">
             <div class="text-body-1">Organization</div>
 
             <div class="text-body-1">Role</div>
@@ -41,7 +35,6 @@
               <UserRoleChip :role="roles.role" />
             </div>
           </div>
-
         </div>
 
         <div class="textGrid mt-2 text-caption">
@@ -52,12 +45,8 @@
             {{ organizationInfoText }}
           </div>
         </div>
-
       </div>
-
-
     </div>
-
   </v-card>
 </template>
 
@@ -73,16 +62,17 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import UserAvatar from '@/components/Layouts/UserAvatar';
-import UserRoleChip from '@/components/Chips/UserRoleChip';
+ */
 import { mapState } from 'vuex';
+
+import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
+import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import {
-  isMember,
-  isEditor,
-  isAdmin,
-  isSysadmin,
   hasOrganizationRoles,
+  isAdmin,
+  isEditor,
+  isMember,
+  isSysadmin,
 } from '@/factories/userEditingValidations';
 
 export default {
@@ -104,9 +94,7 @@ export default {
     isCollaborator: Boolean,
   },
   computed: {
-    ...mapState([
-      'config',
-    ]),
+    ...mapState(['config']),
     userDashboardConfig() {
       if (this.$store) {
         return this.config?.userDashboardConfig || {};
@@ -115,17 +103,25 @@ export default {
       return {};
     },
     organizationInfoText() {
-
       if (isSysadmin(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.sysadminOrganizationText || this.sysadminOrganizationText;
+        return (
+          this.userDashboardConfig.organizationRolesText
+            ?.sysadminOrganizationText || this.sysadminOrganizationText
+        );
       }
 
       if (isAdmin(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.adminOrganizationText || this.adminOrganizationText;
+        return (
+          this.userDashboardConfig.organizationRolesText
+            ?.adminOrganizationText || this.adminOrganizationText
+        );
       }
 
       if (isEditor(this.organizationRoles)) {
-        return this.userDashboardConfig.organizationRolesText?.editorOrganizationText || this.editorOrganizationText;
+        return (
+          this.userDashboardConfig.organizationRolesText
+            ?.editorOrganizationText || this.editorOrganizationText
+        );
       }
 
       if (this.isCollaborator) {
@@ -136,14 +132,23 @@ export default {
         return this.userDashboardConfig.organizationRolesText?.memberOrganizationText || this.memberOrganizationText;
       }
 
-      return this.userDashboardConfig.organizationRolesText?.noOrganizationText || this.noOrganizationText;
+      if (isMember(this.organizationRoles)) {
+        return (
+          this.userDashboardConfig.organizationRolesText
+            ?.memberOrganizationText || this.memberOrganizationText
+        );
+      }
+
+      return (
+        this.userDashboardConfig.organizationRolesText?.noOrganizationText ||
+        this.noOrganizationText
+      );
     },
     hasARole() {
       return hasOrganizationRoles(this.organizationRoles);
     },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     avatarHeight: 32,
     title: 'Organization Roles',
@@ -155,7 +160,7 @@ export default {
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
     sysadminOrganizationText: 'You have System Administrator rights, be careful!',
     collaboratorText: 'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
-    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
   }),
   components: {
     UserAvatar,
@@ -165,45 +170,43 @@ export default {
 </script>
 
 <style scoped>
+.cardGrid {
+  display: grid;
+  grid-template-rows: 64px auto;
+  grid-template-columns: 100%;
+}
 
-  .cardGrid {
-    display: grid;
-    grid-template-rows: 64px auto;
-    grid-template-columns: 100%;
-  }
+.infoGrid {
+  display: grid;
+  grid-template-rows: 60% 40%;
+  overflow-y: auto;
+}
 
-  .infoGrid {
-    display: grid;
-    grid-template-rows: 60% 40%;
-    overflow-y: auto;
-  }
+.avatarGrid {
+  display: grid;
+  justify-content: space-between;
+  grid-template-columns: auto 32px;
+  column-gap: 5px;
+}
 
-  .avatarGrid {
-    display: grid;
-    justify-content: space-between;
-    grid-template-columns: auto 32px;
-    column-gap: 5px;
-  }
+.roleGrid {
+  align-content: start;
+  display: grid;
+  grid-template-rows: 32px auto;
+  overflow-y: auto;
+}
 
-  .roleGrid {
-    align-content: start;
-    display: grid;
-    grid-template-rows: 32px auto;
-    overflow-y: auto;
-  }
+.roleGrid > div {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  column-gap: 25px;
+  align-content: end;
+}
 
-  .roleGrid > div {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    column-gap: 25px;
-    align-content: end;
-  }
-
-  .textGrid {
-    display: grid;
-    overflow-y: auto;
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-  }
-
+.textGrid {
+  display: grid;
+  overflow-y: auto;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
 </style>

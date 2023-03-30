@@ -3,7 +3,15 @@
     <v-row>
       <v-col cols="6">
         <!-- prettier-ignore -->
-        <EditPublicationInfo v-bind="editPublicationsProps" />
+        <v-row>
+          <v-col cols="12">
+            <EditFunding v-bind="editFundingProps" />
+          </v-col>
+
+          <v-col cols="12">
+            <EditPublicationInfo v-bind="editPublicationsProps" />
+          </v-col>
+        </v-row>
       </v-col>
 
       <v-col cols="6">
@@ -96,16 +104,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganization from '@/modules/user/components/EditOrganization';
+import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo';
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditFunding from '@/modules/user/components/EditFunding.vue';
 // import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   eventBus,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_FUNDING_INFO,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
@@ -129,6 +139,13 @@ export default {
 
       return {};
     },
+    fundingInfo() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_FUNDING_INFO);
+      }
+
+      return {};
+    },
     organizationsInfo() {
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
@@ -142,6 +159,13 @@ export default {
     editPublicationsProps() {
       return {
         ...this.publicationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
+    editFundingProps() {
+      return {
+        ...this.fundingInfo,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
@@ -162,15 +186,16 @@ export default {
   },
   methods: {
     submitEdittedMetadata() {
-      eventBus.$emit(METADATA_EDITING_FINISH_CLICK);
+      eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
   },
   data: () => ({
-    envidatDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
   }),
   components: {
     //  EditOrganizationTree,
     EditPublicationInfo,
+    EditFunding,
     EditOrganization,
     BaseRectangleButton,
   },

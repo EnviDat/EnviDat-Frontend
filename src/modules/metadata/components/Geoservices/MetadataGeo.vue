@@ -7,24 +7,29 @@
         </v-col>
 
         <v-col class="shrink pl-2">
-          <BaseIconButton v-if="showFullscreenButton"
-                          materialIconName="zoom_out_map"
-                          iconColor="black"
-                          :fillColor="$vuetify.theme.themes.light.accent"
-                          @clicked="triggerFullscreen"
-                        />
+          <BaseIconButton
+            v-if="showFullscreenButton"
+            materialIconName="zoom_out_map"
+            iconColor="black"
+            :fillColor="$vuetify.theme.themes.light.accent"
+            @clicked="triggerFullscreen"
+          />
         </v-col>
       </v-row>
     </v-card-title>
 
-    <v-card-text v-if="error"
-                  class="py-1 text-caption readableText"
-                  :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`" >
+    <v-card-text
+      v-if="error"
+      class="py-1 text-caption readableText"
+      :style="
+        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+      "
+    >
       {{ error }}
     </v-card-text>
 
     <v-card-text style="position: relative">
-      <Map
+      <MapRoot
         :layer-config="layerConfig"
         :mapDivId="mapDivId"
         :selectedLayerName="selectedLayerName"
@@ -36,39 +41,30 @@
       />
     </v-card-text>
 
-    <v-row v-if="editErrorMessage"
-           justify="end"
-           align="center"
-           no-gutters>
-
+    <v-row v-if="editErrorMessage" justify="end" align="center" no-gutters>
       <v-card-text
         class="text-caption readableText"
         align="center"
-        :style="`line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`"
+        :style="
+          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+        "
       >
         {{ editErrorMessage }}
       </v-card-text>
     </v-row>
-
   </v-card>
 </template>
 
 <script>
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { eventBus,INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
-
-import {
-  INJECT_MAP_FULLSCREEN,
-  eventBus,
-} from '@/factories/eventBus';
-
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-
-import Map from './Map';
+import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
 
 export default {
   name: 'MetadataGeo',
   components: {
-    Map,
+    MapRoot,
     BaseIconButton,
   },
   props: {
@@ -86,24 +82,27 @@ export default {
       return this.genericProps?.layerConfig;
     },
     isGcnet() {
-      return this.genericProps?.isGcnet;
+      return this.genericProps?.isGcnet || false;
     },
     mapHeight() {
-      return this.genericProps?.mapHeight;
+      return this.genericProps?.mapHeight || 450;
     },
     mapEditable() {
-      return this.genericProps?.mapEditable;
+      return this.genericProps?.mapEditable || false;
     },
     mapDivId() {
-      return this.genericProps?.mapDivId;
+      return this.genericProps?.mapDivId || 'metadata-map-small';
     },
     showFullscreenButton() {
-      return this.genericProps?.showFullscreenButton;
+      return this.genericProps?.showFullscreenButton || false;
     },
   },
   methods: {
     triggerFullscreen() {
-      eventBus.$emit(INJECT_MAP_FULLSCREEN, { site: this.site, layerConfig: this.layerConfig });
+      eventBus.emit(INJECT_MAP_FULLSCREEN, {
+        site: this.site,
+        layerConfig: this.layerConfig,
+      });
     },
     selectLayer(layerName) {
       this.selectedLayerName = layerName;

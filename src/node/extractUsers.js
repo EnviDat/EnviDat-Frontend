@@ -6,6 +6,7 @@ const userListPath = `${inputPath}user_list_17-08-2022.json`;
 const userList = require(userListPath).result;
 
 const packageListPath = `${inputPath}all_packages.json`;
+// eslint-disable-next-line import/no-dynamic-require
 const packageList = require(packageListPath).result;
 
 const outputFileName = 'user_emails.json';
@@ -119,8 +120,8 @@ function writeUsersToFile(data, fileName) {
     }
 
     return console.log(`Users extracted to ${outputPath}${fileName}. Wrote ${data.length} lines.`);
-  }); 
-  
+  });
+
 }
 
 function getCSVData (userMap) {
@@ -161,4 +162,3 @@ const userMap = genericExtractUser(packageList, getDataMaintainer);
 const csvString = getCSVData(userMap);
 
 writeUsersToFile(csvString, outputPath + outputDataMaintainersCSV);
-

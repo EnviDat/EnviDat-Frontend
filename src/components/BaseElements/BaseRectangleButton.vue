@@ -1,38 +1,42 @@
 <template>
-  <v-tooltip  v-bind="{ [tooltipPosition]: true}"
-              :disabled="$vuetify.breakpoint.smAndDown || !tooltipText">
+  <v-tooltip
+    v-bind="{ [tooltipPosition]: true }"
+    :disabled="$vuetify.breakpoint.smAndDown || !tooltipText"
+  >
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on"
-              :small="isSmall"
-              :x-small="isXsSmall"
-              :class="marginClass"
-              :outlined="isOutlined"
-              :text="isFlat"
-              :color="color"
-              :disabled="disabled"
-              :href="url"
-              :loading="loading"
-              rel="noopener noreferrer"
-              target="_blank"
-              @click.stop="onClick" >
-
+      <v-btn
+        v-on="on"
+        :small="isSmall"
+        :x-small="isXsSmall"
+        :class="marginClass"
+        :outlined="isOutlined"
+        :text="isFlat"
+        :color="color"
+        :disabled="disabled"
+        :href="url"
+        :loading="loading"
+        rel="noopener noreferrer"
+        target="_blank"
+        @click.stop="onClick"
+      >
         <div v-if="customIcon" class="iconCentering">
-          <img class="envidatIcon" :src="customIcon" :alt="`${iconString} icon`" />
+          <img
+            class="envidatIcon"
+            :src="customIcon"
+            :alt="`${iconString} icon`"
+          />
         </div>
 
-        <v-icon v-if="materialIconName"
-                left
-                :color="iconColor" >
+        <v-icon v-if="materialIconName" left :color="iconColor">
           {{ materialIconName }}
         </v-icon>
 
         {{ buttonText }}
       </v-btn>
-    </template >
+    </template>
 
     <span>{{ tooltipText }}</span>
   </v-tooltip>
-
 </template>
 
 <script>

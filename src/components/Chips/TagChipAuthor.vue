@@ -2,9 +2,9 @@
   <v-chip class="authorTag"
           :class="{
             'white--text': highlighted,
-            'smallChip': $vuetify.breakpoint.smAndDown,
-            }"
-          :style="{'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+            smallChip: $vuetify.breakpoint.smAndDown,
+           }"
+          :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
           @click.stop="clicked"
           :small="isSmall"
           close-icon="close"
@@ -20,7 +20,7 @@
     <v-tooltip v-if="authorIsDead"
                 bottom>
       <template v-slot:activator="{ on }">
-        <v-icon v-on="on" x-small >hourglass_empty</v-icon>
+        <v-icon v-on="on" x-small >hourglass_bottom</v-icon>
       </template>
       {{ authorPassedInfo }}
     </v-tooltip>
@@ -87,5 +87,13 @@ export default {
   .authorTag > .v-chip__content > .v-avatar > .v-icon {
     color: rgba(0, 0, 0, 0.87) !important;
   }
+
+</style>
+
+<style>
+
+.authorTag .v-chip__close {
+  color: red !important;
+}
 
 </style>

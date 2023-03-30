@@ -5,15 +5,15 @@ import {
 } from '@storybook/addon-knobs';
 */
 
-import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import DataCreditLayout from '@/components/Layouts/DataCreditLayout';
+import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import {
   createAuthors,
   extractAuthorsMap,
   getFullAuthorsFromDataset,
 } from '@/factories/authorFactory';
-import authorCollection from '../public/testdata/authorCollection.json';
-import { CARD_VIEWS } from './storybookFolder';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import authorCollection from './testdata/authorCollection.json';
 
 import unFormatedMetadataCards from './js/metadata';
 
@@ -42,12 +42,70 @@ const methods = {
 
 
 export default {
-  title: `${CARD_VIEWS}`,
+  title: '3 Cards / Author Cards',
   decorators: [],
-  parameters: {},
+  parameters: {
+    ...envidatViewportParameters,
+  },
 };
 
-export const AuthorCardViews = () => ({
+
+const Template = (args, { argTypes }) => ({
+  components: { AuthorCard },
+  props: Object.keys(argTypes),
+  template: '<AuthorCard v-bind="$props" />',
+});
+
+/*
+export const Empty = Template.bind({});
+*/
+
+
+export const Author1 = Template.bind({});
+Author1.args = { author: authorFromCollection };
+
+const authorLoadsOfDatacredit = {
+  firstName: 'Felix',
+    lastName: 'Gugerli',
+    fullName: 'Felix Gugerli',
+    datasetCount: 7,
+    affiliation: 'WSL',
+    id: {
+    identifier: '0000-0003-3878-1845',
+  },
+  email: 'felix.gugerli@wsl.ch',
+    totalDataCredits: {
+    collection: 10,
+      validation: 3,
+      curation: 12,
+      software: 10,
+      publication: 15,
+      supervision: 1,
+  },
+};
+
+export const AuthorManyDataCredit = Template.bind({});
+AuthorManyDataCredit.args = { author: authorLoadsOfDatacredit };
+
+export const AuthorCardInfosExpanded = Template.bind({});
+AuthorCardInfosExpanded.args = {
+  ...AuthorManyDataCredit.args,
+  overrideAuthorInfosExpanded: true,
+};
+
+export const MobileAuthorCard = Template.bind({});
+MobileAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+MobileAuthorCard.parameters = mobileViewportParams;
+
+export const MobileLargeAuthorCard = Template.bind({});
+MobileLargeAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+MobileLargeAuthorCard.parameters = mobileLargeViewportParams;
+
+export const TabletAuthorCard = Template.bind({});
+TabletAuthorCard.args = { ...AuthorCardInfosExpanded.args };
+TabletAuthorCard.parameters = tabletViewportParams;
+
+export const AuthorCardList = () => ({
   components: {
     AuthorCard,
     DataCreditLayout,
@@ -81,23 +139,23 @@ export const AuthorCardViews = () => ({
   <v-container grid-list-lg fluid pa-0>
     <v-row>
 
-      <v-col cols="12" md="4" pt-5 >
+<!--      <v-col cols="12" md="4" pt-5 >
         <author-card :author="emptyAuthor" />
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
 
         <author-card :author="authorFromCollection" />
-      </v-col>      
-      
+      </v-col>
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" />
-      </v-col>
+      </v-col>-->
 
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="author" :overrideAuthorInfosExpanded="true"/>
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" />
       </v-col>
@@ -105,18 +163,27 @@ export const AuthorCardViews = () => ({
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection2" :isSelected="true" />
       </v-col>
-      
+
       <v-col cols="12" md="4" pt-5 >
         <author-card :author="authorFromCollection3" :loading="true" />
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="authorFromCollection4" />
+        <author-card :author="authorFromCollection4"
+                     :loading="true"
+                     :show-generic-open-button="true"
+                     open-button-icon="edit"
+                     open-button-tooltip="Editing Author"
+        />
       </v-col>
 
       <v-col cols="12" md="4" pt-5 >
-        <author-card :author="author2" />
-      </v-col>      
+        <author-card :author="author2"
+                     :show-generic-open-button="true"
+                     open-button-icon="edit"
+                     open-button-tooltip="Editing Author"
+        />
+      </v-col>
     </v-row>
   </v-container>
   `,
@@ -132,25 +199,7 @@ export const AuthorCardViews = () => ({
       'collection',
       'software',
     ],
-    author: {
-      firstName: 'Felix',
-      lastName: 'Gugerli',
-      fullName: 'Felix Gugerli',
-      datasetCount: 7,
-      affiliation: 'WSL',
-      id: {
-        identifier: '0000-0003-3878-1845',
-      },
-      email: 'felix.gugerli@wsl.ch',
-      totalDataCredits: {
-        collection: 10,
-        validation: 3,
-        curation: 12,
-        software: 10,
-        publication: 15,
-        supervision: 1,
-      },
-    },
+    author: authorLoadsOfDatacredit,
     author2: {
       firstName: 'Felix',
       lastName: 'Gugerli',
@@ -193,3 +242,78 @@ export const AuthorCardViews = () => ({
 });
 
 // stories.addDecorator(withKnobs);
+
+
+export const backgroundTest = () => ({
+  components: {
+  },
+  template: `
+    <v-row>
+      
+      <v-col cols="12" md="4" pt-5 >
+        <div>
+          <v-icon>menu_book</v-icon>
+          <v-icon>local_library</v-icon>
+          <v-icon>code</v-icon>
+          <v-icon>widgets</v-icon>
+          <v-icon>record_voice_over</v-icon>
+          <v-icon>supervision_account</v-icon>
+        </div>
+        
+<!--
+        <div style="width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
+          <div v-for="(index) in 10" 
+               :key="index"
+                :style="getStyle(index, 300, 300)" >
+            <v-icon>widgets</v-icon>
+          </div>
+
+          <div v-for="(index) in 10"
+               :key="index * 100"
+               :style="getStyle(index, 300, 300, -60)" >
+            <v-icon>code</v-icon>
+          </div>
+          
+        </div>
+-->
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
+          <div v-for="(index) in 10"
+               :key="index">
+            <v-icon>widgets</v-icon>
+          </div>
+
+<!--
+          <div v-for="(index) in 10"
+               :key="index * 100"
+               :style="getStyle(index, 300, 300, -60)" >
+            <v-icon>code</v-icon>
+          </div>
+-->
+
+        </div>        
+      </v-col>
+
+    </v-row>
+  `,
+  computed: {
+  },
+  methods: {
+    getStyle(index, maxWidth, maxHeight, start = 0) {
+      const size = 30;
+      let pos = index * size + start;
+      if (pos > maxWidth) {
+        pos -= maxWidth;
+      }
+      let tPos = index * size + start;
+      if (tPos > maxHeight) {
+        tPos -= maxHeight;
+      }
+
+      // return `position: relative; opacity: 0.25; top: ${tPos}px; left: ${pos}px; width: ${size}px; height: ${size}px;`;
+      return `transform: translate(${pos}px, ${tPos}px); opacity: 0.25; width: ${size}px; height: ${size}px;`;
+    },
+  },
+  data: () => ({
+  }),
+});

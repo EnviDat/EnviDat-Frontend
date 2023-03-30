@@ -1,36 +1,35 @@
 <template>
-  <v-banner two-line
-            :color="bannerColor">
-
-    <v-avatar slot="icon"
-              color="secondary"
-              size="24">
-
-      <v-icon color="white"
-              style="animation: progress-circular-rotate 3s linear infinite">
+  <v-banner two-line :color="bannerColor">
+    <v-avatar slot="icon" color="secondary" size="24">
+      <v-icon
+        color="white"
+        style="animation: progress-circular-rotate 3s linear infinite"
+      >
         settings
       </v-icon>
     </v-avatar>
 
-    <span v-html="text"/>
+    <span v-html="text" />
 
     <template v-slot:actions>
-      <BaseRectangleButton v-if="confirmText"
-                           marginClass="mx-1"
-                           color="secondary"
-                           :buttonText="confirmText"
-                           @clicked="confirmClick"/>
+      <BaseRectangleButton
+        v-if="confirmText"
+        marginClass="mx-1"
+        color="secondary"
+        :buttonText="confirmText"
+        @clicked="confirmClick"
+      />
 
-      <BaseRectangleButton v-if="cancelText"
-                           marginClass="mx-1"
-                           :buttonText="cancelText"
-                           :isFlat="true"
-                           @clicked="cancelClick"/>
-
+      <BaseRectangleButton
+        v-if="cancelText"
+        marginClass="mx-1"
+        :buttonText="cancelText"
+        :isFlat="true"
+        @clicked="cancelClick"
+      />
     </template>
   </v-banner>
 </template>
-
 
 <script>
 /**
@@ -45,7 +44,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'TextBanner',
@@ -79,9 +78,5 @@ export default {
 </script>
 
 <style scoped>
-
-.dataproducer_title {
-  font-family: 'Baskervville', serif !important;
-}
 
 </style>

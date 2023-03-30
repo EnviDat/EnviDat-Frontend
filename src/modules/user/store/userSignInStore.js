@@ -30,7 +30,10 @@ const userSignInState = {
 export const userSignIn = {
   namespaced: true,
   state: userSignInState,
-  getters: {},
+  getters: {
+    user: state => state.user,
+    userLoading: state => state.userLoading,
+  },
   mutations,
   actions,
 };

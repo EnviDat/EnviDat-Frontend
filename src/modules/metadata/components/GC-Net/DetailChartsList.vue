@@ -1,98 +1,91 @@
 <template>
-  <v-container class="pa-1"
-                fluid
-                id="DetailChartList" >
+  <v-container class="pa-1" fluid id="DetailChartList">
     <v-row no-gutters>
-      <v-col cols="3"
-              class="pa-2" >
-
+      <v-col cols="3" class="pa-2">
         <v-row no-gutters>
-          <v-col cols="12"
-                 class="py-1" >
-            <ButtonContentTable :stationName="currentStation.name"
-                                :buttonList="stationParams"
-                                :scrollPos="scrollPos"
-                                :title="`Detailed charts of ${ currentStation.name } station`"
-                                :subtitle="contentTableTitle"
-                                @buttonClick="scrollToChart" />
+          <v-col cols="12" class="py-1">
+            <ButtonContentTable
+              :stationName="currentStation.name"
+              :buttonList="stationParams"
+              :scrollPos="scrollPos"
+              :title="`Detailed charts of ${currentStation.name} station`"
+              :subtitle="contentTableTitle"
+              @buttonClick="scrollToChart"
+            />
           </v-col>
 
-          <v-col cols="12"
-                 class="py-1" >
-            <ButtonContentTable :stationName="currentStation.name"
-                                :buttonList="downloadButton"
-                                :scrollPos="scrollPos"
-                                title="Download Data"
-                                :subtitle="downloadSubtitle"
-                                :downloadActive="downloadActive"
-                                @buttonClick="downloadData" />
+          <v-col cols="12" class="py-1">
+            <ButtonContentTable
+              :stationName="currentStation.name"
+              :buttonList="downloadButton"
+              :scrollPos="scrollPos"
+              title="Download Data"
+              :subtitle="downloadSubtitle"
+              :downloadActive="downloadActive"
+              @buttonClick="downloadData"
+            />
           </v-col>
         </v-row>
-
-
       </v-col>
 
-      <v-col cols="9"
-              class="px-1 scrollableList"
-              ref="scrollableList"
-              id="scrollableList"
-              v-scroll.self="onScroll" >
+      <v-col v-show="currentStation && fileObjects.length > 0"
+        cols="9"
+        class="px-1 scrollableList"
+        ref="scrollableList"
+        id="scrollableList"
+        v-scroll.self="onScroll"
+      >
+        <v-row v-for="fileObject in fileObjects"
+               :key="fileObject.fileName"
+               :ref="chartCardId(fileObject)"
+               :id="chartCardId(fileObject)"
+               no-gutters
+        >
+          <!-- :ref="fileObject.fileName" -->
 
-        <v-row v-if="currentStation && fileObjects.length > 0"
-                no-gutters >
-
-                  <!-- :ref="fileObject.fileName" -->
-
-          <v-col v-for="fileObject in fileObjects"
-                  :key="fileObject.fileName"
-                  :ref="chartCardId(fileObject)"
-                  :id="chartCardId(fileObject)"
-                  cols="12"
-                  class="py-2" >
-
-              <DetailChart :apiUrl="currentStation.envidatConfig.apiUrl"
-                          :fallbackUrl="currentStation.envidatConfig.fallbackUrl"
-                          :fallbackFilename="fileObject.fileName"
-                          :stationName="currentStation.name"
-                          :stationId="currentStation.id"
-                          :fileObject="fileObject"
-                          :chartId="chartId(fileObject.fileName)"
-                          :graphs="buildGraphs(fileObject)"
-                          :preload="fileObject.preload"
-                          :showDisclaimer="fileObject.showDisclaimer"
-                          :historicalEndDate="getHistoricalEndDate(fileObject.parameters)"
-                          :convertLocalTime="convertLocalTime"
-                          :key="fileObject.fileName + reRenderKey" />
-
+          <v-col cols="12"
+                  class="py-2"
+          >
+            <DetailChart
+              :apiUrl="currentStation.envidatConfig.apiUrl"
+              :fallbackUrl="currentStation.envidatConfig.fallbackUrl"
+              :fallbackFilename="fileObject.fileName"
+              :stationName="currentStation.name"
+              :stationId="currentStation.id"
+              :fileObject="fileObject"
+              :chartId="chartId(fileObject.fileName)"
+              :graphs="buildGraphs(fileObject)"
+              :preload="fileObject.preload"
+              :showDisclaimer="fileObject.showDisclaimer"
+              :historicalEndDate="getHistoricalEndDate(fileObject.parameters)"
+              :convertLocalTime="convertLocalTime"
+              :key="fileObject.fileName + reRenderKey"
+            />
           </v-col>
         </v-row>
 
         <v-row v-if="fileObjects.length <= 0">
-          <v-col>{{ `FileObject: ${fileObjects} graphStyling: ${graphStyling}` }}</v-col>
+          <v-col>{{
+            `FileObject: ${fileObjects} graphStyling: ${graphStyling}`
+          }}</v-col>
         </v-row>
-
       </v-col>
-
     </v-row>
-
   </v-container>
-
 </template>
 
 <script>
-import { defaultSeriesSettings } from '@/factories/chartFactory';
-import { isNumber } from '@turf/turf';
-import ButtonContentTable from '@/components/Navigation/ButtonContentTable';
-
 import formatISO from 'date-fns/formatISO';
-import parseISO from 'date-fns/parseISO';
 import isAfter from 'date-fns/isAfter';
+import parseISO from 'date-fns/parseISO';
 
-import DetailChart from './DetailChart';
+import ButtonContentTable from '@/components/Navigation/ButtonContentTable.vue';
+import { defaultSeriesSettings } from '@/factories/chartFactory';
 
+import DetailChart from './DetailChart.vue';
 
 export default {
-  name: 'Station',
+  name: 'DetailChartsList',
   props: {
     currentStation: Object,
     fileObjects: Array,
@@ -148,8 +141,12 @@ export default {
         lineThickness: this.seriesSettings.lineStrokeWidth,
         connect: false,
         gridAboveGraphs: true,
-        negativeLineColor: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
-        negativeFillColors: infoObj.negativeColor ? infoObj.negativeColor : infoObj.color,
+        negativeLineColor: infoObj.negativeColor
+          ? infoObj.negativeColor
+          : infoObj.color,
+        negativeFillColors: infoObj.negativeColor
+          ? infoObj.negativeColor
+          : infoObj.color,
         precision: infoObj.precision ? infoObj.precision : 0,
       };
     },
@@ -160,7 +157,9 @@ export default {
       return `${this.stationId}_${fileName}`;
     },
     chartCardId(fileObject) {
-      return `${fileObject.parameters[0]}_${fileObject.chartTitle.includes('Recent') ? '1' : '2'}`;
+      return `${fileObject.parameters[0]}_${
+        fileObject.chartTitle.includes('Recent') ? '1' : '2'
+      }`;
     },
     // catchParamClick(fileName) {
     //   let scrollToChart = null;
@@ -198,7 +197,11 @@ export default {
         for (let i = 0; i < stations.length; i++) {
           const station = stations[i];
 
-          if (station.id === stationToFind || station.alias === stationToFind || station.name === stationToFind) {
+          if (
+            station.id === stationToFind ||
+            station.alias === stationToFind ||
+            station.name === stationToFind
+          ) {
             return station;
           }
         }
@@ -224,7 +227,6 @@ export default {
       this.scrollPos = e.target.scrollTop;
     },
     scrollToChart(paramName) {
-
       // if (!this.referenceExists(paramName)) {
       //   return;
       // }
@@ -236,14 +238,16 @@ export default {
 
         // this.$vuetify.goTo(`${paramName}_1`, {
         // this.$vuetify.goTo(target, {
-          // duration: this.duration,
-          // offset: this.offset,
-          // easing: this.easing,
+        // duration: this.duration,
+        // offset: this.offset,
+        // easing: this.easing,
         // });
       }
     },
     downloadData() {
-      const downloadURL = this.currentStation?.envidatConfig?.downloadAllUrl || `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation?.aliasApi}/end/empty/`;
+      const downloadURL =
+        this.currentStation?.envidatConfig?.downloadAllUrl ||
+        `https://www.envidat.ch/data-api/gcnet/nead/${this.currentStation?.aliasApi}/end/empty/`;
       window.open(downloadURL, '_blank');
     },
     referenceExists(paramName) {
@@ -251,7 +255,6 @@ export default {
       return target && target.length > 0;
     },
     getHistoricalEndDate(parameters) {
-
       if (!parameters || parameters.length <= 0) {
         return undefined;
       }
@@ -281,7 +284,9 @@ export default {
         return null;
       }
 
-      const matches = this.currentStation.envidatConfig.parameterDates.filter(dateObj => dateObj.parameter === param);
+      const matches = this.currentStation.envidatConfig.parameterDates.filter(
+        dateObj => dateObj.parameter === param,
+      );
       return matches[0];
     },
   },
@@ -290,7 +295,6 @@ export default {
       return this.config?.metadataConfig || {};
     },
     downloadActive() {
-
       if (this.metadataConfig?.resourcesConfig) {
         return this.metadataConfig?.resourcesConfig?.downloadActive;
       }
@@ -311,7 +315,13 @@ export default {
         if (!this.paramExclusion.includes(key)) {
           const name = this.graphStyling[key].titleString.trim();
           const lastChar = name.substring(name.length - 2);
-          const cutOff = isNumber(lastChar);
+          let cutOff = false;
+          try {
+            const lastDigit = Number.parseInt(lastChar, 2);
+            cutOff = Number.isInteger(lastDigit);
+          } catch (e) {
+            console.log(`lastDigit parse failed: ${e}`);
+          }
 
           if (!this.listHasSimilarString(paramList, stringToCheck)) {
             buttons[key] = {
@@ -325,20 +335,23 @@ export default {
       return Object.values(buttons);
     },
     downloadButton() {
-      return [
-        {
-          buttonText: 'Download Data',
-        },
-      ];
+      return [{ buttonText: 'Download Data' }];
     },
     stationId() {
-      return `${this.currentStation.id}_${this.currentStation.alias ? this.currentStation.alias : this.currentStation.name}`;
+      return `${this.currentStation.id}_${
+        this.currentStation.alias
+          ? this.currentStation.alias
+          : this.currentStation.name
+      }`;
+    },
+    downloadSubtitle() {
+      return 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format.';
+      // return 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format. Data after <insert date> not quality controlled.';
     },
   },
   data: () => ({
     paramExclusion: ['swout', 'netrad'],
     contentTableTitle: 'Show specific measurement',
-    downloadSubtitle: 'Download all data from this station in the <a href="https://github.com/GEUS-Glaciology-and-Climate/NEAD" target="_blank">NEAD</a> format. Data after <insert date> not quality controlled.',
     loadingStation: false,
     stationImg: null,
     stationPreloadImage: null,
@@ -352,10 +365,8 @@ export default {
 </script>
 
 <style scoped>
-
 .scrollableList {
   overflow: auto scroll;
-  /* height: 100vh; */
-  max-height: 850px;
+  height: calc(100vh - 132px);
 }
 </style>

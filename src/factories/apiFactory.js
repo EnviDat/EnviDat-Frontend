@@ -4,7 +4,7 @@
  * @summary function factory for api methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2019-10-30 10:13:56
  *
  * This file is subject to the terms and conditions defined in
@@ -99,7 +99,7 @@ export function solrResultToCKANJSON(solorJSON) {
     ckanStructure.organization = dataDict.organization;
     // TODO decode organization?
 
-    ckanStructure.revision_id = dataDict.revision_id;
+    ckanStructure.resource_size = dataDict.resource_size;
     ckanStructure.resource_type = dataDict.resource_type;
   }
 

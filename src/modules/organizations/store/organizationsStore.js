@@ -4,7 +4,7 @@
  * @summary projects store
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2019-10-23 16:41:03
  *
  * This file is subject to the terms and conditions defined in
@@ -20,12 +20,10 @@ const organizationsState = {
   loading: false,
 };
 
-
 export const organizations = {
   namespaced: true,
   state: organizationsState,
-  getters: {
-  },
+  getters: {},
   mutations,
   actions,
 };

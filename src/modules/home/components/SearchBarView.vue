@@ -1,36 +1,29 @@
 <template>
-  <v-card hover
-          raised
-          style="width: 100%;"
-          class="pa-4">
-    <v-container fluid
-                  class="pa-0">
-      <v-row align="center"
-              justify="space-between"
-              class="grow"
-              no-gutters >
-
-        <v-col class="grow py-1 pr-4 " >
-          <v-text-field class="ma-0"
-                        v-model="searchText"
-                        prepend-icon="search"
-                        hide-details
-                        dense
-                        :label="labelText"
-                        @click:prepend="clicked"
-                        @keyup.enter="clicked" />
+  <v-card hover raised style="width: 100%;" class="pa-4">
+    <v-container fluid class="pa-0">
+      <v-row align="center" justify="space-between" class="grow" no-gutters>
+        <v-col class="grow py-1 pr-4 ">
+          <v-text-field
+            class="ma-0"
+            v-model="searchText"
+            prepend-icon="search"
+            hide-details
+            dense
+            :label="labelText"
+            @click:prepend="clicked"
+            @keyup.enter="clicked"
+          />
         </v-col>
 
-        <v-col v-if="hasButton"
-               class="shrink py-0" >
-          <base-rectangle-button :button-text="buttonText"
-                                  :is-small="true"
-                                  @clicked="clicked" />
+        <v-col v-if="hasButton" class="shrink py-0">
+          <base-rectangle-button
+            :button-text="buttonText"
+            :is-small="true"
+            @clicked="clicked"
+          />
         </v-col>
-
       </v-row>
     </v-container>
-
   </v-card>
 </template>
 
@@ -48,7 +41,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   components: {

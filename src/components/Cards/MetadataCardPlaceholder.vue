@@ -1,6 +1,5 @@
 <template>
   <v-card ripple
-          hover
           style="height: 100%; max-height: 375px !important;" >
     <v-img background-color="primary"
             :height="flatLayout ? '65px' : $vuetify.breakpoint.smAndDown ? '100px' : '125px'" >
@@ -46,7 +45,7 @@
 
 
 <script>
-import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder';
+import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

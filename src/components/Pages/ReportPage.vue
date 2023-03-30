@@ -1,17 +1,8 @@
 <template>
-  <v-container class="fill-height pa-0" tag="article"
-                fluid 
-                >
+  <v-container class="fill-height pa-0" tag="article" fluid>
     <v-row no-gutters>
-
-      <v-col cols="12"
-              md="6"
-            v-for="(err, index) in errors"
-            :key="index" >
-
-        <NotificationCard :notification="err"
-                            />
-
+      <v-col cols="12" md="6" v-for="(err, index) in errors" :key="index">
+        <NotificationCard :notification="err" />
       </v-col>
     </v-row>
 
@@ -88,45 +79,42 @@ import {
   mapState,
   // mapGetters,
 } from 'vuex';
-import {
-  REPORT_PAGENAME,
-} from '@/router/routeConsts';
+
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
+import { REPORT_PAGENAME } from '@/router/routeConsts';
 import {
   SET_APP_BACKGROUND,
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import NotificationCard from '@/components/Cards/NotificationCard';
-
-
 export default {
   /**
-     * @description beforeRouteEnter is used to change background image of this page.
-     * It's called via vue-router.
-     */
+   * @description beforeRouteEnter is used to change background image of this page.
+   * It's called via vue-router.
+   */
   beforeRouteEnter(to, from, next) {
-    next((vm) => {
+    next(vm => {
       vm.$store.commit(SET_CURRENT_PAGE, REPORT_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
   /**
-     * @description reset the scrolling to the top,
-     * because of the scrolling is set from the browsePage or metaDetailPage
-     */
+   * @description reset the scrolling to the top,
+   * because of the scrolling is set from the browsePage or metaDetailPage
+   */
   mounted() {
     window.scrollTo(0, 0);
   },
   computed: {
-    ...mapState([
-      'notifications',
-    ]),
+    ...mapState(['notifications']),
     color() {
-      return this.error ? this.$vuetify.theme.themes.light.error : this.$vuetify.theme.themes.light.highlight;
+      return this.error
+        ? this.$vuetify.theme.themes.light.error
+        : this.$vuetify.theme.themes.light.highlight;
     },
     errors() {
       return Object.values(this.notifications);
-    },    
+    },
   },
   methods: {
     submit() {

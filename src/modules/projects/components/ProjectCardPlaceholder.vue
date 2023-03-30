@@ -1,36 +1,30 @@
 <template>
-  <div style="cursor: pointer;" >
-
+  <div style="cursor: pointer;">
     <!-- Top of Card -->
-    <v-card :height="headerCardHeight"
-            class="elevation-3"
-            style="z-index: 1;" >
-
+    <v-card :height="headerCardHeight" class="elevation-3" style="z-index: 1;">
       <v-card-text>
-        <div class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer">
+        <div
+          class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
+        >
           <div class="bone bone-type-multiline bone-style-steps" />
         </div>
       </v-card-text>
-
     </v-card>
 
     <!-- Bottom of Card -->
-    <v-card height="100%"
-            style="z-index: 0;"
-            class="elevation-2 mx-2" >
-
-      <v-card-text >
-        <div class="skeleton skeleton-color-silver skeleton-animation-shimmer"
-              style="width: 100%;" >
+    <v-card height="100%" style="z-index: 0;" class="elevation-2 mx-2">
+      <v-card-text>
+        <div
+          class="skeleton skeleton-color-silver skeleton-animation-shimmer"
+          style="width: 100%;"
+        >
           <div class="bone bone-type-multiline" />
           <div class="bone bone-type-multiline bone-style-paragraph" />
         </div>
       </v-card-text>
-
     </v-card>
   </div>
 </template>
-
 
 <script>
 /**
@@ -49,14 +43,10 @@
 
 export default {
   name: 'ProjectCard',
-  components: {
-  },
-  props: {
-  },
-  computed: {
-  },
-  methods: {
-  },
+  components: {},
+  props: {},
+  computed: {},
+  methods: {},
   data: () => ({
     headerCardHeight: 150,
   }),

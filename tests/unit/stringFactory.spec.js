@@ -1,3 +1,5 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   convertCSVToJSON, getChartSeries,
   getResearchUnitDatasets,
@@ -46,7 +48,7 @@ describe('stringFactory - renderMarkdown', () => {
     expect(markOut.includes(hrTag)).toBeTruthy();
     expect(markOut.includes(aTag)).toBeTruthy();
   });
-  
+
 });
 
 describe('stringFactory - stripMarkdown', () => {
@@ -119,7 +121,7 @@ describe('stringFactory - getResearchUnitDatasets', () => {
       // to test it the full_package.json has to be added, which
       // I don't want to have in the git repo! Add it manually
       // it's the content of https://www.envidat.ch/api/action/current_package_list_with_resources?limit=1000
-      return undefined;
+      return;
     }
 
     const researchUnitMap = getResearchUnitDatasets(researchUnits, datasets);

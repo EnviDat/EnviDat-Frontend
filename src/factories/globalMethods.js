@@ -16,6 +16,11 @@
 import { Object } from 'core-js';
 
 import {
+  LOCATION_TYPE_MULTIPOINT,
+  LOCATION_TYPE_POINT,
+  LOCATION_TYPE_POLYGON,
+} from '@/factories/metaDataFactory';
+import {
   DIVERSITY,
   FOREST,
   HAZARD,
@@ -23,12 +28,6 @@ import {
   METEO,
   SNOW,
 } from '@/store/categoriesConsts';
-
-import {
-  LOCATION_TYPE_MULTIPOINT,
-  LOCATION_TYPE_POINT,
-  LOCATION_TYPE_POLYGON,
-} from '@/factories/metaDataFactory';
 
 
 export default {
@@ -181,9 +180,13 @@ export default {
       if (state.webpIsSupported) {
         const webpImg = state.webpAssets[`${imageKey}.webp`];
 
+        // console.log(`resolving ${imageKey} found ${webpImg}`);
+
         if (webpImg) {
           return webpImg;
         }
+
+        console.warn(`Wanted to get ${imageKey}, but didn't find it`);
       }
 
       return state.jpgAssets[`${imageKey}.jpg`];
@@ -196,40 +199,76 @@ export default {
      */
     mixinMethods_getIcon(iconName) {
       const iconKey = `./${iconName}.png`;
+
       return this.$store?.getters?.iconImages[iconKey] || null;
     },
     /**
      * Loads the path to the icon image representing a file extension
      *
-     * @param {*} iconName
-     * @return {string} relative file path to the icon image file
+     * @param {*} fileExtension
+     * @return {string|null} relative file path to the icon image file
      */
     mixinMethods_getIconFileExtension(fileExtension) {
       const ext = fileExtension.toLowerCase();
       const iconKey = `./file${ext}.png`;
 
-      return this.$store.getters.iconImages[iconKey];
+      const iconString = this.$store.getters.iconImages[iconKey];
+      return iconString || null;
     },
     /**
      * Loads the file path to given images into a Map.
      *
-     * @param {Map<string, string>} imgs imageContext which is loaded via require.context() (ex. require.context('./assets/', false, /\.jpg$/);)
+     * @param {Map<string, string>} imgPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
      * @param {String} checkForString
      *
      * @return {Map<string, string>} Image cache
      */
-    mixinMethods_importImages(imgs, checkForString) {
-      if (!imgs) {
+    mixinMethods_importImages(imgPaths, checkForString) {
+      if (!imgPaths) {
         // console.log(`Got empty imgs for ${checkForString}`);
         return null;
       }
       const imgCache = {};
 
-      imgs.keys().forEach((key) => {
+      imgPaths.keys().forEach((key) => {
         if (!checkForString || (checkForString && key.includes(checkForString))) {
-          imgCache[key] = imgs(key);
+          // imgCache[key] = imgPaths(key).default;
+
+          const imgPath = imgPaths(key)?.default || '';
+          const imgUrl = new URL(imgPath, import.meta.url)
+          imgCache[key] = imgUrl.href;
         }
       });
+
+      return imgCache;
+    },
+    /**
+     * Loads the file path to given images into a Map.
+     *
+     * @param {Map<string, string>} imgsPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
+     * @param {String} checkForString
+     *
+     * @return {Map<string, string>} Image cache
+     */
+    mixinMethods_importGlobImages(imgPaths, checkForString) {
+      if (!imgPaths) {
+        // console.log(`Got empty imgs for ${checkForString}`);
+        return null;
+      }
+      const imgCache = {};
+
+      for (const path in imgPaths) {
+        if (path) {
+          if (!checkForString || (checkForString && path.includes(checkForString))) {
+
+            const splits = path.split('/');
+            const imgName = splits[splits.length - 1];
+
+            const imgUrl = new URL(path, import.meta.url)
+            imgCache[imgName] = imgUrl.href;
+          }
+        }
+      }
 
       return imgCache;
     },
@@ -257,24 +296,6 @@ export default {
       }
 
       return this.genericProps[propName] ? this.genericProps[propName] : defaultValue;
-    },
-    /**
-     *
-     * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
-     * @param {*} a
-     * @param {*} b
-     */
-    mixinMethods_formatBytes(a, b = 2) {
-      /* eslint-disable prefer-template */
-      /* eslint-disable no-restricted-properties */
-      if (a === 0) return '0 Bytes';
-
-      const c = 1024;
-
-      const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-      const f = Math.floor(Math.log(a) / Math.log(c));
-
-      return parseFloat((a / Math.pow(c, f)).toFixed(b)) + ' ' + e[f];
     },
     mixinMethods_getCardBackgrounds(useWebp = false) {
       const bgs = {};

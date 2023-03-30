@@ -6,7 +6,7 @@
       {{ METADATA_AUTHORS_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="showPlaceholder && !hasAuthors"
+    <v-card-text v-if="showPlaceholder"
                   class="pa-2 pt-0" >
       <v-container fluid
                     class="pa-0" >
@@ -50,7 +50,8 @@
                         :openButtonIcon="author.openButtonIcon"
                         :isSelected="author.isSelected"
                         :loading="author.loading"
-                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)" >
+                        @openButtonClicked="catchOpenClick(author.openEvent, author.openProperty)"
+                        @catchSearchAuthor="catchAuthorSearchClick(author.fullName)" >
 
               <template v-if="hasDataCredits(author.dataCredit)"
                         #dataCreditCurrentDataset >
@@ -98,10 +99,13 @@ import {
   METADATA_AUTHORS_TITLE,
 } from '@/factories/metadataConsts';
 
-import AuthorCard from '@/modules/metadata/components/AuthorCard';
-import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder';
-import { eventBus } from '@/factories/eventBus';
-import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits';
+import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
+import AuthorCardPlaceholder from '@/modules/metadata/components/AuthorCardPlaceholder.vue';
+import {
+  AUTHOR_SEARCH_CLICK,
+  eventBus,
+} from '@/factories/eventBus';
+import ActiveDataCredits from '@/modules/user/components/edit/ActiveDataCredits.vue';
 
 export default {
   name: 'MetadataAuthors',
@@ -112,7 +116,8 @@ export default {
   mounted() {
     const options = this.options || {};
 
-    this.observer = new IntersectionObserver(([entry]) => {
+    this.observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
       if (entry && entry.isIntersecting) {
         this.showAuthors = true;
       }
@@ -126,8 +131,6 @@ export default {
   },
   computed: {
     hasEditingAuthorsSlot() {
-      // console.log(this.$slots);
-      // console.log(this.$scopedSlots);
       return !!this.$scopedSlots.editingAuthors;
     },
     authors() {
@@ -164,7 +167,10 @@ export default {
       return Object.keys(dataCredit).length > 0;
     },
     catchOpenClick(event, eventProperty) {
-      eventBus.$emit(event, eventProperty);
+      eventBus.emit(event, eventProperty);
+    },
+    catchAuthorSearchClick(fullName) {
+      eventBus.emit(AUTHOR_SEARCH_CLICK, fullName);
     },
   },
   components: {

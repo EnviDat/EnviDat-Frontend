@@ -1,34 +1,30 @@
 <template>
-  <v-card id="EditDataGeo"
-          class="pa-0"
-          :loading="loading">
-
-    <v-container fluid
-                 class="pa-4">
-
+  <v-card id="EditDataGeo" class="pa-0" :loading="loading">
+    <v-container fluid class="pa-4">
       <template slot="progress">
-        <v-progress-linear color="primary"
-                           indeterminate />
+        <v-progress-linear color="primary" indeterminate />
       </template>
 
       <v-row>
-        <v-col cols="6"
-               class="text-h5">
+        <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
         </v-col>
 
-        <v-col v-if="message" >
-          <BaseStatusLabelView statusIcon="check"
-                               statusColor="success"
-                               :statusText="message"
-                               :expandedText="messageDetails" />
+        <v-col v-if="message">
+          <BaseStatusLabelView
+            statusIcon="check"
+            statusColor="success"
+            :statusText="message"
+            :expandedText="messageDetails"
+          />
         </v-col>
-        <v-col v-if="error"  >
-
-          <BaseStatusLabelView statusIcon="error"
-                               statusColor="error"
-                               :statusText="error"
-                               :expandedText="errorDetails" />
+        <v-col v-if="error">
+          <BaseStatusLabelView
+            statusIcon="error"
+            statusColor="error"
+            :statusText="error"
+            :expandedText="errorDetails"
+          />
         </v-col>
       </v-row>
 
@@ -39,42 +35,38 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12"
-               md="10"
-            class="editDataGeo">
+        <v-col cols="12" md="10" class="editDataGeo">
           <MetadataGeo :genericProps="genericProps" />
         </v-col>
 
-        <v-col cols="12"
-               md="2"
-               class="align-self-md-end">
-
-          <v-row >
+        <v-col cols="12" md="2" class="align-self-md-end">
+          <v-row>
             <v-col>
-              <BaseRectangleButton :color="$vuetify.theme.themes.light.accent"
-                                   :disabled="!undoButtonEnabled"
-                                   buttonText="Undo Changes"
-                                   tooltipText="Reset to original geometry"
-                                   tooltipPosition="top"
-                                   @clicked="revertGeometriesInMetadata" />
+              <BaseRectangleButton
+                :color="$vuetify.theme.themes.light.accent"
+                :disabled="!undoButtonEnabled"
+                buttonText="Undo Changes"
+                tooltipText="Reset to original geometry"
+                tooltipPosition="top"
+                @clicked="revertGeometriesInMetadata"
+              />
             </v-col>
 
-            <v-col >
-
-              <BaseRectangleButton :color="$vuetify.theme.themes.light.accent"
-                                   :disabled="!saveButtonEnabled"
-                                   :loading="saveButtonInProgress"
-                                   buttonText="Save Geometries"
-                                   tooltipText="Save the geometry"
-                                   tooltipPosition="top"
-                                   @clicked="updateGeometriesInMetadata" />
+            <v-col>
+              <BaseRectangleButton
+                :color="$vuetify.theme.themes.light.accent"
+                :disabled="!saveButtonEnabled"
+                :loading="saveButtonInProgress"
+                buttonText="Save Geometries"
+                tooltipText="Save the geometry"
+                tooltipPosition="top"
+                @clicked="updateGeometriesInMetadata"
+              />
             </v-col>
           </v-row>
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
 </template>
 
@@ -92,25 +84,22 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
-  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_DATA_GEO,
-  MAP_GEOMETRY_MODIFIED,
+  EDITMETADATA_OBJECT_UPDATE,
   eventBus,
+  MAP_GEOMETRY_MODIFIED,
 } from '@/factories/eventBus';
-
+import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
+import { parseAsGeomCollection } from '@/factories/metaDataFactory';
 // eslint-disable-next-line import/no-cycle
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { parseAsGeomCollection } from '@/factories/metaDataFactory';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo';
-import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 
 export default {
   name: 'EditDataGeo',
@@ -169,13 +158,13 @@ export default {
     },
   },
   mounted() {
-    eventBus.$on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {
       this.updateGeometriesInMetadata();
     }
-    eventBus.$off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
   },
   computed: {
     genericProps() {
@@ -211,17 +200,20 @@ export default {
      * @param {Array} geomArray array of valid GeoJSON geometries
      */
     parseAndStoreUpdatedGeometries(geomArray) {
-
-      if (isFieldValid( 'geometries', geomArray, this.validations, this.validationErrors)) {
-
+      if (
+        isFieldValid(
+          'geometries',
+          geomArray,
+          this.validations,
+          this.validationErrors,
+        )
+      ) {
         this.localGeomCollection = parseAsGeomCollection(geomArray, {
           name: this.location.name,
         });
 
         this.saveButtonEnabled = true;
-
       } else {
-
         this.saveButtonEnabled = false;
       }
     },
@@ -229,14 +221,13 @@ export default {
      * Merge locally saved geometries with existing props, trigger update event
      */
     updateGeometriesInMetadata() {
-
-      this.previousLocation = {...this.location};
+      this.previousLocation = { ...this.location };
 
       const updatedLocation = {
         ...this.location,
         geoJSON: this.localGeomCollection,
       };
-      this.commitGeometries(updatedLocation)
+      this.commitGeometries(updatedLocation);
 
       this.undoButtonEnabled = true;
     },
@@ -251,10 +242,9 @@ export default {
      * Update spatial metadata via event bus
      */
     commitGeometries(updatedLocation) {
-
       this.saveButtonInProgress = true;
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
           location: updatedLocation,
@@ -287,10 +277,9 @@ export default {
 </script>
 
 <style>
-
- .editDataGeo .leaflet-bar a, .leaflet-bar a:hover {
-   width: 32px;
-   height: 32px;
- }
-
+.editDataGeo .leaflet-bar a,
+.leaflet-bar a:hover {
+  width: 32px;
+  height: 32px;
+}
 </style>

@@ -17,18 +17,17 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import NavigationStepper from '@/components/Navigation/NavigationStepper';
-// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo';
+import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
+// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo.vue';
 
 import {
   metadataCreationSteps,
   getStepByName,
 } from '@/factories/userEditingFactory';
 
-import { NAVIGATION_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${NAVIGATION_VIEWS} / NavigationStepper`,
+  title: '5 Navigation / NavigationStepper',
   decorators: [],
   parameters: {},
 };
@@ -49,10 +48,10 @@ export const NavigationStepperViews = () => ({
   </v-row>
   `,
   created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
     getStepByName,

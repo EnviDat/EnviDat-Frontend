@@ -64,7 +64,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         categoryBalloonDateFormat: 'MMM DD, YYYY JJ:NN',
         // "dataDateFormat": "MMM DD, YYYY JJ:NN"
       },
-      categoryField: 'timestamp_iso',    
+      categoryField: 'timestamp_iso',
       categoryAxis: {
         parseDates: true,
         // "minPeriod": recentData ? "hh" : "DD",
@@ -87,7 +87,7 @@ const createSerialChart = function createSerialChart(selector, unit, graphs, cha
         //   event: 'init',
         //   method: () => {
         //     doneCallback(chart.dataProvider.length);
-        //     // console.log("init finished"); 
+        //     // console.log("init finished");
         //   },
         // },
       ],
@@ -168,18 +168,16 @@ function getConfigFiles(resources) {
 
 // eslint-disable-next-line no-unused-vars
 function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
-  // eslint-disable-next-line prefer-const
-  let stationsConfigUrl = configs?.gcnetStationsConfig?.url || null;
-  // eslint-disable-next-line prefer-const
-  let stationParametersUrl = configs?.gcnetStationParameters?.url || null;
-  // eslint-disable-next-line prefer-const
-  let geoConfigUrl = configs?.geoServicesConfig?.url || null;
 
   if (!configs) {
     configs = {};
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  const stationsConfigUrl = configs.gcnetStationsConfig?.url || null;
+  const stationParametersUrl = configs.gcnetStationParameters?.url || null;
+  let geoConfigUrl = configs.geoServicesConfig?.url || null;
+
+  if (import.meta.env.DEV) {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
     // stationParametersUrl = ''; // testStationParametersUrl;
 
@@ -385,11 +383,40 @@ function createChart(yAxisDivID, xAxisName, yAxisName, data, xAxisFormat = 'yyyy
 }
 
 export {
+  addStartEndDateUrl,
   createSerialChart,
   createChart,
   defaultSeriesSettings,
-  addStartEndDateUrl,
-  hasData,
   getConfigFiles,
   getConfigUrls,
+  hasData,
 };
+
+export function getFeatureCollectionFromGcNetStations(stations) {
+  const featureCollection = {
+    type: 'FeatureCollection',
+    features: [],
+  };
+
+  if (!stations) {
+    return featureCollection;
+  }
+
+  stations.forEach((geom) => {
+    featureCollection.features.push({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [Number(geom.longitude), Number(geom.latitude)],
+      },
+      properties: {
+        alias: geom.alias,
+        name: geom.name,
+        active: geom.active,
+        elevation: geom.elevation,
+      },
+    });
+  });
+
+  return featureCollection;
+}

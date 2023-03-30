@@ -1,5 +1,5 @@
 <template>
-  <v-app class="application"
+  <v-app class="application envidat-font-overwrite"
          :style="dynamicBackground">
 
     <div v-show="showDecemberParticles"
@@ -108,6 +108,8 @@
         />
 
       </v-dialog>
+
+      <GenericFullScreenModal :auto-scroll="true"/>
     </v-main>
 
   </v-app>
@@ -141,7 +143,6 @@ import {
   BROWSE_PAGENAME,
   REPORT_PATH,
   USER_SIGNIN_PATH,
-  BLOG_PAGENAME,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
   USER_DASHBOARD_PAGENAME,
@@ -160,13 +161,13 @@ import {
   HIDE_NOTIFICATIONS,
 } from '@/store/mainMutationsConsts';
 
-import { ABOUT_NAMESPACE } from '@/modules/about/store/aboutMutationsConsts';
-import { PROJECTS_NAMESPACE } from '@/modules/projects/store/projectsMutationsConsts';
 import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
   ACTION_GET_USER_CONTEXT,
-  FETCH_USER_DATA, USER_NAMESPACE,
+  SIGNIN_USER_ACTION,
+  USER_NAMESPACE,
+  ACTION_GET_USER_CONTEXT_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -175,19 +176,22 @@ import {
   userMenuItems,
 } from '@/store/navigationState';
 
-import TheNavigation from '@/components/Navigation/TheNavigation';
-import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar';
-import NotificationCard from '@/components/Cards/NotificationCard';
-import ConfirmTextCard from '@/components/Cards/ConfirmTextCard';
-import TextBanner from '@/components/Layouts/TextBanner';
-import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 import {
   eventBus,
+  OPEN_FULLSCREEN_MODAL,
   SHOW_DIALOG,
   SHOW_REDIRECT_DASHBOARD_DIALOG,
   SHOW_REDIRECT_SIGNIN_DIALOG,
 } from '@/factories/eventBus';
 
+import TheNavigation from '@/components/Navigation/TheNavigation.vue';
+import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
+import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+
+const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
+const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
+const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
+const NotificationCard = () => import('@/components/Cards/NotificationCard.vue');
 
 export default {
   name: 'App',
@@ -196,16 +200,18 @@ export default {
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
-    eventBus.$on(SHOW_DIALOG, this.openGenericDialog);
-    eventBus.$on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.on(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     this.checkUserSignedIn();
   },
   beforeDestroy() {
-    eventBus.$off(SHOW_DIALOG, this.openGenericDialog);
-    eventBus.$off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
-    eventBus.$off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
+    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.off(SHOW_DIALOG, this.openGenericDialog);
+    eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
+    eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
     this.startParticles();
@@ -391,7 +397,7 @@ export default {
         callback = this.redirectToLegacyDashboard;
       }
 
-      eventBus.$emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+      eventBus.emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
@@ -410,6 +416,7 @@ export default {
     showRedirectDashboardDialog() {
       this.handleRedirectCallBack(true);
     },
+    // eslint-disable-next-line default-param-last
     openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
       this.dialogTitle = title;
 
@@ -427,6 +434,9 @@ export default {
       }
 
       this.showInfoDialog = true;
+    },
+    openGenericFullscreen() {
+      this.showModal = true;
     },
     catchSigninClicked() {
 
@@ -464,9 +474,11 @@ export default {
 
     },
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
-          action: ACTION_GET_USER_CONTEXT,
+          action,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
@@ -498,11 +510,6 @@ export default {
         ],
     ),
     ...mapGetters({
-      policiesLoading: `${ABOUT_NAMESPACE}/policiesLoading`,
-      guidelinesLoading: `${ABOUT_NAMESPACE}/guidelinesLoading`,
-      projectsLoading: `${PROJECTS_NAMESPACE}/loading`,
-    }),
-    ...mapGetters({
       currentPage: 'currentPage',
       appBGImage: 'appBGImage',
       outdatedVersion: 'outdatedVersion',
@@ -524,6 +531,9 @@ export default {
     },
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
+    },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
       if (!this.maintenanceConfig.messageActive){
@@ -572,8 +582,7 @@ export default {
       return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
     },
     loading() {
-      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent
-          || this.projectsLoading || this.policiesLoading || this.guidelinesLoading;
+      return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
     },
     searchTerm() {
       return this.$route.query.search;
@@ -644,13 +653,17 @@ export default {
     NotificationCard,
     ConfirmTextCard,
     TextBanner,
+    GenericFullScreenModal,
   },
   watch: {
     config() {
       if (!this.loadingConfig) {
         this.setupNavItems();
         this.loadAllMetadata();
-        this.startParticles();
+
+        this.$nextTick(() => {
+          this.startParticles();
+        });
       }
     },
     notifications() {
@@ -664,14 +677,15 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     reloadDialogCanceled: false,
     showInfoDialog: false,
+    showModal: false,
     dialogTitle: 'Redirect to Legacy Website!',
     dialogMessage: '',
     dialogCallback: () => {},
     redirectToDashboard: false,
-    appVersion: process.env.VUE_APP_VERSION,
+    appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
     NavToolbarZIndex: 1150,
     NavigationZIndex: 1100,
@@ -687,7 +701,35 @@ export default {
 </script>
 
 
+<style lang="scss">
+$font-family: 'Raleway', sans-serif;
+
+.envidat-font-overwrite {
+  font-family: $font-family, sans-serif !important;
+
+  [class*='display-'],
+  [class*='text-'] {
+    font-family: $font-family, sans-serif !important;
+  }
+
+  [class*='headerTitle'] {
+    font-family: 'Baskervville', serif !important;
+    font-weight: 400;
+    opacity: 1;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+  }
+
+  [class*='envidatTitle'] {
+    font-family: 'Baskervville', serif !important;
+  }
+}
+</style>
+
 <style>
+
+.v-dialog:not(.v-dialog--fullscreen) {
+  max-height: 95% !important;
+}
 
 .envidatNavbar {
   position: -webkit-sticky;
@@ -755,8 +797,7 @@ export default {
 }
 
 .envidatTitle {
-  font-family: "Baskervville", serif !important;
-  letter-spacing: 0em !important;
+  letter-spacing: 0 !important;
 }
 
 .metadataInfoIcon,

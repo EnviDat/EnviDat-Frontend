@@ -1,12 +1,12 @@
 <template>
-  <v-row 
-             >
-    <v-col class="my-2"
+  <v-row>
+    <v-col
+      class="my-2"
       v-for="(info, index) in textArray"
       :key="index"
       cols="12"
-      
-      v-html="markdownText(info)" >
+    >
+      <div v-html="markdownText(info)"></div>
     </v-col>
   </v-row>
 </template>
@@ -23,13 +23,12 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 import { renderMarkdown } from '@/factories/stringFactory';
 
 export default {
-  components: {
-  },
+  components: {},
   props: {
     textArray: Array,
   },

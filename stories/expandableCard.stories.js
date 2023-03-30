@@ -10,9 +10,7 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import { storiesOf } from '@storybook/vue';
-
-import ExpandableCard from '../src/modules/about/components/ExpandableCard';
+import ExpandableCard from '../src/modules/about/components/ExpandableCard.vue';
 import teamSmall from '../src/assets/about/team_small.jpg';
 import mission from '../src/assets/projects/mission.jpg';
 import missionSmall from '../src/assets/projects/mission_small.jpg';
@@ -20,7 +18,6 @@ import handsSmall from '../src/assets/about/hands_small.jpg';
 import orga from '../src/assets/about/EnviDat_organigram.png';
 import conceptSmall from '../src/assets/about/concept_small.jpg';
 import communitySmall from '../src/assets/about/community_small.jpg';
-import { CARD_VIEWS, METADATA_EDITING } from './storybookFolder';
 
 const computed = {
   missionImg() {
@@ -64,7 +61,7 @@ const computed = {
 };
 
 export default {
-  title: `${CARD_VIEWS} / Expandable Cards`,
+  title: '3 Cards / Expandable Cards',
   decorators: [],
   parameters: {},
 };

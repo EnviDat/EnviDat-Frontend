@@ -47,11 +47,12 @@
       "resolveIds": true,
       "idPrefix": "*",
       "idDelimiter": ":",
-      "resolveBaseUrl": "https://www.envidat.ch/dora/"
+      "resolveBaseUrl": "https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/"
     },
     "authorDetailsConfig": {
       "showAuthorInfos": true,
       "showDataCredits": true,
+      "showDatasetCount": true,
       "showDataCreditScore": false
     },
     "resourcesConfig": {
@@ -100,6 +101,9 @@
     "defaultLocation": {"type": "Polygon", "coordinates": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]},
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
+    "resourceEditingActive": true,
+    "resourceUploadActive": false,
+    "editingRestrictingActive": false,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
@@ -117,6 +121,7 @@
       "sysadminOrganizationText": "You have System Administrator right, be careful!",
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
+    "useTokenSignin": false,
     "showOldDashboardUrl": true
   }
 }

@@ -21,7 +21,12 @@ import {
 
 
 import actions from './userActions';
+import editActions from './editActions';
+import createActions from './createActions';
+
 import mutations from './userMutations';
+import editMutations from './editMutations';
+import createMutations from './createMutations';
 
 const userState = {
   error: null,
@@ -47,11 +52,16 @@ const userState = {
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
   metadataInEditing: getEmptyMetadataInEditingObject(),
-  selectedResourceId: '',
-  selectedAuthorId: '',
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadLoading: false,
+  uploadFileId: null,
+  uploadKey: null,
+  uploadResource: null,
+  uploadMetadataId: null,
+  envidatUsers: null,
+  envidatUsersError: null,
 };
 
 
@@ -78,7 +88,19 @@ export const user = {
 
       return filteredContent;
     },
+    uploadFileId: state => state.uploadFileId,
+    uploadResource: state => state.uploadResource,
+    uploadResourceId: state => state.uploadResource.id,
+    uploadMetadataId: state => state.uploadMetadataId,
   },
-  mutations,
-  actions,
+  mutations: {
+    ...mutations,
+    ...editMutations,
+    ...createMutations,
+  },
+  actions: {
+    ...actions,
+    ...editActions,
+    ...createActions,
+  },
 };

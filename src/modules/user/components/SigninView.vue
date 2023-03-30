@@ -1,13 +1,12 @@
 <template>
-  <v-card class="pa-0 signInGrid"
-          id="signInGrid" >
-
-    <v-img :src="signInPic"
-            max-height="500"
-            style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;" />
+  <v-card class="pa-0 signInGrid" id="signInGrid">
+    <v-img
+      :src="signInPic"
+      max-height="500"
+      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
+    />
 
     <v-container fluid class="pa-4">
-
       <v-row>
         <v-col class="text-h3">
           {{ title }}
@@ -15,122 +14,118 @@
       </v-row>
 
       <v-row v-if="signedIn">
-        <v-col cols="12"
-                class="text-h6"
-                :style="`background-color: ${signedInColor};`" >
+        <v-col
+          cols="12"
+          class="text-h6"
+          :style="`background-color: ${signedInColor};`"
+        >
           {{ signedInText + signedInEmail }}
         </v-col>
       </v-row>
 
       <v-row v-if="!signedIn">
-        <v-col cols="12"
-                class="text-h6" >
+        <v-col cols="12" class="text-h6">
           {{ instructionsText }}
         </v-col>
       </v-row>
 
-      <form v-if="!signedIn"
-            class="enviDatForm">
-        <v-row id="emailRow"
-                align="center" >
-          <v-col cols="12"
-                  md="9">
-
-            <v-text-field v-model="email"
-                          :error-messages="backendErrors.email"
-                          label="Email"
-                          @input="isEmailValid()"
-                          @keyup.enter="catchRequestToken"
-                          tabindex="0" />
+      <form v-if="!signedIn" class="enviDatForm">
+        <v-row id="emailRow" align="center">
+          <v-col cols="12" md="9">
+            <v-text-field
+              v-model="email"
+              :error-messages="backendErrors.email"
+              label="Email"
+              @input="isEmailValid()"
+              @keyup.enter="catchRequestToken"
+              tabindex="0"
+            />
           </v-col>
 
-          <v-col v-if="email && emailAddressIsValid"
-                  cols="12"
-                  md="3"
-                  id="tokenButton" >
-
-            <v-btn color="primary"
-                    :loading="tokenRequestLoading"
-                    @click="catchRequestToken"
-                    tabindex="0" >
+          <v-col
+            v-if="email && emailAddressIsValid"
+            cols="12"
+            md="3"
+            id="tokenButton"
+          >
+            <v-btn
+              color="primary"
+              :loading="tokenRequestLoading"
+              @click="catchRequestToken"
+              tabindex="0"
+            >
               {{ tokenButtonText }}
             </v-btn>
           </v-col>
-
         </v-row>
 
-        <v-row v-if="requestSuccess && email" >
-          <v-col cols="12"
-                  class="text-caption" >
+        <v-row v-if="requestSuccess && email">
+          <v-col cols="12" class="text-caption">
             {{ `${requestSentText} ${email}. ${requestSentText2}` }}
           </v-col>
         </v-row>
 
-
-        <v-row v-if="email && emailAddressIsValid"
-                id="tokenRow"
-                align="center"
-                justify="space-between"
-                class="pt-4" >
-
-          <v-col cols="12"
-                  md="4"
-                  class="shrink text-h6" >
+        <v-row
+          v-if="email && emailAddressIsValid"
+          id="tokenRow"
+          align="center"
+          justify="space-between"
+          class="pt-4"
+        >
+          <v-col cols="12" md="4" class="shrink text-h6">
             {{ requestTokenText }}
           </v-col>
 
-          <v-col cols="12"
-                  md="5"
-                  class="pt-0">
-            <v-text-field v-model="key"
-                          :error-messages="backendErrors.key"
-                          :counter="keyLength"
-                          label="Token"
-                          clearable
-                          clear-icon="clear"
-                          @input="isTokenValid()"
-                          @keyup.enter="catchSignIn"
-                          tabindex="0"/>
+          <v-col cols="12" md="5" class="pt-0">
+            <v-text-field
+              v-model="key"
+              :error-messages="backendErrors.key"
+              :counter="keyLength"
+              label="Token"
+              clearable
+              clear-icon="clear"
+              @input="isTokenValid()"
+              @keyup.enter="catchSignIn"
+              tabindex="0"
+            />
           </v-col>
 
-          <v-col cols="12"
-                  md="3" >
-
-            <v-btn v-show="key && keyAddressIsValid"
-                    color="primary"
-                    :loading="signInRequestLoading"
-                    @click="catchSignIn"
-                   tabindex="0" >
-              {{ signinButtonText}}
+          <v-col cols="12" md="3">
+            <v-btn
+              v-show="key && keyAddressIsValid"
+              color="primary"
+              :loading="signInRequestLoading"
+              @click="catchSignIn"
+              tabindex="0"
+            >
+              {{ signinButtonText }}
             </v-btn>
           </v-col>
         </v-row>
 
-        <v-row v-if="formErrorText"
-                id="errorTextRow"
-                :style="`background-color: ${errorColor};`"
-                class="mt-4" >
-          <v-col cols="12"
-                  class="text-body-1">
+        <v-row
+          v-if="formErrorText"
+          id="errorTextRow"
+          :style="`background-color: ${errorColor};`"
+          class="mt-4"
+        >
+          <v-col cols="12" class="text-body-1">
             {{ formErrorText }}
           </v-col>
         </v-row>
-
       </form>
 
-      <v-row v-if="signedIn"
-             id="signinButtonRow" >
-
+      <v-row v-if="signedIn" id="signinButtonRow">
         <v-col class="shrink">
-          <BaseRectangleButton color="primary"
-                               :button-text="dashboardButtonText"
-                               @clicked="catchOpenDashboard"
+          <BaseRectangleButton
+            color="primary"
+            :button-text="dashboardButtonText"
+            @clicked="catchOpenDashboard"
           />
-
         </v-col>
 
         <v-col class="shrink">
-<!--
+          <!--
           <v-btn color="secondary"
                  outlined
                  @click="catchSignOut">
@@ -138,21 +133,17 @@
           </v-btn>
 -->
 
-          <BaseRectangleButton color="secondary"
-                               :button-text="signoutButtonText"
-                               is-outlined
-                               @clicked="catchSignOut"
+          <BaseRectangleButton
+            color="secondary"
+            :button-text="signoutButtonText"
+            is-outlined
+            @clicked="catchSignOut"
           />
         </v-col>
-
       </v-row>
-
     </v-container>
-
   </v-card>
-
 </template>
-
 
 <script>
 /**
@@ -166,12 +157,13 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-import signInPic from '@/modules/user/assets/signin.jpg';
-import { isFieldValid } from '@/factories/userEditingValidations';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
 import * as yup from 'yup';
+
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { isFieldValid } from '@/factories/userEditingValidations';
+import signInPic from '@/modules/user/assets/signin.jpg';
 
 const keyLength = 32;
 
@@ -219,14 +211,16 @@ export default {
     },
     yupValidations: () =>
       yup.object().shape({
-        email: yup.string()
-            .email('Email must be a valid email address')
-            .required('Email is required'),
-        key: yup.string()
-            .nullable()
-            .required('Token is required')
-            .min(32, 'Token must be 32 characters')
-            .max(32, 'Token must be 32 characters'),
+        email: yup
+          .string()
+          .email('Email must be a valid email address')
+          .required('Email is required'),
+        key: yup
+          .string()
+          .nullable()
+          .required('Token is required')
+          .min(32, 'Token must be 32 characters')
+          .max(32, 'Token must be 32 characters'),
       }),
   },
   methods: {
@@ -234,22 +228,30 @@ export default {
       if (value) {
         this.email = value;
       }
-      return isFieldValid('email', this.email, this.yupValidations, this.backendErrors);
+      return isFieldValid(
+        'email',
+        this.email,
+        this.yupValidations,
+        this.backendErrors,
+      );
     },
     isTokenValid(value) {
       if (value) {
         this.key = value;
       }
-      return isFieldValid('key', this.key, this.yupValidations, this.backendErrors);
+      return isFieldValid(
+        'key',
+        this.key,
+        this.yupValidations,
+        this.backendErrors,
+      );
     },
     catchRequestToken() {
-
       if (this.isEmailValid(this.email)) {
         this.$emit('requestToken', this.email);
       }
     },
     catchSignIn() {
-
       if (this.isTokenValid(this.key) && this.isEmailValid(this.email)) {
         this.$emit('signIn', this.email, this.key);
       }
@@ -286,7 +288,8 @@ export default {
     requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
-    instructionsText: 'Sign into EnviDat with your email address and the token which will be sent by email.',
+    instructionsText:
+      'Sign into EnviDat with your email address and the token which will be sent by email.',
     signInPic,
   }),
   components: {
@@ -296,8 +299,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .signInGrid {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-  }
+.signInGrid {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
 </style>

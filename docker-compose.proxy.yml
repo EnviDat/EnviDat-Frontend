@@ -1,0 +1,23 @@
+version: '3'
+
+networks:
+  net:
+
+services:
+  proxy:
+    image: "${INTERNAL_REG}/frontend-ckan-proxy:1.21-main"
+    build:
+      context: ./nginx-ckan-proxy
+      args:
+        - EXTERNAL_REG=${EXTERNAL_REG}
+        - INTERNAL_REG=${INTERNAL_REG}
+        - MAINTAINER=${MAINTAINER_CD}
+    container_name: envidat_frontend_proxy
+    depends_on:
+      - envidat-frontend
+    env_file:
+      - .ckan-proxy.secret
+    ports:
+      - "8991:80"
+    networks:
+      - net

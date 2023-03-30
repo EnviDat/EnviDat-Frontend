@@ -1,7 +1,9 @@
+import { it, describe, expect } from 'vitest';
+
 import {
   getModeData,
   getTagsMergedWithExtras,
-  enhanceMetadataFromExtras,
+  enhanceMetadataWithModeExtras,
 } from '@/factories/modeFactory';
 
 import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
@@ -60,7 +62,7 @@ describe('modeFactory - getTagsMergedWithExtras', () => {
 
 describe('modeFactory - enhanceMetadataFromExtras', () => {
   it('empty', () => {
-    const enhancedMetadata = enhanceMetadataFromExtras(undefined, undefined);
+    const enhancedMetadata = enhanceMetadataWithModeExtras(undefined, undefined);
 
     expect(enhancedMetadata).toBeNull();
   });

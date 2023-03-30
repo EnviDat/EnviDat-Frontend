@@ -1,11 +1,6 @@
 <template>
-  <v-card id="EditDropResourceFiles"
-            class="pa-4"
-            flat>
-
-    <v-container fluid
-                  class="pa-0">
-
+  <v-card id="EditDropResourceFiles" class="pa-4" >
+    <v-container fluid class="pa-0">
       <v-row>
         <v-col cols="12">
           <div class="text-h5">{{ labels.title }}</div>
@@ -20,24 +15,42 @@
 
       <v-row>
         <v-col cols="12">
-          <BaseFileDropField @filesChanged="catchFilesChanged" />
+
+          <DragDrop :uppy="uppy" />
+
+          <StatusBar :uppy="uppy" />
+
+        </v-col>
+      </v-row>
+
+      <v-row class="px-5">
+        <v-col v-for="(state, index) in states"
+                :key="index"
+               :class="index >= states.length - 1 ? 'shrink' : ''"
+               >
+          <v-row style="align-items: center;">
+            <v-col class="shrink">
+              <v-chip :color="getStateColor(state)" small>
+                {{ state.name }}
+              </v-chip>
+            </v-col>
+
+            <v-col v-if="index < states.length - 1"
+                   class="pa-0" >
+              <v-progress-linear :color="getIndicatorColor(state)"
+                                 :indeterminate="getIndicatorLoading(state)"
+                                 :value="getIndicatorValue(state)"
+              />
+              </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12">
-          <div class="text-body-1">{{ labels.subInstructions }}</div>
+          <div class="text-body-1">{{ labels.instruction2 }}</div>
         </v-col>
       </v-row>
-
-      <v-row justify="end">
-        <v-col class="shrink">
-          <BaseRectangleButton :disabled="createButtonDisabled"
-                                :buttonText="labels.createButtonTextS"
-                                @clicked="createButtonClick" />
-        </v-col>
-      </v-row>
-
 
     </v-container>
   </v-card>
@@ -53,48 +66,151 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
+ */
+
+import {
+  DragDrop,
+  StatusBar,
+} from '@uppy/vue';
+
+import '@uppy/core/dist/style.css';
+import '@uppy/drag-drop/dist/style.css';
+import '@uppy/status-bar/dist/style.css';
+
+/*
+import Uppy, { debugLogger } from '@uppy/core';
+import Tus from '@uppy/tus';
 */
-import BaseFileDropField from '@/components/BaseElements/BaseFileDropField';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
+import {
+  eventBus,
+  UPLOAD_STATE_RESET,
+  UPLOAD_STATE_RESOURCE_CREATED,
+  UPLOAD_STATE_UPLOAD_COMPLETED, UPLOAD_STATE_UPLOAD_PROGRESS,
+  UPLOAD_STATE_UPLOAD_STARTED,
+} from '@/factories/eventBus';
+
 
 export default {
   name: 'EditDropResourceFiles',
   props: {
-    genericProps: Object,
+    metadataId: String,
+  },
+  created() {
+    eventBus.on(UPLOAD_STATE_RESET, this.resetState);
+    eventBus.on(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
+    eventBus.on(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
+    eventBus.on(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
+    eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
+  },
+  mounted() {
+  },
+  beforeDestroy() {
+    eventBus.off(UPLOAD_STATE_RESET, this.resetState);
+    eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
+    eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);
+    eventBus.off(UPLOAD_STATE_UPLOAD_PROGRESS, this.changeState);
+    eventBus.off(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
+
+    destroyUppyInstance();
   },
   computed: {
+    uppy () {
+      return getUppyInstance(this.metadataId, this.$store);
+    },
   },
   methods: {
-    checkCreateButtonDisabled() {
-      this.createButtonDisabled = this.files?.length <= 0;
+    getStateColor(state) {
+      const index = this.states.findIndex(((s) => s.id === state?.id));
+      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
+
+      if (currentIndex >= index) {
+        return 'primary';
+      }
+
+      return 'gray';
     },
-    catchFilesChanged(files) {
-      this.files = files;
-      this.checkCreateButtonDisabled();
+    getIndicatorColor(state) {
+      const index = this.states.findIndex(((s) => s.id === state?.id));
+      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
+
+      if (currentIndex >= index) {
+        return 'primary';
+      }
+
+      return 'grey';
     },
-    createButtonClick() {
-      this.$emit('createResources', this.files);
+    getIndicatorLoading(state) {
+      const index = this.states.findIndex(((s) => s.id === state?.id));
+      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
+
+      return currentIndex === index;
+    },
+    getIndicatorValue(state) {
+      const index = this.states.findIndex(((s) => s.id === state?.id));
+      const currentIndex = this.states.findIndex(((s) => s.id === this.currentState?.id));
+
+      if (index > currentIndex) {
+        return undefined;
+      }
+
+      return this.getIndicatorLoading(state) ? undefined : 100;
+    },
+    resetState() {
+      this.currentState = null;
+    },
+    changeState(event) {
+      console.log('changeState');
+      const { id } = event;
+      console.log(event);
+
+      const index = this.states.findIndex(((s) => s.id === id));
+      if (index >= 0) {
+        this.currentState = this.states[index];
+        console.log('currentState');
+        console.log(this.currentState.name);
+      }
+
     },
   },
   data: () => ({
     labels: {
-      title: 'Create Resource from Files',
-      instructions: 'Drag and drop a file here to create a new resource and upload it. For files with a file size < 5 GB.',
-      subInstructions: 'For files larger then 5GB contact the envidat team.',
-      createButtonTextS: 'Create Resource',
-      createButtonTextP: 'Create Resources',
+      title: 'Create Resource from File',
+      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file',
+      instruction2: 'After uploading make sure to rename the resource and add a description.',
     },
-    files: [],
-    createButtonDisabled: true,
+    resourceId: null,
+    fileName: null,
+    fileSize: null,
+    currentState: null,
+    states: [
+      {
+        id: UPLOAD_STATE_UPLOAD_STARTED,
+        name: 'upload started',
+      },
+      {
+        id: UPLOAD_STATE_RESOURCE_CREATED,
+        name: 'resource created',
+      },
+      {
+        id: UPLOAD_STATE_UPLOAD_PROGRESS,
+        name: 'uploading file',
+      },
+      {
+        id: UPLOAD_STATE_UPLOAD_COMPLETED,
+        name: 'upload finished',
+      },
+    ],
   }),
   components: {
-    BaseFileDropField,
-    BaseRectangleButton,
+    DragDrop,
+    StatusBar,
   },
 };
 </script>
 
-<style scoped>
-
-
+<style>
+.uppy-Root {
+  font-family: 'Raleway', serif !important;
+}
 </style>

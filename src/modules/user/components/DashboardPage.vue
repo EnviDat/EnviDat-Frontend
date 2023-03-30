@@ -82,6 +82,7 @@
       <TitleCard title="My Datasets"
                   icon="refresh"
                   :tooltipText="refreshButtonText"
+                  :loading="userDatasetsLoading"
                   :clickCallback="catchRefreshClick" />
 
       <MetadataList v-if="hasUserDatasets"
@@ -129,6 +130,7 @@
        <TitleCard title="My Collaborator Datasets"
                   icon="refresh"
                   :tooltipText="refreshButtonText"
+                  :loading="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
                   :clickCallback="catchCollaboratorRefreshClick" />
 
        <div v-if="collaboratorDatasetIdsLoading || collaboratorDatasetsLoading"
@@ -197,7 +199,8 @@
       <TitleCard :title="`Datasets of ${usersOrganisationTitle}`"
                   icon="refresh"
                   :tooltipText="refreshOrgaButtonText"
-                  :clickCallback="catchRefreshOrgaClick" />
+                 :loading="userOrganizationLoading"
+                 :clickCallback="catchRefreshOrgaClick" />
 
       <MetadataList v-if="hasOrgaDatasets"
                     class="datasetsGrid px-1"
@@ -306,18 +309,6 @@ import {
   isMember,
 } from '@/factories/userEditingValidations';
 
-import NotFoundCard from '@/components/Cards/NotFoundCard';
-import MetadataList from '@/components/MetadataList';
-import MetadataCard from '@/components/Cards/MetadataCard';
-import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder';
-import IntroductionCard from '@/components/Cards/IntroductionCard';
-import NotificationCard from '@/components/Cards/NotificationCard';
-import TitleCard from '@/components/Cards/TitleCard';
-import UserCard from '@/components/Cards/UserCard';
-import EditUserProfile from '@/modules/user/components/edit/EditUserProfile';
-import FlipLayout from '@/components/Layouts/FlipLayout';
-import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo';
-
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
@@ -328,6 +319,17 @@ import {
   SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
 } from '@/factories/eventBus';
 
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
+import MetadataList from '@/components/MetadataList.vue';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
+import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
+import NotificationCard from '@/components/Cards/NotificationCard.vue';
+import TitleCard from '@/components/Cards/TitleCard.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
+import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
+import FlipLayout from '@/components/Layouts/FlipLayout.vue';
+import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 
 
 export default {
@@ -339,12 +341,12 @@ export default {
     });
   },
   created() {
-    eventBus.$on(SELECT_EDITING_DATASET, this.catchEditingClick);
-    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
+    eventBus.on(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.on(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeDestroy() {
-    eventBus.$off(SELECT_EDITING_DATASET, this.catchEditingClick);
-    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
+    eventBus.off(SELECT_EDITING_DATASET, this.catchEditingClick);
+    eventBus.off(EDIT_USER_PROFILE_EVENT, this.callUserUpdateAction);
   },
   beforeMount() {
     this.fileIconString = this.mixinMethods_getIcon('file');
@@ -360,7 +362,7 @@ export default {
   mounted() {
     if (this.dashboardRedirect) {
       // if the config is set to redirect to the legacy dashboard
-      eventBus.$emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
+      eventBus.emit(SHOW_REDIRECT_DASHBOARD_DIALOG);
     }
   },
   computed: {
@@ -751,7 +753,7 @@ export default {
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    ckanDomain: process.env.VUE_APP_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',
@@ -815,7 +817,8 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  @import "~vuetify/src/styles/settings/_variables.scss"
+  /* @import "~vuetify/src/styles/settings/_variables.scss" */
+  $spacer: 4px !default
   $gridGap: $spacer * 4
   $maxHeight: 750px
 

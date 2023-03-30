@@ -11,28 +11,29 @@
  */
 
 import { Object } from 'core-js';
-import { getSpecificApiError } from '@/factories/notificationFactory';
+
 import globalMethods from '@/factories/globalMethods';
+import { getSpecificApiError } from '@/factories/notificationFactory';
 
 import {
-  SET_APP_BACKGROUND,
-  SET_WEBP_SUPPORT,
-  SET_WEBP_ASSETS,
-  SET_CARD_IMAGES,
-  UPDATE_CATEGORYCARD_IMAGES,
-  SET_CURRENT_PAGE,
   ADD_CARD_IMAGES,
   ADD_ICON_IMAGE,
-  SET_CONTROLS,
+  ADD_USER_NOTIFICATION,
+  CHECK_FRONTEND_VERSION,
+  HIDE_NOTIFICATIONS,
+  SET_APP_BACKGROUND,
   SET_APP_SCROLL_POSITION,
   SET_BROWSE_SCROLL_POSITION,
+  SET_CARD_IMAGES,
   SET_CONFIG,
-  SET_CONFIG_SUCCESS,
   SET_CONFIG_ERROR,
-  CHECK_FRONTEND_VERSION,
-  ADD_USER_NOTIFICATION,
+  SET_CONFIG_SUCCESS,
+  SET_CONTROLS,
+  SET_CURRENT_PAGE,
+  SET_WEBP_ASSETS,
+  SET_WEBP_SUPPORT,
   TRIM_NOTIFICATIONS,
-  HIDE_NOTIFICATIONS,
+  UPDATE_CATEGORYCARD_IMAGES,
 } from './mainMutationsConsts';
 
 function disablingCategoryCards(config, categoryCards) {
@@ -74,7 +75,10 @@ export default {
 
     for (let i = 0; i < state.categoryCards.length; i++) {
       const cardInfo = state.categoryCards[i];
-      cardInfo.img = globalMethods.methods.mixinMethods_getWebpImage(cardInfo.imgPath, state);
+      cardInfo.img = globalMethods.methods.mixinMethods_getWebpImage(
+        cardInfo.imgPath,
+        state,
+      );
       updatedCards.push(cardInfo);
     }
 
@@ -115,7 +119,7 @@ export default {
     this.commit(ADD_USER_NOTIFICATION, notificationObj);
   },
   [CHECK_FRONTEND_VERSION](state, version) {
-    if (version > process.env.VUE_APP_VERSION) {
+    if (version > import.meta.env.VITE_VERSION) {
       state.outdatedVersion = true;
       state.newVersion = version;
     }

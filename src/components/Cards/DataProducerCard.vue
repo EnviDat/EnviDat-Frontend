@@ -1,21 +1,18 @@
 <template>
-  <v-card
-    ripple
-    hover
-  >
+  <v-card ripple hover>
     <v-card-media
       class="imagezoom"
-      v-bind="{ [`height`]: this.$vuetify.breakpoint.smAndDown ? '200px' : '300px',
+      v-bind="{
+        [`height`]: this.$vuetify.breakpoint.smAndDown ? '200px' : '300px',
       }"
       :src="dataCreatorImg"
     >
-      <v-container class="fill-height"
-        
-        fluid
-      >
-        <v-row class="fill-height" >
+      <v-container class="fill-height" fluid>
+        <v-row class="fill-height">
           <v-col cols="12">
-            <span class="text-h3 dataproducer_title white--text">{{ titleText }}</span>
+            <span class="text-h3 dataproducer_title white--text">{{
+              titleText
+            }}</span>
           </v-col>
         </v-row>
       </v-container>
@@ -23,36 +20,20 @@
 
     <v-card-actions>
       <v-spacer />
-      <v-btn
-        v-if="loggedIn"
-        large
-        color="primary"
-        @click.native="enterclick"
-      >
+      <v-btn v-if="loggedIn" large color="primary" @click.native="enterclick">
         {{ loggedinText }}
       </v-btn>
 
-      <v-btn
-        v-if="!loggedIn"
-        large
-        color="primary"
-        @click.native="singupclick"
-      >
+      <v-btn v-if="!loggedIn" large color="primary" @click.native="singupclick">
         {{ signupText }}
       </v-btn>
 
-      <v-btn
-        v-if="!loggedIn"
-        large
-        color="primary"
-        @click.native="loginclick"
-      >
+      <v-btn v-if="!loggedIn" large color="primary" @click.native="loginclick">
         {{ loginText }}
       </v-btn>
     </v-card-actions>
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -62,15 +43,16 @@
  * @summary card with login / signup button
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-02 11:24:00 
+ * Created at     : 2019-10-02 11:24:00
  * Last modified  : 2019-10-02 13:22:27
  *
  * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package. 
+ * file 'LICENSE.txt', which is part of this source code package.
  */
 import dataCreatorImg from '@/modules/projects/assets/data_creator.jpg';
 
 export default {
+  name: 'DataProducerCard',
   props: {
     titleText: String,
     loginText: String,
@@ -96,9 +78,5 @@ export default {
 </script>
 
 <style scoped>
-
-  .dataproducer_title {
-    font-family: 'Baskervville', serif !important;
-  }
 
 </style>

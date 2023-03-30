@@ -1,23 +1,21 @@
 <template>
   <v-card tile min-height="200">
-
     <v-card-title>Subprojects</v-card-title>
 
-    <v-row >
-
+    <v-row>
       <v-col v-for="(project, index) in subProjects" :key="'sub_' + index">
-        <project-card :id="project.id"
-                      :title="project.title"
-                      :img="project.image_display_url"
-                      :defaultImg="defaultImg"
-                      :description="project.description"
-                      :subProjects="project.subProjects"
-                      @cardClick="onCardClick"
-                      @subprojectClick="onSubprojectClick" />
+        <project-card
+          :id="project.id"
+          :title="project.title"
+          :img="project.image_display_url"
+          :defaultImg="defaultImg"
+          :description="project.description"
+          :subProjects="project.subProjects"
+          @cardClick="onCardClick"
+          @subprojectClick="onSubprojectClick"
+        />
       </v-col>
-
     </v-row>
-
   </v-card>
 </template>
 
@@ -34,10 +32,10 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
-// import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-import ProjectCard from '@/modules/projects/components/ProjectCard';
+// import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 
 export default {
   components: {
@@ -53,8 +51,7 @@ export default {
     //   return this.subProjects;
     // },
   },
-  methods: {
-  },
+  methods: {},
   data: () => ({
     window: 0,
   }),
@@ -62,11 +59,5 @@ export default {
 </script>
 
 <style scoped>
-
-  .bodyTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 700 !important;
-  }
-
 
 </style>

@@ -2,7 +2,7 @@
  * @summary about store constants
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2020-10-29 20:53:14
  *
  * This file is subject to the terms and conditions defined in

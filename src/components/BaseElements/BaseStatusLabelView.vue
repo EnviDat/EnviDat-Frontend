@@ -1,69 +1,87 @@
 <template>
-  <v-container fluid
-                :id="`BaseStatusLabelView_${statusIcon}`"
-                class="px-0"
-                :class="expanded ? 'py-1' : 'py-0'"
-                :style="expanded ? `border: solid 1px ${statusTextColor};` : ''" >
-
-    <v-row no-gutters
-            justify="start"
-            class="align-center"  >
-
-      <v-col v-show="loading"
-              class="shrink pr-2" >
-        <div class='skeleton skeleton-animation-shimmer' >
-          <div style="width: 30px; height: 30px;"
-                class='bone bone-type-image bone-style-round'></div>
+  <v-container
+    fluid
+    :id="`BaseStatusLabelView_${statusIcon}`"
+    class="px-0"
+    :class="expanded ? 'py-1' : 'py-0'"
+    :style="expanded ? `border: solid 1px ${statusTextColor};` : ''"
+  >
+    <v-row no-gutters justify="start" class="align-center">
+      <v-col v-show="loading" class="shrink pr-2">
+        <div class="skeleton skeleton-animation-shimmer">
+          <div
+            style="width: 30px; height: 30px;"
+            class="bone bone-type-image bone-style-round"
+          ></div>
         </div>
       </v-col>
 
-      <v-col v-show="loading"
-             class="shrink pr-2">
-        <div class='skeleton skeleton-animation-shimmer' >
-          <div style="width: 100%; height: 30px;"
-               class='bone bone-type-image'></div>
+      <v-col v-show="loading" class="shrink pr-2">
+        <div class="skeleton skeleton-animation-shimmer">
+          <div
+            style="width: 100%; height: 30px;"
+            class="bone bone-type-image"
+          ></div>
         </div>
       </v-col>
 
-      <v-col v-show="!loading"
-              class="shrink pr-2" >
-        <v-icon :color="statusColor"
-                v-on="expandedText ? { click: () => { expanded = !expanded } } : {}" >
+      <v-col v-show="!loading" class="shrink pr-2">
+        <v-icon
+          :color="statusColor"
+          v-on="
+            expandedText
+              ? {
+                  click: () => {
+                    expanded = !expanded;
+                  },
+                }
+              : {}
+          "
+        >
           {{ statusIcon }}
         </v-icon>
       </v-col>
 
-      <v-col v-show="!loading"
-              class="grow pr-2 text-caption"
-              :style="expandedText ? 'cursor: pointer;' : ''"
-             v-on="expandedText ? { click: () => { expanded = !expanded } } : {}" >
+      <v-col
+        v-show="!loading"
+        class="grow pr-2 text-caption"
+        :style="expandedText ? 'cursor: pointer;' : ''"
+        v-on="
+          expandedText
+            ? {
+                click: () => {
+                  expanded = !expanded;
+                },
+              }
+            : {}
+        "
+      >
         {{ statusText }}
       </v-col>
 
-      <v-col v-show="!loading && showExpandIcon"
-              class="shrink" >
-        <BaseIconButton materialIconName="arrow_drop_down"
-                        iconColor="primary"
-                        isSmall
-                        :rotateOnClick="true"
-                        :rotateToggle="expanded"
-                        @clicked="expanded = !expanded" />
+      <v-col v-show="!loading && showExpandIcon" class="shrink">
+        <BaseIconButton
+          materialIconName="arrow_drop_down"
+          iconColor="primary"
+          isSmall
+          :rotateOnClick="true"
+          :rotateToggle="expanded"
+          @clicked="expanded = !expanded"
+        />
       </v-col>
-          
-
     </v-row>
 
     <!-- <v-expand-y-transition v-show="expanded"
                             transition="scroll-y-transition" > -->
-    <v-row v-show="expanded && expandedText"
-            no-gutters
-            justify="start"
-            class="align-center pa-1 text-caption" >
+    <v-row
+      v-show="expanded && expandedText"
+      no-gutters
+      justify="start"
+      class="align-center pa-1 text-caption"
+    >
       {{ expandedText }}
     </v-row>
     <!-- </v-expand-y-transition> -->
-
-
   </v-container>
 </template>
 
@@ -80,7 +98,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'BaseStatusLabelView',
@@ -97,7 +115,9 @@ export default {
   },
   computed: {
     statusTextColor() {
-      return this.$vuetify.theme.themes.light[this.statusColor] || this.statusColor;
+      return (
+        this.$vuetify.theme.themes.light[this.statusColor] || this.statusColor
+      );
     },
   },
   data: () => ({
@@ -109,5 +129,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

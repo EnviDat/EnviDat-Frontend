@@ -10,9 +10,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
-import EditOrganization from '@/modules/user/components/EditOrganization';
-import OrganizationTree from '@/modules/user/components/OrganizationTree';
+import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree.vue';
+import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import OrganizationTree from '@/modules/user/components/OrganizationTree.vue';
 import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
@@ -21,13 +21,12 @@ import {
 
 import { getOrganizationMap } from '@/factories/metaDataFactory';
 import testOrganizations from './js/organizations';
-import { METADATA_EDITING } from './storybookFolder';
 
 const organizationsMap = getOrganizationMap(testOrganizations);
 const organizationsMap2 = { ...organizationsMap };
 
 export default {
-  title: `${METADATA_EDITING} / Organization`,
+  title: '5 Navigation / Organization',
   decorators: [],
   parameters: {},
 };
@@ -59,10 +58,10 @@ export const OrganizationTreeView = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.showSelectedOrga);
     },
     methods: {
       showSelectedOrga(updateObj) {
@@ -114,10 +113,10 @@ export const EditDatasetOrganization = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
       updateOrga(updateObj) {
@@ -232,10 +231,10 @@ export const EditOrganizationViews = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     beforeDestroy() {
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateOrga);
     },
     methods: {
       updateOrga(updateObj) {

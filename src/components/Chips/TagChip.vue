@@ -1,16 +1,18 @@
 <template>
-  <v-chip class="envidatChip"
-          :class="{
-            'white--text': highlighted,
-            'smallChip': $vuetify.breakpoint.smAndDown,
-            }"
-          v-bind="{ 'color': highlighted ? 'primary' : color }"
-          :style="{ 'height' : $vuetify.breakpoint.xsOnly ? '15px' : '' }"
-          :small="isSmall"
-          close-icon="close"
-          @click.stop="clicked"
-          :close="closeable"
-          @click:close="$emit('clickedClose', name)" >
+  <v-chip
+    class="envidatChip"
+    :class="{
+      'white--text': highlighted ? true : false,
+      smallChip: $vuetify.breakpoint.smAndDown ? true : false,
+    }"
+    v-bind="{ color: highlighted ? 'primary' : color }"
+    :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
+    :small="isSmall"
+    close-icon="close"
+    @click.stop="clicked"
+    :close="closeable"
+    @click:close="$emit('clickedClose', name)"
+  >
     {{ name }}
 
     <!-- <span v-if="closeable"
@@ -18,7 +20,6 @@
           class="" >
       <v-icon small >close</v-icon>
     </span> -->
-
   </v-chip>
 </template>
 
@@ -34,7 +35,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'TagChip',
@@ -53,8 +54,7 @@ export default {
       default: true,
     },
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     clicked: function clicked() {
       if (!this.selectable) {

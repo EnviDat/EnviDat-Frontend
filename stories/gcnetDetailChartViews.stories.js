@@ -15,13 +15,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-property-newline */
 
-import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart';
+import DetailChart from '@/modules/metadata/components/GC-Net/DetailChart.vue';
 import { defaultSeriesSettings } from '@/factories/chartFactory';
-import stationParameters from '../public/testdata/stationParameters.json';
-import stationsConfig from '../public/testdata/stationsConfig.json';
+import stationParameters from './testdata/stationParameters.json';
+import stationsConfig from './testdata/stationsConfig.json';
 
-import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList';
-import { GCNET_VIEWS } from './storybookFolder';
+import DetailChartsList from '../src/modules/metadata/components/GC-Net/DetailChartsList.vue';
 
 const stations = stationsConfig;
 const fileObjects = stationParameters.fileObjects;
@@ -29,7 +28,7 @@ const graphStyling = stationParameters.graphStyling;
 
 
 export default {
-  title: `${GCNET_VIEWS} / Detail Charts`,
+  title: '12 Chart Views / Detail Charts',
   component: DetailChartsList,
   decorators: [],
   parameters: {
@@ -75,35 +74,7 @@ export const DetailChartViews = () => ({
 
         </v-col>
       </v-row>
-
-      <v-row class="py-3"
-      >
-        Station 4 DetailChartsList
-      </v-row>
-
-      <v-row style="border: solid 1px;"
-             no-gutters>
-        <v-col >
-          <DetailChartsList :currentStation="station4"
-                            :fileObjects="fileObjects"
-                            :graphStyling="graphStyling" />
-        </v-col>
-      </v-row>
-
-      <v-row class="py-3"
-      >
-        Station 8 DetailChartsList
-      </v-row>
-
-      <v-row style="border: solid 1px;"
-             no-gutters>
-        <v-col >
-          <DetailChartsList :currentStation="station8"
-                            :fileObjects="fileObjects"
-                            :graphStyling="graphStyling" />
-        </v-col>
-      </v-row>
-
+    
     </v-col>
     `,
     computed: {
@@ -197,6 +168,34 @@ export const DetailChartsListViews = () => ({
         </v-col>
       </v-row>
 
+      <v-row class="py-3"
+      >
+        Station 4 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station4"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3"
+      >
+        Station 8 DetailChartsList
+      </v-row>
+
+      <v-row style="border: solid 1px;"
+             no-gutters>
+        <v-col >
+          <DetailChartsList :currentStation="station8"
+                            :fileObjects="fileObjects"
+                            :graphStyling="graphStyling" />
+        </v-col>
+      </v-row>
+    
     </v-col>
     `,
   computed: {
@@ -205,6 +204,12 @@ export const DetailChartsListViews = () => ({
     },
     station2() {
       return this.stations[1];
+    },
+    station4() {
+      return this.stations[3];
+    },
+    station8() {
+      return this.stations[7];
     },
   },
   // methods,

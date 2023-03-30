@@ -124,8 +124,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import UserCard from '@/components/Cards/UserCard';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import UserCard from '@/components/Cards/UserCard.vue';
 import { getAuthorName, getNameInitials } from '@/factories/authorFactory';
 import {
   getValidationMetadataEditingObject,
@@ -202,10 +202,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     firstNameField() {
@@ -311,7 +311,7 @@ export default {
           ...userObject,
         };
 
-        eventBus.$emit(EDIT_USER_PROFILE_EVENT, {
+        eventBus.emit(EDIT_USER_PROFILE_EVENT, {
           object: USER_PROFILE,
           data: userInfo,
         });

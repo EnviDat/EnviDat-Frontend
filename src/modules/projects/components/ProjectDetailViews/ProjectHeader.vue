@@ -72,7 +72,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   components: {
@@ -138,11 +138,5 @@ export default {
 </script>
 
 <style scoped>
-
-  .headerTitle {
-    font-family: 'Baskervville', serif !important;
-    font-weight: 400;
-    opacity: 1;
-  }
 
 </style>

@@ -11,21 +11,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  GET_GUIDELINES,
-  GET_GUIDELINES_SUCCESS,
-  GET_GUIDELINES_ERROR,
-  GET_POLICIES,
-  GET_POLICIES_SUCCESS,
-  GET_POLICIES_ERROR,
-  GET_DMP,
-  GET_DMP_SUCCESS,
-  GET_DMP_ERROR,
-} from '@/modules/about/store/aboutMutationsConsts';
-
-import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 import { getSpecificApiError } from '@/factories/notificationFactory';
-
+import {
+  GET_DMP,
+  GET_DMP_ERROR,
+  GET_DMP_SUCCESS,
+  GET_GUIDELINES,
+  GET_GUIDELINES_ERROR,
+  GET_GUIDELINES_SUCCESS,
+  GET_POLICIES,
+  GET_POLICIES_ERROR,
+  GET_POLICIES_SUCCESS,
+} from '@/modules/about/store/aboutMutationsConsts';
+import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
 export default {
   [GET_GUIDELINES](state) {
@@ -42,8 +40,9 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.guidelinesMarkdown = `${details}: ${reason}`;
 
-    if (process.env.NODE_ENV === 'development') {
-      state.guidelinesMarkdown += ' \nThis is normal when developing locally on localhost:8080';
+    if (import.meta.env.DEV) {
+      state.guidelinesMarkdown +=
+        ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -63,8 +62,9 @@ export default {
 
     state.policiesMarkdown = `${details}: ${reason}`;
 
-    if (process.env.NODE_ENV === 'development') {
-      state.policiesMarkdown += ' \nThis is normal when developing locally on localhost:8080';
+    if (import.meta.env.DEV) {
+      state.policiesMarkdown +=
+        ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -83,8 +83,9 @@ export default {
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 
-    if (process.env.NODE_ENV === 'development') {
-      state.dmpMarkdown += ' \nThis is normal when developing locally on localhost:8080';
+    if (import.meta.env.DEV) {
+      state.dmpMarkdown +=
+        ' \nThis is normal when developing locally on localhost:8080';
     }
 
     this.commit(ADD_USER_NOTIFICATION, errObj);

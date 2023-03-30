@@ -9,37 +9,40 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import SearchBarView from '@/modules/home/components/SearchBarView';
-import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView';
-import { FILTERING_VIEWS } from './storybookFolder';
+import SearchBarView from '@/modules/home/components/SearchBarView.vue';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
-  title: `${FILTERING_VIEWS} / SearchBarView`,
+  title: '4 Filtering / SearchBarView',
   decorators: [],
   parameters: {
+    ...envidatViewportParameters,
   },
 };
 
-export const BasicSearchViews = () => ({
-    components: { SearchBarView },
-    template: `
-    <search-bar-view labelText="Search for something"
-                    buttonText="SEARCH"
-                    hasButton
-                    @clicked="onClick"
-                    @searchCleared="onClear" />`,
-    methods: {
-      onClick(searchTerm) {
-        console.log(`clicked search for "${searchTerm}"`);
-      },
-      onClear() {
-        console.log(`cleared Search ${this.searchTerm}`);
-      },
-    },
-    data: () => ({
-      searchTerm: '',
-    }),
-  });
+const Template = (args, { argTypes }) => ({
+  components: { SearchBarView },
+  props: Object.keys(argTypes),
+  template: '<search-bar-view v-bind="$props" />',
+});
+
+export const BasicSearchBar = Template.bind({});
+BasicSearchBar.args = {
+  labelText: 'Search for something',
+  buttonText: 'SEARCH',
+  hasButton: true,
+};
+
+export const BasicSearchBarhMobile = Template.bind({});
+BasicSearchBarhMobile.args = { ...BasicSearchBar.args };
+
+BasicSearchBarhMobile.parameters = {
+  viewport: {
+    defaultViewport: 'mobile1',
+  },
+};
+
 
 export const SmallSearchViews = () => ({
     components: { SmallSearchBarView },
@@ -123,7 +126,7 @@ export const SmallSearchViews = () => ({
                             @searchCleared="onClear"
                               />
             </v-col>
-            
+
           </v-row>
         </v-col>
 

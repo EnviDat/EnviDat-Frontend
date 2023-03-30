@@ -1,20 +1,20 @@
 <template>
-  <v-chip class="organizationChip text--black px-2"
-          :outlined="!showContent"
-          color="black"
-          @mouseover="hover = true"
-          @mouseleave="hover = false"
-          @click="$emit('organizationClicked', organization)">
-
-    <v-tooltip v-if="tooltip"
-               bottom>
+  <v-chip
+    class="organizationChip text--black px-2"
+    :outlined="!showContent"
+    color="black"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    @click="$emit('organizationClicked', organization)"
+  >
+    <v-tooltip v-if="tooltip" bottom>
       <template v-slot:activator="{ on }">
-        <div v-on="on" >
+        <div v-on="on">
           <v-icon size="18">home_filled</v-icon>
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
-      
+
       <span>{{ toolTipText }}</span>
     </v-tooltip>
 
@@ -22,7 +22,6 @@
       <v-icon size="18">home_filled</v-icon>
       {{ showContent ? organizationText : '' }}
     </div>
-
   </v-chip>
 </template>
 
@@ -38,7 +37,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'MetadataOrganizationChip',
@@ -75,20 +74,20 @@ export default {
 </script>
 
 <style scoped>
-  .organizationChip{
-    height: 1.5rem;
-    font-size: 0.75rem;
-    max-width: 120px;
-    background-color: #e0e0e0 !important;
-  }
+.organizationChip {
+  height: 1.5rem;
+  font-size: 0.75rem;
+  max-width: 120px;
+  background-color: #e0e0e0 !important;
+}
 
-  .organizationChip > .v-chip__content > div:nth-child(1) {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.organizationChip > .v-chip__content > div:nth-child(1) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .organizationChip .v-icon {
-    top: -1px;
-    left: -0.5px;
-  }
+.organizationChip .v-icon {
+  top: -1px;
+  left: -0.5px;
+}
 </style>

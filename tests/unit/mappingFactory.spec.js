@@ -1,4 +1,4 @@
-// noinspection DuplicatedCode
+import { it, describe, expect } from 'vitest';
 
 import {
   getBackendJSON,
@@ -14,7 +14,7 @@ import {
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO, EDITMETADATA_DATA_INFO_DATES,
-  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -25,8 +25,7 @@ import {
 } from '@/factories/eventBus';
 
 import categoryCards from '@/store/categoryCards';
-
-const mappingTestData = require('@/../public/testdata/mappingTestData.json');
+import * as mappingTestData from '@/../public/testdata/mappingTestData.json';
 
 describe('getFrontendJSON', () => {
 
@@ -240,9 +239,15 @@ describe('getFrontendJSON', () => {
 
     expect(publicationData.publisher).toBe(publication.publisher);
     expect(publicationData.publicationYear).toBe(publication.publication_year);
-    expect(publicationData.funders).toBeInstanceOf(Array);
 
-    const array = publicationData.funders;
+  });
+
+  it(EDITMETADATA_FUNDING_INFO, () => {
+
+    const snakeCaseJSON = convertJSON(mappingTestData, false);
+    const fundingData = getFrontendJSON(EDITMETADATA_FUNDING_INFO, snakeCaseJSON)
+
+    const array = fundingData.funders;
     expect(array).toBeInstanceOf(Array);
 
     for (let i = 0; i < array.length; i++) {
@@ -434,7 +439,7 @@ describe('getBackendJSON', () => {
 
       expect(backendDate.date).toBe(frontendDate.dateStart);
       expect(mappedEntry.date).toBe(frontendDate.dateStart);
-      
+
       expect(backendDate.date_type).toBe(frontendDate.dateType);
       expect(mappedEntry.date_type).toBe(frontendDate.dateType);
 
@@ -554,14 +559,12 @@ describe('getBackendJSON', () => {
   it(EDITMETADATA_PUBLICATION_INFO, () => {
 
     const publication = JSON.parse(mappingTestData.publication);
-    const funding = JSON.parse(mappingTestData.funding);
 
     const frontendJSON = {
       publicationState: mappingTestData.publication_state,
       doi: mappingTestData.doi,
       publisher: publication.publisher,
       publicationYear: publication.publication_year,
-      funders: funding,
     }
 
     const frontendPublicationInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
@@ -574,26 +577,42 @@ describe('getBackendJSON', () => {
     expect(publicationData.publication.publisher).toBe(frontendJSON.publisher);
     expect(publicationData.publication.publication_year).toBe(frontendJSON.publicationYear);
 
-    const array = publicationData.funding;
+    const flatJSON = convertJSON(publicationData, true);
+
+    expect(flatJSON.publication.includes('publisher')).toBeTruthy();
+    expect(flatJSON.publication.includes('publication_year')).toBeTruthy();
+
+  });
+
+  it(EDITMETADATA_FUNDING_INFO, () => {
+
+    const funding = JSON.parse(mappingTestData.funding);
+
+    const frontendJSON = {
+      funders: funding,
+    }
+
+    const frontendFundingInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
+
+    const fundingData = getBackendJSON(EDITMETADATA_FUNDING_INFO, frontendFundingInfo)
+
+    const array = fundingData.funding;
     expect(array).toBeInstanceOf(Array);
 
     for (let i = 0; i < array.length; i++) {
       const funder = array[i];
-      const frontendFunder = frontendPublicationInfo.funders[i];
+      const frontendFunder = frontendFundingInfo.funders[i];
 
       expect(funder.institution).toBe(frontendFunder.institution);
       expect(funder.institution_url).toBe(frontendFunder.institutionUrl);
       expect(funder.grant_number).toBe(frontendFunder.grantNumber);
     }
 
-    const flatJSON = convertJSON(publicationData, true);
+    const flatJSON = convertJSON(fundingData, true);
 
     expect(flatJSON.funding.includes('institution')).toBeTruthy();
     expect(flatJSON.funding.includes('institution_url')).toBeTruthy();
     expect(flatJSON.funding.includes('grant_number')).toBeTruthy();
-
-    expect(flatJSON.publication.includes('publisher')).toBeTruthy();
-    expect(flatJSON.publication.includes('publication_year')).toBeTruthy();
 
   });
 

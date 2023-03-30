@@ -1,7 +1,5 @@
 <template>
-  <v-chip class="userRoleChip"
-          small
-          :color="roleColor">
+  <v-chip class="userRoleChip" small :color="roleColor">
     {{ roleText }}
   </v-chip>
 </template>
@@ -18,7 +16,7 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
+ */
 
 export default {
   name: 'UserRoleChip',
@@ -45,14 +43,13 @@ export default {
       return this.colorMap[this.role];
     },
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
 <style scoped>
-  .userRoleChip{
-    height: 1.5rem;
-    font-size: 0.75rem;
-  }
+.userRoleChip {
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
 </style>

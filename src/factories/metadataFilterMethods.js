@@ -5,7 +5,7 @@
  * @summary function factory for filtering methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03 
+ * Created at     : 2019-10-23 16:07:03
  * Last modified  : 2020-10-29 21:16:48
  *
  * This file is subject to the terms and conditions defined in
@@ -32,8 +32,8 @@ export function createTag(name, options = defaultTagOptions) {
 
 /**
  * Goes through all the tags and checks if they are part of the content list.
- * @param {array} tags 
- * @param {array} content 
+ * @param {array} tags
+ * @param {array} content
  */
 export function getEnabledTags(tags, content) {
   const updatedTags = [];
@@ -135,7 +135,7 @@ export function getPopularTags(datasets, excludeTag = '', minCount = 5, maxCount
       if (notExcluded && notMaxCount) {
         cleandAndCounted.push(tag);
       }
-    }    
+    }
   }
 
   return cleandAndCounted;

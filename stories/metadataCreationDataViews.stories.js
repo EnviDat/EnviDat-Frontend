@@ -12,27 +12,34 @@
 
 import {
   CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
+
 } from '@/factories/eventBus';
 
-import EditMetadataResources from '@/modules/user/components/EditMetadataResources';
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
-import EditDataInfo from '@/modules/user/components/EditDataInfo';
-import { createResources } from '@/factories/metaDataFactory';
+import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
+import EditResource from '@/modules/user/components/EditResource.vue';
+
 import {
   enhanceElementsWithStrategyEvents,
   localIdProperty,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
+
+import { cleanListForFrontend, enhanceUserObject, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 import unFormatedMetadataCards from './js/metadata';
-import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
+import userList from './testdata/user_list.json';
 
+const envidatUsers = userList?.result || [];
 
-// const apiFactory = require('@/factories/apiFactory');
+for (let i = 0; i < envidatUsers.length; i++) {
+  envidatUsers[i] = enhanceUserObject(envidatUsers[i]);
+}
 
 const metadataCards = [];
 
@@ -40,17 +47,120 @@ const metadataCards = [];
 
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   const dataset = unFormatedMetadataCards[i];
-  const resources = createResources(dataset);
-  resources.resources = enhanceElementsWithStrategyEvents(resources.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(resources);
 }
-// });
+
 
 export default {
-  title: `${METADATA_EDITING} / Data Infos`,
+  title: '9 Editing Metadata / Resource Views',
   decorators: [],
   parameters: {},
 };
+
+const userEditMetadataConfig = {
+  editingRestrictingActive: true,
+};
+
+  export const EditResourceViews = () => ({
+  components: { EditResource },
+  template: `
+    <v-col>
+
+      <v-row>
+        EditResource empty and with resource1
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col cols="6">
+          <EditResource  />
+        </v-col>
+
+        <v-col cols="6">
+          <EditResource v-bind="resource1" />
+        </v-col>
+
+      </v-row>
+
+      <v-row>
+        EditResource with resource2 & resource 3
+      </v-row>
+
+      <v-row class="py-3" >
+
+        <v-col cols="6">
+          <EditResource v-bind="resource2" />
+        </v-col>
+
+        <v-col cols="6">
+          <EditResource v-bind="resource3" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        EditResource with resource 4
+      </v-row>
+
+      <v-row class="py-3" >
+
+        <v-col cols="6">
+          <EditResource v-bind="resource4" />
+        </v-col>
+
+      </v-row>
+    
+    </v-col>
+    `,
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      this.resource1 = updateObj.data;
+    },
+  },
+  computed: {
+    resource4() {
+      return {
+        ...metadataCards[2][2],
+        loading: true,
+        envidatUsers,
+      }
+    },
+  },
+  data: () => ({
+    emptyFirstGenericProps: {
+      id: '1',
+      resources: [],
+      selectionId: -1,
+      resourcesConfig: {
+        downloadActive: false,
+      },
+    },
+    resource1: {
+      ... metadataCards[0][0],
+      ...mergeResourceSizeForFrontend(metadataCards[0][0]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
+    resource2: {
+      ...metadataCards[0][1],
+      ...mergeResourceSizeForFrontend(metadataCards[0][1]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
+    resource3: {
+      ...metadataCards[2][0],
+      ...mergeResourceSizeForFrontend(metadataCards[2][0]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
+  }),
+});
 
 export const EditResourcesList = () => ({
     components: { EditMetadataResources },
@@ -75,14 +185,14 @@ export const EditResourcesList = () => ({
         <v-col >
           <EditMetadataResources v-bind="genericProps" />
         </v-col>
-      </v-row>    
+      </v-row>
     </v-col>
     `,
     created() {
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     beforeDestroy() {
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     methods: {
       selectResource(id) {
@@ -111,7 +221,7 @@ export const EditResourcesList = () => ({
       },
       genericProps: {
         id: '2',
-        resources: metadataCards[2].resources,
+        resources: metadataCards[2],
         selectionId: -1,
         resourcesConfig: {
           downloadActive: false,
@@ -120,64 +230,6 @@ export const EditResourcesList = () => ({
     }),
   });
 
-export const EditDataInfoViews = () => ({
-  components: { EditDataInfo },
-  template: `
-    <v-col>
-
-      <v-row>
-        EditDataInfo Component Unfilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayEmpty" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditDataInfo Component Prefilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  computed: {
-  },
-  methods: {
-  },
-    data: () => ({
-      datesArrayEmpty: [
-        {
-          dateType: '',
-          date: '',
-          dateEnd: '',
-        },
-      ],
-      datesArrayFilled: [
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-      ],
-    }),
-  });
 
 export const EditDataAndResourcesListViews = () => ({
     components: { EditDataAndResources },
@@ -190,25 +242,40 @@ export const EditDataAndResourcesListViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataAndResources :genericProps="genericProps" />
+          <EditDataAndResources v-bind="genericProps" />
         </v-col>
       </v-row>
 
+      <v-row>
+        EditDataAndResources Component resourceUploadActive: true
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataAndResources v-bind="genericProps2" />
+        </v-col>
+      </v-row>
+    
     </v-col>
     `,
     created() {
-      eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     beforeDestroy() {
-      eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
+      userEditMetadataConfig() {
+        return {
+          resourceUploadActive: true,
+        };
+      },
       genericProps() {
         return {
           resources: this.resources,
@@ -216,6 +283,16 @@ export const EditDataAndResourcesListViews = () => ({
           resourcesConfig: {
             downloadActive: false,
           },
+        };
+      },
+      genericProps2() {
+        return {
+          resources: this.resources,
+          selectionId: this.selectionId,
+          resourcesConfig: {
+            downloadActive: false,
+          },
+          userEditMetadataConfig: this.userEditMetadataConfig,
         };
       },
     },
@@ -291,7 +368,7 @@ export const EditDataAndResourcesListViews = () => ({
       },
     },
     data: () => ({
-      resources: metadataCards[0].resources,
+      resources: metadataCards[0],
       selectionId: -1,
     }),
   });

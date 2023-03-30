@@ -2,7 +2,7 @@
  * @summary main store actions
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51 
+ * Created at     : 2019-10-23 16:34:51
  * Last modified  : 2020-11-03 16:06:16
  *
  * This file is subject to the terms and conditions defined in
@@ -12,13 +12,13 @@
 import axios from 'axios';
 
 import {
-  SET_CONFIG,
-  SET_CONFIG_SUCCESS,
-  SET_CONFIG_ERROR,
   CHECK_FRONTEND_VERSION,
+  SET_CONFIG,
+  SET_CONFIG_ERROR,
+  SET_CONFIG_SUCCESS,
 } from '@/store/mainMutationsConsts';
 
-const configURL = process.env.VUE_APP_CONFIG_URL;
+const configURL = import.meta.env.VITE_CONFIG_URL;
 
 export default {
   [SET_CONFIG]({ commit }) {
@@ -27,11 +27,12 @@ export default {
 
       const url = `${configURL}?nocache=${new Date().getTime()}`;
 
-      axios.get(url)
-        .then((response) => {
+      axios
+        .get(url)
+        .then(response => {
           try {
             let config;
-            if (typeof (response.data) === 'string') {
+            if (typeof response.data === 'string') {
               config = JSON.parse(response.data);
             } else {
               config = response.data;
@@ -46,7 +47,7 @@ export default {
             console.error(`tried loading config, error: ${error}`);
           }
         })
-        .catch((reason) => {
+        .catch(reason => {
           commit(SET_CONFIG_ERROR, reason);
         });
     }

@@ -2,7 +2,7 @@
 // noinspection JSUnusedGlobalSymbols
 
 /**
- * @summary story of SigninPage sandbox testing
+ * @summary story of layouts sandbox testing
  * @author Dominik Haas-Artho
  *
  * Created at     : 2019-10-23 16:34:51
@@ -13,16 +13,15 @@
  */
 
 // eslint-disable-next-line import/extensions
-import TextCardListLayout from '@/components/Layouts/TextCardListLayout';
-import ImageTextCard from '@/components/Layouts/ImageTextCard';
+import TextCardListLayout from '@/components/Layouts/TextCardListLayout.vue';
+import ImageTextCard from '@/components/Layouts/ImageTextCard.vue';
 
 import dataCreatorImg from '@/assets/cards/data_creator_small.jpg'
-import integrationlist from '../public/testdata/integrationlist.json';
-import { LAYOUT_VIEWS } from './storybookFolder';
+import integrationlist from './testdata/integrationlist.json';
 
 
 export default {
-  title: `${LAYOUT_VIEWS} / Page layouts`,
+  title: '13 Layouts / Page layouts',
   // component: TextCardListLayout,
   decorators: [],
   parameters: {},
@@ -39,7 +38,7 @@ export const TextCardListLayoutViews = () => ({
     <v-col cols="12">
       Empty TextCardListLayout
     </v-col>
-  
+
     <v-col cols="12">
       <TextCardListLayout  />
     </v-col>

@@ -51,6 +51,7 @@
                 :key="res.id"
                 cols="12"
                 :sm="availableResources.length > 1 ? 6 : 12"
+                :order="res.position"
                 class="pa-2" >
 
           <ResourceCard v-bind="res"
@@ -100,17 +101,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
 
 import {
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
-  INJECT_RESOURCE_STRATEGY,
 } from '@/factories/eventBus';
 
-import ResourceCard from '../ResourceCard';
-import ResourceCardPlaceholder from '../ResourceCardPlaceholder';
+import ResourceCard from '../ResourceCard.vue';
+import ResourceCardPlaceholder from '../ResourceCardPlaceholder.vue';
 
 export default {
   name: 'MetadataResources',
@@ -125,19 +125,11 @@ export default {
   },
   created() {
     this.injectedComponent = null;
-    eventBus.$on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
-
-    this.strategyEvent = null;
-    this.strategyProperty = null;
-    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
+    eventBus.on(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
   },
   beforeDestroy() {
     this.injectedComponent = null;
-    eventBus.$off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
-
-    this.strategyEvent = null;
-    this.strategyProperty = null;
-    eventBus.$on(INJECT_RESOURCE_STRATEGY, this.injectStrategy);
+    eventBus.off(GCNET_INJECT_MICRO_CHARTS, this.injectComponent);
   },
   computed: {
     doi() {
@@ -191,25 +183,19 @@ export default {
     readMore() {
       this.showAllResources = !this.showAllResources;
     },
-    injectComponent(injectedComponent, injectedComponentConfig, injectAtStart = true) {
-      this.injectedComponent = injectedComponent;
-      this.injectedComponentConfig = injectedComponentConfig;
+    injectComponent({ component, config, injectAtStart = true }) {
+      this.injectedComponent = component;
+      this.injectedComponentConfig = config;
       this.injectAtStart = injectAtStart;
     },
-    injectStrategy(strategyEvent, strategyProperty) {
-      this.strategyEvent = strategyEvent;
-      this.strategyProperty = strategyProperty;
-    },
     catchOpenClick(event, eventProperty) {
-      eventBus.$emit(event, eventProperty);
+      eventBus.emit(event, eventProperty);
     },
   },
   data: () => ({
     injectedComponent: null,
     injectAtStart: true,
     injectedComponentConfig: null,
-    strategyEvent: null,
-    strategyProperty: null,
     showAllResources: false,
     METADATA_RESOURCES_TITLE,
   }),

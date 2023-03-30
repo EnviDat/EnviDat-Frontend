@@ -14,16 +14,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { about } from '@/modules/about/store/aboutStore';
-import { projects } from '@/modules/projects/store/projectsStore';
 import { metadata } from '@/modules/metadata/store/metadataStore';
-import { geoservices } from '@/modules/metadata/components/Geoservices/geoservicesStore';
 import { user } from '@/modules/user/store/userStore';
 import { userSignIn } from '@/modules/user/store/userSignInStore';
 import { organizations } from '@/modules/organizations/store/organizationsStore';
-import { blog } from '@/modules/blog/store/blogStore';
-import { integration } from '@/modules/integration/store/integrationStore';
-import { service } from '@/modules/services/store/serviceStore';
 
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
@@ -36,18 +30,17 @@ import {
 } from '@/factories/enhancementsFactory';
 
 import globalMethods from '@/factories/globalMethods';
-import localStoragePlugin, { clearLocalStorage } from '@/store/localStorage';
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = require.context('../assets/', true, /\.jpg$/);
+const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
 const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
 
-const iconImgPath = require.context('../assets/icons/', false, /\.png$/);
+const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
 const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 
 /*
-const errReport = process.env.VUE_APP_ERROR_REPORTING_ENABLED;
+const errReport = process.env.VITE_ERROR_REPORTING_ENABLED;
 // the check for 'NULL' is needed because simply nothing will not work
 let errorReportingEnabled = false;
 
@@ -78,7 +71,7 @@ const initialState = {
   appScrollPosition: 0,
   browseScrollPosition: 0,
   outdatedVersion: false,
-  newVersion: process.env.VUE_APP_VERSION,
+  newVersion: process.env.VITE_VERSION,
   // config can be overloaded from the backend
   loadingConfig: false,
   config: {},
@@ -88,15 +81,9 @@ const initialState = {
 
 const modules = {
   metadata,
-  about,
-  projects,
-  geoservices,
   user,
   userSignIn,
   organizations,
-  blog,
-  integration,
-  service,
 };
 
 function createStore() {
@@ -122,7 +109,7 @@ function createStore() {
     mutations,
     actions,
     modules,
-    plugins: [localStoragePlugin.plugin],
+    plugins: [],
   });
 }
 
@@ -136,20 +123,16 @@ try {
     // if there is an error for the initial loading
     // Syntax Error from parsing the json
 
+    // eslint-disable-next-line no-console
     console.log('restoreState error');
-    console.log(e);
-
-    // clear it to make sure the app boots with a clean state
-    clearLocalStorage();
-
-    console.info('cleared local storage');
+    // eslint-disable-next-line no-console
+    console.error(e);
 
     store = createStore();
   }
 }
 
-
-if (process.env.NODE_ENV === 'test') {
+if (import.meta.env.MODE === 'test') {
   loadImages(store);
 } else {
   checkWebpFeatureAsync('lossy', (feature, isSupported) => {

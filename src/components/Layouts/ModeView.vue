@@ -1,57 +1,52 @@
 <template>
-  <v-row align="center"
-          justify="center"
-          no-gutters >
-
-    <v-col v-if="compact"
-          class="shrink text-body-2 mx-1 text-no-wrap" >
+  <v-row align="center" justify="center" no-gutters>
+    <v-col v-if="compact" class="shrink text-body-2 mx-1 text-no-wrap">
       {{ modeInfoPrefix }}: {{ modeTitle }}
-     </v-col>
+    </v-col>
 
-    <v-col v-else
-          class="shrink text-h6 mx-1 text-no-wrap">
+    <v-col v-else class="shrink text-h6 mx-1 text-no-wrap">
       {{ modeInfo }}
     </v-col>
 
-    <v-col v-if="modeLogo"
-            class="shrink mx-1"
-            style="height: 34px; width: 34px;">
-
-      <a v-if="modeExternalUrl"
-          :href="modeExternalUrl"
-          rel="noopener noreferrer"
-          target="_blank" >
-        <v-img :src="modeLogo"
-                height="34" width="34" />
+    <v-col
+      v-if="modeLogo"
+      class="shrink mx-1"
+      style="height: 34px; width: 34px;"
+    >
+      <a
+        v-if="modeExternalUrl"
+        :href="modeExternalUrl"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <v-img :src="modeLogo" height="34" width="34" />
       </a>
 
-      <v-img v-else
-              :src="modeLogo"
-              height="34" width="34" />
-
+      <v-img v-else :src="modeLogo" height="34" width="34" />
     </v-col>
 
-    <v-col class="shrink mx-1" >
-
-      <base-icon-button materialIconName="info_outline"
-                        :tooltipText="`${tooltipText} ${modeTitle}`"
-                        tooltipBottom
-                        color="transparent"
-                        iconColor="secondary"
-                        isSmall />
+    <v-col class="shrink mx-1">
+      <base-icon-button
+        materialIconName="info_outline"
+        :tooltipText="`${tooltipText} ${modeTitle}`"
+        tooltipBottom
+        color="transparent"
+        iconColor="secondary"
+        isSmall
+      />
     </v-col>
 
-    <div v-if="closeCallback"
-          class="shrink mx-1" >
-      <base-icon-button materialIconName="close"
-                        :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"
-                        tooltipBottom
-                        color="transparent"
-                        iconColor="red"
-                        isSmall
-                        @clicked="closeCallback" />
+    <div v-if="closeCallback" class="shrink mx-1">
+      <base-icon-button
+        materialIconName="close"
+        :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"
+        tooltipBottom
+        color="transparent"
+        iconColor="red"
+        isSmall
+        @clicked="closeCallback"
+      />
     </div>
-
   </v-row>
 </template>
 
@@ -67,8 +62,8 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
-*/
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
+ */
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
 
 export default {

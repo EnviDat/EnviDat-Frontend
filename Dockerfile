@@ -19,14 +19,13 @@ RUN npm install
 FROM base AS debug
 ENV NODE_ENV development
 ENTRYPOINT ["node", "--inspect=0.0.0.0:9229", \
-            "./node_modules/@vue/cli-service/bin/vue-cli-service.js", \
-            "serve"]
+            "node_modules/.bin/vite", "--debug"]
 
 
 FROM base AS builder
 ENV NODE_ENV production
 COPY . .
-RUN npm run modern-build -- --mode $NODE_ENV
+RUN npm run build -- --mode $NODE_ENV
 
 
 FROM ${EXTERNAL_REG}/nginx:1.21-alpine as prod

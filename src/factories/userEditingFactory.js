@@ -13,27 +13,15 @@
 
 /* eslint-disable no-underscore-dangle */
 
-import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader';
-import EditDescription from '@/modules/user/components/EditDescription';
-
-import EditKeywords from '@/modules/user/components/EditKeywords';
-import EditAuthorList from '@/modules/user/components/EditAuthorList';
-import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo';
-import EditDataInfo from '@/modules/user/components/EditDataInfo';
-import EditDataGeo from '@/modules/user/components/EditDataGeo';
-import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo';
-
-import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper';
-
-import EditDataAndResources from '@/modules/user/components/EditDataAndResources';
-
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN,
   EDITMETADATA_MAIN_DESCRIPTION,
@@ -44,7 +32,6 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-import { localIdProperty } from '@/factories/strategyFactory';
 import {
   EDIT_STEP_TITLE_MAIN_METADATA,
   EDIT_STEP_TITLE_MAIN_PUBLICATION,
@@ -59,6 +46,27 @@ import {
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
 
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import { createNewBaseResource } from '@/factories/uploadFactory';
+
+
+const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
+const EditDescription = () => import('@/modules/user/components/EditDescription.vue');
+const EditKeywords = () => import('@/modules/user/components/EditKeywords.vue');
+const EditAuthorList = () => import('@/modules/user/components/EditAuthorList.vue');
+
+const EditDataAndResources = () => import('@/modules/user/components/EditDataAndResources.vue');
+const EditDataInfo = () => import('@/modules/user/components/EditDataInfo.vue');
+const EditDataGeo = () => import('@/modules/user/components/EditDataGeo.vue');
+
+const MetadataGenericSubStepper = () => import('@/modules/user/components/MetadataGenericSubStepper.vue');
+const MetadataCreationRelatedInfo = () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue');
+const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
+
+
+export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
+export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
+
 
 export function updateEditingArray(
   store,
@@ -71,8 +79,7 @@ export function updateEditingArray(
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[localIdProperty] === newElement[localIdProperty]
-                || el[propertyToCompare] === newElement[propertyToCompare];
+    const match = el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -92,16 +99,14 @@ export function updateEditingArray(
   elementList.unshift(newElement);
 }
 
-export function updateResource(store, state, payload) {
-  const resources = state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources;
-  const newRes = payload.data;
+export function updateResource(store, state, newRes) {
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
 
   updateEditingArray(store, resources, newRes, 'id');
 }
 
-export function updateAuthors(store, state, payload) {
+export function updateAuthors(store, state, newAuthors) {
   const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
-  const newAuthors = payload.data;
 
   updateEditingArray(store, authors, newAuthors, 'email');
 }
@@ -136,14 +141,16 @@ export function setSelected(
 
     // check for newly created entries (local only)
     // with the localIdProperty first
-    const match = element[localIdProperty] === id || element[propertyToCompare] === id;
+    const match = element[propertyToCompare] === id;
 
     if (match) {
       element.isSelected = selected;
       store._vm.$set(elementList, i, element);
-      return;
+      return element;
     }
   }
+
+  return null;
 }
 
 export function selectForEditing(
@@ -157,7 +164,22 @@ export function selectForEditing(
     setSelected(store, elementList, previousId, propertyToCompare, false);
   }
 
-  setSelected(store, elementList, id, propertyToCompare, true);
+  return setSelected(store, elementList, id, propertyToCompare, true);
+}
+
+export function getSelectedElement(elementList) {
+  let selectedRes = null;
+  const res = elementList;
+
+  if (res?.length > 0) {
+    const selected = res.filter(r => r.isSelected);
+
+    if (selected.length > 0) {
+      selectedRes = selected[0];
+    }
+  }
+
+  return selectedRes;
 }
 
 const emptyMetadataInEditing = {
@@ -214,6 +236,8 @@ const emptyMetadataInEditing = {
     doi: '',
     publisher: '',
     publicationYear: '',
+  },
+  [EDITMETADATA_FUNDING_INFO]: {
     funders: [],
   },
 };
@@ -222,6 +246,7 @@ const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
     completed: false,
+    // component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
   },
@@ -408,4 +433,83 @@ export function deleteEmptyObject(index, localObjects) {
 
 export function isMaxLength(maximum, localObjects) {
   return localObjects.length >= maximum;
+}
+// const exludeRegEx = /(?:\d+\w+\S\-\w+)/gm
+// eslint-disable-next-line no-useless-escape
+const exludeRegEx = /(\d+\w+\S\-\w+)|(\d+\S*\d+)/gm
+export function getUserAutocompleteList(userList) {
+
+  const cleanedList = userList.filter((user) => {
+
+    const match = user.name?.match(exludeRegEx);
+
+    if (match && match[0] && match[0].length === user.name?.length) {
+      return false;
+    }
+
+    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullName?.toLowerCase() === 'admin');
+  });
+
+
+  return cleanedList.map((user) => user.fullName || user.displayName);
+}
+
+/**
+ * Spilts the allowed users string into an array
+ * @param allowedUsersString
+ * @returns {*[]}
+ */
+export function getAllowedUserNamesArray(allowedUsersString) {
+  if (!allowedUsersString) {
+    return [];
+  }
+
+  const splits = allowedUsersString.split(',');
+  let usersString;
+  if (splits.length > 0) {
+    usersString = splits;
+  } else {
+    usersString = [allowedUsersString]
+  }
+
+  return usersString;
+}
+
+/**
+ * Return an array of the full names of the allowed users
+ *
+ * @param allowedUsersString
+ * @param envidatUsers
+ * @returns {*[]}
+ */
+export function getAllowedUserNames(allowedUsersString, envidatUsers) {
+  if (!allowedUsersString || !envidatUsers) {
+    return [];
+  }
+
+  const usersString = getAllowedUserNamesArray(allowedUsersString);
+
+  const allowedUsers = envidatUsers.filter((user) => usersString.includes(user.name));
+
+  return allowedUsers.map((user) => user.fullName || user.displayName);
+}
+
+/**
+ * Returns a string of the allowed users names (only the name attribute of the user object)
+ * separted by ","
+ *
+ * @param userFullNameArray
+ * @param envidatUsers
+ * @returns {string}
+ */
+export function getAllowedUsersString(userFullNameArray, envidatUsers) {
+  if (!userFullNameArray || !envidatUsers) {
+    return '';
+  }
+
+  const allowedUserObjs = envidatUsers.filter((user) => userFullNameArray.includes(user.fullName || user.displayName));
+
+  const allowedUsers = allowedUserObjs.map((user) => user.name);
+
+  return allowedUsers.join(',');
 }

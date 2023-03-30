@@ -6,9 +6,8 @@
       {{ METADATA_CITATION_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="citationText"
+    <v-card-text v-if="!showPlaceholder && citationText"
                   class="readableText px-4 py-0"
-                  style="font-style: italic; "
                   v-html="markdownText" >
 
     </v-card-text>
@@ -37,8 +36,8 @@
           <v-col class="shrink py-1 px-2">
             <base-rectangle-button margin-class="citationButton"
                                    color="secondary"
-                                   button-text="Copy Citation"
-                                   tooltipText="Copy Citation to your Clipboard"
+                                   button-text="Copy"
+                                   tooltipText="Copy citation text to your clipboard"
                                    material-icon-name="content_copy"
                                    :is-small="true"
                                    icon-color="white"
@@ -97,7 +96,7 @@ import {
   renderMarkdown,
   stripHTML,
 } from '@/factories/stringFactory';
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton';
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
 
 export default {
@@ -114,7 +113,7 @@ export default {
   }),
   computed: {
     markdownText() {
-      return renderMarkdown(this.citationText);
+      return renderMarkdown(this.citationText, false);
     },
     citationText() {
       return this.mixinMethods_getGenericProp('citationText');

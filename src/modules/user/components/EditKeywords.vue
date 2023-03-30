@@ -58,6 +58,7 @@
                       append-icon="arrow_drop_down"
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
+                      :placeholder="labels.placeholder"
                       :search-input.sync="search"
                       :readonly="mixinMethods_isFieldReadOnly('keywords')"
                       :hint="mixinMethods_readOnlyHint('keywords')"
@@ -131,14 +132,14 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import MetadataCard from '@/components/Cards/MetadataCard';
-import TagChip from '@/components/Chips/TagChip';
+import MetadataCard from '@/components/Cards/MetadataCard.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
 import catCards from '@/store/categoryCards';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
 
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 import {
   getValidationMetadataEditingObject,
@@ -157,7 +158,8 @@ export default {
     rulesKeywords: [],
     labels: {
       title: EDIT_METADATA_KEYWORDS_TITLE,
-      keywordsLabel: 'Click here to pick Keywords',
+      keywordsLabel: 'Keywords',
+      placeholder: 'Pick keywords from the list or type in a new keyword',
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
           ' To create a new keyword type it and press enter.',
@@ -220,10 +222,10 @@ export default {
     },
   },
   created() {
-    eventBus.$on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   beforeDestroy() {
-    eventBus.$off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     ...mapState([
@@ -432,7 +434,7 @@ export default {
         [property]: value,
       };
 
-      eventBus.$emit(EDITMETADATA_OBJECT_UPDATE, {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_KEYWORDS,
         data: newKeywords,
       });

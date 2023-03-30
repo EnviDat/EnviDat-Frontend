@@ -12,9 +12,8 @@
 /* eslint-disable object-property-newline */
 // noinspection JSUnusedGlobalSymbols
 
-import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart';
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView';
-import { GCNET_VIEWS } from './storybookFolder';
+import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
 
 const stations = [
@@ -75,7 +74,7 @@ const stations = [
 ];
 
 export default {
-  title: `${GCNET_VIEWS} / Micro Charts`,
+  title: '8 GC-Net Views / Micro Charts',
   component: MicroChart,
   decorators: [],
   parameters: {
@@ -293,16 +292,6 @@ export const MicroChartViews = () => ({
     station3() {
       return this.stations[2];
     },
-  },
-  beforeMount() {
-    // const imgs = require.context('../src/assets/stations/small', false, /\.jpg$/);
-    // const imgCache = {};
-
-    // imgs.keys().forEach((key) => {
-    //   imgCache[key] = imgs(key);
-    // });
-
-    // this.cardImgs = imgCache;
   },
   methods: {
     // stationImg(alias) {

@@ -1,32 +1,45 @@
 <template>
-  <v-card ripple
-          hover
-          @mouseover="hover = true"
-          @mouseleave="hover = false"
-          style="height: 100%;"
-          @click.native="cardClick" >
-
+  <v-card
+    ripple
+    hover
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+    style="height: 100%;"
+    @click.native="cardClick"
+  >
     <!-- <v-card-title primary-title class="pa-0"> -->
 
     <v-container fluid class="pa-0">
       <v-row no-gutters>
-        <v-col >
-
-          <v-img :style="headerImageStyle"
-                  :height="flatLayout ? '55px' : $vuetify.breakpoint.smAndDown ? '90px' : '115px'" >
-
-            <div v-if="!maxTitleLengthReached || $vuetify.breakpoint.xsOnly"
-                class="pa-4 metadataTitle mb-0"
-                :class="titleClass" >
+        <v-col>
+          <v-img
+            :style="headerImageStyle"
+            :height="
+              flatLayout
+                ? '55px'
+                : $vuetify.breakpoint.smAndDown
+                ? '90px'
+                : '115px'
+            "
+          >
+            <div
+              v-if="!maxTitleLengthReached || $vuetify.breakpoint.xsOnly"
+              class="pa-4 metadataTitle mb-0"
+              :class="titleClass"
+            >
               {{ truncatedTitle }}
             </div>
 
-            <v-tooltip v-if="maxTitleLengthReached && !$vuetify.breakpoint.xsOnly"
-                        bottom >
+            <v-tooltip
+              v-if="maxTitleLengthReached && !$vuetify.breakpoint.xsOnly"
+              bottom
+            >
               <template v-slot:activator="{ on }">
-                <div v-on="on"
-                      class="pa-4 metadataTitle mb-0"
-                      :class="titleClass" >
+                <div
+                  v-on="on"
+                  class="pa-4 metadataTitle mb-0"
+                  :class="titleClass"
+                >
                   {{ truncatedTitle }}
                 </div>
               </template>
@@ -38,65 +51,60 @@
       </v-row>
     </v-container>
 
-    <v-card-text v-if="showCardBody"
-                  :class="{['cardText'] : $vuetify.breakpoint.mdAndUp,
-                        ['compactText'] : flatLayout || $vuetify.breakpoint.smAndDown,
-                        ['pr-5'] : flatLayout,
-                  }" >
-
-      <v-container fluid class="pa-0 fill-height" >
-
-        <v-row v-if="!compactLayout"
-                no-gutters
-                class="pb-2" >
-          <v-col cols="12" >
+    <v-card-text
+      v-if="showCardBody"
+      :class="{
+        ['cardText']: $vuetify.breakpoint.mdAndUp,
+        ['compactText']: flatLayout || $vuetify.breakpoint.smAndDown,
+        ['pr-5']: flatLayout,
+      }"
+    >
+      <v-container fluid class="pa-0 fill-height">
+        <v-row v-if="!compactLayout" no-gutters class="pb-2">
+          <v-col cols="12">
             {{ truncatedSubtitle }}
           </v-col>
         </v-row>
 
-        <v-row v-if="tags"
-                no-gutters >
-          <v-col v-for="(tag, index) in tags.slice (0, maxTagNumber)"
-                  :key="index"
-                  class="shrink" >
-
-              <tag-chip class="py-0"
-                        :name="tag.name || tag"
-                        :selectable="true"
-                        :color="tag.color"
-                        @clicked="catchTagClicked(tag.name)" />
-
+        <v-row v-if="tags" no-gutters>
+          <v-col
+            v-for="(tag, index) in tags.slice(0, maxTagNumber)"
+            :key="index"
+            class="shrink"
+          >
+            <tag-chip
+              class="py-0"
+              :name="tag.name || tag"
+              :selectable="true"
+              :color="tag.color"
+              @clicked="catchTagClicked(tag.name)"
+            />
           </v-col>
-          <v-col v-if="maxTagsReached"
-                  class="shrink" >
-              <tag-chip class="py-0"
-                        name="..." />
-
+          <v-col v-if="maxTagsReached" class="shrink">
+            <tag-chip class="py-0" name="..." />
           </v-col>
         </v-row>
-
       </v-container>
     </v-card-text>
 
-    <v-card-actions class="ma-0 pa-2"
-                    :style="`position: absolute; bottom: 0; right: 0;
-                              background-color: ${showCardBody ? 'white' : 'transparent'};
-                              border-radius: 10px;`" >
-
-      <v-container v-if="showCardBody"
-                   class="pa-0">
-
-        <v-row v-if="state"
-               class="pb-1"
-               no-gutters
-               justify="end">
-          <v-col class="cardIcons shrink" >
-            <MetadataStateChip :state="state"
-                                :showOnHover="!hover" />
+    <v-card-actions
+      class="ma-0 pa-2"
+      :style="
+        `position: absolute; bottom: 0; right: 0;
+                              background-color: ${
+                                showCardBody ? 'white' : 'transparent'
+                              };
+                              border-radius: 10px;`
+      "
+    >
+      <v-container v-if="showCardBody" class="pa-0">
+        <v-row v-if="state" class="pb-1" no-gutters justify="end">
+          <v-col class="cardIcons shrink">
+            <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
         </v-row>
 
-<!--
+        <!--
         <v-row v-if="organization"
                class="pb-1"
                no-gutters
@@ -110,102 +118,100 @@
         </v-row>
 -->
 
-        <v-row v-if="modeData"
-               no-gutters
-               justify="end">
+        <v-row v-if="modeData" no-gutters justify="end">
           <v-col class="cardIcons shrink">
-            <base-icon-button isFlat
-                                isSmall
-                                color="transparent"
-                                :disabled="true"
-                                :customIcon="modeEntryIcon" />
+            <base-icon-button
+              isFlat
+              isSmall
+              color="transparent"
+              :disabled="true"
+              :customIcon="modeEntryIcon"
+            />
           </v-col>
         </v-row>
 
-        <v-row no-gutters
-               justify="end">
+        <v-row no-gutters justify="end">
           <v-col class="cardIcons shrink">
-            <base-icon-count-view :count="resourceAmount"
-                                  :icon-string="fileIconString" />
+            <base-icon-count-view
+              :count="resourceAmount"
+              :icon-string="fileIconString"
+            />
           </v-col>
         </v-row>
 
-        <v-row v-if="geoJSONIcon"
-               no-gutters
-               justify="end">
+        <v-row v-if="geoJSONIcon" no-gutters justify="end">
           <v-col class="cardIcons shrink">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
-
       </v-container>
 
-      <v-container v-if="!showCardBody"
-                   class="pa-0">
-
-        <v-row no-gutters
-               class="justify-end">
-          <v-col v-if="role"
-                 class="pl-1 shrink" >
+      <v-container v-if="!showCardBody" class="pa-0">
+        <v-row no-gutters class="justify-end">
+          <v-col v-if="role" class="pl-1 shrink">
             <UserRoleChip :role="role" />
           </v-col>
-          <v-col v-if="state"
-                 class="pl-1 shrink" >
-            <MetadataStateChip :state="state"
-                               :showOnHover="!hover" />
+          <v-col v-if="state" class="pl-1 shrink">
+            <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
-          <v-col v-if="organization"
-                 class="pl-1 shrink" >
-            <MetadataOrganizationChip :organization="organization"
-                                      :tooltip="organizationTooltip"
-                                      :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
-                                      @organizationClicked="$emit('organizationClicked', $event)" />
+          <v-col v-if="organization" class="pl-1 shrink">
+            <MetadataOrganizationChip
+              :organization="organization"
+              :tooltip="organizationTooltip"
+              :showOnHover="
+                showOrganizationOnHover === true ||
+                  (showOrganizationOnHover === undefined && !hover)
+              "
+              @organizationClicked="$emit('organizationClicked', $event)"
+            />
           </v-col>
 
-          <v-col v-if="modeData"
-                 class="pl-1 shrink cardIcons" >
-            <base-icon-button isFlat
-                              isSmall
-                              color="transparent"
-                              :disabled="true"
-                              :customIcon="modeEntryIcon" />
+          <v-col v-if="modeData" class="pl-1 shrink cardIcons">
+            <base-icon-button
+              isFlat
+              isSmall
+              color="transparent"
+              :disabled="true"
+              :customIcon="modeEntryIcon"
+            />
           </v-col>
 
-          <v-col class="pl-3 shrink cardIcons" >
-            <base-icon-count-view :count="resourceAmount"
-                                  :icon-string="fileIconString" />
+          <v-col class="pl-3 shrink cardIcons">
+            <base-icon-count-view
+              :count="resourceAmount"
+              :icon-string="fileIconString"
+            />
           </v-col>
 
-          <v-col v-if="geoJSONIcon"
-                 class="pl-1 shrink cardIcons" >
+          <v-col v-if="geoJSONIcon" class="pl-1 shrink cardIcons">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
       </v-container>
-
     </v-card-actions>
 
-    <v-container v-if="showGenericOpenButton"
-                 class="ma-2 pa-0"
-                 style="position: absolute; top: 0; right: 0; width: 30px;">
-      <v-row >
-        <v-col cols="12" >
-          <base-icon-button :materialIconName="openButtonIcon"
-                            iconColor="black"
-                            color="accent"
-                            :isElevated="true"
-                            :isSmall="true"
-                            :tooltipText="openButtonTooltip"
-                            @clicked="$emit('openButtonClicked')" />
+    <v-container
+      v-if="showGenericOpenButton"
+      class="ma-2 pa-0"
+      style="position: absolute; top: 0; right: 0; width: 30px;"
+    >
+      <v-row>
+        <v-col cols="12">
+          <base-icon-button
+            :materialIconName="openButtonIcon"
+            iconColor="black"
+            color="accent"
+            :isElevated="true"
+            :isSmall="true"
+            :tooltipText="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')"
+          />
         </v-col>
       </v-row>
-
     </v-container>
-
   </v-card>
 </template>
-
 
 <script>
 /**
@@ -221,16 +227,15 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import TagChip from '@/components/Chips/TagChip';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView';
-import BaseIconButton from '@/components/BaseElements/BaseIconButton';
-
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
+import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
-import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip';
-import UserRoleChip from '@/components/Chips/UserRoleChip';
 
 // Header Sleek design
 // https://codepen.io/GeorgeGedox/pen/NQrxrY
@@ -247,7 +252,6 @@ import UserRoleChip from '@/components/Chips/UserRoleChip';
 
 // Card opening animation
 // https://codepen.io/luizotcarvalho/pen/yyQNRO
-
 
 // check multi line truncation via css (only works with one-colored background)
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
@@ -311,16 +315,21 @@ export default {
       return !!this.tags || !this.compactLayout;
     },
     headerImageStyle() {
-      let topBorderStyle = 'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
+      let topBorderStyle =
+        'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
       if (!this.showCardBody) {
         topBorderStyle = 'border-radius: 4px; ';
       }
-      const imgStyle = !this.flatLayout ? this.dynamicCardBackground : `background-color: ${this.categoryColor}; `;
+      const imgStyle = !this.flatLayout
+        ? this.dynamicCardBackground
+        : `background-color: ${this.categoryColor}; `;
 
       return `${topBorderStyle} ${imgStyle}`;
     },
     dynamicCardBackground() {
-      const gradient = this.dark ? this.blackTopToBottom : this.whiteTopToBottom;
+      const gradient = this.dark
+        ? this.blackTopToBottom
+        : this.whiteTopToBottom;
 
       if (this.titleImg && this.$vuetify.breakpoint.mdAndUp) {
         return `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
@@ -347,9 +356,13 @@ export default {
 
         textLength += name.length + 1;
 
-        if (this.flatAndMaxReached(textLength)
-          || this.compactAndMaxReached(textLength)
-          || ((!this.isCompactLayout && !this.flatLayout) && textLength >= this.tagtextLength)) {
+        if (
+          this.flatAndMaxReached(textLength) ||
+          this.compactAndMaxReached(textLength) ||
+          (!this.isCompactLayout &&
+            !this.flatLayout &&
+            textLength >= this.tagtextLength)
+        ) {
           break;
         }
 
@@ -359,9 +372,13 @@ export default {
       return numberOfTags;
     },
     maxTitleLengthReached() {
-      return (this.flatLayout && this.title.length > this.flatTagtextLength)
-      || (this.isCompactLayout && this.title.length > this.compactTitleLength)
-      || ((!this.isCompactLayout && !this.flatLayout) && this.title.length > this.titleLength);
+      return (
+        (this.flatLayout && this.title.length > this.flatTagtextLength) ||
+        (this.isCompactLayout && this.title.length > this.compactTitleLength) ||
+        (!this.isCompactLayout &&
+          !this.flatLayout &&
+          this.title.length > this.titleLength)
+      );
     },
     isCompactLayout() {
       return this.compactLayout || this.$vuetify.breakpoint.smAndDown;
@@ -457,8 +474,7 @@ export default {
       return getModeData(this.mode);
     },
   },
-  created() {
-  },
+  created() {},
   methods: {
     flatAndMaxReached(textLength) {
       return this.flatLayout && textLength >= this.flatTagtextLength;
@@ -491,7 +507,8 @@ export default {
   },
   data: () => ({
     hover: false,
-    singleLineCss: 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
+    singleLineCss:
+      'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
     show: false,
     showDataText: 'SHOW DATA',
     titleLength: 100,
@@ -511,53 +528,50 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.card .card__media {
+  /* Fallback if the background images don't work */
+  background: #00695c; /* Old Browsers */
+  background: -webkit-linear-gradient(top, #00695c, #00897b); /*Safari 5.1-6*/
+  background: -o-linear-gradient(top, #00695c, #00897b); /*Opera 11.1-12*/
+  background: -moz-linear-gradient(top, #00695c, #00897b); /*Fx 3.6-15*/
+  background: linear-gradient(to bottom, #00695c, #00897b); /*Standard*/
+}
 
+.black_title {
+  color: rgba(0, 0, 0, 0.87) !important;
+}
 
-  .card .card__media {
-    /* Fallback if the background images don't work */
-    background: #00695c; /* Old Browsers */
-    background: -webkit-linear-gradient(top,#00695c,#00897b); /*Safari 5.1-6*/
-    background: -o-linear-gradient(top,#00695c,#00897b); /*Opera 11.1-12*/
-    background: -moz-linear-gradient(top,#00695c,#00897b); /*Fx 3.6-15*/
-    background: linear-gradient(to bottom, #00695c, #00897b); /*Standard*/
-  }
+.white_title {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
 
-  .black_title{
-    color: rgba(0,0,0,.87) !important;
-  }
+.metadataTitle {
+  /* font-family: "Baskervville", serif !important; */
+  font-size: 1.2rem !important;
+  line-height: 1.2rem !important;
+}
 
-  .white_title{
-    color: rgba(255,255,255,.9) !important;
-  }
+.compactTitle {
+  font-size: 17px !important;
+}
 
-  .metadataTitle {
-    /* font-family: "Baskervville", serif !important; */
-    font-size: 1.2rem !important;
-    line-height: 1.2rem !important;
-  }
+.smallScreenTitle {
+  font-size: 14px !important;
+}
 
-  .compactTitle {
-    font-size: 17px !important;
-  }
+.compactText {
+  line-height: 1.2em !important;
+}
 
-  .smallScreenTitle {
-    font-size: 14px !important;
-  }
+.cardText {
+  font-size: 14px !important;
+  opacity: 0.75;
+  line-height: 1.2em !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+  overflow: hidden;
+}
 
-  .compactText {
-    line-height: 1.2em !important;
-  }
-
-  .cardText {
-    font-size: 14px !important;
-    opacity: 0.75;
-    line-height: 1.2em !important;
-    color: rgba(0, 0, 0, 0.87) !important;
-    overflow: hidden;
-  }
-
-  .cardIcons {
-    opacity: 0.5;
-  }
-
+.cardIcons {
+  opacity: 0.5;
+}
 </style>
