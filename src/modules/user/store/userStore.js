@@ -60,6 +60,7 @@ const userState = {
   uploadKey: null,
   uploadResource: null,
   uploadMetadataId: null,
+  uploadError: null,
   envidatUsers: null,
   envidatUsersError: null,
 };
@@ -90,7 +91,7 @@ export const user = {
     },
     uploadFileId: state => state.uploadFileId,
     uploadResource: state => state.uploadResource,
-    uploadResourceId: state => state.uploadResource.id,
+    uploadResourceId: state => state.uploadResource?.id,
     uploadMetadataId: state => state.uploadMetadataId,
   },
   mutations: {

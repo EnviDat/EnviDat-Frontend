@@ -16,7 +16,6 @@
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFiles.vue';
 import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
-import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
 export default {
   title: '9 Editing Metadata / Upload Elements',
@@ -27,13 +26,21 @@ export default {
 
 const metadataId = 'storybook_testing_metadataId';
 
-export const EditDropResourceFilesView = () => ({
+const EditDropResourceFilesTemplate = (args, { argTypes }) => ({
   components: { EditDropResourceFiles },
-  template: '<EditDropResourceFiles :metadataId="metadataId" /> ',
-  data: () => ({
-    metadataId,
-  }),
+  props: Object.keys(argTypes),
+  template: '<EditDropResourceFiles v-bind="$props" />',
 });
+
+export const EmptyEditDropResourceFiles = EditDropResourceFilesTemplate.bind({});
+EmptyEditDropResourceFiles.args = { metadataId };
+export const ErrorEditDropResourceFiles = EditDropResourceFilesTemplate.bind({});
+ErrorEditDropResourceFiles.args = {
+  ...EmptyEditDropResourceFiles.args,
+  error: 'Network Error',
+  errorDetails: 'CORS something something',
+};
+
 
 export const EditMultiDropResourceFilesView = () => ({
   components: { EditMultiDropResourceFiles },
@@ -51,6 +58,3 @@ const EditResourcePasteUrlTemplate = (args, { argTypes }) => ({
 
 export const EmptyEditResourcePasteUrl = EditResourcePasteUrlTemplate.bind({});
 
-/*
-export const EmptyEditResourcePasteUrl = EditResourcePasteUrlTemplate.bind({});
-*/

@@ -63,7 +63,7 @@ const defaultRestrictions = {
  * a resource via url
  *
  * @param metadataId
- * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: null, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, position: number, state: string, last_modified: string, doi: null, resourceType: null}}
+ * @returns {{cacheLastUpdated: null, cacheUrl: null, created: string, format: string, packageId, description: string, hast: string, url: string, urlType: null, mimetypeInner: null, size: null, restricted: {level: string, allowedUsers: string, sharedSecret: string}, name: string, resourceSize: {sizeUnits: string, sizeValue: string}, mimetype: null, id: string, lastModified: string, position: number, state: string, doi: string, resourceType: null}}
  */
 export function createNewBaseResource(metadataId) {
 
@@ -311,27 +311,27 @@ export async function abortMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_abort_multipart';
   const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+
+  // const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
-  const deletedInCKAN = await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_DELETE_RESOURCE}`, { resourceId });
+  await storeReference?.dispatch(`${USER_NAMESPACE}/${METADATA_DELETE_RESOURCE}`, resourceId);
 
   const payload = {
     id: resourceId,
-    deletedInCKAN,
   };
 
   try {
-    // const res =
-    await axios.post(url, payload);
-    // console.log(
-    //   `Multipart upload aborted. Resource ID ${this.resourceId} | S3 Upload ID ${uploadData.uploadId}`,
-    // );
+    const response = await axios.post(url, payload);
+    console.log(`Multipart upload aborted. Resource ID ${resourceId} | S3 Upload ID ${uploadData.uploadId}`);
+    console.log(response);
+
     return {};
   } catch (error) {
-    // console.log(
-    //   `Multipart abort failed for Resource ID ${this.resourceId}: ${error}`,
-    // );
+    console.log(`Multipart abort failed for Resource ID ${resourceId}: ${error}`);
     return error;
+  } finally {
+    eventBus.emit(UPLOAD_STATE_RESET);
   }
 }
 
@@ -414,16 +414,6 @@ export function unSubscribeOnUppyEvent(event, callback) {
   }
 }
 
-/*
-function awsS3Parameters(file) {
-  return {
-    method: 'POST',
-    url: '',
-    fields: '',
-    headers: '',
-  }
-}
-*/
 
 function createUppyInstance(height = 300, autoProceed = true, debug = true, restrictions = defaultRestrictions) {
 
@@ -454,66 +444,20 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
     completeMultipartUpload: completeMultipart,
   });
 
-/*
-  uppy
-    // .use(GoldenRetriever, { serviceWorker: true })
-    .use(GoldenRetriever, { })
-*/
-
-
-/*
-  uppy.on('file-added', (newFile) => {
-
-    if (newFile.size >= 1024 * 1024 * 6) {
-
-      const awsS3Plugin = uppy.getPlugin('AwsS3');
-      if (awsS3Plugin) {
-        uppy.removePlugin(AwsS3);
-      }
-      uppy.use(AwsS3Multipart, {
-        id: 'multipart-aws',
-        limit: 4,
-        getChunkSize(file) {
-          // at least 25MB per request, at most 500 requests
-          return Math.max(1024 * 1024 * 25, Math.ceil(file.size / 500));
-        },
-        createMultipartUpload: initiateMultipart,
-        signPart: requestPresignedUrl,
-        listParts: listUploadedParts,
-        abortMultipartUpload: abortMultipart,
-        completeMultipartUpload: completeMultipart,
-      });
-    } else {
-
-      const awsS3Plugin = uppy.getPlugin('multipart-aws');
-      if (awsS3Plugin) {
-        uppy.removePlugin(AwsS3Multipart);
-      }
-
-      uppy.use(AwsS3, {
-        id: 'AwsS3',
-        // companionUrl: ENVIDAT_PROXY,
-        getUploadParameters: getSinglePresignedUrl,
-      });
-    }
-  });
-
-*/
-  /*
-      .use(Tus, { endpoint: 'https://tusd.tusdemo.net/files/' });
-  */
-
-
-  // uppy.on('upload-complete', this.$emit('uploadComplete', 'Done'));
-
   return uppy;
 }
 
 export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, debug = true, restrictions = undefined) {
 
-  // need to be stored for later usage for some multipart functions
-  storeReference = store;
-  storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, metadataId);
+  if (store) {
+    storeReference = store;
+
+    const currentMetadataId = storeReference.getters[`${USER_NAMESPACE}/uploadMetadataId`];
+    if (currentMetadataId !== metadataId) {
+      // needs to be stored for later usage for some multipart functions
+      storeReference.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_INIT}`, metadataId);
+    }
+  }
 
   if (hasUppyInstance()) {
     return uppyInstance;

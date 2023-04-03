@@ -38,7 +38,7 @@
 
           <v-col v-if="resourceUploadActive"
                  cols="12">
-            <EditDropResourceFiles :metadataId="metadataId" />
+            <EditDropResourceFiles v-bind="editDropResourceObject" />
 <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
@@ -66,6 +66,7 @@
       </v-col>
     </v-row>
 
+<!--
     <v-snackbar
         :value="!!uploadProgessText"
         bottom
@@ -75,6 +76,7 @@
       {{ uploadProgessText }}
 
     </v-snackbar>
+-->
 
   </v-container>
 </template>
@@ -95,10 +97,10 @@ import {
   CANCEL_EDITING_RESOURCE,
   OPEN_TEXT_PREVIEW,
   SAVE_EDITING_RESOURCE,
-  UPLOAD_ERROR,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
+  UPLOAD_STATE_RESET,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -108,7 +110,6 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
-// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 import {
   getUppyInstance,
@@ -193,7 +194,8 @@ export default {
     subscribeOnUppyEvent('upload', this.uploadStarted);
     subscribeOnUppyEvent('progress', this.uploadProgress);
     subscribeOnUppyEvent('complete', this.uploadCompleted);
-    subscribeOnUppyEvent('error', this.uploadError);
+    subscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    subscribeOnUppyEvent('error', this.uploadUppyError);
 
     this.$nextTick(() => {
       this.loadEnvidatUsers();
@@ -203,7 +205,8 @@ export default {
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
     unSubscribeOnUppyEvent('progress', this.uploadProgress);
     unSubscribeOnUppyEvent('complete', this.uploadCompleted);
-    unSubscribeOnUppyEvent('error', this.uploadError);
+    unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    unSubscribeOnUppyEvent('error', this.uploadUppyError);
   },
   computed: {
     ...mapState(['config']),
@@ -211,7 +214,10 @@ export default {
       'user',
       'userLoading',
     ]),
-    ...mapState(USER_NAMESPACE, ['envidatUsers']),
+    ...mapState(USER_NAMESPACE, [
+        'envidatUsers',
+        'uploadError',
+    ]),
     resourceUploadActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
@@ -264,6 +270,14 @@ export default {
         envidatUsers: this.envidatUsers,
       };
     },
+    editDropResourceObject() {
+      return {
+        metadataId: this.metadataId,
+        legacyUrl: this.linkAddNewResourcesCKAN,
+        error: this.uploadError?.message || this.uppyError?.name,
+        errorDetails: this.uploadError?.details || this.uppyError?.message,
+      };
+    },
     selectedResource() {
       return getSelectedElement(this.resources);
     },
@@ -297,6 +311,7 @@ export default {
       // data: { id, fileIDs }
       console.log(`Starting upload ${id} for files ${fileIDs}`);
 
+      this.uppyError = null;
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
 
@@ -349,7 +364,7 @@ export default {
 */
 
       // reset uppy to be able to upload another file
-      this.resetUppy()
+      this.resetUppy();
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -359,20 +374,21 @@ export default {
       }, 500);
 
     },
-    uploadError(error) {
-/*
-      console.log('failed files:', error)
-*/
+    uploadUppyError(error) {
+      this.uppyError = error;
 
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
 
-      const uppy = getUppyInstance();
-      uppy.cancelAll({ reason: error});
-
-      eventBus.emit(UPLOAD_ERROR, { error });
+      eventBus.emit(UPLOAD_STATE_RESET);
+    },
+    cancelUpload() {
+      this.resetUppy();
     },
     resetUppy() {
+      eventBus.emit(UPLOAD_STATE_RESET);
+      this.uppyError = null;
+
       const uppy = getUppyInstance();
       const files = uppy.getFiles();
       if (files.length === 1) {
@@ -419,6 +435,7 @@ export default {
     envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
     uploadProgessText: null,
     uploadProgressIcon: '',
+    uppyError: null,
     editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
                     <br />
                     Please edit resources via the legacy website by clicking on

@@ -22,7 +22,10 @@ import {
 */
 
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
-import { mapFrontendToBackend } from '@/factories/mappingFactory';
+import {
+  getBackendJSON,
+  stringifyResourceForBackend,
+} from '@/factories/mappingFactory';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -30,8 +33,6 @@ import {
   ACTION_METADATA_CREATION_RESOURCE,
   METADATA_DELETE_RESOURCE,
   ACTION_METADATA_DELETE_RESOURCE,
-  METADATA_DELETE_RESOURCE_SUCCESS,
-  METADATA_DELETE_RESOURCE_ERROR,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -55,8 +56,8 @@ export default {
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const postData = mapFrontendToBackend(EDITMETADATA_DATA_RESOURCE, data);
-
+    const cleaned = getBackendJSON(EDITMETADATA_DATA_RESOURCE, data);
+    const postData = stringifyResourceForBackend(cleaned);
 
     try {
       const response = await axios.post(url, postData);
@@ -72,7 +73,7 @@ export default {
 
     } catch(reason) {
       commit(METADATA_CREATION_RESOURCE_ERROR, {
-        // stepKey,
+        stepKey: EDITMETADATA_DATA_RESOURCE,
         reason,
       });
     }
@@ -93,22 +94,7 @@ export default {
           // Authorization: apiKey,
         },
       })
-      .then((response) => {
-        commit(METADATA_DELETE_RESOURCE_SUCCESS, {
-          // stepKey,
-          message: 'Resource deleted',
-          // details: `Changes saved ${stepKey} data for ${id}`,
-        });
-
-        return true;
-      })
-      .catch((reason) => {
-        commit(METADATA_DELETE_RESOURCE_ERROR, {
-          // stepKey,
-          reason,
-        });
-
-        return false;
-      });
+      .then(() => true)
+      .catch(() => false)
   },
 };

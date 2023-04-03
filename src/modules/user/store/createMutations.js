@@ -17,7 +17,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { extractError } from '@/modules/user/store/mutationFactory';
+import { createErrorMessage, extractError } from '@/modules/user/store/mutationFactory';
 
 import {
   enhanceElementsWithStrategyEvents,
@@ -43,6 +43,7 @@ export default {
     // resource.loading = true;
     state.uploadLoading = true;
     state.uploadResource = null;
+    state.uploadError = null;
 
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
@@ -76,7 +77,12 @@ export default {
   [METADATA_CREATION_RESOURCE_ERROR](state, reason) {
     state.uploadLoading = false;
 
-    extractError(this, reason);
+    const errorObj = createErrorMessage(reason);
+    state.uploadError = {
+      message: errorObj.message,
+      details: errorObj.errorDetails,
+    };
+
   },
   [METADATA_UPLOAD_FILE_INIT](state, metadataId) {
     state.uploadMetadataId = metadataId;
@@ -89,7 +95,6 @@ export default {
     state.uploadLoading = false;
     state.uploadFileId = null;
     state.uploadKey = null;
-    state.uploadMetadataId = null;
   },
 /*
   [METADATA_UPLOAD_FILE_ERROR](state, { fileId, key}) {
