@@ -19,11 +19,11 @@
         target="_blank"
         @click.stop="onClick"
       >
-        <div v-if="customIcon" class="iconCentering">
+        <div v-if="customIcon" :class="customIconSpace ? 'iconCentering pr-4' : 'iconCentering'">
           <img
             class="envidatIcon"
             :src="customIcon"
-            :alt="`${iconString} icon`"
+            :style="customIconWhiten ? 'filter: brightness(0) invert(1);' : ''"
           />
         </div>
 
@@ -72,6 +72,8 @@ export default {
   name: 'BaseRectangleButton',
   props: {
     customIcon: String,
+    customIconWhiten: Boolean,
+    customIconSpace: Boolean,
     materialIconName: String,
     buttonText: String,
     tooltipText: String,
