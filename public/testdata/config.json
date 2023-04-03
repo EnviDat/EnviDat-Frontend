@@ -127,5 +127,13 @@
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
     "showOldDashboardUrl": true
+  },
+  "signinPageConfig": {
+    "disclaimerText": "Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:",
+    "disclaimerPoints": [
+	  "has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn't violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.",
+	  "after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at envidat@wsl.ch for devising an appropriate solution.",
+	  "will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications."
+	]
   }
 }
