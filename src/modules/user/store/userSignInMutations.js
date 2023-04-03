@@ -127,7 +127,9 @@ import {
      state.signInLoading = false;
      state.signInSuccess = true;
      const user = payload.user;
-     state.user = enhanceUserObject(user);
+     if (user) {
+      state.user = enhanceUserObject(user);
+     }
    },
    [USER_SIGNIN_ERROR](state, reason) {
      state.signInLoading = false;

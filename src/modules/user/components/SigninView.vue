@@ -1,131 +1,153 @@
 <template>
-  <v-card class="pa-0 signInGrid" id="signInGrid">
-    <v-img
-      :src="signInPic"
-      max-height="500"
-      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
-    />
+  <v-container fluid>
+    <v-card class="pa-0 signInGrid" id="signInGrid">
+      <v-img
+        :src="signInPic"
+        max-height="700"
+        style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
+      />
 
-    <v-container fluid class="pa-4">
-      <v-row>
-        <v-col class="text-h3">
-          {{ title }}
-        </v-col>
-      </v-row>
-
-      <v-row v-if="signedIn">
-        <v-col
-          cols="12"
-          class="text-h6"
-          :style="`background-color: ${signedInColor};`"
-        >
-          {{ signedInText + signedInEmail }}
-        </v-col>
-      </v-row>
-
-      <v-row v-if="!signedIn">
-        <v-col cols="12" class="text-h6">
-          {{ instructionsText }}
-        </v-col>
-      </v-row>
-
-      <form v-if="!signedIn" class="enviDatForm">
-        <v-row id="emailRow" align="center">
-          <v-col cols="12" md="9">
-            <v-text-field
-              v-model="email"
-              :error-messages="backendErrors.email"
-              label="Email"
-              @input="isEmailValid()"
-              @keyup.enter="catchRequestToken"
-              tabindex="0"
-            />
+      <v-container fluid class="pa-4">
+        <v-row>
+          <v-col class="text-h3">
+            {{ title }}
           </v-col>
+        </v-row>
 
+        <v-row v-if="signedIn">
           <v-col
-            v-if="email && emailAddressIsValid"
             cols="12"
-            md="3"
-            id="tokenButton"
+            class="text-h6"
+            :style="`background-color: ${signedInColor};`"
           >
-            <v-btn
-              color="primary"
-              :loading="tokenRequestLoading"
-              @click="catchRequestToken"
-              tabindex="0"
+            {{ signedInText + signedInEmail }}
+          </v-col>
+        </v-row>
+
+        <v-row v-if="!signedIn">
+          <v-col cols="12" class="text-h6">
+            {{ emailSignInInstructions }}
+          </v-col>
+        </v-row>
+
+        <form v-if="!signedIn" class="enviDatForm">
+          <v-row id="emailRow" align="center">
+            <v-col cols="12" md="9">
+              <v-text-field
+                v-model="email"
+                :error-messages="backendErrors.email"
+                label="Email"
+                @input="isEmailValid()"
+                @keyup.enter="catchRequestToken"
+                tabindex="0"
+              />
+            </v-col>
+
+            <v-col
+              v-hide="!email | !emailAddressIsValid"
+              cols="12"
+              md="3"
+              id="tokenButton"
             >
-              {{ tokenButtonText }}
-            </v-btn>
-          </v-col>
-        </v-row>
+              <v-btn
+                color="primary"
+                :loading="tokenRequestLoading"
+                @click="catchRequestToken"
+                tabindex="0"
+              >
+                {{ tokenButtonText }}
+              </v-btn>
+            </v-col>
+          </v-row>
 
-        <v-row v-if="requestSuccess && email">
-          <v-col cols="12" class="text-caption">
-            {{ `${requestSentText} ${email}. ${requestSentText2}` }}
-          </v-col>
-        </v-row>
+          <v-row
+            id="emailRow"
+            align="center"
+            v-hide="!email | !emailAddressIsWsl"
+          >
+            <v-col cols="12" md="4" class="text-h8">
+              {{ azureSignInInstructions }}
+            </v-col>
 
-        <v-row
-          v-if="email && emailAddressIsValid"
-          id="tokenRow"
-          align="center"
-          justify="space-between"
-          class="pt-4"
-        >
-          <v-col cols="12" md="4" class="shrink text-h6">
-            {{ requestTokenText }}
-          </v-col>
+            <v-col cols="12" md="6" id="tokenButton">
+              <BaseRectangleButton
+                color="secondary"
+                :button-text="azureButtonText"
+                :custom-icon="wslLogo"
+                custom-icon-whiten
+                custom-icon-space
+                @clicked="catchAzureAdSignIn"
+              />
+            </v-col>
+          </v-row>
 
-          <v-col cols="12" md="5" class="pt-0">
-            <v-text-field
-              v-model="key"
-              :error-messages="backendErrors.key"
-              :counter="keyLength"
-              label="Token"
-              clearable
-              clear-icon="clear"
-              @input="isTokenValid()"
-              @keyup.enter="catchSignIn"
-              tabindex="0"
+          <v-row v-if="requestSuccess && email">
+            <v-col cols="12" class="text-caption">
+              {{ `${requestSentText} ${email}. ${requestSentText2}` }}
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-hide="!email | !emailAddressIsValid"
+            id="tokenRow"
+            align="center"
+            justify="space-between"
+            class="pt-4"
+          >
+            <v-col cols="12" md="4" class="shrink text-h6">
+              {{ requestTokenText }}
+            </v-col>
+
+            <v-col cols="12" md="5" class="pt-0">
+              <v-text-field
+                v-model="key"
+                :error-messages="backendErrors.key"
+                :counter="keyLength"
+                label="Token"
+                clearable
+                clear-icon="clear"
+                @input="isTokenValid()"
+                @keyup.enter="catchEmailSignIn"
+                tabindex="0"
+              />
+            </v-col>
+
+            <v-col cols="12" md="3">
+              <v-btn
+                v-show="key && keyAddressIsValid"
+                color="primary"
+                :loading="signInRequestLoading"
+                @click="catchEmailSignIn"
+                tabindex="0"
+              >
+                {{ signinButtonText }}
+              </v-btn>
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-if="formErrorText"
+            id="errorTextRow"
+            :style="`background-color: ${errorColor};`"
+            class="mt-4"
+          >
+            <v-col cols="12" class="text-body-1">
+              {{ formErrorText }}
+            </v-col>
+          </v-row>
+        </form>
+
+        <v-row v-if="signedIn" id="signinButtonRow">
+          <v-col class="shrink">
+            <BaseRectangleButton
+              color="primary"
+              :button-text="dashboardButtonText"
+              @clicked="catchOpenDashboard"
             />
           </v-col>
 
-          <v-col cols="12" md="3">
-            <v-btn
-              v-show="key && keyAddressIsValid"
-              color="primary"
-              :loading="signInRequestLoading"
-              @click="catchSignIn"
-              tabindex="0"
-            >
-              {{ signinButtonText }}
-            </v-btn>
-          </v-col>
-        </v-row>
-
-        <v-row
-          v-if="formErrorText"
-          id="errorTextRow"
-          :style="`background-color: ${errorColor};`"
-          class="mt-4"
-        >
-          <v-col cols="12" class="text-body-1">
-            {{ formErrorText }}
-          </v-col>
-        </v-row>
-      </form>
-
-      <v-row v-if="signedIn" id="signinButtonRow">
-        <v-col class="shrink">
-          <BaseRectangleButton
-            color="primary"
-            :button-text="dashboardButtonText"
-            @clicked="catchOpenDashboard"
-          />
-        </v-col>
-
-        <v-col class="shrink">
-          <!--
+          <v-col class="shrink">
+            <!--
           <v-btn color="secondary"
                  outlined
                  @click="catchSignOut">
@@ -133,16 +155,38 @@
           </v-btn>
 -->
 
-          <BaseRectangleButton
-            color="secondary"
-            :button-text="signoutButtonText"
-            is-outlined
-            @clicked="catchSignOut"
-          />
+            <BaseRectangleButton
+              color="secondary"
+              :button-text="signoutButtonText"
+              is-outlined
+              @clicked="catchSignOut"
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
+    <v-card v-if="disclaimerText !== ''" class="mt-4 pa-4">
+      <v-row v-if="disclaimerText !== ''">
+        <v-col cols="12" class="text-h6">
+          {{ disclaimerTitleText }}
         </v-col>
       </v-row>
-    </v-container>
-  </v-card>
+
+      <v-row v-if="disclaimerText !== ''">
+        <v-col cols="12" class="text-subtitle-1">
+          <span v-html="disclaimerText" />
+        </v-col>
+      </v-row>
+
+      <v-row v-if="disclaimerText !== ''">
+        <v-col cols="12" class="px-8 text-body-2">
+          <li v-for="point in disclaimerPoints" :key="point">
+            <span v-html="point" />
+          </li>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -181,6 +225,9 @@ export default {
     signedInEmail: String,
     requestLoading: Boolean,
     requestSuccess: Boolean,
+    disclaimerText: String,
+    disclaimerPoints: Array,
+    // disclaimerPoints: Array<String>,
     formErrorText: String,
     errorField: String,
     errorFieldText: String,
@@ -190,12 +237,16 @@ export default {
     },
   },
   beforeMount() {
-    this.email = this.prefilledEmail;
+    this.email = this.prefilledEmail || '';
     this.key = this.prefilledKey;
+    this.wslLogo = this.mixinMethods_getIcon('wslLogo');
   },
   computed: {
     emailAddressIsValid() {
-      return !this.signedIn && !this.backendErrors.email;
+      return (!this.signedIn && !this.backendErrors.email) || false;
+    },
+    emailAddressIsWsl() {
+      return this.emailAddressIsValid && this.email.endsWith('@wsl.ch');
     },
     keyAddressIsValid() {
       return !this.signedIn && !this.backendErrors.key;
@@ -251,10 +302,14 @@ export default {
         this.$emit('requestToken', this.email);
       }
     },
-    catchSignIn() {
+    catchEmailSignIn() {
       if (this.isTokenValid(this.key) && this.isEmailValid(this.email)) {
-        this.$emit('signIn', this.email, this.key);
+        this.$emit('emailSignIn', this.email, this.key);
       }
+    },
+    async catchAzureAdSignIn() {
+      const accessToken = await this.$msal.getAccessToken();
+      this.$emit('azureAdSignIn', this.email, accessToken, true);
     },
     catchSignOut() {
       this.$emit('signOut');
@@ -284,12 +339,16 @@ export default {
     formInvalid: false,
     keyLength,
     requestTokenText: 'Do you have a token to sign in?',
+    disclaimerTitleText: 'Disclaimer',
     requestSentText: 'The token was sent to ',
     requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
-    instructionsText:
+    emailSignInInstructions:
       'Sign into EnviDat with your email address and the token which will be sent by email.',
+    azureSignInInstructions:
+      'WSL staff may sign in using their organization login instead:',
+    azureButtonText: 'Login',
     signInPic,
   }),
   components: {
