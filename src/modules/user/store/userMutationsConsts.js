@@ -78,6 +78,14 @@ export const ACTION_API_TOKEN = () => {
   return 'passwordless_request_api_token';
 };
 
+export const ACTION_API_TOKEN_AZURE = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/passwordless_request_api_token_azure_ad.json';
+  }
+
+  return 'passwordless_request_api_token_azure_ad';
+};
+
 /*
 export const RESET_KEY = 'RESET_KEY';
 export const RESET_KEY_ERROR = 'RESET_KEY_ERROR';
