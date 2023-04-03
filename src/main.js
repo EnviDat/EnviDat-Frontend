@@ -41,6 +41,12 @@ Vue.use(InfiniteLoading /* , { options } */);
 Vue.use(msalPlugin, msalConfig);
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
+Vue.directive('hide', {
+  // Run on initialisation (first render) of the directive on the element
+  bind: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
+  // Run on subsequent updates to the value supplied to the directive
+  update: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
+})
 
 initAxios(Vue, store);
 
