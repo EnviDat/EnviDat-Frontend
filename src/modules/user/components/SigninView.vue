@@ -181,6 +181,9 @@ export default {
     signedInEmail: String,
     requestLoading: Boolean,
     requestSuccess: Boolean,
+    disclaimerText: String,
+    disclaimerPoints: Array,
+    // disclaimerPoints: Array<String>,
     formErrorText: String,
     errorField: String,
     errorFieldText: String,
@@ -190,12 +193,16 @@ export default {
     },
   },
   beforeMount() {
-    this.email = this.prefilledEmail;
+    this.email = this.prefilledEmail || '';
     this.key = this.prefilledKey;
+    this.wslLogo = this.mixinMethods_getIcon('wslLogo');
   },
   computed: {
     emailAddressIsValid() {
-      return !this.signedIn && !this.backendErrors.email;
+      return (!this.signedIn && !this.backendErrors.email) || false;
+    },
+    emailAddressIsWsl() {
+      return this.emailAddressIsValid && this.email.endsWith('@wsl.ch');
     },
     keyAddressIsValid() {
       return !this.signedIn && !this.backendErrors.key;
@@ -251,10 +258,14 @@ export default {
         this.$emit('requestToken', this.email);
       }
     },
-    catchSignIn() {
+    catchEmailSignIn() {
       if (this.isTokenValid(this.key) && this.isEmailValid(this.email)) {
-        this.$emit('signIn', this.email, this.key);
+        this.$emit('emailSignIn', this.email, this.key);
       }
+    },
+    async catchAzureAdSignIn() {
+      const accessToken = await this.$msal.getAccessToken();
+      this.$emit('azureAdSignIn', this.email, accessToken, true);
     },
     catchSignOut() {
       this.$emit('signOut');
@@ -284,12 +295,16 @@ export default {
     formInvalid: false,
     keyLength,
     requestTokenText: 'Do you have a token to sign in?',
+    disclaimerTitleText: 'Disclaimer',
     requestSentText: 'The token was sent to ',
     requestSentText2: 'Please check your email address.',
     title: 'Sign in',
     signedInText: 'You are signed in as ',
-    instructionsText:
+    emailSignInInstructions:
       'Sign into EnviDat with your email address and the token which will be sent by email.',
+    azureSignInInstructions:
+      'WSL staff may sign in using their organization login instead:',
+    azureButtonText: 'Login',
     signInPic,
   }),
   components: {

@@ -18,12 +18,15 @@
           :signedInEmail="user ? user.email : null"
           :requestLoading="requestLoading"
           :requestSuccess="requestSuccess"
+          :disclaimerText="disclaimerText"
+          :disclaimerPoints="disclaimerPoints"
           :formErrorText="errorText"
           :errorFieldText="errorFieldText"
           :errorField="errorField"
           :errorColor="$vuetify.theme.themes.light.errorHighlight"
           @requestToken="catchRequestToken"
-          @signIn="catchSignIn"
+          @emailSignIn="submitTokenAndSignIn"
+          @azureAdSignIn="submitTokenAndSignIn"
           @signOut="catchSignOut"
           @openDashboard="catchOpenDashboard"
         />
@@ -50,6 +53,7 @@ import {
   ACTION_GET_USER_CONTEXT,
   ACTION_REQUEST_TOKEN,
   ACTION_API_TOKEN,
+  ACTION_API_TOKEN_AZURE,
   ACTION_USER_SIGNOUT,
   SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
@@ -101,6 +105,15 @@ export default {
       'errorField',
       'errorFieldText',
     ]),
+    signinPageConfig() {
+      return this.config?.signinPageConfig || {};
+    },
+    disclaimerText() {
+      return this.signinPageConfig?.disclaimerText || '';
+    },
+    disclaimerPoints() {
+      return this.signinPageConfig?.disclaimerPoints || [];
+    },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -141,14 +154,26 @@ export default {
         mutation: GET_USER_CONTEXT,
       });
     },
-    async catchSignIn(email, key) {
-      const action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
+    async submitTokenAndSignIn(email, keyOrToken, isAzure=false) {
+      let action
+      if (isAzure) {
+        action = ACTION_API_TOKEN_AZURE
+      } else {
+        action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
+      };
+
+      let bodyParams
+      if (action === ACTION_USER_SIGNIN) {
+        bodyParams = { email, key: keyOrToken }
+      } else {
+        bodyParams = { email, token: keyOrToken }
+      }
 
       await this.$store.dispatch(
         `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
-          body: { email, key },
+          body: bodyParams,
           commit: true,
           mutation: USER_SIGNIN,
         },
