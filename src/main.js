@@ -19,11 +19,26 @@ import store from '@/store/store';
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
+import msalPlugin from '@/plugins/msalPlugin';
 import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
+const msalConfig = {
+  auth: {
+    clientId: '4cb09289-cbb9-48a3-bb16-87ef3508bad3',
+    authority: 'https://login.microsoftonline.com/5d407ffa-9961-403b-ab1f-6e7867089add',
+    redirect_uri: '/',
+    postLogoutRedirectUri: '/',
+  },
+  cache: {
+    cacheLocation: 'sessionStorage',
+  },
+  mode: 'popup',
+}
+
 Vue.use(InfiniteLoading /* , { options } */);
+Vue.use(msalPlugin, msalConfig);
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 
