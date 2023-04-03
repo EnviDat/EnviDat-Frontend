@@ -25,8 +25,8 @@
           :errorField="errorField"
           :errorColor="$vuetify.theme.themes.light.errorHighlight"
           @requestToken="catchRequestToken"
-          @emailSignIn="submitTokenAndSignIn"
-          @azureAdSignIn="submitTokenAndSignIn"
+          @emailSignIn="submitDataAndSignIn"
+          @azureAdSignIn="submitDataAndSignIn"
           @signOut="catchSignOut"
           @openDashboard="catchOpenDashboard"
         />
@@ -154,7 +154,7 @@ export default {
         mutation: GET_USER_CONTEXT,
       });
     },
-    async submitTokenAndSignIn(email, keyOrToken, isAzure=false) {
+    async submitDataAndSignIn(email, keyOrToken, isAzure=false) {
       let action
       if (isAzure) {
         action = ACTION_API_TOKEN_AZURE
@@ -215,7 +215,14 @@ export default {
       });
     },
     catchSignOut() {
-      const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+      let action
+      action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+
+      // In case where useTokenSignIn===false, but Azure login is used
+      const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
+      if (action === ACTION_USER_SIGNOUT && !ckanCookie) {
+        action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
+      }
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
