@@ -1030,3 +1030,81 @@ export function enhanceUserObject(user) {
   return cleanUser;
 }
 
+export function getResourceChartConfigKey(resource) {
+  return resource ? `resourceChartConfig_${resource.id}` : null;
+}
+
+/**
+ * Stores the chart config (json) for a specific resource into the extras of
+ * the dataset. It gets stringify before integrating into the extras.
+ *
+ * @param resource
+ * @param chartConfig
+ * @param dataset
+ * @returns {boolean}
+ */
+export function integrateChartConfigIntoDataset(resource, chartConfig, dataset) {
+  if (!resource || !dataset){
+    return false;
+  }
+
+  const chartConfigKey = getResourceChartConfigKey(resource);
+  const extras = dataset.extras;
+
+  for (let i = 0; i < extras.length; i++) {
+    const extra = extras[i];
+
+    if (extra.key === chartConfigKey) {
+      try {
+        extra.value = JSON.stringify(chartConfig);
+        return true;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to store the chart config for resource ${resource.id} failed: `);
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Creates a Map with resource.id as key and the specific chart config
+ * as value. The config is extracted from the dataset extras.
+ *
+ * @param dataset
+ * @returns {Map<string, object>|null}
+ */
+export function extractChartConfigsFromDataset(dataset) {
+  if (!dataset){
+    return null;
+  }
+
+  const configMap = new Map();
+  const extras = dataset.extras;
+  const resources = dataset.resources;
+
+  for (let i = 0; i < resources.length; i++) {
+    const res = resources[i];
+    const chartConfigKey = getResourceChartConfigKey(res);
+
+    const matches = extras.filter((e) => e.key === chartConfigKey);
+
+    if (matches.length > 0) {
+      const chartConfig = matches[0].value;
+      try {
+        const jsonConfig = JSON.parse(chartConfig);
+        configMap.set(chartConfigKey, jsonConfig);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(`Getting the chart config for resource ${res.id} failed: `);
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
+    }
+  }
+
+  return configMap;
+}

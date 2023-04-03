@@ -14,7 +14,6 @@ export const localIdProperty = 'localId';
 
 export const SELECT_EDITING_RESOURCE_PROPERTY = 'id';
 export const SHOW_DATA_PREVIEW_PROPERTY = 'previewUrl';
-export const SHOW_DATA_PREVIEW_KEY_PREFIX = 'resourcePreview';
 export const SELECT_EDITING_AUTHOR_PROPERTY = 'email';
 export const SELECT_EDITING_DATASET_PROPERTY = 'name';
 
@@ -59,6 +58,10 @@ export const clickStrategies = [
     tooltip: 'Click for a preview of this resource',
   },
 ];
+
+export function getResourcePreviewKey(resource) {
+  return resource ? `resourcePreview_${resource.id}` : null;
+}
 
 export function getPreviewStrategy(strategyKeys) {
 
@@ -142,7 +145,7 @@ export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
 
     for (let i = 0; i < resources.length; i++) {
       const resource = resources[i];
-      const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
+      const enhanceKey = getResourcePreviewKey(resource)
 
       const matches = metdataExtras.filter((entry) => entry.key === enhanceKey);
 

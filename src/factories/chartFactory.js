@@ -27,7 +27,7 @@ export const DefaultSettings = {
   wheelY: 'zoomX',
 };
 
-export const DefaultChartSetting = {
+export const DefaultChartConfig = {
   type: 'XYChart',
   settings: {
     ...DefaultSettings,
@@ -48,6 +48,16 @@ export const ChartTypes = [
   'xy',
 ];
 
+
+
+export function createChartFromConfig(htmlId, config) {
+  const chart = am5.Root.new(htmlId, {
+    ...DefaultChartConfig,
+    ...config,
+  });
+
+  return chart;
+}
 
 // eslint-disable-next-line no-unused-vars
 const createSerialChart = function createSerialChart(selector, unit, graphs, chartData, delay, doneCallback, errorCallback, recentData, localTimeConversion) {
@@ -196,8 +206,8 @@ function getConfigFiles(resources) {
   return configResources;
 }
 
-// eslint-disable-next-line no-unused-vars
-function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json', testGeoUrl = './testdata/geoservices_config.json') {
+// testStationsConfigUrl = './testdata/stationsConfig.json', testStationParametersUrl = './testdata/stationParameters.json'
+export function getConfigUrls(configs, testGeoUrl = './testdata/geoservices_config.json') {
 
   if (!configs) {
     configs = {};
@@ -412,7 +422,6 @@ export {
   createChart,
   defaultSeriesSettings,
   getConfigFiles,
-  getConfigUrls,
   hasData,
 };
 
