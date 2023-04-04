@@ -205,7 +205,6 @@ export default {
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
-    this.checkUserSignedIn();
   },
   beforeDestroy() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -215,6 +214,7 @@ export default {
   },
   mounted() {
     this.startParticles();
+    this.checkUserSignedIn();
   },
   updated() {
     this.updateActiveStateOnNavItems();

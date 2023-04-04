@@ -22,7 +22,11 @@ import {
   GET_USER_CONTEXT,
   USER_EDITING_UPDATE,
   USER_EDITING_UPDATE_ERROR,
-  USER_EDITING_UPDATE_SUCCESS, requestMethodsForLoginActions,
+  USER_EDITING_UPDATE_SUCCESS,
+  requestMethodsForLoginActions,
+  USER_SIGNIN_NAMESPACE,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_API_TOKEN,
 } from './userMutationsConsts';
 
 
@@ -43,7 +47,8 @@ export default {
     commit(payload.mutation);
 
     let data = payload.body || undefined;
-    const method = requestMethodsForLoginActions(payload.action);
+    const action = payload.action;
+    const method = requestMethodsForLoginActions(action);
 
     // unpack the action because it might be wrapped to provide a test url
     const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
@@ -63,6 +68,18 @@ export default {
       .then((response) => {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
+
+          if (actionUrl === ACTION_API_TOKEN()) {
+            // make an additional call with the token to get the cookie set
+            const token = response.data.result.token;
+
+            this.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+              action: ACTION_GET_USER_CONTEXT_TOKEN,
+              commit: true,
+              mutation: GET_USER_CONTEXT,
+              body: { token },
+            });
+          }
         }
       })
       .catch((error) => {

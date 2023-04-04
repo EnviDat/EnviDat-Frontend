@@ -94,6 +94,7 @@ export default ({ mode }) => {
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
               { find: 'vue', replacement: 'vue/dist/vue.min.js' },
+              // { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
             ],
         },
         build: {
