@@ -474,7 +474,10 @@ export default {
 
     },
     checkUserSignedIn() {
-      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      let action = ACTION_GET_USER_CONTEXT_TOKEN;
+      if (this.config?.userDashboardConfig && !this.useTokenSignin) {
+        action = ACTION_GET_USER_CONTEXT;
+      }
       
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
