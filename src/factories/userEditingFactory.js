@@ -19,7 +19,6 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -47,7 +46,6 @@ import {
 } from '@/factories/metadataConsts';
 
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import { createNewBaseResource } from '@/factories/uploadFactory';
 
 
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
@@ -301,6 +299,40 @@ export const metadataCreationSteps = [
     stepTitle: mainDetailSteps[0].title,
     color: 'white',
   },
+/*
+  {
+    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
+    completed: false,
+    component: MetadataCreationRelatedInfo,
+    key: EDITMETADATA_DATA,
+    stepTitle: EDIT_STEP_TITLE_SUB_DATA,
+    color: 'white',
+  },
+*/
+  {
+    title: EDIT_STEP_TITLE_MAIN_RELATED,
+    completed: false,
+    component: MetadataCreationRelatedInfo,
+    key: EDITMETADATA_RELATED_PUBLICATIONS,
+  },
+  {
+    title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
+    completed: false,
+    component: MetadataCreationPublicationInfo,
+    key: EDITMETADATA_PUBLICATION_INFO,
+  },
+];
+
+export const metadataEditingSteps = [
+  {
+    title: EDIT_STEP_TITLE_MAIN_METADATA,
+    completed: false,
+    component: MetadataGenericSubStepper,
+    key: EDITMETADATA_MAIN,
+    detailSteps: mainDetailSteps,
+    stepTitle: mainDetailSteps[0].title,
+    color: 'white',
+  },
   {
     title: EDIT_STEP_TITLE_MAIN_RESOURCES,
     completed: false,
@@ -323,7 +355,6 @@ export const metadataCreationSteps = [
     key: EDITMETADATA_PUBLICATION_INFO,
   },
 ];
-
 export function initializeSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
@@ -387,7 +418,8 @@ export function getStepFromRoute(route) {
 export function getEmptyMetadataInEditingObject() {
   // use the JSON.parse and JSON.stringify to disconnect it from this file
   // meaning it won't connect with the reactivity of vue.js
-  const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
+  // const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
+  const emptyEditingObject = { ...emptyMetadataInEditing };
 
   // initialize every object with some basic attributes
   // for loading indication, error and success messages
@@ -512,4 +544,52 @@ export function getAllowedUsersString(userFullNameArray, envidatUsers) {
   const allowedUsers = allowedUserObjs.map((user) => user.name);
 
   return allowedUsers.join(',');
+}
+
+export function storeStepDataInLocalStorage(stepKey, data) {
+  const stringData = JSON.stringify(data);
+  localStorage.setItem(stepKey, stringData)
+  return data;
+}
+
+export function loadDataFromLocalStorage(stepKey) {
+  const storeData = localStorage.getItem(stepKey);
+  try {
+    return JSON.parse(storeData);
+  } catch (e) {
+    return null;
+  }
+}
+
+function initStepDataInLocalStorage(stepKey, data) {
+
+  const storeData = localStorage.getItem(stepKey);
+
+  if (!storeData) {
+    return storeStepDataInLocalStorage(stepKey, data);
+  }
+
+  return JSON.parse(storeData);
+}
+
+
+export function loadAllStepDataFromLocalStorage(steps, creationData) {
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    const stepKey = step.key;
+
+    if (creationData[stepKey]) {
+      // if the step exists in the data structure, check the localstorage
+      // steps which have detailSteps don't keep data in the data structure
+      step.genericProps = initStepDataInLocalStorage(stepKey, creationData[stepKey]);
+      console.log(`assigned data to ${stepKey}`);
+      console.log(step.genericProps);
+    }
+
+    if (step.detailSteps) {
+      loadAllStepDataFromLocalStorage(step.detailSteps, creationData);
+    }
+
+  }
 }
