@@ -630,12 +630,12 @@ export default {
     getAuthorByName(fullName) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.fullName === fullName);
-      return found[0] || {};
+      return found[0] || null;
     },
     getAuthorByEmail(email) {
       const authors = this.existingAuthorsWrap;
       const found = authors.filter(auth => auth.email === email);
-      return found[0] || {};
+      return found[0] || null;
     },
     getAuthorByNameProp(property, value) {
 
