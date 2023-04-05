@@ -30,7 +30,8 @@
 
       <v-row>
         <v-col>
-          <div class="text-body-1">{{ labels.instructionsLicense }}</div>
+          <div class="text-body-1" v-html="labels.instructionsLicense" >
+          </div>
         </v-col>
       </v-row>
 
@@ -60,7 +61,7 @@
             <v-expansion-panel>
               <v-expansion-panel-header expand-icon="arrow_drop_down"
               class="py-2 px-3">
-                {{ this.labels.dataLicenseSummary }}
+                {{ dataSummaryClickInfo }}
               </v-expansion-panel-header>
               <!--              <v-expansion-panel-content>{{ this.getDataLicenseSummary }}</v-expansion-panel-content>-->
               <v-expansion-panel-content
@@ -170,6 +171,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    dataSummaryClickInfo() {
+      if (this.currentDataLicense) {
+        return `${this.labels.dataLicenseSummary} of ${this.currentDataLicense.title}`;
+      }
+
+      return this.labels.dataLicenseSummary;
+    },
     selectedLicense: {
       get() {
         if (!this.dataLicenseId) {
@@ -185,17 +193,18 @@ export default {
       },
     },
     currentDataLicense() {
-      return this.getLicenseById(this.dataLicenseId);
+      const id = this.previewDataLicenses !== null ? this.previewDataLicenses : this.dataLicenseId;
+      return this.getLicenseById(id);
     },
     getDataLicenseLink() {
-      if (!this.dataLicenseId) {
+      if (!this.currentDataLicense) {
         return 'Please select a data license above to view link for more detailed information.';
       }
 
       return this.currentDataLicense?.link || 'Data license information unavailable.';
     },
     getDataLicenseSummary() {
-      if (!this.dataLicenseId) {
+      if (!this.currentDataLicense) {
         return 'Please select a data license above to view data license summary.';
       }
 
@@ -210,6 +219,7 @@ export default {
   },
   methods: {
     clearPreviews() {
+      this.previewDataLicenses = null;
     },
     getLicenseById(id) {
       if (!id) {
@@ -253,6 +263,8 @@ export default {
     changeLicense(value) {
       const property = 'dataLicenseId';
 
+      this.previewDataLicenses = value;
+
       if (isFieldValid(property, value, this.validations, this.validationErrors)) {
         this.setDataLicenseInfo(value);
       }
@@ -267,12 +279,13 @@ export default {
     },
     labels: {
       cardTitle: 'Data License of the Resources',
-      instructionsLicense: 'Select a data license which reflects the terms of usage of your research data.',
+      instructionsLicense: 'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
       dataLicense: 'Click here to select a data license',
-      dataLicenseSummary: 'Click here to view Data License Summary',
+      dataLicenseSummary: 'Show a summary',
       dataLicenseEmail:
         'Link for more detailed information about selected Data License:',
     },
+    previewDataLicenses: null,
     dataLicenses: [
       {
         id: 'odc-odbl',
@@ -362,7 +375,7 @@ export default {
           'Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents.\n' +
           '\n' +
           'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
-        link: 'https://www.envidat.ch/#/about/policies',
+        link: 'https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md',
       },
     ],
   }),
