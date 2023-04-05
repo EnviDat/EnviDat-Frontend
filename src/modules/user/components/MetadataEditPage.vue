@@ -6,7 +6,7 @@
     tag="article"
   >
     <!-- prettier-ignore -->
-    <NavigationStepper :steps="creationSteps"
+    <NavigationStepper :steps="editingSteps"
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
@@ -73,7 +73,7 @@ import {
   getStepByName,
   getStepFromRoute,
   initializeSteps,
-  metadataCreationSteps,
+  metadataEditingSteps,
 } from '@/factories/userEditingFactory';
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
@@ -138,7 +138,7 @@ export default {
     });
   },
   created() {
-    this.creationSteps = initializeSteps(metadataCreationSteps);
+    this.editingSteps = initializeSteps(metadataEditingSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -280,18 +280,18 @@ export default {
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
-        this.updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
+        this.updateStepsWithReadOnlyFields(this.editingSteps, readOnlyObj);
       }
 
       const stepKey = getStepFromRoute(this.$route);
-      this.updateStepStatus(stepKey, this.creationSteps);
+      this.updateStepStatus(stepKey, this.editingSteps);
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
     },
     initializeStepsInUrl() {
-      const initialStep = this.creationSteps[0]?.title || '';
-      const initialSubStep = this.creationSteps[0]?.detailSteps[0]?.title || '';
+      const initialStep = this.editingSteps[0]?.title || '';
+      const initialSubStep = this.editingSteps[0]?.detailSteps[0]?.title || '';
 
       const currentStep = this.routeStep
       const currentSubStep = this.routeSubStep
@@ -395,7 +395,7 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        this.updateStepStatus(updateObj.object, this.creationSteps);
+        this.updateStepStatus(updateObj.object, this.editingSteps);
       });
 
     },
@@ -492,14 +492,14 @@ export default {
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
         const stepKey = getStepFromRoute(this.$route);
-        this.updateStepStatus(stepKey, this.creationSteps);
+        this.updateStepStatus(stepKey, this.editingSteps);
       }
     },
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
       const stepKey = getStepFromRoute(this.$route);
-      this.updateStepStatus(stepKey, this.creationSteps);
+      this.updateStepStatus(stepKey, this.editingSteps);
     },
     authorsMap() {
 
@@ -521,7 +521,7 @@ export default {
   },
   data: () => ({
     domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
-    creationSteps: null,
+    editingSteps: null,
     errorTitle: null,
     errorMessage: null,
     errorColor: 'error',

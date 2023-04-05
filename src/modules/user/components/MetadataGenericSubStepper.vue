@@ -75,13 +75,17 @@ export default {
   },
   methods: {
     getGenericPropsForStep(step) {
+      if (step.genericProps) {
+        return step.genericProps;
+      }
+
       if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](step.key);
       }
 
-      return step.genericProps;
+      return undefined;
     },
     catchStepClick(stepTitle) {
       if (!this.$route) {

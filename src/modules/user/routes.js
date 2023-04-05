@@ -12,6 +12,8 @@
  */
 
 import {
+  METADATA_CREATION_PAGENAME,
+  METADATA_CREATION_PATH,
   METADATAEDIT_PAGENAME,
   METADATAEDIT_PATH,
   USER_DASHBOARD_PAGENAME,
@@ -23,6 +25,7 @@ import {
 const SigninPage = () => import('@/modules/user/components/SigninPage.vue');
 const DashboardPage = () => import('@/modules/user/components/DashboardPage.vue');
 const MetadataEditPage = () => import('@/modules/user/components/MetadataEditPage.vue');
+const MetadataCreationPage = () => import('@/modules/user/components/MetadataCreationPage.vue');
 
 export const userRoutes = [
   {
@@ -44,6 +47,18 @@ export const userRoutes = [
         path: `${METADATAEDIT_PATH}/:metadataid/:step?/:substep?`,
         name: METADATAEDIT_PAGENAME,
         component: MetadataEditPage,
+      },
+    ],
+  },
+  {
+    path: METADATA_CREATION_PATH,
+    name: METADATA_CREATION_PAGENAME,
+    component: MetadataCreationPage,
+    children: [
+      {
+        path: `${METADATA_CREATION_PATH}/:step?/:substep?`,
+        name: METADATA_CREATION_PAGENAME,
+        component: MetadataCreationPage,
       },
     ],
   },
