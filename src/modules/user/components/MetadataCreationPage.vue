@@ -60,9 +60,7 @@ import {
   SELECT_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_AUTHOR_DATACREDIT,
-  AUTHOR_SEARCH_CLICK,
+  AUTHOR_SEARCH_CLICK, EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import {
@@ -71,23 +69,14 @@ import {
   getStepFromRoute,
   metadataCreationSteps,
   initializeSteps,
-  initializeStepsInUrl,
-  loadDataFromLocalStorage,
-  loadAllStepDataFromLocalStorage,
-  storeStepDataInLocalStorage,
-  updateStepStatus, componentChangedEvent,
 } from '@/factories/userEditingFactory';
 
 
-import { mapGetters, mapState } from 'vuex';
-
 import {
-  METADATA_CANCEL_AUTHOR_EDITING,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
-  METADATA_EDITING_SELECT_AUTHOR,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -113,11 +102,18 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
-import { getReadOnlyFieldsObject, populateEditingComponents } from '@/factories/mappingFactory';
+import { populateEditingComponents } from '@/factories/mappingFactory';
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
-import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
+import {
+  componentChangedEvent,
+  initializeStepsInUrl,
+  loadAllStepDataFromLocalStorage,
+  loadDataFromLocalStorage,
+  storeStepDataInLocalStorage,
+  updateStepStatus,
+} from '@/factories/userCreationFactory';
 
 
 export default {
@@ -152,7 +148,7 @@ export default {
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
-    initializeStepsInUrl(this.creationSteps, this);
+    initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
     this.initStepDataOnLocalStorage(this.creationSteps);
   },
   mounted() {
@@ -310,13 +306,14 @@ export default {
       window.open(routeData.href, '_blank');
     },
     selectAuthor(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
+      const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
+
     },
     cancelEditingAuthor() {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
+
     },
     saveAuthor(newAuthor) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
+
     },
     editComponentsChanged(updateObj) {
 

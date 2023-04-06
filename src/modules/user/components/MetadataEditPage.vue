@@ -63,27 +63,22 @@ import {
   SELECT_EDITING_RESOURCE,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
-  EDITMETADATA_AUTHOR_DATACREDIT,
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_DATA_RESOURCE,
 } from '@/factories/eventBus';
 
 import {
-  componentChangedEvent, getSelectedElement, getStepByName,
+  getSelectedElement,
   getStepFromRoute,
   initializeSteps,
-  initializeStepsInUrl,
-  metadataEditingSteps, selectForEditing, setSelected, storeStepDataInLocalStorage,
-  updateStepStatus,
-  updateStepsWithReadOnlyFields,
+  metadataEditingSteps,
+  selectForEditing,
+  setSelected,
 } from '@/factories/userEditingFactory';
 
 import { mapGetters, mapState } from 'vuex';
 
 import {
-  METADATA_CANCEL_AUTHOR_EDITING,
-  METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
@@ -91,8 +86,6 @@ import {
   METADATA_EDITING_PATCH_RESOURCE,
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
-  METADATA_EDITING_SELECT_AUTHOR,
-  METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -124,7 +117,12 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
+import {
+  componentChangedEvent,
+  initializeStepsInUrl,
+  updateStepStatus,
+  updateStepsWithReadOnlyFields,
+} from '@/factories/userCreationFactory';
 
 
 export default {
@@ -167,7 +165,7 @@ export default {
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeMount() {
-    initializeStepsInUrl(this.editingSteps, this);
+    initializeStepsInUrl(this.editingSteps, this.routeStep, this.routeSubStep, this);
   },
   mounted() {
     // reset the scrolling to the top
@@ -305,28 +303,28 @@ export default {
       window.open(routeData.href, '_blank');
     },
     selectResource(id) {
-      const resources = this.getters[`${USER_NAMESPACE}/resources`];
+      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
 
       const previousId = getSelectedElement(resources)?.id || '';
-      selectForEditing(this, resources, id, previousId, 'id');
+      selectForEditing(this.$store, resources, id, previousId, 'id');
     },
     cancelEditingResource() {
-      const resources = this.getters[`${USER_NAMESPACE}/resources`];
+      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
 
       const previousId = getSelectedElement(resources)?.id || '';
-      setSelected(this, resources, previousId, 'id', false);
+      setSelected(this.$store, resources, previousId, 'id', false);
     },
     selectAuthor(id) {
-      const authors = this.getters[`${USER_NAMESPACE}/authors`];
+      const authors = this.$store.getters[`${USER_NAMESPACE}/authors`];
 
       const previousEmail = getSelectedElement(authors)?.email || '';
-      selectForEditing(this, authors, id, previousEmail, 'email');
+      selectForEditing(this.$store, authors, id, previousEmail, 'email');
     },
     cancelEditingAuthor() {
-      const authors = this.getters[`${USER_NAMESPACE}/authors`];
+      const authors = this.$store.getters[`${USER_NAMESPACE}/authors`];
 
       const previousEmail = getSelectedElement(authors)?.email || '';
-      setSelected(this, authors, previousEmail, 'email', false);
+      setSelected(this.$store, authors, previousEmail, 'email', false);
     },
     saveResource(newRes) {
 
