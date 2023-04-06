@@ -74,12 +74,13 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
   // from the vuex store
   const localCopy = [...elementList];
 
+  let match = false;
   for (let i = 0; i < elementList.length; i++) {
     const el = elementList[i];
 
     // the localIdProperty is used to identify any elements which exists local only
     // ex. a resource which isn't uploaded yet or an author which isn't saved yet
-    const match = el[propertyToCompare] === newElement[propertyToCompare];
+    match = el[propertyToCompare] === newElement[propertyToCompare];
     if (match) {
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
@@ -94,8 +95,10 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
     }
   }
 
-  // if the element doesn't exist, add it via unshift as the first entry in the list
-  localCopy.unshift(newElement);
+  if (!match) {
+    // if the element doesn't exist, add it via unshift as the first entry in the list
+    localCopy.unshift(newElement);
+  }
 
   return localCopy;
 }

@@ -17,11 +17,13 @@ import {
   getSelectedElement,
   selectForEditing,
   setSelected,
-  updateAuthors,
-  updateResource,
 } from '@/factories/userEditingFactory';
 
-import { cleanResourceForFrontend, getFrontendJSON, populateEditingComponents } from '@/factories/mappingFactory';
+import {
+  cleanResourceForFrontend,
+  getFrontendJSON,
+  populateEditingComponents,
+} from '@/factories/mappingFactory';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -34,7 +36,8 @@ import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import {
   createErrorMessage,
   enhanceMetadataFromCategories,
-  extractError,
+  updateAuthors,
+  updateResources,
 } from '@/modules/user/store/mutationFactory';
 
 import {
@@ -89,7 +92,7 @@ export default {
   [METADATA_EDITING_PATCH_RESOURCE](state, resource) {
 
     resource.loading = true;
-    updateResource(this, state, resource);
+    updateResources(this, state, resource);
 
     resetErrorObject(state);
   },
@@ -100,7 +103,7 @@ export default {
     fResource.loading = false;
     fResource.message = message;
 
-    updateResource(this, state, fResource);
+    updateResources(this, state, fResource);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
@@ -121,7 +124,33 @@ export default {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
   },
+  [METADATA_EDITING_SELECT_RESOURCE](state, id) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
+    const previousId = getSelectedElement(resources)?.id || '';
+    selectForEditing(this, resources, id, previousId, 'id');
+  },
+  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const previousEmail = getSelectedElement(authors)?.email || '';
+    selectForEditing(this, authors, id, previousEmail, 'email');
+  },
+  [METADATA_CANCEL_RESOURCE_EDITING](state) {
+    const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
+    const previousId = getSelectedElement(resources)?.id || '';
+    setSelected(this, resources, previousId, 'id', false);
+  },
+  [METADATA_CANCEL_AUTHOR_EDITING](state) {
+    const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+    const previousEmail = getSelectedElement(authors)?.email || '';
+    setSelected(this, authors, previousEmail, 'email', false);
+  },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
+    author.loading = false;
+
     updateAuthors(this, state, author);
 
     resetErrorObject(state);

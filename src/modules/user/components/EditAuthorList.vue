@@ -17,8 +17,7 @@
           <v-col cols="12">
 
               <EditAddAuthor v-bind="editAddAuthorObject"
-                             @closeClicked="catchEditAuthorClose"
-                             @saveAuthor="catchSaveAuthorClose" />
+                             @closeClicked="catchEditAuthorClose" />
           </v-col>
 
         </v-row>
@@ -220,9 +219,6 @@ export default {
     },
     catchEditAuthorClose() {
       eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
-    },
-    catchSaveAuthorClose() {
-      eventBus.emit(SAVE_EDITING_AUTHOR, this.selectedAuthor);
     },
   },
   data: () => ({

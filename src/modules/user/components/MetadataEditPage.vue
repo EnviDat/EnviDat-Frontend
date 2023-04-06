@@ -57,7 +57,6 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   METADATA_EDITING_FINISH_CLICK,
-  SAVE_EDITING_AUTHOR,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_RESOURCE,
@@ -68,17 +67,16 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  getSelectedElement,
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,
-  selectForEditing,
-  setSelected,
 } from '@/factories/userEditingFactory';
 
 import { mapGetters, mapState } from 'vuex';
 
 import {
+  METADATA_CANCEL_AUTHOR_EDITING,
+  METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_PATCH_DATASET_OBJECT,
@@ -86,6 +84,8 @@ import {
   METADATA_EDITING_PATCH_RESOURCE,
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
+  METADATA_EDITING_SELECT_AUTHOR,
+  METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -143,7 +143,6 @@ export default {
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
     eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
-    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -156,7 +155,6 @@ export default {
     eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
     eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditingResource);
     eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
-    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -303,28 +301,16 @@ export default {
       window.open(routeData.href, '_blank');
     },
     selectResource(id) {
-      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
-
-      const previousId = getSelectedElement(resources)?.id || '';
-      selectForEditing(this.$store, resources, id, previousId, 'id');
-    },
-    cancelEditingResource() {
-      const resources = this.$store.getters[`${USER_NAMESPACE}/resources`];
-
-      const previousId = getSelectedElement(resources)?.id || '';
-      setSelected(this.$store, resources, previousId, 'id', false);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
     },
     selectAuthor(id) {
-      const authors = this.$store.getters[`${USER_NAMESPACE}/authors`];
-
-      const previousEmail = getSelectedElement(authors)?.email || '';
-      selectForEditing(this.$store, authors, id, previousEmail, 'email');
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
+    },
+    cancelEditingResource() {
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
     },
     cancelEditingAuthor() {
-      const authors = this.$store.getters[`${USER_NAMESPACE}/authors`];
-
-      const previousEmail = getSelectedElement(authors)?.email || '';
-      setSelected(this.$store, authors, previousEmail, 'email', false);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
     },
     saveResource(newRes) {
 
@@ -332,9 +318,6 @@ export default {
         object: EDITMETADATA_DATA_RESOURCE,
         data: newRes,
       });
-    },
-    saveAuthor(newAuthor) {
-      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_AUTHOR}`, newAuthor);
     },
     editComponentsChanged(updateObj) {
 

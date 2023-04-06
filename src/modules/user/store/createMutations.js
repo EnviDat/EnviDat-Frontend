@@ -17,14 +17,12 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { createErrorMessage, extractError } from '@/modules/user/store/mutationFactory';
+import { createErrorMessage, updateResources } from '@/modules/user/store/mutationFactory';
 
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-
-import { updateResource } from '@/factories/userEditingFactory';
 
 import { cleanResourceForFrontend, getFrontendJSON } from '@/factories/mappingFactory';
 import {
@@ -65,7 +63,7 @@ export default {
     state.uploadResource = resource;
     state.metadataInEditing[stepKey] = resource;
 
-    updateResource(this, state, resource)
+    updateResources(this, state, resource)
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

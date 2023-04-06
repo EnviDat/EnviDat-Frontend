@@ -131,13 +131,6 @@ export default {
     authorsFields() {
       const authors = this.previewAuthors || this.authors;
 
-      if (authors?.length > 0) {
-        for (let i = 0; i < authors.length; i++) {
-          const author = authors[i];
-          author.loading = this.loading;
-        }
-      }
-
       isFieldValid('authors', authors, this.validations, this.validationErrors)
 
       return authors;

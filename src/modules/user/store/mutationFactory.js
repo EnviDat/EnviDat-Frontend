@@ -15,10 +15,15 @@
 import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
 
 import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_NETWORK_ERROR,
   eventBus,
 } from '@/factories/eventBus';
-import { VALIDATION_ERROR } from './userMutationsConsts';
+
+import { updateEditingArray } from '@/factories/userEditingFactory';
+
+import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
 
 export function extractError(store, reason, errorProperty = 'error') {
@@ -130,4 +135,18 @@ export function enhanceMetadataFromCategories(store, metadatas) {
 
   const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
   return isArrayInput ? enhanced : enhanced[0];
+}
+
+export function updateResources(store, state, newRes) {
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
+
+  const updatedResources = updateEditingArray(resources, newRes, 'id');
+  store._vm.$set(state.metadataInEditing[EDITMETADATA_DATA_RESOURCES], 'resources', updatedResources);
+}
+
+export function updateAuthors(store, state, newAuthor) {
+  const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
+
+  const updatedAuthors = updateEditingArray(authors, newAuthor, 'email');
+  store._vm.$set(state.metadataInEditing[EDITMETADATA_AUTHOR_LIST], 'authors', updatedAuthors);
 }
