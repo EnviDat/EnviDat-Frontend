@@ -75,6 +75,10 @@ export function updateEditingArray(
   newElement,
   propertyToCompare,
 ) {
+  // use a localcopy of the array because it might come directly
+  // from the vuex store
+  const localCopy = [...elementList];
+
   for (let i = 0; i < elementList.length; i++) {
     const el = elementList[i];
 
@@ -85,19 +89,20 @@ export function updateEditingArray(
       // make sure to merged the elements, because ex. an author
       // has more information attached then is editable -> not all the properties
       // are passed down ex. the EditAuthor component
-      const mergedElement = {
+
+      localCopy[i] = {
         ...el,
         ...newElement,
       };
 
-      // use the $set() to trigger an update change of vue
-      store._vm.$set(elementList, i, mergedElement);
-      return;
+      break;
     }
   }
 
   // if the element doesn't exist, add it via unshift as the first entry in the list
-  elementList.unshift(newElement);
+  localCopy.unshift(newElement);
+
+  return localCopy;
 }
 
 export function updateResource(store, state, newRes) {

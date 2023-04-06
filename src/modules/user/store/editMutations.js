@@ -121,34 +121,7 @@ export default {
       this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
     }, state.metadataSavingErrorTimeoutTime);
   },
-  [METADATA_EDITING_SELECT_RESOURCE](state, id) {
-    const resources = this.getters[`${USER_NAMESPACE}/resources`];
-
-    const previousId = getSelectedElement(resources)?.id || '';
-    selectForEditing(this, resources, id, previousId, 'id');
-  },
-  [METADATA_EDITING_SELECT_AUTHOR](state, id) {
-    const authors = this.getters[`${USER_NAMESPACE}/authors`];
-
-    const previousEmail = getSelectedElement(authors)?.email || '';
-    selectForEditing(this, authors, id, previousEmail, 'email');
-  },
-  [METADATA_CANCEL_RESOURCE_EDITING](state) {
-    const resources = this.getters[`${USER_NAMESPACE}/resources`];
-
-    const previousId = getSelectedElement(resources)?.id || '';
-    setSelected(this, resources, previousId, 'id', false);
-  },
-  [METADATA_CANCEL_AUTHOR_EDITING](state) {
-    const authors = this.getters[`${USER_NAMESPACE}/authors`];
-
-    const previousEmail = getSelectedElement(authors)?.email || '';
-    setSelected(this, authors, previousEmail, 'email', false);
-  },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
-
-    author.loading = true;
-
     updateAuthors(this, state, author);
 
     resetErrorObject(state);

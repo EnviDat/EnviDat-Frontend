@@ -70,11 +70,11 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  componentChangedEvent, getStepByName,
+  componentChangedEvent, getSelectedElement, getStepByName,
   getStepFromRoute,
   initializeSteps,
   initializeStepsInUrl,
-  metadataEditingSteps, storeStepDataInLocalStorage,
+  metadataEditingSteps, selectForEditing, setSelected, storeStepDataInLocalStorage,
   updateStepStatus,
   updateStepsWithReadOnlyFields,
 } from '@/factories/userEditingFactory';
@@ -305,19 +305,31 @@ export default {
       window.open(routeData.href, '_blank');
     },
     selectResource(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
-    },
-    selectAuthor(id) {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
+      const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
+      const previousId = getSelectedElement(resources)?.id || '';
+      selectForEditing(this, resources, id, previousId, 'id');
     },
     cancelEditingResource() {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
+      const resources = this.getters[`${USER_NAMESPACE}/resources`];
+
+      const previousId = getSelectedElement(resources)?.id || '';
+      setSelected(this, resources, previousId, 'id', false);
+    },
+    selectAuthor(id) {
+      const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+      const previousEmail = getSelectedElement(authors)?.email || '';
+      selectForEditing(this, authors, id, previousEmail, 'email');
     },
     cancelEditingAuthor() {
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
+      const authors = this.getters[`${USER_NAMESPACE}/authors`];
+
+      const previousEmail = getSelectedElement(authors)?.email || '';
+      setSelected(this, authors, previousEmail, 'email', false);
     },
     saveResource(newRes) {
-      // this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_SAVE_RESOURCE}`, newRes);
+
       this.editComponentsChanged({
         object: EDITMETADATA_DATA_RESOURCE,
         data: newRes,
