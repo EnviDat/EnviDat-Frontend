@@ -308,12 +308,33 @@ export default {
     selectAuthor(id) {
       const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
 
+      const previousEmail = getSelectedElement(authors)?.email || '';
+      selectForEditing(undefined, authors, id, previousEmail, 'email');
+
+      this.editComponentsChanged({
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: { authors },
+      });
     },
     cancelEditingAuthor() {
+      const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
 
+      const previousEmail = getSelectedElement(authors)?.email || '';
+      setSelected(undefined, authors, previousEmail, 'email', false);
+
+      this.editComponentsChanged({
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: { authors },
+      });
     },
     saveAuthor(newAuthor) {
+      let authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
+      authors = updateEditingArray(authors, newAuthor, 'email');
 
+      this.editComponentsChanged({
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: { authors },
+      });
     },
     editComponentsChanged(updateObj) {
 

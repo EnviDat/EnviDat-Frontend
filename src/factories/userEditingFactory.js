@@ -46,10 +46,6 @@ import {
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
 
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
-import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
-
 
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
 const EditDescription = () => import('@/modules/user/components/EditDescription.vue');
@@ -69,6 +65,13 @@ export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
 export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
 
 
+/**
+ *
+ * @param elementList
+ * @param newElement
+ * @param propertyToCompare
+ * @returns {[]}
+ */
 export function updateEditingArray(elementList, newElement, propertyToCompare) {
   // use a localcopy of the array because it might come directly
   // from the vuex store
@@ -104,6 +107,15 @@ export function updateEditingArray(elementList, newElement, propertyToCompare) {
 }
 
 
+/**
+ *
+ * @param store
+ * @param elementList
+ * @param id
+ * @param propertyToCompare
+ * @param selected
+ * @returns {object|null}
+ */
 export function setSelected(
   store,
   elementList,
@@ -120,7 +132,9 @@ export function setSelected(
 
     if (match) {
       element.isSelected = selected;
-      store._vm.$set(elementList, i, element);
+      if (store) {
+        store._vm.$set(elementList, i, element);
+      }
       return element;
     }
   }
@@ -128,6 +142,15 @@ export function setSelected(
   return null;
 }
 
+/**
+ *
+ * @param store
+ * @param elementList
+ * @param id
+ * @param previousId
+ * @param propertyToCompare
+ * @returns {Object|null}
+ */
 export function selectForEditing(
   store,
   elementList,
