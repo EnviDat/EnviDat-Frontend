@@ -144,6 +144,12 @@ export default ({ mode }) => {
                 if (id.includes('amchart') || id.includes('uplot')) {
                   return 'vendor_charts';
                 }
+                if (id.includes('uppy')) {
+                  return 'vendor_uppy';
+                }
+                if (id.includes('core-js')) {
+                  return 'vendor_core_js';
+                }
 
                 // all other node_modules
                 if (id.includes('node_modules')) {
