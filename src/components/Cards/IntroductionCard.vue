@@ -22,30 +22,6 @@
           <v-row no-gutters class="pt-3" style="align-items: center;">
             <v-col cols="3" class="text-body-1">
               {{ createText }}
-              <!--
-              <v-icon style="animation: progress-circular-rotate 3s linear infinite" >settings</v-icon>
-              Coming Soon!
--->
-
-              <!--              <base-rectangle-button color="accent"
-                                                   marginClass="black&#45;&#45;text"
-                                                   :isOutlined="hasEditing"
-                                                   :button-text="createButtonText"
-                                                   :disabled="createClickCallback === null"
-                                                   @clicked="createClickCallback ? createClickCallback : ''" />
-                            -->
-            </v-col>
-
-            <v-col cols="3" class="text-body-2">
-              <v-icon
-                style="animation: progress-circular-rotate 3s linear infinite"
-                >settings</v-icon
-              >
-              Coming Soon!
-            </v-col>
-
-            <v-col cols="3">
-              <div class="pb-2">Use the legacy website for now:</div>
             </v-col>
 
             <v-col cols="3">

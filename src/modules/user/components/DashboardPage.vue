@@ -287,7 +287,7 @@ import {
   USER_DASHBOARD_PAGENAME,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
-  METADATAEDIT_PAGENAME,
+  METADATAEDIT_PAGENAME, METADATA_CREATION_PATH,
 } from '@/router/routeConsts';
 
 import {
@@ -681,7 +681,7 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
