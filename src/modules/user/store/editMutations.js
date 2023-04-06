@@ -26,7 +26,6 @@ import { cleanResourceForFrontend, getFrontendJSON, populateEditingComponents } 
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_RESOURCE,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -57,7 +56,6 @@ import {
   METADATA_EDITING_PATCH_RESOURCE_SUCCESS,
   METADATA_EDITING_REMOVE_AUTHOR,
   METADATA_EDITING_SAVE_AUTHOR,
-  METADATA_EDITING_SAVE_AUTHOR_ERROR,
   METADATA_EDITING_SAVE_AUTHOR_SUCCESS,
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
@@ -158,14 +156,10 @@ export default {
   [METADATA_EDITING_SAVE_AUTHOR_SUCCESS](state, author) {
 
     author.loading = false;
-    author.existsOnlyLocal = false;
 
     updateAuthors(this, state, author);
 
     resetErrorObject(state);
-  },
-  [METADATA_EDITING_SAVE_AUTHOR_ERROR](state, reason) {
-    extractError(this, reason);
   },
   [METADATA_EDITING_REMOVE_AUTHOR](state, email) {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];

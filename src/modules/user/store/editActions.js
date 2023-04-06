@@ -63,12 +63,18 @@ const sleep = (milliseconds) =>
 
 
 export default {
-  async [METADATA_EDITING_SAVE_AUTHOR]({ commit }, author) {
+  async [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
     commit(METADATA_EDITING_SAVE_AUTHOR, author);
 
-    await sleep(2000);
+    const newAuthorList = this.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST);
+
+    await dispatch(METADATA_EDITING_PATCH_DATASET_OBJECT, {
+      stepKey: EDITMETADATA_AUTHOR_LIST,
+      data: newAuthorList,
+      id });
 
     commit(METADATA_EDITING_SAVE_AUTHOR_SUCCESS, author);
+
   },
   [METADATA_EDITING_REMOVE_AUTHOR]({ commit, dispatch }, { data, id }) {
     commit(METADATA_EDITING_REMOVE_AUTHOR, data);
