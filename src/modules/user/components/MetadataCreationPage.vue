@@ -60,7 +60,8 @@ import {
   SELECT_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
-  AUTHOR_SEARCH_CLICK, EDITMETADATA_AUTHOR_LIST,
+  AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
 
 import {
@@ -69,6 +70,10 @@ import {
   getStepFromRoute,
   metadataCreationSteps,
   initializeSteps,
+  getSelectedElement,
+  updateEditingArray,
+  setSelected,
+  selectForEditing,
 } from '@/factories/userEditingFactory';
 
 
