@@ -56,7 +56,6 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   METADATA_EDITING_FINISH_CLICK,
-  SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
@@ -66,14 +65,11 @@ import {
 
 import {
   getEmptyMetadataInEditingObject,
-  getStepByName,
   getStepFromRoute,
   metadataCreationSteps,
   initializeSteps,
   getSelectedElement,
-  updateEditingArray,
-  setSelected,
-  selectForEditing,
+  getStepByName,
 } from '@/factories/userEditingFactory';
 
 
@@ -107,16 +103,18 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
+/*
 import { populateEditingComponents } from '@/factories/mappingFactory';
+*/
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import {
-  componentChangedEvent,
+  canLocalDatasetBeStoredInBackend,
   initializeStepsInUrl,
   loadAllStepDataFromLocalStorage,
   loadDataFromLocalStorage,
-  storeStepDataInLocalStorage,
+  storeCreationStepsData,
   updateStepStatus,
 } from '@/factories/userCreationFactory';
 
@@ -134,7 +132,6 @@ export default {
     this.creationSteps = initializeSteps(metadataCreationSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -144,7 +141,6 @@ export default {
   },
   beforeDestroy() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -197,17 +193,21 @@ export default {
       return false;
       // return this.loadingCurrentEditingContent || !this.currentEditingContent || this.authorsMapLoading;
     },
+/*
     authorsMapLoading() {
       const map = this.authorsMap;
 
       return !map || Object.keys(map).length <= 0;
     },
+*/
+/*
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route);
       const stepData = this.getGenericPropsForStep(stepKey);
 
       return stepData?.loading || false;
     },
+*/
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
 
@@ -310,28 +310,51 @@ export default {
       const routeData = this.$router.resolve({ path:`${BROWSE_PATH}?search=${cleanFullName}&isAuthorSearch=true`});
       window.open(routeData.href, '_blank');
     },
-    selectAuthor(id) {
+    selectAuthor(email) {
+      console.log('selectAuthor');
       const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
 
-      const previousEmail = getSelectedElement(authors)?.email || '';
-      selectForEditing(undefined, authors, id, previousEmail, 'email');
+      const previousSelected = getSelectedElement(authors);
+
+      if (previousSelected) {
+        previousSelected.isSelected = false;
+
+        this.editComponentsChanged({
+            object: EDITMETADATA_AUTHOR,
+            data: previousSelected,
+          },
+          false);
+      }
+
+      const selectedAuthor = authors.filter(a => a.email === email)[0];
+
+      selectedAuthor.isSelected = true;
 
       this.editComponentsChanged({
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: { authors },
-      });
+          object: EDITMETADATA_AUTHOR,
+          data: selectedAuthor,
+        },
+        false);
     },
     cancelEditingAuthor() {
-      const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
 
-      const previousEmail = getSelectedElement(authors)?.email || '';
-      setSelected(undefined, authors, previousEmail, 'email', false);
+      // don't use the the gene
+      const authorStep = getStepByName(EDITMETADATA_AUTHOR_LIST, this.creationSteps);
+      const authors = authorStep.genericProps.authors;
 
-      this.editComponentsChanged({
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: { authors },
-      });
+      const previousSelected = getSelectedElement(authors);
+
+      if (previousSelected) {
+        previousSelected.isSelected = false;
+
+        this.editComponentsChanged({
+            object: EDITMETADATA_AUTHOR,
+            data: previousSelected,
+          },
+          false);
+      }
     },
+/*
     saveAuthor(newAuthor) {
       let authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
       authors = updateEditingArray(authors, newAuthor, 'email');
@@ -341,21 +364,24 @@ export default {
         data: { authors },
       });
     },
-    editComponentsChanged(updateObj) {
+*/
+    editComponentsChanged(updateObj, resetMessages = true) {
 
-      componentChangedEvent(updateObj, this, (payload) => {
+      const stepKey = updateObj.object;
+      const data = updateObj.data;
 
-        const step = getStepByName(payload.stepKey, this.creationSteps);
-        step.genericProps = payload.data;
-        storeStepDataInLocalStorage(payload.stepKey, payload.data)
-      });
+      storeCreationStepsData(stepKey, data, this.creationSteps, resetMessages);
+
+      const canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+      console.log('canSaveInBackend');
+      console.log(canSaveInBackend);
 
       this.$nextTick(() => {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        updateStepStatus(updateObj.object, this.creationSteps, this.getGenericPropsForStep);
+        updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
       });
 
     },
@@ -383,18 +409,21 @@ export default {
     },
   },
   watch: {
+/*
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
         const stepKey = getStepFromRoute(this.$route);
         updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
       }
     },
+*/
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
       const stepKey = getStepFromRoute(this.$route);
       updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
     },
+/*
     authorsMap() {
 
       if (this.currentEditingContent
@@ -406,6 +435,7 @@ export default {
         populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards, this.authorsMap);
       }
     },
+*/
   },
   components: {
     NavigationStepper,
