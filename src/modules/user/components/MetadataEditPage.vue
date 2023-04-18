@@ -70,6 +70,7 @@ import {
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,
+  componentChangedEvent,
 } from '@/factories/userEditingFactory';
 
 import { mapGetters, mapState } from 'vuex';
@@ -118,7 +119,6 @@ import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import {
-  componentChangedEvent,
   initializeStepsInUrl,
   updateStepStatus,
   updateStepsWithReadOnlyFields,
