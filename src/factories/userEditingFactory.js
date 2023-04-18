@@ -45,6 +45,8 @@ import {
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
 } from '@/factories/metadataConsts';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 
 
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
@@ -247,24 +249,28 @@ const mainDetailSteps = [
     // component: () => import('@/modules/user/components/EditMetadataHeader.vue'),
     component: EditMetadataHeader,
     key: EDITMETADATA_MAIN_HEADER,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_SUB_DESC,
     completed: false,
     component: EditDescription,
     key: EDITMETADATA_MAIN_DESCRIPTION,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_SUB_KEYWORDS,
     completed: false,
     component: EditKeywords,
     key: EDITMETADATA_KEYWORDS,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_SUB_AUTHORS,
     completed: false,
     component: EditAuthorList,
     key: EDITMETADATA_AUTHOR_LIST,
+    genericProps: {},
   },
 ];
 
@@ -274,18 +280,21 @@ const dataDetailSteps = [
     completed: false,
     component: EditDataAndResources,
     key: EDITMETADATA_DATA_RESOURCES,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_SUB_DATES,
     completed: false,
     key: EDITMETADATA_DATA_INFO,
     component: EditDataInfo,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_SUB_GEO,
     completed: false,
     key: EDITMETADATA_DATA_GEO,
     component: EditDataGeo,
+    genericProps: {},
   },
 ];
 
@@ -298,6 +307,7 @@ export const metadataCreationSteps = [
     detailSteps: mainDetailSteps,
     stepTitle: mainDetailSteps[0].title,
     color: 'white',
+    genericProps: {},
   },
 /*
   {
@@ -314,12 +324,14 @@ export const metadataCreationSteps = [
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
+    genericProps: {},
   },
 ];
 
@@ -332,6 +344,7 @@ export const metadataEditingSteps = [
     detailSteps: mainDetailSteps,
     stepTitle: mainDetailSteps[0].title,
     color: 'white',
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_MAIN_RESOURCES,
@@ -341,18 +354,21 @@ export const metadataEditingSteps = [
     detailSteps: dataDetailSteps,
     stepTitle: dataDetailSteps[0].title,
     color: 'white',
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
     component: MetadataCreationRelatedInfo,
     key: EDITMETADATA_RELATED_PUBLICATIONS,
+    genericProps: {},
   },
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
+    genericProps: {},
   },
 ];
 export function initializeSteps(steps) {
@@ -544,4 +560,32 @@ export function getAllowedUsersString(userFullNameArray, envidatUsers) {
   const allowedUsers = allowedUserObjs.map((user) => user.name);
 
   return allowedUsers.join(',');
+}
+
+export function componentChangedEvent(updateObj, vm, storeDataFn) {
+
+  const payload = {
+    stepKey: updateObj.object,
+    data: updateObj.data,
+    id: vm.$route.params.metadataid,
+  };
+
+  if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
+    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
+    const authorToMergeDataCredit = updateObj.data;
+
+    // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+    payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
+    payload.stepKey = EDITMETADATA_AUTHOR_LIST;
+  }
+
+  if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
+    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
+
+    // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
+    // that's why it is necessary to know which have been removed via the picker and combined the three lists
+    payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
+  }
+
+  storeDataFn(payload);
 }

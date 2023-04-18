@@ -394,7 +394,7 @@ export function getBackendJSON(stepKey, data) {
 
   let backEndJson = {};
 
-  rules.forEach(x => convertPut(backEndJson, x[1], convertGet(data, x[0])));
+  rules.forEach(rule => convertPut(backEndJson, rule[1], convertGet(data, rule[0])));
 
   backEndJson = getObjectInOtherCase(backEndJson, toSnakeCase);
 
@@ -412,7 +412,7 @@ export function getFrontendJSON(stepKey, data) {
 
   let frontEndJson = {};
 
-  rules.forEach(x => convertPut(frontEndJson, x[0], convertGet(backendJSON, x[1])));
+  rules.forEach(rule => convertPut(frontEndJson, rule[0], convertGet(backendJSON, rule[1])));
 
   frontEndJson = getObjectInOtherCase(frontEndJson, toCamelCase);
 
@@ -580,20 +580,24 @@ export function getReadOnlyFieldsObject(trigger) {
 }
 
 function commitEditingData(commit, eventName, data) {
+  if(!commit) {
+    return;
+  }
+
   commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-      {
-        object: eventName,
-        data,
-      },
-      { root: true },
+    {
+      object: eventName,
+      data,
+    },
+    { root: true },
   );
 }
 
 function mapCustomFields(fields, frontendToBackend = true) {
-  const backendEntries = [];
+  const entries = [];
 
   if (!fields) {
-    return backendEntries;
+    return entries;
   }
 
   for (let i = 0; i < fields.length; i++) {
@@ -603,13 +607,13 @@ function mapCustomFields(fields, frontendToBackend = true) {
     } else {
       mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
     }
-    backendEntries.push(mappedEntry);
+    entries.push(mappedEntry);
   }
 
-  return backendEntries;
+  return entries;
 }
 
-function formatDates(dates) {
+function formatDatesForFrontend(dates) {
   const formattedDates = [];
 
   for (let i = 0; i < dates.length; i++) {
@@ -711,7 +715,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   let stepKey = EDITMETADATA_DATA_INFO;
   const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
 
-  dateInfoData.dates = formatDates(dateInfoData.dates);
+  dateInfoData.dates = formatDatesForFrontend(dateInfoData.dates);
 
   const dataInfo = {
     // for now only use the title, check how to choose it in the
@@ -884,6 +888,24 @@ const dataNeedsStringify = [
   EDITMETADATA_PUBLICATION_INFO, // still needed without funding info?
   EDITMETADATA_FUNDING_INFO,
 ];
+
+export function mapBackendToFrontend(stepKey, backendData) {
+
+  // dataNeedsStringify.includes(stepKey)
+  const backendJSON = convertJSON(backendData, false);
+
+  if (stepKey === EDITMETADATA_DATA_RESOURCES) {
+    backendJSON.resources = cleanListForFrontend(backendJSON.resources, EDITMETADATA_DATA_RESOURCE);
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    backendJSON.author = cleanListForFrontend(backendJSON.author, EDITMETADATA_AUTHOR);
+  } else if (stepKey === EDITMETADATA_DATA_INFO) {
+    backendJSON.date = formatDatesForFrontend(backendJSON.date);
+  } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
+    backendJSON.extras = mapCustomFields(backendJSON.extras, false);
+  }
+
+  return getFrontendJSON(stepKey, backendJSON);
+}
 
 export function mapFrontendToBackend(stepKey, frontendData) {
 
