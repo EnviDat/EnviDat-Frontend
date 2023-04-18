@@ -58,7 +58,6 @@ import {
   CANCEL_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
   eventBus,
-  SAVE_EDITING_AUTHOR,
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
@@ -118,18 +117,26 @@ export default {
   },
   computed: {
     existingAuthorsWrap() {
+      if (this.existingAuthors) {
+        return this.existingAuthors;
+      }
+
       if (this.$store) {
         return this.$store.getters[`${METADATA_NAMESPACE}/existingAuthors`];
       }
 
-      return this.existingAuthors;
+      return undefined;
     },
     authorsWrap() {
+      if (this.authors) {
+        return this.authors;
+      }
+
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST).authors;
       }
 
-      return this.authors;
+      return undefined;
     },
     noDataCreditAuthorsWrap() {
       const authors = [...this.existingAuthorsWrap];
@@ -210,6 +217,8 @@ export default {
   },
   methods: {
     catchEditAuthorClick(author) {
+      console.log('catchEditAuthorClick');
+      console.log(author);
       if (author.isSelected) {
         eventBus.emit(CANCEL_EDITING_AUTHOR, author.email);
       } else {
@@ -217,6 +226,8 @@ export default {
       }
     },
     catchEditAuthorClose() {
+      console.log('catchEditAuthorClose');
+      console.log(this.selectedAuthor);
       eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
   },
