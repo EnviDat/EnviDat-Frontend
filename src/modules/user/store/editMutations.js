@@ -51,9 +51,6 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
   METADATA_EDITING_PATCH_RESOURCE,
   METADATA_EDITING_PATCH_RESOURCE_ERROR,
   METADATA_EDITING_PATCH_RESOURCE_SUCCESS,
@@ -174,32 +171,6 @@ export default {
   },
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
-  },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY](state, stepKey) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = true;
-  },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](state, { stepKey, message }) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
-    editingObject.message = message;
-
-    setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
-    }, state.metadataSavingMessageTimeoutTime);
-  },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR](state, { stepKey, reason }) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
-    const errorObj = createErrorMessage(reason);
-    editingObject.error = errorObj.message;
-    editingObject.errorDetails = errorObj.details;
-
-    this.dispatch(SET_CONFIG);
-
-    setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
-    }, state.metadataSavingErrorTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
 
