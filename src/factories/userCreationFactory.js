@@ -1,33 +1,162 @@
-import { EDITMETADATA_AUTHOR_DATACREDIT, EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+import {
+  EDITMETADATA_AUTHOR,
+  EDITMETADATA_AUTHOR_DATACREDIT,
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_CLEAR_PREVIEW,
+  eventBus,
+} from '@/factories/eventBus';
+
 import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
-import { getStepByName } from '@/factories/userEditingFactory';
+import { getStepByName, updateEditingArray } from '@/factories/userEditingFactory';
+import { mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
 
-export function storeStepDataInLocalStorage(stepKey, data) {
-  const stringData = JSON.stringify(data);
-  localStorage.setItem(stepKey, stringData)
+/*
+export const ckanRequiredPropsForDatasetCreation = [
+  'title', // can include whitespaces
+  'name', // whitespaces should be replaced with '-'
+  'maintainer', // add the user which creates the dataset as default
+  'tags', // maybe use ? 'tag_string',
+  'notes',
+  'author',  // add the user which creates the dataset as default
+  'license_id',
+  'funding',
+  'date',
+  'owner_org',
+  'resource_type_general', // default: 'dataset'
+  'spatial',
+  'publication', // default: "{\"publisher\": \"EnviDat\", \"publication_year\": \"2023\"}"
+];
+*/
+
+export const minRequiredPropsForDatasetCreation = [
+  'metadataTitle',
+  // 'keywords',
+  'description',
+  'authors',
+/*
+  'dataLicenseId',
+  'funders',
+  'dates',
+  'location.geoJSON',
+  'publisher', // default "EnviDat"
+*/
+  'publicationYear',
+];
+
+function matchedWithRequiredProps(steps) {
+
+  let step;
+  let genericKey;
+  let matches;
+
+  const matchedPropsWithValue = [];
+
+  for (let i = 0; i < steps.length; i++) {
+    step = steps[i];
+    const genericKeys = Object.keys(step.genericProps);
+
+    matches = minRequiredPropsForDatasetCreation.filter((prop) => genericKeys.includes(prop));
+
+    if (matches.length > 0) {
+      genericKey = matches[0];
+      const value = step.genericProps[genericKey];
+      if (value) {
+        matchedPropsWithValue.push(genericKey);
+      }
+    }
+
+    if (step.detailSteps) {
+      const detailMatches = matchedWithRequiredProps(step.detailSteps);
+      if (detailMatches.length > 0) {
+        matchedPropsWithValue.push(...detailMatches);
+      }
+    }
+  }
+
+  return matchedPropsWithValue;
+}
+
+export function canLocalDatasetBeStoredInBackend(steps) {
+
+  if (!steps) {
+    return false;
+  }
+
+  const matchedPropsWithValue = matchedWithRequiredProps(steps);
+
+  return matchedPropsWithValue.length === minRequiredPropsForDatasetCreation.length;
+}
+
+/**
+ * stores the data to a step in the creation workflow.
+ * It uses the mapFrontendToBackend function to make sure only data is stored
+ * which is needed in the JSON structure in the backend.
+ * (Nothing which is only part of the user communication to fill out a current step
+ * ex. input validation errors)
+ * This is the disadvantage the in the local storage the JSON
+ * has snake_case style property names (coming from the Python backend).
+ * But via the mapping functions, this is resovled in the same
+ * was as if communicating with the backend.
+ *
+ * @param stepKey
+ * @param data
+ * @returns {*|null}
+ */
+function storeStepDataInLocalStorage(stepKey, data) {
+
+  if (!stepKey) {
+    return null;
+  }
+
+  try {
+    const bData = mapFrontendToBackend(stepKey, data);
+    const stringData = JSON.stringify(bData);
+    localStorage.setItem(stepKey, stringData)
+  } catch (e) {
+    console.error(`Failed to stringify json of ${stepKey} : ${e}`);
+    return null;
+  }
+
   return data;
 }
 
+/**
+ * Loads data from the browsers local storage for the given step
+ * from the creation workflow.
+ *
+ * The mapBackendToFrontend function is used to make sure only
+ * data which is defined in the mapping rules will be available for the frontend.
+ * In the same as if communicating to the Python backend.
+ *
+ * @param stepKey
+ * @returns {*|null}
+ */
 export function loadDataFromLocalStorage(stepKey) {
-  const storeData = localStorage.getItem(stepKey);
+  if(!stepKey) {
+    return null;
+  }
+
   try {
-    return JSON.parse(storeData);
+    const storeData = localStorage.getItem(stepKey);
+    const bData = JSON.parse(storeData);
+    const fData = mapBackendToFrontend(stepKey, bData);
+    return fData;
   } catch (e) {
+    console.error(`Failed to parse json of ${stepKey} : ${e}`);
     return null;
   }
 }
 
 function initStepDataInLocalStorage(stepKey, data) {
 
-  const storeData = localStorage.getItem(stepKey);
+  const storeData = loadDataFromLocalStorage(stepKey);
 
   if (!storeData) {
     return storeStepDataInLocalStorage(stepKey, data);
   }
 
-  return JSON.parse(storeData);
+  return storeData;
 }
 
 
@@ -154,30 +283,60 @@ export function updateStepStatus(stepKey, steps, getStepDataFn) {
   }
 }
 
-export function componentChangedEvent(updateObj, vm, storeDataFn) {
 
-  const payload = {
-    stepKey: updateObj.object,
-    data: updateObj.data,
-    id: vm.$route.params.metadataid,
-  };
+export function storeCreationStepsData(stepKey, data, steps, resetMessages = true) {
 
-  if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
-    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
-    const authorToMergeDataCredit = updateObj.data;
+  let key = stepKey;
+  let stepData = data;
 
-    // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-    payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
-    payload.stepKey = EDITMETADATA_AUTHOR_LIST;
+  if (stepKey === EDITMETADATA_AUTHOR) {
+    key = EDITMETADATA_AUTHOR_LIST;
+    const authorsStepData = loadDataFromLocalStorage(key);
+    authorsStepData.authors = updateEditingArray(authorsStepData.authors, data, 'email');
+    stepData = authorsStepData;
+
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+
+    key = EDITMETADATA_AUTHOR_LIST;
+    const authorsStepData = loadDataFromLocalStorage(key);
+    // add the new author as an array
+    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, [data]);
+
+    stepData = authorsStepData;
+  } else if (stepKey === EDITMETADATA_AUTHOR_DATACREDIT) {
+    key = EDITMETADATA_AUTHOR_LIST;
+    const authorsStepData = loadDataFromLocalStorage(key);
+
+    // overwrite the authors and stepKey that it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+    authorsStepData.authors = mergeAuthorsDataCredit(authorsStepData.authors, data);
+
+    stepData = authorsStepData;
   }
 
-  if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
+  const step = getStepByName(key, steps);
+  const storedData = storeStepDataInLocalStorage(key, stepData);
 
-    // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
-    // that's why it is necessary to know which have been removed via the picker and combined the three lists
-    payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
+  if (storedData) {
+    stepData.message = `Changes for ${step.title} saved locally!`;
+    stepData.messageDetails = `Saved data for ${step.title} in your browser, enter all mandatory fields to save it on the server!`;
+
+    if (resetMessages) {
+      setTimeout(() => {
+        step.genericProps = {
+          ...stepData,
+          message: null,
+          messageDetails: null,
+        };
+      }, 2500);
+    }
   }
 
-  storeDataFn(payload);
+
+  step.genericProps = stepData;
+
+  eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+  return stepData;
 }
+
+
