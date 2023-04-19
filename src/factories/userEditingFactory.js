@@ -52,7 +52,7 @@ import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFa
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
 const EditDescription = () => import('@/modules/user/components/EditDescription.vue');
 const EditKeywords = () => import('@/modules/user/components/EditKeywords.vue');
-const EditAuthorList = () => import('@/modules/user/components/EditAuthorList.vue');
+const EditAuthorList = () => import('@/modules/user/components/edit/EditAuthorList.vue');
 
 const EditDataAndResources = () => import('@/modules/user/components/EditDataAndResources.vue');
 const EditDataInfo = () => import('@/modules/user/components/EditDataInfo.vue');
@@ -371,6 +371,11 @@ export const metadataEditingSteps = [
     genericProps: {},
   },
 ];
+
+export function getEditingWorkflowSteps() {
+  return structuredClone(metadataEditingSteps);
+}
+
 export function initializeSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
@@ -434,11 +439,12 @@ export function getStepFromRoute(route) {
 export function getEmptyMetadataInEditingObject() {
   // use the JSON.parse and JSON.stringify to disconnect it from this file
   // meaning it won't connect with the reactivity of vue.js
-  // const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
-  const emptyEditingObject = { ...emptyMetadataInEditing };
+  const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
+  // const emptyEditingObject = { ...emptyMetadataInEditing };
 
   // initialize every object with some basic attributes
   // for loading indication, error and success messages
+/*
   const stepKeys = Object.keys(emptyEditingObject);
   for (let i = 0; i < stepKeys.length; i++) {
     const key = stepKeys[i];
@@ -450,6 +456,7 @@ export function getEmptyMetadataInEditingObject() {
     stepObj.error = null;
     stepObj.errorDetails = null;
   }
+*/
 
   return emptyEditingObject;
 }

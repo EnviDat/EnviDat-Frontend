@@ -67,6 +67,7 @@ import {
 } from '@/factories/eventBus';
 
 import {
+  getEditingWorkflowSteps,
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,
@@ -137,7 +138,8 @@ export default {
     });
   },
   created() {
-    this.editingSteps = initializeSteps(metadataEditingSteps);
+    this.editingSteps = initializeSteps(getEditingWorkflowSteps());
+    this.initStepDataFromStore(this.editingSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -233,6 +235,23 @@ export default {
     },
   },
   methods: {
+    initStepDataFromStore(steps) {
+      for (let i = 0; i < steps.length; i++) {
+        const step = steps[i];
+        const stepKey = step.key;
+
+        const data = this.getGenericPropsForStep(stepKey);
+        if (data) {
+          step.genericProps = data;
+        }
+
+        if (step.detailSteps) {
+          this.initStepDataFromStore(step.detailSteps)
+        }
+
+      }
+
+    },
     async loadOrganizations() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
 

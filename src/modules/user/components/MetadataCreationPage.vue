@@ -66,7 +66,6 @@ import {
 import {
   getEmptyMetadataInEditingObject,
   getStepFromRoute,
-  metadataCreationSteps,
   initializeSteps,
   getSelectedElement,
   getStepByName,
@@ -129,7 +128,7 @@ export default {
     });
   },
   created() {
-    this.creationSteps = initializeSteps(metadataCreationSteps);
+    this.creationSteps = initializeSteps(getCreationgWorkflowSteps());
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
