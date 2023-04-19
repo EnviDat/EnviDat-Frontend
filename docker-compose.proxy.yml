@@ -5,7 +5,7 @@ networks:
 
 services:
   proxy:
-    image: "${INTERNAL_REG}/frontend-ckan-proxy:1.21-main"
+    image: "${INTERNAL_REG}/envidat-frontend-ckan-proxy:1.21-main"
     build:
       context: ./nginx-ckan-proxy
       args:
