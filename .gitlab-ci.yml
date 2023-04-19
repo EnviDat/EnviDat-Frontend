@@ -176,7 +176,7 @@ tag-commit-sha:
   before_script:
     - export REG_HOST=${INTERNAL_REG%/*}
     - >
-      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\","hostname\":
+      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
       \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
       \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
   script:
