@@ -94,6 +94,7 @@ export default ({ mode }) => {
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
               { find: 'vue', replacement: 'vue/dist/vue.min.js' },
+              // { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
             ],
         },
         build: {
@@ -142,6 +143,12 @@ export default ({ mode }) => {
                 }
                 if (id.includes('amchart') || id.includes('uplot')) {
                   return 'vendor_charts';
+                }
+                if (id.includes('uppy')) {
+                  return 'vendor_uppy';
+                }
+                if (id.includes('core-js')) {
+                  return 'vendor_core_js';
                 }
 
                 // all other node_modules

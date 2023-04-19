@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <div v-if="$slots.articles" class="articlesGrid" :class="paddings">
+    <div v-if="$slots.articles" class="articlesGrid" :class="`${paddings} pb-4 pb-sm-0`">
       <TitleCard
         :title="articlesTitle"
         cardClass="pa-2"

@@ -362,7 +362,6 @@ export const EditDataAndResourcesListViews = () => ({
         }
       },
       saveResource(newRes) {
-        newRes.existsOnlyLocal = false;
         this.updateResource(newRes);
         this.cancelEditing();
       },
