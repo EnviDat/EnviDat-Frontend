@@ -45,9 +45,15 @@ export function addDefaultsToNewDataset(newDataset) {
 }
 
 export function initializeStepDataWithDefaults(steps, user, organizationId) {
-  const nameSplits = user.fullName.split(' ');
-  const firstName = nameSplits[0];
-  const lastName = nameSplits[1];
+  const fullName = user.fullName || user.name || '';
+  const nameSplits = fullName.split(' ');
+
+  let firstName = nameSplits[0];
+  if (nameSplits.length > 2) {
+    const lastIndex = fullName.lastIndexOf(' ');
+    firstName = fullName.substring(0, lastIndex);
+  }
+  const lastName = nameSplits[nameSplits.length - 1];
 
   const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, steps);
 
@@ -63,7 +69,7 @@ export function initializeStepDataWithDefaults(steps, user, organizationId) {
     email: user.email,
   });
 
-  const authorsStep = getStepByName(EDITMETADATA_AUTHOR, steps);
+  const authorsStep = getStepByName(EDITMETADATA_AUTHOR_LIST, steps);
   authorsStep.genericProps = { authors: [userAuthor] };
 
   const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, steps);
@@ -205,6 +211,28 @@ function initStepDataInLocalStorage(stepKey, data) {
   return storeData;
 }
 
+export function getAllFromSteps(steps) {
+  let flatData = {};
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+
+    flatData = {
+      ...flatData,
+      ...step.genericProps,
+    }
+
+    if (step.detailSteps) {
+      const flatDetailData = getAllFromSteps(step.detailSteps);
+      flatData = {
+        ...flatData,
+        ...flatDetailData,
+      }
+    }
+  }
+
+  return flatData;
+}
 export function loadAllStepDataFromLocalStorage(steps, creationData) {
 
   for (let i = 0; i < steps.length; i++) {

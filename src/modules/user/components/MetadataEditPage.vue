@@ -67,7 +67,6 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  getEditingWorkflowSteps,
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,

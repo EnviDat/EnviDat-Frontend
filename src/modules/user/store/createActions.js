@@ -105,7 +105,7 @@ export default {
       .then(() => true)
       .catch(() => false)
   },
-  async [METADATA_CREATION_DATASET]({ commit }, { data }) {
+  async [METADATA_CREATION_DATASET]({ commit }, data) {
 
     commit(METADATA_CREATION_DATASET);
 

@@ -76,6 +76,7 @@ import {
 
 
 import {
+  METADATA_CREATION_DATASET,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
   METADATA_EDITING_REMOVE_AUTHOR,
@@ -111,7 +112,7 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import {
-  canLocalDatasetBeStoredInBackend,
+  canLocalDatasetBeStoredInBackend, getAllFromSteps,
   initializeStepDataWithDefaults,
   initializeStepsInUrl,
   loadAllStepDataFromLocalStorage,
@@ -317,6 +318,8 @@ export default {
     },
     catchSaveDataset() {
 
+      const data = getAllFromSteps(this.creationSteps);
+      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
