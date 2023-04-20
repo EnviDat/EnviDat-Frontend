@@ -281,6 +281,17 @@ export const METADATA_DELETE_RESOURCE_SUCCESS = 'METADATA_DELETE_RESOURCE_SUCCES
 export const USER_NAMESPACE = 'user';
 export const USER_SIGNIN_NAMESPACE = 'userSignIn';
 
+export const METADATA_CREATION_DATASET = 'METADATA_CREATION_DATASET';
+export const METADATA_CREATION_DATASET_ERROR = 'METADATA_CREATION_DATASET_ERROR';
+export const METADATA_CREATION_DATASET_SUCCESS = 'METADATA_CREATION_DATASET_SUCCESS';
+
+export const ACTION_METADATA_CREATION_DATASET = () => {
+  if (process.env.NODE_ENV === 'development' && useTestdata) {
+    return './testdata/package_create.json';
+  }
+
+  return 'package_create';
+};
 
 const requests = {
   get:[

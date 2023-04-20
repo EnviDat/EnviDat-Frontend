@@ -24,7 +24,12 @@ import {
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import { cleanResourceForFrontend, getFrontendJSON } from '@/factories/mappingFactory';
+import {
+  cleanResourceForFrontend,
+  getFrontendJSON,
+  getFrontendJSONNewDataset,
+} from '@/factories/mappingFactory';
+
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -33,6 +38,9 @@ import {
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
   METADATA_UPLOAD_FILE_SUCCESS,
+  METADATA_CREATION_DATASET,
+  METADATA_CREATION_DATASET_SUCCESS,
+  METADATA_CREATION_DATASET_ERROR,
 } from './userMutationsConsts';
 
 
@@ -100,4 +108,37 @@ export default {
     state.uploadKey = key;
   },
 */
+  [METADATA_CREATION_DATASET](state) {
+    state.metadataCreationLoading = true;
+    state.newMetadataset = null;
+    state.metadataCreationError = null;
+
+  },
+  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset, message }) {
+    state.metadataCreationLoading = false;
+
+    // convert properties and stringified json to match the frontend structure
+    const fDataset = getFrontendJSONNewDataset(dataset);
+
+    state.newMetadataset = fDataset;
+
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
+/*
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+    }, state.metadataSavingMessageTimeoutTime);
+*/
+
+  },
+  [METADATA_CREATION_DATASET_ERROR](state, reason) {
+    state.metadataCreationLoading = false;
+
+    const errorObj = createErrorMessage(reason);
+    state.metadataCreationError = {
+      message: errorObj.message,
+      details: errorObj.errorDetails,
+    };
+
+  },
 };

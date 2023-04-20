@@ -63,6 +63,9 @@ const userState = {
   uploadError: null,
   envidatUsers: null,
   envidatUsersError: null,
+  metadataCreationLoading: true,
+  newMetadataset: null,
+  metadataCreationError: null,
 };
 
 
