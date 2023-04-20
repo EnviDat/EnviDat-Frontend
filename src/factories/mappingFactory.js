@@ -419,7 +419,6 @@ export function getFrontendJSON(stepKey, data) {
   return frontEndJson;
 }
 
-
 export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
 
@@ -1050,5 +1049,51 @@ export function enhanceUserObject(user) {
   }
 
   return cleanUser;
+}
+
+export function getNewCreationDatasetMappingRules() {
+  const mergedRules = [];
+
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_MAIN_DESCRIPTION]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_KEYWORDS]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_AUTHOR_LIST]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_DATA_INFO]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_DATA_GEO]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_FUNDING_INFO]);
+  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_PUBLICATION_INFO]);
+
+  mergedRules.push([
+    ['ownerOrg', 'owner_org'],
+    ['resourceTypeGeneral', 'resource_type_general'],
+  ]);
+
+  return mergedRules;
+}
+
+export function getBackendJSONNewDataset (data) {
+  const rules = getNewCreationDatasetMappingRules();
+
+  let backEndJson = {};
+
+  rules.forEach(rule => convertPut(backEndJson, rule[1], convertGet(data, rule[0])));
+
+  backEndJson = getObjectInOtherCase(backEndJson, toSnakeCase);
+
+  return backEndJson;
+}
+
+export function getFrontendJSONNewDataset(data) {
+  const rules = getNewCreationDatasetMappingRules();
+
+  const backendJSON = data;
+
+  let frontEndJson = {};
+
+  rules.forEach(rule => convertPut(frontEndJson, rule[0], convertGet(backendJSON, rule[1])));
+
+  frontEndJson = getObjectInOtherCase(frontEndJson, toCamelCase);
+
+  return frontEndJson;
 }
 

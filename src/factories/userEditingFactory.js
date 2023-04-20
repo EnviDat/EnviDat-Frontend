@@ -372,6 +372,10 @@ export const metadataEditingSteps = [
   },
 ];
 
+export function getCreationWorkflowSteps() {
+  return structuredClone(metadataCreationSteps);
+}
+
 export function getEditingWorkflowSteps() {
   return structuredClone(metadataEditingSteps);
 }

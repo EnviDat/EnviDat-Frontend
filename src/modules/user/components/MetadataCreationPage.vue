@@ -11,6 +11,8 @@
                        :subStep="routeSubStep"
                        stepColor="highlight"
                        :loading="loading"
+                       :showSaveButton="canSaveInBackend"
+                       @clickedSaveDataset="catchSaveDataset"
                        @clickedClose="catchBackClicked" />
 
 
@@ -69,6 +71,7 @@ import {
   initializeSteps,
   getSelectedElement,
   getStepByName,
+  metadataCreationSteps,
 } from '@/factories/userEditingFactory';
 
 
@@ -79,6 +82,7 @@ import {
   METADATA_EDITING_SAVE_AUTHOR,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -102,20 +106,21 @@ import {
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
 } from '@/store/metadataMutationsConsts';
 
-/*
-import { populateEditingComponents } from '@/factories/mappingFactory';
-*/
+
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import {
   canLocalDatasetBeStoredInBackend,
+  initializeStepDataWithDefaults,
   initializeStepsInUrl,
   loadAllStepDataFromLocalStorage,
-  loadDataFromLocalStorage,
+  readDataFromLocalStorage,
   storeCreationStepsData,
   updateStepStatus,
 } from '@/factories/userCreationFactory';
+
+import { mapState } from 'vuex';
 
 
 export default {
@@ -128,9 +133,9 @@ export default {
     });
   },
   created() {
-    this.creationSteps = initializeSteps(getCreationgWorkflowSteps());
+    this.creationSteps = initializeSteps(metadataCreationSteps);
 
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.componentChanged);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -139,7 +144,7 @@ export default {
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
   beforeDestroy() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.componentChanged);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
@@ -149,7 +154,7 @@ export default {
   },
   beforeMount() {
     initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
-    this.initStepDataOnLocalStorage(this.creationSteps);
+    this.initStepDataOnLocalStorage(this.creationSteps, this.user);
   },
   mounted() {
     // reset the scrolling to the top
@@ -162,9 +167,12 @@ export default {
 */
 
     // this.loadOrganizations();
-
+    this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
   },
   computed: {
+    ...mapState(USER_SIGNIN_NAMESPACE,[
+      'user',
+    ]),
 /*
     ...mapState(USER_NAMESPACE, [
       'lastEditedBackPath',
@@ -229,9 +237,13 @@ export default {
     },
   },
   methods: {
-    initStepDataOnLocalStorage(steps) {
+    initStepDataOnLocalStorage(steps, user) {
       const creationData = getEmptyMetadataInEditingObject();
+
+      initializeStepDataWithDefaults(steps, user, 'test')
       loadAllStepDataFromLocalStorage(steps, creationData);
+
+      // merge data
     },
 /*
     async loadStepsWithCreationData(steps, creationData) {
@@ -303,6 +315,9 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
+    catchSaveDataset() {
+
+    },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
 
@@ -318,7 +333,7 @@ export default {
       if (previousSelected) {
         previousSelected.isSelected = false;
 
-        this.editComponentsChanged({
+        this.componentChanged({
             object: EDITMETADATA_AUTHOR,
             data: previousSelected,
           },
@@ -329,7 +344,7 @@ export default {
 
       selectedAuthor.isSelected = true;
 
-      this.editComponentsChanged({
+      this.componentChanged({
           object: EDITMETADATA_AUTHOR,
           data: selectedAuthor,
         },
@@ -346,7 +361,7 @@ export default {
       if (previousSelected) {
         previousSelected.isSelected = false;
 
-        this.editComponentsChanged({
+        this.componentChanged({
             object: EDITMETADATA_AUTHOR,
             data: previousSelected,
           },
@@ -358,22 +373,20 @@ export default {
       let authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
       authors = updateEditingArray(authors, newAuthor, 'email');
 
-      this.editComponentsChanged({
+      this.componentChanged({
         object: EDITMETADATA_AUTHOR_LIST,
         data: { authors },
       });
     },
 */
-    editComponentsChanged(updateObj, resetMessages = true) {
+    componentChanged(updateObj, resetMessages = true) {
 
       const stepKey = updateObj.object;
       const data = updateObj.data;
 
       storeCreationStepsData(stepKey, data, this.creationSteps, resetMessages);
 
-      const canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-      console.log('canSaveInBackend');
-      console.log(canSaveInBackend);
+      this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
 
       this.$nextTick(() => {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
@@ -385,7 +398,7 @@ export default {
 
     },
     getGenericPropsForStep(key) {
-      return loadDataFromLocalStorage(key);
+      return readDataFromLocalStorage(key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
@@ -445,6 +458,7 @@ export default {
   data: () => ({
     domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     creationSteps: null,
+    canSaveInBackend: false,
     errorTitle: null,
     errorMessage: null,
     errorColor: 'error',

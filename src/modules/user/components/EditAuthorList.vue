@@ -217,8 +217,7 @@ export default {
   },
   methods: {
     catchEditAuthorClick(author) {
-      console.log('catchEditAuthorClick');
-      console.log(author);
+
       if (author.isSelected) {
         eventBus.emit(CANCEL_EDITING_AUTHOR, author.email);
       } else {
@@ -226,8 +225,6 @@ export default {
       }
     },
     catchEditAuthorClose() {
-      console.log('catchEditAuthorClose');
-      console.log(this.selectedAuthor);
       eventBus.emit(CANCEL_EDITING_AUTHOR, this.selectedAuthor.email);
     },
   },

@@ -3,10 +3,17 @@ import {
   EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
 } from '@/factories/eventBus';
 
-import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
+import {
+  combineAuthorLists,
+  createAuthor,
+  mergeAuthorsDataCredit,
+} from '@/factories/authorFactory';
+
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import { getStepByName, updateEditingArray } from '@/factories/userEditingFactory';
 import { mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
@@ -29,8 +36,47 @@ export const ckanRequiredPropsForDatasetCreation = [
 ];
 */
 
-export const minRequiredPropsForDatasetCreation = [
+export function addDefaultsToNewDataset(newDataset) {
+
+  return {
+    ...newDataset,
+    resourceTypeGeneral : 'dataset',
+  }
+}
+
+export function initializeStepDataWithDefaults(steps, user, organizationId) {
+  const nameSplits = user.fullName.split(' ');
+  const firstName = nameSplits[0];
+  const lastName = nameSplits[1];
+
+  const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, steps);
+
+  headerStep.genericProps = {
+    contactEmail: user.email,
+    contactGivenName: firstName,
+    contactSurname: lastName,
+  };
+
+  const userAuthor = createAuthor({
+    firstName,
+    lastName,
+    email: user.email,
+  });
+
+  const authorsStep = getStepByName(EDITMETADATA_AUTHOR, steps);
+  authorsStep.genericProps = { authors: [userAuthor] };
+
+  const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, steps);
+  publicationStep.genericProps = {
+    publisher: 'EnviDat',
+  };
+}
+
+const minRequiredPropsForDatasetCreation = [
   'metadataTitle',
+  'contactEmail',
+  'contactGivenName',
+  'contactSurname',
   // 'keywords',
   'description',
   'authors',
@@ -103,7 +149,7 @@ export function canLocalDatasetBeStoredInBackend(steps) {
  * @param data
  * @returns {*|null}
  */
-function storeStepDataInLocalStorage(stepKey, data) {
+function writeStepDataInLocalStorage(stepKey, data) {
 
   if (!stepKey) {
     return null;
@@ -132,7 +178,7 @@ function storeStepDataInLocalStorage(stepKey, data) {
  * @param stepKey
  * @returns {*|null}
  */
-export function loadDataFromLocalStorage(stepKey) {
+export function readDataFromLocalStorage(stepKey) {
   if(!stepKey) {
     return null;
   }
@@ -150,15 +196,14 @@ export function loadDataFromLocalStorage(stepKey) {
 
 function initStepDataInLocalStorage(stepKey, data) {
 
-  const storeData = loadDataFromLocalStorage(stepKey);
+  const storeData = readDataFromLocalStorage(stepKey);
 
   if (!storeData) {
-    return storeStepDataInLocalStorage(stepKey, data);
+    return writeStepDataInLocalStorage(stepKey, data);
   }
 
   return storeData;
 }
-
 
 export function loadAllStepDataFromLocalStorage(steps, creationData) {
 
@@ -291,21 +336,21 @@ export function storeCreationStepsData(stepKey, data, steps, resetMessages = tru
 
   if (stepKey === EDITMETADATA_AUTHOR) {
     key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = loadDataFromLocalStorage(key);
+    const authorsStepData = readDataFromLocalStorage(key);
     authorsStepData.authors = updateEditingArray(authorsStepData.authors, data, 'email');
     stepData = authorsStepData;
 
   } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
 
     key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = loadDataFromLocalStorage(key);
+    const authorsStepData = readDataFromLocalStorage(key);
     // add the new author as an array
     authorsStepData.authors = combineAuthorLists(authorsStepData.authors, [data]);
 
     stepData = authorsStepData;
   } else if (stepKey === EDITMETADATA_AUTHOR_DATACREDIT) {
     key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = loadDataFromLocalStorage(key);
+    const authorsStepData = readDataFromLocalStorage(key);
 
     // overwrite the authors and stepKey that it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
     authorsStepData.authors = mergeAuthorsDataCredit(authorsStepData.authors, data);
@@ -314,7 +359,7 @@ export function storeCreationStepsData(stepKey, data, steps, resetMessages = tru
   }
 
   const step = getStepByName(key, steps);
-  const storedData = storeStepDataInLocalStorage(key, stepData);
+  const storedData = writeStepDataInLocalStorage(key, stepData);
 
   if (storedData) {
     stepData.message = `Changes for ${step.title} saved locally!`;

@@ -138,7 +138,7 @@ export default {
     });
   },
   created() {
-    this.editingSteps = initializeSteps(getEditingWorkflowSteps());
+    this.editingSteps = initializeSteps(metadataEditingSteps);
     this.initStepDataFromStore(this.editingSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
