@@ -28,6 +28,18 @@
       />
 
       <BaseIconButton
+              v-if="showSaveButton"
+              id="SaveMetadataButton"
+              class="ma-auto px-4"
+              material-icon-name="remove_red_eye"
+              icon-color="black"
+              color="success"
+              tooltipText="Save Dataset On the Server"
+              :tooltipBottom="true"
+              @clicked="catchSaveDatasetClick"
+      />
+
+      <BaseIconButton
         id="MetadataEditCloseButton"
         class="ma-auto px-4"
         material-icon-name="close"
@@ -108,6 +120,10 @@ export default {
       default: false,
     },
     showPreviewButton: {
+      type: Boolean,
+      default: false,
+    },
+    showSaveButton: {
       type: Boolean,
       default: false,
     },
@@ -201,6 +217,9 @@ export default {
     },
     catchPreviewClick() {
       this.$emit('clickedPreview');
+    },
+    catchSaveDatasetClick() {
+      this.$emit('clickedSaveDataset');
     },
   },
   data: () => ({
