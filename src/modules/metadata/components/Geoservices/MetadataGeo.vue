@@ -8,6 +8,31 @@
 
         <v-col class="shrink pl-2">
           <BaseIconButton
+            v-if="mapEditable"
+            :disabled="!undoButtonEnabled"
+            materialIconName="undo"
+            iconColor="black"
+            :fillColor="$vuetify.theme.themes.light.accent"
+            tooltipText="Undo"
+            @clicked="triggerGeomUndo"
+          />
+        </v-col>
+
+        <v-col class="shrink pl-2">
+          <BaseIconButton
+            v-if="mapEditable"
+            :disabled="!saveButtonEnabled"
+            :loading="saveButtonInProgress"
+            materialIconName="save"
+            iconColor="black"
+            :fillColor="$vuetify.theme.themes.light.accent"
+            tooltipText="Save"
+            @clicked="triggerGeomSave"
+          />
+        </v-col>
+
+        <v-col class="shrink pl-2">
+          <BaseIconButton
             v-if="showFullscreenButton"
             materialIconName="zoom_out_map"
             iconColor="black"
@@ -93,11 +118,23 @@ export default {
     mapDivId() {
       return this.genericProps?.mapDivId || 'metadata-map-small';
     },
-    showFullscreenButton() {
-      return this.genericProps?.showFullscreenButton || false;
+    saveButtonEnabled() {
+      return this.genericProps?.saveButtonEnabled || false;
+    },
+    saveButtonInProgress() {
+      return this.genericProps?.saveButtonInProgress || false;
+    },
+    undoButtonEnabled() {
+      return this.genericProps?.undoButtonEnabled || false;
     },
   },
   methods: {
+    triggerGeomSave() {
+      this.$emit('saveGeoms')
+    },
+    triggerGeomUndo() {
+      this.$emit('undoGeoms')
+    },
     triggerFullscreen() {
       eventBus.emit(INJECT_MAP_FULLSCREEN, {
         site: this.site,

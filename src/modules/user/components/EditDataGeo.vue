@@ -35,35 +35,12 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="10" class="editDataGeo">
-          <MetadataGeo :genericProps="genericProps" />
-        </v-col>
-
-        <v-col cols="12" md="2" class="align-self-md-end">
-          <v-row>
-            <v-col>
-              <BaseRectangleButton
-                :color="$vuetify.theme.themes.light.accent"
-                :disabled="!undoButtonEnabled"
-                buttonText="Undo Changes"
-                tooltipText="Reset to original geometry"
-                tooltipPosition="top"
-                @clicked="revertGeometriesInMetadata"
-              />
-            </v-col>
-
-            <v-col>
-              <BaseRectangleButton
-                :color="$vuetify.theme.themes.light.accent"
-                :disabled="!saveButtonEnabled"
-                :loading="saveButtonInProgress"
-                buttonText="Save Geometries"
-                tooltipText="Save the geometry"
-                tooltipPosition="top"
-                @clicked="updateGeometriesInMetadata"
-              />
-            </v-col>
-          </v-row>
+        <v-col cols="12" md="12" class="editDataGeo">
+          <MetadataGeo
+            :genericProps="genericProps"
+            @saveGeoms="updateGeometriesInMetadata"
+            @undoGeoms="revertGeometriesInMetadata"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -84,7 +61,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_DATA_GEO,
@@ -257,7 +233,6 @@ export default {
   components: {
     MetadataGeo,
     BaseStatusLabelView,
-    BaseRectangleButton,
   },
   data: () => ({
     labels: {
