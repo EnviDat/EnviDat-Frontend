@@ -36,10 +36,18 @@
 
       <v-row>
         <v-col cols="12" md="12" class="editDataGeo">
+          <v-file-input
+            ref="filePicker"
+            v-show="false"
+            multiple
+            accept=".geojson,.json"
+            @change="triggerFileUpload"
+          ></v-file-input>
           <MetadataGeo
             :genericProps="genericProps"
             @saveGeoms="commitGeometriesToAPI"
             @undoGeoms="undoGeomEdits"
+            @uploadGeomFile="triggerFilePicker"
           />
         </v-col>
       </v-row>
@@ -67,6 +75,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   MAP_GEOMETRY_MODIFIED,
+  EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
 import { parseAsGeomCollection } from '@/factories/metaDataFactory';
@@ -135,13 +144,15 @@ export default {
   },
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
-    this.originalGeom = this.location.geomCollection
+    eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
+    this.originalGeom = this.location.geomCollection;
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {
       this.commitGeometriesToAPI();
     }
     eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
+    eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
   },
   computed: {
     genericProps() {
@@ -159,7 +170,10 @@ export default {
       };
     },
     geomsForMap() {
-      return this.editedGeomBuffer[this.editedGeomBuffer.length - 1] || this.originalGeom
+      return (
+        this.editedGeomBuffer[this.editedGeomBuffer.length - 1] ||
+        this.originalGeom
+      );
     },
     editErrorMessage() {
       return this.validationErrors.geometries;
@@ -188,9 +202,11 @@ export default {
           this.validationErrors,
         )
       ) {
-        this.editedGeomBuffer.push(parseAsGeomCollection(geomArray, {
-          name: this.location.name,
-        }))
+        this.editedGeomBuffer.push(
+          parseAsGeomCollection(geomArray, {
+            name: this.location.name,
+          }),
+        );
 
         this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
@@ -202,13 +218,13 @@ export default {
      * Undo geometry edits, either local, or saved
      */
     undoGeomEdits() {
-      this.editedGeomBuffer.pop()
+      this.editedGeomBuffer.pop();
 
       if (this.editedGeomBuffer.length === 0) {
         this.commitGeometriesToAPI({
-        ...this.location,
-        geoJSON: this.geomsForMap,
-      })
+          ...this.location,
+          geoJSON: this.geomsForMap,
+        });
         this.undoButtonEnabled = false;
       }
     },
@@ -227,6 +243,34 @@ export default {
 
       this.saveButtonEnabled = false;
     },
+    triggerFilePicker() {
+      this.$refs.filePicker.$refs.input.click();
+    },
+    triggerFileUpload(fileArray) {
+      // Loop through each dropped file
+      for (const file of fileArray) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Attempt GeoJSON
+          try {
+            const geoJSON = JSON.parse(reader.result);
+            const geomArray = JSON.parse(
+              JSON.stringify(this.geomsForMap.geometries),
+            );
+            geomArray.push(geoJSON);
+            this.parseGeomCollectionAddToBuffer(geomArray);
+          } catch {
+            this.validationErrors.geometries =
+              'Could not load file. Is it GeoJSON?';
+          }
+        };
+
+        reader.readAsText(file);
+      }
+    },
+    triggerValidationError(errorMsg) {
+      this.validationErrors.geometries = errorMsg;
+    },
   },
   components: {
     MetadataGeo,
@@ -235,7 +279,8 @@ export default {
   data: () => ({
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
-      cardInstructions: 'Choose the location(s) where the research data was collected.',
+      cardInstructions:
+        'Choose the location(s) where the research data was collected.',
     },
     validationErrors: {
       geometries: null,
