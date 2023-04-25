@@ -221,10 +221,7 @@ export default {
       this.editedGeomBuffer.pop();
 
       if (this.editedGeomBuffer.length === 0) {
-        this.commitGeometriesToAPI({
-          ...this.location,
-          geoJSON: this.geomsForMap,
-        });
+        this.commitGeometriesToAPI();
         this.undoButtonEnabled = false;
       }
     },
@@ -237,7 +234,10 @@ export default {
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
-          location: this.geomsForMap,
+          location: {
+            ...this.location,
+            geoJSON: this.geomsForMap,
+          },
         },
       });
 
