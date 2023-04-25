@@ -786,7 +786,7 @@ export function createLocation(dataset) {
 
       }
 
-      location.geomCollection = parseAsGeomCollection(geomCollection, location.name);
+      location.geomCollection = parseAsGeomCollection(geomCollection, {name: location.name});
 
     }
   }
@@ -1292,4 +1292,3 @@ export function formatBytes(a, b = 2) {
 
   return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
-
