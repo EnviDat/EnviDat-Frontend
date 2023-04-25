@@ -106,7 +106,7 @@
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
 	  "resourceEditingActive": true,
-    "resourceUploadActive": false,
+    "resourceUploadActive": true,
     "editingRestrictingActive": false,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
