@@ -58,6 +58,18 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 export default {
   name: 'MetadataCreationRelatedInfo',
   props: {
+    relatedPublicationsText: {
+      type: String,
+      default: undefined,
+    },
+    relatedDatasetsText: {
+      type: String,
+      default: undefined,
+    },
+    customFields: {
+      type: Array,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -69,50 +81,62 @@ export default {
     nextMajorStep: String,
   },
   computed: {
-    relatedPublicationsText() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_PUBLICATIONS);
+    relatedPublicationsTextWrap() {
+      if (this.relatedPublicationsText) {
+        return this.relatedPublicationsText;
       }
 
-      return '';
-    },
-    relatedDatasetsText() {
       if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_DATASETS);
+        ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
       }
 
-      return '';
+      return undefined;
     },
-    customFields() {
+    relatedDatasetsTextWrap() {
+      if (this.relatedDatasetsText) {
+        return this.relatedDatasetsText;
+      }
+
       if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_CUSTOMFIELDS);
+        ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
+      }
+
+      return undefined;
+    },
+    customFieldsWrap() {
+      if (this.customFields) {
+        return this.customFields;
+      }
+
+      if (this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_CUSTOMFIELDS).customFields;
       }
 
       return [];
     },
     editRelatedPublicationsProps() {
       return {
-        ...this.relatedPublicationsText,
+        relatedPublicationsText: this.relatedPublicationsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editRelatedDatasetsProps() {
       return {
-        ...this.relatedDatasetsText,
+        relatedDatasetsText: this.relatedDatasetsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editCustomFieldsProps() {
       return {
-        ...this.customFields,
+        customFields: this.customFieldsWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };

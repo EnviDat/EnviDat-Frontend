@@ -133,6 +133,17 @@ export default {
   },
   computed: {
     publicationsInfo() {
+      if (this.publicationState) {
+        return {
+          possiblePublicationStates: this.possiblePublicationStates,
+          publicationState: this.publicationState,
+          visibilityState: this.visibilityState,
+          doi: this.doi,
+          publisher: this.publisher,
+          publicationYear: this.publicationYear,
+        }
+      }
+
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
       }
@@ -140,6 +151,10 @@ export default {
       return {};
     },
     fundingInfo() {
+      if (this.funders) {
+        return this.funders;
+      }
+
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_FUNDING_INFO);
       }
@@ -147,6 +162,14 @@ export default {
       return {};
     },
     organizationsInfo() {
+      if (this.organization) {
+        return {
+          organization: this.organization,
+          allOrganizations: this.allOrganizations,
+          userOrganizationsList: this.userOrganizationsList,
+        }
+      }
+
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
       }
