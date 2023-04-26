@@ -253,7 +253,7 @@ export default {
 
       const previewEntry = {
         title: this.metadataCardTitle,
-        tags: this.keywords,
+        tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
         fileIconString: this.mixinMethods_getIcon('file'),
       };
@@ -279,7 +279,7 @@ export default {
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press   <kbd>enter</kbd>   to create a new keyword.`;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press   <kbd>enter</kbd>   to create a new keyword. `;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -330,7 +330,7 @@ export default {
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
-      const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
+      const selectedKeywords = this.keywordsField.concat([pickedKeywordObj]);
 
       this.previewKeywords = this.processValues(selectedKeywords);
       this.search = null;
