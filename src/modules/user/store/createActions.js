@@ -23,7 +23,7 @@ import {
 
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import {
-  getBackendJSON,
+  getBackendJSONForStep,
   getBackendJSONNewDataset,
   stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
@@ -64,7 +64,7 @@ export default {
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const cleaned = getBackendJSON(EDITMETADATA_DATA_RESOURCE, data);
+    const cleaned = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCE, data);
     const postData = stringifyResourceForBackend(cleaned);
 
     try {

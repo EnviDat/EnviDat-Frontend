@@ -1,8 +1,8 @@
 import { it, describe, expect } from 'vitest';
 
 import {
-  getBackendJSON,
-  getFrontendJSON,
+  getBackendJSONForStep,
+  getFrontendJSONForStep,
   convertJSON,
   getObjectInOtherCase,
   toCamelCase,
@@ -32,7 +32,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_MAIN_HEADER, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const headerData = getFrontendJSON(EDITMETADATA_MAIN_HEADER, snakeCaseJSON)
+    const headerData = getFrontendJSONForStep(EDITMETADATA_MAIN_HEADER, snakeCaseJSON)
 
     expect(headerData.metadataTitle).not.toBeNull();
     expect(headerData.contactEmail).not.toBeNull();
@@ -53,7 +53,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_MAIN_DESCRIPTION, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const descData = getFrontendJSON(EDITMETADATA_MAIN_DESCRIPTION, snakeCaseJSON)
+    const descData = getFrontendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, snakeCaseJSON)
 
     expect(descData.description).not.toBeNull();
     expect(descData.description).toBe(snakeCaseJSON.notes);
@@ -63,7 +63,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_KEYWORDS, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const keywordsData = getFrontendJSON(EDITMETADATA_KEYWORDS, snakeCaseJSON)
+    const keywordsData = getFrontendJSONForStep(EDITMETADATA_KEYWORDS, snakeCaseJSON)
 
     expect(keywordsData.keywords).toBeInstanceOf(Array);
 
@@ -83,7 +83,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_AUTHOR_LIST, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const authorsData = getFrontendJSON(EDITMETADATA_AUTHOR_LIST, snakeCaseJSON)
+    const authorsData = getFrontendJSONForStep(EDITMETADATA_AUTHOR_LIST, snakeCaseJSON)
 
     expect(authorsData.authors).toBeInstanceOf(Array);
 
@@ -105,7 +105,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_DATA_RESOURCES, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const resourceData = getFrontendJSON(EDITMETADATA_DATA_RESOURCES, snakeCaseJSON)
+    const resourceData = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCES, snakeCaseJSON)
 
     const array = resourceData.resources;
     expect(array).toBeInstanceOf(Array);
@@ -129,7 +129,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_DATA_INFO, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const dataInfoData = getFrontendJSON(EDITMETADATA_DATA_INFO, snakeCaseJSON)
+    const dataInfoData = getFrontendJSONForStep(EDITMETADATA_DATA_INFO, snakeCaseJSON)
 
     expect(dataInfoData.dataLicenseId).toBe(snakeCaseJSON.license_id);
     expect(dataInfoData.dataLicenseTitle).toBe(snakeCaseJSON.license_title);
@@ -142,7 +142,7 @@ describe('getFrontendJSON', () => {
       const date = array[i];
       const backendDate = snakeCaseJSON.date[i];
 
-      const mappedEntry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, backendDate);
+      const mappedEntry = getFrontendJSONForStep(EDITMETADATA_DATA_INFO_DATES, backendDate);
 
       expect(mappedEntry.dateStart).toBe(backendDate.date);
       expect(mappedEntry.dateType).toBe(backendDate.dateType);
@@ -158,7 +158,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_DATA_GEO, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const geoData = getFrontendJSON(EDITMETADATA_DATA_GEO, snakeCaseJSON)
+    const geoData = getFrontendJSONForStep(EDITMETADATA_DATA_GEO, snakeCaseJSON)
 
     expect(geoData.location.geoJSON.type).toBe(snakeCaseJSON.spatial.type);
     expect(geoData.location.geoJSON.coordinates).toStrictEqual(snakeCaseJSON.spatial.coordinates);
@@ -168,7 +168,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_RELATED_PUBLICATIONS, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const relatedPubData = getFrontendJSON(EDITMETADATA_RELATED_PUBLICATIONS, snakeCaseJSON)
+    const relatedPubData = getFrontendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, snakeCaseJSON)
 
     expect(relatedPubData.relatedPublicationsText).toBe(snakeCaseJSON.related_publications);
 
@@ -177,7 +177,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_RELATED_DATASETS, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const relatedDatasetsData = getFrontendJSON(EDITMETADATA_RELATED_DATASETS, snakeCaseJSON)
+    const relatedDatasetsData = getFrontendJSONForStep(EDITMETADATA_RELATED_DATASETS, snakeCaseJSON)
 
     expect(relatedDatasetsData.relatedDatasetsText).toBe(snakeCaseJSON.related_datasets);
 
@@ -186,7 +186,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_CUSTOMFIELDS, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const customFieldsData = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS, snakeCaseJSON)
+    const customFieldsData = getFrontendJSONForStep(EDITMETADATA_CUSTOMFIELDS, snakeCaseJSON)
 
     const array = customFieldsData.customFields;
     expect(array).toBeInstanceOf(Array);
@@ -206,7 +206,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_ORGANIZATION, () => {
     const backendOrganization = mappingTestData.organization;
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const organizationData = getFrontendJSON(EDITMETADATA_ORGANIZATION, snakeCaseJSON)
+    const organizationData = getFrontendJSONForStep(EDITMETADATA_ORGANIZATION, snakeCaseJSON)
 
     const id = organizationData.organizationId;
 
@@ -230,7 +230,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_PUBLICATION_INFO, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const publicationData = getFrontendJSON(EDITMETADATA_PUBLICATION_INFO, snakeCaseJSON)
+    const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, snakeCaseJSON)
 
     expect(publicationData.publicationState).toBe(mappingTestData.publication_state);
     expect(publicationData.doi).toBe(mappingTestData.doi);
@@ -245,7 +245,7 @@ describe('getFrontendJSON', () => {
   it(EDITMETADATA_FUNDING_INFO, () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
-    const fundingData = getFrontendJSON(EDITMETADATA_FUNDING_INFO, snakeCaseJSON)
+    const fundingData = getFrontendJSONForStep(EDITMETADATA_FUNDING_INFO, snakeCaseJSON)
 
     const array = fundingData.funders;
     expect(array).toBeInstanceOf(Array);
@@ -277,7 +277,7 @@ describe('getBackendJSON', () => {
       license: mappingTestData.license_title,
     }
 
-    const headerData = getBackendJSON(EDITMETADATA_MAIN_HEADER, frontEndJSON)
+    const headerData = getBackendJSONForStep(EDITMETADATA_MAIN_HEADER, frontEndJSON)
 
     expect(headerData.title).not.toBeNull();
     expect(headerData.maintainer).not.toBeNull();
@@ -312,7 +312,7 @@ describe('getBackendJSON', () => {
       description: mappingTestData.notes,
     }
 
-    const descData = getBackendJSON(EDITMETADATA_MAIN_DESCRIPTION, frontendJSON)
+    const descData = getBackendJSONForStep(EDITMETADATA_MAIN_DESCRIPTION, frontendJSON)
 
     expect(descData.notes).not.toBeNull();
     expect(descData.notes).toBe(frontendJSON.description);
@@ -327,7 +327,7 @@ describe('getBackendJSON', () => {
 
     const frontendKeywords = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const backEndKeywords = getBackendJSON(EDITMETADATA_KEYWORDS, frontendKeywords)
+    const backEndKeywords = getBackendJSONForStep(EDITMETADATA_KEYWORDS, frontendKeywords)
 
     expect(backEndKeywords.tags).toBeInstanceOf(Array);
 
@@ -350,7 +350,7 @@ describe('getBackendJSON', () => {
 
     const frontendAuthors = getObjectInOtherCase({ authors: authorArray }, toCamelCase);
 
-    const backEndAuthors = getBackendJSON(EDITMETADATA_AUTHOR_LIST, frontendAuthors)
+    const backEndAuthors = getBackendJSONForStep(EDITMETADATA_AUTHOR_LIST, frontendAuthors)
 
     expect(backEndAuthors.author).toBeInstanceOf(Array);
 
@@ -377,7 +377,7 @@ describe('getBackendJSON', () => {
 
     const frontendResources = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const resourceData = getBackendJSON(EDITMETADATA_DATA_RESOURCES, frontendResources)
+    const resourceData = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCES, frontendResources)
 
     const array = resourceData.resources;
     expect(array).toBeInstanceOf(Array);
@@ -421,7 +421,7 @@ describe('getBackendJSON', () => {
 
     const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const dataInfoData = getBackendJSON(EDITMETADATA_DATA_INFO, frontendDataInfo);
+    const dataInfoData = getBackendJSONForStep(EDITMETADATA_DATA_INFO, frontendDataInfo);
 
     expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
     expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
@@ -435,7 +435,7 @@ describe('getBackendJSON', () => {
 
       const frontendDate = frontendDates[i];
 
-      const mappedEntry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, frontendDate);
+      const mappedEntry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, frontendDate);
 
       expect(backendDate.date).toBe(frontendDate.dateStart);
       expect(mappedEntry.date).toBe(frontendDate.dateStart);
@@ -468,7 +468,7 @@ describe('getBackendJSON', () => {
     }
 
     const frontendGeoInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
-    const geoData = getBackendJSON(EDITMETADATA_DATA_GEO, frontendGeoInfo)
+    const geoData = getBackendJSONForStep(EDITMETADATA_DATA_GEO, frontendGeoInfo)
 
     expect(geoData.spatial.type).toBe(frontendJSON.location.geoJSON.type);
     expect(geoData.spatial.coordinates).toStrictEqual(frontendJSON.location.geoJSON.coordinates);
@@ -487,7 +487,7 @@ describe('getBackendJSON', () => {
       relatedPublicationsText: mappingTestData.related_publications,
     }
 
-    const backendData = getBackendJSON(EDITMETADATA_RELATED_PUBLICATIONS, frontendJSON)
+    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_PUBLICATIONS, frontendJSON)
 
     expect(backendData.related_publications).not.toBeNull();
     expect(backendData.related_publications).toBe(frontendJSON.relatedPublicationsText);
@@ -500,7 +500,7 @@ describe('getBackendJSON', () => {
       relatedDatasetsText: mappingTestData.related_datasets,
     }
 
-    const backendData = getBackendJSON(EDITMETADATA_RELATED_DATASETS, frontendJSON)
+    const backendData = getBackendJSONForStep(EDITMETADATA_RELATED_DATASETS, frontendJSON)
 
     expect(backendData.related_datasets).not.toBeNull();
     expect(backendData.related_datasets).toBe(frontendJSON.relatedDatasetsText);
@@ -515,7 +515,7 @@ describe('getBackendJSON', () => {
 
     const frontendCustomFields = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const extrasData = getBackendJSON(EDITMETADATA_CUSTOMFIELDS, frontendCustomFields)
+    const extrasData = getBackendJSONForStep(EDITMETADATA_CUSTOMFIELDS, frontendCustomFields)
 
     const array = extrasData.extras;
     expect(array).toBeInstanceOf(Array);
@@ -536,7 +536,7 @@ describe('getBackendJSON', () => {
       organizationId: mappingTestData.organization.id,
     }, toCamelCase);
 
-    const organizationData = getBackendJSON(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo)
+    const organizationData = getBackendJSONForStep(EDITMETADATA_ORGANIZATION, frontendOrganizationInfo)
 
 //    const backendOrganization = organizationData.organization;
 //    const frontendOrganization = frontendOrganizationInfo.organization;
@@ -569,7 +569,7 @@ describe('getBackendJSON', () => {
 
     const frontendPublicationInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const publicationData = getBackendJSON(EDITMETADATA_PUBLICATION_INFO, frontendPublicationInfo)
+    const publicationData = getBackendJSONForStep(EDITMETADATA_PUBLICATION_INFO, frontendPublicationInfo)
 
     expect(publicationData.publication_state).toBe(frontendJSON.publicationState);
     expect(publicationData.doi).toBe(frontendJSON.doi);
@@ -594,7 +594,7 @@ describe('getBackendJSON', () => {
 
     const frontendFundingInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
-    const fundingData = getBackendJSON(EDITMETADATA_FUNDING_INFO, frontendFundingInfo)
+    const fundingData = getBackendJSONForStep(EDITMETADATA_FUNDING_INFO, frontendFundingInfo)
 
     const array = fundingData.funding;
     expect(array).toBeInstanceOf(Array);

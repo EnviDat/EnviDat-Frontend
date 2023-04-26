@@ -26,7 +26,7 @@ import {
 
 import {
   cleanResourceForFrontend,
-  getFrontendJSON,
+  getFrontendJSONForStep,
   getFrontendJSONNewDataset,
 } from '@/factories/mappingFactory';
 
@@ -55,7 +55,7 @@ export default {
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
 
     // convert properties and stringified json to match the frontend structure
-    resource = getFrontendJSON(stepKey, resource);
+    resource = getFrontendJSONForStep(stepKey, resource);
     resource = cleanResourceForFrontend(resource);
 
     // make resource selectable

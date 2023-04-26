@@ -385,38 +385,66 @@ function convertGet(entity, property) {
   return property.split('.').reduce( (entry, b) => entry[b], entity);
 }
 
-export function getBackendJSON(stepKey, data) {
-  const rules = JSONFrontendBackendRules[stepKey];
-
+function convertToBackendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
 
-  let backEndJson = {};
+  let backendJson = {};
 
-  rules.forEach(rule => convertPut(backEndJson, rule[1], convertGet(data, rule[0])));
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i];
 
-  backEndJson = getObjectInOtherCase(backEndJson, toSnakeCase);
+    try {
+      const value = convertGet(data, rule[0]);
+      convertPut(backendJson, rule[1], value);
+    } catch (e) {
+      console.log(i);
+      console.log(rule);
+      console.error(e);
+    }
+  }
+  // rules.forEach(rule => convertPut(backendJson, rule[1], convertGet(data, rule[0])));
 
-  return backEndJson;
+  backendJson = getObjectInOtherCase(backendJson, toSnakeCase);
+  return backendJson;
 }
 
-export function getFrontendJSON(stepKey, data) {
-  const rules = JSONFrontendBackendRules[stepKey];
-
+function convertToFrontendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
 
-  const backendJSON = data;
+  let frontendJson = {};
 
-  let frontEndJson = {};
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i];
 
-  rules.forEach(rule => convertPut(frontEndJson, rule[0], convertGet(backendJSON, rule[1])));
+    try {
+      const value = convertGet(data, rule[1]);
+      convertPut(frontendJson, rule[0], value);
+    } catch (e) {
+      console.log(i);
+      console.log(rule);
+      console.error(e);
+    }
+  }
+  // rules.forEach(rule => convertPut(frontendJson, rule[0], convertGet(data, rule[1])));
 
-  frontEndJson = getObjectInOtherCase(frontEndJson, toCamelCase);
+  frontendJson = getObjectInOtherCase(frontendJson, toCamelCase);
+  return frontendJson;
+}
 
-  return frontEndJson;
+export function getBackendJSONForStep(stepKey, data) {
+  const rules = JSONFrontendBackendRules[stepKey];
+
+  return convertToBackendJSONWithRules(rules, data);
+}
+
+export function getFrontendJSONForStep(stepKey, data) {
+  const rules = JSONFrontendBackendRules[stepKey];
+
+  return convertToFrontendJSONWithRules(rules, data);
 }
 
 export function stringifyResourceForBackend(resource) {
@@ -468,7 +496,7 @@ export function cleanListForBackend(elementList, mappingKey) {
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
-    let cleaned = getBackendJSON(mappingKey, element);
+    let cleaned = getBackendJSONForStep(mappingKey, element);
 
     if (mappingKey === EDITMETADATA_DATA_RESOURCE) {
       cleaned = stringifyResourceForBackend(cleaned);
@@ -485,7 +513,7 @@ export function cleanListForFrontend(elementList, mappingKey) {
   const cleanedElements = [];
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
-    const cleaned = getFrontendJSON(mappingKey, element);
+    const cleaned = getFrontendJSONForStep(mappingKey, element);
     cleanedElements.push(cleaned);
   }
 
@@ -505,7 +533,7 @@ export function cleanResourceForFrontend(resource) {
     }
   }
 
-  const cleanedResSize = getFrontendJSON(EDITMETADATA_DATA_RESOURCE_SIZE, resSize);
+  const cleanedResSize = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE_SIZE, resSize);
 
   let restricted = resource.restricted;
 
@@ -518,7 +546,7 @@ export function cleanResourceForFrontend(resource) {
     }
   }
 
-  const cleanedRestricted = getFrontendJSON(EDITMETADATA_DATA_RESTRICTED, restricted);
+  const cleanedRestricted = getFrontendJSONForStep(EDITMETADATA_DATA_RESTRICTED, restricted);
   
   return {
     ...resource,
@@ -527,15 +555,6 @@ export function cleanResourceForFrontend(resource) {
   }
 }
 
-export function cleanSpatialInfo(spatial) {
-  const rules = JSONFrontendBackendRules[EDITMETADATA_DATA_GEO_SPATIAL];
-
-  const backEndJson = {};
-
-  rules.forEach(x => convertPut(backEndJson, x[1], convertGet(spatial, x[0])));
-
-  return backEndJson;
-}
 
 // possible publication states: ['', 'published', 'approved', 'publication pending', 'publication requested']
 const readOnlyMappingRules = [
@@ -602,9 +621,9 @@ function mapCustomFields(fields, frontendToBackend = true) {
   for (let i = 0; i < fields.length; i++) {
     let mappedEntry = null;
     if (frontendToBackend) {
-      mappedEntry = getBackendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+      mappedEntry = getBackendJSONForStep(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
     } else {
-      mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+      mappedEntry = getFrontendJSONForStep(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
     }
     entries.push(mappedEntry);
   }
@@ -618,7 +637,7 @@ function formatDatesForFrontend(dates) {
   for (let i = 0; i < dates.length; i++) {
     const dateEntry = dates[i];
 
-    const entry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    const entry = getFrontendJSONForStep(EDITMETADATA_DATA_INFO_DATES, dateEntry);
     entry.dateStart = formatDate(entry.dateStart) || '';
     entry.dateEnd = formatDate(entry.dateEnd) || '';
 
@@ -633,21 +652,21 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   const dataObject = {};
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const headerData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const descriptionData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
-  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
+  const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
 
   const enhancedKeywords = {
     ...keywordsData,
@@ -670,7 +689,7 @@ function populateEditingAuthors(commit, snakeCaseJSON, authorsMap) {
 
   const authors = []
   snakeCaseJSON.author.forEach((bAuthor) => {
-    const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+    const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
 
     if (typeof author.dataCredit === 'string') {
       author.dataCredit = [author.dataCredit];
@@ -712,7 +731,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   // const resources = createResources(metadataRecord).resources;
 
   let stepKey = EDITMETADATA_DATA_INFO;
-  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   dateInfoData.dates = formatDatesForFrontend(dateInfoData.dates);
 
@@ -728,7 +747,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
 
 
   stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   const location = createLocation({
     ...snakeCaseJSON,
@@ -753,7 +772,7 @@ function populateEditingResources(commit, snakeCaseJSON) {
   // const resources = createResources(metadataRecord).resources;
 
   const stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   const resources = resourceData.resources;
 
   for (let i = 0; i < resources.length; i++) {
@@ -777,19 +796,19 @@ function populateEditingRelatedResearch(commit, snakeCaseJSON) {
   const dataObject = {};
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const rPublicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const rDatasetsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, rDatasetsData);
   dataObject.relatedDatasetsData = rDatasetsData;
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const customFieldsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
 
   commitEditingData(commit, stepKey, customFieldsData);
@@ -803,20 +822,20 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   const dataObject = {};
 
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const publicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
 
   commitEditingData(commit, stepKey, publicationData);
   dataObject.publicationData = publicationData;
 
   stepKey = EDITMETADATA_FUNDING_INFO;
-  const fundingData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const fundingData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, fundingData);
   dataObject.fundingData = fundingData;
 
   stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const organizationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, organizationData);
   dataObject.organizationData = organizationData;
@@ -857,7 +876,7 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
 function mapDatesForBackend(datesArray) {
 
   if (!Array.isArray(datesArray) || datesArray.length <= 0) {
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, {
+    const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, {
       dateType: 'creation',
       dateStart: '',
       dateEnd: '',
@@ -871,7 +890,7 @@ function mapDatesForBackend(datesArray) {
   for (let i = 0; i < datesArray.length; i++) {
     const dateEntry = datesArray[i];
 
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, dateEntry);
     mappedDates.push(entry);
   }
 
@@ -903,7 +922,7 @@ export function mapBackendToFrontend(stepKey, backendData) {
     backendJSON.extras = mapCustomFields(backendJSON.extras, false);
   }
 
-  return getFrontendJSON(stepKey, backendJSON);
+  return getFrontendJSONForStep(stepKey, backendJSON);
 }
 
 export function mapFrontendToBackend(stepKey, frontendData) {
@@ -921,7 +940,7 @@ export function mapFrontendToBackend(stepKey, frontendData) {
     localData.customFields = mapCustomFields(localData.customFields);
   }
 
-  let backendData = getBackendJSON(stepKey, localData);
+  let backendData = getBackendJSONForStep(stepKey, localData);
 
   if (dataNeedsStringify.includes(stepKey)) {
     backendData = convertJSON(backendData, true);
@@ -1034,7 +1053,7 @@ export function mergeResourceSizeForFrontend(resource) {
 
 export function enhanceUserObject(user) {
 
-  const cleanUser = getFrontendJSON(USER_OBJECT, user);
+  const cleanUser = getFrontendJSONForStep(USER_OBJECT, user);
 
   const email = cleanUser?.email || null;
   if (email) {
@@ -1052,48 +1071,32 @@ export function enhanceUserObject(user) {
 }
 
 export function getNewCreationDatasetMappingRules() {
-  const mergedRules = [];
-
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_MAIN_DESCRIPTION]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_KEYWORDS]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_AUTHOR_LIST]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_DATA_INFO]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_DATA_GEO]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_FUNDING_INFO]);
-  mergedRules.push(JSONFrontendBackendRules[EDITMETADATA_PUBLICATION_INFO]);
-
-  mergedRules.push([
-    ['ownerOrg', 'owner_org'],
-    ['resourceTypeGeneral', 'resource_type_general'],
-  ]);
-
-  return mergedRules;
+  return [].concat(
+    JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER],
+    JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER],
+    JSONFrontendBackendRules[EDITMETADATA_MAIN_DESCRIPTION],
+    JSONFrontendBackendRules[EDITMETADATA_KEYWORDS],
+    JSONFrontendBackendRules[EDITMETADATA_AUTHOR_LIST],
+    JSONFrontendBackendRules[EDITMETADATA_DATA_INFO],
+    JSONFrontendBackendRules[EDITMETADATA_DATA_GEO],
+    JSONFrontendBackendRules[EDITMETADATA_FUNDING_INFO],
+    JSONFrontendBackendRules[EDITMETADATA_PUBLICATION_INFO],
+    [
+      ['ownerOrg', 'owner_org'],
+      ['resourceTypeGeneral', 'resource_type_general'],
+    ],
+  );
 }
 
 export function getBackendJSONNewDataset (data) {
   const rules = getNewCreationDatasetMappingRules();
 
-  let backEndJson = {};
-
-  rules.forEach(rule => convertPut(backEndJson, rule[1], convertGet(data, rule[0])));
-
-  backEndJson = getObjectInOtherCase(backEndJson, toSnakeCase);
-
-  return backEndJson;
+  return convertToBackendJSONWithRules(rules, data);
 }
 
 export function getFrontendJSONNewDataset(data) {
   const rules = getNewCreationDatasetMappingRules();
 
-  const backendJSON = data;
-
-  let frontEndJson = {};
-
-  rules.forEach(rule => convertPut(frontEndJson, rule[0], convertGet(backendJSON, rule[1])));
-
-  frontEndJson = getObjectInOtherCase(frontEndJson, toCamelCase);
-
-  return frontEndJson;
+  return convertToFrontendJSONWithRules(rules, data);
 }
 

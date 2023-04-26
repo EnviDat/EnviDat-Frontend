@@ -21,7 +21,7 @@ import {
 
 import {
   cleanResourceForFrontend,
-  getFrontendJSON,
+  getFrontendJSONForStep,
   populateEditingComponents,
 } from '@/factories/mappingFactory';
 
@@ -95,7 +95,7 @@ export default {
   },
   [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
 
-    let fResource = getFrontendJSON(stepKey, resource);
+    let fResource = getFrontendJSONForStep(stepKey, resource);
     fResource = cleanResourceForFrontend(fResource)
     fResource.loading = false;
     fResource.message = message;

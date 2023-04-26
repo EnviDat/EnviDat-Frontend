@@ -15,7 +15,7 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
-  getBackendJSON,
+  getBackendJSONForStep,
   mapFrontendToBackend,
   populateEditingComponents,
   stringifyResourceForBackend,
@@ -56,11 +56,6 @@ if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
   ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 }
-
-const sleep = (milliseconds) =>
-  // eslint-disable-next-line no-promise-executor-return
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
-
 
 export default {
   async [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
@@ -142,7 +137,7 @@ export default {
 
     // create a local copy to avoid mutation of vuex store objects / properties
     const localData = { ...data };
-    const cleaned = getBackendJSON(stepKey, localData);
+    const cleaned = getBackendJSONForStep(stepKey, localData);
     const postData = stringifyResourceForBackend(cleaned);
 
     await axios.post(url, postData)
