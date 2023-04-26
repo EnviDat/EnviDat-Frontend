@@ -235,14 +235,6 @@ export const metadataEditingSteps = [
   },
 ];
 
-export function getCreationWorkflowSteps() {
-  return structuredClone(metadataCreationSteps);
-}
-
-export function getEditingWorkflowSteps() {
-  return structuredClone(metadataEditingSteps);
-}
-
 export function initializeSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
@@ -252,7 +244,11 @@ export function initializeSteps(steps) {
       // initialize these properties here so they are reactive
       step.readOnlyFields = null;
       step.readOnlyExplanation = null;
+      step.loading = false;
+      step.message = null;
+      step.messageDetails = null;
       step.error = null;
+      step.errorDetails = null;
 
       if (step.detailSteps) {
         step.detailSteps = initializeSteps(step.detailSteps);
@@ -312,24 +308,7 @@ export function getStepFromRoute(route) {
 export function getEmptyMetadataInEditingObject() {
   // use the JSON.parse and JSON.stringify to disconnect it from this file
   // meaning it won't connect with the reactivity of vue.js
-  const emptyEditingObject = JSON.parse(JSON.stringify(emptyMetadataInEditing));
-  // const emptyEditingObject = { ...emptyMetadataInEditing };
+  // aka. a deep copy without references
 
-  // initialize every object with some basic attributes
-  // for loading indication, error and success messages
-  /*
-    const stepKeys = Object.keys(emptyEditingObject);
-    for (let i = 0; i < stepKeys.length; i++) {
-      const key = stepKeys[i];
-
-      const stepObj = emptyEditingObject[key];
-      stepObj.loading = false;
-      stepObj.message = null;
-      stepObj.messageDetails = null;
-      stepObj.error = null;
-      stepObj.errorDetails = null;
-    }
-  */
-
-  return emptyEditingObject;
+  return JSON.parse(JSON.stringify(emptyMetadataInEditing));
 }

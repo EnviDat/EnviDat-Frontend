@@ -114,7 +114,12 @@ import {
 } from '@/factories/userCreationFactory';
 
 import { mapState } from 'vuex';
-import { getStepByName, getStepFromRoute, initializeSteps, metadataCreationSteps } from '@/factories/workflowFactory';
+import {
+  getStepByName,
+  getStepFromRoute,
+  initializeSteps,
+  metadataCreationSteps,
+} from '@/factories/workflowFactory';
 
 
 export default {
