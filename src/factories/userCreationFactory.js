@@ -125,7 +125,7 @@ const minRequiredPropsForDatasetCreation = [
   'dataLicenseId',
   'funders',
   'dates',
-  'location.geoJSON',
+  'location', // 'location.geoJSON',
   'publisher',
   'publicationYear',
 ];
