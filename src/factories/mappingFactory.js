@@ -143,9 +143,9 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO_DATES]: [
     // special case because the snakeCase is done before
     // only a renaming is needed
-    [DATE_PROPERTY_DATE_TYPE,'dateType'],
-    [DATE_PROPERTY_START_DATE,'date'],
-    [DATE_PROPERTY_END_DATE,'endDate'],
+    [DATE_PROPERTY_DATE_TYPE, 'date_type'],
+    [DATE_PROPERTY_START_DATE, 'date'],
+    [DATE_PROPERTY_END_DATE, 'end_date'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
