@@ -10,7 +10,7 @@
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <div v-on="on">
-          {{ showContent ? stateText : stateText.substr(0, 1) }}
+          {{ showContent ? stateText : stateText.substring(0, 1) }}
         </div>
       </template>
 

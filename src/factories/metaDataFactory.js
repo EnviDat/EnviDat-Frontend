@@ -102,7 +102,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
       const timeOnly = split[1];
       const timeSplit = timeOnly.split('.');
       let timeToMinutes = timeSplit[0];
-      timeToMinutes = timeToMinutes.substr(0, 5);
+      timeToMinutes = timeToMinutes.substring(0, 5);
 
       formatedDate = `${newDate} ${timeToMinutes}`;
     } else {
