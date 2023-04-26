@@ -50,11 +50,11 @@
             :label="labels.institution"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('institution')"
-            :hint="mixinMethods_readOnlyHint('institution')"
+            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
+            :hint="mixinMethods_readOnlyHint(INSTITUTION)"
             :value="item.institution"
-            :error-messages="validationErrors.funders[index].institution"
-            @change="notifyChange(index, 'institution', $event)"
+            :error-messages="getValidationErrorMessage(INSTITUTION, index)"
+            @change="notifyChange(index, INSTITUTION, $event)"
           />
         </v-col>
 
@@ -63,11 +63,11 @@
             :label="labels.grantNumber"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('grantNumber')"
-            :hint="mixinMethods_readOnlyHint('grantNumber')"
+            :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
+            :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
             :value="item.grantNumber"
-            :error-messages="validationErrors.funders[index].grantNumber"
-            @change="notifyChange(index, 'grantNumber', $event)"
+            :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
+            @change="notifyChange(index, GRANTNUMBER, $event)"
           />
         </v-col>
 
@@ -76,11 +76,11 @@
             :label="labels.institutionUrl"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('institutionUrl')"
-            :hint="mixinMethods_readOnlyHint('institutionUrl')"
+            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
+            :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
             :value="item.institutionUrl"
-            :error-messages="validationErrors.funders[index].institutionUrl"
-            @change="notifyChange(index, 'institutionUrl', $event)"
+            :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
+            @change="notifyChange(index, INSTITUTION_URL, $event)"
           />
         </v-col>
 
@@ -148,6 +148,10 @@ import {
   isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+const INSTITUTION = 'institution';
+const GRANTNUMBER = 'grantNumber';
+const INSTITUTION_URL = 'institutionUrl';
 
 export default {
   name: 'EditFunding',
@@ -365,8 +369,14 @@ export default {
         this.validationErrors.fundersArray = this.maxFundersMessage;
       }
     },
+    getValidationErrorMessage(property, index) {
+      return this.validationErrors?.funders[index][property] || '';
+    },
   },
   data: () => ({
+    INSTITUTION,
+    GRANTNUMBER,
+    INSTITUTION_URL,
     emptyEntry: {
       institution: '',
       grantNumber: '',
