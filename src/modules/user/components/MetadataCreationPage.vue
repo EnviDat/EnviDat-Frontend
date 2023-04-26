@@ -111,6 +111,7 @@ import {
   initStepDataOnLocalStorage,
   storeCreationStepsData,
   updateStepStatus,
+  updateStepsWithReadOnlyFields,
 } from '@/factories/userCreationFactory';
 
 import { mapState } from 'vuex';
@@ -120,6 +121,8 @@ import {
   initializeSteps,
   metadataCreationSteps,
 } from '@/factories/workflowFactory';
+import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 
 
 export default {
@@ -154,6 +157,8 @@ export default {
   beforeMount() {
     initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
     initStepDataOnLocalStorage(this.creationSteps, this.user);
+
+    this.setReadOnlyBasedOnVisibilty(this.creationSteps);
   },
   mounted() {
     // reset the scrolling to the top
@@ -165,8 +170,11 @@ export default {
     }
 */
 
-    // this.loadOrganizations();
-    this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+    this.loadOrganizations();
+
+    this.$nextTick(() => {
+      this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+    });
   },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE,[
@@ -236,6 +244,15 @@ export default {
     },
   },
   methods: {
+    setReadOnlyBasedOnVisibilty(steps) {
+      const publicationState = getMetadataVisibilityState();
+      const readOnlyObj = getReadOnlyFieldsObject(publicationState);
+
+      if (readOnlyObj) {
+        updateStepsWithReadOnlyFields(steps, readOnlyObj);
+      }
+
+    },
     async loadOrganizations() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
 
@@ -281,7 +298,7 @@ export default {
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
-        this.updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
+        updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
       }
 */
 

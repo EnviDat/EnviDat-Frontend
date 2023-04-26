@@ -576,6 +576,15 @@ const readOnlyMappingRules = [
   },
 /*
   {
+    triggerRule: ['draft'],
+    explanation: 'This is "readonly" because the dataset is still a draft.',
+    readOnlyFields: [
+      'resources',
+    ],
+  },
+*/
+/*
+  {
     triggerRule: 'admin',
     readOnlyFields: [],
   },
