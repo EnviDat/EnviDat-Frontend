@@ -12,6 +12,7 @@
                        stepColor="highlight"
                        :loading="loading"
                        :showSaveButton="canSaveInBackend"
+                       :isCreationWorkflow="true"
                        @clickedSaveDataset="catchSaveDataset"
                        @clickedClose="catchBackClicked" />
 
@@ -66,7 +67,6 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  getEmptyMetadataInEditingObject,
   getStepFromRoute,
   initializeSteps,
   getSelectedElement,
@@ -112,10 +112,10 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import {
-  canLocalDatasetBeStoredInBackend, getAllFromSteps,
-  initializeStepDataWithDefaults,
+  canLocalDatasetBeStoredInBackend,
+  getAllFromSteps,
   initializeStepsInUrl,
-  loadAllStepDataFromLocalStorage,
+  initStepDataOnLocalStorage,
   readDataFromLocalStorage,
   storeCreationStepsData,
   updateStepStatus,
@@ -155,7 +155,7 @@ export default {
   },
   beforeMount() {
     initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
-    this.initStepDataOnLocalStorage(this.creationSteps, this.user);
+    initStepDataOnLocalStorage(this.creationSteps, this.user);
   },
   mounted() {
     // reset the scrolling to the top
@@ -238,25 +238,6 @@ export default {
     },
   },
   methods: {
-    initStepDataOnLocalStorage(steps, user) {
-      const creationData = getEmptyMetadataInEditingObject();
-
-      initializeStepDataWithDefaults(steps, user, 'test')
-      loadAllStepDataFromLocalStorage(steps, creationData);
-
-      // merge data
-    },
-/*
-    async loadStepsWithCreationData(steps, creationData) {
-
-      const stepKeys = Object.keys(steps);
-
-      for (let i = 0; i < stepKeys.length; i++) {
-        const stepK = stepKeys[i];
-
-      }
-    },
-*/
     async loadOrganizations() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
 
@@ -319,7 +300,7 @@ export default {
     catchSaveDataset() {
 
       const data = getAllFromSteps(this.creationSteps);
-      this.$store.commit(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
+      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
@@ -389,9 +370,8 @@ export default {
 
       storeCreationStepsData(stepKey, data, this.creationSteps, resetMessages);
 
-      this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-
       this.$nextTick(() => {
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
         // }

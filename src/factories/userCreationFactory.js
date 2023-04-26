@@ -3,8 +3,13 @@ import {
   EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_RELATED_DATASETS,
+  EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -15,7 +20,7 @@ import {
 } from '@/factories/authorFactory';
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
-import { getStepByName, updateEditingArray } from '@/factories/userEditingFactory';
+import { getEmptyMetadataInEditingObject, getStepByName, updateEditingArray } from '@/factories/userEditingFactory';
 import { mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
 
 /*
@@ -44,7 +49,7 @@ export function addDefaultsToNewDataset(newDataset) {
   }
 }
 
-export function initializeStepDataWithDefaults(steps, user, organizationId) {
+function initCreationDataWithDefaults(creationData, user, organizationId) {
   const fullName = user.fullName || user.name || '';
   const nameSplits = fullName.split(' ');
 
@@ -55,9 +60,10 @@ export function initializeStepDataWithDefaults(steps, user, organizationId) {
   }
   const lastName = nameSplits[nameSplits.length - 1];
 
-  const headerStep = getStepByName(EDITMETADATA_MAIN_HEADER, steps);
+  const headerStep = creationData[EDITMETADATA_MAIN_HEADER];
 
-  headerStep.genericProps = {
+  creationData[EDITMETADATA_MAIN_HEADER] = {
+    ...headerStep,
     contactEmail: user.email,
     contactGivenName: firstName,
     contactSurname: lastName,
@@ -69,11 +75,11 @@ export function initializeStepDataWithDefaults(steps, user, organizationId) {
     email: user.email,
   });
 
-  const authorsStep = getStepByName(EDITMETADATA_AUTHOR_LIST, steps);
-  authorsStep.genericProps = { authors: [userAuthor] };
+  creationData[EDITMETADATA_AUTHOR_LIST] = { authors: [userAuthor] };
 
-  const publicationStep = getStepByName(EDITMETADATA_PUBLICATION_INFO, steps);
-  publicationStep.genericProps = {
+  const publicationStep = creationData[EDITMETADATA_PUBLICATION_INFO];
+  creationData[EDITMETADATA_PUBLICATION_INFO] = {
+    ...publicationStep,
     publisher: 'EnviDat',
   };
 }
@@ -99,7 +105,6 @@ const minRequiredPropsForDatasetCreation = [
 function matchedWithRequiredProps(steps) {
 
   let step;
-  let genericKey;
   let matches;
 
   const matchedPropsWithValue = [];
@@ -111,11 +116,14 @@ function matchedWithRequiredProps(steps) {
     matches = minRequiredPropsForDatasetCreation.filter((prop) => genericKeys.includes(prop));
 
     if (matches.length > 0) {
-      genericKey = matches[0];
-      const value = step.genericProps[genericKey];
-      if (value) {
-        matchedPropsWithValue.push(genericKey);
+      for (let j = 0; j < matches.length; j++) {
+        const key = matches[j];
+        const value = step.genericProps[key];
+        if (value) {
+          matchedPropsWithValue.push(key);
+        }
       }
+
     }
 
     if (step.detailSteps) {
@@ -190,8 +198,13 @@ export function readDataFromLocalStorage(stepKey) {
   }
 
   try {
-    const storeData = localStorage.getItem(stepKey);
-    const bData = JSON.parse(storeData);
+    const localData = localStorage.getItem(stepKey);
+
+    if (!localData) {
+      return null;
+    }
+
+    const bData = JSON.parse(localData);
     const fData = mapBackendToFrontend(stepKey, bData);
     return fData;
   } catch (e) {
@@ -202,13 +215,13 @@ export function readDataFromLocalStorage(stepKey) {
 
 function initStepDataInLocalStorage(stepKey, data) {
 
-  const storeData = readDataFromLocalStorage(stepKey);
+  const localData = readDataFromLocalStorage(stepKey);
 
-  if (!storeData) {
+  if (!localData) {
     return writeStepDataInLocalStorage(stepKey, data);
   }
 
-  return storeData;
+  return localData;
 }
 
 export function getAllFromSteps(steps) {
@@ -233,24 +246,45 @@ export function getAllFromSteps(steps) {
 
   return flatData;
 }
+
+function mapDataKeyToStepKey(key) {
+  // merged the data from these localstorage objects
+  // on to a single step object because it's one step with multiple components
+  // not sub steps aka. details steps
+
+  if (key === EDITMETADATA_RELATED_DATASETS ||
+    key === EDITMETADATA_CUSTOMFIELDS) {
+    return EDITMETADATA_RELATED_PUBLICATIONS;
+  }
+
+  if (key === EDITMETADATA_FUNDING_INFO ||
+    key === EDITMETADATA_ORGANIZATION) {
+    return EDITMETADATA_PUBLICATION_INFO;
+  }
+
+  return key;
+}
+
 export function loadAllStepDataFromLocalStorage(steps, creationData) {
 
-  for (let i = 0; i < steps.length; i++) {
-    const step = steps[i];
-    const stepKey = step.key;
+  const keys = Object.keys(creationData);
 
-    if (creationData[stepKey]) {
-      // if the step exists in the data structure, check the localstorage
-      // steps which have detailSteps don't keep data in the data structure
-      step.genericProps = initStepDataInLocalStorage(stepKey, creationData[stepKey]);
-/*
-      console.log(`assigned data to ${stepKey}`);
-      console.log(step.genericProps);
-*/
-    }
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
 
-    if (step.detailSteps) {
-      loadAllStepDataFromLocalStorage(step.detailSteps, creationData);
+    const storeData = initStepDataInLocalStorage(key, creationData[key]);
+
+    if (storeData) {
+      key = mapDataKeyToStepKey(key);
+
+      const step = getStepByName(key, steps);
+
+      if (step) {
+        step.genericProps = {
+          ...step.genericProps,
+          ...storeData,
+        };
+      }
     }
 
   }
@@ -273,6 +307,13 @@ export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
       query: vm.$route.query,
     });
   }
+}
+
+export function initStepDataOnLocalStorage(steps, user) {
+  const creationData = getEmptyMetadataInEditingObject();
+
+  initCreationDataWithDefaults(creationData, user, 'test')
+  loadAllStepDataFromLocalStorage(steps, creationData);
 }
 
 function updateStepCompleted(step, stepData) {
@@ -356,7 +397,6 @@ export function updateStepStatus(stepKey, steps, getStepDataFn) {
   }
 }
 
-
 export function storeCreationStepsData(stepKey, data, steps, resetMessages = true) {
 
   let key = stepKey;
@@ -386,8 +426,11 @@ export function storeCreationStepsData(stepKey, data, steps, resetMessages = tru
     stepData = authorsStepData;
   }
 
-  const step = getStepByName(key, steps);
+
   const storedData = writeStepDataInLocalStorage(key, stepData);
+  key = mapDataKeyToStepKey(stepKey);
+
+  const step = getStepByName(key, steps);
 
   if (storedData) {
     stepData.message = `Changes for ${step.title} saved locally!`;
@@ -395,17 +438,18 @@ export function storeCreationStepsData(stepKey, data, steps, resetMessages = tru
 
     if (resetMessages) {
       setTimeout(() => {
-        step.genericProps = {
-          ...stepData,
-          message: null,
-          messageDetails: null,
-        };
+        step.genericProps.message = null;
+        step.genericProps.messageDetails = null;
       }, 2500);
     }
   }
 
-
-  step.genericProps = stepData;
+  step.genericProps = {
+    ...step.genericProps,
+    // use the stepData here, because the storeData only contains
+    // what later on is stored in the backend
+    ...stepData,
+  };
 
   eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

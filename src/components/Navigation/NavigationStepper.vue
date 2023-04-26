@@ -72,13 +72,15 @@
         <!-- prettier-ignore -->
         <component v-if="currentStep"
                        :is="currentStep.component"
+                       :currentStep="currentStep"
                        :steps="currentStep.detailSteps"
                        v-bind="currentStep.genericProps"
                        :stepTitle="subStep || currentStep.stepTitle"
                        :stepColor="currentStep.color"
                        :readOnlyFields="currentStep.readOnlyFields"
                        :readOnlyExplanation="currentStep.readOnlyExplanation"
-                       :nextMajorStep="getNextMajorStepTitle()" />
+                       :nextMajorStep="getNextMajorStepTitle()"
+                       :isCreationWorkflow="isCreationWorkflow" />
 
         <div v-if="!currentStep">
           Nothing selected, please select a step in the navigation!
@@ -124,6 +126,10 @@ export default {
       default: false,
     },
     showSaveButton: {
+      type: Boolean,
+      default: false,
+    },
+    isCreationWorkflow: {
       type: Boolean,
       default: false,
     },

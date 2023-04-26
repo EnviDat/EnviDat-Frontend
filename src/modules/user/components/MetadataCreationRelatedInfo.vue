@@ -49,6 +49,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
+
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
@@ -58,6 +59,7 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 export default {
   name: 'MetadataCreationRelatedInfo',
   props: {
+    currentStep: Object,
     relatedPublicationsText: {
       type: String,
       default: undefined,
@@ -79,46 +81,53 @@ export default {
       default: '',
     },
     nextMajorStep: String,
+    isCreationWorkflow: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     relatedPublicationsTextWrap() {
-      if (this.relatedPublicationsText) {
-        return this.relatedPublicationsText;
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.relatedPublicationsText;
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
       }
 
-      return undefined;
+      return this.relatedPublicationsText;
     },
     relatedDatasetsTextWrap() {
-      if (this.relatedDatasetsText) {
-        return this.relatedDatasetsText;
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.relatedDatasetsText;
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
       }
 
-      return undefined;
+      return this.relatedDatasetsText;
     },
     customFieldsWrap() {
-      if (this.customFields) {
-        return this.customFields;
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.customFields;
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](EDITMETADATA_CUSTOMFIELDS).customFields;
       }
 
-      return [];
+      return this.customFields;
     },
     editRelatedPublicationsProps() {
       return {

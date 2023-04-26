@@ -112,16 +112,45 @@ import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
-  eventBus,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_FUNDING_INFO,
+  eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
+    currentStep: Object,
+    possiblePublicationStates: {
+      type: Array,
+      default: undefined,
+    },
+    publicationState: {
+      type: String,
+      default: undefined,
+    },
+    visibilityState: {
+      type: String,
+      default: undefined,
+    },
+    doi: {
+      type: String,
+      default: undefined,
+    },
+    publisher: {
+      type: String,
+      default: undefined,
+    },
+    publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    funders: {
+      type: Array,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -130,47 +159,50 @@ export default {
       type: String,
       default: '',
     },
+    isCreationWorkflow: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     publicationsInfo() {
-      if (this.publicationState) {
+
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+
         return {
-          possiblePublicationStates: this.possiblePublicationStates,
-          publicationState: this.publicationState,
-          visibilityState: this.visibilityState,
-          doi: this.doi,
-          publisher: this.publisher,
-          publicationYear: this.publicationYear,
+          possiblePublicationStates: stepData.possiblePublicationStates,
+          publicationState: stepData.publicationState,
+          visibilityState: stepData.visibilityState,
+          doi: stepData.doi,
+          publisher: stepData.publisher,
+          publicationYear: stepData.publicationYear,
         }
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
       }
 
       return {};
     },
     fundingInfo() {
-      if (this.funders) {
-        return this.funders;
+      if (this.isCreationWorkflow) {
+        return this.currentStep.genericProps;
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_FUNDING_INFO);
       }
 
       return {};
     },
     organizationsInfo() {
-      if (this.organization) {
-        return {
-          organization: this.organization,
-          allOrganizations: this.allOrganizations,
-          userOrganizationsList: this.userOrganizationsList,
-        }
+      if (this.isCreationWorkflow) {
+        return this.currentStep.genericProps;
       }
 
-      if (this.$store) {
+      if (!this.isCreationWorkflow && this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
       }
 
