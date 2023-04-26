@@ -39,6 +39,9 @@ const EditDataAndResources = () => import('@/modules/user/components/EditDataAnd
 const EditDataInfo = () => import('@/modules/user/components/EditDataInfo.vue');
 const EditDataGeo = () => import('@/modules/user/components/EditDataGeo.vue');
 
+const CreateDataAndResources = () => import('@/modules/user/components/create/CreateDataAndResources.vue');
+
+
 const MetadataGenericSubStepper = () => import('@/modules/user/components/MetadataGenericSubStepper.vue');
 const MetadataCreationRelatedInfo = () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue');
 const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
@@ -137,7 +140,31 @@ const mainDetailSteps = [
   },
 ];
 
-const dataDetailSteps = [
+const creationDataDetailSteps = [
+  {
+    title: EDIT_STEP_TITLE_SUB_DATA,
+    completed: false,
+    component: CreateDataAndResources,
+    key: EDITMETADATA_DATA_RESOURCES,
+    genericProps: {},
+  },
+  {
+    title: EDIT_STEP_TITLE_SUB_DATES,
+    completed: false,
+    key: EDITMETADATA_DATA_INFO,
+    component: EditDataInfo,
+    genericProps: {},
+  },
+  {
+    title: EDIT_STEP_TITLE_SUB_GEO,
+    completed: false,
+    key: EDITMETADATA_DATA_GEO,
+    component: EditDataGeo,
+    genericProps: {},
+  },
+];
+
+const editingDataDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_DATA,
     completed: false,
@@ -177,8 +204,8 @@ export const metadataCreationSteps = [
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
-    detailSteps: dataDetailSteps,
-    stepTitle: dataDetailSteps[0].title,
+    detailSteps: creationDataDetailSteps,
+    stepTitle: creationDataDetailSteps[0].title,
     color: 'white',
     genericProps: {},
   },
@@ -214,8 +241,8 @@ export const metadataEditingSteps = [
     completed: false,
     component: MetadataGenericSubStepper,
     key: EDITMETADATA_DATA,
-    detailSteps: dataDetailSteps,
-    stepTitle: dataDetailSteps[0].title,
+    detailSteps: editingDataDetailSteps,
+    stepTitle: editingDataDetailSteps[0].title,
     color: 'white',
     genericProps: {},
   },
