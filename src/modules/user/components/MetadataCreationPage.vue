@@ -285,7 +285,7 @@ export default {
       }
 */
 
-      const stepKey = getStepFromRoute(this.$route);
+      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
       updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
     },
     updateLastEditingDataset(name, path, backPath) {
@@ -407,7 +407,7 @@ export default {
 /*
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
-        const stepKey = getStepFromRoute(this.$route);
+        const stepKey = getStepFromRoute(this.$route, this.creationSteps);
         updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
       }
     },
@@ -415,7 +415,7 @@ export default {
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-      const stepKey = getStepFromRoute(this.$route);
+      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
       updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
     },
 /*

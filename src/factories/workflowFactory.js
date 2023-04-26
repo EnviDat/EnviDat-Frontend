@@ -172,16 +172,16 @@ export const metadataCreationSteps = [
     color: 'white',
     genericProps: {},
   },
-  /*
-    {
-      title: EDIT_STEP_TITLE_MAIN_RESOURCES,
-      completed: false,
-      component: MetadataCreationRelatedInfo,
-      key: EDITMETADATA_DATA,
-      stepTitle: EDIT_STEP_TITLE_SUB_DATA,
-      color: 'white',
-    },
-  */
+  {
+    title: EDIT_STEP_TITLE_MAIN_RESOURCES,
+    completed: false,
+    component: MetadataGenericSubStepper,
+    key: EDITMETADATA_DATA,
+    detailSteps: dataDetailSteps,
+    stepTitle: dataDetailSteps[0].title,
+    color: 'white',
+    genericProps: {},
+  },
   {
     title: EDIT_STEP_TITLE_MAIN_RELATED,
     completed: false,
@@ -288,10 +288,10 @@ export function getStepByName(stepKey, steps) {
   return null;
 }
 
-export function getStepFromRoute(route) {
+export function getStepFromRoute(route, steps) {
 
   const stepTitle = route?.params?.step || null;
-  const currentStep = metadataCreationSteps.filter(step => step.title === stepTitle)[0];
+  const currentStep = steps.filter(step => step.title === stepTitle)[0];
 
   const detailSteps = currentStep?.detailSteps || null;
   const subStepTitle = route?.params?.substep || null;

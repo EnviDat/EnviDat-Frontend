@@ -205,7 +205,7 @@ export default {
       return !map || Object.keys(map).length <= 0;
     },
     currentComponentLoading() {
-      const stepKey = getStepFromRoute(this.$route);
+      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
       const stepData = this.getGenericPropsForStep(stepKey);
 
       return stepData?.loading || false;
@@ -296,7 +296,7 @@ export default {
         updateStepsWithReadOnlyFields(this.editingSteps, readOnlyObj);
       }
 
-      const stepKey = getStepFromRoute(this.$route);
+      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
       updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
     },
     updateLastEditingDataset(name, path, backPath) {
@@ -385,14 +385,14 @@ export default {
   watch: {
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
-        const stepKey = getStepFromRoute(this.$route);
+        const stepKey = getStepFromRoute(this.$route, this.editingSteps);
         updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
       }
     },
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-      const stepKey = getStepFromRoute(this.$route);
+      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
       updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
     },
     authorsMap() {
