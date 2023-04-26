@@ -12,13 +12,13 @@
  */
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
+import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
 
 import actions from './userActions';
 import editActions from './editActions';

@@ -20,8 +20,10 @@ import {
 } from '@/factories/authorFactory';
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
-import { getEmptyMetadataInEditingObject, getStepByName, updateEditingArray } from '@/factories/userEditingFactory';
-import { mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
+import { updateEditingArray } from '@/factories/userEditingFactory';
+import { convertToBackendJSONWithRules, mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
+
+import { getEmptyMetadataInEditingObject, getStepByName } from '@/factories/workflowFactory';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [

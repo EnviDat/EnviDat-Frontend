@@ -24,11 +24,8 @@ import {
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import {
   getBackendJSONForStep,
-  getBackendJSONNewDataset,
   stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
-
-import { addDefaultsToNewDataset } from '@/factories/userCreationFactory';
 
 import {
   METADATA_CREATION_RESOURCE,

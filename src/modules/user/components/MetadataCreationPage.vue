@@ -67,11 +67,7 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  getStepFromRoute,
-  initializeSteps,
   getSelectedElement,
-  getStepByName,
-  metadataCreationSteps,
 } from '@/factories/userEditingFactory';
 
 
@@ -122,6 +118,7 @@ import {
 } from '@/factories/userCreationFactory';
 
 import { mapState } from 'vuex';
+import { getStepByName, getStepFromRoute, initializeSteps, metadataCreationSteps } from '@/factories/workflowFactory';
 
 
 export default {

@@ -67,9 +67,6 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  getStepFromRoute,
-  initializeSteps,
-  metadataEditingSteps,
   componentChangedEvent,
 } from '@/factories/userEditingFactory';
 
@@ -123,6 +120,7 @@ import {
   updateStepStatus,
   updateStepsWithReadOnlyFields,
 } from '@/factories/userCreationFactory';
+import { getStepFromRoute, initializeSteps, metadataEditingSteps } from '@/factories/workflowFactory';
 
 
 export default {

@@ -20,10 +20,7 @@ import {
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo.vue';
 
-import {
-  metadataCreationSteps,
-  getStepByName,
-} from '@/factories/userEditingFactory';
+import { getStepByName, metadataCreationSteps } from '@/factories/workflowFactory';
 
 
 export default {
