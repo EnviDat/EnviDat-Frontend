@@ -41,10 +41,25 @@ export const ckanRequiredPropsForDatasetCreation = [
 ];
 */
 
-export function addDefaultsToNewDataset(newDataset) {
+const hardCodedDefaultLocation = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [5.95587, 45.81802],
+      [5.95587, 47.80838],
+      [10.49203, 47.80838],
+      [10.49203, 45.81802],
+      [5.95587, 45.81802],
+    ],
+  ],
+};
 
+export function addDefaultsToNewDataset(newDataset, userEditMetadataConfig) {
+
+  const geoJSON = userEditMetadataConfig?.defaultLocation || hardCodedDefaultLocation;
   return {
     ...newDataset,
+    location: { geoJSON },
     resourceTypeGeneral : 'dataset',
   }
 }
