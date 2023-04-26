@@ -41,7 +41,7 @@ export const EDIT_ORGANIZATION_TITLE = 'Organization(s) for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
-export const EDIT_METADATA_GEODATA_TITLE = 'Editing Geospatial Information';
+export const EDIT_METADATA_GEODATA_TITLE = 'Geospatial Information about the research data';
 
 export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
 export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';

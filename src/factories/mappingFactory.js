@@ -560,7 +560,7 @@ export function cleanResourceForFrontend(resource) {
 const readOnlyMappingRules = [
   {
     triggerRule: ['published'],
-    explanation: 'This field is "readonly" because the publication state is : "published".',
+    explanation: 'This field is "readonly" because the dataset is already published.',
     readOnlyFields: [
       // EditMetadataHeader
       'metadataTitle',

@@ -70,7 +70,7 @@ export default {
   parameters: {},
 };
 
-export const EditingKeywordsPlaceholder = () => ({
+export const EditingKeywords = () => ({
     components: { EditKeywords },
     template: `
     <v-col>

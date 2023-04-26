@@ -12,7 +12,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable camelcase */
 import { Object } from 'core-js';
 
 import {

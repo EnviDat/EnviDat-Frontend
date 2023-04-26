@@ -514,12 +514,21 @@ function combineAuthorDataChanges(dataKey, data) {
 
 export function storeCreationStepsData(dataKey, data, steps, resetMessages = true) {
 
-  const stepData = combineAuthorDataChanges(dataKey, data);
+  let storedData;
+  let stepData;
+
+  if (dataKey.includes('AUTHOR')) {
+    // any author information is stored in the author list
+    stepData = combineAuthorDataChanges(dataKey, data);
+    storedData = writeStepDataInLocalStorage(EDITMETADATA_AUTHOR_LIST, stepData);
+  } else {
+    stepData = data;
+    storedData = writeStepDataInLocalStorage(dataKey, stepData);
+  }
 
   // some of the data is stored in the same "Step" object therefore we need to the right step key
   // (the data structure is flat key -> object, the step structure as a hierachy steps with details steps
   const key = getStepKeyToDataKey(dataKey);
-  const storedData = writeStepDataInLocalStorage(key, stepData);
   const step = getStepByName(key, steps);
 
   if (storedData) {
