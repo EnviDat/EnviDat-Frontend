@@ -147,7 +147,9 @@ function matchedWithRequiredProps(steps) {
       for (let j = 0; j < matches.length; j++) {
         const key = matches[j];
         const value = step.genericProps[key];
-        if (value) {
+        const isArray = value instanceof Array;
+        const arrayWithValues = isArray && value.length > 0;
+        if (value && (!isArray || arrayWithValues)) {
           matchedPropsWithValue.push(key);
         }
       }
