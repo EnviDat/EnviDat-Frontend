@@ -657,9 +657,9 @@ export default {
 
       if (author) {
         return {
-          contactGivenName: author.firstName.trim(),
-          contactSurname: author.lastName.trim(),
-          contactEmail: author.email.trim(),
+          contactGivenName: author.firstName?.trim(),
+          contactSurname: author.lastName?.trim(),
+          contactEmail: author.email?.trim(),
         };
       }
 

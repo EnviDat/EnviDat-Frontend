@@ -109,8 +109,7 @@ export default {
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
     const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
 
-    const datasetWithDefaults= addDefaultsToNewDataset(data);
-    const postData = getBackendJSONNewDataset(datasetWithDefaults);
+    const postData = data;
 
     try {
       const response = await axios.post(url, postData);

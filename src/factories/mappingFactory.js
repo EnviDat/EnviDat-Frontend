@@ -385,7 +385,7 @@ function convertGet(entity, property) {
   return property.split('.').reduce( (entry, b) => entry[b], entity);
 }
 
-function convertToBackendJSONWithRules(rules, data) {
+export function convertToBackendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
@@ -1070,33 +1070,10 @@ export function enhanceUserObject(user) {
   return cleanUser;
 }
 
-export function getNewCreationDatasetMappingRules() {
-  return [].concat(
-    JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER],
-    JSONFrontendBackendRules[EDITMETADATA_MAIN_HEADER],
-    JSONFrontendBackendRules[EDITMETADATA_MAIN_DESCRIPTION],
-    JSONFrontendBackendRules[EDITMETADATA_KEYWORDS],
-    JSONFrontendBackendRules[EDITMETADATA_AUTHOR_LIST],
-    JSONFrontendBackendRules[EDITMETADATA_DATA_INFO],
-    JSONFrontendBackendRules[EDITMETADATA_DATA_GEO],
-    JSONFrontendBackendRules[EDITMETADATA_FUNDING_INFO],
-    JSONFrontendBackendRules[EDITMETADATA_PUBLICATION_INFO],
-    [
-      ['ownerOrg', 'owner_org'],
-      ['resourceTypeGeneral', 'resource_type_general'],
-    ],
-  );
-}
-
-export function getBackendJSONNewDataset (data) {
-  const rules = getNewCreationDatasetMappingRules();
-
-  return convertToBackendJSONWithRules(rules, data);
-}
 
 export function getFrontendJSONNewDataset(data) {
-  const rules = getNewCreationDatasetMappingRules();
+  // const rules = getNewCreationDatasetMappingRules();
 
-  return convertToFrontendJSONWithRules(rules, data);
+  return mapBackendToFrontend();
 }
 

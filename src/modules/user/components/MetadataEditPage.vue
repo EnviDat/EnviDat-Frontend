@@ -359,8 +359,8 @@ export default {
     getUserAction(stepKey) {
       return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
     },
-    getGenericPropsForStep(key) {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](key);
+    getGenericPropsForStep(step) {
+      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);

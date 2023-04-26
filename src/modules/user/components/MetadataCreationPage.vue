@@ -13,7 +13,7 @@
                        :loading="loading"
                        :showSaveButton="canSaveInBackend"
                        :isCreationWorkflow="true"
-                       @clickedSaveDataset="catchSaveDataset"
+                       @clickedSaveDataset="catchSaveNewDataset"
                        @clickedClose="catchBackClicked" />
 
 
@@ -61,7 +61,6 @@ import {
   METADATA_EDITING_FINISH_CLICK,
   SELECT_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
-  REMOVE_EDITING_AUTHOR,
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_AUTHOR_LIST,
 } from '@/factories/eventBus';
@@ -75,8 +74,6 @@ import {
   METADATA_CREATION_DATASET,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
-  METADATA_EDITING_REMOVE_AUTHOR,
-  METADATA_EDITING_SAVE_AUTHOR,
   UPDATE_METADATA_EDITING,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
@@ -109,10 +106,9 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import {
   canLocalDatasetBeStoredInBackend,
-  getAllFromSteps,
+  createNewDatasetFromSteps,
   initializeStepsInUrl,
   initStepDataOnLocalStorage,
-  readDataFromLocalStorage,
   storeCreationStepsData,
   updateStepStatus,
 } from '@/factories/userCreationFactory';
@@ -294,9 +290,9 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
-    catchSaveDataset() {
+    catchSaveNewDataset() {
 
-      const data = getAllFromSteps(this.creationSteps);
+      const data = createNewDatasetFromSteps(this.creationSteps);
       this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
     },
     catchAuthorCardAuthorSearch(fullName) {
@@ -306,8 +302,9 @@ export default {
       window.open(routeData.href, '_blank');
     },
     selectAuthor(email) {
-      console.log('selectAuthor');
-      const authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
+
+      const step = getStepByName(EDITMETADATA_AUTHOR_LIST, this.creationSteps);
+      const authors = this.getGenericPropsForStep(step).authors;
 
       const previousSelected = getSelectedElement(authors);
 
@@ -362,10 +359,10 @@ export default {
 */
     componentChanged(updateObj, resetMessages = true) {
 
-      const stepKey = updateObj.object;
+      const dataKey = updateObj.object;
       const data = updateObj.data;
 
-      storeCreationStepsData(stepKey, data, this.creationSteps, resetMessages);
+      storeCreationStepsData(dataKey, data, this.creationSteps, resetMessages);
 
       this.$nextTick(() => {
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
@@ -373,12 +370,13 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
+        updateStepStatus(dataKey, this.creationSteps, this.getGenericPropsForStep);
       });
 
     },
-    getGenericPropsForStep(key) {
-      return readDataFromLocalStorage(key);
+    getGenericPropsForStep(step) {
+      return step.genericProps;
+      // return readDataFromLocalStorage(key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
@@ -455,10 +453,6 @@ export default {
       },
     },
     showSnack: false,
-    userActions: {
-      [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
-      [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
-    },
   }),
 };
 </script>

@@ -10,6 +10,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  REMOVE_EDITING_AUTHOR,
   eventBus,
 } from '@/factories/eventBus';
 
@@ -56,18 +57,24 @@ const hardCodedDefaultLocation = {
   ],
 };
 
-export function addDefaultsToNewDataset(newDataset, userEditMetadataConfig) {
+export function getNewDatasetDefaults(userEditMetadataConfig) {
 
   const geoJSON = userEditMetadataConfig?.defaultLocation || hardCodedDefaultLocation;
-  return {
-    ...newDataset,
+  const defaults = {
     location: { geoJSON },
     resourceTypeGeneral : 'dataset',
   }
+
+  const backendJSONDefaults = convertToBackendJSONWithRules([
+    ['ownerOrg', 'owner_org'],
+    ['resourceTypeGeneral', 'resource_type_general'],
+  ], defaults);
+
+  return backendJSONDefaults;
 }
 
 function initCreationDataWithDefaults(creationData, user, organizationId) {
-  const fullName = user.fullName || user.name || '';
+  const fullName = user?.fullName || user?.name || '';
   const nameSplits = fullName.split(' ');
 
   let firstName = nameSplits[0];
@@ -75,24 +82,30 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
     const lastIndex = fullName.lastIndexOf(' ');
     firstName = fullName.substring(0, lastIndex);
   }
+
   const lastName = nameSplits[nameSplits.length - 1];
+  const email = user?.email || undefined;
 
   const headerStep = creationData[EDITMETADATA_MAIN_HEADER];
 
   creationData[EDITMETADATA_MAIN_HEADER] = {
     ...headerStep,
-    contactEmail: user.email,
+    contactEmail: email,
     contactGivenName: firstName,
     contactSurname: lastName,
   };
 
-  const userAuthor = createAuthor({
-    firstName,
-    lastName,
-    email: user.email,
-  });
+  const userAuthor =[];
+  if (firstName && lastName && email) {
+    const author = createAuthor({
+      firstName,
+      lastName,
+      email,
+    });
+    userAuthor.push(author);
+  }
 
-  creationData[EDITMETADATA_AUTHOR_LIST] = { authors: [userAuthor] };
+  creationData[EDITMETADATA_AUTHOR_LIST] = { authors: userAuthor };
 
   const publicationStep = creationData[EDITMETADATA_PUBLICATION_INFO];
   creationData[EDITMETADATA_PUBLICATION_INFO] = {
@@ -106,16 +119,14 @@ const minRequiredPropsForDatasetCreation = [
   'contactEmail',
   'contactGivenName',
   'contactSurname',
-  // 'keywords',
+  'keywords',
   'description',
   'authors',
-/*
   'dataLicenseId',
   'funders',
   'dates',
   'location.geoJSON',
-  'publisher', // default "EnviDat"
-*/
+  'publisher',
   'publicationYear',
 ];
 
@@ -230,6 +241,31 @@ export function readDataFromLocalStorage(stepKey) {
   }
 }
 
+
+export function getFlatDataFromLocalStorage(steps) {
+  let flatStoreData = {};
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+
+    const data = readDataFromLocalStorage(step.key);
+    flatStoreData = {
+      ...flatStoreData,
+      ...data,
+    }
+
+    if (step.detailSteps) {
+      const flatDetailData = getFlatDataFromLocalStorage(step.detailSteps);
+      flatStoreData = {
+        ...flatStoreData,
+        ...flatDetailData,
+      }
+    }
+  }
+
+  return flatStoreData;
+}
+
 function initStepDataInLocalStorage(stepKey, data) {
 
   const localData = readDataFromLocalStorage(stepKey);
@@ -241,19 +277,21 @@ function initStepDataInLocalStorage(stepKey, data) {
   return localData;
 }
 
-export function getAllFromSteps(steps) {
+function getFlatBackendDataFromSteps(steps) {
   let flatData = {};
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
 
+    const bData = mapFrontendToBackend(step.key, step.genericProps);
+
     flatData = {
       ...flatData,
-      ...step.genericProps,
+      ...bData,
     }
 
     if (step.detailSteps) {
-      const flatDetailData = getAllFromSteps(step.detailSteps);
+      const flatDetailData = getFlatBackendDataFromSteps(step.detailSteps);
       flatData = {
         ...flatData,
         ...flatDetailData,
@@ -264,10 +302,31 @@ export function getAllFromSteps(steps) {
   return flatData;
 }
 
-function mapDataKeyToStepKey(key) {
+export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
+
+  const bData = getFlatBackendDataFromSteps(steps);
+  const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
+  return {
+    ...bData,
+    ...bDefaults,
+  };
+}
+
+/**
+ *
+ * @param key {string}
+ * @returns {*|string}
+ */
+function getStepKeyToDataKey(key) {
   // merged the data from these localstorage objects
   // on to a single step object because it's one step with multiple components
   // not sub steps aka. details steps
+
+  if (key === EDITMETADATA_AUTHOR ||
+      key === EDITMETADATA_AUTHOR_DATACREDIT ||
+      key === REMOVE_EDITING_AUTHOR) {
+    return EDITMETADATA_AUTHOR_LIST;
+  }
 
   if (key === EDITMETADATA_RELATED_DATASETS ||
     key === EDITMETADATA_CUSTOMFIELDS) {
@@ -292,7 +351,7 @@ export function loadAllStepDataFromLocalStorage(steps, creationData) {
     const storeData = initStepDataInLocalStorage(key, creationData[key]);
 
     if (storeData) {
-      key = mapDataKeyToStepKey(key);
+      key = getStepKeyToDataKey(key);
 
       const step = getStepByName(key, steps);
 
@@ -390,7 +449,7 @@ export function updateStepStatus(stepKey, steps, getStepDataFn) {
     return;
   }
 
-  const stepData = getStepDataFn(step.key);
+  const stepData = getStepDataFn(step);
   const stepValidation = getValidationMetadataEditingObject(step.key);
 
   if (updateStepValidation(step, stepData, stepValidation)) {
@@ -414,39 +473,53 @@ export function updateStepStatus(stepKey, steps, getStepDataFn) {
   }
 }
 
-export function storeCreationStepsData(stepKey, data, steps, resetMessages = true) {
+function combineAuthorDataChanges(dataKey, data) {
+  if (dataKey === EDITMETADATA_AUTHOR) {
 
-  let key = stepKey;
-  let stepData = data;
-
-  if (stepKey === EDITMETADATA_AUTHOR) {
-    key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = readDataFromLocalStorage(key);
+    const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
     authorsStepData.authors = updateEditingArray(authorsStepData.authors, data, 'email');
-    stepData = authorsStepData;
-
-  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-
-    key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = readDataFromLocalStorage(key);
-    // add the new author as an array
-    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, [data]);
-
-    stepData = authorsStepData;
-  } else if (stepKey === EDITMETADATA_AUTHOR_DATACREDIT) {
-    key = EDITMETADATA_AUTHOR_LIST;
-    const authorsStepData = readDataFromLocalStorage(key);
-
-    // overwrite the authors and stepKey that it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-    authorsStepData.authors = mergeAuthorsDataCredit(authorsStepData.authors, data);
-
-    stepData = authorsStepData;
+    return authorsStepData;
   }
 
+  if (dataKey === EDITMETADATA_AUTHOR_LIST) {
 
+    const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
+    // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
+    // that's why it is necessary to know which have been removed via the picker and combined the three lists
+    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, data.authors, data.removedAuthors);
+    return authorsStepData;
+  }
+
+  if (dataKey === REMOVE_EDITING_AUTHOR) {
+
+    const email = data;
+    const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
+    const authorToRemove = authorsStepData.authors.filter(a => a.email === email);
+
+    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, [], authorToRemove);
+    return authorsStepData;
+  }
+
+  if (dataKey === EDITMETADATA_AUTHOR_DATACREDIT) {
+    const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
+
+    // overwrite the authors and dataKey that it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
+    authorsStepData.authors = mergeAuthorsDataCredit(authorsStepData.authors, data);
+    return authorsStepData;
+  }
+
+  return data;
+}
+
+
+export function storeCreationStepsData(dataKey, data, steps, resetMessages = true) {
+
+  const stepData = combineAuthorDataChanges(dataKey, data);
+
+  // some of the data is stored in the same "Step" object therefore we need to the right step key
+  // (the data structure is flat key -> object, the step structure as a hierachy steps with details steps
+  const key = getStepKeyToDataKey(dataKey);
   const storedData = writeStepDataInLocalStorage(key, stepData);
-  key = mapDataKeyToStepKey(stepKey);
-
   const step = getStepByName(key, steps);
 
   if (storedData) {
