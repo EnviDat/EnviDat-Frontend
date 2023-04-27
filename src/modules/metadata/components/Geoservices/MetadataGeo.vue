@@ -6,7 +6,8 @@
           {{ METADATA_LOCATION_TITLE }}
         </v-col>
 
-        <v-col class="shrink pl-2 pr-4" v-if="mapEditable">
+        <v-col v-if="mapEditable"
+               class="shrink pl-2 pr-4">
           <BaseRectangleButton
             :color="$vuetify.theme.themes.light.secondary"
             buttonText="Upload GeoJSON"
@@ -16,7 +17,8 @@
           />
         </v-col>
 
-        <v-col class="shrink pl-2" v-if="mapEditable">
+        <v-col v-if="mapEditable"
+               class="shrink pl-2">
           <BaseIconButton
             :disabled="!undoButtonEnabled"
             materialIconName="undo"
@@ -27,7 +29,8 @@
           />
         </v-col>
 
-        <v-col class="shrink pl-2" v-if="mapEditable">
+        <v-col v-if="mapEditable"
+                class="shrink pl-2">
           <BaseIconButton
             :disabled="!saveButtonEnabled"
             :loading="saveButtonInProgress"
@@ -136,6 +139,9 @@ export default {
     },
     undoButtonEnabled() {
       return this.genericProps?.undoButtonEnabled || false;
+    },
+    showFullscreenButton() {
+      return this.genericProps?.showFullscreenButton || false;
     },
   },
   methods: {
