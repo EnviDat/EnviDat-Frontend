@@ -12,6 +12,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
   REMOVE_EDITING_AUTHOR,
   eventBus,
+  EDITMETADATA_DATA_GEO,
 } from '@/factories/eventBus';
 
 import {
@@ -63,14 +64,20 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   const defaults = {
     location: { geoJSON },
     resourceTypeGeneral : 'dataset',
+    ownerOrg: 'a5d8660c-7635-4620-8289-fb6181c34e0c',
   }
+
+  const backendSpatial = mapFrontendToBackend(EDITMETADATA_DATA_GEO, defaults);
 
   const backendJSONDefaults = convertToBackendJSONWithRules([
     ['ownerOrg', 'owner_org'],
     ['resourceTypeGeneral', 'resource_type_general'],
   ], defaults);
 
-  return backendJSONDefaults;
+  return {
+    ...backendSpatial,
+    ...backendJSONDefaults,
+  };
 }
 
 function initCreationDataWithDefaults(creationData, user, organizationId) {
@@ -125,7 +132,7 @@ const minRequiredPropsForDatasetCreation = [
   'dataLicenseId',
   'funders',
   'dates',
-  'location', // 'location.geoJSON',
+  // 'location', // 'location.geoJSON',
   'publisher',
   'publicationYear',
 ];
@@ -244,28 +251,53 @@ export function readDataFromLocalStorage(stepKey) {
 }
 
 
-export function getFlatDataFromLocalStorage(steps) {
-  let flatStoreData = {};
+/**
+ * Object key -> stepKey, object value -> list of data keys
+ * @type {{EDITMETADATA_PUBLICATION_INFO: (string)[], EDITMETADATA_RELATED_PUBLICATIONS: (string)[], EDITMETADATA_AUTHOR_LIST: (string)[]}}
+ */
+const stepKeyToDataKeyMap = {
+  EDITMETADATA_AUTHOR_LIST: [
+    EDITMETADATA_AUTHOR,
+    EDITMETADATA_AUTHOR_DATACREDIT,
+    REMOVE_EDITING_AUTHOR,
+  ],
+  EDITMETADATA_RELATED_PUBLICATIONS: [
+    EDITMETADATA_RELATED_DATASETS,
+    EDITMETADATA_CUSTOMFIELDS,
+  ],
+  EDITMETADATA_PUBLICATION_INFO: [
+    EDITMETADATA_FUNDING_INFO,
+    EDITMETADATA_ORGANIZATION,
+  ],
+}
 
-  for (let i = 0; i < steps.length; i++) {
-    const step = steps[i];
+function getDataKeysToStepKey(stepKey) {
+  return stepKeyToDataKeyMap[stepKey] || [];
+}
 
-    const data = readDataFromLocalStorage(step.key);
-    flatStoreData = {
-      ...flatStoreData,
-      ...data,
-    }
+/**
+ * returns the main key (step key) if the given key is part of the data key list
+ *
+ * @param key {string}
+ * @returns {string}
+ */
+function getStepKeyToDataKey(key) {
+  // merged the data from these localstorage objects
+  // on to a single step object because it's one step with multiple components
+  // not sub steps aka. details steps
 
-    if (step.detailSteps) {
-      const flatDetailData = getFlatDataFromLocalStorage(step.detailSteps);
-      flatStoreData = {
-        ...flatStoreData,
-        ...flatDetailData,
-      }
+  const stepKeys = Object.keys(stepKeyToDataKeyMap);
+
+  for (let i = 0; i < stepKeys.length; i++) {
+    const stepKey = stepKeys[i];
+    const dataKeys = stepKeyToDataKeyMap[stepKey];
+
+    if (dataKeys.includes(key)) {
+      return stepKey;
     }
   }
 
-  return flatStoreData;
+  return key;
 }
 
 function initStepDataInLocalStorage(stepKey, data) {
@@ -284,12 +316,26 @@ function getFlatBackendDataFromSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
+    const stepKey = step.key;
 
-    const bData = mapFrontendToBackend(step.key, step.genericProps);
+    const dataKeys = getDataKeysToStepKey(stepKey);
 
-    flatData = {
-      ...flatData,
-      ...bData,
+    // use the stepKey itself aswell, for merged step data and flat stored
+    // it is used in both cases
+    dataKeys.push(stepKey);
+
+    for (let j = 0; j < dataKeys.length; j++) {
+
+      const dataKey = dataKeys[j];
+      const bData = mapFrontendToBackend(dataKey, step.genericProps);
+
+      if (bData) {
+        flatData = {
+          ...flatData,
+          ...bData,
+        }
+      }
+
     }
 
     if (step.detailSteps) {
@@ -304,43 +350,25 @@ function getFlatBackendDataFromSteps(steps) {
   return flatData;
 }
 
+/**
+ *
+ * @param steps {array}
+ * @param userEditMetadataConfig
+ * @returns {object} dataset in a json structure as the backend expects it
+ */
 export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
 
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
+
+  let name = bData.title.toLowerCase();
+  name = name.replaceAll(' ', '-');
+
   return {
     ...bData,
+    name,
     ...bDefaults,
   };
-}
-
-/**
- *
- * @param key {string}
- * @returns {*|string}
- */
-function getStepKeyToDataKey(key) {
-  // merged the data from these localstorage objects
-  // on to a single step object because it's one step with multiple components
-  // not sub steps aka. details steps
-
-  if (key === EDITMETADATA_AUTHOR ||
-      key === EDITMETADATA_AUTHOR_DATACREDIT ||
-      key === REMOVE_EDITING_AUTHOR) {
-    return EDITMETADATA_AUTHOR_LIST;
-  }
-
-  if (key === EDITMETADATA_RELATED_DATASETS ||
-    key === EDITMETADATA_CUSTOMFIELDS) {
-    return EDITMETADATA_RELATED_PUBLICATIONS;
-  }
-
-  if (key === EDITMETADATA_FUNDING_INFO ||
-    key === EDITMETADATA_ORGANIZATION) {
-    return EDITMETADATA_PUBLICATION_INFO;
-  }
-
-  return key;
 }
 
 export function loadAllStepDataFromLocalStorage(steps, creationData) {
@@ -348,14 +376,14 @@ export function loadAllStepDataFromLocalStorage(steps, creationData) {
   const keys = Object.keys(creationData);
 
   for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
+    const key = keys[i];
 
     const storeData = initStepDataInLocalStorage(key, creationData[key]);
 
     if (storeData) {
-      key = getStepKeyToDataKey(key);
+      const stepKey = getStepKeyToDataKey(key);
 
-      const step = getStepByName(key, steps);
+      const step = getStepByName(stepKey, steps);
 
       if (step) {
         step.genericProps = {
@@ -530,8 +558,8 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
 
   // some of the data is stored in the same "Step" object therefore we need to the right step key
   // (the data structure is flat key -> object, the step structure as a hierachy steps with details steps
-  const key = getStepKeyToDataKey(dataKey);
-  const step = getStepByName(key, steps);
+  const stepKey = getStepKeyToDataKey(dataKey);
+  const step = getStepByName(stepKey, steps);
 
   if (storedData) {
     stepData.message = `Changes for ${step.title} saved locally!`;
