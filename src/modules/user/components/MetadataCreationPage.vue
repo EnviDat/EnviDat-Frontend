@@ -87,6 +87,7 @@ import {
 import {
   BROWSE_PATH,
   METADATA_CREATION_PAGENAME,
+  METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
 } from '@/router/routeConsts';
 
@@ -312,10 +313,25 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
-    catchSaveNewDataset() {
+    async catchSaveNewDataset() {
 
       const data = createNewDatasetFromSteps(this.creationSteps);
-      this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
+      const metadataId = data.name;
+      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
+
+      localStorage.clear();
+
+      this.$router.push({
+        name: METADATAEDIT_PAGENAME,
+        params: {
+          metadataid: metadataId,
+        },
+/*
+        query: {
+          backPath: this.$route.fullPath,
+        },
+*/
+      });
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();
