@@ -63,9 +63,9 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   const geoJSON = userEditMetadataConfig?.defaultLocation || hardCodedDefaultLocation;
   const defaults = {
     location: { geoJSON },
-    resourceTypeGeneral : 'dataset',
+    resourceTypeGeneral: 'dataset',
     ownerOrg: 'a5d8660c-7635-4620-8289-fb6181c34e0c',
-  }
+  };
 
   const backendSpatial = mapFrontendToBackend(EDITMETADATA_DATA_GEO, defaults);
 
@@ -102,7 +102,7 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
     contactSurname: lastName,
   };
 
-  const userAuthor =[];
+  const userAuthor = [];
   if (firstName && lastName && email) {
     const author = createAuthor({
       firstName,
@@ -142,8 +142,6 @@ function matchedWithRequiredProps(steps) {
   let step;
   let matches;
 
-  const matchedPropsWithValue = [];
-
   for (let i = 0; i < steps.length; i++) {
     step = steps[i];
     const genericKeys = Object.keys(step.genericProps);
@@ -151,27 +149,32 @@ function matchedWithRequiredProps(steps) {
     matches = minRequiredPropsForDatasetCreation.filter((prop) => genericKeys.includes(prop));
 
     if (matches.length > 0) {
+
       for (let j = 0; j < matches.length; j++) {
+
         const key = matches[j];
         const value = step.genericProps[key];
         const isArray = value instanceof Array;
         const arrayWithValues = isArray && value.length > 0;
+
         if (value && (!isArray || arrayWithValues)) {
-          matchedPropsWithValue.push(key);
+          // continue
+        } else {
+          return false;
         }
       }
-
     }
 
     if (step.detailSteps) {
-      const detailMatches = matchedWithRequiredProps(step.detailSteps);
-      if (detailMatches.length > 0) {
-        matchedPropsWithValue.push(...detailMatches);
+      const detailMatched = matchedWithRequiredProps(step.detailSteps);
+
+      if (!detailMatched) {
+        return false;
       }
     }
   }
 
-  return matchedPropsWithValue;
+  return true;
 }
 
 export function canLocalDatasetBeStoredInBackend(steps) {
@@ -180,9 +183,7 @@ export function canLocalDatasetBeStoredInBackend(steps) {
     return false;
   }
 
-  const matchedPropsWithValue = matchedWithRequiredProps(steps);
-
-  return matchedPropsWithValue.length === minRequiredPropsForDatasetCreation.length;
+  return matchedWithRequiredProps(steps);
 }
 
 /**
@@ -209,7 +210,7 @@ function writeStepDataInLocalStorage(stepKey, data) {
   try {
     const bData = mapFrontendToBackend(stepKey, data);
     const stringData = JSON.stringify(bData);
-    localStorage.setItem(stepKey, stringData)
+    localStorage.setItem(stepKey, stringData);
   } catch (e) {
     console.error(`Failed to stringify json of ${stepKey} : ${e}`);
     return null;
@@ -230,7 +231,7 @@ function writeStepDataInLocalStorage(stepKey, data) {
  * @returns {*|null}
  */
 export function readDataFromLocalStorage(stepKey) {
-  if(!stepKey) {
+  if (!stepKey) {
     return null;
   }
 
@@ -269,7 +270,7 @@ const stepKeyToDataKeyMap = {
     EDITMETADATA_FUNDING_INFO,
     EDITMETADATA_ORGANIZATION,
   ],
-}
+};
 
 function getDataKeysToStepKey(stepKey) {
   return stepKeyToDataKeyMap[stepKey] || [];
@@ -333,7 +334,7 @@ function getFlatBackendDataFromSteps(steps) {
         flatData = {
           ...flatData,
           ...bData,
-        }
+        };
       }
 
     }
@@ -343,7 +344,7 @@ function getFlatBackendDataFromSteps(steps) {
       flatData = {
         ...flatData,
         ...flatDetailData,
-      }
+      };
     }
   }
 
@@ -382,7 +383,6 @@ export function loadAllStepDataFromLocalStorage(steps, creationData) {
 
     if (storeData) {
       const stepKey = getStepKeyToDataKey(key);
-
       const step = getStepByName(stepKey, steps);
 
       if (step) {
@@ -400,7 +400,7 @@ export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
   const initialStep = steps[0]?.title || '';
   const initialSubStep = steps[0]?.detailSteps[0]?.title || '';
 
-  const params = {}
+  const params = {};
 
   if (!routeStep && !routeSubStep) {
     // when no parameter are given in the url, fallback the first ones
@@ -418,7 +418,7 @@ export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
 export function initStepDataOnLocalStorage(steps, user) {
   const creationData = getEmptyMetadataInEditingObject();
 
-  initCreationDataWithDefaults(creationData, user, 'test')
+  initCreationDataWithDefaults(creationData, user, 'test');
   loadAllStepDataFromLocalStorage(steps, creationData);
 }
 
