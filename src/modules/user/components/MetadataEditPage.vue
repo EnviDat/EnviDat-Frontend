@@ -136,7 +136,6 @@ export default {
   },
   created() {
     this.editingSteps = initializeSteps(metadataEditingSteps);
-    this.initStepDataFromStore(this.editingSteps);
 
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
@@ -172,7 +171,9 @@ export default {
       this.initMetadataUsingId(this.metadataId);
     }
 
-    this.loadOrganizations();
+    this.$nextTick(() => {
+      this.loadOrganizations();
+    });
 
   },
   computed: {
@@ -180,6 +181,7 @@ export default {
       'lastEditedBackPath',
       'currentEditingContent',
       'loadingCurrentEditingContent',
+      'loadingEditingData',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -206,7 +208,11 @@ export default {
     },
     currentComponentLoading() {
       const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-      const stepData = this.getGenericPropsForStep(stepKey);
+      if (!stepKey) {
+        return false;
+      }
+
+      const stepData = this.getGenericPropsForStep({ key: stepKey });
 
       return stepData?.loading || false;
     },
@@ -235,9 +241,8 @@ export default {
     initStepDataFromStore(steps) {
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
-        const stepKey = step.key;
 
-        const data = this.getGenericPropsForStep(stepKey);
+        const data = this.getGenericPropsForStep(step);
         if (data) {
           step.genericProps = data;
         }
@@ -245,7 +250,6 @@ export default {
         if (step.detailSteps) {
           this.initStepDataFromStore(step.detailSteps)
         }
-
       }
 
     },
@@ -286,6 +290,8 @@ export default {
       if (id !== this.currentEditingContent?.name) {
         await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
       }
+
+      this.initStepDataFromStore(this.editingSteps);
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
@@ -383,6 +389,11 @@ export default {
     },
   },
   watch: {
+    loadingEditingData() {
+      if (!this.loadingEditingData) {
+        this.initStepDataFromStore(this.editingSteps);
+      }
+    },
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
         const stepKey = getStepFromRoute(this.$route, this.editingSteps);

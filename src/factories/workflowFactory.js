@@ -318,7 +318,7 @@ export function getStepByName(stepKey, steps) {
 export function getStepFromRoute(route, steps) {
 
   const stepTitle = route?.params?.step || null;
-  const currentStep = steps.filter(step => step.title === stepTitle)[0];
+  const currentStep = steps?.filter(step => step.title === stepTitle)[0];
 
   const detailSteps = currentStep?.detailSteps || null;
   const subStepTitle = route?.params?.substep || null;

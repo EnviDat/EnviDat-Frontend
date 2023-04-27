@@ -174,6 +174,8 @@ export default {
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
 
+    state.loadingEditingData = true;
+
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
     editingObject.message = null;
@@ -182,6 +184,8 @@ export default {
     editingObject.errorDetails = null;
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
+
+    state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
@@ -194,6 +198,8 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
+
+    state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;

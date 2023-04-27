@@ -51,6 +51,7 @@ const userState = {
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
+  loadingEditingData: false,
   metadataInEditing: getEmptyMetadataInEditingObject(),
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
