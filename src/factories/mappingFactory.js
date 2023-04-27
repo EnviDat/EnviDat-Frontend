@@ -145,11 +145,9 @@ const JSONFrontendBackendRules = {
     ['dataLicenseUrl','license_url'],
   ],
   [EDITMETADATA_DATA_INFO_DATES]: [
-    // special case because the snakeCase is done before
-    // only a renaming is needed
-    [DATE_PROPERTY_DATE_TYPE, 'dateType'],
+    [DATE_PROPERTY_DATE_TYPE, 'date_type'],
     [DATE_PROPERTY_START_DATE, 'date'],
-    [DATE_PROPERTY_END_DATE, 'endDate'],
+    [DATE_PROPERTY_END_DATE, 'end_date'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -745,9 +743,17 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   // const resources = createResources(metadataRecord).resources;
 
   let stepKey = EDITMETADATA_DATA_INFO;
+  const bDates = snakeCaseJSON.date;
   const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
-  dateInfoData.dates = formatDatesForFrontend(dateInfoData.dates);
+  // special case here to use the backend structure json directly to format the entries
+  // this is done for consitency. When calling getFrontendJSONForStep() the dateInfoData.dates
+  // are already in camelCase and not snakeCase anymore, so for formatDatesForFrontend() the JSONFrontendBackendRules
+  // would have to be only in camelCase, which wouldn't fit the rest of the structure
+  // and therefore a special case implementation would also be necessary in the creationWorkflow when getting
+  // the information from the localstorage. Since here is already a special case implemenation it's better to do it
+  // here and keep the JSONFrontendBackendRules consitent!
+  dateInfoData.dates = formatDatesForFrontend(bDates);
 
   const dataInfo = {
     // for now only use the title, check how to choose it in the
