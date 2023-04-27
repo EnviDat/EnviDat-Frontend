@@ -31,9 +31,10 @@
               v-if="showSaveButton"
               id="SaveMetadataButton"
               class="ma-auto px-4"
-              material-icon-name="remove_red_eye"
-              icon-color="black"
-              color="success"
+              material-icon-name="save"
+              icon-color="accent"
+              color="accent"
+              outlined
               tooltipText="Save Dataset On the Server"
               :tooltipBottom="true"
               @clicked="catchSaveDatasetClick"
