@@ -103,6 +103,8 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import {
+  DATE_PROPERTY_COLLECTED_TYPE,
+  DATE_PROPERTY_CREATED_TYPE,
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
@@ -159,7 +161,7 @@ export default {
         const dates =
           this.previewDates?.length > 0 ? this.previewDates : [...this.dates];
 
-        const createdType = 'created';
+        const createdType = DATE_PROPERTY_CREATED_TYPE;
         const createdAmount = dates.filter(dObj => dObj.dateType === createdType).length;
 
         if (createdAmount <= 0) {
@@ -170,7 +172,7 @@ export default {
           });
         }
 
-        const collectedType = 'collected';
+        const collectedType = DATE_PROPERTY_COLLECTED_TYPE;
         const collectedAmount = dates.filter(dObj => dObj.dateType === collectedType).length;
 
         if (collectedAmount <= 0) {
@@ -213,10 +215,6 @@ export default {
         data: newDataInfo,
       });
     },
-    dateChangedTextField(index, property, value) {
-      const dateValue = this.formatToCKANDate(value);
-      this.dateChanged(index, property, dateValue);
-    },
     dateChanged(index, property, value) {
       // Update indexed object in array, with updated dates
 
@@ -248,10 +246,8 @@ export default {
 
       for (let i = 0; i < array.length; i++) {
         const entry = array[i];
-        if (
-          !!entry[DATE_PROPERTY_START_DATE] ||
-          !!entry[DATE_PROPERTY_END_DATE]
-        ) {
+        if (!!entry[DATE_PROPERTY_START_DATE] ||
+            !!entry[DATE_PROPERTY_END_DATE]) {
           cleanCopy.push(entry);
         }
       }

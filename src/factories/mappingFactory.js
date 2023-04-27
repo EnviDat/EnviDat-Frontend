@@ -60,6 +60,10 @@ export const DATE_PROPERTY_DATE_TYPE = 'dateType';
 export const DATE_PROPERTY_START_DATE = 'dateStart';
 export const DATE_PROPERTY_END_DATE = 'dateEnd';
 
+export const DATE_PROPERTY_CREATED_TYPE = 'created';
+
+export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
+
 /**
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
@@ -143,9 +147,9 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_DATA_INFO_DATES]: [
     // special case because the snakeCase is done before
     // only a renaming is needed
-    [DATE_PROPERTY_DATE_TYPE, 'date_type'],
+    [DATE_PROPERTY_DATE_TYPE, 'dateType'],
     [DATE_PROPERTY_START_DATE, 'date'],
-    [DATE_PROPERTY_END_DATE, 'end_date'],
+    [DATE_PROPERTY_END_DATE, 'endDate'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -647,6 +651,7 @@ function formatDatesForFrontend(dates) {
     const dateEntry = dates[i];
 
     const entry = getFrontendJSONForStep(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    entry.dateType = entry.dateType || DATE_PROPERTY_CREATED_TYPE;
     entry.dateStart = formatDate(entry.dateStart) || '';
     entry.dateEnd = formatDate(entry.dateEnd) || '';
 
@@ -886,9 +891,9 @@ function mapDatesForBackend(datesArray) {
 
   if (!Array.isArray(datesArray) || datesArray.length <= 0) {
     const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, {
-      dateType: 'creation',
-      dateStart: '',
-      dateEnd: '',
+      [DATE_PROPERTY_DATE_TYPE]: DATE_PROPERTY_CREATED_TYPE,
+      [DATE_PROPERTY_START_DATE]: '',
+      [DATE_PROPERTY_END_DATE]: '',
     });
 
     return [entry];
