@@ -681,7 +681,8 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
+      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      // this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
