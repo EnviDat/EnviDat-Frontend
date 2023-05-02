@@ -76,7 +76,7 @@
               :tooltipText="`Open Subproject ${sub.title}`"
               tooltipBottom
               :isSmall="true"
-              @clicked="subprojectClick(sub.id)"
+              @clicked="subprojectClick(sub.name)"
             />
           </v-col>
         </v-row>
