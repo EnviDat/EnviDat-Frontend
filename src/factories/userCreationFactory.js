@@ -489,7 +489,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
 
 }
 
-export function updateStepsCompleted(steps, getStepDataFn) {
+export function updateAllStepsForCompletion(steps, getStepDataFn) {
   if (!steps) {
     return;
   }
@@ -499,7 +499,7 @@ export function updateStepsCompleted(steps, getStepDataFn) {
     const detailSteps = step.detailSteps;
 
     if (detailSteps) {
-      updateStepsCompleted(step.detailSteps, getStepDataFn);
+      updateAllStepsForCompletion(step.detailSteps, getStepDataFn);
 
       const completedDetailSteps = detailSteps.filter(s => s.completed);
       step.completed = completedDetailSteps.length === detailSteps.length;

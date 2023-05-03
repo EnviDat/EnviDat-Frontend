@@ -111,7 +111,8 @@ import {
   initializeStepsInUrl,
   initStepDataOnLocalStorage,
   storeCreationStepsData,
-  updateStepStatus,
+  updateAllStepsForCompletion,
+  updateStepValidation,
   updateStepsWithReadOnlyFields,
 } from '@/factories/userCreationFactory';
 
@@ -174,10 +175,16 @@ export default {
     this.loadOrganizations();
 
     this.$nextTick(() => {
+
+      this.validateCurrentStep();
+
+      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
+
       this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
     });
   },
   computed: {
+    ...mapState(['config']),
     ...mapState(USER_SIGNIN_NAMESPACE,[
       'user',
     ]),
@@ -243,6 +250,9 @@ export default {
       }
       return errorMessage(this.errorTitle, this.errorMessage);
     },
+    userEditMetadataConfig() {
+      return this.config?.userEditMetadataConfig;
+    },
   },
   methods: {
     setReadOnlyBasedOnVisibilty(steps) {
@@ -287,6 +297,7 @@ export default {
 
       }
     },
+    /*
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
         await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
@@ -294,18 +305,17 @@ export default {
 
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-/*
       const publicationState = getMetadataVisibilityState(this.currentEditingContent);
       const readOnlyObj = getReadOnlyFieldsObject(publicationState);
 
       if (readOnlyObj) {
         updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
       }
-*/
 
       const stepKey = getStepFromRoute(this.$route, this.creationSteps);
       updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
     },
+    */
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
     },
@@ -315,7 +325,7 @@ export default {
     },
     async catchSaveNewDataset() {
 
-      const data = createNewDatasetFromSteps(this.creationSteps);
+      const data = createNewDatasetFromSteps(this.creationSteps, this.userEditMetadataConfig);
       const metadataId = data.name;
       await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
 
@@ -408,9 +418,13 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        updateStepStatus(dataKey, this.creationSteps, this.getGenericPropsForStep);
+        updateStepValidation(dataKey, this.creationSteps, this.getGenericPropsForStep);
       });
 
+    },
+    validateCurrentStep() {
+      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
+      updateStepValidation(stepKey, this.creationSteps, this.getGenericPropsForStep);
     },
     getGenericPropsForStep(step) {
       return step.genericProps;
@@ -440,16 +454,18 @@ export default {
 /*
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
-        const stepKey = getStepFromRoute(this.$route, this.creationSteps);
-        updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
+        this.validateCurrentStep();
       }
     },
 */
     $route(){
+/*
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
+*/
 
-      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
-      updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
+      this.validateCurrentStep();
+
+      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
     },
 /*
     authorsMap() {

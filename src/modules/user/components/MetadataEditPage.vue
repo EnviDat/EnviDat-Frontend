@@ -117,8 +117,9 @@ import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import {
   initializeStepsInUrl,
-  updateStepStatus,
+  updateStepValidation,
   updateStepsWithReadOnlyFields,
+  updateAllStepsForCompletion,
 } from '@/factories/userCreationFactory';
 import { getStepFromRoute, initializeSteps, metadataEditingSteps } from '@/factories/workflowFactory';
 
@@ -302,8 +303,9 @@ export default {
         updateStepsWithReadOnlyFields(this.editingSteps, readOnlyObj);
       }
 
-      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-      updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
+      this.validateCurrentStep();
+
+      updateAllStepsForCompletion(this.editingSteps, this.getGenericPropsForStep);
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
@@ -358,9 +360,13 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        updateStepStatus(updateObj.object, this.editingSteps, this.getGenericPropsForStep);
+        updateStepValidation(updateObj.object, this.editingSteps, this.getGenericPropsForStep);
       });
 
+    },
+    validateCurrentStep() {
+      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
+      updateStepValidation(stepKey, this.editingSteps, this.getGenericPropsForStep);
     },
     getUserAction(stepKey) {
       return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
@@ -396,15 +402,15 @@ export default {
     },
     currentComponentLoading() {
       if (!this.currentComponentLoading) {
-        const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-        updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
+        this.validateCurrentStep();
       }
     },
     $route(){
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 
-      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-      updateStepStatus(stepKey, this.editingSteps, this.getGenericPropsForStep);
+      this.validateCurrentStep();
+
+      updateAllStepsForCompletion(this.editingSteps, this.getGenericPropsForStep);
     },
     authorsMap() {
 
