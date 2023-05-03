@@ -1,13 +1,13 @@
 <template>
   <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
     <v-row no-gutters>
-      <v-col offset="1" cols="10">
+      <v-col class="px-10">
         <!-- prettier-ignore -->
         <StepperHeader  :steps="steps"
                         activeColor="accent"
                         inactiveColor="secondary"
                         :stepColor="stepColor"
-                        :stepNumber="currentStepIndex"
+                        :currentStepIndex="currentStepIndex"
                         @stepClick="catchStepClick" />
       </v-col>
     </v-row>

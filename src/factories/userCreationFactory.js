@@ -4,15 +4,14 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_CUSTOMFIELDS,
+  EDITMETADATA_DATA_GEO,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
-  EDITMETADATA_RELATED_PUBLICATIONS,
-  REMOVE_EDITING_AUTHOR,
   eventBus,
-  EDITMETADATA_DATA_GEO,
+  REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 import {
@@ -62,7 +61,7 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
 
   const geoJSON = userEditMetadataConfig?.defaultLocation || hardCodedDefaultLocation;
   const defaults = {
-    location: { geoJSON },
+    // location: { geoJSON },
     resourceTypeGeneral: 'dataset',
     ownerOrg: 'a5d8660c-7635-4620-8289-fb6181c34e0c',
   };
@@ -422,23 +421,6 @@ export function initStepDataOnLocalStorage(steps, user) {
   loadAllStepDataFromLocalStorage(steps, creationData);
 }
 
-function updateStepCompleted(step, stepData) {
-  const data = stepData || {};
-  const values = Object.values(data);
-
-  let isComplete = true;
-  for (let i = 0; i < values.length; i++) {
-    const value = values[i];
-
-    if (value === undefined || value === null || value === '') {
-      isComplete = false;
-      break;
-    }
-  }
-
-  step.completed = isComplete;
-}
-
 export function updateStepsWithReadOnlyFields(steps, readOnlyObj) {
 
   for (let i = 0; i < steps.length; i++) {
@@ -453,17 +435,21 @@ export function updateStepsWithReadOnlyFields(steps, readOnlyObj) {
   }
 }
 
-function updateStepValidation(step, stepData, stepValidation) {
-  if (!stepValidation) {
-    return true;
+function stepValidation(step, stepData, validationRules, skipError = false) {
+  if (!validationRules) {
+    return false;
   }
 
   try {
-    stepValidation.validateSync(stepData);
+    validationRules.validateSync(stepData);
   } catch (e) {
-    console.error(`updateStepValidation validation Error ${e}`);
 
-    step.error = e.message;
+    if (!skipError) {
+      console.error(`stepValidation validation Error ${e}`);
+
+      step.error = e.message;
+    }
+
     return false;
   }
 
@@ -472,35 +458,61 @@ function updateStepValidation(step, stepData, stepValidation) {
 }
 
 
-export function updateStepStatus(stepKey, steps, getStepDataFn) {
+export function updateStepValidation(stepKey, steps, getStepDataFn) {
   const step = getStepByName(stepKey, steps);
 
   if (!step) {
     return;
   }
 
-  const stepData = getStepDataFn(step);
-  const stepValidation = getValidationMetadataEditingObject(step.key);
+  const detailSteps = step.detailSteps;
 
-  if (updateStepValidation(step, stepData, stepValidation)) {
-
-    if (!step.error && step.detailSteps?.length > 0) {
-      const anyErrors = step.detailSteps.filter(s => !!s.error);
-
-      /*
-                const firstStepWithErrors = anyErrors[0];
-
-                let mainErrorMsg = '';
-                if (firstStepWithErrors?.error) {
-                  mainErrorMsg = `"${firstStepWithErrors.title}" has an error: ${firstStepWithErrors.error}`;
-                }
-      */
-
-      step.error = anyErrors[0]?.error ? 'Detail step has an error' : null;
-    } else {
-      updateStepCompleted(step, stepData);
+  if (detailSteps) {
+    for (let i = 0; i < detailSteps.length; i++) {
+      const detailStep = step.detailSteps[i];
+      updateStepValidation(detailStep.key, steps, getStepDataFn);
     }
+
+    const anyErrors = detailSteps.filter(s => !!s.error);
+    step.error = anyErrors[0]?.error ? 'Error in detail step' : null;
+    step.completed = !!step.error;
+
+    return;
   }
+
+  const stepData = getStepDataFn(step);
+  const validationRules = getValidationMetadataEditingObject(step.key);
+
+  step.completed = stepValidation(step, stepData, validationRules);
+
+  // console.log(`updateStepStatus step ${step.key} completed? ${step.completed}`);
+
+}
+
+export function updateStepsCompleted(steps, getStepDataFn) {
+  if (!steps) {
+    return;
+  }
+
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    const detailSteps = step.detailSteps;
+
+    if (detailSteps) {
+      updateStepsCompleted(step.detailSteps, getStepDataFn);
+
+      const completedDetailSteps = detailSteps.filter(s => s.completed);
+      step.completed = completedDetailSteps.length === detailSteps.length;
+    } else {
+
+      const stepData = getStepDataFn(step);
+      const validationRules = getValidationMetadataEditingObject(step.key);
+
+      step.completed = stepValidation(step, stepData, validationRules, true);
+    }
+    // console.log(`step ${step.key} completed? ${step.completed}`);
+  }
+
 }
 
 function combineAuthorDataChanges(dataKey, data) {

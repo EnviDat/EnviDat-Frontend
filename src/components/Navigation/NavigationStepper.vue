@@ -1,9 +1,10 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
-  <div id="NavigationStepper" class="pa-0 fill-height stepperContentGrid">
-    <div
-      class="stepper fill-height pl-10 headerContentGrid"
-      :style="`background-color: ${backgroundColor}`"
+  <div id="NavigationStepper"
+       class="pa-0 fill-height stepperContentGrid">
+
+    <div class="stepper pl-10 headerContentGrid"
+          :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
       <StepperHeader class="py-4"
@@ -11,7 +12,7 @@
                          activeColor="accent"
                          inactiveColor="secondary"
                          :stepColor="stepColor"
-                         :stepNumber="currentStepIndex"
+                         :currentStepIndex="currentStepIndex"
                          @stepClick="catchStepClick" />
 
       <BaseIconButton
@@ -258,7 +259,5 @@ export default {
   display: grid;
   grid-template-columns: 11fr 0.1fr 0.1fr;
   gap: 0;
-  width: 100%;
-  height: 100%;
 }
 </style>

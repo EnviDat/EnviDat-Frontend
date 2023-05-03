@@ -47,7 +47,7 @@ const metadataInEditingValidations = {
         .min(5, 'Dataset title must be at least 5 characters')
         .max(180, 'Dataset title has a maximum of 180 characters'),
       contactGivenName: yup.string()
-        .required('Contact given (first) name is required')
+        .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
       contactSurname: yup.string()
         .required('Contact surname is required')
@@ -60,17 +60,17 @@ const metadataInEditingValidations = {
     yup.object().shape({
       description: yup.string()
         .required('Description is required')
-        .min(100, 'Please write at least a minimal description with 100 characters.'),
+        .min(100, 'Write at least a description with 100 characters.'),
     }),
   [EDITMETADATA_KEYWORDS]: () =>
     yup.object().shape({
       keywords: yup.array()
-        .min(5, 'Please enter at least 5 keywords.'),
+        .min(5, 'Enter at least 5 keywords.'),
     }),
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
       authors: yup.array()
-        .min(1, 'Please add at least one author.'),
+        .min(1, 'Add at least one author.'),
     }),
   [EDITMETADATA_DATA_RESOURCE]: () =>
     yup.object().shape({
@@ -85,7 +85,7 @@ const metadataInEditingValidations = {
       description: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Please write at least a minimal description with 20 characters.'),
+        .min(20, 'Write at least a minimal description with 20 characters.'),
       format: yup.string()
         .nullable()
         .min(2, 'Format has to be at least 2 characters long.'),
@@ -116,21 +116,32 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({
-      geometries: yup.array().min(1, 'Editing Error: a geometry is required to be set'),
+      location: yup.object()
+        .nullable()
+        .required('Geometry is required to be set')
+        .shape({
+          geoJSON: yup.object()
+            .required('Geometry is required to be set')
+            .shape({
+              geometries: yup.array()
+                .required('Geometry is required to be set')
+                .min(1, 'At least one geometry is required'),
+            }),
+        }),
     }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
       relatedPublicationsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Please use at least 20 characters to describe the related publications.'),
+        .min(20, 'Write at least 20 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
       relatedDatasetsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Please use at least 20 characters to describe the related datasets.'),
+        .min(20, 'Write at least 20 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -157,22 +168,23 @@ const metadataInEditingValidations = {
       publicationState: yup.string(),
       doi: yup.string(),
       publisher: yup.string()
-        .required()
+        .required('Enter publisher')
         .min(3),
       publicationYear: yup.string()
-        .required(),
+        .required('Enter publication year'),
     }),
   [EDITMETADATA_FUNDING_INFO]: () =>
     yup.object().shape({
       funders: yup.array()
-        .required().min(1, 'Provide at least one entry about funding of the research.').of(
+        .required('Enter funding information')
+        .min(1, 'Enter at least one funding information').of(
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),
           institutionUrl: yup.string()
             .nullable()
             .transform(convertEmptyStringToNull)
-            .matches(urlRegex, 'Please provide an valid link / url.'),
+            .matches(urlRegex, 'Provide a valid link / url.'),
         }),
       ),
     }),
