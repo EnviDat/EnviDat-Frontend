@@ -400,6 +400,9 @@ export default {
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
+    datasetCreationActive() {
+      return this.userEditMetadataConfig?.datasetCreationActive || false;
+    },
     loading() {
       return this.userLoading;
     },
@@ -681,8 +684,11 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
-      // this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
+      if (this.datasetCreationActive) {
+        this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
+      } else {
+        window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      }
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
