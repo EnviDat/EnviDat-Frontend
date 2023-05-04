@@ -20,7 +20,7 @@
         <v-col class="pa-0" cols="6">
           <v-img
             class="imagezoom"
-            style="border-radius: 2px 0px 0px 2px;"
+            style="border-radius: 2px 0 0 2px;"
             :contain="headerImg ? headerImg.width > headerImg.height : false"
             :cover="headerImg ? headerImg.width < headerImg.height : false"
             :height="headerCardHeight"

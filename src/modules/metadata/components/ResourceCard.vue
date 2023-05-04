@@ -443,8 +443,8 @@ export default {
 
 .fabPosition {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
 }
 
 .fabMenu {
@@ -501,6 +501,6 @@ export default {
 }
 
 .highlighted {
-  box-shadow: #ffd740 0px 0px 5px 5px !important;
+  box-shadow: #ffd740 0 0 5px 5px !important;
 }
 </style>

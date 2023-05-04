@@ -13,9 +13,9 @@ import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import globalMethods from '@/factories/globalMethods';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();

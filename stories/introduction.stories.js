@@ -1,4 +1,4 @@
-/* eslint-disable object-curly-newline */
+/* eslint-disable object-curly-newline,no-console */
 // noinspection JSUnusedGlobalSymbols
 
 /**

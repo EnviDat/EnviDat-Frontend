@@ -735,7 +735,6 @@ $font-family: 'Raleway', sans-serif;
 }
 
 .envidatNavbar {
-  position: -webkit-sticky;
   position: sticky;
   top: 8px;
   z-index: 1000;

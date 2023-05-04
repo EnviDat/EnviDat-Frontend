@@ -12,7 +12,7 @@
     </div>
 
     <base-icon-button class="ma-2"
-                      style="position: absolute; top: 0px; right: 0px; z-index: 2;"
+                      style="position: absolute; top: 0; right: 0; z-index: 2;"
                       material-icon-name="close"
                       icon-color="primary"
                       color="primary"

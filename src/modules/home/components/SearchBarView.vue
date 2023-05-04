@@ -73,6 +73,6 @@ export default {
   margin-top: 16px !important;
 } */
 .adjustIconSearchbar {
-  margin-top: 0px;
+  margin-top: 0;
 }
 </style>
