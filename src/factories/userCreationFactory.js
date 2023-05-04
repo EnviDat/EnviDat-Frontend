@@ -515,6 +515,27 @@ export function updateAllStepsForCompletion(steps, getStepDataFn) {
 
 }
 
+export function countSteps(steps, onlyCompleted) {
+  if (!steps) {
+    return 0;
+  }
+  
+  let count = 0;
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    if (step.detailSteps) {
+      const detailCounts = countSteps(step.detailSteps, onlyCompleted);
+      count += detailCounts;
+    } else if (!onlyCompleted) {
+      count++;
+    } else if (onlyCompleted && step.completed) {
+      count++;
+    }
+  }
+  
+  return count;
+}
+
 function combineAuthorDataChanges(dataKey, data) {
   if (dataKey === EDITMETADATA_AUTHOR) {
 

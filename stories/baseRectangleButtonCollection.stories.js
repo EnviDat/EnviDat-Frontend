@@ -10,12 +10,15 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
   title: '1 Base Elements / Rectangle Buttons Collection',
   component: BaseRectangleButton,
   decorators: [],
-  parameters: {},
+  parameters: {
+    ...envidatViewportParameters,
+  },
 };
 
 const Template = (args, { argTypes }) => ({

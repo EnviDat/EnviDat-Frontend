@@ -3,7 +3,75 @@
   <div id="NavigationStepper"
        class="pa-0 fill-height stepperContentGrid">
 
-    <div class="stepper pl-10 headerContentGrid"
+    <div class="infoPanel infoPanelGrid pa-4"
+         :style="`background-color: ${backgroundColor}`" >
+
+      <div class="instructions">
+        <div class="white--text readableText">
+          <v-icon color="white">info</v-icon>
+          {{ isCreationWorkflow ? creationWorkflowInstruction : editingWorkflowInstruction }}
+        </div>
+
+      </div>
+
+      <div class="interaction">
+
+        <v-row justify="end">
+          <v-col>
+
+            <BaseProgressView text="Only a few steps"
+                              :progress-pct="completedPct"
+                              color="white"
+            />
+          </v-col>
+
+          <v-col v-if="showPreviewButton"
+                 class="shrink">
+            <BaseIconButton
+                    id="PreviewMetadataButton"
+                    material-icon-name="remove_red_eye"
+                    icon-color="white"
+                    color="white"
+                    outlined
+                    tooltipText="Preview Dataset"
+                    :tooltipBottom="true"
+                    @clicked="catchPreviewClick"
+            />
+          </v-col>
+
+          <v-col v-if="showSaveButton"
+                 class="shrink">
+            <BaseIconButton
+                    id="SaveMetadataButton"
+                    material-icon-name="save"
+                    icon-color="accent"
+                    color="accent"
+                    outlined
+                    tooltipText="Save Dataset On the Server"
+                    :tooltipBottom="true"
+                    @clicked="catchSaveDatasetClick"
+            />
+          </v-col>
+
+          <v-col class="shrink">
+
+            <BaseIconButton
+                    id="MetadataEditCloseButton"
+                    material-icon-name="close"
+                    icon-color="white"
+                    color="white"
+                    outlined
+                    tooltipText="Close workflow"
+                    :tooltipBottom="true"
+                    @clicked="catchCloseClick"
+            />
+          </v-col>
+
+        </v-row>
+      </div>
+    </div>
+
+    <div class="stepper px-5 headerContentGrid"
           :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
@@ -15,43 +83,6 @@
                          :currentStepIndex="currentStepIndex"
                          @stepClick="catchStepClick" />
 
-      <BaseIconButton
-        v-if="showPreviewButton"
-        id="PreviewMetadataButton"
-        class="ma-auto px-4"
-        material-icon-name="remove_red_eye"
-        icon-color="white"
-        color="white"
-        outlined
-        tooltipText="Preview Dataset"
-        :tooltipBottom="true"
-        @clicked="catchPreviewClick"
-      />
-
-      <BaseIconButton
-              v-if="showSaveButton"
-              id="SaveMetadataButton"
-              class="ma-auto px-4"
-              material-icon-name="save"
-              icon-color="accent"
-              color="accent"
-              outlined
-              tooltipText="Save Dataset On the Server"
-              :tooltipBottom="true"
-              @clicked="catchSaveDatasetClick"
-      />
-
-      <BaseIconButton
-        id="MetadataEditCloseButton"
-        class="ma-auto px-4"
-        material-icon-name="close"
-        icon-color="white"
-        color="white"
-        outlined
-        tooltipText="Close metadata editing"
-        :tooltipBottom="true"
-        @clicked="catchCloseClick"
-      />
     </div>
 
     <div
@@ -110,6 +141,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
+import { countSteps } from '@/factories/userCreationFactory';
 
 export default {
   name: 'NavigationStepper',
@@ -146,6 +178,20 @@ export default {
     backgroundColor() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
     },
+    completedPct() {
+      const pct = this.completedStepsAmount / this.allStepsAmount;
+      const pct2 = (pct * 100).toFixed(2);
+      return Number.parseFloat(pct2);
+    },
+    completedPctInteger() {
+      return Math.floor(this.completedPct);
+    },
+    completedStepsAmount() {
+      return countSteps(this.steps, true);
+    },
+    allStepsAmount() {
+      return countSteps(this.steps);
+    },
   },
   watch: {
     step() {
@@ -153,6 +199,9 @@ export default {
     },
   },
   methods: {
+    getCompletedAmount() {
+      return this.steps.filter((s) => s.complete === true).length;
+    },
     getNextMajorStepTitle() {
       const nextMajorIndex = this.currentStepIndex + 1;
 
@@ -241,6 +290,11 @@ export default {
   data: () => ({
     currentStep: null,
     currentStepIndex: -1,
+    creationWorkflowInstruction: `You are creating a new dataset.
+    There is a minimum of information you have to fill out until you can save a dataset on the server.
+    `,
+    editingWorkflowInstruction: `You are editing an existing dataset.
+    For editing most of the infomation will be auto-saved. Once you have changed information just click away to save it.`,
   }),
   components: {
     StepperHeader,
@@ -254,18 +308,29 @@ export default {
 .stepperContentGrid {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 72px auto;
+  grid-template-rows: auto 72px auto;
   gap: 0;
   grid-template-areas:
+    'infoPanel'
     'stepper'
     'content';
   width: 100%;
   height: 100%;
 }
 
-.headerContentGrid {
+.infoPanelGrid {
   display: grid;
-  grid-template-columns: 11fr 0.1fr 0.1fr;
-  gap: 0;
+  grid-template-columns: 5fr auto;
+  gap: 50px;
+}
+
+.instructions {
+    display: inherit;
+    justify-content: start;
+}
+
+.interaction {
+  display: inherit;
+  justify-content: end;
 }
 </style>
