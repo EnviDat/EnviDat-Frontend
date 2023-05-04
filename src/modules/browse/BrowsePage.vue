@@ -472,7 +472,6 @@ export default {
 <style scoped>
 
   .stickyFilterBar {
-    position: -webkit-sticky;
     position: sticky;
     top: 50px;
     z-index: 1000;

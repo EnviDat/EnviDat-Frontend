@@ -1,7 +1,12 @@
 ARG INTERNAL_REG
 ARG EXTERNAL_REG
-FROM ${INTERNAL_REG}/debian:bullseye as certs
 
+
+FROM ${EXTERNAL_REG}/debian:bullseye AS certs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates
 
 
 FROM ${EXTERNAL_REG}/node:16 AS base

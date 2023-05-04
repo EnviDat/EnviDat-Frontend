@@ -202,12 +202,12 @@ export default {
 }
 
 .smallSearchBar .input-group__details {
-  min-height: 0px !important;
+  min-height: 0 !important;
 }
 
 .envidatSmallSearch {
-  padding: 0px !important;
-  margin: 0px !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .envidatSmallSearch > .v-input__control {
@@ -215,11 +215,7 @@ export default {
   margin-bottom: 2px !important;
 }
 
-.envidatSmallSearch
-  > .v-input__control
-  > .v-input__slot
-  > .v-text-field__slot
-  > input {
+.envidatSmallSearch > .v-input__control > .v-input__slot > .v-text-field__slot > input {
   padding: 0;
 }
 

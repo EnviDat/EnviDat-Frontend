@@ -6,11 +6,10 @@
         <v-col >
 
           <v-img v-show="!loadingImagePreview && !imagePreviewError"
-                 :src="url"
                  ref="imagePreview"
                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
                  @click="catchImageClick"
-                 @load="loadingImagePreview = true"
+                 @load="loadingImagePreview = false"
                  @error="catchImageLoadError"
                  alt="resource image preview"/>
 
@@ -46,7 +45,7 @@
 
 <script>
 /**
- * ImagePreviewCard.vue a card which previews an image
+ * ImagePreviewCard.vue a card which shows an image
  *
  * @summary renders an image
  * @author Dominik Haas-Artho
@@ -62,18 +61,18 @@ export default {
     url: String,
   },
   mounted() {
+    this.loadImagePreview(this.url);
   },
   computed: {
   },
   methods: {
-/*
     loadImagePreview(url) {
       this.imagePreviewError = null;
       this.loadingImagePreview = true;
       const vm = this;
 
       try {
-        vm.$nextTick(() => {
+        this.$nextTick(() => {
           const imageRefs = vm.$refs.imagePreview;
           const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
 
@@ -86,11 +85,12 @@ export default {
         this.loadingImagePreview = false;
       }
     },
-*/
     catchImageClick() {
       this.$emit('previewImageClicked');
     },
     catchImageLoadError(event) {
+      console.log('catchImageLoadError');
+      console.error(event);
       this.loadingImagePreview = false;
       this.imagePreviewError = event;
     },

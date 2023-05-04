@@ -309,7 +309,7 @@ export default {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      console.log(`Starting upload ${id} for files ${fileIDs}`);
+      // console.log(`Starting upload ${id} for files ${fileIDs}`);
 
       this.uppyError = null;
       this.uploadProgessText = 'Starting upload file';
@@ -328,21 +328,16 @@ export default {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
-      console.log('successful files:', result.successful)
-      console.log('failed files:', result.failed)
+      // console.log('successful files:', result.successful)
+      // console.log('failed files:', result.failed)
 
       let message = '';
-/*
-      let uploadURL = null;
-*/
+
       if (oks > 0) {
         message += `${oks} uploads successful`;
         this.uploadProgressIcon = 'check_circle';
-
-/*
-        uploadURL = result.successful[0]?.uploadURL || null;
-*/
       }
+
       if (fails > 0) {
         message += `${fails} failed uploads`;
         this.uploadProgressIcon = 'report_gmailerrorred';
@@ -351,17 +346,6 @@ export default {
       eventBus.emit(UPLOAD_STATE_UPLOAD_COMPLETED, { id: UPLOAD_STATE_UPLOAD_COMPLETED });
 
       this.uploadProgessText = message;
-
-
-/*
-      if (uploadURL) {
-        await updateResourceWithFileUrl(uploadURL, this.$store);
-        const resources = this.$store?.getters[`${USER_NAMESPACE}/resources`];
-
-        console.log('after updateResourceWithFileUrl')
-        console.log(resources)
-      }
-*/
 
       // reset uppy to be able to upload another file
       this.resetUppy();

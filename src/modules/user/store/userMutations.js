@@ -91,6 +91,7 @@ export default {
 
     const datasets = enhanceMetadataFromCategories(this, payload.datasets);
 
+    // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(datasets, SELECT_EDITING_DATASET_PROPERTY);
 
     // use the $set to make sure updates are triggered
@@ -146,6 +147,7 @@ export default {
 
     const enhancedDatasets = enhanceMetadataFromCategories(this, datasets) || [];
 
+    // TODO - check config for dataset editing enabled
     enhanceElementsWithStrategyEvents(enhancedDatasets, SELECT_EDITING_DATASET_PROPERTY);
 
     const collaboratorDatasets = [
@@ -223,6 +225,8 @@ export default {
 
       const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
 
+      // TODO - check config for dataset editing enabled
+      
       if (isUserGroupAdmin(userId, payload)) {
         enhanceElementsWithStrategyEvents(payload.packages, SELECT_EDITING_DATASET_PROPERTY);
       }

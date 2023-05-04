@@ -129,7 +129,7 @@ export default {
 
  .dataCreditBadge > span {
     bottom: -25px !important;
-    right: 0px !important;
+    right: 0 !important;
   }
 
   .dataCreditBadge.black--text > span > span {

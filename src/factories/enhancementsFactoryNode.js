@@ -42,6 +42,7 @@ function getFilesWithPrefix(path, prefix = '') {
       }
     }
   } catch (err) {
+    // eslint-disable-next-line no-console
     console.log(`Couldn't read path: ${path}. Error: ${err}`);
   }
 

@@ -373,6 +373,8 @@ export default {
 
   },
   created() {
+    this.blogModuleLoaded = this.$store?.state?.blog;
+
     this.$store.watch((state) => state.blog,(value) => {
       this.blogModuleLoaded = !!value;
     });

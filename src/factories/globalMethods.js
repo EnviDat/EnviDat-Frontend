@@ -12,8 +12,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { Object } from 'core-js';
-
 import {
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_POINT,

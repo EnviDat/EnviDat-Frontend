@@ -93,18 +93,17 @@ export default ({ mode }) => {
               { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-              { find: 'vue', replacement: 'vue/dist/vue.min.js' },
-              // { find: 'vue', replacement: 'vue/dist/vue.esm.js' },
+              { find: 'vue', replacement: `vue/dist/vue.${ isProd ? 'min' : 'esm' }.js` },
             ],
         },
         build: {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
           cssCodeSplit: true,
-          minify: true,
-          // sourcemap: true,
+          minify: isProd,
+          sourcemap: !isProd,
           emptyOutDir: true,
-          rollupOptions: {
+          rollupOptions: isProd ? {
             output: {
               // eslint-disable-next-line consistent-return
               manualChunks: (id) => {
@@ -157,7 +156,7 @@ export default ({ mode }) => {
                 }
               },
             },
-          },
+          } : {},
           define: {
             'import.meta.env.VITE_VERSION': JSON.stringify(version),
           },

@@ -3,7 +3,7 @@
     <v-img
       :src="notFoundImage"
       :max-height="height"
-      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
+      style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
     />
 
     <v-container fluid class="pa-4">

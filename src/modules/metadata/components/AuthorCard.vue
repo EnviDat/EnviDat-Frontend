@@ -223,7 +223,7 @@
 
     <v-container v-if="showGenericOpenButton"
                  class="ma-2 pa-0"
-                 style="position: absolute; top: 0px; right: 0px; width: 40px;">
+                 style="position: absolute; top: 0; right: 0; width: 40px;">
       <v-row>
         <v-col cols="12">
           <base-icon-button :materialIconName="openButtonIcon"

@@ -215,7 +215,7 @@ export default {
   data: () => ({
     labels: {
       title: 'Create Resource from File',
-      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file',
+      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file. If you have files larger then 2 GB please contact the EnviDat team.',
       instruction2: 'When uploading is finished, please make sure to rename the resource and add a description. The resource will be automatically selected.',
     },
     resourceId: null,
