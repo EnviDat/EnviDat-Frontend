@@ -25,6 +25,7 @@
           :color="color ? color : disabled ? '' : 'primary'"
           :href="url"
           :disabled="disabled"
+          :class="isFancy ? 'fancyButton' : ''"
           v-bind="{ ['target']: '_blank' }"
           @click.stop="onClick"
         >
@@ -64,6 +65,7 @@
       :color="color ? color : disabled ? '' : 'primary'"
       :href="url"
       :disabled="disabled"
+      :class="isFancy ? 'fancyButton' : ''"
       v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
     >
@@ -152,6 +154,7 @@ export default {
     disabled: Boolean,
     count: Number,
     overwriteHeight: Number,
+    isFancy:Boolean,
   },
   data: () => ({
     hoverBadge: false,
@@ -180,3 +183,24 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fancyButton {
+  background-color: #00BFAD;
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C,
+      #00BFAD
+    );
+}
+
+.fancyButton:hover {
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C 20%,
+      #00BFAD
+    );
+}
+</style>

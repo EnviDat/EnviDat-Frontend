@@ -39,15 +39,17 @@
             />
           </v-col>
 
-          <v-col v-if="showSaveButton"
-                 class="shrink">
+          <v-col v-if="isCreationWorkflow"
+                  class="shrink">
             <BaseIconButton
                     id="SaveMetadataButton"
                     material-icon-name="save"
-                    icon-color="accent"
-                    color="accent"
+                    icon-color="black"
+                    color="black"
                     outlined
                     tooltipText="Save Dataset On the Server"
+                    :disabled="!showSaveButton"
+                    :isFancy="showSaveButton"
                     :tooltipBottom="true"
                     @clicked="catchSaveDatasetClick"
             />
