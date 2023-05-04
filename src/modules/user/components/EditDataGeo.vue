@@ -57,6 +57,15 @@
           />
         </v-col>
       </v-row>
+
+        <v-row >
+          <v-col >
+            <ExpandableTextLayout title="Text Preview of Geospatial Information"
+                                  :text="geoJSONHintPreview"
+                                  />
+          </v-col>
+        </v-row>
+
     </v-container>
   </v-card>
 </template>
@@ -93,7 +102,10 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
+
+import { defaultSwissLocation } from '@/factories/workflowFactory';
+
+import geojsonhint from '@mapbox/geojsonhint';
 
 export default {
   name: 'EditDataGeo',
@@ -197,6 +209,18 @@ export default {
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
     },
+    geoJSONHintPreview() {
+      const geomString = this.geomsForMapString;
+
+      if (geomString) {
+        const hints = geojsonhint.hint(geomString, {});
+
+        if (hints) {
+          return `${geomString} \n\n\n ${JSON.stringify(hints)}`;
+        }
+      }
+
+      return geomString;
     },
   },
   watch: {

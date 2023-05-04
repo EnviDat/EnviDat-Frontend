@@ -24,6 +24,7 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
     "@geoman-io/leaflet-geoman-free": "^2.13.0",
+    "@mapbox/geojsonhint": "^3.1.1",
     "@metamask/jazzicon": "^2.0.0",
     "@turf/turf": "^6.5.0",
     "@uppy/aws-s3-multipart": "^3.1.1",
