@@ -28,6 +28,7 @@
         </v-col>
       </v-row>
 
+<!--
       <v-row no-gutters align="center">
         <v-col class="pt-2 text-body-1">
           Changing the Organization of a datasets is for now not possible.
@@ -35,20 +36,43 @@
           Contact the Envidat team for support to make such a change.
         </v-col>
       </v-row>
+      -->
 
       <v-row>
-        <v-col>
+        <v-col v-if="onlyOneUserOrganziation">
           <v-text-field
             outlined
             prepend-icon="home_filled"
             :value="selectedOrganization.title"
             readonly
-            hint='This field is "readonly" only the EnviDat Team can change it.'
-            :error-messages="validationErrors.organizationId"
           />
+
+<!--
+            readonly=""
+            hint='This field is "readonly" only the EnviDat Team can change it.'
+-->
+
         </v-col>
 
-        <!--
+        <v-col v-if="!onlyOneUserOrganziation">
+          <v-select @input="setOrganization($event)"
+                    :value="organizationField"
+                    :items="userOrganizations"
+                    item-text="title"
+                    item-value="id"
+                    outlined
+                    chips
+                    append-icon="arrow_drop_down"
+                    :readonly="mixinMethods_isFieldReadOnly('organization')"
+                    :hint="mixinMethods_readOnlyHint('organization')"
+                    label="Organization"
+                    :error-messages="validationErrors.organizationId"
+          >
+          </v-select>
+
+        </v-col>
+
+<!--
         <v-col >
           <MetadataOrganizationChip :organization="selectedOrganization.title" />
         </v-col>
@@ -140,10 +164,12 @@ export default {
       type: Array,
       default: () => [],
     },
+/*
     allOrganizations: {
       type: Array,
       default: () => [],
     },
+*/
     loading: {
       type: Boolean,
       default: false,
@@ -186,6 +212,11 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    organizationField: {
+      get() {
+        return this.previewOrganizationId ? this.previewOrganizationId : this.organizationId;
+      },
+    },
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
     ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
     currentUser() {
@@ -195,6 +226,7 @@ export default {
 
       return null;
     },
+/*
     userOrganizationsCount() {
       if (this.allOrganizations) {
         return this.allOrganizations.length;
@@ -206,6 +238,7 @@ export default {
 
       return 0;
     },
+*/
     previewOrganization() {
       return this.previewOrganizationId || this.organizationId;
     },
@@ -222,26 +255,14 @@ export default {
 
       return false;
     },
+    onlyOneUserOrganziation() {
+      return this.userOrganizations?.length === 1;
+    },
     selectedOrganization() {
-      // Get organization title, filtering userOrganizationsList by organizationId prop
 
-      let userOrg = null;
+      const id = this.organizationField;
 
-      if (this.allOrganizations?.length > 0) {
-        userOrg = this.allOrganizations.filter(
-          x => x.id === this.previewOrganization,
-        )[0];
-      }
-
-      if (!userOrg && this.$store && this.userOrganizationsList?.length > 0) {
-        userOrg = this.userOrganizationsList.filter(
-          x => x.id === this.previewOrganization,
-        )[0];
-      }
-
-      if (!userOrg) {
-        return this.emptySelection;
-      }
+      const userOrg = this.userOrganizations.filter((orga) => orga.id === id)[0] || {};
 
       return {
         id: userOrg.id,
@@ -273,7 +294,7 @@ export default {
   },
   methods: {
     clearPreview() {
-      this.previewOrganizationId = '';
+      this.previewOrganizationId = null;
     },
     setOrganization(orgId) {
       // Select organization based on picked item and pass via event bus
@@ -322,7 +343,7 @@ export default {
       id: '',
       title: '',
     },
-    previewOrganizationId: '',
+    previewOrganizationId: null,
   }),
   components: {
     BaseStatusLabelView,
