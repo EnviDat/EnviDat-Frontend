@@ -260,7 +260,7 @@ export default {
         this.$store.state,
       );
 
-      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-2';
+      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-3';
 
       const defaultAboutInfo = [
         {
@@ -306,7 +306,7 @@ export default {
             this.orga +
             '" style="width: 100%; height: 100%;" />',
           img: teamImg,
-          defaultWidthClass: 'col-12 col-sm-12 col-md-8 col-xl-3',
+          defaultWidthClass: 'col-12 col-sm-12 col-md-8',
         },
       ];
 
