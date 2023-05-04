@@ -90,6 +90,7 @@ export default {
     catchStepClick(stepTitle) {
       if (!this.$route) {
         // storybook context
+        this.setCurrentStep(stepTitle);
         return;
       }
 

@@ -172,6 +172,13 @@ export default {
       }
     },
     catchStepClick(stepTitle) {
+
+      if (!this.$router) {
+        // storybook context
+        this.setCurrentStep(stepTitle);
+        return;
+      }
+
       this.$router.push(
         {
           params: {
@@ -189,6 +196,7 @@ export default {
           }
         },
       );
+
     },
     nextStep() {
       let nextIndex = this.currentStepIndex + 1;

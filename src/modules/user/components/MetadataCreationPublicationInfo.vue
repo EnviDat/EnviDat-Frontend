@@ -233,7 +233,7 @@ export default {
       };
     },
     metadataId() {
-      return this.$route.params.metadataid;
+      return this.$route?.params?.metadataid;
     },
     linkToDatasetCKAN() {
       return `${this.envidatDomain}/dataset/${this.metadataId}`;

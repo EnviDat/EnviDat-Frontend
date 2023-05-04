@@ -140,7 +140,7 @@ export default {
       return undefined;
     },
     noDataCreditAuthorsWrap() {
-      const authors = [...this.existingAuthorsWrap];
+      const authors = this.existingAuthorsWrap ? [...this.existingAuthorsWrap] : [];
 
       for (let i = 0; i < authors.length; i++) {
         authors[i] = {
