@@ -13,6 +13,7 @@ declare module 'vue' {
     BaseIconCountView: typeof import('./src/components/BaseElements/BaseIconCountView.vue')['default']
     BaseIconLabelView: typeof import('./src/components/BaseElements/BaseIconLabelView.vue')['default']
     BaseIconSwitch: typeof import('./src/components/BaseElements/BaseIconSwitch.vue')['default']
+    BaseProgressView: typeof import('./src/components/BaseElements/BaseProgressView.vue')['default']
     BaseRectangleButton: typeof import('./src/components/BaseElements/BaseRectangleButton.vue')['default']
     BaseShinyBadge: typeof import('./src/components/BaseElements/BaseShinyBadge.vue')['default']
     BaseStartEndDate: typeof import('./src/components/BaseElements/BaseStartEndDate.vue')['default']
