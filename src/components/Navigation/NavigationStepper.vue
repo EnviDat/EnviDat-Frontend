@@ -1,7 +1,7 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
   <div id="NavigationStepper"
-       class="pa-0 fill-height stepperContentGrid">
+       class="pa-0 stepperContentGrid">
 
     <div class="infoPanel infoPanelGrid pa-4"
          :style="`background-color: ${backgroundColor}`" >
@@ -309,7 +309,7 @@ export default {
 .stepperContentGrid {
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: auto 72px auto;
+  grid-template-rows: auto 72px minmax(auto, 1fr);
   gap: 0;
   grid-template-areas:
     'infoPanel'
