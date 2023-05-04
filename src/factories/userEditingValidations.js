@@ -31,6 +31,7 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
+import { DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/mappingFactory';
 
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
@@ -109,13 +110,16 @@ const metadataInEditingValidations = {
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
-      dataLicenseId: yup
-      .string()
-      .test(
-        'empty-check',
-        'An data licence must be selected.',
-        dataLicenseId => dataLicenseId !== '',
-      ),
+      dataLicenseId: yup.string()
+        .required('Data licence is required'),
+      dates: yup.array()
+        .required('Creation data is required')
+        .min(1, 'At least a creation date is required')
+        .test(
+          'empty-check',
+          'Add start and end date',
+          dateEntry => dateEntry[DATE_PROPERTY_START_DATE] !== '' && dateEntry[DATE_PROPERTY_END_DATE] !== '',
+        ),
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({
@@ -184,7 +188,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       funders: yup.array()
         .required('Enter funding information')
-        .min(1, 'Enter at least one funding information').of(
+        .min(1, 'Provide at least one funding entry').of(
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),

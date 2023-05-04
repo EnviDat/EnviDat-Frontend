@@ -258,6 +258,11 @@ const stepKeyToDataKeyMap = {
   ],
 };
 
+/**
+ *
+ * @param stepKey
+ * @returns {[]}
+ */
 function getDataKeysToStepKey(stepKey) {
   return stepKeyToDataKeyMap[stepKey] || [];
 }
@@ -468,9 +473,23 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
   }
 
   const stepData = getStepDataFn(step);
-  const validationRules = getValidationMetadataEditingObject(step.key);
+  const dataKeys = getDataKeysToStepKey(stepKey);
 
-  step.completed = stepValidation(step, stepData, validationRules);
+  // use the stepKey itself aswell, for merged step data and flat stored
+  // it is used in both cases
+  dataKeys.push(stepKey);
+
+  for (let i = 0; i < dataKeys.length; i++) {
+    const key = dataKeys[i];
+    const validationRules = getValidationMetadataEditingObject(key);
+
+    if (validationRules) {
+      step.completed = stepValidation(step, stepData, validationRules);
+      if (step.error) {
+        break;
+      }
+    }
+  }
 
   // console.log(`updateStepStatus step ${step.key} completed? ${step.completed}`);
 
@@ -490,12 +509,16 @@ export function updateAllStepsForCompletion(steps, getStepDataFn) {
 
       const completedDetailSteps = detailSteps.filter(s => s.completed);
       step.completed = completedDetailSteps.length === detailSteps.length;
+      if(step.completed) {
+        // clear the error for a parten step, they only get cleared through the validation check
+        step.error = null;
+      }
     } else {
 
       const stepData = getStepDataFn(step);
       const validationRules = getValidationMetadataEditingObject(step.key);
 
-      step.completed = stepValidation(step, stepData, validationRules, true);
+      step.completed = validationRules ? stepValidation(step, stepData, validationRules, true) : true;
     }
     // console.log(`step ${step.key} completed? ${step.completed}`);
   }

@@ -414,11 +414,10 @@ export default {
 
       this.$nextTick(() => {
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-        // if (updateObj.object === EDITMETADATA_AUTHOR) {
-        //  this.updateExistingAuthors(updateObj.data);
-        // }
 
-        updateStepValidation(dataKey, this.creationSteps, this.getGenericPropsForStep);
+        // updateStepValidation(dataKey, this.creationSteps, this.getGenericPropsForStep);
+        this.validateCurrentStep();
+        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
       });
 
     },
