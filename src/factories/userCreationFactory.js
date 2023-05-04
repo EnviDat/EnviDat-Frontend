@@ -24,7 +24,7 @@ import { getValidationMetadataEditingObject } from '@/factories/userEditingValid
 import { updateEditingArray } from '@/factories/userEditingFactory';
 import { convertToBackendJSONWithRules, mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
 
-import { getEmptyMetadataInEditingObject, getStepByName } from '@/factories/workflowFactory';
+import { getEmptyMetadataInEditingObject, getStepByName, defaultSwissLocation } from '@/factories/workflowFactory';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -44,24 +44,11 @@ export const ckanRequiredPropsForDatasetCreation = [
 ];
 */
 
-const hardCodedDefaultLocation = {
-  type: 'Polygon',
-  coordinates: [
-    [
-      [5.95587, 45.81802],
-      [5.95587, 47.80838],
-      [10.49203, 47.80838],
-      [10.49203, 45.81802],
-      [5.95587, 45.81802],
-    ],
-  ],
-};
-
 export function getNewDatasetDefaults(userEditMetadataConfig) {
 
-  const geoJSON = userEditMetadataConfig?.defaultLocation || hardCodedDefaultLocation;
+  const geoJSON = userEditMetadataConfig?.defaultLocation || defaultSwissLocation;
   const defaults = {
-    // location: { geoJSON },
+    location: { geoJSON },
     resourceTypeGeneral: 'dataset',
     ownerOrg: 'a5d8660c-7635-4620-8289-fb6181c34e0c',
   };

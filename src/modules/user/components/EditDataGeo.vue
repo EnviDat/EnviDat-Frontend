@@ -34,6 +34,12 @@
         </v-col>
       </v-row>
 
+      <v-row v-show="isDefaultLocation">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning}`">
+          {{ labels.defaultInstructions }}
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col cols="12" md="12" class="editDataGeo">
           <v-file-input
@@ -70,16 +76,19 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import {
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   MAP_GEOMETRY_MODIFIED,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
+  EDITMETADATA_DATA_GEO_SPATIAL,
 } from '@/factories/eventBus';
+
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
 import { parseAsGeomCollection } from '@/factories/metaDataFactory';
-// eslint-disable-next-line import/no-cycle
+
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -145,7 +154,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.originalGeom = this.location.geomCollection;
+    this.originalGeom = this.location.geoJSON;
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {
@@ -179,7 +188,15 @@ export default {
       return this.validationErrors.geometries;
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO);
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO_SPATIAL);
+    },
+    isDefaultLocation() {
+      const defaultGeoJSONString = JSON.stringify(defaultSwissLocation);
+      return this.geomsForMapString === defaultGeoJSONString;
+    },
+    geomsForMapString() {
+      return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
+    },
     },
   },
   watch: {
@@ -281,6 +298,7 @@ export default {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
+      defaultInstructions: 'Your are using the default location (Switzerland). Adjust the geo information to represents your research data more accurately.',
     },
     validationErrors: {
       geometries: null,

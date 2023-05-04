@@ -19,6 +19,7 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_FUNDING_INFO,
@@ -38,6 +39,8 @@ const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_
 const convertEmptyStringToNull = (value, originalValue) => originalValue === '' ? null : value;
 
 const convertToZero = (value) => Number.isNaN(value) ? 0 : value;
+
+const geoValidationMessage = 'Geometry is required';
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
@@ -118,17 +121,21 @@ const metadataInEditingValidations = {
     yup.object().shape({
       location: yup.object()
         .nullable()
-        .required('Geometry is required to be set')
+        .required(geoValidationMessage)
         .shape({
           geoJSON: yup.object()
-            .required('Geometry is required to be set')
-            .shape({
-              geometries: yup.array()
-                .required('Geometry is required to be set')
-                .min(1, 'At least one geometry is required'),
-            }),
+            .required(geoValidationMessage)
+            .test('empty-check',
+              geoValidationMessage,
+                geoObj => Object.keys(geoObj)?.length > 0),
         }),
     }),
+  [EDITMETADATA_DATA_GEO_SPATIAL]: () =>
+    yup.object().shape({
+      geometries: yup.array()
+        .required(geoValidationMessage)
+        .min(1, 'At least one geometry is required'),
+  }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
       relatedPublicationsText: yup.string()

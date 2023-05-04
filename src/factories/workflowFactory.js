@@ -47,6 +47,37 @@ const MetadataCreationRelatedInfo = () => import('@/modules/user/components/Meta
 const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
 
 
+export const defaultSwissLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [5.95587, 45.81802],
+        [5.95587, 47.80838],
+        [10.49203, 47.80838],
+        [10.49203, 45.81802],
+        [5.95587, 45.81802],
+      ],
+    ],
+  }],
+};
+
+export const defaultWorldLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [-175, -85],
+        [-175, 85],
+        [175, 85],
+        [175, -85],
+        [-175, -85],
+      ],
+    ],
+  }],
+}
 
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
@@ -72,7 +103,9 @@ const emptyMetadataInEditing = {
     dataLicenseId: '',
   },
   [EDITMETADATA_DATA_GEO]: {
-    location: null,
+    location: {
+      geoJSON: defaultSwissLocation,
+    },
   },
   [EDITMETADATA_RELATED_PUBLICATIONS]: {
     relatedPublicationsText: '',
