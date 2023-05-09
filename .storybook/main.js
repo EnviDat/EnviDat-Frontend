@@ -7,8 +7,7 @@ const Components = require('unplugin-vue-components/vite');
 const ViteRequireContext = require('@originjs/vite-plugin-require-context').default;
 
 // const eslint = require('vite-plugin-eslint').default;
-const VitePluginFonts = require('vite-plugin-fonts').default;
-
+const Unfonts = require('unplugin-fonts/vite').default;
 
 const version = process.env.npm_package_version;
 
@@ -40,7 +39,7 @@ module.exports = {
            ],
         }),
         // eslint(),
-        VitePluginFonts({
+        Unfonts({
           google: {
             families: [
               'Baskervville',
