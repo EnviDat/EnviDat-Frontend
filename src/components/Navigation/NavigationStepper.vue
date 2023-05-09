@@ -3,7 +3,8 @@
   <div id="NavigationStepper"
        class="pa-0 stepperContentGrid">
 
-    <div class="infoPanel infoPanelGrid pa-4"
+    <div class="infoPanel pa-2 pa-sm-4"
+         :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`"
          :style="`background-color: ${backgroundColor}`" >
 
       <div class="instructions">
@@ -14,17 +15,9 @@
 
       </div>
 
-      <div class="interaction">
+      <div class="interaction py-2 py-sm-0">
 
         <v-row justify="end">
-          <v-col>
-
-            <BaseProgressView text="Only a few steps"
-                              :progress-pct="completedPct"
-                              color="white"
-            />
-          </v-col>
-
           <v-col v-if="showPreviewButton"
                  class="shrink">
             <BaseIconButton
@@ -93,7 +86,7 @@
           :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
-      <StepperHeader class="py-4"
+      <StepperHeader class="py-2 py-sm-4"
                          :steps="steps"
                          activeColor="accent"
                          inactiveColor="secondary"
@@ -206,6 +199,28 @@ export default {
     },
     completedStepsAmount() {
       return countSteps(this.steps, true);
+    },
+    creationProgressInfo() {
+      if (this.completedPct >= 100) {
+        return 'Ready to save!'
+      }
+
+      if (this.completedPct >= 50) {
+        return 'A few infos more!'
+      }
+
+      return 'Enter all info to save!'
+    },
+    editingProgressInfo() {
+      if (this.completedPct >= 100) {
+        return 'Excellent!'
+      }
+
+      if (this.completedPct >= 70) {
+        return 'Almost there!'
+      }
+
+      return 'Provide more info!'
     },
     allStepsAmount() {
       return countSteps(this.steps);
@@ -326,30 +341,44 @@ export default {
 <style scoped>
 .stepperContentGrid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 72px minmax(auto, 1fr);
   gap: 0;
   grid-template-areas:
     'infoPanel'
     'stepper'
     'content';
+/*
   width: 100%;
   height: 100%;
+  */
 }
 
 .infoPanelGrid {
   display: grid;
-  grid-template-columns: 5fr auto;
-  gap: 50px;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: auto;
+  gap: 0;
+  grid-template-areas:
+  'instructions'
+  'interaction';
+}
+
+.infoPanelGrid-md {
+    display: grid;
+    grid-template-columns: 5fr auto;
+    gap: 50px;
+    grid-template-areas:
+    'instructions interaction';
 }
 
 .instructions {
-    display: inherit;
+    display: flex;
     justify-content: start;
 }
 
 .interaction {
-  display: inherit;
+  display: flex;
   justify-content: end;
 }
 </style>

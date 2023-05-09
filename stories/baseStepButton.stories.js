@@ -70,8 +70,5 @@ ErrorActive.args = {
 export const LongError = Template.bind({});
 LongError.args = {
   ...TextOnly.args,
-  error: 'An data licence must be selected',
+  error: 'An data licence must be selected and some more text',
 };
-export const MobileTextOnly = Template.bind({});
-MobileTextOnly.args = { ...TextOnly.args };
-MobileTextOnly.parameters = mobileViewportParams;

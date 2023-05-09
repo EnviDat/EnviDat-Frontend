@@ -113,7 +113,7 @@ const metadataInEditingValidations = {
       dataLicenseId: yup.string()
         .required('Data licence is required'),
       dates: yup.array()
-        .required('Creation data is required')
+        .required('Created date is required')
         .min(1, 'At least a creation date is required')
         .test(
           'empty-check',

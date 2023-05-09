@@ -1,7 +1,7 @@
 <template>
   <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
     <v-row no-gutters>
-      <v-col class="px-10">
+      <v-col class="px-sm-10">
         <!-- prettier-ignore -->
         <StepperHeader  :steps="steps"
                         activeColor="accent"

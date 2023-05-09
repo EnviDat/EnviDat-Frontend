@@ -5,10 +5,11 @@
 
         <div v-for="(step, index) in stepsWithGaps"
              :key="`step-${index}`"
-              :style="`flex-grow: ${step ? 0 : 2}`"
+              :style="`flex-grow: ${step ? 0 : 2}; `"
+             class="py-1 py-md-0"
         >
 
-            <v-divider v-if="!step"
+            <v-divider v-if="!step && $vuetify.breakpoint.smAndUp"
                        color="accent"
                        class="mx-5"
                        style="min-width: 25px; align-self: center; "
@@ -17,7 +18,7 @@
 
             <StepButton v-if="step"
                         :id="`step-${index}`"
-                        :title="step.title"
+                        :title="$vuetify.breakpoint.smAndUp ? step.title : ''"
                         :active="isCurrentStep(step)"
                         :complete="step.completed"
                         :number="step.number"
@@ -113,6 +114,8 @@ export default {
 
   .stepperHeaderRow {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
   }
