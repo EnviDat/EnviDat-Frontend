@@ -48,7 +48,9 @@ export default ({ mode }) => {
     return defineConfig({
         plugins: [
             vue(),
-            eslint(),
+            eslint({
+              exclude: ['/virtual:/**', 'node_modules/**'],
+            }),
             ViteRequireContext(),
             Components({
                 resolvers: [
