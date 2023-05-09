@@ -31,6 +31,9 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const Empty = Template.bind({});
+Empty.args = {
+  userOrganizations: testOrganizations,
+}
 
 export const Normal = Template.bind({});
 Normal.args = {
@@ -40,6 +43,6 @@ Normal.args = {
 
 export const SingleOrganizationCase = Template.bind({});
 SingleOrganizationCase.args = {
-  // organizationId: testOrganizations[0].id,
-  userOrganizations: [testOrganizations[1]],
+  organizationId: testOrganizations[0].id,
+  userOrganizations: [testOrganizations[0]],
 }

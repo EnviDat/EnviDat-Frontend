@@ -62,6 +62,7 @@
                     item-value="id"
                     outlined
                     chips
+                    prepend-icon="home_filled"
                     append-icon="arrow_drop_down"
                     :readonly="mixinMethods_isFieldReadOnly('organization')"
                     :hint="mixinMethods_readOnlyHint('organization')"
@@ -164,12 +165,6 @@ export default {
       type: Array,
       default: () => [],
     },
-/*
-    allOrganizations: {
-      type: Array,
-      default: () => [],
-    },
-*/
     loading: {
       type: Boolean,
       default: false,
@@ -218,42 +213,13 @@ export default {
       },
     },
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
+    // ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
     currentUser() {
       if (this.$store) {
         return this.user;
       }
 
       return null;
-    },
-/*
-    userOrganizationsCount() {
-      if (this.allOrganizations) {
-        return this.allOrganizations.length;
-      }
-
-      if (this.$store) {
-        return this.userOrganizationsList.length;
-      }
-
-      return 0;
-    },
-*/
-    previewOrganization() {
-      return this.previewOrganizationId || this.organizationId;
-    },
-    userIsPartOfSelectedOrganization() {
-      if (
-        !!this.selectedOrganization?.id &&
-        this.userOrganizationsList?.length > 0
-      ) {
-        const matched = this.userOrganizationsList.filter(
-          x => x.id === this.selectedOrganization.id,
-        )[0];
-        return !!matched;
-      }
-
-      return false;
     },
     onlyOneUserOrganziation() {
       return this.userOrganizations?.length === 1;
@@ -268,25 +234,6 @@ export default {
         id: userOrg.id,
         title: userOrg.title,
       };
-    },
-    userOrganizationsListItems() {
-      // Return formatted list of organizations user is member of, with id/title
-
-      if (this.$store && this.userOrganizationsList) {
-        return this.userOrganizationsList.map(org => ({
-          id: org.id,
-          title: org.title,
-        }));
-      }
-
-      if (this.allOrganizations) {
-        return this.allOrganizations.map(org => ({
-          id: org.id,
-          title: org.title,
-        }));
-      }
-
-      return [this.emptySelection];
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_ORGANIZATION);
@@ -309,7 +256,7 @@ export default {
           this.validationErrors,
         )
       ) {
-        const newOrgId = this.userOrganizationsList.filter(
+        const newOrgId = this.userOrganizations.filter(
           x => x.id === orgId,
         )[0].id;
 
@@ -322,7 +269,7 @@ export default {
     fetchUserOrganisationData() {
       this.$store.dispatch(
         `${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
-        this.currentUser.id,
+        this.currentUser?.id,
       );
     },
     validateProperty(property, value) {
