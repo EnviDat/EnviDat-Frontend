@@ -1,8 +1,7 @@
 <template>
   <v-row no-gutters
-         align-content="center"
-          style="justify-content: end;">
-    <v-col>
+         style="justify-content: end; align-items: center;">
+    <v-col :style="`color: ${textColor};`">
       {{ text }}
     </v-col>
 
@@ -37,11 +36,15 @@ export default {
   props: {
     text: {
       type: String,
-      default: 'Your progress is',
+      default: 'Progress: ',
     },
     color: {
       type: String,
       default: 'secondary',
+    },
+    textColor: {
+      type: String,
+      default: 'black',
     },
     progressPct: {
       type: Number,

@@ -55,6 +55,22 @@
             />
           </v-col>
 
+          <v-col v-if="isCreationWorkflow" >
+              <BaseProgressView :text="creationProgressInfo"
+                                text-color="white"
+                                :progress-pct="completedPct"
+                                color="white"
+              />
+          </v-col>
+
+          <v-col v-if="!isCreationWorkflow" >
+              <BaseProgressView :text="editingProgressInfo"
+                                text-color="white"
+                                :progress-pct="completedPct"
+                                color="white"
+              />
+          </v-col>
+
           <v-col class="shrink">
 
             <BaseIconButton
