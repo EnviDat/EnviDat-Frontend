@@ -25,6 +25,7 @@ import { updateEditingArray } from '@/factories/userEditingFactory';
 import { convertToBackendJSONWithRules, mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
 
 import { getEmptyMetadataInEditingObject, getStepByName, defaultSwissLocation } from '@/factories/workflowFactory';
+import { getYear } from 'date-fns';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -100,11 +101,30 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
 
   creationData[EDITMETADATA_AUTHOR_LIST] = { authors: userAuthor };
 
+  const defaultCurrentYear = getYear(new Date()).toString();
+
   const publicationStep = creationData[EDITMETADATA_PUBLICATION_INFO];
   creationData[EDITMETADATA_PUBLICATION_INFO] = {
     ...publicationStep,
     publisher: 'EnviDat',
+    publicationYear: defaultCurrentYear,
   };
+
+  creationData[EDITMETADATA_DATA_GEO] = {
+    location: {
+      geoJSON: defaultSwissLocation,
+    },
+  }
+
+  if (organizationId) {
+    const organizationData = creationData[EDITMETADATA_ORGANIZATION];
+
+    creationData[EDITMETADATA_ORGANIZATION] = {
+      ...organizationData,
+      organization: organizationId,
+    }
+  }
+
 }
 
 const minRequiredPropsForDatasetCreation = [
