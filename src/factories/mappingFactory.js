@@ -569,6 +569,7 @@ const readOnlyMappingRules = [
       // EditAuthorList
       'authors',
       // EditPublicationInfo
+      'organization',
       'publicationYear',
       'publisher',
       'doi',

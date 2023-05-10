@@ -37,7 +37,7 @@ export const EDIT_METADATA_ADD_AUTHOR_TITLE = 'Add a New Author';
 
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORSLIST_TITLE = 'Author List Preview';
-export const EDIT_ORGANIZATION_TITLE = 'Organization(s) for this Dataset';
+export const EDIT_ORGANIZATION_TITLE = 'Organization for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';

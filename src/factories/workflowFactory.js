@@ -117,9 +117,9 @@ const emptyMetadataInEditing = {
     customFields: [],
   },
   [EDITMETADATA_ORGANIZATION]: {
-    allOrganizations: [],
+    // allOrganizations: [],
     organization: '',
-    userOrganizationsList: [],
+    userOrganizations: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
     possiblePublicationStates: [

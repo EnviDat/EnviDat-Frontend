@@ -12,9 +12,11 @@
 
 import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
+import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 import testOrganizations from './js/organizations';
 import { envidatViewportParameters } from './js/envidatViewports';
 
+const editingReadOnlyObj = getReadOnlyFieldsObject('published');
 
 export default {
   title: '9 Editing Metadata / Edit Organization',
@@ -35,14 +37,30 @@ Empty.args = {
   userOrganizations: testOrganizations,
 }
 
-export const Normal = Template.bind({});
-Normal.args = {
-  organizationId: testOrganizations[0].id,
+export const SingleOrganization = Template.bind({});
+SingleOrganization.args = {
+  organization: testOrganizations[0].id,
+  userOrganizations: [testOrganizations[0]],
+}
+
+export const MultipleOrganizations = Template.bind({});
+MultipleOrganizations.args = {
+  organization: testOrganizations[0].id,
   userOrganizations: testOrganizations,
 }
 
-export const SingleOrganizationCase = Template.bind({});
-SingleOrganizationCase.args = {
-  organizationId: testOrganizations[0].id,
-  userOrganizations: [testOrganizations[0]],
+export const EditingSingleOrganization = Template.bind({});
+EditingSingleOrganization.args = {
+  organization: testOrganizations[2].id,
+  userOrganizations: [testOrganizations[2]],
+  readOnlyFields: editingReadOnlyObj.readOnlyFields,
+  readOnlyExplanation: editingReadOnlyObj.explanation,
+}
+
+export const EditingMultipleOrganizations = Template.bind({});
+EditingMultipleOrganizations.args = {
+  organization: testOrganizations[2].id,
+  userOrganizations: testOrganizations,
+  readOnlyFields: editingReadOnlyObj.readOnlyFields,
+  readOnlyExplanation: editingReadOnlyObj.explanation,
 }

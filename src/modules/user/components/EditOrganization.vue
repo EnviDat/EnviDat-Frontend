@@ -28,33 +28,27 @@
         </v-col>
       </v-row>
 
-<!--
-      <v-row no-gutters align="center">
-        <v-col class="pt-2 text-body-1">
-          Changing the Organization of a datasets is for now not possible.
-          <br />
-          Contact the Envidat team for support to make such a change.
-        </v-col>
-      </v-row>
-      -->
-
       <v-row>
         <v-col v-if="onlyOneUserOrganziation">
-          <v-text-field
-            outlined
-            prepend-icon="home_filled"
-            :value="selectedOrganization.title"
-            readonly
-          />
 
-<!--
-            readonly=""
-            hint='This field is "readonly" only the EnviDat Team can change it.'
--->
+          <v-select :value="selectedOrganization"
+                    :items="userOrganizations"
+                    item-text="title"
+                    item-value="id"
+                    outlined
+                    chips
+                    readonly
+                    prepend-icon="home_filled"
+                    append-icon="arrow_drop_down"
+                    :hint="mixinMethods_readOnlyHint('organization') || 'Your Organization was autocompleted'"
+                    persistent-hint
+                    label="Organization"
+          />
 
         </v-col>
 
         <v-col v-if="!onlyOneUserOrganziation">
+
           <v-select @input="setOrganization($event)"
                     :value="organizationField"
                     :items="userOrganizations"
@@ -68,52 +62,11 @@
                     :hint="mixinMethods_readOnlyHint('organization')"
                     label="Organization"
                     :error-messages="validationErrors.organizationId"
-          >
-          </v-select>
-
+          />
         </v-col>
 
-<!--
-        <v-col >
-          <MetadataOrganizationChip :organization="selectedOrganization.title" />
-        </v-col>
--->
       </v-row>
 
-      <!--
-      <v-row>
-        <v-col>
-
-          <v-text-field v-if="!userIsPartOfSelectedOrganization"
-                        outlined
-                        readonly
-                        hint='This field is "readonly" because you belong to only one organization.'
-                        :error-messages="validationErrors.organizationId"
-                        >
-            <MetadataOrganizationChip :organization="selectedOrganization.title" />
-
-          </v-text-field>
-
-          <v-select     v-else
-                        @input="setOrganization($event)"
-                        :value="selectedOrganization"
-                        :items="userOrganizationsListItems"
-                        item-text="title"
-                        item-value="id"
-                        outlined
-                        chips
-                        append-icon="arrow_drop_down"
-                        :readonly="mixinMethods_isFieldReadOnly('organization')"
-                        :hint="mixinMethods_readOnlyHint('organization')"
-                        label="Organization"
-                        :error-messages="validationErrors.organizationId"
-                        >
-
-         </v-select>
-
-        </v-col>
-      </v-row>
--->
     </v-container>
   </v-card>
 </template>
@@ -157,7 +110,7 @@ import {
 export default {
   name: 'EditOrganization',
   props: {
-    organizationId: {
+    organization: {
       type: String,
       default: '',
     },
@@ -209,7 +162,7 @@ export default {
   computed: {
     organizationField: {
       get() {
-        return this.previewOrganizationId ? this.previewOrganizationId : this.organizationId;
+        return this.previewOrganizationId ? this.previewOrganizationId : this.organization;
       },
     },
     ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
@@ -256,9 +209,7 @@ export default {
           this.validationErrors,
         )
       ) {
-        const newOrgId = this.userOrganizations.filter(
-          x => x.id === orgId,
-        )[0].id;
+        const newOrgId = this.userOrganizations.filter(x => x.id === orgId)[0].id;
 
         eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
           object: EDITMETADATA_ORGANIZATION,
