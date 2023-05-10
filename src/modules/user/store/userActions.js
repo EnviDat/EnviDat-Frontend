@@ -18,19 +18,10 @@ import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
   ACTION_USER_COLLABORATOR_DATASETS,
-  ACTION_USER_ORGANIZATION_IDS,
-  ACTION_USER_ORGANIZATIONS,
   FETCH_USER_DATA,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASETS_ERROR,
   USER_GET_COLLABORATOR_DATASETS_SUCCESS,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATION_IDS_ERROR,
-  USER_GET_ORGANIZATION_IDS_SUCCESS,
-  USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_ERROR,
-  USER_GET_ORGANIZATIONS_RESET,
-  USER_GET_ORGANIZATIONS_SUCCESS,
 } from './userMutationsConsts';
 
 // don't use an api base url or proxy when using testdata
@@ -109,67 +100,6 @@ export default {
       })
       .catch((error) => {
         commit(USER_GET_COLLABORATOR_DATASETS_ERROR, error);
-      });
-  },
-  async [USER_GET_ORGANIZATION_IDS]({ commit }, userId) {
-    commit(USER_GET_ORGANIZATION_IDS);
-
-    const actionUrl = ACTION_USER_ORGANIZATION_IDS();
-    let url = extractBodyIntoUrl(actionUrl, { id: userId });
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-    if (useTestdata) {
-      // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-    }
-
-    await axios.get(url)
-      .then((response) => {
-        commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
-      })
-      .catch((error) => {
-        commit(USER_GET_ORGANIZATION_IDS_ERROR, error);
-      });
-  },
-  async [USER_GET_ORGANIZATIONS]({ commit }, ids) {
-    commit(USER_GET_ORGANIZATIONS);
-
-    if (!ids || ids.length <= 0) {
-      commit(USER_GET_ORGANIZATIONS_RESET);
-      return;
-    }
-
-    const actionUrl = ACTION_USER_ORGANIZATIONS();
-
-    const requests = [];
-    for (let i = 0; i < ids.length; i++) {
-      const id = ids[i];
-
-      let url = extractBodyIntoUrl(actionUrl, {
-        id,
-        include_datasets: true,
-        include_tags: true,
-      });
-
-      url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-      if (useTestdata) {
-        // ignore the parameters for testdata, because it's directly a file
-        url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
-      }
-
-      requests.push(axios.get(url));
-    }
-
-    await Promise.all(requests)
-      .then((responses) => {
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          commit(USER_GET_ORGANIZATIONS_SUCCESS, response.data.result);
-        }
-      })
-      .catch((error) => {
-        commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
   },
 };

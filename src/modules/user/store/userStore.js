@@ -41,10 +41,7 @@ const userState = {
   collaboratorDatasetsLoading: false,
   collaboratorDatasets: [],
   collaboratorDatasetsLimit: 1000,
-  userOrganizationLoading: false,
-  userOrganizationIds: [],
-  userOrganizationNames: [],
-  userOrganizations: {},
+
   userOrgaDatasetsError: null,
   metadataSavingMessageTimeoutTime: 2500,
   metadataSavingErrorTimeoutTime: 15000,

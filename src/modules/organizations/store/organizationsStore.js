@@ -15,9 +15,16 @@ import actions from './organizationsActions';
 import mutations from './organizationsMutations';
 
 const organizationsState = {
-  organizations: [],
-  organizationsPageBackRoute: null,
   loading: false,
+  organizationIds: [],
+  organizations: [],
+  error: null,
+  organizationsPageBackRoute: null,
+  userOrganizationLoading: false,
+  userOrganizationIds: [],
+  userOrganizationNames: [],
+  userOrganizations: {},
+  userOrganizationError: null,
 };
 
 export const organizations = {

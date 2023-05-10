@@ -74,14 +74,13 @@ import {
   METADATA_CREATION_DATASET,
   METADATA_EDITING_LAST_DATASET,
   METADATA_EDITING_LOAD_DATASET,
-  UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
+  UPDATE_METADATA_EDITING, USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
   GET_ORGANIZATIONS,
-  ORGANIZATIONS_NAMESPACE,
+  ORGANIZATIONS_NAMESPACE, USER_GET_ORGANIZATION_IDS, USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -269,6 +268,12 @@ export default {
 
       this.updateStepsOrganizations();
     },
+    async fetchUserOrganisationData() {
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    },
     updateStepsOrganizations() {
       const allOrgas = this.$store.state.organizations.organizations;
 
@@ -327,21 +332,25 @@ export default {
 
       const data = createNewDatasetFromSteps(this.creationSteps, this.userEditMetadataConfig);
       const metadataId = data.name;
-      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
 
-      localStorage.clear();
+      const successfullStored = await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
 
-      this.$router.push({
-        name: METADATAEDIT_PAGENAME,
-        params: {
-          metadataid: metadataId,
-        },
-/*
-        query: {
-          backPath: this.$route.fullPath,
-        },
-*/
-      });
+      if (successfullStored) {
+        this.$router.push({
+          name: METADATAEDIT_PAGENAME,
+          params: {
+            metadataid: metadataId,
+          },
+  /*
+          query: {
+            backPath: this.$route.fullPath,
+          },
+  */
+        });
+
+        localStorage.clear();
+      }
+
     },
     catchAuthorCardAuthorSearch(fullName) {
       const cleanFullName = fullName.replace(`(${this.asciiDead})`, '').trim();

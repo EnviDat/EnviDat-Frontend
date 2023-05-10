@@ -26,7 +26,7 @@ import { updateEditingArray } from '@/factories/userEditingFactory';
 import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
 
-export function extractError(store, reason, errorProperty = 'error') {
+export function extractUserError(store, reason, errorProperty = 'error') {
 
   let type = '';
   let field = '';

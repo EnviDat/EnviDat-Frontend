@@ -154,31 +154,6 @@ export const USER_GET_DATASETS = 'USER_GET_DATASETS';
 export const USER_GET_DATASETS_ERROR = 'USER_GET_DATASETS_ERROR';
 export const USER_GET_DATASETS_SUCCESS = 'USER_GET_DATASETS_SUCCESS';
 
-export const ACTION_USER_ORGANIZATION_IDS = () => {
-  if (import.meta.env.DEV && useTestdata) {
-    return './testdata/organization_list_for_user.json';
-  }
-
-  return 'organization_list_for_user';
-};
-
-export const USER_GET_ORGANIZATION_IDS = 'USER_GET_ORGANIZATION_IDS';
-export const USER_GET_ORGANIZATION_IDS_ERROR = 'USER_GET_ORGANIZATION_ERROR';
-export const USER_GET_ORGANIZATION_IDS_SUCCESS = 'USER_GET_ORGANIZATION_SUCCESS';
-
-export const ACTION_USER_ORGANIZATIONS = () => {
-  if (import.meta.env.DEV && useTestdata) {
-    return './testdata/organization_show.json';
-  }
-
-  return 'organization_show';
-};
-
-export const USER_GET_ORGANIZATIONS = 'USER_GET_ORGANIZATIONS';
-export const USER_GET_ORGANIZATIONS_ERROR = 'USER_GET_ORGANIZATIONS_ERROR';
-export const USER_GET_ORGANIZATIONS_SUCCESS = 'USER_GET_ORGANIZATIONS_SUCCESS';
-export const USER_GET_ORGANIZATIONS_RESET = 'USER_GET_ORGANIZATIONS_RESET';
-
 export const USER_EDITING_UPDATE = 'USER_EDITING_UPDATE';
 export const USER_EDITING_UPDATE_SUCCESS = 'USER_EDITING_UPDATE_SUCCESS';
 export const USER_EDITING_UPDATE_ERROR = 'USER_EDITING_UPDATE_ERROR';

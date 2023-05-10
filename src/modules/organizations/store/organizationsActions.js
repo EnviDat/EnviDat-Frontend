@@ -14,26 +14,71 @@
 import axios from 'axios';
 
 import { urlRewrite } from '@/factories/apiFactory';
+import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
+  ORGANIZATIONS_NAMESPACE,
+  ACTION_GET_ORGANIZATIONS,
+  ACTION_USER_ORGANIZATION_IDS,
+  ACTION_GET_ORGANIZATION,
   GET_ORGANIZATIONS,
   GET_ORGANIZATIONS_ERROR,
   GET_ORGANIZATIONS_SUCCESS,
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATION_IDS_ERROR,
+  USER_GET_ORGANIZATION_IDS_SUCCESS,
+  USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SUCCESS,
+  GET_ALL_ORGANIZATIONS_IDS,
+  GET_ALL_ORGANIZATIONS_IDS_SUCCESS,
+  GET_ALL_ORGANIZATIONS_IDS_ERROR, GET_ALL_ORGANIZATIONS, GET_ALL_ORGANIZATIONS_SUCCESS, GET_ALL_ORGANIZATIONS_ERROR,
 } from './organizationsMutationsConsts';
+
+
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 const ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
 
+function getOrganizationRequestArray(ids, body = {}) {
+  const actionUrl = ACTION_GET_ORGANIZATION();
+
+  const requests = [];
+  for (let i = 0; i < ids.length; i++) {
+    const id = ids[i];
+
+    let url = extractBodyIntoUrl(actionUrl, {
+      id,
+      ...body,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    if (useTestdata) {
+      // ignore the parameters for testdata, because it's directly a file
+      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    }
+
+    requests.push(axios.get(url));
+  }
+
+  return requests;
+}
+
 export default {
-  // eslint-disable-next-line no-unused-vars
+/*
   async [GET_ORGANIZATIONS]({ commit }) {
     commit(GET_ORGANIZATIONS);
 
-    const url = urlRewrite(
-      'organization_list?all_fields=true',
-      API_BASE,
-      ENVIDAT_PROXY,
-    );
+    const actionUrl = ACTION_GET_ORGANIZATIONS();
+    let url = extractBodyIntoUrl(actionUrl, {
+      limit: 1000,
+      all_fields: true,
+    });
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
 
     // if (this.getters[`${METADATA_NAMESPACE}/metadatasContentSize`] === 0) {
     //   const metadataConfig = this.state.config.metadataConfig;
@@ -46,14 +91,14 @@ export default {
     //   url = './testdata/projects.json';
     // }
 
-    /*
+    /!*
     const localFileUrl = projectsConfig.localFileUrl;
     const loadLocalFile = projectsConfig.loadLocalFile;
 
     if (loadLocalFile && localFileUrl) {
       url = localFileUrl;
     }
-*/
+*!/
 
     await axios
       .get(url)
@@ -62,6 +107,106 @@ export default {
       })
       .catch(reason => {
         commit(GET_ORGANIZATIONS_ERROR, reason);
+      });
+  },
+*/
+  async [GET_ALL_ORGANIZATIONS_IDS] ({commit}) {
+    commit(GET_ALL_ORGANIZATIONS_IDS);
+
+    const actionUrl = ACTION_GET_ORGANIZATIONS();
+    let url = extractBodyIntoUrl(actionUrl, { limit: 1000 });
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then(response => {
+        commit(GET_ALL_ORGANIZATIONS_IDS_SUCCESS, response.data.result);
+      })
+      .catch(reason => {
+        commit(GET_ALL_ORGANIZATIONS_IDS_ERROR, reason);
+      });
+  },
+  async [GET_ALL_ORGANIZATIONS] ({commit}, ids) {
+    commit(GET_ALL_ORGANIZATIONS);
+
+
+    const requests = getOrganizationRequestArray(ids)
+
+    await Promise.all(requests)
+      .then((responses) => {
+        for (let i = 0; i < responses.length; i++) {
+          const response = responses[i];
+          commit(GET_ALL_ORGANIZATIONS_SUCCESS, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(GET_ALL_ORGANIZATIONS_ERROR, error);
+      });
+
+  },
+  async [GET_ORGANIZATIONS] ({ commit, dispatch }) {
+
+    // organization_list has a limitation of returning 25 when using the all_fields=true,
+    // even that the CKAN docu says otherwise, it doesn't work
+    // therefor we need to get all ids first and them each organization with one call
+    commit(GET_ORGANIZATIONS);
+
+    await dispatch(GET_ALL_ORGANIZATIONS_IDS);
+
+
+    const ids = this.state.organizations.organizationIds;
+
+    // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+    await dispatch(GET_ALL_ORGANIZATIONS, ids);
+
+    if (this.state.organizations.error) {
+      commit(GET_ORGANIZATIONS_SUCCESS);
+    } else {
+      commit(GET_ORGANIZATIONS_ERROR);
+    }
+
+  },
+  async [USER_GET_ORGANIZATION_IDS]({ commit }, userId) {
+    commit(USER_GET_ORGANIZATION_IDS);
+
+    const actionUrl = ACTION_USER_ORGANIZATION_IDS();
+    let url = extractBodyIntoUrl(actionUrl, { id: userId });
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    if (useTestdata) {
+      // ignore the parameters for testdata, because it's directly a file
+      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    }
+
+    await axios.get(url)
+      .then((response) => {
+        commit(USER_GET_ORGANIZATION_IDS_SUCCESS, response.data.result);
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATION_IDS_ERROR, error);
+      });
+  },
+  async [USER_GET_ORGANIZATIONS]({ commit }, ids) {
+    commit(USER_GET_ORGANIZATIONS);
+
+    if (!ids || ids.length <= 0) {
+      commit(USER_GET_ORGANIZATIONS_RESET);
+      return;
+    }
+
+    const requests = getOrganizationRequestArray(ids, {
+      include_datasets: true,
+      include_tags: true,
+    })
+
+    await Promise.all(requests)
+      .then((responses) => {
+        for (let i = 0; i < responses.length; i++) {
+          const response = responses[i];
+          commit(USER_GET_ORGANIZATIONS_SUCCESS, response.data.result);
+        }
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
   },
 };

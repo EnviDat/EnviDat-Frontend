@@ -268,11 +268,10 @@ import {
   FETCH_USER_DATA,
   ACTION_USER_SHOW,
   USER_GET_DATASETS,
-  USER_GET_ORGANIZATION_IDS,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASET_IDS,
   ACTION_COLLABORATOR_DATASET_IDS,
-  USER_GET_ORGANIZATIONS, USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -330,6 +329,10 @@ import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
+import {
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
 
 
 export default {

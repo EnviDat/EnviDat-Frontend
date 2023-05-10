@@ -89,7 +89,6 @@ import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/r
 import {
   ACTION_USER_SHOW,
   FETCH_USER_DATA, USER_GET_DATASETS,
-  USER_GET_ORGANIZATION_IDS,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -149,6 +148,7 @@ import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
+import { USER_GET_ORGANIZATION_IDS } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata
