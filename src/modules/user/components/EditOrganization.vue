@@ -39,7 +39,6 @@
                     chips
                     readonly
                     prepend-icon="home_filled"
-                    append-icon="arrow_drop_down"
                     :hint="mixinMethods_readOnlyHint('organization') || 'Your Organization was autocompleted'"
                     persistent-hint
                     label="Organization"
@@ -57,9 +56,10 @@
                     outlined
                     chips
                     prepend-icon="home_filled"
-                    append-icon="arrow_drop_down"
-                    :readonly="mixinMethods_isFieldReadOnly('organization')"
+                    :append-icon="isEditOrganizationReadonly ? '' : 'arrow_drop_down'"
+                    :readonly="isEditOrganizationReadonly"
                     :hint="mixinMethods_readOnlyHint('organization')"
+                    :persistent-hint="isEditOrganizationReadonly"
                     label="Organization"
                     :error-messages="validationErrors.organizationId"
           />
@@ -87,8 +87,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { mapState } from 'vuex';
-
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
@@ -101,11 +99,6 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import {
-  USER_GET_ORGANIZATION_IDS,
-  USER_NAMESPACE,
-  USER_SIGNIN_NAMESPACE,
-} from '@/modules/user/store/userMutationsConsts';
 
 export default {
   name: 'EditOrganization',
@@ -150,12 +143,6 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
-  mounted() {
-    //  beforeMount() {
-    if (this.currentUser) {
-      this.fetchUserOrganisationData();
-    }
-  },
   beforeDestroy() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
@@ -165,14 +152,8 @@ export default {
         return this.previewOrganizationId ? this.previewOrganizationId : this.organization;
       },
     },
-    ...mapState(USER_SIGNIN_NAMESPACE, ['user']),
-    // ...mapState(USER_NAMESPACE, ['userOrganizationsList']),
-    currentUser() {
-      if (this.$store) {
-        return this.user;
-      }
-
-      return null;
+    isEditOrganizationReadonly() {
+      return this.mixinMethods_isFieldReadOnly('organization');
     },
     onlyOneUserOrganziation() {
       return this.userOrganizations?.length === 1;
@@ -201,14 +182,12 @@ export default {
 
       this.previewOrganizationId = orgId;
 
-      if (
-        isFieldValid(
+      if (isFieldValid(
           'organizationId',
           orgId,
           this.validations,
           this.validationErrors,
-        )
-      ) {
+        )) {
         const newOrgId = this.userOrganizations.filter(x => x.id === orgId)[0].id;
 
         eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
@@ -216,12 +195,6 @@ export default {
           data: { organizationId: newOrgId },
         });
       }
-    },
-    fetchUserOrganisationData() {
-      this.$store.dispatch(
-        `${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`,
-        this.currentUser?.id,
-      );
     },
     validateProperty(property, value) {
       return isFieldValid(
