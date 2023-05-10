@@ -149,6 +149,7 @@
 */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
@@ -334,6 +335,7 @@ export default {
     StepperHeader,
     BaseIconButton,
     MetadataCardPlaceholder,
+    BaseProgressView,
   },
 };
 </script>
@@ -348,10 +350,8 @@ export default {
     'infoPanel'
     'stepper'
     'content';
-/*
   width: 100%;
   height: 100%;
-  */
 }
 
 .infoPanelGrid {
