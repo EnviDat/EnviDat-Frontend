@@ -46,6 +46,8 @@ const MetadataGenericSubStepper = () => import('@/modules/user/components/Metada
 const MetadataCreationRelatedInfo = () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue');
 const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
 
+const MetadataEditingPublicationInfo = () => import('@/modules/user/components/MetadataEditingPublicationInfo.vue');
+
 
 export const defaultSwissLocation = {
   type: 'GeometryCollection',
@@ -79,6 +81,12 @@ export const defaultWorldLocation = {
   }],
 }
 
+/**
+ * don't use any defaults on the emptyMetadataInEditing because it will be stored in the localstorage and therefore needs to be empty
+ * defauls have to be added later on!
+ *
+ * @type {{'[EDITMETADATA_KEYWORDS]': {keywords: *[]}, '[EDITMETADATA_FUNDING_INFO]': {funders: *[]}, '[EDITMETADATA_AUTHOR_LIST]': {authors: *[]}, '[EDITMETADATA_MAIN_DESCRIPTION]': {description: string}, '[EDITMETADATA_PUBLICATION_INFO]': {possiblePublicationStates: string[], visibilityState: string, publicationState: string, publisher: string, publicationYear: string, doi: string}, '[EDITMETADATA_DATA_INFO]': {dataLicenseId: string, dates: *[]}, '[EDITMETADATA_RELATED_PUBLICATIONS]': {relatedPublicationsText: string}, '[EDITMETADATA_CUSTOMFIELDS]': {customFields: *[]}, '[EDITMETADATA_RELATED_DATASETS]': {relatedDatasetsText: string}, '[EDITMETADATA_MAIN_HEADER]': {metadataTitle: string, contactEmail: string, contactGivenName: string, contactSurname: string}, '[EDITMETADATA_ORGANIZATION]': {userOrganizations: *[], organization: string}, '[EDITMETADATA_DATA_RESOURCES]': {resources: *[]}, '[EDITMETADATA_DATA_GEO]': {location: {geoJSON: {}}}}}
+ */
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
     metadataTitle: '',
@@ -123,6 +131,8 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
     possiblePublicationStates: [
+      // does an empty entry make any sense? it's like that in ckan
+      // maybe better use something like 'unpublished' / 'unstarted'
       '',
       'reserved',
       'publication requested',
@@ -243,13 +253,6 @@ export const metadataCreationSteps = [
     genericProps: {},
   },
   {
-    title: EDIT_STEP_TITLE_MAIN_RELATED,
-    completed: false,
-    component: MetadataCreationRelatedInfo,
-    key: EDITMETADATA_RELATED_PUBLICATIONS,
-    genericProps: {},
-  },
-  {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
     component: MetadataCreationPublicationInfo,
@@ -289,7 +292,7 @@ export const metadataEditingSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_PUBLICATION,
     completed: false,
-    component: MetadataCreationPublicationInfo,
+    component: MetadataEditingPublicationInfo,
     key: EDITMETADATA_PUBLICATION_INFO,
     genericProps: {},
   },

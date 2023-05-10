@@ -8,49 +8,73 @@
             <EditFunding v-bind="editFundingProps" />
           </v-col>
 
+          <v-col cols="12">
+            <EditPublicationInfo v-bind="editPublicationsProps" />
+          </v-col>
         </v-row>
       </v-col>
 
       <v-col cols="6">
 
+        <v-row v-if="!isDatasetPublic">
+
+          <v-col >
+
+          <!-- TEMPORARY PLACEHOLDER START -->
+          <v-card class="pa-4">
+            <v-container fluid class="pa-0">
+              <v-row>
+                <v-col cols="12">
+                  <div class="text-h5">Publishing Dataset</div>
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters align="center" class="pt-6">
+                <v-col cols="1">
+                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
+                </v-col>
+
+                <v-col class="text-h5" cols="11">
+                  Coming Soon!
+                </v-col>
+
+                <v-col class="pt-2 text-body-1">
+                  Publishing datasets is still under construction.
+                  <br>
+                  Please publish via this dataset the legacy website by clicking on the button below.
+                </v-col>
+              </v-row>
+
+              <v-row no-gutters
+                     class="pt-6" >
+
+                <v-col class="pr-2 text-left">
+                  <BaseRectangleButton buttonText="Publish Dataset"
+                                       color="secondary"
+                                       :url="linkToDatasetCKAN" />
+
+                </v-col>
+
+              </v-row>
+            </v-container>
+          </v-card>
+          <!-- TEMPORARY PLACEHOLDER END -->
+
+          </v-col >
+
+        </v-row>
+
         <v-row>
+
           <v-col >
 
             <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
             <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
-          </v-col >
-        </v-row>
-
-        <v-row >
-
-          <v-col >
-
-            <!-- TEMPORARY PLACEHOLDER START -->
-            <v-card class="pa-4">
-              <v-container fluid class="pa-0">
-                <v-row>
-                  <v-col cols="12">
-                    <div class="text-h5">Publishing Dataset</div>
-                  </v-col>
-                </v-row>
-
-                <v-row no-gutters align="center" class="pt-6">
-
-                  <v-col class="pt-2 text-body-1">
-                    {{ publicationInstructions }}
-                  </v-col>
-                </v-row>
-
-              </v-container>
-            </v-card>
-            <!-- TEMPORARY PLACEHOLDER END -->
 
           </v-col >
 
         </v-row>
-
-
       </v-col>
     </v-row>
 
@@ -58,8 +82,6 @@
       <v-col class="shrink">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Finish"
-                             material-icon-name="save"
-                             icon-color="black"
                              color='green'
                              @clicked="submitEdittedMetadata" />
       </v-col>
@@ -84,7 +106,9 @@
 
 import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
+import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
+// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
@@ -135,33 +159,51 @@ export default {
       type: String,
       default: '',
     },
+    isCreationWorkflow: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     publicationsInfo() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+      }
 
       const stepData = this.currentStep.genericProps;
 
-      if (stepData) {
-        return {
-          possiblePublicationStates: stepData.possiblePublicationStates,
-          publicationState: stepData.publicationState,
-          visibilityState: stepData.visibilityState,
-          doi: stepData.doi,
-          publisher: stepData.publisher,
-          publicationYear: stepData.publicationYear,
-        }
+      return {
+        possiblePublicationStates: stepData.possiblePublicationStates,
+        publicationState: stepData.publicationState,
+        visibilityState: stepData.visibilityState,
+        doi: stepData.doi,
+        publisher: stepData.publisher,
+        publicationYear: stepData.publicationYear,
       }
-
-      return {};
     },
     fundingInfo() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_FUNDING_INFO);
+      }
+
       return this.currentStep.genericProps;
     },
     organizationsInfo() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      }
+
       return this.currentStep.genericProps;
     },
     isDatasetPublic() {
       return this.publicationsInfo?.publicationState === 'published';
+    },
+    editPublicationsProps() {
+      return {
+        ...this.publicationsInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
     },
     editFundingProps() {
       return {
@@ -180,6 +222,9 @@ export default {
     metadataId() {
       return this.$route?.params?.metadataid;
     },
+    linkToDatasetCKAN() {
+      return `${this.envidatDomain}/dataset/${this.metadataId}`;
+    },
   },
   methods: {
     submitEdittedMetadata() {
@@ -187,10 +232,11 @@ export default {
     },
   },
   data: () => ({
-    publicationInstructions: `Your are in the dataset creation process. Please fill out all necessary information and finish the creation.
-    Publication of a dataset can be done later while editing a dataset.`,
+    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
   }),
   components: {
+    //  EditOrganizationTree,
+    EditPublicationInfo,
     EditFunding,
     EditOrganization,
     BaseRectangleButton,
