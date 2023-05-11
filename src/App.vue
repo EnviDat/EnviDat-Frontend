@@ -187,6 +187,7 @@ import {
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
+import { GET_ORGANIZATIONS, ORGANIZATIONS_NAMESPACE } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
 const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
@@ -213,13 +214,20 @@ export default {
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
-    this.startParticles();
     this.checkUserSignedIn();
+
+    this.$nextTick(() => {
+      this.loadAllOrganizations();
+      this.startParticles();
+    })
   },
   updated() {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    loadAllOrganizations() {
+      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
+    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
@@ -475,6 +483,7 @@ export default {
     },
     checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
+
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_GET_USER_CONTEXT;
       }

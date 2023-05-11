@@ -324,12 +324,9 @@ export function getUserOrganizationRoleMap(userId, organizations) {
     return roleMap;
   }
 
-  const keys = Object.keys(organizations);
-
-  keys.forEach(k => {
-    const orga = organizations[k];
-    const matchedUsers = orga.users.filter(u => u.id === userId);
-    if (matchedUsers[0]) {
+  organizations.forEach(orga => {
+    const matchedUsers = orga.users?.filter(u => u.id === userId);
+    if (matchedUsers?.length > 0) {
       roleMap[orga.name] = matchedUsers[0].capacity;
     }
   })

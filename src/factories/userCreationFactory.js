@@ -121,7 +121,7 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
 
     creationData[EDITMETADATA_ORGANIZATION] = {
       ...organizationData,
-      organization: organizationId,
+      organizationId,
     }
   }
 

@@ -22,7 +22,8 @@ import { isUserGroupAdmin } from '@/factories/userEditingValidations';
 import { enhanceElementsWithStrategyEvents, SELECT_EDITING_DATASET_PROPERTY } from '@/factories/strategyFactory';
 
 import {
-  GET_ALL_ORGANIZATIONS, GET_ALL_ORGANIZATIONS_ERROR,
+  GET_ALL_ORGANIZATIONS,
+  GET_ALL_ORGANIZATIONS_ERROR,
   GET_ALL_ORGANIZATIONS_IDS,
   GET_ALL_ORGANIZATIONS_IDS_ERROR,
   GET_ALL_ORGANIZATIONS_IDS_SUCCESS,
@@ -33,10 +34,10 @@ import {
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
-  USER_GET_ORGANIZATIONS, USER_GET_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SUCCESS,
-  // SET_PROJECTDETAIL_PAGE_BACK_URL,
 } from './organizationsMutationsConsts';
 
 function resetErrorObject(state) {
@@ -47,17 +48,14 @@ export default {
     state.loading = true;
     state.organizations = [];
   },
-  [GET_ORGANIZATIONS_SUCCESS](state, payload) {
+  [GET_ORGANIZATIONS_SUCCESS](state) {
     state.loading = false;
-    state.organizations = payload;
-
-    console.log('get_organizations');
-    console.log(Object.values(state.organizations));
+    // state.organizations is filled in the GET_ALL_ORGANIZATIONS_SUCCESS mutations
   },
   [GET_ORGANIZATIONS_ERROR](state, reason) {
     state.loading = false;
 
-    const details = 'An error occured while loading the policies!';
+    const details = 'An error occured while loading the organizations!';
     const errObj = getSpecificApiError(details, reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);
@@ -75,12 +73,10 @@ export default {
     state.organizations = [];
   },
   [GET_ALL_ORGANIZATIONS_SUCCESS](state, payload) {
-
-    // state.organizations = ?
+    state.organizations.push(payload);
   },
   [GET_ALL_ORGANIZATIONS_ERROR](state, reason) {
-
-    //
+    state.error = reason;
   },
   /*
   [SET_PROJECTDETAIL_PAGE_BACK_URL](state, payload) {
@@ -90,30 +86,26 @@ export default {
   [USER_GET_ORGANIZATION_IDS](state) {
     state.userOrganizationLoading = true;
     state.userOrganizationIds = [];
-    state.userOrganizationNames = [];
 
     state.error = null;
   },
   [USER_GET_ORGANIZATION_IDS_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
 
+    // only use the ids because the organizations from this call
+    // don't have the datasets / users included
+
     const orgaIds = [];
-    const orgaNames = [];
-    const orgaList = [];
 
     if (payload?.length > 0 && payload instanceof Array) {
       for (let i = 0; i < payload.length; i++) {
         const orga = payload[i];
         orgaIds.push(orga.id);
-        orgaNames.push(orga.name);
-        orgaList.push(orga);
       }
     }
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizationIds', orgaIds);
-    this._vm.$set(state, 'userOrganizationNames', orgaNames);
-    this._vm.$set(state, 'userOrganizationsList', orgaList);
   },
   [USER_GET_ORGANIZATION_IDS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
@@ -126,34 +118,50 @@ export default {
   },
   [USER_GET_ORGANIZATIONS_RESET](state) {
     state.userOrganizationLoading = false;
-    state.userOrganizations = {};
+    state.userOrganizations = [];
     state.userOrganizationError = null;
   },
   [USER_GET_ORGANIZATIONS_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
 
-    // let datasets = payload?.packages || [];
-    const orgaId = payload?.id || payload?.name;
+    const userOrga = payload;
+    // const orgaId = userOrga.id || userOrga?.name;
 
-    if (payload?.packages.length > 0) {
+    if (userOrga.packages?.length > 0) {
 
       const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
 
-      payload.packages = enhanceTagsOrganizationDatasetFromAllDatasets(payload.packages, metadataContents);
+      userOrga.packages = enhanceTagsOrganizationDatasetFromAllDatasets(userOrga.packages, metadataContents);
 
-      payload.packages = enhanceMetadataFromCategories(this, payload.packages);
+      userOrga.packages = enhanceMetadataFromCategories(this, userOrga.packages);
 
       const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
 
       // TODO - check config for dataset editing enabled
 
-      if (isUserGroupAdmin(userId, payload)) {
-        enhanceElementsWithStrategyEvents(payload.packages, SELECT_EDITING_DATASET_PROPERTY);
+      if (isUserGroupAdmin(userId, userOrga)) {
+        enhanceElementsWithStrategyEvents(userOrga.packages, SELECT_EDITING_DATASET_PROPERTY);
       }
     }
 
+    const userOrgas = state.userOrganizations;
+    const existingOrgas = state.userOrganizations.filter((o) => o.id === userOrga.id);
+
+    if (existingOrgas.length > 0) {
+      const currentIndex = state.userOrganizations.indexOf(existingOrgas[0]);
+      if (currentIndex >= 0) {
+        // overwrite the userOrganization because the organization
+        // and it's datasets could have changed in the meantime
+        state.userOrganizations[currentIndex] = userOrga;
+      }
+    } else {
+      userOrgas.push(userOrga);
+    }
+
     // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state.userOrganizations, orgaId, payload);
+    this._vm.$set(state, 'userOrganizations', userOrgas);
+
+    // this._vm.$set(state.userOrganizations, orgaId, userOrga);
   },
   [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
     state.userOrganizationLoading = false;

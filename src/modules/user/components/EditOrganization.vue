@@ -103,7 +103,7 @@ import {
 export default {
   name: 'EditOrganization',
   props: {
-    organization: {
+    organizationId: {
       type: String,
       default: '',
     },
@@ -149,7 +149,7 @@ export default {
   computed: {
     organizationField: {
       get() {
-        return this.previewOrganizationId ? this.previewOrganizationId : this.organization;
+        return this.previewOrganizationId ? this.previewOrganizationId : this.organizationId;
       },
     },
     isEditOrganizationReadonly() {

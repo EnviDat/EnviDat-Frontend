@@ -85,12 +85,12 @@ import {
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
-  USER_NAMESPACE,
+  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
   GET_ORGANIZATIONS,
-  ORGANIZATIONS_NAMESPACE,
+  ORGANIZATIONS_NAMESPACE, USER_GET_ORGANIZATION_IDS, USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -173,11 +173,17 @@ export default {
     }
 
     this.$nextTick(() => {
-      this.loadOrganizations();
+      this.loadUserOrganizations();
     });
 
   },
   computed: {
+    ...mapState(USER_SIGNIN_NAMESPACE,[
+      'user',
+    ]),
+    ...mapState(ORGANIZATIONS_NAMESPACE,[
+      'userOrganizationIds',
+    ]),
     ...mapState(USER_NAMESPACE, [
       'lastEditedBackPath',
       'currentEditingContent',
@@ -254,38 +260,28 @@ export default {
       }
 
     },
-    async loadOrganizations() {
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
+    async loadUserOrganizations() {
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
+
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
 
       this.updateStepsOrganizations();
     },
     updateStepsOrganizations() {
-      const allOrgas = this.$store.state.organizations.organizations;
+      const userOrganizations = this.$store.state.organizations.userOrganizations
 
-      if (Array.isArray(allOrgas) && allOrgas.length > 0) {
+      const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
 
-        const allOrganizations = [];
-        for (let i = 0; i < allOrgas.length; i++) {
-          const orga = allOrgas[i];
-          allOrganizations.push({
-            id: orga.id,
-            title: orga.title,
-          })
-        }
-
-        const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
-
-        this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-          {
-            object: EDITMETADATA_ORGANIZATION,
-            data: {
-              ...editOrgaData,
-              allOrganizations,
-            },
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+        {
+          object: EDITMETADATA_ORGANIZATION,
+          data: {
+            ...editOrgaData,
+            userOrganizations,
           },
-        );
-
-      }
+        },
+      );
     },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {

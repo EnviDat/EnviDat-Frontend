@@ -330,6 +330,7 @@ import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue'
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 import {
+  ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
@@ -383,15 +384,17 @@ export default {
       'collaboratorDatasetIds',
       'collaboratorDatasetsLoading',
       'collaboratorDatasets',
-      'userOrganizationLoading',
-      'userOrganizations',
-      'userOrgaDatasetsError',
       'userDatasets',
       'userDatasetsLoading',
       'userDatasetsError',
-      'userOrganizationIds',
       'lastEditedDataset',
       'lastEditedDatasetPath',
+    ]),
+    ...mapState(ORGANIZATIONS_NAMESPACE, [
+      'userOrganizationLoading',
+      'userOrganizations',
+      'userOrganizationIds',
+      'userOrganizationError',
     ]),
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
@@ -410,11 +413,11 @@ export default {
       return this.userLoading;
     },
     noOrgaDatasetsError() {
-      if (!this.userOrgaDatasetsError) {
+      if (!this.userOrganizationError) {
         return null;
       }
 
-      const errorDetail = `${this.userOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
+      const errorDetail = `${this.userOrganizationError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
 
       const notification = errorMessage('Error Loading Datasets From Organization', errorDetail);
       notification.timeout = 0;
@@ -442,19 +445,14 @@ export default {
     hasOrgaDatasets() {
       return this.userOrgaDatasetList.length > 0;
     },
-    userOrganizationsList() {
-      const keys = Object.keys(this.userOrganizations);
-
-      if (keys.length > 0) {
-        return Object.values(this.userOrganizations);
-      }
-
-      return [];
-    },
     userOrgaDatasetList() {
       const datasets = [];
 
-      this.userOrganizationsList.forEach(o => {
+      if (!this.userOrganizations) {
+        return datasets;
+      }
+
+      this.userOrganizations.forEach(o => {
         datasets.push(o.packages);
       });
 
@@ -520,8 +518,8 @@ export default {
       return getNameInitials(this.user);
     },
     usersOrganisationTitle() {
-      if (this.userOrganizationsList?.length === 1) {
-        return this.userOrganizationsList[0].display_name;
+      if (this.userOrganizations?.length === 1) {
+        return this.userOrganizations[0].display_name;
       }
 
       return 'your Organizations';
@@ -540,7 +538,7 @@ export default {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (this.userOrganizationsList.length <= 0) {
+      if (this.userOrganizations.length <= 0) {
         return null;
       }
 
@@ -663,10 +661,10 @@ export default {
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
     async fetchUserOrganisationData() {
-      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
       // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {

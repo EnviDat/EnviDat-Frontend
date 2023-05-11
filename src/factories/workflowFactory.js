@@ -126,7 +126,7 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_ORGANIZATION]: {
     // allOrganizations: [],
-    organization: '',
+    organizationId: '',
     userOrganizations: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {

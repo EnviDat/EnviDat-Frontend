@@ -17,7 +17,6 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
-  ORGANIZATIONS_NAMESPACE,
   ACTION_GET_ORGANIZATIONS,
   ACTION_USER_ORGANIZATION_IDS,
   ACTION_GET_ORGANIZATION,
@@ -33,7 +32,10 @@ import {
   USER_GET_ORGANIZATIONS_SUCCESS,
   GET_ALL_ORGANIZATIONS_IDS,
   GET_ALL_ORGANIZATIONS_IDS_SUCCESS,
-  GET_ALL_ORGANIZATIONS_IDS_ERROR, GET_ALL_ORGANIZATIONS, GET_ALL_ORGANIZATIONS_SUCCESS, GET_ALL_ORGANIZATIONS_ERROR,
+  GET_ALL_ORGANIZATIONS_IDS_ERROR,
+  GET_ALL_ORGANIZATIONS,
+  GET_ALL_ORGANIZATIONS_SUCCESS,
+  GET_ALL_ORGANIZATIONS_ERROR,
 } from './organizationsMutationsConsts';
 
 
@@ -68,48 +70,6 @@ function getOrganizationRequestArray(ids, body = {}) {
 }
 
 export default {
-/*
-  async [GET_ORGANIZATIONS]({ commit }) {
-    commit(GET_ORGANIZATIONS);
-
-    const actionUrl = ACTION_GET_ORGANIZATIONS();
-    let url = extractBodyIntoUrl(actionUrl, {
-      limit: 1000,
-      all_fields: true,
-    });
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
-
-
-    // if (this.getters[`${METADATA_NAMESPACE}/metadatasContentSize`] === 0) {
-    //   const metadataConfig = this.state.config.metadataConfig;
-    //   await dispatch(`${METADATA_NAMESPACE}/${BULK_LOAD_METADATAS_CONTENT}`,
-    //     metadataConfig,
-    //     { root: true });
-    // }
-
-    // if (import.meta.env.DEV) {
-    //   url = './testdata/projects.json';
-    // }
-
-    /!*
-    const localFileUrl = projectsConfig.localFileUrl;
-    const loadLocalFile = projectsConfig.loadLocalFile;
-
-    if (loadLocalFile && localFileUrl) {
-      url = localFileUrl;
-    }
-*!/
-
-    await axios
-      .get(url)
-      .then(response => {
-        commit(GET_ORGANIZATIONS_SUCCESS, response.data.result);
-      })
-      .catch(reason => {
-        commit(GET_ORGANIZATIONS_ERROR, reason);
-      });
-  },
-*/
   async [GET_ALL_ORGANIZATIONS_IDS] ({commit}) {
     commit(GET_ALL_ORGANIZATIONS_IDS);
 
@@ -129,7 +89,9 @@ export default {
     commit(GET_ALL_ORGANIZATIONS);
 
 
-    const requests = getOrganizationRequestArray(ids)
+    const requests = getOrganizationRequestArray(ids, {
+      include_datasets: true,
+    });
 
     await Promise.all(requests)
       .then((responses) => {
@@ -159,9 +121,9 @@ export default {
     await dispatch(GET_ALL_ORGANIZATIONS, ids);
 
     if (this.state.organizations.error) {
-      commit(GET_ORGANIZATIONS_SUCCESS);
-    } else {
       commit(GET_ORGANIZATIONS_ERROR);
+    } else {
+      commit(GET_ORGANIZATIONS_SUCCESS);
     }
 
   },
@@ -192,6 +154,10 @@ export default {
       commit(USER_GET_ORGANIZATIONS_RESET);
       return;
     }
+
+    // don't use this.state.organizations.organizations to filter the userOrganizations
+    // always call the backend, because unpublished datasets won't be part of the orgaizations list
+    // which was loaded from a "public viewpoint"
 
     const requests = getOrganizationRequestArray(ids, {
       include_datasets: true,

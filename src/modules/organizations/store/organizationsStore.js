@@ -22,8 +22,7 @@ const organizationsState = {
   organizationsPageBackRoute: null,
   userOrganizationLoading: false,
   userOrganizationIds: [],
-  userOrganizationNames: [],
-  userOrganizations: {},
+  userOrganizations: [],
   userOrganizationError: null,
 };
 
