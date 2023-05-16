@@ -31,7 +31,13 @@ import {
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
-import { DATE_PROPERTY_END_DATE, DATE_PROPERTY_START_DATE } from '@/factories/mappingFactory';
+
+import {
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+} from '@/factories/metadataConsts';
 
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
@@ -46,10 +52,16 @@ const geoValidationMessage = 'Geometry is required';
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
-      metadataTitle: yup.string()
+      [METADATA_TITLE_PROPERTY]: yup.string()
         .required('Dataset title is required')
         .min(5, 'Dataset title must be at least 5 characters')
-        .max(180, 'Dataset title has a maximum of 180 characters'),
+        .max(180, 'Dataset title has a maximum of 180 characters')
+        .matches(/^[\w\söüä]+$/, 'Use only letters and numbers for the title'),
+      [METADATA_URL_PROPERTY]: yup.string()
+        .nullable()
+        .min(5, 'Dataset url must be at least 5 characters')
+        .max(180, 'Dataset url has a maximum of 180 characters')
+      .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       contactGivenName: yup.string()
         .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),

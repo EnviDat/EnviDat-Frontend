@@ -55,14 +55,14 @@ import {
 } from '@/factories/strategyFactory';
 
 import { md5Hash } from '@/factories/stringFactory';
-
-export const DATE_PROPERTY_DATE_TYPE = 'dateType';
-export const DATE_PROPERTY_START_DATE = 'dateStart';
-export const DATE_PROPERTY_END_DATE = 'dateEnd';
-
-export const DATE_PROPERTY_CREATED_TYPE = 'created';
-
-export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
+import {
+  DATE_PROPERTY_CREATED_TYPE,
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+} from '@/factories/metadataConsts';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -70,7 +70,8 @@ export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
  */
 const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_HEADER]: [
-    ['metadataTitle','title'],
+    [METADATA_TITLE_PROPERTY,'title'],
+    [METADATA_URL_PROPERTY,'name'],
     ['contactEmail','maintainer.email'],
     ['contactGivenName','maintainer.given_name'],
     ['contactSurname','maintainer.name'],
@@ -565,7 +566,7 @@ const readOnlyMappingRules = [
     explanation: 'This field is "readonly" because the dataset is already published.',
     readOnlyFields: [
       // EditMetadataHeader
-      'metadataTitle',
+      METADATA_TITLE_PROPERTY,
       // EditAuthorList
       'authors',
       // EditPublicationInfo
@@ -574,7 +575,7 @@ const readOnlyMappingRules = [
       'publisher',
       'doi',
       // not implemented yet
-      'metadataUrl',
+      METADATA_URL_PROPERTY,
     ],
   },
 /*
@@ -1098,3 +1099,8 @@ export function getFrontendJSONNewDataset(data) {
   return mapBackendToFrontend();
 }
 
+export function getMetadataUrlFromTitle(title) {
+  let urlName = title?.toLowerCase().trim() || '';
+  urlName = urlName.replaceAll(' ', '-');
+  return urlName.trim();
+}

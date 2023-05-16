@@ -102,16 +102,15 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+import { renderMarkdown } from '@/factories/stringFactory';
+import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import {
   DATE_PROPERTY_COLLECTED_TYPE,
   DATE_PROPERTY_CREATED_TYPE,
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
-} from '@/factories/mappingFactory';
-import { renderMarkdown } from '@/factories/stringFactory';
-// eslint-disable-next-line import/no-cycle
-import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
+} from '@/factories/metadataConsts';
 
 export default {
   name: 'EditDataDates',

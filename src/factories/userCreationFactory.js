@@ -22,7 +22,12 @@ import {
 
 import { getValidationMetadataEditingObject } from '@/factories/userEditingValidations';
 import { updateEditingArray } from '@/factories/userEditingFactory';
-import { convertToBackendJSONWithRules, mapBackendToFrontend, mapFrontendToBackend } from '@/factories/mappingFactory';
+import {
+  convertToBackendJSONWithRules,
+  getMetadataUrlFromTitle,
+  mapBackendToFrontend,
+  mapFrontendToBackend,
+} from '@/factories/mappingFactory';
 
 import { getEmptyMetadataInEditingObject, getStepByName, defaultSwissLocation } from '@/factories/workflowFactory';
 import { getYear } from 'date-fns';
@@ -373,8 +378,7 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
 
-  let name = bData.title.toLowerCase();
-  name = name.replaceAll(' ', '-');
+  const name = getMetadataUrlFromTitle(bData.title);
 
   return {
     ...bData,
