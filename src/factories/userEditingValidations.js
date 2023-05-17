@@ -61,7 +61,7 @@ const metadataInEditingValidations = {
         .nullable()
         .min(5, 'Dataset url must be at least 5 characters')
         .max(180, 'Dataset url has a maximum of 180 characters')
-      .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
+        .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       contactGivenName: yup.string()
         .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),

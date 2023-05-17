@@ -68,7 +68,7 @@
                         :placeholder="labels.placeholderTitle"
                         :value="metadataTitleField"
                         @input="changeProperty(METADATA_TITLE_PROPERTY, $event)"
-                        @change="notifyTitleChange(METADATA_TITLE_PROPERTY, $event)"
+                        @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
           />
 
         </v-col>
@@ -206,7 +206,7 @@
                           :placeholder="labels.placeholderUrl"
                           :value="metadataUrlField"
                           @input="changeProperty(METADATA_URL_PROPERTY, $event)"
-                          @change="notifyTitleChange(METADATA_URL_PROPERTY, $event)"
+                          @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
             />
           </ExpandableLayout>
 
@@ -603,8 +603,7 @@ export default {
 
       return null;
     },
-
-    notifyTitleChange(property, value) {
+    notifyPropertyChange(property, value) {
       if (this.previews[property] === null){
         return;
       }
@@ -675,10 +674,19 @@ export default {
     },
     setHeaderInfo(property, value) {
 
-      const newHeaderInfo = {
+      let newHeaderInfo = {
         ...this.$props,
         [property]: value,
       };
+
+      if (property === METADATA_TITLE_PROPERTY && !this.metadataUrl && this.metadataUrlField) {
+        // in the case of typing in the title for the first time, make sure
+        // to store the url as well
+        newHeaderInfo = {
+          ...newHeaderInfo,
+          [METADATA_URL_PROPERTY]: this.metadataUrlField,
+        }
+      }
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_MAIN_HEADER,

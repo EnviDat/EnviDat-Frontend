@@ -10,6 +10,8 @@ import {
   EDIT_STEP_TITLE_SUB_GEO,
   EDIT_STEP_TITLE_SUB_HEADER,
   EDIT_STEP_TITLE_SUB_KEYWORDS,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 
 import {
@@ -89,10 +91,11 @@ export const defaultWorldLocation = {
  */
 const emptyMetadataInEditing = {
   [EDITMETADATA_MAIN_HEADER]: {
-    metadataTitle: '',
+    [METADATA_TITLE_PROPERTY]: '',
     contactEmail: '',
     contactGivenName: '',
     contactSurname: '',
+    [METADATA_URL_PROPERTY]: '',
   },
   [EDITMETADATA_MAIN_DESCRIPTION]: {
     description: '',
