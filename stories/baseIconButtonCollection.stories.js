@@ -21,61 +21,60 @@ export default {
   parameters: {},
 };
 
-export const IconButtonsViews = () => ({
-    components: { BaseIconButton },
-    template: `
-    <v-row style="border: solid 1px;">
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          :customIcon="contact2Icon"
-                          iconColor="accent"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
 
-      <v-col cols="1">
-        <base-icon-button tooltipText="Example Text"
-                          class="mr-2"
-                          materialIconName="expand_less"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
 
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          materialIconName="close"
-                          iconColor="accent"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
+const Template = (args, { argTypes }) => ({
+  components: { BaseIconButton },
+  props: Object.keys(argTypes),
+  methods: {
+    rotationClick() {
+      this.rotated = !this.rotated;
+    },
+  },
+  data: () => ({
+    rotated: false,
+  }),
+  template: '<BaseIconButton v-bind="$props" :rotate-toggle="rotated" @clicked="rotationClick" />',
+});
 
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          materialIconName="close"
-                          iconColor="accent"
-                          color="primary"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
+export const IconOnly = Template.bind({});
+IconOnly.args = {
+  materialIconName: 'save',
+}
 
-      </v-col>
+export const IconOnlyOutlined = Template.bind({});
+IconOnlyOutlined.args = {
+  materialIconName: 'save',
+  outlined: true,
+  iconColor: 'black',
+}
 
-    </v-row>`,
-    data: () => ({
-      showFullDescription: false,
-      contact2Icon,
-    }),
-  });
+export const IconRotated = Template.bind({});
+IconRotated.args = {
+  materialIconName: 'expand_less',
+  outlined: true,
+  rotateOnClick: true,
+}
+
+export const FancyButton = Template.bind({});
+FancyButton.args = {
+  materialIconName: 'save',
+  outlined: true,
+  iconColor: 'black',
+  isFancy: true,
+}
+
+export const GlowingButton = Template.bind({});
+GlowingButton.args = {
+  ...IconOnlyOutlined.args,
+  isGlowing: true,
+}
+
+export const FancyAndGlowingButton = Template.bind({});
+FancyAndGlowingButton.args = {
+  ...FancyButton.args,
+  isGlowing: true,
+}
 
 export const IconsWithCountBadeViews = () => ({
     components: { BaseIconCountView },

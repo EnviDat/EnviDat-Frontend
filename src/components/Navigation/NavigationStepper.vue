@@ -42,18 +42,19 @@
                     outlined
                     tooltipText="Save Dataset On the Server"
                     :disabled="!showSaveButton"
-                    :isFancy="showSaveButton"
+                    isFancy
+                    :is-glowing="showSaveButton"
                     :tooltipBottom="true"
                     @clicked="catchSaveDatasetClick"
             />
           </v-col>
 
           <v-col v-if="isCreationWorkflow" >
-              <BaseProgressView :text="creationProgressInfo"
-                                text-color="white"
-                                :progress-pct="completedPct"
-                                color="white"
-              />
+            <BaseProgressView :text="creationProgressInfo"
+                              text-color="white"
+                              :progress-pct="completedPct"
+                              color="white"
+            />
           </v-col>
 
           <v-col v-if="!isCreationWorkflow" >
