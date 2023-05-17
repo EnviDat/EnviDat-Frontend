@@ -37,8 +37,9 @@
 
                 <v-row no-gutters align="center" class="pt-6">
 
-                  <v-col class="pt-2 text-body-1">
-                    {{ publicationInstructions }}
+                  <v-col class="pt-2 text-body-1"
+                          v-html="publicationInstructions">
+
                   </v-col>
                 </v-row>
 
@@ -187,8 +188,8 @@ export default {
     },
   },
   data: () => ({
-    publicationInstructions: `Your are in the dataset creation process. Please fill out all necessary information and finish the creation.
-    Publication of a dataset can be done later while editing a dataset.`,
+    publicationInstructions: `Your are in the dataset creation process. This <strong>dataset is only stored locally on your computer in this browser</strong>. Please fill out all necessary information and save the dataset.
+    Once the dataset is saved, the publication can be done via editing.`,
   }),
   components: {
     EditFunding,

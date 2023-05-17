@@ -62,7 +62,8 @@ import {
   SELECT_EDITING_AUTHOR,
   EDITMETADATA_AUTHOR,
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_AUTHOR_LIST, EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_AUTHOR_LIST,
+  SHOW_DIALOG,
 } from '@/factories/eventBus';
 
 import {
@@ -78,8 +79,9 @@ import {
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
-  GET_ORGANIZATIONS,
-  ORGANIZATIONS_NAMESPACE, USER_GET_ORGANIZATION_IDS, USER_GET_ORGANIZATIONS,
+  ORGANIZATIONS_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -156,7 +158,9 @@ export default {
   },
   beforeMount() {
     initializeStepsInUrl(this.creationSteps, this.routeStep, this.routeSubStep, this);
-    initStepDataOnLocalStorage(this.creationSteps, this.user);
+
+    const prefilledOrganizationId = this.userOrganizationIds?.length === 1 ? this.userOrganizationIds[0] : undefined;
+    initStepDataOnLocalStorage(this.creationSteps, this.user, prefilledOrganizationId);
 
     this.setReadOnlyBasedOnVisibilty(this.creationSteps);
   },
@@ -174,9 +178,8 @@ export default {
 
     this.$nextTick(() => {
 
-      this.validateCurrentStep();
-
-      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
+      const stepKey = this.validateCurrentStep();
+      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
 
       this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
     });
@@ -412,14 +415,15 @@ export default {
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
 
         // updateStepValidation(dataKey, this.creationSteps, this.getGenericPropsForStep);
-        this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
+        const stepKey = this.validateCurrentStep();
+        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
       });
 
     },
     validateCurrentStep() {
       const stepKey = getStepFromRoute(this.$route, this.creationSteps);
       updateStepValidation(stepKey, this.creationSteps, this.getGenericPropsForStep);
+      return stepKey;
     },
     getGenericPropsForStep(step) {
       return step.genericProps;
@@ -458,9 +462,8 @@ export default {
       this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
 */
 
-      this.validateCurrentStep();
-
-      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep);
+      const stepKey = this.validateCurrentStep();
+      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
     },
 /*
     authorsMap() {

@@ -143,6 +143,7 @@ const minRequiredPropsForDatasetCreation = [
   'dataLicenseId',
   'funders',
   'dates',
+  'organizationId',
   // 'location', // 'location.geoJSON',
   'publisher',
   'publicationYear',
@@ -268,11 +269,13 @@ export function readDataFromLocalStorage(stepKey) {
  * @type {{EDITMETADATA_PUBLICATION_INFO: (string)[], EDITMETADATA_RELATED_PUBLICATIONS: (string)[], EDITMETADATA_AUTHOR_LIST: (string)[]}}
  */
 const stepKeyToDataKeyMap = {
+/*
   EDITMETADATA_AUTHOR_LIST: [
     EDITMETADATA_AUTHOR,
     EDITMETADATA_AUTHOR_DATACREDIT,
     REMOVE_EDITING_AUTHOR,
   ],
+*/
   EDITMETADATA_RELATED_PUBLICATIONS: [
     EDITMETADATA_RELATED_DATASETS,
     EDITMETADATA_CUSTOMFIELDS,
@@ -289,16 +292,28 @@ const stepKeyToDataKeyMap = {
  * @returns {[]}
  */
 function getDataKeysToStepKey(stepKey) {
-  return stepKeyToDataKeyMap[stepKey] || [];
+
+  const stepKeys = Object.keys(stepKeyToDataKeyMap);
+
+  for (let i = 0; i < stepKeys.length; i++) {
+    const key = stepKeys[i];
+    const dataKeys = stepKeyToDataKeyMap[key];
+
+    if (key === stepKey) {
+      return [...dataKeys];
+    }
+  }
+
+  return [];
 }
 
 /**
  * returns the main key (step key) if the given key is part of the data key list
  *
- * @param key {string}
+ * @param dataKey {string}
  * @returns {string}
  */
-function getStepKeyToDataKey(key) {
+function getStepKeyToDataKey(dataKey) {
   // merged the data from these localstorage objects
   // on to a single step object because it's one step with multiple components
   // not sub steps aka. details steps
@@ -309,12 +324,12 @@ function getStepKeyToDataKey(key) {
     const stepKey = stepKeys[i];
     const dataKeys = stepKeyToDataKeyMap[stepKey];
 
-    if (dataKeys.includes(key)) {
+    if (dataKeys.includes(dataKey)) {
       return stepKey;
     }
   }
 
-  return key;
+  return dataKey;
 }
 
 function initStepDataInLocalStorage(stepKey, data) {
@@ -430,10 +445,10 @@ export function initializeStepsInUrl(steps, routeStep, routeSubStep, vm) {
   }
 }
 
-export function initStepDataOnLocalStorage(steps, user) {
+export function initStepDataOnLocalStorage(steps, user, prefilledOrganizationId) {
   const creationData = getEmptyMetadataInEditingObject();
 
-  initCreationDataWithDefaults(creationData, user, 'test');
+  initCreationDataWithDefaults(creationData, user, prefilledOrganizationId);
   loadAllStepDataFromLocalStorage(steps, creationData);
 }
 
@@ -469,10 +484,12 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
     return false;
   }
 
-  step.error = null;
+  if (!skipError) {
+    step.error = null;
+  }
+
   return true;
 }
-
 
 export function updateStepValidation(stepKey, steps, getStepDataFn) {
   const step = getStepByName(stepKey, steps);
@@ -497,6 +514,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
   }
 
   const stepData = getStepDataFn(step);
+  // validateDataStructureForStep(step, stepData)
   const dataKeys = getDataKeysToStepKey(stepKey);
 
   // use the stepKey itself aswell, for merged step data and flat stored
@@ -519,7 +537,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
 
 }
 
-export function updateAllStepsForCompletion(steps, getStepDataFn) {
+export function updateAllStepsForCompletion(steps, getStepDataFn, ignoreStepKey = '') {
   if (!steps) {
     return;
   }
@@ -533,16 +551,39 @@ export function updateAllStepsForCompletion(steps, getStepDataFn) {
 
       const completedDetailSteps = detailSteps.filter(s => s.completed);
       step.completed = completedDetailSteps.length === detailSteps.length;
+
       if(step.completed) {
-        // clear the error for a parten step, they only get cleared through the validation check
+        // clear the error for a parent step, they only get cleared through the validation check
         step.error = null;
       }
-    } else {
+    } else if (step.key !== ignoreStepKey) {
 
+      /*
+            validateDataStructureForStep(step, stepData, true);
+      */
       const stepData = getStepDataFn(step);
-      const validationRules = getValidationMetadataEditingObject(step.key);
+      const stepKey = step.key;
+      const dataKeys = getDataKeysToStepKey(stepKey);
 
+      // use the stepKey itself aswell, for merged step data and flat stored
+      // it is used in both cases
+      dataKeys.push(stepKey);
+
+      for (let j = 0; j < dataKeys.length; j++) {
+        const key = dataKeys[j];
+        const validationRules = getValidationMetadataEditingObject(key);
+
+        step.completed = validationRules ? stepValidation(step, stepData, validationRules, true) : true;
+
+        if (!step.completed) {
+          break;
+        }
+      }
+/*
+      const validationRules = getValidationMetadataEditingObject(step.key);
       step.completed = validationRules ? stepValidation(step, stepData, validationRules, true) : true;
+*/
+
     }
     // console.log(`step ${step.key} completed? ${step.completed}`);
   }
@@ -613,19 +654,22 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
 
   let storedData;
   let stepData;
+  let stepKey;
 
   if (dataKey.includes('AUTHOR')) {
     // any author information is stored in the author list
     stepData = combineAuthorDataChanges(dataKey, data);
     storedData = writeStepDataInLocalStorage(EDITMETADATA_AUTHOR_LIST, stepData);
+    stepKey = EDITMETADATA_AUTHOR_LIST;
   } else {
     stepData = data;
     storedData = writeStepDataInLocalStorage(dataKey, stepData);
+    stepKey = getStepKeyToDataKey(dataKey);
   }
 
   // some of the data is stored in the same "Step" object therefore we need to the right step key
   // (the data structure is flat key -> object, the step structure as a hierachy steps with details steps
-  const stepKey = getStepKeyToDataKey(dataKey);
+  // const stepKey = getStepKeyToDataKey(dataKey);
   const step = getStepByName(stepKey, steps);
 
   if (storedData) {

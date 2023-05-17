@@ -168,8 +168,8 @@ const metadataInEditingValidations = {
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
-      organizationId: yup
-      .string('organizationId must be a string.')
+      organizationId: yup.string()
+      .required('selected an Organization')
       .test(
         'empty-check',
         'An organization must be selected.',
