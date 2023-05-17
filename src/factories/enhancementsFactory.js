@@ -14,6 +14,7 @@
 import globalMethods from '@/factories/globalMethods';
 import {
   SET_CARD_IMAGES,
+  SET_JPG_ASSETS,
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
   UPDATE_CATEGORYCARD_IMAGES,
@@ -106,20 +107,25 @@ export function checkWebpFeature() {
 }
 
 
-export function loadImages(store, isSupported = false) {
+export function loadImages(store, isWebpSupported = false) {
 
-  store.commit(SET_WEBP_SUPPORT, isSupported);
+  store.commit(SET_WEBP_SUPPORT, isWebpSupported);
 
-  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isSupported);
+  const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds(isWebpSupported);
   if (cardBGImages) {
     store.commit(SET_CARD_IMAGES, cardBGImages);
   }
 
-  const webpAssetPaths = require.context('@/assets/', true, /\.webp$/)
-  const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths) : null;
+  if (isWebpSupported) {
+    const webpAssetPaths = require.context('@/assets/', true, /\.webp$/)
+    const webpAssets = webpAssetPaths ? globalMethods.methods.mixinMethods_importImages(webpAssetPaths) : null;
 
-  if (webpAssets) {
     store.commit(SET_WEBP_ASSETS, webpAssets);
+  } else {
+    const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
+    const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+
+    store.commit(SET_JPG_ASSETS, jpgAssets);
   }
 
   store.commit(UPDATE_CATEGORYCARD_IMAGES);
