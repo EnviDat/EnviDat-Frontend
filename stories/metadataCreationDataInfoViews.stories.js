@@ -14,7 +14,7 @@ import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
-} from '@/factories/mappingFactory';
+} from '@/factories/metadataConsts';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
