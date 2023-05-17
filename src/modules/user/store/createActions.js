@@ -125,9 +125,7 @@ export default {
       commit(METADATA_CREATION_DATASET_ERROR, {
         reason,
       });
-      return false;
     }
 
-    return true;
   },
 };

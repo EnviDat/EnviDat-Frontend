@@ -73,8 +73,7 @@ import {
 import {
   METADATA_CREATION_DATASET,
   METADATA_EDITING_LAST_DATASET,
-  METADATA_EDITING_LOAD_DATASET,
-  UPDATE_METADATA_EDITING, USER_NAMESPACE,
+  USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
@@ -189,6 +188,9 @@ export default {
     ]),
     ...mapState(ORGANIZATIONS_NAMESPACE,[
       'userOrganizationIds',
+    ]),
+    ...mapState(USER_NAMESPACE, [
+      'newMetadataset',
     ]),
 /*
     ...mapState(USER_NAMESPACE, [
@@ -305,27 +307,35 @@ export default {
       const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
+    loadDatasetInEditingWorkflow(metadataId) {
+      this.$router.push({
+        name: METADATAEDIT_PAGENAME,
+        params: {
+          metadataid: metadataId,
+        },
+/*
+        query: {
+          backPath: this.$route.fullPath,
+        },
+*/
+      });
+    },
     async catchSaveNewDataset() {
 
       const data = createNewDatasetFromSteps(this.creationSteps, this.userEditMetadataConfig);
       const metadataId = data.name;
 
-      const successfullStored = await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
+      await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
 
-      if (successfullStored) {
-        this.$router.push({
-          name: METADATAEDIT_PAGENAME,
-          params: {
-            metadataid: metadataId,
+      if (this.newMetadataset) {
+        eventBus.emit(SHOW_DIALOG, {
+          title: 'Dataset Saved!',
+          message: 'Your datasets has been saved',
+          callback: () => {
+            this.loadDatasetInEditingWorkflow(metadataId);
+            // localStorage.clear();
           },
-  /*
-          query: {
-            backPath: this.$route.fullPath,
-          },
-  */
         });
-
-        localStorage.clear();
       }
 
     },
