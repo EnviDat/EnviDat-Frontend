@@ -21,6 +21,7 @@ import {
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -122,8 +123,6 @@ const metadataInEditingValidations = {
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
-      dataLicenseId: yup.string()
-        .required('Data licence is required'),
       dates: yup.array()
         .required('Created date is required')
         .min(1, 'At least a creation date is required')
@@ -132,6 +131,11 @@ const metadataInEditingValidations = {
           'Add start and end date',
           dateEntry => dateEntry[DATE_PROPERTY_START_DATE] !== '' && dateEntry[DATE_PROPERTY_END_DATE] !== '',
         ),
+    }),
+  [EDITMETADATA_DATA_LICENSE]: () =>
+    yup.object().shape({
+      dataLicenseId: yup.string()
+        .required('Data licence is required'),
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({

@@ -3,13 +3,10 @@ import {
   EDITMETADATA_AUTHOR_DATACREDIT,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
-  EDITMETADATA_RELATED_DATASETS,
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -29,7 +26,13 @@ import {
   mapFrontendToBackend,
 } from '@/factories/mappingFactory';
 
-import { getEmptyMetadataInEditingObject, getStepByName, defaultSwissLocation } from '@/factories/workflowFactory';
+import {
+  defaultSwissLocation,
+  getDataKeysToStepKey,
+  getEmptyMetadataInEditingObject,
+  getStepByName,
+  getStepKeyToDataKey,
+} from '@/factories/workflowFactory';
 import { getYear } from 'date-fns';
 
 /*
@@ -264,73 +267,7 @@ export function readDataFromLocalStorage(stepKey) {
 }
 
 
-/**
- * Object key -> stepKey, object value -> list of data keys
- * @type {{EDITMETADATA_PUBLICATION_INFO: (string)[], EDITMETADATA_RELATED_PUBLICATIONS: (string)[], EDITMETADATA_AUTHOR_LIST: (string)[]}}
- */
-const stepKeyToDataKeyMap = {
-/*
-  EDITMETADATA_AUTHOR_LIST: [
-    EDITMETADATA_AUTHOR,
-    EDITMETADATA_AUTHOR_DATACREDIT,
-    REMOVE_EDITING_AUTHOR,
-  ],
-*/
-  EDITMETADATA_RELATED_PUBLICATIONS: [
-    EDITMETADATA_RELATED_DATASETS,
-    EDITMETADATA_CUSTOMFIELDS,
-  ],
-  EDITMETADATA_PUBLICATION_INFO: [
-    EDITMETADATA_FUNDING_INFO,
-    EDITMETADATA_ORGANIZATION,
-  ],
-};
 
-/**
- *
- * @param stepKey
- * @returns {[]}
- */
-function getDataKeysToStepKey(stepKey) {
-
-  const stepKeys = Object.keys(stepKeyToDataKeyMap);
-
-  for (let i = 0; i < stepKeys.length; i++) {
-    const key = stepKeys[i];
-    const dataKeys = stepKeyToDataKeyMap[key];
-
-    if (key === stepKey) {
-      return [...dataKeys];
-    }
-  }
-
-  return [];
-}
-
-/**
- * returns the main key (step key) if the given key is part of the data key list
- *
- * @param dataKey {string}
- * @returns {string}
- */
-function getStepKeyToDataKey(dataKey) {
-  // merged the data from these localstorage objects
-  // on to a single step object because it's one step with multiple components
-  // not sub steps aka. details steps
-
-  const stepKeys = Object.keys(stepKeyToDataKeyMap);
-
-  for (let i = 0; i < stepKeys.length; i++) {
-    const stepKey = stepKeys[i];
-    const dataKeys = stepKeyToDataKeyMap[stepKey];
-
-    if (dataKeys.includes(dataKey)) {
-      return stepKey;
-    }
-  }
-
-  return dataKey;
-}
 
 function initStepDataInLocalStorage(stepKey, data) {
 

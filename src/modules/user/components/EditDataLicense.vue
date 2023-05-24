@@ -117,7 +117,7 @@
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {
   EDITMETADATA_CLEAR_PREVIEW,
-  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
@@ -214,7 +214,7 @@ export default {
       );
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_DATA_INFO);
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_LICENSE);
     },
   },
   methods: {
@@ -256,7 +256,7 @@ export default {
       };
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
-        object: EDITMETADATA_DATA_INFO,
+        object: EDITMETADATA_DATA_LICENSE,
         data: newDataInfo,
       });
     },

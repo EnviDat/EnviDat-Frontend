@@ -20,6 +20,7 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -111,6 +112,8 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_INFO]: {
     dates: [],
+  },
+  [EDITMETADATA_DATA_LICENSE]: {
     dataLicenseId: '',
   },
   [EDITMETADATA_DATA_GEO]: {
@@ -301,6 +304,34 @@ export const metadataEditingSteps = [
   },
 ];
 
+/**
+ * A mapping use to combine flat data structure elements with the hierarchy of the steps structure
+ *
+ * Object key -> stepKey, object value -> list of data keys
+ * @type {{EDITMETADATA_PUBLICATION_INFO: (string)[], EDITMETADATA_RELATED_PUBLICATIONS: (string)[], EDITMETADATA_AUTHOR_LIST: (string)[]}}
+ */
+export const stepKeyToDataKeyMap = {
+  /*
+    EDITMETADATA_AUTHOR_LIST: [
+      EDITMETADATA_AUTHOR,
+      EDITMETADATA_AUTHOR_DATACREDIT,
+      REMOVE_EDITING_AUTHOR,
+    ],
+  */
+  EDITMETADATA_RELATED_PUBLICATIONS: [
+    EDITMETADATA_RELATED_DATASETS,
+    EDITMETADATA_CUSTOMFIELDS,
+  ],
+  EDITMETADATA_PUBLICATION_INFO: [
+    EDITMETADATA_FUNDING_INFO,
+    EDITMETADATA_ORGANIZATION,
+  ],
+  EDITMETADATA_DATA_INFO: [
+    EDITMETADATA_DATA_LICENSE,
+  ],
+};
+
+
 export function initializeSteps(steps) {
 
   for (let i = 0; i < steps.length; i++) {
@@ -377,4 +408,51 @@ export function getEmptyMetadataInEditingObject() {
   // aka. a deep copy without references
 
   return JSON.parse(JSON.stringify(emptyMetadataInEditing));
+}
+
+/**
+ * return all the dataKeys for a step key
+ *
+ * @param stepKey
+ * @returns {[]}
+ */
+export function getDataKeysToStepKey(stepKey) {
+
+  const stepKeys = Object.keys(stepKeyToDataKeyMap);
+
+  for (let i = 0; i < stepKeys.length; i++) {
+    const key = stepKeys[i];
+    const dataKeys = stepKeyToDataKeyMap[key];
+
+    if (key === stepKey) {
+      return [...dataKeys];
+    }
+  }
+
+  return [];
+}
+
+/**
+ * returns the main key (step key) if the given key is part of a data key list
+ *
+ * @param dataKey {string}
+ * @returns {string}
+ */
+export function getStepKeyToDataKey(dataKey) {
+  // merged the data from these localstorage objects
+  // on to a single step object because it's one step with multiple components
+  // not sub steps aka. details steps
+
+  const stepKeys = Object.keys(stepKeyToDataKeyMap);
+
+  for (let i = 0; i < stepKeys.length; i++) {
+    const stepKey = stepKeys[i];
+    const dataKeys = stepKeyToDataKeyMap[stepKey];
+
+    if (dataKeys.includes(dataKey)) {
+      return stepKey;
+    }
+  }
+
+  return dataKey;
 }

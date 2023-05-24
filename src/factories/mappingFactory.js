@@ -20,6 +20,7 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
+  EDITMETADATA_DATA_LICENSE,
   EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCE_SIZE,
   EDITMETADATA_DATA_RESOURCES,
@@ -141,6 +142,8 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
+  ],
+  [EDITMETADATA_DATA_LICENSE]: [
     ['dataLicenseId','license_id'],
     ['dataLicenseTitle','license_title'],
     ['dataLicenseUrl','license_url'],
@@ -757,16 +760,14 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   // here and keep the JSONFrontendBackendRules consitent!
   dateInfoData.dates = formatDatesForFrontend(bDates);
 
-  const dataInfo = {
-    // for now only use the title, check how to choose it in the
-    // edit component
-    dataLicenseId: dateInfoData.dataLicenseId,
-    ...dateInfoData,
-  };
+  commitEditingData(commit, stepKey, dateInfoData);
+  dataObject.dataInfo = dateInfoData;
 
-  commitEditingData(commit, stepKey, dataInfo);
-  dataObject.dataInfo = dataInfo;
+  stepKey = EDITMETADATA_DATA_LICENSE;
+  const dataLicenseInfo = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
+  commitEditingData(commit, stepKey, dataLicenseInfo);
+  dataObject.dataLicenseInfo = dataLicenseInfo;
 
   stepKey = EDITMETADATA_DATA_GEO;
   const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);

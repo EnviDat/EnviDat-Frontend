@@ -13,8 +13,11 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_DATA_INFO, EDITMETADATA_DATA_INFO_DATES,
-  EDITMETADATA_DATA_RESOURCES, EDITMETADATA_FUNDING_INFO,
+  EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_INFO_DATES,
+  EDITMETADATA_DATA_LICENSE,
+  EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -130,10 +133,6 @@ describe('getFrontendJSON', () => {
 
     const snakeCaseJSON = convertJSON(mappingTestData, false);
     const dataInfoData = getFrontendJSONForStep(EDITMETADATA_DATA_INFO, snakeCaseJSON)
-
-    expect(dataInfoData.dataLicenseId).toBe(snakeCaseJSON.license_id);
-    expect(dataInfoData.dataLicenseTitle).toBe(snakeCaseJSON.license_title);
-    expect(dataInfoData.dataLicenseUrl).toBe(snakeCaseJSON.license_url);
 
     const array = dataInfoData.dates;
     expect(array).toBeInstanceOf(Array);
@@ -401,13 +400,7 @@ describe('getBackendJSON', () => {
   it(EDITMETADATA_DATA_INFO, () => {
 
     const dates = JSON.parse(mappingTestData.date);
-
-    const frontendJSON = {
-      dates,
-      dataLicenseId: mappingTestData.license_id,
-      dataLicenseTitle: mappingTestData.license_title,
-      dataLicenseUrl: mappingTestData.license_url,
-    }
+    const frontendJSON = { dates };
 
     const frontendDates = [];
     for (let i = 0; i < dates.length; i++) {
@@ -422,10 +415,6 @@ describe('getBackendJSON', () => {
     const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
 
     const dataInfoData = getBackendJSONForStep(EDITMETADATA_DATA_INFO, frontendDataInfo);
-
-    expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
-    expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
-    expect(dataInfoData.license_url).toBe(frontendDataInfo.dataLicenseUrl);
 
     const array = dataInfoData.date;
     expect(array).toBeInstanceOf(Array);
@@ -455,6 +444,23 @@ describe('getBackendJSON', () => {
     expect(flatJSON.date.includes('date')).toBeTruthy()
     expect(flatJSON.date.includes('date_type')).toBeTruthy()
     expect(flatJSON.date.includes('end_date')).toBeTruthy()
+  });
+
+  it(EDITMETADATA_DATA_LICENSE, () => {
+
+    const frontendJSON = {
+      dataLicenseId: mappingTestData.license_id,
+      dataLicenseTitle: mappingTestData.license_title,
+      dataLicenseUrl: mappingTestData.license_url,
+    };
+
+    const frontendDataInfo = getObjectInOtherCase(frontendJSON, toCamelCase);
+    const dataInfoData = getBackendJSONForStep(EDITMETADATA_DATA_LICENSE, frontendDataInfo);
+
+    expect(dataInfoData.license_id).toBe(frontendDataInfo.dataLicenseId);
+    expect(dataInfoData.license_title).toBe(frontendDataInfo.dataLicenseTitle);
+    expect(dataInfoData.license_url).toBe(frontendDataInfo.dataLicenseUrl);
+
   });
 
   it(EDITMETADATA_DATA_GEO, () => {
