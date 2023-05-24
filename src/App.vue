@@ -405,7 +405,11 @@ export default {
         callback = this.redirectToLegacyDashboard;
       }
 
-      eventBus.emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Redirect to Legacy Website!',
+        message,
+        callback,
+      });
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
@@ -425,7 +429,7 @@ export default {
       this.handleRedirectCallBack(true);
     },
     // eslint-disable-next-line default-param-last
-    openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
+    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback }) {
       this.dialogTitle = title;
 
       if (!message) {
