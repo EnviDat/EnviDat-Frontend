@@ -217,7 +217,6 @@ export default {
     this.checkUserSignedIn();
 
     this.$nextTick(() => {
-      this.loadAllOrganizations();
       this.startParticles();
     })
   },
@@ -225,9 +224,6 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
-    loadAllOrganizations() {
-      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${GET_ORGANIZATIONS}`);
-    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
