@@ -99,7 +99,8 @@
 
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
-                          :hint="labels.authorPickHint"
+                          :readonly="isUserPickerReadOnly"
+                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -401,6 +402,9 @@ export default {
       }
 
       return 'Create a new author which is not on any published dataset.';
+    },
+    isUserPickerReadOnly() {
+      return this.mixinMethods_isFieldReadOnly('authors');
     },
   },
   methods: {
