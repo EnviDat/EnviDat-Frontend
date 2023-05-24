@@ -63,7 +63,7 @@ import {
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE, SHOW_DIALOG,
 } from '@/factories/eventBus';
 
 import {
@@ -85,12 +85,14 @@ import {
   METADATA_EDITING_SELECT_AUTHOR,
   METADATA_EDITING_SELECT_RESOURCE,
   UPDATE_METADATA_EDITING,
-  USER_NAMESPACE, USER_SIGNIN_NAMESPACE,
+  USER_NAMESPACE,
+  USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
-  GET_ORGANIZATIONS,
-  ORGANIZATIONS_NAMESPACE, USER_GET_ORGANIZATION_IDS, USER_GET_ORGANIZATIONS,
+  ORGANIZATIONS_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 import {
@@ -98,6 +100,7 @@ import {
   METADATADETAIL_PATH,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
+  USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -122,7 +125,7 @@ import {
   updateAllStepsForCompletion,
 } from '@/factories/userCreationFactory';
 import {
-  getDataKeysToStepKey, getStepByName,
+  getDataKeysToStepKey,
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,
@@ -173,13 +176,25 @@ export default {
     // reset the scrolling to the top
     window.scrollTo(0, 0);
 
-    if (this.metadataId) {
-      this.initMetadataUsingId(this.metadataId);
-    }
+    if (this.user) {
+      if (this.metadataId) {
+        this.$nextTick(() => {
+          this.initMetadataUsingId(this.metadataId);
+        });
+      }
 
-    this.$nextTick(() => {
-      this.loadUserOrganizations();
-    });
+      this.$nextTick(() => {
+        this.loadUserOrganizations();
+      });
+    } else {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Please Sign in!',
+        message: 'For dataset editing you need to be signed in.',
+        callback: () => {
+          this.navigateToSignPage();
+        },
+      });
+    }
 
   },
   computed: {
@@ -399,6 +414,9 @@ export default {
       this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details || ''}`;
 
       this.showSnack = true;
+    },
+    navigateToSignPage() {
+      this.$router.push({ name: USER_SIGNIN_PAGENAME });
     },
   },
   watch: {
