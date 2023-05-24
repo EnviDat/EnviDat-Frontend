@@ -63,7 +63,8 @@ import {
   EDITMETADATA_AUTHOR,
   REMOVE_EDITING_AUTHOR,
   AUTHOR_SEARCH_CLICK,
-  EDITMETADATA_DATA_RESOURCE, SHOW_DIALOG,
+  EDITMETADATA_DATA_RESOURCE,
+  SHOW_DIALOG,
 } from '@/factories/eventBus';
 
 import {
@@ -126,6 +127,7 @@ import {
 } from '@/factories/userCreationFactory';
 import {
   getDataKeysToStepKey,
+  getStepByName,
   getStepFromRoute,
   initializeSteps,
   metadataEditingSteps,
@@ -370,11 +372,14 @@ export default {
     },
     editComponentsChanged(updateObj) {
 
+      const dataKey = updateObj.object;
+      // const data = updateObj.data;
+
       componentChangedEvent(updateObj, this, (payload) => {
 
         // overwrite the action and the payload to fit the specific
         // backend call to change the ownership of a dataset
-        const action = this.getUserAction(updateObj.object);
+        const action = this.getUserAction(dataKey);
 
         // save the full dataObject it in the backend
         this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
@@ -384,14 +389,14 @@ export default {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
         //  this.updateExistingAuthors(updateObj.data);
         // }
-
-        updateStepValidation(updateObj.object, this.editingSteps);
+        const step = getStepByName(dataKey, this.editingSteps);
+        updateStepValidation(step, this.editingSteps);
       });
 
     },
     validateCurrentStep() {
       const step = getStepFromRoute(this.$route, this.editingSteps);
-      updateStepValidation(step.key, this.editingSteps);
+      updateStepValidation(step, this.editingSteps);
     },
     getUserAction(stepKey) {
       return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;

@@ -419,9 +419,7 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
   return true;
 }
 
-export function updateStepValidation(stepKey, steps) {
-  const step = getStepByName(stepKey, steps);
-
+export function updateStepValidation(step, steps) {
   if (!step) {
     return;
   }
@@ -431,7 +429,7 @@ export function updateStepValidation(stepKey, steps) {
   if (detailSteps) {
     for (let i = 0; i < detailSteps.length; i++) {
       const detailStep = step.detailSteps[i];
-      updateStepValidation(detailStep.key, steps);
+      updateStepValidation(detailStep, steps);
     }
 
     const anyErrors = detailSteps.filter(s => !!s.error);
@@ -441,6 +439,7 @@ export function updateStepValidation(stepKey, steps) {
     return;
   }
 
+  const stepKey = step.key;
   const stepData = step.genericProps;
   const dataKeys = getDataKeysToStepKey(stepKey);
 

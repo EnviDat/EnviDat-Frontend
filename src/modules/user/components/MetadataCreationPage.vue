@@ -95,11 +95,6 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
-import {
-  METADATA_NAMESPACE,
-  METADATA_UPDATE_AN_EXISTING_AUTHOR,
-} from '@/store/metadataMutationsConsts';
-
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
@@ -414,7 +409,7 @@ export default {
     },
     validateCurrentStep() {
       const step = getStepFromRoute(this.$route, this.creationSteps);
-      updateStepValidation(step.key, this.creationSteps);
+      updateStepValidation(step, this.creationSteps);
       return step.key;
     },
     showSnackMessage({ status, statusMessage, details }) {
