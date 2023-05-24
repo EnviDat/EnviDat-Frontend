@@ -110,7 +110,7 @@ export default {
 */
   [METADATA_CREATION_DATASET](state) {
     state.metadataCreationLoading = true;
-    state.newMetadataset = null;
+    state.newMetadatasetName = null;
     state.metadataCreationError = null;
 
   },
@@ -118,9 +118,9 @@ export default {
     state.metadataCreationLoading = false;
 
     // convert properties and stringified json to match the frontend structure
-    const fDataset = getFrontendJSONNewDataset(dataset);
+    // const fDataset = getFrontendJSONNewDataset(dataset);
 
-    state.newMetadataset = fDataset;
+    state.newMetadatasetName = dataset.name;
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 

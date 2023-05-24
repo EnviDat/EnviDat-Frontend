@@ -60,7 +60,7 @@ const userState = {
   envidatUsers: null,
   envidatUsersError: null,
   metadataCreationLoading: true,
-  newMetadataset: null,
+  newMetadatasetName: null,
   metadataCreationError: null,
 };
 

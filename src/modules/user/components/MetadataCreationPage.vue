@@ -17,7 +17,6 @@
                        @clickedClose="catchBackClicked" />
 
 
-<!--
     <v-snackbar id="NotificationSnack"
                 top
                 elevation="0"
@@ -26,13 +25,12 @@
                 v-model="showSnack"
                 >
 
-      <NotificationCard v-if="editingError"
-                        :notification="editingError"
+      <NotificationCard v-if="creationError"
+                        :notification="creationError"
                         :showCloseButton="true"
                         @clickedClose="showSnack = false" />
 
     </v-snackbar>
--->
 
   </v-container>
 
@@ -115,6 +113,7 @@ import {
   updateAllStepsForCompletion,
   updateStepValidation,
   updateStepsWithReadOnlyFields,
+  readDataFromLocalStorage,
 } from '@/factories/userCreationFactory';
 
 import { mapState } from 'vuex';
@@ -169,11 +168,6 @@ export default {
     // reset the scrolling to the top
     window.scrollTo(0, 0);
 
-/*
-    if (this.metadataId) {
-      this.initMetadataUsingId(this.metadataId);
-    }
-*/
 
     if (this.user) {
       this.loadUserOrganizations();
@@ -204,7 +198,8 @@ export default {
       'userOrganizationIds',
     ]),
     ...mapState(USER_NAMESPACE, [
-      'newMetadataset',
+      'newMetadatasetName',
+      'metadataCreationError',
     ]),
 /*
     ...mapState(USER_NAMESPACE, [
@@ -260,7 +255,7 @@ export default {
 
       return subStep || '';
     },
-    editingError() {
+    creationError() {
       if (!this.errorMessage && !this.errorTitle) {
         return null;
       }
@@ -291,27 +286,17 @@ export default {
     updateStepsOrganizations() {
       const userOrganizations = this.$store.state.organizations.userOrganizations
 
-      storeCreationStepsData(EDITMETADATA_ORGANIZATION, { userOrganizations }, this.creationSteps)
-    },
-    /*
-    async initMetadataUsingId(id) {
-      if (id !== this.currentEditingContent?.name) {
-        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+      // Get any already information from the local storage
+      // to make sure not to overwrite anything!
+      const existingOrganizationData = readDataFromLocalStorage(EDITMETADATA_ORGANIZATION);
+
+      const data = {
+        ...existingOrganizationData,
+        userOrganizations,
       }
 
-      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
-
-      const publicationState = getMetadataVisibilityState(this.currentEditingContent);
-      const readOnlyObj = getReadOnlyFieldsObject(publicationState);
-
-      if (readOnlyObj) {
-        updateStepsWithReadOnlyFields(this.creationSteps, readOnlyObj);
-      }
-
-      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
-      updateStepStatus(stepKey, this.creationSteps);
+      storeCreationStepsData(EDITMETADATA_ORGANIZATION, data, this.creationSteps)
     },
-    */
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
     },
@@ -342,14 +327,21 @@ export default {
 
       await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_CREATION_DATASET}`, data);
 
-      if (this.newMetadataset) {
+      if (this.newMetadatasetName) {
         eventBus.emit(SHOW_DIALOG, {
           title: 'Dataset Saved!',
-          message: 'Your datasets has been saved',
+          message: `Your datasets ${ this.newMetadatasetName } has been saved successfully.
+          We load up your dataset in the editing workflow, there you can upload resources and add aditional metadata.`,
           callback: () => {
             this.loadDatasetInEditingWorkflow(metadataId);
-            // localStorage.clear();
+            localStorage.clear();
           },
+        });
+      } else {
+        this.showSnackMessage({
+          status: 'Creation Failed',
+          statusMessage: this.metadataCreationError.message,
+          details: this.metadataCreationError.details,
         });
       }
 
@@ -413,11 +405,10 @@ export default {
       storeCreationStepsData(dataKey, data, this.creationSteps, resetMessages);
 
       this.$nextTick(() => {
-        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-
         // updateStepValidation(dataKey, this.creationSteps);
         const stepKey = this.validateCurrentStep();
         updateAllStepsForCompletion(this.creationSteps, stepKey);
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
       });
 
     },
@@ -426,22 +417,10 @@ export default {
       updateStepValidation(step.key, this.creationSteps);
       return step.key;
     },
-    updateExistingAuthors(data) {
-      this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
-    },
     showSnackMessage({ status, statusMessage, details }) {
 
-      const id = this.currentEditingContent?.id || null;
-      const name = this.currentEditingContent?.name || null;
-
-      if (id && name) {
-        statusMessage = statusMessage.replace(id, `"${name}"`);
-        details = details.replace(id, `"${name}"`);
-      }
-
-      const predefinedErrors = this.backendErrorList[status];
-      this.errorTitle = predefinedErrors?.message || 'Fatal Error';
-      this.errorMessage = `${statusMessage} ${details} ${predefinedErrors?.details || ''}`;
+      this.errorTitle = status;
+      this.errorMessage = `${statusMessage} ${details}`;
 
       this.showSnack = true;
     },

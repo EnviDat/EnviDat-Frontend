@@ -59,13 +59,11 @@ export function getNewDatasetDefaults(userEditMetadataConfig) {
   const defaults = {
     location: { geoJSON },
     resourceTypeGeneral: 'dataset',
-    ownerOrg: 'a5d8660c-7635-4620-8289-fb6181c34e0c',
   };
 
   const backendSpatial = mapFrontendToBackend(EDITMETADATA_DATA_GEO, defaults);
 
   const backendJSONDefaults = convertToBackendJSONWithRules([
-    ['ownerOrg', 'owner_org'],
     ['resourceTypeGeneral', 'resource_type_general'],
   ], defaults);
 
@@ -192,15 +190,6 @@ function matchedWithRequiredProps(steps) {
   return true;
 }
 
-export function canLocalDatasetBeStoredInBackend(steps) {
-
-  if (!steps) {
-    return false;
-  }
-
-  return matchedWithRequiredProps(steps);
-}
-
 /**
  * stores the data to a step in the creation workflow.
  * It uses the mapFrontendToBackend function to make sure only data is stored
@@ -242,26 +231,26 @@ function writeStepDataInLocalStorage(stepKey, data) {
  * data which is defined in the mapping rules will be available for the frontend.
  * In the same as if communicating to the Python backend.
  *
- * @param stepKey
+ * @param dataKey
  * @returns {*|null}
  */
-export function readDataFromLocalStorage(stepKey) {
-  if (!stepKey) {
+export function readDataFromLocalStorage(dataKey) {
+  if (!dataKey) {
     return null;
   }
 
   try {
-    const localData = localStorage.getItem(stepKey);
+    const localData = localStorage.getItem(dataKey);
 
     if (!localData) {
       return null;
     }
 
     const bData = JSON.parse(localData);
-    const fData = mapBackendToFrontend(stepKey, bData);
+    const fData = mapBackendToFrontend(dataKey, bData);
     return fData;
   } catch (e) {
-    console.error(`Failed to parse json of ${stepKey} : ${e}`);
+    console.error(`Failed to parse json of ${dataKey} : ${e}`);
     return null;
   }
 }
@@ -329,10 +318,12 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
 
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
-
   const name = getMetadataUrlFromTitle(bData.title);
 
+  const orgaId = bData.organization?.id || '';
+
   return {
+    'owner_org': orgaId,
     ...bData,
     name,
     ...bDefaults,
@@ -473,26 +464,27 @@ export function updateStepValidation(stepKey, steps) {
 
 }
 
-export function updateAllStepsForCompletion(steps, ignoreStepKey = '') {
+export function updateAllStepsForCompletion(steps) {
   if (!steps) {
-    return;
+    return 0;
   }
+
+  let countCompleted = 0;
 
   for (let i = 0; i < steps.length; i++) {
     const step = steps[i];
     const detailSteps = step.detailSteps;
 
     if (detailSteps) {
-      updateAllStepsForCompletion(step.detailSteps, ignoreStepKey);
-
-      const completedDetailSteps = detailSteps.filter(s => s.completed);
-      step.completed = completedDetailSteps.length === detailSteps.length;
+      const completedDetailSteps = updateAllStepsForCompletion(step.detailSteps);
+      step.completed = completedDetailSteps === detailSteps.length;
 
       if(step.completed) {
+        countCompleted++;
         // clear the error for a parent step, they only get cleared through the validation check
         step.error = null;
       }
-    } else if (step.key !== ignoreStepKey) {
+    } else {
 
       const stepData = step.genericProps;
       const stepKey = step.key;
@@ -502,25 +494,30 @@ export function updateAllStepsForCompletion(steps, ignoreStepKey = '') {
       // it is used in both cases
       dataKeys.push(stepKey);
 
+      let countDataValid = 0;
+
       for (let j = 0; j < dataKeys.length; j++) {
         const key = dataKeys[j];
         const validationRules = getValidationMetadataEditingObject(key);
 
         step.completed = validationRules ? stepValidation(step, stepData, validationRules, true) : true;
 
-        if (!step.completed) {
+        if(step.completed) {
+          countDataValid++;
+        } else {
           break;
         }
       }
-/*
-      const validationRules = getValidationMetadataEditingObject(step.key);
-      step.completed = validationRules ? stepValidation(step, stepData, validationRules, true) : true;
-*/
+
+      if (countDataValid === dataKeys.length) {
+        countCompleted++;
+      }
 
     }
     // console.log(`step ${step.key} completed? ${step.completed}`);
   }
 
+  return countCompleted;
 }
 
 export function countSteps(steps, onlyCompleted) {
@@ -629,4 +626,15 @@ export function storeCreationStepsData(dataKey, data, steps, resetMessages = tru
   return stepData;
 }
 
+export function canLocalDatasetBeStoredInBackend(steps) {
+
+  if (!steps) {
+    return false;
+  }
+
+  const allSteps = countSteps(steps);
+  const onlyCompleted = countSteps(steps, true);
+
+  return allSteps === onlyCompleted;
+}
 
