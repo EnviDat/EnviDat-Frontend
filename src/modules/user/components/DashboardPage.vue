@@ -406,6 +406,9 @@ export default {
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
+    userEditMetadataConfig() {
+      return this.config?.userEditMetadataConfig;
+    },
     datasetCreationActive() {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
     },
