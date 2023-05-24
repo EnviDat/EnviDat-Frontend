@@ -181,7 +181,7 @@ export default {
       this.$nextTick(() => {
 
         const stepKey = this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
+        updateAllStepsForCompletion(this.creationSteps, stepKey);
 
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
       });
@@ -242,10 +242,8 @@ export default {
 */
 /*
     currentComponentLoading() {
-      const stepKey = getStepFromRoute(this.$route);
-      const stepData = this.getGenericPropsForStep(stepKey);
-
-      return stepData?.loading || false;
+      const step = getStepFromRoute(this.$route);
+      return step?.genericProps?.loading || false;
     },
 */
     routeStep() {
@@ -311,7 +309,7 @@ export default {
       }
 
       const stepKey = getStepFromRoute(this.$route, this.creationSteps);
-      updateStepStatus(stepKey, this.creationSteps, this.getGenericPropsForStep);
+      updateStepStatus(stepKey, this.creationSteps);
     },
     */
     updateLastEditingDataset(name, path, backPath) {
@@ -365,7 +363,7 @@ export default {
     selectAuthor(email) {
 
       const step = getStepByName(EDITMETADATA_AUTHOR_LIST, this.creationSteps);
-      const authors = this.getGenericPropsForStep(step).authors;
+      const authors = step.genericProps.authors;
 
       const previousSelected = getSelectedElement(authors);
 
@@ -407,17 +405,6 @@ export default {
           false);
       }
     },
-/*
-    saveAuthor(newAuthor) {
-      let authors = this.getGenericPropsForStep(EDITMETADATA_AUTHOR_LIST).authors;
-      authors = updateEditingArray(authors, newAuthor, 'email');
-
-      this.componentChanged({
-        object: EDITMETADATA_AUTHOR_LIST,
-        data: { authors },
-      });
-    },
-*/
     componentChanged(updateObj, resetMessages = true) {
 
       const dataKey = updateObj.object;
@@ -428,20 +415,16 @@ export default {
       this.$nextTick(() => {
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
 
-        // updateStepValidation(dataKey, this.creationSteps, this.getGenericPropsForStep);
+        // updateStepValidation(dataKey, this.creationSteps);
         const stepKey = this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
+        updateAllStepsForCompletion(this.creationSteps, stepKey);
       });
 
     },
     validateCurrentStep() {
-      const stepKey = getStepFromRoute(this.$route, this.creationSteps);
-      updateStepValidation(stepKey, this.creationSteps, this.getGenericPropsForStep);
-      return stepKey;
-    },
-    getGenericPropsForStep(step) {
-      return step.genericProps;
-      // return readDataFromLocalStorage(key);
+      const step = getStepFromRoute(this.$route, this.creationSteps);
+      updateStepValidation(step.key, this.creationSteps);
+      return step.key;
     },
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
@@ -477,7 +460,7 @@ export default {
 */
 
       const stepKey = this.validateCurrentStep();
-      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
+      updateAllStepsForCompletion(this.creationSteps, stepKey);
     },
 /*
     authorsMap() {

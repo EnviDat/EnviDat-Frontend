@@ -395,11 +395,10 @@ export function getStepFromRoute(route, steps) {
 
   if (detailSteps && subStepTitle) {
 
-    const currentSubstep = detailSteps.filter(subStep => subStep.title === subStepTitle)[0];
-    return currentSubstep?.key || null;
+    return detailSteps.filter(subStep => subStep.title === subStepTitle)[0] || null;
   }
 
-  return currentStep?.key || null;
+  return currentStep || null;
 }
 
 export function getEmptyMetadataInEditingObject() {

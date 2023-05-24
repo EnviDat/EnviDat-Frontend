@@ -428,7 +428,7 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
   return true;
 }
 
-export function updateStepValidation(stepKey, steps, getStepDataFn) {
+export function updateStepValidation(stepKey, steps) {
   const step = getStepByName(stepKey, steps);
 
   if (!step) {
@@ -440,7 +440,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
   if (detailSteps) {
     for (let i = 0; i < detailSteps.length; i++) {
       const detailStep = step.detailSteps[i];
-      updateStepValidation(detailStep.key, steps, getStepDataFn);
+      updateStepValidation(detailStep.key, steps);
     }
 
     const anyErrors = detailSteps.filter(s => !!s.error);
@@ -450,8 +450,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
     return;
   }
 
-  const stepData = getStepDataFn(step);
-  // validateDataStructureForStep(step, stepData)
+  const stepData = step.genericProps;
   const dataKeys = getDataKeysToStepKey(stepKey);
 
   // use the stepKey itself aswell, for merged step data and flat stored
@@ -474,7 +473,7 @@ export function updateStepValidation(stepKey, steps, getStepDataFn) {
 
 }
 
-export function updateAllStepsForCompletion(steps, getStepDataFn, ignoreStepKey = '') {
+export function updateAllStepsForCompletion(steps, ignoreStepKey = '') {
   if (!steps) {
     return;
   }
@@ -484,7 +483,7 @@ export function updateAllStepsForCompletion(steps, getStepDataFn, ignoreStepKey 
     const detailSteps = step.detailSteps;
 
     if (detailSteps) {
-      updateAllStepsForCompletion(step.detailSteps, getStepDataFn);
+      updateAllStepsForCompletion(step.detailSteps, ignoreStepKey);
 
       const completedDetailSteps = detailSteps.filter(s => s.completed);
       step.completed = completedDetailSteps.length === detailSteps.length;
@@ -495,10 +494,7 @@ export function updateAllStepsForCompletion(steps, getStepDataFn, ignoreStepKey 
       }
     } else if (step.key !== ignoreStepKey) {
 
-      /*
-            validateDataStructureForStep(step, stepData, true);
-      */
-      const stepData = getStepDataFn(step);
+      const stepData = step.genericProps;
       const stepKey = step.key;
       const dataKeys = getDataKeysToStepKey(stepKey);
 

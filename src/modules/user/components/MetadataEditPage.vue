@@ -121,7 +121,12 @@ import {
   updateStepsWithReadOnlyFields,
   updateAllStepsForCompletion,
 } from '@/factories/userCreationFactory';
-import { getStepFromRoute, initializeSteps, metadataEditingSteps } from '@/factories/workflowFactory';
+import {
+  getDataKeysToStepKey, getStepByName,
+  getStepFromRoute,
+  initializeSteps,
+  metadataEditingSteps,
+} from '@/factories/workflowFactory';
 
 
 export default {
@@ -214,14 +219,8 @@ export default {
       return !map || Object.keys(map).length <= 0;
     },
     currentComponentLoading() {
-      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-      if (!stepKey) {
-        return false;
-      }
-
-      const stepData = this.getGenericPropsForStep({ key: stepKey });
-
-      return stepData?.loading || false;
+      const step = getStepFromRoute(this.$route, this.editingSteps);
+      return step?.genericProps?.loading || false;
     },
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
@@ -249,10 +248,25 @@ export default {
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];
 
-        const data = this.getGenericPropsForStep(step);
-        if (data) {
-          step.genericProps = data;
+        const dataKeys = getDataKeysToStepKey(step.key);
+        // use the stepKey itself aswell, for merged step data and flat stored
+        dataKeys.push(step.key);
+
+        let mergedData = {};
+
+        for (let j = 0; j < dataKeys.length; j++) {
+          const dataKey = dataKeys[j];
+          const data = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](dataKey);
+
+          if (data) {
+            mergedData = {
+              ...mergedData,
+              ...data,
+            }
+          }
         }
+
+        step.genericProps = mergedData;
 
         if (step.detailSteps) {
           this.initStepDataFromStore(step.detailSteps)
@@ -301,7 +315,7 @@ export default {
 
       this.validateCurrentStep();
 
-      updateAllStepsForCompletion(this.editingSteps, this.getGenericPropsForStep);
+      updateAllStepsForCompletion(this.editingSteps);
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
@@ -356,19 +370,16 @@ export default {
         //  this.updateExistingAuthors(updateObj.data);
         // }
 
-        updateStepValidation(updateObj.object, this.editingSteps, this.getGenericPropsForStep);
+        updateStepValidation(updateObj.object, this.editingSteps);
       });
 
     },
     validateCurrentStep() {
-      const stepKey = getStepFromRoute(this.$route, this.editingSteps);
-      updateStepValidation(stepKey, this.editingSteps, this.getGenericPropsForStep);
+      const step = getStepFromRoute(this.$route, this.editingSteps);
+      updateStepValidation(step.key, this.editingSteps);
     },
     getUserAction(stepKey) {
       return this.userActions[stepKey] || METADATA_EDITING_PATCH_DATASET_OBJECT;
-    },
-    getGenericPropsForStep(step) {
-      return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](step.key);
     },
     updateExistingAuthors(data) {
       this.$store.commit(`${METADATA_NAMESPACE}/${METADATA_UPDATE_AN_EXISTING_AUTHOR}`, data);
@@ -406,7 +417,7 @@ export default {
 
       this.validateCurrentStep();
 
-      updateAllStepsForCompletion(this.editingSteps, this.getGenericPropsForStep);
+      updateAllStepsForCompletion(this.editingSteps);
     },
     authorsMap() {
 
