@@ -89,6 +89,7 @@ import {
   METADATA_CREATION_PAGENAME,
   METADATAEDIT_PAGENAME,
   USER_DASHBOARD_PATH,
+  USER_SIGNIN_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -174,15 +175,25 @@ export default {
     }
 */
 
-    this.loadUserOrganizations();
+    if (this.user) {
+      this.loadUserOrganizations();
 
-    this.$nextTick(() => {
+      this.$nextTick(() => {
 
-      const stepKey = this.validateCurrentStep();
-      updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
+        const stepKey = this.validateCurrentStep();
+        updateAllStepsForCompletion(this.creationSteps, this.getGenericPropsForStep, stepKey);
 
-      this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-    });
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+      });
+    } else {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Please Sign in!',
+        message: 'For dataset creation you need to be signed in.',
+        callback: () => {
+          this.navigateToSignPage();
+        },
+      });
+    }
   },
   computed: {
     ...mapState(['config']),
@@ -322,6 +333,9 @@ export default {
         },
 */
       });
+    },
+    navigateToSignPage() {
+      this.$router.push({ name: USER_SIGNIN_PAGENAME });
     },
     async catchSaveNewDataset() {
 
