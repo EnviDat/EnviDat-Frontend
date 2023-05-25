@@ -11,7 +11,9 @@
                        :subStep="routeSubStep"
                        stepColor="highlight"
                        :loading="loading"
+                       :saving="loadingEditingData"
                        showPreviewButton
+                       :dataset-title="currentEditingContent?.title"
                        @clickedPreview="catchPreviewClicked"
                        @clickedClose="catchBackClicked" />
 

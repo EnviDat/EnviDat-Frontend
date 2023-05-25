@@ -10,9 +10,11 @@
                        :step="routeStep"
                        :subStep="routeSubStep"
                        stepColor="highlight"
-                       :loading="loading"
+                       :saving="metadataCreationLoading"
                        :showSaveButton="canSaveInBackend"
                        :isCreationWorkflow="true"
+                       :showProgress="true"
+                       :dataset-title="currentDatasetTitle"
                        @clickedSaveDataset="catchSaveNewDataset"
                        @clickedClose="catchBackClicked" />
 
@@ -62,6 +64,7 @@ import {
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_AUTHOR_LIST,
   SHOW_DIALOG,
+  EDITMETADATA_MAIN_HEADER,
 } from '@/factories/eventBus';
 
 import {
@@ -95,6 +98,8 @@ import {
   SET_CURRENT_PAGE,
 } from '@/store/mainMutationsConsts';
 
+import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 // import NotificationCard from '@/components/Cards/NotificationCard.vue';
@@ -112,12 +117,14 @@ import {
 } from '@/factories/userCreationFactory';
 
 import { mapState } from 'vuex';
+
 import {
   getStepByName,
   getStepFromRoute,
   initializeSteps,
   metadataCreationSteps,
 } from '@/factories/workflowFactory';
+
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 
@@ -195,47 +202,12 @@ export default {
     ...mapState(USER_NAMESPACE, [
       'newMetadatasetName',
       'metadataCreationError',
+      'metadataCreationLoading',
     ]),
-/*
-    ...mapState(USER_NAMESPACE, [
-      'lastEditedBackPath',
-      'currentEditingContent',
-      'loadingCurrentEditingContent',
-    ]),
-    ...mapState(METADATA_NAMESPACE,[
-      'authorsMap',
-      'asciiDead',
-    ]),
-    ...mapGetters(USER_NAMESPACE, ['authors']),
-    ...mapGetters(METADATA_NAMESPACE, [
-      'existingAuthors',
-      'existingKeywords',
-    ]),
-*/
-    /**
-     * @returns {String} the metadataId from the route
-     */
-    metadataId() {
-      return '';
-      // return this.$route.params.metadataid;
+    currentDatasetTitle() {
+      const step = getStepByName(EDITMETADATA_MAIN_HEADER, this.creationSteps);
+      return step?.genericProps[METADATA_TITLE_PROPERTY];
     },
-    loading() {
-      return false;
-      // return this.loadingCurrentEditingContent || !this.currentEditingContent || this.authorsMapLoading;
-    },
-/*
-    authorsMapLoading() {
-      const map = this.authorsMap;
-
-      return !map || Object.keys(map).length <= 0;
-    },
-*/
-/*
-    currentComponentLoading() {
-      const step = getStepFromRoute(this.$route);
-      return step?.genericProps?.loading || false;
-    },
-*/
     routeStep() {
       let stepFromRoute = this.$route?.params?.step;
 
@@ -305,11 +277,6 @@ export default {
         params: {
           metadataid: metadataId,
         },
-/*
-        query: {
-          backPath: this.$route.fullPath,
-        },
-*/
       });
     },
     navigateToSignPage() {
@@ -421,40 +388,13 @@ export default {
     },
   },
   watch: {
-/*
-    currentComponentLoading() {
-      if (!this.currentComponentLoading) {
-        this.validateCurrentStep();
-      }
-    },
-*/
     $route(){
-/*
-      this.updateLastEditingDataset(this.$route.params.metadataid, this.$route.path, this.$route.query.backPath);
-*/
-
       const stepKey = this.validateCurrentStep();
       updateAllStepsForCompletion(this.creationSteps, stepKey);
     },
-/*
-    authorsMap() {
-
-      if (this.currentEditingContent
-        && this.authorsMap && Object.keys(this.authorsMap).length > 0) {
-
-        const { categoryCards } = this.$store.getters;
-
-        // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
-        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards, this.authorsMap);
-      }
-    },
-*/
   },
   components: {
     NavigationStepper,
-    // NotificationSnack,
-    // BaseRectangleButton,
-    // NotificationCard,
   },
   data: () => ({
     domain: process.env.VUE_APP_ENVIDAT_DOMAIN,

@@ -188,8 +188,7 @@
       </v-row>
 
       <v-row dense no-gutters>
-        <v-col cols="12"
-        >
+        <v-col cols="12" >
 
           <ExpandableLayout statusText="Advanced Header info"
                             :isFlat="true">
@@ -260,6 +259,7 @@ import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import MetadataHeader from '@/modules/metadata/components/Metadata/MetadataHeader.vue';
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 
 import imageContact from '@/assets/icons/contact.png';
 import imageMail from '@/assets/icons/mail.png';
@@ -755,6 +755,7 @@ export default {
     MetadataHeader,
     BaseUserPicker,
     BaseStatusLabelView,
+    ExpandableLayout,
   },
 };
 </script>

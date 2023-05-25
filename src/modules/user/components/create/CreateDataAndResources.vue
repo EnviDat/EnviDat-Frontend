@@ -35,7 +35,7 @@ export default {
   data: () => ({
     title: 'Research Data & Resources',
     subtitle: 'This dataset is still a "Draft"',
-    instructions: 'This datasets only lives in our browser, please finish the creation of the dataset first. Then it\'s stored on the server. Once the datasets is saved you can upload your research data and other resources.',
+    instructions: 'Please finish all the steps to create your datasets on the server. Once it\'s saved you can upload your research data and other resources in the editing workflow.',
   }),
 };
 </script>

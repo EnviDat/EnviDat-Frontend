@@ -59,9 +59,7 @@
       <v-col class="shrink">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Finish"
-                             material-icon-name="save"
-                             icon-color="black"
-                             color='green'
+                             color='secondary'
                              @clicked="submitEdittedMetadata" />
       </v-col>
     </v-row>
@@ -188,8 +186,8 @@ export default {
     },
   },
   data: () => ({
-    publicationInstructions: `Your are in the dataset creation process. This <strong>dataset is only stored locally on your computer in this browser</strong>. Please fill out all necessary information and save the dataset.
-    Once the dataset is saved, the publication can be done via editing.`,
+    publicationInstructions: `Your are in the dataset creation process. This <strong>dataset is only stored locally on your computer in this browser</strong>. Please fill out all the steps and save the dataset.
+    Once the dataset is saved, the publication can be done in editing workflow.`,
   }),
   components: {
     EditFunding,

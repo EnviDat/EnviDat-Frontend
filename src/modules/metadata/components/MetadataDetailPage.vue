@@ -141,6 +141,7 @@ import { rewind as tRewind } from '@turf/turf';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
+import { USER_GET_ORGANIZATION_IDS } from '@/modules/organizations/store/organizationsMutationsConsts';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -148,7 +149,6 @@ import MetadataCitation from './Metadata/MetadataCitation.vue';
 import MetadataPublications from './Metadata/MetadataPublications.vue';
 import MetadataFunding from './Metadata/MetadataFunding.vue';
 import MetadataAuthors from './Metadata/MetadataAuthors.vue';
-import { USER_GET_ORGANIZATION_IDS } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 // Might want to check https://css-tricks.com/use-cases-fixed-backgrounds-css/
 // for animations between the different parts of the Metadata

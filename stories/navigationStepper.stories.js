@@ -16,6 +16,7 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import { metadataCreationSteps, metadataEditingSteps } from '@/factories/workflowFactory';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
+const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
   title: '5 Navigation / NavigationStepper',
@@ -33,14 +34,29 @@ export const CreationSteps = Template.bind({});
 CreationSteps.args = {
   steps: metadataCreationSteps,
   initialStepTitle: metadataCreationSteps[0].title,
+  datasetTitle,
+  isCreationWorkflow: true,
+  showProgress: true,
+}
+
+export const CreationStepsLoading = Template.bind({});
+CreationStepsLoading.args = {
+  ...CreationSteps.args,
+  loading: true,
 }
 
 export const EditingSteps = Template.bind({});
 EditingSteps.args = {
   steps: metadataEditingSteps,
   initialStepTitle: metadataEditingSteps[0].title,
+  datasetTitle,
 }
 
+export const EditingStepsLoading = Template.bind({});
+EditingStepsLoading.args = {
+  ...EditingSteps.args,
+  loading: true,
+}
 
 export const MobileCreationSteps = Template.bind({});
 MobileCreationSteps.args = { ...CreationSteps.args };

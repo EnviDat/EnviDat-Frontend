@@ -1,16 +1,27 @@
 /* eslint-disable vue/no-unused-vars */
 <template>
   <div id="NavigationStepper"
-       class="pa-0 stepperContentGrid">
+       class="pa-0 stepperContentGrid"
+       :style="`background-color: ${backgroundColor}`" >
 
-    <div class="infoPanel pa-2 pa-sm-4"
-         :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`"
-         :style="`background-color: ${backgroundColor}`" >
+    <div class="infoPanel ma-1 py-2 px-3 "
+         :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`" >
 
       <div class="instructions">
-        <div class="white--text readableText">
-          <v-icon color="white">info</v-icon>
-          {{ isCreationWorkflow ? creationWorkflowInstruction : editingWorkflowInstruction }}
+
+        <div style="display: flex; align-items: center; ">
+          <v-icon color="secondary"
+                  class="pr-2">info</v-icon>
+
+          <ExpandableLayout :title="datasetTitleText"
+                            cardClass="pa-0"
+                            :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
+                            :isFlat="true">
+
+            {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
+
+          </ExpandableLayout>
+
         </div>
 
       </div>
@@ -23,8 +34,8 @@
             <BaseIconButton
                     id="PreviewMetadataButton"
                     material-icon-name="remove_red_eye"
-                    icon-color="white"
-                    color="white"
+                    icon-color="black"
+                    color="black"
                     outlined
                     tooltipText="Preview Dataset"
                     :tooltipBottom="true"
@@ -49,19 +60,17 @@
             />
           </v-col>
 
-          <v-col v-if="isCreationWorkflow" >
+          <v-col v-if="showProgress && isCreationWorkflow" >
             <BaseProgressView :text="creationProgressInfo"
-                              text-color="white"
                               :progress-pct="completedPct"
-                              color="white"
+                              color="secondary"
             />
           </v-col>
 
-          <v-col v-if="!isCreationWorkflow" >
+          <v-col v-if="showProgress && !isCreationWorkflow" >
               <BaseProgressView :text="editingProgressInfo"
-                                text-color="white"
                                 :progress-pct="completedPct"
-                                color="white"
+                                color="secondary"
               />
           </v-col>
 
@@ -70,8 +79,8 @@
             <BaseIconButton
                     id="MetadataEditCloseButton"
                     material-icon-name="close"
-                    icon-color="white"
-                    color="white"
+                    icon-color="black"
+                    color="black"
                     outlined
                     tooltipText="Close workflow"
                     :tooltipBottom="true"
@@ -80,6 +89,7 @@
           </v-col>
 
         </v-row>
+
       </div>
     </div>
 
@@ -87,13 +97,20 @@
           :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
-      <StepperHeader class="py-2 py-sm-4"
+      <StepperHeader class="py-2"
                          :steps="steps"
                          activeColor="accent"
                          inactiveColor="secondary"
                          :stepColor="stepColor"
                          :currentStepIndex="currentStepIndex"
                          @stepClick="catchStepClick" />
+
+      <v-progress-linear v-show="saving"
+                         indeterminate
+                         color="accent"
+                         rounded
+                         height="2"
+      />
 
     </div>
 
@@ -153,6 +170,8 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
+
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 import { countSteps } from '@/factories/userCreationFactory';
 
@@ -168,7 +187,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    saving: {
+      type: Boolean,
+      default: false,
+    },
     showPreviewButton: {
+      type: Boolean,
+      default: false,
+    },
+    showProgress: {
       type: Boolean,
       default: false,
     },
@@ -180,6 +207,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    datasetTitle: {
+      type: String,
+      default: undefined,
+    },
   },
   beforeMount() {
     this.setupSteps();
@@ -188,6 +219,26 @@ export default {
     eventBus.on(EDITMETADATA_NEXT_MAJOR_STEP, this.catchStepClick);
   },
   computed: {
+    datasetTitleText() {
+      let titleText = this.editingTitle;
+      if (this.isCreationWorkflow) {
+        titleText = this.creationTitle;
+      }
+
+      if (!this.datasetTitle) {
+        return titleText;
+      }
+
+      titleText += ' of ';
+
+      if (this.datasetTitle.length >= 85) {
+        titleText += `'${this.datasetTitle.substring(0, 85)} ...'`;
+      } else {
+        titleText += `'${this.datasetTitle}'`;
+      }
+
+      return titleText;
+    },
     backgroundColor() {
       return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
     },
@@ -326,10 +377,14 @@ export default {
   data: () => ({
     currentStep: null,
     currentStepIndex: -1,
-    creationWorkflowInstruction: `You are creating a new dataset.
-    There is a minimum of information you have to fill out until you can save a dataset on the server.
-    `,
-    editingWorkflowInstruction: `You are editing an existing dataset.
+    creationTitle: 'Dataset Creation',
+    creationShortInstructions: 'This dataset only exists on your computer, fill out all the steps to save it on the server. Click here to read more.',
+    creationInstructions: `You are creating a new dataset, all the information you enter is saved in your browser on this computer until you save it on the server.
+    To save it you have to fill all the steps of the workflow. Once that's done, click on the disk icon on the top right to store your dataset on server.
+    You will be able to editing everything all the information until you publish it.`,
+    editingTitle: 'Dataset Editing',
+    editingShortInstructions: 'Changes are automatically saved, please fill out all the steps to provide the most value for your users. Click here to read more.',
+    editingInstructions: `You are editing an existing dataset.
     For editing most of the infomation will be auto-saved. Once you have changed information just click away to save it.`,
   }),
   components: {
@@ -337,6 +392,7 @@ export default {
     BaseIconButton,
     MetadataCardPlaceholder,
     BaseProgressView,
+    ExpandableLayout,
   },
 };
 </script>
@@ -355,6 +411,11 @@ export default {
   height: 100%;
 }
 
+.infoPanel {
+  background-color: white;
+  border-radius: 5px;
+}
+
 .infoPanelGrid {
   display: grid;
   grid-template-rows: 1fr auto;
@@ -366,11 +427,11 @@ export default {
 }
 
 .infoPanelGrid-md {
-    display: grid;
-    grid-template-columns: 5fr auto;
-    gap: 50px;
-    grid-template-areas:
-    'instructions interaction';
+  display: grid;
+  grid-template-columns: 5fr auto;
+  gap: 50px;
+  grid-template-areas:
+  'instructions interaction';
 }
 
 .instructions {

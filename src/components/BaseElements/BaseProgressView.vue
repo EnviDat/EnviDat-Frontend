@@ -7,7 +7,7 @@
 
     <v-col class="shrink pl-2">
       <v-progress-circular :value="progressPct"
-                           :size="35"
+                           :size="38"
                            :rotate="-90"
                            :color="color"
       >
