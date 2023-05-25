@@ -330,6 +330,7 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
     ...bData,
     name,
     ...bDefaults,
+    private: true, // necessary otherwise the dataset would be public directly
   };
 }
 
