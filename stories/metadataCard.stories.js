@@ -12,7 +12,7 @@
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import globalMethods from '@/factories/globalMethods';
 import fileIcon from '../src/assets/icons/file.png';
@@ -21,8 +21,6 @@ import unlockedIcon from '../src/assets/icons/lockOpen.png';
 import pinIcon from '../src/assets/icons/marker.png';
 import multiPinIcon from '../src/assets/icons/markerMulti.png';
 import polygonIcon from '../src/assets/icons/polygons.png';
-
-
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
@@ -78,6 +76,60 @@ export default {
   decorators: [],
   parameters: {},
 };
+
+const Template = (args, { argTypes }) => ({
+  components: { MetadataCard },
+  props: Object.keys(argTypes),
+  template: '<MetadataCard v-bind="$props" />',
+});
+
+const firstDataset = metadataCards[0];
+
+export const TitleOnly = Template.bind({});
+TitleOnly.args = {
+  id: firstDataset.id,
+  title: firstDataset.title,
+  fileIconString: fileIcon,
+  categoryColor: firstDataset.categoryColor,
+}
+
+export const NormalCard = Template.bind({});
+NormalCard.args = {
+  ...TitleOnly.args,
+  name: firstDataset.name,
+  subtitle: firstDataset.notes,
+  titleImg: firstDataset.titleImg,
+}
+
+export const CompactCard = Template.bind({});
+CompactCard.args = {
+  ...NormalCard.args,
+  compactLayout: true,
+}
+
+export const FlatCard = Template.bind({});
+FlatCard.args = {
+  ...NormalCard.args,
+  flatLayout: true,
+}
+
+export const CardWithState = Template.bind({});
+CardWithState.args = {
+  ...NormalCard.args,
+  state: getMetadataVisibilityState(firstDataset),
+}
+
+export const CardWithOrganization = Template.bind({});
+CardWithOrganization.args = {
+  ...CardWithState.args,
+  organization: firstDataset.organization?.name,
+}
+
+export const CardWithTags = Template.bind({});
+CardWithTags.args = {
+  ...CardWithState.args,
+  tags: firstDataset.tags,
+}
 
 export const MetadataCardCollectionView = () => ({
     components: { MetadataCard },

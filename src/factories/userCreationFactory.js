@@ -4,6 +4,8 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_DATA_GEO,
+  EDITMETADATA_KEYWORDS,
+  EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
@@ -34,6 +36,7 @@ import {
   getStepKeyToDataKey,
 } from '@/factories/workflowFactory';
 import { getYear } from 'date-fns';
+import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -637,3 +640,14 @@ export function canLocalDatasetBeStoredInBackend(steps) {
   return allSteps === onlyCompleted;
 }
 
+export function getPreviewDatasetFromLocalStorage() {
+  const header = readDataFromLocalStorage(EDITMETADATA_MAIN_HEADER);
+  const desc = readDataFromLocalStorage(EDITMETADATA_MAIN_DESCRIPTION);
+  const keywords = readDataFromLocalStorage(EDITMETADATA_KEYWORDS);
+
+  return {
+    ...header,
+    ...desc,
+    ...keywords,
+  }
+}

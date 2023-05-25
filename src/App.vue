@@ -103,8 +103,10 @@
 
         <ConfirmTextCard :title="dialogTitle"
                          :text="dialogMessage"
-                         confirmText="Ok"
+                         :confirmText="dialogConfirmText"
                          :confirmClick="dialogCallback"
+                         :cancelText="dialogCancelText"
+                         :cancelClick="dialogCancelCallback"
         />
 
       </v-dialog>
@@ -187,7 +189,6 @@ import {
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
-import { GET_ORGANIZATIONS, ORGANIZATIONS_NAMESPACE } from '@/modules/organizations/store/organizationsMutationsConsts';
 
 const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
 const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
@@ -425,7 +426,7 @@ export default {
       this.handleRedirectCallBack(true);
     },
     // eslint-disable-next-line default-param-last
-    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback }) {
+    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback, cancelCallback, confirmText = 'Ok', cancelText = 'Cancel' }) {
       this.dialogTitle = title;
 
       if (!message) {
@@ -434,12 +435,26 @@ export default {
         this.dialogMessage = message;
       }
 
-      this.dialogCallback = () => {
-        if (callback) {
-          callback();
+      if (cancelCallback) {
+        this.dialogCancelCallback = () => {
+          cancelCallback();
+          this.showInfoDialog = false;
         }
-        this.showInfoDialog = false;
+      } else {
+        this.dialogCancelCallback = undefined;
       }
+
+      if (callback) {
+        this.dialogCallback = () => {
+          callback();
+          this.showInfoDialog = false;
+        }
+      } else {
+        this.dialogCallback = undefined;
+      }
+
+      this.dialogConfirmText = confirmText;
+      this.dialogCancelText = cancelText;
 
       this.showInfoDialog = true;
     },
@@ -694,8 +709,11 @@ export default {
     showInfoDialog: false,
     showModal: false,
     dialogTitle: 'Redirect to Legacy Website!',
+    dialogConfirmText: 'Ok',
+    dialogCancelText: 'Cancel',
     dialogMessage: '',
     dialogCallback: () => {},
+    dialogCancelCallback: () => {},
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,

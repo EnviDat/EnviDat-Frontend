@@ -18,13 +18,15 @@
 
       <IntroductionCard :userName="user.fullName"
                         :introText="userDashboardConfig.introText"
-                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
-                        :existingClickCallback="existingClickCallback"
-                        :editingClickCallback="editingClickCallback"
-                        :editingDatasetName="lastEditedDataset"
                         :feedbackText="userDashboardConfig.feedbackText"
                         :oldDashboardUrl="oldDashboardUrl"
-                        />
+                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
+                        :editingClickCallback="editingClickCallback"
+                        :editingDatasetName="lastEditedDataset"
+                        :currentLocalDataset="currentLocalDataset"
+                        @localCardClicked="catchLocalCardClick"
+                        @clearButtonClicked="catchClearLocalStorage"
+      />
 
       <UserOrganizationInfo :height="userOrgaInfoCardHeight"
                             :width="userOrgaInfoCardWidth"
@@ -286,7 +288,7 @@ import {
   USER_DASHBOARD_PAGENAME,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
-  METADATAEDIT_PAGENAME, METADATA_CREATION_PATH,
+  METADATAEDIT_PAGENAME, METADATA_CREATION_PATH, METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -301,7 +303,7 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -315,7 +317,9 @@ import {
   EDIT_USER_PROFILE_EVENT,
   eventBus,
   SELECT_EDITING_DATASET,
-  SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
+  SHOW_DIALOG,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
+  USER_PROFILE,
 } from '@/factories/eventBus';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
@@ -334,7 +338,10 @@ import {
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
+import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
+import fileIcon from '@/assets/icons/file.png';
+import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
   name: 'DashboardPage',
@@ -359,7 +366,7 @@ export default {
 
     if (this.user) {
       this.fetchUserDatasets();
-      this.fetchCollaboratorDatasets()
+      this.fetchCollaboratorDatasets();
       this.fetchUserOrganisationData();
     }
   },
@@ -585,7 +592,7 @@ export default {
     noDatasetsInfos() {
       return {
         title: 'No Datasets',
-        description: "It seems you don't have any datasets.",
+        description: 'It seems you don\'t have any datasets.',
         actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
@@ -599,6 +606,30 @@ export default {
     },
     userLastName() {
       return this.user?.fullName?.split(' ')[1] || '';
+    },
+    currentLocalDataset() {
+      const localStorageInfos = getPreviewDatasetFromLocalStorage();
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties,no-unused-expressions
+      this.localDatasetUpdateCount;
+
+      const properties = Object.keys(localStorageInfos);
+
+      if (properties.length <= 0) {
+        return undefined;
+      }
+
+      const localDataset = {
+        title: localStorageInfos[METADATA_TITLE_PROPERTY] ? localStorageInfos[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
+        subTitle: localStorageInfos.description,
+        tags: localStorageInfos.keywords,
+        fileIconString: fileIcon,
+        flatLayout: true,
+      };
+
+      enhanceMetadatas([localDataset], undefined, this.categoryCards);
+
+      return localDataset;
     },
   },
   methods: {
@@ -755,10 +786,32 @@ export default {
         };
 
         this.$store.dispatch(
-            `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
-            payload,
+          `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
+          payload,
         );
       }
+    },
+    catchLocalCardClick() {
+      this.$router.push({
+        name: METADATA_CREATION_PAGENAME,
+      });
+    },
+    catchClearLocalStorage() {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Clear your dataset in creation?',
+        message: 'This dataset is not stored on the server yet! Are you sure you want to delete it?',
+        callback: () => {},
+        cancelCallback: () => {
+          localStorage.clear();
+
+          // increase this number to force the computed property to recalulate because the
+          // localstorage is cleared. Localstorage isn't reactive so the computed prop
+          // won't get it out of the box
+          this.localDatasetUpdateCount++;
+        },
+        confirmText: 'Keep Dataset',
+        cancelText: 'Delete Dataset',
+      });
     },
   },
   data: () => ({
@@ -793,12 +846,12 @@ export default {
     },
     noCollaboratorDatasetsInfos: {
       title: 'No Collaborator Datasets',
-      description: "It seems you don't have datasets where you are added as a collaborator.",
+      description: 'It seems you don\'t have datasets where you are added as a collaborator.',
       image: UserNotFound2,
     },
     noOrganizationsInfos: {
       title: 'No Organizations Found',
-      description: "It seems that your aren't assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.",
+      description: 'It seems that your aren\'t assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.',
       image: UserNotFound1,
     },
     userListDefaultControls: [
@@ -810,6 +863,7 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     defaultPublicationState: 'draft',
+    localDatasetUpdateCount: 0,
   }),
   components: {
     MetadataList,
