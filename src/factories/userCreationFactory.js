@@ -215,7 +215,7 @@ function writeStepDataInLocalStorage(stepKey, data) {
   }
 
   try {
-    const bData = mapFrontendToBackend(stepKey, data);
+    const bData = mapFrontendToBackend(stepKey, data, false);
     const stringData = JSON.stringify(bData);
     localStorage.setItem(stepKey, stringData);
   } catch (e) {

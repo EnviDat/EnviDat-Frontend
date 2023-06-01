@@ -896,9 +896,9 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
   commitEditingData(commit, stepKey, enhanceHeader);
 }
 
-function mapDatesForBackend(datesArray) {
+function mapDatesForBackend(datesArray, initializeDefaults = true) {
 
-  if (!Array.isArray(datesArray) || datesArray.length <= 0) {
+  if (!Array.isArray(datesArray) || datesArray.length <= 0 && initializeDefaults) {
     const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, {
       [DATE_PROPERTY_DATE_TYPE]: DATE_PROPERTY_CREATED_TYPE,
       [DATE_PROPERTY_START_DATE]: '',
@@ -948,7 +948,7 @@ export function mapBackendToFrontend(stepKey, backendData) {
   return getFrontendJSONForStep(stepKey, backendJSON);
 }
 
-export function mapFrontendToBackend(stepKey, frontendData) {
+export function mapFrontendToBackend(stepKey, frontendData, initializeDefaults = true) {
 
   // create a local copy to avoid mutation of vuex store objects / properties
   const localData = { ...frontendData };
@@ -958,7 +958,7 @@ export function mapFrontendToBackend(stepKey, frontendData) {
   } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
     localData.authors = cleanListForBackend(localData.authors, EDITMETADATA_AUTHOR);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
-    localData.dates = mapDatesForBackend(localData.dates);
+    localData.dates = mapDatesForBackend(localData.dates, initializeDefaults);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
     localData.customFields = mapCustomFields(localData.customFields);
   }
