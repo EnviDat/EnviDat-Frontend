@@ -452,7 +452,7 @@ export default {
         const { categoryCards } = this.$store.getters;
 
         // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
-        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards, this.authorsMap);
+        populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards);
       }
     },
   },

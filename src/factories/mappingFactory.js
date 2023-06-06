@@ -697,7 +697,7 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingAuthors(commit, snakeCaseJSON, authorsMap) {
+function populateEditingAuthors(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
@@ -715,26 +715,7 @@ function populateEditingAuthors(commit, snakeCaseJSON, authorsMap) {
     authors.push(author);
   })
 
-  let enhanceAuthors = []
-
-  if (authorsMap && Object.keys(authorsMap).length > 0) {
-
-    for (let i = 0; i < authors.length; i++) {
-      const auth = authors[i];
-      const existingAuthor = authorsMap[auth.email];
-      let enhanced = auth;
-
-      if (existingAuthor) {
-        enhanced = mergeEditingAuthor(auth, existingAuthor);
-      }
-
-      enhanceAuthors.push(enhanced);
-    }
-  } else {
-    enhanceAuthors = authors;
-  }
-
-  commitEditingData(commit, stepKey, { authors: enhanceAuthors });
+  commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
 
   return dataObject;
@@ -866,13 +847,13 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards, authorsMap) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
   const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
 
-  const { authors } = populateEditingAuthors(commit, snakeCaseJSON, authorsMap);
+  const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
 
   const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 

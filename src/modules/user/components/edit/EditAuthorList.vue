@@ -52,12 +52,12 @@ import EditAddExistingAuthor from '@/modules/user/components/EditAddExistingAuth
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
 
 import {
+  enhanceAuthorsFromAuthorMap,
   getAuthorName,
 } from '@/factories/authorFactory';
 
 import {
   CANCEL_EDITING_AUTHOR,
-  EDITMETADATA_AUTHOR_LIST,
   eventBus,
   SELECT_EDITING_AUTHOR,
 } from '@/factories/eventBus';
@@ -117,6 +117,17 @@ export default {
     },
   },
   computed: {
+    authorsMapWrap() {
+      if (this.authorsMap) {
+        return this.authorsMap;
+      }
+
+      if (this.$store) {
+        return this.$store.getters[`${METADATA_NAMESPACE}/authorsMap`];
+      }
+
+      return undefined;
+    },
     existingAuthorsWrap() {
       if (this.existingAuthors) {
         return this.existingAuthors;
@@ -129,15 +140,18 @@ export default {
       return undefined;
     },
     authorsWrap() {
-      if (this.authors) {
-        return this.authors;
+      let authors = this.authors
+
+      if (!authors && this.$store) {
+        authors = this.$store.getters[`${USER_NAMESPACE}/authors`] || [];
       }
 
-      if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_AUTHOR_LIST).authors;
+      if (!authors) {
+        return undefined;
       }
 
-      return undefined;
+      const authorsMap = this.authorsMapWrap;
+      return enhanceAuthorsFromAuthorMap(authors, authorsMap)
     },
     noDataCreditAuthorsWrap() {
       const authors = this.existingAuthorsWrap ? [...this.existingAuthorsWrap] : [];

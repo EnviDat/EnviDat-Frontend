@@ -118,8 +118,7 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
+        populateEditingComponents(commit, response.data.result, categoryCards);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
