@@ -322,7 +322,7 @@ export default {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
       cardInstructions:
         'Choose the location(s) where the research data was collected.',
-      defaultInstructions: 'Your are using the default location (Switzerland). Adjust the geo information to represents your research data more accurately.',
+      defaultInstructions: 'Your are using the default location (Switzerland). Consider adjusting the geo information to represents your research data as accurate as possible.',
     },
     validationErrors: {
       geometries: null,
