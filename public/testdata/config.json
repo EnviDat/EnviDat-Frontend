@@ -115,8 +115,8 @@
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,
-    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
-    "feedbackText": "<br />Please <a href='mailto:envidat@wsl.ch'>let us know</a> if you have improvements or issues while using Envidat.<br/>",
+    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). ",
+    "feedbackText": " Please <a href='mailto:envidat@wsl.ch'>let us know</a> if you have improvements or issues while using Envidat.",
     "userEditingEnabled": true,
     "useTokenSignin": true,
     "organizationRolesText": {
