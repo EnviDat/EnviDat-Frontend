@@ -64,7 +64,7 @@ import {
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_AUTHOR_LIST,
   SHOW_DIALOG,
-  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_MAIN_HEADER, EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import {
@@ -102,7 +102,7 @@ import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
-// import NotificationCard from '@/components/Cards/NotificationCard.vue';
+
 import { errorMessage } from '@/factories/notificationFactory';
 import {
   canLocalDatasetBeStoredInBackend,
@@ -268,14 +268,19 @@ export default {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
     },
     catchBackClicked() {
-      const path = this.lastEditedBackPath || USER_DASHBOARD_PATH;
+      const path = USER_DASHBOARD_PATH;
       this.$router.push({ path });
     },
     loadDatasetInEditingWorkflow(metadataId) {
+
+      const resourceStep = getStepByName(EDITMETADATA_DATA_RESOURCES, this.creationSteps);
+      const title = resourceStep?.title || undefined;
+
       this.$router.push({
         name: METADATAEDIT_PAGENAME,
         params: {
           metadataid: metadataId,
+          step: title,
         },
       });
     },
@@ -292,12 +297,18 @@ export default {
       if (this.newMetadatasetName) {
         eventBus.emit(SHOW_DIALOG, {
           title: 'Dataset Saved!',
-          message: `Your datasets ${ this.newMetadatasetName } has been saved successfully.
-          We load up your dataset in the editing workflow, there you can upload resources and add aditional metadata.`,
+          message: `Your datasets ${ this.newMetadatasetName } has been saved successfully and it's now part of your dashboard! <br /> <br />
+          Would you like to continue editing the dataset to upload resources and add additional metadata?`,
           callback: () => {
-            this.loadDatasetInEditingWorkflow(metadataId);
             localStorage.clear();
+            this.loadDatasetInEditingWorkflow(metadataId);
           },
+          cancelCallback: () => {
+            localStorage.clear();
+            this.catchBackClicked();
+          },
+          confirmText: 'Upload Resources',
+          cancelText: 'Go to Dashboard',
         });
       } else {
         this.showSnackMessage({

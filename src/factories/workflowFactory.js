@@ -157,6 +157,19 @@ const emptyMetadataInEditing = {
   },
 };
 
+/**
+ * @typedef {Object} step
+ * @property {string} title - step title to show in the workflow
+ * @property {boolean} completed - shows the user if all the input is valid in this step
+ * @property {string} key - the step key to identify the step and it's data keys / structure
+ * @property {object} genericProps - the data structure for this specific step or the combination of multiple data structures
+ * @property {step[] | undefined} detailSteps - the substeps for this major step
+ */
+
+/**
+ * detail steps for the "main" major step
+ * @type {step[]}
+ */
 const mainDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_HEADER,
@@ -189,6 +202,10 @@ const mainDetailSteps = [
   },
 ];
 
+/**
+ * detail steps for the "data and resources" major step only for the creation workflow
+ * @type {step[]}
+ */
 const creationDataDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_DATA,
@@ -213,6 +230,11 @@ const creationDataDetailSteps = [
   },
 ];
 
+/**
+ * detail steps for the "data and resources" major step only for the editing workflow
+ * inclues resource upload components
+ * @type {step[]}
+ */
 const editingDataDetailSteps = [
   {
     title: EDIT_STEP_TITLE_SUB_DATA,
@@ -237,6 +259,10 @@ const editingDataDetailSteps = [
   },
 ];
 
+/**
+ * The major steps for the creation workflow
+ * @type {step[]}
+ */
 export const metadataCreationSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_METADATA,
@@ -267,6 +293,10 @@ export const metadataCreationSteps = [
   },
 ];
 
+/**
+ * The major steps for the editing workflow
+ * @type {step[]}
+ */
 export const metadataEditingSteps = [
   {
     title: EDIT_STEP_TITLE_MAIN_METADATA,
@@ -359,8 +389,8 @@ export function initializeSteps(steps) {
 /**
  *
  * @param stepKey {string}
- * @param steps {array<object>}
- * @returns {object | null}
+ * @param steps {step[]}
+ * @returns {step | null}
  */
 export function getStepByName(stepKey, steps) {
   if (!stepKey || !steps) {
