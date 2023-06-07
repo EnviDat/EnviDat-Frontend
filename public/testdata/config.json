@@ -105,7 +105,7 @@
   "userEditMetadataConfig": {
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
-    "datasetCreationActive": false,
+    "datasetCreationActive": true,
     "resourceEditingActive": true,
     "resourceUploadActive": true,
     "editingRestrictingActive": false,
