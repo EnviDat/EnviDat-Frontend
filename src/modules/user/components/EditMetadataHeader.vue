@@ -204,6 +204,7 @@
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
                           :value="metadataUrlField"
+                          @click.stop
                           @input="changeProperty(METADATA_URL_PROPERTY, $event)"
                           @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
             />
