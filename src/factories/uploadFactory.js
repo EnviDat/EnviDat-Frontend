@@ -12,13 +12,9 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import Uppy, { debugLogger } from '@uppy/core';
+import Uppy from '@uppy/core';
 import axios from 'axios';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
-/*
-import GoldenRetriever from '@uppy/golden-retriever';
-import Tus from '@uppy/tus';
-*/
 
 import {
   METADATA_CREATION_RESOURCE,
@@ -426,7 +422,6 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     id: uppyId,
     autoProceed,
     debug,
-    logger: debug ? debugLogger : undefined,
     restrictions,
     height,
   });
