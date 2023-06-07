@@ -4,6 +4,12 @@
                 fluid
                 id="DashboardPage">
 
+    <v-progress-linear v-show="loading"
+                       indeterminate
+                       style="position: relative; left: 0; bottom: 0;"
+                       class="mb-2"
+                       height="2"
+                       color="accent" />
     <div v-if="!user"
           class="notSignedinGrid">
 
@@ -420,7 +426,7 @@ export default {
       return this.userEditMetadataConfig?.datasetCreationActive || false;
     },
     loading() {
-      return this.userLoading;
+      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.userOrganizationLoading;
     },
     noOrgaDatasetsError() {
       if (!this.userOrganizationError) {
