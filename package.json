@@ -31,10 +31,7 @@
     "@uppy/core": "^3.1.1",
     "@uppy/dashboard": "^3.3.1",
     "@uppy/drag-drop": "^3.0.1",
-    "@uppy/golden-retriever": "^3.0.2",
-    "@uppy/progress-bar": "^3.0.1",
     "@uppy/status-bar": "^3.0.1",
-    "@uppy/tus": "^3.0.5",
     "@uppy/vue": "^1.0.1",
     "axios": "^0.21.4",
     "crypto-js": "^4.1.1",
@@ -59,7 +56,6 @@
     "vue-router": "^3.4.9",
     "vuetify": "^2.6.12",
     "vuex": "^3.6.0",
-    "xml2js": "^0.4.23",
     "yup": "^0.32.11"
   },
   "devDependencies": {
@@ -100,7 +96,6 @@
     "unplugin-fonts": "^1.0.3",
     "unplugin-vue-components": "^0.22.9",
     "vite": "^3.2.6",
-    "vite-plugin-cesium": "^1.2.19",
     "vite-plugin-eslint": "^1.7.0",
     "vite-plugin-static-copy": "^0.14.0",
     "vitest": "^0.24.4",
