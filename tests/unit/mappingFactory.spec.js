@@ -29,6 +29,11 @@ import {
 
 import categoryCards from '@/store/categoryCards';
 import * as mappingTestData from '@/../public/testdata/mappingTestData.json';
+import {
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+} from '@/factories/metadataConsts';
 
 describe('getFrontendJSON', () => {
 
@@ -138,18 +143,13 @@ describe('getFrontendJSON', () => {
     expect(array).toBeInstanceOf(Array);
 
     for (let i = 0; i < array.length; i++) {
-      const date = array[i];
       const backendDate = snakeCaseJSON.date[i];
 
       const mappedEntry = getFrontendJSONForStep(EDITMETADATA_DATA_INFO_DATES, backendDate);
 
-      expect(mappedEntry.dateStart).toBe(backendDate.date);
-      expect(mappedEntry.dateType).toBe(backendDate.dateType);
-      expect(mappedEntry.dateEnd).toBe(backendDate.endDate);
-
-      expect(date.date).toBe(backendDate.date);
-      expect(date.dateType).toBe(backendDate.date_type);
-      expect(date.endDate).toBe(backendDate.end_date);
+      expect(mappedEntry[DATE_PROPERTY_DATE_TYPE]).toBe(backendDate.date_type);
+      expect(mappedEntry[DATE_PROPERTY_START_DATE]).toBe(backendDate.date);
+      expect(mappedEntry[DATE_PROPERTY_END_DATE]).toBe(backendDate.end_date);
     }
 
   });
@@ -632,7 +632,6 @@ describe('populateEditingComponents', () => {
     const keys = Object.keys(payload.data);
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      const strValue = payload.data[key].toString();
       expect(key.includes('_')).toBeFalsy();
     }
   }
