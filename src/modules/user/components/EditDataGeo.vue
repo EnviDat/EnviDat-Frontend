@@ -58,6 +58,7 @@
         </v-col>
       </v-row>
 
+<!--
         <v-row >
           <v-col >
             <ExpandableTextLayout title="Text Preview of Geospatial Information"
@@ -65,6 +66,7 @@
                                   />
           </v-col>
         </v-row>
+-->
 
     </v-container>
   </v-card>
@@ -85,6 +87,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+/*
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
+*/
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import {
   EDITMETADATA_DATA_GEO,
@@ -105,7 +110,9 @@ import {
 
 import { defaultSwissLocation } from '@/factories/workflowFactory';
 
+/*
 import geojsonhint from '@mapbox/geojsonhint';
+*/
 
 export default {
   name: 'EditDataGeo',
@@ -209,6 +216,7 @@ export default {
     geomsForMapString() {
       return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
     },
+/*
     geoJSONHintPreview() {
       const geomString = this.geomsForMapString;
 
@@ -222,6 +230,7 @@ export default {
 
       return geomString;
     },
+*/
   },
   watch: {
     location() {
@@ -316,6 +325,9 @@ export default {
   components: {
     MetadataGeo,
     BaseStatusLabelView,
+/*
+    ExpandableTextLayout,
+*/
   },
   data: () => ({
     labels: {
