@@ -1,4 +1,3 @@
-// import { addDecorator } from '@storybook/vue';
 // noinspection ES6UnusedImports
 
 import vuetify from './vuetify_storybook';
