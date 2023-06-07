@@ -422,7 +422,7 @@ export default {
       });
 
       const previewEntry = {
-        metadataTitle: this.metadataTitleField || this.labels.placeholderHeaderTitle,
+        [METADATA_TITLE_PROPERTY]: this.metadataTitleField || this.labels.placeholderHeaderTitle,
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: fullName,
@@ -485,7 +485,8 @@ export default {
       this.previews.contactGivenName = null;
       this.previews.contactSurname = null;
       this.previews.contactEmail = null;
-      this.previews.metadataTitle = null;
+      this.previews[METADATA_TITLE_PROPERTY] = null;
+      this.previews[METADATA_URL_PROPERTY] = null;
     },
     // Validate contact author properties by calling isFieldValid()
     // Returns true if all properties are valid, else returns false
