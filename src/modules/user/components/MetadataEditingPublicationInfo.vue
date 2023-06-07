@@ -81,8 +81,8 @@
     <v-row justify="end" align="end">
       <v-col class="shrink">
         <!-- prettier-ignore -->
-        <BaseRectangleButton buttonText="Finish"
-                             color='green'
+        <BaseRectangleButton buttonText="Close"
+                             color='highlight'
                              @clicked="submitEdittedMetadata" />
       </v-col>
     </v-row>
