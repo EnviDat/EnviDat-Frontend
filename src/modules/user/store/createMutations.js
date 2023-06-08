@@ -27,7 +27,6 @@ import {
 import {
   cleanResourceForFrontend,
   getFrontendJSONForStep,
-  getFrontendJSONNewDataset,
 } from '@/factories/mappingFactory';
 
 import {

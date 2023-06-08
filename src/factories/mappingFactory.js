@@ -1074,13 +1074,6 @@ export function enhanceUserObject(user) {
   return cleanUser;
 }
 
-
-export function getFrontendJSONNewDataset(data) {
-  // const rules = getNewCreationDatasetMappingRules();
-
-  return mapBackendToFrontend();
-}
-
 export function getMetadataUrlFromTitle(title) {
   let urlName = title?.toLowerCase().trim() || '';
   urlName = urlName.replaceAll(' ', '-');
