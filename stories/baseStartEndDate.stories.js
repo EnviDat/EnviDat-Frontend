@@ -14,8 +14,7 @@ import BaseStartEndDate from '@/components/BaseElements/BaseStartEndDate.vue';
 
 export default {
   title: '1 Base Elements / Start End Date picker',
-  decorators: [],
-  parameters: {},
+  component: BaseStartEndDate,
 };
 
 

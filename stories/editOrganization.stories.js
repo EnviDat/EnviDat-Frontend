@@ -14,16 +14,12 @@ import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 import testOrganizations from './js/organizations';
-import { envidatViewportParameters } from './js/envidatViewports';
 
 const editingReadOnlyObj = getReadOnlyFieldsObject('published');
 
 export default {
   title: '9 Editing Metadata / Edit Organization',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: EditOrganization,
 };
 
 const Template = (args, { argTypes }) => ({

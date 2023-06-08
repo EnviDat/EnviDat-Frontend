@@ -10,18 +10,10 @@
  */
 
 import StepButton from '@/components/Navigation/StepButton.vue';
-import {
-  envidatViewportParameters,
-  mobileViewportParams,
-} from './js/envidatViewports';
-
 
 export default {
   title: '1 Base Elements / Step button',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: StepButton,
 };
 
 const catchStepClick = (title) => {

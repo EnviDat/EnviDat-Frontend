@@ -30,8 +30,7 @@ const user2 =  authorCollection[keys[2]];
 
 export default {
   title: '9 Editing Metadata / User Profile',
-  decorators: [],
-  parameters: {},
+  component: EditUserProfile,
 };
 
 export const EditUserViews = () => ({

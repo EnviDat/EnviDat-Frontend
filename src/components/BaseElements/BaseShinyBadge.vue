@@ -10,6 +10,16 @@
 </template>
 
 <script>
+/**
+ * BaseShinyBadge.vue shows a fancy badge / tag with a shiny star.
+ * The shine can be toggled.
+ *
+ * @summary badge / tag with a little star
+ * @author Dominik Haas-Artho
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 export default {
   name: 'BaseShinyBadge',
   props: {
