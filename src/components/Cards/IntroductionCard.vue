@@ -26,34 +26,30 @@
 
           <v-row v-if="currentLocalDataset"
                  no-gutters>
-            <v-col cols="12"
+            <v-col cols="7"
                     class="py-2">
               Continue creating your dataset:
             </v-col>
 
+            <v-col cols="5"
+                   class="py-2">
+              Clear your local dataset in creation:
+            </v-col>
+
             <v-col cols="7"
-                  class="px-1">
+                  class="pl-1 pr-4">
               <MetadataCardLocal v-bind="currentLocalDataset"
                                  @clickedEvent="$emit('localCardClicked')"
               />
             </v-col>
 
-            <v-col cols="5"
-                   class="pl-4 pr-1">
-              <v-row >
-                <v-col align-self="center">
-                  Clear your local dataset in creation
-                </v-col>
-
-                <v-col class="shrink">
-                  <base-icon-button material-icon-name="clear"
-                                    :fill-color="$vuetify.theme.themes.light.error"
-                                    icon-color="black"
-                                    tooltip-text="Delete your local dataset"
-                                    @clicked="$emit('clearButtonClicked', $event)"
-                  />
-                </v-col>
-              </v-row>
+            <v-col cols="5" style="display: inline-flex; justify-content: center;">
+              <base-icon-button material-icon-name="clear"
+                                :fill-color="$vuetify.theme.themes.light.error"
+                                icon-color="black"
+                                tooltip-text="Delete your local dataset"
+                                @clicked="$emit('clearButtonClicked', $event)"
+              />
             </v-col>
 
           </v-row>
