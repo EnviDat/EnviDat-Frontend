@@ -64,7 +64,8 @@ import {
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_AUTHOR_LIST,
   SHOW_DIALOG,
-  EDITMETADATA_MAIN_HEADER, EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_MAIN_HEADER,
+  EDITMETADATA_DATA,
 } from '@/factories/eventBus';
 
 import {
@@ -274,7 +275,7 @@ export default {
     },
     loadDatasetInEditingWorkflow(metadataId) {
 
-      const resourceStep = getStepByName(EDITMETADATA_DATA_RESOURCES, this.creationSteps);
+      const resourceStep = getStepByName(EDITMETADATA_DATA, this.creationSteps);
       const title = resourceStep?.title || undefined;
 
       this.$router.push({
