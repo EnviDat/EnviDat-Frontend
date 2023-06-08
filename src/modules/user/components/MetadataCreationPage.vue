@@ -198,6 +198,7 @@ export default {
     ]),
     ...mapState(ORGANIZATIONS_NAMESPACE,[
       'userOrganizationIds',
+      'userOrganizations',
     ]),
     ...mapState(USER_NAMESPACE, [
       'newMetadatasetName',
@@ -243,17 +244,17 @@ export default {
 
     },
     async loadUserOrganizations() {
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
+      if (this.userOrganizations?.length < 0) {
+        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user?.id);
 
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      }
 
-      this.updateStepsOrganizations();
+      this.updateStepsOrganizations(this.userOrganizations);
     },
-    updateStepsOrganizations() {
-      const userOrganizations = this.$store.state.organizations.userOrganizations
-
-      // Get any already information from the local storage
+    updateStepsOrganizations(userOrganizations) {
+      // Get any already existing information from the local storage
       // to make sure not to overwrite anything!
       const existingOrganizationData = readDataFromLocalStorage(EDITMETADATA_ORGANIZATION);
 
@@ -262,7 +263,7 @@ export default {
         userOrganizations,
       }
 
-      storeCreationStepsData(EDITMETADATA_ORGANIZATION, data, this.creationSteps)
+      storeCreationStepsData(EDITMETADATA_ORGANIZATION, data, this.creationSteps, true, false)
     },
     updateLastEditingDataset(name, path, backPath) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_LAST_DATASET}`, { name, path, backPath });
