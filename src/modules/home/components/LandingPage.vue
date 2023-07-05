@@ -631,7 +631,7 @@ export default {
   },
   data: () => ({
     blogModuleLoaded: false,
-    PageBGImage: 'app_b_landingpage',
+    PageBGImage: 'app_b_landingpage2',
     MobileBGImage: 'app_b_browsepage',
     buttonText: 'SEARCH',
     defaultWelcomeInfo: {
