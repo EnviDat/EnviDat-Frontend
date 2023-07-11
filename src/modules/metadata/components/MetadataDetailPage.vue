@@ -88,7 +88,8 @@ import { mapGetters, mapState } from 'vuex';
 import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 import {
   ACTION_USER_SHOW,
-  FETCH_USER_DATA, USER_GET_DATASETS,
+  FETCH_USER_DATA,
+  USER_GET_DATASETS,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -334,7 +335,7 @@ export default {
     showEditButton() {
       const userId = this.user?.id;
 
-      if (!userId || this.userDatasets?.length <= 0) {
+      if (!userId || !this.userDatasets || this.userDatasets.length <= 0) {
         return false;
       }
 
@@ -752,15 +753,15 @@ export default {
       }
 
       this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-          {
-            action: ACTION_USER_SHOW,
-            body: {
-              id: userId,
-              include_datasets: true,
-            },
-            commit: true,
-            mutation: USER_GET_DATASETS,
-          });
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: userId,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
     },
   },
   watch: {
