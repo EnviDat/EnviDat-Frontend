@@ -237,6 +237,7 @@ export default {
         userName: this.userFullName,
         nameInitials: this.initials,
         email: this.emailField,
+        emailHash: this.emailHash,
         datasetCount: this.datasetCount,
       };
     },

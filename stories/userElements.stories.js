@@ -217,25 +217,25 @@ export const UserAvatarViews = () => ({
     <v-row>
     <v-col>
       <UserAvatar :size="32"
-                  nameInitials="II"
+                  nameInitials="DH"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar
-          nameInitials="II"
+          nameInitials="DH"
           emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar :size="64"
-                  nameInitials="II"
+                  nameInitials="DH"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
 
     <v-col>
       <UserAvatar :size="128"
-                  nameInitials="II"
+                  nameInitials="DH"
                   emailHash="7e6b6dca84df35a663ba4518360095a8"/>
     </v-col>
     </v-row>
@@ -304,13 +304,16 @@ export const UserCardViews = () => ({
               :key="index" >
         <UserCard :userName="author.fullName"
                   :email="index > 0 ? author.email : null"
-                  :name-initials="index > 1 ? getNameInitials(author) : null"
-                  :emailHash="index > 2 ? '7e6b6dca84df35a663ba4518360095a8' : null"
+                  :name-initials="index > 0 ? getNameInitials(author) : null"
+                  :emailHash="index === 2 ? '7e6b6dca84df35a663ba4518360095a8' : null"
                   :datasetCount="author.datasetCount"
                   :loading="index === authors().length - 1"
                   />
       </v-col>
 
+      <v-col>
+        Info: Emailhash -> the gravatar resolving is hardcoded just for testing
+      </v-col>
     </v-row>
     `,
   methods: {
