@@ -131,6 +131,16 @@ export default {
       type: String,
       default: '',
     },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseUrl: {
+      type: String,
+      default: undefined,
+    },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseDOIUrl: {
+      type: String,
+      default: undefined,
+    },
   },
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
@@ -152,6 +162,8 @@ export default {
       return {
         text: this.previewPublicationsText,
         maxTextLength: 2000,
+        resolveBaseUrl: this.resolveBaseUrl,
+        resolveBaseDOIUrl: this.resolveBaseDOIUrl,
       };
     },
     validations() {

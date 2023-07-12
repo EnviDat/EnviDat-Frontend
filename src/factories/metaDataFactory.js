@@ -23,6 +23,7 @@ import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
 } from '@/factories/userEditingFactory';
+import { forEach } from '~/storybook-static/vendors~main.cca4b2fc5eda12166d3c.manager.bundle';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -1032,19 +1033,19 @@ export function extractPIDsFromText(text) {
  *
  * @param text
  * @param {Map<any, any>} citationMap Map keys are the PID with the citation text as value
- * @param {Map<string, string>} pidMap Map keys are the url with the PID as value
+ * @param {Map<string, string>} idMap Map keys are the url with the PID as value
  * @returns {*}
  */
-export function replacePIDsInText(text, citationMap, pidMap) {
+export function replaceIdsInText(text, citationMap, idMap) {
 
   let newText = text;
 
   if (text) {
 
-    pidMap.forEach((pid, url) => {
-      const citation = citationMap.get(pid);
+    idMap.forEach((id, url) => {
+      const citationObj = citationMap.get(id);
+      const citation = citationObj.citation;
       if (citation) {
-        // newText = `<p>${newText.replace(url, citation)}  </p>`;
         newText = newText.replace(url, `${citation} <br /> <br />`);
       }
     });
@@ -1063,7 +1064,7 @@ function getGenericCitation(resolvedObject) {
   return citationObj[keys[0]];
 }
 
-function getGenericCitationObject(citationInfo) {
+function getGenericCitationObject(citationInfo, pid = undefined) {
   const genericCitation = getGenericCitation(citationInfo);
 
   let abstractTitle = 'Abstract';
@@ -1074,6 +1075,7 @@ function getGenericCitationObject(citationInfo) {
   }
 
   return {
+    pid: citationInfo.pid || pid,
     citation: genericCitation || null,
     abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : null,
     doraSiteUrl: citationInfo.object_url,
@@ -1104,32 +1106,22 @@ export function resolvedCitationText(resolvedPubs, pidMap) {
   return citationTextMap;
 }
 
-export function getPidCitationObjectMap(citationObjs) {
-
-  const citationMap = new Map();
-  const pids = Object.entries(citationObjs);
-
-  pids.forEach(entry => {
-    const [pid, citationInfo] = entry;
-
-    const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(pid, citationObj);
-  });
-
-
-  return citationMap;
-}
-
-export function getDoiCitationObjectMap(doiObjs) {
-  if (!doiObjs) {
+/**
+ *
+ * @param citationObjs
+ * @param citationIdProperty
+ * @returns {Map<any, any>|null}
+ */
+export function getCitationObjectMap(citationObjs, citationIdProperty) {
+  if (!citationObjs) {
     return null;
   }
 
   const citationMap = new Map();
 
-  doiObjs.forEach((citationInfo) => {
+  citationObjs.forEach((citationInfo) => {
     const citationObj = getGenericCitationObject(citationInfo);
-    citationMap.set(citationObj.doi, citationObj);
+    citationMap.set(citationObj[citationIdProperty], citationObj);
   });
 
   return citationMap;
@@ -1185,6 +1177,12 @@ export function extractPIDMapFromText(text) {
 
 const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
 
+/**
+ * returns a url to call for multiple pids
+ * @param pidMap
+ * @param resolveBaseUrl
+ * @returns {string} 
+ */
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
 
@@ -1199,30 +1197,48 @@ export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
 
 const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
 
-export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
-  let fullUrl = resolveBaseUrl || fallbackDoiUrl;
+export function getDoraDoisUrls(doiMap, resolveBaseDOIUrl) {
+  const urls = [];
+  const baseUrl = resolveBaseDOIUrl || fallbackDoiUrl;
 
   doiMap.forEach((doi, url) => {
-    fullUrl += `${doi.replace('/', '~slsh~')}|`;
+    // baseUrl += `${doi.replace('/', '~slsh~')}|`;
+    const doiUrl = `${baseUrl}${doi.replace('/', '~slsh~')}`;
+    urls.push(doiUrl);
   });
 
-  fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+  // fullUrl = fullUrl.substring(0, fullUrl.length - 1);
 
-  return fullUrl;
+  return urls;
 }
 
-export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+export async function resolveDOIsViaDora(doiMap, resolveBaseDOIUrl = undefined) {
   if (!doiMap) {
     return null;
   }
 
-  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+  const doiUrls = getDoraDoisUrls(doiMap, resolveBaseDOIUrl);
 
-  const response = await axios.get(doraUrl);
-  return response.data;
+/*
+  const doiResponses = [];
+  doiUrls.forEach((url) => {
+    doiResponses.push(axios.get(url));
+  });
+
+  const responses = await Promise.all(doiResponses);
+*/
+
+  const data = [];
+/*
+  responses.forEach((res) => {
+    data.push(res.data[0]);
+  });
+*/
+
+  return data;
 }
 
-export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl) {
   if (!pidMap) {
     return null;
   }
@@ -1234,18 +1250,42 @@ export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
   return response.data;
 }
 
-export async function resolvePidCitationObjectsViaDora(pidMap) {
+/**
+ * Expecting an object with the pids as keys and their citaion object as value.
+ * eg: https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids/wsl:14249|wsl:21835
+ * @param responseObj
+ * @returns {*[]}
+ */
+function convertPidMapToArray(responseObj) {
 
-  const citationObj = await resolvePIDsViaDora(pidMap);
+  const pidKeys = Object.keys(responseObj);
+  const pidObjects = [];
 
-  return getPidCitationObjectMap(citationObj);
+  for (let i = 0; i < pidKeys.length; i++) {
+    const pid = pidKeys[i];
+    const citationObj = getGenericCitationObject(responseObj[pid], pid);
+    pidObjects.push(citationObj);
+  }
+
+  return pidObjects;
 }
 
-export async function resolveDoiCitationObjectsViaDora(doiMap) {
+export async function resolvePidCitationObjectsViaDora(pidMap, resolveBaseUrl = undefined) {
 
-  const citationObj = await resolveDOIsViaDora(doiMap);
+  let citationObjs = await resolvePIDsViaDora(pidMap, resolveBaseUrl);
 
-  return getDoiCitationObjectMap(citationObj);
+  if (!Array.isArray(citationObjs)) {
+    citationObjs = convertPidMapToArray(citationObjs);
+  }
+
+  return getCitationObjectMap(citationObjs, 'pid');
+}
+
+export async function resolveDoiCitationObjectsViaDora(doiMap, resolveBaseDOIUrl = undefined) {
+
+  const citationObjs = await resolveDOIsViaDora(doiMap, resolveBaseDOIUrl);
+
+  return getCitationObjectMap(citationObjs, 'doi');
 }
 
 export function extractDatasetIdsFromText(text) {

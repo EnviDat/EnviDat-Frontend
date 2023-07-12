@@ -58,21 +58,14 @@ FilledDoi.args = {
   doi: '10.1002/eap.2133',
 }
 
-export const FilledDenseDoi = Template.bind({});
-FilledDenseDoi.args = {
-  ...FilledDoi.args,
-  dense: true,
-}
 
 export const FilledPidWithPreview = Template.bind({});
 FilledPidWithPreview.args = {
-  dense: true,
   ...citation1,
 }
 
 export const FilledDoiWithPreview = Template.bind({});
 FilledDoiWithPreview.args = {
-  dense: true,
   ...citation2,
 }
 

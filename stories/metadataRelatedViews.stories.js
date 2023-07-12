@@ -177,6 +177,9 @@ export const EditRelatedPublicationViews = () => ({
       genericProps: {
         relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
         id: '1',
+        // resolveBaseUrl: 'https://www.envidat.ch/dora/',
+        resolveBaseUrl: 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/',
+        resolveBaseDOIUrl: 'https://www.envidat.ch/doi:',
       },
       genericPropsFilled: {
         id: '2',
@@ -185,6 +188,9 @@ export const EditRelatedPublicationViews = () => ({
         showPlaceholder: false,
         relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
         // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+        // resolveBaseUrl: 'https://www.envidat.ch/dora/',
+        resolveBaseUrl: 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/',
+        resolveBaseDOIUrl: 'https://www.envidat.ch/doi:',
       },
     }),
   });

@@ -12,9 +12,9 @@
         <v-text-field
             v-model="pidField"
             :label="labels.pId"
-            :dense="dense"
             :disabled="!!doiField"
             outlined
+            dense
             hide-details
             prepend-icon="account_circle"
             @input="pidChange"
@@ -24,7 +24,7 @@
       <v-col cols="12"
              md="auto"
              style="text-align: center;"
-              class="text-h6 px-md-4 shrink" >
+              class="text-h6 py-2 py-md-0 px-md-4 shrink" >
         Or
       </v-col>
 
@@ -32,10 +32,10 @@
              md="auto">
         <v-text-field
             v-model="doiField"
-            :label="labels.dataObjectIdentifier"
-            :dense="dense"
+            :label="labels.doi"
             :disabled="!!pidField"
             outlined
+            dense
             hide-details
             prepend-icon="fingerprint"
             @input="doiChange"
@@ -112,6 +112,7 @@
 import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
+import { mapState } from 'vuex';
 
 import {
   resolveDoiCitationObjectsViaDora,
@@ -149,6 +150,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseUrl: {
+      type: String,
+      default: undefined,
+    },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseDOIUrl: {
+      type: String,
+      default: undefined,
+    },
   },
   mounted() {
     if (this.pid) {
@@ -158,6 +169,19 @@ export default {
     }
   },
   computed: {
+    ...mapState(['config']),
+    metadataConfig() {
+      return this.$store ? this.config?.metadataConfig || {} : {};
+    },
+    publicationsConfig() {
+      return this.metadataConfig?.publicationsConfig || {};
+    },
+    resolveBaseUrlField() {
+      return this.publicationsConfig?.resolveBaseUrl || this.resolveBaseUrl;
+    },
+    resolveBaseDOIUrlField() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || this.resolveBaseDOIUrl;
+    },
     pidField: {
       get() {
         return this.previewPID !== null ? this.previewPID : this.pid;
@@ -204,7 +228,7 @@ export default {
       pidMap.set(pid, pid);
 
       try {
-        const citationMap = await resolvePidCitationObjectsViaDora(pidMap);
+        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrlField);
         this.previewCitation = citationMap.get(pid);
       } catch (e) {
         this.previewCitation = {
@@ -222,7 +246,7 @@ export default {
       doiMap.set(doi, doi);
 
       try {
-        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap);
+        const citationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrlField);
         this.previewCitation = citationMap.get(doi);
       } catch (e) {
         this.previewCitation = {

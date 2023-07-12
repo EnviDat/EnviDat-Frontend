@@ -31,11 +31,9 @@ import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import { mapState } from 'vuex';
 import {
   extractPIDMapFromText,
-  getDoraPidsUrl,
-  replacePIDsInText,
-  resolvedCitationText,
+  replaceIdsInText,
+  resolvePidCitationObjectsViaDora,
 } from '@/factories/metaDataFactory';
-import axios from 'axios';
 
 export default {
   name: 'MetadataPublications',
@@ -65,23 +63,36 @@ export default {
       type: Array,
       default: () => [],
     },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseUrl: {
+      type: String,
+      default: undefined,
+    },
+    /* prop to use without the $store in the storybook context */
+    resolveBaseDOIUrl: {
+      type: String,
+      default: undefined,
+    },
   },
   computed: {
     ...mapState(['config']),
-    loading() {
-      return this.isResolving || this.showPlaceholder;
-    },
-    publications() {
-      return this.mixinMethods_getGenericProp('publications');
-    },
     metadataConfig() {
       return this.$store ? this.config?.metadataConfig || {} : {};
     },
     publicationsConfig() {
       return this.metadataConfig?.publicationsConfig || {};
     },
-    resolveBaseUrl() {
-      return this.publicationsConfig?.resolveBaseUrl || 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+    resolveBaseUrlField() {
+      return this.publicationsConfig?.resolveBaseUrl || this.resolveBaseUrl;
+    },
+    resolveBaseDOIUrlField() {
+      return this.publicationsConfig?.resolveBaseDOIUrl || this.resolveBaseDOIUrl;
+    },
+    loading() {
+      return this.isResolving || this.showPlaceholder;
+    },
+    publications() {
+      return this.mixinMethods_getGenericProp('publications');
     },
     extractedPIDMap() {
       return extractPIDMapFromText(this.text);
@@ -126,13 +137,11 @@ export default {
       this.isResolving = true;
 
       try {
-        // get url which works with multiple PIDs
-        const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
-
-        const response = await axios.get(doraUrl);
-
-        const citationMap = resolvedCitationText(response.data, pidMap);
-        newText = replacePIDsInText(text, citationMap, pidMap);
+        // const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
+        // const response = await axios.get(doraUrl);
+        // const citationMap = resolvedCitationText(response.data, pidMap);
+        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrlField);
+        newText = replaceIdsInText(text, citationMap, pidMap);
 
       } catch (e) {
         this.resolveError = e;
