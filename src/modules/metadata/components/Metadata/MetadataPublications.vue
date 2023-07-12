@@ -30,10 +30,13 @@ import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue'
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 import { mapState } from 'vuex';
 import {
+  extractDOIMapFromText,
   extractPIDMapFromText,
   replaceIdsInText,
+  resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
+
 
 export default {
   name: 'MetadataPublications',
@@ -97,6 +100,9 @@ export default {
     extractedPIDMap() {
       return extractPIDMapFromText(this.text);
     },
+    extractedDOIMap() {
+      return extractDOIMapFromText(this.text);
+    },
     resolvingStatusText() {
       if (this.resolveError) {
         return `Publication could not be resolved because: ${this.resolveError}`;
@@ -108,48 +114,51 @@ export default {
   methods: {
     resolvedCitations(text){
 
-      if (!this.isResolving && !this.resolveError
-          && this.extractedPIDMap?.size > 0) {
-
+      if (text && !this.isResolving && !this.resolveError ) {
         this.isResolving = true;
-        this.$nextTick(() => {
-          this.resolvePIDs(text, this.extractedPIDMap);
+        this.resolveError = null;
+        this.replacedText = '';
+
+        this.$nextTick(async () => {
+
+          await this.resolvePIDs(text, this.extractedPIDMap);
+          await this.resolveDOIs(text, this.extractedDOIMap);
+
+          const idsMap = new Map([...this.extractedPIDMap, ...this.extractedDOIMap]);
+          const citationsMap = new Map([...this.pidCitationMap, ...this.doiCitationMap]);
+
+          this.replacedText = replaceIdsInText(text, citationsMap, idsMap);
+
+          this.isResolving = false;
         })
       }
 
       return text;
     },
-    /**
-     * 
-     * @param text
-     * @param {null|Map<string, string>} pidMap
-     * @returns {Promise<void>}
-     */
     async resolvePIDs(text, pidMap) {
       if (!text || !pidMap) {
         return;
       }
 
-      this.replaceMap = {};
-      this.resolveError = null;
-      this.replacedText = null;
-      let newText = null;
-      this.isResolving = true;
-
       try {
-        // const doraUrl = getDoraPidsUrl(pidMap, this.resolveBaseUrl);
-        // const response = await axios.get(doraUrl);
-        // const citationMap = resolvedCitationText(response.data, pidMap);
-        const citationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrlField);
-        newText = replaceIdsInText(text, citationMap, pidMap);
+        this.pidCitationMap = await resolvePidCitationObjectsViaDora(pidMap, this.resolveBaseUrlField);
 
       } catch (e) {
         this.resolveError = e;
-      } finally {
-        this.isResolving = false;
+      }
+    },
+    async resolveDOIs(text, doiMap) {
+      if (!text || !doiMap) {
+        return;
       }
 
-      this.replacedText = newText;
+      try {
+        this.doiCitationMap = await resolveDoiCitationObjectsViaDora(doiMap, this.resolveBaseDOIUrlField);
+
+      } catch (e) {
+        this.resolveError = e;
+      }
+
     },
   },
   watch: {
@@ -163,8 +172,9 @@ export default {
     METADATA_PUBLICATIONS_TITLE,
     isResolving: false,
     resolveError: null,
-    replacedText: null,
-    replaceMap: {},
+    replacedText: '',
+    pidCitationMap: null,
+    doiCitationMap: null,
   }),
 };
 </script>

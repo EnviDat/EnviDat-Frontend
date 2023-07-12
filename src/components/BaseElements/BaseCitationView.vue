@@ -50,7 +50,8 @@
       </v-col>
 
       <v-col cols="10"
-             md="11" >
+             md="11"
+              class="pt-1">
         <div v-html="citation" ></div>
       </v-col>
 

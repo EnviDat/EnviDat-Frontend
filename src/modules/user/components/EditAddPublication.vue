@@ -117,7 +117,7 @@ import { mapState } from 'vuex';
 import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
-} from '@/factories/metaDataFactory';
+} from '@/factories/citationFactory';
 
 export default {
   name: 'EditAddPublication',

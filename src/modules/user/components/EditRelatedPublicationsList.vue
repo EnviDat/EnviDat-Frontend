@@ -90,7 +90,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import { EDIT_METADATA_RELATEDPUBLICATIONS_TITLE } from '@/factories/metadataConsts';
 
 import EditAddPublication from '@/modules/user/components/EditAddPublication.vue';
-import { extractPIDMapFromText } from '@/factories/metaDataFactory';
+import { extractPIDMapFromText } from '@/factories/citationFactory';
 
 export default {
   name: 'EditRelatedPublicationsList',
