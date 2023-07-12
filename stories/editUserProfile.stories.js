@@ -132,6 +132,7 @@ export const UserCardEditingViews = () => ({
             <UserCard :height="height"
                       :width="height"
                       :userName="author.firstName + ' ' + author.lastName"
+                      :nameInitials="getNameInitials(author)"
                       :email="author.email"
                       :loading="true"
             />
@@ -164,6 +165,7 @@ export const UserCardEditingViews = () => ({
             <UserCard :height="height"
                       :width="height"
                       :userName="author.firstName + ' ' + author.lastName"
+                      :nameInitials="getNameInitials(author)"
                       :email="author.email"
                       email-hash="7e6b6dca84df35a663ba4518360095a8"
             />
