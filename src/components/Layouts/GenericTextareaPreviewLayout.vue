@@ -21,7 +21,8 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="subtitlePreview">
+      <v-row v-if="subtitlePreview"
+              no-gutters >
         <v-col :cols="columns" class="text-subtitle-1">
           {{ subtitlePreview }}
         </v-col>
@@ -53,7 +54,8 @@
       </v-col>
 
       <v-col>
-        <v-row v-if="subtitlePreview">
+        <v-row v-if="subtitlePreview"
+               no-gutters>
           <v-col class="text-subtitle-1">
             {{ subtitlePreview }}
           </v-col>

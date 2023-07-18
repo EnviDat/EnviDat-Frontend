@@ -4,9 +4,103 @@
                class="pa-0"
   >
 
-    <v-row no-gutters
+    <!-- horizontal layout -->
+    <v-row v-if="$vuetify.breakpoint.mdAndUp"
+           no-gutters
+           align="center"
+            >
+      <v-col cols="5">
+        <v-row no-gutters
+                justify="start">
+
+          <v-col cols="10" >
+            <v-text-field
+                v-model="pidField"
+                :label="labels.pId"
+                :disabled="!!doiField"
+                outlined
+                dense
+                hide-details
+                prepend-icon="account_circle"
+                @input="pidChange"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters
+               align="center"
+               justify="start">
+
+          <v-col cols="10"
+                 style="text-align: center;"
+                 class="text-h6 py-2 px-md-4 shrink" >
+            Or
+          </v-col>
+
+          <v-col class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
+            <BaseIconButton material-icon-name="add"
+                            :fillColor="addButtonActive ? $vuetify.theme.themes.light.primary : 'white'"
+                            :icon-color="addButtonActive ? 'white' : 'black'"
+                            color="primary"
+                            :disabled="!addButtonActive"
+                            outlined
+                            isSmall
+                            @clicked="addClick"
+            />
+          </v-col>
+
+        </v-row>
+
+        <v-row no-gutters
+               align="center"
+               justify="start">
+
+          <v-col cols="10" >
+
+            <v-text-field
+                  v-model="doiField"
+                  :label="labels.doi"
+                  :disabled="!!pidField"
+                  outlined
+                  dense
+                  hide-details
+                  prepend-icon="fingerprint"
+                  @input="doiChange"
+                  />
+
+          </v-col>
+
+        </v-row>
+      </v-col>
+
+      <v-col cols="7">
+        <v-row no-gutters >
+          <v-col >
+            <div class="text-subtitle-1"
+                 v-html="labels.subtitlePreview">
+
+            </div>
+          </v-col>
+        </v-row>
+
+        <v-row no-gutters
+               class="pt-2">
+          <v-col >
+            <v-card class="pa-4 pl-3">
+              <BaseCitationView v-bind="citationViewProps" />
+            </v-card>
+          </v-col>
+        </v-row>
+
+      </v-col>
+    </v-row>
+
+    <!-- vertical layout -->
+    <v-row v-if="$vuetify.breakpoint.smAndDown"
+           no-gutters
             align="center"
-            :dense="dense">
+            dense >
+
       <v-col cols="12"
               md="auto">
         <v-text-field
@@ -53,45 +147,24 @@
       <v-col cols="auto"
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton material-icon-name="add"
-                        :fillColor="$vuetify.theme.themes.light.primary"
-                        icon-color="white"
-                        :is-small="dense && $vuetify.breakpoint.mdAndUp"
+                        :fillColor="addButtonActive ? $vuetify.theme.themes.light.primary : 'white'"
+                        :icon-color="addButtonActive ? 'white' : 'black'"
+                        color="primary"
+                        :disabled="!addButtonActive"
+                        outlined
                         @clicked="addClick"
         />
 
       </v-col>
-    </v-row>
 
-
-<!--
-    <v-row no-gutters
-           class="pt-4">
-      <v-col >
-        <BaseStatusLabelView status-icon="question_mark"
-                             :show-expand-icon="true"
-          />
-      </v-col>
-    </v-row>
--->
-
-    <v-row no-gutters
-          class="pt-4">
-      <v-col >
-        <div class="text-subtitle-1"
-             v-html="labels.subtitlePreview">
-
-        </div>
-      </v-col>
-    </v-row>
-
-    <v-row no-gutters
-            class="pt-2">
-      <v-col >
-        <v-card class="pa-4">
+      <v-col cols="12 pt-4">
+        <v-card class="pa-4 pl-3">
           <BaseCitationView v-bind="citationViewProps" />
         </v-card>
       </v-col>
+
     </v-row>
+
 
   </v-container>
 </template>
@@ -146,10 +219,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    dense: {
-      type: Boolean,
-      default: false,
-    },
     /* prop to use without the $store in the storybook context */
     resolveBaseUrl: {
       type: String,
@@ -181,6 +250,9 @@ export default {
     },
     resolveBaseDOIUrlField() {
       return this.publicationsConfig?.resolveBaseDOIUrl || this.resolveBaseDOIUrl;
+    },
+    addButtonActive() {
+      return this.pidField || this.doiField;
     },
     pidField: {
       get() {
@@ -261,6 +333,7 @@ export default {
         pid: this.pidField,
         doi: this.doiField,
       });
+
     },
   },
   data: () => ({

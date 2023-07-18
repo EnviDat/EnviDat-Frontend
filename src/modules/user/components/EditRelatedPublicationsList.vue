@@ -13,17 +13,23 @@
     </template>
 
     <v-row>
-      <v-col cols="6" class="text-h5">
+      <v-col cols="12"
+             sm="6"
+             class="text-h5">
         {{ EDIT_METADATA_RELATEDPUBLICATIONS_TITLE }}
       </v-col>
 
-      <v-col v-if="message" >
+      <v-col v-if="message"
+             cols="12"
+             sm="6" >
         <BaseStatusLabelView statusIcon="check"
                              statusColor="success"
                              :statusText="message"
                              :expandedText="messageDetails" />
       </v-col>
-      <v-col v-if="error"  >
+      <v-col v-if="error"
+             cols="12"
+             sm="6" >
 
         <BaseStatusLabelView statusIcon="error"
                              statusColor="error"
@@ -43,7 +49,7 @@
     </v-row>
 
     <v-row no-gutters
-           class="pt-4">
+           class="pt-2">
       <v-col >
         <BaseStatusLabelView status-icon="question_mark"
                              status-text="More Info"
@@ -53,10 +59,24 @@
       </v-col>
     </v-row>
 
-    <v-row>
+    <v-row no-gutters >
       <v-col >
         <EditAddPublication dense
                             @addClicked="catchAddPublication" />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        {{ labels.subtitlePreview }}
+      </v-col>
+    </v-row>
+
+    <v-row v-if="citationIds">
+      <v-col v-for="id of citationIds"
+            :key="id">
+        <BaseCitationView >
+        </BaseCitationView>
       </v-col>
     </v-row>
 
@@ -144,7 +164,13 @@ export default {
   },
   methods: {
     catchAddPublication({ pid, doi }) {
+      if (pid) {
+        this.citationIds.push(pid);
+      }
 
+      if (doi) {
+        this.citationIds.push(doi);
+      }
     },
     catchChangedText(value) {
       if (this.validateProperty(this.editingProperty, value)) {
@@ -160,6 +186,7 @@ export default {
     },
   },
   data: () => ({
+    citationIds: [],
     editingProperty: 'relatedPublicationsText',
     EDIT_METADATA_RELATEDPUBLICATIONS_TITLE,
     labels: {

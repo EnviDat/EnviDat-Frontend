@@ -18,7 +18,7 @@ import seedrandom from 'seedrandom';
 import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
 
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
-import axios from 'axios';
+
 import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,

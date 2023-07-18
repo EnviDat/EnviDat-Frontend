@@ -6,8 +6,8 @@
     <v-row no-gutters
            align="start">
 
-      <v-col cols="2"
-              sm="auto">
+      <v-col v-if="$vuetify.breakpoint.smAndUp"
+             class="flex-grow-0 pr-2">
         <v-row no-gutters>
           <v-col cols="12">
             <v-menu
@@ -29,7 +29,8 @@
                 </v-icon>
               </template>
 
-              <div class="pa-4"
+              <div v-if="abstract"
+                   class="pa-4"
                    style="background-color: white;"
                    v-html="abstract"
                    >
@@ -49,9 +50,7 @@
         </v-row>
       </v-col>
 
-      <v-col cols="10"
-             md="11"
-              class="pt-1">
+      <v-col class="pt-1 flex-grow-1">
         <div v-html="citation" ></div>
       </v-col>
 
