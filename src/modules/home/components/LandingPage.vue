@@ -6,11 +6,13 @@
       style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;"
     />
 
+<!--
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas2"
       style="position: absolute; width: 400px; height: 300px; bottom: 30%; left: 22.5%;"
     />
+-->
 
     <LandingPageLayout
       :categoriesTitle="welcomeInfo.categoriesTitle"
@@ -530,6 +532,7 @@ export default {
         );
 
         // eslint-disable-next-line no-undef
+/*
         particlesJS.load(
           'polygon-canvas2',
           './particles/polygonParticleOptions2.json',
@@ -541,6 +544,7 @@ export default {
             this.currentParticles = window.pJS;
           },
         );
+*/
       }
     },
     catchCategoryClicked(cardType) {
