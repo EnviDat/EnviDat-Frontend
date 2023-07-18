@@ -181,29 +181,16 @@ export default {
     window.scrollTo(0, 0);
 
     if (this.user) {
-      if (this.metadataId) {
-        this.$nextTick(() => {
-          this.initMetadataUsingId(this.metadataId);
-        });
-      }
-
-      this.$nextTick(() => {
-        this.loadUserOrganizations();
-      });
-    } else {
-      eventBus.emit(SHOW_DIALOG, {
-        title: 'Please Sign in!',
-        message: 'For dataset editing you need to be signed in.',
-        callback: () => {
-          this.navigateToSignPage();
-        },
-      });
+      this.initializeMetadata();
+    } else if (!this.userLoading) {
+      this.showDialogSignInNeeded();
     }
 
   },
   computed: {
     ...mapState(USER_SIGNIN_NAMESPACE,[
       'user',
+      'userLoading',
     ]),
     ...mapState(ORGANIZATIONS_NAMESPACE,[
       'userOrganizationIds',
@@ -422,6 +409,26 @@ export default {
 
       this.showSnack = true;
     },
+    initializeMetadata() {
+      if (this.metadataId) {
+        this.$nextTick(() => {
+          this.initMetadataUsingId(this.metadataId);
+        });
+      }
+
+      this.$nextTick(() => {
+        this.loadUserOrganizations();
+      });
+    },
+    showDialogSignInNeeded() {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Please Sign in!',
+        message: 'For dataset editing you need to be signed in.',
+        callback: () => {
+          this.navigateToSignPage();
+        },
+      });
+    },
     navigateToSignPage() {
       this.$router.push({ name: USER_SIGNIN_PAGENAME });
     },
@@ -453,6 +460,15 @@ export default {
 
         // re-trigger the populate of the data when the authorsMap is loaded for author enhancement
         populateEditingComponents(this.$store.commit, this.currentEditingContent, categoryCards);
+      }
+    },
+    userLoading() {
+      if(!this.userLoading) {
+        if (this.user) {
+          this.initializeMetadata();
+        } else {
+          this.showDialogSignInNeeded();
+        }
       }
     },
   },

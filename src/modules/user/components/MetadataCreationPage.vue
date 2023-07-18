@@ -173,29 +173,16 @@ export default {
 
 
     if (this.user) {
-      this.loadUserOrganizations();
-
-      this.$nextTick(() => {
-
-        const stepKey = this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, stepKey);
-
-        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
-      });
-    } else {
-      eventBus.emit(SHOW_DIALOG, {
-        title: 'Please Sign in!',
-        message: 'For dataset creation you need to be signed in.',
-        callback: () => {
-          this.navigateToSignPage();
-        },
-      });
+      this.initializeMetadata();
+    } else if (!this.userLoading) {
+      this.showDialogSignInNeeded();
     }
   },
   computed: {
     ...mapState(['config']),
     ...mapState(USER_SIGNIN_NAMESPACE,[
       'user',
+      'userLoading',
     ]),
     ...mapState(ORGANIZATIONS_NAMESPACE,[
       'userOrganizationIds',
@@ -283,6 +270,26 @@ export default {
         params: {
           metadataid: metadataId,
           step: title,
+        },
+      });
+    },
+    initializeMetadata() {
+      this.loadUserOrganizations();
+
+      this.$nextTick(() => {
+
+        const stepKey = this.validateCurrentStep();
+        updateAllStepsForCompletion(this.creationSteps, stepKey);
+
+        this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
+      });
+    },
+    showDialogSignInNeeded() {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Please Sign in!',
+        message: 'For dataset creation you need to be signed in.',
+        callback: () => {
+          this.navigateToSignPage();
         },
       });
     },
@@ -404,6 +411,15 @@ export default {
     $route(){
       const stepKey = this.validateCurrentStep();
       updateAllStepsForCompletion(this.creationSteps, stepKey);
+    },
+    userLoading() {
+      if(!this.userLoading) {
+        if (this.user) {
+          this.initializeMetadata();
+        } else {
+          this.showDialogSignInNeeded();
+        }
+      }
     },
   },
   components: {
