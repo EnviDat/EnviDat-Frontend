@@ -81,6 +81,13 @@
         </v-row>
       </v-container>
 
+      <TextBanner v-if="showCookieInfo"
+                  style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+                  :text="cookieInfoText"
+                  confirmText="Okay"
+                  bannerColor="highlight"
+                  :confirmClick="catchCookieInfoOk"/>
+
       <v-dialog v-model="showReloadDialog"
                 persistent
                 :style="`z-index: ${NotificationZIndex};`"
@@ -190,6 +197,8 @@ import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
+import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
+
 const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
 const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
 const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
@@ -207,6 +216,8 @@ export default {
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
+    const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
+    this.showCookieInfo = strShowCookieInfo!== 'false';
   },
   beforeDestroy() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -387,6 +398,10 @@ export default {
         path: REPORT_PATH,
         query: index,
       });
+    },
+    catchCookieInfoOk() {
+      localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
+      this.showCookieInfo = false;
     },
     redirectMessage(componentName = 'Sign In') {
       const userName = this.user?.name || '';
@@ -714,6 +729,8 @@ export default {
     dialogMessage: '',
     dialogCallback: () => {},
     dialogCancelCallback: () => {},
+    showCookieInfo: true,
+    cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
