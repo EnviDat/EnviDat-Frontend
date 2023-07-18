@@ -114,8 +114,9 @@ export const UserMenuViews = () => ({
     `,
   data: () => ({
     user: {
-      firstName: 'Enjo',
+      firstName: 'Dominik',
       lastName: 'Haas',
+      emailHash: '7e6b6dca84df35a663ba4518360095a8',
     },
     user2: {
       firstName: 'Onio',

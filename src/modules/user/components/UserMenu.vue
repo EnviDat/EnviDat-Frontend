@@ -2,7 +2,9 @@
   <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
     <template v-slot:activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
-        <UserAvatar :size="size" :nameInitials="nameInitials" />
+        <UserAvatar :size="size"
+                    :nameInitials="nameInitials"
+                    :email-hash="emailHash"/>
       </div>
     </template>
     <v-list>
@@ -59,6 +61,9 @@ export default {
     ...mapState(['config']),
     nameInitials() {
       return getNameInitials(this.userObject);
+    },
+    emailHash() {
+      return this.userObject?.emailHash;
     },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};

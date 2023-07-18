@@ -26,13 +26,13 @@
                          @clickedReport="catchReportClicked(notification.key)"/>
     </div>
 
-    <the-navigation :style="`z-index: ${NavigationZIndex}`"
+    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
                     :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
                     @itemClick="catchItemClicked"/>
 
-    <the-navigation-toolbar v-if="showToolbar"
+    <TheNavigationToolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
                             class="envidatToolbar"
                             :style="`z-index: ${NavToolbarZIndex}`"
