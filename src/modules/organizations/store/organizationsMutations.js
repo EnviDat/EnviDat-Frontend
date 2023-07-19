@@ -180,7 +180,6 @@ export default {
     datasets = enhanceTagsOrganizationDatasetFromAllDatasets(datasets, metadataContents);
     datasets = enhanceMetadataFromCategories(this, datasets);
 
-    console.time('loop organizationIds')
     for (let i = 0; i < organizationIds.length; i++) {
       const orgaId = organizationIds[i];
 

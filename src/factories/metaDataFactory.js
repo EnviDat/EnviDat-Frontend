@@ -919,7 +919,7 @@ export function enhanceMetadataEntry(
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
-  if (metadatas === undefined || metadatas.length <= 0) {
+  if (metadatas === undefined) {
     return undefined;
   }
 
