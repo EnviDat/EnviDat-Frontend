@@ -221,7 +221,7 @@ export default {
     creatorImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
         ? 'projects/data_creator'
-        : 'about/data_creator_small';
+        : 'projects/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     missionImg() {
