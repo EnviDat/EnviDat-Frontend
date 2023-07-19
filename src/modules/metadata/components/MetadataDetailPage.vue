@@ -142,7 +142,10 @@ import { rewind as tRewind } from '@turf/turf';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
-import { USER_GET_ORGANIZATION_IDS } from '@/modules/organizations/store/organizationsMutationsConsts';
+import {
+  ORGANIZATIONS_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -212,6 +215,8 @@ export default {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, [
       'userDatasets',
+    ]),
+    ...mapState(ORGANIZATIONS_NAMESPACE, [
       'userOrganizationIds',
     ]),
     ...mapGetters(USER_SIGNIN_NAMESPACE, [
@@ -744,7 +749,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
+      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
     },
     fetchUserDatasets() {
       const userId = this.user?.id;

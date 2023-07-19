@@ -343,6 +343,7 @@ import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_SEARCH,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
@@ -469,7 +470,9 @@ export default {
       }
 
       this.userOrganizations.forEach(o => {
-        datasets.push(o.packages);
+        if (o.packages?.length > 0) {
+          datasets.push(o.packages);
+        }
       });
 
       return datasets.flat();
@@ -541,7 +544,7 @@ export default {
       return 'your Organizations';
     },
     allUserdataTags() {
-      const minTagCount = this.userDatasets?.length > 50 ? 10 : 1;
+      const minTagCount = this.userDatasets?.length > 50 ? 5 : 2;
 
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
@@ -703,8 +706,8 @@ export default {
     async fetchUserOrganisationData() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      // always call the USER_GET_ORGANIZATIONS_SEARCH action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {

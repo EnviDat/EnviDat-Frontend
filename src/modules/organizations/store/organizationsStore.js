@@ -24,6 +24,7 @@ const organizationsState = {
   userOrganizationIds: [],
   userOrganizations: [],
   userOrganizationError: null,
+  organizationsDatasetsLimit: 1000,
 };
 
 export const organizations = {

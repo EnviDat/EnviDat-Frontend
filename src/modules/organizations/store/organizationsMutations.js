@@ -37,6 +37,7 @@ import {
   USER_GET_ORGANIZATIONS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
   USER_GET_ORGANIZATIONS_SUCCESS,
 } from './organizationsMutationsConsts';
 
@@ -106,6 +107,7 @@ export default {
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizationIds', orgaIds);
+    this._vm.$set(state, 'userOrganizations', payload);
   },
   [USER_GET_ORGANIZATION_IDS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
@@ -162,6 +164,39 @@ export default {
     this._vm.$set(state, 'userOrganizations', userOrgas);
 
     // this._vm.$set(state.userOrganizations, orgaId, userOrga);
+  },
+  [USER_GET_ORGANIZATIONS_SEARCH_SUCCESS](state, payload) {
+    state.userOrganizationLoading = false;
+
+    const organizationIds = state.userOrganizationIds;
+    let datasets = payload;
+    const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
+    const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
+
+    // create a new array here to "override" the state.userOrganizations via $set() so the
+    // reactivity will trigger
+    const userOrgas = [];
+
+    datasets = enhanceTagsOrganizationDatasetFromAllDatasets(datasets, metadataContents);
+    datasets = enhanceMetadataFromCategories(this, datasets);
+
+    console.time('loop organizationIds')
+    for (let i = 0; i < organizationIds.length; i++) {
+      const orgaId = organizationIds[i];
+
+      const orga = state.userOrganizations.filter((o) => o.id === orgaId)[0];
+      let orgaDatasets = datasets.filter((d) => d.owner_org === orgaId);
+
+      if (isUserGroupAdmin(userId, orga)) {
+        orgaDatasets = enhanceElementsWithStrategyEvents(orgaDatasets, SELECT_EDITING_DATASET_PROPERTY);
+      }
+
+      orga.packages = orgaDatasets;
+      userOrgas.push(orga);
+    }
+
+    // use this._vm.$set() to make sure computed properties are recalulated
+    this._vm.$set(state, 'userOrganizations', userOrgas);
   },
   [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
