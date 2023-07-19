@@ -227,6 +227,7 @@
 
           <v-col v-if="tags"
                   cols="12"
+                  sm="9"
                   class="py-0"
                   id="tags"
                   key="tags" >

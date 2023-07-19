@@ -669,8 +669,8 @@ export default {
 
 <style>
 .compactBlogPostCard {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 500;
-  line-height: 1.1rem;
+  line-height: 1rem;
 }
 </style>
