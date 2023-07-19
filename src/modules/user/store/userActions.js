@@ -14,7 +14,7 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-import { extractBodyIntoUrl } from '@/factories/stringFactory';
+import { extractBodyIntoUrl, getSOLRStringForElements } from '@/factories/stringFactory';
 
 import {
   ACTION_USER_COLLABORATOR_DATASETS,
@@ -71,12 +71,7 @@ export default {
 
     const actionUrl = ACTION_USER_COLLABORATOR_DATASETS();
     const limit = this.state.user.collaboratorDatasetsLimit;
-
-    let idQuery = 'id:(';
-    for (let i = 0; i < collaboratorIds.length; i++) {
-      idQuery += `"${collaboratorIds[i].id}",`;
-    }
-    idQuery += ')';
+    const idQuery = getSOLRStringForElements('id', collaboratorIds);
 
     let url = extractBodyIntoUrl(actionUrl, {
       q: idQuery,
