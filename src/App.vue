@@ -49,24 +49,13 @@
                             @continueClick="catchContinueClick"/>
 
     <v-main>
+
       <v-container class="pa-2 pa-sm-3 fill-height"
                    fluid
                    v-on:scroll="updateScroll()"
                    id="appContainer"
                    ref="appContainer"
                    :style="pageStyle">
-
-        <v-row v-if="maintenanceBannerVisible"
-               id="maintenanceBanner"
-               no-gutters
-               class="pb-2">
-          <v-col>
-            <TextBanner :text="maintenanceBannerText"
-                        confirmText="Okay"
-                        :bannerColor="maintenanceBannerColor"
-                        :confirmClick="catchMaintenanceConfirmClick"/>
-          </v-col>
-        </v-row>
 
         <v-row class="fill-height"
                id="mainPageRow">
@@ -81,9 +70,19 @@
         </v-row>
       </v-container>
 
+      <TextBanner v-if="maintenanceBannerVisible"
+                  id="maintenanceBanner"
+                  style="position: absolute; top: 0; z-index: 1001; width: 100%; "
+                  :text="maintenanceBannerText"
+                  confirmText="Okay"
+                  :bannerColor="maintenanceBannerColor"
+                  :confirmClick="catchMaintenanceConfirmClick"/>
+
       <TextBanner v-if="showCookieInfo"
+                  id="cookieBanner"
                   style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
                   :text="cookieInfoText"
+                  icon="cookie"
                   confirmText="Okay"
                   bannerColor="highlight"
                   :confirmClick="catchCookieInfoOk"/>
