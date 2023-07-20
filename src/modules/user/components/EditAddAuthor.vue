@@ -245,13 +245,11 @@ import {
   isObjectValid,
 } from '@/factories/userEditingValidations';
 
-import imageContact from '@/assets/icons/contact.png';
-import imageMail from '@/assets/icons/mail.png';
-
 import {
   EDITMETADATA_AUTHOR, EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus, REMOVE_EDITING_AUTHOR,
+  eventBus,
+  REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 
@@ -596,8 +594,6 @@ export default {
       firstName: null,
       lastName: null,
     },
-    iconName: imageContact,
-    iconMail: imageMail,
   }),
   components: {
     BaseRectangleButton,

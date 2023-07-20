@@ -262,8 +262,6 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 
-import imageContact from '@/assets/icons/contact.png';
-import imageMail from '@/assets/icons/mail.png';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
@@ -739,8 +737,6 @@ export default {
       contactSurname: false,
       contactEmail: false,
     },
-    iconName: imageContact,
-    iconMail: imageMail,
     METADATA_TITLE_PROPERTY,
     METADATA_URL_PROPERTY,
   }),
