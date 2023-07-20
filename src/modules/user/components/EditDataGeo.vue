@@ -108,6 +108,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 
+// eslint-disable-next-line import/no-cycle
 import { defaultSwissLocation } from '@/factories/workflowFactory';
 
 /*
