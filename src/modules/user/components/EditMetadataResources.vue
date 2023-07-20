@@ -50,27 +50,19 @@ export default {
     },
   },
   mounted() {
-    this.doiIcon = this.mixinMethods_getIcon('doi') || '';
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize') || '';
     this.fileIcon = this.mixinMethods_getIcon('file') || '';
     this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated') || '';
     this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified') || '';
-    this.contactIcon = this.mixinMethods_getIcon('contact2') || '';
-    this.mailIcon = this.mixinMethods_getIcon('mail') || '';
-    this.licenseIcon = this.mixinMethods_getIcon('license') || '';
   },
   computed: {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
-        doiIcon: this.doiIcon,
         fileSizeIcon: this.fileSizeIcon,
         fileIcon: this.fileIcon,
         dateCreatedIcon: this.dateCreatedIcon,
         lastModifiedIcon: this.lastModifiedIcon,
-        contactIcon: this.contactIcon,
-        mailIcon: this.mailIcon,
-        licenseIcon: this.licenseIcon,
         emptyText:
           'No resources has been added yet. Upload a file or provide a link to a resource.',
         emptyTextColor: 'grey',
@@ -81,14 +73,10 @@ export default {
   data: () => ({
     editingInstructions: 'Pick a resource from the list to edit its details',
     EDIT_METADATA_RESOURCES_TITLE,
-    doiIcon: null,
     fileSizeIcon: null,
     fileIcon: null,
     dateCreatedIcon: null,
     lastModifiedIcon: null,
-    contactIcon: null,
-    mailIcon: null,
-    licenseIcon: null,
   }),
 };
 </script>

@@ -37,9 +37,6 @@ import {
 import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
-import mailIcon from '../src/assets/icons/mail.png';
-import contactIcon from '../src/assets/icons/contact2.png';
-import licenseIcon from '../src/assets/icons/license.png';
 import fileSizeIcon from '../src/assets/icons/fileSize.png';
 import fileIcon from '../src/assets/icons/file.png';
 
@@ -207,10 +204,6 @@ export const MetadataHeaderViews = () => ({
       <v-col >
         <metadata-header
           v-bind="smallHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
         />
       </v-col>
     </v-row>
@@ -225,10 +218,6 @@ export const MetadataHeaderViews = () => ({
       <v-col >
         <metadata-header
           v-bind="largeHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
           show-edit-button
         />
       </v-col>
@@ -252,10 +241,6 @@ export const MetadataHeaderViews = () => ({
   data: () => ({
     smallHeader,
     largeHeader,
-    doiIcon,
-    contactIcon,
-    licenseIcon,
-    mailIcon,
   }),
 });
 
@@ -640,9 +625,6 @@ export const MetadataResourcesViews = () => ({
       resources: resources1.resources,
       showPlaceholder: false,
       doiIcon,
-      contactIcon,
-      licenseIcon,
-      mailIcon,
       fileIcon,
       fileSizeIcon,
     },
@@ -654,9 +636,6 @@ export const MetadataResourcesViews = () => ({
       resources: resources2.resources,
       showPlaceholder: false,
       doiIcon,
-      contactIcon,
-      licenseIcon,
-      mailIcon,
       fileIcon,
       fileSizeIcon,
     },

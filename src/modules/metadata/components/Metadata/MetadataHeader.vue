@@ -389,10 +389,6 @@ export default {
     authors: Array,
     maxTags: Number,
     showPlaceholder: Boolean,
-    doiIcon: String,
-    contactIcon: String,
-    mailIcon: String,
-    licenseIcon: String,
     expanded: {
       type: Boolean,
       default: true,

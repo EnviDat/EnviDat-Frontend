@@ -12,10 +12,6 @@
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
                           :showPlaceholder="showPlaceholder"
-                          :doiIcon="doiIcon"
-                          :contactIcon="contactIcon"
-                          :mailIcon="mailIcon"
-                          :licenseIcon="licenseIcon"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
                           :showEditButton="showEditButton"
@@ -182,9 +178,6 @@ export default {
     this.fileIcon = this.mixinMethods_getIcon('file');
     this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
     this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
-    this.contactIcon = this.mixinMethods_getIcon('contact2');
-    this.mailIcon = this.mixinMethods_getIcon('mail');
-    this.licenseIcon = this.mixinMethods_getIcon('license');
 
     window.scrollTo(0, 0);
   },
@@ -861,9 +854,6 @@ export default {
     fileIcon: null,
     dateCreatedIcon: null,
     lastModifiedIcon: null,
-    contactIcon: null,
-    mailIcon: null,
-    licenseIcon: null,
     modalTitle: '',
     gcnetModalComponent: null,
     textPreviewComponent: null,

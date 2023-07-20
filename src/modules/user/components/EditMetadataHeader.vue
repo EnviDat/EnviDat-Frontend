@@ -412,11 +412,6 @@ export default {
     },
     metadataPreviewEntry() {
 
-      const doiIcon = this.mixinMethods_getIcon('doi') || '';
-      const contactIcon = this.mixinMethods_getIcon('contact2') || this.iconName;
-      const mailIcon = this.mixinMethods_getIcon('mail') || this.iconMail;
-      const licenseIcon = this.mixinMethods_getIcon('license') || '';
-
       const fullName = this.getFullName({
         given_name: this.contactGivenNameField,
         name: this.contactSurnameField,
@@ -427,13 +422,9 @@ export default {
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: fullName,
-        contactIcon,
         contactEmail: this.contactEmailField,
-        mailIcon,
         doi: this.doi,
-        doiIcon,
         license: this.dataLicense,
-        licenseIcon,
         tags: this.keywords,
         authors: this.authors,
       };
