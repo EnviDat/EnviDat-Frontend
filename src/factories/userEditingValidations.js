@@ -340,12 +340,7 @@ export function getUserOrganizationRoleMap(userId, organizations) {
     return roleMap;
   }
 
-  organizations.forEach(orga => {
-    const matchedUsers = orga.users?.filter(u => u.id === userId);
-    if (matchedUsers?.length > 0) {
-      roleMap[orga.name] = matchedUsers[0].capacity;
-    }
-  })
+  organizations.forEach(orga => { roleMap[orga.name] = orga.capacity })
 
   return roleMap;
 }
