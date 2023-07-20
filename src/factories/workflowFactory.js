@@ -49,37 +49,7 @@ import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreat
 import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
 import MetadataEditingPublicationInfo from '@/modules/user/components/MetadataEditingPublicationInfo.vue';
 
-export const defaultSwissLocation = {
-  type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [5.95587, 45.81802],
-        [5.95587, 47.80838],
-        [10.49203, 47.80838],
-        [10.49203, 45.81802],
-        [5.95587, 45.81802],
-      ],
-    ],
-  }],
-};
-
-export const defaultWorldLocation = {
-  type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [-175, -85],
-        [-175, 85],
-        [175, 85],
-        [175, -85],
-        [-175, -85],
-      ],
-    ],
-  }],
-}
+import { defaultSwissLocation } from '@/factories/metaDataFactory';
 
 /**
  * don't use any defaults on the emptyMetadataInEditing because it will be stored in the localstorage and therefore needs to be empty

@@ -29,14 +29,14 @@ import {
 } from '@/factories/mappingFactory';
 
 import {
-  defaultSwissLocation,
   getDataKeysToStepKey,
   getEmptyMetadataInEditingObject,
   getStepByName,
   getStepKeyToDataKey,
 } from '@/factories/workflowFactory';
 import { getYear } from 'date-fns';
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+
+import { defaultSwissLocation } from '@/factories/metaDataFactory';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [

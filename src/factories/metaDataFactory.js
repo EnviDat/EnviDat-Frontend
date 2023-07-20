@@ -18,7 +18,9 @@ import seedrandom from 'seedrandom';
 import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
 
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+
 import axios from 'axios';
+
 import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
@@ -1292,3 +1294,34 @@ export function formatBytes(a, b = 2) {
 
   return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
+
+export const defaultSwissLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [5.95587, 45.81802],
+        [5.95587, 47.80838],
+        [10.49203, 47.80838],
+        [10.49203, 45.81802],
+        [5.95587, 45.81802],
+      ],
+    ],
+  }],
+};
+export const defaultWorldLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [-175, -85],
+        [-175, 85],
+        [175, 85],
+        [175, -85],
+        [-175, -85],
+      ],
+    ],
+  }],
+};

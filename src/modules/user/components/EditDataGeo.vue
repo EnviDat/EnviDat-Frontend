@@ -101,15 +101,12 @@ import {
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
-import { parseAsGeomCollection } from '@/factories/metaDataFactory';
+import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-
-// eslint-disable-next-line import/no-cycle
-import { defaultSwissLocation } from '@/factories/workflowFactory';
 
 /*
 import geojsonhint from '@mapbox/geojsonhint';
