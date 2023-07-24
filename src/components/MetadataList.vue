@@ -203,12 +203,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-/*
-import {
-  mapState,
-  mapGetters,
-} from 'vuex';
-*/
+
 import { BROWSE_PATH} from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
 import FilterMapView from '@/components/Filtering/FilterMapView.vue';
@@ -218,7 +213,7 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import {
-//  METADATA_NAMESPACE,
+  METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
@@ -228,6 +223,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
 export default {
@@ -303,6 +299,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    metadatasContent: {
+      type: Object,
+      default: () => {},
+    },
     categoryCards: {
       type: Array,
       default: () => [],
@@ -326,17 +326,6 @@ export default {
     this.infiniteHandler();
   },
   computed: {
-/*
-    ...mapState([
-      'categoryCards',
-    ]),
-    ...mapGetters({
-      metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
-      searchingMetadatasContent: `${METADATA_NAMESPACE}/searchingMetadatasContent`,
-      loadingMetadatasContent: `${METADATA_NAMESPACE}/loadingMetadatasContent`,
-      isFilteringContent: `${METADATA_NAMESPACE}/isFilteringContent`,
-    }),
-*/
     showPinnedElements() {
       return !this.loading && this.showMapFilter && this.prePinnedIds?.length > 0;
     },
@@ -359,14 +348,6 @@ export default {
 
       return this.prePinnedIds;
     },
-/*
-    loading() {
-      return (this.loadingMetadatasContent
-            || this.isFilteringContent
-            || this.searchingMetadatasContent
-      );
-    },
-*/
     cardGridClass() {
       const mapActive = this.isActiveControl(LISTCONTROL_MAP_ACTIVE);
 

@@ -14,7 +14,7 @@
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
                     @clickedCard="catchMetadataClicked"
-                   :prePinnedIds="selectedPins"
+                    :prePinnedIds="selectedPins"
                     @pinnedIds="catchPinnedIds"
                     :mode="mode"
                     :defaultListControls="defaultControls"

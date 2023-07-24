@@ -115,6 +115,7 @@
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
+                      :metadatasContent="metadatasContent"
                       mainScrollClass=".midBoard > .datasetsGrid"
       />
 
@@ -234,6 +235,7 @@
                     :reloadAmount="20"
                     :preloadingDistance="10"
                     :showOrganizationOnHover="false"
+                    :metadatasContent="metadatasContent"
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 
@@ -413,6 +415,7 @@ export default {
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
       'updatingTags',
+      'metadatasContent',
     ]),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};

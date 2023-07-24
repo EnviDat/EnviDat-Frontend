@@ -50,7 +50,6 @@
         <ProjectDatasets
           :hasMetadatas="hasMetadatas"
           :listContent="filteredListContent"
-          :showMapFilter="false"
           :mapFilteringPossible="mapFilteringPossible"
           :placeHolderAmount="placeHolderAmount"
           @clickedTag="catchTagClicked"
@@ -59,10 +58,14 @@
           @clickedTagClose="catchTagCloseClicked"
           @clickedClear="catchTagCleared"
           @clickedCard="catchMetadataClicked"
+          :prePinnedIds="selectedPins"
+          @pinnedIds="catchPinnedIds"
           :defaultListControls="defaultControls"
           :enabledControls="enabledControls"
           :topFilteringLayout="true"
           :showSearch="false"
+          :metadatasContent="metadatasContent"
+          :loading="loading"
           @setScroll="setScrollPos"
         />
       </v-col>
@@ -169,12 +172,8 @@ export default {
       this.loadProjects();
     }
   },
-  watch: {
-    config() {
-      if (!this.loadingConfig && !this.loading) {
-        this.loadProjects();
-      }
-    },
+  mounted() {
+    this.loadRoutePins();
   },
   computed: {
     ...mapState(['loadingConfig', 'config']),
@@ -298,6 +297,24 @@ export default {
     },
   },
   methods: {
+    loadRoutePins() {
+      let pins = this.$route.query.pins || '';
+
+      if (pins.length > 0) {
+        pins = this.mixinMethods_convertUrlStringToArray(pins, false, true);
+
+        this.selectedPins = pins;
+      }
+    },
+    catchPinnedIds(pins) {
+
+      this.selectedPins = pins;
+
+      const stringPins = this.mixinMethods_convertArrayToUrlString(this.selectedPins);
+
+      this.mixinMethods_additiveChangeRoute(this.$route.path, undefined, undefined,
+        undefined, stringPins, undefined);
+    },
     catchMetadataClicked(datasetname) {
       this.$store.commit(
         `${METADATA_NAMESPACE}/${SET_DETAIL_PAGE_BACK_URL}`,
@@ -408,6 +425,17 @@ export default {
       }
     },
   },
+  watch: {
+    config() {
+      if (!this.loadingConfig && !this.loading) {
+        this.loadProjects();
+      }
+    },
+    $route() {
+      // react on changes of the route ( pin clicks )
+      this.loadRoutePins();
+    },
+  },
   components: {
     ProjectHeader,
     ProjectBody,
@@ -418,6 +446,7 @@ export default {
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 3,
     selectedTagNames: [],
+    selectedPins: [],
     defaultControls: [LISTCONTROL_MAP_ACTIVE],
     enabledControls: [LISTCONTROL_LIST_ACTIVE, LISTCONTROL_MAP_ACTIVE],
   }),
