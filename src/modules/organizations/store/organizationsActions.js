@@ -42,6 +42,7 @@ import {
   USER_GET_ORGANIZATIONS_SEARCH,
   ACTION_USER_GET_ORGANIZATIONS_SEARCH,
   USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from './organizationsMutationsConsts';
 
 
@@ -190,7 +191,7 @@ export default {
     }
 
     const actionUrl = ACTION_USER_GET_ORGANIZATIONS_SEARCH();
-    const limit = this.state.organizations.organizationsDatasetsLimit;
+    const rows = this.state.organizations.organizationsDatasetsLimit;
 
     const idQuery = getSOLRStringForElements('owner_org', ids);
 
@@ -198,7 +199,7 @@ export default {
       q: idQuery,
       include_private: true,
       include_drafts: true,
-      rows: limit,
+      rows,
     });
 
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
@@ -211,5 +212,48 @@ export default {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
 
+  },
+  async [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE]({ dispatch, commit }, ids) {
+    commit(USER_GET_ORGANIZATIONS);
+
+    if (!ids || ids.length <= 0) {
+      commit(USER_GET_ORGANIZATIONS_RESET);
+      return;
+    }
+
+    const actionUrl = ACTION_USER_GET_ORGANIZATIONS_SEARCH();
+    const rows = this.state.organizations.organizationsDatasetsLimit;
+    const preOffset = this.state.organizations.userOrgaDatasetOffset;
+
+    const idQuery = getSOLRStringForElements('owner_org', ids);
+
+    let url = extractBodyIntoUrl(actionUrl, {
+      q: idQuery,
+      include_private: true,
+      include_drafts: true,
+      rows,
+      offset: preOffset,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then((response) => {
+        commit(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, response.data.result);
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATIONS_ERROR, error);
+      });
+
+    if (this.state.organizations.userOrganizationError) {
+      return;
+    }
+
+    const afterOffset = this.state.organizations.userOrgaDatasetOffset;
+    const totalAvailable = this.state.organizations.userOrgaDatasetTotal;
+
+    if (afterOffset < totalAvailable) {
+      dispatch(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, { ids });
+    }
   },
 };

@@ -37,6 +37,7 @@ import {
   USER_GET_ORGANIZATIONS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
   USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
   USER_GET_ORGANIZATIONS_SUCCESS,
 } from './organizationsMutationsConsts';
@@ -122,6 +123,8 @@ export default {
     state.userOrganizationLoading = false;
     state.userOrganizations = [];
     state.userOrganizationError = null;
+    state.userOrgaDatasetTotal = 0;
+    state.userOrgaDatasetOffset = 0;
   },
   [USER_GET_ORGANIZATIONS_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
@@ -196,6 +199,32 @@ export default {
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizations', userOrgas);
+  },
+  /**
+   * result : {
+   * count : 137
+   * facets : {}
+   * results : [datasets]
+   * search_facets : {}
+   * sort : "score desc, metadata_modified desc"
+   * }
+   *
+   * @param state
+   * @param payload
+   */
+  [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE] (state, payload) {
+    state.userOrgaDatasetTotal = payload.count;
+
+    let datasets = payload.results;
+    const datasetRetured = datasets?.length || 0;
+
+    this.commit(USER_GET_ORGANIZATIONS_SEARCH_SUCCESS, datasets);
+
+    if (datasetRetured !== 0) {
+      state.userOrgaDatasetOffset = state.userOrgaDatasetOffset + datasetRetured;
+    } else {
+      state.userOrgaDatasetOffset = 0;
+    }
   },
   [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
     state.userOrganizationLoading = false;

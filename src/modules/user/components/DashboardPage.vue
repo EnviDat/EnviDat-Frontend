@@ -345,7 +345,7 @@ import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_SEARCH,
+  USER_GET_ORGANIZATIONS_SEARCH, USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
@@ -709,8 +709,9 @@ export default {
     async fetchUserOrganisationData() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
-      // always call the USER_GET_ORGANIZATIONS_SEARCH action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH}`, this.userOrganizationIds);
+      // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
+
     },
     catchRefreshClick() {
       if (this.user) {
