@@ -12,7 +12,6 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import fileIcon from '../src/assets/icons/file.png';
-import contact2Icon from '../src/assets/icons/contact2.png';
 
 
 export default {
@@ -93,7 +92,7 @@ export const IconsWithCountBadeViews = () => ({
       <v-col class="shrink" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
-                                :iconString="contact2Icon"
+                                :iconString="fileIcon"
                                 :count="counter"
                                 :tooltipText="tooltip" />
         <!-- /div -->
@@ -103,7 +102,6 @@ export const IconsWithCountBadeViews = () => ({
     data: () => ({
       showFullDescription: false,
       fileIcon,
-      contact2Icon,
       counter: 55,
       tooltip: 'This is the tooltip of the icon count view',
     }),
