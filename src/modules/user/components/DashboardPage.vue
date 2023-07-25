@@ -296,7 +296,9 @@ import {
   USER_DASHBOARD_PAGENAME,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
-  METADATAEDIT_PAGENAME, METADATA_CREATION_PATH, METADATA_CREATION_PAGENAME,
+  METADATAEDIT_PAGENAME,
+  METADATA_CREATION_PATH,
+  METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -607,7 +609,7 @@ export default {
       return {
         title: 'No Datasets',
         description: 'It seems you don\'t have any datasets.',
-        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
@@ -836,6 +838,15 @@ export default {
         confirmText: 'Keep Dataset',
         cancelText: 'Delete Dataset',
       });
+    },
+  },
+  watch: {
+    user() {
+      if (this.user) {
+        this.fetchUserDatasets();
+        this.fetchCollaboratorDatasets();
+        this.fetchUserOrganisationData();
+      }
     },
   },
   data: () => ({
