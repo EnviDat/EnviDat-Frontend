@@ -68,13 +68,13 @@ export function getSOLRStringForElements(property, elements, elementProperty = u
     if (typeof element === 'object') {
       entry = element[objectProperty];
     }
-    
-    query += `"${entry}",`;
-    // query += `"${collaboratorIds[i].id}",`;
+
+    query += `${entry} OR `;
   }
-  // cut away the last ","
-  query = `${query.substring(0, query.length - 1)})`;
-  
+
+  // cut away the last " OR "
+  query = `${query.substring(0, query.length - 4)})`;
+
   return query;
 }
 
