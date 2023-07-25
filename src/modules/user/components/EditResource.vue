@@ -96,15 +96,14 @@
              class="pt-2">
         <v-col v-if="showImagePreview"
                cols="4"
-               class="pt-3 pb-4 pr-4">
+               class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
 
           <div v-show="loadingImagePreview"
                class="skeleton skeleton-animation-shimmer"
-              style="height: 100%; width: 100%; "
-          >
+              style="height: 100%; width: 100%; " >
             <div style="width: 100%; min-height: 100%; "
-                class="bone bone-type-image"
-            ></div>
+                class="bone bone-type-image">
+            </div>
           </div>
 
 

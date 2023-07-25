@@ -215,8 +215,8 @@ export default {
       'userLoading',
     ]),
     ...mapState(USER_NAMESPACE, [
-        'envidatUsers',
-        'uploadError',
+      'envidatUsers',
+      'uploadError',
     ]),
     resourceUploadActive() {
       if (this.$store) {
