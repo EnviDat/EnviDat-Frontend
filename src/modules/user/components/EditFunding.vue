@@ -384,7 +384,7 @@ export default {
     },
     labels: {
       cardTitle: 'Funding Information',
-      fundingInformation: 'Provide information about how funded the research efforts.',
+      fundingInformation: 'Provide information about who funded the research efforts.',
       institution: 'Institution',
       grantNumber: 'Grant Number',
       institutionUrl: 'Link',
