@@ -345,7 +345,9 @@ import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_SEARCH, USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+  USER_GET_ORGANIZATIONS_SEARCH,
+  USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
@@ -709,9 +711,18 @@ export default {
     async fetchUserOrganisationData() {
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
+      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    },
+    async fetchUserOrganisationDataRecursive() {
+      // this was a test to see if the datasets of the organizations the users is in can be
+      // loaded quickly via the package_search, it turns out that include_drafts / include_privte
+      // slows down the search to be unuseable... we need to find another solution
+      this.$store.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_RESET}`);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
       // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
-
     },
     catchRefreshClick() {
       if (this.user) {

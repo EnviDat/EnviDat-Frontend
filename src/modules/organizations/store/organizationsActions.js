@@ -43,6 +43,7 @@ import {
   ACTION_USER_GET_ORGANIZATIONS_SEARCH,
   USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
   USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS,
 } from './organizationsMutationsConsts';
 
 
@@ -216,11 +217,6 @@ export default {
   async [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE]({ dispatch, commit }, ids) {
     commit(USER_GET_ORGANIZATIONS);
 
-    if (!ids || ids.length <= 0) {
-      commit(USER_GET_ORGANIZATIONS_RESET);
-      return;
-    }
-
     const actionUrl = ACTION_USER_GET_ORGANIZATIONS_SEARCH();
     const rows = this.state.organizations.organizationsDatasetsLimit;
     const preOffset = this.state.organizations.userOrgaDatasetOffset;
@@ -232,7 +228,7 @@ export default {
       include_private: true,
       include_drafts: true,
       rows,
-      offset: preOffset,
+      start: preOffset,
     });
 
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
@@ -253,7 +249,9 @@ export default {
     const totalAvailable = this.state.organizations.userOrgaDatasetTotal;
 
     if (afterOffset < totalAvailable) {
-      dispatch(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, { ids });
+      dispatch(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, ids);
+    } else {
+      commit(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS);
     }
   },
 };

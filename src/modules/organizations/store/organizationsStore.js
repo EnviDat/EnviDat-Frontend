@@ -24,7 +24,7 @@ const organizationsState = {
   userOrganizationIds: [],
   userOrganizations: [],
   userOrganizationError: null,
-  organizationsDatasetsLimit: 25,
+  organizationsDatasetsLimit: 10,
   userOrgaDatasetTotal: 0,
   userOrgaDatasetOffset: 0,
 };
