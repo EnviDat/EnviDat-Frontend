@@ -18,7 +18,6 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
-
 } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
@@ -48,6 +47,19 @@ const metadataCards = [];
 for (let i = 0; i < unFormatedMetadataCards.length; i++) {
   const dataset = unFormatedMetadataCards[i];
   let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+
+  for (let j = 0; j < resources.length; j++) {
+    const resource = resources[j];
+    if(resource.restricted && typeof resource.restricted === 'string') {
+      try {
+        resource.restricted = JSON.parse(resource.restricted);
+      } catch (e) {
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
+        console.error(e);
+      }
+    }
+  }
+
   resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
   metadataCards.push(resources);
 }
