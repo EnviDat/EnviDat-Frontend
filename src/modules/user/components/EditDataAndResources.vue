@@ -407,10 +407,7 @@ export default {
       eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
     showFullScreenImage(url) {
-      if (url) {
-        this.$emit('previewImageClicked', this.url);
-        eventBus.emit(OPEN_TEXT_PREVIEW, this.url);
-      }
+      eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
   },
   data: () => ({
