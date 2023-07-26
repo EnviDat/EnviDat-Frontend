@@ -67,6 +67,8 @@ import {
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_DATA_RESOURCE,
   SHOW_DIALOG,
+  EDITMETADATA_DATA,
+  EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
 import {
@@ -343,14 +345,14 @@ export default {
     },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
-      this.initStepDataFromStore(this.editingSteps);
+      this.updateResourceStepFromStore();
     },
     selectAuthor(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
     },
     cancelEditingResource() {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
-      this.initStepDataFromStore(this.editingSteps);
+      this.updateResourceStepFromStore();
     },
     cancelEditingAuthor() {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
@@ -361,6 +363,11 @@ export default {
         object: EDITMETADATA_DATA_RESOURCE,
         data: newRes,
       });
+    },
+    updateResourceStepFromStore() {
+      const dataStep = getStepByName(EDITMETADATA_DATA, this.editingSteps);
+      const resourceStep = getStepByName(EDITMETADATA_DATA_RESOURCES, dataStep.detailSteps);
+      this.initStepDataFromStore([resourceStep]);
     },
     editComponentsChanged(updateObj) {
 
