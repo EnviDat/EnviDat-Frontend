@@ -49,7 +49,7 @@ import {
 } from '@/factories/metaDataFactory';
 
 import { format, isValid, parse } from 'date-fns';
-import { mergeEditingAuthor } from '@/factories/authorFactory';
+
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_RESOURCE_PROPERTY,

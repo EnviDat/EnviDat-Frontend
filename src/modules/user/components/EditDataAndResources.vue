@@ -305,7 +305,8 @@ export default {
           });
       }
     },
-    uploadStarted({ id, fileIDs }) {
+    uploadStarted() {
+    // uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }

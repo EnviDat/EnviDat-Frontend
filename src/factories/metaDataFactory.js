@@ -1190,7 +1190,7 @@ const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
 
-  pidMap.forEach((pid, url) => {
+  pidMap.forEach((pid) => {
     fullUrl += `${pid}|`;
   });
 
@@ -1204,7 +1204,7 @@ const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
 
-  doiMap.forEach((doi, url) => {
+  doiMap.forEach((doi) => {
     fullUrl += `${doi.replace('/', '~slsh~')}|`;
   });
 

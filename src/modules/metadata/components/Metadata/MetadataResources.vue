@@ -62,7 +62,7 @@
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
-                          :showGenericOpenButton="res.openEvent ? true : false"
+                          :showGenericOpenButton="!!res.openEvent"
                           :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"

@@ -213,7 +213,6 @@ import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import NoSearchResultsView from '@/components/Filtering/NoSearchResultsView.vue';
 import {
-  METADATA_NAMESPACE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
