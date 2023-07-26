@@ -203,6 +203,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import Vue from 'vue';
 
 import { BROWSE_PATH} from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
@@ -222,6 +223,9 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import InfiniteLoading from 'vue-infinite-loading';
+
+Vue.use(InfiniteLoading /* , { options } */);
 
 // check filtering in detail https://www.npmjs.com/package/vue2-filters
 
