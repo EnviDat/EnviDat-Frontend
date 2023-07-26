@@ -218,6 +218,20 @@ export default {
       'envidatUsers',
       'uploadError',
     ]),
+    resourceUploadError() {
+      if (this.$store) {
+        return this.uploadError;
+      }
+
+      return null;
+    },
+    allEnviDatUsers() {
+      if (this.$store) {
+        return this.envidatUsers;
+      }
+
+      return undefined;
+    },
     resourceUploadActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
@@ -267,15 +281,15 @@ export default {
         ...this.selectedResource,
         ...mergedSize,
         userEditMetadataConfig,
-        envidatUsers: this.envidatUsers,
+        envidatUsers: this.allEnviDatUsers,
       };
     },
     editDropResourceObject() {
       return {
         metadataId: this.metadataId,
         legacyUrl: this.linkAddNewResourcesCKAN,
-        error: this.uploadError?.message || this.uppyError?.name,
-        errorDetails: this.uploadError?.details || this.uppyError?.message,
+        error: this.resourceUploadError?.message || this.uppyError?.name,
+        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
