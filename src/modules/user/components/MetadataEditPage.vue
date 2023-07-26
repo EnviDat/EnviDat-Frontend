@@ -203,6 +203,7 @@ export default {
       'loadingCurrentEditingContent',
       'loadingEditingData',
       'uploadLoading',
+      'uploadNewResourceLoading',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -446,7 +447,13 @@ export default {
   watch: {
     uploadLoading() {
       if (!this.uploadLoading) {
-        this.initStepDataFromStore(this.editingSteps);
+        // this.initStepDataFromStore(this.editingSteps);
+        this.updateResourceStepFromStore();
+      }
+    },
+    uploadNewResourceLoading() {
+      if (!this.uploadNewResourceLoading) {
+        this.updateResourceStepFromStore();
       }
     },
     loadingEditingData() {

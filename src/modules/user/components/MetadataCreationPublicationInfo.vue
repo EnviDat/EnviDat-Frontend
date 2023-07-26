@@ -85,11 +85,8 @@ import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+
 import {
-  EDITMETADATA_FUNDING_INFO,
-  EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
