@@ -200,6 +200,7 @@ export default {
       'currentEditingContent',
       'loadingCurrentEditingContent',
       'loadingEditingData',
+      'uploadLoading',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -342,12 +343,14 @@ export default {
     },
     selectResource(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, id);
+      this.initStepDataFromStore(this.editingSteps);
     },
     selectAuthor(id) {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_AUTHOR}`, id);
     },
     cancelEditingResource() {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`);
+      this.initStepDataFromStore(this.editingSteps);
     },
     cancelEditingAuthor() {
       this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_AUTHOR_EDITING}`);
@@ -434,6 +437,11 @@ export default {
     },
   },
   watch: {
+    uploadLoading() {
+      if (!this.uploadLoading) {
+        this.initStepDataFromStore(this.editingSteps);
+      }
+    },
     loadingEditingData() {
       if (!this.loadingEditingData) {
         this.initStepDataFromStore(this.editingSteps);

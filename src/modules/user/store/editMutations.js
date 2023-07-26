@@ -88,12 +88,16 @@ export default {
   },
   [METADATA_EDITING_PATCH_RESOURCE](state, resource) {
 
+    state.loadingEditingData = true;
+
     resource.loading = true;
     updateResources(this, state, resource);
 
     resetErrorObject(state);
   },
   [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
+
+    state.loadingEditingData = false;
 
     let fResource = getFrontendJSONForStep(stepKey, resource);
     fResource = cleanResourceForFrontend(fResource)
@@ -107,6 +111,9 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+
+    state.loadingEditingData = false;
+
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
     const selectedResource = getSelectedElement(resources);
 
@@ -133,13 +140,13 @@ export default {
     const previousEmail = getSelectedElement(authors)?.email || '';
     selectForEditing(this, authors, id, previousEmail, 'email');
   },
-  [METADATA_CANCEL_RESOURCE_EDITING](state) {
+  [METADATA_CANCEL_RESOURCE_EDITING]() {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
 
     const previousId = getSelectedElement(resources)?.id || '';
     setSelected(this, resources, previousId, 'id', false);
   },
-  [METADATA_CANCEL_AUTHOR_EDITING](state) {
+  [METADATA_CANCEL_AUTHOR_EDITING]() {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
     const previousEmail = getSelectedElement(authors)?.email || '';
@@ -218,11 +225,15 @@ export default {
   },
   resetMessage(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
-    editingObject.message = null;
+    if (editingObject) {
+      editingObject.message = null;
+    }
   },
   resetError(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
-    editingObject.error = null;
+    if (editingObject) {
+      editingObject.error = null;
+    }
   },
   [METADATA_EDITING_LAST_DATASET](state, payload) {
     state.lastEditedDataset = payload.name;

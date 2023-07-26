@@ -80,6 +80,10 @@ export function setSelected(
   propertyToCompare,
   selected,
 ) {
+  if (!id) {
+    return null;
+  }
+
   for (let i = 0; i < elementList.length; i++) {
     const element = elementList[i];
 
@@ -123,18 +127,17 @@ export function selectForEditing(
 }
 
 export function getSelectedElement(elementList) {
-  let selectedRes = null;
-  const res = elementList;
-
-  if (res?.length > 0) {
-    const selected = res.filter(r => r.isSelected);
-
-    if (selected.length > 0) {
-      selectedRes = selected[0];
-    }
+  if (!elementList) {
+    return null;
   }
 
-  return selectedRes;
+  const selected = elementList.filter(r => r.isSelected);
+
+  if (selected.length > 0) {
+    return selected[0];
+  }
+
+  return null;
 }
 
 // Returns true if all values in obj are null or empty strings, else returns false

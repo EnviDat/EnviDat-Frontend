@@ -810,19 +810,19 @@ export default {
       this.loadingImagePreview = true;
       const vm = this;
 
-      try {
-        vm.$nextTick(() =>{
+      this.$nextTick(() => {
+        try {
           const imageRefs = vm.$refs.filePreview;
           const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
 
           imageRef.src = url;
-        })
-      } catch (e) {
-        this.imagePreviewError = e;
-        console.error(`Loading image preview failed: ${e}`);
-      } finally {
-        this.loadingImagePreview = false;
-      }
+        } catch (e) {
+          vm.imagePreviewError = e;
+          console.error(`Loading image preview failed: ${e}`);
+        } finally {
+          vm.loadingImagePreview = false;
+        }
+      });
     },
     catchImageClick() {
       this.$emit('previewImageClicked', this.url);
