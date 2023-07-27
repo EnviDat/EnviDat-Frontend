@@ -277,9 +277,7 @@ export default {
       this.loadUserOrganizations();
 
       this.$nextTick(() => {
-
-        const stepKey = this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, stepKey);
+        updateAllStepsForCompletion(this.creationSteps);
 
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
       });
@@ -387,9 +385,7 @@ export default {
       storeCreationStepsData(dataKey, data, this.creationSteps, resetMessages);
 
       this.$nextTick(() => {
-        // updateStepValidation(dataKey, this.creationSteps);
-        const stepKey = this.validateCurrentStep();
-        updateAllStepsForCompletion(this.creationSteps, stepKey);
+        updateAllStepsForCompletion(this.creationSteps);
         this.canSaveInBackend = canLocalDatasetBeStoredInBackend(this.creationSteps);
       });
 
@@ -409,8 +405,7 @@ export default {
   },
   watch: {
     $route(){
-      const stepKey = this.validateCurrentStep();
-      updateAllStepsForCompletion(this.creationSteps, stepKey);
+      updateAllStepsForCompletion(this.creationSteps);
     },
     userLoading() {
       if(!this.userLoading) {

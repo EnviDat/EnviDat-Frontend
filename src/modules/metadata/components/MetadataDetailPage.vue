@@ -518,7 +518,7 @@ export default {
       const { components } = this.$options;
       const currentContent = this.currentMetadataContent;
 
-      this.resources = createResources(currentContent, this.user, this.userOrganizationIds);
+      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
       this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
@@ -526,7 +526,7 @@ export default {
       this.resources.dateCreatedIcon = this.dateCreatedIcon;
       this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
-      if (this.resources?.resources) {
+      if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
         enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
