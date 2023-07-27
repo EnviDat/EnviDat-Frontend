@@ -161,14 +161,14 @@ const metadataInEditingValidations = {
       relatedPublicationsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Write at least 20 characters to describe the related publications.'),
+        .min(10, 'Write at least 10 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
       relatedDatasetsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Write at least 20 characters to describe the related datasets.'),
+        .min(10, 'Write at least 10 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -219,7 +219,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('First name is required')
-        .min(3, 'First name must be at least 3 characters'),
+        .min(2, 'First name must be at least 2 characters'),
       lastName: yup.string()
         .required('Last name is required')
         .min(3, 'Last name must be at least 3 characters'),
@@ -231,7 +231,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('Author first name is required')
-        .min(3, 'Author first name must be at least 3 characters'),
+        .min(2, 'Author first name must be at least 2 characters'),
       lastName: yup.string()
         .required('Author last name is required')
         .min(3, 'Author last name must be at least 3 characters'),
