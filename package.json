@@ -15,7 +15,7 @@
     "extract-authors": "node src/node/extractAuthors.js",
     "extract-emails": "node src/node/extractUsers.js",
     "full-build": "vite build && storybook build",
-    "chromatic": "chromatic",
+    "chromatic": "npx chromatic --project-token <your-project-token>",
     "storybook": "storybook dev -p 6006 --loglevel warn",
     "storybook-debug": "storybook dev -p 6006 --loglevel silly",
     "test-storybook": "test-storybook",

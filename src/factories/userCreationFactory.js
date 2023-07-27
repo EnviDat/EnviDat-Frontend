@@ -408,8 +408,7 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
   } catch (e) {
 
     if (!skipError) {
-      console.log(`stepValidation validation Error ${e}`);
-
+      // console.log(`stepValidation validation Error ${e}`);
       step.error = e.message;
     }
 
