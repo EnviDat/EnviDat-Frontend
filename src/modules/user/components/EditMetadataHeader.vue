@@ -67,6 +67,7 @@
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
                         :value="metadataTitleField"
+                        @keyup="blurOnEnterKey"
                         @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
                         @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
           />
@@ -105,6 +106,7 @@
                         prepend-icon="email"
                         :placeholder="labels.placeholderContactEmail"
                         :value="contactEmailField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactEmail', $event)"
                         @input="changePropertyForPreview('contactEmail', $event)"
@@ -156,6 +158,7 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderContactGivenName"
                         :value="contactGivenNameField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactGivenName', $event)"
                         @input="changePropertyForPreview('contactGivenName', $event)"
@@ -178,6 +181,7 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderContactSurname"
                         :value="contactSurnameField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactSurname', $event)"
                         @input="changePropertyForPreview('contactSurname', $event)"
@@ -204,6 +208,7 @@
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
                           :value="metadataUrlField"
+                          @keyup="blurOnEnterKey"
                           @click.stop
                           @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
                           @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
@@ -460,6 +465,11 @@ export default {
     },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     isContactPropertyReadOnly(property) {
       return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
     },

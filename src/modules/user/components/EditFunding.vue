@@ -54,6 +54,7 @@
             :hint="mixinMethods_readOnlyHint(INSTITUTION)"
             :value="item.institution"
             :error-messages="getValidationErrorMessage(INSTITUTION, index)"
+            @keyup="blurOnEnterKey"
             @change="notifyChange(index, INSTITUTION, $event)"
           />
         </v-col>
@@ -67,6 +68,7 @@
             :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
             :value="item.grantNumber"
             :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
+            @keyup="blurOnEnterKey"
             @change="notifyChange(index, GRANTNUMBER, $event)"
           />
         </v-col>
@@ -80,6 +82,7 @@
             :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
             :value="item.institutionUrl"
             :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
+            @keyup="blurOnEnterKey"
             @change="notifyChange(index, INSTITUTION_URL, $event)"
           />
         </v-col>
@@ -226,6 +229,11 @@ export default {
     },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     validateProperty(property, value) {
       return isFieldValid(
         property,

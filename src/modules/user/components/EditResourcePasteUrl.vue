@@ -24,6 +24,7 @@
             clearable
             clear-icon="close"
             :error-messages="validationErrors.url"
+            @keyup="blurOnEnterKey"
             @input="checkCreateButtonDisabled"
           />
         </v-col>
@@ -64,6 +65,11 @@ export default {
   },
   computed: {},
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     checkCreateButtonDisabled() {
 
       const urlSchema = yup.object({

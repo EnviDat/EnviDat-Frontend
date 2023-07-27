@@ -72,6 +72,7 @@
                         prepend-icon="email"
                         :placeholder="labels.placeholderEmail"
                         :value="emailField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
                         @input="changeProperty('email', $event)"
@@ -130,6 +131,7 @@
                         :value="firstNameField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
                         @input="changeProperty('firstName', $event)"
@@ -149,6 +151,7 @@
                         :value="lastNameField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
                         @input="changeProperty('lastName', $event)"
@@ -173,6 +176,7 @@
                         :value="affiliationField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
                         @input="changeProperty('affiliation', $event)"
@@ -192,6 +196,7 @@
                         :value="identifierField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
                         @input="changeProperty('identifier', $event)"
@@ -406,6 +411,11 @@ export default {
     },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     clearPreviews() {
       this.fillPreviews(null, null, null, null, null);
     },
