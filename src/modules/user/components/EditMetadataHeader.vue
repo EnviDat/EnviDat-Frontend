@@ -67,7 +67,7 @@
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
                         :value="metadataTitleField"
-                        @input="changeProperty(METADATA_TITLE_PROPERTY, $event)"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
                         @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
           />
 
@@ -107,7 +107,7 @@
                         :value="contactEmailField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactEmail', $event)"
-                        @input="changeProperty('contactEmail', $event)"
+                        @input="changePropertyForPreview('contactEmail', $event)"
                         />
 
         </v-col>
@@ -158,7 +158,7 @@
                         :value="contactGivenNameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactGivenName', $event)"
-                        @input="changeProperty('contactGivenName', $event)"
+                        @input="changePropertyForPreview('contactGivenName', $event)"
                         />
 
         </v-col>
@@ -180,7 +180,7 @@
                         :value="contactSurnameField"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactSurname', $event)"
-                        @input="changeProperty('contactSurname', $event)"
+                        @input="changePropertyForPreview('contactSurname', $event)"
                         />
 
         </v-col>
@@ -205,7 +205,7 @@
                           :placeholder="labels.placeholderUrl"
                           :value="metadataUrlField"
                           @click.stop
-                          @input="changeProperty(METADATA_URL_PROPERTY, $event)"
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
                           @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
             />
           </ExpandableLayout>
@@ -520,7 +520,7 @@ export default {
         this.activeElements[toId] = editing;
       }
     },
-    changeProperty(property, value) {
+    changePropertyForPreview(property, value) {
       this.previews[property] = value;
       const valid = this.validateProperty(property, value);
 

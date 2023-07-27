@@ -56,7 +56,7 @@ const metadataInEditingValidations = {
       [METADATA_URL_PROPERTY]: yup.string()
         .nullable()
         .min(5, 'Dataset url must be at least 5 characters')
-        .max(180, 'Dataset url has a maximum of 180 characters')
+        .max(80, 'Dataset url has a maximum of 80 characters')
         .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       [METADATA_TITLE_PROPERTY]: yup.string()
         .required('Dataset title is required')
