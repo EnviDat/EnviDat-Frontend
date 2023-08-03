@@ -65,6 +65,11 @@ MobileCreationSteps.parameters = mobileViewportParams;
 export const LargeMobileCreationSteps = Template.bind({});
 LargeMobileCreationSteps.args = { ...CreationSteps.args };
 LargeMobileCreationSteps.parameters = mobileLargeViewportParams;
+
+export const TabletCreationSteps = Template.bind({});
+TabletCreationSteps.args = { ...CreationSteps.args };
+TabletCreationSteps.parameters = tabletViewportParams;
+
 export const TabletEditingSteps = Template.bind({});
 TabletEditingSteps.args = { ...EditingSteps.args };
 TabletEditingSteps.parameters = tabletViewportParams;

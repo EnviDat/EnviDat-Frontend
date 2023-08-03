@@ -32,7 +32,7 @@
                   style="cursor: pointer;" >
       <v-row align="center">
         <v-col>
-          {{ statusText }}
+          {{ swapStatusTextWithSoltText && expanded ? $slots.default[0].text : statusText }}
         </v-col>
 
         <v-col class="shrink">
@@ -50,7 +50,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="$slots.default && expanded"
+      <v-row v-if="!swapStatusTextWithSoltText && $slots.default && expanded"
               no-gutters>
         <v-col>
           <slot name="default"></slot>
@@ -123,6 +123,10 @@ export default {
     },
     cardClass: String,
     showPlaceholder: {
+      type: Boolean,
+      default: false,
+    },
+    swapStatusTextWithSoltText: {
       type: Boolean,
       default: false,
     },

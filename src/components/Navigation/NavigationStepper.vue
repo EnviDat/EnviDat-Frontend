@@ -9,13 +9,20 @@
 
       <div class="instructions">
 
-        <div style="display: flex; align-items: center; ">
+        <div>
+          <v-card-title class="metadata_title text-h6 pa-0">
+            {{ datasetTitleText }}
+          </v-card-title>
+        </div>
+
+        <div class="pt-1"
+             style="display: flex; align-items: center; ">
           <v-icon color="secondary"
                   class="pr-2">info</v-icon>
 
-          <ExpandableLayout :title="datasetTitleText"
-                            cardClass="pa-0"
+          <ExpandableLayout cardClass="pa-0"
                             :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
+                            swapStatusTextWithSoltText
                             :isFlat="true">
 
             {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
@@ -26,7 +33,7 @@
 
       </div>
 
-      <div class="interaction py-2 py-sm-0">
+      <div class="interaction pl-md-2 py-2 py-sm-0">
 
         <v-row justify="end">
           <v-col v-if="showPreviewButton"
@@ -378,14 +385,14 @@ export default {
     currentStep: null,
     currentStepIndex: -1,
     creationTitle: 'Dataset Creation',
-    creationShortInstructions: 'This dataset only exists on your computer, fill out all the steps to save it on the server. Click here to read more.',
-    creationInstructions: `You are creating a new dataset, all the information you enter is saved in your browser on this computer until you save it on the server.
-    To save it you have to fill all the steps of the workflow. Once that's done, click on the disk icon on the top right to store your dataset on server.
-    You will be able to editing everything all the information until you publish it.`,
+    creationShortInstructions: 'This dataset only exists on your computer, fill out all the steps and save it with the disk icon on the top right. Click here to read more.',
+    creationInstructions: `While creating a new dataset all the information you enter is stored in your browser on this computer until you save it on the server.
+    Fill in the information of all steps and click on the disk icon on the top right to save your dataset on server.
+    You will be able to editing everything until you publish it. When adding information either hit the enter key or leave the field (click outside of the field) to save it.`,
     editingTitle: 'Dataset Editing',
     editingShortInstructions: 'Changes are automatically saved, please fill out all the steps to provide the most value for your users. Click here to read more.',
-    editingInstructions: `You are editing an existing dataset.
-    For editing most of the infomation will be auto-saved. Once you have changed information just click away to save it.`,
+    editingInstructions: `While editing an existing dataset most of the infomation will be auto-saved. Once you have changed information either hit the enter key or leave the field (click outside of the field) to save it.
+    Add references to related publications and datasets to provide even more valueable information.`,
   }),
   components: {
     StepperHeader,
@@ -429,7 +436,7 @@ export default {
 .infoPanelGrid-md {
   display: grid;
   grid-template-columns: 5fr auto;
-  gap: 50px;
+  gap: 30px;
   grid-template-areas:
   'instructions interaction';
 }
