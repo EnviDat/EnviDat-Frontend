@@ -10,7 +10,7 @@
         {{ number }}
       </div>
 
-      <div v-if="!error"
+      <div v-if="!error && title"
            class="px-3 readableText ">
           {{ title }}
       </div>

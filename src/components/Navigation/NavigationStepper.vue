@@ -10,7 +10,8 @@
       <div class="instructions">
         <v-container fluid class="pa-0" >
           <v-row no-gutters>
-            <v-col class="metadata_title text-h6 pa-0">
+            <v-col class="metadata_title text-h6 pa-0"
+                   :class="$vuetify.breakpoint.smAndDown ? 'compactTitle' : ''" >
               {{ datasetTitleText }}
             </v-col>
           </v-row>
@@ -451,5 +452,9 @@ export default {
 .interaction {
   display: flex;
   justify-content: end;
+}
+
+.compactTitle {
+  line-height: 1.5rem !important;
 }
 </style>
