@@ -52,6 +52,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mapState } from 'vuex';
+
 import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
@@ -116,8 +118,6 @@ import {
   updateStepsWithReadOnlyFields,
   readDataFromLocalStorage,
 } from '@/factories/userCreationFactory';
-
-import { mapState } from 'vuex';
 
 import {
   getStepByName,

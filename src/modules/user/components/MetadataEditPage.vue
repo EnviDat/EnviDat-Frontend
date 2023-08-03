@@ -51,6 +51,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mapGetters, mapState } from 'vuex';
+
 import {
   eventBus,
   CANCEL_EDITING_AUTHOR,
@@ -74,8 +76,6 @@ import {
 import {
   componentChangedEvent,
 } from '@/factories/userEditingFactory';
-
-import { mapGetters, mapState } from 'vuex';
 
 import {
   METADATA_CANCEL_AUTHOR_EDITING,
@@ -123,12 +123,14 @@ import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
 import NotificationCard from '@/components/Cards/NotificationCard.vue';
 import { errorMessage } from '@/factories/notificationFactory';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
+
 import {
   initializeStepsInUrl,
   updateStepValidation,
   updateStepsWithReadOnlyFields,
   updateAllStepsForCompletion,
 } from '@/factories/userCreationFactory';
+
 import {
   getDataKeysToStepKey,
   getStepByName,

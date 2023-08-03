@@ -32,8 +32,10 @@
  * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-25 14:31:13
  */
+import { mapState } from 'vuex';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
+
 import {
   ACTION_USER_SIGNOUT,
   ACTION_USER_SIGNOUT_REVOKE_TOKEN,
@@ -41,8 +43,8 @@ import {
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { LANDING_PATH, USER_SIGNOUT_PATH } from '@/router/routeConsts';
-import { mapState } from 'vuex';
 
 export default {
   name: 'UserMenu',

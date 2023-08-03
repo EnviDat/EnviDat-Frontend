@@ -10,6 +10,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { format, isValid, parse } from 'date-fns';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -47,8 +48,6 @@ import {
   formatDate,
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
-
-import { format, isValid, parse } from 'date-fns';
 
 import {
   enhanceElementsWithStrategyEvents,

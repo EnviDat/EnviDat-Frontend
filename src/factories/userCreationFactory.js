@@ -1,3 +1,5 @@
+import { getYear } from 'date-fns';
+
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_DATACREDIT,
@@ -34,7 +36,6 @@ import {
   getStepByName,
   getStepKeyToDataKey,
 } from '@/factories/workflowFactory';
-import { getYear } from 'date-fns';
 
 import { defaultSwissLocation } from '@/factories/metaDataFactory';
 

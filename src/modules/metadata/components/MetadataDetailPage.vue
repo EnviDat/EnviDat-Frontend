@@ -80,8 +80,10 @@
  */
 
 import axios from 'axios';
+import { rewind as tRewind } from '@turf/turf';
 import { mapGetters, mapState } from 'vuex';
 import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+
 import {
   ACTION_USER_SHOW,
   FETCH_USER_DATA,
@@ -133,8 +135,6 @@ import {
 } from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
-
-import { rewind as tRewind } from '@turf/turf';
 
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
