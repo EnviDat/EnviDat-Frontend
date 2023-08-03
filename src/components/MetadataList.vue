@@ -204,6 +204,7 @@
 */
 
 import Vue from 'vue';
+import InfiniteLoading from 'vue-infinite-loading';
 
 import { BROWSE_PATH} from '@/router/routeConsts';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
@@ -223,7 +224,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
-import InfiniteLoading from 'vue-infinite-loading';
 
 Vue.use(InfiniteLoading /* , { options } */);
 
