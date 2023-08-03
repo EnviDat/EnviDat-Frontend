@@ -30,7 +30,8 @@
                  :class="isFlat ? 'pa-0' : 'pa-5'"
                  @click="readMore"
                   style="cursor: pointer;" >
-      <v-row align="center">
+      <v-row no-gutters
+             align="center">
         <v-col>
           {{ swapStatusTextWithSoltText && expanded ? $slots.default[0].text : statusText }}
         </v-col>

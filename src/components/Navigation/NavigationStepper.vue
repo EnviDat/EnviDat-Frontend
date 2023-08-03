@@ -8,28 +8,30 @@
          :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`" >
 
       <div class="instructions">
+        <v-container fluid class="pa-0" >
+          <v-row no-gutters>
+            <v-col class="metadata_title text-h6 pa-0">
+              {{ datasetTitleText }}
+            </v-col>
+          </v-row>
 
-        <div>
-          <v-card-title class="metadata_title text-h6 pa-0">
-            {{ datasetTitleText }}
-          </v-card-title>
-        </div>
+          <v-row class="pt-1"
+                 no-gutters>
+            <v-col class="flex-grow-0">
+              <v-icon color="secondary" class="pr-2">info</v-icon>
+            </v-col>
+            <v-col>
+              <ExpandableLayout cardClass="pa-0"
+                                :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
+                                swapStatusTextWithSoltText
+                                :isFlat="true">
 
-        <div class="pt-1"
-             style="display: flex; align-items: center; ">
-          <v-icon color="secondary"
-                  class="pr-2">info</v-icon>
+                {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
 
-          <ExpandableLayout cardClass="pa-0"
-                            :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
-                            swapStatusTextWithSoltText
-                            :isFlat="true">
-
-            {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
-
-          </ExpandableLayout>
-
-        </div>
+              </ExpandableLayout>
+            </v-col>
+          </v-row>
+        </v-container>
 
       </div>
 
