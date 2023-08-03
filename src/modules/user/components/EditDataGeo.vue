@@ -171,7 +171,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.originalGeom = this.location.geoJSON;
+    this.originalGeom = this.location?.geoJSON;
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {
