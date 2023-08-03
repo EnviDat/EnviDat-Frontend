@@ -12,14 +12,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import axios from 'axios';
 import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
 
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
-
-import axios from 'axios';
 
 import {
   ACCESS_LEVEL_PUBLIC_VALUE,
