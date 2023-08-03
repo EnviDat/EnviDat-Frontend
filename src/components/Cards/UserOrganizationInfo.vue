@@ -179,7 +179,7 @@ export default {
 
 .infoGrid {
   display: grid;
-  grid-template-rows: 60% 40%;
+  grid-template-rows: 1fr auto;
   overflow-y: auto;
 }
 
