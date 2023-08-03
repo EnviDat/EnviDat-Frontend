@@ -125,6 +125,7 @@
                         id="firstName"
                         :label="labels.labelFirstName"
                         outlined
+                        dense
                         :error-messages="validationErrors.firstName"
                         prepend-icon="person"
                         :placeholder="labels.placeholderFirstName"
@@ -145,6 +146,7 @@
                         id="lastName"
                         :label="labels.labelLastName"
                         outlined
+                        dense
                         :error-messages="validationErrors.lastName"
                         prepend-icon="person"
                         :placeholder="labels.placeholderLastName"
@@ -170,6 +172,7 @@
                         id="affiliation"
                         :label="labels.labelAffiliation"
                         outlined
+                        dense
                         :error-messages="validationErrors.affiliation"
                         prepend-icon="handshake"
                         :placeholder="labels.placeholderAffiliation"
@@ -190,6 +193,7 @@
                         id="identifier"
                         :label="labels.labelIdentifier"
                         outlined
+                        dense
                         :error-messages="validationErrors.identifier"
                         prepend-icon="card_membership"
                         :placeholder="labels.placeholderIdentifier"
