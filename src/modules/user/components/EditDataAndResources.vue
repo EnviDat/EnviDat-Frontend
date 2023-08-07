@@ -92,6 +92,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters, mapState } from 'vuex';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -130,7 +131,6 @@ import {
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
-import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');

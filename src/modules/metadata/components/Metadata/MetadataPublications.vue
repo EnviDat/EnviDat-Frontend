@@ -27,9 +27,10 @@
  */
 
 import axios from 'axios';
+import { mapState } from 'vuex';
+
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
-import { mapState } from 'vuex';
 import {
   extractPIDMapFromText,
   getDoraPidsUrl,
