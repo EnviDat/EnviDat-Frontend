@@ -79,6 +79,7 @@
 <script>
 import { isDate, isMatch, parse } from 'date-fns';
 import * as yup from 'yup';
+import { ValidationError } from 'yup';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import {
@@ -88,7 +89,6 @@ import {
   parseDateStringToEnviDatFormat,
 } from '@/factories/mappingFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
-import { ValidationError } from 'yup';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {

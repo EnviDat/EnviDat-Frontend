@@ -66,6 +66,7 @@
                         id="email"
                         :label="labels.labelEmail"
                         outlined
+                        dense
                         :error-messages="validationErrors.email"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
