@@ -372,7 +372,7 @@ export default {
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
-        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;

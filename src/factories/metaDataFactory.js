@@ -359,29 +359,56 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
+/**
+ * public case: "{"allowed_users": "", "level": "public", "shared_secret": ""}"
+ * public (used to be restricted) case: "{"allowed_users": "adrian_meyer,zweifel", "level": "public", "shared_secret": ""}"
+ * restricted signin & same organization case: "{"allowed_users": "", "level": "same_organization", "shared_secret": ""}"
+ * restricted signin & same organization & specific users case: "{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization", "shared_secret": ""}"
+ *
+ * @param resource {object}
+ * @param resourceOrganizationID {string}
+ * @param signedInUserName {string}
+ * @param signedInUserOrganizationIds {string[]}
+ * @returns {boolean|null}
+ */
 export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
-  if (!resource || !resourceOrganizationID || !signedInUserName || !signedInUserOrganizationIds) return false;
+  if (!resource) return null;
 
   let allowedUsers = '';
   const restrictedInfo = resource.restricted;
   let isProtected = false;
+  let isPublic = false;
 
   if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
     try {
       const restrictedObj = JSON.parse(restrictedInfo);
+      isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
       isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
       allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
-      isProtected = !restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+      isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+      isProtected = !isPublic;
     }
   }
 
-  if (isProtected && signedInUserOrganizationIds.length > 0) {
+  if (isPublic) {
+    return false;
+  }
+
+  if (!signedInUserOrganizationIds) {
+    return isProtected;
+  }
+
+  if (resourceOrganizationID && signedInUserOrganizationIds.length > 0) {
     isProtected = !signedInUserOrganizationIds.includes(resourceOrganizationID);
   }
 
-  if (isProtected && allowedUsers.length > 0) {
+  if (!signedInUserName) {
+    return isProtected;
+  }
+
+  if (allowedUsers) {
     const names = getAllowedUserNamesArray(allowedUsers);
     isProtected = !names.includes(signedInUserName);
   }
