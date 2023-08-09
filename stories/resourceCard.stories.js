@@ -90,14 +90,15 @@ TabletFilled.parameters = tabletViewportParams;
 export const AccessWithoutUser = Template.bind({});
 AccessWithoutUser.args = { ...protectedResBlocked };
 
-export const AccessNotSameOrganization = Template.bind({});
-AccessNotSameOrganization.args = { ...protResNotSameOga };
+export const AccessWithUser = Template.bind({});
+AccessWithUser.args = { ...protResWithUserName };
+
 
 export const AccessWithSameOrganization = Template.bind({});
 AccessWithSameOrganization.args = { ...protResWithSameOga };
 
-export const AccessWithUser = Template.bind({});
-AccessWithUser.args = { ...protResWithUserName };
+export const AccessNotSameOrganization = Template.bind({});
+AccessNotSameOrganization.args = { ...protResNotSameOga };
 
 export const AccessNotSameOrganizationButUserAccess = Template.bind({});
 AccessNotSameOrganizationButUserAccess.args = { ...protResNotSameOgaButUser };
