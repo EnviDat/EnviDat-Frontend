@@ -17,6 +17,7 @@
     <LandingPageLayout
       :categoriesTitle="welcomeInfo.categoriesTitle"
       :datasetsTitle="welcomeInfo.datasetsTitle"
+      :datasetsTotal="datasetsTotal"
       :newsTitle="welcomeInfo.newsTitle"
       :articlesTitle="welcomeInfo.articlesTitle"
     >
@@ -200,90 +201,6 @@
       </template>
     </LandingPageLayout>
 
-    <!--
-      <v-row class="pb-5"
-              no-gutters>
-
-        <v-col cols="12"
-                md="6"
-                align-self="end"
-                order-md="1"
-                order="2"
-                class="pr-md-4 pt-4 pt-md-0">
-
-          <SloganCard v-if="showWinterHolidayWishs"
-                      slogan="Happy Holidays!"
-                      :sloganImg="winterHolidayImage"
-                      :maxHeight="275"
-                      :subSlogan="decemberWishes" />
-
-          <SloganCard v-if="showNewYearWishs"
-                      slogan="Happy New Year!"
-                      :sloganImg="newYearImage"
-                      :maxHeight="300"
-                      :subSlogan="newYearWishes" />
-        </v-col>
-
-        <the-title-screen-layout :title="welcomeInfo.titleText"
-                                  :slogan="welcomeInfo.Slogan"
-                                  :subSlogan="welcomeInfo.SubSlogan"
-                                  :buttonText="sloganButtonText"
-                                  :buttonCallback="catchBrowseClicked"
-                                  :moreButtonText="sloganMoreButtonText"
-                                  :moreButtonCallback="catchMoreClicked" />
-      </v-row>
--->
-
-    <!--
-      <v-row class="hidden-xs-only px-0 py-5 offset-md-4 offset-lg-6"
-              no-gutters>
-        <search-bar-view :labelText="welcomeInfo.searchLabelText"
-                          :buttonText="buttonText"
-                          :hasButton="true"
-                          @clicked="catchSearchClicked" />
-      </v-row>
-
-      <v-row class="py-5 pa-0 hidden-sm-and-up"
-              no-gutters>
-        <small-search-bar-view :labelText="welcomeInfo.smallSearchLabelText"
-                                :buttonText="buttonText"
-                                @clicked="catchSearchClicked" />
-      </v-row>
--->
-
-    <!--
-      <v-row class="pt-5 pb-2 offset-md-4 offset-lg-6"
-              no-gutters>
-        <v-col>
-          <v-card>
-            <v-card-title primary style="word-break: break-word; line-height: 1.5rem;">
-              {{ welcomeInfo.categoryText }}
-            </v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row class=" offset-md-4 offset-lg-6"
-              no-gutters >
-        <v-container class="pt-3 pb-0 px-1 pa-sm-0 pt-sm-3">
-          <v-row>
-
-            <v-col v-for="card in categoryCards"
-                    :key="card.title"
-                    cols="6"
-                    class="pa-2 pa-sm-3" >
-
-              <base-click-card :title="card.title"
-                                :img="card.img"
-                                :color="card.darkColor"
-                                :contain="card.contain"
-                                :disabled="card.disabled"
-                                @click="catchCategoryClicked(card.type)" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-row>
--->
   </v-container>
 </template>
 
@@ -401,6 +318,7 @@ export default {
     ...mapState(['categoryCards', 'config', 'loadingConfig']),
     ...mapGetters(METADATA_NAMESPACE, [
       'loadingMetadatasContent',
+      'metadatasContentSize',
       'recentMetadata',
     ]),
     ...mapState(BLOG_NAMESPACE, ['list']),
@@ -415,6 +333,9 @@ export default {
     },
     welcomeInfo() {
       return this.config?.welcomeInfo || this.defaultWelcomeInfo;
+    },
+    datasetsTotal() {
+      return this.loadingMetadatasContent ? 0 : this.metadatasContentSize;
     },
     hasActiveNews() {
       return (
