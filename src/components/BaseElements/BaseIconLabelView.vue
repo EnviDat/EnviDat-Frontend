@@ -33,6 +33,11 @@
           </div>
         </v-col>
 
+        <v-col v-if="materialIconName"
+                class="flex-grow-0">
+          <v-icon class="pr-2">{{ materialIconName }}</v-icon>
+        </v-col>
+
         <v-col v-if="label" cols="3" :style="textStyle">
           {{ label }}
         </v-col>
@@ -80,6 +85,7 @@ export default {
   name: 'BaseIconLabelView',
   props: {
     icon: String,
+    materialIconName: String,
     iconTooltip: String,
     label: String,
     text: String,

@@ -743,11 +743,13 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   commitEditingData(commit, stepKey, dateInfoData);
   dataObject.dataInfo = dateInfoData;
 
+/*
   stepKey = EDITMETADATA_DATA_LICENSE;
   const dataLicenseInfo = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, dataLicenseInfo);
   dataObject.dataLicenseInfo = dataLicenseInfo;
+*/
 
   stepKey = EDITMETADATA_DATA_GEO;
   const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
@@ -774,9 +776,18 @@ function populateEditingResources(commit, snakeCaseJSON) {
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
+  const dataStepKey = EDITMETADATA_DATA_LICENSE;
+  const dataLicenseInfo = getFrontendJSONForStep(dataStepKey, snakeCaseJSON);
+
+  commitEditingData(commit, dataStepKey, dataLicenseInfo);
+  dataObject.dataLicenseInfo = dataLicenseInfo;
+
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   const resources = resourceData.resources;
+
+  resourceData.license = dataLicenseInfo.license;
+  resourceData.licenseUrl = dataLicenseInfo.licenseUrl;
 
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);

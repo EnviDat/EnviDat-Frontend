@@ -12,11 +12,25 @@
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
                 class="shrink resourcesIcons" >
           <base-icon-count-view :count="resources.length"
-                                :icon-string="fileIcon" />
+                                tooltip-text="Amount of Resources"
+                                materialIconName="insert_drive_file" />
         </v-col>
       </v-row>
     </v-card-title>
 
+    <v-card-text>
+      <v-row no-gutters
+             align="center">
+        <v-col >
+          <BaseIconLabelView icon-tooltip="Data License"
+                             materialIconName="policy"
+                             :text="license"
+                             :url="licenseUrl"
+                             />
+        </v-col>
+
+      </v-row>
+    </v-card-text>
 
     <v-container v-if="showPlaceholder"
                   id="resourcePlaceholderList"
@@ -157,8 +171,11 @@ export default {
     fileSizeIcon() {
       return this.mixinMethods_getGenericProp('fileSizeIcon');
     },
-    fileIcon() {
-      return this.mixinMethods_getGenericProp('fileIcon');
+    license() {
+      return this.mixinMethods_getGenericProp('license');
+    },
+    licenseUrl() {
+      return this.mixinMethods_getGenericProp('licenseUrl');
     },
     dateCreatedIcon() {
       return this.mixinMethods_getGenericProp('dateCreatedIcon');

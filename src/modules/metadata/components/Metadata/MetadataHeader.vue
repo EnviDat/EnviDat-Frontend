@@ -220,22 +220,15 @@
             </v-row>
           </v-col>
 
-          <v-col cols="12"
+          <v-col v-if="hasContent"
+                 cols="12"
                  sm="6"
                  lg="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <v-row no-gutters
-                    align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">policy</v-icon>
-              </v-col>
-              <v-col>
-                <a :href="licenseUrl" target="_blank">{{ license }}</a>
-              </v-col>
-            </v-row>
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip" />
+
           </v-col>
         </v-row>
 
@@ -326,14 +319,6 @@
                class="px-1" >
           <MetadataStateChip :state="metadataState"
                               :showOnHover="metadataState === 'published'" />
-
-        </v-col>
-
-        <v-col v-if="hasContent"
-          class="px-1" >
-          <MetadataOrganizationChip :organization="organization"
-                                    :tooltip="organizationTooltip" />
-
         </v-col>
 
       </v-row>

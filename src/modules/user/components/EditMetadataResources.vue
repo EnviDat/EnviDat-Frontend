@@ -48,6 +48,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    license: {
+      type: String,
+      default: undefined,
+    },
+    licenseUrl: {
+      type: String,
+      default: undefined,
+    },
   },
   mounted() {
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize') || '';
@@ -59,6 +67,8 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
+        license: this.license,
+        licenseUrl: this.licenseUrl,
         fileSizeIcon: this.fileSizeIcon,
         fileIcon: this.fileIcon,
         dateCreatedIcon: this.dateCreatedIcon,

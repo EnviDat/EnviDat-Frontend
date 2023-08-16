@@ -151,6 +151,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    license: {
+      type: String,
+      default: undefined,
+    },
+    licenseUrl: {
+      type: String,
+      default: undefined,
+    },
 /*
     metadataId: {
       type: String,
@@ -252,6 +260,8 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
+        license: this.license,
+        licenseUrl: this.licenseUrl,
         resourcesConfig: {
           downloadActive: false,
         },

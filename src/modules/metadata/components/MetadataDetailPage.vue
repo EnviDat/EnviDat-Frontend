@@ -520,6 +520,9 @@ export default {
 
       this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
+      const license = this.header.license;
+      const licenseUrl = this.header.licenseUrl;
+
       this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
       this.resources.fileIcon = this.fileIcon;
@@ -537,6 +540,8 @@ export default {
 
         this.$set(components.MetadataResources, 'genericProps', {
           ...this.resources,
+          license,
+          licenseUrl,
           resourcesConfig: this.resourcesConfig,
         });
       });
