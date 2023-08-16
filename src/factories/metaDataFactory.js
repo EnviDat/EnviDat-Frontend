@@ -21,7 +21,7 @@ import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/fac
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
 
 import {
-  ACCESS_LEVEL_PUBLIC_VALUE,
+  ACCESS_LEVEL_PUBLIC_VALUE, ACCESS_LEVEL_REDACTED,
   getAllowedUserNamesArray,
 } from '@/factories/userEditingFactory';
 
@@ -378,6 +378,10 @@ export function isResourceProtectedForUser(resource, resourceOrganizationID, sig
   const restrictedInfo = resource.restricted;
   let isProtected = false;
   let isPublic = false;
+
+  if (restrictedInfo === ACCESS_LEVEL_REDACTED) {
+    return true;
+  }
 
   if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
     try {

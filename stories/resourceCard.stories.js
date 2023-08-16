@@ -4,6 +4,7 @@ import globalMethods from '@/factories/globalMethods';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 import { createResource } from '@/factories/metaDataFactory';
+import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
@@ -33,21 +34,33 @@ const dataset = metadataCards[2];
 const protectedResBlocked = createResource(dataset.resources[0], dataset.name, dataset.organization.id);
 
 const dSet = metadataCards[0];
-const protResWithUserName = createResource(dSet.resources[1], dSet.name, dSet.organization.id,
+const protResWithUserName = {
+  ... createResource(dSet.resources[1], dSet.name, dSet.organization.id,
   'zhichao_he',
-  [dSet.organization.id]);
+  [dSet.organization.id]),
+  isSignedIn: true,
+};
 
-const protResNotSameOga = createResource(dSet.resources[1], dSet.name, 'randomId',
+const protResNotSameOga = {
+  ...createResource(dSet.resources[1], dSet.name, 'randomId',
   '',
-  [dSet.organization.id]);
+  [dSet.organization.id]),
+  isSignedIn: true,
+};
 
-const protResWithSameOga = createResource(dSet.resources[1], dSet.name, dSet.organization.id,
+const protResWithSameOga = {
+  ...createResource(dSet.resources[1], dSet.name, dSet.organization.id,
   '',
-  [dSet.organization.id]);
+  [dSet.organization.id]),
+  isSignedIn: true,
+};
 
-const protResNotSameOgaButUser = createResource(dSet.resources[1], dSet.name, 'randomId',
+const protResNotSameOgaButUser = {
+  ...createResource(dSet.resources[1], dSet.name, 'randomId',
   'zhichao_he',
-  [dSet.organization.id]);
+  [dSet.organization.id]),
+  isSignedIn: true,
+};
 
 export default {
   title: '3 Cards / Resource Cards',
@@ -56,6 +69,13 @@ export default {
   parameters: {
   },
 };
+
+
+
+eventBus.off(EDITMETADATA_OBJECT_UPDATE, (event) => {
+  console.log(EDITMETADATA_OBJECT_UPDATE);
+  console.log(event);
+});
 
 const Template = (args, { argTypes }) => ({
   components: { ResourceCard },
@@ -113,12 +133,12 @@ export const ResourceCardCollection = () => ({
               v-for="(res, index) in metadataCards[2].resources"
               :key="'cols-3_' + index" >
 
-              <resource-card v-bind="res"
-                              :doiIcon="doiIcon"
-                              :dateCreatedIcon="dateCreatedIcon"
-                              :lastModifiedIcon="lastModifiedIcon"
-                              :fileExtensionIcon="iconFiles"
-                               />
+        <resource-card v-bind="res"
+                        :doiIcon="doiIcon"
+                        :dateCreatedIcon="dateCreatedIcon"
+                        :lastModifiedIcon="lastModifiedIcon"
+                        :fileExtensionIcon="iconFiles"
+                         />
       </v-col>
 
       <v-col cols="4" class="pa-2"

@@ -191,12 +191,32 @@
               >shield</v-icon
             >
 
-            <div
-              v-if="downloadActive"
-              class="pt-2 lockedText black--text protectedLink"
-            >
-              <p v-html="protectedText"></p>
+            <div v-if="downloadActive"
+                 class="pt-2 lockedText black--text protectedLink" >
+
+              <v-row>
+                <v-col cols="12">
+                  Request Access to '{{ name }}'
+                </v-col>
+
+                <v-col v-if="!isSignedIn">
+                  Please sign in into your EnviDat account.
+                </v-col>
+
+                <v-col v-if="isSignedIn && !accessRequested">
+                  <base-icon-button material-icon-name="key"
+                                    icon-color="black"
+                                    :fillColor="$vuetify.theme.themes.light.accent"
+                                    @clicked="catchRequestAccesClick"
+                  />
+                </v-col>
+
+                <v-col v-if="isSignedIn && accessRequested">
+                  You requested access to '{{ name }}', you should get an email confirmation shortly.
+                </v-col>
+              </v-row>
             </div>
+
           </div>
         </v-col>
       </v-row>
@@ -221,6 +241,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
+import { eventBus, RESOURCE_REQUEST_ACCESS } from '@/factories/eventBus';
 
 export default {
   name: 'ResourceCard',
@@ -247,6 +268,10 @@ export default {
     dateCreatedIcon: String,
     lastModifiedIcon: String,
     isProtected: Boolean,
+    isSignedIn: {
+      type: Boolean,
+      defautl: false,
+    },
     fileExtensionIcon: Object,
     metadataContact: String,
     downloadActive: {
@@ -280,6 +305,7 @@ export default {
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
+    accessRequested: false,
   }),
   computed: {
     readableCreated() {
@@ -418,7 +444,12 @@ export default {
       return icon;
     },
   },
-  methods: {},
+  methods: {
+    catchRequestAccesClick() {
+      this.accessRequested = true;
+      eventBus.emit(RESOURCE_REQUEST_ACCESS, this.id);
+    },
+  },
 };
 </script>
 

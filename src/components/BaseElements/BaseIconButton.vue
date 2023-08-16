@@ -80,9 +80,7 @@
       <v-icon
         v-if="materialIconName"
         :color="iconColor ? iconColor : 'primary'"
-        :style="
-          rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
-        "
+        :style="rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''"
       >
         {{ materialIconName }}
       </v-icon>

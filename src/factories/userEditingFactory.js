@@ -21,6 +21,8 @@ import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFa
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
 export const ACCESS_LEVEL_SAMEORGANIZATION_VALUE = 'same_organization';
 
+export const ACCESS_LEVEL_REDACTED = 'redacted';
+
 
 /**
  *
