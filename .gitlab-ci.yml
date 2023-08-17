@@ -76,7 +76,7 @@ run-tests:
       - node_modules/
     policy: pull-push
   before_script:
-    - npm install
+    - npm ci
   script:
     - npm run test
 
@@ -90,7 +90,7 @@ run-tests:
 #       - node_modules/
 #     policy: pull
 #   before_script:
-#     - npm install
+#     - npm ci
 #   script:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
