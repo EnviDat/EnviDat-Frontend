@@ -59,3 +59,17 @@ export const METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS =
   'METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS';
 export const METADATA_UPDATE_EXISTING_KEYWORDS_ERROR =
   'METADATA_UPDATE_EXISTING_KEYWORDS_ERROR';
+
+export const METADATA_RESOURCE_ACCESS_REQUEST =  'METADATA_RESOURCE_ACCESS_REQUEST';
+export const METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS =  'METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS';
+export const METADATA_RESOURCE_ACCESS_REQUEST_ERROR =  'METADATA_RESOURCE_ACCESS_REQUEST_ERROR';
+
+const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+
+export const ACTION_RESOURCE_REQUEST_ACCESS = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/restricted_request_access.json';
+  }
+
+  return 'restricted_request_access';
+};

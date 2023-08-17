@@ -88,6 +88,9 @@ const initialState = {
   authorPassedInfo: 'Sadly this author has passed away.',
   existingAuthors: [],
   existingKeywords: [],
+  resourceAccess: false,
+  resourceLoading: false,
+  resourceError: null,
 };
 
 export const metadata = {

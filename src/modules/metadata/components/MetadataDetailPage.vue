@@ -100,6 +100,7 @@ import {
   CLEAR_SEARCH_METADATA,
   LOAD_METADATA_CONTENT_BY_ID,
   METADATA_NAMESPACE,
+  METADATA_RESOURCE_ACCESS_REQUEST,
 } from '@/store/metadataMutationsConsts';
 import {
   createBody,
@@ -127,6 +128,7 @@ import {
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
   GCNET_PREPARE_DETAIL_CHARTS,
+  RESOURCE_REQUEST_ACCESS,
 } from '@/factories/eventBus';
 
 import {
@@ -167,7 +169,7 @@ export default {
   created() {
     eventBus.on(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
-
+    eventBus.on(RESOURCE_REQUEST_ACCESS, this.catchAccessRequest);
   },
   /**
    * @description load all the icons once before the first component's rendering.
@@ -203,6 +205,7 @@ export default {
 
     eventBus.off(GCNET_PREPARE_DETAIL_CHARTS, this.prepareGCNetChartModal);
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
+    eventBus.off(RESOURCE_REQUEST_ACCESS, this.catchAccessRequest);
   },
   computed: {
     ...mapState(['config']),
@@ -717,6 +720,9 @@ export default {
           backPath: this.$route.fullPath,
         },
       });
+    },
+    catchAccessRequest(resourceId) {
+      this.$store.dispatch(METADATA_RESOURCE_ACCESS_REQUEST, resourceId);
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.

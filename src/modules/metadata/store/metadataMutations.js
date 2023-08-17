@@ -42,6 +42,9 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
   METADATA_UPDATE_AN_EXISTING_AUTHOR,
   METADATA_NAMESPACE,
+  METADATA_RESOURCE_ACCESS_REQUEST,
+  METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS,
+  METADATA_RESOURCE_ACCESS_REQUEST_ERROR,
 } from '@/store/metadataMutationsConsts';
 
 import {
@@ -270,5 +273,17 @@ export default {
   [METADATA_UPDATE_EXISTING_KEYWORDS_ERROR](state, reason) {
     const errObj = warningMessage(`${METADATA_KEYWORDS_TITLE} Error`, `Error while processing keywords: ${reason.message}.`, reason.stack);
     this.commit(ADD_USER_NOTIFICATION, errObj);
+  },
+  [METADATA_RESOURCE_ACCESS_REQUEST](state) {
+    state.resourceLoading = true;
+  },
+  [METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS](state) {
+    state.resourceLoading = false;
+    state.resourceAccess = true;
+  },
+  [METADATA_RESOURCE_ACCESS_REQUEST_ERROR](state, reason) {
+    state.resourceLoading = false;
+    state.resourceAccess = false;
+    state.resourceError = reason;
   },
 };

@@ -16,8 +16,6 @@ import axios from 'axios';
 
 import {
   LOAD_METADATA_CONTENT_BY_ID,
-  // LOAD_METADATA_CONTENT_BY_ID_SUCCESS,
-  // LOAD_METADATA_CONTENT_BY_ID_ERROR,
   SEARCH_METADATA,
   SEARCH_METADATA_SUCCESS,
   SEARCH_METADATA_ERROR,
@@ -35,6 +33,10 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  METADATA_RESOURCE_ACCESS_REQUEST,
+  ACTION_RESOURCE_REQUEST_ACCESS,
+  METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS,
+  METADATA_RESOURCE_ACCESS_REQUEST_ERROR,
 } from '@/store/metadataMutationsConsts';
 
 import catCards from '@/store/categoryCards';
@@ -55,16 +57,19 @@ import {
 } from '@/factories/metaDataFactory';
 
 import metadataTags from '@/modules/metadata/store/metadataTags';
-/*
-import { enhanceElementsWithStrategyEvents } from '@/factories/strategyFactory';
-import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
-*/
+import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
+// don't use an api base url or proxy when using testdata
 /* eslint-disable no-unused-vars  */
-const PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+let API_BASE = '';
+let ENVIDAT_PROXY = '';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+}
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -212,7 +217,7 @@ export default {
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+    const url = urlRewrite(publicOnlyQuery, '/', ENVIDAT_PROXY);
 
     await axios
       .get(url)
@@ -247,7 +252,7 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
+    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, ENVIDAT_PROXY);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -266,7 +271,7 @@ export default {
     const metadataConfig = config.metadataConfig || {};
 
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, PROXY);
+                API_BASE, ENVIDAT_PROXY);
 
     if (import.meta.env.DEV && useTestdata) {
       url = './testdata/packagelist.json';
@@ -405,7 +410,7 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, PROXY);
+    const url = urlRewrite('tag_list', API_BASE, ENVIDAT_PROXY);
 
     await axios.get(url).then((response) => {
 
@@ -425,5 +430,22 @@ export default {
     }).catch((reason) => {
       commit(METADATA_UPDATE_EXISTING_KEYWORDS_ERROR, reason);
     });
+  },
+  [METADATA_RESOURCE_ACCESS_REQUEST]({ commit }, resourceId) {
+    commit(METADATA_RESOURCE_ACCESS_REQUEST);
+
+    const actionUrl = ACTION_RESOURCE_REQUEST_ACCESS();
+
+    let url = extractBodyIntoUrl(actionUrl, { id: resourceId });
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    axios.get(url)
+      .then((response) => {
+        commit(METADATA_RESOURCE_ACCESS_REQUEST_SUCCESS, response.data.result);
+      })
+      .catch((reason) => {
+        commit(METADATA_RESOURCE_ACCESS_REQUEST_ERROR, reason);
+      });
+
   },
 };
