@@ -3,10 +3,9 @@ import { it, describe, expect } from 'vitest';
 import {
   getModeData,
   getTagsMergedWithExtras,
-  enhanceMetadataWithModeExtras,
+  enhanceMetadataWithModeExtras, SWISSFL_MODE,
 } from '@/factories/modeFactory';
 
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 import {
   swissFLExtraTags,
 } from '@/modules/metadata/store/swissForestLabTags';

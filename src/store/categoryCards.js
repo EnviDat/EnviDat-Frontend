@@ -27,7 +27,8 @@ import {
 // import meteoImg from '@/assets/cards/c_b_c_b_clouds_lighting_small.jpg';
 // import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 // import swissFLLogo from '@/assets/cards/swiss_forest_lab_logo.jpg';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+
+import { SWISSFL_MODE } from '@/factories/modeFactory';
 
 export default [
   {

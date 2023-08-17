@@ -35,7 +35,6 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
   SET_ABOUT_PAGE_BACK_URL,
   SET_VIRTUAL_LIST_INDEX,
-  SWISSFL_MODE,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -67,7 +66,7 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
-import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
+import { enhanceMetadataWithModeExtras, SWISSFL_MODE } from '@/factories/modeFactory';
 
 
 

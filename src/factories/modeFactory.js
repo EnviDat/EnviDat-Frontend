@@ -15,7 +15,6 @@ import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
 import { createTag } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
 
 /*
 async function getSwissflLogo() {
@@ -40,6 +39,8 @@ function getSwissflIcons() {
 }
 
 // const swissflLogo = getSwissflLogo();
+
+export const SWISSFL_MODE = 'swissfl';
 
 const swissflMode = {
   name: SWISSFL_MODE,

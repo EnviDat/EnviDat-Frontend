@@ -15,12 +15,11 @@
 import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
-
 import {
   navigationItems,
   userMenuItems,
 } from '@/store/navigationState';
+import { SWISSFL_MODE } from '@/factories/modeFactory';
 
 
 const dominikHaas = {

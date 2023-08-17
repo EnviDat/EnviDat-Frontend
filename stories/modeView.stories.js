@@ -10,7 +10,8 @@
  */
 
 import ModeView from '@/components/Layouts/ModeView.vue';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+
+import { SWISSFL_MODE } from '@/factories/modeFactory';
 
 export default {
   title: '14 Mode / Mode View',
