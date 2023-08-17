@@ -4,7 +4,7 @@ import globalMethods from '@/factories/globalMethods';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 import { createResource } from '@/factories/metaDataFactory';
-import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import { eventBus, RESOURCE_REQUEST_ACCESS } from '@/factories/eventBus';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
@@ -71,16 +71,17 @@ export default {
 };
 
 
-
-eventBus.off(EDITMETADATA_OBJECT_UPDATE, (event) => {
-  console.log(EDITMETADATA_OBJECT_UPDATE);
+const log = (event) => {
+  console.log(RESOURCE_REQUEST_ACCESS);
   console.log(event);
-});
+}
+eventBus.on(RESOURCE_REQUEST_ACCESS, log);
 
 const Template = (args, { argTypes }) => ({
   components: { ResourceCard },
   props: Object.keys(argTypes),
-  template: '<ResourceCard v-bind="$props" />',
+  template: `<ResourceCard v-bind="$props"
+  />`,
 });
 
 export const Empty = Template.bind({});

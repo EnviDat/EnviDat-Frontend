@@ -181,41 +181,52 @@
       <v-row v-if="isProtected">
         <v-col>
           <div
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
+            class="fabMenu fabPosition elevation-2 ma-2 pa-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
           >
-            <v-icon
-              class="pl-1 pt-1"
-              :class="downloadActive ? 'iconCircle' : ''"
-              :disabled="!downloadActive"
-              >shield</v-icon
-            >
+            <v-row>
+              <v-col class="flex-grow-0 pa-3 pr-2">
+                <v-icon class="px-1 pt-1"
+                        :disabled="!downloadActive" >
+                  shield
+                </v-icon>
+              </v-col>
 
-            <div v-if="downloadActive"
-                 class="pt-2 lockedText black--text protectedLink" >
+              <v-col v-if="!isSignedIn"
+                     class="lockedText black--text protectedLink pa-2 pl-1" >
+                Request Access to '{{ name }}' resource.
+              </v-col>
+            </v-row>
 
-              <v-row>
-                <v-col cols="12">
-                  Request Access to '{{ name }}'
-                </v-col>
+            <v-row no-gutters
+                   align="end"
+                   class="lockedText black--text protectedLink">
 
-                <v-col v-if="!isSignedIn">
-                  Please sign in into your EnviDat account.
-                </v-col>
+              <v-col v-if="isSignedIn && !accessRequested"
+                     cols="12"
+                     class="lockedText black--text protectedLink pa-1" >
+                Request Access to '{{ name }}' resource.
+              </v-col>
 
-                <v-col v-if="isSignedIn && !accessRequested">
-                  <base-icon-button material-icon-name="key"
-                                    icon-color="black"
-                                    :fillColor="$vuetify.theme.themes.light.accent"
-                                    @clicked="catchRequestAccesClick"
-                  />
-                </v-col>
+              <v-col v-if="!isSignedIn"
+                     class="pa-1 py-2">
+                Please sign in into your EnviDat account.
+              </v-col>
 
-                <v-col v-if="isSignedIn && accessRequested">
-                  You requested access to '{{ name }}', you should get an email confirmation shortly.
-                </v-col>
-              </v-row>
-            </div>
+              <v-col v-if="isSignedIn && !accessRequested"
+                      class="flex-grow-0" >
+                <base-icon-button material-icon-name="key"
+                                  icon-color="black"
+                                  :fillColor="$vuetify.theme.themes.light.accent"
+                                  @clicked="catchRequestAccessClick"
+                />
+              </v-col>
+
+              <v-col v-if="isSignedIn && accessRequested"
+                     class="py-0">
+                You requested access to '{{ name }}', should get an email confirmation shortly.
+              </v-col>
+            </v-row>
 
           </div>
         </v-col>
@@ -270,7 +281,7 @@ export default {
     isProtected: Boolean,
     isSignedIn: {
       type: Boolean,
-      defautl: false,
+      default: false,
     },
     fileExtensionIcon: Object,
     metadataContact: String,
@@ -445,7 +456,7 @@ export default {
     },
   },
   methods: {
-    catchRequestAccesClick() {
+    catchRequestAccessClick() {
       this.accessRequested = true;
       eventBus.emit(RESOURCE_REQUEST_ACCESS, this.id);
     },
@@ -495,7 +506,7 @@ export default {
 .fabMenuHover:active {
   background: #fff;
   min-width: 160px;
-  min-height: 160px;
+  min-height: 130px;
   width: 100%;
   height: 100%;
   border-radius: 3px 3px;
@@ -504,9 +515,9 @@ export default {
 
 .fabMenuHover:hover .v-icon,
 .fabMenuHover:active .v-icon {
-  border: 1px solid grey;
-  border-radius: 50%;
   padding: 0 4px 4px 0;
+  width: 24px;
+  height: 24px;
 }
 
 .lockedText {
