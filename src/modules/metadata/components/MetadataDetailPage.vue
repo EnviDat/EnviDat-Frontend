@@ -722,7 +722,7 @@ export default {
       });
     },
     catchAccessRequest(resourceId) {
-      this.$store.dispatch(METADATA_RESOURCE_ACCESS_REQUEST, resourceId);
+      this.$store.dispatch(`${METADATA_NAMESPACE}/${METADATA_RESOURCE_ACCESS_REQUEST}`, resourceId);
     },
     /**
      * @description loads the content of this metadata entry (metadataid) from the URL.

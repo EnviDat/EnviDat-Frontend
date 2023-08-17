@@ -436,7 +436,7 @@ export default {
 
     const actionUrl = ACTION_RESOURCE_REQUEST_ACCESS();
 
-    let url = extractBodyIntoUrl(actionUrl, { id: resourceId });
+    let url = extractBodyIntoUrl(actionUrl, { resource_id: resourceId });
     url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
 
     axios.get(url)

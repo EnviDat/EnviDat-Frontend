@@ -467,6 +467,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
     lastModified: modified,
     position: resource.position || '',
     isProtected,
+    isSignedIn: !!signedInUserName,
     previewUrl: resource.previewUrl || null,
   };
 }

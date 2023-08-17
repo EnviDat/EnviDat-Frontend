@@ -194,7 +194,7 @@
 
               <v-col v-if="!isSignedIn"
                      class="lockedText black--text protectedLink pa-2 pl-1" >
-                Request Access to '{{ name }}' resource.
+                Request Access to this resource.
               </v-col>
             </v-row>
 
@@ -205,7 +205,7 @@
               <v-col v-if="isSignedIn && !accessRequested"
                      cols="12"
                      class="lockedText black--text protectedLink pa-1" >
-                Request Access to '{{ name }}' resource.
+                Request Access to this resource.
               </v-col>
 
               <v-col v-if="!isSignedIn"
