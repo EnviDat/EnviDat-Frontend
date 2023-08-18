@@ -1,10 +1,12 @@
 <template>
   <v-container fluid class="pa-0" tag="article" id="LandingPage">
+<!--
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas"
       style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;"
     />
+-->
 
 <!--
     <div
