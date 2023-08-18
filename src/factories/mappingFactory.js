@@ -786,8 +786,8 @@ function populateEditingResources(commit, snakeCaseJSON) {
   const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   const resources = resourceData.resources;
 
-  resourceData.license = dataLicenseInfo.license;
-  resourceData.licenseUrl = dataLicenseInfo.licenseUrl;
+  resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
+  resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
 
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
@@ -865,7 +865,7 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
 
-  const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+  populateEditingDataInfo(commit, snakeCaseJSON);
 
   populateEditingResources(commit, snakeCaseJSON);
 
@@ -876,11 +876,15 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
   // enhanced Header for the preview infos
   const stepKey = EDITMETADATA_MAIN_HEADER;
 
+  const organization = snakeCaseJSON.organization.name;
+  const organizationTooltip = snakeCaseJSON.organization.title;
+
   const enhanceHeader = {
     ...headerData,
     keywords: keywordsData.keywords,
     authors,
-    dataLicense: dataInfo.dataLicenseTitle,
+    organization,
+    organizationTooltip,
     doi: publicationData.doi,
   };
 

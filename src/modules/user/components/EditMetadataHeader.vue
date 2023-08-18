@@ -327,9 +327,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    dataLicense: {
+    organization: {
       type: String,
-      default: () => '',
+      default: undefined,
+    },
+    organizationTooltip: {
+      type: String,
+      default: undefined,
     },
     doi: {
       type: String,
@@ -427,7 +431,8 @@ export default {
         contactName: fullName,
         contactEmail: this.contactEmailField,
         doi: this.doi,
-        license: this.dataLicense,
+        organization: this.organization,
+        organizationTooltip: this.organizationTooltip,
         tags: this.keywords,
         authors: this.authors,
       };

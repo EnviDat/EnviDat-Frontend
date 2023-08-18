@@ -368,8 +368,6 @@ export default {
     contactName: String,
     contactEmail: String,
     doi: String,
-    license: String,
-    licenseUrl: String,
     tags: Array,
     authors: Array,
     maxTags: Number,

@@ -24,8 +24,8 @@
         <v-col >
           <BaseIconLabelView icon-tooltip="Data License"
                              materialIconName="policy"
-                             :text="license"
-                             :url="licenseUrl"
+                             :text="dataLicenseTitle"
+                             :url="dataLicenseUrl"
                              />
         </v-col>
 
@@ -171,11 +171,11 @@ export default {
     fileSizeIcon() {
       return this.mixinMethods_getGenericProp('fileSizeIcon');
     },
-    license() {
-      return this.mixinMethods_getGenericProp('license');
+    dataLicenseTitle() {
+      return this.mixinMethods_getGenericProp('dataLicenseTitle');
     },
-    licenseUrl() {
-      return this.mixinMethods_getGenericProp('licenseUrl');
+    dataLicenseUrl() {
+      return this.mixinMethods_getGenericProp('dataLicenseUrl');
     },
     dateCreatedIcon() {
       return this.mixinMethods_getGenericProp('dateCreatedIcon');

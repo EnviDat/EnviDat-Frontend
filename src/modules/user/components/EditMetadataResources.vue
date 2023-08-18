@@ -48,11 +48,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    license: {
+    dataLicenseTitle: {
       type: String,
       default: undefined,
     },
-    licenseUrl: {
+    dataLicenseUrl: {
       type: String,
       default: undefined,
     },
@@ -67,8 +67,8 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
-        license: this.license,
-        licenseUrl: this.licenseUrl,
+        dataLicenseTitle: this.dataLicenseTitle,
+        dataLicenseUrl: this.dataLicenseUrl,
         fileSizeIcon: this.fileSizeIcon,
         fileIcon: this.fileIcon,
         dateCreatedIcon: this.dateCreatedIcon,
