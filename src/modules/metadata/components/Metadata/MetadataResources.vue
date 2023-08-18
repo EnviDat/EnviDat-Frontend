@@ -21,7 +21,7 @@
     <v-card-text>
       <v-row no-gutters
              align="center">
-        <v-col >
+        <v-col class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
                              materialIconName="policy"
                              :text="dataLicenseTitle"
