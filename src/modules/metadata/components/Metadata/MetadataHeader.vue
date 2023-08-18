@@ -317,8 +317,12 @@
 
         <v-col v-if="metadataState"
                class="px-1" >
-          <MetadataStateChip :state="metadataState"
-                              :showOnHover="metadataState === 'published'" />
+          <MetadataStateChip :state="metadataState" />
+        </v-col>
+
+        <v-col v-if="publicationYear"
+               class="px-1" >
+          <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>
 
       </v-row>
@@ -392,6 +396,10 @@ export default {
     organization: String,
     organizationTooltip: String,
     metadataState: {
+      type: String,
+      default: undefined,
+    },
+    publicationYear: {
       type: String,
       default: undefined,
     },

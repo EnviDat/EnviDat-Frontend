@@ -22,7 +22,6 @@ import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.v
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
 import {
   createHeader,
@@ -31,15 +30,9 @@ import {
   createPublications,
   createBody,
   createLocation,
-  createResources,
 } from '@/factories/metaDataFactory';
 
 import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
-
-import doiIcon from '../src/assets/icons/doi.png';
-import fileSizeIcon from '../src/assets/icons/fileSize.png';
-import fileIcon from '../src/assets/icons/file.png';
-
 
 // const iconFiles = getIcons();
 
@@ -121,9 +114,6 @@ const funding2 = [
   { grant_number: '', institution: 'Someone', institution_url: '' },
   { grant_number: '', institution: 'Someone you do not know with a long name', institution_url: '' },
 ];
-
-const resources1 = createResources(metadata[1]);
-const resources2 = createResources(metadata[2]);
 
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
@@ -592,52 +582,6 @@ export const MetadataFundingViews = () => ({
     genericProps2: {
       funding: funding2,
       showPlaceholder: false,
-    },
-  }),
-});
-
-export const MetadataResourcesViews = () => ({
-  components: { MetadataResources },
-  template: `
-  <v-row >
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProp"
-                          :showPlaceholder="genericProp.showPlaceholder" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProps2"
-                          :showPlaceholder="genericProps2.showPlaceholder" />
-    </v-col>
-
-  </v-row>
-  `,
-  updated() {
-  },
-  data: () => ({
-    genericProp: {
-      resources: resources1.resources,
-      showPlaceholder: false,
-      doiIcon,
-      fileIcon,
-      fileSizeIcon,
-    },
-    genericPropsPlaceholder: {
-      resources: null,
-      showPlaceholder: true,
-    },
-    genericProps2: {
-      resources: resources2.resources,
-      showPlaceholder: false,
-      doiIcon,
-      fileIcon,
-      fileSizeIcon,
     },
   }),
 });

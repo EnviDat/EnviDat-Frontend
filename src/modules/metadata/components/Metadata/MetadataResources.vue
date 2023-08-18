@@ -29,6 +29,24 @@
                              />
         </v-col>
 
+        <v-col>
+          <v-row no-gutters
+                 justify="end"
+                 v-for="(dateObj, index) in dates"
+                 :key="index">
+            <v-col >{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
+
+<!--
+            <v-col class="flex-grow-0 px-2">Start:</v-col>
+-->
+            <v-col align-self="end" class="">{{ dateObj[DATE_PROPERTY_START_DATE] }}</v-col>
+<!--
+            <v-col class="flex-grow-0 px-2">End:</v-col>
+-->
+            <v-col align-self="end">{{ dateObj[DATE_PROPERTY_END_DATE] }}</v-col>
+          </v-row>
+        </v-col>
+
       </v-row>
     </v-card-text>
 
@@ -116,7 +134,12 @@
 */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
+import {
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_RESOURCES_TITLE,
+} from '@/factories/metadataConsts';
 
 import {
   eventBus,
@@ -151,6 +174,9 @@ export default {
     },
     resources() {
       return this.mixinMethods_getGenericProp('resources');
+    },
+    dates() {
+      return this.mixinMethods_getGenericProp('dates');
     },
     availableResources() {
       const res = this.resources;
@@ -215,6 +241,9 @@ export default {
     injectedComponentConfig: null,
     showAllResources: false,
     METADATA_RESOURCES_TITLE,
+    DATE_PROPERTY_DATE_TYPE,
+    DATE_PROPERTY_START_DATE,
+    DATE_PROPERTY_END_DATE,
   }),
 };
 </script>

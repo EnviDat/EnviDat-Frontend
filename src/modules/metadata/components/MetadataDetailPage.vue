@@ -82,7 +82,11 @@
 import axios from 'axios';
 import { rewind as tRewind } from '@turf/turf';
 import { mapGetters, mapState } from 'vuex';
-import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import {
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
+} from '@/router/routeConsts';
 
 import {
   ACTION_USER_SHOW,
@@ -106,6 +110,7 @@ import {
   createCitation,
   createFunding,
   createHeader,
+  createLicense,
   createLocation,
   createPublications,
   createRelatedDatasets,
@@ -123,6 +128,7 @@ import {
 
 import {
   AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
@@ -142,6 +148,9 @@ import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
+
+import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -478,6 +487,10 @@ export default {
 
         this.header.metadataState = getMetadataVisibilityState(currentContent);
 
+        const parsedContent = convertJSON(currentContent, false);
+        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        this.header.publicationYear = publicationData.publicationYear;
+
         this.body = createBody(
           currentContent,
           this.$vuetify.breakpoint.smAndDown,
@@ -535,6 +548,8 @@ export default {
 
         enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
         enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
+
+        this.resources.dates = getFrontendDates(this.currentMetadataContent.date);
       }
 
       this.$nextTick(() => {

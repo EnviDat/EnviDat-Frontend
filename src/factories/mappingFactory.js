@@ -696,14 +696,22 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   return dataObject;
 }
 
+export function getFrontendDates(backendDates) {
+  let dates = backendDates;
+  if(typeof backendDates === 'string') {
+    dates = JSON.parse(backendDates);
+  }
+
+  return formatDatesForFrontend(dates);
+}
+
 function populateEditingAuthors(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   const stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
-
   const authors = []
+
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
 
