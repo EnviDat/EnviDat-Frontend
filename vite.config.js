@@ -112,9 +112,13 @@ export default ({ mode }) => {
                 if (id.includes('skeleton-placeholder')) {
                   return 'vendor_skeleton';
                 }
+/*
+                Had to be removed, it caused import errors, when the vendor_leaflet.js tried
+                to import something from the vendors.js
                 if (id.includes('leaflet')) {
                   return 'vendor_leaflet';
                 }
+*/
                 if (id.includes('src/factories')) {
                   return 'envidat_factories';
                 }

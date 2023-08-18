@@ -13,7 +13,6 @@
  */
 
 import Vue from 'vue';
-import InfiniteLoading from 'vue-infinite-loading';
 
 import store from '@/store/store';
 import App from '@/App.vue';
@@ -23,7 +22,7 @@ import vuetify from './plugins/vuetify';
 import router from './router';
 import globalMethods from './factories/globalMethods';
 
-Vue.use(InfiniteLoading /* , { options } */);
+
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
 

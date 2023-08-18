@@ -15,6 +15,13 @@ import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.
 import { enhanceMetadatas, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import globalMethods from '@/factories/globalMethods';
+
+import {
+  mobileLargeViewportParams,
+  mobileViewportParams,
+  tabletViewportParams,
+} from './js/envidatViewports';
+
 import fileIcon from '../src/assets/icons/file.png';
 import lockedIcon from '../src/assets/icons/lockClosed.png';
 import unlockedIcon from '../src/assets/icons/lockOpen.png';
@@ -106,6 +113,19 @@ CompactCard.args = {
   ...NormalCard.args,
   compactLayout: true,
 }
+
+export const MobileNormalCard = Template.bind({});
+MobileNormalCard.args = { ...NormalCard.args };
+MobileNormalCard.parameters = mobileViewportParams;
+
+export const MobileLargeNormalCard = Template.bind({});
+MobileLargeNormalCard.args = { ...NormalCard.args };
+MobileLargeNormalCard.parameters = mobileLargeViewportParams;
+
+export const TabletNormalCard = Template.bind({});
+TabletNormalCard.args = { ...NormalCard.args };
+TabletNormalCard.parameters = tabletViewportParams;
+
 
 export const FlatCard = Template.bind({});
 FlatCard.args = {

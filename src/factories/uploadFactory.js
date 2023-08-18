@@ -21,6 +21,8 @@ import {
   METADATA_DELETE_RESOURCE,
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
+  METADATA_UPLOAD_FILE_ERROR,
+  METADATA_UPLOAD_FILE_SUCCESS,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
@@ -162,10 +164,10 @@ export async function initiateMultipart(file) {
   try {
     const res = await axios.post(url, payload);
 
-    const fileId = res.data.result.id;
+    // const fileId = res.data.result.id;
     const key = res.data.result.name;
 
-    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, { fileId, key });
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, key);
 
     return {
       uploadId: res.data.result.id,
@@ -296,8 +298,11 @@ export async function completeMultipart(file, uploadData) {
     const res = await axios.post(url, payload);
     const fileUrl = res.data?.result?.url || null
 
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_SUCCESS}`);
+
     return { location: fileUrl };
   } catch (error) {
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_ERROR}`, error);
     console.error(`Multipart completion failed: ${error}`);
     return error;
   }

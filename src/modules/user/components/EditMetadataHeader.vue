@@ -67,7 +67,8 @@
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
                         :value="metadataTitleField"
-                        @input="changeProperty(METADATA_TITLE_PROPERTY, $event)"
+                        @keyup="blurOnEnterKey"
+                        @input="changePropertyForPreview(METADATA_TITLE_PROPERTY, $event)"
                         @change="notifyPropertyChange(METADATA_TITLE_PROPERTY, $event)"
           />
 
@@ -105,9 +106,10 @@
                         prepend-icon="email"
                         :placeholder="labels.placeholderContactEmail"
                         :value="contactEmailField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactEmail', $event)"
-                        @input="changeProperty('contactEmail', $event)"
+                        @input="changePropertyForPreview('contactEmail', $event)"
                         />
 
         </v-col>
@@ -156,9 +158,10 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderContactGivenName"
                         :value="contactGivenNameField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactGivenName', $event)"
-                        @input="changeProperty('contactGivenName', $event)"
+                        @input="changePropertyForPreview('contactGivenName', $event)"
                         />
 
         </v-col>
@@ -178,9 +181,10 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderContactSurname"
                         :value="contactSurnameField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('contactSurname', $event)"
-                        @input="changeProperty('contactSurname', $event)"
+                        @input="changePropertyForPreview('contactSurname', $event)"
                         />
 
         </v-col>
@@ -204,8 +208,9 @@
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
                           :value="metadataUrlField"
+                          @keyup="blurOnEnterKey"
                           @click.stop
-                          @input="changeProperty(METADATA_URL_PROPERTY, $event)"
+                          @input="changePropertyForPreview(METADATA_URL_PROPERTY, $event)"
                           @change="notifyPropertyChange(METADATA_URL_PROPERTY, $event)"
             />
           </ExpandableLayout>
@@ -262,8 +267,6 @@ import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
 
-import imageContact from '@/assets/icons/contact.png';
-import imageMail from '@/assets/icons/mail.png';
 import { enhanceTitleImg } from '@/factories/metaDataFactory';
 
 import {
@@ -324,9 +327,13 @@ export default {
       type: Array,
       default: () => [],
     },
-    dataLicense: {
+    organization: {
       type: String,
-      default: () => '',
+      default: undefined,
+    },
+    organizationTooltip: {
+      type: String,
+      default: undefined,
     },
     doi: {
       type: String,
@@ -412,11 +419,6 @@ export default {
     },
     metadataPreviewEntry() {
 
-      const doiIcon = this.mixinMethods_getIcon('doi') || '';
-      const contactIcon = this.mixinMethods_getIcon('contact2') || this.iconName;
-      const mailIcon = this.mixinMethods_getIcon('mail') || this.iconMail;
-      const licenseIcon = this.mixinMethods_getIcon('license') || '';
-
       const fullName = this.getFullName({
         given_name: this.contactGivenNameField,
         name: this.contactSurnameField,
@@ -427,13 +429,10 @@ export default {
         title: this.metadataTitleField || this.labels.placeholderHeaderTitle, // is needed for the enhanceTitleImg
         showCloseButton: false,
         contactName: fullName,
-        contactIcon,
         contactEmail: this.contactEmailField,
-        mailIcon,
         doi: this.doi,
-        doiIcon,
-        license: this.dataLicense,
-        licenseIcon,
+        organization: this.organization,
+        organizationTooltip: this.organizationTooltip,
         tags: this.keywords,
         authors: this.authors,
       };
@@ -471,6 +470,11 @@ export default {
     },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     isContactPropertyReadOnly(property) {
       return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
     },
@@ -531,7 +535,7 @@ export default {
         this.activeElements[toId] = editing;
       }
     },
-    changeProperty(property, value) {
+    changePropertyForPreview(property, value) {
       this.previews[property] = value;
       const valid = this.validateProperty(property, value);
 
@@ -748,8 +752,6 @@ export default {
       contactSurname: false,
       contactEmail: false,
     },
-    iconName: imageContact,
-    iconMail: imageMail,
     METADATA_TITLE_PROPERTY,
     METADATA_URL_PROPERTY,
   }),

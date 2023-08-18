@@ -50,7 +50,7 @@ import {
    let type = '';
    let field = '';
    let msg =
-     'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+     'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
 
    const error = reason?.response?.data?.error || reason?.error || reason;
 

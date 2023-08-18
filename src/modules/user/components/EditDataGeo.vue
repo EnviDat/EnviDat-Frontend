@@ -101,14 +101,12 @@ import {
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
-import { parseAsGeomCollection } from '@/factories/metaDataFactory';
+import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/metaDataFactory';
 
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-
-import { defaultSwissLocation } from '@/factories/workflowFactory';
 
 /*
 import geojsonhint from '@mapbox/geojsonhint';
@@ -173,7 +171,7 @@ export default {
   mounted() {
     eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
     eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
-    this.originalGeom = this.location.geoJSON;
+    this.originalGeom = this.location?.geoJSON;
   },
   beforeDestroy() {
     if (this.saveButtonEnabled) {

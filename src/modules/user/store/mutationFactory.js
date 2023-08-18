@@ -30,7 +30,7 @@ export function extractUserError(store, reason, errorProperty = 'error') {
 
   let type = '';
   let field = '';
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
 
   if (reason?.response && reason.response.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText}
@@ -66,7 +66,7 @@ export function extractUserError(store, reason, errorProperty = 'error') {
 }
 
 export function createErrorMessage(reason) {
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
   let details = '';
   let status = 500;
 

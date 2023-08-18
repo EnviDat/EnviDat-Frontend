@@ -377,6 +377,13 @@ export default {
           'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
         link: 'https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md',
       },
+      {
+        id: 'other-undefined',
+        title: 'Other (Specified in the description)',
+        summary:
+          'This is an option provide a custom license. It needs to be provided in the description. \n However we do NOT recommend to do it, unless you have a very good reason for it.',
+        link: '',
+      },
     ],
   }),
 };

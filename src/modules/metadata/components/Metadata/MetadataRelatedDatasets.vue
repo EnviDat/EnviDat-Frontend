@@ -55,9 +55,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters } from 'vuex';
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
-import { mapGetters } from 'vuex';
 import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 import { extractDatasetIdsFromText, getCitationList } from '@/factories/metaDataFactory';
 

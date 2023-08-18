@@ -26,16 +26,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import axios from 'axios';
+import { mapState } from 'vuex';
+
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_PUBLICATIONS_TITLE } from '@/factories/metadataConsts';
-import { mapState } from 'vuex';
 import {
   extractPIDMapFromText,
   getDoraPidsUrl,
   replacePIDsInText,
   resolvedCitationText,
 } from '@/factories/metaDataFactory';
-import axios from 'axios';
 
 export default {
   name: 'MetadataPublications',

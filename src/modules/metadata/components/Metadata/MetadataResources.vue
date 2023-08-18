@@ -12,11 +12,43 @@
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
                 class="shrink resourcesIcons" >
           <base-icon-count-view :count="resources.length"
-                                :icon-string="fileIcon" />
+                                tooltip-text="Amount of Resources"
+                                materialIconName="insert_drive_file" />
         </v-col>
       </v-row>
     </v-card-title>
 
+    <v-card-text>
+      <v-row no-gutters
+             align="center">
+        <v-col class="pr-2">
+          <BaseIconLabelView icon-tooltip="Data License"
+                             materialIconName="policy"
+                             :text="dataLicenseTitle"
+                             :url="dataLicenseUrl"
+                             />
+        </v-col>
+
+        <v-col>
+          <v-row no-gutters
+                 justify="end"
+                 v-for="(dateObj, index) in dates"
+                 :key="index">
+            <v-col >{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
+
+<!--
+            <v-col class="flex-grow-0 px-2">Start:</v-col>
+-->
+            <v-col align-self="end" class="">{{ dateObj[DATE_PROPERTY_START_DATE] }}</v-col>
+<!--
+            <v-col class="flex-grow-0 px-2">End:</v-col>
+-->
+            <v-col align-self="end">{{ dateObj[DATE_PROPERTY_END_DATE] }}</v-col>
+          </v-row>
+        </v-col>
+
+      </v-row>
+    </v-card-text>
 
     <v-container v-if="showPlaceholder"
                   id="resourcePlaceholderList"
@@ -62,7 +94,7 @@
                           :lastModifiedIcon="lastModifiedIcon"
                           :twoColumnLayout="twoColumnLayout"
                           :downloadActive="resourcesConfig.downloadActive"
-                          :showGenericOpenButton="res.openEvent ? true : false"
+                          :showGenericOpenButton="!!res.openEvent"
                           :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"
@@ -102,7 +134,12 @@
 */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import { METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
+import {
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_RESOURCES_TITLE,
+} from '@/factories/metadataConsts';
 
 import {
   eventBus,
@@ -138,6 +175,9 @@ export default {
     resources() {
       return this.mixinMethods_getGenericProp('resources');
     },
+    dates() {
+      return this.mixinMethods_getGenericProp('dates');
+    },
     availableResources() {
       const res = this.resources;
       return res ? res.filter(r => !r.hideFromResourceList) : [];
@@ -157,8 +197,11 @@ export default {
     fileSizeIcon() {
       return this.mixinMethods_getGenericProp('fileSizeIcon');
     },
-    fileIcon() {
-      return this.mixinMethods_getGenericProp('fileIcon');
+    dataLicenseTitle() {
+      return this.mixinMethods_getGenericProp('dataLicenseTitle');
+    },
+    dataLicenseUrl() {
+      return this.mixinMethods_getGenericProp('dataLicenseUrl');
     },
     dateCreatedIcon() {
       return this.mixinMethods_getGenericProp('dateCreatedIcon');
@@ -198,6 +241,9 @@ export default {
     injectedComponentConfig: null,
     showAllResources: false,
     METADATA_RESOURCES_TITLE,
+    DATE_PROPERTY_DATE_TYPE,
+    DATE_PROPERTY_START_DATE,
+    DATE_PROPERTY_END_DATE,
   }),
 };
 </script>

@@ -56,7 +56,7 @@ const metadataInEditingValidations = {
       [METADATA_URL_PROPERTY]: yup.string()
         .nullable()
         .min(5, 'Dataset url must be at least 5 characters')
-        .max(180, 'Dataset url has a maximum of 180 characters')
+        .max(80, 'Dataset url has a maximum of 80 characters')
         .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
       [METADATA_TITLE_PROPERTY]: yup.string()
         .required('Dataset title is required')
@@ -161,14 +161,14 @@ const metadataInEditingValidations = {
       relatedPublicationsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Write at least 20 characters to describe the related publications.'),
+        .min(10, 'Write at least 10 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
       relatedDatasetsText: yup.string()
         .nullable()
         .transform(convertEmptyStringToNull)
-        .min(20, 'Write at least 20 characters to describe the related datasets.'),
+        .min(10, 'Write at least 10 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
@@ -219,7 +219,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('First name is required')
-        .min(3, 'First name must be at least 3 characters'),
+        .min(2, 'First name must be at least 2 characters'),
       lastName: yup.string()
         .required('Last name is required')
         .min(3, 'Last name must be at least 3 characters'),
@@ -231,7 +231,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('Author first name is required')
-        .min(3, 'Author first name must be at least 3 characters'),
+        .min(2, 'Author first name must be at least 2 characters'),
       lastName: yup.string()
         .required('Author last name is required')
         .min(3, 'Author last name must be at least 3 characters'),
@@ -340,12 +340,7 @@ export function getUserOrganizationRoleMap(userId, organizations) {
     return roleMap;
   }
 
-  organizations.forEach(orga => {
-    const matchedUsers = orga.users?.filter(u => u.id === userId);
-    if (matchedUsers?.length > 0) {
-      roleMap[orga.name] = matchedUsers[0].capacity;
-    }
-  })
+  organizations.forEach(orga => { roleMap[orga.name] = orga.capacity })
 
   return roleMap;
 }

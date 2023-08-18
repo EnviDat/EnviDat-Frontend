@@ -33,56 +33,23 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
-const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');
-const EditDescription = () => import('@/modules/user/components/EditDescription.vue');
-const EditKeywords = () => import('@/modules/user/components/EditKeywords.vue');
-const EditAuthorList = () => import('@/modules/user/components/edit/EditAuthorList.vue');
+import EditMetadataHeader from '@/modules/user/components/EditMetadataHeader.vue';
+import EditDescription from '@/modules/user/components/EditDescription.vue';
+import EditKeywords from '@/modules/user/components/EditKeywords.vue';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
-const EditDataAndResources = () => import('@/modules/user/components/EditDataAndResources.vue');
-const EditDataInfo = () => import('@/modules/user/components/EditDataInfo.vue');
-const EditDataGeo = () => import('@/modules/user/components/EditDataGeo.vue');
+import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
+import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
+import EditDataGeo from '@/modules/user/components/EditDataGeo.vue';
 
-const CreateDataAndResources = () => import('@/modules/user/components/create/CreateDataAndResources.vue');
+import CreateDataAndResources from '@/modules/user/components/create/CreateDataAndResources.vue';
 
+import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
+import MetadataEditingPublicationInfo from '@/modules/user/components/MetadataEditingPublicationInfo.vue';
 
-const MetadataGenericSubStepper = () => import('@/modules/user/components/MetadataGenericSubStepper.vue');
-const MetadataCreationRelatedInfo = () => import('@/modules/user/components/MetadataCreationRelatedInfo.vue');
-const MetadataCreationPublicationInfo = () => import('@/modules/user/components/MetadataCreationPublicationInfo.vue');
-
-const MetadataEditingPublicationInfo = () => import('@/modules/user/components/MetadataEditingPublicationInfo.vue');
-
-
-export const defaultSwissLocation = {
-  type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [5.95587, 45.81802],
-        [5.95587, 47.80838],
-        [10.49203, 47.80838],
-        [10.49203, 45.81802],
-        [5.95587, 45.81802],
-      ],
-    ],
-  }],
-};
-
-export const defaultWorldLocation = {
-  type: 'GeometryCollection',
-  geometries: [{
-    type: 'Polygon',
-    coordinates: [
-      [
-        [-175, -85],
-        [-175, 85],
-        [175, 85],
-        [175, -85],
-        [-175, -85],
-      ],
-    ],
-  }],
-}
+import { defaultSwissLocation } from '@/factories/metaDataFactory';
 
 /**
  * don't use any defaults on the emptyMetadataInEditing because it will be stored in the localstorage and therefore needs to be empty

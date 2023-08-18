@@ -36,6 +36,7 @@
                     item-text="title"
                     item-value="id"
                     outlined
+                    dense
                     chips
                     readonly
                     prepend-icon="home_filled"
@@ -54,6 +55,7 @@
                     item-text="title"
                     item-value="id"
                     outlined
+                    dense
                     chips
                     prepend-icon="home_filled"
                     :append-icon="isEditOrganizationReadonly ? '' : 'arrow_drop_down'"

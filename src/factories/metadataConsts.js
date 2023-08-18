@@ -63,3 +63,5 @@ export const DATE_PROPERTY_CREATED_TYPE = 'created';
 export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
+
+export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';

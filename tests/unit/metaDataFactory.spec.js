@@ -41,11 +41,12 @@ describe('metaDataFactory - createHeader', () => {
     expect(header.doi).toBeDefined();
     expect(header.contactName).toBeDefined();
     expect(header.contactEmail).toBeDefined();
-    expect(header.license).toBeDefined();
     expect(header.tags).toBeDefined();
     expect(header.titleImg).toBe(dataset.titleImg);
     expect(header.maxTags).toBeDefined();
     expect(header.authors).toBeDefined();
+    expect(header.organization).toBeDefined();
+    expect(header.organizationTooltip).toBeDefined();
   });
 });
 

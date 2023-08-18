@@ -14,7 +14,10 @@
 import axios from 'axios';
 
 import { urlRewrite } from '@/factories/apiFactory';
-import { extractBodyIntoUrl } from '@/factories/stringFactory';
+import {
+  extractBodyIntoUrl,
+  getSOLRStringForElements,
+} from '@/factories/stringFactory';
 
 import {
   ACTION_GET_ORGANIZATIONS,
@@ -36,6 +39,11 @@ import {
   GET_ALL_ORGANIZATIONS,
   GET_ALL_ORGANIZATIONS_SUCCESS,
   GET_ALL_ORGANIZATIONS_ERROR,
+  USER_GET_ORGANIZATIONS_SEARCH,
+  ACTION_USER_GET_ORGANIZATIONS_SEARCH,
+  USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS,
 } from './organizationsMutationsConsts';
 
 
@@ -162,7 +170,7 @@ export default {
     const requests = getOrganizationRequestArray(ids, {
       include_datasets: true,
       include_tags: true,
-    })
+    });
 
     await Promise.all(requests)
       .then((responses) => {
@@ -174,5 +182,76 @@ export default {
       .catch((error) => {
         commit(USER_GET_ORGANIZATIONS_ERROR, error);
       });
+  },
+  async [USER_GET_ORGANIZATIONS_SEARCH]({ commit }, ids) {
+    commit(USER_GET_ORGANIZATIONS);
+
+    if (!ids || ids.length <= 0) {
+      commit(USER_GET_ORGANIZATIONS_RESET);
+      return;
+    }
+
+    const actionUrl = ACTION_USER_GET_ORGANIZATIONS_SEARCH();
+    const rows = this.state.organizations.organizationsDatasetsLimit;
+
+    const idQuery = getSOLRStringForElements('owner_org', ids);
+
+    let url = extractBodyIntoUrl(actionUrl, {
+      q: idQuery,
+      include_private: true,
+      include_drafts: true,
+      rows,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then((response) => {
+        commit(USER_GET_ORGANIZATIONS_SEARCH_SUCCESS, response.data.result.results);
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATIONS_ERROR, error);
+      });
+
+  },
+  async [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE]({ dispatch, commit }, ids) {
+    commit(USER_GET_ORGANIZATIONS);
+
+    const actionUrl = ACTION_USER_GET_ORGANIZATIONS_SEARCH();
+    const rows = this.state.organizations.organizationsDatasetsLimit;
+    const preOffset = this.state.organizations.userOrgaDatasetOffset;
+
+    const idQuery = getSOLRStringForElements('owner_org', ids);
+
+    let url = extractBodyIntoUrl(actionUrl, {
+      q: idQuery,
+      include_private: true,
+      include_drafts: true,
+      rows,
+      start: preOffset,
+    });
+
+    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+
+    await axios.get(url)
+      .then((response) => {
+        commit(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, response.data.result);
+      })
+      .catch((error) => {
+        commit(USER_GET_ORGANIZATIONS_ERROR, error);
+      });
+
+    if (this.state.organizations.userOrganizationError) {
+      return;
+    }
+
+    const afterOffset = this.state.organizations.userOrgaDatasetOffset;
+    const totalAvailable = this.state.organizations.userOrgaDatasetTotal;
+
+    if (afterOffset < totalAvailable) {
+      dispatch(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE, ids);
+    } else {
+      commit(USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS);
+    }
   },
 };

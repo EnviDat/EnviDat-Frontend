@@ -10,6 +10,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { format, isValid, parse } from 'date-fns';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -48,8 +49,6 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { format, isValid, parse } from 'date-fns';
-import { mergeEditingAuthor } from '@/factories/authorFactory';
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_RESOURCE_PROPERTY,
@@ -697,14 +696,22 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
   return dataObject;
 }
 
+export function getFrontendDates(backendDates) {
+  let dates = backendDates;
+  if(typeof backendDates === 'string') {
+    dates = JSON.parse(backendDates);
+  }
+
+  return formatDatesForFrontend(dates);
+}
+
 function populateEditingAuthors(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   const stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
-
   const authors = []
+
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
 
@@ -733,12 +740,12 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   // special case here to use the backend structure json directly to format the entries
-  // this is done for consitency. When calling getFrontendJSONForStep() the dateInfoData.dates
+  // this is done for consistency. When calling getFrontendJSONForStep() the dateInfoData.dates
   // are already in camelCase and not snakeCase anymore, so for formatDatesForFrontend() the JSONFrontendBackendRules
   // would have to be only in camelCase, which wouldn't fit the rest of the structure
   // and therefore a special case implementation would also be necessary in the creationWorkflow when getting
-  // the information from the localstorage. Since here is already a special case implemenation it's better to do it
-  // here and keep the JSONFrontendBackendRules consitent!
+  // the information from the localstorage. Since here is already a special case implementation, it's better to do it
+  // here and keep the JSONFrontendBackendRules consistent!
   dateInfoData.dates = formatDatesForFrontend(bDates);
 
   commitEditingData(commit, stepKey, dateInfoData);
@@ -768,7 +775,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingResources(commit, snakeCaseJSON) {
+function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
 
   const dataObject = {};
 
@@ -778,6 +785,9 @@ function populateEditingResources(commit, snakeCaseJSON) {
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   const resources = resourceData.resources;
+
+  resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
+  resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
 
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
@@ -855,9 +865,9 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
 
-  const { dataInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+  const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 
-  populateEditingResources(commit, snakeCaseJSON);
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo);
 
   populateEditingRelatedResearch(commit, snakeCaseJSON);
 
@@ -866,11 +876,15 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
   // enhanced Header for the preview infos
   const stepKey = EDITMETADATA_MAIN_HEADER;
 
+  const organization = snakeCaseJSON.organization.name;
+  const organizationTooltip = snakeCaseJSON.organization.title;
+
   const enhanceHeader = {
     ...headerData,
     keywords: keywordsData.keywords,
     authors,
-    dataLicense: dataInfo.dataLicenseTitle,
+    organization,
+    organizationTooltip,
     doi: publicationData.doi,
   };
 
@@ -1075,7 +1089,11 @@ export function enhanceUserObject(user) {
 }
 
 export function getMetadataUrlFromTitle(title) {
-  let urlName = title?.toLowerCase().trim() || '';
-  urlName = urlName.replaceAll(' ', '-');
-  return urlName.trim();
+  let urlName = title?.toLowerCase() || '';
+  urlName = urlName.trim().replaceAll(' ', '-');
+  if (urlName.length > 80) {
+    // only a max of 80 is allowed by the backend for the url
+    urlName = urlName.substring(0, 80);
+  }
+  return urlName;
 }

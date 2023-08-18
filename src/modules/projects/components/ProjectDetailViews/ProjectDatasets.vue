@@ -8,7 +8,6 @@
       <MetadataList
         ref="metadataList"
         :listContent="listContent"
-        :showMapFilter="showMapFilter"
         :mapFilteringPossible="mapFilteringPossible"
         :placeHolderAmount="placeHolderAmount"
         @clickedTag="$emit('clickedTag', $event)"
@@ -17,12 +16,15 @@
         @clickedTagClose="$emit('clickedTagClose', $event)"
         @clickedClear="$emit('clickedClear', $event)"
         @clickedCard="catchMetadataClicked"
+        :prePinnedIds="prePinnedIds"
+        @pinnedIds="catchPinnedIds"
         :defaultListControls="defaultListControls"
         :enabledControls="enabledControls"
         :minMapHeight="mapFilterHeight"
         :topFilteringLayout="topFilteringLayout"
         :showSearch="showSearch"
         :searchCount="listContent.length"
+        :metadatasContent="metadatasContent"
         @setScroll="$emit('setScroll', $event)"
       />
     </v-card-text>
@@ -56,7 +58,6 @@ export default {
   props: {
     hasMetadatas: Boolean,
     listContent: Array,
-    showMapFilter: Boolean,
     mapFilteringPossible: Boolean,
     placeHolderAmount: Number,
     allTags: Array,
@@ -65,14 +66,21 @@ export default {
     enabledControls: Array,
     topFilteringLayout: Boolean,
     showSearch: Boolean,
+    metadatasContent: Object,
+    prePinnedIds: Array,
+    loading: Boolean,
   },
   computed: {},
   methods: {
+    catchPinnedIds(newPins) {
+      this.$emit('pinnedIds', newPins);
+    },
     catchMetadataClicked(datasetName) {
       this.$emit('clickedCard', datasetName);
     },
   },
   data: () => ({
+    selectedPins: [],
     projectDatasetsTitle: 'Related Datasets',
     projectDatasetsEmptyText:
       'There are no datasets connected with this project.',

@@ -26,13 +26,13 @@
                          @clickedReport="catchReportClicked(notification.key)"/>
     </div>
 
-    <the-navigation :style="`z-index: ${NavigationZIndex}`"
+    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
                     :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
                     @itemClick="catchItemClicked"/>
 
-    <the-navigation-toolbar v-if="showToolbar"
+    <TheNavigationToolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
                             class="envidatToolbar"
                             :style="`z-index: ${NavToolbarZIndex}`"
@@ -49,24 +49,13 @@
                             @continueClick="catchContinueClick"/>
 
     <v-main>
+
       <v-container class="pa-2 pa-sm-3 fill-height"
                    fluid
                    v-on:scroll="updateScroll()"
                    id="appContainer"
                    ref="appContainer"
                    :style="pageStyle">
-
-        <v-row v-if="maintenanceBannerVisible"
-               id="maintenanceBanner"
-               no-gutters
-               class="pb-2">
-          <v-col>
-            <TextBanner :text="maintenanceBannerText"
-                        confirmText="Okay"
-                        :bannerColor="maintenanceBannerColor"
-                        :confirmClick="catchMaintenanceConfirmClick"/>
-          </v-col>
-        </v-row>
 
         <v-row class="fill-height"
                id="mainPageRow">
@@ -80,6 +69,23 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <TextBanner v-if="maintenanceBannerVisible"
+                  id="maintenanceBanner"
+                  style="position: absolute; top: 0; z-index: 1001; width: 100%; "
+                  :text="maintenanceBannerText"
+                  confirmText="Okay"
+                  :bannerColor="maintenanceBannerColor"
+                  :confirmClick="catchMaintenanceConfirmClick"/>
+
+      <TextBanner v-if="showCookieInfo"
+                  id="cookieBanner"
+                  style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+                  :text="cookieInfoText"
+                  icon="cookie"
+                  confirmText="Okay"
+                  bannerColor="highlight"
+                  :confirmClick="catchCookieInfoOk"/>
 
       <v-dialog v-model="showReloadDialog"
                 persistent
@@ -190,6 +196,8 @@ import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
+import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
+
 const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
 const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
 const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
@@ -207,6 +215,8 @@ export default {
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
+    const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
+    this.showCookieInfo = strShowCookieInfo!== 'false';
   },
   beforeDestroy() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -387,6 +397,10 @@ export default {
         path: REPORT_PATH,
         query: index,
       });
+    },
+    catchCookieInfoOk() {
+      localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
+      this.showCookieInfo = false;
     },
     redirectMessage(componentName = 'Sign In') {
       const userName = this.user?.name || '';
@@ -714,6 +728,8 @@ export default {
     dialogMessage: '',
     dialogCallback: () => {},
     dialogCancelCallback: () => {},
+    showCookieInfo: true,
+    cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,

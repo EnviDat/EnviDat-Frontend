@@ -38,7 +38,7 @@ import {
   MAP_ZOOM_OUT,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
-import { defaultSwissLocation, defaultWorldLocation } from '@/factories/workflowFactory';
+import { defaultSwissLocation, defaultWorldLocation } from '@/factories/metaDataFactory';
 
 /* eslint-disable vue/no-unused-components */
 

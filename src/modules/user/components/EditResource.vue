@@ -96,27 +96,27 @@
              class="pt-2">
         <v-col v-if="showImagePreview"
                cols="4"
-               class="pt-3 pb-4 pr-4">
+               class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
 
-          <div v-show="loadingImagePreview"
+          <div v-if="loadingImagePreview"
                class="skeleton skeleton-animation-shimmer"
-              style="height: 100%; width: 100%; "
-          >
+              style="height: 100%; width: 100%; " >
             <div style="width: 100%; min-height: 100%; "
-                class="bone bone-type-image"
-            ></div>
+                class="bone bone-type-image">
+            </div>
           </div>
 
 
-          <v-img v-show="!loadingImagePreview && !imagePreviewError"
+          <v-img v-show="!imagePreviewError"
                  :src="urlField"
                  ref="filePreview"
                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
                  @click="catchImageClick"
                  @error="catchImageLoadError"
+                 @load="loadingImagePreview = false"
                  alt="resource image preview"/>
 
-          <div v-if="!loadingImagePreview && imagePreviewError"
+          <div v-if="imagePreviewError"
                class="imagePreviewErrorContainer">
 
             <v-img id="curtain"
@@ -811,25 +811,26 @@ export default {
       this.loadingImagePreview = true;
       const vm = this;
 
-      try {
-        vm.$nextTick(() =>{
+      this.$nextTick(() => {
+        try {
           const imageRefs = vm.$refs.filePreview;
           const imageRef = (imageRefs instanceof Array) ? imageRefs[0] : imageRefs;
-
           imageRef.src = url;
-        })
-      } catch (e) {
-        this.imagePreviewError = e;
-        console.error(`Loading image preview failed: ${e}`);
-      } finally {
-        this.loadingImagePreview = false;
-      }
+
+        } catch (e) {
+          vm.imagePreviewError = e;
+          vm.loadingImagePreview = false;
+
+          console.error(`Loading image preview failed: ${e}`);
+        }
+      });
     },
     catchImageClick() {
       this.$emit('previewImageClicked', this.url);
     },
     catchImageLoadError(event) {
       this.imagePreviewError = event;
+      this.loadingImagePreview = false;
     },
     changeAllowedUsers(pickedUserNames) {
       this.allowedUsersField = getAllowedUsersString(pickedUserNames, this.envidatUsers);

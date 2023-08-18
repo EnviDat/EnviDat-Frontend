@@ -115,6 +115,7 @@
                       :showPublicationState="true"
                       :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
+                      :metadatasContent="metadatasContent"
                       mainScrollClass=".midBoard > .datasetsGrid"
       />
 
@@ -234,6 +235,7 @@
                     :reloadAmount="20"
                     :preloadingDistance="10"
                     :showOrganizationOnHover="false"
+                    :metadatasContent="metadatasContent"
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 
@@ -294,7 +296,9 @@ import {
   USER_DASHBOARD_PAGENAME,
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
-  METADATAEDIT_PAGENAME, METADATA_CREATION_PATH, METADATA_CREATION_PAGENAME,
+  METADATAEDIT_PAGENAME,
+  METADATA_CREATION_PATH,
+  METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -343,6 +347,9 @@ import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_SEARCH,
+  USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
@@ -412,6 +419,7 @@ export default {
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
       'updatingTags',
+      'metadatasContent',
     ]),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
@@ -469,7 +477,9 @@ export default {
       }
 
       this.userOrganizations.forEach(o => {
-        datasets.push(o.packages);
+        if (o.packages?.length > 0) {
+          datasets.push(o.packages);
+        }
       });
 
       return datasets.flat();
@@ -541,7 +551,7 @@ export default {
       return 'your Organizations';
     },
     allUserdataTags() {
-      const minTagCount = this.userDatasets?.length > 50 ? 10 : 1;
+      const minTagCount = this.userDatasets?.length > 50 ? 5 : 2;
 
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
@@ -599,7 +609,7 @@ export default {
       return {
         title: 'No Datasets',
         description: 'It seems you don\'t have any datasets.',
-        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
@@ -705,6 +715,16 @@ export default {
 
       // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
       await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    },
+    async fetchUserOrganisationDataRecursive() {
+      // this was a test to see if the datasets of the organizations the users is in can be
+      // loaded quickly via the package_search, it turns out that include_drafts / include_privte
+      // slows down the search to be unuseable... we need to find another solution
+      this.$store.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_RESET}`);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+      // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {
@@ -818,6 +838,15 @@ export default {
         confirmText: 'Keep Dataset',
         cancelText: 'Delete Dataset',
       });
+    },
+  },
+  watch: {
+    user() {
+      if (this.user) {
+        this.fetchUserDatasets();
+        this.fetchCollaboratorDatasets();
+        this.fetchUserOrganisationData();
+      }
     },
   },
   data: () => ({

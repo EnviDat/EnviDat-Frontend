@@ -11,8 +11,8 @@
 
             <v-divider v-if="!step && $vuetify.breakpoint.smAndUp"
                        color="accent"
-                       class="mx-5"
-                       style="min-width: 25px; align-self: center; "
+                       class="mx-2 mx-md-5"
+                       style="align-self: center; "
             />
 
 

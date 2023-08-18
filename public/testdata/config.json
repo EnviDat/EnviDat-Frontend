@@ -115,10 +115,10 @@
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,
-    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). ",
-    "feedbackText": " Please <a href='mailto:envidat@wsl.ch'>let us know</a> if you have improvements or issues while using Envidat.",
+    "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in a unpublished dataset) go to your ",
+    "feedbackText": ". If you have issues while using EnviDat or though of an improvement, please <a href='mailto:envidat@wsl.ch'>let us know</a>.",
     "userEditingEnabled": true,
-    "useTokenSignin": true,
+    "useTokenSignin": false,
     "organizationRolesText": {
       "noOrganizationText": "You aren't assigned to an organisation yet. If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation. If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.",
       "memberOrganizationText": "As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.",

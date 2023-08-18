@@ -12,10 +12,6 @@
         <MetadataHeader v-bind="header"
                           :metadataId="metadataId"
                           :showPlaceholder="showPlaceholder"
-                          :doiIcon="doiIcon"
-                          :contactIcon="contactIcon"
-                          :mailIcon="mailIcon"
-                          :licenseIcon="licenseIcon"
                           @clickedTag="catchTagClicked"
                           @clickedBack="catchBackClicked"
                           :showEditButton="showEditButton"
@@ -84,11 +80,18 @@
  */
 
 import axios from 'axios';
+import { rewind as tRewind } from '@turf/turf';
 import { mapGetters, mapState } from 'vuex';
-import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
+import {
+  BROWSE_PATH,
+  METADATADETAIL_PAGENAME,
+  METADATAEDIT_PAGENAME,
+} from '@/router/routeConsts';
+
 import {
   ACTION_USER_SHOW,
-  FETCH_USER_DATA, USER_GET_DATASETS,
+  FETCH_USER_DATA,
+  USER_GET_DATASETS,
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
@@ -107,6 +110,7 @@ import {
   createCitation,
   createFunding,
   createHeader,
+  createLicense,
   createLocation,
   createPublications,
   createRelatedDatasets,
@@ -124,6 +128,7 @@ import {
 
 import {
   AUTHOR_SEARCH_CLICK,
+  EDITMETADATA_PUBLICATION_INFO,
   eventBus,
   GCNET_INJECT_MICRO_CHARTS,
   GCNET_OPEN_DETAIL_CHARTS,
@@ -137,11 +142,15 @@ import {
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 
-import { rewind as tRewind } from '@turf/turf';
-
 import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import MetadataRelatedDatasets from '@/modules/metadata/components/Metadata/MetadataRelatedDatasets.vue';
-import { USER_GET_ORGANIZATION_IDS } from '@/modules/organizations/store/organizationsMutationsConsts';
+import {
+  ORGANIZATIONS_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
+
+import { convertJSON, getFrontendDates, getFrontendJSONForStep } from '@/factories/mappingFactory';
+
 import MetadataHeader from './Metadata/MetadataHeader.vue';
 import MetadataBody from './Metadata/MetadataBody.vue';
 import MetadataResources from './Metadata/MetadataResources.vue';
@@ -178,9 +187,6 @@ export default {
     this.fileIcon = this.mixinMethods_getIcon('file');
     this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
     this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
-    this.contactIcon = this.mixinMethods_getIcon('contact2');
-    this.mailIcon = this.mixinMethods_getIcon('mail');
-    this.licenseIcon = this.mixinMethods_getIcon('license');
 
     window.scrollTo(0, 0);
   },
@@ -211,6 +217,8 @@ export default {
     ...mapState(['config']),
     ...mapState(USER_NAMESPACE, [
       'userDatasets',
+    ]),
+    ...mapState(ORGANIZATIONS_NAMESPACE, [
       'userOrganizationIds',
     ]),
     ...mapGetters(USER_SIGNIN_NAMESPACE, [
@@ -334,7 +342,7 @@ export default {
     showEditButton() {
       const userId = this.user?.id;
 
-      if (!userId || this.userDatasets?.length <= 0) {
+      if (!userId || !this.userDatasets || this.userDatasets.length <= 0) {
         return false;
       }
 
@@ -479,6 +487,10 @@ export default {
 
         this.header.metadataState = getMetadataVisibilityState(currentContent);
 
+        const parsedContent = convertJSON(currentContent, false);
+        const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
+        this.header.publicationYear = publicationData.publicationYear;
+
         this.body = createBody(
           currentContent,
           this.$vuetify.breakpoint.smAndDown,
@@ -519,7 +531,11 @@ export default {
       const { components } = this.$options;
       const currentContent = this.currentMetadataContent;
 
-      this.resources = createResources(currentContent, this.user, this.userOrganizationIds);
+      this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
+
+      const license = createLicense(currentContent);
+      const dataLicenseTitle = license.title;
+      const dataLicenseUrl = license.url;
 
       this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
@@ -527,17 +543,21 @@ export default {
       this.resources.dateCreatedIcon = this.dateCreatedIcon;
       this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
-      if (this.resources?.resources) {
+      if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
         enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
         enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
+
+        this.resources.dates = getFrontendDates(this.currentMetadataContent.date);
       }
 
       this.$nextTick(() => {
 
         this.$set(components.MetadataResources, 'genericProps', {
           ...this.resources,
+          dataLicenseTitle,
+          dataLicenseUrl,
           resourcesConfig: this.resourcesConfig,
         });
       });
@@ -743,7 +763,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
+      this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, userId);
     },
     fetchUserDatasets() {
       const userId = this.user?.id;
@@ -752,15 +772,15 @@ export default {
       }
 
       this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
-          {
-            action: ACTION_USER_SHOW,
-            body: {
-              id: userId,
-              include_datasets: true,
-            },
-            commit: true,
-            mutation: USER_GET_DATASETS,
-          });
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: userId,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
     },
   },
   watch: {
@@ -855,9 +875,6 @@ export default {
     fileIcon: null,
     dateCreatedIcon: null,
     lastModifiedIcon: null,
-    contactIcon: null,
-    mailIcon: null,
-    licenseIcon: null,
     modalTitle: '',
     gcnetModalComponent: null,
     textPreviewComponent: null,

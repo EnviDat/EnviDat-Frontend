@@ -31,18 +31,57 @@ import {
   GET_ORGANIZATIONS,
   GET_ORGANIZATIONS_ERROR,
   GET_ORGANIZATIONS_SUCCESS,
+  ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATION_IDS_ERROR,
   USER_GET_ORGANIZATION_IDS_SUCCESS,
   USER_GET_ORGANIZATIONS,
   USER_GET_ORGANIZATIONS_ERROR,
   USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS,
+  USER_GET_ORGANIZATIONS_SEARCH_SUCCESS,
   USER_GET_ORGANIZATIONS_SUCCESS,
 } from './organizationsMutationsConsts';
 
 function resetErrorObject(state) {
   state.error = null;
 }
+
+function enhanceOrganizationsWithDatasets(store, datasets) {
+
+  const state = store.state;
+  const userOrganizations = state.organizations.userOrganizations;
+  const userOrganizationIds = state.organizations.userOrganizationIds;
+  const userId = state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
+  const metadataContents = state[METADATA_NAMESPACE]?.metadatasContent || {};
+
+  // create a new array here to "override" the state.userOrganizations via $set() so the
+  // reactivity will trigger
+  const userOrgas = [];
+
+  datasets = enhanceTagsOrganizationDatasetFromAllDatasets(datasets, metadataContents);
+  datasets = enhanceMetadataFromCategories(store, datasets);
+
+  for (let i = 0; i < userOrganizationIds.length; i++) {
+    const orgaId = userOrganizationIds[i];
+    const orga = userOrganizations.filter((o) => o.id === orgaId)[0];
+    let orgaDatasets = datasets.filter((d) => d.owner_org === orgaId);
+
+    if (orgaDatasets.length > 0) {
+      if (isUserGroupAdmin(userId, orga)) {
+        orgaDatasets = enhanceElementsWithStrategyEvents(orgaDatasets, SELECT_EDITING_DATASET_PROPERTY);
+      }
+
+      orga.packages = orgaDatasets;
+    }
+
+    userOrgas.push(orga);
+  }
+
+  return userOrgas;
+}
+
 export default {
   [GET_ORGANIZATIONS](state) {
     state.loading = true;
@@ -106,6 +145,7 @@ export default {
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizationIds', orgaIds);
+    this._vm.$set(state, 'userOrganizations', payload);
   },
   [USER_GET_ORGANIZATION_IDS_ERROR](state, reason) {
     state.userOrganizationLoading = false;
@@ -120,48 +160,56 @@ export default {
     state.userOrganizationLoading = false;
     state.userOrganizations = [];
     state.userOrganizationError = null;
+    state.userOrgaDatasetTotal = 0;
+    state.userOrgaDatasetOffset = 0;
   },
   [USER_GET_ORGANIZATIONS_SUCCESS](state, payload) {
     state.userOrganizationLoading = false;
 
-    const userOrga = payload;
-    // const orgaId = userOrga.id || userOrga?.name;
-
-    if (userOrga.packages?.length > 0) {
-
-      const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
-
-      userOrga.packages = enhanceTagsOrganizationDatasetFromAllDatasets(userOrga.packages, metadataContents);
-
-      userOrga.packages = enhanceMetadataFromCategories(this, userOrga.packages);
-
-      const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
-
-      // TODO - check config for dataset editing enabled
-
-      if (isUserGroupAdmin(userId, userOrga)) {
-        enhanceElementsWithStrategyEvents(userOrga.packages, SELECT_EDITING_DATASET_PROPERTY);
-      }
-    }
-
-    const userOrgas = state.userOrganizations;
-    const existingOrgas = state.userOrganizations.filter((o) => o.id === userOrga.id);
-
-    if (existingOrgas.length > 0) {
-      const currentIndex = state.userOrganizations.indexOf(existingOrgas[0]);
-      if (currentIndex >= 0) {
-        // overwrite the userOrganization because the organization
-        // and it's datasets could have changed in the meantime
-        state.userOrganizations[currentIndex] = userOrga;
-      }
-    } else {
-      userOrgas.push(userOrga);
-    }
+    const datasets = payload.packages;
+    const userOrgas = enhanceOrganizationsWithDatasets(this, datasets);
 
     // use this._vm.$set() to make sure computed properties are recalulated
     this._vm.$set(state, 'userOrganizations', userOrgas);
+  },
+  [USER_GET_ORGANIZATIONS_SEARCH_SUCCESS](state, payload) {
+    state.userOrganizationLoading = false;
 
-    // this._vm.$set(state.userOrganizations, orgaId, userOrga);
+    const datasets = payload;
+    const userOrgas = enhanceOrganizationsWithDatasets(this, datasets);
+
+    // use this._vm.$set() to make sure computed properties are recalulated
+    this._vm.$set(state, 'userOrganizations', userOrgas);
+  },
+  /**
+   * result : {
+   * count : 137
+   * facets : {}
+   * results : [datasets]
+   * search_facets : {}
+   * sort : "score desc, metadata_modified desc"
+   * }
+   *
+   * @param state
+   * @param payload
+   */
+  [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE] (state, payload) {
+    state.userOrgaDatasetTotal = payload.count;
+
+    let datasets = payload.results;
+    const datasetReturned = datasets?.length || 0;
+
+    this.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_SUCCESS}`, datasets);
+
+    if (datasetReturned !== 0) {
+      state.userOrgaDatasetOffset = state.userOrgaDatasetOffset + datasetReturned;
+    } else {
+      state.userOrgaDatasetOffset = 0;
+    }
+  },
+  [USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE_SUCCESS](state) {
+    state.userOrganizationLoading = false;
+
   },
   [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
     state.userOrganizationLoading = false;

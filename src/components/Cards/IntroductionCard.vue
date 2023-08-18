@@ -20,9 +20,6 @@
       <v-row no-gutters
               class="pt-2">
         <v-col >
-          <v-row no-gutters class="text-h6">
-            What can you do here?
-          </v-row>
 
           <v-row v-if="currentLocalDataset"
                  no-gutters>
@@ -163,8 +160,7 @@ export default {
     },
     ckanDashboardText() {
       return this.oldDashboardUrl
-        ? ` And more is to come, the dashboard will change over time, if you can't find
-                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the legacy dashboard</a>.`
+        ? `<a href="${this.oldDashboardUrl}" target="_blank">legacy dashboard</a>`
         : '';
     },
     editingText() {
@@ -176,7 +172,7 @@ export default {
   methods: {},
   data: () => ({
     introTextFallback:
-      'Here you can manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
+      'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
     createButtonText: 'New Dataset',
     editingButtonText: 'Continue editing',

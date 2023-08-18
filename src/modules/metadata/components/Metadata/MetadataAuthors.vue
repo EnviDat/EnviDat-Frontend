@@ -45,7 +45,7 @@
                         :authorDetailsConfig="authorDetailsConfig"
                         :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
                         :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                        :showGenericOpenButton="author.openEvent ? true : false"
+                        :showGenericOpenButton="!!author.openEvent"
                         :openButtonTooltip="author.openButtonTooltip"
                         :openButtonIcon="author.openButtonIcon"
                         :isSelected="author.isSelected"

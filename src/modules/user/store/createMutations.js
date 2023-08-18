@@ -40,18 +40,19 @@ import {
   METADATA_CREATION_DATASET,
   METADATA_CREATION_DATASET_SUCCESS,
   METADATA_CREATION_DATASET_ERROR,
+  METADATA_UPLOAD_FILE_ERROR,
 } from './userMutationsConsts';
 
 
 export default {
   [METADATA_CREATION_RESOURCE](state) {
-    // resource.loading = true;
-    state.uploadLoading = true;
+    state.uploadNewResourceLoading = true;
     state.uploadResource = null;
     state.uploadError = null;
-
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
+
+    state.uploadNewResourceLoading = false;
 
     // convert properties and stringified json to match the frontend structure
     resource = getFrontendJSONForStep(stepKey, resource);
@@ -80,7 +81,8 @@ export default {
 
   },
   [METADATA_CREATION_RESOURCE_ERROR](state, reason) {
-    state.uploadLoading = false;
+
+    state.uploadNewResourceLoading = false;
 
     const errorObj = createErrorMessage(reason);
     state.uploadError = {
@@ -92,26 +94,22 @@ export default {
   [METADATA_UPLOAD_FILE_INIT](state, metadataId) {
     state.uploadMetadataId = metadataId;
   },
-  [METADATA_UPLOAD_FILE](state, { fileId, key}) {
-    state.uploadFileId = fileId;
+  [METADATA_UPLOAD_FILE](state, key) {
+    state.uploadLoading = true;
     state.uploadKey = key;
   },
   [METADATA_UPLOAD_FILE_SUCCESS](state) {
     state.uploadLoading = false;
-    state.uploadFileId = null;
     state.uploadKey = null;
   },
-/*
-  [METADATA_UPLOAD_FILE_ERROR](state, { fileId, key}) {
-    state.uploadFileId = fileId;
-    state.uploadKey = key;
+  [METADATA_UPLOAD_FILE_ERROR](state, reason) {
+    state.uploadLoading = false;
+    state.uploadError = reason;
   },
-*/
   [METADATA_CREATION_DATASET](state) {
     state.metadataCreationLoading = true;
     state.newMetadatasetName = null;
     state.metadataCreationError = null;
-
   },
   [METADATA_CREATION_DATASET_SUCCESS](state, { dataset, message }) {
     state.metadataCreationLoading = false;

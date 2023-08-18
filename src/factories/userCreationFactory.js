@@ -1,3 +1,5 @@
+import { getYear } from 'date-fns';
+
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_DATACREDIT,
@@ -29,14 +31,13 @@ import {
 } from '@/factories/mappingFactory';
 
 import {
-  defaultSwissLocation,
   getDataKeysToStepKey,
   getEmptyMetadataInEditingObject,
   getStepByName,
   getStepKeyToDataKey,
 } from '@/factories/workflowFactory';
-import { getYear } from 'date-fns';
-import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
+
+import { defaultSwissLocation } from '@/factories/metaDataFactory';
 
 /*
 export const ckanRequiredPropsForDatasetCreation = [
@@ -408,8 +409,7 @@ function stepValidation(step, stepData, validationRules, skipError = false) {
   } catch (e) {
 
     if (!skipError) {
-      console.log(`stepValidation validation Error ${e}`);
-
+      // console.log(`stepValidation validation Error ${e}`);
       step.error = e.message;
     }
 

@@ -2,7 +2,9 @@
   <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
     <template v-slot:activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
-        <UserAvatar :size="size" :nameInitials="nameInitials" />
+        <UserAvatar :size="size"
+                    :nameInitials="nameInitials"
+                    :email-hash="emailHash"/>
       </div>
     </template>
     <v-list>
@@ -30,8 +32,10 @@
  * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-25 14:31:13
  */
+import { mapState } from 'vuex';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
+
 import {
   ACTION_USER_SIGNOUT,
   ACTION_USER_SIGNOUT_REVOKE_TOKEN,
@@ -39,8 +43,8 @@ import {
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { LANDING_PATH, USER_SIGNOUT_PATH } from '@/router/routeConsts';
-import { mapState } from 'vuex';
 
 export default {
   name: 'UserMenu',
@@ -59,6 +63,9 @@ export default {
     ...mapState(['config']),
     nameInitials() {
       return getNameInitials(this.userObject);
+    },
+    emailHash() {
+      return this.userObject?.emailHash;
     },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
