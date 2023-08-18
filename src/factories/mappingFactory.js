@@ -732,24 +732,22 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   // special case here to use the backend structure json directly to format the entries
-  // this is done for consitency. When calling getFrontendJSONForStep() the dateInfoData.dates
+  // this is done for consistency. When calling getFrontendJSONForStep() the dateInfoData.dates
   // are already in camelCase and not snakeCase anymore, so for formatDatesForFrontend() the JSONFrontendBackendRules
   // would have to be only in camelCase, which wouldn't fit the rest of the structure
   // and therefore a special case implementation would also be necessary in the creationWorkflow when getting
-  // the information from the localstorage. Since here is already a special case implemenation it's better to do it
-  // here and keep the JSONFrontendBackendRules consitent!
+  // the information from the localstorage. Since here is already a special case implementation, it's better to do it
+  // here and keep the JSONFrontendBackendRules consistent!
   dateInfoData.dates = formatDatesForFrontend(bDates);
 
   commitEditingData(commit, stepKey, dateInfoData);
   dataObject.dataInfo = dateInfoData;
 
-/*
   stepKey = EDITMETADATA_DATA_LICENSE;
   const dataLicenseInfo = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, dataLicenseInfo);
   dataObject.dataLicenseInfo = dataLicenseInfo;
-*/
 
   stepKey = EDITMETADATA_DATA_GEO;
   const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
@@ -769,18 +767,12 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingResources(commit, snakeCaseJSON) {
+function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
 
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
-
-  const dataStepKey = EDITMETADATA_DATA_LICENSE;
-  const dataLicenseInfo = getFrontendJSONForStep(dataStepKey, snakeCaseJSON);
-
-  commitEditingData(commit, dataStepKey, dataLicenseInfo);
-  dataObject.dataLicenseInfo = dataLicenseInfo;
 
   const stepKey = EDITMETADATA_DATA_RESOURCES;
   const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
@@ -865,9 +857,9 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
 
-  populateEditingDataInfo(commit, snakeCaseJSON);
+  const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 
-  populateEditingResources(commit, snakeCaseJSON);
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo);
 
   populateEditingRelatedResearch(commit, snakeCaseJSON);
 

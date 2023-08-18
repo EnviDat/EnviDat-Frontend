@@ -146,8 +146,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
 
   const contactEmail = maintainer?.email || '';
 
-  const license = createLicense(dataset);
-
   let authors = null;
 
   if (typeof dataset.author === 'string') {
@@ -166,9 +164,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     doi: dataset.doi,
     contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
-    licenseId: license.id,
-    license: license.title,
-    licenseUrl: license.url,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
