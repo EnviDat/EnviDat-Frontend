@@ -1,3 +1,4 @@
-public/* linguist-generate
-src/stories/js/* linguist-documentation
-src/stories/testdata/* linguist-documentation
+public/* linguist-generated
+*.html linguist-generated
+stories/js/* linguist-documentation
+stories/testdata/* linguist-documentation
