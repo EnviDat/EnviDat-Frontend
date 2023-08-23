@@ -108,7 +108,7 @@
     "datasetCreationActive": true,
     "resourceEditingActive": true,
     "resourceUploadActive": true,
-    "editingRestrictingActive": false,
+    "editingRestrictingActive": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
