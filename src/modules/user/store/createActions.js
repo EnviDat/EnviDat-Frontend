@@ -40,15 +40,15 @@ import {
   ACTION_METADATA_CREATION_DATASET,
 } from './userMutationsConsts';
 
-// don't use an api base url or proxy when using testdata
+// don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 
@@ -59,7 +59,7 @@ export default {
     commit(METADATA_CREATION_RESOURCE);
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const cleaned = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCE, data);
     const postData = stringifyResourceForBackend(cleaned);
@@ -91,7 +91,7 @@ export default {
     };
 
     const actionUrl = ACTION_METADATA_DELETE_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     await axios.post(url, postData,
       {
@@ -107,7 +107,7 @@ export default {
     commit(METADATA_CREATION_DATASET);
 
     const actionUrl = ACTION_METADATA_CREATION_DATASET();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const postData = data;
 

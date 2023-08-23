@@ -718,7 +718,7 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,
     showModal: false,

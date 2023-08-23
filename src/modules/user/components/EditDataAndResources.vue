@@ -438,7 +438,7 @@ export default {
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
-    envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    envidatDomain: import.meta.env.VITE_API_ROOT,
     uploadProgessText: null,
     uploadProgressIcon: '',
     uppyError: null,

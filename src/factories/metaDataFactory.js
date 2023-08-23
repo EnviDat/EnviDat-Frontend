@@ -245,7 +245,7 @@ export function createCitation(dataset) {
     return null;
   }
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_API_ROOT;
 
   const authors = getAuthorsCitationString(dataset);
   const title = dataset.title;
@@ -424,7 +424,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_API_ROOT;
 
   const resURL = resource.url;
   let fileName = resource.name;

@@ -852,7 +852,7 @@ export default {
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_API_ROOT,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',

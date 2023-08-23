@@ -232,7 +232,7 @@ export default {
     },
   },
   data: () => ({
-    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
+    envidatDomain: process.env.VITE_API_ROOT,
   }),
   components: {
     //  EditOrganizationTree,

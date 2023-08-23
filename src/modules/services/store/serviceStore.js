@@ -22,7 +22,7 @@ const serviceState = {
   list: [],
 };
 
-const staticRoot = process.env.VITE_ENVIDAT_STATIC_ROOT;
+const staticRoot = process.env.VITE_STATIC_ROOT;
 const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
 
 export const service = {

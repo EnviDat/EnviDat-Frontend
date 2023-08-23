@@ -39,7 +39,7 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
  // }
 
    const excludedDomains = [
-     process.env.VITE_ENVIDAT_STATIC_ROOT,
+     process.env.VITE_STATIC_ROOT,
      process.env.VITE_CONFIG_URL,
    ];
 

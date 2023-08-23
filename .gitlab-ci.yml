@@ -113,7 +113,7 @@ modify-env:
       file = '.env.production';
       branch = os.getenv('CI_COMMIT_REF_NAME'); \
       \
-      key = 'VITE_ENVIDAT_PROXY';
+      key = 'VITE_API_ROOT';
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
       dotenv.set_key(file, key, value, quote_mode='never');

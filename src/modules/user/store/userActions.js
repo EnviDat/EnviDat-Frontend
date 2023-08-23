@@ -24,15 +24,15 @@ import {
   USER_GET_COLLABORATOR_DATASETS_SUCCESS,
 } from './userMutationsConsts';
 
-// don't use an api base url or proxy when using testdata
+// don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 
@@ -46,7 +46,7 @@ export default {
     const actionUrl = typeof (payload.action) === 'function' ? payload.action() : payload.action;
 
     let url = extractBodyIntoUrl(actionUrl, body);
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
@@ -80,7 +80,7 @@ export default {
       rows: limit,
     });
 
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     await axios.get(url)
       .then((response) => {

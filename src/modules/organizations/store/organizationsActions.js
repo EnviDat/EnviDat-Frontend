@@ -50,7 +50,7 @@ import {
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+const API_ROOT = import.meta.env.VITE_API_ROOT;
 
 function getOrganizationRequestArray(ids, body = {}) {
   const actionUrl = ACTION_GET_ORGANIZATION();
@@ -64,11 +64,11 @@ function getOrganizationRequestArray(ids, body = {}) {
       ...body,
     });
 
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     if (useTestdata) {
       // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+      url = urlRewrite(actionUrl, API_BASE, API_ROOT);
     }
 
     requests.push(axios.get(url));
@@ -83,7 +83,7 @@ export default {
 
     const actionUrl = ACTION_GET_ORGANIZATIONS();
     let url = extractBodyIntoUrl(actionUrl, { limit: 1000 });
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     await axios.get(url)
       .then(response => {
@@ -140,11 +140,11 @@ export default {
 
     const actionUrl = ACTION_USER_ORGANIZATION_IDS();
     let url = extractBodyIntoUrl(actionUrl, { id: userId });
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     if (useTestdata) {
       // ignore the parameters for testdata, because it's directly a file
-      url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+      url = urlRewrite(actionUrl, API_BASE, API_ROOT);
     }
 
     await axios.get(url)
@@ -203,7 +203,7 @@ export default {
       rows,
     });
 
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     await axios.get(url)
       .then((response) => {
@@ -231,7 +231,7 @@ export default {
       start: preOffset,
     });
 
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     await axios.get(url)
       .then((response) => {

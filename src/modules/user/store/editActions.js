@@ -46,15 +46,15 @@ import {
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
-// don't use an api base url or proxy when using testdata
+// don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 export default {
@@ -100,7 +100,7 @@ export default {
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
@@ -132,7 +132,7 @@ export default {
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     // create a local copy to avoid mutation of vuex store objects / properties
     const localData = { ...data };
@@ -165,7 +165,7 @@ export default {
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const postData = {
       id,

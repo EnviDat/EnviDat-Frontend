@@ -421,7 +421,6 @@ export default {
     NavigationStepper,
   },
   data: () => ({
-    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     creationSteps: null,
     canSaveInBackend: false,
     errorTitle: null,

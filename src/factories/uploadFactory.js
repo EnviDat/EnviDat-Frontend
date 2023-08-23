@@ -36,13 +36,13 @@ import {
 
 
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 let uppyInstance = null;
@@ -153,7 +153,7 @@ export async function initiateMultipart(file) {
   }
 
   const actionUrl = 'cloudstorage_initiate_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const payload = {
     id: resourceId,
@@ -194,7 +194,7 @@ export async function getSinglePresignedUrl(file) {
 
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
@@ -231,7 +231,7 @@ export async function getSinglePresignedUrl(file) {
 export async function requestPresignedUrl(file, partData) {
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
@@ -285,7 +285,7 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 export async function completeMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_finish_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   const payload = {
@@ -311,7 +311,7 @@ export async function completeMultipart(file, uploadData) {
 export async function abortMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_abort_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   // const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
@@ -339,7 +339,7 @@ export async function abortMultipart(file, uploadData) {
 export async function listUploadedParts(file, { uploadId, key }) {
 
   const actionUrl = 'cloudstorage_multipart_list_parts';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const payload = {
     uploadId,
@@ -361,7 +361,7 @@ export async function listUploadedParts(file, { uploadId, key }) {
 export async  function getPresignedUrlForDownload(resourceId) {
 
   const actionUrl = 'get_presigned_url_download';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const payload = { id: resourceId };
 
   try {

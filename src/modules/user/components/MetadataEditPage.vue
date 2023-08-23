@@ -503,7 +503,6 @@ export default {
     NotificationCard,
   },
   data: () => ({
-    domain: process.env.VUE_APP_ENVIDAT_DOMAIN,
     editingSteps: null,
     errorTitle: null,
     errorMessage: null,
