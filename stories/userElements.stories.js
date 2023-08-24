@@ -14,6 +14,8 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 
+import jazzicons from '@metamask/jazzicon';
+import seedrandom from 'seedrandom';
 import { getNameInitials } from '@/factories/authorFactory';
 
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
@@ -22,8 +24,6 @@ import UserMenu from '@/modules/user/components/UserMenu.vue';
 import MetadataCube from '@/components/BaseElements/MetadataCube.vue';
 import TitleCard from '@/components/Cards/TitleCard.vue';
 
-import seedrandom from 'seedrandom';
-import jazzicons from '@metamask/jazzicon';
 import authorCollection from './testdata/authorCollection.json';
 
 
