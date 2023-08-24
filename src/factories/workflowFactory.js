@@ -108,9 +108,7 @@ const emptyMetadataInEditing = {
       // maybe better use something like 'unpublished' / 'unstarted'
       '',
       'reserved',
-      'publication requested',
-      'publication pending',
-      'approved',
+      'pub_pending',
       'published',
     ],
     publicationState: '',
