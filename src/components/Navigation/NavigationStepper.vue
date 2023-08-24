@@ -38,68 +38,19 @@
 
       <div class="interaction pl-md-2 py-2 py-sm-0">
 
-        <v-row justify="end">
-          <v-col v-if="showPreviewButton"
-                 class="shrink">
-            <BaseIconButton
-                    id="PreviewMetadataButton"
-                    material-icon-name="remove_red_eye"
-                    icon-color="black"
-                    color="black"
-                    outlined
-                    tooltipText="Preview Dataset"
-                    :tooltipBottom="true"
-                    @clicked="catchPreviewClick"
-            />
-          </v-col>
-
-          <v-col v-if="isCreationWorkflow"
-                  class="shrink">
-            <BaseIconButton
-                    id="SaveMetadataButton"
-                    material-icon-name="save"
-                    icon-color="black"
-                    color="black"
-                    outlined
-                    tooltipText="Save Dataset On the Server"
-                    :disabled="!showSaveButton"
-                    isFancy
-                    :is-glowing="showSaveButton"
-                    :tooltipBottom="true"
-                    @clicked="catchSaveDatasetClick"
-            />
-          </v-col>
-
-          <v-col v-if="showProgress && isCreationWorkflow" >
-            <BaseProgressView :text="creationProgressInfo"
-                              :progress-pct="completedPct"
-                              color="secondary"
-            />
-          </v-col>
-
-          <v-col v-if="showProgress && !isCreationWorkflow" >
-              <BaseProgressView :text="editingProgressInfo"
-                                :progress-pct="completedPct"
-                                color="secondary"
-              />
-          </v-col>
-
-          <v-col class="shrink">
-
-            <BaseIconButton
-                    id="MetadataEditCloseButton"
-                    material-icon-name="close"
-                    icon-color="black"
-                    color="black"
-                    outlined
-                    tooltipText="Close workflow"
-                    :tooltipBottom="true"
-                    @clicked="catchCloseClick"
-            />
-          </v-col>
-
-        </v-row>
-
+        <StepperInteractionView :steps="steps"
+                                :showPreviewButton="showPreviewButton"
+                                :showProgress="showProgress"
+                                :showSaveButton="showSaveButton"
+                                :isCreationWorkflow="isCreationWorkflow"
+                                :message="message"
+                                :messageDetails="messageDetails"
+                                :error="error"
+                                :errorDetails="errorDetails"
+                                @clickedClose="catchCloseClick"
+                                @clickedPreview="catchPreviewClick"
+                                @clickedSaveDataset="catchSaveDatasetClick"
+        />
       </div>
     </div>
 
@@ -181,6 +132,7 @@ import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
 import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue';
+import StepperInteractionView from '@/components/Navigation/StepperInteractionView.vue';
 
 import { EDITMETADATA_NEXT_MAJOR_STEP, eventBus } from '@/factories/eventBus';
 import { countSteps } from '@/factories/userCreationFactory';
@@ -220,6 +172,22 @@ export default {
     datasetTitle: {
       type: String,
       default: undefined,
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+    messageDetails: {
+      type: String,
+      default: null,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+    errorDetails: {
+      type: String,
+      default: null,
     },
   },
   beforeMount() {
@@ -398,6 +366,7 @@ export default {
     Add references to related publications and datasets to provide even more valueable information.`,
   }),
   components: {
+    StepperInteractionView,
     StepperHeader,
     BaseIconButton,
     MetadataCardPlaceholder,

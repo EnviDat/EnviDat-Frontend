@@ -230,6 +230,26 @@
                                       :tooltip="organizationTooltip" />
 
           </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="6"
+                 lg="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">account</v-icon>
+              </v-col>
+              <v-col>
+                Last updated: 23-08-2023
+              </v-col>
+            </v-row>
+
+          </v-col>
         </v-row>
 
         <v-row no-gutters

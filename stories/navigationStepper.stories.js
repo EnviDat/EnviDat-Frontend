@@ -39,6 +39,20 @@ CreationSteps.args = {
   showProgress: true,
 }
 
+export const CreationStepsMessage = Template.bind({});
+CreationStepsMessage.args = {
+  ...CreationSteps.args,
+  message: 'Saved successfull',
+  messageDetails: 'Saved Metadataheader',
+}
+
+export const CreationStepsError = Template.bind({});
+CreationStepsError.args = {
+  ...CreationSteps.args,
+  error: 'Network Error',
+  errorDetails: 'Could not save the dataset',
+}
+
 export const CreationStepsLoading = Template.bind({});
 CreationStepsLoading.args = {
   ...CreationSteps.args,
