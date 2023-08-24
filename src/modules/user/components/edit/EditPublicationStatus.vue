@@ -34,15 +34,41 @@
         </v-row>
 
         <v-row>
-          <v-col cols="6">
-            <BaseRectangleButton button-text="Request Publication"
-                                  material-icon-name="newspaper"
-                                  icon-color="white"
-                                  @clicked="$emit('requestPublication')" />
-          </v-col>
+          <v-col v-for="(state, index) in pStatesWithDividers"
+                 :key="`${index}_pState`"
+                 :cols="index % 2 === 0 ? 2 : undefined"
+                 class="flex-grow-0">
 
-          <v-col cols="6">
-            <MetadataStateChip :state="publicationState" />
+            <v-chip v-if="index % 2 === 0"
+                    small
+                    :disabled="activeStateIndex > index"
+                    :color="activeStateIndex === index ? 'primary' : '' "
+            >
+              {{ getStateText(state) }}
+            </v-chip>
+
+            <v-icon v-else
+                    class="px-2">
+              {{ state }}
+            </v-icon>
+
+            <div v-if="activeStateIndex + 2 === index"
+                  style="display: inline-block;">
+
+              <v-row no-gutters
+                     class="py-2"
+                     justify="center">
+                <v-icon>arrow_upward</v-icon>
+              </v-row>
+
+              <v-row no-gutters>
+                <BaseRectangleButton button-text="Request Publication"
+                                     material-icon-name="newspaper"
+                                     icon-color="white"
+                                     is-small
+                                     @clicked="$emit('requestPublication')" />
+              </v-row>
+            </div>
           </v-col>
 
         </v-row>
@@ -52,6 +78,7 @@
   </template>
 
   <script>
+  /* eslint-disable vue/no-unused-components */
   /**
    * @summary Shows Publication State
    * @author Dominik Haas-Artho
@@ -73,11 +100,16 @@
     props: {
       possiblePublicationStates: {
         type: Array,
-        default: () => [],
+        default: () => [
+          '',
+          'reserved',
+          'pub_pending',
+          'published',
+        ],
       },
       publicationState: {
         type: String,
-        default: '',
+        default: 'reserved',
       },
       loading: {
         type: Boolean,
@@ -119,11 +151,38 @@
       isPublished() {
         return this.publicationState === 'published';
       },
+      pStatesWithDividers() {
+        const pStateWithDiv = [];
+        if (!this.possiblePublicationStates) {
+          return pStateWithDiv;
+        }
+
+        for (let i = 0; i < this.possiblePublicationStates.length; i++) {
+          const pState = this.possiblePublicationStates[i];
+          pStateWithDiv.push(pState);
+          pStateWithDiv.push('arrow_forward');
+        }
+
+        pStateWithDiv.splice(pStateWithDiv.length - 1, 1);
+
+        return pStateWithDiv;
+      },
+      activeStateIndex() {
+        return this.pStatesWithDividers.findIndex(v => v === this.publicationState);
+      },
     },
     methods: {
-
+      getStateText(state) {
+        return this.stateTextMap.get(state);
+      },
     },
     data: () => ({
+      stateTextMap: new Map([
+        ['', 'Draft'],
+        ['reserved', 'Reserved DOI'],
+        ['pub_pending', 'Publication Pending'],
+        ['published', 'Published'],
+      ]),
       labels: {
         cardTitle: 'Publication Status',
       },
@@ -136,4 +195,9 @@
   };
   </script>
 
-<style scoped></style>
+<style scoped>
+  .statesGrid {
+    display: grid;
+    grid-template-columns: 2fr 0.5fr 2fr 0.5fr 2fr 0.5fr 2fr;
+  }
+</style>
