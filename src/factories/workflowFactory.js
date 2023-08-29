@@ -103,14 +103,6 @@ const emptyMetadataInEditing = {
     userOrganizations: [],
   },
   [EDITMETADATA_PUBLICATION_INFO]: {
-    possiblePublicationStates: [
-      // does an empty entry make any sense? it's like that in ckan
-      // maybe better use something like 'unpublished' / 'unstarted'
-      '',
-      'reserved',
-      'pub_pending',
-      'published',
-    ],
     publicationState: '',
     visibilityState: '',
     doi: '',

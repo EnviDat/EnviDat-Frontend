@@ -13,24 +13,59 @@
 
 
  export default {
-   title: '10 Chips / EditPublicationStatus',
+   title: '9 Editing Metadata / Edit Publication Status',
    component: EditPublicationStatus,
    decorators: [],
-   parameters: {},
-   argTypes: { onClick: { action: 'clicked' } },
- };
+};
 
 
  const Template = (args, {argTypes}) => ({
    components: { EditPublicationStatus },
    props: Object.keys(argTypes),
-   template: '<EditPublicationStatus v-bind="$props"  />',
+   methods: {
+     logEvent(event) {
+       console.log(event);
+     },
+   },
+   template: `<EditPublicationStatus v-bind="$props"
+                                     @clicked="logEvent" />`,
  });
 
 
- export const PublicationStatus = Template.bind({});
+ export const PublicationDraft = Template.bind({});
 
- PublicationStatus.args = {
-   publicationState: 'draft',
-   loading: false,
- }
+
+export const PublicationReserved = Template.bind({});
+PublicationReserved.args = {
+  publicationState: 'reserved',
+}
+
+export const PublicationReservedLoading = Template.bind({});
+PublicationReservedLoading.args = {
+  publicationState: 'reserved',
+  loading: true,
+}
+
+export const PublicationPending = Template.bind({});
+PublicationPending.args = {
+  publicationState: 'pub_pending',
+}
+export const PublicationPublished = Template.bind({});
+PublicationPublished.args = {
+  publicationState: 'published',
+}
+
+export const PublicationDraftNoRights = Template.bind({});
+PublicationDraftNoRights.args = {
+  ...PublicationDraft.args,
+  readOnlyFields: ['publicationStatus'],
+  readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
+}
+
+export const PublicationReservedNoRights = Template.bind({});
+PublicationReservedNoRights.args = {
+  ...PublicationReserved.args,
+  readOnlyFields: ['publicationStatus'],
+  readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
+}
+

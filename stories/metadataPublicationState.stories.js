@@ -19,9 +19,7 @@
    parameters: {},
  };
 
- const states = [
-   'draft', 'unpublished', 'pending', 'published',
- ];
+ const states = ['draft', 'unpublished', 'published'];
 
  export const MetadataStateAllStates = () => ({
    components: { MetadataStateChip },
@@ -43,35 +41,41 @@
    }),
  })
 
- /*
  const Template = (args, {argTypes}) => ({
    components: { MetadataStateChip },
    props: Object.keys(argTypes),
-   // template: '<MetadataStateChip v-bind="$props" />',
+   template: `
+     <div>
+       <v-row>
+        <MetadataStateChip v-bind="$props" />
+       </v-row>
+
+       <v-row class="pt-4">
+         <v-col class="flex-grow-0">
+            Show on Hover enabled:
+         </v-col>
+
+         <v-col>
+            <MetadataStateChip v-bind="$props" show-on-hover />
+         </v-col>
+       </v-row>
+     </div>
+   `,
  });
 
 
  export const MetadataStateDraft = Template.bind({});
  MetadataStateDraft.args = {
    state: 'draft',
-   showOnHover: false,
  }
 
  export const MetadataStateUnpublished = Template.bind({});
  MetadataStateUnpublished.args = {
    state: 'unpublished',
-   showOnHover: false,
  }
 
- export const MetadataStatePending = Template.bind({});
- MetadataStatePending.args = {
-   state: 'pending',
-   showOnHover: false,
- }
 
  export const MetadataStatePublished = Template.bind({});
  MetadataStatePublished.args = {
    state: 'published',
-   showOnHover: false,
  }
- */

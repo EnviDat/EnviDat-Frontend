@@ -42,31 +42,6 @@
           <MetadataStateChip :state="visibilityState" />
         </v-col>
 
-        <!--
-        <v-col cols="6">
-
-          <v-select :items="possiblePublicationStates"
-                    :label="labels.publicationState"
-                    outlined
-                    chips
-                    small-chips
-                    append-icon="arrow_drop_down"
-                    readonly
-                    hint="Only editable for the organization administrator"
-                    :error-messages="validationErrors.publicationState"
-                    @change="publicationStateField = $event"
-                    @input="validateProperty('publicationState', $event)"
-                    :value="publicationStateField" />
-
-          <v-text-field :label="labels.publicationState"
-                        outlined
-                        readonly
-                        hint="Only editable for the organization administrator"
-                        :error-messages="validationErrors.publicationState"
-                        :value="publicationStateField" />
-
-        </v-col>
--->
       </v-row>
 
       <v-row class="pt-2">
@@ -170,10 +145,6 @@ export default {
     this.getYearList();
   },
   props: {
-    possiblePublicationStates: {
-      type: Array,
-      default: () => [],
-    },
     publicationState: {
       type: String,
       default: '',

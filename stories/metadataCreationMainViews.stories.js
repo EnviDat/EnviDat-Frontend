@@ -16,9 +16,6 @@ import {
 } from '@/factories/eventBus';
 
 import EditDescription from '@/modules/user/components/EditDescription.vue';
-import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
-import EditFunding from '@/modules/user/components/EditFunding.vue';
 import EditImgPlaceholder from '@/modules/user/components/EditImgPlaceholder.vue';
 import EditKeywords from '@/modules/user/components/EditKeywords.vue';
 
@@ -55,7 +52,6 @@ function getKeywordsSource(tagsSource, catCards) {
 const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
 
 const placeholderKeywordsGenericProps = {
-  // keywordsSource: tagsFromDatasets,
   metadataCardTitle: 'A Mostly Glorious Title',
   metadataCardSubtitle: 'My metadata description is pleasant to read.',
   existingKeywords: tagsFromDatasets,
@@ -340,187 +336,6 @@ contribute something to the general goal of your product. `,
           text: '',
         },
       },
-    }),
-  });
-
-export const EditPublicationInfoView = () => ({
-    components: { EditPublicationInfo },
-    template: `
-    <v-col>
-
-      <v-row>
-        Edit Publication Info fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditPublicationInfo />
-        </v-col>
-      </v-row>
-
-       <v-row>
-        Edit Publication Info fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditPublicationInfo v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col> `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        this.genericPropsFilled = updateObj.data;
-      },
-    },
-    data: () => ({
-      genericPropsFilled: {
-        id: 1,
-      },
-    }),
-  });
-
-export const EditFundingView = () => ({
-  components: { EditFunding },
-  template: `
-    <v-col>
-
-      <v-row>
-        Edit Funding fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditFunding />
-        </v-col>
-      </v-row>
-
-       <v-row>
-        Edit Funding fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditFunding v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col> `,
-  created() {
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeDestroy() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  methods: {
-    editComponentsChanged(updateObj) {
-//      if (updateObj.data.id === this.genericPropsFilled.id) {
-        this.genericPropsFilled.funders = updateObj.data.funders;
-//      }
-    },
-  },
-  data: () => ({
-    genericPropsFilled: {
-      id: 1,
-      funders: [
-        {
-          institution: 'WSL',
-          grantNumber: 'XYZ',
-          institutionUrl: 'https://www.wsl.ch',
-        },
-        {
-          institution: 'NSF',
-          grantNumber: '123',
-          institutionUrl: 'https://www.superduper.ch',
-        },
-      ],
-    },
-  }),
-});
-
-export const EditCustomFieldViews = () => ({
-    components: { EditCustomFields },
-    template: `
-    <v-col>
-
-      <v-row>
-        Edit Custom Fields fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditCustomFields v-bind="emptyFirstGenericProps" />
-        </v-col>
-      </v-row>
-
-       <v-row>
-        Edit Custom Fields fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditCustomFields v-bind="genericProps" />
-        </v-col>
-      </v-row>
-
-    </v-col> `,
-    created() {
-      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    beforeDestroy() {
-      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-    },
-    methods: {
-      editComponentsChanged(updateObj) {
-        if (updateObj.data?.length === this.genericProps.length) {
-          this.genericProps = updateObj.data;
-        }
-        if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
-          this.emptyFirstGenericProps = updateObj.data;
-        }
-      },
-    },
-    data: () => ({
-      emptyFirstGenericProps: {},
-      genericProps: [
-        {
-          field0: {
-            fieldName: 'SubProject',
-            content: 'Projectx',
-          },
-        },
-        {
-          field1: {
-            fieldName: 'Game',
-            content: 'Gloomhaven',
-          },
-        },
-        {
-          field2: {
-            fieldName: 'Drink',
-            content: 'Prosecco',
-          },
-        },
-        {
-          field3: {
-            fieldName: '',
-            content: '',
-          },
-        },
-        {
-          field4: {
-            fieldName: '',
-            content: '',
-          },
-        },
-      ],
     }),
   });
 

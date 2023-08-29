@@ -15,6 +15,7 @@
             {{ labels.cardTitle }}
           </v-col>
 
+<!--
           <v-col v-if="message">
             <BaseStatusLabelView
               statusIcon="check"
@@ -31,44 +32,67 @@
               :expandedText="errorDetails"
             />
           </v-col>
+-->
         </v-row>
 
         <v-row>
-          <v-col v-for="(state, index) in pStatesWithDividers"
+          <v-col v-for="(state, index) in pStatesAndArrows"
                  :key="`${index}_pState`"
-                 :cols="index % 2 === 0 ? 2 : undefined"
-                 class="flex-grow-0">
+                  :id="`activeStateIndex_${activeStateIndex}`">
 
-            <v-chip v-if="index % 2 === 0"
-                    small
-                    :disabled="activeStateIndex > index"
-                    :color="activeStateIndex === index ? 'primary' : '' "
-            >
-              {{ getStateText(state) }}
-            </v-chip>
+            <v-row no-gutters
+                   justify="center">
+              <v-chip v-if="getStateText(state)"
+                      small
+                      :disabled="activeStateIndex > index"
+                      :color="activeStateIndex === index ? 'secondary' : '' "
+              >
+                {{ getStateText(state) }}
+              </v-chip>
 
-            <v-icon v-else
-                    class="px-2">
-              {{ state }}
-            </v-icon>
+              <v-icon v-else
+                      class="px-2">
+                {{ state }}
+              </v-icon>
+            </v-row>
 
-            <div v-if="activeStateIndex + 2 === index"
-                  style="display: inline-block;">
+            <v-row v-if="currentStateInfos.positionIndex === index"
+                   no-gutters
+                   class="py-2"
+                   justify="center">
+              <v-icon>arrow_upward</v-icon>
+            </v-row>
 
-              <v-row no-gutters
-                     class="py-2"
-                     justify="center">
-                <v-icon>arrow_upward</v-icon>
-              </v-row>
+            <v-row v-if="currentStateInfos.positionIndex === index"
+                   no-gutters
+                   justify="center">
 
-              <v-row no-gutters>
-                <BaseRectangleButton button-text="Request Publication"
-                                     material-icon-name="newspaper"
+              <v-col v-if="currentStateInfos.buttonText"
+                      cols="12">
+
+                <BaseRectangleButton :button-text="currentStateInfos.buttonText"
+                                     :material-icon-name="currentStateInfos.buttonIcon"
                                      icon-color="white"
                                      is-small
-                                     @clicked="$emit('requestPublication')" />
-              </v-row>
-            </div>
+                                     :loading="loading"
+                                     :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
+                                     @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
+
+              </v-col>
+
+              <v-col class="pt-2"
+                      cols="12">
+                {{ currentStateInfos.infoText }}
+              </v-col>
+
+              <v-col v-if="mixinMethods_isFieldReadOnly('publicationStatus')"
+                     class="pt-2 readOnlyHint"
+                     cols="12">
+                {{ mixinMethods_readOnlyHint('publicationStatus') }}
+              </v-col>
+
+            </v-row>
+
           </v-col>
 
         </v-row>
@@ -93,43 +117,19 @@
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
   import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+  import { possiblePublicationStates } from '@/factories/metaDataFactory';
 
 
   export default {
     name: 'EditPublicationStatus',
     props: {
-      possiblePublicationStates: {
-        type: Array,
-        default: () => [
-          '',
-          'reserved',
-          'pub_pending',
-          'published',
-        ],
-      },
       publicationState: {
         type: String,
-        default: 'reserved',
+        default: 'draft',
       },
       loading: {
         type: Boolean,
         default: false,
-      },
-      message: {
-        type: String,
-        default: '',
-      },
-      messageDetails: {
-        type: String,
-        default: null,
-      },
-      error: {
-        type: String,
-        default: '',
-      },
-      errorDetails: {
-        type: String,
-        default: null,
       },
       readOnlyFields: {
         type: Array,
@@ -142,23 +142,14 @@
     },
     computed: {
       ...mapState(['config']),
-      isDraft() {
-        return this.publicationState === 'draft';
-      },
-      isUnpublished() {
-        return this.publicationState === 'unpublished';
-      },
-      isPublished() {
-        return this.publicationState === 'published';
-      },
-      pStatesWithDividers() {
+      pStatesAndArrows() {
         const pStateWithDiv = [];
         if (!this.possiblePublicationStates) {
           return pStateWithDiv;
         }
 
         for (let i = 0; i < this.possiblePublicationStates.length; i++) {
-          const pState = this.possiblePublicationStates[i];
+          const pState = this.possiblePublicationStates[i] || 'draft';
           pStateWithDiv.push(pState);
           pStateWithDiv.push('arrow_forward');
         }
@@ -168,23 +159,57 @@
         return pStateWithDiv;
       },
       activeStateIndex() {
-        return this.pStatesWithDividers.findIndex(v => v === this.publicationState);
+        return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
+      },
+      currentStateInfos() {
+        return this.stateTextMap.get(this.publicationState);
       },
     },
     methods: {
       getStateText(state) {
-        return this.stateTextMap.get(state);
+        return this.stateTextMap.get(state)?.chipText || '';
       },
     },
     data: () => ({
+      possiblePublicationStates,
       stateTextMap: new Map([
-        ['', 'Draft'],
-        ['reserved', 'Reserved DOI'],
-        ['pub_pending', 'Publication Pending'],
-        ['published', 'Published'],
+        ['draft', {
+          chipText: 'Draft',
+          infoText: 'Reserve DOI for Dataset',
+          buttonIcon: 'fingerprint',
+          buttonText: 'Reserve',
+          buttonEvent: 'reserveDoi',
+          positionIndex: 2,
+        }],
+        ['reserved', {
+          chipText: 'Reserved DOI',
+          infoText: 'Request Dataset Publication',
+          buttonIcon: 'newspaper',
+          buttonText: 'Request',
+          buttonEvent: 'requestPublication',
+          positionIndex: 4,
+        }],
+        ['pub_pending', {
+          chipText: 'Publication Pending',
+          infoText: 'Wait for the admin to review & approve the publication',
+/*
+          buttonIcon: 'newspaper',
+          buttonText: 'Request',
+          buttonEvent: 'requestPublication',
+*/
+          positionIndex: 6,
+        }],
+        ['published', {
+          chipText: 'Published',
+          infoText: 'Open the DOI entry at DataCite',
+          buttonIcon: 'public',
+          buttonText: 'Show DOI',
+          buttonEvent: 'openDoi',
+          positionIndex: 6,
+        }],
       ]),
       labels: {
-        cardTitle: 'Publication Status',
+        cardTitle: 'Dataset Publication Status',
       },
     }),
     components: {
@@ -199,5 +224,14 @@
   .statesGrid {
     display: grid;
     grid-template-columns: 2fr 0.5fr 2fr 0.5fr 2fr 0.5fr 2fr;
+  }
+
+  .readOnlyHint {
+    font-size: 12px;
+    line-height: 12px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
   }
 </style>

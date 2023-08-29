@@ -95,10 +95,6 @@ export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
     currentStep: Object,
-    possiblePublicationStates: {
-      type: Array,
-      default: undefined,
-    },
     publicationState: {
       type: String,
       default: undefined,
@@ -139,7 +135,6 @@ export default {
 
       if (stepData) {
         return {
-          possiblePublicationStates: stepData.possiblePublicationStates,
           publicationState: stepData.publicationState,
           visibilityState: stepData.visibilityState,
           doi: stepData.doi,
@@ -155,9 +150,6 @@ export default {
     },
     organizationsInfo() {
       return this.currentStep.genericProps;
-    },
-    isDatasetPublic() {
-      return this.publicationsInfo?.publicationState === 'published';
     },
     editFundingProps() {
       return {

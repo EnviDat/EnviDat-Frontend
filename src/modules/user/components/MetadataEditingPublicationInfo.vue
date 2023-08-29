@@ -123,10 +123,6 @@ export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
     currentStep: Object,
-    possiblePublicationStates: {
-      type: Array,
-      default: undefined,
-    },
     publicationState: {
       type: String,
       default: undefined,
@@ -173,7 +169,6 @@ export default {
       const stepData = this.currentStep.genericProps;
 
       return {
-        possiblePublicationStates: stepData.possiblePublicationStates,
         publicationState: stepData.publicationState,
         visibilityState: stepData.visibilityState,
         doi: stepData.doi,
