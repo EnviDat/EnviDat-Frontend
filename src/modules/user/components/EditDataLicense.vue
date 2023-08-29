@@ -46,7 +46,7 @@
             :label="labels.dataLicense"
             :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
             :hint="mixinMethods_readOnlyHint('dataLicenseId')"
-            prepend-icon="data_usage"
+            prepend-icon="policy"
             append-icon="arrow_drop_down"
             :value="selectedLicense"
             @input="changeLicense($event)"
@@ -74,25 +74,18 @@
       </v-row>
 
       <v-row>
-        <v-col>
-          <div v-if="!selectedLicense" class="text-body-3">
-            {{ this.getDataLicenseLink }}
+        <v-col class="text-body-2">
+          <div>{{ labels.dataLicenseUrl }}</div>
+          
+          <a v-if="dataLicenseLinkExists"
+             :href="getDataLicenseLink" target="_blank">
+            {{ getDataLicenseLink }}
+          </a>
+          
+          <div v-if="!dataLicenseLinkExists" >
+            {{ getDataLicenseLink }}
           </div>
 
-          <div
-            v-if="selectedLicense && this.dataLicenseLinkExists()"
-            class="text-body-3"
-          >
-            {{ this.labels.dataLicenseEmail }}
-          </div>
-          <div
-            v-if="selectedLicense && this.dataLicenseLinkExists()"
-            class="text-body-3"
-          >
-            <a v-bind:href="this.getDataLicenseLink" target="_blank">{{
-              this.getDataLicenseLink
-            }}</a>
-          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -121,8 +114,9 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+
 import { renderMarkdown } from '@/factories/stringFactory';
-// eslint-disable-next-line import/no-cycle
+
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -201,20 +195,20 @@ export default {
         return 'Please select a data license above to view link for more detailed information.';
       }
 
-      return this.currentDataLicense?.link || 'Data license information unavailable.';
+      return this.currentDataLicense?.link || 'Data license information unavailable';
     },
     getDataLicenseSummary() {
       if (!this.currentDataLicense) {
         return 'Please select a data license above to view data license summary.';
       }
 
-      return (
-        this.markdownText(this.currentDataLicense?.summary) ||
-        'Data summary information unavailable.'
-      );
+      return this.markdownText(this.currentDataLicense?.summary) || 'Data summary information unavailable';
     },
     validations() {
       return getValidationMetadataEditingObject(EDITMETADATA_DATA_LICENSE);
+    },
+    dataLicenseLinkExists() {
+      return !!this.currentDataLicense?.link;
     },
   },
   methods: {
@@ -229,14 +223,6 @@ export default {
       const dataLicense = this.dataLicenses.filter(x => x.id === id)[0];
 
       return dataLicense || null;
-    },
-    dataLicenseLinkExists() {
-      const currentLicense = this.getLicenseById(this.dataLicenseId);
-      if (!currentLicense) {
-        return false;
-      }
-
-      return currentLicense.link || false;
     },
     markdownText(mdText) {
       return renderMarkdown(mdText);
@@ -282,7 +268,7 @@ export default {
       instructionsLicense: 'Select a data license which reflects the terms of usage of your research data. CC-BY-SA is the recommend license, read the blog post about <a href="https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md" target="_blank">Data license</a> for more information. ',
       dataLicense: 'Click here to select a data license',
       dataLicenseSummary: 'Show a summary',
-      dataLicenseEmail:
+      dataLicenseUrl:
         'Link for more detailed information about selected Data License:',
     },
     previewDataLicenses: null,
@@ -375,7 +361,7 @@ export default {
           'Exclusive rights to reuse or publish WSL research data may not be transferred to commercial publishers or their agents.\n' +
           '\n' +
           'WSL reserves the right to use its research data itself or make it accessible to third parties for reuse.\n',
-        link: 'https://envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md',
+        link: 'https://www.envidat.ch/#/blog/EnviDat_WSLIntern_2022q4.md',
       },
       {
         id: 'other-undefined',
