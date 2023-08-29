@@ -15,7 +15,7 @@
 
 import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
-import { createResources } from '@/factories/metaDataFactory';
+import { createLicense, createResources } from '@/factories/metaDataFactory';
 import { getFrontendDates } from '@/factories/mappingFactory';
 
 import doiIcon from '../src/assets/icons/doi.png';
@@ -28,12 +28,15 @@ import metadata from './js/metadata';
 const resources1 = createResources(metadata[1]);
 const resources2 = createResources(metadata[2]);
 
+const license1 = createLicense(metadata[1]);
+const license2 = createLicense(metadata[2]);
+
 const resources1Dates = getFrontendDates(metadata[1].date);
 const resources2Dates = getFrontendDates(metadata[2].date);
 
 
 export default {
-  title: '6 Detail Views / Metadata Detail Page View',
+  title: '6 Dataset Detail Views / Metadata Detail Page View',
   decorators: [],
   parameters: {},
 };
@@ -64,6 +67,9 @@ export const MetadataResourcesViews = () => ({
   },
   data: () => ({
     genericProp: {
+      dataLicenseId: license1.id,
+      dataLicenseTitle: license1.title,
+      dataLicenseUrl: license1.url,
       resources: resources1.resources,
       dates: resources1Dates,
       showPlaceholder: false,
@@ -76,6 +82,9 @@ export const MetadataResourcesViews = () => ({
       showPlaceholder: true,
     },
     genericProps2: {
+      dataLicenseId: license2.id,
+      dataLicenseTitle: license2.title,
+      dataLicenseUrl: license2.url,
       resources: resources2.resources,
       dates: resources2Dates,
       showPlaceholder: false,

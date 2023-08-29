@@ -534,8 +534,6 @@ export default {
       this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
       const license = createLicense(currentContent);
-      const dataLicenseTitle = license.title;
-      const dataLicenseUrl = license.url;
 
       this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
@@ -556,8 +554,9 @@ export default {
 
         this.$set(components.MetadataResources, 'genericProps', {
           ...this.resources,
-          dataLicenseTitle,
-          dataLicenseUrl,
+          dataLicenseId: license.id,
+          dataLicenseTitle: license.title,
+          dataLicenseUrl: license.url,
           resourcesConfig: this.resourcesConfig,
         });
       });

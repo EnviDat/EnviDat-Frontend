@@ -134,6 +134,9 @@
 */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
+import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
+import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
+
 import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
@@ -146,8 +149,7 @@ import {
   GCNET_INJECT_MICRO_CHARTS,
 } from '@/factories/eventBus';
 
-import ResourceCard from '../ResourceCard.vue';
-import ResourceCardPlaceholder from '../ResourceCardPlaceholder.vue';
+import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
 
 export default {
   name: 'MetadataResources',
@@ -201,6 +203,13 @@ export default {
       return this.mixinMethods_getGenericProp('dataLicenseTitle');
     },
     dataLicenseUrl() {
+      const licenseId = this.mixinMethods_getGenericProp('dataLicenseId');
+      if (licenseId === WSL_DATA_LICENSE_ID) {
+        const wslDataLicense = dataLicenses.filter((l) => l.id === WSL_DATA_LICENSE_ID)[0];
+        
+        return wslDataLicense.link; 
+      }
+      
       return this.mixinMethods_getGenericProp('dataLicenseUrl');
     },
     dateCreatedIcon() {
