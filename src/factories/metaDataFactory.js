@@ -1346,3 +1346,22 @@ export const defaultWorldLocation = {
     ],
   }],
 };
+
+/**
+ * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different
+ * dataset visibility!
+ *
+ * @type {string[]}
+ */
+export const possiblePublicationStates = [
+  '', // defaults to 'draft' in the components
+  'reserved',
+  'pub_pending',
+  'published',
+];
+
+export const possibleVisibilityStates = [
+  'draft',
+  'unpublished',
+  'published',
+];
