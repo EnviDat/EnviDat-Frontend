@@ -15,7 +15,6 @@
             {{ labels.cardTitle }}
           </v-col>
 
-<!--
           <v-col v-if="message">
             <BaseStatusLabelView
               statusIcon="check"
@@ -32,7 +31,6 @@
               :expandedText="errorDetails"
             />
           </v-col>
--->
         </v-row>
 
         <v-row>
@@ -131,6 +129,22 @@
         type: Boolean,
         default: false,
       },
+      message: {
+        type: String,
+        default: '',
+      },
+      messageDetails: {
+        type: String,
+        default: null,
+      },
+      error: {
+        type: String,
+        default: '',
+      },
+      errorDetails: {
+        type: String,
+        default: null,
+      },
       readOnlyFields: {
         type: Array,
         default: () => [],
@@ -162,7 +176,7 @@
         return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
       },
       currentStateInfos() {
-        return this.stateTextMap.get(this.publicationState);
+        return this.stateTextMap.get(this.publicationState || 'draft');
       },
     },
     methods: {

@@ -9,15 +9,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
- import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import { possiblePublicationStates } from '@/factories/metaDataFactory';
 
 
  export default {
    title: '9 Editing Metadata / Edit Publication Status',
    component: EditPublicationStatus,
-   decorators: [],
 };
 
+ const allStates = possiblePublicationStates;
+ allStates[0] = 'draft';
 
  const Template = (args, {argTypes}) => ({
    components: { EditPublicationStatus },
@@ -31,9 +33,7 @@
                                      @clicked="logEvent" />`,
  });
 
-
- export const PublicationDraft = Template.bind({});
-
+export const PublicationDraft = Template.bind({});
 
 export const PublicationReserved = Template.bind({});
 PublicationReserved.args = {
@@ -69,3 +69,55 @@ PublicationReservedNoRights.args = {
   readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
 }
 
+
+export const DOIWorkflowInteraction = () => ({
+  components: { EditPublicationStatus },
+  template: `<EditPublicationStatus v-bind="editPublicationProps"
+                                    @clicked="catchClicked" /> `,
+  methods: {
+    catchClicked(event) {
+      console.log(event);
+      this.loading = true;
+
+      setTimeout(() => {
+        const index = this.allStates.findIndex((value) => value === this.state);
+        if (index < this.allStates.length) {
+          this.message = `Successfully ${ this.successMessageMap.get(this.state) }`;
+
+          setTimeout(() => {
+            this.message = '';
+            this.messageDetails = '';
+          }, 3000);
+
+          this.state = this.allStates[index + 1];
+        }
+
+        this.messageDetails = '';
+        this.loading = false;
+      }, 1000);
+    },
+  },
+  computed: {
+    editPublicationProps() {
+      return {
+        publicationState: this.state,
+        loading: this.loading,
+        message: this.message,
+        messageDetails: this.messageDetails,
+      };
+    },
+  },
+  data: () => ({
+    allStates,
+    state: 'draft',
+    loading: false,
+    message: '',
+    messageDetails: '',
+    successMessageMap: new Map([
+      ['draft', 'Reserved a DOI'],
+      ['reserved', 'Requested publication'],
+      ['pub_pending', 'Requested publication'],
+      ['published', 'Published Dataset '],
+    ]),
+  }),
+})
