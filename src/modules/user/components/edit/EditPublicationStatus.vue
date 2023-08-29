@@ -100,7 +100,6 @@
   </template>
 
   <script>
-  /* eslint-disable vue/no-unused-components */
   /**
    * @summary Shows Publication State
    * @author Dominik Haas-Artho
@@ -114,7 +113,6 @@
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-  import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
 
 
@@ -229,7 +227,6 @@
     components: {
       BaseRectangleButton,
       BaseStatusLabelView,
-      MetadataStateChip,
     },
   };
   </script>

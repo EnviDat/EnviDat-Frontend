@@ -19,10 +19,7 @@ import relatedPublicCitationTesting from './js/relatedPublicCitation';
 
 export default {
   title: '1 Base Elements / Citation View',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: BaseCitationView,
 };
 
 
@@ -45,6 +42,7 @@ const citation2 = createCitation(metadata[2]);
 const citation4 = createCitation(citationTesting);
 */
 
+/*
 const Template = (args, { argTypes }) => ({
   components: { BaseCitationView },
   props: Object.keys(argTypes),
@@ -52,27 +50,31 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const EmptyCitation = Template.bind({});
+*/
 
-export const NormalCitation = Template.bind({});
-NormalCitation.args = {
-  ...citation2,
+export const EmptyCitation = { args: {} };
+
+export const NormalCitation = { args: { ...citation2 } };
+
+export const MobileNormalCitation = {
+  args: { ...NormalCitation.args },
+  parameters: mobileViewportParams,
 };
 
-export const MobileNormalCitation = Template.bind({});
-MobileNormalCitation.args = { ...NormalCitation.args };
-MobileNormalCitation.parameters = mobileViewportParams;
+export const MobileLargeNormalCitation = {
+  args: { ...NormalCitation.args },
+  parameters: mobileLargeViewportParams,
+};
 
-export const MobileLargeNormalCitation = Template.bind({});
-MobileLargeNormalCitation.args = { ...NormalCitation.args };
-MobileLargeNormalCitation.parameters = mobileLargeViewportParams;
+export const TabletNormalCitation = {
+  args: { ...NormalCitation.args },
+  parameters: tabletViewportParams,
+};
 
-export const TabletNormalCitation = Template.bind({});
-TabletNormalCitation.args = { ...NormalCitation.args };
-TabletNormalCitation.parameters = tabletViewportParams;
-
-export const CitationWithoutAbstract = Template.bind({});
-CitationWithoutAbstract.args = {
-  citation: citation1.citationText,
-  doi: citation1.doi,
-  doiUrl: citation1.doiUrl,
+export const CitationWithoutAbstract = {
+  args: {
+    citation: citation1.citationText,
+    doi: citation1.doi,
+    doiUrl: citation1.doiUrl,
+  },
 };
