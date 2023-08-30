@@ -15,11 +15,11 @@ variables:
   rules:
     - if: >
           ($CI_COMMIT_REF_NAME == "main"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
     - if: >
           ($CI_COMMIT_REF_NAME == "staging"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
     - if: >
           ($CI_COMMIT_REF_NAME == "develop"
