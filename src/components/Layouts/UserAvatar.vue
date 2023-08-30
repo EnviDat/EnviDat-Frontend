@@ -70,7 +70,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'secondary',
+      default: 'highlight',
     },
   },
   mounted() {
@@ -80,11 +80,11 @@ export default {
   },
   computed: {
     backgroundColor() {
-      if (!this.showInitials) {
-        return this.color;
+      if (this.showInitials || this.showGravatar) {
+        return 'transparent';
       }
 
-      return 'transparent';
+      return this.color;
     },
     showGravatar() {
       return !this.gravatarNotLoaded;
