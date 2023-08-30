@@ -36,7 +36,7 @@
         <v-row>
           <v-col v-for="(state, index) in pStatesAndArrows"
                  :key="`${index}_pState`"
-                  :id="`activeStateIndex_${activeStateIndex}`">
+                 :id="`activeStateIndex_${activeStateIndex}`">
 
             <v-row no-gutters
                    justify="center">
@@ -61,34 +61,33 @@
               <v-icon>arrow_upward</v-icon>
             </v-row>
 
-            <v-row v-if="currentStateInfos.positionIndex === index"
+            <v-row v-if="currentStateInfos.positionIndex === index && currentStateInfos.buttonText"
                    no-gutters
                    justify="center">
+              <BaseRectangleButton id='interactiveButton'
+                                   :button-text="currentStateInfos.buttonText"
+                                   :material-icon-name="currentStateInfos.buttonIcon"
+                                   icon-color="white"
+                                   is-small
+                                   :loading="loading"
+                                   :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
+                                   @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
-              <v-col v-if="currentStateInfos.buttonText"
-                      cols="12">
+            </v-row>
 
-                <BaseRectangleButton :button-text="currentStateInfos.buttonText"
-                                     :material-icon-name="currentStateInfos.buttonIcon"
-                                     icon-color="white"
-                                     is-small
-                                     :loading="loading"
-                                     :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
-                                     @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
+            <v-row v-if="currentStateInfos.positionIndex === index"
+                   class="pt-2"
+                   no-gutters
+                   justify="center">
+              {{ currentStateInfos.infoText }}
+            </v-row>
 
-              </v-col>
-
-              <v-col class="pt-2"
-                      cols="12">
-                {{ currentStateInfos.infoText }}
-              </v-col>
-
-              <v-col v-if="mixinMethods_isFieldReadOnly('publicationStatus')"
-                     class="pt-2 readOnlyHint"
-                     cols="12">
-                {{ mixinMethods_readOnlyHint('publicationStatus') }}
-              </v-col>
-
+            <v-row v-if="currentStateInfos.positionIndex === index
+                          && mixinMethods_isFieldReadOnly('publicationStatus')"
+                   class="pt-2 readOnlyHint"
+                   no-gutters
+                   justify="center">
+              {{ mixinMethods_readOnlyHint('publicationStatus') }}
             </v-row>
 
           </v-col>

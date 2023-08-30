@@ -9,6 +9,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { within } from '@storybook/testing-library';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
 
@@ -21,6 +22,24 @@ import { possiblePublicationStates } from '@/factories/metaDataFactory';
  const allStates = possiblePublicationStates;
  allStates[0] = 'draft';
 
+ export const SimluateWorkflow = {
+   args: {
+     publicationState: 'draft',
+   },
+   play: async ({ canvasElement }) => {
+     const canvas = within(canvasElement);
+     console.log('canvas');
+     console.log(canvas);
+     // const btn = canvas.getByText('Reserve');
+/*
+     const btn = canvas.getByLabelText('Reserve');
+     console.log('btn');
+     console.log(btn);
+*/
+   },
+ }
+
+/*
  const Template = (args, {argTypes}) => ({
    components: { EditPublicationStatus },
    props: Object.keys(argTypes),
@@ -32,6 +51,7 @@ import { possiblePublicationStates } from '@/factories/metaDataFactory';
    template: `<EditPublicationStatus v-bind="$props"
                                      @clicked="logEvent" />`,
  });
+*/
 
 export const DOIWorkflowInteraction = () => ({
   components: { EditPublicationStatus },
@@ -39,7 +59,7 @@ export const DOIWorkflowInteraction = () => ({
                                     @clicked="catchClicked" /> `,
   methods: {
     catchClicked(event) {
-      console.log(event);
+      // console.log(event);
       this.loading = true;
 
       setTimeout(() => {
@@ -53,6 +73,12 @@ export const DOIWorkflowInteraction = () => ({
           }, 3000);
 
           this.state = this.allStates[index + 1];
+        }
+
+        if (this.state === 'pub_pending') {
+          setTimeout(() => {
+            this.state = this.allStates[this.allStates.length - 1];
+          }, 3000);
         }
 
         this.messageDetails = '';
