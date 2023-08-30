@@ -322,7 +322,7 @@
               align="center">
 
         <v-col v-if="maxTagsReached"
-               class="px-1" >
+               class="px-1 flex-grow-0" >
           <base-icon-button materialIconName="expand_more"
                             color="primary"
                             :iconColor="showTagsExpanded ? 'accent' : 'primary'"
@@ -336,12 +336,12 @@
         </v-col>
 
         <v-col v-if="metadataState"
-               class="px-1" >
+               class=" flex-grow-1 px-1" >
           <MetadataStateChip :state="metadataState" />
         </v-col>
 
         <v-col v-if="publicationYear"
-               class="px-1" >
+               class="flex-grow-0 px-1" >
           <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>
 
