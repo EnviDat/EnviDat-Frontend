@@ -231,11 +231,6 @@
   </script>
 
 <style scoped>
-  .statesGrid {
-    display: grid;
-    grid-template-columns: 2fr 0.5fr 2fr 0.5fr 2fr 0.5fr 2fr;
-  }
-
   .readOnlyHint {
     font-size: 12px;
     line-height: 12px;

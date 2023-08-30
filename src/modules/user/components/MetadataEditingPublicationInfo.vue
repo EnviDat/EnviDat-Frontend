@@ -16,50 +16,10 @@
 
       <v-col cols="6">
 
-        <v-row v-if="!isDatasetPublic">
+        <v-row >
 
           <v-col >
-
-          <!-- TEMPORARY PLACEHOLDER START -->
-          <v-card class="pa-4">
-            <v-container fluid class="pa-0">
-              <v-row>
-                <v-col cols="12">
-                  <div class="text-h5">Publishing Dataset</div>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters align="center" class="pt-6">
-                <v-col cols="1">
-                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                </v-col>
-
-                <v-col class="text-h5" cols="11">
-                  Coming Soon!
-                </v-col>
-
-                <v-col class="pt-2 text-body-1">
-                  Publishing datasets is still under construction.
-                  <br>
-                  Please publish via this dataset the legacy website by clicking on the button below.
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters
-                     class="pt-6" >
-
-                <v-col class="pr-2 text-left">
-                  <BaseRectangleButton buttonText="Publish Dataset"
-                                       color="secondary"
-                                       :url="linkToDatasetCKAN" />
-
-                </v-col>
-
-              </v-row>
-            </v-container>
-          </v-card>
-          <!-- TEMPORARY PLACEHOLDER END -->
-
+            <EditPublicationStatus v-bind="editPublicationStatusProps" />
           </v-col >
 
         </v-row>
@@ -106,7 +66,7 @@
 
 import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 // import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -118,6 +78,7 @@ import {
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -190,6 +151,13 @@ export default {
 
       return this.currentStep.genericProps;
     },
+    publicationInfo() {
+      if (this.$store) {
+        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      }
+
+      return this.currentStep.genericProps;
+    },
     isDatasetPublic() {
       return this.publicationsInfo?.publicationState === 'published';
     },
@@ -214,6 +182,13 @@ export default {
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
+    editPublicationStatusProps() {
+      return {
+        ...this.publicationInfo,
+        readOnlyFields: this.readOnlyFields,
+        readOnlyExplanation: this.readOnlyExplanation,
+      };
+    },
     metadataId() {
       return this.$route?.params?.metadataid;
     },
@@ -230,6 +205,7 @@ export default {
     envidatDomain: process.env.VITE_API_ROOT,
   }),
   components: {
+    EditPublicationStatus,
     //  EditOrganizationTree,
     EditPublicationInfo,
     EditFunding,

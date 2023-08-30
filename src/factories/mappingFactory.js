@@ -118,7 +118,6 @@ const JSONFrontendBackendRules = {
     ['name','name'],
     ['packageId','package_id'],
     ['position','position'],
-    ['publicationState','publication_state'],
     ['restricted','restricted'],
     ['resourceSize','resource_size'],
     ['resourceType','resource_type'],

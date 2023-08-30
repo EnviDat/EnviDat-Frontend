@@ -49,6 +49,7 @@
           <v-text-field
             :label="labels.dataObjectIdentifier"
             outlined
+            dense
             :readonly="mixinMethods_isFieldReadOnly('doi')"
             :hint="mixinMethods_readOnlyHint('doi')"
             :error-messages="validationErrors.doi"
@@ -81,6 +82,7 @@
           <v-text-field
             :label="labels.publisher"
             outlined
+            dense
             :readonly="mixinMethods_isFieldReadOnly('publisher')"
             :hint="mixinMethods_readOnlyHint('publisher')"
             :error-messages="validationErrors.publisher"
@@ -95,6 +97,7 @@
           <v-select
             :items="yearList"
             outlined
+            dense
             :label="labels.year"
             :error-messages="validationErrors.publicationYear"
             :readonly="mixinMethods_isFieldReadOnly('publicationYear')"
