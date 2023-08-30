@@ -231,6 +231,32 @@
 
           </v-col>
 
+        </v-row>
+
+        <v-row no-gutters
+               class="pt-1"
+                justify="end">
+
+          <v-col v-if="hasContent && spatialInfo"
+                 cols="12"
+                 sm="6"
+                 lg="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">location_pin</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ spatialInfo }}
+              </v-col>
+            </v-row>
+
+          </v-col>
+
           <v-col v-if="hasContent"
                  cols="12"
                  sm="6"
@@ -242,10 +268,30 @@
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">account</v-icon>
+                        color="black">more_time</v-icon>
               </v-col>
-              <v-col>
-                Last updated: 23-08-2023
+              <v-col style="font-size: 0.9rem;">
+                {{ created }}
+              </v-col>
+            </v-row>
+
+          </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="6"
+                 lg="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">update</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ modified }}
               </v-col>
             </v-row>
 
@@ -420,6 +466,18 @@ export default {
       default: undefined,
     },
     publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    spatialInfo: {
+      type: String,
+      default: undefined,
+    },
+    created: {
+      type: String,
+      default: undefined,
+    },
+    modified: {
       type: String,
       default: undefined,
     },

@@ -172,6 +172,8 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
   }
 
   const visibility = getMetadataVisibilityState(dataset);
+  const created = formatDate(dataset.metadata_created);
+  const modified = formatDate(dataset.metadata_modified);
 
   return {
     metadataTitle: dataset.title,
@@ -187,6 +189,9 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
     metadataState: visibility,
+    spatialInfo: dataset.spatial_info,
+    created,
+    modified,
   };
 }
 
