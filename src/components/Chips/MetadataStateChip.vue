@@ -81,7 +81,7 @@ export default {
       return this.state?.toUpperCase() || 'DRAFT';
     },
     stateLowerCase() {
-      return this.state.toLowerCase();
+      return this.stateText.toLowerCase();
     },
     stateTooltip() {
       return this.tooltipMap[this.stateLowerCase];

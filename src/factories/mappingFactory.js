@@ -559,25 +559,25 @@ export function cleanResourceForFrontend(resource) {
   }
 }
 
+export const metadataPublishedReadOnlyFields = [
+  // EditMetadataHeader
+  METADATA_TITLE_PROPERTY,
+  // EditAuthorList
+  'authors',
+  // EditPublicationInfo
+  'organization',
+  'publicationYear',
+  'publisher',
+  'doi',
+  // not implemented yet
+  METADATA_URL_PROPERTY,
+];
 
-// possible publication states: ['', 'published', 'approved', 'publication pending', 'publication requested']
 const readOnlyMappingRules = [
   {
     triggerRule: ['published'],
     explanation: 'This field is "readonly" because the dataset is already published.',
-    readOnlyFields: [
-      // EditMetadataHeader
-      METADATA_TITLE_PROPERTY,
-      // EditAuthorList
-      'authors',
-      // EditPublicationInfo
-      'organization',
-      'publicationYear',
-      'publisher',
-      'doi',
-      // not implemented yet
-      METADATA_URL_PROPERTY,
-    ],
+    readOnlyFields: metadataPublishedReadOnlyFields,
   },
 /*
   {

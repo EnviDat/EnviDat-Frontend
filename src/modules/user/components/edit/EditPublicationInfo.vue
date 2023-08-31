@@ -33,24 +33,15 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="6">
-          {{ labels.visibilityState }}
-        </v-col>
-
-        <v-col cols="6">
-          <MetadataStateChip :state="visibilityState" />
-        </v-col>
-
-      </v-row>
 
       <v-row class="pt-2">
-        <v-col cols="4">
+
+        <v-col >
           <v-text-field
             :label="labels.dataObjectIdentifier"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('doi')"
+            readonly
             :hint="mixinMethods_readOnlyHint('doi')"
             :error-messages="validationErrors.doi"
             prepend-icon="fingerprint"
@@ -60,21 +51,24 @@
           />
         </v-col>
 
-        <v-col class="shrink pt-5">
-          <BaseRectangleButton buttonText="Generate New DOI" :disabled="true" />
-        </v-col>
-
-        <v-col class="shrink pt-6">
-          <v-icon
-            color="primary"
-            style="animation: progress-circular-rotate 3s linear infinite"
-            >settings</v-icon
+        <v-col>
+          <v-autocomplete :value="visibilityState"
+                          :items="[visibilityState]"
+                          outlined
+                          dense
+                          chips
+                          readonly
+                          prepend-icon="remove_red_eye"
+                          persistent-hint
+                          :label="labels.visibilityState"
           >
+            <template v-slot:selection="{ item }">
+              <MetadataStateChip style="font-size: 12px;" :state="item" />
+            </template>
+          </v-autocomplete>
+
         </v-col>
 
-        <v-col class=" pt-6">
-          Generating DOI is under construction
-        </v-col>
       </v-row>
 
       <v-row>
@@ -126,9 +120,8 @@
  */
 import { mapState } from 'vuex';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+// import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -140,6 +133,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import baseIconLableViewStories from '~/stories/baseIconLableView.stories';
 
 export default {
   name: 'EditPublicationInfo',
@@ -198,6 +192,9 @@ export default {
     },
   },
   computed: {
+    baseIconLableViewStories() {
+      return baseIconLableViewStories
+    },
     ...mapState(['config']),
     maxYears() {
       let maxYears = this.defaultUserEditMetadataConfig.publicationYearsList;
@@ -347,9 +344,8 @@ export default {
     stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
-    BaseRectangleButton,
     BaseStatusLabelView,
-    MetadataStateChip,
+//    MetadataStateChip,
   },
 };
 </script>

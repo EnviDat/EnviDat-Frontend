@@ -31,6 +31,10 @@
               :expandedText="errorDetails"
             />
           </v-col>
+
+          <v-col cols="12">
+            <div class="text-body-2">{{ labels.instructions }}</div>
+          </v-col>
         </v-row>
 
         <v-row>
@@ -94,6 +98,17 @@
 
         </v-row>
 
+        <v-row>
+          <v-col cols="12">
+            <div class="text-body-2">{{ labels.instructions2 }}</div>
+          </v-col>
+
+          <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
+                  :key="`${index}_${field}`">
+            {{ field }}
+          </v-col>
+        </v-row>
+
       </v-container>
     </v-card>
   </template>
@@ -113,6 +128,7 @@
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
+  import { metadataPublishedReadOnlyFields } from '@/factories/mappingFactory';
 
 
   export default {
@@ -221,7 +237,13 @@
       ]),
       labels: {
         cardTitle: 'Dataset Publication Status',
+        instructions: `Have you finished uploading data & resouces and entered all the metadata correctly?
+          Start publishing your dataset with reserving a DOI, when that's done.
+          Request publication, it will be reviewd by admins and once approved it will be restigered at DataCite.`,
+        instructions2: `Please be aware that once you published some metadata can not be changed anymore.
+        If you have updates to your data you have to upload a newer version and make a clear naming and desription for the latest data.`,
       },
+      metadataPublishedReadOnlyFields,
     }),
     components: {
       BaseRectangleButton,
