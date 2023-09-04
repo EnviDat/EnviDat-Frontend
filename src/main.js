@@ -12,29 +12,25 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import Vue from 'vue';
+import { createApp } from 'vue';
+// import InfiniteLoading from 'vue-infinite-loading';
 
 import store from '@/store/store';
 import App from '@/App.vue';
 import { initAxios } from '@/init';
 
-import vuetify from './plugins/vuetify';
-import router from './router';
-import globalMethods from './factories/globalMethods';
+import vuetify from '@/plugins/vuetify';
+import router from '@/router';
+import globalMethods from '@/factories/globalMethods';
 
+const app = createApp(App);
 
-Vue.config.productionTip = false;
-Vue.mixin(globalMethods);
+initAxios(app, store);
 
-initAxios(Vue, store);
-
-
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  vuetify,
-  components: { App },
-  template: '<App/>',
-});
+app
+  .use(vuetify)
+  .use(router)
+  .use(store)
+  //  .use(InfiniteLoading)
+  .mixin(globalMethods)
+  .mount('#app');

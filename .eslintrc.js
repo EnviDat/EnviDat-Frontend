@@ -35,12 +35,14 @@ module.exports = {
   // add your custom rules here
   rules: {
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/extensions.md
+/*
     'import/extensions': ['error', // warning
       'always', {
         'js': 'never',
         'vue': 'never',
       },
     ],
+*/
     'import/no-unresolved': 'off',
     // allow optionalDependencies
     'import/no-extraneous-dependencies': 'off',
@@ -67,7 +69,7 @@ module.exports = {
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',
-    'vuetify/no-legacy-grid': 'error',
+    // 'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
     'vue/no-v-text-v-html-on-component': 'off',

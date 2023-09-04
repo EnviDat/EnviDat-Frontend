@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import vue from '@vitejs/plugin-vue2';
+import vue from '@vitejs/plugin-vue';
+import vuetify from 'vite-plugin-vuetify';
 
-import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
-import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import Unfonts from 'unplugin-fonts/vite'
 import { visualizer } from 'rollup-plugin-visualizer';
 
+// import { getFilesWithPrefix } from '@/factories/enhancementsFactoryNode';
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
@@ -51,12 +51,8 @@ export default ({ mode }) => {
             eslint({
               exclude: ['/virtual:/**', 'node_modules/**'],
             }),
-            ViteRequireContext(),
-            Components({
-                resolvers: [
-                  // Vuetify
-                  VuetifyResolver(),
-                ],
+            vuetify({
+              autoImport: true,
             }),
             Unfonts({
               google: {
@@ -88,14 +84,13 @@ export default ({ mode }) => {
                 // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
-              { find: '@turf/turf', replacement: '@turf/turf/dist/es/index.js' },
-              { find: 'turf-jsts', replacement: 'turf-jsts/jsts.min.js' },
               { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
               { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-              { find: 'vue', replacement: `vue/dist/vue.${ isProd ? 'min' : 'esm' }.js` },
+              // { find: 'vue', replacement: `vue/dist/vue.${ isProd ? 'min' : 'esm' }.js` },
+              // { find: 'vue', replacement: '@vue/compat' },
             ],
         },
         build: {

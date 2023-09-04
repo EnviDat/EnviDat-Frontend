@@ -80,7 +80,7 @@
  */
 
 import axios from 'axios';
-import { rewind as tRewind } from '@turf/turf';
+import * as tRewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import {
   BROWSE_PATH,

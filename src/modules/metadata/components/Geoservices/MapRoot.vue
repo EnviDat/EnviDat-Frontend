@@ -40,11 +40,9 @@
 </template>
 
 <script>
-import {
-  buffer as tBuffer,
-  centroid as tCentroid,
-  envelope as tEnvelope,
-} from '@turf/turf';
+import * as tBuffer from '@turf/buffer';
+import * as tCentroid from '@turf/centroid';
+import * as tEnvelope from '@turf/envelope';
 
 import { eventBus,MAP_TOGGLE_BASE_LAYER } from '@/factories/eventBus';
 import {
@@ -91,7 +89,7 @@ export default {
   mounted() {
     eventBus.on(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(MAP_TOGGLE_BASE_LAYER, this.toggleBaseMapLayer);
   },
   computed: {
