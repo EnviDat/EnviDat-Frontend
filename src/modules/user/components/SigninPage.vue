@@ -49,15 +49,19 @@ import { eventBus, SHOW_REDIRECT_DASHBOARD_DIALOG } from '@/factories/eventBus';
 import {
   ACTION_GET_USER_CONTEXT,
   ACTION_REQUEST_TOKEN,
-  ACTION_USER_SIGNIN,
+  ACTION_API_TOKEN,
   ACTION_USER_SIGNOUT,
-  FETCH_USER_DATA,
+  SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
   REQUEST_TOKEN,
-  USER_SIGNIN,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
   VALIDATION_ERROR,
+  ACTION_GET_USER_CONTEXT_TOKEN,
+  ACTION_REQUEST_TOKEN_RESET,
+  ACTION_USER_SIGNIN,
+  USER_SIGNIN,
+  ACTION_USER_SIGNOUT_REVOKE_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
 import {
   USER_DASHBOARD_PATH,
@@ -103,6 +107,9 @@ export default {
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
+    },
     prefilledEmail() {
       return this.$route.query.email;
     },
@@ -123,26 +130,45 @@ export default {
   },
   methods: {
     checkUserSignedIn() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_GET_USER_CONTEXT,
+      let action = ACTION_GET_USER_CONTEXT_TOKEN;
+      if (this.config?.userDashboardConfig && !this.useTokenSignin) {
+        action = ACTION_GET_USER_CONTEXT;
+      }
+
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+        action,
         commit: true,
         mutation: GET_USER_CONTEXT,
       });
     },
     async catchSignIn(email, key) {
+      const action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
+
       await this.$store.dispatch(
-        `${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`,
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
-          action: ACTION_USER_SIGNIN,
+          action,
           body: { email, key },
           commit: true,
           mutation: USER_SIGNIN,
         },
       );
 
-      if (!this.errorField && !this.errorFieldText) {
-        this.redirectToDashboardIfAllowed();
+      // token login (if useTokenSignin = true) makes an additional call within the action with the token
+      if (!this.useTokenSignin && !this.errorField && !this.errorFieldText) {
+
+        // Get user context via the old login
+        await this.$store.dispatch(
+        `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+        {
+          action: ACTION_GET_USER_CONTEXT,
+          commit: true,
+          mutation: GET_USER_CONTEXT,
+        });
       }
+
+      // Then redirect with context set
+      this.redirectToDashboardIfAllowed();
     },
     redirectToDashboardIfAllowed() {
       if (this.dashboardRedirect) {
@@ -154,16 +180,20 @@ export default {
       }
     },
     catchRequestToken(email) {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_REQUEST_TOKEN,
+      const action = this.useTokenSignin ? ACTION_REQUEST_TOKEN_RESET : ACTION_REQUEST_TOKEN;
+
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+        action,
         body: { email },
         commit: true,
         mutation: REQUEST_TOKEN,
       });
     },
     catchSignOut() {
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-        action: ACTION_USER_SIGNOUT,
+      const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+
+      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+        action,
         commit: true,
         mutation: USER_SIGNOUT,
       });

@@ -1,5 +1,8 @@
 <template>
-  <v-card color="secondary" dark id="IntroductionCard" class="pa-0">
+  <v-card color="secondary"
+          id="IntroductionCard"
+          class="pa-0 theme--dark">
+
     <v-container fluid class="pa-4">
       <v-row no-gutters>
         <v-col class="text-h5">
@@ -7,45 +10,51 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row no-gutters
+              class="pt-2">
         <v-col class="text-body-1 accentLink">
           <div v-html="introductionText"></div>
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col class="text-body-1">
-          <v-row no-gutters>
-            What can you do here?
+      <v-row no-gutters
+              class="pt-2">
+        <v-col >
+
+          <v-row v-if="currentLocalDataset"
+                 no-gutters>
+            <v-col cols="7"
+                    class="py-2">
+              Continue creating your dataset:
+            </v-col>
+
+            <v-col cols="5"
+                   class="py-2">
+              Clear your local dataset in creation:
+            </v-col>
+
+            <v-col cols="7"
+                  class="pl-1 pr-4">
+              <MetadataCardLocal v-bind="currentLocalDataset"
+                                 @clickedEvent="$emit('localCardClicked')"
+              />
+            </v-col>
+
+            <v-col cols="5" style="display: inline-flex; justify-content: center;">
+              <base-icon-button material-icon-name="clear"
+                                :fill-color="$vuetify.theme.themes.light.error"
+                                icon-color="black"
+                                tooltip-text="Delete your local dataset"
+                                @clicked="$emit('clearButtonClicked', $event)"
+              />
+            </v-col>
+
           </v-row>
 
-          <v-row no-gutters class="pt-3" style="align-items: center;">
+          <v-row v-if="!currentLocalDataset"
+                 no-gutters class="pt-3" style="align-items: center;">
             <v-col cols="3" class="text-body-1">
               {{ createText }}
-              <!--
-              <v-icon style="animation: progress-circular-rotate 3s linear infinite" >settings</v-icon>
-              Coming Soon!
--->
-
-              <!--              <base-rectangle-button color="accent"
-                                                   marginClass="black&#45;&#45;text"
-                                                   :isOutlined="hasEditing"
-                                                   :button-text="createButtonText"
-                                                   :disabled="createClickCallback === null"
-                                                   @clicked="createClickCallback ? createClickCallback : ''" />
-                            -->
-            </v-col>
-
-            <v-col cols="3" class="text-body-2">
-              <v-icon
-                style="animation: progress-circular-rotate 3s linear infinite"
-                >settings</v-icon
-              >
-              Coming Soon!
-            </v-col>
-
-            <v-col cols="3">
-              <div class="pb-2">Use the legacy website for now:</div>
             </v-col>
 
             <v-col cols="3">
@@ -59,33 +68,17 @@
             </v-col>
           </v-row>
 
-          <v-row no-gutters class="pt-3" style="align-items: center;">
-            <v-col cols="3" class="text-body-1">
-              {{ existingText }}
-            </v-col>
-
-            <v-col cols="3">
-              <base-rectangle-button
-                color="accent"
-                marginClass="black--text"
-                :button-text="existingButtonText"
-                :disabled="existingClickCallback === null"
-                @clicked="existingClickCallback ? existingClickCallback() : ''"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row
-            v-if="editingText"
+          <v-row v-if="editingText"
             no-gutters
             class="pt-3"
             style="align-items: center;"
           >
-            <v-col cols="6" class="text-body-1">
+            <v-col cols="7" class="text-body-1">
               {{ editingText }}
             </v-col>
 
-            <v-col cols="6">
+            <v-col cols="5"
+                    class="pl-4">
               <base-rectangle-button
                 color="accent"
                 marginClass="black--text"
@@ -121,7 +114,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Welcome back',
+      default: 'Welcome',
     },
     userName: String,
     introText: {
@@ -129,10 +122,6 @@ export default {
       default: '',
     },
     createClickCallback: {
-      type: Function,
-      default: null,
-    },
-    existingClickCallback: {
       type: Function,
       default: null,
     },
@@ -152,6 +141,10 @@ export default {
       type: String,
       default: '',
     },
+    currentLocalDataset: {
+      type: Object,
+      default: undefined,
+    },
   },
   computed: {
     welcomeTitle() {
@@ -167,8 +160,7 @@ export default {
     },
     ckanDashboardText() {
       return this.oldDashboardUrl
-        ? ` And more is to come, the dashboard will change over time, if you can't find
-                  a feature you can switch <a href="${this.oldDashboardUrl}" target="_blank">to the legacy dashboard</a>.`
+        ? `<a href="${this.oldDashboardUrl}" target="_blank">legacy dashboard</a>`
         : '';
     },
     editingText() {
@@ -180,11 +172,9 @@ export default {
   methods: {},
   data: () => ({
     introTextFallback:
-      'Here you can manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>',
+      'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',
     createButtonText: 'New Dataset',
-    existingText: 'Edit your existing datasets',
-    existingButtonText: 'Goto Datasets',
     editingButtonText: 'Continue editing',
   }),
   components: {

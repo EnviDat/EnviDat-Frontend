@@ -16,15 +16,18 @@
           v-model="pickedUsers"
           :items="users"
           outlined
+          :dense="dense"
           append-icon="arrow_drop_down"
           :readonly="readonly"
           :hint="hint"
+          :persistent-hint="!!hint"
           :prepend-icon="prependIcon"
           :label="pickerLabel"
           :multiple="multiplePick"
           :clearable="isClearable"
           :search-input="search"
           :error-messages="errorMessages"
+          :menu-props="menuOptions"
           clear-icon="close"
           @change="catchPicks"
           @blur="$emit('blur', $event)"
@@ -38,7 +41,7 @@
               v-if="item"
               :name="item"
               :isSmall="true"
-              :isCloseable="authorsCloseable"
+              :isCloseable="userTagsCloseable"
               @closeClicked="catchCloseClicked"
             />
           </template>
@@ -82,6 +85,10 @@ export default {
     users: Array,
     preSelected: Array,
     multiplePick: Boolean,
+    pickerLabel: {
+      type: String,
+      default: 'Click here to pick an EnviDat author',
+    },
     isClearable: {
       type: Boolean,
       default: false,
@@ -92,9 +99,13 @@ export default {
       type: String,
       default: 'account_box',
     },
-    authorsCloseable: {
+    userTagsCloseable: {
       type: Boolean,
       default: true,
+    },
+    dense: {
+      type: Boolean,
+      default: false,
     },
     errorMessages: {
       type: String,
@@ -120,10 +131,15 @@ export default {
   computed: {
     autocompleteHint() {
       if (!this.search) {
-        return 'Start typing for author autocompletion.';
+        return 'Start typing for autocompletion.';
       }
 
-      return `No author name matching "<strong>${this.search}</strong>".`;
+      return `No name matching "<strong>${this.search}</strong>".`;
+    },
+    menuOptions() {
+      return {
+        transition: 'fade-transition',
+      }
     },
   },
   methods: {
@@ -189,7 +205,6 @@ export default {
     },
   },
   data: () => ({
-    pickerLabel: 'Click here to pick an EnviDat author',
     pickedUsers: [],
     search: '',
   }),

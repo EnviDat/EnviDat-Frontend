@@ -11,15 +11,22 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
-import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
+
+import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
 
 import actions from './userActions';
+import editActions from './editActions';
+import createActions from './createActions';
+
 import mutations from './userMutations';
+import editMutations from './editMutations';
+import createMutations from './createMutations';
 
 const userState = {
   error: null,
@@ -34,30 +41,34 @@ const userState = {
   collaboratorDatasetsLoading: false,
   collaboratorDatasets: [],
   collaboratorDatasetsLimit: 1000,
-  userOrganizationLoading: false,
-  userOrganizationIds: [],
-  userOrganizationNames: [],
-  userOrganizations: {},
-  userOrgaDatasetsError: null,
   metadataSavingMessageTimeoutTime: 2500,
   metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
+  loadingEditingData: false,
   metadataInEditing: getEmptyMetadataInEditingObject(),
-  selectedResourceId: '',
-  selectedAuthorId: '',
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadNewResourceLoading: false,
+  uploadLoading: false,
+  uploadResource: null,
+  uploadMetadataId: null,
+  uploadError: null,
+  envidatUsers: null,
+  envidatUsersError: null,
+  metadataCreationLoading: false,
+  newMetadatasetName: null,
+  metadataCreationError: null,
 };
+
 
 export const user = {
   namespaced: true,
   state: userState,
   getters: {
-    resources: state =>
-      state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
+    resources: state => state.metadataInEditing[EDITMETADATA_DATA_RESOURCES].resources,
     authors: state => state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors,
     getMetadataEditingObject: state => key => state.metadataInEditing[key],
     filteredDatasets: (state, getters) => {
@@ -68,10 +79,7 @@ export const user = {
         for (let i = 0; i < content.length; i++) {
           const entry = content[i];
 
-          if (
-            entry.tags &&
-            tagsIncludedInSelectedTags(entry.tags, state.filteringTagNames)
-          ) {
+          if (entry.tags && tagsIncludedInSelectedTags(entry.tags, state.filteringTagNames)) {
             filteredContent.push(entry);
           }
         }
@@ -79,7 +87,18 @@ export const user = {
 
       return filteredContent;
     },
+    uploadResource: state => state.uploadResource,
+    uploadResourceId: state => state.uploadResource?.id,
+    uploadMetadataId: state => state.uploadMetadataId,
   },
-  mutations,
-  actions,
+  mutations: {
+    ...mutations,
+    ...editMutations,
+    ...createMutations,
+  },
+  actions: {
+    ...actions,
+    ...editActions,
+    ...createActions,
+  },
 };

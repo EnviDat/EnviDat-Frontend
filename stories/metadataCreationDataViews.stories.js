@@ -12,51 +12,70 @@
 
 import {
   CANCEL_EDITING_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
 import EditDataAndResources from '@/modules/user/components/EditDataAndResources.vue';
-import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 
-import { createResources } from '@/factories/metaDataFactory';
 import {
   enhanceElementsWithStrategyEvents,
   localIdProperty,
+  SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
-import unFormatedMetadataCards from './js/metadata';
-import { LABLE_VIEWS, METADATA_EDITING } from './storybookFolder';
 
+import { cleanListForFrontend, enhanceUserObject, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
+import unFormatedMetadata from './js/metadata';
+import userList from './testdata/user_list.json';
 
-// const apiFactory = require('@/factories/apiFactory');
+const envidatUsers = userList?.result || [];
 
-const metadataCards = [];
-
-// console.log(`got metadata ${!!unFormatedMetadataCards}`);
-
-for (let i = 0; i < unFormatedMetadataCards.length; i++) {
-  const dataset = unFormatedMetadataCards[i];
-  const resources = createResources(dataset);
-  resources.resources = enhanceElementsWithStrategyEvents(resources.resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
-  metadataCards.push(resources);
+for (let i = 0; i < envidatUsers.length; i++) {
+  envidatUsers[i] = enhanceUserObject(envidatUsers[i]);
 }
-// });
+
+const allResources = [];
+
+// console.log(`got metadata ${!!unFormatedMetadata}`);
+
+for (let i = 0; i < unFormatedMetadata.length; i++) {
+  const dataset = unFormatedMetadata[i];
+  let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+
+  for (let j = 0; j < resources.length; j++) {
+    const resource = resources[j];
+    if(resource.restricted && typeof resource.restricted === 'string') {
+      try {
+        resource.restricted = JSON.parse(resource.restricted);
+      } catch (e) {
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
+        console.error(e);
+      }
+    }
+  }
+
+  resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
+  allResources.push(resources);
+}
+
 
 export default {
-  title: `${METADATA_EDITING} / Data Infos`,
+  title: '9 Editing Metadata / Resource Views',
   decorators: [],
   parameters: {},
 };
 
+const userEditMetadataConfig = {
+  editingRestrictingActive: true,
+};
 
-
-export const EditResourceViews = () => ({
+  export const EditResourceViews = () => ({
   components: { EditResource },
   template: `
     <v-col>
@@ -66,60 +85,64 @@ export const EditResourceViews = () => ({
       </v-row>
 
       <v-row class="py-3" >
-        <v-col >
+        <v-col cols="6">
           <EditResource  />
         </v-col>
 
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource1" />
         </v-col>
 
       </v-row>
 
       <v-row>
-        EditResource with resource2
+        EditResource with resource2 & resource 3
       </v-row>
 
       <v-row class="py-3" >
 
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource2" />
         </v-col>
-      </v-row>
 
-      <v-row>
-        EditResource with resource3
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
+        <v-col cols="6">
           <EditResource v-bind="resource3" />
         </v-col>
       </v-row>
 
+      <v-row>
+        EditResource with resource 4
+      </v-row>
+
+      <v-row class="py-3" >
+
+        <v-col cols="6">
+          <EditResource v-bind="resource4" />
+        </v-col>
+
+      </v-row>
+    
     </v-col>
     `,
   created() {
-    eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeUnmount() {
-    eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {
-    selectResource(id) {
-      this.emptyFirstGenericProps = {
-        ...this.emptyFirstGenericProps,
-        selectionId: id,
-      };
+    editComponentsChanged(updateObj) {
+      this.resource1 = updateObj.data;
     },
-    // editComponentsChanged(updateObj) {
-    //   if (updateObj.data.id === this.genericProps.id) {
-    //     this.genericProps = updateObj.data;
-    //   }
-    //   if (updateObj.data.id === this.emptyFirstGenericProps.id) {
-    //     this.emptyFirstGenericProps = updateObj.data;
-    //   }
-    // },
+  },
+  computed: {
+    resource4() {
+      return {
+        ...allResources[2][2],
+        loading: true,
+        envidatUsers,
+      }
+    },
   },
   data: () => ({
     emptyFirstGenericProps: {
@@ -130,9 +153,24 @@ export const EditResourceViews = () => ({
         downloadActive: false,
       },
     },
-    resource1: metadataCards[0].resources[0],
-    resource2: metadataCards[0].resources[1],
-    resource3: metadataCards[2].resources[0],
+    resource1: {
+      ...allResources[0][0],
+      ...mergeResourceSizeForFrontend(allResources[0][0]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
+    resource2: {
+      ...allResources[0][1],
+      ...mergeResourceSizeForFrontend(allResources[0][1]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
+    resource3: {
+      ...allResources[2][0],
+      ...mergeResourceSizeForFrontend(allResources[2][0]),
+      userEditMetadataConfig,
+      envidatUsers,
+    },
   }),
 });
 
@@ -163,10 +201,10 @@ export const EditResourcesList = () => ({
     </v-col>
     `,
     created() {
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
     },
-    beforeUnmount() {
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
+    beforeDestroy() {
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
     },
     methods: {
       selectResource(id) {
@@ -195,7 +233,7 @@ export const EditResourcesList = () => ({
       },
       genericProps: {
         id: '2',
-        resources: metadataCards[2].resources,
+        resources: allResources[2],
         selectionId: -1,
         resourcesConfig: {
           downloadActive: false,
@@ -204,64 +242,6 @@ export const EditResourcesList = () => ({
     }),
   });
 
-export const EditDataInfoViews = () => ({
-  components: { EditDataInfo },
-  template: `
-    <v-col>
-
-      <v-row>
-        EditDataInfo Component Unfilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayEmpty" />
-        </v-col>
-      </v-row>
-
-      <v-row>
-        EditDataInfo Component Prefilled Dates
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditDataInfo :datesArray="datesArrayFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col>
-    `,
-  computed: {
-  },
-  methods: {
-  },
-    data: () => ({
-      datesArrayEmpty: [
-        {
-          dateType: '',
-          date: '',
-          dateEnd: '',
-        },
-      ],
-      datesArrayFilled: [
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-        {
-          dateType: 'collected',
-          date: '01.08.2006',
-          dateEnd: '6.09.2007',
-        },
-      ],
-    }),
-  });
 
 export const EditDataAndResourcesListViews = () => ({
     components: { EditDataAndResources },
@@ -274,32 +254,61 @@ export const EditDataAndResourcesListViews = () => ({
 
       <v-row class="py-3" >
         <v-col >
-          <EditDataAndResources :genericProps="genericProps" />
+          <EditDataAndResources v-bind="genericProps" />
         </v-col>
       </v-row>
 
+      <v-row>
+        EditDataAndResources Component resourceUploadActive: true
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditDataAndResources v-bind="genericProps2" />
+        </v-col>
+      </v-row>
+    
     </v-col>
     `,
     created() {
-      eventBus.$on(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$on(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+      eventBus.on(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.on(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.on(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeUnmount() {
-      eventBus.$off(SAVE_EDITING_RESOURCE, this.saveResource);
-      eventBus.$off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
-      eventBus.$off(SELECT_EDITING_RESOURCE, this.selectResource);
-      eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    beforeDestroy() {
+      eventBus.off(SAVE_EDITING_RESOURCE, this.saveResource);
+      eventBus.off(CANCEL_EDITING_RESOURCE, this.cancelEditing);
+      eventBus.off(SELECT_EDITING_RESOURCE, this.selectResource);
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
+      userEditMetadataConfig() {
+        return {
+          resourceUploadActive: true,
+        };
+      },
       genericProps() {
         return {
           resources: this.resources,
+          license: unFormatedMetadata[0].license_title,
+          licenseUrl: unFormatedMetadata[0].license_url,
           selectionId: this.selectionId,
           resourcesConfig: {
             downloadActive: false,
           },
+        };
+      },
+      genericProps2() {
+        return {
+          resources: this.resources,
+          license: unFormatedMetadata[0].license_title,
+          licenseUrl: unFormatedMetadata[0].license_url,
+          selectionId: this.selectionId,
+          resourcesConfig: {
+            downloadActive: false,
+          },
+          userEditMetadataConfig: this.userEditMetadataConfig,
         };
       },
     },
@@ -369,13 +378,12 @@ export const EditDataAndResourcesListViews = () => ({
         }
       },
       saveResource(newRes) {
-        newRes.existsOnlyLocal = false;
         this.updateResource(newRes);
         this.cancelEditing();
       },
     },
     data: () => ({
-      resources: metadataCards[0].resources,
+      resources: allResources[0],
       selectionId: -1,
     }),
   });

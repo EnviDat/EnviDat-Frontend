@@ -2,7 +2,9 @@
   <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
     <template v-slot:activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
-        <UserAvatar :size="size" :nameInitials="nameInitials" />
+        <UserAvatar :size="size"
+                    :nameInitials="nameInitials"
+                    :email-hash="emailHash"/>
       </div>
     </template>
     <v-list>
@@ -30,15 +32,19 @@
  * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-25 14:31:13
  */
+import { mapState } from 'vuex';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
+
 import {
   ACTION_USER_SIGNOUT,
-  FETCH_USER_DATA,
+  ACTION_USER_SIGNOUT_REVOKE_TOKEN,
+  SIGNIN_USER_ACTION,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
-import { USER_SIGNOUT_PATH } from '@/router/routeConsts';
+
+import { LANDING_PATH, USER_SIGNOUT_PATH } from '@/router/routeConsts';
 
 export default {
   name: 'UserMenu',
@@ -54,18 +60,33 @@ export default {
     UserAvatar,
   },
   computed: {
+    ...mapState(['config']),
     nameInitials() {
       return getNameInitials(this.userObject);
     },
+    emailHash() {
+      return this.userObject?.emailHash;
+    },
+    userDashboardConfig() {
+      return this.config?.userDashboardConfig || {};
+    },
+    useTokenSignin() {
+      return this.userDashboardConfig?.useTokenSignin || false;
+    },
   },
   methods: {
-    menuClick(item) {
+    async menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${FETCH_USER_DATA}`, {
-          action: ACTION_USER_SIGNOUT,
+        const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+
+        await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
+          action,
           commit: true,
           mutation: USER_SIGNOUT,
         });
+
+        await this.$router?.push(LANDING_PATH);
+
         return;
       }
 

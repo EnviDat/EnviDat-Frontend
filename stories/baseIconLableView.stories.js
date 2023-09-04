@@ -11,12 +11,10 @@
 
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import fileIcon from '../src/assets/icons/fileAudio.png';
-import contact2Icon from '../src/assets/icons/contact2.png';
-import { LABLE_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${LABLE_VIEWS} / IconLabel Collection`,
+  title: '1 Base Elements / Labels Collection',
   decorators: [],
   parameters: {},
 };
@@ -61,7 +59,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="contact2Icon"
+        <base-icon-label-view :icon="fileIcon"
                               iconTooltip="icon label view with alignLeft, icon, label & text"
                               label="label text: "
                               text="somefilelongerfilename.mp4"
@@ -69,7 +67,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="contact2Icon"
+        <base-icon-label-view :icon="fileIcon"
                               iconTooltip="icon label view without text & usePlaceholder, alignLeft, icon, label"
                               label="label text: "
                               alignLeft
@@ -77,7 +75,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="contact2Icon"
+        <base-icon-label-view :icon="fileIcon"
                               iconTooltip="icon label view with wordBreak, icon, label & text"
                               label="label text: "
                               text="somefilename.mp4"
@@ -85,7 +83,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="contact2Icon"
+        <base-icon-label-view :icon="fileIcon"
                               iconTooltip="icon label view with compactLayout, icon, label & text"
                               label="label text: "
                               text="somefilename.mp4"
@@ -93,7 +91,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="contact2Icon"
+        <base-icon-label-view :icon="fileIcon"
                               iconTooltip="icon label view with icon, text & without label text"
                               text="somefilename.mp4" />
       </v-col>
@@ -117,6 +115,5 @@ export const DifferentLabelsView = () => ({
   // methods,
   data: () => ({
     fileIcon,
-    contact2Icon,
   }),
 });

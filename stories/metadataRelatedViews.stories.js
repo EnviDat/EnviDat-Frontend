@@ -1,0 +1,295 @@
+/* eslint-disable object-property-newline */
+/**
+ * @summary story of all the MetadataDetailViews for sandbox testing
+ * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
+ *
+ * Created at     : 2019-10-23 16:34:51
+ * Last modified  : 2021-09-06 15:11:15
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
+import {
+  EDITMETADATA_OBJECT_UPDATE,
+  eventBus,
+} from '@/factories/eventBus';
+
+import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
+import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
+import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
+import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
+
+import { getTagColor } from '@/factories/metaDataFactory';
+import { getPopularTags } from '@/factories/metadataFilterMethods';
+
+import storyTags from '@/modules/metadata/store/metadataTags';
+import categoryCards from '@/store/categoryCards';
+import metadataset from './js/metadata';
+
+const unFormatedMetadataCards = metadataset;
+const tagsFromDatasets = getPopularTags(metadataset, '', 1);
+
+for (let i = 0; i < tagsFromDatasets.length; i++) {
+  const tag = tagsFromDatasets[i];
+  tag.color = getTagColor(categoryCards, tag.name);
+}
+
+
+function getKeywordsSource(tagsSource, catCards) {
+
+  const keywordsArray = [...tagsSource];
+
+  for (let i = 0; i < keywordsArray.length; i++) {
+    keywordsArray[i].color = getTagColor(catCards, keywordsArray[i].name);
+  }
+
+  return keywordsArray;
+}
+
+const storyTags5 = getKeywordsSource(storyTags, categoryCards).slice(0, 5);
+
+const placeholderKeywordsGenericProps = {
+  metadataCardTitle: 'A Mostly Glorious Title',
+  metadataCardSubtitle: 'My metadata description is pleasant to read.',
+  existingKeywords: tagsFromDatasets,
+  componentTitle: 'Metadata Keywords',
+  disclaimer: 'Please note that the screenshot below will serve as a template for the future component.',
+};
+
+
+export default {
+  title: '9 Editing Metadata / Related Views',
+  decorators: [],
+  parameters: {},
+};
+
+export const EditRelatedDatasetsViews = () => ({
+    components: { EditRelatedDatasets },
+    template: `
+    <v-col>
+
+      <v-row>
+        <v-col cols="6">
+        Edit Related Datasets fields unfilled
+        </v-col>
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col cols="6">
+          <EditRelatedDatasets v-bind="genericProps" 
+                                :allDatasets="allDatasets" />
+        </v-col>
+        
+        <v-col cols="6">
+          <EditRelatedDatasets v-bind="genericPropsFilled"
+                                :allDatasets="allDatasets" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+    created() {
+        eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    mounted() {
+        this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
+        this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
+    },
+    beforeDestroy() {
+        eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+        editComponentsChanged(updateObj) {
+            if (updateObj.data.id === this.genericProps.id) {
+                this.genericProps = updateObj.data;
+                // this.genericProps.publications.text = this.genericProps.textareaContent;
+            }
+            if (updateObj.data.id === this.genericPropsFilled.id) {
+                this.genericPropsFilled = updateObj.data;
+                // this.genericPropsFilled.relatedPublicationsText = this.genericPropsFilled.relatedPublicationsText;
+            }
+        },
+    },
+    data: () => ({
+        relatedDatasetsText: '',
+        relatedDatasetsText2: `https://www.envidat.ch/#/metadata/total_basal_area-2
+            https://www.envidat.ch/#/metadata/salvage_logging_star-186
+        `,
+        allDatasets: unFormatedMetadataCards,
+        genericProps: {
+            relatedDatasetsText: '',
+            id: '1',
+        },
+        genericPropsFilled: {
+            id: '2',
+            relatedDatasetsText: '',
+        },
+    }),
+})
+
+export const EditRelatedPublicationViews = () => ({
+    components: { EditRelatedPublications },
+    template: `
+    <v-col>
+
+      <v-row>
+        Edit Related Publications fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditRelatedPublications v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+
+      <v-row>
+        Edit Related Publications fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditRelatedPublications v-bind="genericPropsFilled" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+    created() {
+      eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    beforeDestroy() {
+      eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+    },
+    methods: {
+      editComponentsChanged(updateObj) {
+        if (updateObj.data.id === this.genericProps.id) {
+          this.genericProps = updateObj.data;
+         // this.genericProps.publications.text = this.genericProps.textareaContent;
+        }
+        if (updateObj.data.id === this.genericPropsFilled.id) {
+          // this.genericPropsFilled = updateObj.data;
+          this.genericPropsFilled.relatedPublicationsText = updateObj.data;
+        }
+      },
+    },
+    data: () => ({
+      genericProps: {
+        relatedPublicationsText: '', // * wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        id: '1',
+      },
+      genericPropsFilled: {
+        id: '2',
+        labelTextarea: 'Related Publications',
+        subtitlePreview: 'Preview',
+        showPlaceholder: false,
+        relatedPublicationsText: '* wsl:21835 wsl%3A22390 \n * https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 ',
+        // relatedPublicationsText: '* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A22390\r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl:29664 \r\n* https://www.dora.lib4ri.ch/wsl/islandora/object/wsl%3A30382',
+      },
+    }),
+  });
+
+export const EditCustomFieldViews = () => ({
+  components: { EditCustomFields },
+  template: `
+    <v-col>
+
+      <v-row>
+        Edit Custom Fields fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields v-bind="emptyFirstGenericProps" />
+        </v-col>
+      </v-row>
+
+       <v-row>
+        Edit Custom Fields fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      if (updateObj.data?.length === this.genericProps.length) {
+        this.genericProps = updateObj.data;
+      }
+      if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
+        this.emptyFirstGenericProps = updateObj.data;
+      }
+    },
+  },
+  data: () => ({
+    emptyFirstGenericProps: {},
+    genericProps: [
+      {
+        field0: {
+          fieldName: 'SubProject',
+          content: 'Projectx',
+        },
+      },
+      {
+        field1: {
+          fieldName: 'Game',
+          content: 'Gloomhaven',
+        },
+      },
+      {
+        field2: {
+          fieldName: 'Drink',
+          content: 'Prosecco',
+        },
+      },
+      {
+        field3: {
+          fieldName: '',
+          content: '',
+        },
+      },
+      {
+        field4: {
+          fieldName: '',
+          content: '',
+        },
+      },
+    ],
+  }),
+});
+
+export const MetadataCreationRelatedInfoStep = () => ({
+  components: { MetadataCreationRelatedInfo },
+  template: `
+    <v-col>
+    
+      <v-row>
+        MetadataCreationRelatedInfo with Placeholder
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <MetadataCreationRelatedInfo v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col>
+    `,
+  data: () => ({
+    genericProps: placeholderKeywordsGenericProps,
+    storyTags5,
+  }),
+});
+
+

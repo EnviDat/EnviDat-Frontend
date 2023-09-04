@@ -15,11 +15,11 @@ variables:
   rules:
     - if: >
           ($CI_COMMIT_REF_NAME == "main"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
     - if: >
           ($CI_COMMIT_REF_NAME == "staging"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
+          && $CI_PIPELINE_SOURCE == "push")
       when: always
     - if: >
           ($CI_COMMIT_REF_NAME == "develop"
@@ -60,7 +60,7 @@ set-vars:
     - echo CHART_VERSION=$(yq '.version' chart/Chart.yaml) >> build.env
     - source build.env
     - >
-      echo "IMAGE_NAME=${INTERNAL_REG}/frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+      echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       >> build.env
   artifacts:
     reports:
@@ -76,7 +76,7 @@ run-tests:
       - node_modules/
     policy: pull-push
   before_script:
-    - npm install
+    - npm ci
   script:
     - npm run test
 
@@ -90,7 +90,7 @@ run-tests:
 #       - node_modules/
 #     policy: pull
 #   before_script:
-#     - npm install
+#     - npm ci
 #   script:
 #     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
 
@@ -113,7 +113,7 @@ modify-env:
       file = '.env.production';
       branch = os.getenv('CI_COMMIT_REF_NAME'); \
       \
-      key = 'VITE_ENVIDAT_PROXY';
+      key = 'VITE_API_ROOT';
       value = 'https://envidat.ch' if branch == 'main' \
       else f'https://ckan-{branch}.envidat.ch';
       dotenv.set_key(file, key, value, quote_mode='never');
@@ -147,9 +147,6 @@ image-build:
       - .env.production
     policy: pull
   before_script:
-    - >
-      echo "${IMAGE_REGISTRY_CA_CERT}"
-      | base64 -d >> /kaniko/ssl/certs/ca-certificates.crt
     - mkdir -p /kaniko/.docker
     - >
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
@@ -179,20 +176,18 @@ tag-commit-sha:
   before_script:
     - export REG_HOST=${INTERNAL_REG%/*}
     - >
-      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"regcert\":
-      \"$(printf "%s" "${IMAGE_REGISTRY_CERT}" | base64 -d
-      | awk 'NF {sub(/\r/, ""); printf "%s\\n",$0;}')\",\"hostname\":
+      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
       \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
       \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
   script:
       - >
         regctl --verbosity debug image copy
-        "${IMAGE_NAME}" "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
 
 rclone-sync:
   extends: .trigger-rules
   stage: deploy
-  image: "${INTERNAL_REG}/frontend:${CI_COMMIT_SHA}"
+  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -216,7 +211,7 @@ rclone-sync:
 
 collect:
   stage: release
-  image: "${INTERNAL_REG}/frontend:${VERSION}-main"
+  image: "${INTERNAL_REG}/envidat-frontend:${VERSION}-main"
   rules:
     - if: $CI_COMMIT_TAG
   variables:

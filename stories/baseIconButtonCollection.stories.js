@@ -12,78 +12,75 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
 import fileIcon from '../src/assets/icons/file.png';
-import contact2Icon from '../src/assets/icons/contact2.png';
-import { BUTTONS_VIEWS } from './storybookFolder';
 
 
 export default {
-  title: `${BUTTONS_VIEWS} / Icon buttons`,
+  title: '1 Base Elements / Icon buttons',
   decorators: [],
   parameters: {},
 };
 
-export const IconButtonsViews = () => ({
-    components: { BaseIconButton },
-    template: `
-    <v-row style="border: solid 1px;">
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          :customIcon="contact2Icon"
-                          iconColor="accent"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
 
-      <v-col cols="1">
-        <base-icon-button tooltipText="Example Text"
-                          class="mr-2"
-                          materialIconName="expand_less"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
 
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          materialIconName="close"
-                          iconColor="accent"
-                          color="transparent"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
-      </v-col>
+const Template = (args, { argTypes }) => ({
+  components: { BaseIconButton },
+  props: Object.keys(argTypes),
+  methods: {
+    rotationClick() {
+      this.rotated = !this.rotated;
+    },
+  },
+  data: () => ({
+    rotated: false,
+  }),
+  template: '<BaseIconButton v-bind="$props" :rotate-toggle="rotated" @clicked="rotationClick" />',
+});
 
-      <v-col cols="1">
-        <base-icon-button class="mr-2"
-                          materialIconName="close"
-                          iconColor="accent"
-                          color="primary"
-                          :outlined="showFullDescription"
-                          :rotateOnClick="true"
-                          :rotateToggle="showFullDescription"
-                          @clicked="showFullDescription = !showFullDescription" />
+export const IconOnly = Template.bind({});
+IconOnly.args = {
+  materialIconName: 'save',
+}
 
-      </v-col>
+export const IconOnlyOutlined = Template.bind({});
+IconOnlyOutlined.args = {
+  materialIconName: 'save',
+  outlined: true,
+  iconColor: 'black',
+}
 
-    </v-row>`,
-    data: () => ({
-      showFullDescription: false,
-      contact2Icon,
-    }),
-  });
+export const IconRotated = Template.bind({});
+IconRotated.args = {
+  materialIconName: 'expand_less',
+  outlined: true,
+  rotateOnClick: true,
+}
+
+export const FancyButton = Template.bind({});
+FancyButton.args = {
+  materialIconName: 'save',
+  outlined: true,
+  iconColor: 'black',
+  isFancy: true,
+}
+
+export const GlowingButton = Template.bind({});
+GlowingButton.args = {
+  ...IconOnlyOutlined.args,
+  isGlowing: true,
+}
+
+export const FancyAndGlowingButton = Template.bind({});
+FancyAndGlowingButton.args = {
+  ...FancyButton.args,
+  isGlowing: true,
+}
 
 export const IconsWithCountBadeViews = () => ({
     components: { BaseIconCountView },
     template: `
     <v-row style="border: solid 1px;">
 
-      <v-col cols="2" >
+      <v-col class="shrink" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
                                 :iconString="fileIcon"
@@ -92,10 +89,10 @@ export const IconsWithCountBadeViews = () => ({
         <!-- /div -->
       </v-col>
 
-      <v-col cols="2" >
+      <v-col class="shrink" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
-                                :iconString="contact2Icon"
+                                :iconString="fileIcon"
                                 :count="counter"
                                 :tooltipText="tooltip" />
         <!-- /div -->
@@ -105,7 +102,6 @@ export const IconsWithCountBadeViews = () => ({
     data: () => ({
       showFullDescription: false,
       fileIcon,
-      contact2Icon,
       counter: 55,
       tooltip: 'This is the tooltip of the icon count view',
     }),

@@ -14,7 +14,6 @@
 
 import MicroChart from '@/modules/metadata/components/GC-Net/MicroChart.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import { GCNET_VIEWS } from './storybookFolder';
 
 
 const stations = [
@@ -75,7 +74,7 @@ const stations = [
 ];
 
 export default {
-  title: `${GCNET_VIEWS} / Micro Charts`,
+  title: '8 GC-Net Views / Micro Charts',
   component: MicroChart,
   decorators: [],
   parameters: {

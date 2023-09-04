@@ -12,23 +12,20 @@ module.exports = {
   extends: [
     'airbnb-base',
     'plugin:vue/essential',
-//    'plugin:import/recommended',
+    'plugin:import/recommended',
     'prettier',
     'plugin:storybook/recommended',
     'plugin:vitest-globals/recommended',
   ],
-/*
   settings: {
     'import/resolver': {
       alias: {
         map: [
           ['@', './src'],
-          // ['cesium', './node_modules/cesium/Source'],
         ],
       },
     },
   },
-*/
   // // required to lint *.vue files
   plugins: [
     'vuetify',
@@ -38,17 +35,12 @@ module.exports = {
   // add your custom rules here
   rules: {
     // https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/extensions.md
-    'import/extensions': 'off',
-/*
-    'import/extensions': [//
-      // 'error',
-      'warn',
+    'import/extensions': ['error', // warning
       'always', {
         'js': 'never',
         'vue': 'never',
       },
     ],
-*/
     'import/no-unresolved': 'off',
     // allow optionalDependencies
     'import/no-extraneous-dependencies': 'off',
@@ -75,7 +67,7 @@ module.exports = {
     // "linebreak-style": ["error", process.env.NODE_ENV === 'prod' ? "unix" : "windows"]
     'vuetify/no-deprecated-classes': 'error',
     'vuetify/grid-unknown-attributes': 'error',
-    // 'vuetify/no-legacy-grid': 'error',
+    'vuetify/no-legacy-grid': 'error',
     'implicit-arrow-linebreak': 0,
     'no-restricted-syntax': 0,
     'vue/no-v-text-v-html-on-component': 'off',

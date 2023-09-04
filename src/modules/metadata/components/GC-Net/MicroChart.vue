@@ -187,7 +187,7 @@ import uPlot from 'uplot/dist/uPlot.esm';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
-import {eventBus, GCNET_OPEN_DETAIL_CHARTS} from '@/factories/eventBus';
+import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
 
 export default {
   name: 'MicroChart',
@@ -340,7 +340,7 @@ export default {
       this.isFallback = isFallback;
 
       // 2 weeks for the recent data, 2 years for historical
-      const dayRange = isFallback ? 45 : 14;
+      const dayRange = isFallback ? 730 : 14;
       const apiUrl = addStartEndDateUrl(url, dayRange);
 
       axios
@@ -560,7 +560,7 @@ export default {
       };
     },
     catchDetailClick(stationId) {
-      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, stationId);
+      eventBus.emit(GCNET_PREPARE_DETAIL_CHARTS, stationId);
     },
     downloadData() {
       window.open(this.downloadAllUrl, '_blank');

@@ -72,12 +72,12 @@
 export default {
   name: 'BaseFileDropField',
   props: {
-    genericProps: Object,
+    dragColor: {
+      type: String,
+      default: 'highlight',
+    },
   },
   computed: {
-    dragColor() {
-      return this.mixinMethods_getGenericProp('dragColor', 'highlight');
-    },
   },
   methods: {
     onChange() {

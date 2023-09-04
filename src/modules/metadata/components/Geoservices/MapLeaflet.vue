@@ -13,8 +13,17 @@ import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
-import axios from 'axios';
-import L from 'leaflet';
+import {
+  map as createMap,
+  icon as createIcon,
+  tileLayer,
+  Icon,
+  geoJSON,
+  marker as createMarker,
+  divIcon,
+  control,
+} from 'leaflet';
+
 import { mapState } from 'vuex';
 
 import markerIcon from '@/assets/map/marker-icon.png';
@@ -22,13 +31,14 @@ import markerIcon2x from '@/assets/map/marker-icon-2x.png';
 import markerIconShadow from '@/assets/map/marker-shadow.png';
 import {
   eventBus,
-  GCNET_OPEN_DETAIL_CHARTS,
+  GCNET_PREPARE_DETAIL_CHARTS,
   MAP_GEOMETRY_MODIFIED,
   MAP_ZOOM_CENTER,
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
+  EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
-// import { leafletLayer } from './layer-leaflet';
+import { defaultSwissLocation, defaultWorldLocation } from '@/factories/metaDataFactory';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -37,7 +47,6 @@ export default {
   components: {},
   props: {
     baseMapLayerName: String,
-    wmsLayer: Object,
     site: Object,
     maxExtent: Object,
     opacity: Number,
@@ -84,14 +93,14 @@ export default {
       return this.$store?.state.geoservices.layerConfig || null;
     },
     streets() {
-      return L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         noWrap: true,
       });
     },
     satellite() {
-      return L.tileLayer.bing({
+      return tileLayer.bing({
         bingMapsKey: this.config?.apiKeys?.bing || null,
         imagerySet: 'AerialWithLabels',
         noWrap: true,
@@ -148,21 +157,21 @@ export default {
 
       const isGcnet = this.isGcnet;
 
-      this.siteLayer = L.geoJSON(geoJsonArray, {
+      this.siteLayer = geoJSON(geoJsonArray, {
         pointToLayer(feature, latlng) {
           if (isGcnet) {
             if (feature.properties.active === false) {
-              return L.marker(latlng, styleObj.gcnetInactiveStyle);
+              return createMarker(latlng, styleObj.gcnetInactiveStyle);
             }
 
             if (feature.properties.active === null) {
-              return L.marker(latlng, styleObj.gcnetMissingStyle);
+              return createMarker(latlng, styleObj.gcnetMissingStyle);
             }
 
-            return L.marker(latlng, styleObj.gcnetStyle);
+            return createMarker(latlng, styleObj.gcnetStyle);
           }
 
-          return L.marker(latlng, styleObj.customPointStyle);
+          return createMarker(latlng, styleObj.customPointStyle);
         },
         style: styleObj.customPolygonStyle,
       });
@@ -206,67 +215,6 @@ export default {
         });
       }
     },
-    getFeatureInfo(latlng) {
-      if (Math.abs(latlng[0]) > 90 || Math.abs(latlng[1]) > 180) {
-        return;
-      }
-
-      let start = 0;
-      const featureinfo = [];
-      const promises = [];
-
-      while (start < this.layerConfig.layers.length) {
-        const url = this.getFeatureInfoUrl(latlng, start, start + 50);
-        const promise = axios.get(url).then(res => {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(res.data, 'text/xml');
-          const layers = xmlDoc.getElementsByTagName('Layer');
-          layers.forEach(layer => {
-            featureinfo.push({
-              name: layer.attributes.name.nodeValue,
-              value: Number(layer.childNodes[1].attributes.value.nodeValue),
-            });
-          });
-        });
-        promises.push(promise);
-        start += 50;
-      }
-
-      Promise.all(promises).then(() =>
-        this.$store.commit('addTimeSeries', {
-          values: featureinfo,
-          coords: latlng,
-        }),
-      );
-    },
-    getFeatureInfoUrl(latlng, start, stop) {
-      // Construct a GetFeatureInfo request URL given a point
-      const point = this.map.latLngToContainerPoint(latlng, this.map.getZoom()); // coords to n pixels from upper left corner
-      const size = this.map.getSize(); // map container dimensions (in pixel)
-      let bbox = this.map.getBounds(); // bbox in WGS coordinates
-      // eslint-disable-next-line no-underscore-dangle
-      bbox = `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`;
-      const layers = this.layerConfig.layers
-        .map(layer => layer.name)
-        .slice(start, stop);
-      const params = {
-        request: 'GetFeatureInfo',
-        service: 'WMS',
-        srs: 'EPSG:4326',
-        version: '1.3.0',
-        bbox,
-        height: size.y,
-        width: size.x,
-        query_layers: layers,
-        info_format: 'text/xml',
-        i: point.x,
-        j: point.y,
-      };
-      return (
-        this.layerConfig.baseURL +
-        L.Util.getParamString(params, this.layerConfig.baseURL, true)
-      );
-    },
     zoomIn(mapId) {
       if (this.mapDivId !== mapId) {
         return;
@@ -291,12 +239,14 @@ export default {
       }
     },
     setupMap() {
+      /*
       if (this.isGcnet) {
         // Disable editing
         this.isMapEditable = false;
       }
+*/
 
-      this.map = new L.Map(this.$refs.map, {
+      this.map = createMap(this.$refs.map, {
         zoomControl: false,
         center: [46.943961, 8.19924],
         zoom: 7,
@@ -317,14 +267,8 @@ export default {
         ),
       );
 
-      L.control.scale().addTo(this.map);
+      control.scale().addTo(this.map);
       this.replaceBasemap();
-
-      /*
-      if (this.layerConfig && this.layerConfig.timeseries) {
-        this.map.on('click', e => this.getFeatureInfo(e.latlng));
-      }
-*/
 
       this.addSiteIfAvailable();
     },
@@ -351,21 +295,7 @@ export default {
       if (this.mapLayer) {
         this.map.removeLayer(this.mapLayer);
         this.mapLayer = null;
-      } else if (this.wmsLayer) {
-        this.mapLayer = this.leafletLayer(this.wmsLayer);
-        this.map.addLayer(this.mapLayer);
-        this.mapLayer.setOpacity(this.opacity / 100);
-        this.mapLayer.bringToFront();
       }
-    },
-    leafletLayer(config) {
-      // eslint-disable-next-line new-cap
-      return new L.tileLayer.wms(config.baseURL, {
-        layers: config.name,
-        transparent: true,
-        format: 'image/png',
-        noWrap: true,
-      });
     },
     replaceBasemap() {
       if (this.basemapLayer) {
@@ -383,8 +313,8 @@ export default {
 
       if (layerArray.length !== 0) {
         layerArray.forEach(geometry => {
-          const geoJSON = geometry.toGeoJSON();
-          geoJSONArray.push(geoJSON.geometry);
+          const geoJson = geometry.toGeoJSON();
+          geoJSONArray.push(geoJson.geometry);
         });
       }
 
@@ -398,11 +328,11 @@ export default {
       eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
     },
     getCustomLeafletStyle() {
-      const iconOptions = L.Icon.Default.prototype.options;
+      const iconOptions = Icon.Default.prototype.options;
       iconOptions.iconUrl = this.markerIcon;
       iconOptions.iconRetinaUrl = this.markerIcon2x;
       iconOptions.shadowUrl = this.markerIconShadow;
-      const icon = L.icon(iconOptions);
+      const icon = createIcon(iconOptions);
       return {
         customPointStyle: {
           icon,
@@ -416,7 +346,7 @@ export default {
           // weight: 1,
         },
         gcnetStyle: {
-          icon: L.divIcon({
+          icon: divIcon({
             className: 'rounded-circle green',
             iconSize: [20, 20],
           }),
@@ -424,7 +354,7 @@ export default {
           riseOnHover: true,
         },
         gcnetInactiveStyle: {
-          icon: L.divIcon({
+          icon: divIcon({
             className: 'rounded-circle red',
             iconSize: [20, 20],
           }),
@@ -432,7 +362,7 @@ export default {
           riseOnHover: true,
         },
         gcnetMissingStyle: {
-          icon: L.divIcon({
+          icon: divIcon({
             className: 'rounded-circle grey',
             iconSize: [20, 20],
           }),
@@ -453,6 +383,7 @@ export default {
         drawMarker: true,
         drawPolygon: true,
         drawRectangle: true,
+        drawText: false,
         editMode: true,
         position: 'topright',
         drawPolyline: false,
@@ -470,34 +401,92 @@ export default {
         this.triggerGeometryEditEvent();
       });
 
-      // // Add custom toolbar
-      // this.map.pm.Toolbar.createCustomControl({
-      //   name: "add_global_geom",
-      //   block: "custom",
-      //   title: "Add Global Geometry",
-      //   className: "marker-icon marker-icon-middle material-icons language",
-      //   onClick: this.tempFunction,
-      //   toggle: false,
-      // });
+      // Add event listener for dropping files
+      this.map.getContainer().addEventListener('drop', event => {
+        event.preventDefault();
+
+        // Get dropped files
+        const files = event.dataTransfer.files;
+
+        // Loop through each dropped file
+        for (const file of files) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            // Attempt GeoJSON
+            try {
+              const geojson = JSON.parse(reader.result);
+              this.map.addLayer(geoJSON(geojson));
+              this.triggerGeometryEditEvent();
+            } catch {
+              eventBus.emit(
+                EDITMETADATA_DATA_GEO_MAP_ERROR,
+                'Could not load file. Is it GeoJSON?',
+              );
+            }
+            // Attempt KML, requires a plugin (wait for user request)
+            // try {
+            //   const geojson = JSON.parse(reader.result);
+            //   this.map.addLayer(geoJSON(geojson));
+            //   this.triggerGeometryEditEvent()
+            // } catch {
+            //   console.error('Could not load file. Is it GeoJSON?')
+            // }
+          };
+          reader.readAsText(file);
+          // }
+        }
+      });
+      // Prevent default behavior for dragover and dragenter events
+      this.map.getContainer().addEventListener('dragover', event => {
+        event.preventDefault();
+      });
+      this.map.getContainer().addEventListener('dragenter', event => {
+        event.preventDefault();
+      });
+
+      // Add custom buttons
+      this.map.pm.Toolbar.createCustomControl({
+        name: 'add_swiss_geom',
+        block: 'custom',
+        title: 'Add Switzerland Geom',
+        className: 'material-icons add_box swiss',
+        color: 'red',
+        onClick: () => {
+          this.addPredefinedGeomToMap('swiss');
+        },
+        toggle: false,
+      });
+      this.map.pm.Toolbar.createCustomControl({
+        name: 'add_world_geom',
+        block: 'custom',
+        title: 'Add World Geom',
+        className: 'material-icons add_box language',
+        color: 'red',
+        onClick: () => {
+          this.addPredefinedGeomToMap('world');
+        },
+        toggle: false,
+      });
     },
     catchGcnetStationClick(stationAlias) {
-      eventBus.emit(GCNET_OPEN_DETAIL_CHARTS, stationAlias);
+      eventBus.emit(GCNET_PREPARE_DETAIL_CHARTS, stationAlias);
     },
-    // tempFunction() {
-    //   const geoms = this.map.pm.getGeomanLayers()
-    //   console.log(geoms);
-    //   console.log(geoms[0].feature.geometry.coordinates);
-    // },
+    addPredefinedGeomToMap(type) {
+      const layerArray = this.map.pm.getGeomanLayers();
+      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+
+      if (type === 'swiss') {
+        geoJSONArray.push(defaultSwissLocation);
+      } else if (type === 'world') {
+        geoJSONArray.push(defaultWorldLocation)
+      }
+
+      eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
+    },
   },
   watch: {
     opacity() {
       this.mapLayer.setOpacity(this.opacity / 100);
-    },
-    wmsLayer: {
-      handler() {
-        this.replaceLayer();
-      },
-      deep: true,
     },
     baseMapLayerName() {
       this.replaceBasemap();
@@ -528,5 +517,9 @@ export default {
   bottom: 20px;
   right: 8px;
   z-index: 10000;
+}
+.swiss {
+  background-color: red;
+  color: red;
 }
 </style>

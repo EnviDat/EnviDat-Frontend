@@ -34,38 +34,40 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="12" md="10" class="editDataGeo">
-          <MetadataGeo :genericProps="genericProps" />
-        </v-col>
-
-        <v-col cols="12" md="2" class="align-self-md-end">
-          <v-row>
-            <v-col>
-              <BaseRectangleButton
-                :color="$vuetify.theme.themes.light.accent"
-                :disabled="!undoButtonEnabled"
-                buttonText="Undo Changes"
-                tooltipText="Reset to original geometry"
-                tooltipPosition="top"
-                @clicked="revertGeometriesInMetadata"
-              />
-            </v-col>
-
-            <v-col>
-              <BaseRectangleButton
-                :color="$vuetify.theme.themes.light.accent"
-                :disabled="!saveButtonEnabled"
-                :loading="saveButtonInProgress"
-                buttonText="Save Geometries"
-                tooltipText="Save the geometry"
-                tooltipPosition="top"
-                @clicked="updateGeometriesInMetadata"
-              />
-            </v-col>
-          </v-row>
+      <v-row v-show="isDefaultLocation">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning}`">
+          {{ labels.defaultInstructions }}
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col cols="12" md="12" class="editDataGeo">
+          <v-file-input
+            ref="filePicker"
+            v-show="false"
+            multiple
+            accept=".geojson,.json"
+            @change="triggerFileUpload"
+          ></v-file-input>
+          <MetadataGeo
+            :genericProps="genericProps"
+            @saveGeoms="commitGeometriesToAPI"
+            @undoGeoms="undoGeomEdits"
+            @uploadGeomFile="triggerFilePicker"
+          />
+        </v-col>
+      </v-row>
+
+<!--
+        <v-row >
+          <v-col >
+            <ExpandableTextLayout title="Text Preview of Geospatial Information"
+                                  :text="geoJSONHintPreview"
+                                  />
+          </v-col>
+        </v-row>
+-->
+
     </v-container>
   </v-card>
 </template>
@@ -84,22 +86,31 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+/*
+import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
+*/
+import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
 import {
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
   MAP_GEOMETRY_MODIFIED,
+  EDITMETADATA_DATA_GEO_MAP_ERROR,
+  EDITMETADATA_DATA_GEO_SPATIAL,
 } from '@/factories/eventBus';
+
 import { EDIT_METADATA_GEODATA_TITLE } from '@/factories/metadataConsts';
-import { parseAsGeomCollection } from '@/factories/metaDataFactory';
-// eslint-disable-next-line import/no-cycle
+import { defaultSwissLocation, parseAsGeomCollection } from '@/factories/metaDataFactory';
+
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.vue';
+
+/*
+import geojsonhint from '@mapbox/geojsonhint';
+*/
 
 export default {
   name: 'EditDataGeo',
@@ -158,13 +169,16 @@ export default {
     },
   },
   mounted() {
-    eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.on(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
+    eventBus.on(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
+    this.originalGeom = this.location?.geoJSON;
   },
   beforeUnmount() {
     if (this.saveButtonEnabled) {
-      this.updateGeometriesInMetadata();
+      this.commitGeometriesToAPI();
     }
-    eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseAndStoreUpdatedGeometries);
+    eventBus.off(MAP_GEOMETRY_MODIFIED, this.parseGeomCollectionAddToBuffer);
+    eventBus.off(EDITMETADATA_DATA_GEO_MAP_ERROR, this.triggerValidationError);
   },
   computed: {
     genericProps() {
@@ -178,15 +192,43 @@ export default {
         showFullscreenButton: this.showFullscreenButton,
         layerConfig: this.layerConfig,
         error: this.editErrorMessage,
-        site: this.location?.geomCollection,
+        site: this.geomsForMap,
       };
+    },
+    geomsForMap() {
+      return (
+        this.editedGeomBuffer[this.editedGeomBuffer.length - 1] ||
+        this.originalGeom
+      );
     },
     editErrorMessage() {
       return this.validationErrors.geometries;
     },
     validations() {
-      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO);
+      return getValidationMetadataEditingObject(EDITMETADATA_DATA_GEO_SPATIAL);
     },
+    isDefaultLocation() {
+      const defaultGeoJSONString = JSON.stringify(defaultSwissLocation);
+      return this.geomsForMapString === defaultGeoJSONString;
+    },
+    geomsForMapString() {
+      return this.geomsForMap ? JSON.stringify(this.geomsForMap) : '';
+    },
+/*
+    geoJSONHintPreview() {
+      const geomString = this.geomsForMapString;
+
+      if (geomString) {
+        const hints = geojsonhint.hint(geomString, {});
+
+        if (hints) {
+          return `${geomString} \n\n\n ${JSON.stringify(hints)}`;
+        }
+      }
+
+      return geomString;
+    },
+*/
   },
   watch: {
     location() {
@@ -195,11 +237,11 @@ export default {
   },
   methods: {
     /**
-     * Parse updated geometries, validate, and store in local variable
+     * Validate updated geometries, and store in local variable
      *
      * @param {Array} geomArray array of valid GeoJSON geometries
      */
-    parseAndStoreUpdatedGeometries(geomArray) {
+    parseGeomCollectionAddToBuffer(geomArray) {
       if (
         isFieldValid(
           'geometries',
@@ -208,67 +250,95 @@ export default {
           this.validationErrors,
         )
       ) {
-        this.localGeomCollection = parseAsGeomCollection(geomArray, {
-          name: this.location.name,
-        });
+        this.editedGeomBuffer.push(
+          parseAsGeomCollection(geomArray, {
+            name: this.location.name,
+          }),
+        );
 
+        this.undoButtonEnabled = true;
         this.saveButtonEnabled = true;
       } else {
         this.saveButtonEnabled = false;
       }
     },
     /**
-     * Merge locally saved geometries with existing props, trigger update event
+     * Undo geometry edits, either local, or saved
      */
-    updateGeometriesInMetadata() {
-      this.previousLocation = { ...this.location };
+    undoGeomEdits() {
+      this.editedGeomBuffer.pop();
 
-      const updatedLocation = {
-        ...this.location,
-        geoJSON: this.localGeomCollection,
-      };
-      this.commitGeometries(updatedLocation);
-
-      this.undoButtonEnabled = true;
+      if (this.editedGeomBuffer.length === 0) {
+        this.commitGeometriesToAPI();
+        this.undoButtonEnabled = false;
+      }
     },
     /**
-     * Revert to initial geometry, trigger update event
+     * Update spatial metadata in API via event bus
      */
-    revertGeometriesInMetadata() {
-      this.commitGeometries(this.previousLocation);
-      this.undoButtonEnabled = false;
-    },
-    /**
-     * Update spatial metadata via event bus
-     */
-    commitGeometries(updatedLocation) {
+    commitGeometriesToAPI() {
       this.saveButtonInProgress = true;
 
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_DATA_GEO,
         data: {
-          location: updatedLocation,
+          location: {
+            ...this.location,
+            geoJSON: this.geomsForMap,
+          },
         },
       });
 
       this.saveButtonEnabled = false;
     },
+    triggerFilePicker() {
+      this.$refs.filePicker.$refs.input.click();
+    },
+    triggerFileUpload(fileArray) {
+      // Loop through each dropped file
+      for (const file of fileArray) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // Attempt GeoJSON
+          try {
+            const geoJSON = JSON.parse(reader.result);
+            const geomArray = JSON.parse(
+              JSON.stringify(this.geomsForMap.geometries),
+            );
+            geomArray.push(geoJSON);
+            this.parseGeomCollectionAddToBuffer(geomArray);
+          } catch {
+            this.validationErrors.geometries =
+              'Could not load file. Is it GeoJSON?';
+          }
+        };
+
+        reader.readAsText(file);
+      }
+    },
+    triggerValidationError(errorMsg) {
+      this.validationErrors.geometries = errorMsg;
+    },
   },
   components: {
     MetadataGeo,
     BaseStatusLabelView,
-    BaseRectangleButton,
+/*
+    ExpandableTextLayout,
+*/
   },
   data: () => ({
     labels: {
       cardTitle: EDIT_METADATA_GEODATA_TITLE,
-      cardInstructions: 'Choose the location(s) where the research data was collected.',
+      cardInstructions:
+        'Choose the location(s) where the research data was collected.',
+      defaultInstructions: 'Your are using the default location (Switzerland). Consider adjusting the geo information to represent your research data as accurate as possible.',
     },
     validationErrors: {
       geometries: null,
     },
-    previousLocation: null,
-    localGeomCollection: null,
+    originalGeom: null,
+    editedGeomBuffer: [],
     saveButtonEnabled: false,
     saveButtonInProgress: false,
     undoButtonEnabled: false,

@@ -65,7 +65,7 @@
     <base-icon-button
       v-if="$vuetify.breakpoint.xsOnly"
       :count="selectedTags.length"
-      style="position: absolute; bottom: 0px; right: 0px;"
+      style="position: absolute; bottom: 0; right: 0;"
       material-icon-name="expand_more"
       color="secondary"
       icon-color="secondary"
@@ -127,6 +127,12 @@ export default {
   }),
   computed: {
     unselectedTags() {
+      if (!this.allTags){
+        return [];
+      }
+
+      return this.allTags.filter((element) => element.enabled && !this.mixinMethods_isTagSelected(element.name) );
+/*
       const unselectedTags = [];
 
       this.allTags.forEach(element => {
@@ -136,6 +142,7 @@ export default {
       });
 
       return unselectedTags;
+*/
     },
     selectedTags() {
       // always get the selected as a subset of the allTags because they are the full

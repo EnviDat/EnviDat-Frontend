@@ -1,66 +1,81 @@
-import TextPreviewCard from '@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue';
-
 import {
-  INJECT_TEXT_PREVIEW,
+  OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
   SELECT_EDITING_AUTHOR,
-  SELECT_EDITING_AUTHOR_PROPERTY,
   SELECT_EDITING_DATASET,
-  SELECT_EDITING_DATASET_PROPERTY,
   SELECT_EDITING_RESOURCE,
-  SELECT_EDITING_RESOURCE_PROPERTY,
 } from './eventBus';
+
+const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
+const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
+const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
 
 export const localIdProperty = 'localId';
 
+export const SELECT_EDITING_RESOURCE_PROPERTY = 'id';
+export const SHOW_DATA_PREVIEW_PROPERTY = 'previewUrl';
+export const SHOW_DATA_PREVIEW_KEY_PREFIX = 'resourcePreview';
+export const SELECT_EDITING_AUTHOR_PROPERTY = 'email';
+export const SELECT_EDITING_DATASET_PROPERTY = 'name';
+
 export const clickStrategies = [
   {
-    fileExtensions: ['txt', 'md'],
+    strategyKeys: ['txt', 'md'],
     component: TextPreviewCard,
     openEvent: OPEN_TEXT_PREVIEW,
-    injectEvent: INJECT_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this resource',
-    fallbackProperty: '',
   },
   {
-    fileExtensions: [SELECT_EDITING_RESOURCE_PROPERTY],
+    strategyKeys: ['jpg', 'png', 'jpeg'],
+    component: ImagePreviewCard,
+    openEvent: OPEN_TEXT_PREVIEW,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this image',
+  },
+  {
+    strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
     openEvent: SELECT_EDITING_RESOURCE,
     icon: 'edit',
     tooltip: 'Click to select this resource for editing',
-    fallbackProperty: localIdProperty,
   },
   {
-    fileExtensions: [SELECT_EDITING_AUTHOR_PROPERTY],
+    strategyKeys: [SELECT_EDITING_AUTHOR_PROPERTY],
     openEvent: SELECT_EDITING_AUTHOR,
     icon: 'edit',
     tooltip: 'Click to select this author for editing',
-    fallbackProperty: localIdProperty,
   },
   {
-    fileExtensions: [SELECT_EDITING_DATASET_PROPERTY],
+    strategyKeys: [SELECT_EDITING_DATASET_PROPERTY],
     openEvent: SELECT_EDITING_DATASET,
     icon: 'edit',
     tooltip: 'Click to edit this dataset',
-    fallbackProperty: localIdProperty,
+  },
+  {
+    strategyKeys: [SHOW_DATA_PREVIEW_PROPERTY],
+    component: DataPreviewIframe,
+    openEvent: OPEN_DATA_PREVIEW_IFRAME,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this resource',
   },
 ];
 
-export function getPreviewStrategy(extensions) {
+export function getPreviewStrategy(strategyKeys) {
 
-  if (extensions) {
+  if (!strategyKeys) {
+    return null;
+  }
 
-    if (!(extensions instanceof Array)) {
-      extensions = [extensions];
-    }
+  if (!(strategyKeys instanceof Array)) {
+    strategyKeys = [strategyKeys];
+  }
 
-    for (let i = 0; i < extensions.length; i++) {
-      const ext = extensions[i];
-      const filteredStrat = clickStrategies.filter(strat => strat.fileExtensions.indexOf(ext) !== -1);
+  for (let i = 0; i < strategyKeys.length; i++) {
+    const ext = strategyKeys[i];
+    const filteredStrat = clickStrategies.filter(strat => strat.strategyKeys.indexOf(ext) !== -1);
 
-      if (filteredStrat.length > 0) {
-        return filteredStrat[0];
-      }
+    if (filteredStrat.length > 0) {
+      return filteredStrat[0];
     }
   }
 
@@ -77,11 +92,11 @@ export function getUrlExtension(url) {
   return splits[splits.length - 1];
 }
 
-export function getPreviewStrategyFromUrl(url) {
-  const resExtension = getUrlExtension(url);
+export function getPreviewStrategyFromUrlExtension(url) {
+  const fileExtension = getUrlExtension(url);
 
-  if (resExtension) {
-    return getPreviewStrategy(resExtension);
+  if (fileExtension) {
+    return getPreviewStrategy(fileExtension);
   }
 
   return null;
@@ -95,22 +110,50 @@ export function enhanceElementsWithStrategyEvents(elementList, previewProperty =
 
   for (let i = 0; i < elementList.length; i++) {
     const entry = elementList[i];
+    const idValue = entry[previewProperty];
 
-    let strat = null;
-    if (entriesAreResources && previewProperty === 'url') {
-      strat = getPreviewStrategyFromUrl(entry.url);
-    } else {
-      strat = getPreviewStrategy(previewProperty);
-    }
+    if (idValue) {
 
-    if (strat) {
-      entry.openEvent = strat.openEvent;
-      const idValue = entry[previewProperty];
-      entry.openProperty = idValue || entry[strat.fallbackProperty];
-      entry.openButtonIcon = strat.icon;
-      entry.openButtonTooltip = strat.tooltip;
+      let strat = null;
+      if (entriesAreResources && previewProperty === 'url') {
+        // get the click strategy based on the url file extension
+        strat = getPreviewStrategyFromUrlExtension(entry.url);
+      } else {
+        strat = getPreviewStrategy(previewProperty);
+      }
+
+      if (strat) {
+        entry.openEvent = strat.openEvent;
+        entry.openProperty = idValue;
+        entry.openButtonIcon = strat.icon;
+        entry.openButtonTooltip = strat.tooltip;
+      }
     }
   }
 
   return elementList;
+}
+
+export function enhanceResourcesWithMetadataExtras(metdataExtras, resources) {
+  if (!metdataExtras || !resources) return null;
+
+  if (typeof metdataExtras === 'object'
+    && metdataExtras instanceof Array) {
+
+    for (let i = 0; i < resources.length; i++) {
+      const resource = resources[i];
+      const enhanceKey = `${SHOW_DATA_PREVIEW_KEY_PREFIX}_${resource.id}`;
+
+      const matches = metdataExtras.filter((entry) => entry.key === enhanceKey);
+
+      if (matches.length > 0) {
+        resource[SHOW_DATA_PREVIEW_PROPERTY] = matches[0].value;
+      }
+    }
+
+  }
+
+  enhanceElementsWithStrategyEvents(resources, SHOW_DATA_PREVIEW_PROPERTY);
+
+  return resources;
 }

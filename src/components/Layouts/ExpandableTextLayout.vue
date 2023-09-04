@@ -13,8 +13,14 @@
       </div>
     </v-card-title>
 
+    <v-card-text v-if="showPlaceholder" class="pa-4 pt-0">
+      <div class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer" >
+        <div class="bone bone-type-multiline bone-style-paragraph" />
+      </div>
+    </v-card-text>
+
     <v-card-text
-      v-if="fullText"
+      v-if="!showPlaceholder && fullText"
       ref="text"
       :usedMaxTextLength="maxTextLength"
       class="pa-4 pt-0 heightAndScroll readableText"
@@ -23,20 +29,16 @@
       <div v-html="markdownText"></div>
     </v-card-text>
 
-    <v-card-text v-if="showPlaceholder && !fullText" class="pa-4 pt-0">
-      <div
-        class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-      >
-        <div class="bone bone-type-multiline bone-style-paragraph" />
-      </div>
-    </v-card-text>
-
     <v-card-text
       v-if="!showPlaceholder && !fullText"
       class="pa-4 pt-0 readableText"
       :style="`color: ${emptyTextColor};`"
     >
       {{ emptyText }}
+    </v-card-text>
+
+    <v-card-text v-if="statusText">
+      {{ statusText }}
     </v-card-text>
 
     <v-card-actions
@@ -99,10 +101,18 @@ export default {
       default: 'red',
     },
     cardClass: String,
+    sanitizeHTML: {
+      type: Boolean,
+      default: true,
+    },
+    statusText: {
+      type: String,
+      default: undefined,
+    },
   },
   computed: {
     markdownText() {
-      return renderMarkdown(this.fullText);
+      return renderMarkdown(this.fullText, this.sanitizeHTML);
     },
     fullText() {
       if (this.text) {

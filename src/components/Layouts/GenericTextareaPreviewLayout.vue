@@ -4,7 +4,9 @@
       <v-row>
         <v-col :cols="columns">
           <v-textarea
+              class="heightAndScroll pt-1"
             :label="labelTextarea"
+            :placeholder="placeholderTextarea"
             outlined
             auto-grow
             :readonly="readonly"
@@ -35,9 +37,13 @@
     <v-row v-if="!isVerticalLayout">
       <v-col>
         <v-textarea
+          class="heightAndScroll pt-1"
           :label="labelTextarea"
+          :placeholder="placeholderTextarea"
           outlined
           auto-grow
+          :readonly="readonly"
+          :hint="hint"
           :error-messages="validationError"
           :value="textareaContent"
           @input="catchInputedText($event)"
@@ -100,6 +106,10 @@ export default {
       type: String,
       default: '',
     },
+    placeholderTextarea: {
+      type: String,
+      default: '',
+    },
     prependIcon: {
       type: String,
       default: '',
@@ -127,3 +137,12 @@ export default {
   },
 };
 </script>
+
+<style>
+.heightAndScroll {
+  max-height: 500px;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+</style>

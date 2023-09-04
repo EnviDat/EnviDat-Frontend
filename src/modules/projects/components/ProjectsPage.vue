@@ -36,7 +36,7 @@
               xl="3"
             >
               <project-card
-                :id="project.id"
+                :id="project.name"
                 :title="project.title"
                 :img="project.image_display_url"
                 :defaultImg="creatorImg"
@@ -138,7 +138,7 @@ export default {
     creatorImg() {
       const imgPath = this.$vuetify.breakpoint.mdAndUp
         ? 'projects/data_creator'
-        : 'about/data_creator_small';
+        : 'projects/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
   },

@@ -19,7 +19,6 @@ import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
 import UserNotFound2 from '@/modules/user/assets/UserNotFound2.jpg';
 
 import authorCollection from './testdata/authorCollection.json';
-import { USER_VIEWS } from './storybookFolder';
 
 const methods = {
   authors() {
@@ -29,7 +28,7 @@ const methods = {
 };
 
 export default {
-  title: `${USER_VIEWS} / SignIn`,
+  title: '7 User / SignIn',
   decorators: [],
   parameters: {
   },

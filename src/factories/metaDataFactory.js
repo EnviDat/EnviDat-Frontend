@@ -12,19 +12,18 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { format, formatISO, parse } from 'date-fns';
+import axios from 'axios';
+import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
-import { getAuthorName, getAuthorsString } from '@/factories/authorFactory';
-import { localIdProperty } from '@/factories/strategyFactory';
+import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
+
+import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
+
 import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  METEO,
-  SNOW,
-} from '@/store/categoriesConsts';
+  ACCESS_LEVEL_PUBLIC_VALUE,
+  getAllowedUserNamesArray,
+} from '@/factories/userEditingFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -104,7 +103,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
       const timeOnly = split[1];
       const timeSplit = timeOnly.split('.');
       let timeToMinutes = timeSplit[0];
-      timeToMinutes = timeToMinutes.substr(0, 5);
+      timeToMinutes = timeToMinutes.substring(0, 5);
 
       formatedDate = `${newDate} ${timeToMinutes}`;
     } else {
@@ -116,13 +115,17 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
-/**
- * @returns {String} ISO Formated Date String from now
- */
-export function getCurrentDate() {
-  const now = new Date();
-  const isoFormatted = formatISO(now);
-  return formatDate(isoFormatted);
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata?.state || null;
+  const priv = metadata?.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
 }
 
 export function createLicense(dataset) {
@@ -155,8 +158,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
 
   const contactEmail = maintainer?.email || '';
 
-  const license = createLicense(dataset);
-
   let authors = null;
 
   if (typeof dataset.author === 'string') {
@@ -170,14 +171,15 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     authors = dataset.author;
   }
 
+  const visibility = getMetadataVisibilityState(dataset);
+  const created = formatDate(dataset.metadata_created);
+  const modified = formatDate(dataset.metadata_modified);
+
   return {
     metadataTitle: dataset.title,
     doi: dataset.doi,
     contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
-    licenseId: license.id,
-    license: license.title,
-    licenseUrl: license.url,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
@@ -186,6 +188,10 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     categoryColor: dataset.categoryColor,
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
+    metadataState: visibility,
+    spatialInfo: dataset.spatial_info,
+    created,
+    modified,
   };
 }
 
@@ -220,7 +226,7 @@ export function createRelatedDatasets(dataset) {
 
   return {
     text: dataset.related_datasets,
-    maxTextLength: 500,
+    maxTextLength: 1000,
   };
 }
 
@@ -259,41 +265,65 @@ export function createCitation(dataset) {
     return null;
   }
 
-  const authors = getAuthorsString(dataset);
+  const ckanDomain = process.env.VITE_API_ROOT;
+
+  const authors = getAuthorsCitationString(dataset);
+  const title = dataset.title;
 
   let { publication } = dataset;
 
-  if (typeof dataset.publication === 'string') {
-    publication = JSON.parse(dataset.publication);
+  if (publication && typeof publication === 'string') {
+    try {
+      publication = JSON.parse(publication);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
-  let text = `${authors.trim()} `;
+  const publisher = publication?.publisher || '';
+  const year = publication?.publication_year || publication?.publicationYear || '';
+  const doi = dataset.doi || '';
+  const doiUrl = `https://www.doi.org/${doi}`;
 
-  if (publication && publication.publication_year) {
-    text += `(${publication.publication_year}). `;
-  }
+  let text = `${authors.trim()}`;
+  text += ` (${year}).`;
+  text += ` ${title}. `;
+  text += ` <span style="font-style: italic;" >${publisher}.</span> `;
+  text += ` <a href="${doiUrl}" target="_blank">${doiUrl}</a>. `;
 
-  text += `${dataset.title}. `;
-
-  if (publication && publication.publisher) {
-    text += ` ${publication.publisher}. `;
-  }
-
-  if (dataset.doi) {
-    text += ` doi: <a href="https://www.doi.org/${dataset.doi}" target="_blank">${dataset.doi}</a>. `;
-  }
-
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+/*
+  text += ` <a href="${ckanDomain}/#/metadata/${dataset.name}" target="_blank">Institutional Repository</a> `;
+*/
 
   return {
     id: dataset.id,
     citationText: text,
+    doi,
+    doiUrl,
     citationXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/datacite.xml`,
     citationIsoXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/iso19139.xml`,
     citationGCMDXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/gcmd_dif.xml`,
     citationBibtexXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/bibtex.bib`,
     citationRisXmlLink: `${ckanDomain}/dataset/${dataset.name}/export/ris.ris`,
   };
+}
+
+export function getCitationList(datasets, datasetIds) {
+  const citations = [];
+
+  if (!datasets || datasets.length <= 0) {
+    return citations;
+  }
+
+  const datasetMatches = datasets.filter((d) => datasetIds.includes(d.name) || datasetIds.includes(d.id));
+
+
+  for (let i = 0; i < datasetMatches.length; i++) {
+    const c = createCitation(datasetMatches[i]);
+    citations.push(c);
+  }
+
+  return citations;
 }
 
 export function createPublishingInfo(dataset) {
@@ -344,118 +374,69 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
-let localResoureID = 0;
+/**
+ * public case: "{"allowed_users": "", "level": "public", "shared_secret": ""}"
+ * public (used to be restricted) case: "{"allowed_users": "adrian_meyer,zweifel", "level": "public", "shared_secret": ""}"
+ * restricted signin & same organization case: "{"allowed_users": "", "level": "same_organization", "shared_secret": ""}"
+ * restricted signin & same organization & specific users case: "{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization", "shared_secret": ""}"
+ *
+ * @param resource {object}
+ * @param resourceOrganizationID {string}
+ * @param signedInUserName {string}
+ * @param signedInUserOrganizationIds {string[]}
+ * @returns {boolean|null}
+ */
+export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
+  if (!resource) return null;
 
-export function initializeLocalResource(metadataId, file = null, url = '') {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : getFileFormat(file);
-  let resourceName = isLink ? '' : file.name;
-  const fileName = isLink ? '' : file.name;
-  const size = !isLink ? file.size : 0;
+  let allowedUsers = '';
+  const restrictedInfo = resource.restricted;
+  let isProtected = false;
+  let isPublic = false;
 
-  if (!isLink) {
-    const splits = resourceName.split('.');
-    resourceName = splits[0];
+  if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
+    try {
+      const restrictedObj = JSON.parse(restrictedInfo);
+      isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
+      isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
+      allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
+      // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
+    } catch (err) {
+      isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+      isProtected = !isPublic;
+    }
   }
 
-  localResoureID++;
+  if (isPublic) {
+    return false;
+  }
 
-  const now = getCurrentDate();
+  if (!signedInUserOrganizationIds) {
+    return isProtected;
+  }
 
-  return {
-    metadataId,
-    name: resourceName,
-    fileName,
-    file,
-    size,
-    id: `resoureId_${localResoureID}`,
-    [localIdProperty]: `resoureId_${localResoureID}`,
-    url_type: isLink ? '' : 'upload',
-    format: resourceFormat,
-    url,
-    existsOnlyLocal: true,
-    created: now,
-    lastModified: now,
-    loading: false,
-  };
+  if (resourceOrganizationID && signedInUserOrganizationIds.length > 0) {
+    isProtected = !signedInUserOrganizationIds.includes(resourceOrganizationID);
+  }
+
+  if (!signedInUserName) {
+    return isProtected;
+  }
+
+  if (allowedUsers) {
+    const names = getAllowedUserNamesArray(allowedUsers);
+    isProtected = !names.includes(signedInUserName);
+  }
+
+  return isProtected;
 }
 
-export function createLocalResource(
-  metadataId,
-  name,
-  description,
-  file,
-  fileFormat = '',
-  size = 0,
-  url = '',
-  doi = '',
-  restricted = false,
-) {
-  const isLink = !!url;
-  const resourceFormat = isLink ? 'url' : fileFormat;
-
-  const created = getCurrentDate();
-
-  return {
-    description,
-    metadataId,
-    url_type: isLink ? '' : 'upload',
-    id: '',
-    size,
-    // mimetype: resource.mimetype ? resource.mimetype : '',
-    // cacheUrl: resource.cache_url ? resource.cache_url : '',
-    doi,
-    name,
-    url,
-    restricted,
-    format: resourceFormat,
-    existsOnlyLocal: true,
-    // state: resource.state ? resource.state : '',
-    created,
-    lastModified: created,
-    // position: resource.position ? resource.position : '',
-    // revisionId: resource.revision_id ? resource.revision_id : '',
-    isProtected: restricted,
-  };
-}
-
-export function createResource(resource, datasetName) {
+export function createResource(resource, datasetName, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
   if (!resource) {
     return null;
   }
 
-  let isProtected = false;
-  let restrictedUsers;
-  let restrictedObj = false;
-
-  if (
-    resource.restricted &&
-    typeof resource.restricted === 'string' &&
-    resource.restricted.length > 0
-  ) {
-    try {
-      restrictedObj = JSON.parse(resource.restricted);
-      isProtected = restrictedObj.level !== 'public';
-      restrictedUsers = restrictedObj.allowed_users !== '';
-      // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
-    } catch (err) {
-      isProtected = !resource.restricted.includes('public');
-    }
-  }
-
-  let resURL = resource.url;
-
-  if (
-    isProtected ||
-    (typeof restrictedUsers === 'boolean' && restrictedUsers === true)
-  ) {
-    const splits = resource.url.split('resource');
-    if (splits && splits.length > 0) {
-      resURL = splits[0];
-    } else {
-      resURL = '';
-    }
-  }
+  const isProtected = isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds);
 
   let fileFormat = resource.format ? resource.format : '';
   fileFormat = fileFormat.replace('.', '').toLowerCase();
@@ -463,8 +444,9 @@ export function createResource(resource, datasetName) {
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_API_ROOT;
 
+  const resURL = resource.url;
   let fileName = resource.name;
 
   if (!fileName && resURL) {
@@ -483,28 +465,30 @@ export function createResource(resource, datasetName) {
     // url_type: "upload",
     id: resource.id,
     size: resource.size ? resource.size : 0,
-    mimetype: resource.mimetype ? resource.mimetype : '',
-    cacheUrl: resource.cache_url ? resource.cache_url : '',
+    mimetype: resource.mimetype || '',
     doi: resource.doi,
     name: fileName,
     url: resURL,
     urlType: resource.url_type,
     restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
-    restricted: resource.restricted ? resource.restricted : '',
+    restricted: resource.restricted || '',
     format: fileFormat,
-    state: resource.state ? resource.state : '',
+    state: resource.state || '',
     created,
     lastModified: modified,
-    position: resource.position ? resource.position : '',
-    revisionId: resource.revision_id ? resource.revision_id : '',
+    position: resource.position || '',
     isProtected,
+    previewUrl: resource.previewUrl || null,
   };
 }
 
-export function createResources(dataset) {
+export function createResources(dataset, signedInUser, signedInUserOrganizationIds) {
   if (!dataset) {
     return null;
   }
+
+  const organizationID = dataset.organization?.id;
+  const signedInUserName = signedInUser?.name;
 
   const resources = [];
 
@@ -521,7 +505,7 @@ export function createResources(dataset) {
 
   if (dataset.resources) {
     dataset.resources.forEach((element) => {
-      const res = createResource(element, dataset.name);
+      const res = createResource(element, dataset.name, organizationID, signedInUserName, signedInUserOrganizationIds);
       res.metadataContact = contactEmail;
 
       resources.push(res);
@@ -566,19 +550,6 @@ export function getOrganizationMap(organizations) {
   }
 
   return mainOrgas;
-}
-
-export function getMetadataVisibilityState(metadata) {
-  const state = metadata?.state || null;
-  const priv = metadata?.private || undefined;
-
-  let visibilityState = 'draft';
-
-  if (state === 'active') {
-    visibilityState = priv ? 'unpublished' : 'published';
-  }
-
-  return visibilityState;
 }
 
 export function createDetails(dataset) {
@@ -757,7 +728,7 @@ function getGeomCollectionPointArray(geometries) {
  * @param {Object} [propertiesObj={}] key:value mapping for properties included in output GeoJSON
  * @returns {Object} GeoJSON of GeometryCollection type
  */
-export function parseAsGeomCollection(geomArray, propertiesObj={}) {
+export function parseAsGeomCollection(geomArray, propertiesObj = {}) {
 
   if (!geomArray) {
     return null;
@@ -845,7 +816,7 @@ export function createLocation(dataset) {
 
       }
 
-      location.geomCollection = parseAsGeomCollection(geomCollection, location.name);
+      location.geomCollection = parseAsGeomCollection(geomCollection, {name: location.name});
 
     }
   }
@@ -950,6 +921,7 @@ export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
 /**
  * @param {Object} metadataEntry
  * @param {Array} cardBGImages
+ * @param {Array} categoryCards
  *
  * @return {Object} metadataEntry enhanced with a title image based on the entrys tags
  */
@@ -977,7 +949,7 @@ export function enhanceMetadataEntry(
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
-  if (metadatas === undefined || metadatas.length <= 0) {
+  if (metadatas === undefined) {
     return undefined;
   }
 
@@ -1005,3 +977,398 @@ export function sortObjectArray(arrOfObjects, sortProperty, sort = 'ASC') {
     b[sortProperty].toUpperCase() > a[sortProperty].toUpperCase() ? 1 : -1,
   );
 }
+
+export function sanitizeUrls(url) {
+  if (!url) {
+    return null;
+  }
+
+  return url.replaceAll('%3A', ':');
+}
+
+/**
+ * extracts all urls from a string
+ * @param {String}text
+ * @returns {*|*[]}
+ */
+export function extractUrlsFromText(text) {
+  if (!text) {
+    return [];
+  }
+
+  const textWithUrls = text;
+  // const regExStr = '/[A-Za-z]+:\/\/[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_:%&;\?\#\/.=]+';
+  const regExStr = '[A-Za-z]+://[A-Za-z0-9-_]+.[A-Za-z0-9-_:%&;?#/.=]+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  return textWithUrls.match(regEx) || [];
+}
+
+/**
+ *
+ * @param urls
+ * @returns {Map<any, any>} Map keys are the url with the PID as value
+ */
+export function extractPIDsFromUrls(urls) {
+  const pidMap = new Map();
+
+  if (urls?.length <= 0) {
+    return pidMap;
+  }
+
+  // regEx to determine if any url contains a PID from DORA
+  // /[a-zA-Z]+(:|%3A)\d+/g
+  // PID delimiter is typically ':' but this can be changed via browser url and copy paste
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+  const regEx = new RegExp(regExStr, 'g');
+
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    const matches = url.match(regEx);
+
+    if (matches) {
+      const pid = matches[0];
+
+      if (pid) {
+        const cleanPID = sanitizeUrls(pid);
+        pidMap.set(url, cleanPID);
+      }
+    }
+  }
+
+  return pidMap;
+}
+
+export function extractPIDsFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const regExStr = '[a-zA-Z]+(:|%3A)\\d+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const pidMatches = text.match(regEx) || [];
+
+  pidMatches.forEach((match) => {
+    pidMap.set(match, match);
+  });
+
+  return pidMap;
+}
+
+/**
+ *
+ * @param text
+ * @param {Map<any, any>} citationMap Map keys are the PID with the citation text as value
+ * @param {Map<string, string>} pidMap Map keys are the url with the PID as value
+ * @returns {*}
+ */
+export function replacePIDsInText(text, citationMap, pidMap) {
+
+  let newText = text;
+
+  if (text) {
+
+    pidMap.forEach((pid, url) => {
+      const citation = citationMap.get(pid);
+      if (citation) {
+        // newText = `<p>${newText.replace(url, citation)}  </p>`;
+        newText = newText.replace(url, `${citation} <br /> <br />`);
+      }
+    });
+
+  }
+
+  return newText;
+}
+
+function getGenericCitation(resolvedObject) {
+  // don't use the ACS or APA or any property explicit of the citation
+  // if any time the style of the citation is changed, the code would fail
+  // in this generic way, the first citation will be used no matter the name
+  const citationObj = resolvedObject?.citation || {};
+  const keys = Object.keys(citationObj);
+  return citationObj[keys[0]];
+}
+
+function getGenericCitationObject(citationInfo) {
+  const genericCitation = getGenericCitation(citationInfo);
+
+  let abstractTitle = 'Abstract';
+  if (citationInfo.object_url) {
+    abstractTitle += ` provided by <a href="${citationInfo.object_url}" target="_blank" >DORA</a>:`;
+  } else {
+    abstractTitle += ':';
+  }
+
+  return {
+    citation: genericCitation || null,
+    abstract: citationInfo.abstract ? `${abstractTitle} \n ${citationInfo.abstract}` : null,
+    doraSiteUrl: citationInfo.object_url,
+    doi: citationInfo.doi,
+    doiUrl: `https://www.doi.org/${citationInfo.doi}`,
+  };
+}
+
+/**
+ *
+ * @param resolvedPubs
+ * @param pidMap
+ * @returns {Map<any, any>} Map keys are the PID with the citation text as value
+ */
+export function resolvedCitationText(resolvedPubs, pidMap) {
+  const citationTextMap = new Map();
+
+  pidMap.forEach((pid) => {
+    const resolvedObject = resolvedPubs[pid];
+
+    const genericCitation = getGenericCitation(resolvedObject);
+
+    if (genericCitation) {
+      citationTextMap.set(pid, genericCitation);
+    }
+  });
+
+  return citationTextMap;
+}
+
+export function getPidCitationObjectMap(citationObjs) {
+
+  const citationMap = new Map();
+  const pids = Object.entries(citationObjs);
+
+  pids.forEach(entry => {
+    const [pid, citationInfo] = entry;
+
+    const citationObj = getGenericCitationObject(citationInfo);
+    citationMap.set(pid, citationObj);
+  });
+
+
+  return citationMap;
+}
+
+export function getDoiCitationObjectMap(doiObjs) {
+  if (!doiObjs) {
+    return null;
+  }
+
+  const citationMap = new Map();
+
+  doiObjs.forEach((citationInfo) => {
+    const citationObj = getGenericCitationObject(citationInfo);
+    citationMap.set(citationObj.doi, citationObj);
+  });
+
+  return citationMap;
+}
+
+/**
+ * returns a map with keys which are PIDs or Urls from the text and the values are the PIDs
+ *
+ * @param {string} text
+ * @returns {Map<string, string>} Map keys are the url or a PID with the PID as value
+ */
+export function extractPIDMapFromText(text) {
+  const pidMap = new Map();
+
+  if (!text) {
+    return pidMap;
+  }
+
+  const urls = extractUrlsFromText(text);
+  const urlsPIDMap = extractPIDsFromUrls(urls);
+
+  urlsPIDMap.forEach((value, key) => {
+    pidMap.set(key, value);
+  });
+
+  // also extract all PIDs from the whole text to catch PIDs with don't have an url
+  const onlyPIDs = extractPIDsFromText(text);
+
+  const urlsPIDValues = Array.from(urlsPIDMap.values());
+
+  if (urlsPIDValues.length > 0) {
+
+    // in case there are urls in the text, make sure not to overwrite any
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      if (!urlsPIDValues.includes(cleanPID)) {
+        pidMap.set(key, cleanPID);
+      }
+    });
+  } else {
+
+    // in case there are only ids merged as well
+    onlyPIDs.forEach((value, key) => {
+      const cleanPID = sanitizeUrls(value);
+
+      pidMap.set(key, cleanPID);
+    });
+  }
+
+  return pidMap;
+}
+
+const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_pids_wsl/';
+
+export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
+  let fullUrl = resolveBaseUrl || fallbackPIDUrl;
+
+  pidMap.forEach((pid) => {
+    fullUrl += `${pid}|`;
+  });
+
+  fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+
+  return fullUrl;
+}
+
+const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit_wsl/mods_identifier_doi_mt:';
+
+export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
+  let fullUrl = resolveBaseUrl || fallbackDoiUrl;
+
+  doiMap.forEach((doi) => {
+    fullUrl += `${doi.replace('/', '~slsh~')}|`;
+  });
+
+  fullUrl = fullUrl.substring(0, fullUrl.length - 1);
+
+  return fullUrl;
+}
+
+export async function resolveDOIsViaDora(doiMap, resolveBaseUrl = undefined) {
+  if (!doiMap) {
+    return null;
+  }
+
+  const doraUrl = getDoraDoisUrl(doiMap, resolveBaseUrl);
+
+  const response = await axios.get(doraUrl);
+  return response.data;
+}
+
+export async function resolvePIDsViaDora(pidMap, resolveBaseUrl = undefined) {
+  if (!pidMap) {
+    return null;
+  }
+
+  // get url which works with multiple PIDs
+  const doraUrl = getDoraPidsUrl(pidMap, resolveBaseUrl);
+
+  const response = await axios.get(doraUrl);
+  return response.data;
+}
+
+export async function resolvePidCitationObjectsViaDora(pidMap) {
+
+  const citationObj = await resolvePIDsViaDora(pidMap);
+
+  return getPidCitationObjectMap(citationObj);
+}
+
+export async function resolveDoiCitationObjectsViaDora(doiMap) {
+
+  const citationObj = await resolveDOIsViaDora(doiMap);
+
+  return getDoiCitationObjectMap(citationObj);
+}
+
+export function extractDatasetIdsFromText(text) {
+  const ids = [];
+
+  if (!text) {
+    return ids;
+  }
+
+  const regExStr = '/#/metadata/[a-zA-Za_-\\d]+';
+  const regEx = new RegExp(regExStr, 'gm');
+
+  const matches = text.match(regEx) || [];
+
+  for (let i = 0; i < matches.length; i++) {
+
+    const match = matches[i];
+    const splits = match.split('/');
+
+    if (splits.length > 0) {
+      const id = splits[splits.length - 1];
+      ids.push(id);
+    }
+  }
+
+  return ids;
+}
+
+/**
+ *
+ * for details: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+ * @param {*} a
+ * @param {*} b
+ */
+export function formatBytes(a, b = 2) {
+  /* eslint-disable prefer-template */
+  /* eslint-disable no-restricted-properties */
+  if (a === 0) return '0 Bytes';
+
+  const c = 1024;
+
+  const e = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const f = Math.floor(Math.log(a) / Math.log(c));
+
+  return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
+}
+
+export const defaultSwissLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [5.95587, 45.81802],
+        [5.95587, 47.80838],
+        [10.49203, 47.80838],
+        [10.49203, 45.81802],
+        [5.95587, 45.81802],
+      ],
+    ],
+  }],
+};
+export const defaultWorldLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [-175, -85],
+        [-175, 85],
+        [175, 85],
+        [175, -85],
+        [-175, -85],
+      ],
+    ],
+  }],
+};
+
+/**
+ * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different
+ * dataset visibility!
+ *
+ * @type {string[]}
+ */
+export const possiblePublicationStates = [
+  '', // defaults to 'draft' in the components
+  'reserved',
+  'pub_pending',
+  'published',
+];
+
+export const possibleVisibilityStates = [
+  'draft',
+  'unpublished',
+  'published',
+];

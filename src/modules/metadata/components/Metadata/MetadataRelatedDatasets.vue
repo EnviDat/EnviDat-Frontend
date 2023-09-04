@@ -1,13 +1,44 @@
 <template>
   <expandable-text-layout
-    id="MetadataRelatedDatasets"
-    :title="METADATA_DATASETS_TITLE"
-    v-bind="datasets"
-    :showPlaceholder="showPlaceholder"
-    :emptyTextColor="emptyTextColor"
-    :emptyText="emptyText"
-    class="relatedPubList"
+      id="MetadataRelatedDatasets"
+      :title="METADATA_DATASETS_TITLE"
+      :text="getCitationsFromRelatedDatasets(text)"
+      :showPlaceholder="showPlaceholder"
+      :emptyTextColor="emptyTextColor"
+      :emptyText="emptyText"
+      :maxTextLength="maxTextLength"
+      :sanitizeHTML="false"
+      class="relatedPubList"
   />
+<!--
+  <v-card flat>
+
+    <v-card-text>
+      <expandable-text-layout
+        id="MetadataRelatedDatasets"
+        :title="METADATA_DATASETS_TITLE"
+        :text="getCitationsFromRelatedDatasets(text)"
+        :showPlaceholder="showPlaceholder"
+        :emptyTextColor="emptyTextColor"
+        :emptyText="emptyText"
+        :maxTextLength="maxTextLength"
+        :sanitizeHTML="false"
+        class="relatedPubList"
+      />
+    </v-card-text>
+
+    <v-card-text v-if="relatedMetadata.length > 0">
+      <v-row>
+        <v-col v-for="(dataset, index) in relatedMetadata"
+                  :key="index">
+          <MetadataCard v-bind="dataset"
+          ></MetadataCard>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+-->
+
 </template>
 
 <script>
@@ -24,8 +55,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters } from 'vuex';
 import ExpandableTextLayout from '@/components/Layouts/ExpandableTextLayout.vue';
 import { METADATA_DATASETS_TITLE } from '@/factories/metadataConsts';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import { extractDatasetIdsFromText, getCitationList } from '@/factories/metaDataFactory';
 
 export default {
   name: 'MetadataRelatedDatasets',
@@ -33,24 +67,65 @@ export default {
     ExpandableTextLayout,
   },
   props: {
-    genericProps: Object,
     showPlaceholder: Boolean,
+    text: {
+      type: String,
+      default: '',
+    },
+    emptyText: {
+      type: String,
+      default: 'No related datasets available for this dataset.',
+    },
+    emptyTextColor: {
+      type: String,
+      default: 'grey',
+    },
+    maxTextLength: {
+      type: Number,
+      default: undefined,
+    },
+    allDatasets: {
+      // this is only for testing & implementation via storybook
+      type: Array,
+      default: () => [],
+    },
   },
   computed: {
-    emptyTextColor() {
-      return this.mixinMethods_getGenericProp('emptyTextColor', 'grey');
-    },
-    emptyText() {
-      return this.mixinMethods_getGenericProp(
-        'emptyText',
-        'No related datasets available for this dataset.',
-      );
-    },
-    datasets() {
-      return this.mixinMethods_getGenericProp('datasets');
+    ...mapGetters(METADATA_NAMESPACE, [
+      'getCitationListFromIds',
+    ]),
+    relatedDatasetIds() {
+      return extractDatasetIdsFromText(this.text);
     },
   },
-  methods: {},
+  methods: {
+    getCitationsFromRelatedDatasets(text) {
+      if (!text) {
+        return '';
+      }
+
+      const ids = this.relatedDatasetIds;
+
+      if (ids.length <= 0){
+        return text;
+      }
+
+      let citations = [];
+      if (this.$store) {
+        citations = this.getCitationListFromIds(ids);
+      } else {
+        citations = getCitationList(this.allDatasets, ids);
+      }
+
+      let citationText = '';
+
+      for (let i = 0; i < citations.length; i++) {
+        citationText += `${citations[i].citationText}\n\n`;
+      }
+
+      return citationText;
+    },
+  },
   data: () => ({
     METADATA_DATASETS_TITLE,
   }),

@@ -87,6 +87,9 @@ pnpm-lock.yaml
 # DynamoDB Local files
 .dynamodb/
 
+# Secrets
+**/*.secret
+
 # envidat frontend
 dist/
 storybook-static/

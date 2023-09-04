@@ -1,13 +1,13 @@
 <template>
   <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
     <v-row no-gutters>
-      <v-col offset="1" cols="10">
+      <v-col class="px-sm-10">
         <!-- prettier-ignore -->
         <StepperHeader  :steps="steps"
                         activeColor="accent"
                         inactiveColor="secondary"
                         :stepColor="stepColor"
-                        :stepNumber="currentStepIndex"
+                        :currentStepIndex="currentStepIndex"
                         @stepClick="catchStepClick" />
       </v-col>
     </v-row>
@@ -75,17 +75,22 @@ export default {
   },
   methods: {
     getGenericPropsForStep(step) {
+      if (step.genericProps) {
+        return step.genericProps;
+      }
+
       if (this.$store) {
         return this.$store.getters[
           `${USER_NAMESPACE}/getMetadataEditingObject`
         ](step.key);
       }
 
-      return step.genericProps;
+      return undefined;
     },
     catchStepClick(stepTitle) {
       if (!this.$route) {
         // storybook context
+        this.setCurrentStep(stepTitle);
         return;
       }
 

@@ -24,7 +24,7 @@ import {
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
-import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
@@ -42,7 +42,6 @@ import {
 
 import { AUTHORS_EDIT_CURRENT_DATACREDIT } from '@/factories/metadataConsts';
 import unFormatedMetadataCards from './js/metadata';
-import { METADATA_EDITING } from './storybookFolder';
 
 const metadataCards = [];
 
@@ -70,7 +69,7 @@ const preSelectedAuthors3 = authorsStrings.filter(value => value.includes('B'));
 
 
 export default {
-  title: `${METADATA_EDITING} / Author Infos`,
+  title: '9 Editing Metadata / Author Infos',
   decorators: [],
   parameters: {},
 };
@@ -106,10 +105,10 @@ export const EditAddAuthorViews = () => ({
   </v-col>
   `,
   created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
-  beforeUnmount() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
   methods: {
     changeAuthor(updateObj) {
@@ -318,10 +317,10 @@ export const EditAuthorsListViews = () => ({
   </v-col>
   `,
   created() {
-    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  beforeUnmount() {
-    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+  beforeDestroy() {
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   methods: {
     selectAuthor(id) {
@@ -381,16 +380,16 @@ export const FullEditingAuthorViews = () => ({
     </v-col>
   `,
   created() {
-    eventBus.$on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
-  beforeUnmount() {
-    eventBus.$off(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.$off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.$off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  beforeDestroy() {
+    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
+    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
+    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
   methods: {
     removeAuthor(email) {
@@ -416,7 +415,7 @@ export const FullEditingAuthorViews = () => ({
     cancelEditing() {
       this.setSelected(this.selectionId, false);
       this.selectionId = '';
-      eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
     },
     setSelected(id, selected) {
       const auths = this.authors;
@@ -432,7 +431,6 @@ export const FullEditingAuthorViews = () => ({
 
     },
     saveAuthor(newAuthor) {
-      newAuthor.existsOnlyLocal = false;
       this.updateAuthors(newAuthor);
       this.cancelEditing();
     },
@@ -515,7 +513,7 @@ export const FullEditingAuthorViews = () => ({
 
       setTimeout(() => {
         this.loading = false;
-        eventBus.$emit(EDITMETADATA_CLEAR_PREVIEW);
+        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
       }, 1000)
     },
   },

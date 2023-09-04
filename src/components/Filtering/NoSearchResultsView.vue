@@ -53,7 +53,10 @@ import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 export default {
   name: 'NoSearchResultView',
   props: {
-    categoryCards: Array,
+    categoryCards: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {

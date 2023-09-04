@@ -18,7 +18,6 @@ import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
 import projectJSON from './testdata/projects.json';
-import { CARD_VIEWS } from './storybookFolder';
 
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
@@ -54,7 +53,7 @@ const methods = {
 };
 
 export default {
-  title: `${CARD_VIEWS} / Projects Cards`,
+  title: '3 Cards / Projects Cards',
   decorators: [],
   parameters: {
   },

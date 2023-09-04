@@ -58,13 +58,29 @@
  */
 
 import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/leaflet.markercluster';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet-bing-layer';
 
-import L from 'leaflet';
-import { mapGetters,mapState } from 'vuex';
+import {
+  map as createMap,
+  icon as createIcon,
+  tileLayer,
+  Icon,
+  geoJSON,
+  marker as createMarker,
+  layerGroup,
+  polygon as createPolygon,
+  featureGroup,
+  control,
+} from 'leaflet';
+
+import {
+  mapGetters,
+  mapState,
+} from 'vuex';
+
+const MarkerClusterGroupImport = () => import('leaflet.markercluster');
 
 // HACK start
 /* eslint-disable import/first */
@@ -215,7 +231,7 @@ export default {
       }
     },
     initLeaflet(mapElement) {
-      const map = L.map(mapElement, {
+      const map = createMap(mapElement, {
         // scrollWheelZoom: false,
         center: this.setupCenterCoords,
         zoom: 7,
@@ -228,13 +244,13 @@ export default {
     },
     parseGeoJSON(geoJsonString) {
       try {
-        return L.geoJSON(geoJsonString);
+        return geoJSON(geoJsonString);
       } catch (error) {
         return undefined;
       }
     },
     addImageMapLayer(map, bingKey) {
-      const streetTiles = L.tileLayer(
+      const streetTiles = tileLayer(
         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
         {
           attribution:
@@ -246,7 +262,7 @@ export default {
       const baseMaps = {};
 
       if (bingKey) {
-        const aerialTiles = L.tileLayer.bing({
+        const aerialTiles = tileLayer.bing({
           bingMapsKey: bingKey,
           imagerySet: 'AerialWithLabels',
         });
@@ -258,13 +274,13 @@ export default {
       // put is afterwards, because default seems to be the last one
       baseMaps['Roads (OpenStreetMaps)'] = streetTiles;
 
-      this.mapLayerGroup = L.layerGroup(layers);
+      this.mapLayerGroup = layerGroup(layers);
       this.mapLayerGroup.addTo(map);
 
-      L.control.layers(baseMaps).addTo(map);
+      control.layers(baseMaps).addTo(map);
     },
     getPointIcon(dataset, modeData, selected) {
-      const iconOptions = L.Icon.Default.prototype.options;
+      const iconOptions = Icon.Default.prototype.options;
       // use the defaultoptions to ensure that all untouched defaults stay in place
 
       let iconUrl = null;
@@ -300,7 +316,7 @@ export default {
       iconOptions.iconSize = [width, height];
       iconOptions.className = iconClass;
 
-      return L.icon(iconOptions);
+      return createIcon(iconOptions);
     },
     getPoint(dataset, coords, id, title, selected) {
       const icon = this.getPointIcon(dataset, this.modeData, selected);
@@ -313,7 +329,7 @@ export default {
         opacity = selected ? 0.8 : 0.65;
       }
 
-      const point = L.marker(coords, {
+      const point = createMarker(coords, {
         icon,
         opacity,
         riseOnHover: true,
@@ -330,7 +346,7 @@ export default {
     getPolygon(coords, id, title, selected) {
       // create a polygon from an array of LatLng points
       // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
-      const polygon = L.polygon(coords, {
+      const polygon = createPolygon(coords, {
         color: selected
           ? this.$vuetify.theme.themes.light.primary
           : this.$vuetify.theme.themes.light.accent,
@@ -464,7 +480,7 @@ export default {
       }
 
       if (allLayers.length > 0) {
-        const feat = L.featureGroup(allLayers);
+        const feat = featureGroup(allLayers);
         const featBounds = feat.getBounds();
         this.map.fitBounds(featBounds, { maxZoom: 8 });
       }
@@ -521,9 +537,10 @@ export default {
         }
       }
     },
-    updateMap() {
+    async updateMap() {
       if (!this.clusterLayer) {
-        this.clusterLayer = L.markerClusterGroup();
+        const { MarkerClusterGroup } = await MarkerClusterGroupImport();
+        this.clusterLayer = new MarkerClusterGroup();
       }
 
       this.clusterLayer.removeFrom(this.map);

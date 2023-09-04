@@ -1,17 +1,23 @@
 <template>
-  <v-banner two-line :color="bannerColor">
-    <v-avatar color="secondary" size="24">
+  <v-banner two-line
+            class="noPaddingForActions"
+            :color="bannerColor">
+
+    <template v-slot:icon>
       <v-icon
         color="white"
-        style="animation: progress-circular-rotate 3s linear infinite"
+        size="24"
+        style="animation: progress-circular-rotate 3s linear infinite;"
       >
-        settings
+        {{ icon }}
       </v-icon>
-    </v-avatar>
+    </template>
 
-    <span v-html="text" />
+    <template v-slot:default>
+      <span v-html="text" />
+    </template>
 
-    <template v-slot:actions>
+    <template v-slot:actions >
       <BaseRectangleButton
         v-if="confirmText"
         marginClass="mx-1"
@@ -51,6 +57,10 @@ export default {
   props: {
     title: String,
     text: String,
+    icon: {
+      type: String,
+      default: 'settings',
+    },
     confirmText: String,
     confirmClick: Function,
     cancelText: String,
@@ -77,6 +87,9 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style>
+  .noPaddingForActions > .v-banner__wrapper > .v-banner__actions {
+    padding-top: 8px !important;
+    padding-bottom: 12px !important;
+  }
 </style>

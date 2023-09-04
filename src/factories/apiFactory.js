@@ -99,7 +99,7 @@ export function solrResultToCKANJSON(solorJSON) {
     ckanStructure.organization = dataDict.organization;
     // TODO decode organization?
 
-    ckanStructure.revision_id = dataDict.revision_id;
+    ckanStructure.resource_size = dataDict.resource_size;
     ckanStructure.resource_type = dataDict.resource_type;
   }
 

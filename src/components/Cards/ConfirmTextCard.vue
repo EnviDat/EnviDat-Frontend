@@ -4,8 +4,9 @@
       {{ title }}
     </v-card-title>
 
-    <v-card-text class="pa-4 pt-0">
-      {{ text }}
+    <v-card-text class="pa-4 pt-0 readableText"
+                  v-html="text">
+
     </v-card-text>
 
     <v-card-actions class="pa-4 pt-0">

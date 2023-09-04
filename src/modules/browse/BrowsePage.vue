@@ -14,7 +14,7 @@
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
                     @clickedCard="catchMetadataClicked"
-                   :prePinnedIds="selectedPins"
+                    :prePinnedIds="selectedPins"
                     @pinnedIds="catchPinnedIds"
                     :mode="mode"
                     :defaultListControls="defaultControls"
@@ -36,6 +36,10 @@
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
                     :reloadDelay="vReloadDelay"
+                    :updatingTags="updatingTags"
+                    :loading="loading"
+                    :metadatasContent="metadatasContent"
+                    :categoryCards="categoryCards"
     />
 
   </article>
@@ -326,6 +330,7 @@ export default {
   computed: {
     ...mapState([
       'config',
+      'categoryCards',
     ]),
     ...mapGetters({
       metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
@@ -350,6 +355,12 @@ export default {
       vReloadAmountMobile: `${METADATA_NAMESPACE}/vReloadAmountMobile`,
       vReloadDelay: `${METADATA_NAMESPACE}/vReloadDelay`,
     }),
+    loading() {
+      return (this.loadingMetadatasContent
+          || this.isFilteringContent
+          || this.searchingMetadatasContent
+      );
+    },
     reloadAmount() {
       return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },
@@ -461,7 +472,6 @@ export default {
 <style scoped>
 
   .stickyFilterBar {
-    position: -webkit-sticky;
     position: sticky;
     top: 50px;
     z-index: 1000;

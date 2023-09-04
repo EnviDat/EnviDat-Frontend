@@ -25,7 +25,8 @@
           :color="color ? color : disabled ? '' : 'primary'"
           :href="url"
           :disabled="disabled"
-          v-bind="{ target: '_blank' }"
+          :class="buttonClass"
+          v-bind="{ ['target']: '_blank' }"
           @click.stop="onClick"
         >
           <div v-if="customIcon">
@@ -64,7 +65,8 @@
       :color="color ? color : disabled ? '' : 'primary'"
       :href="url"
       :disabled="disabled"
-      v-bind="{ target: '_blank' }"
+      :class="buttonClass"
+      v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
     >
       <div v-if="customIcon" class="iconCentering">
@@ -90,7 +92,6 @@
 
     <v-badge
       v-if="count > 0"
-      :content="count"
       :overlap="!isSmall"
       :left="isSmall"
       :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
@@ -98,13 +99,9 @@
       :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
       @click.stop="onClick"
     >
-<!--
-      <template v-slot:badge>
-        <span class="black&#45;&#45;text">
-          {{ count }}
-        </span>
-      </template>
--->
+      <span slot="badge" class="black--text">
+        {{ count }}
+      </span>
     </v-badge>
   </div>
 </template>
@@ -157,6 +154,8 @@ export default {
     disabled: Boolean,
     count: Number,
     overwriteHeight: Number,
+    isFancy:Boolean,
+    isGlowing:Boolean,
   },
   data: () => ({
     hoverBadge: false,
@@ -177,6 +176,13 @@ export default {
 
       return height;
     },
+    buttonClass() {
+      let classes = this.isFancy ? 'fancyButton' : '';
+
+      classes += this.isGlowing ? ' glowingButton' : '';
+
+      return classes;
+    },
   },
   methods: {
     onClick() {
@@ -185,3 +191,45 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fancyButton {
+  background-color: #00BFAD;
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C,
+      #00BFAD
+    );
+}
+
+.fancyButton:hover {
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C 20%,
+      #00BFAD
+    );
+}
+
+.glowingButton {
+  animation-name: glow;
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px 0 yellow;
+  }
+
+  50% {
+    box-shadow: 0 0 10px 10px yellow;
+  }
+
+  to {
+    box-shadow: 0 0 10px 0 yellow;
+  }
+}
+
+</style>

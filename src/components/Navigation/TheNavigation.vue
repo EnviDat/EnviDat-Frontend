@@ -38,7 +38,9 @@
                   class="ma-0"
                   :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`"
                   @click.stop="itemClick(item)" >
-            <img :src="Logo"
+            <v-img :src="Logo"
+                 height="32"
+                 width="32"
                   alt="envidat_logo" />
           </v-btn>
         </v-list-item-action>

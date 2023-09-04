@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 /**
  * metadata store actions
  *
@@ -30,12 +31,6 @@ import {
   FILTER_METADATA_SUCCESS,
   FILTER_METADATA_ERROR,
   METADATA_NAMESPACE,
-  PUBLICATIONS_RESOLVE_IDS,
-  PUBLICATIONS_RESOLVE_IDS_SUCCESS,
-  PUBLICATIONS_RESOLVE_IDS_ERROR,
-  EXTRACT_IDS_FROM_TEXT,
-  EXTRACT_IDS_FROM_TEXT_SUCCESS,
-  EXTRACT_IDS_FROM_TEXT_ERROR,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -66,7 +61,7 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
@@ -217,7 +212,7 @@ export default {
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+    const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
 
     await axios
       .get(url)
@@ -252,7 +247,7 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
+    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -271,7 +266,7 @@ export default {
     const metadataConfig = config.metadataConfig || {};
 
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, PROXY);
+                API_BASE, API_ROOT);
 
     if (import.meta.env.DEV && useTestdata) {
       url = './testdata/packagelist.json';
@@ -390,64 +385,6 @@ export default {
       commit(FILTER_METADATA_ERROR, error);
     }
   },
-  [PUBLICATIONS_RESOLVE_IDS]({ commit }, { idsToResolve, resolveBaseUrl }) {
-    commit(PUBLICATIONS_RESOLVE_IDS);
-
-    const currentIdsToResolve = idsToResolve;
-    const requests = [];
-    currentIdsToResolve.forEach((id) => {
-      const url = resolveBaseUrl + id;
-      requests.push(axios.get(url));
-    });
-
-    Promise.all(requests)
-      .then((responses) => {
-        let resolvedPublications = {};
-
-        for (let i = 0; i < responses.length; i++) {
-          const response = responses[i];
-          resolvedPublications = { ...resolvedPublications, ...response.data };
-        }
-
-        commit(PUBLICATIONS_RESOLVE_IDS_SUCCESS, {
-          idsToResolve: currentIdsToResolve,
-          resolvedPublications,
-        });
-      })
-      .catch((error) => {
-        commit(PUBLICATIONS_RESOLVE_IDS_ERROR, error);
-      });
-  },
-  [EXTRACT_IDS_FROM_TEXT]({ commit }, { text, idDelimiter = '', idPrefix = '' }) {
-
-    if (text) {
-
-      commit(EXTRACT_IDS_FROM_TEXT);
-
-      try {
-        const regExStr = `\\${idPrefix}\\s?[a-zA-Z]+${idDelimiter}\\d+`;
-        const regEx = new RegExp(regExStr, 'gm');
-        const hasValidIds = text.match(regEx) || [];
-        // console.log(`hasValidIds ${hasValidIds?.length}`);
-
-        const ids = [];
-
-        hasValidIds.forEach((match) => {
-          let idOnly = match;
-          if (idPrefix) {
-            idOnly = idOnly.replace(idPrefix, '');
-          }
-
-          ids.push(idOnly.trim());
-          // console.log(`Found match, group ${groupIndex}: ${match}`);
-        });
-
-        commit(EXTRACT_IDS_FROM_TEXT_SUCCESS, ids);
-      } catch (e) {
-        commit(EXTRACT_IDS_FROM_TEXT_ERROR, e);
-      }
-    }
-  },
   async [METADATA_UPDATE_EXISTING_AUTHORS]({ commit }) {
 
     const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
@@ -468,7 +405,7 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, PROXY);
+    const url = urlRewrite('tag_list', API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
 

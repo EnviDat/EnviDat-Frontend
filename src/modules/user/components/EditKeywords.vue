@@ -7,7 +7,7 @@
     <v-container fluid
                 class="pa-4">
 
-      <template v-slot:progress>
+      <template slot="progress">
         <v-progress-linear color="primary"
                            indeterminate />
       </template>
@@ -58,21 +58,19 @@
                       append-icon="arrow_drop_down"
                       prepend-icon="style"
                       :label="labels.keywordsLabel"
-                      :search-input="search"
+                      :placeholder="labels.placeholder"
+                      :search-input.sync="search"
                       :readonly="mixinMethods_isFieldReadOnly('keywords')"
                       :hint="mixinMethods_readOnlyHint('keywords')"
                       :error-messages="validationErrors.keywords"
                       @update:search-input="isKeywordValid(search)"
+                      @keyup="blurOnEnterKey"
                       @input="isEnoughKeywords()"
                       @change="notifyChange('keywords', $event)"
                       @blur="saveChange()"
                       @keydown="catchKeywordEntered($event)"
                       :rules="rulesKeywords"
                       >
-
-<!--
-            :search-input.sync="search"
--->
 
             <template v-slot:selection="{ item }" >
               <TagChip  :name="item.name"
@@ -161,7 +159,8 @@ export default {
     rulesKeywords: [],
     labels: {
       title: EDIT_METADATA_KEYWORDS_TITLE,
-      keywordsLabel: 'Click here to pick Keywords',
+      keywordsLabel: 'Keywords',
+      placeholder: 'Pick keywords from the list or type in a new keyword',
       cardInstructions1: 'Please enter at least 5 keywords.',
       cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
           ' To create a new keyword type it and press enter.',
@@ -226,7 +225,7 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeUnmount() {
+  beforeDestroy() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
@@ -255,7 +254,7 @@ export default {
 
       const previewEntry = {
         title: this.metadataCardTitle,
-        tags: this.keywords,
+        tags: this.keywordsField,
         subtitle: this.metadataCardSubtitle,
         fileIconString: this.mixinMethods_getIcon('file'),
       };
@@ -277,11 +276,11 @@ export default {
       let hint = '';
 
       if (!this.keywordValidMin3Characters) {
-        hint += '<span class="font-italic">Keyword must be at least three characters. </span> ';
+        hint += '<span class="font-italic">Keyword must be at least <strong>3 characters</strong>. </span> ';
       }
 
       if (this.search) {
-        hint += ` No results matching "<strong>${this.search}</strong>". Press   <kbd>enter</kbd>   to create a new keyword.`;
+        hint += ` No results matching "<strong>${this.search}</strong>". Press <span class="mx-1"><kbd>enter</kbd></span> to create a new keyword. `;
       } else {
         hint += ' Start typing for keyword autocompletion.';
       }
@@ -300,6 +299,11 @@ export default {
     },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter' && keyboardEvent.target.value === '') {
+        keyboardEvent.target.blur();
+      }
+    },
     saveChange() {
       if (this.previewKeywords.length > 0) {
         if (this.validateProperty('keywords', this.previewKeywords)) {
@@ -332,7 +336,7 @@ export default {
       };
 
       // Assign selectedKeywords to keywords concatenated with pickedKeywordObj
-      const selectedKeywords = this.keywords.concat([pickedKeywordObj]);
+      const selectedKeywords = this.keywordsField.concat([pickedKeywordObj]);
 
       this.previewKeywords = this.processValues(selectedKeywords);
       this.search = null;

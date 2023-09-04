@@ -53,6 +53,7 @@
           :style="`top: ${avatarTopPosition}px;`" >
       <UserAvatar :size="avatarHeight"
                   :nameInitials="nameInitials"
+                  :emailHash="emailHash"
                   class="elevation-5" />
     </div>
 

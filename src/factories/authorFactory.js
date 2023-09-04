@@ -51,6 +51,21 @@ export function getAuthorName(author) {
   return  fullName || null;
 }
 
+export function getAuthorNameCitation(author) {
+
+  const firstName = author.given_name || author.firstName || '';
+
+  const splits = firstName.trim().split(' ');
+  let firstnameInitials = '';
+
+  splits.forEach((name) => {
+    firstnameInitials += `${name.substring(0, 1)}. `;
+  })
+
+  const lastName = author.name || author.lastName || '';
+
+  return `${lastName.trim()}, ${firstnameInitials.trim()}`;
+}
 /**
  *
  * @param userObjects {Array}
@@ -99,6 +114,41 @@ export function getAuthorsString(dataset) {
   }
 
   return authors.trim();
+}
+
+export function getAuthorsCitationString(dataset) {
+  if (!dataset) {
+    return null;
+  }
+
+  let authorString = '';
+
+  if (dataset.author !== undefined) {
+    let { author } = dataset;
+
+    if (typeof dataset.author === 'string') {
+      author = JSON.parse(dataset.author);
+    }
+
+    const authors = author;
+
+    for (let i = 0; i < (authors.length || 19); i++) {
+      const element = authors[i];
+      authorString += ` ${getAuthorNameCitation(element)},`;
+    }
+
+    // cut of the last ';'
+    if (authorString.length > 1) {
+      authorString = authorString.substring(0, authorString.length - 1);
+    }
+
+    if (authors.length > 19) {
+      authorString += ' et al.';
+    }
+
+  }
+
+  return authorString.trim();
 }
 
 export function getDataCreditIcon(creditName) {
@@ -450,35 +500,13 @@ export function getNameInitials(userObject) {
     return getInitials(userObject.firstName, userObject.lastName);
   }
 
-  if (userObject.name && userObject.fullname) {
-    return getInitials(userObject.name, userObject.fullname);
+  if (userObject.name && userObject.fullName) {
+    return getInitials(userObject.name, userObject.fullName);
   }
 
   return '';
 }
 
-let localAuthorID = 0;
-
-export function initializeLocalAuthor() {
-  localAuthorID++;
-
-  const newAuthor = {
-    firstName: 'unknown',
-    lastName: '',
-    affiliation: '',
-    id: {
-      type: '',
-      identifier: '',
-    },
-    email: '',
-    existsOnlyLocal: true,
-    loading: false,
-  };
-
-  newAuthor[localIdProperty] = `authorId_${localAuthorID}`;
-
-  return newAuthor;
-}
 
 export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
   const authorWithFullInfos = [];
@@ -556,4 +584,30 @@ export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
   }
 
   return authors;
+}
+
+export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
+  
+  const canEnhance = (authorMap && Object.keys(authorMap).length > 0);
+  if (!canEnhance || authors?.length <= 0) {
+    return authors;
+  }
+  
+  const enhancedAuthors = [];
+
+  for (let i = 0; i < authors.length; i++) {
+    const auth = authors[i];
+    const key = getAuthorKey(auth);
+    const existingAuthor = authorMap[key];
+
+    let enhanced = auth;
+
+    if (existingAuthor) {
+      enhanced = mergeEditingAuthor(auth, existingAuthor);
+    }
+
+    enhancedAuthors.push(enhanced);
+  }
+
+  return enhancedAuthors;
 }

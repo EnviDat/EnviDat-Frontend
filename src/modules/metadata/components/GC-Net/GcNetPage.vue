@@ -55,15 +55,6 @@ export default {
   mounted() {},
   beforeUnmount() {},
   computed: {
-    // ...mapState([
-    //   'config',
-    // ]),
-    // ...mapState(METADATA_NAMESPACE, [
-    //   'extractingIds',
-    //   'idsToResolve',
-    //   'publicationsResolvingIds',
-    //   'publicationsResolvedIds',
-    // ]),
     // ...mapGetters({
     //   metadatasContent: `${METADATA_NAMESPACE}/metadatasContent`,
     //   metadatasContentSize: `${METADATA_NAMESPACE}/metadatasContentSize`,

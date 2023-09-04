@@ -13,8 +13,8 @@
       >
         <v-col
           v-if="loading"
-          class="shrink py-0"
-          style="min-width: 60px; text-align: center;"
+          class="shrink py-0 mx-sm-2"
+          style="min-width: 45px; text-align: center;"
         >
           <v-progress-circular
             indeterminate
@@ -26,8 +26,8 @@
 
         <v-col
           v-if="showSearchCount && !loading"
-          class="shrink py-0"
-          style="min-width: 60px; text-align: center;"
+          class="shrink py-0 mx-sm-2"
+          style="min-width: 45px; text-align: center;"
         >
           <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly">
             <template v-slot:activator="{ on }">
@@ -49,7 +49,8 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && !hasButton" class="shrink pa-0">
+        <v-col v-if="showSearch && !hasButton"
+               class="shrink pa-0 hidden-xs-only">
           <base-icon-button
             materialIconName="search"
             marginClass="ma-0"
@@ -59,7 +60,7 @@
           />
         </v-col>
 
-        <v-col v-if="showSearch" class="grow py-0 mr-2">
+        <v-col v-if="showSearch" class="grow py-0 ml-2 ml-sm-0 mr-sm-2">
           <v-tooltip
             bottom
             :disabled="$vuetify.breakpoint.xsOnly || !searchToolTipText"
@@ -74,11 +75,11 @@
                 single-line
                 hide-details
                 primary
-                :clearable="searchText && searchText.length > 0"
+                :clearable="$vuetify.breakpoint.smAndUp && searchText && searchText.length > 0"
                 :flat="isFlat"
                 :placeholder="labelText"
                 @keyup.enter="clicked"
-                append-icon="clear"
+                :append-icon="$vuetify.breakpoint.smAndUp ? 'clear' : ''"
                 @click:append="clearClicked"
               />
             </template>
@@ -201,12 +202,12 @@ export default {
 }
 
 .smallSearchBar .input-group__details {
-  min-height: 0px !important;
+  min-height: 0 !important;
 }
 
 .envidatSmallSearch {
-  padding: 0px !important;
-  margin: 0px !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .envidatSmallSearch > .v-input__control {
@@ -214,11 +215,7 @@ export default {
   margin-bottom: 2px !important;
 }
 
-.envidatSmallSearch
-  > .v-input__control
-  > .v-input__slot
-  > .v-text-field__slot
-  > input {
+.envidatSmallSearch > .v-input__control > .v-input__slot > .v-text-field__slot > input {
   padding: 0;
 }
 

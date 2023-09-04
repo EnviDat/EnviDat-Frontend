@@ -98,7 +98,7 @@
 
             <base-icon-label-view
               v-if="created"
-              :text="created"
+              :text="readableCreated"
               :label="dateCreatedIcon ? '' : 'Created at:'"
               :icon="dateCreatedIcon"
               icon-tooltip="Date of file creation"
@@ -107,7 +107,7 @@
 
             <base-icon-label-view
               v-if="lastModified"
-              :text="lastModified"
+              :text="readableLastModified"
               :label="lastModifiedIcon ? '' : 'Modified at:'"
               :icon="lastModifiedIcon"
               icon-tooltip="Date of last modification"
@@ -122,29 +122,26 @@
       class="ma-0 pa-2"
       style="position: absolute; bottom: 0; right: 55px;"
     >
-      <base-icon-button
-        v-if="maxDescriptionLengthReached"
-        :class="isProtected ? 'mr-2' : ''"
-        material-icon-name="expand_more"
-        :iconColor="showFullDescription ? 'primary' : 'accent'"
-        color="accent"
-        :fillColor="
-          showFullDescription ? $vuetify.theme.themes.light.accent : ''
-        "
-        outlined
-        :rotateOnClick="true"
-        :rotateToggle="showFullDescription"
-        :tooltipText="
-          showFullDescription
-            ? 'Hide full description'
-            : 'Show full description'
-        "
-        @clicked="showFullDescription = !showFullDescription"
+      <base-icon-button v-if="maxDescriptionLengthReached"
+                        :class="isProtected ? 'mr-2' : ''"
+                        material-icon-name="expand_more"
+                        :iconColor="showFullDescription ? 'primary' : 'accent'"
+                        color="accent"
+                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
+                        outlined
+                        :rotateOnClick="true"
+                        :rotateToggle="showFullDescription"
+                        :tooltipText="
+                          showFullDescription
+                            ? 'Hide full description'
+                            : 'Show full description'
+                        "
+                        @clicked="showFullDescription = !showFullDescription"
       />
     </v-card-actions>
 
     <v-container
-      v-if="showGenericOpenButton"
+      v-if="showGenericOpenButton && !isProtected"
       class="pa-2"
       style="position: absolute; right: 0; width: 55px;"
       :style="`${genericOpenButtonBottom ? 'bottom: 55px;' : 'top: 0;'}`"
@@ -223,6 +220,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
+import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 
 export default {
   name: 'ResourceCard',
@@ -284,6 +282,12 @@ export default {
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
   }),
   computed: {
+    readableCreated() {
+      return formatDate(this.created) || this.created;
+    },
+    readableLastModified() {
+      return formatDate(this.lastModified) || this.lastModified;
+    },
     resourceName() {
       if (!this.name && !!this.url) {
         const splits = this.url.split('/');
@@ -336,7 +340,7 @@ export default {
         sizeNumber = Number.parseInt(this.size, 10);
       }
 
-      return this.mixinMethods_formatBytes(sizeNumber);
+      return formatBytes(sizeNumber);
     },
     isLink() {
       return (
@@ -368,7 +372,7 @@ export default {
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
-        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
@@ -439,8 +443,8 @@ export default {
 
 .fabPosition {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
 }
 
 .fabMenu {
@@ -497,6 +501,6 @@ export default {
 }
 
 .highlighted {
-  box-shadow: #ffd740 0px 0px 5px 5px !important;
+  box-shadow: #ffd740 0 0 5px 5px !important;
 }
 </style>

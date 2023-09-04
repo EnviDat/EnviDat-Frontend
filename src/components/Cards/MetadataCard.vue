@@ -4,8 +4,9 @@
     hover
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    style="height: 100%;"
-    @click="cardClick"
+    class="fill-height"
+    :dark="false"
+    @click.native="cardClick"
   >
     <!-- <v-card-title primary-title class="pa-0"> -->
 
@@ -54,9 +55,9 @@
     <v-card-text
       v-if="showCardBody"
       :class="{
-        ['cardText']: $vuetify.breakpoint.mdAndUp,
-        ['compactText']: flatLayout || $vuetify.breakpoint.smAndDown,
-        ['pr-5']: flatLayout,
+        cardText: $vuetify.breakpoint.mdAndUp,
+        compactText: flatLayout || $vuetify.breakpoint.smAndDown,
+        'pr-5': flatLayout,
       }"
     >
       <v-container fluid class="pa-0 fill-height">
@@ -257,12 +258,12 @@ import { stripMarkdown } from '@/factories/stringFactory';
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 
 export default {
+  name: 'MetadataCard',
   props: {
     id: String,
     title: String,
     subtitle: String,
     name: String,
-    type: Number,
     restricted: Boolean,
     favourit: Boolean,
     tags: {
@@ -373,11 +374,11 @@ export default {
     },
     maxTitleLengthReached() {
       return (
-        (this.flatLayout && this.title.length > this.flatTagtextLength) ||
-        (this.isCompactLayout && this.title.length > this.compactTitleLength) ||
+        (this.flatLayout && this.title?.length > this.flatTagtextLength) ||
+        (this.isCompactLayout && this.title?.length > this.compactTitleLength) ||
         (!this.isCompactLayout &&
           !this.flatLayout &&
-          this.title.length > this.titleLength)
+          this.title?.length > this.titleLength)
       );
     },
     isCompactLayout() {
@@ -567,7 +568,6 @@ export default {
   font-size: 14px !important;
   opacity: 0.75;
   line-height: 1.2em !important;
-  color: rgba(0, 0, 0, 0.87) !important;
   overflow: hidden;
 }
 

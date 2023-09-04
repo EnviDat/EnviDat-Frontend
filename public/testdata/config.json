@@ -1,5 +1,5 @@
 {
-  "version": "0.7.16",
+  "version": "0.7.573",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -7,7 +7,7 @@
     "searchLabelText": "Looking for something specific? Enter research term, topic or author here!",
     "smallSearchLabelText": "Enter research term, topic or author",
     "searchText": "Looking for something specific?",
-    "categoryText": "Have a look at one of these research categories or sign in to upload data. Uploading and publishing data are currently restricted to WSL employees and their collaborators.",
+    "categoryText": "Have a look at the research categories or sign in to publish your data. Uploading and publishing data is only available for WSL employees and their collaborators.",
     "articlesTitle": "Recent EnviDat Blog Articles",
     "newsTitle": "News From The EnviDat Team",
     "categoriesTitle": "Research Data Categories",
@@ -28,8 +28,8 @@
     },
     {
       "title": "Team",
-      "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
-      "widthClass": "col-12 col-sm-6 col-md-8 col-xl-3"
+	  "text": "<img src='https://www.envidat.ch/EnviDat_organigram.png' style='width: 100%; height: 100%;' />",
+      "widthClass": "col-12 col-sm-6 col-md-8"
     },
     {
       "title": "Community",
@@ -67,21 +67,26 @@
     "signinDisabled": false,
     "signinRedirectActive": false,
     "messageActive": false,
-    "message": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>."
+    "message": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>."
   },
   "newsConfig": {
     "newsActive": true,
     "entries": [
       {
-        "title": "Maintenance Mode Active!",
-        "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
-        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+        "title": "Update: New Way of Editing",
+        "text": "The homepage has a new look and many other new features are part of this update. Have look at the navigation entries on the left side and <a href='./#/signin' >sign into</a> your account in the top right corner. The main feature is the <strong>new editing workflow</strong>, sign in and give it a try or read more in the <a href='./#/blog/new_editing_workflow.md' >blog post</a>.",
+        "image": "https://www.envidat.ch/blog/images/edit_workflow_header.jpg"
       }
     ]
   },
   "ignoredNews": {
     "newsActive": false,
     "entries": [
+      {
+        "title": "Maintenance 29. March!",
+        "text": "On Wednesday 29th March, between 9 and 12, EnviDat is undergoing the planned annual physical checkup. EnviDat can be accessed in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities will be disabled</strong>.",
+        "image": "https://www.envidat.ch/blog/images/maintenance.jpg"
+      },
       {
         "title": "Maintenance Mode Active!",
         "text": "We are currently doing maintenance on the server and EnviDat is now in <strong>read-only mode</strong>. Data download, upload and <strong>user data management functionalities are currently disabled</strong>.",
@@ -92,24 +97,28 @@
   "effectsConfig": {
     "landingPageParticles": true,
     "showDecemberWishes": true,
-    "decemberWishes": "We wish you happy winter holidays! <br/> <br/>Enjoy cosy days with your family and loved ones. How do you enjoy your time? With a big cup of coffee and a new book on the sofa? Or solve a jigsaw puzzle while listening to an audiobook? How about listening to some good old CDs or get that vinyl playing again? <br/> <br/> What ever you do, take your time to relax. Set the tea kettle on the stove, get those tasty cookies out of the jar and enjoy the rest of the 2020... <br/>What a year!",
+    "decemberWishes": "We wish you happy winter holidays! <br/> <br/>Enjoy cosy days with your family and loved ones and stay healthy. How do you enjoy your time? With a big cup of coffee or tea and a new book on the couch? Or maybe visit a sauna or spa?<br/> <br/>Whatever you do, we wish you nice and relaxing days! Enjoy the rest of the 2021. <br/><br/>Cheers <br/>EnviDat Team",
     "showNewYearWishes": true,
-    "newYearWishes": "We wish you happy new 2021! <br/> <br/>The year 2020 behind us, let us take a deep breath for a moment. Phew what kind of year was that? <br/> <br/> The changes 2020 brought into our lives, into our socitey were deep and some of them are pretty sure going to stay. So now it is time to take out the compass, review and update the map and plan for the challenges of 2021! <br/> <br/> Do you have a challenge for the EnviDat team? <br/> <a href='./#/about/about' >Let us know!</br>",
+    "newYearWishes": "We wish you happy new 2022! <br/> <br/>We are exicted to annouce the upcoming features of a new workflow to edit datasets! Right now, we are in the final testing phase, soon you can sign in and edit you datasets directly on the new website. <br/><br/>The workflow for creating new datasets is more complex, while we are building it you can create new datasets via the legacy website, this includes uploading of resources. <br/> <br/> Any questions or remarks, don't hesitate to ask the <a href='./#/about/about' >EnviDat team!</br>",
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
-    "defaultLocation": {"type": "Polygon", "coordinates": [[[5.95587, 45.81802],[5.95587, 47.80838],[10.49203, 47.80838],[10.49203, 45.81802],[5.95587, 45.81802]]]},
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
+    "datasetCreationActive": true,
+    "resourceEditingActive": true,
+    "resourceUploadActive": true,
+    "editingRestrictingActive": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,
-    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
-    "feedbackText": "<br />However we would be glad if you <a href='' target='_blank'>let us know about it.</a> <br/>",
+    "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in a unpublished dataset) go to your ",
+    "feedbackText": ". If you have issues while using EnviDat or though of an improvement, please <a href='mailto:envidat@wsl.ch'>let us know</a>.",
     "userEditingEnabled": true,
+    "useTokenSignin": false,
     "organizationRolesText": {
       "noOrganizationText": "You aren't assigned to an organisation yet. If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation. If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.",
       "memberOrganizationText": "As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.",

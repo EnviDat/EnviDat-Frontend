@@ -6,7 +6,7 @@
       {{ METADATA_AUTHORS_TITLE }}
     </v-card-title>
 
-    <v-card-text v-if="showPlaceholder && !hasAuthors"
+    <v-card-text v-if="showPlaceholder"
                   class="pa-2 pt-0" >
       <v-container fluid
                     class="pa-0" >
@@ -45,7 +45,7 @@
                         :authorDetailsConfig="authorDetailsConfig"
                         :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
                         :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-                        :showGenericOpenButton="author.openEvent ? true : false"
+                        :showGenericOpenButton="!!author.openEvent"
                         :openButtonTooltip="author.openButtonTooltip"
                         :openButtonIcon="author.openButtonIcon"
                         :isSelected="author.isSelected"

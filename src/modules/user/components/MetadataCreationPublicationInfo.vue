@@ -3,78 +3,63 @@
     <v-row>
       <v-col cols="6">
         <!-- prettier-ignore -->
-        <EditPublicationInfo v-bind="editPublicationsProps" />
+        <v-row>
+          <v-col cols="12">
+            <EditFunding v-bind="editFundingProps" />
+          </v-col>
+
+        </v-row>
       </v-col>
 
       <v-col cols="6">
 
-        <v-row v-if="!isDatasetPublic">
-
-          <v-col >
-
-          <!-- TEMPORARY PLACEHOLDER START -->
-          <v-card class="pa-4">
-            <v-container fluid class="pa-0">
-              <v-row>
-                <v-col cols="12">
-                  <div class="text-h5">Publishing Dataset</div>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters align="center" class="pt-6">
-                <v-col cols="1">
-                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                </v-col>
-
-                <v-col class="text-h5" cols="11">
-                  Coming Soon!
-                </v-col>
-
-                <v-col class="pt-2 text-body-1">
-                  Publishing datasets is still under construction.
-                  <br>
-                  Please publish via this dataset the legacy website by clicking on the button below.
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters
-                     class="pt-6" >
-
-                <v-col class="pr-2 text-left">
-                  <BaseRectangleButton buttonText="Publish Dataset"
-                                       color="secondary"
-                                       :url="linkToDatasetCKAN" />
-
-                </v-col>
-
-              </v-row>
-            </v-container>
-          </v-card>
-          <!-- TEMPORARY PLACEHOLDER END -->
-
-          </v-col >
-
-        </v-row>
-
         <v-row>
-
           <v-col >
 
             <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
             <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
+          </v-col >
+        </v-row>
+
+        <v-row >
+
+          <v-col >
+
+            <!-- TEMPORARY PLACEHOLDER START -->
+            <v-card class="pa-4">
+              <v-container fluid class="pa-0">
+                <v-row>
+                  <v-col cols="12">
+                    <div class="text-h5">Publishing Dataset</div>
+                  </v-col>
+                </v-row>
+
+                <v-row no-gutters align="center" class="pt-6">
+
+                  <v-col class="pt-2 text-body-1"
+                          v-html="publicationInstructions">
+
+                  </v-col>
+                </v-row>
+
+              </v-container>
+            </v-card>
+            <!-- TEMPORARY PLACEHOLDER END -->
 
           </v-col >
 
         </v-row>
+
+
       </v-col>
     </v-row>
 
     <v-row justify="end" align="end">
       <v-col class="shrink">
         <!-- prettier-ignore -->
-        <BaseRectangleButton buttonText="Finish"
-                             color='green'
+        <BaseRectangleButton buttonText="Close"
+                             color='highlight'
                              @clicked="submitEdittedMetadata" />
       </v-col>
     </v-row>
@@ -98,20 +83,42 @@
 
 import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
-// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
+
 import {
   eventBus,
-  EDITMETADATA_ORGANIZATION,
-  EDITMETADATA_PUBLICATION_INFO,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
   props: {
+    currentStep: Object,
+    publicationState: {
+      type: String,
+      default: undefined,
+    },
+    visibilityState: {
+      type: String,
+      default: undefined,
+    },
+    doi: {
+      type: String,
+      default: undefined,
+    },
+    publisher: {
+      type: String,
+      default: undefined,
+    },
+    publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    funders: {
+      type: Array,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -123,25 +130,30 @@ export default {
   },
   computed: {
     publicationsInfo() {
-      if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+
+      const stepData = this.currentStep.genericProps;
+
+      if (stepData) {
+        return {
+          publicationState: stepData.publicationState,
+          visibilityState: stepData.visibilityState,
+          doi: stepData.doi,
+          publisher: stepData.publisher,
+          publicationYear: stepData.publicationYear,
+        }
       }
 
       return {};
+    },
+    fundingInfo() {
+      return this.currentStep.genericProps;
     },
     organizationsInfo() {
-      if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
-      }
-
-      return {};
+      return this.currentStep.genericProps;
     },
-    isDatasetPublic() {
-      return this.publicationsInfo?.publicationState === 'published';
-    },
-    editPublicationsProps() {
+    editFundingProps() {
       return {
-        ...this.publicationsInfo,
+        ...this.fundingInfo,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
@@ -154,10 +166,7 @@ export default {
       };
     },
     metadataId() {
-      return this.$route.params.metadataid;
-    },
-    linkToDatasetCKAN() {
-      return `${this.envidatDomain}/dataset/${this.metadataId}`;
+      return this.$route?.params?.metadataid;
     },
   },
   methods: {
@@ -166,11 +175,11 @@ export default {
     },
   },
   data: () => ({
-    envidatDomain: process.env.VITE_ENVIDAT_PROXY,
+    publicationInstructions: `Your are in the dataset creation process. This <strong>dataset is only stored locally on your computer in this browser</strong>. Please fill out all the steps and save the dataset.
+    Once the dataset is saved, the publication can be done in editing workflow.`,
   }),
   components: {
-    //  EditOrganizationTree,
-    EditPublicationInfo,
+    EditFunding,
     EditOrganization,
     BaseRectangleButton,
   },

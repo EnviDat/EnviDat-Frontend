@@ -12,63 +12,78 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import {
-  EDITMETADATA_OBJECT_UPDATE,
-  eventBus,
-} from '@/factories/eventBus';
-
 import NavigationStepper from '@/components/Navigation/NavigationStepper.vue';
-// import MetadataCreationMainInfo from '@/modules/user/components/MetadataCreationMainInfo.vue';
+import { metadataCreationSteps, metadataEditingSteps } from '@/factories/workflowFactory';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
-import {
-  metadataCreationSteps,
-  getStepByName,
-} from '@/factories/userEditingFactory';
-
-import { NAVIGATION_VIEWS } from './storybookFolder';
+const datasetTitle = 'Lens, Switzerland: Long-term forest meteorological data from the Long-term Forest Ecosystem Research Programme (LWF), from 1997 onwards';
 
 export default {
-  title: `${NAVIGATION_VIEWS} / NavigationStepper`,
+  title: '5 Navigation / NavigationStepper',
   decorators: [],
   parameters: {},
 };
 
-export const NavigationStepperViews = () => ({
-  components: {
-    NavigationStepper,
-  },
-  template: `
-  <v-row>
-    <v-col cols="12">
-      <NavigationStepper :steps="steps"
-                          :initialStepTitle="steps[0].title"
-                          stepColor="success" />
-
-    </v-col>
-
-  </v-row>
-  `,
-  created() {
-    eventBus.$on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeUnmount() {
-    eventBus.$off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  methods: {
-    getStepByName,
-    editComponentsChanged(updateObj) {
-      // console.log(`got update on ${JSON.stringify(updateObj.object)} with data ${JSON.stringify(updateObj.data)}`);
-      // this.editState[updateObj.object] = updateObj.data;
-      // console.log(`got update on ${this.editState}`);
-
-      this.updateSteps(updateObj.object, updateObj.data);
-    },
-    updateSteps(eventName, newGenericProps) {
-      const stepToUpdate = this.getStepByName(eventName, this.steps);
-      stepToUpdate.genericProps = newGenericProps;
-    },
-  },
-  data: () => ({
-    steps: metadataCreationSteps,
-  }),
+const Template = (args, { argTypes }) => ({
+  components: { NavigationStepper },
+  props: Object.keys(argTypes),
+  template: '<NavigationStepper v-bind="$props"  />',
 });
+
+export const CreationSteps = Template.bind({});
+CreationSteps.args = {
+  steps: metadataCreationSteps,
+  initialStepTitle: metadataCreationSteps[0].title,
+  datasetTitle,
+  isCreationWorkflow: true,
+  showProgress: true,
+}
+
+export const CreationStepsMessage = Template.bind({});
+CreationStepsMessage.args = {
+  ...CreationSteps.args,
+  message: 'Saved successfull',
+  messageDetails: 'Saved Metadataheader',
+}
+
+export const CreationStepsError = Template.bind({});
+CreationStepsError.args = {
+  ...CreationSteps.args,
+  error: 'Network Error',
+  errorDetails: 'Could not save the dataset',
+}
+
+export const CreationStepsLoading = Template.bind({});
+CreationStepsLoading.args = {
+  ...CreationSteps.args,
+  loading: true,
+}
+
+export const EditingSteps = Template.bind({});
+EditingSteps.args = {
+  steps: metadataEditingSteps,
+  initialStepTitle: metadataEditingSteps[0].title,
+  datasetTitle,
+}
+
+export const EditingStepsLoading = Template.bind({});
+EditingStepsLoading.args = {
+  ...EditingSteps.args,
+  loading: true,
+}
+
+export const MobileCreationSteps = Template.bind({});
+MobileCreationSteps.args = { ...CreationSteps.args };
+MobileCreationSteps.parameters = mobileViewportParams;
+
+export const LargeMobileCreationSteps = Template.bind({});
+LargeMobileCreationSteps.args = { ...CreationSteps.args };
+LargeMobileCreationSteps.parameters = mobileLargeViewportParams;
+
+export const TabletCreationSteps = Template.bind({});
+TabletCreationSteps.args = { ...CreationSteps.args };
+TabletCreationSteps.parameters = tabletViewportParams;
+
+export const TabletEditingSteps = Template.bind({});
+TabletEditingSteps.args = { ...EditingSteps.args };
+TabletEditingSteps.parameters = tabletViewportParams;

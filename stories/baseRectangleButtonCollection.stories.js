@@ -10,13 +10,36 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
-import { BUTTONS_VIEWS } from './storybookFolder';
 
 export default {
-  title: `${BUTTONS_VIEWS} / Rectangle Collection`,
-  decorators: [],
-  parameters: {},
+  title: '1 Base Elements / Rectangle Buttons Collection',
+  component: BaseRectangleButton,
 };
+
+const Template = (args, { argTypes }) => ({
+  components: { BaseRectangleButton },
+  props: Object.keys(argTypes),
+  template: '<BaseRectangleButton v-bind="$props" />',
+});
+
+export const SingleButton = Template.bind({});
+SingleButton.args = {
+  buttonText: 'Single Button',
+  isOutlined: true,
+  materialIconName: 'edit',
+}
+
+/*
+SingleButton.play = async ({canvasElement}) => {
+  const canvas = within(canvasElement);
+
+  const btn = canvas.getByText('Single Button', {
+    selector: 'span',
+  });
+
+  await expect(btn).toBeInTheDocument();
+}
+*/
 
 
 export const ButtonsCollectionViews = () => ({

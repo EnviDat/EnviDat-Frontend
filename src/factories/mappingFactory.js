@@ -10,8 +10,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import { format, isValid, parse } from 'date-fns';
 
-import { format, parse } from 'date-fns';
 import {
   EDITMETADATA_AUTHOR,
   EDITMETADATA_AUTHOR_LIST,
@@ -21,7 +21,12 @@ import {
   EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_INFO_DATES,
+  EDITMETADATA_DATA_LICENSE,
+  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_DATA_RESOURCE_SIZE,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_DATA_RESTRICTED,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -29,6 +34,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  USER_OBJECT,
 } from '@/factories/eventBus';
 
 import {
@@ -43,11 +49,20 @@ import {
   getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { mergeEditingAuthor } from '@/factories/authorFactory';
+import {
+  enhanceElementsWithStrategyEvents,
+  SELECT_EDITING_RESOURCE_PROPERTY,
+} from '@/factories/strategyFactory';
 
-export const DATE_PROPERTY_DATE_TYPE = 'dateType';
-export const DATE_PROPERTY_START_DATE = 'dateStart';
-export const DATE_PROPERTY_END_DATE = 'dateEnd';
+import { md5Hash } from '@/factories/stringFactory';
+import {
+  DATE_PROPERTY_CREATED_TYPE,
+  DATE_PROPERTY_DATE_TYPE,
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+} from '@/factories/metadataConsts';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -55,7 +70,8 @@ export const DATE_PROPERTY_END_DATE = 'dateEnd';
  */
 const JSONFrontendBackendRules = {
   [EDITMETADATA_MAIN_HEADER]: [
-    ['metadataTitle','title'],
+    [METADATA_TITLE_PROPERTY,'title'],
+    [METADATA_URL_PROPERTY,'name'],
     ['contactEmail','maintainer.email'],
     ['contactGivenName','maintainer.given_name'],
     ['contactSurname','maintainer.name'],
@@ -84,21 +100,57 @@ const JSONFrontendBackendRules = {
   [EDITMETADATA_AUTHOR_LIST]: [
     ['authors','author'],
   ],
+  [EDITMETADATA_DATA_RESOURCE]: [
+    ['metadataId','package_id'],
+    ['cacheLastUpdated','cache_last_updated'],
+    ['cacheUrl','cache_url'],
+    ['created','created'],
+    ['description','description'],
+    ['doi','doi'],
+    ['format','format'],
+    ['hash','hash'],
+    ['id','id'],
+    ['lastModified','last_modified'],
+    ['mimetype','mimetype'],
+    ['mimetypeInner','mimetype_inner'],
+    ['metadataModified','metadata_modified'],
+    ['multipartName','multipart_name'],
+    ['name','name'],
+    ['packageId','package_id'],
+    ['position','position'],
+    ['publicationState','publication_state'],
+    ['restricted','restricted'],
+    ['resourceSize','resource_size'],
+    ['resourceType','resource_type'],
+    ['size','size'],
+    ['state','state'],
+    ['url','url'],
+    ['urlType','url_type'],
+  ],
+  [EDITMETADATA_DATA_RESOURCE_SIZE]: [
+    ['sizeValue','size_value'],
+    ['sizeUnits','size_units'],
+  ],
+  [EDITMETADATA_DATA_RESTRICTED]: [
+    ['allowedUsers','allowed_users'],
+    ['level','level'],
+    ['sharedSecret','shared_secret'],
+  ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
   ],
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
+  ],
+  [EDITMETADATA_DATA_LICENSE]: [
     ['dataLicenseId','license_id'],
     ['dataLicenseTitle','license_title'],
     ['dataLicenseUrl','license_url'],
   ],
   [EDITMETADATA_DATA_INFO_DATES]: [
-    // special case because the snakeCase is done before
-    // only a renaming is needed
-    [DATE_PROPERTY_DATE_TYPE,'dateType'],
-    [DATE_PROPERTY_START_DATE,'date'],
-    [DATE_PROPERTY_END_DATE,'endDate'],
+    [DATE_PROPERTY_DATE_TYPE, 'date_type'],
+    [DATE_PROPERTY_START_DATE, 'date'],
+    [DATE_PROPERTY_END_DATE, 'end_date'],
   ],
   [EDITMETADATA_DATA_GEO]: [
     ['location.geoJSON','spatial'],
@@ -128,7 +180,28 @@ const JSONFrontendBackendRules = {
     ['doi','doi'],
     ['publisher','publication.publisher'],
     ['publicationYear','publication.publication_year'],
+  ],
+  [EDITMETADATA_FUNDING_INFO]: [
     ['funders','funding'],
+  ],
+  [USER_OBJECT]: [
+    ['id','id'],
+    ['name','name'],
+    ['fullName','fullname'],
+    ['email','email'],
+    ['apikey','apikey'],
+    ['resetKey','reset_key'],
+    ['created','created'],
+    ['about','about'],
+    ['activityStreamsEmailNotifications','activity_streams_email_notifications'],
+    ['sysadmin','sysadmin'],
+    ['state','state'],
+    ['imageUrl','image_url'],
+    ['displayName','display_name'],
+    ['emailHash','email_hash'],
+    ['numberCreatedPackages','number_created_packages'],
+    ['pluginExtras','plugin_extras'],
+    ['imageDisplayUrl','image_display_url'],
   ],
 };
 
@@ -155,6 +228,8 @@ export function convertJSONArray(array, recursive) {
   return parsedArray;
 }
 
+const jsonStartRegex = /^\s*(\{|\[)/;
+
 export function convertJSON(data, stringify, recursive = false) {
   const properties = Object.keys(data);
   const flatObj = {};
@@ -177,7 +252,7 @@ export function convertJSON(data, stringify, recursive = false) {
     } else {
 
       // eslint-disable-next-line no-lonely-if
-      if (typeof value === 'string') {
+      if (typeof value === 'string' && jsonStartRegex.test(value)) {
         try {
           const parsedValue = JSON.parse(value);
           if (parsedValue && typeof parsedValue === 'object') {
@@ -315,68 +390,205 @@ function convertGet(entity, property) {
   return property.split('.').reduce( (entry, b) => entry[b], entity);
 }
 
-export function getBackendJSON(stepKey, data) {
-  const rules = JSONFrontendBackendRules[stepKey];
-
+export function convertToBackendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
 
-  let backEndJson = {};
+  let backendJson = {};
 
-  rules.forEach(x => convertPut(backEndJson, x[1], convertGet(data, x[0])));
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i];
 
-  backEndJson = getObjectInOtherCase(backEndJson, toSnakeCase);
+    try {
+      const value = convertGet(data, rule[0]);
+      convertPut(backendJson, rule[1], value);
+    } catch (e) {
+      console.log(i);
+      console.log(rule);
+      console.error(e);
+    }
+  }
+  // rules.forEach(rule => convertPut(backendJson, rule[1], convertGet(data, rule[0])));
 
-  return backEndJson;
+  backendJson = getObjectInOtherCase(backendJson, toSnakeCase);
+  return backendJson;
 }
 
-export function getFrontendJSON(stepKey, data) {
-  const rules = JSONFrontendBackendRules[stepKey];
-
+function convertToFrontendJSONWithRules(rules, data) {
   if (!rules) {
     return null;
   }
 
-  const backendJSON = data;
+  let frontendJson = {};
 
-  let frontEndJson = {};
+  for (let i = 0; i < rules.length; i++) {
+    const rule = rules[i];
 
-  rules.forEach(x => convertPut(frontEndJson, x[0], convertGet(backendJSON, x[1])));
+    try {
+      const value = convertGet(data, rule[1]);
+      convertPut(frontendJson, rule[0], value);
+    } catch (e) {
+      console.log(i);
+      console.log(rule);
+      console.error(e);
+    }
+  }
+  // rules.forEach(rule => convertPut(frontendJson, rule[0], convertGet(data, rule[1])));
 
-  frontEndJson = getObjectInOtherCase(frontEndJson, toCamelCase);
-
-  return frontEndJson;
+  frontendJson = getObjectInOtherCase(frontendJson, toCamelCase);
+  return frontendJson;
 }
 
-export function cleanSpatialInfo(spatial) {
-  const rules = JSONFrontendBackendRules[EDITMETADATA_DATA_GEO_SPATIAL];
+export function getBackendJSONForStep(stepKey, data) {
+  const rules = JSONFrontendBackendRules[stepKey];
 
-  const backEndJson = {};
-
-  rules.forEach(x => convertPut(backEndJson, x[1], convertGet(spatial, x[0])));
-
-  return backEndJson;
+  return convertToBackendJSONWithRules(rules, data);
 }
+
+export function getFrontendJSONForStep(stepKey, data) {
+  const rules = JSONFrontendBackendRules[stepKey];
+
+  return convertToFrontendJSONWithRules(rules, data);
+}
+
+export function stringifyResourceForBackend(resource) {
+  let resourceSize = resource.resource_size;
+
+  if (typeof resourceSize === 'object') {
+    try {
+      resourceSize = JSON.stringify({
+        size_value: resourceSize.size_value?.toString() || '',
+        size_units: resourceSize.size_units?.toString().toLowerCase() || '',
+      });
+    } catch (e) {
+      console.error(`Tried stringify resourceSize ${e}`);
+      resourceSize = JSON.stringify({
+        size_value: '',
+        size_units: '',
+      });
+    }
+  }
+
+  let restricted = resource.restricted;
+
+  if (typeof restricted === 'object') {
+    try {
+      restricted = JSON.stringify({
+        level: restricted.level?.toString() || 'public',
+        allowed_users: restricted.allowed_users?.toString() || '',
+        shared_secret: restricted.shared_secret?.toString() || '',
+      });
+    } catch (e) {
+      console.error(`Tried stringify restricted ${e}`);
+      restricted = JSON.stringify({
+        level: 'public',
+        allowed_users: '',
+        shared_secret: '',
+      });
+    }
+  }
+
+  return {
+    ...resource,
+    resource_size: resourceSize,
+    restricted,
+  }
+}
+
+export function cleanListForBackend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    let cleaned = getBackendJSONForStep(mappingKey, element);
+
+    if (mappingKey === EDITMETADATA_DATA_RESOURCE) {
+      cleaned = stringifyResourceForBackend(cleaned);
+    }
+
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
+export function cleanListForFrontend(elementList, mappingKey) {
+
+  const cleanedElements = [];
+  for (let i = 0; i < elementList.length; i++) {
+    const element = elementList[i];
+    const cleaned = getFrontendJSONForStep(mappingKey, element);
+    cleanedElements.push(cleaned);
+  }
+
+  return cleanedElements;
+}
+
+export function cleanResourceForFrontend(resource) {
+
+  let resSize = resource.resourceSize;
+
+  if (typeof resSize === 'string') {
+    try {
+      resSize = JSON.parse(resSize);
+    } catch (e) {
+      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      resSize = { size_value: '', size_units: '' };
+    }
+  }
+
+  const cleanedResSize = getFrontendJSONForStep(EDITMETADATA_DATA_RESOURCE_SIZE, resSize);
+
+  let restricted = resource.restricted;
+
+  if (typeof restricted === 'string') {
+    try {
+      restricted = JSON.parse(restricted);
+    } catch (e) {
+      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      restricted = { allowed_users: '', level: 'public', shared_secret: '' };
+    }
+  }
+
+  const cleanedRestricted = getFrontendJSONForStep(EDITMETADATA_DATA_RESTRICTED, restricted);
+  
+  return {
+    ...resource,
+    resourceSize: cleanedResSize,
+    restricted: cleanedRestricted,
+  }
+}
+
 
 // possible publication states: ['', 'published', 'approved', 'publication pending', 'publication requested']
 const readOnlyMappingRules = [
   {
     triggerRule: ['published'],
-    explanation: 'This field is "readonly" because the publication state is : "published".',
+    explanation: 'This field is "readonly" because the dataset is already published.',
     readOnlyFields: [
       // EditMetadataHeader
-      'metadataTitle',
+      METADATA_TITLE_PROPERTY,
       // EditAuthorList
       'authors',
       // EditPublicationInfo
+      'organization',
       'publicationYear',
       'publisher',
       'doi',
       // not implemented yet
-      'metadataUrl',
+      METADATA_URL_PROPERTY,
     ],
   },
+/*
+  {
+    triggerRule: ['draft'],
+    explanation: 'This is "readonly" because the dataset is still a draft.',
+    readOnlyFields: [
+      'resources',
+    ],
+  },
+*/
 /*
   {
     triggerRule: 'admin',
@@ -401,42 +613,47 @@ export function getReadOnlyFieldsObject(trigger) {
 }
 
 function commitEditingData(commit, eventName, data) {
+  if(!commit) {
+    return;
+  }
+
   commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
-      {
-        object: eventName,
-        data,
-      },
-      { root: true },
+    {
+      object: eventName,
+      data,
+    },
+    { root: true },
   );
 }
 
 function mapCustomFields(fields, frontendToBackend = true) {
-  const backendEntries = [];
+  const entries = [];
 
   if (!fields) {
-    return backendEntries;
+    return entries;
   }
 
   for (let i = 0; i < fields.length; i++) {
     let mappedEntry = null;
     if (frontendToBackend) {
-      mappedEntry = getBackendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+      mappedEntry = getBackendJSONForStep(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
     } else {
-      mappedEntry = getFrontendJSON(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
+      mappedEntry = getFrontendJSONForStep(EDITMETADATA_CUSTOMFIELDS_ENTRY, fields[i]);
     }
-    backendEntries.push(mappedEntry);
+    entries.push(mappedEntry);
   }
 
-  return backendEntries;
+  return entries;
 }
 
-function formatDates(dates) {
+function formatDatesForFrontend(dates) {
   const formattedDates = [];
 
   for (let i = 0; i < dates.length; i++) {
     const dateEntry = dates[i];
 
-    const entry = getFrontendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    const entry = getFrontendJSONForStep(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    entry.dateType = entry.dateType || DATE_PROPERTY_CREATED_TYPE;
     entry.dateStart = formatDate(entry.dateStart) || '';
     entry.dateEnd = formatDate(entry.dateEnd) || '';
 
@@ -446,26 +663,26 @@ function formatDates(dates) {
   return formattedDates;
 }
 
-function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
+function populateEditingMain(commit, categoryCards, snakeCaseJSON) {
 
   const dataObject = {};
 
   let stepKey = EDITMETADATA_MAIN_HEADER;
-  const headerData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const headerData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   // the commiting of the EDITMETADATA_MAIN_HEADER is done later on,
   // with additional data from other "steps"
 
   dataObject.headerData = headerData;
 
   stepKey = EDITMETADATA_MAIN_DESCRIPTION;
-  const descriptionData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const descriptionData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, descriptionData);
   dataObject.descriptionData = descriptionData;
 
   stepKey = EDITMETADATA_KEYWORDS;
   const enhanceDataset = enhanceTags(snakeCaseJSON, categoryCards);
-  const keywordsData = getFrontendJSON(stepKey, enhanceDataset);
+  const keywordsData = getFrontendJSONForStep(stepKey, enhanceDataset);
 
   const enhancedKeywords = {
     ...keywordsData,
@@ -476,12 +693,27 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
   commitEditingData(commit, stepKey, enhancedKeywords);
   dataObject.keywordsData = keywordsData;
 
-  stepKey = EDITMETADATA_AUTHOR_LIST;
-  // const backendAuthors = getFrontendJSON(stepKey, snakeCaseJSON);
+  return dataObject;
+}
 
+export function getFrontendDates(backendDates) {
+  let dates = backendDates;
+  if(typeof backendDates === 'string') {
+    dates = JSON.parse(backendDates);
+  }
+
+  return formatDatesForFrontend(dates);
+}
+
+function populateEditingAuthors(commit, snakeCaseJSON) {
+
+  const dataObject = {};
+
+  const stepKey = EDITMETADATA_AUTHOR_LIST;
   const authors = []
+
   snakeCaseJSON.author.forEach((bAuthor) => {
-    const author = getFrontendJSON(EDITMETADATA_AUTHOR, bAuthor);
+    const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
 
     if (typeof author.dataCredit === 'string') {
       author.dataCredit = [author.dataCredit];
@@ -490,62 +722,43 @@ function populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap) {
     authors.push(author);
   })
 
-  let enhanceAuthors = []
-
-  if (authorsMap && Object.keys(authorsMap).length > 0) {
-
-    for (let i = 0; i < authors.length; i++) {
-      const auth = authors[i];
-      const existingAuthor = authorsMap[auth.email];
-      let enhanced = auth;
-
-      if (existingAuthor) {
-        enhanced = mergeEditingAuthor(auth, existingAuthor);
-      }
-
-      enhanceAuthors.push(enhanced);
-    }
-  } else {
-    enhanceAuthors = authors;
-  }
-
-  commitEditingData(commit, stepKey, { authors: enhanceAuthors });
+  commitEditingData(commit, stepKey, { authors });
   dataObject.authors = authors;
 
   return dataObject;
 }
 
-function populateEditingData(commit, snakeCaseJSON) {
+function populateEditingDataInfo(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   // Stepper 2: Data Resources, Info, Location
   // const resources = createResources(metadataRecord).resources;
 
-  let stepKey = EDITMETADATA_DATA_RESOURCES;
-  const resourceData = getFrontendJSON(stepKey, snakeCaseJSON);
+  let stepKey = EDITMETADATA_DATA_INFO;
+  const bDates = snakeCaseJSON.date;
+  const dateInfoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
-  commitEditingData(commit, stepKey, resourceData);
-  dataObject.resourceData = resourceData;
+  // special case here to use the backend structure json directly to format the entries
+  // this is done for consistency. When calling getFrontendJSONForStep() the dateInfoData.dates
+  // are already in camelCase and not snakeCase anymore, so for formatDatesForFrontend() the JSONFrontendBackendRules
+  // would have to be only in camelCase, which wouldn't fit the rest of the structure
+  // and therefore a special case implementation would also be necessary in the creationWorkflow when getting
+  // the information from the localstorage. Since here is already a special case implementation, it's better to do it
+  // here and keep the JSONFrontendBackendRules consistent!
+  dateInfoData.dates = formatDatesForFrontend(bDates);
 
-  stepKey = EDITMETADATA_DATA_INFO;
-  const dateInfoData = getFrontendJSON(stepKey, snakeCaseJSON);
+  commitEditingData(commit, stepKey, dateInfoData);
+  dataObject.dataInfo = dateInfoData;
 
-  dateInfoData.dates = formatDates(dateInfoData.dates);
+  stepKey = EDITMETADATA_DATA_LICENSE;
+  const dataLicenseInfo = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
-  const dataInfo = {
-    // for now only use the title, check how to choose it in the
-    // edit component
-    dataLicenseId: dateInfoData.dataLicenseId,
-    ...dateInfoData,
-  };
-
-  commitEditingData(commit, stepKey, dataInfo);
-  dataObject.dataInfo = dataInfo;
-
+  commitEditingData(commit, stepKey, dataLicenseInfo);
+  dataObject.dataLicenseInfo = dataLicenseInfo;
 
   stepKey = EDITMETADATA_DATA_GEO;
-  const geoData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const geoData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   const location = createLocation({
     ...snakeCaseJSON,
@@ -562,24 +775,54 @@ function populateEditingData(commit, snakeCaseJSON) {
   return dataObject;
 }
 
+function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
+
+  const dataObject = {};
+
+  // Stepper 2: Data Resources, Info, Location
+  // const resources = createResources(metadataRecord).resources;
+
+  const stepKey = EDITMETADATA_DATA_RESOURCES;
+  const resourceData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+  const resources = resourceData.resources;
+
+  resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
+  resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
+
+  for (let i = 0; i < resources.length; i++) {
+    resources[i] = cleanResourceForFrontend(resources[i]);
+  }
+
+  enhanceElementsWithStrategyEvents(
+    resources,
+    SELECT_EDITING_RESOURCE_PROPERTY,
+    true,
+  );
+
+  commitEditingData(commit, stepKey, resourceData);
+  dataObject.resourceData = resourceData;
+  
+  return dataObject;
+}
+
 function populateEditingRelatedResearch(commit, snakeCaseJSON) {
 
   const dataObject = {};
 
   let stepKey = EDITMETADATA_RELATED_PUBLICATIONS;
-  const rPublicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const rPublicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, rPublicationData);
   dataObject.relatedPublicationData = rPublicationData;
 
   stepKey = EDITMETADATA_RELATED_DATASETS;
-  const rDatasetsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const rDatasetsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, rDatasetsData);
   dataObject.relatedDatasetsData = rDatasetsData;
 
   stepKey = EDITMETADATA_CUSTOMFIELDS;
-  const customFieldsData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const customFieldsData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   customFieldsData.customFields = mapCustomFields(customFieldsData.customFields, false);
 
   commitEditingData(commit, stepKey, customFieldsData);
@@ -593,14 +836,20 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   const dataObject = {};
 
   let stepKey = EDITMETADATA_PUBLICATION_INFO;
-  const publicationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const publicationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
   publicationData.visibilityState = getMetadataVisibilityState(metadataRecord);
 
   commitEditingData(commit, stepKey, publicationData);
   dataObject.publicationData = publicationData;
 
+  stepKey = EDITMETADATA_FUNDING_INFO;
+  const fundingData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
+
+  commitEditingData(commit, stepKey, fundingData);
+  dataObject.fundingData = fundingData;
+
   stepKey = EDITMETADATA_ORGANIZATION;
-  const organizationData = getFrontendJSON(stepKey, snakeCaseJSON);
+  const organizationData = getFrontendJSONForStep(stepKey, snakeCaseJSON);
 
   commitEditingData(commit, stepKey, organizationData);
   dataObject.organizationData = organizationData;
@@ -608,13 +857,17 @@ function populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON) {
   return dataObject;
 }
 
-export function populateEditingComponents(commit, metadataRecord, categoryCards, authorsMap) {
+export function populateEditingComponents(commit, metadataRecord, categoryCards) {
 
   const snakeCaseJSON = convertJSON(metadataRecord, false);
 
-  const { headerData, keywordsData, authors } = populateEditingMain(commit, categoryCards, snakeCaseJSON, authorsMap);
+  const { headerData, keywordsData } = populateEditingMain(commit, categoryCards, snakeCaseJSON);
 
-  const { dataInfo } = populateEditingData(commit, snakeCaseJSON);
+  const { authors } = populateEditingAuthors(commit, snakeCaseJSON);
+
+  const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
+
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo);
 
   populateEditingRelatedResearch(commit, snakeCaseJSON);
 
@@ -623,24 +876,28 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards,
   // enhanced Header for the preview infos
   const stepKey = EDITMETADATA_MAIN_HEADER;
 
+  const organization = snakeCaseJSON.organization.name;
+  const organizationTooltip = snakeCaseJSON.organization.title;
+
   const enhanceHeader = {
     ...headerData,
     keywords: keywordsData.keywords,
     authors,
-    dataLicense: dataInfo.dataLicenseTitle,
+    organization,
+    organizationTooltip,
     doi: publicationData.doi,
   };
 
   commitEditingData(commit, stepKey, enhanceHeader);
 }
 
-function mapDatesForBackend(datesArray) {
+function mapDatesForBackend(datesArray, initializeDefaults = true) {
 
-  if (!Array.isArray(datesArray) || datesArray.length <= 0) {
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, {
-      dateType: 'creation',
-      dateStart: '',
-      dateEnd: '',
+  if (!Array.isArray(datesArray) || datesArray.length <= 0 && initializeDefaults) {
+    const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, {
+      [DATE_PROPERTY_DATE_TYPE]: DATE_PROPERTY_CREATED_TYPE,
+      [DATE_PROPERTY_START_DATE]: '',
+      [DATE_PROPERTY_END_DATE]: '',
     });
 
     return [entry];
@@ -651,47 +908,57 @@ function mapDatesForBackend(datesArray) {
   for (let i = 0; i < datesArray.length; i++) {
     const dateEntry = datesArray[i];
 
-    const entry = getBackendJSON(EDITMETADATA_DATA_INFO_DATES, dateEntry);
+    const entry = getBackendJSONForStep(EDITMETADATA_DATA_INFO_DATES, dateEntry);
     mappedDates.push(entry);
   }
 
   return mappedDates;
 }
 
-function cleanAuthorsForBackend(authors) {
-
-  const bAuthors = [];
-  for (let i = 0; i < authors.length; i++) {
-    const author = authors[i];
-    const bAuthor = getBackendJSON(EDITMETADATA_AUTHOR, author);
-    bAuthors.push(bAuthor);
-  }
-
-  return bAuthors;
-}
 
 const dataNeedsStringify = [
   EDITMETADATA_MAIN_HEADER,
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_INFO,
   EDITMETADATA_DATA_GEO,
-  EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_INFO, // still needed without funding info?
+  EDITMETADATA_FUNDING_INFO,
 ];
 
-export function mapFrontendToBackend(stepKey, frontendData) {
+export function mapBackendToFrontend(stepKey, backendData) {
+
+  // dataNeedsStringify.includes(stepKey)
+  const backendJSON = convertJSON(backendData, false);
+
+  if (stepKey === EDITMETADATA_DATA_RESOURCES) {
+    backendJSON.resources = cleanListForFrontend(backendJSON.resources, EDITMETADATA_DATA_RESOURCE);
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    backendJSON.author = cleanListForFrontend(backendJSON.author, EDITMETADATA_AUTHOR);
+  } else if (stepKey === EDITMETADATA_DATA_INFO) {
+    backendJSON.date = formatDatesForFrontend(backendJSON.date);
+  } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
+    backendJSON.extras = mapCustomFields(backendJSON.extras, false);
+  }
+
+  return getFrontendJSONForStep(stepKey, backendJSON);
+}
+
+export function mapFrontendToBackend(stepKey, frontendData, initializeDefaults = true) {
 
   // create a local copy to avoid mutation of vuex store objects / properties
   const localData = { ...frontendData };
 
-  if (stepKey === EDITMETADATA_AUTHOR_LIST) {
-    localData.authors = cleanAuthorsForBackend(localData.authors);
+  if (stepKey === EDITMETADATA_DATA_RESOURCES) {
+    localData.resources = cleanListForBackend(localData.resources, EDITMETADATA_DATA_RESOURCE);
+  } else if (stepKey === EDITMETADATA_AUTHOR_LIST) {
+    localData.authors = cleanListForBackend(localData.authors, EDITMETADATA_AUTHOR);
   } else if (stepKey === EDITMETADATA_DATA_INFO) {
-    localData.dates = mapDatesForBackend(localData.dates);
+    localData.dates = mapDatesForBackend(localData.dates, initializeDefaults);
   } else if (stepKey === EDITMETADATA_CUSTOMFIELDS) {
     localData.customFields = mapCustomFields(localData.customFields);
   }
 
-  let backendData = getBackendJSON(stepKey, localData);
+  let backendData = getBackendJSONForStep(stepKey, localData);
 
   if (dataNeedsStringify.includes(stepKey)) {
     backendData = convertJSON(backendData, true);
@@ -710,6 +977,11 @@ export function parseDateStringToCKANFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, enviDatDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, ckanDateFormat);
 }
 
@@ -720,5 +992,108 @@ export function parseDateStringToEnviDatFormat(dateString) {
   }
 
   const parsedDate = parse(dateString, ckanDateFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
   return format(parsedDate, enviDatDateFormat);
+}
+
+// ex. 2023-02-14T11:00:31.518140
+export const ckanDateTimeFormat = 'yyyy-MM-dd\'T\'HH:mm:ss.SSSSSS';
+
+/**
+ *
+ * @param {Date} date
+ * @returns {string|null}
+ */
+export function formatDateTimeToCKANFormat(date) {
+
+  if (!date) {
+    return null;
+  }
+
+  return format(date, ckanDateTimeFormat);
+}
+
+/**
+ *
+ * @param {string} dateString
+ * @returns {string|null}
+ */
+export function parseDateStringToReadableFormat(dateString) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsedDate = parse(dateString, ckanDateTimeFormat, new Date());
+
+  if (!isValid(parsedDate)) {
+    return null;
+  }
+
+  return formatDate(parsedDate);
+}
+
+export function mergeResourceSizeForFrontend(resource) {
+  const mergedResourceSize = {};
+
+  const isLink = resource.urlType !== 'upload';
+  const resourceSize = resource.resourceSize || null;
+
+  if (resourceSize) {
+    let size;
+    let sizeFormat;
+
+    if (isLink) {
+      sizeFormat = resourceSize.sizeUnits?.toUpperCase() || '';
+
+      try {
+        size = Number.parseFloat(resourceSize.sizeValue);
+      } catch (e) {
+        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
+      }
+
+      if (Number.isNaN(size)) {
+        size = undefined;
+      }
+    } else {
+      size = resource.size;
+    }
+
+    mergedResourceSize.size = size;
+    mergedResourceSize.sizeFormat = sizeFormat;
+  }
+  
+  return mergedResourceSize;
+}
+
+export function enhanceUserObject(user) {
+
+  const cleanUser = getFrontendJSONForStep(USER_OBJECT, user);
+
+  const email = cleanUser?.email || null;
+  if (email) {
+    cleanUser.emailHash = md5Hash(email);
+  }
+
+  // only use the fullname from ckan api, because the "name" is not usable to show the users
+  const fullName = cleanUser?.fullName || cleanUser?.displayName || '';
+
+  if (fullName) {
+    cleanUser.fullName = fullName;
+  }
+
+  return cleanUser;
+}
+
+export function getMetadataUrlFromTitle(title) {
+  let urlName = title?.toLowerCase() || '';
+  urlName = urlName.trim().replaceAll(' ', '-');
+  if (urlName.length > 80) {
+    // only a max of 80 is allowed by the backend for the url
+    urlName = urlName.substring(0, 80);
+  }
+  return urlName;
 }

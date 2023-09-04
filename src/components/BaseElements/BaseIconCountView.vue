@@ -29,12 +29,17 @@
                 </v-badge>
               </v-col>
 
-              <v-col class="pa-0">
+              <v-col v-if="iconString"
+                     class="pa-0">
                 <img
                   class="envidatIcon"
                   :src="iconString"
                   :alt="`${iconString} icon`"
                 />
+              </v-col>
+
+              <v-col v-if="materialIconName">
+                <v-icon>{{ materialIconName }}</v-icon>
               </v-col>
             </v-row>
           </v-container>
@@ -97,6 +102,7 @@ export default {
   name: 'BaseIconCountView',
   props: {
     iconString: String,
+    materialIconName: String,
     count: Number,
     tooltipText: String,
   },

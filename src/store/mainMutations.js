@@ -10,8 +10,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { Object } from 'core-js';
-
 import globalMethods from '@/factories/globalMethods';
 import { getSpecificApiError } from '@/factories/notificationFactory';
 
@@ -30,6 +28,7 @@ import {
   SET_CONFIG_SUCCESS,
   SET_CONTROLS,
   SET_CURRENT_PAGE,
+  SET_JPG_ASSETS,
   SET_WEBP_ASSETS,
   SET_WEBP_SUPPORT,
   TRIM_NOTIFICATIONS,
@@ -64,6 +63,9 @@ export default {
   },
   [SET_WEBP_ASSETS](state, assets) {
     state.webpAssets = assets;
+  },
+  [SET_JPG_ASSETS](state, assets) {
+    state.jpgAssets = assets;
   },
   [SET_CARD_IMAGES](state, assets) {
     state.cardBGImages = assets;

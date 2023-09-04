@@ -24,7 +24,6 @@ import {
 
 import projectJSON from './testdata/projects.json';
 import metadata from './js/metadata';
-import {DETAIL_VIEWS} from './storybookFolder';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projects = enhancedProjects;
@@ -44,7 +43,7 @@ const methods = {
 };
 
 export default {
-  title: `${DETAIL_VIEWS} / Projects`,
+  title: '5 Navigation / Projects',
   decorators: [],
   parameters: {
   },

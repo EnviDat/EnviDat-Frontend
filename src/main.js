@@ -9,36 +9,32 @@
  * Last modified  : 2021-01-06 16:30:10
  *
  * This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package. */
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 
-import { createApp } from 'vue';
-// import InfiniteLoading from 'vue-infinite-loading';
+import Vue from 'vue';
 
-import App from './App.vue';
 import store from '@/store/store';
-import router from '@/router';
+import App from '@/App.vue';
+import { initAxios } from '@/init';
+
 import vuetify from './plugins/vuetify';
+import router from './router';
 import globalMethods from './factories/globalMethods';
-import { initAxios, initOtel } from './init';
-
-const app = createApp(App);
-
-initAxios(app, store);
-
-const otelUrl = process.env.VITE_OTEL_ENDPOINT;
-if (otelUrl !== 'NULL') {
-  initOtel(otelUrl);
-}
 
 
-// resources for vue 3 & vuetify 3 upgrade:
-// https://v3-migration.vuejs.org/
-// and check the rules for https://github.com/gxmari007/vite-plugin-eslint
+Vue.config.productionTip = false;
+Vue.mixin(globalMethods);
 
-app
-  .use(vuetify)
-  .use(router)
-  .use(store)
-//  .use(InfiniteLoading)
-  .mixin(globalMethods)
-  .mount('#app');
+initAxios(Vue, store);
+
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  store,
+  vuetify,
+  components: { App },
+  template: '<App/>',
+});

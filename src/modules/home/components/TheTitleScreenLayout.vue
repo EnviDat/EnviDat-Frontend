@@ -2,15 +2,15 @@
   <v-col order-md="2" order="1">
     <v-row align="center">
       <v-col class="hidden-sm-and-down" cols="4" lg="3">
-        <img :src="mdLogo" :alt="alternativeText" />
+        <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
       </v-col>
 
       <v-col class="hidden-xs-only hidden-md-and-up" cols="2">
-        <img :src="smLogo" :alt="alternativeText" />
+        <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
       </v-col>
 
       <v-col class="hidden-sm-and-up" cols="3">
-        <img :src="smLogo" :alt="alternativeText" />
+        <v-img :src="smLogo" height="64" width="64" :alt="alternativeText" />
       </v-col>
 
       <v-col
@@ -68,7 +68,7 @@
 
 import smLogo from '@/assets/logo/EnviDat_logo_64.png';
 import mdLogo from '@/assets/logo/EnviDat_logo_128.png';
-import lgLogo from '@/assets/logo/EnviDat_logo_256.png';
+
 import SloganCard from '@/modules/home/components/SloganCard.vue';
 
 export default {
@@ -87,7 +87,6 @@ export default {
   data: () => ({
     smLogo,
     mdLogo,
-    lgLogo,
     alternativeText: 'EnviDat logo',
   }),
   computed: {},

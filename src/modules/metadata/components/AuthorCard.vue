@@ -1,5 +1,6 @@
 <template>
   <v-card class="authorCard pa-0"
+          id="AuthorCard"
           :class="cardClass"
           :style="dynamicCardBackground"
           :loading="loading">
@@ -221,7 +222,7 @@
 
     <v-container v-if="showGenericOpenButton"
                  class="ma-2 pa-0"
-                 style="position: absolute; top: 0px; right: 0px; width: 40px;">
+                 style="position: absolute; top: 0; right: 0; width: 40px;">
       <v-row>
         <v-col cols="12">
           <base-icon-button :materialIconName="openButtonIcon"
@@ -288,7 +289,7 @@ import {
 // https://github.com/ToxicJojo/SkeletonPlaceholder
 
 export default {
-  name: 'EditDataCredits',
+  name: 'AuthorCard',
   components: {
     DataCreditLayout,
     BaseIconButton,

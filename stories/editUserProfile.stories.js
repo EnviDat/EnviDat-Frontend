@@ -22,7 +22,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import authorCollection from './testdata/authorCollection.json';
-import { METADATA_EDITING } from './storybookFolder';
 
 const keys = Object.keys(authorCollection);
 const user1 =  authorCollection[keys[1]];
@@ -30,9 +29,8 @@ const user2 =  authorCollection[keys[2]];
 
 
 export default {
-  title: `${METADATA_EDITING} / User Profile`,
-  decorators: [],
-  parameters: {},
+  title: '9 Editing Metadata / User Profile',
+  component: EditUserProfile,
 };
 
 export const EditUserViews = () => ({
@@ -67,6 +65,7 @@ export const EditUserViews = () => ({
         <EditUserProfile :first-name="user2.firstName"
                          :last-name="user2.lastName"
                          :email="user2.email"
+                         email-hash="7e6b6dca84df35a663ba4518360095a8"
                          error="Validation Error"
                          error-details="Some Validation Error Text"
         />
@@ -133,6 +132,7 @@ export const UserCardEditingViews = () => ({
             <UserCard :height="height"
                       :width="height"
                       :userName="author.firstName + ' ' + author.lastName"
+                      :nameInitials="getNameInitials(author)"
                       :email="author.email"
                       :loading="true"
             />
@@ -165,7 +165,9 @@ export const UserCardEditingViews = () => ({
             <UserCard :height="height"
                       :width="height"
                       :userName="author.firstName + ' ' + author.lastName"
+                      :nameInitials="getNameInitials(author)"
                       :email="author.email"
+                      email-hash="7e6b6dca84df35a663ba4518360095a8"
             />
           </template>
 
@@ -185,10 +187,10 @@ export const UserCardEditingViews = () => ({
     </v-row>
     `,
   created() {
-    eventBus.$on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+    eventBus.on(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
-  beforeUnmount() {
-    eventBus.$off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
+  beforeDestroy() {
+    eventBus.off(EDIT_USER_PROFILE_EVENT, this.authorChanged);
   },
   computed: {
     author() {

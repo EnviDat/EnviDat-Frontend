@@ -19,7 +19,11 @@ import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CUSTOMFIELDS,
   EDITMETADATA_DATA_GEO,
+  EDITMETADATA_DATA_GEO_SPATIAL,
   EDITMETADATA_DATA_INFO,
+  EDITMETADATA_DATA_LICENSE,
+  EDITMETADATA_DATA_RESOURCE,
+  EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
   EDITMETADATA_MAIN_DESCRIPTION,
   EDITMETADATA_MAIN_HEADER,
@@ -29,18 +33,38 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
 } from '@/factories/eventBus';
 
+import {
+  DATE_PROPERTY_END_DATE,
+  DATE_PROPERTY_START_DATE,
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+} from '@/factories/metadataConsts';
+
 
 const urlRegex = /^((http|https):\/\/)?(www.)?(?!.*(http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+(\/)?.([\w?[a-zA-Z-_%/@]+)*([^/\w[a-zA-Z0-9_-]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm;
+
+
+const convertEmptyStringToNull = (value, originalValue) => originalValue === '' ? null : value;
+
+const convertToZero = (value) => Number.isNaN(value) ? 0 : value;
+
+const geoValidationMessage = 'Geometry is required';
 
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
-      metadataTitle: yup.string()
+      [METADATA_URL_PROPERTY]: yup.string()
+        .nullable()
+        .min(5, 'Dataset url must be at least 5 characters')
+        .max(80, 'Dataset url has a maximum of 80 characters')
+        .matches(/^[\wöüä-]+$/, 'Use only letters, numbers and dashes for the url (not spaces)'),
+      [METADATA_TITLE_PROPERTY]: yup.string()
         .required('Dataset title is required')
         .min(5, 'Dataset title must be at least 5 characters')
-        .max(180, 'Dataset title has a maximum of 180 characters'),
+        .max(180, 'Dataset title has a maximum of 180 characters')
+        .matches(/^[\w\söüä]+$/, 'Use only letters and numbers for the title'),
       contactGivenName: yup.string()
-        .required('Contact given (first) name is required')
+        .required('Contact given name is required')
         .min(3, 'Contact given (first) name must be at least 3 characters'),
       contactSurname: yup.string()
         .required('Contact surname is required')
@@ -53,74 +77,103 @@ const metadataInEditingValidations = {
     yup.object().shape({
       description: yup.string()
         .required('Description is required')
-        .min(100, 'Please write at least a minimal description with 100 characters.'),
+        .min(100, 'Write at least a description with 100 characters.'),
     }),
   [EDITMETADATA_KEYWORDS]: () =>
     yup.object().shape({
       keywords: yup.array()
-        .min(5, 'Please enter at least 5 keywords.'),
+        .min(5, 'Enter at least 5 keywords.'),
     }),
   [EDITMETADATA_AUTHOR_LIST]: () =>
     yup.object().shape({
       authors: yup.array()
-        .min(1, 'Please add at least one author.'),
+        .min(1, 'Add at least one author.'),
     }),
-  // [EDITMETADATA_DATA_RESOURCES]: () => yup.object(),
-  // yup.object().shape({
-  //   isLink: yup.boolean(),
-  //   name: yup
-  //     .string()
-  //     .required('Resource name is required')
-  //     .min(5, 'Resource name must be at least 5 characters')
-  //     .notOneOf(
-  //       [yup.ref('url')],
-  //       'Title cannot be the same as the resource url',
-  //     ),
-  //   description: yup.string(),
-  //   url: yup.string().when('isLink', {
-  //     is: true,
-  //     then: yup
-  //       .string()
-  //       .url('Resource url must be valid')
-  //       .required('Resource url is required'),
-  //     otherwise: yup.string().notRequired(),
-  //   }),
-  // }),
+  [EDITMETADATA_DATA_RESOURCE]: () =>
+    yup.object().shape({
+      isLink: yup.boolean(),
+      name: yup.string()
+        .required('Resource name is required')
+        .min(5, 'Resource name must be at least 5 characters')
+        .notOneOf(
+          [yup.ref('url')],
+          'Title cannot be the same as the resource url',
+        ),
+      description: yup.string()
+        .nullable()
+        .transform(convertEmptyStringToNull)
+        .min(20, 'Write at least a minimal description with 20 characters.'),
+      format: yup.string()
+        .nullable()
+        .min(2, 'Format has to be at least 2 characters long.'),
+      size: yup.number('size must be a number')
+        .transform(convertToZero)
+        .test('empty-check', 'File size must be a number greater than 0', size => size !== 0)
+        .moreThan(0, 'File size be more than 0'),
+      sizeFormat: yup.string()
+        .required('Pick a file size'),
+      url: yup.string().when('isLink', {
+        is: true,
+        then: yup.string()
+          .url('Resource url must be valid')
+          .required('Resource url is required'),
+        otherwise: yup.string().notRequired(),
+      }),
+  }),
   [EDITMETADATA_DATA_INFO]: () =>
     yup.object().shape({
       // dates validation is done the in the BaseStartEndDate component
-      dataLicenseId: yup
-      .string()
-      .test(
-        'empty-check',
-        'An data licence must be selected.',
-        dataLicenseId => dataLicenseId !== '',
-      ),
+      dates: yup.array()
+        .required('Created date is required')
+        .min(1, 'At least a creation date is required')
+        .test(
+          'empty-check',
+          'Add start and end date',
+          dateEntry => dateEntry[DATE_PROPERTY_START_DATE] !== '' && dateEntry[DATE_PROPERTY_END_DATE] !== '',
+        ),
+    }),
+  [EDITMETADATA_DATA_LICENSE]: () =>
+    yup.object().shape({
+      dataLicenseId: yup.string()
+        .required('Data licence is required'),
     }),
   [EDITMETADATA_DATA_GEO]: () =>
     yup.object().shape({
-      geometries: yup.array().min(1, 'Editing Error: a geometry is required to be set'),
+      location: yup.object()
+        .nullable()
+        .required(geoValidationMessage)
+        .shape({
+          geoJSON: yup.object()
+            .required(geoValidationMessage)
+            .test('empty-check',
+              geoValidationMessage,
+                geoObj => Object.keys(geoObj)?.length > 0),
+        }),
     }),
+  [EDITMETADATA_DATA_GEO_SPATIAL]: () =>
+    yup.object().shape({
+      geometries: yup.array()
+        .required(geoValidationMessage)
+        .min(1, 'At least one geometry is required'),
+  }),
   [EDITMETADATA_RELATED_PUBLICATIONS]: () =>
     yup.object().shape({
-      relatedPublicationsText: yup
-        .string()
+      relatedPublicationsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
-        .min(20, 'Please use at least 20 characters to describe the related publications.'),
+        .transform(convertEmptyStringToNull)
+        .min(10, 'Write at least 10 characters to describe the related publications.'),
     }),
   [EDITMETADATA_RELATED_DATASETS]: () =>
     yup.object().shape({
-      relatedDatasetsText: yup
-        .string()
+      relatedDatasetsText: yup.string()
         .nullable()
-        .transform((value, originalValue) => originalValue === '' ? null : value)
-        .min(20, 'Please use at least 20 characters to describe the related datasets.'),
+        .transform(convertEmptyStringToNull)
+        .min(10, 'Write at least 10 characters to describe the related datasets.'),
     }),
   [EDITMETADATA_ORGANIZATION]: () =>
     yup.object().shape({
-      organizationId: yup
-      .string('organizationId must be a string.')
+      organizationId: yup.string()
+      .required('selected an Organization')
       .test(
         'empty-check',
         'An organization must be selected.',
@@ -142,19 +195,23 @@ const metadataInEditingValidations = {
       publicationState: yup.string(),
       doi: yup.string(),
       publisher: yup.string()
-        .required()
+        .required('Enter publisher')
         .min(3),
       publicationYear: yup.string()
-        .required(),
+        .required('Enter publication year'),
+    }),
+  [EDITMETADATA_FUNDING_INFO]: () =>
+    yup.object().shape({
       funders: yup.array()
-        .required().min(1, 'Provide at least one entry about funding of the research.').of(
+        .required('Enter funding information')
+        .min(1, 'Provide at least one funding entry').of(
         yup.object().shape({
           institution: yup.string().required().min(3),
           grantNumber: yup.string(),
           institutionUrl: yup.string()
             .nullable()
-            .transform((value, originalValue) => originalValue === '' ? null : value)
-            .matches(urlRegex, 'Please provide an valid link / url.'),
+            .transform(convertEmptyStringToNull)
+            .matches(urlRegex, 'Provide a valid link / url.'),
         }),
       ),
     }),
@@ -162,7 +219,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('First name is required')
-        .min(3, 'First name must be at least 3 characters'),
+        .min(2, 'First name must be at least 2 characters'),
       lastName: yup.string()
         .required('Last name is required')
         .min(3, 'Last name must be at least 3 characters'),
@@ -174,7 +231,7 @@ const metadataInEditingValidations = {
     yup.object().shape({
       firstName: yup.string()
         .required('Author first name is required')
-        .min(3, 'Author first name must be at least 3 characters'),
+        .min(2, 'Author first name must be at least 2 characters'),
       lastName: yup.string()
         .required('Author last name is required')
         .min(3, 'Author last name must be at least 3 characters'),
@@ -271,6 +328,11 @@ export function isObjectValid(properties, objectToValidate, validations, errorOb
   return true;
 }
 
+export function isObjectValidCheckAllProps(objectToValidate, validations, errorObject) {
+  const keys = Object.keys(objectToValidate);
+  return isObjectValid(keys, objectToValidate, validations, errorObject);
+}
+
 export function getUserOrganizationRoleMap(userId, organizations) {
   const roleMap = {};
 
@@ -278,15 +340,7 @@ export function getUserOrganizationRoleMap(userId, organizations) {
     return roleMap;
   }
 
-  const keys = Object.keys(organizations);
-
-  keys.forEach(k => {
-    const orga = organizations[k];
-    const matchedUsers = orga.users.filter(u => u.id === userId);
-    if (matchedUsers[0]) {
-      roleMap[orga.name] = matchedUsers[0].capacity;
-    }
-  })
+  organizations.forEach(orga => { roleMap[orga.name] = orga.capacity })
 
   return roleMap;
 }

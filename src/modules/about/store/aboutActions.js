@@ -25,7 +25,7 @@ import {
   GET_POLICIES_SUCCESS,
 } from '@/modules/about/store/aboutMutationsConsts';
 
-const staticRoot = import.meta.env.VITE_ENVIDAT_STATIC_ROOT;
+const staticRoot = import.meta.env.VITE_STATIC_ROOT;
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
 export default {
