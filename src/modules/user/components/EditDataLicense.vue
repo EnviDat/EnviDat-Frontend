@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditDataLicense" class="pa-0" :loading="loading">
     <v-container fluid class="pa-4 fill-height">
-      <template slot="progress">
+      <template v-slot:progress>
         <v-progress-linear color="primary" indeterminate />
       </template>
 
@@ -163,7 +163,7 @@ export default {
   created() {
     eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {

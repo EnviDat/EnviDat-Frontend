@@ -218,7 +218,7 @@ export default {
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
     this.showCookieInfo = strShowCookieInfo!== 'false';
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);

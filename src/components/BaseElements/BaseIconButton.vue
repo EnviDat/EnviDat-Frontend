@@ -99,9 +99,11 @@
       :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
       @click.stop="onClick"
     >
-      <span slot="badge" class="black--text">
-        {{ count }}
-      </span>
+      <template v-slot:badge >
+        <span class="black--text">
+          {{ count }}
+        </span>
+      </template>
     </v-badge>
   </div>
 </template>

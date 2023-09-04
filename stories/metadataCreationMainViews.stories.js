@@ -273,7 +273,7 @@ export const GenericTextareaPreviewMetadataBodyView = () => ({
     mounted() {
         this.genericPropsFilled.body.text = this.genericPropsFilled.textareaContent;
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {

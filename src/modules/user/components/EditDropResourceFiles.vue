@@ -130,7 +130,7 @@ export default {
   mounted() {
     this.resetState();
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(UPLOAD_STATE_RESET, this.resetState);
     eventBus.off(UPLOAD_STATE_RESOURCE_CREATED, this.changeState);
     eventBus.off(UPLOAD_STATE_UPLOAD_STARTED, this.changeState);

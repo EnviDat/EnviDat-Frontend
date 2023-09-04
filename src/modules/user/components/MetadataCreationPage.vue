@@ -150,7 +150,7 @@ export default {
 
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.componentChanged);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);

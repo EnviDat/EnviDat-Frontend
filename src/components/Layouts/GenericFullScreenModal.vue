@@ -101,7 +101,7 @@ export default {
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
     eventBus.off(CLOSE_FULLSCREEN_MODAL, this.closeModal);
     eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);

@@ -96,7 +96,7 @@ export const EditRelatedDatasetsViews = () => ({
         this.genericProps.relatedDatasetsText = this.relatedDatasetsText;
         this.genericPropsFilled.relatedDatasetsText = this.relatedDatasetsText2;
     },
-    beforeDestroy() {
+    beforeUnmount() {
         eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -159,7 +159,7 @@ export const EditRelatedPublicationViews = () => ({
     created() {
       eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     methods: {
@@ -219,7 +219,7 @@ export const EditCustomFieldViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
   },
   methods: {

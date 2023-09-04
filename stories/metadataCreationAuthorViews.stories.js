@@ -107,7 +107,7 @@ export const EditAddAuthorViews = () => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthor);
   },
   methods: {
@@ -319,7 +319,7 @@ export const EditAuthorsListViews = () => ({
   created() {
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
   },
   methods: {
@@ -385,7 +385,7 @@ export const FullEditingAuthorViews = () => ({
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);

@@ -209,7 +209,7 @@ export default {
       this.loadEnvidatUsers();
     });
   },
-  beforeDestroy() {
+  beforeUnmount() {
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
     unSubscribeOnUppyEvent('progress', this.uploadProgress);
     unSubscribeOnUppyEvent('complete', this.uploadCompleted);

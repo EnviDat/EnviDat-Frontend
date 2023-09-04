@@ -35,7 +35,7 @@ const Template = (args, { argTypes }) => ({
   created() {
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.updateDataInfo);
   },
   methods: {
