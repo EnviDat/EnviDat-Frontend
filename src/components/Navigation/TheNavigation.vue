@@ -10,20 +10,32 @@
       <v-icon>menu</v-icon>
     </v-btn>
 
-  <v-navigation-drawer app
-                        :permanent="!smallScreen"
-                        clipped
-                        :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
-                        :mini-variant="mini"
-                        :value="show"
-                        @change="setShow"
-                        @input="onInput"
-                        overlay-color="highlight"
-                        mini-variant-width="60"
-                        width="190" >
+  <v-navigation-drawer :permanent="!smallScreen"
+                       :style="smallScreen ? 'top: 36px; max-height: calc(100% - 36px);' : ''"
+                       :mini-variant="mini"
+                       :rail="!show"
+                       expand-on-hover
+                       @change="setShow"
+                       @input="onInput"
+                       overlay-color="highlight"
+                       mini-variant-width="60"
+                       rail-width="60"
+                       width="190" >
 
     <v-list dense >
 
+      <v-list-item v-for="(item, index) in navItemsMenuExcluded"
+                   :key="index"
+                   :prepend-icon="item.icon"
+                   :title="item.title"
+                   :color="item.disabled ? 'grey' : 'primary'"
+                   :disabled="item.disabled"
+                   :class="`${item.icon === 'envidat' ? mini ? 'px-2' : 'px-3' : '' }`"
+                   @click.stop="itemClick(item)" >
+
+      </v-list-item>
+
+<!--
       <v-list-item v-for="(item, index) in navItemsMenuExcluded"
                     :key="index"
                     link
@@ -69,7 +81,7 @@
         <v-list-item-icon v-if="item.icon !== 'envidat'"
                           :color="item.disabled ? 'grey' : 'primary'"
                           @click.stop="itemClick(item)" >
-                          <!-- @click="item.icon === 'menu' ? item.active = !item.active : itemClick(item)" > -->
+                          &lt;!&ndash; @click="item.icon === 'menu' ? item.active = !item.active : itemClick(item)" > &ndash;&gt;
 
           <v-tooltip right
                       style="z-index: 1150;"
@@ -127,6 +139,7 @@
 
         </v-list-item-icon>
       </v-list-item>
+-->
 
     </v-list>
 

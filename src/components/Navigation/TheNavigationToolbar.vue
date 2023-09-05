@@ -1,7 +1,5 @@
 <template>
-  <v-app-bar clipped-left
-              app
-              color="white"
+  <v-app-bar color="white"
               :height="$vuetify.display.xsOnly ? 50 : 36" >
 
     <v-container fluid

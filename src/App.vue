@@ -26,12 +26,6 @@
                          @clickedReport="catchReportClicked(notification.key)"/>
     </div>
 
-    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
-                    :navigationItems="navigationItems"
-                    :version="appVersion"
-                    @menuClick="catchMenuClicked"
-                    @itemClick="catchItemClicked"/>
-
     <TheNavigationToolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
                             class="envidatToolbar"
@@ -47,6 +41,12 @@
                             @signinClick="catchSigninClicked"
                             @homeClick="catchHomeClicked"
                             @continueClick="catchContinueClick"/>
+
+    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
+                   :navigationItems="navigationItems"
+                   :version="appVersion"
+                   @menuClick="catchMenuClicked"
+                   @itemClick="catchItemClicked"/>
 
     <v-main>
 
