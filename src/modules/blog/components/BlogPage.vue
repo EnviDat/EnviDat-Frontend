@@ -14,7 +14,7 @@
 
         <BlogHeader :title="blogHeaderTitle"
                     :titleImage="post ? post.titleImg : blogHeaderImg"
-                    :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+                    :height="$vuetify.display.smAndDown ? 100 : 150"
                     :showCloseButton="!!showBlogPost"
                     @clickedBack="catchClosePost"
                     />
@@ -73,7 +73,7 @@
                  md="4"
                  class="pa-2" >
             <BlogPostCard :postTitle="post.title"
-                          :titleCssClass="$vuetify.breakpoint.smAndDown ? 'text-h6 px-4' : undefined"
+                          :titleCssClass="$vuetify.display.smAndDown ? 'text-h6 px-4' : undefined"
                           :postDate="post.date"
                           :titleImg="post.titleImg"
                           :loadingImg="fallbackCardImg"

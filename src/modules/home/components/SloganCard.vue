@@ -17,10 +17,10 @@
             style="min-height: 100%; border-top-left-radius: 4px;"
             :style="
               `max-height: ${maxHeight}px; border-bottom-left-radius: ${
-                $vuetify.breakpoint.smAndUp ? 4 : 0
+                $vuetify.display.smAndUp ? 4 : 0
               }px;
                     border-top-right-radius: ${
-                      $vuetify.breakpoint.xsOnly ? 4 : 0
+                      $vuetify.display.xsOnly ? 4 : 0
                     }px;`
             "
           />

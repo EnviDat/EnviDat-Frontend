@@ -3,7 +3,7 @@
     <v-row no-gutters>
       <v-col>
         <v-row no-gutters>
-          <v-col class="shrink">
+          <v-col class="flex-grow-0">
             <BaseIconButton
               materialIconName="add"
               iconColor="black"
@@ -14,7 +14,7 @@
             />
           </v-col>
 
-          <v-col class="px-1 shrink">
+          <v-col class="px-1 flex-grow-0">
             <BaseIconButton
               materialIconName="remove"
               iconColor="black"
@@ -25,7 +25,7 @@
             />
           </v-col>
 
-          <v-col class="px-2 shrink">
+          <v-col class="px-2 flex-grow-0">
             <BaseIconButton
               materialIconName="filter_center_focus"
               iconColor="black"
@@ -42,7 +42,7 @@
         <v-row no-gutters>
           <!--
           <v-col v-if="showMapSplitButton"
-                  class="shrink" >
+                  class="flex-grow-0" >
                 &lt;!&ndash; style="position: absolute; top: 0; left: 45%;" &ndash;&gt;
             <BaseIconButton materialIconName="vertical_split"
                             iconColor="black"
@@ -51,7 +51,7 @@
           </v-col>
           -->
 
-          <v-col v-if="showMapSplitCloseButton" class="shrink">
+          <v-col v-if="showMapSplitCloseButton" class="flex-grow-0">
             <!-- style="position: absolute; top: 0; left: 45%;" -->
             <BaseIconButton
               materialIconName="close"
@@ -66,7 +66,7 @@
 
 
     <v-row v-if="layerConfig" class="d-flex flex-column" no-gutters>
-      <v-col v-if="site" cols="1" class="py-2 shrink">
+      <v-col v-if="site" cols="1" class="py-2 flex-grow-0">
         <BaseIconButton
           materialIconName="location_on"
           iconColor="black"
@@ -77,10 +77,10 @@
       </v-col>
 
       <!--
-      <v-col class="pb-2 shrink" >
+      <v-col class="pb-2 flex-grow-0" >
         <v-row no-gutters>
 
-          <v-col class="shrink"
+          <v-col class="flex-grow-0"
                   cols="1" >
             <BaseIconButton materialIconName="layers"
                             iconColor="black"
@@ -100,7 +100,7 @@
       </v-col>
 
       <v-col v-if="!layerControlOpen && selectedLayerName"
-              class="pb-2 shrink" >
+              class="pb-2 flex-grow-0" >
             <v-card max-width="25%">
               <v-card-text class="readableText">
                 {{ `Active Layer: ${selectedLayerName}` }}
@@ -109,7 +109,7 @@
       </v-col>
 
       <v-col v-if="layerControlOpen"
-              class="pb-2 shrink" >
+              class="pb-2 flex-grow-0" >
         <map-layer-control :layers="layerConfig.layers"
                             :selectedLayerName="selectedLayerName"
                             @changeLayer="changeLayer"
@@ -119,7 +119,7 @@
 
       <!--
             <v-col v-if="featureinfo.length > 0"
-                    cols="12 shrink">
+                    cols="12 flex-grow-0">
 
               <feature-info :div-id="`${mapDivId}_graph`"
                             :layers="layerConfig.layers"

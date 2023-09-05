@@ -2,7 +2,7 @@
   <v-app-bar clipped-left
               app
               color="white"
-              :height="$vuetify.breakpoint.xsOnly ? 50 : 36" >
+              :height="$vuetify.display.xsOnly ? 50 : 36" >
 
     <v-container fluid
                   class="pa-0" >
@@ -12,9 +12,10 @@
               justify="space-between" >
 
         <v-col cols="4" sm="2">
-          <v-row no-gutters>
+          <v-row no-gutters
+                  align="center">
 
-            <v-col class="shrink px-2" >
+            <v-col class="flex-grow-0 px-2" >
               <v-btn icon
                       class="ma-0 pt-1"
                       small
@@ -41,7 +42,7 @@
         </v-col>
 
         <v-col v-if="signedInUser"
-                class="shrink"
+                class="flex-grow-0"
                 cols="4" sm="4" md="3" xl="2">
 
           <v-row align="center"
@@ -52,7 +53,7 @@
             </v-col>
 
             <v-col v-if="editingDatasetName"
-                   class="shrink">
+                   class="flex-grow-0">
               <BaseIconButton id="EditButtonNavigationToolbar"
                               material-icon-name="edit"
                               :fillColor="$vuetify.theme.themes.light.accent"
@@ -66,7 +67,7 @@
                               @clicked="catchContinueClick" />
             </v-col>
 
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <UserMenu :userObject="signedInUser"
                           :navItems="userNavigationItems"
                           @userMenuItemClick="catchUserMenuItemClicked" />
@@ -75,7 +76,7 @@
         </v-col>
 
         <v-col v-else
-               class="shrink"
+               class="flex-grow-0"
                cols="4" sm="3" md="2" xl="1">
 
           <v-row align="center"
@@ -102,7 +103,7 @@
 
             </v-col>
 
-            <v-col class="shrink" >
+            <v-col class="flex-grow-0" >
 
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -160,7 +161,7 @@ export default {
   },
   computed: {
     compact() {
-      return this.$vuetify.breakpoint.xsOnly;
+      return this.$vuetify.display.xsOnly;
     },
     hasModeData() {
       return !!this.mode;

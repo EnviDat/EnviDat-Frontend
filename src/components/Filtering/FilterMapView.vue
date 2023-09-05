@@ -136,7 +136,7 @@ export default {
       return this.loadingMetadataIds || this.loadingMetadatasContent;
     },
     widgetWidth() {
-      return this.$vuetify.breakpoint.smAndDown ? 100 : 350;
+      return this.$vuetify.display.smAndDown ? 100 : 350;
     },
     hasPins() {
       return this.pinLayerGroup && this.pinLayerGroup.length > 0;

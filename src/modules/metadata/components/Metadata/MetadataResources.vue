@@ -10,7 +10,7 @@
         </v-col>
 
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
-                class="shrink resourcesIcons" >
+                class="flex-grow-0 resourcesIcons" >
           <base-icon-count-view :count="resources.length"
                                 tooltip-text="Amount of Resources"
                                 materialIconName="insert_drive_file" />

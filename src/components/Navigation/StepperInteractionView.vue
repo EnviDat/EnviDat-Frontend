@@ -5,7 +5,7 @@
     <v-row >
 
       <v-col v-if="showPreviewButton"
-             class="shrink">
+             class="flex-grow-0">
         <BaseIconButton
                 id="PreviewMetadataButton"
                 material-icon-name="remove_red_eye"
@@ -19,7 +19,7 @@
       </v-col>
 
       <v-col v-if="isCreationWorkflow"
-              class="shrink">
+              class="flex-grow-0">
         <BaseIconButton
                 id="SaveMetadataButton"
                 material-icon-name="save"
@@ -49,7 +49,7 @@
           />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
 
         <BaseIconButton
                 id="MetadataEditCloseButton"

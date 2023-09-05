@@ -72,7 +72,7 @@
           justify="space-between"
           class="pt-4"
         >
-          <v-col cols="12" md="4" class="shrink text-h6">
+          <v-col cols="12" md="4" class="flex-grow-0 text-h6">
             {{ requestTokenText }}
           </v-col>
 
@@ -116,7 +116,7 @@
       </form>
 
       <v-row v-if="signedIn" id="signinButtonRow">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton
             color="primary"
             :button-text="dashboardButtonText"
@@ -124,7 +124,7 @@
           />
         </v-col>
 
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <!--
           <v-btn color="secondary"
                  outlined

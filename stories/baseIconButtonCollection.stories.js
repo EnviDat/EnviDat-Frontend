@@ -80,7 +80,7 @@ export const IconsWithCountBadeViews = () => ({
     template: `
     <v-row style="border: solid 1px;">
 
-      <v-col class="shrink" >
+      <v-col class="flex-grow-0" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
                                 :iconString="fileIcon"
@@ -89,7 +89,7 @@ export const IconsWithCountBadeViews = () => ({
         <!-- /div -->
       </v-col>
 
-      <v-col class="shrink" >
+      <v-col class="flex-grow-0" >
         <!-- div style="position: absolute;" -->
           <base-icon-count-view class="mr-2"
                                 :iconString="fileIcon"

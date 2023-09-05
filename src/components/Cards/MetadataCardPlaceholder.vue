@@ -2,7 +2,7 @@
   <v-card ripple
           style="height: 100%; max-height: 375px !important;" >
     <v-img background-color="primary"
-            :height="flatLayout ? '65px' : $vuetify.breakpoint.smAndDown ? '100px' : '125px'" >
+            :height="flatLayout ? '65px' : $vuetify.display.smAndDown ? '100px' : '125px'" >
 
       <v-container class="fill-height py-0"
                     style="position: absolute;" >
@@ -33,7 +33,7 @@
               no-gutters >
         <v-col v-for="n in 3"
                 :key="n"
-                class="shrink">
+                class="flex-grow-0">
           <tag-chip-placeholder py-0
                                 class="envidatChip" />
         </v-col>

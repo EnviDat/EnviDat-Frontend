@@ -24,7 +24,7 @@
         </v-col>
 
         <v-col v-if="authorIsDead"
-               class="shrink py-0">
+               class="flex-grow-0 py-0">
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
@@ -62,7 +62,7 @@
           {{ dataCountLabel }}
         </v-col>
 
-        <v-col class="shrink py-0"
+        <v-col class="flex-grow-0 py-0"
                style="max-height: 36px;">
 
           <base-icon-button class="ma-0"
@@ -104,7 +104,7 @@
           {{ dataScoreLabel }}
         </v-col>
 
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
               <v-icon v-on="on"
@@ -119,7 +119,7 @@
           </v-tooltip>
         </v-col>
 
-        <v-col class="shrink pl-2">
+        <v-col class="flex-grow-0 pl-2">
           <div :style="`background-color: ${ !this.dark ? darkColor : whiteColor };`"
                class="dataCreditScore elevation-5">
 
@@ -140,7 +140,7 @@
           <v-divider :dark="dark"/>
         </v-col>
 
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <v-btn icon
                  :color="dark ? 'white' : 'black'"
                  outlined

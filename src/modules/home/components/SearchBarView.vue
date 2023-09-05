@@ -15,7 +15,7 @@
           />
         </v-col>
 
-        <v-col v-if="hasButton" class="shrink py-0">
+        <v-col v-if="hasButton" class="flex-grow-0 py-0">
           <base-rectangle-button
             :button-text="buttonText"
             :is-small="true"

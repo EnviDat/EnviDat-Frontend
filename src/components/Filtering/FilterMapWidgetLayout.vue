@@ -29,7 +29,7 @@
           </div>
         </v-col>
 
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <slot name="clearPins" />
         </v-col>
       </v-row>
@@ -49,19 +49,19 @@
       id="FilterMapWidgetLayout_topLayout"
     >
       <v-row no-gutters justify="space-around">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <slot name="focus" />
         </v-col>
 
-        <v-col v-if="hasPins" class="shrink">
+        <v-col v-if="hasPins" class="flex-grow-0">
           <slot name="pinEnabled" />
         </v-col>
 
-        <v-col v-if="hasMultiPins" class="shrink">
+        <v-col v-if="hasMultiPins" class="flex-grow-0">
           <slot name="multiPinEnabled" />
         </v-col>
 
-        <v-col v-if="hasPolygons" class="shrink">
+        <v-col v-if="hasPolygons" class="flex-grow-0">
           <slot name="polygonEnabled" />
         </v-col>
       </v-row>
@@ -89,7 +89,7 @@
           </div>
         </v-col>
 
-        <v-col class="shrink" cols="3">
+        <v-col class="flex-grow-0" cols="3">
           <slot name="clearPins" />
         </v-col>
       </v-row>
@@ -164,10 +164,10 @@ export default {
   },
   computed: {
     smScreen() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     mdScreen() {
-      return this.$vuetify.breakpoint.mdAndUp;
+      return this.$vuetify.display.mdAndUp;
     },
   },
   methods: {},

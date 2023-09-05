@@ -13,7 +13,7 @@
     <div v-for="(notification, index) in visibleNotifications()"
          :key="`notification_${index}`"
          :style="`position: absolute;
-                  right: ${$vuetify.breakpoint.xsOnly ? 0 : 15}px;
+                  right: ${$vuetify.display.xsOnly ? 0 : 15}px;
                   top: ${35 + index * 175}px;
                   z-index: ${NotificationZIndex};`">
 
@@ -611,7 +611,7 @@ export default {
       return this.maintenanceConfig?.signinDisabled || false;
     },
     showDecemberParticles() {
-      return this.$vuetify.breakpoint.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
+      return this.$vuetify.display.mdAndUp && this.effectsConfig.decemberParticles && this.itIsDecember;
     },
     userIsOnEditPage() {
       return this.currentPage === METADATAEDIT_PAGENAME;
@@ -620,7 +620,7 @@ export default {
       return getMonth(Date.now()) === 11;
     },
     polygonParticlesActive() {
-      return this.$vuetify.breakpoint.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
+      return this.$vuetify.display.mdAndUp && this.currentPage && this.currentPage === LANDING_PAGENAME;
     },
     loading() {
       return this.loadingMetadatasContent || this.searchingMetadatasContent || this.isFilteringContent;
@@ -640,7 +640,7 @@ export default {
       return this.mainPageIsScrollable ? '' : `${heightStyle} overflow-y: auto; scroll-behavior: smooth; scrollbar-width: thin; `;
     },
     showSmallNavigation() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     searchCount() {
       return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;

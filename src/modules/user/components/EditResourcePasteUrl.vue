@@ -31,7 +31,7 @@
       </v-row>
 
       <v-row no-gutters justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton
             :disabled="createButtonDisabled"
             :buttonText="labels.buttonText"

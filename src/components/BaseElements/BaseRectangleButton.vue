@@ -1,7 +1,7 @@
 <template>
   <v-tooltip
     v-bind="{ tooltipPosition: true }"
-    :disabled="$vuetify.breakpoint.smAndDown || !tooltipText"
+    :disabled="$vuetify.display.smAndDown || !tooltipText"
   >
     <template v-slot:activator="{ on }">
       <v-btn

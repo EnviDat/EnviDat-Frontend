@@ -1,14 +1,14 @@
 <template>
   <v-card raised id="FilterKeywordsView">
     <v-container class="pa-2 fill-height" fluid>
-      <v-row class="fill-height" :no-gutters="$vuetify.breakpoint.smAndUp">
+      <v-row class="fill-height" :no-gutters="$vuetify.display.smAndUp">
         <v-col v-if="!filterExpanded" class="hidden-sm-and-up px-2" cols="12">
           <div class="mx-3">Filter for Keywords</div>
         </v-col>
 
-        <v-col v-if="filterExpanded || $vuetify.breakpoint.smAndUp" cols="12">
+        <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
-            <v-col class="metadataInfoIcon shrink">
+            <v-col class="metadataInfoIcon flex-grow-0">
               <v-icon size="24px" color="black">style</v-icon>
             </v-col>
 
@@ -36,12 +36,12 @@
         </v-col>
 
         <v-col
-          v-if="filterExpanded || $vuetify.breakpoint.smAndUp"
+          v-if="filterExpanded || $vuetify.display.smAndUp"
           class="pt-1"
           cols="12"
         >
           <v-row>
-            <v-col class="metadataInfoIcon shrink">
+            <v-col class="metadataInfoIcon flex-grow-0">
               <v-img :src="tagIcon" height="24" width="24" />
             </v-col>
 
@@ -63,7 +63,7 @@
     </v-container>
 
     <base-icon-button
-      v-if="$vuetify.breakpoint.xsOnly"
+      v-if="$vuetify.display.xsOnly"
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
       material-icon-name="expand_more"
@@ -171,13 +171,13 @@ export default {
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xsOnly) {
         maxTextLength = this.xsTextLength;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxTextLength = this.smTextLength;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
+      } else if (this.$vuetify.display.mdAndDown) {
         maxTextLength = this.mdTextLength;
-      } else if (this.$vuetify.breakpoint.lgAndDown) {
+      } else if (this.$vuetify.display.lgAndDown) {
         maxTextLength = this.mdTextLength;
       }
 
@@ -198,9 +198,9 @@ export default {
     isCleanTag(tagName) {
       let maxWordsPerTag = 3;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xsOnly) {
         maxWordsPerTag = 2;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         maxWordsPerTag = 20;
       }
 
@@ -242,11 +242,11 @@ export default {
     minTagCountToBeVisible() {
       let minCount = 5;
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xsOnly) {
         minCount = 25;
-      } else if (this.$vuetify.breakpoint.smAndDown) {
+      } else if (this.$vuetify.display.smAndDown) {
         minCount = 20;
-      } else if (this.$vuetify.breakpoint.mdAndDown) {
+      } else if (this.$vuetify.display.mdAndDown) {
         minCount = 10;
       }
 

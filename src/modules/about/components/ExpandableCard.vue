@@ -7,7 +7,7 @@
             class="imagezoom"
             :contain="contain"
             :height="
-              $vuetify.breakpoint.xsOnly ? minHeight + 'px' : maxHeight + 'px'
+              $vuetify.display.xsOnly ? minHeight + 'px' : maxHeight + 'px'
             "
             :style="
               `border-bottom-left-radius: ${

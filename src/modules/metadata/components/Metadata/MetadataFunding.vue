@@ -29,7 +29,7 @@
                 cols="12"
                 sm="6"
                 xl="4"
-                class="shrink">
+                class="flex-grow-0">
 
           <v-row v-if="showFundingItem(item)"
                   no-gutters >

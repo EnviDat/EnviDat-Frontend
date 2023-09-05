@@ -13,7 +13,7 @@
       >
         <v-col
           v-if="loading"
-          class="shrink py-0 mx-sm-2"
+          class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
           <v-progress-circular
@@ -26,15 +26,15 @@
 
         <v-col
           v-if="showSearchCount && !loading"
-          class="shrink py-0 mx-sm-2"
+          class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
-          <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly">
+          <v-tooltip bottom :disabled="$vuetify.display.xsOnly">
             <template v-slot:activator="{ on }">
               <tag-chip
                 v-on="on"
                 :style="
-                  $vuetify.breakpoint.xsOnly
+                  $vuetify.display.xsOnly
                     ? 'font-size: 0.65rem !important;'
                     : 'font-size: 0.8rem !important;'
                 "
@@ -50,7 +50,7 @@
         </v-col>
 
         <v-col v-if="showSearch && !hasButton"
-               class="shrink pa-0 hidden-xs-only">
+               class="flex-grow-0 pa-0 hidden-xs-only">
           <base-icon-button
             materialIconName="search"
             marginClass="ma-0"
@@ -63,7 +63,7 @@
         <v-col v-if="showSearch" class="grow py-0 ml-2 ml-sm-0 mr-sm-2">
           <v-tooltip
             bottom
-            :disabled="$vuetify.breakpoint.xsOnly || !searchToolTipText"
+            :disabled="$vuetify.display.xsOnly || !searchToolTipText"
           >
             <template v-slot:activator="{ on }">
               <v-text-field
@@ -75,11 +75,11 @@
                 single-line
                 hide-details
                 primary
-                :clearable="$vuetify.breakpoint.smAndUp && searchText && searchText.length > 0"
+                :clearable="$vuetify.display.smAndUp && searchText && searchText.length > 0"
                 :flat="isFlat"
                 :placeholder="labelText"
                 @keyup.enter="clicked"
-                :append-icon="$vuetify.breakpoint.smAndUp ? 'clear' : ''"
+                :append-icon="$vuetify.display.smAndUp ? 'clear' : ''"
                 @click:append="clearClicked"
               />
             </template>
@@ -88,7 +88,7 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && hasButton" class="shrink">
+        <v-col v-if="showSearch && hasButton" class="flex-grow-0">
           <base-rectangle-button
             :button-text="buttonText"
             :is-small="!compactLayout"
@@ -160,7 +160,7 @@ export default {
       }
 
       if (this.compactLayout) {
-        height = this.$vuetify.breakpoint.sm ? 38 : 32;
+        height = this.$vuetify.display.sm ? 38 : 32;
       } else {
         height = 40;
       }

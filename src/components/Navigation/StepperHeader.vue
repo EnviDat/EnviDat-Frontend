@@ -9,7 +9,7 @@
              class="py-1 py-md-0"
         >
 
-            <v-divider v-if="!step && $vuetify.breakpoint.smAndUp"
+            <v-divider v-if="!step && $vuetify.display.smAndUp"
                        color="accent"
                        class="mx-2 mx-md-5"
                        style="align-self: center; "
@@ -18,7 +18,7 @@
 
             <StepButton v-if="step"
                         :id="`step-${index}`"
-                        :title="$vuetify.breakpoint.smAndUp ? step.title : ''"
+                        :title="$vuetify.display.smAndUp ? step.title : ''"
                         :active="isCurrentStep(step)"
                         :complete="step.completed"
                         :number="step.number"

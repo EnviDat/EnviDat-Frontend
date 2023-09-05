@@ -73,7 +73,7 @@
 
           <v-tooltip right
                       style="z-index: 1150;"
-                      :disabled="$vuetify.breakpoint.smAndDown || !item.toolTip">
+                      :disabled="$vuetify.display.smAndDown || !item.toolTip">
             <template v-slot:activator="{ on }">
 
               <v-icon v-on="on"
@@ -152,7 +152,7 @@ export default {
       return !this.smallScreen && !this.show;
     },
     smallScreen() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     navItemsMenuExcluded() {
       const actives = [];

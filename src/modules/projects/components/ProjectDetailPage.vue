@@ -26,7 +26,7 @@
         <project-body
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
-          :maxTextLength="$vuetify.breakpoint.xsOnly ? 900 : 2000"
+          :maxTextLength="$vuetify.display.xsOnly ? 900 : 2000"
         />
       </v-col>
 
@@ -208,7 +208,7 @@ export default {
       return this.currentProject?.subProjects || null;
     },
     mapFilteringPossible() {
-      return this.$vuetify.breakpoint.smAndUp;
+      return this.$vuetify.display.smAndUp;
     },
     hasMetadatas() {
       return (
@@ -218,13 +218,13 @@ export default {
       );
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/data_creator'
         : 'projects/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/mission'
         : 'about/mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
@@ -284,12 +284,12 @@ export default {
       let width = 82.25;
       let margin = '0px 8.33333%';
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
+      if (this.$vuetify.display.mdAndDown) {
         width = 100;
         margin = '0';
       }
 
-      if (this.$vuetify.breakpoint.lg) {
+      if (this.$vuetify.display.lg) {
         width = 83.25;
       }
 

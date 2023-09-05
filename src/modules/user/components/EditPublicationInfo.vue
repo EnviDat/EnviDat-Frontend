@@ -59,11 +59,11 @@
           />
         </v-col>
 
-        <v-col class="shrink pt-5">
+        <v-col class="flex-grow-0 pt-5">
           <BaseRectangleButton buttonText="Generate New DOI" :disabled="true" />
         </v-col>
 
-        <v-col class="shrink pt-6">
+        <v-col class="flex-grow-0 pt-6">
           <v-icon
             color="primary"
             style="animation: progress-circular-rotate 3s linear infinite"

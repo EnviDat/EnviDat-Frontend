@@ -18,13 +18,13 @@
             :height="
               flatLayout
                 ? '55px'
-                : $vuetify.breakpoint.smAndDown
+                : $vuetify.display.smAndDown
                 ? '90px'
                 : '115px'
             "
           >
             <div
-              v-if="!maxTitleLengthReached || $vuetify.breakpoint.xsOnly"
+              v-if="!maxTitleLengthReached || $vuetify.display.xsOnly"
               class="pa-4 metadataTitle mb-0"
               :class="titleClass"
             >
@@ -32,7 +32,7 @@
             </div>
 
             <v-tooltip
-              v-if="maxTitleLengthReached && !$vuetify.breakpoint.xsOnly"
+              v-if="maxTitleLengthReached && !$vuetify.display.xsOnly"
               bottom
             >
               <template v-slot:activator="{ on }">
@@ -55,8 +55,8 @@
     <v-card-text
       v-if="showCardBody"
       :class="{
-        cardText: $vuetify.breakpoint.mdAndUp,
-        compactText: flatLayout || $vuetify.breakpoint.smAndDown,
+        cardText: $vuetify.display.mdAndUp,
+        compactText: flatLayout || $vuetify.display.smAndDown,
         'pr-5': flatLayout,
       }"
     >
@@ -71,7 +71,7 @@
           <v-col
             v-for="(tag, index) in tags.slice(0, maxTagNumber)"
             :key="index"
-            class="shrink"
+            class="flex-grow-0"
           >
             <tag-chip
               class="py-0"
@@ -81,7 +81,7 @@
               @clicked="catchTagClicked(tag.name)"
             />
           </v-col>
-          <v-col v-if="maxTagsReached" class="shrink">
+          <v-col v-if="maxTagsReached" class="flex-grow-0">
             <tag-chip class="py-0" name="..." />
           </v-col>
         </v-row>
@@ -100,7 +100,7 @@
     >
       <v-container v-if="showCardBody" class="pa-0">
         <v-row v-if="state" class="pb-1" no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+          <v-col class="cardIcons flex-grow-0">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
         </v-row>
@@ -110,7 +110,7 @@
                class="pb-1"
                no-gutters
                justify="end">
-          <v-col class="cardIcons shrink" >
+          <v-col class="cardIcons flex-grow-0" >
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
                                       :showOnHover="showOrganizationOnHover === true || (showOrganizationOnHover === undefined && !hover)"
@@ -120,7 +120,7 @@
 -->
 
         <v-row v-if="modeData" no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+          <v-col class="cardIcons flex-grow-0">
             <base-icon-button
               isFlat
               isSmall
@@ -132,7 +132,7 @@
         </v-row>
 
         <v-row no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+          <v-col class="cardIcons flex-grow-0">
             <base-icon-count-view
               :count="resourceAmount"
               :icon-string="fileIconString"
@@ -141,7 +141,7 @@
         </v-row>
 
         <v-row v-if="geoJSONIcon" no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+          <v-col class="cardIcons flex-grow-0">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -149,14 +149,14 @@
 
       <v-container v-if="!showCardBody" class="pa-0">
         <v-row no-gutters class="justify-end">
-          <v-col v-if="role" class="pl-1 shrink">
+          <v-col v-if="role" class="pl-1 flex-grow-0">
             <UserRoleChip :role="role" />
           </v-col>
-          <v-col v-if="state" class="pl-1 shrink">
+          <v-col v-if="state" class="pl-1 flex-grow-0">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
-          <v-col v-if="organization" class="pl-1 shrink">
+          <v-col v-if="organization" class="pl-1 flex-grow-0">
             <MetadataOrganizationChip
               :organization="organization"
               :tooltip="organizationTooltip"
@@ -168,7 +168,7 @@
             />
           </v-col>
 
-          <v-col v-if="modeData" class="pl-1 shrink cardIcons">
+          <v-col v-if="modeData" class="pl-1 flex-grow-0 cardIcons">
             <base-icon-button
               isFlat
               isSmall
@@ -178,14 +178,14 @@
             />
           </v-col>
 
-          <v-col class="pl-3 shrink cardIcons">
+          <v-col class="pl-3 flex-grow-0 cardIcons">
             <base-icon-count-view
               :count="resourceAmount"
               :icon-string="fileIconString"
             />
           </v-col>
 
-          <v-col v-if="geoJSONIcon" class="pl-1 shrink cardIcons">
+          <v-col v-if="geoJSONIcon" class="pl-1 flex-grow-0 cardIcons">
             <BaseIconLabelView :icon="geoJSONIcon" />
           </v-col>
         </v-row>
@@ -332,7 +332,7 @@ export default {
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
 
-      if (this.titleImg && this.$vuetify.breakpoint.mdAndUp) {
+      if (this.titleImg && this.$vuetify.display.mdAndUp) {
         return `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
                 background-position: center, center;
                 background-size: cover; background-repeat: initial; `;
@@ -382,7 +382,7 @@ export default {
       );
     },
     isCompactLayout() {
-      return this.compactLayout || this.$vuetify.breakpoint.smAndDown;
+      return this.compactLayout || this.$vuetify.display.smAndDown;
     },
     maxTitleLength() {
       let maxLength = this.titleLength;
@@ -451,9 +451,9 @@ export default {
       return {
         black_title: !this.dark,
         white_title: this.dark,
-        // smallScreenTitle: this.compactLayout || this.$vuetify.breakpoint.xsOnly,
-        smallScreenTitle: this.$vuetify.breakpoint.xsOnly,
-        compactTitle: this.compactLayout || this.$vuetify.breakpoint.smOnly,
+        // smallScreenTitle: this.compactLayout || this.$vuetify.display.xsOnly,
+        smallScreenTitle: this.$vuetify.display.xsOnly,
+        compactTitle: this.compactLayout || this.$vuetify.display.smOnly,
       };
     },
     modeEntryIcon() {

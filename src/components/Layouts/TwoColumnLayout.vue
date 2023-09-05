@@ -74,11 +74,11 @@ export default {
       const cssClasses = {};
 
       if (
-        this.$vuetify.breakpoint.mdAndUp &&
-        this.$vuetify.breakpoint.lgAndDown
+        this.$vuetify.display.mdAndUp &&
+        this.$vuetify.display.lgAndDown
       ) {
         cssClasses['px-2'] = true;
-      } else if (this.$vuetify.breakpoint.lgAndUp) {
+      } else if (this.$vuetify.display.lgAndUp) {
         cssClasses['px-3'] = true;
       }
 
@@ -90,7 +90,7 @@ export default {
         'offset-lg-1': true,
       };
 
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         cssClasses['pr-1'] = true;
       }
 
@@ -101,7 +101,7 @@ export default {
         'col-lg-5': true,
       };
 
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         cssClasses['pl-1'] = true;
       }
 

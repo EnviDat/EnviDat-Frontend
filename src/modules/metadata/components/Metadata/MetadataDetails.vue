@@ -121,11 +121,11 @@ export default {
         return true;
       }
 
-      if (this.$vuetify.breakpoint.xsOnly) {
+      if (this.$vuetify.display.xsOnly) {
         return text.length <= this.maxSingleTextLengthXs;
       }
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
+      if (this.$vuetify.display.mdAndDown) {
         return text.length <= this.maxSingleTextLengthMd;
       }
 

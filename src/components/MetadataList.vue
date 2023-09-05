@@ -9,7 +9,7 @@
                         @onScroll="onScroll" >
 
     <template v-slot:filterKeywords>
-      <filter-keywords-view :compactLayout="$vuetify.breakpoint.smAndDown"
+      <filter-keywords-view :compactLayout="$vuetify.display.smAndDown"
                             :allTags="allTags"
                             :selectedTagNames="selectedTagNames"
                             :showPlaceholder="loading || updatingTags"
@@ -382,7 +382,7 @@ export default {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
     },
     mapLayout() {
-      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.breakpoint.mdAndUp;
+      return !this.topFilteringLayout && this.showMapFilter && this.$vuetify.display.mdAndUp;
     },
     dynamicMainScrollClass() {
       if (this.mainScrollClass) {

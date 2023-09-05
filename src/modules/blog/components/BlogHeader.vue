@@ -5,7 +5,7 @@
     <BaseIconButton v-if="showCloseButton"
                     id="BlogHeaderCloseButton"
                     class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                    :class="{ 'mx-1' : $vuetify.display.smAndDown }"
                     style="position: absolute; top: 0; right: 0; z-index: 2;"
                     material-icon-name="close"
                     icon-color="white"

@@ -49,7 +49,7 @@
 
           <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
                   style="width: 30px;"
-                  class="shrink"
+                  class="flex-grow-0"
                   align-self="end" >
 
             <base-icon-button material-icon-name="expand_more"

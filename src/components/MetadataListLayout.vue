@@ -151,7 +151,7 @@ export default {
       return (
         !this.topFilteringLayout &&
         this.showMapFilter &&
-        this.$vuetify.breakpoint.mdAndUp
+        this.$vuetify.display.mdAndUp
       );
     },
   },

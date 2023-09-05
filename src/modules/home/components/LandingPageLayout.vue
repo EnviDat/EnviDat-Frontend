@@ -2,12 +2,12 @@
   <article
     class="landingPageGrid pa-0"
     :class="{
-      gridXs: $vuetify.breakpoint.xsOnly,
-      gridSm: $vuetify.breakpoint.smOnly,
+      gridXs: $vuetify.display.xsOnly,
+      gridSm: $vuetify.display.smOnly,
     }"
     id="LandingPage"
   >
-    <!--    'gridXl' : $vuetify.breakpoint.xlOnly,-->
+    <!--    'gridXl' : $vuetify.display.xlOnly,-->
 
     <div v-if="$slots.logo" class="logoGrid" :class="paddings">
       <slot name="logo"></slot>

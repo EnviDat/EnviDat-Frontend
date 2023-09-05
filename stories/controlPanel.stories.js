@@ -34,7 +34,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch inactive
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="false"/>
     </v-col>
 
@@ -42,7 +42,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch active
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="true"/>
     </v-col>
 
@@ -50,7 +50,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch with lock icon
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="true"
                       materialIconName="lock"
                       tooltipText="access restricted" />
@@ -60,7 +60,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch with lock open icon
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch materialIconName="lock_open"
                       tooltipText="access public" />
     </v-col>
@@ -69,7 +69,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch active clickable
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="!active"
                       materialIconName="account_circle"
                       tooltipText="Author search tool tip"
@@ -80,7 +80,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch active clickable
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="active2"
                       materialIconName="account_circle"
                       tooltipText="Author search tool tip"
@@ -91,7 +91,7 @@ export const BaseIconSwitches = () => ({
       BaseIconSwitch active clickable
     </v-col>
 
-    <v-col class="shrink">
+    <v-col class="flex-grow-0">
       <BaseIconSwitch :active="active"
                       materialIconName="info"
                       tooltipText="notification tool tip"

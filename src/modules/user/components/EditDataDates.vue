@@ -48,7 +48,7 @@
           <v-row no-gutters dense>
 
             <v-col cols="5"
-                   class="pt-2 px-sm-2 shrink">
+                   class="pt-2 px-sm-2 flex-grow-0">
               <div class="text-body-1">
                 {{ item.dateType }}
               </div>

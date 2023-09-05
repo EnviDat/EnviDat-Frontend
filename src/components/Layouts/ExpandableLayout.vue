@@ -36,7 +36,7 @@
           {{ swapStatusTextWithSoltText && expanded ? $slots.default[0].text : statusText }}
         </v-col>
 
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <base-icon-button
                   material-icon-name="expand_more"
                   isSmall

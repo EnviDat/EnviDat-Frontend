@@ -8,7 +8,7 @@
   >
     <v-card-title>
       <v-row align="start">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <v-icon>{{ notification.icon }}</v-icon>
         </v-col>
 
@@ -38,7 +38,7 @@
 
     <v-card-text v-show="showReportButton || showCloseButton">
       <v-row no-gutters align="end" justify="end">
-        <v-col v-if="showReportButton" class="shrink">
+        <v-col v-if="showReportButton" class="flex-grow-0">
           <base-rectangle-button
             buttonText="Report"
             isSmall
@@ -46,7 +46,7 @@
           />
         </v-col>
 
-        <v-col v-if="showCloseButton" class="shrink">
+        <v-col v-if="showCloseButton" class="flex-grow-0">
           <base-rectangle-button
             color="black"
             buttonText="Close"

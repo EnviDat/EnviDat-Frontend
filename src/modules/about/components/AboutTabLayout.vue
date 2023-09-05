@@ -2,14 +2,14 @@
   <v-row
     no-gutters
     :class="{
-      'px-4': $vuetify.breakpoint.mdAndUp,
-      'px-3': $vuetify.breakpoint.sm,
+      'px-4': $vuetify.display.mdAndUp,
+      'px-3': $vuetify.display.sm,
     }"
   >
     <v-col class="pt-3" cols="12">
       <img-and-text-layout
         :img="titleImage"
-        :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+        :height="$vuetify.display.smAndDown ? 100 : 150"
         :title="title"
       />
     </v-col>

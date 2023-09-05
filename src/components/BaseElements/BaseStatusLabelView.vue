@@ -7,7 +7,7 @@
   >
     <v-row v-show="loading"
            no-gutters justify="start" class="align-center">
-      <v-col class="shrink pa-1 pt-2">
+      <v-col class="flex-grow-0 pa-1 pt-2">
         <div class="skeleton skeleton-animation-shimmer">
           <div style="width: 24px; height: 24px;" class="bone bone-type-image bone-style-round"></div>
         </div>
@@ -22,7 +22,7 @@
 
     <v-row v-show="!loading"
            no-gutters justify="start" class="align-center">
-      <v-col class="shrink px-2">
+      <v-col class="flex-grow-0 px-2">
         <v-icon :color="statusColor"
                 v-on="expandedText ? { click: () => { expanded = !expanded } } : {}"
         >
@@ -39,7 +39,7 @@
       </v-col>
 
       <v-col v-show="showExpandIcon"
-             class="shrink">
+             class="flex-grow-0">
         <BaseIconButton
           materialIconName="arrow_drop_down"
           iconColor="primary"

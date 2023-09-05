@@ -62,7 +62,7 @@
               </div>
             </v-col>
 
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <BaseIconButton
                 materialIconName="clear"
                 iconColor="red"

@@ -11,7 +11,7 @@
     <base-icon-button id="MetadataHeaderCloseButton"
                       v-if="showCloseButton"
                       class="ma-2"
-                      :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
                       style="position: absolute; top: 0; right: 0; z-index: 2;"
                       material-icon-name="close"
                       icon-color="primary"
@@ -24,7 +24,7 @@
     <base-icon-button id="MetadataHeaderEditButton"
                       v-if="showEditButton"
                       class="ma-2"
-                      :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
                       style="position: absolute; top: 0; right: 46px; z-index: 2;"
                       material-icon-name="edit"
                       :fillColor="$vuetify.theme.themes.light.accent"
@@ -42,12 +42,12 @@
       <v-col v-if="hasContent"
               cols="12" >
         <div class="headerTitle"
-              :style="`line-height: ${$vuetify.breakpoint.xsOnly ? '1.5rem' : ''};`"
-              :class="{ 'py-0': $vuetify.breakpoint.smAndDown,
-                        'display-2': $vuetify.breakpoint.xlOnly,
-                        'text-h4': $vuetify.breakpoint.mdAndUp,
-                        'headline': $vuetify.breakpoint.smOnly,
-                        'subtitle-1': $vuetify.breakpoint.xsOnly,
+              :style="`line-height: ${$vuetify.display.xsOnly ? '1.5rem' : ''};`"
+              :class="{ 'py-0': $vuetify.display.smAndDown,
+                        'display-2': $vuetify.display.xlOnly,
+                        'text-h4': $vuetify.display.mdAndUp,
+                        'headline': $vuetify.display.smOnly,
+                        'subtitle-1': $vuetify.display.xsOnly,
                       }" >
           {{ metadataTitle }}
         </div>
@@ -57,9 +57,9 @@
               cols="12" >
         <div class="headerTitle py-3"
               :style="`color: ${$vuetify.theme.themes.light.error}`"
-              :class="{ 'display-2': $vuetify.breakpoint.lgAndUp,
-                        'text-h4': $vuetify.breakpoint.mdAndDown,
-                        'headline': $vuetify.breakpoint.smAndDown,
+              :class="{ 'display-2': $vuetify.display.lgAndUp,
+                        'text-h4': $vuetify.display.mdAndDown,
+                        'headline': $vuetify.display.smAndDown,
                       }" >
           {{ `${NotFoundTitle} '${metadataId}'` }}
         </div>
@@ -87,8 +87,8 @@
                   id="authors_divier"
                   key="authors_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.breakpoint.xsOnly,
-                                'my-2': $vuetify.breakpoint.smAndUp }" />
+                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                                'my-2': $vuetify.display.smAndUp }" />
           </v-col>
 
           <v-col v-if="authors"
@@ -102,10 +102,10 @@
               <v-col v-for="(author, index) in authors"
                       :key="index"
                       :class="{
-                        'pa-0': $vuetify.breakpoint.mdAndUp,
-                        'py-1 px-0': $vuetify.breakpoint.smAndDown,
+                        'pa-0': $vuetify.display.mdAndUp,
+                        'py-1 px-0': $vuetify.display.smAndDown,
                       }"
-                      class="shrink" >
+                      class="flex-grow-0" >
 
                 <TagChipAuthor :name="authorName(author)"
                                 :tooltipText="authorToolTipText"
@@ -130,15 +130,15 @@
                       id="authors_placeholder_divier"
                       key="authors_placeholder_divier" >
                 <v-divider :dark="dark"
-                          :class="{ 'my-1': $vuetify.breakpoint.xsOnly,
-                                    'my-2': $vuetify.breakpoint.smAndUp }" />
+                          :class="{ 'my-1': $vuetify.display.xsOnly,
+                                    'my-2': $vuetify.display.smAndUp }" />
               </v-col>
             </v-row>
 
             <v-row no-gutters >
               <v-col v-for="n in 5"
                       :key="n"
-                      class="shrink mr-1" >
+                      class="flex-grow-0 mr-1" >
                 <tag-chip-placeholder class="headerTag" />
               </v-col>
             </v-row>
@@ -154,8 +154,8 @@
                   id="headerinfo_divier"
                   key="headerinfo_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.breakpoint.xsOnly,
-                                'my-2': $vuetify.breakpoint.smAndUp }" />
+                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                                'my-2': $vuetify.display.smAndUp }" />
           </v-col>
         </v-row>
 
@@ -174,7 +174,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">manage_accounts</v-icon>
               </v-col>
               <v-col>
@@ -193,7 +193,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">email</v-icon>
               </v-col>
               <v-col>
@@ -211,7 +211,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">fingerprint</v-icon>
               </v-col>
               <v-col>
@@ -247,7 +247,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">location_pin</v-icon>
               </v-col>
               <v-col style="font-size: 0.9rem;">
@@ -267,7 +267,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">more_time</v-icon>
               </v-col>
               <v-col style="font-size: 0.9rem;">
@@ -287,7 +287,7 @@
                    align="center">
               <v-col class="flex-grow-0 pr-2">
                 <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        :class="$vuetify.display.xs ? 'small' : ''"
                         color="black">update</v-icon>
               </v-col>
               <v-col style="font-size: 0.9rem;">
@@ -307,8 +307,8 @@
                   id="tags_divier"
                   key="tags_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.breakpoint.xsOnly,
-                                'my-2': $vuetify.breakpoint.smAndUp }" />
+                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                                'my-2': $vuetify.display.smAndUp }" />
           </v-col>
 
           <v-col v-if="tags"
@@ -320,7 +320,7 @@
             <v-row no-gutters >
               <v-col v-for="tag in slicedTags"
                       :key="tag.name"
-                      class="shrink" >
+                      class="flex-grow-0" >
 
                 <tag-chip :name="tag.name"
                           :selectable="true"
@@ -330,8 +330,8 @@
               </v-col>
 
               <v-col v-if="maxTagsReached && !showTagsExpanded"
-                      class="shrink" >
-                <tag-chip class="headerTag shrink"
+                      class="flex-grow-0" >
+                <tag-chip class="headerTag flex-grow-0"
                           :name="'...'"
                           @click="showTagsExpanded = !showTagsExpanded" />
               </v-col>
@@ -347,7 +347,7 @@
             <v-row no-gutters >
               <v-col v-for="n in 5"
                       :key="n"
-                      class="shrink mr-1" >
+                      class="flex-grow-0 mr-1" >
                 <tag-chip-placeholder class="headerTag" />
               </v-col>
             </v-row >

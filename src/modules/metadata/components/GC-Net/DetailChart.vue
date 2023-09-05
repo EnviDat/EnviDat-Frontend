@@ -2,7 +2,7 @@
   <v-card>
     <v-container class="pa-4" fluid>
       <v-row no-gutters justify="space-between">
-        <v-col :class="$vuetify.breakpoint.xsOnly ? 'title' : 'text-h4'">
+        <v-col :class="$vuetify.display.xsOnly ? 'title' : 'text-h4'">
           {{ fileObject.chartTitle }}
         </v-col>
         <v-col class="text-h6 text-right">
@@ -13,10 +13,10 @@
       <v-row no-gutters>
         <v-col
           v-if="chartIsLoading && preloading"
-          :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
         >
           <v-row class="fill-height" justify="center" align="center">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <v-progress-circular :size="50" color="primary" indeterminate />
             </v-col>
           </v-row>
@@ -40,16 +40,16 @@
 
         <v-col
           v-if="!preloading"
-          :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
         >
           <!-- <v-row class="fill-height" column
                     justify="center" align="center"> -->
           <v-row class="fill-height" justify="center" align="center">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               Historical datasets can be very large and take a while to load,
               therefore aren't loaded by default.
             </v-col>
-            <v-col class="shrink pt-3">
+            <v-col class="flex-grow-0 pt-3">
               <BaseRectangleButton
                 buttonText="Load historical data"
                 materialIconName="refresh"
@@ -76,7 +76,7 @@
         <v-col v-show="showChart">
           <div
             :id="chartId"
-            :style="`height: ${$vuetify.breakpoint.xsOnly ? 300 : 350}px;`"
+            :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
           ></div>
         </v-col>
       </v-row>
@@ -272,8 +272,8 @@ export default {
       //   inputFormat: 'x',
       // };
 
-      // this.$vuetify.breakpoint.smAndDown ? this.seriesSettings.lineStrokeWidth = 4 : this.seriesSettings.lineStrokeWidth = 3;
-      this.seriesSettings.showLegend = this.$vuetify.breakpoint.smAndUp;
+      // this.$vuetify.display.smAndDown ? this.seriesSettings.lineStrokeWidth = 4 : this.seriesSettings.lineStrokeWidth = 3;
+      this.seriesSettings.showLegend = this.$vuetify.display.smAndUp;
       this.seriesSettings.numberFormat = this.fileObject.seriesNumberFormat
         ? this.fileObject.seriesNumberFormat
         : this.seriesSettings.numberFormat;

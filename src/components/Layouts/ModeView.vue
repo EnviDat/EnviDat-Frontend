@@ -1,16 +1,16 @@
 <template>
   <v-row align="center" justify="center" no-gutters>
-    <v-col v-if="compact" class="shrink text-body-2 mx-1 text-no-wrap">
+    <v-col v-if="compact" class="flex-grow-0 text-body-2 mx-1 text-no-wrap">
       {{ modeInfoPrefix }}: {{ modeTitle }}
     </v-col>
 
-    <v-col v-else class="shrink text-h6 mx-1 text-no-wrap">
+    <v-col v-else class="flex-grow-0 text-h6 mx-1 text-no-wrap">
       {{ modeInfo }}
     </v-col>
 
     <v-col
       v-if="modeLogo"
-      class="shrink mx-1"
+      class="flex-grow-0 mx-1"
       style="height: 34px; width: 34px;"
     >
       <a
@@ -25,7 +25,7 @@
       <v-img v-else :src="modeLogo" height="34" width="34" />
     </v-col>
 
-    <v-col class="shrink mx-1">
+    <v-col class="flex-grow-0 mx-1">
       <base-icon-button
         materialIconName="info_outline"
         :tooltipText="`${tooltipText} ${modeTitle}`"
@@ -36,7 +36,7 @@
       />
     </v-col>
 
-    <div v-if="closeCallback" class="shrink mx-1">
+    <div v-if="closeCallback" class="flex-grow-0 mx-1">
       <base-icon-button
         materialIconName="close"
         :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"

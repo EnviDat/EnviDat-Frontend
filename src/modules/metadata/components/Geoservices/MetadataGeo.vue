@@ -7,7 +7,7 @@
         </v-col>
 
         <v-col v-if="mapEditable"
-               class="shrink pl-2 pr-4">
+               class="flex-grow-0 pl-2 pr-4">
           <BaseRectangleButton
             :color="$vuetify.theme.themes.light.secondary"
             buttonText="Upload GeoJSON"
@@ -18,7 +18,7 @@
         </v-col>
 
         <v-col v-if="mapEditable"
-               class="shrink pl-2">
+               class="flex-grow-0 pl-2">
           <BaseIconButton
             :disabled="!undoButtonEnabled"
             materialIconName="undo"
@@ -30,7 +30,7 @@
         </v-col>
 
         <v-col v-if="mapEditable"
-                class="shrink pl-2">
+                class="flex-grow-0 pl-2">
           <BaseIconButton
             :disabled="!saveButtonEnabled"
             :loading="saveButtonInProgress"
@@ -42,7 +42,7 @@
           />
         </v-col>
 
-        <v-col class="shrink pl-2">
+        <v-col class="flex-grow-0 pl-2">
           <BaseIconButton
             v-if="showFullscreenButton"
             materialIconName="zoom_out_map"

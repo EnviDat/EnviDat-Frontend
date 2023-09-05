@@ -4,7 +4,7 @@
 
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.breakpoint.smAndDown }"
+                    :class="{ 'mx-1' : $vuetify.display.smAndDown }"
                     style="position: absolute; top: 0; right: 0; z-index: 2;"
                     material-icon-name="close"
                     icon-color="primary"
@@ -95,7 +95,7 @@
 
       <v-row no-gutters
               justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <BaseRectangleButton :disabled="!saveButtonEnabled"
                                 :loading="loading"
                                 :buttonText="labels.createButtonText"

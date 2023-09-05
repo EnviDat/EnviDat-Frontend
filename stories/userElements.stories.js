@@ -91,21 +91,21 @@ export const UserMenuViews = () => ({
         Click on the avatar
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user2" />
       </v-col>
 
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <UserMenu :navItems="userMenuItems"
                   :user-object="user3" />
       </v-col>
@@ -136,17 +136,17 @@ export const JazzIconsViews = () => ({
     <v-row >
 
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon"
              ref="jazzIcon">
       </v-col>
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon2"
              ref="jazzIcon2">
       </v-col>
 
-      <v-col class="shrink"
+      <v-col class="flex-grow-0"
              id="jazzIcon3"
              ref="jazzIcon3">
       </v-col>

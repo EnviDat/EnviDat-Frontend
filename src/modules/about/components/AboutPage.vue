@@ -17,7 +17,7 @@
             @click="catchTabClick(tab.name)"
             class="pa-0"
           >
-            {{ $vuetify.breakpoint.smAndUp ? tab.name : '' }}
+            {{ $vuetify.display.smAndUp ? tab.name : '' }}
 
             <v-icon>{{ tab.icon }}</v-icon>
           </v-tab>
@@ -321,7 +321,7 @@ export default {
       );
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'about/mission'
         : 'about/mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
@@ -330,7 +330,7 @@ export default {
       return renderMarkdown(this.policiesMarkdown);
     },
     policiesImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'about/policies'
         : 'about/policies_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
@@ -339,13 +339,13 @@ export default {
       return renderMarkdown(this.guidelinesMarkdown);
     },
     guidelineImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'about/guidelines'
         : 'about/guidelines_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     dmpImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'about/dmp'
         : 'about/dmp_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);

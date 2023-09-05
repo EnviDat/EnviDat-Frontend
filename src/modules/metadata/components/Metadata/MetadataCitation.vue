@@ -21,7 +21,7 @@
 
           <v-col v-for="link in citationLinks"
                   :key="link.text"
-                  class="shrink py-1 px-2" >
+                  class="flex-grow-0 py-1 px-2" >
 
             <base-rectangle-button margin-class="citationButton"
                                     color="secondary"
@@ -33,7 +33,7 @@
                                     :url="link.url" />
           </v-col>
 
-          <v-col class="shrink py-1 px-2">
+          <v-col class="flex-grow-0 py-1 px-2">
             <base-rectangle-button margin-class="citationButton"
                                    color="secondary"
                                    button-text="Copy"

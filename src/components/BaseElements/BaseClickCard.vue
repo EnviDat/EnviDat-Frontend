@@ -13,7 +13,7 @@
         <v-col class="py-0" cols="4" sm="5">
           <v-img
             class="imagezoom"
-            :aspect-ratio="$vuetify.breakpoint.xsOnly ? 1 : undefined"
+            :aspect-ratio="$vuetify.display.xsOnly ? 1 : undefined"
             :contain="contain"
             :height="height"
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
@@ -25,7 +25,7 @@
         <v-col class="px-0" cols="8" sm="7">
           <div
             class="px-2 px-sm-3 baseClickCardTitle"
-            :class="{ compactTitle: $vuetify.breakpoint.xl }"
+            :class="{ compactTitle: $vuetify.display.xl }"
           >
             {{ title }}
           </div>

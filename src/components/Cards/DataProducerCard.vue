@@ -3,7 +3,7 @@
     <v-card-media
       class="imagezoom"
       v-bind="{
-        [`height`]: this.$vuetify.breakpoint.smAndDown ? '200px' : '300px',
+        [`height`]: this.$vuetify.display.smAndDown ? '200px' : '300px',
       }"
       :src="dataCreatorImg"
     >

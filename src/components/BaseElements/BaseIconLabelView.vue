@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
+  <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
     <template v-slot:activator="{ on }">
       <v-row
         v-on="on"
@@ -11,7 +11,7 @@
         <v-col
           v-if="icon && iconTooltip"
           :class="alignClass"
-          class="iconCentering shrink"
+          class="iconCentering flex-grow-0"
           style="position: relative; top: 2px; max-width: 100%"
         >
           <img
@@ -117,7 +117,7 @@ export default {
         style += 'word-break: break-word;';
       }
 
-      if (this.$vuetify.breakpoint.smAndDown) {
+      if (this.$vuetify.display.smAndDown) {
         style += 'font-size: 0.85rem;';
       }
 

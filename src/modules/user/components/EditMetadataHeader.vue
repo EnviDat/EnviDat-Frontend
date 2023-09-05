@@ -114,7 +114,7 @@
 
         </v-col>
 
-        <v-col class="shrink px-4 text-body-1 "
+        <v-col class="flex-grow-0 px-4 text-body-1 "
                style="text-align: center;"
                cols="12"
                sm="2"

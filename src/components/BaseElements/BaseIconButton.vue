@@ -5,7 +5,7 @@
     @mouseleave="hoverBadge = false"
   >
     <v-tooltip
-      v-if="$vuetify.breakpoint.mdAndUp && tooltipText"
+      v-if="$vuetify.display.mdAndUp && tooltipText"
       v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
     >
       <template v-slot:activator="{ on }">

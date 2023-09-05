@@ -55,7 +55,7 @@ export default {
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.defaultTexture) {
+      if (this.$vuetify.display.mdAndUp && this.defaultTexture) {
         return `background-image: linear-gradient(0deg, ${gradient}), url(${this.defaultTexture});
                 background-position: center, center;
                 background-size: cover; background-repeat: initial; `;

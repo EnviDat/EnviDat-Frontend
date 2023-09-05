@@ -23,7 +23,7 @@
             {{ modalTitle }}
           </v-col>
 
-          <v-col class="shrink" >
+          <v-col class="flex-grow-0" >
 
             <BaseIconButton id="GenericFullScreenModalCloseButton"
                               material-icon-name="close"

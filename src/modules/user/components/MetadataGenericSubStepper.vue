@@ -29,7 +29,7 @@
     </v-row>
 
     <v-row justify="end" align="end">
-      <v-col class="shrink">
+      <v-col class="flex-grow-0">
         <!-- prettier-ignore -->
         <BaseRectangleButton buttonText="Next Step"
                              @clicked="nextStep" />

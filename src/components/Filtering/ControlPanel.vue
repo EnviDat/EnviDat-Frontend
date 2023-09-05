@@ -28,7 +28,7 @@
         </v-col>
 
         <v-col v-if="showSearch"
-               class="py-0 px-sm-1 shrink"
+               class="py-0 px-sm-1 flex-grow-0"
                 id="shareSearchResult" >
 
           <BaseIconButton style="opacity: 0.8;"
@@ -43,7 +43,7 @@
         </v-col>
 
         <v-col v-if="showSearch"
-               class="py-0 ml-sm-4 shrink">
+               class="py-0 ml-sm-4 flex-grow-0">
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"

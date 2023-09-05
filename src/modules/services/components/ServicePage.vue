@@ -15,7 +15,7 @@
         <ImgAndTextLayout style="position: relative; z-index: 0;"
                           :title="pageTitle"
                           :img="titleImage"
-                          :height="$vuetify.breakpoint.smAndDown ? 100 : 150" />
+                          :height="$vuetify.display.smAndDown ? 100 : 150" />
 
       </v-col>
 

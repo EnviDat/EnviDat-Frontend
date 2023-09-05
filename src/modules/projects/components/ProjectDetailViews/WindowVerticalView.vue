@@ -1,7 +1,7 @@
 <template>
   <v-card tile min-height="200">
     <v-row align="center">
-      <v-item-group v-model="window" mandatory class="shrink mr-2" tag="v-flex">
+      <v-item-group v-model="window" mandatory class="flex-grow-0 mr-2" tag="v-flex">
         <div v-if="!subProjects && showPlaceholder">
           <v-item v-for="index in 3" :key="'bullet_' + index">
             <div class="px-3 skeleton">

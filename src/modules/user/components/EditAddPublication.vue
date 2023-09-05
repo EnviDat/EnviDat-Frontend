@@ -24,7 +24,7 @@
       <v-col cols="12"
              md="auto"
              style="text-align: center;"
-              class="text-h6 px-md-4 shrink" >
+              class="text-h6 px-md-4 flex-grow-0" >
         Or
       </v-col>
 
@@ -55,7 +55,7 @@
         <BaseIconButton material-icon-name="add"
                         :fillColor="$vuetify.theme.themes.light.primary"
                         icon-color="white"
-                        :is-small="dense && $vuetify.breakpoint.mdAndUp"
+                        :is-small="dense && $vuetify.display.mdAndUp"
                         @clicked="addClick"
         />
 

@@ -21,7 +21,7 @@
       :newsTitle="welcomeInfo.newsTitle"
       :articlesTitle="welcomeInfo.articlesTitle"
     >
-      <template v-if="$vuetify.breakpoint.mdAndUp" v-slot:logo>
+      <template v-if="$vuetify.display.mdAndUp" v-slot:logo>
         <v-row no-gutters
                align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
@@ -76,7 +76,7 @@
 
       <template v-slot:search>
         <SearchBarView
-          v-if="$vuetify.breakpoint.smAndUp"
+          v-if="$vuetify.display.smAndUp"
           :labelText="welcomeInfo.searchLabelText"
           :buttonText="buttonText"
           :hasButton="true"
@@ -84,7 +84,7 @@
         />
 
         <SmallSearchBarView
-          v-if="$vuetify.breakpoint.xsOnly"
+          v-if="$vuetify.display.xsOnly"
           :labelText="welcomeInfo.smallSearchLabelText"
           :buttonText="buttonText"
           @clicked="catchSearchClicked"
@@ -131,7 +131,7 @@
             class="pa-2"
           >
             <BaseClickCard
-              :height="$vuetify.breakpoint.lgAndDown ? '65' : '90'"
+              :height="$vuetify.display.lgAndDown ? '65' : '90'"
               :title="card.title"
               :img="card.img"
               :color="card.darkColor"
@@ -157,7 +157,7 @@
               :loadingImg="fallbackCardImg"
               titleCssClass="compactBlogPostCard"
               subtitleCssClass="text-caption"
-              :height="$vuetify.breakpoint.lgAndDown ? '75' : '100'"
+              :height="$vuetify.display.lgAndDown ? '75' : '100'"
               @clicked="catchPostClick(post.postFile)"
             />
           </v-col>
@@ -277,7 +277,7 @@ export default {
     next(vm => {
       // console.log("landing beforeRouteEnter to: " + to + " from: " + from + " next: " + next);
       vm.$store.commit(SET_CURRENT_PAGE, LANDING_PAGENAME);
-      const bgimg = vm.$vuetify.breakpoint.smAndDown
+      const bgimg = vm.$vuetify.display.smAndDown
         ? vm.MobileBGImage
         : vm.PageBGImage;
       vm.$store.commit(SET_APP_BACKGROUND, bgimg);
@@ -349,7 +349,7 @@ export default {
     },
     showPolygonParticles() {
       return (
-        this.$vuetify.breakpoint.lgAndUp &&
+        this.$vuetify.display.lgAndUp &&
         this.effectsConfig.landingPageParticles &&
         !this.showDecemberParticles
       );
@@ -395,7 +395,7 @@ export default {
     },
     sloganButtonText() {
       /*
-      if (this.$vuetify.breakpoint.lgAndDown) {
+      if (this.$vuetify.display.lgAndDown) {
         return 'EXPLORE';
       }
 */
@@ -403,7 +403,7 @@ export default {
       return 'EXPLORE DATA';
     },
     sloganMoreButtonText() {
-      if (this.$vuetify.breakpoint.lgAndDown) {
+      if (this.$vuetify.display.lgAndDown) {
         return 'ABOUT';
       }
 

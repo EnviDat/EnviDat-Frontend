@@ -4,7 +4,7 @@
       <v-col cols="12" lg="10" offset-lg="1">
         <img-and-text-layout
           :img="missionImg"
-          :height="$vuetify.breakpoint.smAndDown ? 100 : 150"
+          :height="$vuetify.display.smAndDown ? 100 : 150"
           title="Research Projects"
         />
       </v-col>
@@ -130,13 +130,13 @@ export default {
       return this.config?.projectsConfig || {};
     },
     missionImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/mission'
         : 'about/mission_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);
     },
     creatorImg() {
-      const imgPath = this.$vuetify.breakpoint.mdAndUp
+      const imgPath = this.$vuetify.display.mdAndUp
         ? 'projects/data_creator'
         : 'projects/data_creator_small';
       return this.mixinMethods_getWebpImage(imgPath, this.$store.state);

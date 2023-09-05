@@ -47,10 +47,10 @@
       <v-row class="px-5">
         <v-col v-for="(state, index) in states"
                 :key="index"
-               :class="index >= states.length - 1 ? 'shrink' : ''"
+               :class="index >= states.length - 1 ? 'flex-grow-0' : ''"
                >
           <v-row style="align-items: center;">
-            <v-col class="shrink">
+            <v-col class="flex-grow-0">
               <v-chip :color="getStateColor(state)" small>
                 {{ state.name }}
               </v-chip>

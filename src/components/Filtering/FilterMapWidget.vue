@@ -135,10 +135,10 @@ export default {
   },
   computed: {
     smScreen() {
-      return this.$vuetify.breakpoint.smAndDown;
+      return this.$vuetify.display.smAndDown;
     },
     mdScreen() {
-      return this.$vuetify.breakpoint.mdAndDown;
+      return this.$vuetify.display.mdAndDown;
     },
     pinText() {
       return this.pinEnabled ? 'Hide single markers' : 'Show single markers';

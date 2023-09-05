@@ -5,13 +5,13 @@
        :style="`background-color: ${backgroundColor}`" >
 
     <div class="infoPanel ma-1 py-2 px-3 "
-         :class="`infoPanelGrid${$vuetify.breakpoint.mdAndUp ? '-md' : ''}`" >
+         :class="`infoPanelGrid${$vuetify.display.mdAndUp ? '-md' : ''}`" >
 
       <div class="instructions">
         <v-container fluid class="pa-0" >
           <v-row no-gutters>
             <v-col class="metadata_title text-h6 pa-0"
-                   :class="$vuetify.breakpoint.smAndDown ? 'compactTitle' : ''" >
+                   :class="$vuetify.display.smAndDown ? 'compactTitle' : ''" >
               {{ datasetTitleText }}
             </v-col>
           </v-row>

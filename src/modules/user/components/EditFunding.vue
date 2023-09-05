@@ -87,7 +87,7 @@
           />
         </v-col>
 
-        <v-col class="shrink px-1">
+        <v-col class="flex-grow-0 px-1">
           <BaseIconButton
             material-icon-name="clear"
             icon-color="red"

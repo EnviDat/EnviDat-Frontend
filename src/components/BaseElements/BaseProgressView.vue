@@ -5,7 +5,7 @@
       {{ text }}
     </v-col>
 
-    <v-col class="shrink pl-2">
+    <v-col class="flex-grow-0 pl-2">
       <v-progress-circular :value="progressPct"
                            :size="38"
                            :rotate="-90"

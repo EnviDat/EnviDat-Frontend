@@ -5,8 +5,8 @@
         class="text-center text headerTitle"
         cols="12"
         :class="{
-          'display-3': $vuetify.breakpoint.mdAndUp,
-          'text-h4': $vuetify.breakpoint.smAndDown,
+          'display-3': $vuetify.display.mdAndUp,
+          'text-h4': $vuetify.display.smAndDown,
         }"
       >
         {{ title }}

@@ -21,8 +21,8 @@
                     :enabledControls="enabledControls"
                     :useDynamicHeight="true"
                     :minMapHeight="310"
-                    :mapTopLayout="$vuetify.breakpoint.lgAndUp"
-                    :topFilteringLayout="$vuetify.breakpoint.mdAndDown"
+                    :mapTopLayout="$vuetify.display.lgAndUp"
+                    :topFilteringLayout="$vuetify.display.mdAndDown"
                     @onScroll="storeScroll"
                     :showSearch="true"
                     :isAuthorSearch="isAuthorSearch"
@@ -362,7 +362,7 @@ export default {
       );
     },
     reloadAmount() {
-      return this.$vuetify.breakpoint.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
+      return this.$vuetify.display.smAndUp ? this.vReloadAmount : this.vReloadAmountMobile;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -373,14 +373,14 @@ export default {
     enabledControls() {
       let enableds = this.preenabledControls;
 
-      if (this.$vuetify.breakpoint.smAndDown) {
+      if (this.$vuetify.display.smAndDown) {
         enableds = enableds.filter(i => i !== LISTCONTROL_COMPACT_LAYOUT_ACTIVE);
       }
 
       return enableds;
     },
     searchBarPlaceholder() {
-      if (this.$vuetify.breakpoint.smAndDown) {
+      if (this.$vuetify.display.smAndDown) {
         return this.searchPlaceholderTextSmall;
       }
 
@@ -412,7 +412,7 @@ export default {
       };
     },
     mapFilteringPossible() {
-      return this.$vuetify.breakpoint.smAndUp;
+      return this.$vuetify.display.smAndUp;
     },
     searchCount() {
       return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;

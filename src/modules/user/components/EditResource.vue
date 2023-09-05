@@ -7,7 +7,7 @@
     <!-- prettier-ignore -->
     <BaseIconButton id="EditResourceCloseButton"
                     class="ma-2"
-                    :class="{ 'mx-1': $vuetify.breakpoint.smAndDown }"
+                    :class="{ 'mx-1': $vuetify.display.smAndDown }"
                     style="position: absolute; top: 0; right: 0; z-index: 2"
                     material-icon-name="close"
                     icon-color="primary"
@@ -96,7 +96,7 @@
              class="pt-2">
         <v-col v-if="showImagePreview"
                cols="4"
-               class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
+               class="pt-3 pb-4 pr-4 flex-grow-0 flex-flex-grow-0-1">
 
           <div v-if="loadingImagePreview"
                class="skeleton skeleton-animation-shimmer"
@@ -167,7 +167,7 @@
                 class="pr-md-4">
 
           <v-row no-gutters >
-            <v-col class="shrink pt-2">
+            <v-col class="flex-grow-0 pt-2">
               <img class="customIcon"
                    :src="fileFormatIcon"
                    width="24"
@@ -196,7 +196,7 @@
                class="pt-2 pt-md-0">
 
           <v-row no-gutters >
-            <v-col class="shrink pt-2">
+            <v-col class="flex-grow-0 pt-2">
               <img class="customIcon"
                    :src="fileSizeIcon"
                    width="24"
@@ -278,7 +278,7 @@
       <v-row no-gutters
              class="pt-3 px-2"
              align="center">
-        <v-col class="shrink pl-1 pr-4">
+        <v-col class="flex-grow-0 pl-1 pr-4">
           <BaseIconSwitch :active="isPublicField"
                           :disabled="!editingRestrictingActive"
                           :materialIconName="isPublicField ? 'check_circle' : 'check_circle_outline'"
@@ -298,7 +298,7 @@
              class="px-2 pt-3"
              align="center">
 
-        <v-col class="shrink pl-1 pr-4">
+        <v-col class="flex-grow-0 pl-1 pr-4">
           <BaseIconSwitch :active="hasAllowedUsersField"
                           :disabled="!editingRestrictingActive"
                           materialIconName="lock_person"
@@ -342,7 +342,7 @@
       <v-row no-gutters
              class="pt-4"
              justify="end">
-        <v-col class="shrink">
+        <v-col class="flex-grow-0">
           <!-- prettier-ignore -->
           <BaseRectangleButton :disabled="!saveButtonEnabled"
                                :loading="loading"
