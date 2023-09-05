@@ -54,6 +54,7 @@ export default ({ mode }) => {
             vuetify({
               autoImport: true,
             }),
+            ViteRequireContext(),
             Unfonts({
               google: {
                 families: [
