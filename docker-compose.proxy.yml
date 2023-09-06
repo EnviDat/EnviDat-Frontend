@@ -2,6 +2,7 @@ version: '3'
 
 networks:
   net:
+    name: frontend-ckan-proxy
 
 services:
   proxy:
