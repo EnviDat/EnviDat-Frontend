@@ -141,6 +141,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
 import baseIconLableViewStories from '~/stories/baseIconLableView.stories';
 
 export default {
@@ -327,9 +328,9 @@ export default {
       cardTitle: 'Publication Information',
       publicationState: 'Publication State',
       visibilityState: 'Dataset visibility',
-      dataObjectIdentifier: 'Data Object Identifier',
+      dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
-      year: 'Year',
+      year: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
       fundingInformation: 'Funding Information',
       institution: 'Institution',
       grantNumber: 'Grant Number',

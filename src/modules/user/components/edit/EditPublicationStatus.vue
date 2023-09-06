@@ -103,13 +103,13 @@
           </v-col>
         </v-row>
 
-        <v-row class="text-body-2 pt-4 px-4">
+        <v-row class="text-body-2 pt-4 px-3">
 
           <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
                  cols="3"
-                 class="py-1"
+                 class="pa-1"
                   :key="`${index}_${field}`">
-            {{ field }}
+            {{ getReadableLabel(field) }}
           </v-col>
         </v-row>
 
@@ -137,7 +137,7 @@
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
-  import { metadataPublishedReadOnlyFields } from '@/factories/mappingFactory';
+  import { metadataPublishedReadOnlyFields, readablePublishedReadOnlyFields } from '@/factories/mappingFactory';
   import { DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 
 
@@ -206,6 +206,9 @@
       getStateText(state) {
         return this.stateTextMap.get(state)?.chipText || '';
       },
+      getReadableLabel(field) {
+        return this.readablePublishedReadOnlyFields[field];
+      },
     },
     data: () => ({
       possiblePublicationStates,
@@ -254,6 +257,7 @@
         instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest data.',
       },
       metadataPublishedReadOnlyFields,
+      readablePublishedReadOnlyFields,
     }),
     components: {
       BaseRectangleButton,

@@ -29,15 +29,21 @@ export const METADATA_FUNDING_TITLE = 'Funding Information';
 export const METADATA_LOCATION_TITLE = 'Geospatial Information';
 export const METADATA_RESOURCES_TITLE = 'Data and resources';
 
-export const EDIT_METADATA_MAIN_TITLE = 'Research Header Information';
+export const EDIT_METADATA_TITLE = 'Research Header Information';
+export const EDIT_METADATA_TITLE_LABEL = 'Research Dataset Title';
+export const EDIT_METADATA_URL_LABEL = 'Research Dataset Url';
 export const EDIT_METADATA_DESCRIPTION_TITLE = 'Research Data Description';
 export const EDIT_METADATA_KEYWORDS_TITLE = 'Research Data Keywords';
 export const EDIT_METADATA_AUTHORS_TITLE = 'Involved Authors';
+export const EDIT_METADATA_AUTHORS_LABEL = 'Authors';
 export const EDIT_METADATA_ADD_AUTHOR_TITLE = 'Add a New Author';
 
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORSLIST_TITLE = 'Author List Preview';
 export const EDIT_ORGANIZATION_TITLE = 'Organization for this Dataset';
+export const EDIT_METADATA_ORGANIZATION_LABEL = 'Organization';
+export const EDIT_METADATA_DOI_LABEL = 'Data Object Identifier';
+
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
@@ -47,6 +53,8 @@ export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
 export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
 export const EDIT_STEP_TITLE_MAIN_RELATED = 'Related Research';
 export const EDIT_STEP_TITLE_MAIN_PUBLICATION = 'Publication Information';
+export const EDIT_METADATA_PUBLISHER_LABEL = 'Publisher';
+export const EDIT_METADATA_PUBLICATION_YEAR_LABEL = 'Publication Year';
 
 export const EDIT_STEP_TITLE_SUB_HEADER = 'Header Information';
 export const EDIT_STEP_TITLE_SUB_DESC = 'Description';
@@ -63,5 +71,10 @@ export const DATE_PROPERTY_CREATED_TYPE = 'created';
 export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
 export const METADATA_TITLE_PROPERTY = 'metadataTitle';
 export const METADATA_URL_PROPERTY = 'metadataUrl';
+export const METADATA_AUTHORS_PROPERTY = 'authors';
+export const METADATA_ORGANIZATION_PROPERTY = 'organization';
+export const METADATA_DOI_PROPERTY = 'doi';
+export const METADATA_PUBLISHER_PROPERTY = 'publisher';
+export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
