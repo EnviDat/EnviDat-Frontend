@@ -1,5 +1,7 @@
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
 
+export const DOI_API_ACTIONS = 'DOI_API_ACTIONS';
+
 export const DOI_RESERVE = 'DOI_RESERVE';
 
 export const DOI_RESERVE_ACTION = () => {

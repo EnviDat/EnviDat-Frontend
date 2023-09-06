@@ -33,11 +33,11 @@
           </v-col>
 
           <v-col cols="12">
-            <div class="text-body-2">{{ labels.instructions }}</div>
+            <div class="text-body-1">{{ labels.instructions }}</div>
           </v-col>
         </v-row>
 
-        <v-row>
+        <v-row class="pt-4">
           <v-col v-for="(state, index) in pStatesAndArrows"
                  :key="`${index}_pState`"
                  :id="`activeStateIndex_${activeStateIndex}`">
@@ -98,14 +98,23 @@
 
         </v-row>
 
-        <v-row>
-          <v-col cols="12">
-            <div class="text-body-2">{{ labels.instructions2 }}</div>
+        <v-row class="text-body-1 highlight">
+          <v-col cols="12" v-html="labels.instructions2">
           </v-col>
+        </v-row>
+
+        <v-row class="text-body-2 pt-4 px-4">
 
           <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
+                 cols="3"
+                 class="py-1"
                   :key="`${index}_${field}`">
             {{ field }}
+          </v-col>
+        </v-row>
+
+        <v-row class="text-body-1">
+          <v-col cols="12" v-html="labels.instructions3">
           </v-col>
         </v-row>
 
@@ -129,6 +138,7 @@
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
   import { metadataPublishedReadOnlyFields } from '@/factories/mappingFactory';
+  import { DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 
 
   export default {
@@ -205,7 +215,7 @@
           infoText: 'Reserve DOI for Dataset',
           buttonIcon: 'fingerprint',
           buttonText: 'Reserve',
-          buttonEvent: 'reserveDoi',
+          buttonEvent: DOI_RESERVE,
           positionIndex: 2,
         }],
         ['reserved', {
@@ -213,7 +223,7 @@
           infoText: 'Request Dataset Publication',
           buttonIcon: 'newspaper',
           buttonText: 'Request',
-          buttonEvent: 'requestPublication',
+          buttonEvent: DOI_REQUEST,
           positionIndex: 4,
         }],
         ['pub_pending', {
@@ -237,11 +247,11 @@
       ]),
       labels: {
         cardTitle: 'Dataset Publication Status',
-        instructions: `Have you finished uploading data & resouces and entered all the metadata correctly?
+        instructions: `Have you finished uploading data & resouces and entered all the metadata as best as possible?
           Start publishing your dataset with reserving a DOI, when that's done.
           Request publication, it will be reviewd by admins and once approved it will be restigered at DataCite.`,
-        instructions2: `Please be aware that once you published some metadata can not be changed anymore.
-        If you have updates to your data you have to upload a newer version and make a clear naming and desription for the latest data.`,
+        instructions2: 'Please be aware once the <strong>dataset is published</strong> the following metadata information <strong>can NOT be changed anymore</strong>.',
+        instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest data.',
       },
       metadataPublishedReadOnlyFields,
     }),

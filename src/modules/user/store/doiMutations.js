@@ -13,8 +13,7 @@ import {
   DOI_PUBLISH,
   DOI_REQUEST,
   DOI_RESERVE,
-  DOI_RESERVED_PROPERTY,
-} from '@/modules/metadata/store/doiMutationsConsts';
+} from '@/modules/user/store/doiMutationsConsts';
 
 function baseDoiCommit(state) {
   state.doiLoading = true;
@@ -27,45 +26,52 @@ function baseDoiSuccess(state) {
   state.doiSuccess = true;
 }
 
-function baseDoiError(state, reason) {
+function baseDoiError(commit, state, reason) {
   state.doiLoading = false;
   state.doiError = reason;
 
-  const details = 'An error occurred while loading the organizations!';
+  const details = 'An error occurred when changing the publication status!';
   const errObj = getSpecificApiError(details, reason);
 
-  this.commit(ADD_USER_NOTIFICATION, errObj);
+  commit(ADD_USER_NOTIFICATION, errObj);
 }
 
 export default {
-
   [DOI_RESERVE](state, { key }) {
     baseDoiCommit(state);
     state[key] = null;
   },
   [`${DOI_RESERVE}_SUCCESS`](state, { key, value}) {
     baseDoiSuccess(state);
-    state[key] = value;
+    if (key) {
+      state[key] = value;
+    }
   },
   [`${DOI_RESERVE}_ERROR`](state, reason) {
-    baseDoiError(state, reason);
+    baseDoiError(this.commit, state, reason);
   },
   [DOI_REQUEST](state) {
     baseDoiCommit(state);
   },
-  [`${DOI_REQUEST}_SUCCESS`](state) {
+  [`${DOI_REQUEST}_SUCCESS`](state, { key, value }) {
     baseDoiSuccess(state);
+    if (key) {
+      state[key] = value;
+    }
   },
   [`${DOI_REQUEST}_ERROR`](state, reason) {
-    baseDoiError(state, reason);
+    baseDoiError(this.commit, state, reason);
   },
   [DOI_PUBLISH](state) {
     baseDoiCommit(state);
   },
   [`${DOI_PUBLISH}_SUCCESS`](state, { key, value }) {
     baseDoiSuccess(state);
+    if (key) {
+      state[key] = value;
+    }
   },
   [`${DOI_PUBLISH}_ERROR`](state, reason) {
-    baseDoiError(state, reason);
+    baseDoiError(this.commit, state, reason);
   },
 }

@@ -19,14 +19,18 @@ import {
 } from '@/factories/eventBus';
 
 import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
+import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
 
 import actions from './userActions';
 import editActions from './editActions';
 import createActions from './createActions';
+import doiActions from './doiActions';
 
 import mutations from './userMutations';
 import editMutations from './editMutations';
 import createMutations from './createMutations';
+import doiMutations from './doiMutations';
+
 
 const userState = {
   error: null,
@@ -61,6 +65,10 @@ const userState = {
   metadataCreationLoading: false,
   newMetadatasetName: null,
   metadataCreationError: null,
+  doiLoading: false,
+  [DOI_RESERVED_PROPERTY]: null,
+  doiSuccess: false,
+  doiError: null,
 };
 
 
@@ -95,10 +103,12 @@ export const user = {
     ...mutations,
     ...editMutations,
     ...createMutations,
+    ...doiMutations,
   },
   actions: {
     ...actions,
     ...editActions,
     ...createActions,
+    ...doiActions,
   },
 };

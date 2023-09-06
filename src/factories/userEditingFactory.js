@@ -248,7 +248,7 @@ export function getAllowedUsersString(userFullNameArray, envidatUsers) {
   return allowedUsers.join(',');
 }
 
-export function componentChangedEvent(updateObj, vm, storeDataFn) {
+export function componentChangedEvent(updateObj, vm) {
 
   const payload = {
     stepKey: updateObj.object,
@@ -273,5 +273,5 @@ export function componentChangedEvent(updateObj, vm, storeDataFn) {
     payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
   }
 
-  storeDataFn(payload);
+  return payload;
 }

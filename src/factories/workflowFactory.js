@@ -47,7 +47,7 @@ import CreateDataAndResources from '@/modules/user/components/create/CreateDataA
 import MetadataGenericSubStepper from '@/modules/user/components/MetadataGenericSubStepper.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 import MetadataCreationPublicationInfo from '@/modules/user/components/MetadataCreationPublicationInfo.vue';
-import MetadataEditingPublicationInfo from '@/modules/user/components/MetadataEditingPublicationInfo.vue';
+import MetadataEditingPublicationInfo from '@/modules/user/components/edit/MetadataEditingPublicationInfo.vue';
 
 import { defaultSwissLocation } from '@/factories/metaDataFactory';
 

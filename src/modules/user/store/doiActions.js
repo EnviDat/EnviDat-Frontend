@@ -10,22 +10,28 @@
 import axios from 'axios';
 
 import {
+  DOI_API_ACTIONS,
   DOI_PUBLISH,
   DOI_PUBLISH_ACTION,
   DOI_REQUEST,
   DOI_REQUEST_ACTION,
   DOI_RESERVE,
   DOI_RESERVE_ACTION, DOI_RESERVED_PROPERTY,
-} from '@/modules/metadata/store/doiMutationsConsts';
+} from '@/modules/user/store/doiMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
+import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
 
 
 export default {
+  async [DOI_API_ACTIONS]({ dispatch }, { data: { event, metadataId } }) {
+    // await dispatch(`${USER_NAMESPACE}/${event}`, metadataId);
+    await dispatch(event, metadataId);
+  },
   async [DOI_RESERVE]({ commit }, metadataId) {
     commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY })
 

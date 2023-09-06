@@ -16,7 +16,6 @@ import categoryCards from '@/store/categoryCards';
 import actions from './metadataActions';
 import mutations from './metadataMutations';
 import tags from './metadataTags';
-import { DOI_RESERVED_PROPERTY } from '@/modules/metadata/store/doiMutationsConsts';
 
 for (let i = 0; i < tags.length; i++) {
   const tag = tags[i];
@@ -86,10 +85,6 @@ const initialState = {
   authorPassedInfo: 'Sadly this author has passed away.',
   existingAuthors: [],
   existingKeywords: [],
-  doiLoading: false,
-  DOI_RESERVED_PROPERTY: null,
-  doiSuccess: false,
-  doiError: null,
 };
 
 export const metadata = {

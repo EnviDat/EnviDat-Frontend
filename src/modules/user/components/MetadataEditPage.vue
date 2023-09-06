@@ -71,6 +71,7 @@ import {
   SHOW_DIALOG,
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_PUBLICATION_STATE,
 } from '@/factories/eventBus';
 
 import {
@@ -138,6 +139,8 @@ import {
   initializeSteps,
   metadataEditingSteps,
 } from '@/factories/workflowFactory';
+
+import { DOI_API_ACTIONS } from '@/modules/user/store/doiMutationsConsts';
 
 
 export default {
@@ -375,17 +378,15 @@ export default {
     editComponentsChanged(updateObj) {
 
       const dataKey = updateObj.object;
-      // const data = updateObj.data;
+      const editPayload = componentChangedEvent(updateObj, this);
 
-      componentChangedEvent(updateObj, this, (payload) => {
+      // overwrite the action and the payload to fit the specific
+      // backend call to change the ownership of a dataset
+      const action = this.getUserAction(dataKey);
 
-        // overwrite the action and the payload to fit the specific
-        // backend call to change the ownership of a dataset
-        const action = this.getUserAction(dataKey);
+      // save the full dataObject it in the backend
+      this.$store.dispatch(`${USER_NAMESPACE}/${action}`, editPayload);
 
-        // save the full dataObject it in the backend
-        this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
-      });
 
       this.$nextTick(() => {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
@@ -525,6 +526,7 @@ export default {
       [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
       [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
       [EDITMETADATA_DATA_RESOURCE]: METADATA_EDITING_PATCH_RESOURCE,
+      [EDITMETADATA_PUBLICATION_STATE]: DOI_API_ACTIONS,
     },
   }),
 };

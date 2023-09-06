@@ -16,25 +16,19 @@
 
       <v-col cols="6">
 
-        <v-row >
-
-          <v-col >
-            <EditPublicationStatus v-bind="editPublicationStatusProps" />
-          </v-col >
-
-        </v-row>
-
         <v-row>
-
           <v-col >
-
-            <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
-            <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
-
           </v-col >
-
         </v-row>
+
+        <v-row >
+          <v-col >
+            <EditPublicationStatus v-bind="editPublicationStatusProps"
+                                   @clicked="catchPublicationStateChange"/>
+          </v-col >
+        </v-row>
+
       </v-col>
     </v-row>
 
@@ -64,20 +58,25 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapState } from 'vuex';
+
 import EditOrganization from '@/modules/user/components/EditOrganization.vue';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
-// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
+
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_FUNDING_INFO,
+  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_STATE,
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
+
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 
 export default {
@@ -122,6 +121,11 @@ export default {
     },
   },
   computed: {
+    ...mapState(USER_NAMESPACE, [
+      'doiLoading',
+      'doiSuccess',
+      'doiError',
+    ]),
     publicationsInfo() {
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
@@ -185,6 +189,8 @@ export default {
     editPublicationStatusProps() {
       return {
         ...this.publicationInfo,
+        loading: this.$store ? this.doiLoading : undefined,
+        error: this.$store ? this.doiError : undefined,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
@@ -200,13 +206,25 @@ export default {
     submitEdittedMetadata() {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
+    catchPublicationStateChange(event) {
+      console.log('catchPublicationStateChange');
+      console.log(event);
+      console.log(this.metadataId);
+
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_PUBLICATION_STATE,
+        data: {
+          event,
+          metadataId: this.metadataId,
+        },
+      });
+    },
   },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
   }),
   components: {
     EditPublicationStatus,
-    //  EditOrganizationTree,
     EditPublicationInfo,
     EditFunding,
     EditOrganization,

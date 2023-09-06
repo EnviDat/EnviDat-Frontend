@@ -42,13 +42,16 @@
             outlined
             dense
             readonly
-            :hint="mixinMethods_readOnlyHint('doi')"
+            hint="DOI can be changed at the Dataset Publication Status"
             :error-messages="validationErrors.doi"
             prepend-icon="fingerprint"
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
             :value="doiField"
           />
+<!--
+          :hint="mixinMethods_readOnlyHint('doi')"
+-->
         </v-col>
 
         <v-col>
@@ -77,14 +80,19 @@
             :label="labels.publisher"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('publisher')"
-            :hint="mixinMethods_readOnlyHint('publisher')"
+            readonly
+            hint="Publisher can't be changed"
             :error-messages="validationErrors.publisher"
             prepend-icon="public"
             @change="publisherField = $event"
             @input="validateProperty('publisher', $event)"
             :value="publisherField"
           />
+<!--
+          :readonly="mixinMethods_isFieldReadOnly('publisher')"
+            :hint="mixinMethods_readOnlyHint('publisher')"
+-->
+
         </v-col>
 
         <v-col cols="6">
