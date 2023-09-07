@@ -37,7 +37,9 @@
           </v-col>
         </v-row>
 
-        <v-row class="pt-4">
+        <v-row no-gutters
+               class="pt-4">
+
           <v-col v-for="(state, index) in pStatesAndArrows"
                  :key="`${index}_pState`"
                  :id="`activeStateIndex_${activeStateIndex}`">
@@ -106,14 +108,15 @@
         <v-row class="text-body-2 pt-4 px-3">
 
           <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
-                 cols="3"
+                 cols="6"
+                 md="3"
                  class="pa-1"
                   :key="`${index}_${field}`">
             {{ getReadableLabel(field) }}
           </v-col>
         </v-row>
 
-        <v-row class="text-body-1">
+        <v-row class="text-body-1 pt-4">
           <v-col cols="12" v-html="labels.instructions3">
           </v-col>
         </v-row>

@@ -12,6 +12,7 @@
 import { within } from '@storybook/testing-library';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
+import { mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
  export default {
@@ -39,24 +40,11 @@ import { possiblePublicationStates } from '@/factories/metaDataFactory';
    },
  }
 
-/*
- const Template = (args, {argTypes}) => ({
-   components: { EditPublicationStatus },
-   props: Object.keys(argTypes),
-   methods: {
-     logEvent(event) {
-       console.log(event);
-     },
-   },
-   template: `<EditPublicationStatus v-bind="$props"
-                                     @clicked="logEvent" />`,
- });
-*/
-
-export const DOIWorkflowInteraction = () => ({
+const Template = (args, {argTypes}) => ({
   components: { EditPublicationStatus },
-  template: `<EditPublicationStatus v-bind="editPublicationProps"
-                                    @clicked="catchClicked" /> `,
+  template: `<EditPublicationStatus v-bind="$props"
+                                     @clicked="catchClicked" />`,
+  props: Object.keys(argTypes),
   methods: {
     catchClicked(event) {
       // console.log(event);
@@ -103,10 +91,19 @@ export const DOIWorkflowInteraction = () => ({
     message: '',
     messageDetails: '',
     successMessageMap: new Map([
-      ['draft', 'Reserved a DOI'],
-      ['reserved', 'Requested publication'],
-      ['pub_pending', 'Requested publication'],
-      ['published', 'Published Dataset '],
-    ]),
-  }),
-})
+        ['draft', 'Reserved a DOI'],
+        ['reserved', 'Requested publication'],
+        ['pub_pending', 'Requested publication'],
+        ['published', 'Published Dataset '],
+      ]),
+    }),
+  });
+
+
+export const DOIWorkflowInteraction = Template.bind({});
+
+export const DOIWorkflowInteractionMobile = Template.bind({});
+DOIWorkflowInteractionMobile.parameters = mobileViewportParams;
+
+export const DOIWorkflowInteractionTablet = Template.bind({});
+DOIWorkflowInteractionTablet.parameters = tabletViewportParams;
