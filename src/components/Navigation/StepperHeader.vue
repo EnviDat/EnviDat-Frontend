@@ -1,60 +1,35 @@
 <template>
   <div id="StepperHeader">
-    <v-stepper
-      v-model="currentStep"
-      :value="stepNumber"
-      :height="height"
-      style="background: transparent; box-shadow: unset !important;"
-    >
-      <v-stepper-header :style="`height: ${height}px; `">
-        <template v-for="(step, index) in steps">
-          <v-stepper-step
-            :key="`step-${index}`"
-            :id="`step-${index}`"
-            :color="getStepIconColor(step, index)"
-            editable
-            edit-icon="check"
-            error-icon="error"
-            :complete="step.completed"
-            :step="index + 1"
-            :rules="[() => !step.error]"
-            class="py-0 px-3 my-0 mx-2 blackTextStepIcon"
-            style="border-radius: 4px;"
-            :style="
-              `background-color: ${getStepBackgroundColor(step)};
-                                   border: solid black ${
-                                     stepColor === 'white' ? 1 : 0
-                                   }px;`
-            "
-            @click="catchStepClick(step)"
-          >
-            <!--            <v-container fluid class="pa-0">
-            <v-row no-gutters>
-              <v-col class=""
-                      :cols="step.error ? 4 : undefined">
-                {{ step.title }}
-              </v-col>
-              <v-col v-if="step.error"
-                     class="">
-                <small>{{ step.error }}</small>
-              </v-col>
-            </v-row>
-            </v-container>-->
-            {{ step.title }}
-            <div v-if="step.error">
-              <small>{{ step.error }}</small>
-            </div>
-          </v-stepper-step>
 
-          <v-divider
-            v-if="index !== steps.length - 1"
-            :key="index"
-            color="accent"
-            class="mx-3"
-          />
-        </template>
-      </v-stepper-header>
-    </v-stepper>
+    <div class="stepperHeaderRow" >
+
+        <div v-for="(step, index) in stepsWithGaps"
+             :key="`step-${index}`"
+              :style="`flex-grow: ${step ? 0 : 2}; `"
+             class="py-1 py-md-0"
+        >
+
+            <v-divider v-if="!step && $vuetify.breakpoint.smAndUp"
+                       color="accent"
+                       class="mx-2 mx-md-5"
+                       style="align-self: center; "
+            />
+
+
+            <StepButton v-if="step"
+                        :id="`step-${index}`"
+                        :title="$vuetify.breakpoint.smAndUp ? step.title : ''"
+                        :active="isCurrentStep(step)"
+                        :complete="step.completed"
+                        :number="step.number"
+                        :error="step.error"
+                        @stepClick="catchStepClick(step.title)"
+            />
+
+        </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -76,7 +51,7 @@ export default {
   name: 'StepperHeader',
   props: {
     steps: Array,
-    stepNumber: Number,
+    currentStepIndex: Number,
     activeColor: {
       type: String,
       default: 'primary',
@@ -89,57 +64,63 @@ export default {
       type: String,
       default: 'white',
     },
-    height: {
-      type: Number,
-      default: 40,
+  },
+  computed: {
+    stepsWithGaps() {
+      const stepsAndGaps = [];
+      const amount = this.steps.length;
+      const gaps = (this.steps.length - 1)
+      let stepCount = 0;
+
+      for (let i = 0; i < amount + gaps; i++) {
+        let step = null;
+
+        if ((i + 1) % 2 !== 0) {
+          step = {
+            ... this.steps[stepCount],
+            number: (stepCount + 1),
+          };
+          stepCount++;
+        }
+
+        stepsAndGaps.push(step);
+      }
+
+      return stepsAndGaps;
+    },
+    currentStep() {
+      return this.steps[this.currentStepIndex] || null;
     },
   },
-  created() {
-    // +1 so that the steps icons are beginning with 1 not 0
-    this.currentStep = this.stepNumber + 1;
-  },
-  watch: {
-    stepNumber() {
-      this.currentStep = this.stepNumber + 1;
-    },
-  },
-  computed: {},
   methods: {
-    catchStepClick(step) {
-      this.$emit('stepClick', step.title);
+    isCurrentStep(step) {
+
+      const currentS = this.currentStep;
+      if (currentS) {
+        return currentS.title === step.title;
+      }
+
+      return false;
     },
-    getStepIconColor(step, index) {
-      if (this.currentStep === index + 1) {
-        return this.activeColor;
-      }
-
-      if (step.completed) {
-        return this.$vuetify.theme.themes.light.success;
-      }
-
-      if (step.error) {
-        return 'white';
-      }
-
-      return this.inactiveColor;
-    },
-    getStepBackgroundColor(step) {
-      if (step.error) {
-        return 'white';
-      }
-
-      return this.$vuetify.theme.themes.light[this.stepColor];
+    catchStepClick(title) {
+      this.$emit('stepClick', title);
     },
   },
-  data: () => ({
-    currentStep: -1,
-  }),
   components: {},
 };
 </script>
 
 <style scoped>
-.blackTextStepIcon > .v-stepper__step__step > .v-icon {
-  color: black !important;
-}
+
+  .stepperHeaderRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .blackTextStepIcon > .v-stepper__step__step > .v-icon {
+    color: black !important;
+  }
 </style>

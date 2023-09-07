@@ -26,6 +26,9 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
      const errStack = err.stack
        ? err.stack
        : 'No error stack available, please let the envidat team know of this Error!';
+
+     console.error(`err: ${msg} . Error Stack: ${errStack}`);
+     
      handleGenericError(storeRef, msg, info, errStack);
    };
 
@@ -36,7 +39,7 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
  // }
 
    const excludedDomains = [
-     process.env.VITE_ENVIDAT_STATIC_ROOT,
+     process.env.VITE_STATIC_ROOT,
      process.env.VITE_CONFIG_URL,
    ];
 

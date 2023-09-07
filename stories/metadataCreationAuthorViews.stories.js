@@ -24,7 +24,7 @@ import {
 } from '@/factories/eventBus';
 
 import EditMetadataAuthors from '@/modules/user/components/EditMetadataAuthors.vue';
-import EditAuthorList from '@/modules/user/components/EditAuthorList.vue';
+import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 import EditAddAuthor from '@/modules/user/components/EditAddAuthor.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
 
@@ -431,7 +431,6 @@ export const FullEditingAuthorViews = () => ({
 
     },
     saveAuthor(newAuthor) {
-      newAuthor.existsOnlyLocal = false;
       this.updateAuthors(newAuthor);
       this.cancelEditing();
     },

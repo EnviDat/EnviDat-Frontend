@@ -36,8 +36,9 @@ import {
   MAP_ZOOM_CENTER,
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
+  EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
-
+import { defaultSwissLocation, defaultWorldLocation } from '@/factories/metaDataFactory';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -238,7 +239,7 @@ export default {
       }
     },
     setupMap() {
-/*
+      /*
       if (this.isGcnet) {
         // Disable editing
         this.isMapEditable = false;
@@ -382,6 +383,7 @@ export default {
         drawMarker: true,
         drawPolygon: true,
         drawRectangle: true,
+        drawText: false,
         editMode: true,
         position: 'topright',
         drawPolyline: false,
@@ -399,24 +401,88 @@ export default {
         this.triggerGeometryEditEvent();
       });
 
-      // // Add custom toolbar
-      // this.map.pm.Toolbar.createCustomControl({
-      //   name: "add_global_geom",
-      //   block: "custom",
-      //   title: "Add Global Geometry",
-      //   className: "marker-icon marker-icon-middle material-icons language",
-      //   onClick: this.tempFunction,
-      //   toggle: false,
-      // });
+      // Add event listener for dropping files
+      this.map.getContainer().addEventListener('drop', event => {
+        event.preventDefault();
+
+        // Get dropped files
+        const files = event.dataTransfer.files;
+
+        // Loop through each dropped file
+        for (const file of files) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            // Attempt GeoJSON
+            try {
+              const geojson = JSON.parse(reader.result);
+              this.map.addLayer(geoJSON(geojson));
+              this.triggerGeometryEditEvent();
+            } catch {
+              eventBus.emit(
+                EDITMETADATA_DATA_GEO_MAP_ERROR,
+                'Could not load file. Is it GeoJSON?',
+              );
+            }
+            // Attempt KML, requires a plugin (wait for user request)
+            // try {
+            //   const geojson = JSON.parse(reader.result);
+            //   this.map.addLayer(geoJSON(geojson));
+            //   this.triggerGeometryEditEvent()
+            // } catch {
+            //   console.error('Could not load file. Is it GeoJSON?')
+            // }
+          };
+          reader.readAsText(file);
+          // }
+        }
+      });
+      // Prevent default behavior for dragover and dragenter events
+      this.map.getContainer().addEventListener('dragover', event => {
+        event.preventDefault();
+      });
+      this.map.getContainer().addEventListener('dragenter', event => {
+        event.preventDefault();
+      });
+
+      // Add custom buttons
+      this.map.pm.Toolbar.createCustomControl({
+        name: 'add_swiss_geom',
+        block: 'custom',
+        title: 'Add Switzerland Geom',
+        className: 'material-icons add_box swiss',
+        color: 'red',
+        onClick: () => {
+          this.addPredefinedGeomToMap('swiss');
+        },
+        toggle: false,
+      });
+      this.map.pm.Toolbar.createCustomControl({
+        name: 'add_world_geom',
+        block: 'custom',
+        title: 'Add World Geom',
+        className: 'material-icons add_box language',
+        color: 'red',
+        onClick: () => {
+          this.addPredefinedGeomToMap('world');
+        },
+        toggle: false,
+      });
     },
     catchGcnetStationClick(stationAlias) {
       eventBus.emit(GCNET_PREPARE_DETAIL_CHARTS, stationAlias);
     },
-    // tempFunction() {
-    //   const geoms = this.map.pm.getGeomanLayers()
-    //   console.log(geoms);
-    //   console.log(geoms[0].feature.geometry.coordinates);
-    // },
+    addPredefinedGeomToMap(type) {
+      const layerArray = this.map.pm.getGeomanLayers();
+      const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
+
+      if (type === 'swiss') {
+        geoJSONArray.push(defaultSwissLocation);
+      } else if (type === 'world') {
+        geoJSONArray.push(defaultWorldLocation)
+      }
+
+      eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);
+    },
   },
   watch: {
     opacity() {
@@ -451,5 +517,9 @@ export default {
   bottom: 20px;
   right: 8px;
   z-index: 10000;
+}
+.swiss {
+  background-color: red;
+  color: red;
 }
 </style>

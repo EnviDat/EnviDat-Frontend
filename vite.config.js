@@ -7,7 +7,7 @@ import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
-import { VitePluginFonts } from 'vite-plugin-fonts';
+import Unfonts from 'unplugin-fonts/vite'
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
@@ -48,7 +48,9 @@ export default ({ mode }) => {
     return defineConfig({
         plugins: [
             vue(),
-            eslint(),
+            eslint({
+              exclude: ['/virtual:/**', 'node_modules/**'],
+            }),
             ViteRequireContext(),
             Components({
                 resolvers: [
@@ -56,7 +58,7 @@ export default ({ mode }) => {
                   VuetifyResolver(),
                 ],
             }),
-            VitePluginFonts({
+            Unfonts({
               google: {
                 families: [
                   'Baskervville',
@@ -93,26 +95,30 @@ export default ({ mode }) => {
               { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-              { find: 'vue', replacement: 'vue/dist/vue.min.js' },
+              { find: 'vue', replacement: `vue/dist/vue.${ isProd ? 'min' : 'esm' }.js` },
             ],
         },
         build: {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
           cssCodeSplit: true,
-          minify: true,
-          // sourcemap: true,
+          minify: isProd,
+          sourcemap: !isProd,
           emptyOutDir: true,
-          rollupOptions: {
+          rollupOptions: isProd ? {
             output: {
               // eslint-disable-next-line consistent-return
               manualChunks: (id) => {
                 if (id.includes('skeleton-placeholder')) {
                   return 'vendor_skeleton';
                 }
+/*
+                Had to be removed, it caused import errors, when the vendor_leaflet.js tried
+                to import something from the vendors.js
                 if (id.includes('leaflet')) {
                   return 'vendor_leaflet';
                 }
+*/
                 if (id.includes('src/factories')) {
                   return 'envidat_factories';
                 }
@@ -143,6 +149,12 @@ export default ({ mode }) => {
                 if (id.includes('amchart') || id.includes('uplot')) {
                   return 'vendor_charts';
                 }
+                if (id.includes('uppy')) {
+                  return 'vendor_uppy';
+                }
+                if (id.includes('core-js')) {
+                  return 'vendor_core_js';
+                }
 
                 // all other node_modules
                 if (id.includes('node_modules')) {
@@ -150,7 +162,7 @@ export default ({ mode }) => {
                 }
               },
             },
-          },
+          } : {},
           define: {
             'import.meta.env.VITE_VERSION': JSON.stringify(version),
           },

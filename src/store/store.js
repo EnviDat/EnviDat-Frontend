@@ -32,9 +32,6 @@ import {
 import globalMethods from '@/factories/globalMethods';
 import categoryCards from './categoryCards';
 
-const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/);
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
-
 const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
 const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
@@ -57,7 +54,7 @@ const initialState = {
   // use a './' before the img for the img name for the local path
   appBGImage: '',
   webpAssets: null,
-  jpgAssets,
+  jpgAssets: null,
   cardBGImages: null,
   iconImages,
   /**

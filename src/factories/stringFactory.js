@@ -57,6 +57,27 @@ export function stripMarkdown(markdownString, stripHtml = false) {
   return strippedString;
 }
 
+export function getSOLRStringForElements(property, elements, elementProperty = undefined) {
+  let query = `${property}:(`; // 'id:(';
+  const objectProperty = elementProperty || property;
+  
+  for (let i = 0; i < elements.length; i++) {
+    const element = elements[i];
+    let entry = element;
+    
+    if (typeof element === 'object') {
+      entry = element[objectProperty];
+    }
+
+    query += `${entry} OR `;
+  }
+
+  // cut away the last " OR "
+  query = `${query.substring(0, query.length - 4)})`;
+
+  return query;
+}
+
 export function extractBodyIntoUrl(url, body) {
   const keys = Object.keys(body);
 

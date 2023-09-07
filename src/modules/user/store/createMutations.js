@@ -17,16 +17,18 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { extractError } from '@/modules/user/store/mutationFactory';
+import { createErrorMessage, updateResources } from '@/modules/user/store/mutationFactory';
 
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_RESOURCE_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import { updateResource } from '@/factories/userEditingFactory';
+import {
+  cleanResourceForFrontend,
+  getFrontendJSONForStep,
+} from '@/factories/mappingFactory';
 
-import { cleanResourceForFrontend, getFrontendJSON } from '@/factories/mappingFactory';
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -35,20 +37,25 @@ import {
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
   METADATA_UPLOAD_FILE_SUCCESS,
+  METADATA_CREATION_DATASET,
+  METADATA_CREATION_DATASET_SUCCESS,
+  METADATA_CREATION_DATASET_ERROR,
+  METADATA_UPLOAD_FILE_ERROR,
 } from './userMutationsConsts';
 
 
 export default {
   [METADATA_CREATION_RESOURCE](state) {
-    // resource.loading = true;
-    state.uploadLoading = true;
+    state.uploadNewResourceLoading = true;
     state.uploadResource = null;
-
+    state.uploadError = null;
   },
   [METADATA_CREATION_RESOURCE_SUCCESS](state, { resource, stepKey, message }) {
 
+    state.uploadNewResourceLoading = false;
+
     // convert properties and stringified json to match the frontend structure
-    resource = getFrontendJSON(stepKey, resource);
+    resource = getFrontendJSONForStep(stepKey, resource);
     resource = cleanResourceForFrontend(resource);
 
     // make resource selectable
@@ -64,7 +71,7 @@ export default {
     state.uploadResource = resource;
     state.metadataInEditing[stepKey] = resource;
 
-    updateResource(this, state, resource)
+    updateResources(this, state, resource)
 
     eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
@@ -74,27 +81,61 @@ export default {
 
   },
   [METADATA_CREATION_RESOURCE_ERROR](state, reason) {
-    state.uploadLoading = false;
 
-    extractError(this, reason);
+    state.uploadNewResourceLoading = false;
+
+    const errorObj = createErrorMessage(reason);
+    state.uploadError = {
+      message: errorObj.message,
+      details: errorObj.errorDetails,
+    };
+
   },
   [METADATA_UPLOAD_FILE_INIT](state, metadataId) {
     state.uploadMetadataId = metadataId;
   },
-  [METADATA_UPLOAD_FILE](state, { fileId, key}) {
-    state.uploadFileId = fileId;
+  [METADATA_UPLOAD_FILE](state, key) {
+    state.uploadLoading = true;
     state.uploadKey = key;
   },
   [METADATA_UPLOAD_FILE_SUCCESS](state) {
     state.uploadLoading = false;
-    state.uploadFileId = null;
     state.uploadKey = null;
-    state.uploadMetadataId = null;
   },
+  [METADATA_UPLOAD_FILE_ERROR](state, reason) {
+    state.uploadLoading = false;
+    state.uploadError = reason;
+  },
+  [METADATA_CREATION_DATASET](state) {
+    state.metadataCreationLoading = true;
+    state.newMetadatasetName = null;
+    state.metadataCreationError = null;
+  },
+  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset, message }) {
+    state.metadataCreationLoading = false;
+
+    // convert properties and stringified json to match the frontend structure
+    // const fDataset = getFrontendJSONNewDataset(dataset);
+
+    state.newMetadatasetName = dataset.name;
+
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
 /*
-  [METADATA_UPLOAD_FILE_ERROR](state, { fileId, key}) {
-    state.uploadFileId = fileId;
-    state.uploadKey = key;
-  },
+    setTimeout(() => {
+      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
+    }, state.metadataSavingMessageTimeoutTime);
 */
+
+  },
+  [METADATA_CREATION_DATASET_ERROR](state, reason) {
+    state.metadataCreationLoading = false;
+
+    const errorObj = createErrorMessage(reason);
+    state.metadataCreationError = {
+      message: errorObj.message,
+      details: errorObj.errorDetails,
+    };
+
+  },
 };

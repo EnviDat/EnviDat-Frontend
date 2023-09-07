@@ -63,8 +63,7 @@ export function getModeData(mode) {
 
 function mergedExtraTags(modeObj, tags) {
   const mergedTags = [...tags, ...modeObj.extraTags];
-  const uniqueArrayOfTags = mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-  return uniqueArrayOfTags;
+  return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 }
 
 export function getTagsMergedWithExtras(mode, tags) {

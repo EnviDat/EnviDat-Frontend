@@ -14,7 +14,7 @@
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
                     @clickedCard="catchMetadataClicked"
-                   :prePinnedIds="selectedPins"
+                    :prePinnedIds="selectedPins"
                     @pinnedIds="catchPinnedIds"
                     :mode="mode"
                     :defaultListControls="defaultControls"
@@ -472,7 +472,6 @@ export default {
 <style scoped>
 
   .stickyFilterBar {
-    position: -webkit-sticky;
     position: sticky;
     top: 50px;
     z-index: 1000;

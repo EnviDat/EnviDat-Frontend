@@ -37,11 +37,11 @@ export const EDIT_METADATA_ADD_AUTHOR_TITLE = 'Add a New Author';
 
 export const EDIT_METADATA_RESOURCES_TITLE = 'Select a Resource for Editing';
 export const EDIT_METADATA_AUTHORSLIST_TITLE = 'Author List Preview';
-export const EDIT_ORGANIZATION_TITLE = 'Organization(s) for this Dataset';
+export const EDIT_ORGANIZATION_TITLE = 'Organization for this Dataset';
 export const EDIT_METADATA_RELATEDPUBLICATIONS_TITLE = 'Related Publications';
 export const EDIT_METADATA_ADD_PUBLICATION_TITLE = 'Add a Related Publications';
 export const EDIT_METADATA_RELATED_DATASETS_TITLE = 'Related Datasets';
-export const EDIT_METADATA_GEODATA_TITLE = 'Editing Geospatial Information';
+export const EDIT_METADATA_GEODATA_TITLE = 'Geospatial Information about the research data';
 
 export const EDIT_STEP_TITLE_MAIN_METADATA = 'Metadata';
 export const EDIT_STEP_TITLE_MAIN_RESOURCES = 'Data & Resources';
@@ -56,3 +56,12 @@ export const EDIT_STEP_TITLE_SUB_AUTHORS = 'Authors';
 export const EDIT_STEP_TITLE_SUB_DATA = 'Manage Resources';
 export const EDIT_STEP_TITLE_SUB_DATES = 'Data License & Time';
 export const EDIT_STEP_TITLE_SUB_GEO = 'Geospatial Information';
+export const DATE_PROPERTY_DATE_TYPE = 'dateType';
+export const DATE_PROPERTY_START_DATE = 'dateStart';
+export const DATE_PROPERTY_END_DATE = 'dateEnd';
+export const DATE_PROPERTY_CREATED_TYPE = 'created';
+export const DATE_PROPERTY_COLLECTED_TYPE = 'collected';
+export const METADATA_TITLE_PROPERTY = 'metadataTitle';
+export const METADATA_URL_PROPERTY = 'metadataUrl';
+
+export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';

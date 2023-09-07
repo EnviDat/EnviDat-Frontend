@@ -38,7 +38,7 @@
 
           <v-col v-if="resourceUploadActive"
                  cols="12">
-            <EditDropResourceFiles :metadataId="metadataId" />
+            <EditDropResourceFiles v-bind="editDropResourceObject" />
 <!--
             No need to listen to events from the component, events are emitted from uppy directly
 -->
@@ -66,6 +66,7 @@
       </v-col>
     </v-row>
 
+<!--
     <v-snackbar
         :value="!!uploadProgessText"
         bottom
@@ -75,6 +76,7 @@
       {{ uploadProgessText }}
 
     </v-snackbar>
+-->
 
   </v-container>
 </template>
@@ -90,15 +92,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters, mapState } from 'vuex';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
   OPEN_TEXT_PREVIEW,
   SAVE_EDITING_RESOURCE,
-  UPLOAD_ERROR,
   UPLOAD_STATE_UPLOAD_COMPLETED,
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
+  UPLOAD_STATE_RESET,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -108,7 +111,6 @@ import EditDropResourceFiles from '@/modules/user/components/EditDropResourceFil
 import EditResourcePasteUrl from '@/modules/user/components/EditResourcePasteUrl.vue';
 import EditResource from '@/modules/user/components/EditResource.vue';
 import EditResourceRedirect from '@/modules/user/components/EditResourceRedirect.vue';
-// import EditMultiDropResourceFiles from '@/modules/user/components/EditMultiDropResourceFiles.vue';
 
 import {
   getUppyInstance,
@@ -129,7 +131,6 @@ import {
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
-import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
@@ -149,6 +150,14 @@ export default {
     resources: {
       type: Array,
       default: () => [],
+    },
+    dataLicenseTitle: {
+      type: String,
+      default: undefined,
+    },
+    dataLicenseUrl: {
+      type: String,
+      default: undefined,
     },
 /*
     metadataId: {
@@ -193,7 +202,8 @@ export default {
     subscribeOnUppyEvent('upload', this.uploadStarted);
     subscribeOnUppyEvent('progress', this.uploadProgress);
     subscribeOnUppyEvent('complete', this.uploadCompleted);
-    subscribeOnUppyEvent('error', this.uploadError);
+    subscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    subscribeOnUppyEvent('error', this.uploadUppyError);
 
     this.$nextTick(() => {
       this.loadEnvidatUsers();
@@ -203,7 +213,8 @@ export default {
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
     unSubscribeOnUppyEvent('progress', this.uploadProgress);
     unSubscribeOnUppyEvent('complete', this.uploadCompleted);
-    unSubscribeOnUppyEvent('error', this.uploadError);
+    unSubscribeOnUppyEvent('cancel-all', this.cancelUpload);
+    unSubscribeOnUppyEvent('error', this.uploadUppyError);
   },
   computed: {
     ...mapState(['config']),
@@ -211,7 +222,24 @@ export default {
       'user',
       'userLoading',
     ]),
-    ...mapState(USER_NAMESPACE, ['envidatUsers']),
+    ...mapState(USER_NAMESPACE, [
+      'envidatUsers',
+      'uploadError',
+    ]),
+    resourceUploadError() {
+      if (this.$store) {
+        return this.uploadError;
+      }
+
+      return null;
+    },
+    allEnviDatUsers() {
+      if (this.$store) {
+        return this.envidatUsers;
+      }
+
+      return undefined;
+    },
     resourceUploadActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
@@ -232,6 +260,8 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
+        dataLicenseTitle: this.dataLicenseTitle,
+        dataLicenseUrl: this.dataLicenseUrl,
         resourcesConfig: {
           downloadActive: false,
         },
@@ -261,7 +291,15 @@ export default {
         ...this.selectedResource,
         ...mergedSize,
         userEditMetadataConfig,
-        envidatUsers: this.envidatUsers,
+        envidatUsers: this.allEnviDatUsers,
+      };
+    },
+    editDropResourceObject() {
+      return {
+        metadataId: this.metadataId,
+        legacyUrl: this.linkAddNewResourcesCKAN,
+        error: this.resourceUploadError?.message || this.uppyError?.name,
+        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
@@ -291,12 +329,14 @@ export default {
           });
       }
     },
-    uploadStarted({ id, fileIDs }) {
+    uploadStarted() {
+    // uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
-      console.log(`Starting upload ${id} for files ${fileIDs}`);
+      // console.log(`Starting upload ${id} for files ${fileIDs}`);
 
+      this.uppyError = null;
       this.uploadProgessText = 'Starting upload file';
       this.uploadProgressIcon = 'check_box_outline_blank';
 
@@ -313,21 +353,16 @@ export default {
       const oks = result.successful?.length || 0;
       const fails = result.failed?.length || 0;
 
-      console.log('successful files:', result.successful)
-      console.log('failed files:', result.failed)
+      // console.log('successful files:', result.successful)
+      // console.log('failed files:', result.failed)
 
       let message = '';
-/*
-      let uploadURL = null;
-*/
+
       if (oks > 0) {
         message += `${oks} uploads successful`;
         this.uploadProgressIcon = 'check_circle';
-
-/*
-        uploadURL = result.successful[0]?.uploadURL || null;
-*/
       }
+
       if (fails > 0) {
         message += `${fails} failed uploads`;
         this.uploadProgressIcon = 'report_gmailerrorred';
@@ -337,19 +372,8 @@ export default {
 
       this.uploadProgessText = message;
 
-
-/*
-      if (uploadURL) {
-        await updateResourceWithFileUrl(uploadURL, this.$store);
-        const resources = this.$store?.getters[`${USER_NAMESPACE}/resources`];
-
-        console.log('after updateResourceWithFileUrl')
-        console.log(resources)
-      }
-*/
-
       // reset uppy to be able to upload another file
-      this.resetUppy()
+      this.resetUppy();
 
       // resource exists already, get it from uploadResource
       const newRes = this.$store?.getters[`${USER_NAMESPACE}/uploadResource`];
@@ -359,20 +383,21 @@ export default {
       }, 500);
 
     },
-    uploadError(error) {
-/*
-      console.log('failed files:', error)
-*/
+    uploadUppyError(error) {
+      this.uppyError = error;
 
       this.uploadProgessText = `Upload failed ${error}`;
       this.uploadProgressIcon = 'report_gmailerrorred';
 
-      const uppy = getUppyInstance();
-      uppy.cancelAll({ reason: error});
-
-      eventBus.emit(UPLOAD_ERROR, { error });
+      eventBus.emit(UPLOAD_STATE_RESET);
+    },
+    cancelUpload() {
+      this.resetUppy();
     },
     resetUppy() {
+      eventBus.emit(UPLOAD_STATE_RESET);
+      this.uppyError = null;
+
       const uppy = getUppyInstance();
       const files = uppy.getFiles();
       if (files.length === 1) {
@@ -407,18 +432,16 @@ export default {
       eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
     showFullScreenImage(url) {
-      if (url) {
-        this.$emit('previewImageClicked', this.url);
-        eventBus.emit(OPEN_TEXT_PREVIEW, this.url);
-      }
+      eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
-    envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    envidatDomain: import.meta.env.VITE_API_ROOT,
     uploadProgessText: null,
     uploadProgressIcon: '',
+    uppyError: null,
     editResourceRedirectText: `Editing metadata and uploading resources is not available right now.
                     <br />
                     Please edit resources via the legacy website by clicking on

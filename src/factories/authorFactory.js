@@ -584,3 +584,29 @@ export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
 
   return authors;
 }
+
+export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
+  
+  const canEnhance = (authorMap && Object.keys(authorMap).length > 0);
+  if (!canEnhance || authors?.length <= 0) {
+    return authors;
+  }
+  
+  const enhancedAuthors = [];
+
+  for (let i = 0; i < authors.length; i++) {
+    const auth = authors[i];
+    const key = getAuthorKey(auth);
+    const existingAuthor = authorMap[key];
+
+    let enhanced = auth;
+
+    if (existingAuthor) {
+      enhanced = mergeEditingAuthor(auth, existingAuthor);
+    }
+
+    enhancedAuthors.push(enhanced);
+  }
+
+  return enhancedAuthors;
+}

@@ -131,6 +131,13 @@ export default {
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
+  created() {
+    this.blogModuleLoaded = !!this.$store?.state?.blog;
+
+    this.$store?.watch((state) => state.blog,(value) => {
+      this.blogModuleLoaded = !!value;
+    });
+  },
   beforeMount() {
     this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
 
@@ -157,7 +164,7 @@ export default {
       'postContent',
     ]),
     showBlogPost() {
-      return this.post && this.postContent;
+      return !this.loadingPost && this.post && this.postContent;
     },
     blogHeaderTitle() {
       if (this.showBlogPost) {
@@ -223,6 +230,7 @@ export default {
     PageBGImage: 'app_b_browsepage',
     fallbackCardImg: null,
     pageIntroText: 'The EnviDat blog page provides news and information from the EnviDat team. Click on a card to read the blog post, click the close icon in the top right to go back to the overview.',
+    blogModuleLoaded: false,
   }),
 };
 </script>

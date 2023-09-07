@@ -18,9 +18,30 @@
 
           <DragDrop :uppy="uppy" />
 
+        </v-col>
+
+        <v-col cols="12">
           <StatusBar :uppy="uppy" />
+        </v-col>
+
+        <v-col v-show="error"
+               cols="12"
+                class="py-0">
+          <BaseStatusLabelView :status-text="error"
+                               :expanded-text="errorDetails"
+                               status-icon="error"
+                               status-color="error"
+                               />
+        </v-col>
+
+        <v-col v-show="error"
+               cols="12"
+               class="text-body-1"
+                v-html="legacyInstruction">
 
         </v-col>
+
+
       </v-row>
 
       <v-row class="px-5">
@@ -73,20 +94,17 @@ import {
   StatusBar,
 } from '@uppy/vue';
 
-import '@uppy/core/dist/style.css';
-import '@uppy/drag-drop/dist/style.css';
-import '@uppy/status-bar/dist/style.css';
+import '@uppy/core/dist/style.min.css';
+import '@uppy/drag-drop/dist/style.min.css';
+import '@uppy/status-bar/dist/style.min.css';
 
-/*
-import Uppy, { debugLogger } from '@uppy/core';
-import Tus from '@uppy/tus';
-*/
 import { destroyUppyInstance, getUppyInstance } from '@/factories/uploadFactory';
 import {
   eventBus,
   UPLOAD_STATE_RESET,
   UPLOAD_STATE_RESOURCE_CREATED,
-  UPLOAD_STATE_UPLOAD_COMPLETED, UPLOAD_STATE_UPLOAD_PROGRESS,
+  UPLOAD_STATE_UPLOAD_COMPLETED,
+  UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
 } from '@/factories/eventBus';
 
@@ -95,6 +113,12 @@ export default {
   name: 'EditDropResourceFiles',
   props: {
     metadataId: String,
+    legacyUrl: {
+      type: String,
+      default: undefined,
+    },
+    error: String,
+    errorDetails: String,
   },
   created() {
     eventBus.on(UPLOAD_STATE_RESET, this.resetState);
@@ -104,6 +128,7 @@ export default {
     eventBus.on(UPLOAD_STATE_UPLOAD_COMPLETED, this.changeState);
   },
   mounted() {
+    this.resetState();
   },
   beforeDestroy() {
     eventBus.off(UPLOAD_STATE_RESET, this.resetState);
@@ -117,6 +142,9 @@ export default {
   computed: {
     uppy () {
       return getUppyInstance(this.metadataId, this.$store);
+    },
+    legacyInstruction() {
+      return `Please retry uploading, if it still doesn't work please let us know! And give it a try via the <a href="${this.legacyUrl}" target="_blank">legacy website </a>. To upload a new file cancel it first via the little close-icon (x).`;
     },
   },
   methods: {
@@ -158,17 +186,28 @@ export default {
     },
     resetState() {
       this.currentState = null;
+      this.states = null;
+
+      this.$nextTick(() => {
+        this.states = this.initStates;
+      })
     },
     changeState(event) {
-      console.log('changeState');
-      const { id } = event;
-      console.log(event);
+      if (!this.states) {
+        return;
+      }
+
+      const { id, progress } = event;
 
       const index = this.states.findIndex(((s) => s.id === id));
       if (index >= 0) {
         this.currentState = this.states[index];
-        console.log('currentState');
-        console.log(this.currentState.name);
+        if (progress) {
+          this.currentState = {
+            ...this.states[index],
+            name: `${this.states[index].name} ${progress}%`,
+          };
+        }
       }
 
     },
@@ -176,14 +215,15 @@ export default {
   data: () => ({
     labels: {
       title: 'Create Resource from File',
-      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file',
-      instruction2: 'After uploading make sure to rename the resource and add a description.',
+      instructions: 'Drag and drop a file to upload or click on \'browse\' to pick a file. If you have files larger then 2 GB please contact the EnviDat team.',
+      instruction2: 'When uploading is finished, please make sure to rename the resource and add a description. The resource will be automatically selected.',
     },
     resourceId: null,
     fileName: null,
     fileSize: null,
     currentState: null,
-    states: [
+    states: null,
+    initStates: [
       {
         id: UPLOAD_STATE_UPLOAD_STARTED,
         name: 'upload started',

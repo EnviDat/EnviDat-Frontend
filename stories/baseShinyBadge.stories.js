@@ -13,12 +13,8 @@ import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
 export default {
   title: '1 Base Elements / Shiny Badges',
-  decorators: [],
-  parameters: {},
+  component: BaseShinyBadge,
 };
-/*
-const version = import.meta.env.VITE_VERSION;
-*/
 
 export const BaseShinyBadgeViews = () => ({
     components: { BaseShinyBadge },

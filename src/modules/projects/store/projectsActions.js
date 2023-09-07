@@ -22,7 +22,7 @@ import {
 } from './projectsMutationsConsts';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-const ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+const API_ROOT = import.meta.env.VITE_API_ROOT;
 
 export default {
   // eslint-disable-next-line no-unused-vars
@@ -32,7 +32,7 @@ export default {
     let url = urlRewrite(
       'group_list?all_fields=true&include_groups=true&include_extras=true&include_datasets=true',
       API_BASE,
-      ENVIDAT_PROXY,
+      API_ROOT,
     );
 
     // if (this.getters[`${METADATA_NAMESPACE}/metadatasContentSize`] === 0) {

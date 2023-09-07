@@ -46,7 +46,8 @@
                           :multiplePick="true"
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
-                          :hint="labels.authorPickHint"
+                          :readonly="isUserPickerReadOnly"
+                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
                           @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
@@ -134,6 +135,9 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    isUserPickerReadOnly() {
+      return this.mixinMethods_isFieldReadOnly('authors');
+    },
     baseUserPickerObject() {
       return getArrayOfFullNames(this.existingEnviDatUsers);
     },

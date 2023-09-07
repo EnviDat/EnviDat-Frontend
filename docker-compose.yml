@@ -1,12 +1,12 @@
 version: '3'
 
 networks:
-  ckan-internal:
-    external: true
+  net:
+    name: envidat-frontend
 
 services:
   envidat-frontend:
-    image: "${INTERNAL_REG}/frontend:debug"
+    image: "${INTERNAL_REG}/envidat-frontend:debug"
     build:
       context: .
       target: debug
@@ -23,5 +23,5 @@ services:
       - .:/app
       - /app/node_modules/
     networks:
-      - ckan-internal
+      - net
     restart: unless-stopped

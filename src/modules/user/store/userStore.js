@@ -12,13 +12,13 @@
  */
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
+import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
 
 import actions from './userActions';
 import editActions from './editActions';
@@ -41,27 +41,26 @@ const userState = {
   collaboratorDatasetsLoading: false,
   collaboratorDatasets: [],
   collaboratorDatasetsLimit: 1000,
-  userOrganizationLoading: false,
-  userOrganizationIds: [],
-  userOrganizationNames: [],
-  userOrganizations: {},
-  userOrgaDatasetsError: null,
   metadataSavingMessageTimeoutTime: 2500,
   metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
+  loadingEditingData: false,
   metadataInEditing: getEmptyMetadataInEditingObject(),
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadNewResourceLoading: false,
   uploadLoading: false,
-  uploadFileId: null,
-  uploadKey: null,
   uploadResource: null,
   uploadMetadataId: null,
+  uploadError: null,
   envidatUsers: null,
   envidatUsersError: null,
+  metadataCreationLoading: false,
+  newMetadatasetName: null,
+  metadataCreationError: null,
 };
 
 
@@ -88,9 +87,8 @@ export const user = {
 
       return filteredContent;
     },
-    uploadFileId: state => state.uploadFileId,
     uploadResource: state => state.uploadResource,
-    uploadResourceId: state => state.uploadResource.id,
+    uploadResourceId: state => state.uploadResource?.id,
     uploadMetadataId: state => state.uploadMetadataId,
   },
   mutations: {

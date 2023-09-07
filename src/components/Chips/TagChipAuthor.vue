@@ -77,7 +77,7 @@ export default {
   .authorTag {
     opacity: 0.85;
     background-color: #f8f8f8 !important;
-    margin: 0px 2px !important;
+    margin: 0 2px !important;
   }
 
   .authorTag > .v-chip__content > .v-avatar {

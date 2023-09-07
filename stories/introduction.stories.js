@@ -1,4 +1,4 @@
-/* eslint-disable object-curly-newline */
+/* eslint-disable object-curly-newline,no-console */
 // noinspection JSUnusedGlobalSymbols
 
 /**
@@ -14,14 +14,30 @@
 
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
+import fileIcon from '@/assets/icons/file.png';
+import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import categoryCards from '@/store/categoryCards';
+
+import metadataCards from './js/metadata';
 
 
+const dataset = metadataCards[0];
 export default {
   title: '7 User / SignIn',
   component: IntroductionCard,
   decorators: [],
   parameters: {},
 };
+
+const currentLocalDataset = {
+  title: dataset.title,
+  subtitle: dataset.notes,
+  tags: dataset.tags,
+  fileIconString: fileIcon,
+  flatLayout: true,
+};
+
+enhanceMetadatas([currentLocalDataset], undefined, categoryCards);
 
 export const IntroductionCardViews = () => ({
   components: { IntroductionCard },
@@ -47,7 +63,8 @@ export const IntroductionCardViews = () => ({
                         :createClickCallback="createClickMethod"
                         :publishedDatasetCount="123"
                         :unpublishedDatasetCount="2"
-                        :editingDatasetCount="1" />
+                        :editingDatasetCount="1"
+                        :currentLocalDataset="currentLocalDataset" />
     </v-col>
 
     <v-col cols="12">
@@ -62,6 +79,7 @@ export const IntroductionCardViews = () => ({
   `,
   data: () => ({
     userName: 'Dominik Haas',
+    currentLocalDataset,
   }),
   methods: {
     createClickMethod(){

@@ -372,7 +372,7 @@ export default {
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
-        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
@@ -443,8 +443,8 @@ export default {
 
 .fabPosition {
   position: absolute;
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
 }
 
 .fabMenu {
@@ -501,6 +501,6 @@ export default {
 }
 
 .highlighted {
-  box-shadow: #ffd740 0px 0px 5px 5px !important;
+  box-shadow: #ffd740 0 0 5px 5px !important;
 }
 </style>

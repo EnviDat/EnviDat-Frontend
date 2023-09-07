@@ -18,15 +18,12 @@ import {
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
 export default {
   title: '4 Filtering / filtering control panels',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: BaseIconSwitch,
 };
 
 export const BaseIconSwitches = () => ({

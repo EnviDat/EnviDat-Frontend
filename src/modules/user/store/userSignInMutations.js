@@ -50,7 +50,7 @@ import {
    let type = '';
    let field = '';
    let msg =
-     'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+     'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
 
    const error = reason?.response?.data?.error || reason?.error || reason;
 
@@ -107,10 +107,10 @@ import {
 
      const user = payload.user || null;
 
-     if (!user) {
-       resetUser(state);
-     } else {
+     if (user && user.id) {
        state.user = enhanceUserObject(user);
+     } else {
+       resetUser(state);
      }
    },
    [GET_USER_CONTEXT_ERROR](state, reason) {
@@ -126,8 +126,13 @@ import {
    [USER_SIGNIN_SUCCESS](state, payload) {
      state.signInLoading = false;
      state.signInSuccess = true;
+
      const user = payload.user;
-     state.user = enhanceUserObject(user);
+     if (user && user.id) {
+       // this is the case for the old login
+       // token sign makes another call with the context mutation
+       state.user = enhanceUserObject(user);
+     }
    },
    [USER_SIGNIN_ERROR](state, reason) {
      state.signInLoading = false;

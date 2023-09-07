@@ -9,18 +9,15 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
-
 import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
+import { mobileViewportParams } from './js/envidatViewports';
+
 import metadata from './js/metadata';
 
 
 export default {
   title: '9 Editing Metadata / Related Publication List',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: EditRelatedPublicationsList,
 };
 
 const relatedPubText = metadata[2].related_publications;

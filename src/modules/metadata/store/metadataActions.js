@@ -61,7 +61,7 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 
 const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
@@ -212,7 +212,7 @@ export default {
     const query = `query?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+    const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
 
     await axios
       .get(url)
@@ -247,7 +247,7 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
+    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -266,7 +266,7 @@ export default {
     const metadataConfig = config.metadataConfig || {};
 
     let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, PROXY);
+                API_BASE, API_ROOT);
 
     if (import.meta.env.DEV && useTestdata) {
       url = './testdata/packagelist.json';
@@ -405,7 +405,7 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, PROXY);
+    const url = urlRewrite('tag_list', API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
 

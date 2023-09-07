@@ -1,7 +1,10 @@
 <template>
   <v-chip
     class="stateChip"
-    :class="cssClasses"
+    :class="{
+        stateChipHover: !this.showContent,
+        'px-3': true,
+      }"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     :color="stateColor"
@@ -9,9 +12,12 @@
   >
     <v-tooltip bottom>
       <template v-slot:activator="{ on }">
-        <div v-on="on">
-          {{ showContent ? stateText : stateText.substr(0, 1) }}
-        </div>
+        <v-row v-on="on"
+               align="center"
+                no-gutters>
+          <v-col >{{ showContent ? stateText : stateText.substring(0, 1) }}</v-col>
+          <v-col v-show="showContent" class="pl-1"><v-icon>{{ stateIcon }}</v-icon></v-col>
+        </v-row>
       </template>
 
       <span>{{ stateTooltip }}</span>
@@ -38,7 +44,7 @@ export default {
   props: {
     state: {
       type: String,
-      default: '',
+      default: 'draft',
     },
     tooltipMap: {
       type: Object,
@@ -46,7 +52,6 @@ export default {
         draft: 'Draft datasets are only visible to you',
         unpublished:
           'Unpublished datasets are visible for you and your organization',
-        pending: 'Publication request received, dataset is not yet visible for everyone',
         published: 'Published datasets are visible for everyone',
       }),
     },
@@ -55,8 +60,15 @@ export default {
       default: () => ({
         draft: 'gray',
         unpublished: 'warning',
-        pending: 'blue',
         published: 'green',
+      }),
+    },
+    iconMap: {
+      type: Object,
+      default: () => ({
+        draft: 'edit_note',
+        unpublished: 'public_off',
+        published: 'public',
       }),
     },
     showOnHover: {
@@ -65,16 +77,6 @@ export default {
     },
   },
   computed: {
-    cssClasses() {
-      const classes = {
-        stateChipHover: !this.showContent,
-      };
-
-      classes['px-3'] = (this.showOnHover && this.hover) || !this.showOnHover;
-      classes['px-2'] = this.showOnHover && !this.hover;
-
-      return classes;
-    },
     stateText() {
       return this.state?.toUpperCase() || 'DRAFT';
     },
@@ -86,6 +88,9 @@ export default {
     },
     stateColor() {
       return this.colorMap[this.stateLowerCase];
+    },
+    stateIcon() {
+      return this.iconMap[this.stateLowerCase];
     },
     showContent() {
       return !this.showOnHover || (this.showOnHover && this.hover);
@@ -99,7 +104,7 @@ export default {
 
 <style scoped>
 .stateChip {
-  height: 1.5rem;
+  height: 1.65rem;
   font-size: 0.75rem;
 }
 

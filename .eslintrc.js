@@ -22,7 +22,6 @@ module.exports = {
       alias: {
         map: [
           ['@', './src'],
-          ['cesium', './node_modules/cesium/Source'],
         ],
       },
     },

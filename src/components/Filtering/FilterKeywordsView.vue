@@ -65,7 +65,7 @@
     <base-icon-button
       v-if="$vuetify.breakpoint.xsOnly"
       :count="selectedTags.length"
-      style="position: absolute; bottom: 0px; right: 0px;"
+      style="position: absolute; bottom: 0; right: 0;"
       material-icon-name="expand_more"
       color="secondary"
       icon-color="secondary"

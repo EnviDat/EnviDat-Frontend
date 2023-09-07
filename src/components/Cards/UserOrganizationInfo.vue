@@ -9,6 +9,7 @@
         <UserAvatar
           :size="avatarHeight"
           :nameInitials="nameInitials"
+          :emailHash="emailHash"
           class="elevation-5"
         />
       </div>
@@ -160,7 +161,7 @@ export default {
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
     sysadminOrganizationText: 'You have System Administrator rights, be careful!',
     collaboratorText: 'You are added as collaborator to datasets, you can edit datasets which are listed under "Collaborator Datasets".',
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_API_ROOT,
   }),
   components: {
     UserAvatar,
@@ -178,7 +179,7 @@ export default {
 
 .infoGrid {
   display: grid;
-  grid-template-rows: 60% 40%;
+  grid-template-rows: 1fr auto;
   overflow-y: auto;
 }
 

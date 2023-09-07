@@ -18,7 +18,6 @@ import {
   eventBus,
   SAVE_EDITING_RESOURCE,
   SELECT_EDITING_RESOURCE,
-
 } from '@/factories/eventBus';
 
 import EditMetadataResources from '@/modules/user/components/EditMetadataResources.vue';
@@ -32,7 +31,7 @@ import {
 } from '@/factories/strategyFactory';
 
 import { cleanListForFrontend, enhanceUserObject, mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
-import unFormatedMetadataCards from './js/metadata';
+import unFormatedMetadata from './js/metadata';
 import userList from './testdata/user_list.json';
 
 const envidatUsers = userList?.result || [];
@@ -41,15 +40,28 @@ for (let i = 0; i < envidatUsers.length; i++) {
   envidatUsers[i] = enhanceUserObject(envidatUsers[i]);
 }
 
-const metadataCards = [];
+const allResources = [];
 
-// console.log(`got metadata ${!!unFormatedMetadataCards}`);
+// console.log(`got metadata ${!!unFormatedMetadata}`);
 
-for (let i = 0; i < unFormatedMetadataCards.length; i++) {
-  const dataset = unFormatedMetadataCards[i];
+for (let i = 0; i < unFormatedMetadata.length; i++) {
+  const dataset = unFormatedMetadata[i];
   let resources = cleanListForFrontend(dataset.resources, EDITMETADATA_DATA_RESOURCE);
+
+  for (let j = 0; j < resources.length; j++) {
+    const resource = resources[j];
+    if(resource.restricted && typeof resource.restricted === 'string') {
+      try {
+        resource.restricted = JSON.parse(resource.restricted);
+      } catch (e) {
+        console.log(`resource failed ${resource.name} restricted ${resource.restricted}`);
+        console.error(e);
+      }
+    }
+  }
+
   resources = enhanceElementsWithStrategyEvents(resources, SELECT_EDITING_RESOURCE_PROPERTY, true);
-  metadataCards.push(resources);
+  allResources.push(resources);
 }
 
 
@@ -126,7 +138,7 @@ const userEditMetadataConfig = {
   computed: {
     resource4() {
       return {
-        ...metadataCards[2][2],
+        ...allResources[2][2],
         loading: true,
         envidatUsers,
       }
@@ -142,20 +154,20 @@ const userEditMetadataConfig = {
       },
     },
     resource1: {
-      ... metadataCards[0][0],
-      ...mergeResourceSizeForFrontend(metadataCards[0][0]),
+      ...allResources[0][0],
+      ...mergeResourceSizeForFrontend(allResources[0][0]),
       userEditMetadataConfig,
       envidatUsers,
     },
     resource2: {
-      ...metadataCards[0][1],
-      ...mergeResourceSizeForFrontend(metadataCards[0][1]),
+      ...allResources[0][1],
+      ...mergeResourceSizeForFrontend(allResources[0][1]),
       userEditMetadataConfig,
       envidatUsers,
     },
     resource3: {
-      ...metadataCards[2][0],
-      ...mergeResourceSizeForFrontend(metadataCards[2][0]),
+      ...allResources[2][0],
+      ...mergeResourceSizeForFrontend(allResources[2][0]),
       userEditMetadataConfig,
       envidatUsers,
     },
@@ -221,7 +233,7 @@ export const EditResourcesList = () => ({
       },
       genericProps: {
         id: '2',
-        resources: metadataCards[2],
+        resources: allResources[2],
         selectionId: -1,
         resourcesConfig: {
           downloadActive: false,
@@ -279,6 +291,8 @@ export const EditDataAndResourcesListViews = () => ({
       genericProps() {
         return {
           resources: this.resources,
+          license: unFormatedMetadata[0].license_title,
+          licenseUrl: unFormatedMetadata[0].license_url,
           selectionId: this.selectionId,
           resourcesConfig: {
             downloadActive: false,
@@ -288,6 +302,8 @@ export const EditDataAndResourcesListViews = () => ({
       genericProps2() {
         return {
           resources: this.resources,
+          license: unFormatedMetadata[0].license_title,
+          licenseUrl: unFormatedMetadata[0].license_url,
           selectionId: this.selectionId,
           resourcesConfig: {
             downloadActive: false,
@@ -362,13 +378,12 @@ export const EditDataAndResourcesListViews = () => ({
         }
       },
       saveResource(newRes) {
-        newRes.existsOnlyLocal = false;
         this.updateResource(newRes);
         this.cancelEditing();
       },
     },
     data: () => ({
-      resources: metadataCards[0],
+      resources: allResources[0],
       selectionId: -1,
     }),
   });

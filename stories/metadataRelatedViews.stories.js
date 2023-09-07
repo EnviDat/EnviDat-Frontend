@@ -17,6 +17,7 @@ import {
 
 import EditRelatedPublications from '@/modules/user/components/EditRelatedPublications.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
+import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import MetadataCreationRelatedInfo from '@/modules/user/components/MetadataCreationRelatedInfo.vue';
 
 import { getTagColor } from '@/factories/metaDataFactory';
@@ -189,6 +190,85 @@ export const EditRelatedPublicationViews = () => ({
     }),
   });
 
+export const EditCustomFieldViews = () => ({
+  components: { EditCustomFields },
+  template: `
+    <v-col>
+
+      <v-row>
+        Edit Custom Fields fields unfilled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields v-bind="emptyFirstGenericProps" />
+        </v-col>
+      </v-row>
+
+       <v-row>
+        Edit Custom Fields fields filled
+      </v-row>
+
+      <v-row class="py-3" >
+        <v-col >
+          <EditCustomFields v-bind="genericProps" />
+        </v-col>
+      </v-row>
+
+    </v-col> `,
+  created() {
+    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  },
+  methods: {
+    editComponentsChanged(updateObj) {
+      if (updateObj.data?.length === this.genericProps.length) {
+        this.genericProps = updateObj.data;
+      }
+      if (updateObj.data?.length === this.emptyFirstGenericProps.length) {
+        this.emptyFirstGenericProps = updateObj.data;
+      }
+    },
+  },
+  data: () => ({
+    emptyFirstGenericProps: {},
+    genericProps: [
+      {
+        field0: {
+          fieldName: 'SubProject',
+          content: 'Projectx',
+        },
+      },
+      {
+        field1: {
+          fieldName: 'Game',
+          content: 'Gloomhaven',
+        },
+      },
+      {
+        field2: {
+          fieldName: 'Drink',
+          content: 'Prosecco',
+        },
+      },
+      {
+        field3: {
+          fieldName: '',
+          content: '',
+        },
+      },
+      {
+        field4: {
+          fieldName: '',
+          content: '',
+        },
+      },
+    ],
+  }),
+});
+
 export const MetadataCreationRelatedInfoStep = () => ({
   components: { MetadataCreationRelatedInfo },
   template: `
@@ -211,3 +291,5 @@ export const MetadataCreationRelatedInfoStep = () => ({
     storyTags5,
   }),
 });
+
+
