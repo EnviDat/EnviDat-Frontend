@@ -76,6 +76,7 @@
                                    icon-color="white"
                                    is-small
                                    :loading="loading"
+                                   :url="doiUrl"
                                    :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
@@ -151,6 +152,10 @@
         type: String,
         default: 'draft',
       },
+      doi: {
+        type: String,
+        default: undefined,
+      },
       loading: {
         type: Boolean,
         default: false,
@@ -204,6 +209,9 @@
       currentStateInfos() {
         return this.stateTextMap.get(this.publicationState || 'draft');
       },
+      doiUrl() {
+        return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
+      },
     },
     methods: {
       getStateText(state) {
@@ -244,9 +252,9 @@
         }],
         ['published', {
           chipText: 'Published',
-          infoText: 'Open the DOI entry at DataCite',
+          infoText: 'Open the DOI in a new Tab',
           buttonIcon: 'public',
-          buttonText: 'Show DOI',
+          buttonText: 'Open DOI',
           buttonEvent: 'openDoi',
           positionIndex: 6,
         }],

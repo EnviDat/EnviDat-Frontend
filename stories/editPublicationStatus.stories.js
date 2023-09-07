@@ -40,6 +40,7 @@ export const PublicationPending = {
 export const PublicationPublished = {
   args: {
     publicationState: 'published',
+    doi: '10.16904/envidat.402',
   },
 };
 

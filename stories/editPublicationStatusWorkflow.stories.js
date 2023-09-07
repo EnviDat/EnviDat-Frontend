@@ -17,7 +17,8 @@ import { mobileViewportParams, tabletViewportParams } from './js/envidatViewport
 
  export default {
    title: '9 Editing Metadata / Edit Publication Status',
-   component: EditPublicationStatus,
+   // component: don't specific here,
+   // because the template needs to be a neutral componet for the interaction
 };
 
  const allStates = possiblePublicationStates;
@@ -42,7 +43,7 @@ import { mobileViewportParams, tabletViewportParams } from './js/envidatViewport
 
 const Template = (args, {argTypes}) => ({
   components: { EditPublicationStatus },
-  template: `<EditPublicationStatus v-bind="$props"
+  template: `<EditPublicationStatus v-bind="editPublicationProps"
                                      @clicked="catchClicked" />`,
   props: Object.keys(argTypes),
   methods: {
@@ -65,6 +66,7 @@ const Template = (args, {argTypes}) => ({
 
         if (this.state === 'pub_pending') {
           setTimeout(() => {
+            this.doi = '10.16904/envidat.402';
             this.state = this.allStates[this.allStates.length - 1];
           }, 3000);
         }
@@ -79,6 +81,7 @@ const Template = (args, {argTypes}) => ({
       return {
         publicationState: this.state,
         loading: this.loading,
+        doi: this.doi,
         message: this.message,
         messageDetails: this.messageDetails,
       };
@@ -86,6 +89,7 @@ const Template = (args, {argTypes}) => ({
   },
   data: () => ({
     allStates,
+    doi: '',
     state: 'draft',
     loading: false,
     message: '',

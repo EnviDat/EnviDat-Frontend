@@ -155,16 +155,6 @@ export default {
 
       return this.currentStep.genericProps;
     },
-    publicationInfo() {
-      if (this.$store) {
-        return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
-      }
-
-      return this.currentStep.genericProps;
-    },
-    isDatasetPublic() {
-      return this.publicationsInfo?.publicationState === 'published';
-    },
     editPublicationsProps() {
       return {
         ...this.publicationsInfo,
@@ -188,7 +178,7 @@ export default {
     },
     editPublicationStatusProps() {
       return {
-        ...this.publicationInfo,
+        ...this.publicationsInfo,
         loading: this.$store ? this.doiLoading : undefined,
         error: this.$store ? this.doiError : undefined,
         readOnlyFields: this.readOnlyFields,
@@ -207,10 +197,6 @@ export default {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
     catchPublicationStateChange(event) {
-      console.log('catchPublicationStateChange');
-      console.log(event);
-      console.log(this.metadataId);
-
       eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
         object: EDITMETADATA_PUBLICATION_STATE,
         data: {
