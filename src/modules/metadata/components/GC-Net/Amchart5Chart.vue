@@ -19,12 +19,12 @@
         </div>
       </div>
 
-        <div class="chart my-4"
-             v-for="yAxis in params"
-             :id=yAxis
-             :key="yAxis">
-          {{ yAxis }}
-        </div>
+      <div class="chart my-4"
+           v-for="yAxis in params"
+           :id=yAxis
+           :key="yAxis">
+        {{ yAxis }}
+      </div>
 
     </v-container>
 
@@ -35,13 +35,13 @@
 
 <script>
 import * as am5 from '@amcharts/amcharts5';
-// eslint-disable-next-line camelcase
-import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
-import * as am5xy from '@amcharts/amcharts5/xy';
+
+import { convertCSVToJSON } from '@/factories/stringFactory';
+import { createChart } from '@/factories/chartFactory';
+
 
 export default {
   name: 'Amchart5Chart',
-
   props: {
     jsonChartDivID: {
       type: String,
@@ -49,8 +49,7 @@ export default {
     },
     apiUrl: {
       type: String,
-      default:
-        'https://www.envidat.ch/data-api/gcnet/json/swisscamp/windspeed1/2018-11-04T17:00:00/2020-11-10T00:00:00/',
+      default: '',
     },
     xAxisName: {
       type: String,
@@ -66,151 +65,8 @@ export default {
     },
   },
   mounted() {
-    const root = am5.Root.new(this.chartdivID);
-
-    // Set all dates in root to UTC
-    // NOTE: It is critical to set the root to UTC, otherwise timestamps will be rendered in local time!!!!
-    root.utc = true;
-
-    /* eslint-disable camelcase */
-    root.setThemes([am5themes_Animated.new(root)]);
-
-    // Create chart
-    const chart = root.container.children.push(
-      am5xy.XYChart.new(root, {
-        focusable: true,
-        panX: true,
-        panY: true,
-        wheelX: 'panX',
-        wheelY: 'zoomX',
-      }),
-    );
-
-    const easing = am5.ease.linear;
-
-    // Create axes
-    const xAxis = chart.xAxes.push(
-      am5xy.DateAxis.new(root, {
-        maxDeviation: 0.1,
-        groupData: true,
-        groupCount: 500,
-        baseInterval: {
-          timeUnit: 'hour',
-          count: 1,
-        },
-        renderer: am5xy.AxisRendererX.new(root, {
-          // minGridDistance: 50,
-        }),
-        tooltip: am5.Tooltip.new(root, {}),
-      }),
-    );
-
-    const yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, {
-        maxDeviation: 0.1,
-        renderer: am5xy.AxisRendererY.new(root, {}),
-        tooltip: am5.Tooltip.new(root, {}),
-      }),
-    );
-
-    // Add series
-    const series = chart.series.push(
-      am5xy.LineSeries.new(root, {
-        minBulletDistance: 10,
-        connect: false,
-        xAxis,
-        yAxis,
-        valueYField: this.yAxisName,
-        valueXField: this.xAxisName,
-        tooltip: am5.Tooltip.new(root, {}),
-      }),
-    );
-
-    series.get('tooltip').label.set('text', '{valueYField}: {valueY}');
-
-    // series.bullets.push(() => am5.Bullet.new(root, {
-    //     sprite: am5.Circle.new(root, {
-    //       radius: 6,
-    //       stroke: series.get('fill'),
-    //       strokeWidth: 2,
-    //       fill: am5.color(0xffffff),
-    //     }),
-    //   }));
-
-    // series.bullets.push(() => am5.Bullet.new(root, {
-    //     sprite: am5.Circle.new(root, {
-    //       radius: 5,
-    //       fill: series.get('fill'),
-    //       stroke: root.interfaceColors.get('background'),
-    //       strokeWidth: 2,
-    //       tooltipText: '{valueY}',
-    //       showTooltipOn: 'always',
-    //       tooltip: am5.Tooltip.new(root, {}),
-    //     }),
-    //   }));
-
-    series.strokes.template.setAll({
-      strokeWidth: 3,
-      templateField: 'strokeSettings',
-    });
-
-    // Load and parse external data
-    am5.net
-      .load(this.apiUrl)
-      .then(result => {
-        // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
-        const responseType = this.getResponseType(result.type);
-
-        let data = [];
-
-        if (responseType === 'application/json') {
-          data = am5.JSONParser.parse(result.response);
-        } else if (responseType === 'text/csv') {
-          // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
-          // data = this.convertCSVToJSON(result.response, '-999')
-          data = this.convertCSVToJSON(result.response, '');
-          // console.log(data)
-        } else {
-          console.log(
-            `Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`,
-          );
-        }
-
-        // Process data
-        const processor = am5.DataProcessor.new(root, {
-          dateFields: [this.xAxisName],
-          dateFormat: this.xAxisFormat,
-          numericFields: [this.yAxisName],
-        });
-        processor.processMany(data);
-
-        // Assign parsed/processed data to series
-        series.data.setAll(data);
-      })
-      .catch(result => {
-        console.log(`Error loading ${result.xhr.responseURL}`);
-      });
-
-    // Add cursor
-    const cursor = chart.set(
-      'cursor',
-      am5xy.XYCursor.new(root, {
-        xAxis,
-      }),
-    );
-    // cursor.lineY.set('visible', false);
-
-    // Add scrollbar
-    chart.set(
-      'scrollbarX',
-      am5.Scrollbar.new(root, {
-        orientation: 'horizontal',
-      }),
-    );
-
-    // Make stuff animate on load
-    series.appear(1000, 100);
-    chart.appear(1000, 100);
+    // Load and parse data from API call (JSON or NEAD)
+    this.loadParseData();
   },
   beforeDestroy() {
     if (this.root) {
@@ -245,71 +101,77 @@ export default {
     getResponseType(resultType) {
       return resultType.split(',')[0];
     },
-    // Return JSON data from inputted CSV data, convert nullValue to null
-    convertCSVToJSON(csv, nullValue) {
-      let lines = csv.split('\n');
+    // Assign parsedData to loaded and parsed external data
+    loadParseData() {
 
-      // TEST DEV BLOCK //
-      const displayDescription = lines.filter(line =>
-        line.startsWith('# display_description = '),
-      );
+      am5.net.load(this.apiUrl).then((result) => {
 
-      let keys = [];
-      if (displayDescription.length === 1) {
-        keys = displayDescription[0]
-          .replace('# display_description = ', '')
-          .split(',');
-      }
-      // TODO refine error handling
-      else {
-        console.log(
-          'Error parsing NEAD file because header does not have a row that starts with: "# display_description = "',
-        );
-        return {};
-      }
+        // Get responseType 'type' from response header, this indicates if external data is in JSON or CSV format
+        const responseType = this.getResponseType(result.type);
 
-      // TEST code for removing NEAD metadata header lines that start with '#'
-      lines = lines.filter(line => !line.startsWith('#'));
+        // Parse JSON data
+        if (responseType?.includes('application/json')) {
 
-      // TEST END DEV BLOCK //
+          this.parsedData = am5.JSONParser.parse(result.response);
 
-      // Remove last line if it is an empty string
-      if (lines[lines.length - 1] === '') {
-        lines.pop();
-      }
+          // Assign jsonDataYAxis name from parsedData key (excluding timestamp keys)
+          // NOTE: this block assumes that the API JSON call will return data for only one non-timestamp parameter!
+          const firstElementKeys = Object.keys(this.parsedData[0]);
+          this.jsonDataYAxisName = (firstElementKeys.filter(item => !this.timestampArray.includes(item))).shift();
 
-      // TEST comment this out
-      // const keys = lines[0].split(',');
+          this.jsonDataAvailable = true;
 
-      return lines.slice(1).map(line =>
-        line.split(',').reduce((acc, cur, i) => {
-          // TODO possible add logic that tests that keys.length equals length of comma separated line before adding JSON object
+        }
 
-          const toAdd = {};
+        // Parse CSV data
+        else if (responseType?.includes('text/csv')) {
 
-          if (cur === nullValue) {
-            cur = null;
-          }
+          // TODO dynamically assign nullValue in call below, will need to parse nodata value from NEAD
+          const jsonConvert = convertCSVToJSON(result.response, '-999.00');
 
-          toAdd[keys[i]] = cur;
+          this.csvDataYAxesArray = jsonConvert.parameters;
+          this.parsedData = jsonConvert.data;
+          this.csvDataAvailable = true;
 
-          return { ...acc, ...toAdd };
-        }, {}),
+        }
+
+        else {
+          this.dataLoadParseError = true;
+          console.log(`Error loading ${this.apiUrl}, response type ${responseType} is not compatible with application.`);
+        }
+
+      }).catch((error) => {
+          this.dataLoadParseError = true;
+          console.log(`Error loading data: ${error} for ${this.apiUrl}`);
+        },
       );
     },
   },
-};
+  data() {
+    return {
+      dataLoadParseError: false,
+      parsedData: [],
+      jsonDataAvailable: false,
+      jsonDataYAxisName: '',
+      csvDataAvailable: false,
+      csvDataYAxesArray : [],
+    };
+  },
+
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .chart {
   width: 100%;
   height: 350px;
 }
+
 </style>

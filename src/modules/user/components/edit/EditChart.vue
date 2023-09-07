@@ -2,7 +2,7 @@
   <v-card id="EditChart"
           class="pa-0"
           :height="height"
-          :loading="loading || loadingData">
+          :loading="loading || loadingData || loadingChart">
 
     <v-container fluid
                  class="pa-4">
@@ -93,6 +93,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import axios from 'axios';
+import * as am5 from '@amcharts/amcharts5';
+
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import FilterKeywordsView from '@/components/Filtering/FilterKeywordsView.vue';
 
@@ -118,9 +121,7 @@ import {
   ChartTypes,
 } from '@/factories/chartFactory';
 
-import axios from 'axios';
 import { createTag } from '@/factories/metadataFilterMethods';
-import * as am5 from '@amcharts/amcharts5';
 
 
 export default {
@@ -295,12 +296,8 @@ export default {
 
       this.$emit('pickedParameters', this.pickedParameters);
     },
-    loadChart(params, data) {
-      if (!params || params.length <= 0 || !data || data.length <= 0) {
-        return;
-      }
-
-      if (params.length <= 2) {
+    async loadChart(params, data) {
+      if (params?.length <= 0 || data?.length <= 0) {
         return;
       }
 
@@ -364,12 +361,15 @@ export default {
 
       return convertCSVToJSON(neadContent.data, '-999.0');
     },
+    async reloadChart() {
+      this.loadingChart = true;
+      await this.loadChart(this.pickedParameters, this.neadJSON?.data);
+      this.loadingChart = false;
+    },
   },
   watch: {
     pickedParameters() {
-      this.$nextTick(() => {
-        this.loadChart(this.pickedParameters, this.neadJSON?.data);
-      });
+      this.reloadChart();
     },
   },
   data: () => ({
@@ -384,6 +384,7 @@ export default {
       parameters: null,
     },
     loadingData: false,
+    loadingChart: false,
     pickedParameters: [],
     search: '',
     labels: {
