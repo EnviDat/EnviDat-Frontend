@@ -100,7 +100,7 @@
     >
       <v-container v-if="showCardBody" class="pa-0">
         <v-row v-if="state" class="pb-1" no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+          <v-col class="cardIcons">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
         </v-row>
