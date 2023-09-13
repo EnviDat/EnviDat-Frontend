@@ -8,7 +8,7 @@
             v-model="searchText"
             prepend-icon="search"
             hide-details
-            dense
+            variant='underlined'
             :label="labelText"
             @click:prepend="clicked"
             @keyup.enter="clicked"

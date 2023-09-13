@@ -10,15 +10,11 @@
  */
 
 import SearchBarView from '@/modules/home/components/SearchBarView.vue';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
-import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
   title: '4 Filtering / SearchBarView',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
+  component: SearchBarView,
 };
 
 const Template = (args, { argTypes }) => ({
@@ -34,112 +30,18 @@ BasicSearchBar.args = {
   hasButton: true,
 };
 
-export const BasicSearchBarhMobile = Template.bind({});
-BasicSearchBarhMobile.args = { ...BasicSearchBar.args };
-
-BasicSearchBarhMobile.parameters = {
-  viewport: {
-    defaultViewport: 'mobile1',
-  },
+export const BasicSearchBarMobile = Template.bind({});
+BasicSearchBarMobile.args = {
+  ...BasicSearchBar.args,
+  hasButton: false,
 };
+BasicSearchBarMobile.parameters = mobileViewportParams;
 
+export const BasicSearchBarLargeMobile = Template.bind({});
+BasicSearchBarLargeMobile.args = { ...BasicSearchBarMobile.args };
+BasicSearchBarLargeMobile.parameters = mobileLargeViewportParams;
 
-export const SmallSearchViews = () => ({
-    components: { SmallSearchBarView },
-    template: `
-    <v-row >
-        <v-col class="py-1">
-            <small-search-bar-view
-                        labelText="Search for something"
-                        :searchTerm="searchTerm"
-                        buttonText="SEARCH"
-                        hasButton
-                        :searchCount='0'
-                        compactLayout
-                        @clicked="onClick"
-                        @searchCleared="onClear"
-                          />
-        </v-col>
-        <v-col class="py-1">
-            <small-search-bar-view
-                        labelText="Search for something"
-                        :searchTerm="searchTerm"
-                        buttonText="SEARCH"
-                        :searchCount='0'
-                        compactLayout
-                        @clicked="onClick"
-                        @searchCleared="onClear"
-                          />
-        </v-col>
+export const BasicSearchBarTablet = Template.bind({});
+BasicSearchBarTablet.args = { ...BasicSearchBarMobile.args };
+BasicSearchBarTablet.parameters = tabletViewportParams;
 
-        <v-col cols="12" class="py-1">
-          <v-row>
-            <v-col cols="6">
-                <small-search-bar-view
-                            labelText="xs6 optimal for button search"
-                            :searchTerm="searchTerm"
-                            buttonText="SEARCH"
-                            hasButton
-                            showSearchCount
-                            :searchCount='0'
-                            compactLayout
-                            @clicked="onClick"
-                            @searchCleared="onClear"
-                              />
-            </v-col>
-          </v-row>
-        </v-col>
-
-        <v-col cols="12" class="py-1">
-          <v-row >
-            <v-col cols="6" class="px-1">
-                <small-search-bar-view
-                            labelText="xs6 no button"
-                            :searchTerm="searchTerm"
-                            showSearchCount
-                            :searchCount='123'
-                            compactLayout
-                            @clicked="onClick"
-                            @searchCleared="onClear"
-                              />
-            </v-col>
-
-            <v-col cols="6" class="px-1">
-                <small-search-bar-view
-                            labelText="xs6 with compactLayout"
-                            :searchTerm="searchTerm"
-                            showSearchCount
-                            :searchCount='12'
-                            compactLayout
-                            @clicked="onClick"
-                            @searchCleared="onClear"
-                            />
-            </v-col>
-
-            <v-col cols="6" class="px-1">
-                <small-search-bar-view
-                            labelText="xs6 no compactLayout"
-                            :searchTerm="searchTerm"
-                            showSearchCount
-                            :searchCount='0'
-                            @clicked="onClick"
-                            @searchCleared="onClear"
-                              />
-            </v-col>
-
-          </v-row>
-        </v-col>
-
-      </v-row>`,
-    methods: {
-        onClick(searchTerm) {
-            console.log(`clicked search for "${searchTerm}"`);
-        },
-        onClear() {
-            console.log(`cleared Search ${this.searchTerm}`);
-        },
-    },
-    data: () => ({
-      searchTerm: '',
-    }),
-  });

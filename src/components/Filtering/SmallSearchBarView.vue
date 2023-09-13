@@ -1,9 +1,12 @@
 <template>
   <v-card style="width: 100%;">
     <v-container
-      class="pa-0 fill-height"
+      class=" fill-height"
       fluid
-      :class="{ 'py-2': !compactLayout }"
+      :class="{
+        'pa-0': compactLayout,
+        'pa-2': !compactLayout,
+      }"
     >
       <v-row
         align="center"
@@ -60,7 +63,10 @@
           />
         </v-col>
 
-        <v-col v-if="showSearch" class="grow py-0 ml-2 ml-sm-0 mr-sm-2">
+        <v-col v-if="showSearch"
+               class="grow py-0 mr-sm-2"
+              :class="hasButton ? 'ml-4 ' : 'ml-2 ml-sm-0'"
+        >
           <v-tooltip
             bottom
             :disabled="$vuetify.display.xsOnly || !searchToolTipText"
@@ -75,6 +81,7 @@
                 single-line
                 hide-details
                 primary
+                variant="underlined"
                 :clearable="$vuetify.display.smAndUp && searchText && searchText.length > 0"
                 :flat="isFlat"
                 :placeholder="labelText"
