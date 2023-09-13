@@ -10,7 +10,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 
 import { getReadOnlyFieldsObject } from '@/factories/mappingFactory';
 import testOrganizations from './js/organizations';

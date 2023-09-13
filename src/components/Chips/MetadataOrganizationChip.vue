@@ -77,7 +77,7 @@ export default {
 .organizationChip {
   height: 1.5rem;
   font-size: 0.75rem;
-  max-width: 120px;
+  max-width: 250px;
   background-color: #e0e0e0 !important;
 }
 

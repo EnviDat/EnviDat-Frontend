@@ -60,7 +60,7 @@
 
 import { mapState } from 'vuex';
 
-import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
