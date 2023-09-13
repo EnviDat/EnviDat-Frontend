@@ -485,8 +485,6 @@ export default {
           this.authorDeadInfo,
         );
 
-        this.header.metadataState = getMetadataVisibilityState(currentContent);
-
         const parsedContent = convertJSON(currentContent, false);
         const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
         this.header.publicationYear = publicationData.publicationYear;

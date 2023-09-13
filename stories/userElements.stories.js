@@ -267,7 +267,58 @@ export const UserAvatarViews = () => ({
     </v-col>
     </v-row>
 
-    <v-row class="pt-4">
+    <v-row>
+      <v-col>
+        <UserAvatar :size="32"
+                    nameInitials="DH"
+                    emailHash="hashWithOutGravatar"/>
+      </v-col>
+
+      <v-col>
+        <UserAvatar nameInitials="DH" 
+                    emailHash="hashWithOutGravatar"/>
+      </v-col>
+
+      <v-col>
+        <UserAvatar :size="64"
+                    nameInitials="DH"
+                    emailHash="hashWithOutGravatar"/>
+      </v-col>
+
+      <v-col>
+        <UserAvatar :size="128"
+                    nameInitials="DH"
+                    emailHash="hashWithOutGravatar"/>
+      </v-col>
+    </v-row>
+
+      <v-row>
+        <v-col>
+          <UserAvatar :size="32"
+                      defaultGravatar="robohash"
+                      emailHash="7e6b6d1213f35a663ba4518360095a8"/>
+        </v-col>
+
+        <v-col>
+          <UserAvatar defaultGravatar="robohash"
+                      emailHash="7e6b6dca2344df35a663ba4518360095a8"/>
+        </v-col>
+
+        <v-col>
+          <UserAvatar :size="64"
+                      defaultGravatar="robohash"
+                      emailHash="7e6b6dca84df351234518360095a8"/>
+        </v-col>
+
+        <v-col>
+          <UserAvatar :size="128"
+                      defaultGravatar="robohash"
+                      emailHash="4c6104f35821eb25ef16742fc23eb13e"
+                      nameInitials="KP"/>
+        </v-col>
+      </v-row>
+
+      <v-row class="pt-4">
     <v-col>
       <UserAvatar :size="32"
                   nameInitials="II"

@@ -115,6 +115,18 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata?.state || null;
+  const priv = metadata?.private || undefined;
+
+  let visibilityState = 'draft';
+
+  if (state === 'active') {
+    visibilityState = priv ? 'unpublished' : 'published';
+  }
+
+  return visibilityState;
+}
 
 export function createLicense(dataset) {
   if (!dataset) {
@@ -159,6 +171,10 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     authors = dataset.author;
   }
 
+  const visibility = getMetadataVisibilityState(dataset);
+  const created = formatDate(dataset.metadata_created);
+  const modified = formatDate(dataset.metadata_modified);
+
   return {
     metadataTitle: dataset.title,
     doi: dataset.doi,
@@ -172,6 +188,10 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     categoryColor: dataset.categoryColor,
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
+    metadataState: visibility,
+    spatialInfo: dataset.spatial_info,
+    created,
+    modified,
   };
 }
 
@@ -530,19 +550,6 @@ export function getOrganizationMap(organizations) {
   }
 
   return mainOrgas;
-}
-
-export function getMetadataVisibilityState(metadata) {
-  const state = metadata?.state || null;
-  const priv = metadata?.private || undefined;
-
-  let visibilityState = 'draft';
-
-  if (state === 'active') {
-    visibilityState = priv ? 'unpublished' : 'published';
-  }
-
-  return visibilityState;
 }
 
 export function createDetails(dataset) {
