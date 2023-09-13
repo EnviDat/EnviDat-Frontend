@@ -47,8 +47,8 @@
                         :label="labels.firstName"
                         outlined
                         dense
-                        :readonly="checkReadOnly('firstName')"
-                        :hint="checkReadOnlyHint('firstName')"
+                        :readonly="isReadOnly('firstName')"
+                        :hint="readOnlyHint('firstName')"
                         prepend-icon="person"
                         :error-messages="validationErrors.firstName"
                         :placeholder="labels.firstName"
@@ -67,8 +67,8 @@
                         :label="labels.lastName"
                         outlined
                         dense
-                        :readonly="checkReadOnly('lastName')"
-                        :hint="checkReadOnlyHint('lastName')"
+                        :readonly="isReadOnly('lastName')"
+                        :hint="readOnlyHint('lastName')"
                         prepend-icon="person"
                         :error-messages="validationErrors.lastName"
                         :placeholder="labels.lastName"
@@ -87,8 +87,8 @@
                         :label="labels.email"
                         outlined
                         dense
-                        :readonly="checkReadOnly('email')"
-                        :hint="checkReadOnlyHint('email')"
+                        :readonly="isReadOnly('email')"
+                        :hint="readOnlyHint('email')"
                         prepend-icon="email"
                         :error-messages="validationErrors.email"
                         :placeholder="labels.email"
@@ -143,6 +143,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditUserProfile',
@@ -256,20 +257,6 @@ export default {
     },
   },
   methods: {
-    checkReadOnly(property) {
-      if (!this.$store) {
-        return false;
-      }
-
-      return this.mixinMethods_isFieldReadOnly(property);
-    },
-    checkReadOnlyHint(property) {
-      if (!this.$store) {
-        return '';
-      }
-
-      return this.mixinMethods_readOnlyHint(property);
-    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
@@ -325,6 +312,12 @@ export default {
       this.previews.firstName = null;
       this.previews.lastName = null;
       this.previews.email = null;
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

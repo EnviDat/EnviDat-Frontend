@@ -44,8 +44,8 @@
             outlined
             hide-details
             :label="labels.dataLicense"
-            :readonly="mixinMethods_isFieldReadOnly('dataLicenseId')"
-            :hint="mixinMethods_readOnlyHint('dataLicenseId')"
+            :readonly="isReadOnly('dataLicenseId')"
+            :hint="readOnlyHint('dataLicenseId')"
             prepend-icon="policy"
             append-icon="arrow_drop_down"
             :value="selectedLicense"
@@ -123,6 +123,7 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { dataLicenses } from '@/factories/dataLicense';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditDataLicense',
@@ -256,6 +257,12 @@ export default {
       if (isFieldValid(property, value, this.validations, this.validationErrors)) {
         this.setDataLicenseInfo(value);
       }
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   components: {

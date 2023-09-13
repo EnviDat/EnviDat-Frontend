@@ -40,7 +40,7 @@
                     chips
                     readonly
                     prepend-icon="home_filled"
-                    :hint="mixinMethods_readOnlyHint('organization') || 'Your Organization was autocompleted'"
+                    :hint="readOnlyHint('organization') || 'Your Organization was autocompleted'"
                     persistent-hint
                     label="Organization"
           />
@@ -60,7 +60,7 @@
                     prepend-icon="home_filled"
                     :append-icon="isEditOrganizationReadonly ? '' : 'arrow_drop_down'"
                     :readonly="isEditOrganizationReadonly"
-                    :hint="mixinMethods_readOnlyHint('organization')"
+                    :hint="readOnlyHint('organization')"
                     :persistent-hint="isEditOrganizationReadonly"
                     label="Organization"
                     :error-messages="validationErrors.organizationId"
@@ -101,6 +101,8 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditOrganization',
@@ -155,7 +157,7 @@ export default {
       },
     },
     isEditOrganizationReadonly() {
-      return this.mixinMethods_isFieldReadOnly('organization');
+      return this.isReadOnly('organization');
     },
     onlyOneUserOrganziation() {
       return this.userOrganizations?.length === 1;
@@ -205,6 +207,12 @@ export default {
         this.validations,
         this.validationErrors,
       );
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

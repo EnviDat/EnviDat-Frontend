@@ -26,26 +26,26 @@ import {
   SNOW,
 } from '@/store/categoriesConsts';
 
+export const isFieldReadOnly = (props, property) => {
+  if (props?.readOnlyFields?.length > 0) {
+    return props.readOnlyFields.includes(property);
+  }
+
+  return false;
+}
+
+ export const readOnlyHint = (props, property) => {
+  let hint = '';
+
+  if (isFieldReadOnly(property)) {
+    hint = props?.readOnlyExplanation || '';
+  }
+
+  return hint;
+}
 
 export default {
   methods: {
-    mixinMethods_isFieldReadOnly(property) {
-
-      if (this.readOnlyFields?.length > 0) {
-        return this.readOnlyFields.includes(property);
-      }
-
-      return false;
-    },
-    mixinMethods_readOnlyHint(property) {
-      let hint = '';
-
-      if (this.mixinMethods_isFieldReadOnly(property)) {
-        hint = this.readOnlyExplanation || '';
-      }
-
-      return hint;
-    },
     mixinMethods_isTagSelected(tagName) {
       if (!tagName || this.selectedTagNames === undefined) {
         return false;

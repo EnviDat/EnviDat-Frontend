@@ -67,10 +67,6 @@
             :error-messages="validationErrors.name"
           />
 
-<!--
-          :readonly="mixinMethods_isFieldReadOnly('resourceName')"
--->
-
         </v-col>
       </v-row>
 

@@ -47,7 +47,7 @@
                           :isClearable="isClearable"
                           :instructions="labels.userPickInstructions"
                           :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
+                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
                           @blur="notifyChange"
                           @removedUsers="catchRemovedUsers"
                           @pickedUsers="catchPickedUsers"/>
@@ -83,6 +83,7 @@ import { getArrayOfFullNames } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditAddExistingAuthor',
@@ -136,7 +137,7 @@ export default {
   },
   computed: {
     isUserPickerReadOnly() {
-      return this.mixinMethods_isFieldReadOnly('authors');
+      return this.isReadOnly('authors');
     },
     baseUserPickerObject() {
       return getArrayOfFullNames(this.existingEnviDatUsers);
@@ -220,6 +221,12 @@ export default {
     getAuthorByName(fullName, authors) {
       const found = authors.filter(auth => auth.fullName === fullName);
       return found.length > 0 ? found[0] : null;
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

@@ -50,8 +50,8 @@
             :label="labels.institution"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
-            :hint="mixinMethods_readOnlyHint(INSTITUTION)"
+            :readonly="isReadOnly(INSTITUTION)"
+            :hint="readOnlyHint(INSTITUTION)"
             :value="item.institution"
             :error-messages="getValidationErrorMessage(INSTITUTION, index)"
             @keyup="blurOnEnterKey"
@@ -64,8 +64,8 @@
             :label="labels.grantNumber"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
-            :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
+            :readonly="isReadOnly(GRANTNUMBER)"
+            :hint="readOnlyHint(GRANTNUMBER)"
             :value="item.grantNumber"
             :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
             @keyup="blurOnEnterKey"
@@ -78,8 +78,8 @@
             :label="labels.institutionUrl"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
-            :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
+            :readonly="isReadOnly(INSTITUTION_URL)"
+            :hint="readOnlyHint(INSTITUTION_URL)"
             :value="item.institutionUrl"
             :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
             @keyup="blurOnEnterKey"
@@ -126,8 +126,6 @@
 /**
  * @summary Shows Funding Information
  * @author Dominik Haas-Artho
- * Created        : 2023-01-17
- * Last modified  : 2023-01-17 16:53:36
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -151,6 +149,8 @@ import {
   isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 const INSTITUTION = 'institution';
 const GRANTNUMBER = 'grantNumber';
@@ -379,6 +379,12 @@ export default {
     },
     getValidationErrorMessage(property, index) {
       return this.validationErrors?.funders[index][property] || '';
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

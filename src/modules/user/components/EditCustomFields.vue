@@ -46,8 +46,8 @@
             :label="labels.labelFieldName"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('fieldName')"
-            :hint="mixinMethods_readOnlyHint('fieldName')"
+            :readonly="isReadOnly('fieldName')"
+            :hint="readOnlyHint('fieldName')"
             :error-messages="validationErrors.customFieldsList[index].fieldName"
             :value="item.fieldName"
             @change="notifyChange(index, 'fieldName', $event)"
@@ -59,8 +59,8 @@
             :label="labels.labelContent"
             outlined
             dense
-            :readonly="mixinMethods_isFieldReadOnly('content')"
-            :hint="mixinMethods_readOnlyHint('content')"
+            :readonly="isReadOnly('content')"
+            :hint="readOnlyHint('content')"
             :error-messages="validationErrors.customFieldsList[index].content"
             :value="item.content"
             @change="notifyChange(index, 'content', $event)"
@@ -117,6 +117,8 @@ import {
   isArrayContentValid,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditCustomFields',
@@ -356,6 +358,12 @@ export default {
         this.maxCustomFields,
         localCopy,
       );
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   components: {

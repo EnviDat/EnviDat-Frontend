@@ -48,8 +48,8 @@
 
         <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                       :validationError="validationErrors[editingProperty]"
-                                      :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                      :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                      :readonly="isReadOnly(editingProperty)"
+                                      :hint="readOnlyHint(editingProperty)"
                                       @inputedText="catchInputedText($event)"
                                       @changedText="catchChangedText($event)">
           <MetadataRelatedDatasets v-bind="datasetObject" />
@@ -94,6 +94,8 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditRelatedDatasets',
@@ -188,6 +190,12 @@ export default {
         object: EDITMETADATA_RELATED_DATASETS,
         data: { [this.editingProperty]: value },
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

@@ -49,8 +49,8 @@
           <v-text-field
             :label="labels.dataObjectIdentifier"
             outlined
-            :readonly="mixinMethods_isFieldReadOnly('doi')"
-            :hint="mixinMethods_readOnlyHint('doi')"
+            :readonly="isReadOnly('doi')"
+            :hint="readOnlyHint('doi')"
             :error-messages="validationErrors.doi"
             prepend-icon="fingerprint"
             @change="doiField = $event"
@@ -81,8 +81,8 @@
           <v-text-field
             :label="labels.publisher"
             outlined
-            :readonly="mixinMethods_isFieldReadOnly('publisher')"
-            :hint="mixinMethods_readOnlyHint('publisher')"
+            :readonly="isReadOnly('publisher')"
+            :hint="readOnlyHint('publisher')"
             :error-messages="validationErrors.publisher"
             prepend-icon="public"
             @change="publisherField = $event"
@@ -97,8 +97,8 @@
             outlined
             :label="labels.year"
             :error-messages="validationErrors.publicationYear"
-            :readonly="mixinMethods_isFieldReadOnly('publicationYear')"
-            :hint="mixinMethods_readOnlyHint('publicationYear')"
+            :readonly="isReadOnly('publicationYear')"
+            :hint="readOnlyHint('publicationYear')"
             prepend-icon="date_range"
             @change="publicationYearField = $event"
             @input="validateProperty('publicationYear', $event)"
@@ -137,6 +137,8 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 export default {
   name: 'EditPublicationInfo',
@@ -306,6 +308,12 @@ export default {
         data: newPublicationInfo,
         property: property.toString(),
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

@@ -68,8 +68,8 @@
                         outlined
                         dense
                         :error-messages="validationErrors.email"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         prepend-icon="email"
                         :placeholder="labels.placeholderEmail"
                         :value="emailField"
@@ -102,7 +102,7 @@
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
                           :readonly="isUserPickerReadOnly"
-                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
+                          :hint="isUserPickerReadOnly ? readOnlyHint('authors') : labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -131,8 +131,8 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderFirstName"
                         :value="firstNameField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
@@ -152,8 +152,8 @@
                         prepend-icon="person"
                         :placeholder="labels.placeholderLastName"
                         :value="lastNameField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
@@ -178,8 +178,8 @@
                         prepend-icon="handshake"
                         :placeholder="labels.placeholderAffiliation"
                         :value="affiliationField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
@@ -199,8 +199,8 @@
                         prepend-icon="card_membership"
                         :placeholder="labels.placeholderIdentifier"
                         :value="identifierField"
-                        :readonly="mixinMethods_isFieldReadOnly('authors')"
-                        :hint="mixinMethods_readOnlyHint('authors')"
+                        :readonly="isReadOnly('authors')"
+                        :hint="readOnlyHint('authors')"
                         @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
@@ -216,7 +216,7 @@
           <BaseRectangleButton material-icon-name="clear"
                                 icon-color="white"
                                 color="error"
-                               :disabled="mixinMethods_isFieldReadOnly('authors')"
+                               :disabled="isReadOnly('authors')"
                                 button-text="Remove Author"
                                 tooltip-text="Remove this author from the dataset"
                                 @clicked="removeAuthorClick(email)"/>
@@ -261,6 +261,8 @@ import {
   eventBus,
   REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
@@ -412,7 +414,7 @@ export default {
       return 'Create a new author which is not on any published dataset.';
     },
     isUserPickerReadOnly() {
-      return this.mixinMethods_isFieldReadOnly('authors');
+      return this.isReadOnly('authors');
     },
   },
   methods: {
@@ -560,6 +562,12 @@ export default {
         object: REMOVE_EDITING_AUTHOR,
         data: email,
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

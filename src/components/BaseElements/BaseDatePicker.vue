@@ -7,7 +7,7 @@
         outlined
         readonly
         prepend-icon="date_range"
-        :hint="readonlyHint(dateProperty)"
+        :hint="readOnlyHint(dateProperty)"
         :value="formatToEnviDatDate(dateField, dateProperty)"
         :error-messages="validationErrors[dateProperty]"
       />
@@ -90,6 +90,8 @@ import {
 } from '@/factories/mappingFactory';
 import { isFieldValid } from '@/factories/userEditingValidations';
 
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {
   // Helper function for yup date string parsing
@@ -147,7 +149,7 @@ export default {
       [this.dateProperty]: '',
     };
   },
-    mounted() {
+  mounted() {
 
     isFieldValid(
         this.dateProperty,
@@ -226,10 +228,10 @@ export default {
       return yup.object().shape(validation);
     },
     isReadonly(dateProperty) {
-      return this.mixinMethods_isFieldReadOnly(dateProperty);
+      return isFieldReadOnly(this.$props, dateProperty);
     },
-    readonlyHint(dateProperty) {
-      return this.mixinMethods_readOnlyHint(dateProperty);
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
     changeDatePicker(dateProperty, value) {
       if (dateProperty === this.dateProperty) {

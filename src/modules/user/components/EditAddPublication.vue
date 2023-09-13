@@ -43,8 +43,8 @@
   <!--
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
-        :readonly="mixinMethods_isFieldReadOnly('doi')"
-        :hint="mixinMethods_readOnlyHint('doi')"
+        :readonly="isReadOnly('doi')"
+        :hint="readOnlyHint('doi')"
         :error-messages="validationErrors.doi"
   -->
 
@@ -117,6 +117,7 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/metaDataFactory';
+
 
 export default {
   name: 'EditAddPublication',

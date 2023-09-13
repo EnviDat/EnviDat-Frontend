@@ -73,7 +73,7 @@
                                      icon-color="white"
                                      is-small
                                      :loading="loading"
-                                     :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
+                                     :disabled="isReadOnly('publicationStatus')"
                                      @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
               </v-col>
@@ -83,10 +83,10 @@
                 {{ currentStateInfos.infoText }}
               </v-col>
 
-              <v-col v-if="mixinMethods_isFieldReadOnly('publicationStatus')"
+              <v-col v-if="isReadOnly('publicationStatus')"
                      class="pt-2 readOnlyHint"
                      cols="12">
-                {{ mixinMethods_readOnlyHint('publicationStatus') }}
+                {{ readOnlyHint('publicationStatus') }}
               </v-col>
 
             </v-row>
@@ -103,8 +103,6 @@
   /**
    * @summary Shows Publication State
    * @author Dominik Haas-Artho
-   * Created        : 2023-01-18
-   * Last modified  : 2023-01-18 16:53:36
    *
    * This file is subject to the terms and conditions defined in
    * file 'LICENSE.txt', which is part of this source code package.
@@ -113,7 +111,9 @@
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
+  import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
   export default {
@@ -180,6 +180,12 @@
     methods: {
       getStateText(state) {
         return this.stateTextMap.get(state)?.chipText || '';
+      },
+      isReadOnly(dateProperty) {
+        return isFieldReadOnly(this.$props, dateProperty);
+      },
+      readOnlyHint(dateProperty) {
+        return readOnlyHint(this.$props, dateProperty);
       },
     },
     data: () => ({

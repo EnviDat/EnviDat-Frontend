@@ -61,8 +61,8 @@
                         :label="labels.labelTitle"
                         outlined
                         dense
-                        :readonly="mixinMethods_isFieldReadOnly(METADATA_TITLE_PROPERTY)"
-                        :hint="mixinMethods_readOnlyHint(METADATA_TITLE_PROPERTY)"
+                        :readonly="isReadOnly(METADATA_TITLE_PROPERTY)"
+                        :hint="readOnlyHint(METADATA_TITLE_PROPERTY)"
                         prepend-icon="import_contacts"
                         :error-messages="validationErrors[METADATA_TITLE_PROPERTY]"
                         :placeholder="labels.placeholderTitle"
@@ -202,8 +202,8 @@
                           :label="labels.labelUrl"
                           dense
                           outlined
-                          :readonly="mixinMethods_isFieldReadOnly(METADATA_URL_PROPERTY)"
-                          :hint="mixinMethods_readOnlyHint(METADATA_URL_PROPERTY)"
+                          :readonly="isReadOnly(METADATA_URL_PROPERTY)"
+                          :hint="readOnlyHint(METADATA_URL_PROPERTY)"
                           prepend-icon="import_contacts"
                           :error-messages="validationErrors[METADATA_URL_PROPERTY]"
                           :placeholder="labels.placeholderUrl"
@@ -247,9 +247,6 @@
  * @summary shows the title, main contact information, and header preview
  * @author Dominik Haas-Artho and Rebecca Kurup Buchholz
  *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-11-23
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -282,6 +279,7 @@ import {
   METADATA_URL_PROPERTY,
 } from '@/factories/metadataConsts';
 import { getMetadataUrlFromTitle } from '@/factories/mappingFactory';
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
@@ -476,7 +474,7 @@ export default {
       }
     },
     isContactPropertyReadOnly(property) {
-      return this.contactInfoReadOnly || this.mixinMethods_isFieldReadOnly(property);
+      return this.contactInfoReadOnly || this.isReadOnly(property);
     },
     contactPropertyHint(property) {
 
@@ -484,7 +482,7 @@ export default {
         return 'Not editable because the contact is defined in the author picker';
       }
 
-      return this.mixinMethods_readOnlyHint(property);
+      return this.readOnlyHint(property);
     },
     clearPreviews() {
       this.previews.contactGivenName = null;
@@ -698,6 +696,12 @@ export default {
         object: EDITMETADATA_MAIN_HEADER,
         data: newHeaderInfo,
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({

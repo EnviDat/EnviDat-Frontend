@@ -60,8 +60,8 @@
                       :label="labels.keywordsLabel"
                       :placeholder="labels.placeholder"
                       :search-input.sync="search"
-                      :readonly="mixinMethods_isFieldReadOnly('keywords')"
-                      :hint="mixinMethods_readOnlyHint('keywords')"
+                      :readonly="isReadOnly('keywords')"
+                      :hint="readOnlyHint('keywords')"
                       :error-messages="validationErrors.keywords"
                       @update:search-input="isKeywordValid(search)"
                       @keyup="blurOnEnterKey"
@@ -147,6 +147,8 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
@@ -445,6 +447,12 @@ export default {
         data: newKeywords,
       });
 
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   components: {

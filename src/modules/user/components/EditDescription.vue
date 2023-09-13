@@ -47,8 +47,8 @@
 
           <GenericTextareaPreviewLayout v-bind="genericTextAreaObject"
                                         :validationError="validationErrors[editingProperty]"
-                                        :readonly="mixinMethods_isFieldReadOnly(editingProperty)"
-                                        :hint="mixinMethods_readOnlyHint(editingProperty)"
+                                        :readonly="isReadOnly(editingProperty)"
+                                        :hint="readOnlyHint(editingProperty)"
                                         @inputedText="catchInputedText($event)"
                                         @changedText="catchChangedText($event)">
             <MetadataBody :genericProps="descriptionObject" />
@@ -91,6 +91,8 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import GenericTextareaPreviewLayout from '@/components/Layouts/GenericTextareaPreviewLayout.vue';
 import MetadataBody from '@/modules/metadata/components/Metadata/MetadataBody.vue';
 import { EDIT_METADATA_DESCRIPTION_TITLE } from '@/factories/metadataConsts';
+
+import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
@@ -185,6 +187,12 @@ export default {
         object: EDITMETADATA_MAIN_DESCRIPTION,
         data: newDescription,
       });
+    },
+    isReadOnly(dateProperty) {
+      return isFieldReadOnly(this.$props, dateProperty);
+    },
+    readOnlyHint(dateProperty) {
+      return readOnlyHint(this.$props, dateProperty);
     },
   },
   data: () => ({
