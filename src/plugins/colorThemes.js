@@ -29,6 +29,7 @@
 // created via https://vis4.net/palettes/#/6|d|00897b,4db6ac,b2dfdb|99ebff,4caf50,ffc107|1|0
 // for the error and accent colors: https://vis4.net/palettes/#/6|d|00897b,4db6ac,b2dfdb|ff5252,ff8a80,ffd740|1|0
 // colorblind ready theme
+/*
 export const lightColorblind = {
   primary: '#00897b',
   secondary: '#35a89d',
@@ -40,6 +41,34 @@ export const lightColorblind = {
   errorHighlight: '#ffb060', // red lighten-4
   accent: '#FFD740', // amber accent-2
 };
+*/
+
+export const colors = [
+  '#71c5bd',
+  '#FFD740',
+  '#00897b',
+  '#35a89d',
+  '#8ae0de',
+  '#ffc107',
+  '#ff847b',
+  '#92e5ef',
+];
+
+export const lightColorblind = {
+/*
+  background: '#71c5bd',
+  surface: '#ffd740',
+*/
+  primary: '#00897b',
+  secondary: '#35a89d',
+  highlight: '#71c5bd',
+  accent: '#ffd740',
+  success: '#8ae0de',
+  warning: '#ffc107',
+  error: '#ff847b',
+  errorHighlight: '#ffb060',
+  info: '#92e5ef',
+}
 
 export const gradients = {
   lightGreenBlue: {

@@ -4,26 +4,40 @@
  * @summary Vuetify plugin definitions.
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:11:52
- * Last modified  : 2021-01-26 09:11:25
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+// import { lightColorblind } from './colorThemes';
+import { md2 } from 'vuetify/blueprints';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
 import { lightColorblind } from './colorThemes';
 
 // Icons list: https://jossef.github.io/material-design-icons-iconfont/
 
+// const colors = Object.values(lightColorblind);
+
+
+const colors = { ...lightColorblind };
+
 export default {
-  theme: {
-    themes: {
-      light: lightColorblind,
+  blueprint: md2,
+  defaults: {
+    VTextField: {
+      variant: 'outlined',
+      density: 'compact',
     },
   },
-  options: {
-    customProperties: true,
+  theme: {
+    themes: {
+      light: { colors },
+    },
   },
   icons: {
-    iconfont: 'mdi',
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    },
   },
 };
+
