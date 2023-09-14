@@ -7,13 +7,12 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { getSpecificApiError } from '@/factories/notificationFactory';
-import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 import {
   DOI_PUBLISH,
   DOI_REQUEST,
   DOI_RESERVE,
 } from '@/modules/user/store/doiMutationsConsts';
+import { createErrorMessage } from '@/modules/user/store/mutationFactory';
 
 function baseDoiCommit(state) {
   state.doiLoading = true;
@@ -28,12 +27,12 @@ function baseDoiSuccess(state) {
 
 function baseDoiError(commit, state, reason) {
   state.doiLoading = false;
-  state.doiError = reason;
 
-  const details = 'An error occurred when changing the publication status!';
-  const errObj = getSpecificApiError(details, reason);
-
-  commit(ADD_USER_NOTIFICATION, errObj);
+  const errorObj = createErrorMessage(reason);
+  state.doiError = {
+    message: errorObj.message,
+    details: errorObj.errorDetails,
+  };
 }
 
 export default {

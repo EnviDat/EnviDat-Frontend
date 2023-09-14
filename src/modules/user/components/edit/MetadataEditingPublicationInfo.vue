@@ -180,7 +180,8 @@ export default {
       return {
         ...this.publicationsInfo,
         loading: this.$store ? this.doiLoading : undefined,
-        error: this.$store ? this.doiError : undefined,
+        error: this.$store ? this.doiError?.message : undefined,
+        errorDetails: this.$store ? this.doiError?.details : undefined,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };

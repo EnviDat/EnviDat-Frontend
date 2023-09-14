@@ -21,7 +21,6 @@ import {
 
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
-import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 
 const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
@@ -29,7 +28,6 @@ const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite
 
 export default {
   async [DOI_API_ACTIONS]({ dispatch }, { data: { event, metadataId } }) {
-    // await dispatch(`${USER_NAMESPACE}/${event}`, metadataId);
     await dispatch(event, metadataId);
   },
   async [DOI_RESERVE]({ commit }, metadataId) {
