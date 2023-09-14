@@ -22,11 +22,24 @@
           </v-col >
         </v-row>
 
-        <v-row >
+        <v-row v-if="doiWorkflowActive">
           <v-col >
             <EditPublicationStatus v-bind="editPublicationStatusProps"
                                    @clicked="catchPublicationStateChange"/>
           </v-col >
+        </v-row>
+
+        <v-row v-if="!doiWorkflowActive">
+          <v-col>
+
+            <NotFoundCard title="Publication Status editing is disabled"
+                          description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
+                          actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
+                          actionButtonText="Request Publication"
+                          :actionButtonCallback="openCKANLink"
+                          />
+
+          </v-col>
         </v-row>
 
       </v-col>
@@ -61,11 +74,12 @@
 import { mapState } from 'vuex';
 
 import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
-
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
-
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue'
+
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_FUNDING_INFO,
@@ -77,7 +91,6 @@ import {
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
 
-import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -125,11 +138,22 @@ export default {
     },
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
     ...mapState(USER_NAMESPACE, [
       'doiLoading',
       'doiSuccess',
       'doiError',
     ]),
+    doiWorkflowActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.doiWorkflowActive;
+      }
+
+      // storybook context
+      return true;
+    },
     publicationsInfo() {
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
@@ -210,6 +234,9 @@ export default {
         },
       });
     },
+    openCKANLink() {
+      window.open(this.linkToDatasetCKAN, '_blank');
+    },
   },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
@@ -220,6 +247,7 @@ export default {
     EditFunding,
     EditOrganization,
     BaseRectangleButton,
+    NotFoundCard,
   },
 };
 </script>

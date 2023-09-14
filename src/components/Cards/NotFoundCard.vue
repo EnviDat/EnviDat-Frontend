@@ -9,14 +9,15 @@
 
     <v-container fluid class="pa-4">
       <v-row>
-        <v-col class="text-h3">
+        <v-col class="text-h5">
           {{ title }}
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" class="text-md-h6 text-xs-body-1">
-          {{ description }}
+        <v-col cols="12" class="text-md-h6 text-xs-body-1"
+                v-html="description" >
+
         </v-col>
       </v-row>
 
