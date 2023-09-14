@@ -146,7 +146,7 @@ export default {
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.on(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
-    eventBus.on(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+    eventBus.on(METADATA_EDITING_FINISH_CLICK, this.catchLastStepButtonClick);
 
     eventBus.on(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
@@ -155,7 +155,7 @@ export default {
     eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditingAuthor);
     eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.off(EDITMETADATA_NETWORK_ERROR, this.showSnackMessage);
-    eventBus.off(METADATA_EDITING_FINISH_CLICK, this.catchBackClicked);
+    eventBus.off(METADATA_EDITING_FINISH_CLICK, this.catchLastStepButtonClick);
 
     eventBus.off(AUTHOR_SEARCH_CLICK, this.catchAuthorCardAuthorSearch);
   },
@@ -259,6 +259,9 @@ export default {
     catchBackClicked() {
       const path = USER_DASHBOARD_PATH;
       this.$router.push({ path });
+    },
+    catchLastStepButtonClick() {
+      this.catchSaveNewDataset();
     },
     loadDatasetInEditingWorkflow(metadataId) {
 

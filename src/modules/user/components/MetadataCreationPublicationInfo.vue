@@ -58,9 +58,20 @@
     <v-row justify="end" align="end">
       <v-col class="shrink">
         <!-- prettier-ignore -->
-        <BaseRectangleButton buttonText="Close"
+        <BaseRectangleButton buttonText="Save Dataset"
                              color='highlight'
+                             :disabled="!showSaveButton"
+                             :tooltip-text="showSaveButton ? 'Save Dataset on the Server' : 'Fill out all fields to save the dataset, check the progess on the top right'"
                              @clicked="submitEdittedMetadata" />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="!showSaveButton"
+           justify="end"
+           align="end" >
+      <v-col cols="5"
+              class="text-body-2">
+        Fill out all fields to save the dataset. Have a look at the the progess on the top right!
       </v-col>
     </v-row>
   </v-container>
@@ -126,6 +137,10 @@ export default {
     readOnlyExplanation: {
       type: String,
       default: '',
+    },
+    showSaveButton: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

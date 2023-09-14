@@ -132,10 +132,6 @@ export default {
       type: String,
       default: '',
     },
-    isCreationWorkflow: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     ...mapState([
