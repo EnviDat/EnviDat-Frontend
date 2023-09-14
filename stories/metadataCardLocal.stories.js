@@ -18,6 +18,7 @@ import fileIcon from '../src/assets/icons/file.png';
 
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
+import { METADATA_STATE_DRAFT } from '@/factories/metadataConsts';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
@@ -50,6 +51,6 @@ LocalCard.args = {
   categoryColor: firstDataset.categoryColor,
   name: firstDataset.name,
   subtitle: firstDataset.notes,
-  state: 'draft',
+  state: METADATA_STATE_DRAFT,
 }
 

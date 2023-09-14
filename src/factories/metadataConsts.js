@@ -83,3 +83,8 @@ export const METADATA_STATE_DRAFT = 'draft';
 export const METADATA_STATE_INVISILBE = 'hidden';
 export const METADATA_STATE_VISILBE = 'visible';
 
+export const PUBLICATION_STATE_DRAFT = 'draft';
+export const PUBLICATION_STATE_RESERVED = 'reserved';
+export const PUBLICATION_STATE_PENDING = 'pub_pending';
+export const PUBLICATION_STATE_PUBLISHED = 'published';
+

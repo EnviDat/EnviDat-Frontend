@@ -47,13 +47,13 @@
             <v-row no-gutters
                    justify="center">
 
-              <BaseShinyBadge v-if="getStateText(state) === 'Published' && activeStateIndex === index"
+              <BaseShinyBadge v-if="state === PUBLICATION_STATE_PUBLISHED && activeStateIndex === index"
                               :text="getStateText(state)"
               />
 
               <v-chip v-if="!!getStateText(state)
-                            && getStateText(state) !== 'Published'
-                            || (getStateText(state) === 'Published' && activeStateIndex !== index)"
+                            && state !== PUBLICATION_STATE_PUBLISHED
+                            || (state === PUBLICATION_STATE_PUBLISHED && activeStateIndex !== index)"
                       small
                       :disabled="activeStateIndex > index"
                       :color="activeStateIndex === index ? 'secondary' : '' "
@@ -77,6 +77,7 @@
             <v-row v-if="currentStateInfos.positionIndex === index && currentStateInfos.buttonText"
                    no-gutters
                    justify="center">
+
               <BaseRectangleButton id='interactiveButton'
                                    :button-text="currentStateInfos.buttonText"
                                    :material-icon-name="currentStateInfos.buttonIcon"
@@ -152,10 +153,18 @@
   import { metadataPublishedReadOnlyFields, readablePublishedReadOnlyFields } from '@/factories/mappingFactory';
   import { DOI_PUBLISH, DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
   import {
-    USER_ROLE_ADMIN, USER_ROLE_EDITOR,
+    USER_ROLE_ADMIN,
+    USER_ROLE_EDITOR,
     USER_ROLE_MEMBER,
     USER_ROLE_SYSTEM_ADMIN,
   } from '@/factories/userEditingValidations';
+
+  import {
+    PUBLICATION_STATE_DRAFT,
+    PUBLICATION_STATE_PENDING,
+    PUBLICATION_STATE_PUBLISHED,
+    PUBLICATION_STATE_RESERVED,
+  } from '@/factories/metadataConsts';
 
 
   export default {
@@ -163,7 +172,7 @@
     props: {
       publicationState: {
         type: String,
-        default: 'draft',
+        default: PUBLICATION_STATE_DRAFT,
       },
       doi: {
         type: String,
@@ -203,7 +212,7 @@
         }
 
         for (let i = 0; i < this.possiblePublicationStates.length; i++) {
-          const pState = this.possiblePublicationStates[i] || 'draft';
+          const pState = this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
           pStateWithDiv.push(pState);
           pStateWithDiv.push('arrow_forward');
         }
@@ -216,7 +225,7 @@
         return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
       },
       currentStateInfos() {
-        return this.stateTextMap.get(this.publicationState || 'draft');
+        return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
       },
       doiUrl() {
         return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
@@ -248,7 +257,7 @@
     data: () => ({
       possiblePublicationStates,
       stateTextMapEditor: new Map([
-        ['draft', {
+        [PUBLICATION_STATE_DRAFT, {
           chipText: 'Draft',
           infoText: 'Reserve DOI for Dataset',
           buttonIcon: 'fingerprint',
@@ -256,7 +265,7 @@
           buttonEvent: DOI_RESERVE,
           positionIndex: 2,
         }],
-        ['reserved', {
+        [PUBLICATION_STATE_RESERVED, {
           chipText: 'Reserved DOI',
           infoText: 'Request Dataset Publication',
           buttonIcon: 'newspaper',
@@ -264,14 +273,14 @@
           buttonEvent: DOI_REQUEST,
           positionIndex: 4,
         }],
-        ['pub_pending', {
+        [PUBLICATION_STATE_PENDING, {
           chipText: 'Publication Pending',
           infoText: 'Wait for the admin to review & approve the publication',
           buttonIcon: 'public',
           buttonText: 'Publish Dataset',
           positionIndex: 6,
         }],
-        ['published', {
+        [PUBLICATION_STATE_PUBLISHED, {
           chipText: 'Published',
           infoText: 'Open the DOI in a new Tab',
           buttonIcon: 'public',
@@ -281,7 +290,7 @@
         }],
       ]),
       stateTextMapAdmin: new Map([
-        ['pub_pending', {
+        [PUBLICATION_STATE_PENDING, {
           chipText: 'Publication Pending',
           infoText: 'Please make sure you reviewed the dataset before publishing it!',
           buttonIcon: 'public',
@@ -301,6 +310,7 @@
       metadataPublishedReadOnlyFields,
       readablePublishedReadOnlyFields,
       readOnlyExplaination: 'Only dataset owners and admins can change the publication status',
+      PUBLICATION_STATE_PUBLISHED,
     }),
     components: {
       BaseRectangleButton,

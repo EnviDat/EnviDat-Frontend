@@ -113,7 +113,6 @@
                       :topFilteringLayout="true"
                       :showSearch="false"
                       :showPublicationState="true"
-                      :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
                       :metadatasContent="metadatasContent"
                       mainScrollClass=".midBoard > .datasetsGrid"
@@ -231,7 +230,6 @@
                     :topFilteringLayout="true"
                     :showSearch="false"
                     :showPublicationState="true"
-                    :defaultPublicationState="defaultPublicationState"
                     :reloadAmount="20"
                     :preloadingDistance="10"
                     :showOrganizationOnHover="false"
@@ -901,7 +899,6 @@ export default {
       // LISTCONTROL_MAP_ACTIVE,
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
-    defaultPublicationState: 'draft',
     localDatasetUpdateCount: 0,
   }),
   components: {

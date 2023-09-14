@@ -37,14 +37,18 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { METADATA_STATE_DRAFT, METADATA_STATE_INVISILBE, METADATA_STATE_VISILBE } from '@/factories/metadataConsts';
+import {
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISILBE,
+  METADATA_STATE_VISILBE,
+} from '@/factories/metadataConsts';
 
 export default {
   name: 'MetadataStateChip',
   props: {
     state: {
       type: String,
-      default: 'draft',
+      default: METADATA_STATE_DRAFT,
     },
     tooltipMap: {
       type: Object,
@@ -78,7 +82,7 @@ export default {
   },
   computed: {
     stateText() {
-      return this.state?.toUpperCase() || 'DRAFT';
+      return this.state?.toUpperCase() || METADATA_STATE_DRAFT.toUpperCase();
     },
     stateLowerCase() {
       return this.stateText.toLowerCase();

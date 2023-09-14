@@ -24,7 +24,14 @@ import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
 } from '@/factories/userEditingFactory';
-import { METADATA_STATE_DRAFT, METADATA_STATE_INVISILBE, METADATA_STATE_VISILBE } from '@/factories/metadataConsts';
+import {
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISILBE,
+  METADATA_STATE_VISILBE,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+  PUBLICATION_STATE_RESERVED,
+} from '@/factories/metadataConsts';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -1363,9 +1370,9 @@ export const defaultWorldLocation = {
  */
 export const possiblePublicationStates = [
   '', // defaults to 'draft' in the components
-  'reserved',
-  'pub_pending',
-  'published',
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
 ];
 
 export const possibleVisibilityStates = [

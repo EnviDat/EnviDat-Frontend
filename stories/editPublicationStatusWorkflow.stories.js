@@ -9,10 +9,17 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { within } from '@storybook/testing-library';
+// import { within } from '@storybook/testing-library';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
 import { USER_ROLE_ADMIN, USER_ROLE_EDITOR } from '@/factories/userEditingValidations';
+import {
+  METADATA_STATE_DRAFT,
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
+
 import { mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -23,24 +30,26 @@ import { mobileViewportParams, tabletViewportParams } from './js/envidatViewport
 };
 
  const allStates = possiblePublicationStates;
- allStates[0] = 'draft';
+ allStates[0] = METADATA_STATE_DRAFT;
 
+/*
  export const SimluateWorkflow = {
    args: {
-     publicationState: 'draft',
+     publicationState: METADATA_STATE_DRAFT,
    },
    play: async ({ canvasElement }) => {
      const canvas = within(canvasElement);
      console.log('canvas');
      console.log(canvas);
      // const btn = canvas.getByText('Reserve');
-/*
+/!*
      const btn = canvas.getByLabelText('Reserve');
      console.log('btn');
      console.log(btn);
-*/
+*!/
    },
  }
+*/
 
 const Template = (args, {argTypes}) => ({
   components: { EditPublicationStatus },
@@ -49,7 +58,7 @@ const Template = (args, {argTypes}) => ({
   props: Object.keys(argTypes),
   methods: {
     catchClicked(event) {
-      // console.log(event);
+      console.log(event);
       this.loading = true;
 
       setTimeout(() => {
@@ -94,15 +103,15 @@ const Template = (args, {argTypes}) => ({
   data: () => ({
     allStates,
     doi: '',
-    state: 'draft',
+    state: METADATA_STATE_DRAFT,
     loading: false,
     message: '',
     messageDetails: '',
     successMessageMap: new Map([
-        ['draft', 'Reserved a DOI'],
-        ['reserved', 'Requested publication'],
-        ['pub_pending', 'Requested publication'],
-        ['published', 'Published Dataset '],
+        [METADATA_STATE_DRAFT, 'Reserved a DOI'],
+        [PUBLICATION_STATE_RESERVED, 'Requested publication'],
+        [PUBLICATION_STATE_PENDING, 'Requested publication'],
+        [PUBLICATION_STATE_PUBLISHED, 'Published Dataset '],
       ]),
     }),
   });

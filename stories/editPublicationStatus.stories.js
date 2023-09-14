@@ -11,6 +11,12 @@
 
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { USER_ROLE_ADMIN, USER_ROLE_EDITOR, USER_ROLE_MEMBER } from '@/factories/userEditingValidations';
+import {
+  PUBLICATION_STATE_DRAFT,
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
 
 export default {
   title: '9 Editing Metadata / Edit Publication Status',
@@ -26,7 +32,7 @@ export const Draft = {
 export const Reserved = {
   args: {
     ...Draft.args,
-    publicationState: 'reserved',
+    publicationState: PUBLICATION_STATE_RESERVED,
   },
 };
 
@@ -40,27 +46,27 @@ export const ReservedLoading = {
 export const Pending = {
   args: {
     ...Draft.args,
-    publicationState: 'pub_pending',
+    publicationState: PUBLICATION_STATE_PENDING,
   },
 };
 
 export const PendingAdmin = {
   args: {
-    publicationState: 'pub_pending',
+    publicationState: PUBLICATION_STATE_PENDING,
     userRole: USER_ROLE_ADMIN,
   },
 };
 export const Published = {
   args: {
     ...Draft.args,
-    publicationState: 'published',
+    publicationState: PUBLICATION_STATE_PUBLISHED,
     doi: '10.16904/envidat.402',
   },
 };
 
 export const NoRightsDraft = {
   args: {
-    publicationState: 'draft',
+    publicationState: PUBLICATION_STATE_DRAFT,
     userRole: USER_ROLE_MEMBER,
   },
 };
