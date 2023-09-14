@@ -142,7 +142,6 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
-import baseIconLableViewStories from '~/stories/baseIconLableView.stories';
 
 export default {
   name: 'EditPublicationInfo',
@@ -201,9 +200,6 @@ export default {
     },
   },
   computed: {
-    baseIconLableViewStories() {
-      return baseIconLableViewStories
-    },
     ...mapState(['config']),
     maxYears() {
       let maxYears = this.defaultUserEditMetadataConfig.publicationYearsList;
