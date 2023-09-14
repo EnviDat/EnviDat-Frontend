@@ -142,7 +142,11 @@ import {
 } from '@/factories/workflowFactory';
 
 import { DOI_API_ACTIONS, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
-import { getUserOrganizationRoleMap, USER_ROLE_MEMBER } from '@/factories/userEditingValidations';
+import {
+  getUserOrganizationRoleMap,
+  USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+} from '@/factories/userEditingValidations';
 
 
 export default {
@@ -317,11 +321,14 @@ export default {
       );
 
 
-      const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
-      let userRole = USER_ROLE_MEMBER;
-      if (userIsOwner) {
-        const roleMap = getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
-        userRole = roleMap[currentOrgaId];
+      const roleMap = getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+      let userRole = roleMap[currentOrgaId];
+
+      if (userRole === USER_ROLE_EDITOR) {
+        const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
+        if (!userIsOwner) {
+          userRole = USER_ROLE_MEMBER;
+        }
       }
 
       const editPublicationInfo = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
