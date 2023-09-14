@@ -140,7 +140,7 @@ import {
   metadataEditingSteps,
 } from '@/factories/workflowFactory';
 
-import { DOI_API_ACTIONS } from '@/modules/user/store/doiMutationsConsts';
+import { DOI_API_ACTIONS, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
 
 
 export default {
@@ -314,6 +314,14 @@ export default {
     },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
+
+        if (!this.currentEditingContent?.doi) {
+          // always call the doi reserve on dataset without a doi so one get reserved
+          // automatically for any datasets opened in the editing workflow
+          await this.$store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
+        }
+
+        // load the metadata from the backend for editing
         await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
       }
 

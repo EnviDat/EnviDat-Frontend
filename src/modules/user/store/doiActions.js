@@ -59,8 +59,8 @@ export default {
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
     try {
-      const response = await axios.get(url);
-      commit(`${DOI_REQUEST}_SUCCESS`, response.data.result);
+      await axios.get(url);
+      commit(`${DOI_REQUEST}_SUCCESS`);
     } catch(error) {
       commit(`${DOI_REQUEST}_ERROR`, error);
     }
@@ -74,8 +74,8 @@ export default {
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
     try {
-      const response = await axios.get(url);
-      commit(`${DOI_PUBLISH}_SUCCESS`, response.data.result);
+      await axios.get(url);
+      commit(`${DOI_PUBLISH}_SUCCESS`);
     } catch(error) {
       commit(`${DOI_PUBLISH}_ERROR`, error);
     }

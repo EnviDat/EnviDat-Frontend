@@ -52,11 +52,8 @@ export default {
   [DOI_REQUEST](state) {
     baseDoiCommit(state);
   },
-  [`${DOI_REQUEST}_SUCCESS`](state, { key, value }) {
+  [`${DOI_REQUEST}_SUCCESS`](state) {
     baseDoiSuccess(state);
-    if (key) {
-      state[key] = value;
-    }
   },
   [`${DOI_REQUEST}_ERROR`](state, reason) {
     baseDoiError(this.commit, state, reason);
@@ -64,11 +61,8 @@ export default {
   [DOI_PUBLISH](state) {
     baseDoiCommit(state);
   },
-  [`${DOI_PUBLISH}_SUCCESS`](state, { key, value }) {
+  [`${DOI_PUBLISH}_SUCCESS`](state) {
     baseDoiSuccess(state);
-    if (key) {
-      state[key] = value;
-    }
   },
   [`${DOI_PUBLISH}_ERROR`](state, reason) {
     baseDoiError(this.commit, state, reason);
