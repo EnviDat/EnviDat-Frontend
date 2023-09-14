@@ -46,7 +46,14 @@
 
             <v-row no-gutters
                    justify="center">
-              <v-chip v-if="getStateText(state)"
+
+              <BaseShinyBadge v-if="getStateText(state) === 'Published' && activeStateIndex === index"
+                              :text="getStateText(state)"
+              />
+
+              <v-chip v-if="!!getStateText(state)
+                            && getStateText(state) !== 'Published'
+                            || (getStateText(state) === 'Published' && activeStateIndex !== index)"
                       small
                       :disabled="activeStateIndex > index"
                       :color="activeStateIndex === index ? 'secondary' : '' "
@@ -54,7 +61,7 @@
                 {{ getStateText(state) }}
               </v-chip>
 
-              <v-icon v-else
+              <v-icon v-if="!getStateText(state)"
                       class="px-2">
                 {{ state }}
               </v-icon>
@@ -77,7 +84,7 @@
                                    is-small
                                    :loading="loading"
                                    :url="doiUrl"
-                                   :disabled="mixinMethods_isFieldReadOnly('publicationStatus')"
+                                   :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
             </v-row>
@@ -89,12 +96,11 @@
               {{ currentStateInfos.infoText }}
             </v-row>
 
-            <v-row v-if="currentStateInfos.positionIndex === index
-                          && mixinMethods_isFieldReadOnly('publicationStatus')"
+            <v-row v-if="currentStateInfos.positionIndex === index && !isUserAllowedToEdit"
                    class="pt-2 readOnlyHint"
                    no-gutters
                    justify="center">
-              {{ mixinMethods_readOnlyHint('publicationStatus') }}
+              {{ readOnlyUserRole }}
             </v-row>
 
           </v-col>
@@ -140,9 +146,16 @@
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+  import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
+
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
   import { metadataPublishedReadOnlyFields, readablePublishedReadOnlyFields } from '@/factories/mappingFactory';
-  import { DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+  import { DOI_PUBLISH, DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+  import {
+    USER_ROLE_ADMIN, USER_ROLE_EDITOR,
+    USER_ROLE_MEMBER,
+    USER_ROLE_SYSTEM_ADMIN,
+  } from '@/factories/userEditingValidations';
 
 
   export default {
@@ -155,6 +168,10 @@
       doi: {
         type: String,
         default: undefined,
+      },
+      userRole: {
+        type: String,
+        default: USER_ROLE_MEMBER,
       },
       loading: {
         type: Boolean,
@@ -175,14 +192,6 @@
       errorDetails: {
         type: String,
         default: null,
-      },
-      readOnlyFields: {
-        type: Array,
-        default: () => [],
-      },
-      readOnlyExplanation: {
-        type: String,
-        default: '',
       },
     },
     computed: {
@@ -212,6 +221,21 @@
       doiUrl() {
         return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
       },
+      isUserAllowedToEdit() {
+        return this.userRole === USER_ROLE_EDITOR
+          || this.userRole === USER_ROLE_ADMIN
+          || this.userRole === USER_ROLE_SYSTEM_ADMIN;
+      },
+      stateTextMap() {
+        if (this.userRole === USER_ROLE_ADMIN || this.userRole === USER_ROLE_SYSTEM_ADMIN) {
+          return new Map([...this.stateTextMapEditor, ...this.stateTextMapAdmin]);
+        }
+
+        return this.stateTextMapEditor;
+      },
+      readOnlyUserRole() {
+        return this.isUserAllowedToEdit ? '' : this.readOnlyExplaination;
+      },
     },
     methods: {
       getStateText(state) {
@@ -223,7 +247,7 @@
     },
     data: () => ({
       possiblePublicationStates,
-      stateTextMap: new Map([
+      stateTextMapEditor: new Map([
         ['draft', {
           chipText: 'Draft',
           infoText: 'Reserve DOI for Dataset',
@@ -243,11 +267,8 @@
         ['pub_pending', {
           chipText: 'Publication Pending',
           infoText: 'Wait for the admin to review & approve the publication',
-/*
-          buttonIcon: 'newspaper',
-          buttonText: 'Request',
-          buttonEvent: 'requestPublication',
-*/
+          buttonIcon: 'public',
+          buttonText: 'Publish Dataset',
           positionIndex: 6,
         }],
         ['published', {
@@ -256,6 +277,16 @@
           buttonIcon: 'public',
           buttonText: 'Open DOI',
           buttonEvent: 'openDoi',
+          positionIndex: 6,
+        }],
+      ]),
+      stateTextMapAdmin: new Map([
+        ['pub_pending', {
+          chipText: 'Publication Pending',
+          infoText: 'Please make sure you reviewed the dataset before publishing it!',
+          buttonIcon: 'public',
+          buttonText: 'Publish Dataset',
+          buttonEvent: DOI_PUBLISH,
           positionIndex: 6,
         }],
       ]),
@@ -269,10 +300,12 @@
       },
       metadataPublishedReadOnlyFields,
       readablePublishedReadOnlyFields,
+      readOnlyExplaination: 'Only dataset owners and admins can change the publication status',
     }),
     components: {
       BaseRectangleButton,
       BaseStatusLabelView,
+      BaseShinyBadge,
     },
   };
   </script>

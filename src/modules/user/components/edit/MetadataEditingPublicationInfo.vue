@@ -107,6 +107,10 @@ export default {
       type: Array,
       default: undefined,
     },
+    userRole: {
+      type: String,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -131,12 +135,14 @@ export default {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
       }
 
+      // storybook context
       const stepData = this.currentStep.genericProps;
 
       return {
         publicationState: stepData.publicationState,
         visibilityState: stepData.visibilityState,
         doi: stepData.doi,
+        userRole: stepData.userRole,
         publisher: stepData.publisher,
         publicationYear: stepData.publicationYear,
       }
@@ -182,8 +188,10 @@ export default {
         loading: this.$store ? this.doiLoading : undefined,
         error: this.$store ? this.doiError?.message : undefined,
         errorDetails: this.$store ? this.doiError?.details : undefined,
+/*
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
+*/
       };
     },
     metadataId() {

@@ -25,10 +25,10 @@ function baseDoiSuccess(state) {
   state.doiSuccess = true;
 }
 
-function baseDoiError(commit, state, reason) {
+function baseDoiError(commit, state, reason, message) {
   state.doiLoading = false;
 
-  const errorObj = createErrorMessage(reason);
+  const errorObj = createErrorMessage(reason, message);
   state.doiError = {
     message: errorObj.message,
     details: errorObj.errorDetails,
@@ -47,7 +47,7 @@ export default {
     }
   },
   [`${DOI_RESERVE}_ERROR`](state, reason) {
-    baseDoiError(this.commit, state, reason);
+    baseDoiError(this.commit, state, reason, 'DOI Reserving failed');
   },
   [DOI_REQUEST](state) {
     baseDoiCommit(state);
@@ -56,7 +56,7 @@ export default {
     baseDoiSuccess(state);
   },
   [`${DOI_REQUEST}_ERROR`](state, reason) {
-    baseDoiError(this.commit, state, reason);
+    baseDoiError(this.commit, state, reason, 'DOI Request failed');
   },
   [DOI_PUBLISH](state) {
     baseDoiCommit(state);
@@ -65,6 +65,6 @@ export default {
     baseDoiSuccess(state);
   },
   [`${DOI_PUBLISH}_ERROR`](state, reason) {
-    baseDoiError(this.commit, state, reason);
+    baseDoiError(this.commit, state, reason, 'DOI Reserving failed');
   },
 }

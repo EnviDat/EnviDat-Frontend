@@ -16,6 +16,7 @@
 import { EDITMETADATA_AUTHOR_DATACREDIT, EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
+import { USER_ROLE_ADMIN } from '@/factories/userEditingValidations';
 
 
 export const ACCESS_LEVEL_PUBLIC_VALUE = 'public';
@@ -181,7 +182,7 @@ export function getUserAutocompleteList(userList) {
       return false;
     }
 
-    return !(user.sysadmin || user.name.toLowerCase() === 'admin' || user.fullName?.toLowerCase() === 'admin');
+    return !(user.sysadmin || user.name.toLowerCase() === USER_ROLE_ADMIN || user.fullName?.toLowerCase() === USER_ROLE_ADMIN);
   });
 
 

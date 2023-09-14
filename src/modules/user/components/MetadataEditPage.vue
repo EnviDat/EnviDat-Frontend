@@ -72,6 +72,7 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_PUBLICATION_STATE,
+  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
 import {
@@ -141,6 +142,7 @@ import {
 } from '@/factories/workflowFactory';
 
 import { DOI_API_ACTIONS, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+import { getUserOrganizationRoleMap, USER_ROLE_MEMBER } from '@/factories/userEditingValidations';
 
 
 export default {
@@ -209,6 +211,7 @@ export default {
       'loadingEditingData',
       'uploadLoading',
       'uploadNewResourceLoading',
+      'userDatasets',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -301,6 +304,7 @@ export default {
       const userOrganizations = this.$store.state.organizations.userOrganizations
 
       const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      const currentOrgaId = editOrgaData.organizationId;
 
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
         {
@@ -311,6 +315,27 @@ export default {
           },
         },
       );
+
+
+      const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
+      let userRole = USER_ROLE_MEMBER;
+      if (userIsOwner) {
+        const roleMap = getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+        userRole = roleMap[currentOrgaId];
+      }
+
+      const editPublicationInfo = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+        {
+          object: EDITMETADATA_PUBLICATION_INFO,
+          data: {
+            ...editPublicationInfo,
+            userRole,
+          },
+        },
+      );
+
     },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {

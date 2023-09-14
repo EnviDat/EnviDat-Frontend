@@ -12,6 +12,7 @@
 import { within } from '@storybook/testing-library';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
+import { USER_ROLE_ADMIN, USER_ROLE_EDITOR } from '@/factories/userEditingValidations';
 import { mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
@@ -65,10 +66,12 @@ const Template = (args, {argTypes}) => ({
         }
 
         if (this.state === 'pub_pending') {
-          setTimeout(() => {
-            this.doi = '10.16904/envidat.402';
-            this.state = this.allStates[this.allStates.length - 1];
-          }, 3000);
+          if (this.userRole === USER_ROLE_EDITOR) {
+            setTimeout(() => {
+              this.doi = '10.16904/envidat.402';
+              this.state = this.allStates[this.allStates.length - 1];
+            }, 3000);
+          }
         }
 
         this.messageDetails = '';
@@ -82,6 +85,7 @@ const Template = (args, {argTypes}) => ({
         publicationState: this.state,
         loading: this.loading,
         doi: this.doi,
+        userRole: this.userRole,
         message: this.message,
         messageDetails: this.messageDetails,
       };
@@ -105,9 +109,19 @@ const Template = (args, {argTypes}) => ({
 
 
 export const DOIWorkflowInteraction = Template.bind({});
+DOIWorkflowInteraction.args = {
+  userRole: USER_ROLE_EDITOR,
+}
+
+export const DOIWorkflowInteractionAdmin = Template.bind({});
+DOIWorkflowInteractionAdmin.args = {
+  userRole: USER_ROLE_ADMIN,
+}
 
 export const DOIWorkflowInteractionMobile = Template.bind({});
+DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
 DOIWorkflowInteractionMobile.parameters = mobileViewportParams;
 
 export const DOIWorkflowInteractionTablet = Template.bind({});
+DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
 DOIWorkflowInteractionTablet.parameters = tabletViewportParams;

@@ -318,6 +318,9 @@ import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
   isMember,
+  USER_ROLE_ADMIN,
+  USER_ROLE_EDITOR,
+  USER_ROLE_SYSTEM_ADMIN,
 } from '@/factories/userEditingValidations';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
@@ -343,14 +346,15 @@ import UserCard from '@/components/Cards/UserCard.vue';
 import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue';
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
+
 import {
   ORGANIZATIONS_NAMESPACE,
   USER_GET_ORGANIZATION_IDS,
   USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_SEARCH,
   USER_GET_ORGANIZATIONS_RESET,
   USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
 } from '@/modules/organizations/store/organizationsMutationsConsts';
+
 import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
 
 import fileIcon from '@/assets/icons/file.png';
@@ -591,9 +595,9 @@ export default {
       const roles = this.organizationRoles;
 
       if (roles) {
-        const matchedRole = roles.filter(r => r.role === 'editor'
-            || r.role === 'admin'
-            || r.role === 'sysadmin');
+        const matchedRole = roles.filter(r => r.role === USER_ROLE_EDITOR
+            || r.role === USER_ROLE_ADMIN
+            || r.role === USER_ROLE_SYSTEM_ADMIN);
         return matchedRole.length > 0;
       }
 

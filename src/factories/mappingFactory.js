@@ -610,7 +610,7 @@ const readOnlyMappingRules = [
 */
 /*
   {
-    triggerRule: 'admin',
+    triggerRule: USER_ROLE_ADMIN,
     readOnlyFields: [],
   },
 */
