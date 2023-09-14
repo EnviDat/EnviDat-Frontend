@@ -25,8 +25,7 @@
   </v-chip>
 </template>
 
-<script>
-/**
+<script>/**
  * MetadataStateChip.vue show the publication state of a metadata entry
  *
  * @summary show the publication state
@@ -38,6 +37,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { METADATA_STATE_DRAFT, METADATA_STATE_INVISILBE, METADATA_STATE_VISILBE } from '@/factories/metadataConsts';
 
 export default {
   name: 'MetadataStateChip',
@@ -49,26 +49,26 @@ export default {
     tooltipMap: {
       type: Object,
       default: () => ({
-        draft: 'Draft datasets are only visible to you',
-        unpublished:
-          'Unpublished datasets are visible for you and your organization',
-        published: 'Published datasets are visible for everyone',
+        [METADATA_STATE_DRAFT]: 'Draft datasets are only visible to you',
+        [METADATA_STATE_INVISILBE]:
+          'Dataset is hidden, only you and members from your organization can see it',
+        [METADATA_STATE_VISILBE]: 'Visible datasets are publicly visible for everyone',
       }),
     },
     colorMap: {
       type: Object,
       default: () => ({
-        draft: 'gray',
-        unpublished: 'warning',
-        published: 'green',
+        [METADATA_STATE_DRAFT]: 'gray',
+        [METADATA_STATE_INVISILBE]: 'warning',
+        [METADATA_STATE_VISILBE]: 'green',
       }),
     },
     iconMap: {
       type: Object,
       default: () => ({
-        draft: 'edit_note',
-        unpublished: 'public_off',
-        published: 'public',
+        [METADATA_STATE_DRAFT]: 'edit_note',
+        [METADATA_STATE_INVISILBE]: 'visibility_off',
+        [METADATA_STATE_VISILBE]: 'visibility',
       }),
     },
     showOnHover: {

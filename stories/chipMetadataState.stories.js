@@ -35,7 +35,7 @@ export const MetadataStateAllStates = () => ({
      </div>
    `,
     data: () => ({
-        states,
+      states,
     }),
 })
 

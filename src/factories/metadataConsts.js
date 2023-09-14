@@ -78,3 +78,8 @@ export const METADATA_PUBLISHER_PROPERTY = 'publisher';
 export const METADATA_PUBLICATION_YEAR_PROPERTY = 'publicationYear';
 
 export const ENVIDAT_SHOW_COOKIE_BANNER = 'ENVIDAT_SHOW_COOKIE_BANNER';
+
+export const METADATA_STATE_DRAFT = 'draft';
+export const METADATA_STATE_INVISILBE = 'hidden';
+export const METADATA_STATE_VISILBE = 'visible';
+
