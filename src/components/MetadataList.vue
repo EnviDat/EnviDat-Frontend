@@ -271,10 +271,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    defaultPublicationState: {
-      type: String,
-      default: undefined,
-    },
     showScrollTopButton: {
       type: Boolean,
       default: false,

@@ -4,7 +4,7 @@
       <div v-bind="attrs" v-on="on">
         <UserAvatar :size="size"
                     :nameInitials="nameInitials"
-                    :email-hash="emailHash"/>
+                    :emailHash="emailHash"/>
       </div>
     </template>
     <v-list>

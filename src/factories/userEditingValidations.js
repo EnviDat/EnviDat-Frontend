@@ -50,6 +50,13 @@ const convertToZero = (value) => Number.isNaN(value) ? 0 : value;
 
 const geoValidationMessage = 'Geometry is required';
 
+export const USER_ROLE_MEMBER = 'member';
+export const USER_ROLE_EDITOR = 'editor';
+export const USER_ROLE_COLLABORATOR = 'collaborator';
+export const USER_ROLE_ADMIN = 'admin';
+export const USER_ROLE_SYSTEM_ADMIN = 'sysadmin';
+
+
 const metadataInEditingValidations = {
   [EDITMETADATA_MAIN_HEADER]: () =>
     yup.object().shape({
@@ -356,19 +363,19 @@ export function hasRole(roleName, organizationRoles) {
 }
 
 export function isMember(organizationRoles) {
-  return hasRole('member', organizationRoles);
+  return hasRole(USER_ROLE_MEMBER, organizationRoles);
 }
 
 export function isEditor(organizationRoles) {
-  return hasRole('editor', organizationRoles);
+  return hasRole(USER_ROLE_EDITOR, organizationRoles);
 }
 
 export function isAdmin(organizationRoles) {
-  return hasRole('admin', organizationRoles);
+  return hasRole(USER_ROLE_ADMIN, organizationRoles);
 }
 
 export function isSysadmin(organizationRoles) {
-  return hasRole('sysadmin', organizationRoles);
+  return hasRole(USER_ROLE_SYSTEM_ADMIN, organizationRoles);
 }
 
 export function hasOrganizationRoles(organizationRoles){
@@ -378,7 +385,7 @@ export function hasOrganizationRoles(organizationRoles){
 export function isUserGroupAdmin(userId, organization) {
 
   if (organization?.users?.length > 0) {
-    const matches = organization.users.filter(user => user.id === userId && user.capacity === 'admin');
+    const matches = organization.users.filter(user => user.id === userId && user.capacity === USER_ROLE_ADMIN);
     return matches.length > 0;
   }
 

@@ -1,8 +1,8 @@
 version: '3'
 
 networks:
-  ckan-internal:
-    external: true
+  net:
+    name: envidat-frontend
 
 services:
   envidat-frontend:
@@ -23,5 +23,5 @@ services:
       - .:/app
       - /app/node_modules/
     networks:
-      - ckan-internal
+      - net
     restart: unless-stopped

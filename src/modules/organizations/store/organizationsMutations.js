@@ -94,7 +94,7 @@ export default {
   [GET_ORGANIZATIONS_ERROR](state, reason) {
     state.loading = false;
 
-    const details = 'An error occured while loading the organizations!';
+    const details = 'An error occurred while loading the organizations!';
     const errObj = getSpecificApiError(details, reason);
 
     this.commit(ADD_USER_NOTIFICATION, errObj);

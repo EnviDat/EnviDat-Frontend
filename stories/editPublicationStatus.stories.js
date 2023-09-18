@@ -10,51 +10,84 @@
  */
 
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import { USER_ROLE_ADMIN, USER_ROLE_EDITOR, USER_ROLE_MEMBER } from '@/factories/userEditingValidations';
+import {
+  PUBLICATION_STATE_DRAFT,
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
 
 export default {
   title: '9 Editing Metadata / Edit Publication Status',
   component: EditPublicationStatus,
 };
 
-export const PublicationDraft = {};
-
-export const PublicationReserved = {
+export const Draft = {
   args: {
-    publicationState: 'reserved',
+    userRole: USER_ROLE_EDITOR,
   },
 };
 
-export const PublicationReservedLoading = {
+export const Reserved = {
   args: {
-    ...PublicationReserved.args,
+    ...Draft.args,
+    publicationState: PUBLICATION_STATE_RESERVED,
+  },
+};
+
+export const ReservedLoading = {
+  args: {
+    ...Reserved.args,
     loading: true,
   },
 };
 
-export const PublicationPending = {
+export const Pending = {
   args: {
-    publicationState: 'pub_pending',
+    ...Draft.args,
+    publicationState: PUBLICATION_STATE_PENDING,
   },
 };
 
-export const PublicationPublished = {
+export const PendingAdmin = {
   args: {
-    publicationState: 'published',
+    publicationState: PUBLICATION_STATE_PENDING,
+    userRole: USER_ROLE_ADMIN,
+  },
+};
+export const Published = {
+  args: {
+    ...Draft.args,
+    publicationState: PUBLICATION_STATE_PUBLISHED,
+    doi: '10.16904/envidat.402',
   },
 };
 
-export const PublicationDraftNoRights = {
+export const NoRightsDraft = {
   args: {
-    ...PublicationDraft.args,
-    readOnlyFields: ['publicationStatus'],
-    readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
+    publicationState: PUBLICATION_STATE_DRAFT,
+    userRole: USER_ROLE_MEMBER,
   },
 };
 
-export const PublicationReservedNoRights = {
+export const NoRightsReserved = {
   args: {
-    ...PublicationReserved.args,
-    readOnlyFields: ['publicationStatus'],
-    readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
+    ...Reserved.args,
+    userRole: USER_ROLE_MEMBER,
+  },
+};
+
+export const NoRightsPending = {
+  args: {
+    ...Pending.args,
+    userRole: USER_ROLE_MEMBER,
+  },
+};
+
+export const NoRightsPublished = {
+  args: {
+    ...Published.args,
+    userRole: USER_ROLE_MEMBER,
   },
 };

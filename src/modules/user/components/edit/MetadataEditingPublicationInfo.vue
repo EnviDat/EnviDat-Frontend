@@ -16,65 +16,32 @@
 
       <v-col cols="6">
 
-        <v-row v-if="!isDatasetPublic">
-
-          <v-col >
-
-          <!-- TEMPORARY PLACEHOLDER START -->
-          <v-card class="pa-4">
-            <v-container fluid class="pa-0">
-              <v-row>
-                <v-col cols="12">
-                  <div class="text-h5">Publishing Dataset</div>
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters align="center" class="pt-6">
-                <v-col cols="1">
-                  <v-icon color="secondary" style="animation: progress-circular-rotate 3s linear infinite" x-large>settings</v-icon>
-                </v-col>
-
-                <v-col class="text-h5" cols="11">
-                  Coming Soon!
-                </v-col>
-
-                <v-col class="pt-2 text-body-1">
-                  Publishing datasets is still under construction.
-                  <br>
-                  Please publish via this dataset the legacy website by clicking on the button below.
-                </v-col>
-              </v-row>
-
-              <v-row no-gutters
-                     class="pt-6" >
-
-                <v-col class="pr-2 text-left">
-                  <BaseRectangleButton buttonText="Publish Dataset"
-                                       color="secondary"
-                                       :url="linkToDatasetCKAN" />
-
-                </v-col>
-
-              </v-row>
-            </v-container>
-          </v-card>
-          <!-- TEMPORARY PLACEHOLDER END -->
-
-          </v-col >
-
-        </v-row>
-
         <v-row>
-
           <v-col >
-
-            <!--        <EditOrganizationTree v-bind="editOrganizationProps" />-->
-            <!-- prettier-ignore -->
             <EditOrganization v-bind="editOrganizationProps" />
-
           </v-col >
-
         </v-row>
+
+        <v-row v-if="doiWorkflowActive">
+          <v-col >
+            <EditPublicationStatus v-bind="editPublicationStatusProps"
+                                   @clicked="catchPublicationStateChange"/>
+          </v-col >
+        </v-row>
+
+        <v-row v-if="!doiWorkflowActive">
+          <v-col>
+
+            <NotFoundCard title="Publication Status editing is disabled"
+                          description="There seems to be a problem, make sure you read the message in the banner or go on the <a href='https://www.envidat.ch' target='_blank'>homepage</a> and check the news."
+                          actionDescription="Click to open the legacy UI for dataset publication. Use the blue button on the top right of the page."
+                          actionButtonText="Request Publication"
+                          :actionButtonCallback="openCKANLink"
+                          />
+
+          </v-col>
+        </v-row>
+
       </v-col>
     </v-row>
 
@@ -104,20 +71,26 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import { mapState } from 'vuex';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
+import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 import EditFunding from '@/modules/user/components/EditFunding.vue';
-// import EditOrganizationTree from '@/modules/user/components/EditOrganizationTree';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
+import NotFoundCard from '@/components/Cards/NotFoundCard.vue'
+
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 import {
   EDITMETADATA_FUNDING_INFO,
+  EDITMETADATA_OBJECT_UPDATE,
   EDITMETADATA_ORGANIZATION,
   EDITMETADATA_PUBLICATION_INFO,
+  EDITMETADATA_PUBLICATION_STATE,
   eventBus,
   METADATA_EDITING_FINISH_CLICK,
 } from '@/factories/eventBus';
+
 
 export default {
   name: 'MetadataCreationPublicationInfo',
@@ -147,6 +120,10 @@ export default {
       type: Array,
       default: undefined,
     },
+    userRole: {
+      type: String,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -155,23 +132,37 @@ export default {
       type: String,
       default: '',
     },
-    isCreationWorkflow: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
+    ...mapState([
+      'config',
+    ]),
+    ...mapState(USER_NAMESPACE, [
+      'doiLoading',
+      'doiSuccess',
+      'doiError',
+    ]),
+    doiWorkflowActive() {
+      if (this.$store) {
+        return this.config?.userEditMetadataConfig?.doiWorkflowActive;
+      }
+
+      // storybook context
+      return true;
+    },
     publicationsInfo() {
       if (this.$store) {
         return this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
       }
 
+      // storybook context
       const stepData = this.currentStep.genericProps;
 
       return {
         publicationState: stepData.publicationState,
         visibilityState: stepData.visibilityState,
         doi: stepData.doi,
+        userRole: stepData.userRole,
         publisher: stepData.publisher,
         publicationYear: stepData.publicationYear,
       }
@@ -189,9 +180,6 @@ export default {
       }
 
       return this.currentStep.genericProps;
-    },
-    isDatasetPublic() {
-      return this.publicationsInfo?.publicationState === 'published';
     },
     editPublicationsProps() {
       return {
@@ -214,6 +202,14 @@ export default {
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
+    editPublicationStatusProps() {
+      return {
+        ...this.publicationsInfo,
+        loading: this.$store ? this.doiLoading : undefined,
+        error: this.$store ? this.doiError?.message : undefined,
+        errorDetails: this.$store ? this.doiError?.details : undefined,
+      };
+    },
     metadataId() {
       return this.$route?.params?.metadataid;
     },
@@ -225,16 +221,29 @@ export default {
     submitEdittedMetadata() {
       eventBus.emit(METADATA_EDITING_FINISH_CLICK);
     },
+    catchPublicationStateChange(event) {
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_PUBLICATION_STATE,
+        data: {
+          event,
+          metadataId: this.metadataId,
+        },
+      });
+    },
+    openCKANLink() {
+      window.open(this.linkToDatasetCKAN, '_blank');
+    },
   },
   data: () => ({
     envidatDomain: process.env.VITE_API_ROOT,
   }),
   components: {
-    //  EditOrganizationTree,
+    EditPublicationStatus,
     EditPublicationInfo,
     EditFunding,
     EditOrganization,
     BaseRectangleButton,
+    NotFoundCard,
   },
 };
 </script>

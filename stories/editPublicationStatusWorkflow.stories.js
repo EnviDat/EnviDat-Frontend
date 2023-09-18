@@ -9,34 +9,53 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+// import { within } from '@storybook/testing-library';
 import EditPublicationStatus from '@/modules/user/components/edit/EditPublicationStatus.vue';
 import { possiblePublicationStates } from '@/factories/metaDataFactory';
+import { USER_ROLE_ADMIN, USER_ROLE_EDITOR } from '@/factories/userEditingValidations';
+import {
+  METADATA_STATE_DRAFT,
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
+
+import { mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
  export default {
    title: '9 Editing Metadata / Edit Publication Status',
-   component: EditPublicationStatus,
+   // component: don't specific here,
+   // because the template needs to be a neutral componet for the interaction
 };
 
  const allStates = possiblePublicationStates;
- allStates[0] = 'draft';
+ allStates[0] = METADATA_STATE_DRAFT;
 
- const Template = (args, {argTypes}) => ({
-   components: { EditPublicationStatus },
-   props: Object.keys(argTypes),
-   methods: {
-     logEvent(event) {
-       console.log(event);
-     },
+/*
+ export const SimluateWorkflow = {
+   args: {
+     publicationState: METADATA_STATE_DRAFT,
    },
-   template: `<EditPublicationStatus v-bind="$props"
-                                     @clicked="logEvent" />`,
- });
+   play: async ({ canvasElement }) => {
+     const canvas = within(canvasElement);
+     console.log('canvas');
+     console.log(canvas);
+     // const btn = canvas.getByText('Reserve');
+/!*
+     const btn = canvas.getByLabelText('Reserve');
+     console.log('btn');
+     console.log(btn);
+*!/
+   },
+ }
+*/
 
-export const DOIWorkflowInteraction = () => ({
+const Template = (args, {argTypes}) => ({
   components: { EditPublicationStatus },
   template: `<EditPublicationStatus v-bind="editPublicationProps"
-                                    @clicked="catchClicked" /> `,
+                                     @clicked="catchClicked" />`,
+  props: Object.keys(argTypes),
   methods: {
     catchClicked(event) {
       console.log(event);
@@ -55,6 +74,15 @@ export const DOIWorkflowInteraction = () => ({
           this.state = this.allStates[index + 1];
         }
 
+        if (this.state === 'pub_pending') {
+          if (this.userRole === USER_ROLE_EDITOR) {
+            setTimeout(() => {
+              this.doi = '10.16904/envidat.402';
+              this.state = this.allStates[this.allStates.length - 1];
+            }, 3000);
+          }
+        }
+
         this.messageDetails = '';
         this.loading = false;
       }, 1000);
@@ -65,6 +93,8 @@ export const DOIWorkflowInteraction = () => ({
       return {
         publicationState: this.state,
         loading: this.loading,
+        doi: this.doi,
+        userRole: this.userRole,
         message: this.message,
         messageDetails: this.messageDetails,
       };
@@ -72,15 +102,35 @@ export const DOIWorkflowInteraction = () => ({
   },
   data: () => ({
     allStates,
-    state: 'draft',
+    doi: '',
+    state: METADATA_STATE_DRAFT,
     loading: false,
     message: '',
     messageDetails: '',
     successMessageMap: new Map([
-      ['draft', 'Reserved a DOI'],
-      ['reserved', 'Requested publication'],
-      ['pub_pending', 'Requested publication'],
-      ['published', 'Published Dataset '],
-    ]),
-  }),
-})
+        [METADATA_STATE_DRAFT, 'Reserved a DOI'],
+        [PUBLICATION_STATE_RESERVED, 'Requested publication'],
+        [PUBLICATION_STATE_PENDING, 'Requested publication'],
+        [PUBLICATION_STATE_PUBLISHED, 'Published Dataset '],
+      ]),
+    }),
+  });
+
+
+export const DOIWorkflowInteraction = Template.bind({});
+DOIWorkflowInteraction.args = {
+  userRole: USER_ROLE_EDITOR,
+}
+
+export const DOIWorkflowInteractionAdmin = Template.bind({});
+DOIWorkflowInteractionAdmin.args = {
+  userRole: USER_ROLE_ADMIN,
+}
+
+export const DOIWorkflowInteractionMobile = Template.bind({});
+DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
+DOIWorkflowInteractionMobile.parameters = mobileViewportParams;
+
+export const DOIWorkflowInteractionTablet = Template.bind({});
+DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
+DOIWorkflowInteractionTablet.parameters = tabletViewportParams;

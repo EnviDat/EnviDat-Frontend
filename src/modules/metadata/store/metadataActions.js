@@ -353,9 +353,8 @@ export default {
     try {
       if (isSearchResultContent) {
         const searchContent = this.getters[`${METADATA_NAMESPACE}/searchedMetadatasContent`];
-        const searchContentSize = contentSize(searchContent);
 
-        if (searchContentSize > 0) {
+        if (contentSize(searchContent) > 0) {
           content = Object.values(searchContent);
         }
       } else {

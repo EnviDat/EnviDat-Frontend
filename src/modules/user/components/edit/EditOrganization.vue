@@ -64,7 +64,15 @@
                     :persistent-hint="isEditOrganizationReadonly"
                     label="Organization"
                     :error-messages="validationErrors.organizationId"
-          />
+          >
+            <template v-slot:selection="{ item }">
+              <MetadataOrganizationChip :organization="item.title"/>
+            </template>
+
+            <template v-slot:item="{ item }">
+              <MetadataOrganizationChip :organization="item.title"/>
+            </template>
+          </v-select>
         </v-col>
 
       </v-row>
@@ -90,6 +98,8 @@
  */
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
+
 import {
   EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
@@ -228,6 +238,7 @@ export default {
   }),
   components: {
     BaseStatusLabelView,
+    MetadataOrganizationChip,
   },
 };
 </script>

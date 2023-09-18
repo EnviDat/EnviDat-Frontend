@@ -14,9 +14,10 @@ import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import globalMethods from '@/factories/globalMethods';
+import { METADATA_STATE_DRAFT } from '@/factories/metadataConsts';
 import fileIcon from '../src/assets/icons/file.png';
 
-// metadata gets enhance in the storybook config
+// metadata gets enhanced in the storybook config
 import metadataCards from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
@@ -50,6 +51,6 @@ LocalCard.args = {
   categoryColor: firstDataset.categoryColor,
   name: firstDataset.name,
   subtitle: firstDataset.notes,
-  state: 'draft',
+  state: METADATA_STATE_DRAFT,
 }
 

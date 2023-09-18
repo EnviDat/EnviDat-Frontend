@@ -65,15 +65,16 @@ export function extractUserError(store, reason, errorProperty = 'error') {
   store._vm.$set(store.state.user, errorProperty, msg);
 }
 
-export function createErrorMessage(reason) {
-  let msg = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
+const defaultMessage = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
+export function createErrorMessage(reason, message = defaultMessage) {
+  let msg = message;
   let details = '';
   let status = 500;
 
   if (reason?.response) {
 
     status = reason.response.status;
-    msg = 'Saving failed ';
+
     if (status === 403) {
       msg += ' you are not authorized';
     }

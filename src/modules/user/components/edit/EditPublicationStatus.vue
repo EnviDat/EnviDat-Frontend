@@ -31,16 +31,29 @@
               :expandedText="errorDetails"
             />
           </v-col>
+
+          <v-col cols="12">
+            <div class="text-body-1">{{ labels.instructions }}</div>
+          </v-col>
         </v-row>
 
-        <v-row>
+        <v-row no-gutters
+               class="pt-4">
+
           <v-col v-for="(state, index) in pStatesAndArrows"
                  :key="`${index}_pState`"
-                  :id="`activeStateIndex_${activeStateIndex}`">
+                 :id="`activeStateIndex_${activeStateIndex}`">
 
             <v-row no-gutters
                    justify="center">
-              <v-chip v-if="getStateText(state)"
+
+              <BaseShinyBadge v-if="state === PUBLICATION_STATE_PUBLISHED && activeStateIndex === index"
+                              :text="getStateText(state)"
+              />
+
+              <v-chip v-if="!!getStateText(state)
+                            && state !== PUBLICATION_STATE_PUBLISHED
+                            || (state === PUBLICATION_STATE_PUBLISHED && activeStateIndex !== index)"
                       small
                       :disabled="activeStateIndex > index"
                       :color="activeStateIndex === index ? 'secondary' : '' "
@@ -48,7 +61,7 @@
                 {{ getStateText(state) }}
               </v-chip>
 
-              <v-icon v-else
+              <v-icon v-if="!getStateText(state)"
                       class="px-2">
                 {{ state }}
               </v-icon>
@@ -61,38 +74,61 @@
               <v-icon>arrow_upward</v-icon>
             </v-row>
 
-            <v-row v-if="currentStateInfos.positionIndex === index"
+            <v-row v-if="currentStateInfos.positionIndex === index && currentStateInfos.buttonText"
                    no-gutters
                    justify="center">
 
-              <v-col v-if="currentStateInfos.buttonText"
-                      cols="12">
+              <BaseRectangleButton id='interactiveButton'
+                                   :button-text="currentStateInfos.buttonText"
+                                   :material-icon-name="currentStateInfos.buttonIcon"
+                                   icon-color="white"
+                                   is-small
+                                   :loading="loading"
+                                   :url="doiUrl"
+                                   :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
+                                   @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
-                <BaseRectangleButton :button-text="currentStateInfos.buttonText"
-                                     :material-icon-name="currentStateInfos.buttonIcon"
-                                     icon-color="white"
-                                     is-small
-                                     :loading="loading"
-                                     :disabled="isReadOnly('publicationStatus')"
-                                     @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
-              </v-col>
+            </v-row>
 
-              <v-col class="pt-2"
-                      cols="12">
-                {{ currentStateInfos.infoText }}
-              </v-col>
+            <v-row v-if="currentStateInfos.positionIndex === index"
+                   class="pt-2"
+                   no-gutters
+                   justify="center">
+              {{ currentStateInfos.infoText }}
+            </v-row>
 
-              <v-col v-if="isReadOnly('publicationStatus')"
-                     class="pt-2 readOnlyHint"
-                     cols="12">
-                {{ readOnlyHint('publicationStatus') }}
-              </v-col>
 
+            <v-row v-if="currentStateInfos.positionIndex === index && !isUserAllowedToEdit"
+                   class="pt-2 readOnlyHint"
+                   no-gutters
+                   justify="center">
+              {{ readOnlyUserRole }}
             </v-row>
 
           </v-col>
 
+        </v-row>
+
+        <v-row class="text-body-1 highlight">
+          <v-col cols="12" v-html="labels.instructions2">
+          </v-col>
+        </v-row>
+
+        <v-row class="text-body-2 pt-4 px-3">
+
+          <v-col v-for="(field, index) of metadataPublishedReadOnlyFields"
+                 cols="6"
+                 md="3"
+                 class="pa-1"
+                  :key="`${index}_${field}`">
+            {{ getReadableLabel(field) }}
+          </v-col>
+        </v-row>
+
+        <v-row class="text-body-1 pt-4">
+          <v-col cols="12" v-html="labels.instructions3">
+          </v-col>
         </v-row>
 
       </v-container>
@@ -111,9 +147,24 @@
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
   import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
+  import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
 
   import { possiblePublicationStates } from '@/factories/metaDataFactory';
-  import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+  import { metadataPublishedReadOnlyFields, readablePublishedReadOnlyFields } from '@/factories/mappingFactory';
+  import { DOI_PUBLISH, DOI_REQUEST, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+  import {
+    USER_ROLE_ADMIN,
+    USER_ROLE_EDITOR,
+    USER_ROLE_MEMBER,
+    USER_ROLE_SYSTEM_ADMIN,
+  } from '@/factories/userEditingValidations';
+
+  import {
+    PUBLICATION_STATE_DRAFT,
+    PUBLICATION_STATE_PENDING,
+    PUBLICATION_STATE_PUBLISHED,
+    PUBLICATION_STATE_RESERVED,
+  } from '@/factories/metadataConsts';
 
 
   export default {
@@ -121,7 +172,15 @@
     props: {
       publicationState: {
         type: String,
-        default: 'draft',
+        default: PUBLICATION_STATE_DRAFT,
+      },
+      doi: {
+        type: String,
+        default: undefined,
+      },
+      userRole: {
+        type: String,
+        default: USER_ROLE_MEMBER,
       },
       loading: {
         type: Boolean,
@@ -143,14 +202,6 @@
         type: String,
         default: null,
       },
-      readOnlyFields: {
-        type: Array,
-        default: () => [],
-      },
-      readOnlyExplanation: {
-        type: String,
-        default: '',
-      },
     },
     computed: {
       ...mapState(['config']),
@@ -161,7 +212,7 @@
         }
 
         for (let i = 0; i < this.possiblePublicationStates.length; i++) {
-          const pState = this.possiblePublicationStates[i] || 'draft';
+          const pState = this.possiblePublicationStates[i] || PUBLICATION_STATE_DRAFT;
           pStateWithDiv.push(pState);
           pStateWithDiv.push('arrow_forward');
         }
@@ -174,75 +225,102 @@
         return this.pStatesAndArrows.findIndex(v => v === this.publicationState);
       },
       currentStateInfos() {
-        return this.stateTextMap.get(this.publicationState || 'draft');
+        return this.stateTextMap.get(this.publicationState || PUBLICATION_STATE_DRAFT);
+      },
+      doiUrl() {
+        return this.doi ? `https://www.doi.org/${this.doi}` : undefined;
+      },
+      isUserAllowedToEdit() {
+        return this.userRole === USER_ROLE_EDITOR
+          || this.userRole === USER_ROLE_ADMIN
+          || this.userRole === USER_ROLE_SYSTEM_ADMIN;
+      },
+      stateTextMap() {
+        if (this.userRole === USER_ROLE_ADMIN || this.userRole === USER_ROLE_SYSTEM_ADMIN) {
+          return new Map([...this.stateTextMapEditor, ...this.stateTextMapAdmin]);
+        }
+
+        return this.stateTextMapEditor;
+      },
+      readOnlyUserRole() {
+        return this.isUserAllowedToEdit ? '' : this.readOnlyExplaination;
       },
     },
     methods: {
       getStateText(state) {
         return this.stateTextMap.get(state)?.chipText || '';
       },
-      isReadOnly(dateProperty) {
-        return isFieldReadOnly(this.$props, dateProperty);
-      },
-      readOnlyHint(dateProperty) {
-        return readOnlyHint(this.$props, dateProperty);
+      getReadableLabel(field) {
+        return this.readablePublishedReadOnlyFields[field];
       },
     },
     data: () => ({
       possiblePublicationStates,
-      stateTextMap: new Map([
-        ['draft', {
+      stateTextMapEditor: new Map([
+        [PUBLICATION_STATE_DRAFT, {
           chipText: 'Draft',
           infoText: 'Reserve DOI for Dataset',
           buttonIcon: 'fingerprint',
           buttonText: 'Reserve',
-          buttonEvent: 'reserveDoi',
+          buttonEvent: DOI_RESERVE,
           positionIndex: 2,
         }],
-        ['reserved', {
+        [PUBLICATION_STATE_RESERVED, {
           chipText: 'Reserved DOI',
           infoText: 'Request Dataset Publication',
           buttonIcon: 'newspaper',
           buttonText: 'Request',
-          buttonEvent: 'requestPublication',
+          buttonEvent: DOI_REQUEST,
           positionIndex: 4,
         }],
-        ['pub_pending', {
+        [PUBLICATION_STATE_PENDING, {
           chipText: 'Publication Pending',
           infoText: 'Wait for the admin to review & approve the publication',
-/*
-          buttonIcon: 'newspaper',
-          buttonText: 'Request',
-          buttonEvent: 'requestPublication',
-*/
+          buttonIcon: 'public',
+          buttonText: 'Publish Dataset',
           positionIndex: 6,
         }],
-        ['published', {
+        [PUBLICATION_STATE_PUBLISHED, {
           chipText: 'Published',
-          infoText: 'Open the DOI entry at DataCite',
+          infoText: 'Open the DOI in a new Tab',
           buttonIcon: 'public',
-          buttonText: 'Show DOI',
+          buttonText: 'Open DOI',
           buttonEvent: 'openDoi',
+          positionIndex: 6,
+        }],
+      ]),
+      stateTextMapAdmin: new Map([
+        [PUBLICATION_STATE_PENDING, {
+          chipText: 'Publication Pending',
+          infoText: 'Please make sure you reviewed the dataset before publishing it!',
+          buttonIcon: 'public',
+          buttonText: 'Publish Dataset',
+          buttonEvent: DOI_PUBLISH,
           positionIndex: 6,
         }],
       ]),
       labels: {
         cardTitle: 'Dataset Publication Status',
+        instructions: `Have you finished uploading data & resouces and entered all the metadata as best as possible?
+          Start publishing your dataset with reserving a DOI, when that's done.
+          Request publication, it will be reviewd by admins and once approved it will be restigered at DataCite.`,
+        instructions2: 'Please be aware once the <strong>dataset is published</strong> the following metadata information <strong>can NOT be changed anymore</strong>.',
+        instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest data.',
       },
+      metadataPublishedReadOnlyFields,
+      readablePublishedReadOnlyFields,
+      readOnlyExplaination: 'Only dataset owners and admins can change the publication status',
+      PUBLICATION_STATE_PUBLISHED,
     }),
     components: {
       BaseRectangleButton,
       BaseStatusLabelView,
+      BaseShinyBadge,
     },
   };
   </script>
 
 <style scoped>
-  .statesGrid {
-    display: grid;
-    grid-template-columns: 2fr 0.5fr 2fr 0.5fr 2fr 0.5fr 2fr;
-  }
-
   .readOnlyHint {
     font-size: 12px;
     line-height: 12px;

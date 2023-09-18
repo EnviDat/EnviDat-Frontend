@@ -8,6 +8,7 @@
 
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import { possibleVisibilityStates } from '@/factories/metaDataFactory';
+import { METADATA_STATE_DRAFT, METADATA_STATE_INVISILBE, METADATA_STATE_VISILBE } from '@/factories/metadataConsts';
 
 
 export default {
@@ -35,7 +36,7 @@ export const MetadataStateAllStates = () => ({
      </div>
    `,
     data: () => ({
-        states,
+      states,
     }),
 })
 
@@ -62,18 +63,18 @@ const Template = (args, {argTypes}) => ({
 });
 
 
-export const MetadataStateDraft = Template.bind({});
-MetadataStateDraft.args = {
-    state: 'draft',
+export const Draft = Template.bind({});
+Draft.args = {
+    state: METADATA_STATE_DRAFT,
 }
 
-export const MetadataStateUnpublished = Template.bind({});
-MetadataStateUnpublished.args = {
-    state: 'unpublished',
+export const Hidden = Template.bind({});
+Hidden.args = {
+    state: METADATA_STATE_INVISILBE,
 }
 
 
-export const MetadataStatePublished = Template.bind({});
-MetadataStatePublished.args = {
-    state: 'published',
+export const Visible = Template.bind({});
+Visible.args = {
+    state: METADATA_STATE_VISILBE,
 }
