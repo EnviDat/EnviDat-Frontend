@@ -12,11 +12,12 @@ import axios from 'axios';
 import {
   DOI_API_ACTIONS,
   DOI_PUBLISH,
-  DOI_PUBLISH_ACTION,
+  ACTION_DOI_PUBLISH,
   DOI_REQUEST,
-  DOI_REQUEST_ACTION,
+  ACTION_DOI_REQUEST,
   DOI_RESERVE,
-  DOI_RESERVE_ACTION, DOI_RESERVED_PROPERTY,
+  ACTION_DOI_RESERVE,
+  DOI_RESERVED_PROPERTY,
 } from '@/modules/user/store/doiMutationsConsts';
 
 import { urlRewrite } from '@/factories/apiFactory';
@@ -33,7 +34,7 @@ export default {
   async [DOI_RESERVE]({ commit }, metadataId) {
     commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY })
 
-    const actionUrl = DOI_RESERVE_ACTION();
+    const actionUrl = ACTION_DOI_RESERVE();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
@@ -54,7 +55,7 @@ export default {
   async [DOI_REQUEST]({ commit }, metadataId) {
     commit(DOI_REQUEST)
 
-    const actionUrl = DOI_REQUEST_ACTION();
+    const actionUrl = ACTION_DOI_REQUEST();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 
@@ -69,7 +70,7 @@ export default {
   async [DOI_PUBLISH]({ commit }, metadataId) {
     commit(DOI_PUBLISH)
 
-    const actionUrl = DOI_PUBLISH_ACTION();
+    const actionUrl = ACTION_DOI_PUBLISH();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
     url = urlRewrite(url, API_DOI_BASE, API_ROOT);
 

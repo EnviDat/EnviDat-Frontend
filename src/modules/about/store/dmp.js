@@ -27,7 +27,7 @@ const actions = {
     commit(GET_DMP);
 
     let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
-    if (import.meta.env.DEV) {
+    if (import.meta?.env?.DEV) {
       url = './testdata/dmp.md';
     }
 
@@ -57,7 +57,7 @@ const mutations = {
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env.DEV) {
+    if (import.meta?.env?.DEV) {
       state.dmpMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }

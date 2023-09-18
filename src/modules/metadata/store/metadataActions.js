@@ -35,6 +35,10 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  ACTION_BULK_LOAD_METADATAS_CONTENT,
+  ACTION_LOAD_METADATA_CONTENT_BY_ID,
+  ACTION_METADATA_UPDATE_EXISTING_KEYWORDS,
+  ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
 import catCards from '@/store/categoryCards';
@@ -64,7 +68,7 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -209,7 +213,7 @@ export default {
     }
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
-    const query = `query?q=${solrQuery}`;
+    const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
@@ -247,7 +251,8 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, API_ROOT);
+    const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?id=${metadataId}`, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -265,12 +270,8 @@ export default {
 
     const metadataConfig = config.metadataConfig || {};
 
-    let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, API_ROOT);
-
-    if (import.meta.env.DEV && useTestdata) {
-      url = './testdata/packagelist.json';
-    }
+    const actionUrl = ACTION_BULK_LOAD_METADATAS_CONTENT();
+    let url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const localFileUrl = metadataConfig.localFileUrl;
     const loadLocalFile = metadataConfig.loadLocalFile;
@@ -404,7 +405,8 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, API_ROOT);
+    const actionUrl = ACTION_METADATA_UPDATE_EXISTING_KEYWORDS();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
 

@@ -22,7 +22,7 @@ import {
 const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
 let bloglistUrlPrefix = process.env.VITE_STATIC_ROOT;
 
-if (import.meta.env.DEV && useTestdata) {
+if (import.meta?.env?.DEV && useTestdata) {
   bloglistUrlPrefix = './testdata';
 }
 
