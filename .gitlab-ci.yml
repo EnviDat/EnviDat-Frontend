@@ -111,11 +111,15 @@ modify-env:
       \"import os;
       import dotenv;
       file = '.env.production';
+      \
       branch = os.getenv('CI_COMMIT_REF_NAME'); \
       \
       key = 'VITE_API_ROOT';
-      value = 'https://envidat.ch' if branch == 'main' \
-      else f'https://ckan-{branch}.envidat.ch';
+      value = 'https://envidat.ch';
+      \
+      if branch: \
+        value = f'https://ckan-{branch}.envidat.ch';
+      \
       dotenv.set_key(file, key, value, quote_mode='never');
       \
       key = 'VITE_CONFIG_URL';
@@ -124,10 +128,10 @@ modify-env:
       \
       key = 'VITE_ENVIDAT_DOMAIN';
       value = 'https://frontend.s3-website-zh.os.switch.ch' \
-      if branch == 'main' \
-      else ( \
-          f'https://frontend-{branch}.s3-website-zh.os.switch.ch' \
-      );
+      \
+      if branch: \
+        value = f'https://frontend-{branch}.s3-website-zh.os.switch.ch';
+      \
       dotenv.set_key(file, key, value, quote_mode='never');
       \
       key = 'VITE_OTEL_NAME';
