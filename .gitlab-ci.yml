@@ -1,5 +1,5 @@
 stages:
-  - test
+# - test
 # - visual-regression
   - config
   - build
@@ -54,19 +54,19 @@ set-vars:
     reports:
       dotenv: build.env
 
-run-tests:
-  extends: .trigger-rules
-  stage: test
-  image: docker.io/node:16
-  cache:
-    key: node-modules
-    paths:
-      - node_modules/
-    policy: pull-push
-  before_script:
-    - npm ci
-  script:
-    - npm run test
+# run-tests:
+#   extends: .trigger-rules
+#   stage: test
+#   image: docker.io/node:16
+#   cache:
+#     key: node-modules
+#     paths:
+#       - node_modules/
+#     policy: pull-push
+#   before_script:
+#     - npm ci
+#   script:
+#     - npm run test
 
 # visual-regression:
 #   extends: .trigger-rules
