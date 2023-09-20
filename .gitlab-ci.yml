@@ -1,5 +1,5 @@
 stages:
-# - test
+  - test
 # - visual-regression
   - config
   - build
