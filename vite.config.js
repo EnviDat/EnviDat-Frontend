@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue2';
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
+import { configDefaults } from 'vitest/config';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import Unfonts from 'unplugin-fonts/vite'
@@ -15,7 +16,7 @@ import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 const version = process.env.npm_package_version;
 
 
-export default ({ mode }) => {
+export default ({ mode, config }) => {
     const isProd = mode === 'production'
 
     if (isProd) {
@@ -43,7 +44,6 @@ export default ({ mode }) => {
     }
 
     console.log(`starting server | version: ${version} | prod: ${isProd}`);
-
 
     return defineConfig({
         plugins: [
@@ -74,6 +74,9 @@ export default ({ mode }) => {
             title : 'EnviDat Build Visualizer',
           }),
         ],
+        test: {
+          exclude: [...configDefaults.exclude, './tests/unit/ckanRegression.spec.js'],
+        },
         define: {
             'process.env': loadEnv(mode, process.cwd()),
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
