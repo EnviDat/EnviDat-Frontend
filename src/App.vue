@@ -172,7 +172,7 @@ import {
 import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
-  ACTION_GET_USER_CONTEXT,
+  ACTION_OLD_GET_USER_CONTEXT,
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
@@ -514,7 +514,7 @@ export default {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
 
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
-        action = ACTION_GET_USER_CONTEXT;
+        action = ACTION_OLD_GET_USER_CONTEXT;
       }
       
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,

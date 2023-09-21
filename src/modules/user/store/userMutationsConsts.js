@@ -27,7 +27,12 @@ export const GET_USER_CONTEXT = 'GET_USER_CONTEXT';
 export const GET_USER_CONTEXT_ERROR = 'GET_USER_CONTEXT_ERROR';
 export const GET_USER_CONTEXT_SUCCESS = 'GET_USER_CONTEXT_SUCCESS';
 
-export const ACTION_GET_USER_CONTEXT = () => {
+/**
+ * (old) endpoint to get the user information
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_GET_USER_CONTEXT = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/envidat_context_user_show.json';
   }
@@ -38,7 +43,13 @@ export const ACTION_GET_USER_CONTEXT = () => {
 export const USER_SIGNIN = 'USER_SIGNIN';
 export const USER_SIGNIN_ERROR = 'USER_SIGNIN_ERROR';
 export const USER_SIGNIN_SUCCESS = 'USER_SIGNIN_SUCCESS';
-export const ACTION_USER_SIGNIN = () => {
+
+/**
+ * (old) endpoint for the signin with the token from the email
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_USER_SIGNIN = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_user_login.json';
   }
@@ -49,7 +60,13 @@ export const ACTION_USER_SIGNIN = () => {
 export const REQUEST_TOKEN = 'REQUEST_TOKEN';
 export const REQUEST_TOKEN_ERROR = 'REQUEST_TOKEN_ERROR';
 export const REQUEST_TOKEN_SUCCESS = 'REQUEST_TOKEN_SUCCESS';
-export const ACTION_REQUEST_TOKEN = () => {
+
+/**
+ * (old) endpoint to request login token
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_REQUEST_TOKEN = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_perform_reset.json';
   }
@@ -57,6 +74,13 @@ export const ACTION_REQUEST_TOKEN = () => {
   return 'passwordless_perform_reset';
 };
 
+/**
+ * endpoint to get the users information
+ * (JWT style signin)
+ *
+ * @returns {string}
+ * @constructor
+ */
 export const ACTION_GET_USER_CONTEXT_TOKEN = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_get_user.json';
@@ -70,7 +94,14 @@ export const API_TOKEN = 'API_TOKEN';
 export const API_TOKEN_ERROR = 'API_TOKEN_ERROR';
 export const API_TOKEN_SUCCESS = 'API_TOKEN_SUCCESS';
 */
-export const ACTION_API_TOKEN = () => {
+
+/**
+ * endpoint to sign in with the token received via email
+ *
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_USER_SIGNIN_TOKEN = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_request_api_token.json';
   }
@@ -83,7 +114,14 @@ export const RESET_KEY = 'RESET_KEY';
 export const RESET_KEY_ERROR = 'RESET_KEY_ERROR';
 export const RESET_KEY_SUCCESS = 'RESET_KEY_SUCCESS';
 */
-export const ACTION_REQUEST_TOKEN_RESET = () => {
+
+/**
+ * endpoint to request a new token via email
+ *
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_RESET_TOKEN = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_request_reset_key.json';
   }
@@ -95,7 +133,7 @@ export const USER_SIGNOUT = 'USER_SIGNOUT';
 export const USER_SIGNOUT_ERROR = 'USER_SIGNOUT_ERROR';
 export const USER_SIGNOUT_SUCCESS = 'USER_SIGNOUT_SUCCESS';
 
-export const ACTION_USER_SIGNOUT = () => {
+export const ACTION_OLD_USER_SIGNOUT = () => {
   if (import.meta?.env?.DEV && useTestdata) {
     return './testdata/passwordless_user_logout.json';
   }
@@ -271,15 +309,15 @@ export const ACTION_METADATA_CREATION_DATASET = () => {
 const requests = {
   get:[
     ACTION_GET_USER_CONTEXT_TOKEN,
-    ACTION_GET_USER_CONTEXT,
-    ACTION_USER_SIGNIN,
+    ACTION_OLD_GET_USER_CONTEXT,
+    ACTION_OLD_USER_SIGNIN,
     ACTION_USER_SIGNOUT_REVOKE_TOKEN,
-    ACTION_USER_SIGNOUT,
+    ACTION_OLD_USER_SIGNOUT,
   ],
   post: [
-    ACTION_REQUEST_TOKEN,
-    ACTION_REQUEST_TOKEN_RESET,
-    ACTION_API_TOKEN,
+    ACTION_OLD_REQUEST_TOKEN,
+    ACTION_RESET_TOKEN,
+    ACTION_USER_SIGNIN_TOKEN,
   ],
 }
 
