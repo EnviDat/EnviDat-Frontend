@@ -1,8 +1,6 @@
 <template>
   <v-card
-    ripple
-    hover
-    raised
+    max-width='500px'
     :height="height"
     :disabled="disabled"
     @click="clicked"
@@ -13,8 +11,8 @@
         <v-col class="py-0" cols="4" sm="5">
           <v-img
             class="imagezoom"
-            :aspect-ratio="$vuetify.display.xsOnly ? 1 : undefined"
-            :contain="contain"
+            :aspect-ratio="$vuetify.display.smAndUp ? undefined: 1"
+            :cover="!contain"
             :height="height"
             style="border-bottom-left-radius: 4px; border-top-left-radius: 4px;"
             :src="img"

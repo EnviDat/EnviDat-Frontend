@@ -1,11 +1,14 @@
 <template>
-  <v-card ripple hover :expanded="expanded">
-    <v-container class="pa-0" @click="toggleExpand">
+  <v-card :expanded="expanded"
+          max-width='500px'>
+    <v-container class="pa-0"
+                 @click="toggleExpand">
+
       <v-row no-gutters class="pa-0">
         <v-col cols="5">
           <v-img
             class="imagezoom"
-            :contain="contain"
+            :cover="!contain"
             :height="
               $vuetify.display.xsOnly ? minHeight + 'px' : maxHeight + 'px'
             "

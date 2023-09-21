@@ -1,6 +1,5 @@
 <template>
-  <v-card ripple
-          style="height: 100%; max-height: 375px !important;" >
+  <v-card style="height: 100%; max-height: 375px !important;" >
     <v-img background-color="primary"
             :height="flatLayout ? '65px' : $vuetify.display.smAndDown ? '100px' : '125px'" >
 

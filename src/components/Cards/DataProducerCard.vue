@@ -1,5 +1,5 @@
 <template>
-  <v-card ripple hover>
+  <v-card >
     <v-card-media
       class="imagezoom"
       v-bind="{

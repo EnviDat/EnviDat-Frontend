@@ -1,6 +1,5 @@
 <template>
   <v-card id="UserCard"
-          raised
           :width="width"
           :height="height"
           :loading="loading">

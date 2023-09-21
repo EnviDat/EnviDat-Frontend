@@ -1,7 +1,5 @@
 <template>
   <v-card
-    ripple
-    hover
     @mouseover="hover = true"
     @mouseleave="hover = false"
     class="fill-height"
