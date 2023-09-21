@@ -1,5 +1,6 @@
 <template>
   <v-app-bar color="white"
+             order="-1"
               :height="$vuetify.display.xsOnly ? 50 : 36" >
 
     <v-container fluid

@@ -223,7 +223,7 @@ import {
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+// import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import MetadataListLayout from '@/components/MetadataListLayout.vue';
 import { eventBus } from '@/factories/eventBus';
 import { getMetadataVisibilityState } from '@/factories/metaDataFactory';
@@ -638,7 +638,7 @@ export default {
     NoSearchResultsView,
     MetadataCard,
     MetadataCardPlaceholder,
-    BaseRectangleButton,
+    // BaseRectangleButton,
     MetadataListLayout,
   },
 };
