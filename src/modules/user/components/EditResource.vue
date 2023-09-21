@@ -330,7 +330,7 @@
 
       <v-row v-if="!editingRestrictingActive"
              class="py-2">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning};`" >
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.warning};`" >
           {{ labels.editingRestrictingUnavailableInfo }}
         </v-col>
       </v-row>

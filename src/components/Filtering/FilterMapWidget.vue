@@ -42,7 +42,7 @@
         :customIcon="pinIcon"
         color="secondary"
         :fillColor="
-          pinEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
+          pinEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
         "
         :isSmall="mdScreen"
         outlined
@@ -57,7 +57,7 @@
         :customIcon="multiPinIcon"
         color="secondary"
         :fillColor="
-          multiPinEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
+          multiPinEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
         "
         outlined
         :isSmall="mdScreen"
@@ -73,7 +73,7 @@
         iconColor="black"
         color="secondary"
         :fillColor="
-          polygonEnabled ? $vuetify.theme.themes.light.primary : 'transparent'
+          polygonEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
         "
         :isSmall="mdScreen"
         outlined

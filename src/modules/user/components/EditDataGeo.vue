@@ -35,7 +35,7 @@
       </v-row>
 
       <v-row v-show="isDefaultLocation">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.warning}`">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.warning}`">
           {{ labels.defaultInstructions }}
         </v-col>
       </v-row>

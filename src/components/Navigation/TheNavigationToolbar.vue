@@ -18,7 +18,7 @@
                       class="ma-0 pt-1"
                       small
                       @click.stop="catchHomeClicked" >
-                      <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->
+                      <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`" -->
                 <v-img :src="EnviDatLogo"
                      height="32"
                      width="32"
@@ -54,7 +54,7 @@
                    class="flex-grow-0">
               <BaseIconButton id="EditButtonNavigationToolbar"
                               material-icon-name="edit"
-                              :fillColor="$vuetify.theme.themes.light.accent"
+                              :fillColor="$vuetify.theme.themes.light.colors.accent"
                               iconColor="black"
                               color="accent"
                               :isSmall="true"

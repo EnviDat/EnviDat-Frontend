@@ -1,6 +1,6 @@
 <template>
   <div class="localCard"
-       :style="`border: 2px dashed ${$vuetify.theme.themes.light.secondary};`">
+       :style="`border: 2px dashed ${$vuetify.theme.themes.light.colors.secondary};`">
     <MetadataCard v-bind="$props"
                   @clickedEvent="$emit('clickedEvent')"
                   @clickedTag="$emit('clickedTag')"

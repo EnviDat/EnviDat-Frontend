@@ -38,7 +38,7 @@
     <div v-if="!title && !showPlaceholder"
           :style="`position: absolute; top: 0px; right: 0px;
                   height: ${height}px; width: 100%;
-                  z-index: 1; color: ${$vuetify.theme.themes.light.error};`"
+                  z-index: 1; color: ${$vuetify.theme.themes.light.colors.error};`"
           class="headerTitle pa-4"
           :class="{ 'text-h3': $vuetify.display.lgAndUp,
                     'text-h4': $vuetify.display.mdAndDown,

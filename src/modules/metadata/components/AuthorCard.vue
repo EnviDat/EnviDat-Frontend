@@ -441,7 +441,7 @@ export default {
   methods: {
     setLevelProgress() {
       const max = 2160;
-      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) * max}; stroke: ${this.$vuetify.theme.themes.light.accent} !important;`;
+      let style = `stroke-dashoffset: ${((100 - this.levelProgress) / 100) * max}; stroke: ${this.$vuetify.theme.themes.light.colors.accent} !important;`;
       this.$refs.progressFill.setAttribute('style', style);
       style = `stroke: ${this.dataCreditLevelColor} !important;`;
       this.$refs.progressTrack.setAttribute('style', style);

@@ -48,7 +48,7 @@
                             @click.stop="itemClick(item)" >
           <v-btn icon
                   class="ma-0"
-                  :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`"
+                  :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.colors.accent : 'transparent' }`"
                   @click.stop="itemClick(item)" >
             <v-img :src="Logo"
                  height="32"

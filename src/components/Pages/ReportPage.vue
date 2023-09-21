@@ -109,8 +109,8 @@ export default {
     ...mapState(['notifications']),
     color() {
       return this.error
-        ? this.$vuetify.theme.themes.light.error
-        : this.$vuetify.theme.themes.light.highlight;
+        ? this.$vuetify.theme.themes.light.colors.error
+        : this.$vuetify.theme.themes.light.colors.highlight;
     },
     errors() {
       return Object.values(this.notifications);

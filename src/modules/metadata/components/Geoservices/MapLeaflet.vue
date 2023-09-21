@@ -340,7 +340,7 @@ export default {
           riseOnHover: true,
         },
         customPolygonStyle: {
-          color: this.$vuetify.theme.themes.light.accent,
+          color: this.$vuetify.theme.themes.light.colors.accent,
           // fillOpacity: 0.5,
           // opacity: 1,
           // weight: 1,

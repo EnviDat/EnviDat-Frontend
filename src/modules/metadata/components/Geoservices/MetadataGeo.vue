@@ -9,7 +9,7 @@
         <v-col v-if="mapEditable"
                class="flex-grow-0 pl-2 pr-4">
           <BaseRectangleButton
-            :color="$vuetify.theme.themes.light.secondary"
+            :color="$vuetify.theme.themes.light.colors.secondary"
             buttonText="Upload GeoJSON"
             tooltipText="File Drop Also Possible"
             tooltipPosition="top"
@@ -23,7 +23,7 @@
             :disabled="!undoButtonEnabled"
             materialIconName="undo"
             iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
+            :fillColor="$vuetify.theme.themes.light.colors.accent"
             tooltipText="Undo"
             @clicked="triggerGeomUndo"
           />
@@ -36,7 +36,7 @@
             :loading="saveButtonInProgress"
             materialIconName="save"
             iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
+            :fillColor="$vuetify.theme.themes.light.colors.accent"
             tooltipText="Save"
             @clicked="triggerGeomSave"
           />
@@ -47,7 +47,7 @@
             v-if="showFullscreenButton"
             materialIconName="zoom_out_map"
             iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.accent"
+            :fillColor="$vuetify.theme.themes.light.colors.accent"
             @clicked="triggerFullscreen"
           />
         </v-col>
@@ -58,7 +58,7 @@
       v-if="error"
       class="py-1 text-caption readableText"
       :style="
-        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+        `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
       "
     >
       {{ error }}
@@ -82,7 +82,7 @@
         class="text-caption readableText"
         align="center"
         :style="
-          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.error};`
+          `line-height: 1rem; background-color: ${$vuetify.theme.themes.light.colors.error};`
         "
       >
         {{ editErrorMessage }}

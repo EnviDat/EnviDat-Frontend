@@ -24,7 +24,7 @@
       </v-row>
 
       <v-row v-show="validationErrors.authors">
-        <v-col :style="`background-color: ${$vuetify.theme.themes.light.error}; `">
+        <v-col :style="`background-color: ${$vuetify.theme.themes.light.colors.error}; `">
           {{ validationErrors.authors }}
         </v-col>
       </v-row>

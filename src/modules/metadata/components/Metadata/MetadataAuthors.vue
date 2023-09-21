@@ -154,7 +154,7 @@ export default {
       return this.mixinMethods_getGenericProp('emptyText', 'No authors found for this dataset.');
     },
     scrollbarColorFront() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.highlight : 'auto';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.highlight : 'auto';
     },
     scrollbarColorBack() {
       return this.$vuetify ? '#F0F0F0' : 'auto';

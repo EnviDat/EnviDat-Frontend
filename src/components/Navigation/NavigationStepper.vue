@@ -218,7 +218,7 @@ export default {
       return titleText;
     },
     backgroundColor() {
-      return this.$vuetify ? this.$vuetify.theme.themes.light.primary : '';
+      return this.$vuetify ? this.$vuetify.theme.themes.light.colors.primary : '';
     },
     completedPct() {
       const pct = this.completedStepsAmount / this.allStepsAmount;

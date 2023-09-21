@@ -129,7 +129,7 @@ export default {
       'list',
     ]),
     cardHeight() {
-      return this.$vuetify?.breakpoint?.smAndDown ? 350 : 300;
+      return this.$vuetify?.display?.smAndDown ? 350 : 300;
     },
   },
   methods: {

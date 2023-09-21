@@ -42,7 +42,7 @@
 
             <v-col cols="5" style="display: inline-flex; justify-content: center;">
               <base-icon-button material-icon-name="clear"
-                                :fill-color="$vuetify.theme.themes.light.error"
+                                :fill-color="$vuetify.theme.themes.light.colors.error"
                                 icon-color="black"
                                 tooltip-text="Delete your local dataset"
                                 @clicked="$emit('clearButtonClicked', $event)"

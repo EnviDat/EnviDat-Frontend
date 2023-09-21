@@ -9,7 +9,7 @@
     <div
       class="py-0 my-0 "
       :class="mdScreen ? 'px-4' : 'px-4 mb-1'"
-      :style="`background-color: ${$vuetify.theme.themes.light.highlight};`"
+      :style="`background-color: ${$vuetify.theme.themes.light.colors.highlight};`"
     >
       <v-row
         v-if="topLayout"
@@ -80,7 +80,7 @@
             :style="
               `color:${
                 pinnedAmount > 0
-                  ? $vuetify.theme.themes.light.primary
+                  ? $vuetify.theme.themes.light.colors.primary
                   : 'rgba(0,0,0,.47)'
               };`
             "

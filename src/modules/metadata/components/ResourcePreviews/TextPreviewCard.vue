@@ -13,7 +13,7 @@
 
     <v-card-text
       v-if="errorObject"
-      :style="`color: ${$vuetify.theme.themes.light.error};`"
+      :style="`color: ${$vuetify.theme.themes.light.colors.error};`"
     >
       {{ errorObject.title }}
       <br />

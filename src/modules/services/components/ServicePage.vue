@@ -131,11 +131,11 @@ export default {
       'list',
     ]),
     cardHeight() {
-      if (this.$vuetify?.breakpoint?.sm) {
+      if (this.$vuetify?.display?.sm) {
         return 210;
       }
 
-      return this.$vuetify?.breakpoint.mdAndUp ? 220 : undefined;
+      return this.$vuetify?.display.mdAndUp ? 220 : undefined;
     },
   },
   methods: {

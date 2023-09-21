@@ -49,7 +49,7 @@
       <base-icon-button
         material-icon-name="expand_more"
         :iconColor="showFullText ? 'primary' : 'accent'"
-        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.primary"
+        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.colors.primary"
         :color="showFullText ? 'accent' : 'transparent'"
         :outlined="showFullText"
         :rotateOnClick="true"
@@ -132,7 +132,7 @@ export default {
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     scrollbarColorBack() {

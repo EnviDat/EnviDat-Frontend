@@ -46,7 +46,7 @@
                 &lt;!&ndash; style="position: absolute; top: 0; left: 45%;" &ndash;&gt;
             <BaseIconButton materialIconName="vertical_split"
                             iconColor="black"
-                            :fillColor="$vuetify.theme.themes.light.accent"
+                            :fillColor="$vuetify.theme.themes.light.colors.accent"
                             @clicked="triggerSplit" />
           </v-col>
           -->

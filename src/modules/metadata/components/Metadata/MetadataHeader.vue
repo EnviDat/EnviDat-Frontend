@@ -27,7 +27,7 @@
                       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
                       style="position: absolute; top: 0; right: 46px; z-index: 2;"
                       material-icon-name="edit"
-                      :fillColor="$vuetify.theme.themes.light.accent"
+                      :fillColor="$vuetify.theme.themes.light.colors.accent"
                       iconColor="black"
                       color="accent"
                       tooltipText="Edit metadata"
@@ -56,7 +56,7 @@
       <v-col v-if="!metadataTitle && !showPlaceholder"
               cols="12" >
         <div class="headerTitle py-3"
-              :style="`color: ${$vuetify.theme.themes.light.error}`"
+              :style="`color: ${$vuetify.theme.themes.light.colors.error}`"
               :class="{ 'display-2': $vuetify.display.lgAndUp,
                         'text-h4': $vuetify.display.mdAndDown,
                         'headline': $vuetify.display.smAndDown,

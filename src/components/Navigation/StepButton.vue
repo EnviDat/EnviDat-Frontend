@@ -1,7 +1,7 @@
 <template>
 
   <div class="stepButton px-2 py-1"
-        :style="`border-color: ${ active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.highlight };`"
+        :style="`border-color: ${ active ? $vuetify.theme.themes.light.colors.accent : $vuetify.theme.themes.light.colors.highlight };`"
         @click="catchStepClick">
 
     <div class="stepRow">
@@ -22,7 +22,7 @@
         </div>
 
         <div class="stepErrorText"
-             :style="`color: ${ $vuetify.theme.themes.light.error };`">
+             :style="`color: ${ $vuetify.theme.themes.light.colors.error };`">
           {{ error }}
         </div>
       </div>
@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     stepNumberColor() {
-      return this.active ? this.$vuetify.theme.themes.light.accent : this.$vuetify.theme.themes.light.secondary;
+      return this.active ? this.$vuetify.theme.themes.light.colors.accent : this.$vuetify.theme.themes.light.colors.secondary;
     },
   },
   methods: {

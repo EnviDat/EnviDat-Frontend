@@ -127,7 +127,7 @@
                         material-icon-name="expand_more"
                         :iconColor="showFullDescription ? 'primary' : 'accent'"
                         color="accent"
-                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.accent : ''"
+                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.colors.accent : ''"
                         outlined
                         :rotateOnClick="true"
                         :rotateToggle="showFullDescription"
@@ -298,7 +298,7 @@ export default {
     },
     scrollbarColorFront() {
       return this.$vuetify
-        ? this.$vuetify.theme.themes.light.highlight
+        ? this.$vuetify.theme.themes.light.colors.highlight
         : 'auto';
     },
     scrollbarColorBack() {

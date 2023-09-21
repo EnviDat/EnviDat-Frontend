@@ -348,8 +348,8 @@ export default {
       // var latlngs = [[37, -109.05],[41, -109.03],[41, -102.05],[37, -102.04]];
       const polygon = createPolygon(coords, {
         color: selected
-          ? this.$vuetify.theme.themes.light.primary
-          : this.$vuetify.theme.themes.light.accent,
+          ? this.$vuetify.theme.themes.light.colors.primary
+          : this.$vuetify.theme.themes.light.colors.accent,
         opacity: 0.45,
         fillOpacity: 0,
       });

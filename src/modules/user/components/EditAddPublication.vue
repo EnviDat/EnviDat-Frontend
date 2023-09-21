@@ -53,7 +53,7 @@
       <v-col cols="auto"
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
         <BaseIconButton material-icon-name="add"
-                        :fillColor="$vuetify.theme.themes.light.primary"
+                        :fillColor="$vuetify.theme.themes.light.colors.primary"
                         icon-color="white"
                         :is-small="dense && $vuetify.display.mdAndUp"
                         @clicked="addClick"
