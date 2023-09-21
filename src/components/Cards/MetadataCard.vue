@@ -152,7 +152,7 @@
           <v-col v-if="role" class="pl-1 shrink">
             <UserRoleChip :role="role" />
           </v-col>
-          <v-col v-if="state" class="pl-1 shrink">
+          <v-col v-if="state" class="pl-1">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
