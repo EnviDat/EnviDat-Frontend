@@ -273,7 +273,8 @@ import {
 } from '@/factories/userEditingValidations';
 import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
 import {
-  EDIT_METADATA_MAIN_TITLE,
+  EDIT_METADATA_TITLE,
+  EDIT_METADATA_TITLE_LABEL, EDIT_METADATA_URL_LABEL,
   EDIT_STEP_TITLE_MAIN_METADATA,
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY,
@@ -715,10 +716,10 @@ export default {
       contactEmail: null,
     },
     labels: {
-      title: EDIT_METADATA_MAIN_TITLE,
+      title: EDIT_METADATA_TITLE,
       contactPerson: 'Contact Person',
-      labelTitle: 'Research Dataset Title',
-      labelUrl: 'Research Dataset Url',
+      labelTitle: EDIT_METADATA_TITLE_LABEL,
+      labelUrl: EDIT_METADATA_URL_LABEL,
       labelContactEmail: 'Contact Email',
       labelContactGivenName: 'Contact Given Name',
       labelContactSurname: 'Contact Surname',

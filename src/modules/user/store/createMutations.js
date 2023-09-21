@@ -84,7 +84,7 @@ export default {
 
     state.uploadNewResourceLoading = false;
 
-    const errorObj = createErrorMessage(reason);
+    const errorObj = createErrorMessage(reason, 'Resource Creation failed');
     state.uploadError = {
       message: errorObj.message,
       details: errorObj.errorDetails,
@@ -131,7 +131,7 @@ export default {
   [METADATA_CREATION_DATASET_ERROR](state, reason) {
     state.metadataCreationLoading = false;
 
-    const errorObj = createErrorMessage(reason);
+    const errorObj = createErrorMessage(reason, 'Dataset Creation failed');
     state.metadataCreationError = {
       message: errorObj.message,
       details: errorObj.errorDetails,

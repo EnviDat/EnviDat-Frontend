@@ -58,9 +58,20 @@
     <v-row justify="end" align="end">
       <v-col class="flex-grow-0">
         <!-- prettier-ignore -->
-        <BaseRectangleButton buttonText="Close"
+        <BaseRectangleButton buttonText="Save Dataset"
                              color='highlight'
+                             :disabled="!showSaveButton"
+                             :tooltip-text="showSaveButton ? 'Save Dataset on the Server' : 'Fill out all fields to save the dataset, check the progess on the top right'"
                              @clicked="submitEdittedMetadata" />
+      </v-col>
+    </v-row>
+
+    <v-row v-if="!showSaveButton"
+           justify="end"
+           align="end" >
+      <v-col cols="5"
+              class="text-body-2">
+        Fill out all fields to save the dataset. Have a look at the the progess on the top right!
       </v-col>
     </v-row>
   </v-container>
@@ -81,7 +92,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import EditOrganization from '@/modules/user/components/EditOrganization.vue';
+import EditOrganization from '@/modules/user/components/edit/EditOrganization.vue';
 
 import EditFunding from '@/modules/user/components/EditFunding.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -126,6 +137,10 @@ export default {
     readOnlyExplanation: {
       type: String,
       default: '',
+    },
+    showSaveButton: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

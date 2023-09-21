@@ -17,6 +17,13 @@
 
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 import { getNameInitials } from '@/factories/authorFactory';
+import {
+  USER_ROLE_ADMIN,
+  USER_ROLE_COLLABORATOR, USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+  USER_ROLE_SYSTEM_ADMIN,
+} from '@/factories/userEditingValidations';
+
 import authorCollection from './testdata/authorCollection.json';
 
 
@@ -86,50 +93,50 @@ export const UserOrganizationInfoViews = () => ({
     authorCollection,
     organizationRoles0: [{
         organization: 'GIS',
-        role: 'member',
+        role: USER_ROLE_MEMBER,
       },
     ],
     organizationRoles1: [{
       organization: 'WSL',
-      role: 'admin',
+      role: USER_ROLE_ADMIN,
     },
     ],
     organizationRoles2: [
       {
         organization: 'GIS',
-        role: 'member',
+        role: USER_ROLE_MEMBER,
       },
       {
         organization: 'WSL',
-        role: 'admin',
+        role: USER_ROLE_ADMIN,
       },
     ],
     organizationRoles3: [{
       organization: 'SLF',
-      role: 'editor',
+      role: USER_ROLE_EDITOR,
     },
     {
       organization: 'EnviDat',
-      role: 'sysadmin',
+      role: USER_ROLE_SYSTEM_ADMIN,
     },
     {
       organization: 'LWF',
-      role: 'collaborator',
+      role: USER_ROLE_COLLABORATOR,
     },
     {
       organization: 'GIS',
-      role: 'member',
+      role: USER_ROLE_MEMBER,
     },
     {
       organization: 'WSL',
-      role: 'admin',
+      role: USER_ROLE_ADMIN,
     },
   ],
 /*
     userOrganizationRoles: {
-      'GIS': 'member',
-      'SLF': 'admin',
-      'WSL': 'editor',
+      'GIS': USER_ROLE_MEMBER,
+      'SLF': USER_ROLE_ADMIN,
+      'WSL': USER_ROLE_EDITOR,
     },
 */
   }),

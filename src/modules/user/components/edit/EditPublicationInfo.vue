@@ -33,68 +33,69 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="6">
-          {{ labels.visibilityState }}
-        </v-col>
-
-        <v-col cols="6">
-          <MetadataStateChip :state="visibilityState" />
-        </v-col>
-
-      </v-row>
 
       <v-row class="pt-2">
-        <v-col cols="4">
+
+        <v-col >
           <v-text-field
             :label="labels.dataObjectIdentifier"
-            outlined
-            :readonly="isReadOnly('doi')"
-            :hint="readOnlyHint('doi')"
+            readonly
+            hint="DOI can be changed at the Dataset Publication Status"
             :error-messages="validationErrors.doi"
             prepend-icon="fingerprint"
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
             :value="doiField"
           />
+<!--
+          :hint="mixinMethods_readOnlyHint('doi')"
+-->
         </v-col>
 
-        <v-col class="flex-grow-0 pt-5">
-          <BaseRectangleButton buttonText="Generate New DOI" :disabled="true" />
-        </v-col>
-
-        <v-col class="flex-grow-0 pt-6">
-          <v-icon
-            color="primary"
-            style="animation: progress-circular-rotate 3s linear infinite"
-            >settings</v-icon
+        <v-col>
+          <v-autocomplete :value="visibilityState"
+                          :items="[visibilityState]"
+                          outlined
+                          dense
+                          chips
+                          readonly
+                          prepend-icon="remove_red_eye"
+                          persistent-hint
+                          :label="labels.visibilityState"
           >
+            <template v-slot:selection="{ item }">
+              <MetadataStateChip style="font-size: 12px;" :state="item" />
+            </template>
+          </v-autocomplete>
+
         </v-col>
 
-        <v-col class=" pt-6">
-          Generating DOI is under construction
-        </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="6">
           <v-text-field
             :label="labels.publisher"
-            outlined
-            :readonly="isReadOnly('publisher')"
-            :hint="readOnlyHint('publisher')"
+            readonly
+            hint="Publisher can't be changed"
             :error-messages="validationErrors.publisher"
             prepend-icon="public"
             @change="publisherField = $event"
             @input="validateProperty('publisher', $event)"
             :value="publisherField"
           />
+<!--
+          :readonly="mixinMethods_isFieldReadOnly('publisher')"
+            :hint="mixinMethods_readOnlyHint('publisher')"
+-->
+
         </v-col>
 
         <v-col cols="6">
           <v-select
             :items="yearList"
             outlined
+            dense
             :label="labels.year"
             :error-messages="validationErrors.publicationYear"
             :readonly="isReadOnly('publicationYear')"
@@ -123,9 +124,8 @@
  */
 import { mapState } from 'vuex';
 
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
+// import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
 import {
   EDITMETADATA_OBJECT_UPDATE,
@@ -137,8 +137,9 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-
+import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+
 
 export default {
   name: 'EditPublicationInfo',
@@ -327,9 +328,9 @@ export default {
       cardTitle: 'Publication Information',
       publicationState: 'Publication State',
       visibilityState: 'Dataset visibility',
-      dataObjectIdentifier: 'Data Object Identifier',
+      dataObjectIdentifier: EDIT_METADATA_DOI_LABEL,
       publisher: 'Publisher',
-      year: 'Year',
+      year: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
       fundingInformation: 'Funding Information',
       institution: 'Institution',
       grantNumber: 'Grant Number',
@@ -352,9 +353,8 @@ export default {
     stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
   components: {
-    BaseRectangleButton,
     BaseStatusLabelView,
-    MetadataStateChip,
+//    MetadataStateChip,
   },
 };
 </script>

@@ -15,7 +15,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import EditPublicationInfo from '@/modules/user/components/EditPublicationInfo.vue';
+import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
 
 export default {
   title: '9 Editing Metadata / Edit Publication Infos',

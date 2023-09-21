@@ -60,8 +60,19 @@ import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
+  EDIT_METADATA_AUTHORS_LABEL,
+  EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_ORGANIZATION_LABEL,
+  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  EDIT_METADATA_TITLE_LABEL,
+  EDIT_METADATA_URL_LABEL,
+  METADATA_AUTHORS_PROPERTY,
+  METADATA_DOI_PROPERTY,
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
   METADATA_TITLE_PROPERTY,
-  METADATA_URL_PROPERTY,
+  METADATA_URL_PROPERTY, EDIT_METADATA_PUBLISHER_LABEL,
 } from '@/factories/metadataConsts';
 
 /**
@@ -118,7 +129,6 @@ const JSONFrontendBackendRules = {
     ['name','name'],
     ['packageId','package_id'],
     ['position','position'],
-    ['publicationState','publication_state'],
     ['restricted','restricted'],
     ['resourceSize','resource_size'],
     ['resourceType','resource_type'],
@@ -560,25 +570,34 @@ export function cleanResourceForFrontend(resource) {
   }
 }
 
+export const metadataPublishedReadOnlyFields = [
+  // EditMetadataHeader
+  METADATA_TITLE_PROPERTY,
+  METADATA_URL_PROPERTY,
+  // EditAuthorList
+  METADATA_AUTHORS_PROPERTY,
+  // EditPublicationInfo
+  METADATA_ORGANIZATION_PROPERTY,
+  METADATA_PUBLICATION_YEAR_PROPERTY,
+  METADATA_PUBLISHER_PROPERTY,
+  METADATA_DOI_PROPERTY,
+];
 
-// possible publication states: ['', 'published', 'approved', 'publication pending', 'publication requested']
+export const readablePublishedReadOnlyFields = {
+  [METADATA_TITLE_PROPERTY]: EDIT_METADATA_TITLE_LABEL,
+  [METADATA_URL_PROPERTY]: EDIT_METADATA_URL_LABEL,
+  [METADATA_ORGANIZATION_PROPERTY]: EDIT_METADATA_ORGANIZATION_LABEL,
+  [METADATA_AUTHORS_PROPERTY]: EDIT_METADATA_AUTHORS_LABEL,
+  [METADATA_DOI_PROPERTY]: EDIT_METADATA_DOI_LABEL,
+  [METADATA_PUBLISHER_PROPERTY]: EDIT_METADATA_PUBLISHER_LABEL,
+  [METADATA_PUBLICATION_YEAR_PROPERTY]: EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+};
+
 const readOnlyMappingRules = [
   {
     triggerRule: ['published'],
     explanation: 'This field is "readonly" because the dataset is already published.',
-    readOnlyFields: [
-      // EditMetadataHeader
-      METADATA_TITLE_PROPERTY,
-      // EditAuthorList
-      'authors',
-      // EditPublicationInfo
-      'organization',
-      'publicationYear',
-      'publisher',
-      'doi',
-      // not implemented yet
-      METADATA_URL_PROPERTY,
-    ],
+    readOnlyFields: metadataPublishedReadOnlyFields,
   },
 /*
   {
@@ -591,7 +610,7 @@ const readOnlyMappingRules = [
 */
 /*
   {
-    triggerRule: 'admin',
+    triggerRule: USER_ROLE_ADMIN,
     readOnlyFields: [],
   },
 */

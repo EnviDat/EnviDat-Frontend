@@ -71,6 +71,8 @@ import {
   SHOW_DIALOG,
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_RESOURCES,
+  EDITMETADATA_PUBLICATION_STATE,
+  EDITMETADATA_PUBLICATION_INFO,
 } from '@/factories/eventBus';
 
 import {
@@ -139,6 +141,13 @@ import {
   metadataEditingSteps,
 } from '@/factories/workflowFactory';
 
+import { DOI_API_ACTIONS, DOI_RESERVE } from '@/modules/user/store/doiMutationsConsts';
+import {
+  getUserOrganizationRoleMap,
+  USER_ROLE_EDITOR,
+  USER_ROLE_MEMBER,
+} from '@/factories/userEditingValidations';
+
 
 export default {
   name: 'MetadataEditPage',
@@ -206,6 +215,7 @@ export default {
       'loadingEditingData',
       'uploadLoading',
       'uploadNewResourceLoading',
+      'userDatasets',
     ]),
     ...mapState(METADATA_NAMESPACE,[
       'authorsMap',
@@ -298,6 +308,7 @@ export default {
       const userOrganizations = this.$store.state.organizations.userOrganizations
 
       const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
+      const currentOrgaId = editOrgaData.organizationId;
 
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
         {
@@ -308,9 +319,41 @@ export default {
           },
         },
       );
+
+
+      const roleMap = getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
+      let userRole = roleMap[currentOrgaId];
+
+      if (userRole === USER_ROLE_EDITOR) {
+        const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
+        if (!userIsOwner) {
+          userRole = USER_ROLE_MEMBER;
+        }
+      }
+
+      const editPublicationInfo = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
+
+      this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
+        {
+          object: EDITMETADATA_PUBLICATION_INFO,
+          data: {
+            ...editPublicationInfo,
+            userRole,
+          },
+        },
+      );
+
     },
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
+
+        if (!this.currentEditingContent?.doi) {
+          // always call the doi reserve on dataset without a doi so one get reserved
+          // automatically for any datasets opened in the editing workflow
+          await this.$store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
+        }
+
+        // load the metadata from the backend for editing
         await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
       }
 
@@ -375,17 +418,15 @@ export default {
     editComponentsChanged(updateObj) {
 
       const dataKey = updateObj.object;
-      // const data = updateObj.data;
+      const editPayload = componentChangedEvent(updateObj, this);
 
-      componentChangedEvent(updateObj, this, (payload) => {
+      // overwrite the action and the payload to fit the specific
+      // backend call to change the ownership of a dataset
+      const action = this.getUserAction(dataKey);
 
-        // overwrite the action and the payload to fit the specific
-        // backend call to change the ownership of a dataset
-        const action = this.getUserAction(dataKey);
+      // save the full dataObject it in the backend
+      this.$store.dispatch(`${USER_NAMESPACE}/${action}`, editPayload);
 
-        // save the full dataObject it in the backend
-        this.$store.dispatch(`${USER_NAMESPACE}/${action}`, payload);
-      });
 
       this.$nextTick(() => {
         // if (updateObj.object === EDITMETADATA_AUTHOR) {
@@ -525,6 +566,7 @@ export default {
       [EDITMETADATA_AUTHOR]: METADATA_EDITING_SAVE_AUTHOR,
       [REMOVE_EDITING_AUTHOR]: METADATA_EDITING_REMOVE_AUTHOR,
       [EDITMETADATA_DATA_RESOURCE]: METADATA_EDITING_PATCH_RESOURCE,
+      [EDITMETADATA_PUBLICATION_STATE]: DOI_API_ACTIONS,
     },
   }),
 };

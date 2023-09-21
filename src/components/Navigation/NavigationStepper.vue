@@ -103,7 +103,9 @@
                        :readOnlyFields="currentStep.readOnlyFields"
                        :readOnlyExplanation="currentStep.readOnlyExplanation"
                        :nextMajorStep="getNextMajorStepTitle()"
-                       :isCreationWorkflow="isCreationWorkflow" />
+                       :isCreationWorkflow="isCreationWorkflow"
+                       :showSaveButton="showSaveButton"
+        />
 
         <div v-if="!currentStep">
           Nothing selected, please select a step in the navigation!
