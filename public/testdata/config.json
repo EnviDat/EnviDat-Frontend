@@ -1,5 +1,5 @@
 {
-  "version": "0.7.573",
+  "version": "0.8.1",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -57,7 +57,8 @@
     },
     "resourcesConfig": {
       "downloadActive": true
-    }
+    },
+    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
   },
   "projectsConfig": {
     "loadLocalFile": false,

@@ -27,7 +27,7 @@ import {
 // import meteoImg from '@/assets/cards/c_b_c_b_clouds_lighting_small.jpg';
 // import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 // import swissFLLogo from '@/assets/cards/swiss_forest_lab_logo.jpg';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { SWISSFL_MODE, EDNA_MODE } from '@/store/metadataMutationsConsts';
 
 export default [
   {
@@ -84,6 +84,7 @@ export default [
     darkColor: '#C5CAE9',
     disabled: false,
   },
+/*
   {
     title: 'Sign In',
     type: 'login',
@@ -93,6 +94,7 @@ export default [
     darkColor: '#B2DFDB',
     disabled: false,
   },
+*/
   {
     title: 'Swiss Forest Lab View',
     type: `mode_${SWISSFL_MODE}`,
@@ -101,6 +103,15 @@ export default [
     color: '#8BC34A',
     darkColor: '#8BC34A',
     contain: true,
+    disabled: false,
+  },
+  {
+    title: 'EDNA Lab View',
+    type: `mode_${EDNA_MODE}`,
+    alias: [],
+    imgPath: 'cards/edna_logo_small',
+    color: '#3966d0',
+    darkColor: '#2f5dc7',
     disabled: false,
   },
 ];
