@@ -122,7 +122,7 @@ export function getSelectedTagsMergedWithHidden(mode, selectedTagNames) {
 let tempModeData = null;
 
 export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
-  if (!mode || !metdataEntry) return null;
+  if (!mode || !metdataEntry) return metdataEntry;
 
   if (typeof metdataEntry.extras === 'object'
     && metdataEntry.extras instanceof Array) {
