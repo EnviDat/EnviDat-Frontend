@@ -102,7 +102,7 @@ modify-env:
       file = '.env.production'
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
-      key = 'VITE_ENVIDAT_DOMAIN'
+      key = 'VITE_DOMAIN'
       value = f'https://{branch}.envidat.ch'
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
