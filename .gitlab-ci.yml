@@ -120,7 +120,7 @@ image-build:
   extends: .trigger-rules
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/kaniko-project/executor:v1.9.1-debug
     entrypoint: [""]
   before_script:
     - mkdir -p /kaniko/.docker
