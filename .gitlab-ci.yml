@@ -145,6 +145,7 @@ image-build:
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
   dependencies:
+    - set-vars
     - modify-env
 
 tag-commit-sha:
