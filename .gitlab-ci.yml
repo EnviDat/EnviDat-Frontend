@@ -86,11 +86,6 @@ modify-env:
   extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: push
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
@@ -117,6 +112,9 @@ modify-env:
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')"
+  artifacts:
+    paths:
+      - .env.production
 
 image-build:
   extends: .trigger-rules
@@ -124,11 +122,6 @@ image-build:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: pull
   before_script:
     - mkdir -p /kaniko/.docker
     - >
@@ -149,6 +142,8 @@ image-build:
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
+  dependencies:
+    - modify-env
 
 tag-commit-sha:
   extends: .trigger-rules
