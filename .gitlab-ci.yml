@@ -13,7 +13,7 @@ variables:
 
 .trigger-rules:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
       changes:
         - 'src/**/*'
         - 'public/**/*'
