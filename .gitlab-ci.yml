@@ -128,6 +128,8 @@ image-build:
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
       "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - cat .env.production
+    - echo ${IMAGE_NAME}
   script:
     - >
       /kaniko/executor
