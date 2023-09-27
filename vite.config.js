@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue2';
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
-import { configDefaults } from 'vitest/config';
+import { configDefaults } from 'vitest/dist/config.cjs';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import Unfonts from 'unplugin-fonts/vite'

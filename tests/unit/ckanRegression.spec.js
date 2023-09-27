@@ -1,59 +1,53 @@
-import fs from 'fs';
 import { it, describe, expect } from 'vitest';
 import axios from 'axios';
-// const fs = require('fs');
 
-import { getEndpoints } from './saveResponses';
+import { getEndpoints, getFileFromUrl, saveResponseToFile } from './saveResponses';
+
 // import { ACTION_BULK_LOAD_METADATAS_CONTENT } from '@/store/metadataMutationsConsts';
 
-
-const testDataPath = `${__dirname}/../../public/testdata/`;
+// const testDataPath = `${__dirname}/../../public/testdata/`;
+const testDataPath = `${__dirname}/regression/`;
 
 
 
 describe('ckanRegression - preparation', () => {
 
-  it('gathering actions - ', async () => {
+  it('gathering actions - version 2_9', async (version = '2_9') => {
 
-    const endpointsUrls = getEndpoints();
+    const endpointsUrls = getEndpoints({
+      id: 'testing_again',
+    });
 
     expect(endpointsUrls).toBeDefined();
     expect(endpointsUrls.length).greaterThan(0)
 
     // console.log(endpointsUrls);
+    // const url = endpointsUrls[0];
 
-    const url = endpointsUrls[0];
+    const requests = [];
 
-    const response = await axios.get(url);
-    const responseString = JSON.stringify(response.data);
-    // console.log(responseString);
+    for (let i = 0; i < endpointsUrls.length; i++) {
+      const url = endpointsUrls[i];
+      requests.push(axios.get(url, {
+        validateStatus: (status) => status < 500, // Resolve only if the status code is 500
+      }));
+    }
 
-    const fileName = 'current_package_list_with_resources.json';
+    const responses= await Promise.all(requests);
 
-    const absoluteFilePath = testDataPath + fileName;
-    console.log(`open file ${absoluteFilePath}`);
+    for (const response of responses) {
 
-    await fs.open(absoluteFilePath, 'w+', (err) => {
-      if (err) {
-        return console.log(err);
-      }
+      const responseString = JSON.stringify(response.data);
+      const url = axios.getUri(response.config);
+      const fileName = getFileFromUrl(url, version)
 
-      return console.log(`Created ${fileName}`);
-    });
+      expect(fileName).toBeDefined();
 
-    console.log(`opened file ${absoluteFilePath}`);
+      // eslint-disable-next-line no-await-in-loop
+      const ok = saveResponseToFile(testDataPath, fileName, responseString);
 
-    fs.writeFileSync(absoluteFilePath, responseString, (err) => {
-
-      if (err) {
-        return console.log(err);
-      }
-
-      return console.log(`Saved ${fileName}`);
-    });
-
-    console.log(`Saved ${fileName}`);
-
+      expect(ok).toBe(true);
+    }
 
   });
 
