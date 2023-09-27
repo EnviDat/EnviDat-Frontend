@@ -201,6 +201,7 @@ export default {
 
   },
   computed: {
+    ...mapState(['config']),
     ...mapState(USER_SIGNIN_NAMESPACE,[
       'user',
       'userLoading',
@@ -226,6 +227,9 @@ export default {
       'existingAuthors',
       'existingKeywords',
     ]),
+    doiWorkflowActive() {
+      return this.config?.userEditMetadataConfig?.doiWorkflowActive;
+    },
     /**
      * @returns {String} the metadataId from the route
      */
@@ -347,7 +351,7 @@ export default {
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
 
-        if (!this.currentEditingContent?.doi) {
+        if (!this.currentEditingContent?.doi && this.doiWorkflowActive) {
           // always call the doi reserve on dataset without a doi so one get reserved
           // automatically for any datasets opened in the editing workflow
           await this.$store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
