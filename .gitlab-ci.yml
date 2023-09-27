@@ -13,7 +13,7 @@ variables:
 
 .trigger-rules:
   rules:
-    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop)$/'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
       changes:
         - 'src/**/*'
         - 'public/**/*'
@@ -86,56 +86,50 @@ modify-env:
   extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: push
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
     - |
-      python -c "import os;
-      import dotenv;
-      file = '.env.production';
+      python -c "import os
+      import dotenv
 
-      branch = os.getenv('CI_COMMIT_REF_NAME');
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
 
-      key = 'VITE_API_ROOT';
-      value = f'https://envidat.ch/{branch}-api';
-      if branch == 'main':
-          value = 'https://envidat.ch';
-      dotenv.set_key(file, key, value, quote_mode='never');
+      key = 'VITE_DOMAIN'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
 
-      key = 'VITE_CONFIG_URL';
-      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json';
-      dotenv.set_key(file, key, value, quote_mode='never');
+      key = 'VITE_API_ROOT'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
 
-      key = 'VITE_ENVIDAT_DOMAIN';
-      value = f'https://frontend-{branch}.s3-website-zh.os.switch.ch';
-      if branch == 'main':
-          value = 'https://frontend.s3-website-zh.os.switch.ch';
+      key = 'VITE_CONFIG_URL'
+      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')"
-
+  artifacts:
+    paths:
+      - .env.production
 
 image-build:
   extends: .trigger-rules
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/kaniko-project/executor:v1.9.1-debug
     entrypoint: [""]
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: pull
   before_script:
     - mkdir -p /kaniko/.docker
     - >
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
       "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - cat .env.production
+    - echo ${IMAGE_NAME}
   script:
     - >
       /kaniko/executor
@@ -150,6 +144,9 @@ image-build:
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
+  dependencies:
+    - set-vars
+    - modify-env
 
 tag-commit-sha:
   extends: .trigger-rules
