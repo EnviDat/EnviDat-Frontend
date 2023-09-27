@@ -13,7 +13,6 @@ import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
 import globalMethods from '@/factories/globalMethods';
 import categoryCards from '@/store/categoryCards';
 import {
-  envidatViewportParameters,
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
@@ -31,9 +30,16 @@ for (let i = 0; i < categoryCards.length; i++) {
 
 export default {
   title: '3 Cards / Click Cards',
-  decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
+  component: BaseClickCard,
+};
+
+const baseInfo = categoryCards[0];
+
+export const Basic = {
+  args: {
+    title: baseInfo.title,
+    img: baseInfo.img,
+    color: baseInfo.color,
   },
 };
 
@@ -42,10 +48,9 @@ const Template = (args, { argTypes }) => ({
   props: Object.keys(argTypes),
   // template: '<AuthorCard v-bind="$props" />',
   template: `
-    <v-row>
+    <v-row >
       <v-col v-for="card in $props.categoryCards"
-             cols="12"
-             sm="6"
+             class='pa-2'
              :key="card.title">
         
         <BaseClickCard :title="card.title"
