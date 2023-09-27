@@ -62,52 +62,85 @@ const version = process.argv[3];
 console.log(`Starting tests for version ${version}`);
 */
 
-const ckan29Requests = {
+const ckanRequests = {
   [ACTION_GET_ORGANIZATION()]: {
     method: 'GET',
-    params: ['id'],
+    body: {
+      id: 'alpine-remote-sensing',
+      'include_datasets': true,
+    },
   },
   [ACTION_GET_ORGANIZATIONS()]: {
     method: 'GET',
   },
+  [ACTION_METADATA_EDITING_PATCH_DATASET()]: {
+    method: 'POST',
+    body: {
+      id: '',
+      maintainer: '{"affiliation": "WSL", "email": "yi.liu@wsl.ch", "given_name": "Yi", "identifier": "0000-0002-0839-2518", "name": "Liu"}',
+    },
+  },
+  [ACTION_METADATA_EDITING_PATCH_RESOURCE()]: {
+    method: 'POST',
+    body: { 
+      id: 'b2aad61d-11f6-48ca-94d3-056c95916c7c',
+      description: 'This upload contains the data (species checklist, species range maps, time-calibrated phylogenies, topographic change, etc.)  generated, analyzed, and presented in the paper "Escarpment evolution drives the diversification of the Madagascar flora".',
+    },
+  },
+  [ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION()]: {
+    method: 'POST',
+    body: {
+      'id': '94beec87-58ce-4c49-a876-dbb4b192f074', // package_id
+      'organization_id': 'a5d8660c-7635-4620-8289-fb6181c34e0c', // org id
+    },
+  },
+  [ACTION_GET_PROJECTS()]: {
+    method: 'GET',
+    body: {
+      'all_fields': true,
+      'include_groups': true,
+      'include_extras': true,
+      'include_datasets': true,
+    },
+  },
+  [ACTION_USER_EDITING_UPDATE()]: {
+    method: 'GET',
+    body: {
+
+    },
+  },
+/*
+  [ACTION_USER_COLLABORATOR_DATASETS()]: {
+    method: 'POST',
+    params: ['id', 'organization_id'],
+  },
+*/
+}
+
+const ckanRequestsSignedIn = {
   [ACTION_COLLABORATOR_DATASET_IDS()]: {
     method: 'GET',
-    params: ['id', 'include_datasets'],
+    body: {
+      id: '',
+      'include_datasets': true,
+    },
   },
   [ACTION_METADATA_CREATION_DATASET()]: {
     method: 'POST',
-    // params: ['id', 'include_datasets'], many params
+    body: {
+      id: '',
+    }, // many more params
   },
   [ACTION_METADATA_CREATION_RESOURCE()]: {
     method: 'POST',
-    params: ['package_id', 'url'],
+    body: {
+      'package_id': '',
+      'url': '',
+    },
   },
   [ACTION_METADATA_DELETE_RESOURCE()]: {
     method: 'POST',
     params: ['id'],
-  },
-  [ACTION_METADATA_EDITING_PATCH_DATASET()]: {
-    method: 'POST',
-    params: ['id'],
-  },
-  [ACTION_METADATA_EDITING_PATCH_RESOURCE()]: {
-    method: 'POST',
-    params: ['id'],
-  },
-  [ACTION_METADATA_EDITING_PATCH_RESOURCE()]: {
-    method: 'POST',
-    params: ['id'],
-  },
-  [ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION()]: {
-    method: 'POST',
-    params: ['id', 'organization_id'],
-  },
-  [ACTION_GET_PROJECTS()]: {
-    method: 'GET',
-  },
-  [ACTION_USER_COLLABORATOR_DATASETS()]: {
-    method: 'POST',
-    params: ['id', 'organization_id'],
   },
 }
 
@@ -149,7 +182,7 @@ export const getEndpoints = (body = {}) => {
 
   endpoints.forEach(actionUrl => {
     let url = extractBodyIntoUrl(actionUrl, body);
-    url = urlRewrite(url, '/api/action/', 'https://envidat04.wsl.ch');
+    url = urlRewrite(url, '/api/action/', 'http://localhost:8989');
     fullUrls.push(url)
   });
 
@@ -157,7 +190,7 @@ export const getEndpoints = (body = {}) => {
 
   doiActions.forEach(actionUrl => {
     let url = extractBodyIntoUrl(actionUrl, body);
-    url = urlRewrite(url, '/doi-api/datacite/', 'https://envidat04.wsl.ch');
+    url = urlRewrite(url, '/doi-api/datacite/', 'http://localhost:8989');
     fullUrls.push(url)
   });
 
@@ -196,11 +229,11 @@ export const getFileFromUrl = (url, version) => {
 
   const slashSplits = url.split('/');
   url = slashSplits[slashSplits.length - 1];
-  // console.log(`url after slashSplits ${url}`);
+//  console.log(`url after slashSplits ${url}`);
 
   const querySplits = url.split('?');
   let fileName = querySplits.length >= 2 ? querySplits[0] : url;
-  // console.log(`fileName after querySplits ${fileName}`);
+//  console.log(`fileName after querySplits ${fileName}`);
 
   fileName = `${fileName}_${version}`;
 
@@ -211,6 +244,10 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
 
   const absoluteFilePath = `${filePath + fileName}.json`;
 
+  console.log(`absoluteFilePath ${absoluteFilePath}`);
+
+  let fileDescriptor = null
+
   try {
     const createDir = fs.mkdirSync(filePath, { recursive: true });
 
@@ -218,13 +255,20 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
       console.log(`created directory ${createDir}`);
     }
 
-    const fileDescriptor = fs.openSync(absoluteFilePath, 'w+');
-
-    console.log(`opened file ${absoluteFilePath}`);
-
-    fs.writeFileSync(fileDescriptor, dataAsString);
+    fileDescriptor = fs.openSync(absoluteFilePath, 'w+');
 
   } catch (err) {
+    console.error('file opening error');
+    console.error(err.message);
+    return false;
+  }
+
+  console.log(`opened file ${absoluteFilePath}`);
+
+  try {
+    fs.writeFileSync(fileDescriptor, dataAsString);
+  } catch (err) {
+    console.error('file writing error');
     console.error(err.message);
     return false;
   }
