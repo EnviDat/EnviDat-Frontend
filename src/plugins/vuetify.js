@@ -9,6 +9,13 @@
  */
 import  'vuetify/styles';
 import { createVuetify } from 'vuetify';
+import { VDatePicker } from 'vuetify/labs/VDatePicker'
 import config from './vuetifyConfig';
 
-export default createVuetify(config);
+
+export default createVuetify({
+  ...config,
+  components: {
+    VDatePicker,
+  },
+});

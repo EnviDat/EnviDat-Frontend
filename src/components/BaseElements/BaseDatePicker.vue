@@ -3,12 +3,10 @@
       <v-text-field
         v-if="isReadonly(dateProperty)"
         :label="dateLabel"
-        dense
-        outlined
         readonly
         prepend-icon="date_range"
         :hint="readOnlyHint(dateProperty)"
-        :value="formatToEnviDatDate(dateField, dateProperty)"
+        :model-value="formatToEnviDatDate(dateField, dateProperty)"
         :error-messages="validationErrors[dateProperty]"
       />
 
@@ -19,8 +17,8 @@
         v-model="datePickerOpen"
         :close-on-content-click="false"
         transition="scale-transition"
-        :left="$vuetify?.breakpoint?.smAndDown"
-        :offset-y="$vuetify?.breakpoint?.mdAndUp"
+        :left="$vuetify?.display?.smAndDown"
+        :offset-y="$vuetify?.display?.mdAndUp"
         min-width="280px"
       >
 <!--
@@ -28,14 +26,12 @@
         min-width="auto"
 -->
 
-        <template v-slot:activator="{ on }">
+        <template v-slot:activator="{ props }">
           <v-text-field
             :label="dateLabel"
-            dense
-            outlined
             prepend-icon="date_range"
-            v-on="on"
-            :value="formatToEnviDatDate(dateField, dateProperty)"
+            v-bind="props"
+            :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
             :error-messages="validationErrors[dateProperty]"
           />
@@ -43,11 +39,10 @@
 
         <v-date-picker
           locale="en-in"
-          @input="changeDatePicker(dateProperty, $event)"
-          scrollable
+          @click:save="changeDatePicker(dateProperty, $event)"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
-          :value="formatToDatePickerDate(dateField)"
+          :model-value="formatToDatePickerDate(dateField)"
           next-icon="skip_next"
           prev-icon="skip_previous"
         >
@@ -162,6 +157,9 @@ export default {
     dateField: {
       get() {
         return this.previewDate || this.date;
+      },
+      set(value) {
+        this.changeDatePicker()
       },
     },
   },
@@ -300,8 +298,8 @@ export default {
 
       if (dateTime instanceof Date && !!dateTime.getTime()) {
         return new Date(dateTime - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10);
+          .toISOString().substring(0, 10);
+          // .substr(0, 10);
       }
 
       return '';

@@ -2,9 +2,6 @@
  * @summary story of BaseIconButton & BaseIconCountView for sandbox testing
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-31 08:14:47
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -12,13 +9,11 @@
 import BaseDatePicker from '@/components/BaseElements/BaseDatePicker.vue';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
-
 export default {
-  title: '1 Base Elements / Date picker',
+  title: '1 Base Elements / EnviDat Date picker',
   decorators: [],
   component: BaseDatePicker,
 };
-
 
 export const Empty = {};
 
