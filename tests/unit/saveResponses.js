@@ -244,7 +244,7 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
 
   const absoluteFilePath = `${filePath + fileName}.json`;
 
-  console.log(`absoluteFilePath ${absoluteFilePath}`);
+//  console.log(`absoluteFilePath ${absoluteFilePath}`);
 
   let fileDescriptor = null
 
@@ -263,7 +263,7 @@ export const saveResponseToFile = (filePath, fileName, dataAsString) => {
     return false;
   }
 
-  console.log(`opened file ${absoluteFilePath}`);
+//  console.log(`opened file ${absoluteFilePath}`);
 
   try {
     fs.writeFileSync(fileDescriptor, dataAsString);
