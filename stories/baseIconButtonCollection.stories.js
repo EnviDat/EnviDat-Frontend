@@ -16,8 +16,7 @@ import fileIcon from '../src/assets/icons/file.png';
 
 export default {
   title: '1 Base Elements / Icon buttons',
-  decorators: [],
-  parameters: {},
+  component: BaseIconButton,
 };
 
 
