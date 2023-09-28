@@ -4,6 +4,7 @@
     @mouseover="hoverBadge = true"
     @mouseleave="hoverBadge = false"
   >
+<!--
     <v-tooltip
       v-if="$vuetify.display.mdAndUp && tooltipText"
       v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
@@ -14,21 +15,34 @@
           :style="{
             height: `${height}px`,
             width: `${height}px`,
-            backgroundColor: fillColor ? fillColor : '',
           }"
+          :icon="materialIconName"
           style="margin: 0 !important;"
-          :icon="!isElevated"
-          :fab="isElevated"
-          :small="(isSmall || isElevated) && !(isSmall && isElevated)"
-          :x-small="isSmall && isElevated"
-          :outlined="outlined"
-          :color="color ? color : disabled ? '' : 'primary'"
+          variant="outlined"
+          density="comfortable"
           :href="url"
           :disabled="disabled"
           :class="buttonClass"
           v-bind="{ ['target']: '_blank' }"
           @click.stop="onClick"
         >
+
+&lt;!&ndash;
+
+          :style="{
+            height: `${height}px`,
+            width: `${height}px`,
+            backgroundColor: fillColor ? fillColor : '',
+          }"
+
+          :icon="!isElevated"
+          :fab="isElevated"
+          :small="(isSmall || isElevated) && !(isSmall && isElevated)"
+          :x-small="isSmall && isElevated"
+          :outlined="outlined"
+          :color="color ? color : disabled ? '' : 'primary'"
+&ndash;&gt;
+
           <div v-if="customIcon">
             <img
               class="envidatIcon"
@@ -53,23 +67,22 @@
 
       <span>{{ tooltipText }}</span>
     </v-tooltip>
+-->
 
     <v-btn
-      v-else
-      :style="{ backgroundColor: fillColor ? fillColor : '' }"
       style="margin: 0 !important;"
-      :icon="!isElevated"
-      :fab="isElevated"
-      :small="isSmall || isElevated"
-      :outlined="outlined"
-      :color="color ? color : disabled ? '' : 'primary'"
+      icon
+      variant="outlined"
+      density="comfortable"
+      :color="color ? color : outlined ? 'primary' : 'transparent'"
       :href="url"
       :disabled="disabled"
       :class="buttonClass"
       v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
     >
-      <div v-if="customIcon" class="iconCentering">
+      <div v-if="customIcon"
+           class="iconCentering">
         <img
           class="envidatIcon"
           :alt="`${customIcon} icon`"
@@ -77,17 +90,12 @@
         />
       </div>
 
-      <v-icon
-        v-if="materialIconName"
-        :color="iconColor ? iconColor : 'primary'"
-        :style="
-          rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
-        "
-      >
-        {{ materialIconName }}
-      </v-icon>
+      <i v-if="materialIconName"
+         class='material-icons'
+         :style="`color: ${iconColor ? iconColor : $vuetify.theme.themes.light.colors.primary};
+                  ${rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''};`"
+      >{{ materialIconName }}</i>
 
-      <slot v-else> </slot>
     </v-btn>
 
     <v-badge
