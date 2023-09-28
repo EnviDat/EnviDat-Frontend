@@ -206,10 +206,12 @@ const NotificationCard = () => import('@/components/Cards/NotificationCard.vue')
 export default {
   name: 'App',
   beforeCreate() {
-    // check for the backend version
+    // in beforeCreate none of the vue component exists, so not method can be called
+    // the this.$store does exist, so call it here directly, then in created setup the reloadConfigTimer
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    this.reloadConfigTimer = window.setInterval(this.loadConfig, 60000);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -219,6 +221,7 @@ export default {
     this.showCookieInfo = strShowCookieInfo!== 'false';
   },
   beforeDestroy() {
+    window.clearInterval(this.reloadConfigTimer);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -235,6 +238,10 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    loadConfig() {
+      // check for the backend version
+      this.$store.dispatch(SET_CONFIG);
+    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
@@ -742,6 +749,7 @@ export default {
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
+    reloadConfigTimer: null,
   }),
 };
 </script>
