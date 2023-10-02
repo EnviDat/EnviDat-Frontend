@@ -28,6 +28,10 @@ import {
 // import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 // import swissFLLogo from '@/assets/cards/swiss_forest_lab_logo.jpg';
 import { SWISSFL_MODE, EDNA_MODE } from '@/store/metadataMutationsConsts';
+import { getModeData } from '@/factories/modeFactory';
+
+const swissFLMode = getModeData(SWISSFL_MODE);
+const ednaMode = getModeData(EDNA_MODE);
 
 export default [
   {
@@ -96,7 +100,7 @@ export default [
   },
 */
   {
-    title: 'Swiss Forest Lab View',
+    title: `${swissFLMode.title} View`,
     type: `mode_${SWISSFL_MODE}`,
     alias: [],
     imgPath: 'cards/swiss_forest_lab_logo',
@@ -106,7 +110,7 @@ export default [
     disabled: false,
   },
   {
-    title: 'EDNA Lab View',
+    title: `${ednaMode.title} View`,
     type: `mode_${EDNA_MODE}`,
     alias: [],
     imgPath: 'cards/edna_logo_small',

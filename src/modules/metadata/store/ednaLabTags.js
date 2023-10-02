@@ -10,7 +10,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-export const ednaTag = { name: 'EDNA LAB', enabled: false };
+export const ednaTag = { name: 'EDNA', enabled: false };
 
 /*
 export const swissFLExtraTags = [

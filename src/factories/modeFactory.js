@@ -56,7 +56,7 @@ const modes = [
   },
   {
     name: EDNA_MODE,
-    title: 'eDNA Laboratory',
+    title: 'eDNA Data',
     externalUrl: 'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
