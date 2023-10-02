@@ -103,16 +103,12 @@
       :overlap="!isSmall"
       :left="isSmall"
       :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
+      :content="count"
       color="highlight"
       :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
       @click.stop="onClick"
-    >
-      <template v-slot:badge >
-        <span class="black--text">
-          {{ count }}
-        </span>
-      </template>
-    </v-badge>
+      />
+
   </div>
 </template>
 

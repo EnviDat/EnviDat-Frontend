@@ -1,17 +1,12 @@
 /**
- * @summary story of BaseIconButton & BaseIconCountView for sandbox testing
+ * @summary story of BaseIconButton for sandbox testing
  * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-31 08:14:47
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import fileIcon from '../src/assets/icons/file.png';
 
 
 export default {
@@ -74,34 +69,8 @@ FancyAndGlowingButton.args = {
   isGlowing: true,
 }
 
-export const IconsWithCountBadeViews = () => ({
-    components: { BaseIconCountView },
-    template: `
-    <v-row style="border: solid 1px;">
-
-      <v-col class="flex-grow-0" >
-        <!-- div style="position: absolute;" -->
-          <base-icon-count-view class="mr-2"
-                                :iconString="fileIcon"
-                                :count="counter"
-                                :tooltipText="tooltip"  />
-        <!-- /div -->
-      </v-col>
-
-      <v-col class="flex-grow-0" >
-        <!-- div style="position: absolute;" -->
-          <base-icon-count-view class="mr-2"
-                                :iconString="fileIcon"
-                                :count="counter"
-                                :tooltipText="tooltip" />
-        <!-- /div -->
-      </v-col>
-
-    </v-row>`,
-    data: () => ({
-      showFullDescription: false,
-      fileIcon,
-      counter: 55,
-      tooltip: 'This is the tooltip of the icon count view',
-    }),
-  });
+export const CountButton = Template.bind({});
+CountButton.args = {
+  ...IconOnlyOutlined.args,
+  count: 12,
+}

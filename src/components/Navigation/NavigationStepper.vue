@@ -129,7 +129,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';
@@ -370,7 +369,6 @@ export default {
   components: {
     StepperInteractionView,
     StepperHeader,
-    BaseIconButton,
     MetadataCardPlaceholder,
     BaseProgressView,
     ExpandableLayout,

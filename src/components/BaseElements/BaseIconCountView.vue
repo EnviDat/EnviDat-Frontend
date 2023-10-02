@@ -1,5 +1,7 @@
 <template>
-  <div id="BaseIconCountView">
+  <div id="BaseIconCountView"
+       style="max-width: 26px;" >
+
     <v-tooltip v-if="$vuetify.display.mdAndUp && tooltipText" bottom>
       <template v-slot:activator="{ on }">
         <div v-on="on" class="iconCountView">
@@ -14,19 +16,12 @@
                   :left="!hoverBadge"
                   overlap
                   color="secondary"
+                  :content="count"
                   :class="{
                     envidatBadgeBigNumber: count > 9,
                     envidatBadge: count <= 9,
                   }"
-                >
-<!--
-                  <template v-slot:badge>
--->
-                    <span >{{ count }}</span>
-<!--
-                  </template>
--->
-                </v-badge>
+                />
               </v-col>
 
               <v-col v-if="iconString"
@@ -67,8 +62,7 @@
                 envidatBadge: count <= 9,
               }"
               :content="count"
-            >
-            </v-badge>
+            />
           </v-col>
 
           <v-col class="pa-0" style="z-index: 1;">
