@@ -40,16 +40,22 @@ set-vars:
       apk add jq yq --no-cache
       --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
-    - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
-    - cat .env >> build.env
+    # extract version number from package.json, to make it available in the app
+    - >
+      echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
+    # bash "source" command loads all the variables from the file
     - source build.env
     - >
-      echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
-      >> build.env
+      echo "Set all the variables for VERSION: '${VERSION}'"
+    # extract version number from package.json, to make it available in the app
+    - >
+      IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}
+      echo "IMAGE_NAME" >> build.env
+      echo "Added IMAGE_NAME: '${IMAGE_NAME}' to the build.env"
   artifacts:
     reports:
       dotenv: build.env
@@ -185,7 +191,7 @@ rclone-sync:
       else
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
-      echo "Set the BUCKET_NAME to ${BUCKET_NAME}"
+      echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
     - >
       rclone --verbose sync
