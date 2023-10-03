@@ -57,7 +57,6 @@ set-vars:
       >> build.env
     - echo "content of build.env"
     - cat build.env
-
   artifacts:
     reports:
       dotenv: build.env
@@ -120,6 +119,8 @@ modify-env:
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')"
+    - echo "created content for .env.production:"
+    - cat .env.production
   artifacts:
     paths:
       - .env.production
@@ -136,10 +137,10 @@ image-build:
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
       "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - echo "content of .env.production:"
-    - cat .env.production
-    - echo ${IMAGE_NAME}
   script:
+    - echo "With content of .env.production"
+    - cat .env.production
+    - echo "Going to build image '${IMAGE_NAME}'"
     - >
       /kaniko/executor
       --force
@@ -173,6 +174,8 @@ tag-commit-sha:
       - >
         regctl --verbosity debug image copy
         "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
+  dependencies:
+    - image-build
 
 rclone-sync:
   extends: .trigger-rules
@@ -199,3 +202,5 @@ rclone-sync:
     - >
       rclone --verbose sync
       /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+  dependencies:
+    - image-build
