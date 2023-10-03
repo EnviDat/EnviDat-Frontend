@@ -52,9 +52,9 @@ set-vars:
     - >
       echo "Set all the variables for VERSION: '${VERSION}'"
     # extract version number from package.json, to make it available in the app
+    - IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}
+    - echo "IMAGE_NAME" >> build.env
     - >
-      IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}
-      echo "IMAGE_NAME" >> build.env
       echo "Added IMAGE_NAME: '${IMAGE_NAME}' to the build.env"
   artifacts:
     reports:
@@ -134,6 +134,7 @@ image-build:
       echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
       "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - echo "content of .env.production:"
     - cat .env.production
     - echo ${IMAGE_NAME}
   script:
