@@ -23,9 +23,8 @@ import {
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
-const API_ROOT = import.meta.env.VITE_API_ROOT;
-const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
-
+const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL;
+const API_DOI_ROOT = import.meta.env.VITE_DOI_API_ROOT;
 
 export default {
   async [DOI_API_ACTIONS]({ dispatch }, { data: { event, metadataId } }) {
@@ -36,7 +35,7 @@ export default {
 
     const actionUrl = ACTION_DOI_RESERVE();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
-    url = urlRewrite(url, API_DOI_BASE, API_ROOT);
+    url = urlRewrite(url, API_DOI_BASE, API_DOI_ROOT);
 
     try {
       const response = await axios.get(url);
@@ -57,7 +56,7 @@ export default {
 
     const actionUrl = ACTION_DOI_REQUEST();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
-    url = urlRewrite(url, API_DOI_BASE, API_ROOT);
+    url = urlRewrite(url, API_DOI_BASE, API_DOI_ROOT);
 
     try {
       await axios.get(url);
@@ -72,7 +71,7 @@ export default {
 
     const actionUrl = ACTION_DOI_PUBLISH();
     let url = extractBodyIntoUrl(actionUrl, { 'package-id': metadataId });
-    url = urlRewrite(url, API_DOI_BASE, API_ROOT);
+    url = urlRewrite(url, API_DOI_BASE, API_DOI_ROOT);
 
     try {
       await axios.get(url);
