@@ -185,6 +185,7 @@ rclone-sync:
       else
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
+      echo "Set the BUCKET_NAME to ${BUCKET_NAME}"
   script:
     - >
       rclone --verbose sync
