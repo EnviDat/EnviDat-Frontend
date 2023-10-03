@@ -1,6 +1,6 @@
 stages:
   - test
-# - visual-regression
+  - visual-regression
   - config
   - build
   - package
@@ -75,19 +75,21 @@ run-tests:
   script:
     - npm run test
 
-# visual-regression:
-#   extends: .trigger-rules
-#   stage: visual-regression
-#   image: docker.io/node:16
-#   cache:
-#     key: node-modules
-#     paths:
-#       - node_modules/
-#     policy: pull
-#   before_script:
-#     - npm ci
-#   script:
-#     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+visual-regression:
+  stage: visual-regression
+  image: docker.io/node:16
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - npm ci
+  script:
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+  dependencies:
+    - set-vars
+  when: manual
 
 modify-env:
   extends: .trigger-rules
