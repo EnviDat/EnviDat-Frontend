@@ -176,8 +176,6 @@ tag-commit-sha:
       - >
         regctl --verbosity debug image copy
         "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-  dependencies:
-    - image-build
 
 rclone-sync:
   extends: .trigger-rules
@@ -204,5 +202,3 @@ rclone-sync:
     - >
       rclone --verbose sync
       /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
-  dependencies:
-    - image-build
