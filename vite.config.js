@@ -72,8 +72,9 @@ export default ({ mode, config }) => {
           }),
         ],
         test: {
-          exclude: [...configDefaults.exclude,
-            // './tests/unit/ckanRegression.spec.js',
+          exclude: [
+            ...configDefaults.exclude,
+            './tests/unit/ckanRegression.spec.js',
           ],
         },
         define: {
