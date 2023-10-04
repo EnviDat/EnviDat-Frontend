@@ -47,7 +47,7 @@ WithInvalidUrl.args = {
 
 export const WithMarkdownUrl = Template.bind({});
 WithMarkdownUrl.args = {
-  url: 'https://raw.githubusercontent.com/EnviDat/EnviDat-Frontend/main/README.md',
+  url: 'http://s3-zh.os.switch.ch/frontend-static/blog/EnviDat_WSLIntern_2020q1.md',
 }
 
 /*
