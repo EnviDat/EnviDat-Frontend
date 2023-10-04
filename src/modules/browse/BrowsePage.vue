@@ -191,11 +191,10 @@ export default {
       return visibleContent;
     },
     filterContent() {
-      const mode = this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
       this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
         {
           selectedTagNames: this.selectedTagNames,
-          mode,
+          mode: this.mode,
         });
     },
     checkRouteChanges(fromRoute) {
@@ -289,6 +288,7 @@ export default {
         searchTerm,
         metadataConfig,
         isAuthorSearch: this.isAuthorSearch,
+        mode: this.mode,
       });
     },
     catchSearchClicked(search) {
@@ -418,7 +418,7 @@ export default {
       return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
     },
     mode() {
-      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : null;
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
     },
   },
   watch: {

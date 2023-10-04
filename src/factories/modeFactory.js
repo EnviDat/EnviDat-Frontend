@@ -15,7 +15,9 @@ import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
 import { createTag } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { SWISSFL_MODE, EDNA_MODE } from '@/store/metadataMutationsConsts';
+import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
+import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 
 /*
 async function getSwissflLogo() {
@@ -41,20 +43,35 @@ function getSwissflIcons() {
 
 // const swissflLogo = getSwissflLogo();
 
-const swissflMode = {
-  name: SWISSFL_MODE,
-  title: 'Swiss Forest Lab',
-  externalUrl: 'https://swissforestlab.wsl.ch',
-  mainTag: swissFLTag,
-  extraTags: swissFLExtraTags,
-  logo: swissflLogo,
-  icons: getSwissflIcons(),
-  extrasKey: 'swissFL_type',
-};
+const modes = [
+  {
+    name: SWISSFL_MODE,
+    title: 'Swiss Forest Lab',
+    externalUrl: 'https://swissforestlab.wsl.ch',
+    mainTag: swissFLTag,
+    extraTags: swissFLExtraTags,
+    logo: swissflLogo,
+    icons: getSwissflIcons(),
+    extrasKey: 'swissFL_type',
+  },
+  {
+    name: EDNA_MODE,
+    title: 'eDNA Data',
+    externalUrl: 'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
+    mainTag: ednaTag,
+    extraTags: [], // swissFLExtraTags,
+    logo: ednaLogo,
+    icons: getSwissflIcons(),
+    extrasKey: 'edna_type',
+  },
+];
 
 export function getModeData(mode) {
-  if (mode === SWISSFL_MODE) {
-    return swissflMode;
+
+  const modeData = modes.filter((m) => m.name === mode)[0];
+
+  if (modeData) {
+    return modeData;
   }
 
   throw new Error(`Not Mode Objection for mode: "${mode}" implemented`);
@@ -105,7 +122,7 @@ export function getSelectedTagsMergedWithHidden(mode, selectedTagNames) {
 let tempModeData = null;
 
 export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
-  if (!mode || !metdataEntry) return null;
+  if (!mode || !metdataEntry) return metdataEntry;
 
   if (typeof metdataEntry.extras === 'object'
     && metdataEntry.extras instanceof Array) {

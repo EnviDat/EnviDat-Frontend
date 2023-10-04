@@ -195,6 +195,7 @@ export default {
     searchTerm,
     metadataConfig = {},
     isAuthorSearch = false,
+    mode = undefined,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -205,9 +206,11 @@ export default {
     if (loadLocalFile) {
       const datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
       const localSearchResult = localSearch(searchTerm, datasets);
+
       commit(SEARCH_METADATA_SUCCESS, {
         payload: localSearchResult,
         isLocalSearch: true,
+        mode,
       });
       return;
     }
@@ -224,6 +227,7 @@ export default {
 
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
+          mode,
         });
       })
       .catch((reason) => {

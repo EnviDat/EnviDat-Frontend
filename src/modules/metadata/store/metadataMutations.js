@@ -68,7 +68,7 @@ import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 
 
-function enhanceMetadatas(store, datasets) {
+function enhanceMetadatas(store, datasets, mode) {
   if (!(datasets instanceof Array)) {
     throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
   }
@@ -82,7 +82,7 @@ function enhanceMetadatas(store, datasets) {
   for (let i = 0; i < datasets.length; i++) {
     let dataset = datasets[i];
     dataset = enhanceMetadataEntry(dataset, cardBGImgs, categoryCards);
-    dataset = enhanceMetadataWithModeExtras(SWISSFL_MODE, dataset);
+    dataset = enhanceMetadataWithModeExtras(mode, dataset);
 
     dataset = enhanceTags(dataset, categoryCards);
 
@@ -105,6 +105,7 @@ export default {
   [SEARCH_METADATA_SUCCESS](state, {
     payload,
     isLocalSearch = false,
+    mode = undefined,
   }) {
 
     let convertedPayload = [];
@@ -117,7 +118,7 @@ export default {
       }
     }
 
-    state.searchedMetadatasContent = enhanceMetadatas(this, convertedPayload);
+    state.searchedMetadatasContent = enhanceMetadatas(this, convertedPayload, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
