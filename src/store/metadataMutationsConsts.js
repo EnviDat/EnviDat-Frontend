@@ -63,8 +63,10 @@ export const FILTER_METADATA_SUCCESS = 'FILTER_METADATA_SUCCESS';
 export const FILTER_METADATA_ERROR = 'FILTER_METADATA_ERROR';
 
 export const SWISSFL_MODE = 'swissfl';
+export const SWISSFL_MODE_EXTRAS_KEY = 'swissFL_type';
 
 export const EDNA_MODE = 'edna';
+export const EDNA_MODE_EXTRAS_KEY = 'edna_type';
 
 export const PIN_METADATA = 'PIN_METADATA';
 export const CLEAR_PINNED_METADATA = 'CLEAR_PINNED_METADATA';

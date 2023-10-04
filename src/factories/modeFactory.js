@@ -15,7 +15,12 @@ import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
 import { createTag } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
-import { SWISSFL_MODE, EDNA_MODE } from '@/store/metadataMutationsConsts';
+import {
+  SWISSFL_MODE,
+  EDNA_MODE,
+  SWISSFL_MODE_EXTRAS_KEY,
+  EDNA_MODE_EXTRAS_KEY,
+} from '@/store/metadataMutationsConsts';
 import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 
@@ -52,7 +57,7 @@ const modes = [
     extraTags: swissFLExtraTags,
     logo: swissflLogo,
     icons: getSwissflIcons(),
-    extrasKey: 'swissFL_type',
+    extrasKey: SWISSFL_MODE_EXTRAS_KEY,
   },
   {
     name: EDNA_MODE,
@@ -62,7 +67,7 @@ const modes = [
     extraTags: [], // swissFLExtraTags,
     logo: ednaLogo,
     icons: getSwissflIcons(),
-    extrasKey: 'edna_type',
+    extrasKey: EDNA_MODE_EXTRAS_KEY,
   },
 ];
 
