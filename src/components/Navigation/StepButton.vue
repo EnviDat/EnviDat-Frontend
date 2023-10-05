@@ -1,6 +1,6 @@
 <template>
 
-  <div class="stepButton px-2 py-1"
+  <div class="stepButton px-1 px-md-2 py-1"
         :style="`border-color: ${ active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.highlight };`"
         @click="catchStepClick">
 
@@ -10,7 +10,7 @@
         {{ number }}
       </div>
 
-      <div v-if="!error && title"
+      <div v-if="!error && title && !showNumberOnly"
            class="px-3 readableText ">
           {{ title }}
       </div>
@@ -28,7 +28,7 @@
       </div>
         
       <div v-if="!error"
-           class="readableText" >
+           class="readableText pl-1 pl-md-0" >
           <v-icon :color="complete ? 'secondary' : 'grey'">
             {{ complete ? 'check_circle' : 'check_circle_outline' }}
           </v-icon>
@@ -78,6 +78,10 @@ export default {
       default: false,
     },
     complete: {
+      type: Boolean,
+      default: false,
+    },
+    showNumberOnly: {
       type: Boolean,
       default: false,
     },

@@ -35,19 +35,19 @@ Empty.args = {
 
 export const SingleOrganization = Template.bind({});
 SingleOrganization.args = {
-  organization: testOrganizations[0].id,
+  organizationId: testOrganizations[0].id,
   userOrganizations: [testOrganizations[0]],
 }
 
 export const MultipleOrganizations = Template.bind({});
 MultipleOrganizations.args = {
-  organization: testOrganizations[0].id,
+  organizationId: testOrganizations[0].id,
   userOrganizations: testOrganizations,
 }
 
 export const EditingSingleOrganization = Template.bind({});
 EditingSingleOrganization.args = {
-  organization: testOrganizations[2].id,
+  organizationId: testOrganizations[2].id,
   userOrganizations: [testOrganizations[2]],
   readOnlyFields: editingReadOnlyObj.readOnlyFields,
   readOnlyExplanation: editingReadOnlyObj.explanation,
@@ -55,7 +55,7 @@ EditingSingleOrganization.args = {
 
 export const EditingMultipleOrganizations = Template.bind({});
 EditingMultipleOrganizations.args = {
-  organization: testOrganizations[2].id,
+  organizationId: testOrganizations[2].id,
   userOrganizations: testOrganizations,
   readOnlyFields: editingReadOnlyObj.readOnlyFields,
   readOnlyExplanation: editingReadOnlyObj.explanation,

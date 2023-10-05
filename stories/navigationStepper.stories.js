@@ -76,9 +76,17 @@ export const MobileCreationSteps = Template.bind({});
 MobileCreationSteps.args = { ...CreationSteps.args };
 MobileCreationSteps.parameters = mobileViewportParams;
 
+export const MobileEditingSteps = Template.bind({});
+MobileEditingSteps.args = { ...EditingSteps.args };
+MobileEditingSteps.parameters = mobileViewportParams;
+
 export const LargeMobileCreationSteps = Template.bind({});
 LargeMobileCreationSteps.args = { ...CreationSteps.args };
 LargeMobileCreationSteps.parameters = mobileLargeViewportParams;
+
+export const LargeMobileEditingSteps = Template.bind({});
+LargeMobileEditingSteps.args = { ...EditingSteps.args };
+LargeMobileEditingSteps.parameters = mobileLargeViewportParams;
 
 export const TabletCreationSteps = Template.bind({});
 TabletCreationSteps.args = { ...CreationSteps.args };

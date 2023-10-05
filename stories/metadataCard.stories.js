@@ -143,6 +143,7 @@ export const CardWithOrganization = Template.bind({});
 CardWithOrganization.args = {
   ...CardWithState.args,
   organization: firstDataset.organization?.name,
+  compactLayout: true,
 }
 
 export const CardWithTags = Template.bind({});

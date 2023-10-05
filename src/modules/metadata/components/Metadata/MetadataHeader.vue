@@ -169,8 +169,7 @@
                 style="position: relative; z-index: 1;">
 
           <v-col cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                 class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -188,8 +187,7 @@
           </v-col>
 
           <v-col cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -207,8 +205,7 @@
 
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -227,8 +224,7 @@
 
           <v-col v-if="hasContent && spatialInfo"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -255,8 +251,8 @@
                 justify="end">
 
           <v-col cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="4"
+                 md="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -274,8 +270,8 @@
 
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="2"
+                 md="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <!-- empty cell for spacing for the next cells -->
@@ -291,8 +287,7 @@
 
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -311,8 +306,7 @@
 
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <MetadataOrganizationChip :organization="organization"
