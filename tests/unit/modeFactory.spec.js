@@ -10,7 +10,7 @@ import {
   EDNA_MODE,
   EDNA_MODE_EXTRAS_KEY,
   SWISSFL_MODE,
-  SWISSFL_MODE_EXTRAS_KEY
+  SWISSFL_MODE_EXTRAS_KEY,
 } from '@/store/metadataMutationsConsts';
 import {
   swissFLExtraTags,

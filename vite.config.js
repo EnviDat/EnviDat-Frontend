@@ -17,7 +17,7 @@ const version = process.env.npm_package_version;
 
 
 export default ({ mode, config }) => {
-    const isProd = mode !== 'production'
+    const isProd = mode === 'production'
 
     const fileName = `version_${version}.txt`;
     const existingFilePaths = path.resolve(__dirname, 'public/');
