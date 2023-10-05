@@ -312,7 +312,7 @@ export default {
       const userOrganizations = this.$store.state.organizations.userOrganizations
 
       const editOrgaData = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_ORGANIZATION);
-      const currentOrgaId = editOrgaData.organizationId;
+      const datasetOrgaId = editOrgaData.organizationId;
 
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
         {
@@ -324,19 +324,33 @@ export default {
         },
       );
 
+      this.updatePublicationStatus(datasetOrgaId);
+    },
+    updatePublicationStatus(datasetOrgaId) {
+      const userOrganizations = this.$store.state.organizations.userOrganizations
+      const roleMap = getUserOrganizationRoleMap(this.user.id, userOrganizations);
+      const datasetOrga = userOrganizations.filter((orga) => orga.id === datasetOrgaId)[0]
 
-      const roleMap = getUserOrganizationRoleMap(this.user.id, this.userOrganizations);
-      let userRole = roleMap[currentOrgaId];
+      // use member as default, which means no editing of the publicationstatus is possible
+      let userRole = USER_ROLE_MEMBER;
 
-      if (userRole === USER_ROLE_EDITOR) {
-        const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
-        if (!userIsOwner) {
-          userRole = USER_ROLE_MEMBER;
+      if (datasetOrga) {
+        const orgaName = datasetOrga.name;
+        userRole = roleMap[orgaName];
+
+        if (userRole === USER_ROLE_EDITOR) {
+          // check if the current dataset is part of the dataset the user owns (this.userDatasets)
+          const userIsOwner = this.userDatasets?.length > 0 ? this.userDatasets.filter((d) => d.id === this.currentEditingContent?.id)[0] : false;
+          if (!userIsOwner) {
+            userRole = USER_ROLE_MEMBER;
+          }
         }
       }
 
       const editPublicationInfo = this.$store.getters[`${USER_NAMESPACE}/getMetadataEditingObject`](EDITMETADATA_PUBLICATION_INFO);
 
+      // udpate the EDITMETADATA_PUBLICATION_INFO so the component has the userRole assigned for the
+      // different usecases
       this.$store.commit(`${USER_NAMESPACE}/${UPDATE_METADATA_EDITING}`,
         {
           object: EDITMETADATA_PUBLICATION_INFO,
@@ -351,14 +365,15 @@ export default {
     async initMetadataUsingId(id) {
       if (id !== this.currentEditingContent?.name) {
 
-        if (!this.currentEditingContent?.doi && this.doiWorkflowActive) {
+        // load the metadata from the backend for editing
+        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
+
+        if (this.doiWorkflowActive
+          && !this.currentEditingContent?.doi && this.currentEditingContent?.publicationState === '') {
           // always call the doi reserve on dataset without a doi so one get reserved
           // automatically for any datasets opened in the editing workflow
           await this.$store.dispatch(`${USER_NAMESPACE}/${DOI_RESERVE}`, id);
         }
-
-        // load the metadata from the backend for editing
-        await this.$store.dispatch(`${USER_NAMESPACE}/${METADATA_EDITING_LOAD_DATASET}`, id);
       }
 
       this.initStepDataFromStore(this.editingSteps);

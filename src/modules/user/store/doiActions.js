@@ -22,16 +22,20 @@ import {
 
 import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
+import { METADATA_EDITING_LOAD_DATASET } from '@/modules/user/store/userMutationsConsts';
 
 const API_ROOT = import.meta.env.VITE_API_ROOT;
 const API_DOI_BASE = import.meta.env.VITE_API_DOI_BASE_URL || '/doi-api/datacite/';
 
+async function reloadMetadataForEditing(dispatch, metadataId) {
+  await dispatch(METADATA_EDITING_LOAD_DATASET, metadataId);
+}
 
 export default {
   async [DOI_API_ACTIONS]({ dispatch }, { data: { event, metadataId } }) {
     await dispatch(event, metadataId);
   },
-  async [DOI_RESERVE]({ commit }, metadataId) {
+  async [DOI_RESERVE]({ dispatch, commit }, metadataId) {
     commit(DOI_RESERVE, { key: DOI_RESERVED_PROPERTY })
 
     const actionUrl = ACTION_DOI_RESERVE();
@@ -43,6 +47,9 @@ export default {
       const result = response.data.result;
       const reservedDOI = result?.data?.id;
 
+      // reload the metadata entry to get the changes to the publicationState
+      await reloadMetadataForEditing(dispatch, metadataId);
+
       commit(`${DOI_RESERVE}_SUCCESS`, {
         key: DOI_RESERVED_PROPERTY,
         value: reservedDOI,
@@ -52,7 +59,7 @@ export default {
     }
 
   },
-  async [DOI_REQUEST]({ commit }, metadataId) {
+  async [DOI_REQUEST]({ dispatch, commit }, metadataId) {
     commit(DOI_REQUEST)
 
     const actionUrl = ACTION_DOI_REQUEST();
@@ -61,13 +68,17 @@ export default {
 
     try {
       await axios.get(url);
+
+      // reload the metadata entry to get the changes to the publicationState
+      await reloadMetadataForEditing(dispatch, metadataId);
+
       commit(`${DOI_REQUEST}_SUCCESS`);
     } catch(error) {
       commit(`${DOI_REQUEST}_ERROR`, error);
     }
 
   },
-  async [DOI_PUBLISH]({ commit }, metadataId) {
+  async [DOI_PUBLISH]({ dispatch, commit }, metadataId) {
     commit(DOI_PUBLISH)
 
     const actionUrl = ACTION_DOI_PUBLISH();
@@ -76,6 +87,10 @@ export default {
 
     try {
       await axios.get(url);
+
+      // reload the metadata entry to get the changes to the publicationState
+      await reloadMetadataForEditing(dispatch, metadataId);
+
       commit(`${DOI_PUBLISH}_SUCCESS`);
     } catch(error) {
       commit(`${DOI_PUBLISH}_ERROR`, error);

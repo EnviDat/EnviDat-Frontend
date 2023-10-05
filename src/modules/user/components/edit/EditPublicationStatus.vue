@@ -84,7 +84,7 @@
                                    icon-color="white"
                                    is-small
                                    :loading="loading"
-                                   :url="doiUrl"
+                                   :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
                                    :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
@@ -108,7 +108,7 @@
 
         </v-row>
 
-        <v-row class="text-body-1 highlight">
+        <v-row class="text-body-1 errorHighlight">
           <v-col cols="12" v-html="labels.instructions2">
           </v-col>
         </v-row>
