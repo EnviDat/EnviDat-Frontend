@@ -176,6 +176,9 @@ import {
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
+  FETCH_USER_DATA,
+  ACTION_USER_SHOW,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -517,19 +520,38 @@ export default {
       }
 
     },
-    checkUserSignedIn() {
+    fetchUserDatasets() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
+    },
+    async checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
 
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
       
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
+          data: {
+            'include_datasets': true,
+          },
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
+
+      if (this.user) {
+        this.fetchUserDatasets();
+      }
     },
   },
   computed: {
