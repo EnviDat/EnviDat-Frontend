@@ -4,6 +4,7 @@
             'white--text': highlighted,
             smallChip: $vuetify.breakpoint.smAndDown,
            }"
+          :color="highlighted ? 'primary' : color"
           :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
           @click.stop="clicked"
           :small="isSmall"
@@ -48,6 +49,10 @@ export default {
     name: String,
     tooltipText: String,
     highlighted: Boolean,
+    color: {
+      type: String,
+      default: '#f8f8f8',
+    },
     asciiDead: String,
     authorPassedInfo: String,
     isSmall: {
@@ -76,7 +81,9 @@ export default {
 
   .authorTag {
     opacity: 0.85;
+    /*
     background-color: #f8f8f8 !important;
+    */
     margin: 0 2px !important;
   }
 

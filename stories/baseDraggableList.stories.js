@@ -16,19 +16,27 @@ import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams }
 export default {
   title: '1 Base Elements / Base Draggable List',
   component: BaseDraggableList,
+  argTypes: { listChanged: { action: 'listChanged' } },
 };
 
 
 export const EmptyList = { args: {} };
 
-export const FilledList = { args: {
+export const FilledList = {
+  args: {
     items: [
-      'felix',
-      'domi',
-      'sam',
-      'chris',
+      'Dominik Haas-Artho',
+      'Ionut Iosifescu',
+      'Samuel Woodcock',
+      'Gian-Kasper Plattner',
+      'Ranita Pal',
     ],
-}};
+  },
+};
+
+export const FilledAuthorsList = {
+  args: { ...FilledList.args, useAuthorTags: true },
+};
 
 export const MobileNormalCitation = {
   args: { ...FilledList.args },
