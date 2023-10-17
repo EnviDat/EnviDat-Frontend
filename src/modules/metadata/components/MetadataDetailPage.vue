@@ -506,7 +506,7 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        this.loadAuthors(currentContent);
+        // authors are going to be loaded via the watch when the AuthorsMap is available
       }
     },
     loadAuthors(currentContent) {
@@ -828,6 +828,11 @@ export default {
       if (!this.userLoading && this.userOrganizationIds?.length <= 0) {
         this.fetchUserOrganisationData();
         this.fetchUserDatasets();
+      }
+    },
+    authorsMap() {
+      if (this.authorsMap) {
+        this.loadAuthors(this.currentMetadataContent);
       }
     },
   },
