@@ -34,7 +34,7 @@
           <ExpandableLayout statusText="Click here to change the author sequence via Drag and Drop"
                             isFlat>
 
-            <BaseDraggableList :items="authorStrings"
+            <BaseDraggableList :items="authorFullNames"
                                :useAuthorTags="true"
                                @listChanged="reorderList"/>
           </ExpandableLayout>
@@ -106,6 +106,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 
 export default {
@@ -143,7 +144,7 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
-    authorStrings() {
+    authorFullNames() {
       if (!this.authorsFields) {
         return [];
       }
@@ -180,7 +181,7 @@ export default {
 
       for (let i = 0; i < newList.length; i++) {
         const fullName = newList[i];
-        const author = this.authors.filter((a) => a.fullName === fullName)[0];
+        const author = this.authorsFields.filter((a) => a.fullName === fullName)[0];
         if (author) {
           newAuthors.push(author);
         }

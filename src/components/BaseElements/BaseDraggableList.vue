@@ -44,13 +44,23 @@
   </v-container>
 </template>
 
-<script>
-
-/**
- * List of
+<script>/**
+ * BaseDraggableListBaseDraggableList.vue shows a taglist for the given string array.
+ * The entries can be dragged and dropped to change their sequence.
+ * Use the optional @prop useAuthorTags to shoe the tags as the tagChipAuthor component
+ *
  * check https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
  * for details about the drag and drop implementation
+ *
+ * @summary shows the authors the a metadata entry
+ * @author Dominik Haas-Artho
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
  */
+
+import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+
 export default {
   name: 'BaseDraggableList',
   props: {
@@ -66,6 +76,12 @@ export default {
       type: String,
       default: undefined,
     },
+  },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
     draggableItems: {
@@ -85,21 +101,10 @@ export default {
     onDragStart(event, item) {
       this.currentDragItem = item
     },
-    onDragEnter(event, item) {
-      event.preventDefault();
-      this.currentHoverItem = item
-    },
     onDragLeave(event) {
       event.preventDefault();
       this.currentHoverItem = ''
     },
-/*
-    onDragEnd(event, item) {
-      console.log('onDragEnd');
-      console.log(item);
-      console.log(this.currentDragItem);
-    },
-*/
     onDrop(event, item) {
 
       const dragItem = this.draggableItems.filter((author) => author === this.currentDragItem)[0];
@@ -133,6 +138,9 @@ export default {
         this.currentDragItem = '';
         this.currentHoverItem = '';
       }, 300);
+    },
+    clearPreviews() {
+      this.previewItems = null;
     },
     emitChange(list) {
       this.$emit('listChanged', list);

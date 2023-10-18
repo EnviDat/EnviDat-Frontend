@@ -67,12 +67,18 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { EditAuthorList },
   props: Object.keys(argTypes),
-  template: '<EditAuthorList v-bind="$props" />',
+  template: `<EditAuthorList :existing-authors="$props.existingAuthors"
+                             :authors-map="$props.authorsMap"
+                             :authors="localAuthors"
+              />`,
   created() {
     eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
     eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
     eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
     eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
+  },
+  beforeMount() {
+    this.localAuthors = this.authors;
   },
   beforeDestroy() {
     eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
@@ -82,13 +88,15 @@ const Template = (args, { argTypes }) => ({
   },
   methods: {
     removeAuthor(email) {
-      const matches = this.authors.filter(auth => auth.email === email);
+      const matches = this.localAuthors.filter(auth => auth.email === email);
+
       console.log('remove Author');
       console.log(matches.length > 0);
 
       if (matches.length > 0) {
-        const removeIndex = this.authors.indexOf(matches[0]);
-        this.authors.splice(removeIndex, 1);
+        const removeIndex = this.localAuthors.indexOf(matches[0]);
+        this.localAuthors.splice(removeIndex, 1);
+
         console.log('remove index');
         console.log(removeIndex);
       }
@@ -107,7 +115,7 @@ const Template = (args, { argTypes }) => ({
       eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
     },
     setSelected(id, selected) {
-      const auths = this.authors;
+      const auths = this.localAuthors;
 
       for (let i = 0; i < auths.length; i++) {
         const author = auths[i];
@@ -124,17 +132,17 @@ const Template = (args, { argTypes }) => ({
       this.cancelEditing();
     },
     updateAuthors(newAuthor) {
-      const auths = this.genericProps.authors;
+      const auths = this.localAuthors;
 
       for (let i = 0; i < auths.length; i++) {
         const r = auths[i];
         if (r.localId) {
           if (r.localId === newAuthor.localId) {
-            this.$set(auths, i, newAuthor);
+//            this.$set(auths, i, newAuthor);
             return;
           }
         } else if (r.email === newAuthor.email) {
-          this.$set(auths, i, newAuthor);
+//          this.$set(auths, i, newAuthor);
           return;
         }
       }
@@ -148,11 +156,11 @@ const Template = (args, { argTypes }) => ({
         const authorToMergeDataCredit = updateObj.data;
 
         // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-        this.authors = mergeAuthorsDataCredit(this.authors, authorToMergeDataCredit);
+        this.localAuthors = mergeAuthorsDataCredit(this.localAuthors, authorToMergeDataCredit);
       }
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
+        this.localAuthors = combineAuthorLists(this.localAuthors, updateObj.data.authors, updateObj.data.removedAuthors);
       }
 
       if (updateObj.object === EDITMETADATA_AUTHOR) {
@@ -160,10 +168,12 @@ const Template = (args, { argTypes }) => ({
 
         let changed = false;
 
-        for (let i = 0; i < this.authors.length; i++) {
-          const auth = this.authors[i];
+        for (let i = 0; i < this.localAuthors.length; i++) {
+          const auth = this.localAuthors[i];
+
           const email = auth.email;
           const fullName = auth.fullName;
+
           const searchAuthorFullName = getAuthorName({
             firstName: updatedAuthor.firstName,
             lastName: updatedAuthor.lastName,
@@ -175,7 +185,7 @@ const Template = (args, { argTypes }) => ({
             const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
 
             // this.authors[i] = createAuthor(updatedAuthor);
-            this.$set(this.authors, i, mergedAuthor);
+            this.$set(this.localAuthors, i, mergedAuthor);
             // use $set to make the author entry reactive
             // this.$set(this.authors, i, author);
 
@@ -186,7 +196,7 @@ const Template = (args, { argTypes }) => ({
         }
 
         if (!changed) {
-          this.authors.push(updatedAuthor);
+          this.localAuthors.push(updatedAuthor);
 
           this.selectAuthor(updatedAuthor.email);
           // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
@@ -198,7 +208,7 @@ const Template = (args, { argTypes }) => ({
       }
 
       console.log('FullEditingAuthorView updated authors');
-      console.log(this.authors);
+      console.log(this.localAuthors);
 
       setTimeout(() => {
         this.loading = false;
@@ -209,6 +219,7 @@ const Template = (args, { argTypes }) => ({
   data: () => ({
     loading: false,
     selectionId: '',
+    localAuthors: undefined,
   }),
 });
 
@@ -218,171 +229,3 @@ EditExistingAuthors.args = {
   existingAuthors: extractedAuthors,
   authorsMap,
 };
-
-/*
-export const FullEditingAuthorViews = () => ({
-  components: { EditAuthorList },
-  template: `
-    <v-col>
-
-    <v-row>
-      EditAuthorList
-    </v-row>
-
-    <v-row class="py-3" >
-      <v-col >
-        <EditAuthorList :authors="authors"
-                        :existingAuthors="existingAuthors"
-                        :authorsMap="authorsMap" />
-      </v-col>
-    </v-row>
-
-    </v-col>
-  `,
-  created() {
-    eventBus.on(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.on(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.on(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
-  },
-  beforeDestroy() {
-    eventBus.off(SAVE_EDITING_AUTHOR, this.saveAuthor);
-    eventBus.off(SELECT_EDITING_AUTHOR, this.selectAuthor);
-    eventBus.off(CANCEL_EDITING_AUTHOR, this.cancelEditing);
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.changeAuthors);
-  },
-  methods: {
-    removeAuthor(email) {
-      const matches = this.authors.filter(auth => auth.email === email);
-      console.log('remove Author');
-      console.log(matches.length > 0);
-
-      if (matches.length > 0) {
-        const removeIndex = this.authors.indexOf(matches[0]);
-        this.authors.splice(removeIndex, 1);
-        console.log('remove index');
-        console.log(removeIndex);
-      }
-    },
-    selectAuthor(id) {
-      if (this.selectionId !== '') {
-        this.cancelEditing();
-      }
-
-      this.selectionId = id;
-      this.setSelected(this.selectionId, true);
-    },
-    cancelEditing() {
-      this.setSelected(this.selectionId, false);
-      this.selectionId = '';
-      eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-    },
-    setSelected(id, selected) {
-      const auths = this.authors;
-
-      for (let i = 0; i < auths.length; i++) {
-        const author = auths[i];
-        if (author.email === id) {
-          author.isSelected = selected;
-          this.$set(auths, i, author);
-          return;
-        }
-      }
-
-    },
-    saveAuthor(newAuthor) {
-      this.updateAuthors(newAuthor);
-      this.cancelEditing();
-    },
-    updateAuthors(newAuthor) {
-      const auths = this.genericProps.authors;
-
-      for (let i = 0; i < auths.length; i++) {
-        const r = auths[i];
-        if (r.localId) {
-          if (r.localId === newAuthor.localId) {
-            this.$set(auths, i, newAuthor);
-            return;
-          }
-        } else if (r.email === newAuthor.email) {
-          this.$set(auths, i, newAuthor);
-          return;
-        }
-      }
-
-      auths.unshift(newAuthor);
-    },
-    changeAuthors(updateObj) {
-      this.loading = true;
-
-      if (updateObj.object === EDITMETADATA_AUTHOR_DATACREDIT) {
-        const authorToMergeDataCredit = updateObj.data;
-
-        // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
-        this.authors = mergeAuthorsDataCredit(this.authors, authorToMergeDataCredit);
-      }
-
-      if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.authors = combineAuthorLists(this.authors, updateObj.data.authors, updateObj.data.removedAuthors);
-      }
-
-      if (updateObj.object === EDITMETADATA_AUTHOR) {
-        const updatedAuthor = updateObj.data;
-
-        let changed = false;
-
-        for (let i = 0; i < this.authors.length; i++) {
-          const auth = this.authors[i];
-          const email = auth.email;
-          const fullName = auth.fullName;
-          const searchAuthorFullName = getAuthorName({
-            firstName: updatedAuthor.firstName,
-            lastName: updatedAuthor.lastName,
-          });
-
-          if (email === updatedAuthor.email
-            || fullName === searchAuthorFullName){
-
-            const mergedAuthor = mergeEditingAuthor(updatedAuthor, auth);
-
-            // this.authors[i] = createAuthor(updatedAuthor);
-            this.$set(this.authors, i, mergedAuthor);
-            // use $set to make the author entry reactive
-            // this.$set(this.authors, i, author);
-
-            changed = true;
-            console.log(`Updated author ${ email } ${ fullName }`);
-            break;
-          }
-        }
-
-        if (!changed) {
-          this.authors.push(updatedAuthor);
-
-          this.selectAuthor(updatedAuthor.email);
-          // this.$set(this.authors, this.authors.length - 1, updatedAuthor);
-        }
-      }
-
-      if (updateObj.object === REMOVE_EDITING_AUTHOR) {
-        this.removeAuthor(updateObj.data);
-      }
-
-      console.log('FullEditingAuthorView updated authors');
-      console.log(this.authors);
-
-      setTimeout(() => {
-        this.loading = false;
-        eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
-      }, 1000)
-    },
-  },
-  data: () => ({
-    loading: false,
-    selectionId: '',
-    authors: preSelectedAuthors2,
-    existingAuthors: extractedAuthors,
-    authorsMap,
-  }),
-});
-*/
