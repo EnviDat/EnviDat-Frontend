@@ -15,7 +15,7 @@
 
 import { EDITMETADATA_AUTHOR_DATACREDIT, EDITMETADATA_AUTHOR_LIST } from '@/factories/eventBus';
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import { combineAuthorLists, mergeAuthorsDataCredit } from '@/factories/authorFactory';
+import { mergeAuthorsDataCredit } from '@/factories/authorFactory';
 import { USER_ROLE_ADMIN } from '@/factories/userEditingValidations';
 
 
@@ -264,14 +264,6 @@ export function componentChangedEvent(updateObj, vm) {
     // overwrite the authors and stepKey so it will be saved as if it was a EDITMETADATA_AUTHOR_LIST change (to the list of authors)
     payload.data = { authors: mergeAuthorsDataCredit(currentAuthors, authorToMergeDataCredit) };
     payload.stepKey = EDITMETADATA_AUTHOR_LIST;
-  }
-
-  if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-    const currentAuthors = vm.$store.getters[`${USER_NAMESPACE}/authors`];
-
-    // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
-    // that's why it is necessary to know which have been removed via the picker and combined the three lists
-    payload.data.authors = combineAuthorLists(currentAuthors, payload.data.authors, payload.data.removedAuthors);
   }
 
   return payload;

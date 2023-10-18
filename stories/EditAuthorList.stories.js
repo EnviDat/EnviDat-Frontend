@@ -24,7 +24,6 @@ import {
 import EditAuthorList from '@/modules/user/components/edit/EditAuthorList.vue';
 
 import {
-  combineAuthorLists,
   createAuthors,
   extractAuthorsMap,
   getAuthorName,
@@ -160,7 +159,7 @@ const Template = (args, { argTypes }) => ({
       }
 
       if (updateObj.object === EDITMETADATA_AUTHOR_LIST) {
-        this.localAuthors = combineAuthorLists(this.localAuthors, updateObj.data.authors, updateObj.data.removedAuthors);
+        this.localAuthors = updateObj.data.authors;
       }
 
       if (updateObj.object === EDITMETADATA_AUTHOR) {

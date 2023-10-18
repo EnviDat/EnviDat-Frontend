@@ -156,7 +156,6 @@ export default {
       // is null and we can show an empty selection box with the error validation
       // not saving the users changes, but reflecting their action and show the error
       this.previewAuthors = null;
-      this.removedAuthors = [];
     },
     validateProperty(property, value){
       return isFieldValid(property, value, this.validations, this.validationErrors)
@@ -168,15 +167,7 @@ export default {
       this.changePreviews(pickedUsers);
     },
     changePreviews(authorsNames){
-      const pickedAuthors = this.getFullAuthors(authorsNames);
-      const preselectFullAuthors = this.getFullAuthors(this.preselectAuthorNames);
-
-      const removedAuthor = preselectFullAuthors.filter(existingAuthor => !pickedAuthors.some(newAuthor => newAuthor.email === existingAuthor.email))[0];
-      if (removedAuthor) {
-        this.removedAuthors.push(removedAuthor);
-      }
-
-      this.previewAuthors = pickedAuthors;
+      this.previewAuthors = this.getFullAuthors(authorsNames);
     },
     getFullAuthors(authorsNames) {
       const fullAuthors = [];
@@ -209,7 +200,6 @@ export default {
         data: {
           ...this.$props,
           authors: this.previewAuthors,
-          removedAuthors: this.removedAuthors,
         },
       });
 
@@ -230,7 +220,6 @@ export default {
       authorPickHint: 'Start typing the name in the text field to search for an author.',
     },
     previewAuthors: null,
-    removedAuthors: [],
   }),
   components: {
     BaseUserPicker,
