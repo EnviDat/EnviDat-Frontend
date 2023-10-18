@@ -50,6 +50,8 @@ const Template = (args, { argTypes }) => ({
   template: `
     <v-row >
       <v-col v-for="card in $props.categoryCards"
+             cols='12'
+             sm='6'
              class='pa-2'
              :key="card.title">
         
