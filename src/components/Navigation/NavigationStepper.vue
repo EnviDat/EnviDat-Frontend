@@ -24,8 +24,8 @@
             <v-col>
               <ExpandableLayout cardClass="pa-0"
                                 :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
-                                swapStatusTextWithSoltText
-                                :isFlat="true">
+                                swapStatusTextWithSlotText
+                                isFlat >
 
                 {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
 

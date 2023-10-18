@@ -73,6 +73,7 @@
 import BaseUserPicker from '@/components/BaseElements/BaseUserPicker.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
+
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_CLEAR_PREVIEW,
@@ -187,7 +188,6 @@ export default {
         // including the existing dataCredits
         if (!author) {
           // if the author is newly picked, use the existing list as reference
-
           author = this.getAuthorByName(name, this.existingEnviDatUsers);
         }
 

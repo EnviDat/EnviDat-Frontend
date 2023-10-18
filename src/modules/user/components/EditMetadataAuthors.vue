@@ -29,6 +29,19 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col >
+          <ExpandableLayout statusText="Click here to change the author sequence via Drag and Drop"
+                            isFlat>
+
+            <BaseDraggableList :items="authorStrings"
+                               :useAuthorTags="true"
+                               @listChanged="reorderList"/>
+          </ExpandableLayout>
+
+        </v-col>
+      </v-row>
+
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
@@ -82,6 +95,8 @@ import {
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
+import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -128,6 +143,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    authorStrings() {
+      if (!this.authorsFields) {
+        return [];
+      }
+
+      return this.authorsFields.map((a) => a.fullName);
+    },
     authorsFields() {
       const authors = this.previewAuthors || this.authors;
 
@@ -153,6 +175,37 @@ export default {
     },
   },
   methods: {
+    reorderList(newList) {
+      const newAuthors = [];
+
+      for (let i = 0; i < newList.length; i++) {
+        const fullName = newList[i];
+        const author = this.authors.filter((a) => a.fullName === fullName)[0];
+        if (author) {
+          newAuthors.push(author);
+        }
+      }
+
+      this.previewAuthors = newAuthors;
+      this.notifyChange();
+    },
+    notifyChange() {
+      if (!this.previewAuthors) {
+        return;
+      }
+
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: {
+          ...this.$props,
+          authors: this.previewAuthors,
+       },
+      });
+
+      // DO NOT clear the preview because than the user isn't able to remove the last author
+      // this lead to a UX where the user had to add a second author to then remove the first, it
+      // changes want to be made
+    },
     authorEditingProperties(author) {
       let editingProperties = {};
 
@@ -232,6 +285,8 @@ export default {
     MetadataAuthors,
     AuthorCard,
     EditDataCredits,
+    BaseDraggableList,
+    ExpandableLayout,
   },
 };
 </script>

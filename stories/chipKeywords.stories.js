@@ -13,6 +13,7 @@
 
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 
 export default {
     title: '10 Chips / keyword chips',
@@ -20,7 +21,7 @@ export default {
 };
 
 export const TagChips = () => ({
-    components: { TagChip, TagChipPlaceholder },
+    components: { TagChip, TagChipPlaceholder, TagChipAuthor },
     template: `
     <v-row >
 
@@ -51,6 +52,20 @@ export const TagChips = () => ({
       <v-col>
         <tag-chip name="count='5'" selectable :count="5" />
       </v-col>
+
+      <v-col>
+        <tag-chip-author name="Dominik Haas-Artho"  />
+      </v-col>
+
+      <v-col>
+        <tag-chip-author name="Autor tag closeable"
+                         :is-closeable="true"/>
+      </v-col>
+
+      <v-col>
+        <tag-chip-author name="draggable"
+                         :draggable="true"/>
+      </v-col>      
 
     </v-row>`,
   });

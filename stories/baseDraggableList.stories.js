@@ -31,6 +31,7 @@ export const FilledList = {
       'Gian-Kasper Plattner',
       'Ranita Pal',
     ],
+    instructions: 'Drag and Drop items to change order',
   },
 };
 

@@ -1,11 +1,21 @@
 <template>
   <v-container class="pa-0"
                id="BaseDraggableList"
-               fluid>
-    <v-row no-gutters>
+               fluid
+               @click.stop
+  >
+    <v-row v-if="instructions"
+           no-gutters>
+      <v-col class="text-body-2 pb-1">
+        {{ instructions }}
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters
+           class="draggableList pa-2">
+
       <v-col v-for="(item, index) in draggableItems"
            :key="`${index}_${item}`"
-           style="cursor: e-resize;"
            class="flex-grow-0"
            :draggable="true"
            @dragenter.prevent
@@ -16,11 +26,11 @@
       >
 
         <TagChipAuthor v-if="useAuthorTags"
-                       style="cursor: e-resize;"
                        :name="item"
                        :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
                        :highlighted="currentDragItem === item"
                        :isSmall="true"
+                       :draggable="true"
                         />
 
         <TagChip v-if="!useAuthorTags"
@@ -51,6 +61,10 @@ export default {
     useAuthorTags: {
       type: Boolean,
       default: false,
+    },
+    instructions: {
+      type: String,
+      default: undefined,
     },
   },
   computed: {
@@ -133,3 +147,20 @@ export default {
   }),
 };
 </script>
+
+<style scoped >
+
+.draggableList {
+  border-width: thin;
+  border-color: black;
+  border-radius: 4px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.42);
+}
+
+.draggableList:hover {
+  border-color: rgba(0, 0, 0, 1);
+}
+
+
+</style>

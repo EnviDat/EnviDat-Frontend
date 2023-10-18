@@ -33,7 +33,7 @@
       <v-row no-gutters
              align="center">
         <v-col>
-          {{ swapStatusTextWithSoltText && expanded ? $slots.default[0].text : statusText }}
+          {{ swapStatusTextWithSlotText && expanded ? $slots.default[0].text : statusText }}
         </v-col>
 
         <v-col class="shrink">
@@ -51,7 +51,7 @@
         </v-col>
       </v-row>
 
-      <v-row v-if="!swapStatusTextWithSoltText && $slots.default && expanded"
+      <v-row v-if="$slots.default && expanded"
               no-gutters>
         <v-col>
           <slot name="default"></slot>
@@ -89,14 +89,12 @@
 
 <script>
 /**
- * ExpandableLayout.vue renders markdown showing the text of the metadatas.
- * Long text is cropped and a expand button is shown.
+ * ExpandableLayout.vue shows a title with can be clicked on the expand
+ * and show any component provided via default slot
+ * Long text is cropped and an expand icon button is shown.
  *
- * @summary shows the markdown text in an expanable card
+ * @summary show a text with an expand icon to show more components
  * @author Dominik Haas-Artho
- *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2020-12-09 12:01:54
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -127,7 +125,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    swapStatusTextWithSoltText: {
+    swapStatusTextWithSlotText: {
       type: Boolean,
       default: false,
     },

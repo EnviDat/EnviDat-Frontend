@@ -5,8 +5,8 @@
             smallChip: $vuetify.breakpoint.smAndDown,
            }"
           :color="highlighted ? 'primary' : color"
-          :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
           @click.stop="clicked"
+          :draggable="draggable"
           :small="isSmall"
           close-icon="close"
           :close="isCloseable"
@@ -23,6 +23,7 @@
       <template v-slot:activator="{ on }">
         <v-icon v-on="on" x-small >hourglass_bottom</v-icon>
       </template>
+
       {{ authorPassedInfo }}
     </v-tooltip>
 
@@ -60,6 +61,10 @@ export default {
       default: false,
     },
     isCloseable: Boolean,
+    draggable: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   computed: {
     authorIsDead() {

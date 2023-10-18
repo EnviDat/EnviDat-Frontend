@@ -892,11 +892,6 @@ $font-family: 'Raleway', sans-serif;
   font-size: 15px !important;
 }
 
-.authorTag span,
-.envidatChip span {
-  cursor: pointer !important;
-}
-
 .authorTag span {
   font-size: 14px !important;
 }
