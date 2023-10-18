@@ -550,15 +550,22 @@ export function combineAuthorLists(currentAuthors, newAuthors = [], removedAutho
 
   }
 
+  const orderedAuthors = [];
+
   for (let i = 0; i < newAuthors.length; i++) {
     const auth = newAuthors[i];
 
+    if (authors.filter(a => a.email === auth.email)[0]) {
+      orderedAuthors.push(auth);
+    }
+/*
     if (!authors.some(a => a.email === auth.email)) {
       authors.push(auth);
     }
+*/
   }
 
-  return authors;
+  return orderedAuthors;
 }
 
 export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
