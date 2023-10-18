@@ -108,6 +108,7 @@ import {
 } from '@/factories/eventBus';
 
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import { getAuthorName } from '@/factories/authorFactory';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -149,7 +150,7 @@ export default {
         return [];
       }
 
-      return this.authorsFields.map((a) => a.fullName);
+      return this.authorsFields.map((a) => getAuthorName(a));
     },
     authorsFields() {
       const authors = this.previewAuthors || this.authors;
@@ -224,10 +225,6 @@ export default {
         overrideAuthorInfosExpanded: true,
         authorDetailsConfig: this.authorDetailsConfig,
         ...this.authorDeadInfo,
-        /*
-                  :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                  :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-        */
       };
     },
     clearPreviews() {

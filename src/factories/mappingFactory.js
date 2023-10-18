@@ -734,7 +734,6 @@ function populateEditingAuthors(commit, snakeCaseJSON) {
 
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
-
     const fAuthor = createAuthor(author)
     authors.push(fAuthor);
   })
