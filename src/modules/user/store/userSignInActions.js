@@ -34,7 +34,7 @@ import {
 let API_BASE = '';
 let API_ROOT = '';
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';

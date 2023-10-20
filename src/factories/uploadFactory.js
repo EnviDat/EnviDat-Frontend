@@ -38,7 +38,7 @@ import {
 let API_BASE = '';
 let API_ROOT = '';
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
@@ -419,7 +419,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
 function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
-  const debug = import.meta?.env?.DEV;
+  const debug = import.meta.env?.DEV;
 
   uppy.setOptions({
     // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.

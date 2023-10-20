@@ -41,6 +41,7 @@ export default ({ mode, config }) => {
     }
 
     const env = loadEnv(mode, process.cwd())
+    console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
     console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
     console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
     console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);

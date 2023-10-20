@@ -43,7 +43,7 @@ export default {
     //     { root: true });
     // }
 
-    // if (import.meta?.env?.DEV) {
+    // if (import.meta.env?.DEV) {
     //   url = './testdata/projects.json';
     // }
 

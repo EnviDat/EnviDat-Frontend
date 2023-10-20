@@ -65,10 +65,15 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const API_ROOT = import.meta.env.VITE_API_ROOT;
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+let API_BASE = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
+}
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
