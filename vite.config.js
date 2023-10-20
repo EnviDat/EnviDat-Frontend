@@ -15,7 +15,6 @@ import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
-
 export default ({ mode, config }) => {
     const isProd = mode === 'production'
 
@@ -41,7 +40,13 @@ export default ({ mode, config }) => {
         console.log(`Tried to created file ${fileName} in ${filePath}. Error: ${err}`);
     }
 
-    console.log(`starting server | version: ${version} | prod: ${isProd}`);
+    const env = loadEnv(mode, process.cwd())
+    console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
+    console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
+    console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
+    console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+    console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
+
 
     return defineConfig({
         plugins: [
