@@ -46,8 +46,10 @@ export default ({ mode, config }) => {
     console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
     console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
     console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+    console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
     console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
+    const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true'
 
     return defineConfig({
         plugins: [
@@ -111,8 +113,8 @@ export default ({ mode, config }) => {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
           cssCodeSplit: true,
-          minify: isProd,
-          sourcemap: !isProd,
+          minify: !buildSourceMaps,
+          sourcemap: buildSourceMaps,
           emptyOutDir: true,
           rollupOptions: isProd ? {
             output: {
