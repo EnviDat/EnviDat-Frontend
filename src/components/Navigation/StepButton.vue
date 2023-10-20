@@ -1,6 +1,6 @@
 <template>
 
-  <div class="stepButton px-1 px-md-2 py-1"
+  <div class="stepButton px-1 px-md-2 py-0"
         :style="`border-color: ${ active ? $vuetify.theme.themes.light.accent : $vuetify.theme.themes.light.highlight };`"
         @click="catchStepClick">
 
@@ -103,7 +103,7 @@ export default {
   .stepButton {
     border: 2px solid black;
     border-radius: 4px;
-    height: 42px;
+    height: 36px;
     display: inline-flex;
     cursor: pointer;
     background-color: whitesmoke;
@@ -138,8 +138,8 @@ export default {
   }
 
   .stepNumber {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
   }
 
 </style>

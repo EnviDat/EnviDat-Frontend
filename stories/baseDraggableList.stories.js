@@ -20,7 +20,10 @@ export default {
 };
 
 
-export const EmptyList = { args: {} };
+export const EmptyList = { args: {
+    instructions: 'Empty Drag and Drop items',
+  },
+};
 
 export const FilledList = {
   args: {
