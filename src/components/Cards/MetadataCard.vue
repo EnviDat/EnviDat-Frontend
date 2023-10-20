@@ -158,11 +158,13 @@
             <UserRoleChip :role="role" />
           </v-col>
 
-          <v-col v-if="state" class="pl-1">
+          <v-col v-if="state"
+                 class="pl-1">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
-          <v-col class="pl-1 shrink">
+          <v-col v-if="organization"
+                 class="pl-1 shrink">
             <MetadataOrganizationChip :organization="organization"
                                       :tooltip="organizationTooltip"
                                       :showOnHover="
