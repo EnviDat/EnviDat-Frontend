@@ -162,6 +162,6 @@ export default {
 
 <style scoped>
 .relatedPubList .readableText ul > * + * {
-  padding: 5px 0px;
+  padding: 5px 0;
 }
 </style>

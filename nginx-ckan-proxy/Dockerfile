@@ -1,8 +1,14 @@
 ARG EXTERNAL_REG
 ARG INTERNAL_REG
 ARG NGINX_IMG_TAG=1.21-alpine
-FROM ${INTERNAL_REG}/debian:bullseye as certs
 
+
+
+FROM ${EXTERNAL_REG}/debian:bullseye AS certs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-ca-certificates
 
 
 FROM ${EXTERNAL_REG}/nginx:${NGINX_IMG_TAG} as run

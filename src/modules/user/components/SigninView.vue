@@ -4,7 +4,7 @@
       <v-img
         :src="signInPic"
         max-height="700"
-        style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0px;"
+        style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
       />
 
       <v-container fluid class="pa-4">
@@ -18,7 +18,7 @@
           <v-col
             cols="12"
             class="text-h6"
-            :style="`background-color: ${signedInColor};`"
+            :style="`background-color: ${$vuetify.theme.themes.light.highlight};`"
           >
             {{ signedInText + signedInEmail }}
           </v-col>
@@ -128,7 +128,7 @@
           <v-row
             v-if="formErrorText"
             id="errorTextRow"
-            :style="`background-color: ${errorColor};`"
+            :style="`background-color: ${$vuetify.theme.themes.light.errorHighlight};`"
             class="mt-4"
           >
             <v-col cols="12" class="text-body-1">
@@ -218,10 +218,6 @@ export default {
     signInLoading: Boolean,
     signInSuccess: Boolean,
     signedIn: Boolean,
-    signedInColor: {
-      type: String,
-      default: 'green',
-    },
     signedInEmail: String,
     requestLoading: Boolean,
     requestSuccess: Boolean,
@@ -231,10 +227,6 @@ export default {
     formErrorText: String,
     errorField: String,
     errorFieldText: String,
-    errorColor: {
-      type: String,
-      default: 'red',
-    },
   },
   beforeMount() {
     this.email = this.prefilledEmail || '';

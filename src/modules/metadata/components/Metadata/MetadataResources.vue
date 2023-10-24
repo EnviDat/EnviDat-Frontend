@@ -66,7 +66,7 @@
                           :genericOpenButtonBottom="true"
                           :openButtonTooltip="res.openButtonTooltip"
                           :openButtonIcon="res.openButtonIcon"
-                          :cardColor="res.existsOnlyLocal ? 'highlight' : 'primary'"
+                          cardColor="primary"
                           @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>

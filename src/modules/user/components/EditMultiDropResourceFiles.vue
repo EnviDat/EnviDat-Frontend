@@ -65,7 +65,7 @@ export default {
   computed: {
 
     uppy () {
-      return getUppyInstance(this.metadataId, this.$store, 300, false, true, this.multiUploadRestrictions);
+      return getUppyInstance(this.metadataId, this.$store, 300, false, this.multiUploadRestrictions);
 
 /*
       return new Uppy({ logger: debugLogger })

@@ -9,9 +9,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 import { createCitation } from '@/factories/metaDataFactory';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 import metadata from './js/metadata';
 import relatedPublicCitationTesting from './js/relatedPublicCitation';

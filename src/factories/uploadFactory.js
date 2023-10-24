@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle,no-console */
 /**
 * user store mutations
 *
@@ -415,9 +415,10 @@ export function unSubscribeOnUppyEvent(event, callback) {
 }
 
 
-function createUppyInstance(height = 300, autoProceed = true, debug = true, restrictions = defaultRestrictions) {
+function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
+  const debug = import.meta.env.DEV;
 
   uppy.setOptions({
     // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
@@ -425,7 +426,7 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
     id: uppyId,
     autoProceed,
     debug,
-    logger: debugLogger,
+    logger: debug ? debugLogger : undefined,
     restrictions,
     height,
   });
@@ -447,7 +448,7 @@ function createUppyInstance(height = 300, autoProceed = true, debug = true, rest
   return uppy;
 }
 
-export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, debug = true, restrictions = undefined) {
+export function getUppyInstance(metadataId, store, height = 300, autoProceed = true, restrictions = undefined) {
 
   if (store) {
     storeReference = store;
@@ -463,7 +464,7 @@ export function getUppyInstance(metadataId, store, height = 300, autoProceed = t
     return uppyInstance;
   }
 
-  uppyInstance = createUppyInstance(height, autoProceed, debug, restrictions);
+  uppyInstance = createUppyInstance(height, autoProceed, restrictions);
 
   return uppyInstance;
 }

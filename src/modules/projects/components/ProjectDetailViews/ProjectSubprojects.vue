@@ -16,7 +16,7 @@
             xl="3"
           >
             <project-card
-              :id="project.id"
+              :id="project.name"
               :title="project.title"
               :img="project.image_display_url"
               :defaultImg="defaultImg"

@@ -129,10 +129,10 @@ export default {
 
       let backRoute = { path: PROJECTS_PATH };
 
-      if (vm.currentProject && vm.currentProject.parent) {
+      if (vm.currentProject?.parent) {
         backRoute = {
           name: PROJECT_DETAIL_PAGENAME,
-          params: { id: vm.currentProject.parent.id },
+          params: { id: vm.currentProject.parent.name },
         };
       }
 
@@ -146,15 +146,14 @@ export default {
     });
   },
   beforeRouteUpdate(to, from, next) {
-    const toProject = this.projects.find(
-      project => project.id === to.params.id,
-    );
+    const toProject = this.getProject(to.params.id);
+
     let backRoute = { path: PROJECTS_PATH };
 
-    if (toProject.parent) {
+    if (toProject?.parent) {
       backRoute = {
         name: PROJECT_DETAIL_PAGENAME,
-        params: { id: toProject.parent.id },
+        params: { id: toProject.parent.name },
       };
     }
     this.$store.commit(
@@ -335,18 +334,15 @@ export default {
       return this.metadatasContent[id];
     },
     getProject(id) {
-      let current = null;
-
       for (let i = 0; i < this.projects.length; i++) {
         const el = this.projects[i];
 
-        if (el.id === id) {
-          current = el;
-          break;
+        if (el.id === id || el.name === id) {
+          return el;
         }
       }
 
-      return current;
+      return null;
     },
     /**
      * @description changes the url to page the user was before. Fallback: PROJECTS_PATH

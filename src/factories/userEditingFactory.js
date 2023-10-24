@@ -19,7 +19,6 @@ import {
   EDITMETADATA_DATA,
   EDITMETADATA_DATA_GEO,
   EDITMETADATA_DATA_INFO,
-  EDITMETADATA_DATA_RESOURCE,
   EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_FUNDING_INFO,
   EDITMETADATA_KEYWORDS,
@@ -47,7 +46,6 @@ import {
 } from '@/factories/metadataConsts';
 
 import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
-import { createNewBaseResource } from '@/factories/uploadFactory';
 
 
 const EditMetadataHeader = () => import('@/modules/user/components/EditMetadataHeader.vue');

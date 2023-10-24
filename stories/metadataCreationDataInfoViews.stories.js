@@ -10,13 +10,13 @@
  */
 
 import EditDataInfo from '@/modules/user/components/EditDataInfo.vue';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import {
   DATE_PROPERTY_DATE_TYPE,
   DATE_PROPERTY_END_DATE,
   DATE_PROPERTY_START_DATE,
 } from '@/factories/mappingFactory';
 import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
+import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
 export default {

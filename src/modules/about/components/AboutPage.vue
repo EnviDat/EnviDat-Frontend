@@ -105,7 +105,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mapGetters,mapState } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 import orga from '@/assets/about/EnviDat_organigram.png';
 import { renderMarkdown } from '@/factories/stringFactory';
@@ -174,8 +174,7 @@ export default {
 
       if (tabObjs.length > 0) {
         const tabObj = tabObjs[0];
-        const tabIndex = this.tabs.indexOf(tabObj);
-        this.activeTab = tabIndex;
+        this.activeTab = this.tabs.indexOf(tabObj);
       }
     },
     mergeAboutInfo(defaultAboutInfo, backendAboutInfos, defaultWidthClass) {
@@ -261,7 +260,7 @@ export default {
         this.$store.state,
       );
 
-      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-2';
+      const defaultWidthClass = 'col-12 col-sm-6 col-md-4 col-xl-3';
 
       const defaultAboutInfo = [
         {
@@ -288,7 +287,7 @@ export default {
         {
           title: 'Community',
           text:
-            'With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href="https://fairsharing.org/biodbcore-001178/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >FAIRsharing.org</a> and <a href="https://www.re3data.org/repository/r3d100012587" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >re3data.org</a> and a contributor community to <a href="http://geoportal.org/community/envidat-community" target="_blank" onclick="event.stopPropagation();" >ESA Geoportal </a>, <a href="https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles" target="_blank" onclick="event.stopPropagation();" >NASA GCMD</a> and <a href="http://b2find.eudat.eu/dataset?groups=envidat" target="_blank" onclick="event.stopPropagation();" >EOSC-Hub via B2FIND</a>. ',
+            'With EnviDat, WSL aims to disseminate its data sets as broadly as possible in order to foster international research cooperation in the field of environmental science and contribute to the ongoing cultural evolution in research towards openness, shared data and opportunities for collaboration. Consequently, we are registered in <a href="https://fairsharing.org/biodbcore-001178/" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >FAIRsharing.org</a> and <a href="https://www.re3data.org/repository/r3d100012587" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation();" >re3data.org</a> and a contributor community to <a href="https://geoportal.org/community/envidat-community" target="_blank" onclick="event.stopPropagation();" >ESA Geoportal </a>, <a href="https://gcmd.nasa.gov/search/Titles.do?AutoDisplayTitles=true&subset=envidat#titles" target="_blank" onclick="event.stopPropagation();" >NASA GCMD</a> and <a href="https://b2find.eudat.eu/dataset?groups=envidat" target="_blank" onclick="event.stopPropagation();" >EOSC-Hub via B2FIND</a>. ',
           img: communityImg,
           defaultWidthClass,
         },
@@ -307,7 +306,7 @@ export default {
             this.orga +
             '" style="width: 100%; height: 100%;" />',
           img: teamImg,
-          defaultWidthClass: 'col-12 col-sm-12 col-md-8 col-xl-3',
+          defaultWidthClass: 'col-12 col-sm-12 col-md-8',
         },
       ];
 

@@ -9,9 +9,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
-import EditRelatedPublicationsList from '@/modules/user/components/EditRelatedPublicationsList.vue';
 import metadata from './js/metadata';
 
 

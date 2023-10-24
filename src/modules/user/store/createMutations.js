@@ -17,7 +17,7 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 
-import { createErrorMessage, extractError } from '@/modules/user/store/mutationFactory';
+import { createErrorMessage } from '@/modules/user/store/mutationFactory';
 
 import {
   enhanceElementsWithStrategyEvents,

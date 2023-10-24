@@ -205,7 +205,6 @@ export default {
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
-    this.checkUserSignedIn();
   },
   beforeDestroy() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -215,6 +214,7 @@ export default {
   },
   mounted() {
     this.startParticles();
+    this.checkUserSignedIn();
   },
   updated() {
     this.updateActiveStateOnNavItems();
@@ -474,7 +474,10 @@ export default {
 
     },
     checkUserSignedIn() {
-      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      let action = ACTION_GET_USER_CONTEXT_TOKEN;
+      if (this.config?.userDashboardConfig && !this.useTokenSignin) {
+        action = ACTION_GET_USER_CONTEXT;
+      }
       
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
@@ -732,7 +735,6 @@ $font-family: 'Raleway', sans-serif;
 }
 
 .envidatNavbar {
-  position: -webkit-sticky;
   position: sticky;
   top: 8px;
   z-index: 1000;

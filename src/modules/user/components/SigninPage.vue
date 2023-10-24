@@ -14,7 +14,6 @@
           :signInLoading="signInLoading"
           :signInSuccess="signInSuccess"
           :signedIn="user !== null"
-          :signedInColor="$vuetify.theme.themes.light.highlight"
           :signedInEmail="user ? user.email : null"
           :requestLoading="requestLoading"
           :requestSuccess="requestSuccess"
@@ -23,7 +22,6 @@
           :formErrorText="errorText"
           :errorFieldText="errorFieldText"
           :errorField="errorField"
-          :errorColor="$vuetify.theme.themes.light.errorHighlight"
           @requestToken="catchRequestToken"
           @emailSignIn="submitDataAndSignIn"
           @azureAdSignIn="submitDataAndSignIn"
@@ -143,7 +141,10 @@ export default {
   },
   methods: {
     checkUserSignedIn() {
-      const action = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      let action = ACTION_GET_USER_CONTEXT_TOKEN;
+      if (this.config?.userDashboardConfig && !this.useTokenSignin) {
+        action = ACTION_GET_USER_CONTEXT;
+      }
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
@@ -176,20 +177,21 @@ export default {
         },
       );
 
-      if (!this.errorField && !this.errorFieldText) {
-        const contextAction = this.useTokenSignin ? ACTION_GET_USER_CONTEXT_TOKEN : ACTION_GET_USER_CONTEXT;
+      // token login (if useTokenSignin = true) makes an additional call within the action with the token
+      if (!this.useTokenSignin && !this.errorField && !this.errorFieldText) {
 
-        // Get user context
+        // Get user context via the old login
         await this.$store.dispatch(
         `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
-          action: contextAction,
+          action: ACTION_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
-        // Then redirect with context set
-        this.redirectToDashboardIfAllowed();
       }
+
+      // Then redirect with context set
+      this.redirectToDashboardIfAllowed();
     },
     redirectToDashboardIfAllowed() {
       if (this.dashboardRedirect) {

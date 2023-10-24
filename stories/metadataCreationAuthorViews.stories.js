@@ -431,7 +431,6 @@ export const FullEditingAuthorViews = () => ({
 
     },
     saveAuthor(newAuthor) {
-      newAuthor.existsOnlyLocal = false;
       this.updateAuthors(newAuthor);
       this.cancelEditing();
     },

@@ -46,7 +46,7 @@ export default {
       const url = el.getAttribute('xlink:href');
       if (url) {
         // el.addEventListener('click', that.stationClick(url));
-        el.onclick = function() {
+        el.onclick = () => {
           that.mapClick(url);
         };
         el.removeAttribute('xlink:href');
