@@ -25,8 +25,8 @@ import { mobileViewportParams, tabletViewportParams } from './js/envidatViewport
 
  export default {
    title: '9 Editing Metadata / Edit Publication Status',
-   // component: don't specific here,
-   // because the template needs to be a neutral componet for the interaction
+   // component: don't specify here,
+   // because the template needs to be a neutral component for the interaction
 };
 
  const allStates = possiblePublicationStates;
@@ -132,5 +132,5 @@ DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
 DOIWorkflowInteractionMobile.parameters = mobileViewportParams;
 
 export const DOIWorkflowInteractionTablet = Template.bind({});
-DOIWorkflowInteractionMobile.args = DOIWorkflowInteraction.args;
+DOIWorkflowInteractionTablet.args = DOIWorkflowInteraction.args;
 DOIWorkflowInteractionTablet.parameters = tabletViewportParams;
