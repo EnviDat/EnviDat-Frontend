@@ -521,46 +521,6 @@ export function UnwrapEditingAuthors(wrappedAuthors, authorsMap) {
   return authorWithFullInfos;
 }
 
-/**
- * Combines authors arrays, the current is the basis, removedAuthors are subtracted from the currentAuthors and the newAuthors are being added.
- * Main usage of this function is in the context of editing authors.
- *
- * @param currentAuthors
- * @param removedAuthors
- * @param newAuthors
- * @returns {*[]}
- */
-export function combineAuthorLists(currentAuthors, newAuthors = [], removedAuthors = []) {
-  const authors = [...currentAuthors];
-
-  for (let i = 0; i < removedAuthors.length; i++) {
-    const authToRemove = removedAuthors[i];
-
-    let deleteIndex = authors.findIndex(a => a.email === authToRemove.email);
-
-    if (deleteIndex >= 0) {
-      authors.splice(deleteIndex, 1);
-    }
-
-    deleteIndex = newAuthors.findIndex(a => a.email === authToRemove.email);
-
-    if (deleteIndex >= 0) {
-      newAuthors.splice(deleteIndex, 1);
-    }
-
-  }
-
-  for (let i = 0; i < newAuthors.length; i++) {
-    const auth = newAuthors[i];
-
-    if (!authors.some(a => a.email === auth.email)) {
-      authors.push(auth);
-    }
-  }
-
-  return authors;
-}
-
 export function mergeAuthorsDataCredit(currentAuthors, newAuthors) {
   const authors = [...currentAuthors];
 

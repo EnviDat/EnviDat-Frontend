@@ -33,6 +33,7 @@ export const Reserved = {
   args: {
     ...Draft.args,
     publicationState: PUBLICATION_STATE_RESERVED,
+    doi: '10.16904/envidat.402',
   },
 };
 
@@ -45,13 +46,14 @@ export const ReservedLoading = {
 
 export const Pending = {
   args: {
-    ...Draft.args,
+    ...Reserved.args,
     publicationState: PUBLICATION_STATE_PENDING,
   },
 };
 
 export const PendingAdmin = {
   args: {
+    ...Reserved.args,
     publicationState: PUBLICATION_STATE_PENDING,
     userRole: USER_ROLE_ADMIN,
   },

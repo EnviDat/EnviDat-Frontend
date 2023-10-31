@@ -176,6 +176,9 @@ import {
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
+  FETCH_USER_DATA,
+  ACTION_USER_SHOW,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -206,10 +209,12 @@ const NotificationCard = () => import('@/components/Cards/NotificationCard.vue')
 export default {
   name: 'App',
   beforeCreate() {
-    // check for the backend version
+    // in beforeCreate none of the vue component exists, so not method can be called
+    // the this.$store does exist, so call it here directly, then in created setup the reloadConfigTimer
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    this.reloadConfigTimer = window.setInterval(this.loadConfig, 60000);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -219,6 +224,7 @@ export default {
     this.showCookieInfo = strShowCookieInfo!== 'false';
   },
   beforeDestroy() {
+    window.clearInterval(this.reloadConfigTimer);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
@@ -235,6 +241,10 @@ export default {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    loadConfig() {
+      // check for the backend version
+      this.$store.dispatch(SET_CONFIG);
+    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
@@ -510,19 +520,38 @@ export default {
       }
 
     },
-    checkUserSignedIn() {
+    fetchUserDatasets() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
+    },
+    async checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
 
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
       
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
+          data: {
+            'include_datasets': true,
+          },
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
+
+      if (this.user) {
+        this.fetchUserDatasets();
+      }
     },
   },
   computed: {
@@ -742,6 +771,7 @@ export default {
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
+    reloadConfigTimer: null,
   }),
 };
 </script>
@@ -882,11 +912,6 @@ $font-family: 'Raleway', sans-serif;
 
 .smallChip > .v-chip__content > .v-chip__close > .v-icon {
   font-size: 15px !important;
-}
-
-.authorTag span,
-.envidatChip span {
-  cursor: pointer !important;
 }
 
 .authorTag span {

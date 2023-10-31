@@ -16,7 +16,7 @@ import Vue from 'vue';
 
 import store from '@/store/store';
 import App from '@/App.vue';
-import { initAxios } from '@/init';
+import { initAxios, initAzureLogin } from '@/init';
 
 import vuetify from './plugins/vuetify';
 import router from './router';
@@ -25,8 +25,15 @@ import globalMethods from './factories/globalMethods';
 
 Vue.config.productionTip = false;
 Vue.mixin(globalMethods);
+Vue.directive('hide', {
+  // Run on initialisation (first render) of the directive on the element
+  bind: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
+  // Run on subsequent updates to the value supplied to the directive
+  update: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
+})
 
 initAxios(Vue, store);
+initAzureLogin(Vue);
 
 
 /* eslint-disable no-new */

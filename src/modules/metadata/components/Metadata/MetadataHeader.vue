@@ -78,6 +78,7 @@
             no-gutters >
       <v-col cols="12">
 
+        <!-- author list -->
         <v-row no-gutters
                 style="position: relative; z-index: 1;">
 
@@ -146,6 +147,7 @@
           </v-col>
         </v-row>
 
+        <!-- divier -->
         <v-row no-gutters
                 style="position: relative; z-index: 1;">
 
@@ -159,6 +161,7 @@
           </v-col>
         </v-row>
 
+        <!-- info list row number 1 -->
         <v-row v-if="!showPlaceholder && metadataTitle"
                 no-gutters
                 id="headerinfos"
@@ -166,8 +169,7 @@
                 style="position: relative; z-index: 1;">
 
           <v-col cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                 class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -185,26 +187,7 @@
           </v-col>
 
           <v-col cols="12"
-                 sm="6"
-                 lg="3"
-                 class="headerInfo py-1 py-sm-0" >
-
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">email</v-icon>
-              </v-col>
-              <v-col>
-                <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
-              </v-col>
-            </v-row>
-          </v-col>
-
-          <v-col cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -222,45 +205,7 @@
 
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
-                 class="headerInfo py-1 py-sm-0" >
-
-            <MetadataOrganizationChip :organization="organization"
-                                      :tooltip="organizationTooltip" />
-
-          </v-col>
-
-        </v-row>
-
-        <v-row no-gutters
-               class="pt-1"
-                justify="end">
-
-          <v-col v-if="hasContent && spatialInfo"
-                 cols="12"
-                 sm="6"
-                 lg="3"
-                 class="headerInfo py-1 py-sm-0" >
-
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">location_pin</v-icon>
-              </v-col>
-              <v-col style="font-size: 0.9rem;">
-                {{ spatialInfo }}
-              </v-col>
-            </v-row>
-
-          </v-col>
-
-          <v-col v-if="hasContent"
-                 cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -277,10 +222,72 @@
 
           </v-col>
 
+          <v-col v-if="hasContent && spatialInfo"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">location_pin</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ spatialInfo }}
+              </v-col>
+            </v-row>
+
+          </v-col>
+
+
+        </v-row>
+
+        <!-- info list row number 2 -->
+        <v-row v-if="!showPlaceholder && metadataTitle"
+               no-gutters
+               class="pt-1"
+                justify="end">
+
+          <v-col cols="12"
+                 sm="4"
+                 md="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">email</v-icon>
+              </v-col>
+              <v-col>
+                <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
+              </v-col>
+            </v-row>
+          </v-col>
+
           <v-col v-if="hasContent"
                  cols="12"
-                 sm="6"
-                 lg="3"
+                 sm="2"
+                 md="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <!-- empty cell for spacing for the next cells -->
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+              </v-col>
+            </v-row>
+
+          </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
             <v-row no-gutters
@@ -296,6 +303,17 @@
             </v-row>
 
           </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip" />
+
+          </v-col>
+
         </v-row>
 
         <v-row no-gutters
@@ -381,7 +399,7 @@
 
         </v-col>
 
-        <v-col v-if="metadataState"
+        <v-col v-if="metadataState && showEditButton"
                class=" flex-grow-1 px-1" >
           <MetadataStateChip :state="metadataState" />
         </v-col>

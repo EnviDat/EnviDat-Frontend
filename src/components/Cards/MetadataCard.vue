@@ -99,7 +99,11 @@
       "
     >
       <v-container v-if="showCardBody" class="pa-0">
-        <v-row v-if="state" class="pb-1" no-gutters justify="end">
+
+        <v-row v-if="state"
+               class="pb-1"
+               no-gutters
+               justify="end">
           <v-col class="cardIcons">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
@@ -149,22 +153,25 @@
 
       <v-container v-if="!showCardBody" class="pa-0">
         <v-row no-gutters class="justify-end">
+
           <v-col v-if="role" class="pl-1 shrink">
             <UserRoleChip :role="role" />
           </v-col>
-          <v-col v-if="state" class="pl-1">
+
+          <v-col v-if="state"
+                 class="pl-1">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
-          <v-col v-if="organization" class="pl-1 shrink">
-            <MetadataOrganizationChip
-              :organization="organization"
-              :tooltip="organizationTooltip"
-              :showOnHover="
-                showOrganizationOnHover === true ||
-                  (showOrganizationOnHover === undefined && !hover)
-              "
-              @organizationClicked="$emit('organizationClicked', $event)"
+          <v-col v-if="organization"
+                 class="pl-1 shrink">
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="
+                                        showOrganizationOnHover === true ||
+                                          (showOrganizationOnHover === undefined && !hover)
+                                      "
+                                      @organizationClicked="$emit('organizationClicked', $event)"
             />
           </v-col>
 

@@ -6,7 +6,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 export const GET_PROJECTS = 'GET_PROJECTS';
 export const GET_PROJECTS_SUCCESS = 'GET_PROJECTS_SUCCESS';
@@ -14,7 +14,7 @@ export const GET_PROJECTS_ERROR = 'GET_PROJECTS_ERROR';
 export const SET_PROJECTDETAIL_PAGE_BACK_URL = 'SET_PROJECTDETAIL_PAGE_BACK_URL';
 
 export const ACTION_GET_PROJECTS = () => {
-  if (import.meta?.env?.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/group_list.json';
   }
 

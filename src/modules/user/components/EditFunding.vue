@@ -42,7 +42,7 @@
       <v-row
         v-for="(item, index) in fundersField"
         :key="`${item}_${index}`"
-        :class="index === 0 ? 'pt-4' : 'py-1'"
+        :class="index === 0 ? 'pt-2' : 'py-0'"
         no-gutters
       >
         <v-col cols="4" class="pr-2">

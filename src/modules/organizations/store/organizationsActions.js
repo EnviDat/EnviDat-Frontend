@@ -47,7 +47,7 @@ import {
 } from './organizationsMutationsConsts';
 
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
 const API_ROOT = import.meta.env.VITE_API_ROOT;

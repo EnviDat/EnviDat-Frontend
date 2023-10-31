@@ -195,7 +195,7 @@
         <v-col cols="12" >
 
           <ExpandableLayout statusText="Advanced Header info"
-                            :isFlat="true">
+                            isFlat>
 
             <v-text-field ref="metadataUrl"
                           :id="METADATA_URL_PROPERTY"

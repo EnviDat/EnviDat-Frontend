@@ -14,16 +14,17 @@
           :signInLoading="signInLoading"
           :signInSuccess="signInSuccess"
           :signedIn="user !== null"
-          :signedInColor="$vuetify.theme.themes.light.highlight"
           :signedInEmail="user ? user.email : null"
           :requestLoading="requestLoading"
           :requestSuccess="requestSuccess"
+          :disclaimerText="disclaimerText"
+          :disclaimerPoints="disclaimerPoints"
           :formErrorText="errorText"
           :errorFieldText="errorFieldText"
           :errorField="errorField"
-          :errorColor="$vuetify.theme.themes.light.errorHighlight"
           @requestToken="catchRequestToken"
-          @signIn="catchSignIn"
+          @emailSignIn="submitDataAndSignIn"
+          @azureAdSignIn="submitDataAndSignIn"
           @signOut="catchSignOut"
           @openDashboard="catchOpenDashboard"
         />
@@ -47,6 +48,7 @@ import { mapState } from 'vuex';
 
 import { eventBus, SHOW_REDIRECT_DASHBOARD_DIALOG } from '@/factories/eventBus';
 import {
+  ACTION_API_TOKEN_AZURE,
   ACTION_OLD_GET_USER_CONTEXT,
   ACTION_OLD_REQUEST_TOKEN,
   ACTION_USER_SIGNIN_TOKEN,
@@ -101,6 +103,15 @@ export default {
       'errorField',
       'errorFieldText',
     ]),
+    signinPageConfig() {
+      return this.config?.signinPageConfig || {};
+    },
+    disclaimerText() {
+      return this.signinPageConfig?.disclaimerText || '';
+    },
+    disclaimerPoints() {
+      return this.signinPageConfig?.disclaimerPoints || [];
+    },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -141,14 +152,27 @@ export default {
         mutation: GET_USER_CONTEXT,
       });
     },
-    async catchSignIn(email, key) {
-      const action = this.useTokenSignin ? ACTION_USER_SIGNIN_TOKEN : ACTION_OLD_USER_SIGNIN;
+    async submitDataAndSignIn(email, keyOrToken, isAzure = false) {
+      let action
+
+      if (isAzure) {
+        action = ACTION_API_TOKEN_AZURE
+      } else {
+        action = this.useTokenSignin ? ACTION_USER_SIGNIN_TOKEN : ACTION_OLD_USER_SIGNIN;
+      }
+
+      let bodyParams
+      if (action === ACTION_OLD_USER_SIGNIN) {
+        bodyParams = { email, key: keyOrToken }
+      } else {
+        bodyParams = { email, token: keyOrToken }
+      }
 
       await this.$store.dispatch(
         `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
-          body: { email, key },
+          body: bodyParams,
           commit: true,
           mutation: USER_SIGNIN,
         },
@@ -192,7 +216,14 @@ export default {
       });
     },
     catchSignOut() {
-      const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
+      let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
+
+      // In case where useTokenSignIn===false, but Azure login is used
+      const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
+      if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
+        action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
+      }
+
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,

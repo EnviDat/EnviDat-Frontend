@@ -18,11 +18,12 @@
 
             <StepButton v-if="step"
                         :id="`step-${index}`"
-                        :title="$vuetify.breakpoint.smAndUp ? step.title : ''"
+                        :title="step.title"
                         :active="isCurrentStep(step)"
                         :complete="step.completed"
                         :number="step.number"
                         :error="step.error"
+                        :showNumberOnly="$vuetify.breakpoint.smAndDown"
                         @stepClick="catchStepClick(step.title)"
             />
 

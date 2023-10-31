@@ -24,8 +24,8 @@
             <v-col>
               <ExpandableLayout cardClass="pa-0"
                                 :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
-                                swapStatusTextWithSoltText
-                                :isFlat="true">
+                                swapStatusTextWithSlotText
+                                isFlat >
 
                 {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
 
@@ -54,17 +54,16 @@
       </div>
     </div>
 
-    <div class="stepper px-5 headerContentGrid"
+    <div class="stepper ma-2 py-0 px-4 headerContentGrid"
           :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
-      <StepperHeader class="py-2"
-                         :steps="steps"
-                         activeColor="accent"
-                         inactiveColor="secondary"
-                         :stepColor="stepColor"
-                         :currentStepIndex="currentStepIndex"
-                         @stepClick="catchStepClick" />
+      <StepperHeader :steps="steps"
+                     activeColor="accent"
+                     inactiveColor="secondary"
+                     :stepColor="stepColor"
+                     :currentStepIndex="currentStepIndex"
+                     @stepClick="catchStepClick" />
 
       <v-progress-linear v-show="saving"
                          indeterminate
@@ -76,7 +75,7 @@
     </div>
 
     <div
-      class="content fill-height pa-1 pt-0"
+      class="content fill-height pa-1"
       :style="`background-color: ${backgroundColor}`"
     >
       <v-card v-show="loading" class="fill-height pa-4">
@@ -382,7 +381,7 @@ export default {
 .stepperContentGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 72px minmax(auto, 1fr);
+  grid-template-rows: auto 58px minmax(auto, 1fr);
   gap: 0;
   grid-template-areas:
     'infoPanel'

@@ -74,6 +74,7 @@ import {
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY, EDIT_METADATA_PUBLISHER_LABEL,
 } from '@/factories/metadataConsts';
+import { createAuthor } from '@/factories/authorFactory';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
@@ -270,7 +271,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (import.meta?.env?.DEV) {
+          if (import.meta.env?.DEV) {
             if (e instanceof SyntaxError) {
               // eslint-disable-next-line no-console
               console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
@@ -733,12 +734,8 @@ function populateEditingAuthors(commit, snakeCaseJSON) {
 
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
-
-    if (typeof author.dataCredit === 'string') {
-      author.dataCredit = [author.dataCredit];
-    }
-
-    authors.push(author);
+    const fAuthor = createAuthor(author)
+    authors.push(fAuthor);
   })
 
   commitEditingData(commit, stepKey, { authors });

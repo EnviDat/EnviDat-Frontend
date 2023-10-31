@@ -65,10 +65,15 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const API_ROOT = import.meta.env.VITE_API_ROOT;
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+let API_BASE = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
+}
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -195,6 +200,7 @@ export default {
     searchTerm,
     metadataConfig = {},
     isAuthorSearch = false,
+    mode = undefined,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -205,9 +211,11 @@ export default {
     if (loadLocalFile) {
       const datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
       const localSearchResult = localSearch(searchTerm, datasets);
+
       commit(SEARCH_METADATA_SUCCESS, {
         payload: localSearchResult,
         isLocalSearch: true,
+        mode,
       });
       return;
     }
@@ -224,6 +232,7 @@ export default {
 
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
+          mode,
         });
       })
       .catch((reason) => {

@@ -77,7 +77,13 @@ export default {
   methods: {
     async menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        const action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
+        let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
+
+        // In case where useTokenSignIn===false, but Azure login is used
+        const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
+        if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
+          action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
+        }
 
         await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
           action,

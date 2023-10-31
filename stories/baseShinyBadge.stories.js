@@ -2,18 +2,21 @@
  * @summary story of BaseIconButton & BaseIconCountView for sandbox testing
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2019-10-31 08:14:47
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
 import BaseShinyBadge from '@/components/BaseElements/BaseShinyBadge.vue';
+import docTemplate from './docTemplate.mdx';
 
 export default {
   title: '1 Base Elements / Shiny Badges',
   component: BaseShinyBadge,
+  parameters: {
+    docs: {
+      page: docTemplate,
+    },
+  },
 };
 
 export const BaseShinyBadgeViews = () => ({

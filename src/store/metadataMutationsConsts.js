@@ -7,7 +7,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-const useTestdata = import.meta?.env?.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 export const BULK_LOAD_METADATAS_CONTENT = 'BULK_LOAD_METADATAS_CONTENT';
 export const BULK_LOAD_METADATAS_CONTENT_SUCCESS =
@@ -16,7 +16,7 @@ export const BULK_LOAD_METADATAS_CONTENT_ERROR =
   'BULK_LOAD_METADATAS_CONTENT_ERROR';
 
 export const ACTION_BULK_LOAD_METADATAS_CONTENT = () => {
-  if (import.meta?.env?.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/packagelist.json';
   }
 
@@ -30,7 +30,7 @@ export const LOAD_METADATA_CONTENT_BY_ID_ERROR =
   'LOAD_METADATA_CONTENT_BY_ID_ERROR';
 
 export const ACTION_LOAD_METADATA_CONTENT_BY_ID = () => {
-  if (import.meta?.env?.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/package_show.json';
   }
 
@@ -46,7 +46,7 @@ export const SEARCH_METADATA_ERROR = 'SEARCH_METADATA_ERROR';
 export const CLEAR_SEARCH_METADATA = 'CLEAR_SEARCH_METADATA';
 
 export const ACTION_SEARCH_METADATA = () => {
-  if (import.meta?.env?.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/query.json';
   }
 
@@ -61,7 +61,12 @@ export const UPDATE_TAGS_ERROR = 'UPDATE_TAGS_ERROR';
 export const FILTER_METADATA = 'FILTER_METADATA';
 export const FILTER_METADATA_SUCCESS = 'FILTER_METADATA_SUCCESS';
 export const FILTER_METADATA_ERROR = 'FILTER_METADATA_ERROR';
+
 export const SWISSFL_MODE = 'swissfl';
+export const SWISSFL_MODE_EXTRAS_KEY = 'swissFL_type';
+
+export const EDNA_MODE = 'edna';
+export const EDNA_MODE_EXTRAS_KEY = 'edna_type';
 
 export const PIN_METADATA = 'PIN_METADATA';
 export const CLEAR_PINNED_METADATA = 'CLEAR_PINNED_METADATA';
@@ -88,7 +93,7 @@ export const METADATA_UPDATE_EXISTING_KEYWORDS_ERROR =
   'METADATA_UPDATE_EXISTING_KEYWORDS_ERROR';
 
 export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
-  if (import.meta?.env?.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/tag_list.json';
   }
 

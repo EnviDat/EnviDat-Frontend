@@ -365,8 +365,7 @@ export default {
       const author = this.getAuthorByEmail(this.emailField);
 
       if (author) {
-        const fullName = this.getFullName(author);
-
+        const fullName = getAuthorName(author);
         return fullName ? [fullName] : [];
       }
 
@@ -423,12 +422,6 @@ export default {
     },
     clearPreviews() {
       this.fillPreviews(null, null, null, null, null);
-    },
-    getFullName(authorObj) {
-      if (!authorObj) {
-        return [];
-      }
-      return getAuthorName(authorObj);
     },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
@@ -493,11 +486,16 @@ export default {
         return;
       }
 
+      const authorObj = {
+        firstName: this.firstNameField,
+        lastName: this.lastNameField,
+      };
+      const fullName = getAuthorName(authorObj);
       // default to filling all the infos from the text-field input
       // so that single text-field changes are captured too
       let authorObject = {
-        firstName: this.firstNameField,
-        lastName: this.lastNameField,
+        ...authorObj,
+        fullName,
         email: this.emailField,
         identifier: this.identifierField,
         affiliation: this.affiliationField,

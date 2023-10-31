@@ -84,7 +84,7 @@
                                    icon-color="white"
                                    is-small
                                    :loading="loading"
-                                   :url="doiUrl"
+                                   :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
                                    :disabled="!currentStateInfos.buttonEvent || !isUserAllowedToEdit"
                                    @clicked="$emit('clicked', currentStateInfos.buttonEvent)" />
 
@@ -108,7 +108,7 @@
 
         </v-row>
 
-        <v-row class="text-body-1 highlight">
+        <v-row class="text-body-1 errorHighlight">
           <v-col cols="12" v-html="labels.instructions2">
           </v-col>
         </v-row>
@@ -243,7 +243,7 @@
         return this.stateTextMapEditor;
       },
       readOnlyUserRole() {
-        return this.isUserAllowedToEdit ? '' : this.readOnlyExplaination;
+        return this.isUserAllowedToEdit ? '' : this.readOnlyExplanation;
       },
     },
     methods: {
@@ -303,13 +303,13 @@
         cardTitle: 'Dataset Publication Status',
         instructions: `Have you finished uploading data & resouces and entered all the metadata as best as possible?
           Start publishing your dataset with reserving a DOI, when that's done.
-          Request publication, it will be reviewd by admins and once approved it will be restigered at DataCite.`,
+          Request publication, it will be reviewd by admins and once approved it will be registered at DataCite.`,
         instructions2: 'Please be aware once the <strong>dataset is published</strong> the following metadata information <strong>can NOT be changed anymore</strong>.',
         instructions3: 'You can still upload newer versions of your research data, please use a <strong>clear name and desription</strong> to indicate the latest data.',
       },
       metadataPublishedReadOnlyFields,
       readablePublishedReadOnlyFields,
-      readOnlyExplaination: 'Only dataset owners and admins can change the publication status',
+      readOnlyExplanation: 'Only dataset owners and admins can change the publication status',
       PUBLICATION_STATE_PUBLISHED,
     }),
     components: {

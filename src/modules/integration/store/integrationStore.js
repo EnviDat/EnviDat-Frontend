@@ -51,7 +51,7 @@ export const integration = {
 
       let url = `${staticRoot}/integration/integrationlist.json?nocache=${new Date().getTime()}`;
 
-      if (import.meta?.env?.DEV && useTestdata) {
+      if (import.meta.env?.DEV && useTestdata) {
         url = './testdata/integrationlist.json';
       }
 

@@ -102,3 +102,4 @@ public/version_*
 public/testdata/config.json
 public/testdata/*user*.json
 public/testdata/*password*.json
+tests/unit/regression
