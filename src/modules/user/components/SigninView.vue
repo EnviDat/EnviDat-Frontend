@@ -19,7 +19,7 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="signedIn">
+        <v-row v-if="signedIn" >
           <v-col
             cols="12"
             class="text-h6"
@@ -29,14 +29,16 @@
           </v-col>
         </v-row>
 
-        <v-row v-if="!signedIn">
+        <v-row v-if="!signedIn" >
           <v-col cols="12" class="text-h6">
             {{ emailSignInInstructions }}
           </v-col>
         </v-row>
 
-        <form v-if="!signedIn" class="enviDatForm">
-          <v-row id="emailRow" align="center">
+        <form v-if="!signedIn"
+              class="enviDatForm pl-2">
+          <v-row id="emailRow"
+                 align="center">
             <v-col cols="12" md="9">
               <v-text-field
                 v-model="email"
@@ -62,30 +64,6 @@
               >
                 {{ tokenButtonText }}
               </v-btn>
-            </v-col>
-          </v-row>
-
-          <v-row
-            id="emailRow"
-            align="center"
-            v-hide="!email || !emailAddressIsWsl"
-          >
-            <v-col cols="12" md="9"
-                   class="text-h8">
-              {{ azureSignInInstructions }}
-            </v-col>
-
-            <v-col cols="12" md="3"
-                   id="tokenButton">
-              <BaseRectangleButton
-                color="secondary"
-                :button-text="azureButtonText"
-                :custom-icon="wslLogo"
-                :loading="tokenRequestLoading"
-                custom-icon-whiten
-                custom-icon-space
-                @clicked="catchAzureAdSignIn"
-              />
             </v-col>
           </v-row>
 
@@ -134,6 +112,30 @@
           </v-row>
 
           <v-row
+            id="wslEmailRow"
+            align="center"
+            v-hide="!email || !emailAddressIsWsl"
+          >
+            <v-col cols="12" md="9"
+                   class="text-h8">
+              {{ azureSignInInstructions }}
+            </v-col>
+
+            <v-col cols="12" md="3"
+                   id="tokenButton">
+              <BaseRectangleButton
+                color="secondary"
+                :button-text="azureButtonText"
+                :custom-icon="wslLogo"
+                :loading="tokenRequestLoading"
+                custom-icon-whiten
+                custom-icon-space
+                @clicked="catchAzureAdSignIn"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row
             v-if="formErrorText"
             id="errorTextRow"
             :style="`background-color: ${$vuetify.theme.themes.light.errorHighlight};`"
@@ -145,7 +147,9 @@
           </v-row>
         </form>
 
-        <v-row v-if="signedIn" id="signinButtonRow">
+        <v-row v-if="signedIn"
+               id="signinButtonRow"
+                class="pl-2">
           <v-col class="shrink">
             <BaseRectangleButton
               color="primary"
@@ -276,7 +280,8 @@ export default {
       return (!this.signedIn && !this.backendErrors.email) || false;
     },
     emailAddressIsWsl() {
-      return this.emailAddressIsValid && this.email.endsWith('@wsl.ch');
+      return this.emailAddressIsValid
+        && ( this.email.endsWith('@wsl.ch') || this.email.endsWith('@slf.ch') );
     },
     keyAddressIsValid() {
       return !this.signedIn && !this.backendErrors.key;
@@ -380,7 +385,7 @@ export default {
     emailSignInInstructions:
       'Sign into EnviDat with your email address and the token which will be sent by email.',
     azureSignInInstructions:
-      'WSL staff may sign in using their organization login instead:',
+      'WSL staff may sign in using their email and password (LAP password) instead:',
     azureButtonText: 'WSL Sign in',
     signInPic,
   }),

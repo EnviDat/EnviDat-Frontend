@@ -20,7 +20,7 @@
         @click.stop="onClick"
       >
         <div v-if="customIcon"
-             :class="customIconSpace ? 'iconCentering pr-4' : 'iconCentering'">
+             :class="customIconSpace ? 'iconCentering pr-2' : 'iconCentering'">
           <img
             class="envidatIcon"
             :src="customIcon"
