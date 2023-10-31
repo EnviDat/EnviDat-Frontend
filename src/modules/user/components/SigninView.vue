@@ -111,7 +111,7 @@
             </v-col>
           </v-row>
 
-          <v-row
+          <v-row v-if="wslSigninEnabled"
             id="wslEmailRow"
             align="center"
             v-hide="!email || !emailAddressIsWsl"
@@ -206,29 +206,6 @@
       </v-container>
     </v-card>
 
-<!--    <v-card v-if="disclaimerText"
-            class="mt-4 pa-4">
-      <v-row v-if="disclaimerText !== ''">
-        <v-col cols="12" class="text-h6">
-          {{ disclaimerTitleText }}
-        </v-col>
-      </v-row>
-
-      <v-row v-if="disclaimerText !== ''">
-        <v-col cols="12" class="text-subtitle-1">
-          <span v-html="disclaimerText" />
-        </v-col>
-      </v-row>
-
-      <v-row v-if="disclaimerText !== ''">
-        <v-col cols="12" class="px-8 text-body-2">
-          <li v-for="point in disclaimerPoints" :key="point">
-            <span v-html="point" />
-          </li>
-        </v-col>
-      </v-row>
-    </v-card>-->
-
   </v-container>
 </template>
 
@@ -270,6 +247,7 @@ export default {
     formErrorText: String,
     errorField: String,
     errorFieldText: String,
+    wslSigninEnabled: Boolean,
   },
   beforeMount() {
     this.email = this.prefilledEmail || '';

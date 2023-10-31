@@ -22,6 +22,7 @@
           :formErrorText="errorText"
           :errorFieldText="errorFieldText"
           :errorField="errorField"
+          :wslSigninEnabled="wslSigninEnabled"
           @requestToken="catchRequestToken"
           @emailSignIn="submitDataAndSignIn"
           @azureAdSignIn="submitDataAndSignIn"
@@ -111,6 +112,9 @@ export default {
     },
     disclaimerPoints() {
       return this.signinPageConfig?.disclaimerPoints || [];
+    },
+    wslSigninEnabled() {
+      return this.signinPageConfig?.wslSigninEnabled || false;
     },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
