@@ -19,7 +19,8 @@
         target="_blank"
         @click.stop="onClick"
       >
-        <div v-if="customIcon" :class="customIconSpace ? 'iconCentering pr-4' : 'iconCentering'">
+        <div v-if="customIcon"
+             :class="customIconSpace ? 'iconCentering pr-4' : 'iconCentering'">
           <img
             class="envidatIcon"
             :src="customIcon"

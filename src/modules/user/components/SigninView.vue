@@ -1,10 +1,15 @@
 <template>
   <v-container fluid>
-    <v-card class="pa-0 signInGrid" id="signInGrid">
+    <v-card class="pa-0"
+            :class="$vuetify.breakpoint.mdAndUp ? 'signInGrid' : 'signInGridMobile'"
+            id="signInGrid">
+      
       <v-img
         :src="signInPic"
-        max-height="700"
-        style="border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;"
+        :max-height="$vuetify.breakpoint.mdAndUp ? '700' : '100'"
+        :style="$vuetify.breakpoint.mdAndUp
+          ? 'border-bottom-left-radius: 4px; border-top-left-radius: 4px; border-top-right-radius: 0;'
+          : 'border-top-right-radius: 4px; border-top-left-radius: 4px;'"
       />
 
       <v-container fluid class="pa-4">
@@ -44,7 +49,7 @@
             </v-col>
 
             <v-col
-              v-hide="!email | !emailAddressIsValid"
+              v-hide="!email || !emailAddressIsValid"
               cols="12"
               md="3"
               id="tokenButton"
@@ -63,17 +68,20 @@
           <v-row
             id="emailRow"
             align="center"
-            v-hide="!email | !emailAddressIsWsl"
+            v-hide="!email || !emailAddressIsWsl"
           >
-            <v-col cols="12" md="4" class="text-h8">
+            <v-col cols="12" md="9"
+                   class="text-h8">
               {{ azureSignInInstructions }}
             </v-col>
 
-            <v-col cols="12" md="6" id="tokenButton">
+            <v-col cols="12" md="3"
+                   id="tokenButton">
               <BaseRectangleButton
                 color="secondary"
                 :button-text="azureButtonText"
                 :custom-icon="wslLogo"
+                :loading="tokenRequestLoading"
                 custom-icon-whiten
                 custom-icon-space
                 @clicked="catchAzureAdSignIn"
@@ -88,7 +96,7 @@
           </v-row>
 
           <v-row
-            v-hide="!email | !emailAddressIsValid"
+            v-hide="!email || !emailAddressIsValid"
             id="tokenRow"
             align="center"
             justify="space-between"
@@ -163,9 +171,39 @@
             />
           </v-col>
         </v-row>
+
+        <v-row v-if="disclaimerText"
+               class="pt-4">
+          <v-col>
+            <v-card class="pa-4">
+
+              <v-row >
+                <v-col cols="12" class="text-h6">
+                  {{ disclaimerTitleText }}
+                </v-col>
+              </v-row>
+
+              <v-row >
+                <v-col cols="12" class="text-subtitle-1">
+                  <span v-html="disclaimerText" />
+                </v-col>
+              </v-row>
+
+              <v-row v-if="disclaimerPoints">
+                <v-col cols="12" class="pl-6 text-body-2">
+                  <li v-for="point in disclaimerPoints" :key="point">
+                    <span v-html="point" />
+                  </li>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-container>
     </v-card>
-    <v-card v-if="disclaimerText !== ''" class="mt-4 pa-4">
+
+<!--    <v-card v-if="disclaimerText"
+            class="mt-4 pa-4">
       <v-row v-if="disclaimerText !== ''">
         <v-col cols="12" class="text-h6">
           {{ disclaimerTitleText }}
@@ -185,7 +223,8 @@
           </li>
         </v-col>
       </v-row>
-    </v-card>
+    </v-card>-->
+
   </v-container>
 </template>
 
@@ -212,6 +251,7 @@ import signInPic from '@/modules/user/assets/signin.jpg';
 const keyLength = 32;
 
 export default {
+  name: 'SigninView',
   props: {
     prefilledEmail: String,
     prefilledKey: String,
@@ -223,7 +263,6 @@ export default {
     requestSuccess: Boolean,
     disclaimerText: String,
     disclaimerPoints: Array,
-    // disclaimerPoints: Array<String>,
     formErrorText: String,
     errorField: String,
     errorFieldText: String,
@@ -231,7 +270,6 @@ export default {
   beforeMount() {
     this.email = this.prefilledEmail || '';
     this.key = this.prefilledKey;
-    this.wslLogo = this.mixinMethods_getIcon('wslLogo');
   },
   computed: {
     emailAddressIsValid() {
@@ -251,6 +289,9 @@ export default {
     },
     tokenButtonText() {
       return this.requestSuccess ? 'Get another token' : 'Request token';
+    },
+    wslLogo() {
+      return this.mixinMethods_getIcon('wslLogo');
     },
     yupValidations: () =>
       yup.object().shape({
@@ -340,7 +381,7 @@ export default {
       'Sign into EnviDat with your email address and the token which will be sent by email.',
     azureSignInInstructions:
       'WSL staff may sign in using their organization login instead:',
-    azureButtonText: 'Login',
+    azureButtonText: 'WSL Sign in',
     signInPic,
   }),
   components: {
@@ -353,5 +394,9 @@ export default {
 .signInGrid {
   display: grid;
   grid-template-columns: 1fr 3fr;
+}
+
+.signInGridMobile {
+  display: grid;
 }
 </style>

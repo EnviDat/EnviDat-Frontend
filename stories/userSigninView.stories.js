@@ -9,15 +9,8 @@
 
 /* eslint-disable import/no-extraneous-dependencies */
 import SigninView from '@/modules/user/components/SigninView.vue';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
-import authorCollection from './testdata/authorCollection.json';
-
-const methods = {
-  authors() {
-    const items = Object.values(authorCollection);
-    return items.splice(2, 4);
-  },
-};
 
 export default {
   title: '7 User / SignIn',
@@ -29,6 +22,18 @@ export const Empty = {};
 export const EmailEntered = {
   args: {
     prefilledEmail: 'dominik.haas@wsl.ch',
+  },
+};
+
+export const EmailEnteredWithDisclaimer = {
+  args: {
+    prefilledEmail: 'dominik.haas@wsl.ch',
+    disclaimerText: 'Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:',
+    disclaimerPoints: [
+      'has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn\'t violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.',
+      'after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at <mailto="envidat@wsl.ch">envidat@wsl.ch</mailto> for devising an appropriate solution.',
+      'will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications.',
+    ],
   },
 };
 
@@ -72,50 +77,47 @@ export const EmailAndKeyEnteredLoading = {
 
 export const SigninFinishedSuccessful = {
   args: {
-    prefilledEmail: 'dominik.haas@wsl.ch',
     signedIn: true,
+    signedInEmail: 'dominik.haas@wsl.ch',
   },
 };
 
-export const SigninFinishedError = {
+export const SigninErrorToken = {
   args: {
     prefilledEmail: 'dominik.haas@wsl.ch',
-    signedIn: true,
-    error: '',
+    errorFieldText: 'Token is wrong',
+    errorField: 'key',
   },
 };
 
-/*
-export const SignInViews = () => ({
-    components: { SigninView },
-    template: `
-    <v-row >
-      <v-col cols="12">
-        <Signin-view />
-      </v-col>
+export const SigninErrorEmail = {
+  args: {
+    prefilledEmail: 'dominik.haas@wsl.ch',
+    formErrorText: 'Error: Network Error. If you\'re unable to sign in please contact the EnviDat team.',
+  },
+};
 
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" requestLoading />
-      </v-col>
+export const MobileFilled = {};
+MobileFilled.args = { ...EmailEnteredRequestSuccess.args };
+MobileFilled.parameters = mobileViewportParams;
 
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" :requestSuccess="true" />
-      </v-col>
+export const MobileLargeFilled = {};
+MobileLargeFilled.args = { ...EmailEnteredRequestSuccess.args };
+MobileLargeFilled.parameters = mobileLargeViewportParams;
 
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" prefilledKey="01234567890123456789012345678901" />
-      </v-col>
+export const TabletFilled = {};
+TabletFilled.args = { ...EmailEnteredRequestSuccess.args };
+TabletFilled.parameters = tabletViewportParams;
 
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" prefilledKey="01234567890123456789012345678901" signInLoading />
-      </v-col>
+export const MobileFilledWithDisclaimer = {};
+MobileFilledWithDisclaimer.args = { ...EmailEnteredWithDisclaimer.args };
+MobileFilledWithDisclaimer.parameters = mobileViewportParams;
 
-      <v-col cols="12">
-        <Signin-view signedInEmail="dominik.haas@wsl.ch" signedIn  />
-      </v-col>
+export const MobileLargeFilledWithDisclaimer = {};
+MobileLargeFilledWithDisclaimer.args = { ...EmailEnteredWithDisclaimer.args };
+MobileLargeFilledWithDisclaimer.parameters = mobileLargeViewportParams;
 
-    </v-row>
-    `,
-    methods,
-  });
-*/
+export const TabletFilledWithDisclaimer = {};
+TabletFilledWithDisclaimer.args = { ...EmailEnteredWithDisclaimer.args };
+TabletFilledWithDisclaimer.parameters = tabletViewportParams;
+
