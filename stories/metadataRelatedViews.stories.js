@@ -234,38 +234,18 @@ export const EditCustomFieldViews = () => ({
   },
   data: () => ({
     emptyFirstGenericProps: {},
-    genericProps: [
-      {
-        field0: {
+    genericProps: {
+      customFields: [
+        {
           fieldName: 'SubProject',
           content: 'Projectx',
         },
-      },
-      {
-        field1: {
+        {
           fieldName: 'Game',
           content: 'Gloomhaven',
         },
-      },
-      {
-        field2: {
-          fieldName: 'Drink',
-          content: 'Prosecco',
-        },
-      },
-      {
-        field3: {
-          fieldName: '',
-          content: '',
-        },
-      },
-      {
-        field4: {
-          fieldName: '',
-          content: '',
-        },
-      },
-    ],
+      ],
+    },
   }),
 });
 

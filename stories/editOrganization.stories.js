@@ -45,16 +45,16 @@ MultipleOrganizations.args = {
   userOrganizations: testOrganizations,
 }
 
-export const EditingSingleOrganization = Template.bind({});
-EditingSingleOrganization.args = {
+export const EditingSingleOrganizationReadOnly = Template.bind({});
+EditingSingleOrganizationReadOnly.args = {
   organizationId: testOrganizations[2].id,
   userOrganizations: [testOrganizations[2]],
   readOnlyFields: editingReadOnlyObj.readOnlyFields,
   readOnlyExplanation: editingReadOnlyObj.explanation,
 }
 
-export const EditingMultipleOrganizations = Template.bind({});
-EditingMultipleOrganizations.args = {
+export const EditingMultipleOrganizationsReadOnly = Template.bind({});
+EditingMultipleOrganizationsReadOnly.args = {
   organizationId: testOrganizations[2].id,
   userOrganizations: testOrganizations,
   readOnlyFields: editingReadOnlyObj.readOnlyFields,
