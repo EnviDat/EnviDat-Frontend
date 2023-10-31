@@ -14,6 +14,43 @@
                    :class="$vuetify.breakpoint.smAndDown ? 'compactTitle' : ''" >
               {{ datasetTitleText }}
             </v-col>
+
+            <v-col v-if="$vuetify.breakpoint.smAndDown
+                          && !isCreationWorkflow"
+                    class="flex-grow-0">
+              <StepperInteractionView :steps="steps"
+                                      :showPreviewButton="showPreviewButton"
+                                      :showProgress="showProgress"
+                                      :showSaveButton="showSaveButton"
+                                      :isCreationWorkflow="isCreationWorkflow"
+                                      :message="message"
+                                      :messageDetails="messageDetails"
+                                      :error="error"
+                                      :errorDetails="errorDetails"
+                                      @clickedClose="catchCloseClick"
+                                      @clickedPreview="catchPreviewClick"
+                                      @clickedSaveDataset="catchSaveDatasetClick"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row v-if="$vuetify.breakpoint.smAndDown
+                          && isCreationWorkflow">
+            <v-col>
+              <StepperInteractionView :steps="steps"
+                                      :showPreviewButton="showPreviewButton"
+                                      :showProgress="showProgress"
+                                      :showSaveButton="showSaveButton"
+                                      :isCreationWorkflow="isCreationWorkflow"
+                                      :message="message"
+                                      :messageDetails="messageDetails"
+                                      :error="error"
+                                      :errorDetails="errorDetails"
+                                      @clickedClose="catchCloseClick"
+                                      @clickedPreview="catchPreviewClick"
+                                      @clickedSaveDataset="catchSaveDatasetClick"
+              />
+            </v-col>
           </v-row>
 
           <v-row class="pt-1"
@@ -36,7 +73,8 @@
 
       </div>
 
-      <div class="interaction pl-md-2 py-2 py-sm-0">
+      <div v-if="$vuetify.breakpoint.mdAndUp"
+           class="interaction pl-md-2 py-2 py-sm-0">
 
         <StepperInteractionView :steps="steps"
                                 :showPreviewButton="showPreviewButton"
