@@ -74,7 +74,7 @@
               :text="doi"
               :label="doiIcon ? '' : 'DOI:'"
               :icon="doiIcon"
-              icon-tooltip="Data Object Identifier"
+              :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               :align-left="twoColumnLayout"
             />
 
@@ -221,6 +221,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
+import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 
 export default {
   name: 'ResourceCard',
@@ -280,6 +281,7 @@ export default {
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],
+    EDIT_METADATA_DOI_LABEL,
   }),
   computed: {
     readableCreated() {
@@ -372,7 +374,7 @@ export default {
     },
     protectedText() {
       if (this.restrictedUrl && this.restrictedUrl.length > 0) {
-        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the ckan UI to get access</a>.`;
+        return `This resource is protected <a href="${this.restrictedUrl}" target="_blank" rel="noopener noreferrer" >login via the legacy UI to get access</a>.`;
       }
 
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;

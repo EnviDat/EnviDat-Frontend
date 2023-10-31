@@ -78,6 +78,7 @@
             no-gutters >
       <v-col cols="12">
 
+        <!-- author list -->
         <v-row no-gutters
                 style="position: relative; z-index: 1;">
 
@@ -146,6 +147,7 @@
           </v-col>
         </v-row>
 
+        <!-- divier -->
         <v-row no-gutters
                 style="position: relative; z-index: 1;">
 
@@ -159,57 +161,159 @@
           </v-col>
         </v-row>
 
+        <!-- info list row number 1 -->
         <v-row v-if="!showPlaceholder && metadataTitle"
                 no-gutters
                 id="headerinfos"
                 key="headerinfos"
                 style="position: relative; z-index: 1;">
 
-          <v-col cols="6" lg="3"
-                class="headerInfo py-0" >
-            <BaseIconLabelView :text="contactName"
-                                  :label="licenseIcon ? '' : 'Main Contact:'"
-                                  :icon="contactIcon"
-                                  icon-tooltip="Main contact"
-                                  :compactLayout="$vuetify.breakpoint.xs"
-                                  :align-left="true" />
+          <v-col cols="12"
+                 sm="3"
+                class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">manage_accounts</v-icon>
+              </v-col>
+              <v-col>
+                {{ contactName }}
+              </v-col>
+            </v-row>
+
           </v-col>
 
-          <v-col cols="6" lg="3"
-                  class="headerInfo py-0" >
+          <v-col cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
 
-            <BaseIconLabelView :text="contactEmailLowerCase"
-                                  :label="mailIcon ? '' : 'Contact Email:'"
-                                  :url="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''"
-                                  :icon="mailIcon"
-                                  icon-tooltip="Email address of the main contact"
-                                  :compactLayout="$vuetify.breakpoint.xs"
-                                  :word-break="true"
-                                  :align-left="true" />
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">fingerprint</v-icon>
+              </v-col>
+              <v-col>
+                <a :href="doiUrl" target="_blank">{{ doi }}</a>
+              </v-col>
+            </v-row>
           </v-col>
 
-          <v-col cols="6" lg="3"
-                  class="headerInfo py-0" >
-            <BaseIconLabelView :text="doi"
-                                  :label="doiIcon ? '' : 'DOI:'"
-                                  :url="doiUrl"
-                                  :icon="doiIcon"
-                                  icon-tooltip="Data Object Identifier"
-                                  :compactLayout="$vuetify.breakpoint.xs"
-                                  :word-break="true"
-                                  :align-left="true" />
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">more_time</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ created }}
+              </v-col>
+            </v-row>
+
           </v-col>
 
-          <v-col cols="6" lg="3"
-                  class="headerInfo py-0" >
-            <BaseIconLabelView :text="license"
-                                  :label="licenseIcon ? '' : 'License:'"
-                                  :url="licenseUrl"
-                                  :icon="licenseIcon"
-                                  icon-tooltip="License for the data files"
-                                  :compactLayout="$vuetify.breakpoint.xs"
-                                  :align-left="true" />
+          <v-col v-if="hasContent && spatialInfo"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">location_pin</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ spatialInfo }}
+              </v-col>
+            </v-row>
+
           </v-col>
+
+
+        </v-row>
+
+        <!-- info list row number 2 -->
+        <v-row v-if="!showPlaceholder && metadataTitle"
+               no-gutters
+               class="pt-1"
+                justify="end">
+
+          <v-col cols="12"
+                 sm="4"
+                 md="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">email</v-icon>
+              </v-col>
+              <v-col>
+                <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
+              </v-col>
+            </v-row>
+          </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="2"
+                 md="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <!-- empty cell for spacing for the next cells -->
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+              </v-col>
+            </v-row>
+
+          </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <v-row no-gutters
+                   align="center">
+              <v-col class="flex-grow-0 pr-2">
+                <v-icon class="envidatIcon"
+                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                        color="black">update</v-icon>
+              </v-col>
+              <v-col style="font-size: 0.9rem;">
+                {{ modified }}
+              </v-col>
+            </v-row>
+
+          </v-col>
+
+          <v-col v-if="hasContent"
+                 cols="12"
+                 sm="3"
+                 class="headerInfo py-1 py-sm-0" >
+
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip" />
+
+          </v-col>
+
         </v-row>
 
         <v-row no-gutters
@@ -227,6 +331,7 @@
 
           <v-col v-if="tags"
                   cols="12"
+                  sm="9"
                   class="py-0"
                   id="tags"
                   key="tags" >
@@ -281,7 +386,7 @@
               align="center">
 
         <v-col v-if="maxTagsReached"
-               class="px-1" >
+               class="px-1 flex-grow-0" >
           <base-icon-button materialIconName="expand_more"
                             color="primary"
                             :iconColor="showTagsExpanded ? 'accent' : 'primary'"
@@ -294,18 +399,14 @@
 
         </v-col>
 
-        <v-col v-if="metadataState"
-               class="px-1" >
-          <MetadataStateChip :state="metadataState"
-                              :showOnHover="metadataState === 'published'" />
-
+        <v-col v-if="metadataState && showEditButton"
+               class=" flex-grow-1 px-1" >
+          <MetadataStateChip :state="metadataState" />
         </v-col>
 
-        <v-col v-if="hasContent"
-          class="px-1" >
-          <MetadataOrganizationChip :organization="organization"
-                                    :tooltip="organizationTooltip" />
-
+        <v-col v-if="publicationYear"
+               class="flex-grow-0 px-1" >
+          <v-chip small>{{ publicationYear }}</v-chip>
         </v-col>
 
       </v-row>
@@ -331,7 +432,6 @@
 
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';
-import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factories/authorFactory';
@@ -345,7 +445,6 @@ export default {
     TagChip,
     TagChipAuthor,
     TagChipPlaceholder,
-    BaseIconLabelView,
     BaseIconButton,
     MetadataOrganizationChip,
     MetadataStateChip,
@@ -357,16 +456,10 @@ export default {
     contactName: String,
     contactEmail: String,
     doi: String,
-    license: String,
-    licenseUrl: String,
     tags: Array,
     authors: Array,
     maxTags: Number,
     showPlaceholder: Boolean,
-    doiIcon: String,
-    contactIcon: String,
-    mailIcon: String,
-    licenseIcon: String,
     expanded: {
       type: Boolean,
       default: true,
@@ -387,6 +480,22 @@ export default {
     organization: String,
     organizationTooltip: String,
     metadataState: {
+      type: String,
+      default: undefined,
+    },
+    publicationYear: {
+      type: String,
+      default: undefined,
+    },
+    spatialInfo: {
+      type: String,
+      default: undefined,
+    },
+    created: {
+      type: String,
+      default: undefined,
+    },
+    modified: {
       type: String,
       default: undefined,
     },

@@ -12,21 +12,25 @@
  */
 
 import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
-import { getEmptyMetadataInEditingObject } from '@/factories/userEditingFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
   EDITMETADATA_DATA_RESOURCES,
 } from '@/factories/eventBus';
 
+import { getEmptyMetadataInEditingObject } from '@/factories/workflowFactory';
+import { DOI_RESERVED_PROPERTY } from '@/modules/user/store/doiMutationsConsts';
 
 import actions from './userActions';
 import editActions from './editActions';
 import createActions from './createActions';
+import doiActions from './doiActions';
 
 import mutations from './userMutations';
 import editMutations from './editMutations';
 import createMutations from './createMutations';
+import doiMutations from './doiMutations';
+
 
 const userState = {
   error: null,
@@ -41,28 +45,30 @@ const userState = {
   collaboratorDatasetsLoading: false,
   collaboratorDatasets: [],
   collaboratorDatasetsLimit: 1000,
-  userOrganizationLoading: false,
-  userOrganizationIds: [],
-  userOrganizationNames: [],
-  userOrganizations: {},
-  userOrgaDatasetsError: null,
   metadataSavingMessageTimeoutTime: 2500,
   metadataSavingErrorTimeoutTime: 15000,
   lastEditedDataset: '',
   lastEditedDatasetPath: '',
   lastEditedBackPath: '',
+  loadingEditingData: false,
   metadataInEditing: getEmptyMetadataInEditingObject(),
   loadingCurrentEditingContent: false,
   currentEditingContent: null,
   currentEditingContentError: null,
+  uploadNewResourceLoading: false,
   uploadLoading: false,
-  uploadFileId: null,
-  uploadKey: null,
   uploadResource: null,
   uploadMetadataId: null,
   uploadError: null,
   envidatUsers: null,
   envidatUsersError: null,
+  metadataCreationLoading: false,
+  newMetadatasetName: null,
+  metadataCreationError: null,
+  doiLoading: false,
+  [DOI_RESERVED_PROPERTY]: null,
+  doiSuccess: false,
+  doiError: null,
 };
 
 
@@ -89,7 +95,6 @@ export const user = {
 
       return filteredContent;
     },
-    uploadFileId: state => state.uploadFileId,
     uploadResource: state => state.uploadResource,
     uploadResourceId: state => state.uploadResource?.id,
     uploadMetadataId: state => state.uploadMetadataId,
@@ -98,10 +103,12 @@ export const user = {
     ...mutations,
     ...editMutations,
     ...createMutations,
+    ...doiMutations,
   },
   actions: {
     ...actions,
     ...editActions,
     ...createActions,
+    ...doiActions,
   },
 };

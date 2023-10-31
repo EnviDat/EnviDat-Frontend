@@ -35,6 +35,10 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  ACTION_BULK_LOAD_METADATAS_CONTENT,
+  ACTION_LOAD_METADATA_CONTENT_BY_ID,
+  ACTION_METADATA_UPDATE_EXISTING_KEYWORDS,
+  ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
 import catCards from '@/store/categoryCards';
@@ -61,10 +65,15 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+let API_BASE = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
+}
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -191,6 +200,7 @@ export default {
     searchTerm,
     metadataConfig = {},
     isAuthorSearch = false,
+    mode = undefined,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -201,18 +211,20 @@ export default {
     if (loadLocalFile) {
       const datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
       const localSearchResult = localSearch(searchTerm, datasets);
+
       commit(SEARCH_METADATA_SUCCESS, {
         payload: localSearchResult,
         isLocalSearch: true,
+        mode,
       });
       return;
     }
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
-    const query = `query?q=${solrQuery}`;
+    const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
-    const url = urlRewrite(publicOnlyQuery, '/', PROXY);
+    const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
 
     await axios
       .get(url)
@@ -220,6 +232,7 @@ export default {
 
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
+          mode,
         });
       })
       .catch((reason) => {
@@ -247,7 +260,8 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, PROXY);
+    const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?id=${metadataId}`, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -265,12 +279,8 @@ export default {
 
     const metadataConfig = config.metadataConfig || {};
 
-    let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, PROXY);
-
-    if (import.meta.env.DEV && useTestdata) {
-      url = './testdata/packagelist.json';
-    }
+    const actionUrl = ACTION_BULK_LOAD_METADATAS_CONTENT();
+    let url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const localFileUrl = metadataConfig.localFileUrl;
     const loadLocalFile = metadataConfig.loadLocalFile;
@@ -353,9 +363,8 @@ export default {
     try {
       if (isSearchResultContent) {
         const searchContent = this.getters[`${METADATA_NAMESPACE}/searchedMetadatasContent`];
-        const searchContentSize = contentSize(searchContent);
 
-        if (searchContentSize > 0) {
+        if (contentSize(searchContent) > 0) {
           content = Object.values(searchContent);
         }
       } else {
@@ -405,7 +414,8 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, PROXY);
+    const actionUrl = ACTION_METADATA_UPDATE_EXISTING_KEYWORDS();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
 

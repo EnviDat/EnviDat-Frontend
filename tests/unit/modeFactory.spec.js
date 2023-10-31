@@ -6,7 +6,12 @@ import {
   enhanceMetadataWithModeExtras,
 } from '@/factories/modeFactory';
 
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import {
+  EDNA_MODE,
+  EDNA_MODE_EXTRAS_KEY,
+  SWISSFL_MODE,
+  SWISSFL_MODE_EXTRAS_KEY,
+} from '@/store/metadataMutationsConsts';
 import {
   swissFLExtraTags,
 } from '@/modules/metadata/store/swissForestLabTags';
@@ -29,6 +34,26 @@ describe('modeFactory - getModeData', () => {
 
     expect(mode).toBeDefined();
     expect(mode.name).toBe(SWISSFL_MODE);
+    expect(mode.title).toBeDefined();
+    expect(mode.externalUrl).toBeDefined();
+    expect(mode.mainTag).toBeDefined();
+    expect(mode.logo).toBeDefined();
+    expect(mode.icons).toBeDefined();
+    expect(mode.extrasKey).toBe(SWISSFL_MODE_EXTRAS_KEY);
+  });
+
+  it('with eDNA mode', () => {
+
+    const mode = getModeData(EDNA_MODE);
+
+    expect(mode).toBeDefined();
+    expect(mode.name).toBe(EDNA_MODE);
+    expect(mode.title).toBeDefined();
+    expect(mode.externalUrl).toBeDefined();
+    expect(mode.mainTag).toBeDefined();
+    expect(mode.logo).toBeDefined();
+    expect(mode.icons).toBeDefined();
+    expect(mode.extrasKey).toBe(EDNA_MODE_EXTRAS_KEY);
   });
 });
 
@@ -62,9 +87,9 @@ describe('modeFactory - getTagsMergedWithExtras', () => {
 
 describe('modeFactory - enhanceMetadataFromExtras', () => {
   it('empty', () => {
-    const enhancedMetadata = enhanceMetadataWithModeExtras(undefined, undefined);
+    const enhancedMetadata = enhanceMetadataWithModeExtras();
 
-    expect(enhancedMetadata).toBeNull();
+    expect(enhancedMetadata).toBeUndefined();
   });
 
   // it('with SwissFL mode', () => {

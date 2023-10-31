@@ -8,7 +8,8 @@
 
         <v-col cols="2">
           <v-row no-gutters justify="end">
-            <UserAvatar :nameInitials="nameInitials" />
+            <UserAvatar :nameInitials="nameInitials"
+                        :emailHash="emailHash"/>
           </v-row>
         </v-col>
       </v-row>
@@ -30,7 +31,7 @@
  */
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import {
-  ACTION_USER_SIGNOUT,
+  ACTION_OLD_USER_SIGNOUT,
   FETCH_USER_DATA,
   USER_NAMESPACE,
   USER_SIGNOUT,
@@ -56,7 +57,7 @@ export default {
     menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
         this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`, {
-          action: ACTION_USER_SIGNOUT,
+          action: ACTION_OLD_USER_SIGNOUT,
           commit: true,
           mutation: USER_SIGNOUT,
         });

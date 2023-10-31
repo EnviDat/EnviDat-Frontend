@@ -17,11 +17,13 @@ import {
   getSelectedElement,
   selectForEditing,
   setSelected,
-  updateAuthors,
-  updateResource,
 } from '@/factories/userEditingFactory';
 
-import { cleanResourceForFrontend, getFrontendJSON, populateEditingComponents } from '@/factories/mappingFactory';
+import {
+  cleanResourceForFrontend,
+  getFrontendJSONForStep,
+  populateEditingComponents,
+} from '@/factories/mappingFactory';
 
 import {
   EDITMETADATA_AUTHOR,
@@ -34,7 +36,8 @@ import { SET_CONFIG } from '@/store/mainMutationsConsts';
 import {
   createErrorMessage,
   enhanceMetadataFromCategories,
-  extractError,
+  updateAuthors,
+  updateResources,
 } from '@/modules/user/store/mutationFactory';
 
 import {
@@ -48,9 +51,6 @@ import {
   METADATA_EDITING_PATCH_DATASET_OBJECT,
   METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR,
   METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR,
-  METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS,
   METADATA_EDITING_PATCH_RESOURCE,
   METADATA_EDITING_PATCH_RESOURCE_ERROR,
   METADATA_EDITING_PATCH_RESOURCE_SUCCESS,
@@ -88,25 +88,32 @@ export default {
   },
   [METADATA_EDITING_PATCH_RESOURCE](state, resource) {
 
+    state.loadingEditingData = true;
+
     resource.loading = true;
-    updateResource(this, state, resource);
+    updateResources(this, state, resource);
 
     resetErrorObject(state);
   },
   [METADATA_EDITING_PATCH_RESOURCE_SUCCESS](state, { stepKey, resource, message }) {
 
-    let fResource = getFrontendJSON(stepKey, resource);
+    state.loadingEditingData = false;
+
+    let fResource = getFrontendJSONForStep(stepKey, resource);
     fResource = cleanResourceForFrontend(fResource)
     fResource.loading = false;
     fResource.message = message;
 
-    updateResource(this, state, fResource);
+    updateResources(this, state, fResource);
 
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_RESOURCE_ERROR](state, { stepKey, reason }) {
+
+    state.loadingEditingData = false;
+
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
     const selectedResource = getSelectedElement(resources);
 
@@ -133,21 +140,20 @@ export default {
     const previousEmail = getSelectedElement(authors)?.email || '';
     selectForEditing(this, authors, id, previousEmail, 'email');
   },
-  [METADATA_CANCEL_RESOURCE_EDITING](state) {
+  [METADATA_CANCEL_RESOURCE_EDITING]() {
     const resources = this.getters[`${USER_NAMESPACE}/resources`];
 
     const previousId = getSelectedElement(resources)?.id || '';
     setSelected(this, resources, previousId, 'id', false);
   },
-  [METADATA_CANCEL_AUTHOR_EDITING](state) {
+  [METADATA_CANCEL_AUTHOR_EDITING]() {
     const authors = this.getters[`${USER_NAMESPACE}/authors`];
 
     const previousEmail = getSelectedElement(authors)?.email || '';
     setSelected(this, authors, previousEmail, 'email', false);
   },
   [METADATA_EDITING_SAVE_AUTHOR](state, author) {
-
-    author.loading = true;
+    author.loading = false;
 
     updateAuthors(this, state, author);
 
@@ -173,33 +179,9 @@ export default {
   [CLEAR_METADATA_EDITING](state) {
     state.metadataInEditing = {};
   },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY](state, stepKey) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = true;
-  },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY_SUCCESS](state, { stepKey, message }) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
-    editingObject.message = message;
-
-    setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
-    }, state.metadataSavingMessageTimeoutTime);
-  },
-  [METADATA_EDITING_PATCH_DATASET_PROPERTY_ERROR](state, { stepKey, reason }) {
-    const editingObject = state.metadataInEditing[stepKey];
-    editingObject.loading = false;
-    const errorObj = createErrorMessage(reason);
-    editingObject.error = errorObj.message;
-    editingObject.errorDetails = errorObj.details;
-
-    this.dispatch(SET_CONFIG);
-
-    setTimeout(() => {
-      this.commit(`${USER_NAMESPACE}/resetError`, stepKey);
-    }, state.metadataSavingErrorTimeoutTime);
-  },
   [METADATA_EDITING_PATCH_DATASET_OBJECT](state, stepKey) {
+
+    state.loadingEditingData = true;
 
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = true;
@@ -209,6 +191,8 @@ export default {
     editingObject.errorDetails = null;
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_SUCCESS](state, { stepKey, message }) {
+
+    state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
@@ -221,6 +205,8 @@ export default {
     }, state.metadataSavingMessageTimeoutTime);
   },
   [METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR](state, { stepKey, reason }) {
+
+    state.loadingEditingData = false;
 
     const editingObject = state.metadataInEditing[stepKey];
     editingObject.loading = false;
@@ -239,11 +225,15 @@ export default {
   },
   resetMessage(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
-    editingObject.message = null;
+    if (editingObject) {
+      editingObject.message = null;
+    }
   },
   resetError(state, stepKey) {
     const editingObject = state.metadataInEditing[stepKey];
-    editingObject.error = null;
+    if (editingObject) {
+      editingObject.error = null;
+    }
   },
   [METADATA_EDITING_LAST_DATASET](state, payload) {
     state.lastEditedDataset = payload.name;

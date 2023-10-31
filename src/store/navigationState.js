@@ -19,6 +19,8 @@ import {
   SERVICE_PAGENAME,
 } from '@/router/routeConsts';
 
+const domain = import.meta.env.VITE_DOMAIN;
+
 export const navigationItems = [
   // { title: 'Home', icon: 'envidat', toolTip: 'Back to the start page', active: false, path: LANDING_PATH, pageName: LANDING_PAGENAME },
   {
@@ -45,7 +47,7 @@ export const navigationItems = [
     icon: 'account_tree',
     toolTip: 'Overview of the different organizations',
     active: false,
-    path: 'https://www.envidat.ch/organization',
+    path: `${domain}/organization`,
     pageName: 'external',
     disabled: false,
   },

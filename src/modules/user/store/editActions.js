@@ -15,7 +15,7 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
-  getBackendJSON,
+  getBackendJSONForStep,
   mapFrontendToBackend,
   populateEditingComponents,
   stringifyResourceForBackend,
@@ -46,21 +46,16 @@ import {
   USER_NAMESPACE,
 } from './userMutationsConsts';
 
-// don't use an api base url or proxy when using testdata
+// don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
-
-const sleep = (milliseconds) =>
-  // eslint-disable-next-line no-promise-executor-return
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
-
 
 export default {
   async [METADATA_EDITING_SAVE_AUTHOR]({ commit, dispatch }, { data: author, id }) {
@@ -105,7 +100,7 @@ export default {
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const postData = mapFrontendToBackend(stepKey, data);
     postData.id = id;
@@ -123,8 +118,7 @@ export default {
           // details: `Changes saved ${stepKey} data for ${id}`,
         });
 
-        const authorsMap = this.getters[`${METADATA_NAMESPACE}/authorsMap`];
-        populateEditingComponents(commit, response.data.result, categoryCards, authorsMap);
+        populateEditingComponents(commit, response.data.result, categoryCards);
       })
       .catch((reason) => {
         commit(METADATA_EDITING_PATCH_DATASET_OBJECT_ERROR, {
@@ -138,11 +132,11 @@ export default {
     commit(METADATA_EDITING_PATCH_RESOURCE, data);
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     // create a local copy to avoid mutation of vuex store objects / properties
     const localData = { ...data };
-    const cleaned = getBackendJSON(stepKey, localData);
+    const cleaned = getBackendJSONForStep(stepKey, localData);
     const postData = stringifyResourceForBackend(cleaned);
 
     await axios.post(url, postData)
@@ -171,7 +165,7 @@ export default {
     const categoryCards = this.state.categoryCards;
 
     const actionUrl = ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const postData = {
       id,

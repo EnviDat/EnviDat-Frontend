@@ -35,7 +35,7 @@
 
     <div v-if="$slots.datasets" class="datasetsGrid" :class="paddings">
       <TitleCard
-        :title="datasetsTitle"
+        :title="datasetsTotal > 0 ? `${datasetsTitle} of ${datasetsTotal} Total` : datasetsTitle"
         cardClass="pa-2"
         titleClass="titleCardClass"
       />
@@ -86,6 +86,10 @@ export default {
     datasetsTitle: String,
     newsTitle: String,
     articlesTitle: String,
+    datasetsTotal: {
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
     paddings() {

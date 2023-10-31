@@ -1,6 +1,6 @@
 stages:
   - test
-# - visual-regression
+  - visual-regression
   - config
   - build
   - package
@@ -13,30 +13,20 @@ variables:
 
 .trigger-rules:
   rules:
-    - if: >
-          ($CI_COMMIT_REF_NAME == "main"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
-      when: always
-    - if: >
-          ($CI_COMMIT_REF_NAME == "staging"
-          && $CI_PIPELINE_SOURCE == "merge_request_event")
-      when: always
-    - if: >
-          ($CI_COMMIT_REF_NAME == "develop"
-          && $CI_PIPELINE_SOURCE == "push")
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
       changes:
-        - src/**/*
-        - public/**/*
-        - tests/**/*
-        - nginx/**/*
-        - chart/**/*
-        - .env*
-        - package.json*
-        - vue.*
-        - Dockerfile
-        - .gitlab-ci.yml
+        - 'src/**/*'
+        - 'public/**/*'
+        - 'tests/**/*'
+        - 'nginx/**/*'
+        - 'chart/**/*'
+        - '.env*'
+        - 'package.json*'
+        - 'vue.*'
+        - 'Dockerfile'
+        - '.gitlab-ci.yml'
       when: always
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: $CI_PIPELINE_SOURCE == "web"
       when: always
 
 set-vars:
@@ -50,18 +40,23 @@ set-vars:
       apk add jq yq --no-cache
       --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
-    - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
+    # extract version number from package.json, to make it available in the app
+    - >
+      echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
+    # move all variables from the from the CI / CD into the build variables
     - cat .env >> build.env
-    - echo "NAMESPACE=envidat-frontend" >> build.env
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
-    - echo CHART_VERSION=$(yq '.version' chart/Chart.yaml) >> build.env
+    # bash "source" command loads all the variables from the file
     - source build.env
+    # extract version number from package.json, to make it available in the app
     - >
       echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
       >> build.env
+    - echo "content of build.env"
+    - cat build.env
   artifacts:
     reports:
       dotenv: build.env
@@ -76,76 +71,68 @@ run-tests:
       - node_modules/
     policy: pull-push
   before_script:
-    - npm install
+    - npm ci
   script:
     - npm run test
 
-# visual-regression:
-#   extends: .trigger-rules
-#   stage: visual-regression
-#   image: docker.io/node:16
-#   cache:
-#     key: node-modules
-#     paths:
-#       - node_modules/
-#     policy: pull
-#   before_script:
-#     - npm install
-#   script:
-#     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+visual-regression:
+  stage: visual-regression
+  image: docker.io/node:16
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull
+  before_script:
+    - npm ci
+  script:
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+  dependencies:
+    - set-vars
+  when: manual
 
 modify-env:
   extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: push
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
-    - "python -c
-      \"import os;
-      import dotenv;
-      file = '.env.production';
-      branch = os.getenv('CI_COMMIT_REF_NAME'); \
-      \
-      key = 'VITE_ENVIDAT_PROXY';
-      value = 'https://envidat.ch' if branch == 'main' \
-      else f'https://ckan-{branch}.envidat.ch';
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_CONFIG_URL';
-      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json';
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_ENVIDAT_DOMAIN';
-      value = 'https://frontend.s3-website-zh.os.switch.ch' \
-      if branch == 'main' \
-      else ( \
-          f'https://frontend-{branch}.s3-website-zh.os.switch.ch' \
-      );
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_OTEL_NAME';
-      value = f'frontend-{branch}';
-      dotenv.set_key(file, key, value, quote_mode='never')\"
-      "
+    - |
+      python -c "import os
+      import dotenv
+
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
+
+      key = 'VITE_DOMAIN'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_API_ROOT'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_CONFIG_URL'
+      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
+      dotenv.set_key(file, key, value, quote_mode='never')"
+    - echo "created content for .env.production:"
+    - cat .env.production
+  artifacts:
+    paths:
+      - .env.production
 
 image-build:
   extends: .trigger-rules
   stage: build
   image:
-    name: gcr.io/kaniko-project/executor:debug
+    name: gcr.io/kaniko-project/executor:v1.9.1-debug
     entrypoint: [""]
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: pull
   before_script:
     - mkdir -p /kaniko/.docker
     - >
@@ -153,6 +140,9 @@ image-build:
       "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
       | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
   script:
+    - echo "With content of .env.production"
+    - cat .env.production
+    - echo "Going to build image '${IMAGE_NAME}'"
     - >
       /kaniko/executor
       --force
@@ -166,6 +156,9 @@ image-build:
       --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
       --build-arg INTERNAL_REG="${INTERNAL_REG}"
       --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
+  dependencies:
+    - set-vars
+    - modify-env
 
 tag-commit-sha:
   extends: .trigger-rules
@@ -204,43 +197,8 @@ rclone-sync:
       else
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
+      echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
     - >
       rclone --verbose sync
       /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
-
-collect:
-  stage: release
-  image: "${INTERNAL_REG}/envidat-frontend:${VERSION}-main"
-  rules:
-    - if: $CI_COMMIT_TAG
-  variables:
-    GIT_STRATEGY: none
-  script:
-    - echo "Copying build dist to project dir"
-    - mkdir -p $CI_PROJECT_DIR
-    - mv /usr/share/nginx/html $CI_PROJECT_DIR/envidat-frontend
-    - echo "Creating frontend artifact."
-  artifacts:
-    name: frontend-${VERSION}
-    paths:
-      - ./envidat-frontend
-
-release:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:v0.13.0
-  rules:
-    - if: $CI_COMMIT_TAG
-  script:
-    - echo "Running the release job."
-  needs:
-    - job: collect
-      artifacts: true
-  release:
-    name: 'Release $CI_COMMIT_TAG'
-    description: 'Release created using the release-cli.'
-    tag_name: $CI_COMMIT_TAG
-    assets:
-      links:
-        - name: 'Frontend build'
-          url: 'https://gitlabext.wsl.ch/EnviDat/EnviDat-Frontend/-/jobs/artifacts/${CI_COMMIT_TAG}/download?job=collect'

@@ -24,6 +24,7 @@
             clearable
             clear-icon="close"
             :error-messages="validationErrors.url"
+            @keyup="blurOnEnterKey"
             @input="checkCreateButtonDisabled"
           />
         </v-col>
@@ -53,8 +54,9 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import * as yup from 'yup';
+
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { isObjectValidCheckAllProps } from '@/factories/userEditingValidations';
 
 export default {
@@ -64,6 +66,11 @@ export default {
   },
   computed: {},
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     checkCreateButtonDisabled() {
 
       const urlSchema = yup.object({

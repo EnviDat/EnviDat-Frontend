@@ -109,7 +109,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { EDIT_METADATA_ADD_PUBLICATION_TITLE } from '@/factories/metadataConsts';
+import { EDIT_METADATA_ADD_PUBLICATION_TITLE, EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseCitationView from '@/components/BaseElements/BaseCitationView.vue';
 
@@ -250,7 +250,7 @@ export default {
       cardInstructions: 'Add DORA permantant Id (PID) or a Data Object Identifer (DOI).',
       subtitlePreview: 'Preview Publications resolved via DORA',
       pId: 'Permant Id',
-      doi: 'Data Object Identifier',
+      doi: EDIT_METADATA_DOI_LABEL,
     },
     validationErrors: {
       relatedPublicationsText: null,

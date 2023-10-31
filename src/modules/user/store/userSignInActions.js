@@ -16,7 +16,7 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
-  ACTION_GET_USER_CONTEXT,
+  ACTION_OLD_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
   SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
@@ -26,19 +26,19 @@ import {
   requestMethodsForLoginActions,
   USER_SIGNIN_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
-  ACTION_API_TOKEN,
+  ACTION_USER_SIGNIN_TOKEN,
 } from './userMutationsConsts';
 
 
-// don't use an api base url or proxy when using testdata
+// don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 
@@ -59,7 +59,7 @@ export default {
       // reset the data to avoid being part of the post data in the request
       data = undefined;
     }
-    url = urlRewrite(url, API_BASE, ENVIDAT_PROXY);
+    url = urlRewrite(url, API_BASE, API_ROOT);
 
     // if the url is directly to a file it has to be a get call
     // const method = url.includes('.json') ? 'get' : 'post';
@@ -69,7 +69,7 @@ export default {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
 
-          if (actionUrl === ACTION_API_TOKEN()) {
+          if (actionUrl === ACTION_USER_SIGNIN_TOKEN()) {
             // make an additional call with the token to get the cookie set
             const token = response.data.result.token;
 
@@ -91,7 +91,7 @@ export default {
     commit(USER_EDITING_UPDATE);
 
     const actionUrl = ACTION_USER_EDITING_UPDATE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     // the userId is the minimum, only add the other data if there is
     // data to patch
@@ -112,7 +112,7 @@ export default {
 
       await dispatch(SIGNIN_USER_ACTION,
         {
-          action: ACTION_GET_USER_CONTEXT,
+          action: ACTION_OLD_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });

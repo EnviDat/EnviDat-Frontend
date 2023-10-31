@@ -173,7 +173,7 @@ function getConfigUrls(configs, testStationsConfigUrl = './testdata/stationsConf
   const stationParametersUrl = configs.gcnetStationParameters?.url || null;
   let geoConfigUrl = configs.geoServicesConfig?.url || null;
 
-  if (import.meta.env.DEV) {
+  if (import.meta.env?.DEV) {
     // stationsConfigUrl = ''; // testStationsConfigUrl;
     // stationParametersUrl = ''; // testStationParametersUrl;
 

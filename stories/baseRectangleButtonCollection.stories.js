@@ -14,8 +14,6 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 export default {
   title: '1 Base Elements / Rectangle Buttons Collection',
   component: BaseRectangleButton,
-  decorators: [],
-  parameters: {},
 };
 
 const Template = (args, { argTypes }) => ({

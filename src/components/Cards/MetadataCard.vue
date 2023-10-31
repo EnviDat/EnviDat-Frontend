@@ -4,7 +4,8 @@
     hover
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    style="height: 100%;"
+    class="fill-height"
+    :dark="false"
     @click.native="cardClick"
   >
     <!-- <v-card-title primary-title class="pa-0"> -->
@@ -54,9 +55,9 @@
     <v-card-text
       v-if="showCardBody"
       :class="{
-        ['cardText']: $vuetify.breakpoint.mdAndUp,
-        ['compactText']: flatLayout || $vuetify.breakpoint.smAndDown,
-        ['pr-5']: flatLayout,
+        cardText: $vuetify.breakpoint.mdAndUp,
+        compactText: flatLayout || $vuetify.breakpoint.smAndDown,
+        'pr-5': flatLayout,
       }"
     >
       <v-container fluid class="pa-0 fill-height">
@@ -98,8 +99,12 @@
       "
     >
       <v-container v-if="showCardBody" class="pa-0">
-        <v-row v-if="state" class="pb-1" no-gutters justify="end">
-          <v-col class="cardIcons shrink">
+
+        <v-row v-if="state"
+               class="pb-1"
+               no-gutters
+               justify="end">
+          <v-col class="cardIcons">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
         </v-row>
@@ -148,22 +153,25 @@
 
       <v-container v-if="!showCardBody" class="pa-0">
         <v-row no-gutters class="justify-end">
+
           <v-col v-if="role" class="pl-1 shrink">
             <UserRoleChip :role="role" />
           </v-col>
-          <v-col v-if="state" class="pl-1 shrink">
+
+          <v-col v-if="state"
+                 class="pl-1">
             <MetadataStateChip :state="state" :showOnHover="!hover" />
           </v-col>
 
-          <v-col v-if="organization" class="pl-1 shrink">
-            <MetadataOrganizationChip
-              :organization="organization"
-              :tooltip="organizationTooltip"
-              :showOnHover="
-                showOrganizationOnHover === true ||
-                  (showOrganizationOnHover === undefined && !hover)
-              "
-              @organizationClicked="$emit('organizationClicked', $event)"
+          <v-col v-if="organization"
+                 class="pl-1 shrink">
+            <MetadataOrganizationChip :organization="organization"
+                                      :tooltip="organizationTooltip"
+                                      :showOnHover="
+                                        showOrganizationOnHover === true ||
+                                          (showOrganizationOnHover === undefined && !hover)
+                                      "
+                                      @organizationClicked="$emit('organizationClicked', $event)"
             />
           </v-col>
 
@@ -257,12 +265,12 @@ import { stripMarkdown } from '@/factories/stringFactory';
 // http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
 
 export default {
+  name: 'MetadataCard',
   props: {
     id: String,
     title: String,
     subtitle: String,
     name: String,
-    type: Number,
     restricted: Boolean,
     favourit: Boolean,
     tags: {
@@ -373,11 +381,11 @@ export default {
     },
     maxTitleLengthReached() {
       return (
-        (this.flatLayout && this.title.length > this.flatTagtextLength) ||
-        (this.isCompactLayout && this.title.length > this.compactTitleLength) ||
+        (this.flatLayout && this.title?.length > this.flatTagtextLength) ||
+        (this.isCompactLayout && this.title?.length > this.compactTitleLength) ||
         (!this.isCompactLayout &&
           !this.flatLayout &&
-          this.title.length > this.titleLength)
+          this.title?.length > this.titleLength)
       );
     },
     isCompactLayout() {
@@ -567,7 +575,6 @@ export default {
   font-size: 14px !important;
   opacity: 0.75;
   line-height: 1.2em !important;
-  color: rgba(0, 0, 0, 0.87) !important;
   overflow: hidden;
 }
 

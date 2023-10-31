@@ -15,17 +15,22 @@
 import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
 
 import {
+  EDITMETADATA_AUTHOR_LIST,
+  EDITMETADATA_DATA_RESOURCES,
   EDITMETADATA_NETWORK_ERROR,
   eventBus,
 } from '@/factories/eventBus';
-import { VALIDATION_ERROR } from './userMutationsConsts';
+
+import { updateEditingArray } from '@/factories/userEditingFactory';
+
+import { USER_NAMESPACE, VALIDATION_ERROR } from './userMutationsConsts';
 
 
-export function extractError(store, reason, errorProperty = 'error') {
+export function extractUserError(store, reason, errorProperty = 'error') {
 
   let type = '';
   let field = '';
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+  let msg = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
 
   if (reason?.response && reason.response.status !== 200) {
     msg = `${reason.response.status} ${reason.response.statusText}
@@ -60,15 +65,16 @@ export function extractError(store, reason, errorProperty = 'error') {
   store._vm.$set(store.state.user, errorProperty, msg);
 }
 
-export function createErrorMessage(reason) {
-  let msg = 'There was an error on the server, please try again. If it consists please contact envidat@wsl.ch.';
+const defaultMessage = 'There was an error. Please try again. If it persists, please contact envidat@wsl.ch for assistance.';
+export function createErrorMessage(reason, message = defaultMessage) {
+  let msg = message;
   let details = '';
   let status = 500;
 
   if (reason?.response) {
 
     status = reason.response.status;
-    msg = 'Saving failed ';
+
     if (status === 403) {
       msg += ' you are not authorized';
     }
@@ -130,4 +136,18 @@ export function enhanceMetadataFromCategories(store, metadatas) {
 
   const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
   return isArrayInput ? enhanced : enhanced[0];
+}
+
+export function updateResources(store, state, newRes) {
+  const resources = store.getters[`${USER_NAMESPACE}/resources`];
+
+  const updatedResources = updateEditingArray(resources, newRes, 'id');
+  store._vm.$set(state.metadataInEditing[EDITMETADATA_DATA_RESOURCES], 'resources', updatedResources);
+}
+
+export function updateAuthors(store, state, newAuthor) {
+  const authors = state.metadataInEditing[EDITMETADATA_AUTHOR_LIST].authors;
+
+  const updatedAuthors = updateEditingArray(authors, newAuthor, 'email');
+  store._vm.$set(state.metadataInEditing[EDITMETADATA_AUTHOR_LIST], 'authors', updatedAuthors);
 }

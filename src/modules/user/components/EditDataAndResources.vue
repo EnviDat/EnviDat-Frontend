@@ -92,6 +92,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { mapGetters, mapState } from 'vuex';
 import {
   eventBus,
   CANCEL_EDITING_RESOURCE,
@@ -130,7 +131,6 @@ import {
 
 import { getSelectedElement } from '@/factories/userEditingFactory';
 
-import { mapGetters, mapState } from 'vuex';
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
 const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
@@ -150,6 +150,14 @@ export default {
     resources: {
       type: Array,
       default: () => [],
+    },
+    dataLicenseTitle: {
+      type: String,
+      default: undefined,
+    },
+    dataLicenseUrl: {
+      type: String,
+      default: undefined,
     },
 /*
     metadataId: {
@@ -215,9 +223,23 @@ export default {
       'userLoading',
     ]),
     ...mapState(USER_NAMESPACE, [
-        'envidatUsers',
-        'uploadError',
+      'envidatUsers',
+      'uploadError',
     ]),
+    resourceUploadError() {
+      if (this.$store) {
+        return this.uploadError;
+      }
+
+      return null;
+    },
+    allEnviDatUsers() {
+      if (this.$store) {
+        return this.envidatUsers;
+      }
+
+      return undefined;
+    },
     resourceUploadActive() {
       if (this.$store) {
         return this.config?.userEditMetadataConfig?.resourceUploadActive || false;
@@ -238,6 +260,8 @@ export default {
     metadataResourcesGenericProps() {
       return {
         resources: this.resources,
+        dataLicenseTitle: this.dataLicenseTitle,
+        dataLicenseUrl: this.dataLicenseUrl,
         resourcesConfig: {
           downloadActive: false,
         },
@@ -267,15 +291,15 @@ export default {
         ...this.selectedResource,
         ...mergedSize,
         userEditMetadataConfig,
-        envidatUsers: this.envidatUsers,
+        envidatUsers: this.allEnviDatUsers,
       };
     },
     editDropResourceObject() {
       return {
         metadataId: this.metadataId,
         legacyUrl: this.linkAddNewResourcesCKAN,
-        error: this.uploadError?.message || this.uppyError?.name,
-        errorDetails: this.uploadError?.details || this.uppyError?.message,
+        error: this.resourceUploadError?.message || this.uppyError?.name,
+        errorDetails: this.resourceUploadError?.details || this.uppyError?.message,
       };
     },
     selectedResource() {
@@ -305,7 +329,8 @@ export default {
           });
       }
     },
-    uploadStarted({ id, fileIDs }) {
+    uploadStarted() {
+    // uploadStarted({ id, fileIDs }) {
       // data object consists of `id` with upload ID and `fileIDs` array
       // with file IDs in current upload
       // data: { id, fileIDs }
@@ -407,16 +432,13 @@ export default {
       eventBus.emit(SAVE_EDITING_RESOURCE, resourceProps);
     },
     showFullScreenImage(url) {
-      if (url) {
-        this.$emit('previewImageClicked', this.url);
-        eventBus.emit(OPEN_TEXT_PREVIEW, this.url);
-      }
+      eventBus.emit(OPEN_TEXT_PREVIEW, url);
     },
   },
   data: () => ({
     EDIT_METADATA_RESOURCES_TITLE,
     localResCounter: 0,
-    envidatDomain: import.meta.env.VITE_ENVIDAT_PROXY,
+    envidatDomain: import.meta.env.VITE_API_ROOT,
     uploadProgessText: null,
     uploadProgressIcon: '',
     uppyError: null,

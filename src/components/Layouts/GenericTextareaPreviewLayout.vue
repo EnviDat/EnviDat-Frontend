@@ -4,7 +4,7 @@
       <v-row>
         <v-col :cols="columns">
           <v-textarea
-              class="heightAndScroll"
+              class="heightAndScroll pt-1"
             :label="labelTextarea"
             :placeholder="placeholderTextarea"
             outlined
@@ -37,7 +37,7 @@
     <v-row v-if="!isVerticalLayout">
       <v-col>
         <v-textarea
-          class="heightAndScroll"
+          class="heightAndScroll pt-1"
           :label="labelTextarea"
           :placeholder="placeholderTextarea"
           outlined

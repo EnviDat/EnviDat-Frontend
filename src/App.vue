@@ -26,13 +26,13 @@
                          @clickedReport="catchReportClicked(notification.key)"/>
     </div>
 
-    <the-navigation :style="`z-index: ${NavigationZIndex}`"
+    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
                     :navigationItems="navigationItems"
                     :version="appVersion"
                     @menuClick="catchMenuClicked"
                     @itemClick="catchItemClicked"/>
 
-    <the-navigation-toolbar v-if="showToolbar"
+    <TheNavigationToolbar v-if="showToolbar"
                             ref="TheNavigationToolbar"
                             class="envidatToolbar"
                             :style="`z-index: ${NavToolbarZIndex}`"
@@ -49,24 +49,13 @@
                             @continueClick="catchContinueClick"/>
 
     <v-main>
+
       <v-container class="pa-2 pa-sm-3 fill-height"
                    fluid
                    v-on:scroll="updateScroll()"
                    id="appContainer"
                    ref="appContainer"
                    :style="pageStyle">
-
-        <v-row v-if="maintenanceBannerVisible"
-               id="maintenanceBanner"
-               no-gutters
-               class="pb-2">
-          <v-col>
-            <TextBanner :text="maintenanceBannerText"
-                        confirmText="Okay"
-                        :bannerColor="maintenanceBannerColor"
-                        :confirmClick="catchMaintenanceConfirmClick"/>
-          </v-col>
-        </v-row>
 
         <v-row class="fill-height"
                id="mainPageRow">
@@ -80,6 +69,23 @@
           </v-col>
         </v-row>
       </v-container>
+
+      <TextBanner v-if="maintenanceBannerVisible"
+                  id="maintenanceBanner"
+                  style="position: absolute; top: 0; z-index: 1001; width: 100%; "
+                  :text="maintenanceBannerText"
+                  confirmText="Okay"
+                  :bannerColor="maintenanceBannerColor"
+                  :confirmClick="catchMaintenanceConfirmClick"/>
+
+      <TextBanner v-if="showCookieInfo"
+                  id="cookieBanner"
+                  style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
+                  :text="cookieInfoText"
+                  icon="cookie"
+                  confirmText="Okay"
+                  bannerColor="highlight"
+                  :confirmClick="catchCookieInfoOk"/>
 
       <v-dialog v-model="showReloadDialog"
                 persistent
@@ -103,8 +109,10 @@
 
         <ConfirmTextCard :title="dialogTitle"
                          :text="dialogMessage"
-                         confirmText="Ok"
+                         :confirmText="dialogConfirmText"
                          :confirmClick="dialogCallback"
+                         :cancelText="dialogCancelText"
+                         :cancelClick="dialogCancelCallback"
         />
 
       </v-dialog>
@@ -164,10 +172,13 @@ import {
 import {
   USER_SIGNIN_NAMESPACE,
   GET_USER_CONTEXT,
-  ACTION_GET_USER_CONTEXT,
+  ACTION_OLD_GET_USER_CONTEXT,
   SIGNIN_USER_ACTION,
   USER_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
+  FETCH_USER_DATA,
+  ACTION_USER_SHOW,
+  USER_GET_DATASETS,
 } from '@/modules/user/store/userMutationsConsts';
 
 
@@ -188,6 +199,8 @@ import TheNavigation from '@/components/Navigation/TheNavigation.vue';
 import TheNavigationToolbar from '@/components/Navigation/TheNavigationToolbar.vue';
 import '@/../node_modules/skeleton-placeholder/dist/bone.min.css';
 
+import { ENVIDAT_SHOW_COOKIE_BANNER } from '@/factories/metadataConsts';
+
 const GenericFullScreenModal = () => import('@/components/Layouts/GenericFullScreenModal.vue');
 const ConfirmTextCard = () => import('@/components/Cards/ConfirmTextCard.vue');
 const TextBanner = () => import('@/components/Layouts/TextBanner.vue');
@@ -196,30 +209,42 @@ const NotificationCard = () => import('@/components/Cards/NotificationCard.vue')
 export default {
   name: 'App',
   beforeCreate() {
-    // check for the backend version
+    // in beforeCreate none of the vue component exists, so not method can be called
+    // the this.$store does exist, so call it here directly, then in created setup the reloadConfigTimer
     this.$store.dispatch(SET_CONFIG);
   },
   created() {
+    this.reloadConfigTimer = window.setInterval(this.loadConfig, 60000);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.on(SHOW_DIALOG, this.openGenericDialog);
     eventBus.on(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
+    const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
+    this.showCookieInfo = strShowCookieInfo!== 'false';
   },
   beforeDestroy() {
+    window.clearInterval(this.reloadConfigTimer);
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
   },
   mounted() {
-    this.startParticles();
     this.checkUserSignedIn();
+
+    this.$nextTick(() => {
+      this.startParticles();
+    })
   },
   updated() {
     this.updateActiveStateOnNavItems();
   },
   methods: {
+    loadConfig() {
+      // check for the backend version
+      this.$store.dispatch(SET_CONFIG);
+    },
     startParticles() {
       if (!this.currentParticles) {
         if (this.showDecemberParticles) {
@@ -383,6 +408,10 @@ export default {
         query: index,
       });
     },
+    catchCookieInfoOk() {
+      localStorage.setItem(ENVIDAT_SHOW_COOKIE_BANNER, 'false');
+      this.showCookieInfo = false;
+    },
     redirectMessage(componentName = 'Sign In') {
       const userName = this.user?.name || '';
       return `Hello ${userName}, we are urgently working on the "${componentName}" to fix an issue.\n We are going to open a new tab with the legacy website, so you can do any dataset editing there.\n (if it doesn't work please disable popup blocking and try again).`;
@@ -397,7 +426,11 @@ export default {
         callback = this.redirectToLegacyDashboard;
       }
 
-      eventBus.emit(SHOW_DIALOG, 'Redirect to Legacy Website!', message, callback);
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Redirect to Legacy Website!',
+        message,
+        callback,
+      });
     },
     redirectToLegacyDashboard() {
       const userName = this.user?.name || '';
@@ -417,7 +450,7 @@ export default {
       this.handleRedirectCallBack(true);
     },
     // eslint-disable-next-line default-param-last
-    openGenericDialog(title = 'Redirect to Legacy Website!', message, callback) {
+    openGenericDialog({ title = 'Redirect to Legacy Website!', message, callback, cancelCallback, confirmText = 'Ok', cancelText = 'Cancel' }) {
       this.dialogTitle = title;
 
       if (!message) {
@@ -426,12 +459,26 @@ export default {
         this.dialogMessage = message;
       }
 
-      this.dialogCallback = () => {
-        if (callback) {
-          callback();
+      if (cancelCallback) {
+        this.dialogCancelCallback = () => {
+          cancelCallback();
+          this.showInfoDialog = false;
         }
-        this.showInfoDialog = false;
+      } else {
+        this.dialogCancelCallback = undefined;
       }
+
+      if (callback) {
+        this.dialogCallback = () => {
+          callback();
+          this.showInfoDialog = false;
+        }
+      } else {
+        this.dialogCallback = undefined;
+      }
+
+      this.dialogConfirmText = confirmText;
+      this.dialogCancelText = cancelText;
 
       this.showInfoDialog = true;
     },
@@ -473,18 +520,38 @@ export default {
       }
 
     },
-    checkUserSignedIn() {
+    fetchUserDatasets() {
+      this.$store.dispatch(`${USER_NAMESPACE}/${FETCH_USER_DATA}`,
+        {
+          action: ACTION_USER_SHOW,
+          body: {
+            id: this.user.id,
+            include_datasets: true,
+          },
+          commit: true,
+          mutation: USER_GET_DATASETS,
+        });
+    },
+    async checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
+
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
-        action = ACTION_GET_USER_CONTEXT;
+        action = ACTION_OLD_GET_USER_CONTEXT;
       }
       
-      this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
+      await this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
+          data: {
+            'include_datasets': true,
+          },
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
+
+      if (this.user) {
+        this.fetchUserDatasets();
+      }
     },
   },
   computed: {
@@ -680,13 +747,18 @@ export default {
   },
   /* eslint-disable object-curly-newline */
   data: () => ({
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_API_ROOT,
     reloadDialogCanceled: false,
     showInfoDialog: false,
     showModal: false,
     dialogTitle: 'Redirect to Legacy Website!',
+    dialogConfirmText: 'Ok',
+    dialogCancelText: 'Cancel',
     dialogMessage: '',
     dialogCallback: () => {},
+    dialogCancelCallback: () => {},
+    showCookieInfo: true,
+    cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
     redirectToDashboard: false,
     appVersion: import.meta.env.VITE_VERSION,
     showMenu: true,
@@ -699,6 +771,7 @@ export default {
     navigationItems,
     userMenuItems,
     editMaintenanceMessage: `There is maintenance going on, please don't edit anything return to the <a href='./#${USER_DASHBOARD_PATH}' >dashboard page </a> or the <a href='/' >main page</a> for details!.`,
+    reloadConfigTimer: null,
   }),
 };
 </script>
@@ -839,11 +912,6 @@ $font-family: 'Raleway', sans-serif;
 
 .smallChip > .v-chip__content > .v-chip__close > .v-icon {
   font-size: 15px !important;
-}
-
-.authorTag span,
-.envidatChip span {
-  cursor: pointer !important;
 }
 
 .authorTag span {

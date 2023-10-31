@@ -20,14 +20,14 @@ import {
 } from '@/modules/about/store/dmpMutationsConsts';
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-const staticRoot = import.meta.env.VITE_ENVIDAT_STATIC_ROOT;
+const staticRoot = import.meta.env.VITE_STATIC_ROOT;
 
 const actions = {
   [GET_DMP]({ commit }) {
     commit(GET_DMP);
 
     let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
-    if (import.meta.env.DEV) {
+    if (import.meta.env?.DEV) {
       url = './testdata/dmp.md';
     }
 
@@ -57,7 +57,7 @@ const mutations = {
     const errObj = getSpecificApiError(details, reason);
     state.dmpMarkdown = `${details}: ${reason}`;
 
-    if (import.meta.env.DEV) {
+    if (import.meta.env?.DEV) {
       state.dmpMarkdown +=
         ' \nThis is normal when developing locally on localhost:8080';
     }

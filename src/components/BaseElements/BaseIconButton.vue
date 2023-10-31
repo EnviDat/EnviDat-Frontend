@@ -25,6 +25,7 @@
           :color="color ? color : disabled ? '' : 'primary'"
           :href="url"
           :disabled="disabled"
+          :class="buttonClass"
           v-bind="{ ['target']: '_blank' }"
           @click.stop="onClick"
         >
@@ -64,6 +65,7 @@
       :color="color ? color : disabled ? '' : 'primary'"
       :href="url"
       :disabled="disabled"
+      :class="buttonClass"
       v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
     >
@@ -152,6 +154,8 @@ export default {
     disabled: Boolean,
     count: Number,
     overwriteHeight: Number,
+    isFancy:Boolean,
+    isGlowing:Boolean,
   },
   data: () => ({
     hoverBadge: false,
@@ -172,6 +176,13 @@ export default {
 
       return height;
     },
+    buttonClass() {
+      let classes = this.isFancy ? 'fancyButton' : '';
+
+      classes += this.isGlowing ? ' glowingButton' : '';
+
+      return classes;
+    },
   },
   methods: {
     onClick() {
@@ -180,3 +191,45 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.fancyButton {
+  background-color: #00BFAD;
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C,
+      #00BFAD
+    );
+}
+
+.fancyButton:hover {
+  background-image:
+    linear-gradient(
+      to right bottom,
+      #E2F27C 20%,
+      #00BFAD
+    );
+}
+
+.glowingButton {
+  animation-name: glow;
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px 0 yellow;
+  }
+
+  50% {
+    box-shadow: 0 0 10px 10px yellow;
+  }
+
+  to {
+    box-shadow: 0 0 10px 0 yellow;
+  }
+}
+
+</style>

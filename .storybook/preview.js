@@ -1,4 +1,3 @@
-// import { addDecorator } from '@storybook/vue';
 // noinspection ES6UnusedImports
 
 import vuetify from './vuetify_storybook';
@@ -9,11 +8,15 @@ import App from '../src/App.vue';
 
 import Vue from 'vue';
 import globalMethods from '../src/factories/globalMethods';
+import { envidatViewportParameters } from '~/stories/js/envidatViewports';
+
+import vuetify_storybook_styles from './vuetify_storybook_styles.css';
 
 Vue.mixin(globalMethods);
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
 export const parameters = {
+  layout: 'fullscreen',
   options: {
     storySort: {
       method: 'alphabetical',
@@ -21,14 +24,15 @@ export const parameters = {
 //      locales: '',
     },
   },
+  ...envidatViewportParameters,
 };
 
 export const decorators = [
   (Story) => ({
     vuetify,
     template: `
-    <v-app style="font-family: 'Raleway, sans-serif' !important;">
-      <v-main>
+    <v-app class="vuetifyStorybookApp">
+      <v-main >
         <v-container fluid class="pa-0">
           <story/>
         </v-container>
@@ -37,33 +41,3 @@ export const decorators = [
     `,
   }),
 ];
-
-/*
-export const parameters = {
-  actions: { argTypesRegex: "^on[A-Z].*" },
-  controls: {
-    matchers: {
-      color: /(background|color)$/i,
-      date: /Date$/,
-    },
-  },
-}
-*/
-
-
-/*export const decorators = [
-//addDecorator(() => (
-  {
-  vuetify,
-  template: `
-    <v-app style="font-family: 'Raleway, sans-serif' !important;">
-      <v-main>
-        <v-container fluid >
-          <story/>
-        </v-container>
-      </v-main>
-    </v-app>
-    `,
-  }
-// ));
-];*/

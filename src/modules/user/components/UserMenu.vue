@@ -2,7 +2,9 @@
   <v-menu transition="slide-y-transition" bottom offset-y id="UserMenu">
     <template v-slot:activator="{ on, attrs }">
       <div v-bind="attrs" v-on="on">
-        <UserAvatar :size="size" :nameInitials="nameInitials" />
+        <UserAvatar :size="size"
+                    :nameInitials="nameInitials"
+                    :emailHash="emailHash"/>
       </div>
     </template>
     <v-list>
@@ -30,17 +32,19 @@
  * Created at     : 2020-07-14 14:18:32
  * Last modified  : 2020-08-25 14:31:13
  */
+import { mapState } from 'vuex';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
 import { getNameInitials } from '@/factories/authorFactory';
+
 import {
-  ACTION_USER_SIGNOUT,
+  ACTION_OLD_USER_SIGNOUT,
   ACTION_USER_SIGNOUT_REVOKE_TOKEN,
   SIGNIN_USER_ACTION,
   USER_SIGNIN_NAMESPACE,
   USER_SIGNOUT,
 } from '@/modules/user/store/userMutationsConsts';
+
 import { LANDING_PATH, USER_SIGNOUT_PATH } from '@/router/routeConsts';
-import { mapState } from 'vuex';
 
 export default {
   name: 'UserMenu',
@@ -60,6 +64,9 @@ export default {
     nameInitials() {
       return getNameInitials(this.userObject);
     },
+    emailHash() {
+      return this.userObject?.emailHash;
+    },
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
     },
@@ -70,12 +77,11 @@ export default {
   methods: {
     async menuClick(item) {
       if (item?.path === USER_SIGNOUT_PATH) {
-        let action
-        action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+        let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
 
         // In case where useTokenSignIn===false, but Azure login is used
         const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
-        if (action === ACTION_USER_SIGNOUT && !ckanCookie) {
+        if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
           action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
         }
 

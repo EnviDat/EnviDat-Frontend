@@ -12,22 +12,17 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import {
-  getCollaboratorCapacity,
-  isUserGroupAdmin,
-} from '@/factories/userEditingValidations';
+import { getCollaboratorCapacity } from '@/factories/userEditingValidations';
 
 import {
   enhanceElementsWithStrategyEvents,
   SELECT_EDITING_DATASET_PROPERTY,
 } from '@/factories/strategyFactory';
 
-import { enhanceTagsOrganizationDatasetFromAllDatasets } from '@/factories/metadataFilterMethods';
 import {
   enhanceMetadataFromCategories,
-  extractError,
+  extractUserError,
 } from '@/modules/user/store/mutationFactory';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { enhanceUserObject } from '@/factories/mappingFactory';
 
@@ -41,19 +36,10 @@ import {
   USER_GET_DATASETS,
   USER_GET_DATASETS_ERROR,
   USER_GET_DATASETS_SUCCESS,
-  USER_GET_ORGANIZATION_IDS,
-  USER_GET_ORGANIZATION_IDS_ERROR,
-  USER_GET_ORGANIZATION_IDS_SUCCESS,
-  USER_GET_ORGANIZATIONS,
-  USER_GET_ORGANIZATIONS_ERROR,
-  USER_GET_ORGANIZATIONS_RESET,
-  USER_GET_ORGANIZATIONS_SUCCESS,
-  USER_SIGNIN_NAMESPACE,
   GET_USER_LIST,
   GET_USER_LIST_SUCCESS,
   GET_USER_LIST_ERROR,
 } from './userMutationsConsts';
-
 
 
 function resetErrorObject(state) {
@@ -78,7 +64,7 @@ export default {
     state.envidatUsers = users;
   },
   [GET_USER_LIST_ERROR](reason) {
-    extractError(this, reason, 'envidatUsersError');
+    extractUserError(this, reason, 'envidatUsersError');
   },
   [USER_GET_DATASETS](state) {
     state.userDatasetsLoading = true;
@@ -102,7 +88,7 @@ export default {
   [USER_GET_DATASETS_ERROR](state, reason) {
     state.userDatasetsLoading = false;
 
-    extractError(this, reason, 'userDatasetsError');
+    extractUserError(this, reason, 'userDatasetsError');
   },
   [USER_GET_COLLABORATOR_DATASET_IDS](state) {
     state.collaboratorDatasetIdsLoading = true;
@@ -129,7 +115,7 @@ export default {
   [USER_GET_COLLABORATOR_DATASET_IDS_ERROR](state, reason) {
     state.collaboratorDatasetIdsLoading = false;
 
-    extractError(this, reason);
+    extractUserError(this, reason);
   },
   [USER_GET_COLLABORATOR_DATASETS](state) {
     state.collaboratorDatasetsLoading = false;
@@ -161,85 +147,6 @@ export default {
   [USER_GET_COLLABORATOR_DATASETS_ERROR](state, reason) {
     state.collaboratorDatasetsLoading = false;
 
-    extractError(this, reason);
-  },
-  [USER_GET_ORGANIZATION_IDS](state) {
-    state.userOrganizationLoading = true;
-    state.userOrganizationIds = [];
-    state.userOrganizationNames = [];
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATION_IDS_SUCCESS](state, payload) {
-    state.userOrganizationLoading = false;
-
-    const orgaIds = [];
-    const orgaNames = [];
-    const orgaList = [];
-
-    if (payload?.length > 0 && payload instanceof Array) {
-      for (let i = 0; i < payload.length; i++) {
-        const orga = payload[i];
-        orgaIds.push(orga.id);
-        orgaNames.push(orga.name);
-        orgaList.push(orga);
-      }
-    }
-
-    // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state, 'userOrganizationIds', orgaIds);
-    this._vm.$set(state, 'userOrganizationNames', orgaNames);
-    this._vm.$set(state, 'userOrganizationsList', orgaList);
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATION_IDS_ERROR](state, reason) {
-    state.userOrganizationLoading = false;
-
-    extractError(this, reason);
-  },
-  [USER_GET_ORGANIZATIONS](state) {
-    state.userOrganizationLoading = true;
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATIONS_RESET](state) {
-    state.userOrganizationLoading = false;
-    state.userOrganizations = {};
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATIONS_SUCCESS](state, payload) {
-    state.userOrganizationLoading = false;
-
-    // let datasets = payload?.packages || [];
-    const orgaId = payload?.id || payload?.name;
-
-    if (payload?.packages.length > 0) {
-
-      const metadataContents = this.state[METADATA_NAMESPACE]?.metadatasContent || {};
-
-      payload.packages = enhanceTagsOrganizationDatasetFromAllDatasets(payload.packages, metadataContents);
-
-      payload.packages = enhanceMetadataFromCategories(this, payload.packages);
-
-      const userId = this.state[USER_SIGNIN_NAMESPACE]?.user?.id || null;
-
-      // TODO - check config for dataset editing enabled
-      
-      if (isUserGroupAdmin(userId, payload)) {
-        enhanceElementsWithStrategyEvents(payload.packages, SELECT_EDITING_DATASET_PROPERTY);
-      }
-    }
-
-    // use this._vm.$set() to make sure computed properties are recalulated
-    this._vm.$set(state.userOrganizations, orgaId, payload);
-
-    resetErrorObject(state);
-  },
-  [USER_GET_ORGANIZATIONS_ERROR](state, reason) {
-    state.userOrganizationLoading = false;
-
-    extractError(this, reason, 'userOrgaDatasetsError');
+    extractUserError(this, reason);
   },
 };

@@ -10,9 +10,23 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package. */
 
- import axios from 'axios';
 
+import axios from 'axios';
 import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
+import msalPlugin from '@/plugins/msalPlugin';
+
+const msalConfig = {
+  auth: {
+    clientId: '4cb09289-cbb9-48a3-bb16-87ef3508bad3',
+    authority: 'https://login.microsoftonline.com/5d407ffa-9961-403b-ab1f-6e7867089add',
+    redirect_uri: '/',
+    postLogoutRedirectUri: '/',
+  },
+  cache: {
+    cacheLocation: 'sessionStorage',
+  },
+  mode: 'popup',
+}
 
  export const initAxios = (app, store) => {
    const storeRef = store;
@@ -26,6 +40,9 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
      const errStack = err.stack
        ? err.stack
        : 'No error stack available, please let the envidat team know of this Error!';
+
+     console.error(`err: ${msg} . Error Stack: ${errStack}`);
+     
      handleGenericError(storeRef, msg, info, errStack);
    };
 
@@ -36,7 +53,7 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
  // }
 
    const excludedDomains = [
-     process.env.VITE_ENVIDAT_STATIC_ROOT,
+     process.env.VITE_STATIC_ROOT,
      process.env.VITE_CONFIG_URL,
    ];
 
@@ -77,4 +94,9 @@ import { handleGenericAPIError, handleGenericError } from './factories/notificat
        return Promise.reject(error);
      },
    );
+ }
+
+
+ export function initAzureLogin(vue){
+   vue.use(msalPlugin, msalConfig);
  }

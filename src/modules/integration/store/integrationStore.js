@@ -22,7 +22,7 @@ const integrationState = {
   list: [],
 };
 
-const staticRoot = process.env.VITE_ENVIDAT_STATIC_ROOT;
+const staticRoot = process.env.VITE_STATIC_ROOT;
 const useTestdata = process.env.VITE_USE_TESTDATA === 'true';
 
 export const integration = {
@@ -51,7 +51,7 @@ export const integration = {
 
       let url = `${staticRoot}/integration/integrationlist.json?nocache=${new Date().getTime()}`;
 
-      if (import.meta.env.DEV && useTestdata) {
+      if (import.meta.env?.DEV && useTestdata) {
         url = './testdata/integrationlist.json';
       }
 

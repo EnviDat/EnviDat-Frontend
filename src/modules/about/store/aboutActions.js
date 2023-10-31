@@ -25,8 +25,8 @@ import {
   GET_POLICIES_SUCCESS,
 } from '@/modules/about/store/aboutMutationsConsts';
 
-const staticRoot = import.meta.env.VITE_ENVIDAT_STATIC_ROOT;
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const staticRoot = import.meta.env.VITE_STATIC_ROOT;
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 export default {
   [GET_GUIDELINES]({ commit }) {
@@ -34,7 +34,7 @@ export default {
 
     let url = `${staticRoot}/guidelines/guidelines.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env.DEV && useTestdata) {
+    if (import.meta.env?.DEV && useTestdata) {
       url = './testdata/guidelines.md';
     }
 
@@ -51,7 +51,7 @@ export default {
 
     let url = `${staticRoot}/policies/policies.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env.DEV && useTestdata) {
+    if (import.meta.env?.DEV && useTestdata) {
       url = './testdata/policies.md';
     }
 
@@ -69,7 +69,7 @@ export default {
 
     let url = `${staticRoot}/guidelines/dmp.md?nocache=${new Date().getTime()}`;
 
-    if (import.meta.env.DEV && useTestdata) {
+    if (import.meta.env?.DEV && useTestdata) {
       url = './testdata/dmp.md';
     }
 

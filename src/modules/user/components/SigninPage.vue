@@ -48,11 +48,11 @@ import { mapState } from 'vuex';
 
 import { eventBus, SHOW_REDIRECT_DASHBOARD_DIALOG } from '@/factories/eventBus';
 import {
-  ACTION_GET_USER_CONTEXT,
-  ACTION_REQUEST_TOKEN,
-  ACTION_API_TOKEN,
   ACTION_API_TOKEN_AZURE,
-  ACTION_USER_SIGNOUT,
+  ACTION_OLD_GET_USER_CONTEXT,
+  ACTION_OLD_REQUEST_TOKEN,
+  ACTION_USER_SIGNIN_TOKEN,
+  ACTION_OLD_USER_SIGNOUT,
   SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
   REQUEST_TOKEN,
@@ -60,8 +60,8 @@ import {
   USER_SIGNOUT,
   VALIDATION_ERROR,
   ACTION_GET_USER_CONTEXT_TOKEN,
-  ACTION_REQUEST_TOKEN_RESET,
-  ACTION_USER_SIGNIN,
+  ACTION_RESET_TOKEN,
+  ACTION_OLD_USER_SIGNIN,
   USER_SIGNIN,
   ACTION_USER_SIGNOUT_REVOKE_TOKEN,
 } from '@/modules/user/store/userMutationsConsts';
@@ -143,7 +143,7 @@ export default {
     checkUserSignedIn() {
       let action = ACTION_GET_USER_CONTEXT_TOKEN;
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
-        action = ACTION_GET_USER_CONTEXT;
+        action = ACTION_OLD_GET_USER_CONTEXT;
       }
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
@@ -152,16 +152,17 @@ export default {
         mutation: GET_USER_CONTEXT,
       });
     },
-    async submitDataAndSignIn(email, keyOrToken, isAzure=false) {
+    async submitDataAndSignIn(email, keyOrToken, isAzure = false) {
       let action
+
       if (isAzure) {
         action = ACTION_API_TOKEN_AZURE
       } else {
-        action = this.useTokenSignin ? ACTION_API_TOKEN : ACTION_USER_SIGNIN;
-      };
+        action = this.useTokenSignin ? ACTION_USER_SIGNIN_TOKEN : ACTION_OLD_USER_SIGNIN;
+      }
 
       let bodyParams
-      if (action === ACTION_USER_SIGNIN) {
+      if (action === ACTION_OLD_USER_SIGNIN) {
         bodyParams = { email, key: keyOrToken }
       } else {
         bodyParams = { email, token: keyOrToken }
@@ -177,14 +178,16 @@ export default {
         },
       );
 
-      // token login (if useTokenSignin = true) makes an additional call within the action with the token
+      // the SIGNIN_USER_ACTION action (if useTokenSignin = true) makes an additional
+      // call within the action with the token
+
       if (!this.useTokenSignin && !this.errorField && !this.errorFieldText) {
 
         // Get user context via the old login
         await this.$store.dispatch(
         `${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
-          action: ACTION_GET_USER_CONTEXT,
+          action: ACTION_OLD_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });
@@ -203,7 +206,7 @@ export default {
       }
     },
     catchRequestToken(email) {
-      const action = this.useTokenSignin ? ACTION_REQUEST_TOKEN_RESET : ACTION_REQUEST_TOKEN;
+      const action = this.useTokenSignin ? ACTION_RESET_TOKEN : ACTION_OLD_REQUEST_TOKEN;
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,
@@ -213,14 +216,14 @@ export default {
       });
     },
     catchSignOut() {
-      let action
-      action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_USER_SIGNOUT;
+      let action = this.useTokenSignin ? ACTION_USER_SIGNOUT_REVOKE_TOKEN : ACTION_OLD_USER_SIGNOUT;
 
       // In case where useTokenSignIn===false, but Azure login is used
       const ckanCookie = (`; ${document.cookie}`).split('; ckan-beaker=').pop().split(';')[0];
-      if (action === ACTION_USER_SIGNOUT && !ckanCookie) {
+      if (action === ACTION_OLD_USER_SIGNOUT && !ckanCookie) {
         action = ACTION_USER_SIGNOUT_REVOKE_TOKEN
       }
+
 
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`, {
         action,

@@ -14,7 +14,7 @@
           @error="avataaarError" />
 -->
 
-    <div v-if="showInitials"
+    <div v-show="showInitials"
           id="jazzIconContainer"
           ref="jazzIcon"
           :style="`opacity: 0.75; height: ${size}px;`">
@@ -70,7 +70,7 @@ export default {
     },
     color: {
       type: String,
-      default: 'secondary',
+      default: 'highlight',
     },
   },
   mounted() {
@@ -80,20 +80,20 @@ export default {
   },
   computed: {
     backgroundColor() {
-      if (!this.showInitials) {
-        return this.color;
+      if (this.showInitials || this.showGravatar) {
+        return 'transparent';
       }
 
-      return 'transparent';
+      return this.color;
     },
     showGravatar() {
       return !this.gravatarNotLoaded;
     },
     showAvaaatarIcons() {
-      return !this.avataaarNotLoaded && this.emailHash;
+      return !this.avataaarNotLoaded && this.emailHash !== '';
     },
     showInitials() {
-      return !this.showGravatar && !this.showAvaaatarIcons && this.nameInitials;
+      return !this.showGravatar && !!this.nameInitials;
     },
     showFallbackAccountIcon() {
       return !this.emailHash && !this.showGravatar && !this.nameInitials;

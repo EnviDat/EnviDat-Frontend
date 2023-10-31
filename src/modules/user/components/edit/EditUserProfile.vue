@@ -46,6 +46,7 @@
                         id="firstName"
                         :label="labels.firstName"
                         outlined
+                        dense
                         :readonly="checkReadOnly('firstName')"
                         :hint="checkReadOnlyHint('firstName')"
                         prepend-icon="person"
@@ -65,6 +66,7 @@
                         id="lastName"
                         :label="labels.lastName"
                         outlined
+                        dense
                         :readonly="checkReadOnly('lastName')"
                         :hint="checkReadOnlyHint('lastName')"
                         prepend-icon="person"
@@ -84,6 +86,7 @@
                         id="email"
                         :label="labels.email"
                         outlined
+                        dense
                         :readonly="checkReadOnly('email')"
                         :hint="checkReadOnlyHint('email')"
                         prepend-icon="email"
@@ -237,6 +240,7 @@ export default {
         userName: this.userFullName,
         nameInitials: this.initials,
         email: this.emailField,
+        emailHash: this.emailHash,
         datasetCount: this.datasetCount,
       };
     },

@@ -25,7 +25,7 @@ const projectDetail1 = projects[6];
 const projectDetail2 = projects[3];
 
 export default {
-  title: '6 Detail Views / Window Slider',
+  title: '6 Dataset Detail Views / Window Slider',
   decorators: [],
   parameters: {},
 };

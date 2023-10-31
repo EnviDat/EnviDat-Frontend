@@ -12,17 +12,26 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import axios from 'axios';
 import { format, parse } from 'date-fns';
 import seedrandom from 'seedrandom';
 
 import { getAuthorName, getAuthorsCitationString, getAuthorsString } from '@/factories/authorFactory';
 
 import { DIVERSITY, FOREST, HAZARD, LAND, METEO, SNOW } from '@/store/categoriesConsts';
-import axios from 'axios';
+
 import {
   ACCESS_LEVEL_PUBLIC_VALUE,
   getAllowedUserNamesArray,
 } from '@/factories/userEditingFactory';
+import {
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISILBE,
+  METADATA_STATE_VISILBE,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+  PUBLICATION_STATE_RESERVED,
+} from '@/factories/metadataConsts';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -102,7 +111,7 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
       const timeOnly = split[1];
       const timeSplit = timeOnly.split('.');
       let timeToMinutes = timeSplit[0];
-      timeToMinutes = timeToMinutes.substr(0, 5);
+      timeToMinutes = timeToMinutes.substring(0, 5);
 
       formatedDate = `${newDate} ${timeToMinutes}`;
     } else {
@@ -114,6 +123,18 @@ export function formatDate(date, inputFormat = 'yyyy-MM-dd') {
   return formatedDate;
 }
 
+export function getMetadataVisibilityState(metadata) {
+  const state = metadata?.state || null;
+  const priv = metadata?.private || undefined;
+
+  let visibilityState = METADATA_STATE_DRAFT;
+
+  if (state === 'active') {
+    visibilityState = priv ? METADATA_STATE_INVISILBE : METADATA_STATE_VISILBE;
+  }
+
+  return visibilityState;
+}
 
 export function createLicense(dataset) {
   if (!dataset) {
@@ -145,8 +166,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
 
   const contactEmail = maintainer?.email || '';
 
-  const license = createLicense(dataset);
-
   let authors = null;
 
   if (typeof dataset.author === 'string') {
@@ -160,14 +179,15 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     authors = dataset.author;
   }
 
+  const visibility = getMetadataVisibilityState(dataset);
+  const created = formatDate(dataset.metadata_created);
+  const modified = formatDate(dataset.metadata_modified);
+
   return {
     metadataTitle: dataset.title,
     doi: dataset.doi,
     contactName: maintainer ? getAuthorName(maintainer) : '',
     contactEmail,
-    licenseId: license.id,
-    license: license.title,
-    licenseUrl: license.url,
     tags: dataset.tags,
     titleImg: dataset.titleImg,
     maxTags: smallScreen ? 5 : 12,
@@ -176,6 +196,10 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     categoryColor: dataset.categoryColor,
     organization: dataset.organization?.name || '',
     organizationTooltip: dataset.organization?.title || '',
+    metadataState: visibility,
+    spatialInfo: dataset.spatial_info,
+    created,
+    modified,
   };
 }
 
@@ -249,7 +273,7 @@ export function createCitation(dataset) {
     return null;
   }
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_API_ROOT;
 
   const authors = getAuthorsCitationString(dataset);
   const title = dataset.title;
@@ -358,29 +382,56 @@ export function getFileFormat(file) {
   return fileFormat;
 }
 
+/**
+ * public case: "{"allowed_users": "", "level": "public", "shared_secret": ""}"
+ * public (used to be restricted) case: "{"allowed_users": "adrian_meyer,zweifel", "level": "public", "shared_secret": ""}"
+ * restricted signin & same organization case: "{"allowed_users": "", "level": "same_organization", "shared_secret": ""}"
+ * restricted signin & same organization & specific users case: "{"allowed_users": "zhichao_he,zeljka_vulovic", "level": "same_organization", "shared_secret": ""}"
+ *
+ * @param resource {object}
+ * @param resourceOrganizationID {string}
+ * @param signedInUserName {string}
+ * @param signedInUserOrganizationIds {string[]}
+ * @returns {boolean|null}
+ */
 export function isResourceProtectedForUser(resource, resourceOrganizationID, signedInUserName, signedInUserOrganizationIds) {
-  if (!resource || !resourceOrganizationID || !signedInUserName || !signedInUserOrganizationIds) return false;
+  if (!resource) return null;
 
   let allowedUsers = '';
   const restrictedInfo = resource.restricted;
   let isProtected = false;
+  let isPublic = false;
 
   if (typeof restrictedInfo === 'string' && restrictedInfo.length > 0) {
     try {
       const restrictedObj = JSON.parse(restrictedInfo);
+      isPublic = restrictedObj.level === ACCESS_LEVEL_PUBLIC_VALUE;
       isProtected = !!restrictedObj.level && restrictedObj.level !== ACCESS_LEVEL_PUBLIC_VALUE;
       allowedUsers = restrictedObj.allowed_users || restrictedObj.allowedUsers || '';
       // "{"allowed_users": "", "level": "public", "shared_secret": ""}"
     } catch (err) {
-      isProtected = !restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+      isPublic = restrictedInfo.includes(ACCESS_LEVEL_PUBLIC_VALUE);
+      isProtected = !isPublic;
     }
   }
 
-  if (isProtected && signedInUserOrganizationIds.length > 0) {
+  if (isPublic) {
+    return false;
+  }
+
+  if (!signedInUserOrganizationIds) {
+    return isProtected;
+  }
+
+  if (resourceOrganizationID && signedInUserOrganizationIds.length > 0) {
     isProtected = !signedInUserOrganizationIds.includes(resourceOrganizationID);
   }
 
-  if (isProtected && allowedUsers.length > 0) {
+  if (!signedInUserName) {
+    return isProtected;
+  }
+
+  if (allowedUsers) {
     const names = getAllowedUserNamesArray(allowedUsers);
     isProtected = !names.includes(signedInUserName);
   }
@@ -401,7 +452,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
   const created = formatDate(resource.created);
   const modified = formatDate(resource.last_modified);
 
-  const ckanDomain = process.env.VITE_ENVIDAT_PROXY;
+  const ckanDomain = process.env.VITE_API_ROOT;
 
   const resURL = resource.url;
   let fileName = resource.name;
@@ -507,19 +558,6 @@ export function getOrganizationMap(organizations) {
   }
 
   return mainOrgas;
-}
-
-export function getMetadataVisibilityState(metadata) {
-  const state = metadata?.state || null;
-  const priv = metadata?.private || undefined;
-
-  let visibilityState = 'draft';
-
-  if (state === 'active') {
-    visibilityState = priv ? 'unpublished' : 'published';
-  }
-
-  return visibilityState;
 }
 
 export function createDetails(dataset) {
@@ -919,7 +957,7 @@ export function enhanceMetadataEntry(
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
 export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
-  if (metadatas === undefined || metadatas.length <= 0) {
+  if (metadatas === undefined) {
     return undefined;
   }
 
@@ -1188,7 +1226,7 @@ const fallbackPIDUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit
 export function getDoraPidsUrl(pidMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackPIDUrl;
 
-  pidMap.forEach((pid, url) => {
+  pidMap.forEach((pid) => {
     fullUrl += `${pid}|`;
   });
 
@@ -1202,7 +1240,7 @@ const fallbackDoiUrl = 'https://www.dora.lib4ri.ch/wsl/islandora/search/json_cit
 export function getDoraDoisUrl(doiMap, resolveBaseUrl) {
   let fullUrl = resolveBaseUrl || fallbackDoiUrl;
 
-  doiMap.forEach((doi, url) => {
+  doiMap.forEach((doi) => {
     fullUrl += `${doi.replace('/', '~slsh~')}|`;
   });
 
@@ -1292,3 +1330,53 @@ export function formatBytes(a, b = 2) {
 
   return parseFloat((a / c ** f).toFixed(b)) + ' ' + e[f];
 }
+
+export const defaultSwissLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [5.95587, 45.81802],
+        [5.95587, 47.80838],
+        [10.49203, 47.80838],
+        [10.49203, 45.81802],
+        [5.95587, 45.81802],
+      ],
+    ],
+  }],
+};
+export const defaultWorldLocation = {
+  type: 'GeometryCollection',
+  geometries: [{
+    type: 'Polygon',
+    coordinates: [
+      [
+        [-175, -85],
+        [-175, 85],
+        [175, 85],
+        [175, -85],
+        [-175, -85],
+      ],
+    ],
+  }],
+};
+
+/**
+ * Different States of dataset publication (on DataCite for a DOI registration) not to confuse with the different
+ * dataset visibility!
+ *
+ * @type {string[]}
+ */
+export const possiblePublicationStates = [
+  '', // defaults to 'draft' in the components
+  PUBLICATION_STATE_RESERVED,
+  PUBLICATION_STATE_PENDING,
+  PUBLICATION_STATE_PUBLISHED,
+];
+
+export const possibleVisibilityStates = [
+  METADATA_STATE_DRAFT,
+  METADATA_STATE_INVISILBE,
+  METADATA_STATE_VISILBE,
+];

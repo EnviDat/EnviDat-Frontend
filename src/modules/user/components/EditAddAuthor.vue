@@ -66,12 +66,14 @@
                         id="email"
                         :label="labels.labelEmail"
                         outlined
+                        dense
                         :error-messages="validationErrors.email"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
                         prepend-icon="email"
                         :placeholder="labels.placeholderEmail"
                         :value="emailField"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('email', $event)"
                         @input="changeProperty('email', $event)"
@@ -99,7 +101,8 @@
 
           <BaseUserPicker :users="fullNameUsers"
                           :preSelected="preselectAuthorNames"
-                          :hint="labels.authorPickHint"
+                          :readonly="isUserPickerReadOnly"
+                          :hint="isUserPickerReadOnly ? mixinMethods_readOnlyHint('authors') : labels.authorPickHint"
                           @removedUsers="catchPickerAuthorChange($event, false)"
                           @pickedUsers="catchPickerAuthorChange($event, true)"/>
         </v-col>
@@ -123,12 +126,14 @@
                         id="firstName"
                         :label="labels.labelFirstName"
                         outlined
+                        dense
                         :error-messages="validationErrors.firstName"
                         prepend-icon="person"
                         :placeholder="labels.placeholderFirstName"
                         :value="firstNameField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('firstName', $event)"
                         @input="changeProperty('firstName', $event)"
@@ -142,12 +147,14 @@
                         id="lastName"
                         :label="labels.labelLastName"
                         outlined
+                        dense
                         :error-messages="validationErrors.lastName"
                         prepend-icon="person"
                         :placeholder="labels.placeholderLastName"
                         :value="lastNameField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('lastName', $event)"
                         @input="changeProperty('lastName', $event)"
@@ -166,12 +173,14 @@
                         id="affiliation"
                         :label="labels.labelAffiliation"
                         outlined
+                        dense
                         :error-messages="validationErrors.affiliation"
                         prepend-icon="handshake"
                         :placeholder="labels.placeholderAffiliation"
                         :value="affiliationField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('affiliation', $event)"
                         @input="changeProperty('affiliation', $event)"
@@ -185,12 +194,14 @@
                         id="identifier"
                         :label="labels.labelIdentifier"
                         outlined
+                        dense
                         :error-messages="validationErrors.identifier"
                         prepend-icon="card_membership"
                         :placeholder="labels.placeholderIdentifier"
                         :value="identifierField"
                         :readonly="mixinMethods_isFieldReadOnly('authors')"
                         :hint="mixinMethods_readOnlyHint('authors')"
+                        @keyup="blurOnEnterKey"
                         @focusin="focusIn($event)"
                         @focusout="focusOut('identifier', $event)"
                         @input="changeProperty('identifier', $event)"
@@ -244,13 +255,11 @@ import {
   isObjectValid,
 } from '@/factories/userEditingValidations';
 
-import imageContact from '@/assets/icons/contact.png';
-import imageMail from '@/assets/icons/mail.png';
-
 import {
   EDITMETADATA_AUTHOR, EDITMETADATA_CLEAR_PREVIEW,
   EDITMETADATA_OBJECT_UPDATE,
-  eventBus, REMOVE_EDITING_AUTHOR,
+  eventBus,
+  REMOVE_EDITING_AUTHOR,
 } from '@/factories/eventBus';
 
 
@@ -356,8 +365,7 @@ export default {
       const author = this.getAuthorByEmail(this.emailField);
 
       if (author) {
-        const fullName = this.getFullName(author);
-
+        const fullName = getAuthorName(author);
         return fullName ? [fullName] : [];
       }
 
@@ -402,16 +410,18 @@ export default {
 
       return 'Create a new author which is not on any published dataset.';
     },
+    isUserPickerReadOnly() {
+      return this.mixinMethods_isFieldReadOnly('authors');
+    },
   },
   methods: {
+    blurOnEnterKey(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     clearPreviews() {
       this.fillPreviews(null, null, null, null, null);
-    },
-    getFullName(authorObj) {
-      if (!authorObj) {
-        return [];
-      }
-      return getAuthorName(authorObj);
     },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
@@ -476,11 +486,16 @@ export default {
         return;
       }
 
+      const authorObj = {
+        firstName: this.firstNameField,
+        lastName: this.lastNameField,
+      };
+      const fullName = getAuthorName(authorObj);
       // default to filling all the infos from the text-field input
       // so that single text-field changes are captured too
       let authorObject = {
-        firstName: this.firstNameField,
-        lastName: this.lastNameField,
+        ...authorObj,
+        fullName,
         email: this.emailField,
         identifier: this.identifierField,
         affiliation: this.affiliationField,
@@ -592,8 +607,6 @@ export default {
       firstName: null,
       lastName: null,
     },
-    iconName: imageContact,
-    iconMail: imageMail,
   }),
   components: {
     BaseRectangleButton,

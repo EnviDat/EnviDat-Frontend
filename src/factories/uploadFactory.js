@@ -12,19 +12,17 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import Uppy, { debugLogger } from '@uppy/core';
+import Uppy from '@uppy/core';
 import axios from 'axios';
 import AwsS3Multipart from '@uppy/aws-s3-multipart';
-/*
-import GoldenRetriever from '@uppy/golden-retriever';
-import Tus from '@uppy/tus';
-*/
 
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_DELETE_RESOURCE,
   METADATA_UPLOAD_FILE,
   METADATA_UPLOAD_FILE_INIT,
+  METADATA_UPLOAD_FILE_ERROR,
+  METADATA_UPLOAD_FILE_SUCCESS,
   USER_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
 
@@ -38,13 +36,13 @@ import {
 
 
 let API_BASE = '';
-let ENVIDAT_PROXY = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 let uppyInstance = null;
@@ -155,7 +153,7 @@ export async function initiateMultipart(file) {
   }
 
   const actionUrl = 'cloudstorage_initiate_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const payload = {
     id: resourceId,
@@ -166,10 +164,10 @@ export async function initiateMultipart(file) {
   try {
     const res = await axios.post(url, payload);
 
-    const fileId = res.data.result.id;
+    // const fileId = res.data.result.id;
     const key = res.data.result.name;
 
-    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, { fileId, key });
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE}`, key);
 
     return {
       uploadId: res.data.result.id,
@@ -196,7 +194,7 @@ export async function getSinglePresignedUrl(file) {
 
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
@@ -233,7 +231,7 @@ export async function getSinglePresignedUrl(file) {
 export async function requestPresignedUrl(file, partData) {
 
   const actionUrl = 'cloudstorage_get_presigned_url_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
@@ -287,7 +285,7 @@ export async function updateResourceWithFileUrl(fileUrl, store) {
 export async function completeMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_finish_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
 
   const payload = {
@@ -300,8 +298,11 @@ export async function completeMultipart(file, uploadData) {
     const res = await axios.post(url, payload);
     const fileUrl = res.data?.result?.url || null
 
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_SUCCESS}`);
+
     return { location: fileUrl };
   } catch (error) {
+    storeReference?.commit(`${USER_NAMESPACE}/${METADATA_UPLOAD_FILE_ERROR}`, error);
     console.error(`Multipart completion failed: ${error}`);
     return error;
   }
@@ -310,7 +311,7 @@ export async function completeMultipart(file, uploadData) {
 export async function abortMultipart(file, uploadData) {
 
   const actionUrl = 'cloudstorage_abort_multipart';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   // const metadataId = storeReference?.getters[`${USER_NAMESPACE}/uploadMetadataId`];
   const resourceId = storeReference?.getters[`${USER_NAMESPACE}/uploadResourceId`];
@@ -338,7 +339,7 @@ export async function abortMultipart(file, uploadData) {
 export async function listUploadedParts(file, { uploadId, key }) {
 
   const actionUrl = 'cloudstorage_multipart_list_parts';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
   const payload = {
     uploadId,
@@ -360,7 +361,7 @@ export async function listUploadedParts(file, { uploadId, key }) {
 export async  function getPresignedUrlForDownload(resourceId) {
 
   const actionUrl = 'get_presigned_url_download';
-  const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+  const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
   const payload = { id: resourceId };
 
   try {
@@ -418,7 +419,7 @@ export function unSubscribeOnUppyEvent(event, callback) {
 function createUppyInstance(height = 300, autoProceed = true, restrictions = defaultRestrictions) {
 
   const uppy =  new Uppy();
-  const debug = import.meta.env.DEV;
+  const debug = import.meta.env?.DEV;
 
   uppy.setOptions({
     // use different ids multiple instance, e.g. avatar image upload, resource-upload, etc.
@@ -426,7 +427,6 @@ function createUppyInstance(height = 300, autoProceed = true, restrictions = def
     id: uppyId,
     autoProceed,
     debug,
-    logger: debug ? debugLogger : undefined,
     restrictions,
     height,
   });

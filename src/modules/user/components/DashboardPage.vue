@@ -4,6 +4,12 @@
                 fluid
                 id="DashboardPage">
 
+    <v-progress-linear v-show="loading"
+                       indeterminate
+                       style="position: relative; left: 0; bottom: 0;"
+                       class="mb-2"
+                       height="2"
+                       color="accent" />
     <div v-if="!user"
           class="notSignedinGrid">
 
@@ -18,13 +24,15 @@
 
       <IntroductionCard :userName="user.fullName"
                         :introText="userDashboardConfig.introText"
-                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
-                        :existingClickCallback="existingClickCallback"
-                        :editingClickCallback="editingClickCallback"
-                        :editingDatasetName="lastEditedDataset"
                         :feedbackText="userDashboardConfig.feedbackText"
                         :oldDashboardUrl="oldDashboardUrl"
-                        />
+                        :createClickCallback="canCreateDatasets ? createClickCallback : null"
+                        :editingClickCallback="editingClickCallback"
+                        :editingDatasetName="lastEditedDataset"
+                        :currentLocalDataset="currentLocalDataset"
+                        @localCardClicked="catchLocalCardClick"
+                        @clearButtonClicked="catchClearLocalStorage"
+      />
 
       <UserOrganizationInfo :height="userOrgaInfoCardHeight"
                             :width="userOrgaInfoCardWidth"
@@ -105,8 +113,8 @@
                       :topFilteringLayout="true"
                       :showSearch="false"
                       :showPublicationState="true"
-                      :defaultPublicationState="defaultPublicationState"
                       :reloadAmount="20"
+                      :metadatasContent="metadatasContent"
                       mainScrollClass=".midBoard > .datasetsGrid"
       />
 
@@ -222,10 +230,10 @@
                     :topFilteringLayout="true"
                     :showSearch="false"
                     :showPublicationState="true"
-                    :defaultPublicationState="defaultPublicationState"
                     :reloadAmount="20"
                     :preloadingDistance="10"
                     :showOrganizationOnHover="false"
+                    :metadatasContent="metadatasContent"
                     mainScrollClass=".bottomBoard > .datasetsGrid"
                     />
 
@@ -268,11 +276,10 @@ import {
   FETCH_USER_DATA,
   ACTION_USER_SHOW,
   USER_GET_DATASETS,
-  USER_GET_ORGANIZATION_IDS,
   USER_GET_COLLABORATOR_DATASETS,
   USER_GET_COLLABORATOR_DATASET_IDS,
   ACTION_COLLABORATOR_DATASET_IDS,
-  USER_GET_ORGANIZATIONS, USER_EDITING_UPDATE,
+  USER_EDITING_UPDATE,
 } from '@/modules/user/store/userMutationsConsts';
 
 import {
@@ -288,6 +295,8 @@ import {
   USER_SIGNIN_PATH,
   METADATADETAIL_PAGENAME,
   METADATAEDIT_PAGENAME,
+  METADATA_CREATION_PATH,
+  METADATA_CREATION_PAGENAME,
 } from '@/router/routeConsts';
 
 import {
@@ -302,11 +311,14 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
   isMember,
+  USER_ROLE_ADMIN,
+  USER_ROLE_EDITOR,
+  USER_ROLE_SYSTEM_ADMIN,
 } from '@/factories/userEditingValidations';
 
 import UserNotFound1 from '@/modules/user/assets/UserNotFound1.jpg';
@@ -316,7 +328,9 @@ import {
   EDIT_USER_PROFILE_EVENT,
   eventBus,
   SELECT_EDITING_DATASET,
-  SHOW_REDIRECT_DASHBOARD_DIALOG, USER_PROFILE,
+  SHOW_DIALOG,
+  SHOW_REDIRECT_DASHBOARD_DIALOG,
+  USER_PROFILE,
 } from '@/factories/eventBus';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
@@ -331,6 +345,18 @@ import EditUserProfile from '@/modules/user/components/edit/EditUserProfile.vue'
 import FlipLayout from '@/components/Layouts/FlipLayout.vue';
 import UserOrganizationInfo from '@/components/Cards/UserOrganizationInfo.vue';
 
+import {
+  ORGANIZATIONS_NAMESPACE,
+  USER_GET_ORGANIZATION_IDS,
+  USER_GET_ORGANIZATIONS,
+  USER_GET_ORGANIZATIONS_RESET,
+  USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE,
+} from '@/modules/organizations/store/organizationsMutationsConsts';
+
+import { getPreviewDatasetFromLocalStorage } from '@/factories/userCreationFactory';
+
+import fileIcon from '@/assets/icons/file.png';
+import { METADATA_TITLE_PROPERTY } from '@/factories/metadataConsts';
 
 export default {
   name: 'DashboardPage',
@@ -355,7 +381,7 @@ export default {
 
     if (this.user) {
       this.fetchUserDatasets();
-      this.fetchCollaboratorDatasets()
+      this.fetchCollaboratorDatasets();
       this.fetchUserOrganisationData();
     }
   },
@@ -380,19 +406,22 @@ export default {
       'collaboratorDatasetIds',
       'collaboratorDatasetsLoading',
       'collaboratorDatasets',
-      'userOrganizationLoading',
-      'userOrganizations',
-      'userOrgaDatasetsError',
       'userDatasets',
       'userDatasetsLoading',
       'userDatasetsError',
-      'userOrganizationIds',
       'lastEditedDataset',
       'lastEditedDatasetPath',
+    ]),
+    ...mapState(ORGANIZATIONS_NAMESPACE, [
+      'userOrganizationLoading',
+      'userOrganizations',
+      'userOrganizationIds',
+      'userOrganizationError',
     ]),
     ...mapGetters(METADATA_NAMESPACE, [
       'allTags',
       'updatingTags',
+      'metadatasContent',
     ]),
     userDashboardConfig() {
       return this.config?.userDashboardConfig || {};
@@ -400,15 +429,21 @@ export default {
     dashboardRedirect() {
       return this.userDashboardConfig?.dashboardRedirect || false;
     },
+    userEditMetadataConfig() {
+      return this.config?.userEditMetadataConfig;
+    },
+    datasetCreationActive() {
+      return this.userEditMetadataConfig?.datasetCreationActive || false;
+    },
     loading() {
-      return this.userLoading;
+      return this.userLoading || this.userEditLoading || this.userDatasetsLoading || this.userOrganizationLoading;
     },
     noOrgaDatasetsError() {
-      if (!this.userOrgaDatasetsError) {
+      if (!this.userOrganizationError) {
         return null;
       }
 
-      const errorDetail = `${this.userOrgaDatasetsError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
+      const errorDetail = `${this.userOrganizationError}<br /> <strong>Try reloading the datasets. If the problem persists please let use know via envidat@wsl.ch!</strong>`;
 
       const notification = errorMessage('Error Loading Datasets From Organization', errorDetail);
       notification.timeout = 0;
@@ -436,20 +471,17 @@ export default {
     hasOrgaDatasets() {
       return this.userOrgaDatasetList.length > 0;
     },
-    userOrganizationsList() {
-      const keys = Object.keys(this.userOrganizations);
-
-      if (keys.length > 0) {
-        return Object.values(this.userOrganizations);
-      }
-
-      return [];
-    },
     userOrgaDatasetList() {
       const datasets = [];
 
-      this.userOrganizationsList.forEach(o => {
-        datasets.push(o.packages);
+      if (!this.userOrganizations) {
+        return datasets;
+      }
+
+      this.userOrganizations.forEach(o => {
+        if (o.packages?.length > 0) {
+          datasets.push(o.packages);
+        }
       });
 
       return datasets.flat();
@@ -514,14 +546,14 @@ export default {
       return getNameInitials(this.user);
     },
     usersOrganisationTitle() {
-      if (this.userOrganizationsList?.length === 1) {
-        return this.userOrganizationsList[0].display_name;
+      if (this.userOrganizations?.length === 1) {
+        return this.userOrganizations[0].display_name;
       }
 
       return 'your Organizations';
     },
     allUserdataTags() {
-      const minTagCount = this.userDatasets?.length > 50 ? 10 : 1;
+      const minTagCount = this.userDatasets?.length > 50 ? 5 : 2;
 
       return this.getPopularTagsFromDatasets(this.filteredUserDatasets, minTagCount, undefined, this.filteredUserDatasets.length);
     },
@@ -534,7 +566,7 @@ export default {
       return this.userDashboardConfig.showOldDashboardUrl ? `${this.ckanDomain}${this.dashboardCKANUrl}${this.user.name}` : '';
     },
     userOrganizationRoles() {
-      if (this.userOrganizationsList.length <= 0) {
+      if (this.userOrganizations.length <= 0) {
         return null;
       }
 
@@ -561,9 +593,9 @@ export default {
       const roles = this.organizationRoles;
 
       if (roles) {
-        const matchedRole = roles.filter(r => r.role === 'editor'
-            || r.role === 'admin'
-            || r.role === 'sysadmin');
+        const matchedRole = roles.filter(r => r.role === USER_ROLE_EDITOR
+            || r.role === USER_ROLE_ADMIN
+            || r.role === USER_ROLE_SYSTEM_ADMIN);
         return matchedRole.length > 0;
       }
 
@@ -578,8 +610,8 @@ export default {
     noDatasetsInfos() {
       return {
         title: 'No Datasets',
-        description: "It seems you don't have any datasets.",
-        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset via the legacy website' : '',
+        description: 'It seems you don\'t have any datasets.',
+        actionDescription: this.isEditorAndAbove ? 'Get started and create a new dataset' : '',
         actionButtonText: 'New Dataset',
         image: UserNotFound2,
       };
@@ -592,6 +624,30 @@ export default {
     },
     userLastName() {
       return this.user?.fullName?.split(' ')[1] || '';
+    },
+    currentLocalDataset() {
+      const localStorageInfos = getPreviewDatasetFromLocalStorage();
+
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties,no-unused-expressions
+      this.localDatasetUpdateCount;
+
+      const properties = Object.keys(localStorageInfos);
+
+      if (properties.length <= 0) {
+        return undefined;
+      }
+
+      const localDataset = {
+        title: localStorageInfos[METADATA_TITLE_PROPERTY] ? localStorageInfos[METADATA_TITLE_PROPERTY] : '[Untitled Dataset]',
+        subTitle: localStorageInfos.description,
+        tags: localStorageInfos.keywords,
+        fileIconString: fileIcon,
+        flatLayout: true,
+      };
+
+      enhanceMetadatas([localDataset], undefined, this.categoryCards);
+
+      return localDataset;
     },
   },
   methods: {
@@ -657,10 +713,20 @@ export default {
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
     async fetchUserOrganisationData() {
-      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
       // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+    },
+    async fetchUserOrganisationDataRecursive() {
+      // this was a test to see if the datasets of the organizations the users is in can be
+      // loaded quickly via the package_search, it turns out that include_drafts / include_privte
+      // slows down the search to be unuseable... we need to find another solution
+      this.$store.commit(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_RESET}`);
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+
+      // always call the USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE action because it resolves the store & state also when userOrganizationIds is empty
+      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS_SEARCH_RECURSIVE}`, this.userOrganizationIds);
     },
     catchRefreshClick() {
       if (this.user) {
@@ -681,7 +747,11 @@ export default {
       this.$router.push({ path: USER_SIGNIN_PATH, query: '' });
     },
     createClickCallback() {
-      window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      if (this.datasetCreationActive) {
+        this.$router.push({ path: METADATA_CREATION_PATH, query: '' });
+      } else {
+        window.open(`${this.ckanDomain}${this.createCKANUrl}`, '_blank');
+      }
     },
     existingClickCallback() {
       this.$vuetify.goTo(this.$refs.userDatasets, {
@@ -744,16 +814,47 @@ export default {
         };
 
         this.$store.dispatch(
-            `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
-            payload,
+          `${USER_SIGNIN_NAMESPACE}/${USER_EDITING_UPDATE}`,
+          payload,
         );
+      }
+    },
+    catchLocalCardClick() {
+      this.$router.push({
+        name: METADATA_CREATION_PAGENAME,
+      });
+    },
+    catchClearLocalStorage() {
+      eventBus.emit(SHOW_DIALOG, {
+        title: 'Clear your dataset in creation?',
+        message: 'This dataset is not stored on the server yet! Are you sure you want to delete it?',
+        callback: () => {},
+        cancelCallback: () => {
+          localStorage.clear();
+
+          // increase this number to force the computed property to recalulate because the
+          // localstorage is cleared. Localstorage isn't reactive so the computed prop
+          // won't get it out of the box
+          this.localDatasetUpdateCount++;
+        },
+        confirmText: 'Keep Dataset',
+        cancelText: 'Delete Dataset',
+      });
+    },
+  },
+  watch: {
+    user() {
+      if (this.user) {
+        this.fetchUserDatasets();
+        this.fetchCollaboratorDatasets();
+        this.fetchUserOrganisationData();
       }
     },
   },
   data: () => ({
     dashboardCKANUrl: '/user/',
     createCKANUrl: '/dataset/new',
-    ckanDomain: process.env.VITE_ENVIDAT_PROXY,
+    ckanDomain: process.env.VITE_API_ROOT,
     fileIconString: '',
     title: 'Dashboard',
     PageBGImage: 'app_b_dashboardpage',
@@ -782,12 +883,12 @@ export default {
     },
     noCollaboratorDatasetsInfos: {
       title: 'No Collaborator Datasets',
-      description: "It seems you don't have datasets where you are added as a collaborator.",
+      description: 'It seems you don\'t have datasets where you are added as a collaborator.',
       image: UserNotFound2,
     },
     noOrganizationsInfos: {
       title: 'No Organizations Found',
-      description: "It seems that your aren't assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.",
+      description: 'It seems that your aren\'t assigned to an organisation. Ask your project or group lead to add you as a member or directly as an editor so you can create and edit datasets.',
       image: UserNotFound1,
     },
     userListDefaultControls: [
@@ -798,7 +899,7 @@ export default {
       // LISTCONTROL_MAP_ACTIVE,
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
-    defaultPublicationState: 'draft',
+    localDatasetUpdateCount: 0,
   }),
   components: {
     MetadataList,

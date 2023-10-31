@@ -22,7 +22,6 @@ import MetadataGeo from '@/modules/metadata/components/Geoservices/MetadataGeo.v
 import MetadataPublications from '@/modules/metadata/components/Metadata/MetadataPublications.vue';
 import MetadataFunding from '@/modules/metadata/components/Metadata/MetadataFunding.vue';
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
-import MetadataResources from '@/modules/metadata/components/Metadata/MetadataResources.vue';
 
 import {
   createHeader,
@@ -31,18 +30,9 @@ import {
   createPublications,
   createBody,
   createLocation,
-  createResources,
 } from '@/factories/metaDataFactory';
 
 import { extractAuthorsMap, getFullAuthorsFromDataset } from '@/factories/authorFactory';
-
-import doiIcon from '../src/assets/icons/doi.png';
-import mailIcon from '../src/assets/icons/mail.png';
-import contactIcon from '../src/assets/icons/contact2.png';
-import licenseIcon from '../src/assets/icons/license.png';
-import fileSizeIcon from '../src/assets/icons/fileSize.png';
-import fileIcon from '../src/assets/icons/file.png';
-
 
 // const iconFiles = getIcons();
 
@@ -125,9 +115,6 @@ const funding2 = [
   { grant_number: '', institution: 'Someone you do not know with a long name', institution_url: '' },
 ];
 
-const resources1 = createResources(metadata[1]);
-const resources2 = createResources(metadata[2]);
-
 const body1 = createBody(metadata[0]);
 const body2 = createBody(metadata[1]);
 const authorDeadInfo = {
@@ -166,7 +153,7 @@ const genericProps5 = {
 
 
 export default {
-  title: '6 Detail Views / Metadata Detail Page View',
+  title: '6 Dataset Detail Views / Metadata Detail Page View',
   decorators: [],
   parameters: {},
 };
@@ -207,10 +194,6 @@ export const MetadataHeaderViews = () => ({
       <v-col >
         <metadata-header
           v-bind="smallHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
         />
       </v-col>
     </v-row>
@@ -225,10 +208,6 @@ export const MetadataHeaderViews = () => ({
       <v-col >
         <metadata-header
           v-bind="largeHeader"
-          :doiIcon="doiIcon"
-          :contactIcon="contactIcon"
-          :mailIcon="mailIcon"
-          :licenseIcon="licenseIcon"
           show-edit-button
         />
       </v-col>
@@ -252,10 +231,6 @@ export const MetadataHeaderViews = () => ({
   data: () => ({
     smallHeader,
     largeHeader,
-    doiIcon,
-    contactIcon,
-    licenseIcon,
-    mailIcon,
   }),
 });
 
@@ -607,58 +582,6 @@ export const MetadataFundingViews = () => ({
     genericProps2: {
       funding: funding2,
       showPlaceholder: false,
-    },
-  }),
-});
-
-export const MetadataResourcesViews = () => ({
-  components: { MetadataResources },
-  template: `
-  <v-row >
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericPropsPlaceholder"
-                          :showPlaceholder="genericPropsPlaceholder.showPlaceholder" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProp"
-                          :showPlaceholder="genericProp.showPlaceholder" />
-    </v-col>
-
-    <v-col cols="12" class="py-3">
-      <MetadataResources :genericProps="genericProps2"
-                          :showPlaceholder="genericProps2.showPlaceholder" />
-    </v-col>
-
-  </v-row>
-  `,
-  updated() {
-  },
-  data: () => ({
-    genericProp: {
-      resources: resources1.resources,
-      showPlaceholder: false,
-      doiIcon,
-      contactIcon,
-      licenseIcon,
-      mailIcon,
-      fileIcon,
-      fileSizeIcon,
-    },
-    genericPropsPlaceholder: {
-      resources: null,
-      showPlaceholder: true,
-    },
-    genericProps2: {
-      resources: resources2.resources,
-      showPlaceholder: false,
-      doiIcon,
-      contactIcon,
-      licenseIcon,
-      mailIcon,
-      fileIcon,
-      fileSizeIcon,
     },
   }),
 });

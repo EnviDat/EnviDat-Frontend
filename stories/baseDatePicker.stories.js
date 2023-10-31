@@ -9,19 +9,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-/* eslint-disable import/no-extraneous-dependencies */
 import BaseDatePicker from '@/components/BaseElements/BaseDatePicker.vue';
-import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
-/*
-import { EDITMETADATA_OBJECT_UPDATE, eventBus } from '@/factories/eventBus';
-*/
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+
 
 export default {
   title: '1 Base Elements / Date picker',
   decorators: [],
-  parameters: {
-    ...envidatViewportParameters,
-  },
 };
 
 
@@ -91,3 +85,20 @@ WithMinAndMaxDateError.args = {
   minDate: '2023-02-03',
   maxDate: '2023-02-12',
 };
+
+
+export const MobileWithMinAndMax = Template.bind({});
+MobileWithMinAndMax.args = {
+  ...FilledAndClearable.args,
+  ...WithMinAndMaxDate.args,
+};
+MobileWithMinAndMax.parameters = mobileViewportParams;
+
+export const MobileLargeWithMinAndMax = Template.bind({});
+MobileLargeWithMinAndMax.args = { ...MobileWithMinAndMax.args };
+MobileLargeWithMinAndMax.parameters = mobileLargeViewportParams;
+
+export const TabletWithMinAndMax = Template.bind({});
+TabletWithMinAndMax.args = { ...MobileWithMinAndMax.args };
+TabletWithMinAndMax.parameters = tabletViewportParams;
+

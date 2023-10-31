@@ -14,18 +14,12 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-/*
-import {
-//  mapFrontendToBackend,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
-*/
-
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import {
-  getBackendJSON,
+  getBackendJSONForStep,
   stringifyResourceForBackend,
 } from '@/factories/mappingFactory';
+
 import {
   METADATA_CREATION_RESOURCE,
   METADATA_CREATION_RESOURCE_SUCCESS,
@@ -33,17 +27,22 @@ import {
   ACTION_METADATA_CREATION_RESOURCE,
   METADATA_DELETE_RESOURCE,
   ACTION_METADATA_DELETE_RESOURCE,
+  METADATA_CREATION_DATASET,
+  METADATA_CREATION_DATASET_SUCCESS,
+  METADATA_CREATION_DATASET_ERROR,
+  ACTION_METADATA_CREATION_DATASET,
 } from './userMutationsConsts';
 
-// don't use an api base url or proxy when using testdata
-let API_BASE = '';
-let ENVIDAT_PROXY = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+// don't use an api base url or API_ROOT when using testdata
+let API_BASE = '';
+let API_ROOT = '';
+
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
-  ENVIDAT_PROXY = import.meta.env.VITE_ENVIDAT_PROXY;
+  API_ROOT = import.meta.env.VITE_API_ROOT;
 }
 
 
@@ -54,9 +53,9 @@ export default {
     commit(METADATA_CREATION_RESOURCE);
 
     const actionUrl = ACTION_METADATA_CREATION_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
-    const cleaned = getBackendJSON(EDITMETADATA_DATA_RESOURCE, data);
+    const cleaned = getBackendJSONForStep(EDITMETADATA_DATA_RESOURCE, data);
     const postData = stringifyResourceForBackend(cleaned);
 
     try {
@@ -86,7 +85,7 @@ export default {
     };
 
     const actionUrl = ACTION_METADATA_DELETE_RESOURCE();
-    const url = urlRewrite(actionUrl, API_BASE, ENVIDAT_PROXY);
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     await axios.post(url, postData,
       {
@@ -96,5 +95,31 @@ export default {
       })
       .then(() => true)
       .catch(() => false)
+  },
+  async [METADATA_CREATION_DATASET]({ commit }, data) {
+
+    commit(METADATA_CREATION_DATASET);
+
+    const actionUrl = ACTION_METADATA_CREATION_DATASET();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
+
+    const postData = data;
+
+    try {
+      const response = await axios.post(url, postData);
+
+      const dataset = response.data.result;
+
+      commit(METADATA_CREATION_DATASET_SUCCESS, {
+        dataset,
+        message: 'Dataset created',
+      });
+
+    } catch(reason) {
+      commit(METADATA_CREATION_DATASET_ERROR, {
+        reason,
+      });
+    }
+
   },
 };

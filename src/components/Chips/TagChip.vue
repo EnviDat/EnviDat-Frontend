@@ -2,10 +2,10 @@
   <v-chip
     class="envidatChip"
     :class="{
-      'white--text': highlighted ? true : false,
-      smallChip: $vuetify.breakpoint.smAndDown ? true : false,
+      'white--text': highlighted,
+      smallChip: $vuetify.breakpoint.smAndDown,
     }"
-    v-bind="{ color: highlighted ? 'primary' : color }"
+    :color="highlighted ? 'primary' : color"
     :style="{ height: $vuetify.breakpoint.xsOnly ? '15px' : '' }"
     :small="isSmall"
     close-icon="close"

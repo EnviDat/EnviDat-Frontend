@@ -15,9 +15,18 @@ import actions from './organizationsActions';
 import mutations from './organizationsMutations';
 
 const organizationsState = {
-  organizations: [],
-  organizationsPageBackRoute: null,
   loading: false,
+  organizationIds: [],
+  organizations: [],
+  error: null,
+  organizationsPageBackRoute: null,
+  userOrganizationLoading: false,
+  userOrganizationIds: [],
+  userOrganizations: [],
+  userOrganizationError: null,
+  organizationsDatasetsLimit: 10,
+  userOrgaDatasetTotal: 0,
+  userOrgaDatasetOffset: 0,
 };
 
 export const organizations = {

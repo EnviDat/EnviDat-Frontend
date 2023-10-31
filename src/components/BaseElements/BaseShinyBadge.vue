@@ -10,6 +10,16 @@
 </template>
 
 <script>
+/**
+ * BaseShinyBadge.vue shows a fancy badge / tag with a shiny star.
+ * The shine can be toggled.
+ *
+ * @summary badge / tag with a little star
+ * @author Dominik Haas-Artho
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 export default {
   name: 'BaseShinyBadge',
   props: {
@@ -45,7 +55,7 @@ export default {
   color: white;
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(#35a89d, #00897b);
+  background: linear-gradient(#71c5bd, #00897b);
   border-radius: 999px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   user-select: none;
@@ -61,10 +71,10 @@ export default {
   width: 25px;
   height: 25px;
   position: absolute;
-  top: -12px;
+  top: -6px;
   right: -2px;
-  transform: rotate(-20deg);
   filter: blur(0.5px);
+  animation: progress-circular-rotate 5s linear infinite;
 }
 .shinyBadge span:before, .shinyBadge span:after {
   content: "";
@@ -82,19 +92,5 @@ export default {
   top: 12px;
   background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.7), transparent);
 }
-
-.shinyBadge:before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  background: radial-gradient(97% 235% at 75% 20%, white 0%, rgba(135, 187, 255, 0.7) 38%, rgba(255, 255, 255, 0.21) 100%);
-  top: -1px;
-  right: -1px;
-  bottom: -1px;
-  left: -1px;
-  border-radius: 999px;
-}
-
-
 
 </style>

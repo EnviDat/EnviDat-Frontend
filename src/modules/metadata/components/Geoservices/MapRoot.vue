@@ -97,7 +97,7 @@ export default {
   computed: {
     maxExtent() {
       let extent = null;
-      if (this.site) {
+      if (this.site && this.site.type) {
         if (this.site.type === LOCATION_TYPE_GEOMCOLLECTION) {
           if (this.site.geometries.length === 0) {
             return extent;

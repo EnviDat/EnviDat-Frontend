@@ -49,6 +49,7 @@ import {
   EDITMETADATA_RELATED_PUBLICATIONS,
   eventBus,
 } from '@/factories/eventBus';
+
 import relatedDatasets from '@/modules/user/assets/placeholders/relatedDatasets.jpg';
 import EditCustomFields from '@/modules/user/components/EditCustomFields.vue';
 import EditRelatedDatasets from '@/modules/user/components/EditRelatedDatasets.vue';
@@ -58,6 +59,19 @@ import { USER_NAMESPACE } from '@/modules/user/store/userMutationsConsts';
 export default {
   name: 'MetadataCreationRelatedInfo',
   props: {
+    currentStep: Object,
+    relatedPublicationsText: {
+      type: String,
+      default: undefined,
+    },
+    relatedDatasetsText: {
+      type: String,
+      default: undefined,
+    },
+    customFields: {
+      type: Array,
+      default: undefined,
+    },
     readOnlyFields: {
       type: Array,
       default: () => [],
@@ -67,52 +81,71 @@ export default {
       default: '',
     },
     nextMajorStep: String,
+    isCreationWorkflow: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
-    relatedPublicationsText() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_PUBLICATIONS);
+    relatedPublicationsTextWrap() {
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.relatedPublicationsText;
       }
 
-      return '';
+      if (!this.isCreationWorkflow && this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_RELATED_PUBLICATIONS).relatedPublicationsText;
+      }
+
+      return this.relatedPublicationsText;
     },
-    relatedDatasetsText() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_RELATED_DATASETS);
+    relatedDatasetsTextWrap() {
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.relatedDatasetsText;
       }
 
-      return '';
+      if (!this.isCreationWorkflow && this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_RELATED_DATASETS).relatedDatasetsText;
+      }
+
+      return this.relatedDatasetsText;
     },
-    customFields() {
-      if (this.$store) {
-        return this.$store.getters[
-          `${USER_NAMESPACE}/getMetadataEditingObject`
-        ](EDITMETADATA_CUSTOMFIELDS);
+    customFieldsWrap() {
+      if (this.isCreationWorkflow) {
+        const stepData = this.currentStep.genericProps;
+        return stepData.customFields;
       }
 
-      return [];
+      if (!this.isCreationWorkflow && this.$store) {
+        return this.$store.getters[
+          `${USER_NAMESPACE}/getMetadataEditingObject`
+        ](EDITMETADATA_CUSTOMFIELDS).customFields;
+      }
+
+      return this.customFields;
     },
     editRelatedPublicationsProps() {
       return {
-        ...this.relatedPublicationsText,
+        relatedPublicationsText: this.relatedPublicationsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editRelatedDatasetsProps() {
       return {
-        ...this.relatedDatasetsText,
+        relatedDatasetsText: this.relatedDatasetsTextWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };
     },
     editCustomFieldsProps() {
       return {
-        ...this.customFields,
+        customFields: this.customFieldsWrap,
         readOnlyFields: this.readOnlyFields,
         readOnlyExplanation: this.readOnlyExplanation,
       };

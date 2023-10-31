@@ -38,6 +38,7 @@ import {
   MAP_ZOOM_OUT,
   EDITMETADATA_DATA_GEO_MAP_ERROR,
 } from '@/factories/eventBus';
+import { defaultSwissLocation, defaultWorldLocation } from '@/factories/metaDataFactory';
 
 /* eslint-disable vue/no-unused-components */
 
@@ -475,31 +476,9 @@ export default {
       const geoJSONArray = this.geomanGeomsToGeoJSON(layerArray);
 
       if (type === 'swiss') {
-        geoJSONArray.push({
-          type: 'Polygon',
-          coordinates: [
-            [
-              [5.956, 45.818],
-              [5.956, 47.808],
-              [10.494, 47.808],
-              [10.494, 45.818],
-              [5.956, 45.818],
-            ],
-          ],
-        });
+        geoJSONArray.push(defaultSwissLocation);
       } else if (type === 'world') {
-        geoJSONArray.push({
-          type: 'Polygon',
-          coordinates: [
-            [
-              [-175, -85],
-              [-175, 85],
-              [175, 85],
-              [175, -85],
-              [-175, -85],
-            ],
-          ],
-        });
+        geoJSONArray.push(defaultWorldLocation)
       }
 
       eventBus.emit(MAP_GEOMETRY_MODIFIED, geoJSONArray);

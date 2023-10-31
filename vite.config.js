@@ -5,73 +5,86 @@ import vue from '@vitejs/plugin-vue2';
 import { VuetifyResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
 import { defineConfig, loadEnv } from 'vite';
+import { configDefaults } from 'vitest/dist/config.cjs';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
-import { VitePluginFonts } from 'vite-plugin-fonts';
+import ViteWebfontDownload from 'vite-plugin-webfont-dl'
 import { visualizer } from 'rollup-plugin-visualizer';
 
 import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
-
-export default ({ mode }) => {
+export default ({ mode, config }) => {
     const isProd = mode === 'production'
 
-    if (isProd) {
-        const fileName = `version_${version}.txt`;
-        const existingFilePaths = path.resolve(__dirname, 'public/');
+    const fileName = `version_${version}.txt`;
+    const existingFilePaths = path.resolve(__dirname, 'public/');
 
-        const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
+    const existingVersionFiles = getFilesWithPrefix(existingFilePaths, 'version_');
 
-        // delete any existing files with version_ as prefix to make sure only the latest version is created
-        for (let i = 0; i < existingVersionFiles.length; i++) {
-            const file = existingVersionFiles[i];
-            const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
-            console.log(`Going to delete version file: ${fullPath}`);
-            fs.unlinkSync(fullPath);
-        }
-
-        const filePath = path.resolve(__dirname, 'public/', `${fileName}`);
-
-        try {
-            fs.writeFileSync(filePath, version);
-            console.log(`Created version file ${fileName} for easy build version highlight.`);
-        } catch (err) {
-            console.log(`Tried to created file ${fileName}. Error: ${err}`);
-        }
+    // delete any existing files with version_ as prefix to make sure only the latest version is created
+    for (let i = 0; i < existingVersionFiles.length; i++) {
+        const file = existingVersionFiles[i];
+        const fullPath = path.resolve(`${existingFilePaths}`, `${file}`);
+        console.log(`Going to delete version file: ${fullPath}`);
+        fs.unlinkSync(fullPath);
     }
 
-    console.log(`starting server | version: ${version} | prod: ${isProd}`);
+    const filePath = path.resolve(__dirname, 'public/', `${fileName}`);
 
+    try {
+        fs.writeFileSync(filePath, version);
+        console.log(`Created version file ${fileName} for easy build version highlight in ${filePath}`);
+    } catch (err) {
+        console.log(`Tried to created file ${fileName} in ${filePath}. Error: ${err}`);
+    }
+
+    const env = loadEnv(mode, process.cwd())
+    console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
+    console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
+    console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
+    console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
+    console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+    console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+    console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
+
+    const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true'
 
     return defineConfig({
         plugins: [
-            vue(),
-            eslint(),
-            ViteRequireContext(),
-            Components({
-                resolvers: [
-                  // Vuetify
-                  VuetifyResolver(),
-                ],
-            }),
-            VitePluginFonts({
-              google: {
-                families: [
-                  'Baskervville',
-                  {
-                    name: 'Raleway',
-                    styles: 'wght@400;500;700',
-                  },
-                ],
-              },
-            }),
+          vue(),
+          eslint({
+            exclude: ['/virtual:/**', 'node_modules/**'],
+          }),
+          ViteRequireContext(),
+          Components({
+              resolvers: [
+                // Vuetify
+                VuetifyResolver(),
+              ],
+          }),
+          ViteWebfontDownload(
+            ['https://fonts.googleapis.com/css2?family=Baskervville&family=Raleway:wght@400;500;700&display=swap'],
+            {
+              injectAsStyleTag: true,
+              minifyCss: true,
+              async: true,
+              cache: true,
+              proxy: false,
+            },
+          ),
           visualizer({
             filename: './dist/buildStats.html',
             title : 'EnviDat Build Visualizer',
           }),
         ],
+        test: {
+          exclude: [
+            ...configDefaults.exclude,
+            './tests/unit/ckanRegression.spec.js',
+          ],
+        },
         define: {
             'process.env': loadEnv(mode, process.cwd()),
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
@@ -100,8 +113,8 @@ export default ({ mode }) => {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
           cssCodeSplit: true,
-          minify: isProd,
-          sourcemap: !isProd,
+          minify: !buildSourceMaps,
+          sourcemap: buildSourceMaps,
           emptyOutDir: true,
           rollupOptions: isProd ? {
             output: {
@@ -110,9 +123,13 @@ export default ({ mode }) => {
                 if (id.includes('skeleton-placeholder')) {
                   return 'vendor_skeleton';
                 }
+/*
+                Had to be removed, it caused import errors, when the vendor_leaflet.js tried
+                to import something from the vendors.js
                 if (id.includes('leaflet')) {
                   return 'vendor_leaflet';
                 }
+*/
                 if (id.includes('src/factories')) {
                   return 'envidat_factories';
                 }

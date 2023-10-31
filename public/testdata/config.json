@@ -1,5 +1,5 @@
 {
-  "version": "0.7.573",
+  "version": "0.8.1",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -57,7 +57,8 @@
     },
     "resourcesConfig": {
       "downloadActive": true
-    }
+    },
+    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
   },
   "projectsConfig": {
     "loadLocalFile": false,
@@ -103,19 +104,21 @@
     "decemberParticles": true
   },
   "userEditMetadataConfig": {
+    "doiWorkflowActive": true,
     "publicationYearsList": 30,
     "publicationMaxFunders": 5,
-	  "resourceEditingActive": true,
+    "datasetCreationActive": true,
+    "resourceEditingActive": true,
     "resourceUploadActive": true,
-    "editingRestrictingActive": false,
+    "editingRestrictingActive": true,
     "customFieldsMax": 10,
     "keywordsListWordMax": 2,
     "keywordsCountMin": 5
   },
   "userDashboardConfig": {
     "dashboardRedirect": false,
-    "introText": "Manage your existing datasets, create new ones, have a look at the datasets from your organization(s). <br/>",
-    "feedbackText": "<br />Please <a href='mailto:envidat@wsl.ch'>let us know</a> if you have improvements or issues while using Envidat.<br/>",
+    "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in a unpublished dataset) go to your ",
+    "feedbackText": ". If you have issues while using EnviDat or though of an improvement, please <a href='mailto:envidat@wsl.ch'>let us know</a>.",
     "userEditingEnabled": true,
     "useTokenSignin": true,
     "organizationRolesText": {

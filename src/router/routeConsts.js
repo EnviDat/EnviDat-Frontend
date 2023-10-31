@@ -40,6 +40,9 @@ export const PAGENOTFOUND_PAGENAME = 'PageNotFound';
 export const METADATAEDIT_PATH = '/edit';
 export const METADATAEDIT_PAGENAME = 'MetadataEditPage';
 
+export const METADATA_CREATION_PATH = '/new';
+export const METADATA_CREATION_PAGENAME = 'MetadataCreationPage';
+
 export const USER_SIGNIN_PATH = '/signin';
 export const USER_SIGNIN_PAGENAME = 'SigninPage';
 export const USER_DASHBOARD_PATH = '/dashboard';
