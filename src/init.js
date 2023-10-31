@@ -12,8 +12,8 @@
 
 
 import axios from 'axios';
-import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
 import msalPlugin from '@/plugins/msalPlugin';
+import { handleGenericAPIError, handleGenericError } from './factories/notificationFactory';
 
 const msalConfig = {
   auth: {
