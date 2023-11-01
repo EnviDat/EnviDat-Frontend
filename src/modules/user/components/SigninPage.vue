@@ -166,7 +166,7 @@ export default {
       }
 
       let bodyParams
-      if (action === ACTION_OLD_USER_SIGNIN) {
+      if (action !== ACTION_API_TOKEN_AZURE) {
         bodyParams = { email, key: keyOrToken }
       } else {
         bodyParams = { email, token: keyOrToken }
