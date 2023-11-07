@@ -248,7 +248,13 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 
 import { EDIT_METADATA_ADD_AUTHOR_TITLE } from '@/factories/metadataConsts';
 
-import { createAuthor, getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
+import {
+  createAuthor,
+  getArrayOfFullNames,
+  getAuthorByEmail,
+  getAuthorByName,
+  getAuthorName,
+} from '@/factories/authorFactory';
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
@@ -362,7 +368,7 @@ export default {
       },
     },
     preselectAuthorNames() {
-      const author = this.getAuthorByEmail(this.emailField);
+      const author = getAuthorByEmail(this.emailField, this.existingAuthors);
 
       if (author) {
         const fullName = getAuthorName(author);
@@ -451,7 +457,7 @@ export default {
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author = this.getAuthorByName(pickedAuthorName);
+        const author = getAuthorByName(pickedAuthorName, this.existingAuthors) || {};
         const authorObject = createAuthor(author);
 
         this.fillPreviews(authorObject.email, authorObject.firstName,
@@ -466,16 +472,6 @@ export default {
         this.fillPreviews('', '', '', '', '');
       }
 
-    },
-    getAuthorByName(fullName) {
-      const authors = this.existingAuthors;
-      const found = authors.filter(auth => auth.fullName === fullName);
-      return found[0] || {};
-    },
-    getAuthorByEmail(email) {
-      const authors = this.existingAuthors;
-      const found = authors.filter(auth => auth.email === email);
-      return found[0] || null;
     },
     notifyAuthorChange(property, value) {
       if (this.anyUserElementsActive) {
@@ -493,13 +489,13 @@ export default {
       const fullName = getAuthorName(authorObj);
       // default to filling all the infos from the text-field input
       // so that single text-field changes are captured too
-      let authorObject = {
+      let authorObject = createAuthor({
         ...authorObj,
         fullName,
         email: this.emailField,
         identifier: this.identifierField,
         affiliation: this.affiliationField,
-      };
+      });
 
       if (property === 'email') {
 
@@ -519,7 +515,7 @@ export default {
     },
     getAutoCompletedAuthor(email) {
 
-      const autoAuthor = this.getAuthorByEmail(email);
+      const autoAuthor = getAuthorByEmail(email, this.existingAuthors);
 
       if (autoAuthor) {
         const autoAuthorObj = createAuthor(autoAuthor);

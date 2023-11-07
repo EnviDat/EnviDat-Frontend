@@ -80,7 +80,7 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
-import { getArrayOfFullNames } from '@/factories/authorFactory';
+import { getArrayOfFullNames, getAuthorByName } from '@/factories/authorFactory';
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_AUTHORS_TITLE } from '@/factories/metadataConsts';
 
@@ -173,13 +173,13 @@ export default {
       const fullAuthors = [];
 
       authorsNames.forEach((name) => {
-        let author = this.getAuthorByName(name, this.authors);
+        let author = getAuthorByName(name, this.authors);
 
         // if the author is part of the dataset authors, pick it as it is
         // including the existing dataCredits
         if (!author) {
           // if the author is newly picked, use the existing list as reference
-          author = this.getAuthorByName(name, this.existingEnviDatUsers);
+          author = getAuthorByName(name, this.existingEnviDatUsers);
         }
 
         if (author) {
@@ -206,10 +206,6 @@ export default {
       // DO NOT clear the preview because than the user isn't able to remove the last author
       // this lead to a UX where the user had to add a second author to then remove the first, it
       // changes want to be made
-    },
-    getAuthorByName(fullName, authors) {
-      const found = authors.filter(auth => auth.fullName === fullName);
-      return found.length > 0 ? found[0] : null;
     },
   },
   data: () => ({

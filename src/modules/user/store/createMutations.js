@@ -87,7 +87,7 @@ export default {
     const errorObj = createErrorMessage(reason, 'Resource Creation failed');
     state.uploadError = {
       message: errorObj.message,
-      details: errorObj.errorDetails,
+      details: errorObj.details,
     };
 
   },
@@ -134,7 +134,7 @@ export default {
     const errorObj = createErrorMessage(reason, 'Dataset Creation failed');
     state.metadataCreationError = {
       message: errorObj.message,
-      details: errorObj.errorDetails,
+      details: errorObj.details,
     };
 
   },

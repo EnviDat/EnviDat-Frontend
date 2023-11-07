@@ -31,7 +31,7 @@ function baseDoiError(commit, state, reason, message) {
   const errorObj = createErrorMessage(reason, message);
   state.doiError = {
     message: errorObj.message,
-    details: errorObj.errorDetails,
+    details: errorObj.details,
   };
 }
 

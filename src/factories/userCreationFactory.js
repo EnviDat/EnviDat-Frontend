@@ -321,7 +321,7 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
 
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
-  const name = getMetadataUrlFromTitle(bData.title);
+  const name = bData.name ? bData.name : getMetadataUrlFromTitle(bData.title);
 
   const orgaId = bData.organization?.id || '';
 
