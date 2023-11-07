@@ -71,10 +71,7 @@ export default {
       });
 
     } catch(reason) {
-      commit(METADATA_CREATION_RESOURCE_ERROR, {
-        stepKey: EDITMETADATA_DATA_RESOURCE,
-        reason,
-      });
+      commit(METADATA_CREATION_RESOURCE_ERROR, reason);
     }
   },
   async [METADATA_DELETE_RESOURCE]({ commit }, resourceId) {
@@ -116,9 +113,7 @@ export default {
       });
 
     } catch(reason) {
-      commit(METADATA_CREATION_DATASET_ERROR, {
-        reason,
-      });
+      commit(METADATA_CREATION_DATASET_ERROR, reason);
     }
 
   },

@@ -86,21 +86,10 @@ export function createErrorMessage(reason, message = defaultMessage) {
     const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
-
-      if (errorObj.__type) {
-        details += `${errorObj.__type}: `;
-      }
-
-      if (errorObj.message) {
-        details += errorObj.message;
-      } else if (errorObj.__junk) {
-        details += errorObj.__junk;
-      } else {
-        const errKeys = Object.keys(errorObj);
-        for (let i = 0; i < errKeys.length; i++) {
-          const key = errKeys[i];
-          details += `${key} ${errorObj[key]} `;
-        }
+      const errKeys = Object.keys(errorObj);
+      for (let i = 0; i < errKeys.length; i++) {
+        const key = errKeys[i];
+        details += `${key}: ${ JSON.stringify(errorObj[key]) } `;
       }
 
     } else {

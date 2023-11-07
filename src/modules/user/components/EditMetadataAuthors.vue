@@ -182,7 +182,7 @@ export default {
 
       for (let i = 0; i < newList.length; i++) {
         const fullName = newList[i];
-        const author = this.authorsFields.filter((a) => a.fullName === fullName)[0];
+        const author = this.authorsFields.filter((a) => getAuthorName(a) === fullName)[0];
         if (author) {
           newAuthors.push(author);
         }
