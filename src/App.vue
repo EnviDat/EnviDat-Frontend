@@ -225,7 +225,7 @@ export default {
   },
   beforeDestroy() {
     window.clearInterval(this.reloadConfigTimer);
-    eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
+    eventBus.off(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
     eventBus.off(SHOW_DIALOG, this.openGenericDialog);
     eventBus.off(SHOW_REDIRECT_SIGNIN_DIALOG, this.showRedirectSignDialog);
     eventBus.off(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
