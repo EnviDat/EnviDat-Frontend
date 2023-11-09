@@ -63,6 +63,7 @@ export const EditPublicationInfoView = () => ({
     data: () => ({
       genericPropsFilled: {
         id: 1,
+        doi: 'test',
       },
     }),
   });
