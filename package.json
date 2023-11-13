@@ -18,7 +18,7 @@
     "chromatic": "npx chromatic --project-token <your-project-token>",
     "storybook-dev": "storybook dev -p 6006 --loglevel warn",
     "storybook-debug": "storybook dev -p 6006 --loglevel silly",
-    "storybook-build": "storybook build"
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
