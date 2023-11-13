@@ -1,5 +1,6 @@
 stages:
   - test
+  - storybook-build
   - visual-regression
   - config
   - build
@@ -75,6 +76,20 @@ run-tests:
   script:
     - npm run test
 
+build-storybook:
+  extends: .trigger-rules
+  stage: storybook-build
+  image: docker.io/node:16
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull
+  #before_script:
+  #  - npm ci
+  script:
+    - npm run storybook build -o ${CI_PROJECT_DIR}/storybook
+
 visual-regression:
   stage: visual-regression
   image: docker.io/node:16
@@ -83,10 +98,10 @@ visual-regression:
     paths:
       - node_modules/
     policy: pull
-  before_script:
-    - npm ci
+  #before_script:
+  #  - npm ci
   script:
-    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ${CI_PROJECT_DIR}/storybook
   dependencies:
     - set-vars
   when: manual
