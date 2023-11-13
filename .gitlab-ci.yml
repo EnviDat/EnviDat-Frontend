@@ -65,7 +65,7 @@ set-vars:
 run-tests:
   extends: .trigger-rules
   stage: test
-  image: docker.io/node:16
+  image: docker.io/node:18
   cache:
     key: node-modules
     paths:
@@ -79,7 +79,7 @@ run-tests:
 build-storybook:
   extends: .trigger-rules
   stage: storybook-build
-  image: docker.io/node:16
+  image: docker.io/node:18
   cache:
     key: node-modules
     paths:
@@ -92,7 +92,7 @@ build-storybook:
 
 visual-regression:
   stage: visual-regression
-  image: docker.io/node:16
+  image: docker.io/node:18
   cache:
     key: node-modules
     paths:

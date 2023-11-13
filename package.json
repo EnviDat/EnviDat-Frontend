@@ -16,10 +16,9 @@
     "extract-emails": "node src/node/extractUsers.js",
     "full-build": "vite build && storybook build",
     "chromatic": "npx chromatic --project-token <your-project-token>",
-    "storybook": "storybook dev -p 6006 --loglevel warn",
+    "storybook-dev": "storybook dev -p 6006 --loglevel warn",
     "storybook-debug": "storybook dev -p 6006 --loglevel silly",
-    "test-storybook": "test-storybook",
-    "build-storybook": "storybook build"
+    "storybook-build": "storybook build"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.2.2",
