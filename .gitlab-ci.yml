@@ -1,6 +1,6 @@
 stages:
-  - test
   - config
+  - test
   - storybook-build
   - visual-regression
   - build
@@ -32,7 +32,7 @@ variables:
 
 set-vars:
   stage: .pre
-  image: docker.io/alpine:3.18
+  image: docker.io/alpine:3.15
   rules:
     - !reference [.trigger-rules, rules]
     - if: $CI_COMMIT_TAG
@@ -62,57 +62,10 @@ set-vars:
     reports:
       dotenv: build.env
 
-run-tests:
-  extends: .trigger-rules
-  stage: test
-  image: docker.io/node:18.18.2-alpine3.18
-  cache:
-    key: node-modules
-    paths:
-      - node_modules/
-    policy: pull-push
-  before_script:
-    - npm ci
-  script:
-    - npm run test
-
-build-storybook:
-  extends: .trigger-rules
-  stage: storybook-build
-  image: docker.io/node:18.18.2-alpine3.18
-  cache:
-    key: node-modules
-    paths:
-      - node_modules/
-    policy: pull
-  #before_script:
-  #  - npm ci
-  script:
-    - npm run build-storybook -- -o ${CI_PROJECT_DIR}/storybook
-  dependencies:
-    - modify-env
-
-visual-regression:
-  stage: visual-regression
-  image: docker.io/node:18.18.2-alpine3.18
-  cache:
-    key: node-modules
-    paths:
-      - node_modules/
-    policy: pull
-  #before_script:
-  #  - npm ci
-  script:
-    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ${CI_PROJECT_DIR}/storybook
-  dependencies:
-    - modify-env
-    - build-storybook
-  when: manual
-
 modify-env:
   extends: .trigger-rules
   stage: config
-  image: docker.io/python:3.9-alpine
+  image: docker.io/python:3.9-alpine3.15
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
@@ -145,7 +98,55 @@ modify-env:
     paths:
       - .env.production
   dependencies:
-    - run-tests
+    - set-vars
+
+run-tests:
+  extends: .trigger-rules
+  stage: test
+  image: docker.io/node:18.18.2-alpine3.15
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull-push
+  before_script:
+    - npm ci
+  script:
+    - npm run test
+
+build-storybook:
+  extends: .trigger-rules
+  stage: storybook-build
+  image: docker.io/node:18.18.2-alpine3.15
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull
+  #before_script:
+  #  - npm ci
+  script:
+    - npm run build-storybook -- -o ${CI_PROJECT_DIR}/storybook
+  dependencies:
+    - modify-env
+
+visual-regression:
+  stage: visual-regression
+  image: docker.io/node:18.18.2-alpine3.15
+  cache:
+    key: node-modules
+    paths:
+      - node_modules/
+    policy: pull
+  #before_script:
+  #  - npm ci
+  script:
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ${CI_PROJECT_DIR}/storybook
+  dependencies:
+    - modify-env
+    - build-storybook
+  when: manual
+
 
 image-build:
   extends: .trigger-rules
