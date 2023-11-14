@@ -65,7 +65,7 @@ set-vars:
 modify-env:
   extends: .trigger-rules
   stage: config
-  image: docker.io/python:3.9-alpine3.15
+  image: docker.io/python:3.9-alpine3.17
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
@@ -103,7 +103,7 @@ modify-env:
 run-tests:
   extends: .trigger-rules
   stage: test
-  image: docker.io/node:18.18.2-alpine3.15
+  image: docker.io/node:18.18.2-alpine3.17
   cache:
     key: node-modules
     paths:
@@ -117,7 +117,7 @@ run-tests:
 build-storybook:
   extends: .trigger-rules
   stage: storybook-build
-  image: docker.io/node:18.18.2-alpine3.15
+  image: docker.io/node:18.18.2-alpine3.17
   cache:
     key: node-modules
     paths:
@@ -132,7 +132,7 @@ build-storybook:
 
 visual-regression:
   stage: visual-regression
-  image: docker.io/node:18.18.2-alpine3.15
+  image: docker.io/node:18.18.2-alpine3.17
   cache:
     key: node-modules
     paths:
