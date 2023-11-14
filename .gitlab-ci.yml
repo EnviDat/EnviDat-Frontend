@@ -104,6 +104,7 @@ modify-env:
 install-node:
   extends: .trigger-rules
   stage: install
+  image: docker.io/node:18.18.2-alpine3.17
   script:
     # - npm ci
     - npm ci --cache .npm --prefer-offline
