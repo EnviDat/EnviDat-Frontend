@@ -152,8 +152,6 @@ visual-regression:
     - build-storybook
   script:
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
-  needs:
-    - build-storybook
   when: manual
 
 #build-app:
@@ -178,6 +176,7 @@ image-build:
     entrypoint: [""]
   dependencies:
     # needs the artifact: config and environment variables
+    - set-vars
     - modify-env
     # needs the artifact: node_modules, not this could be removed when the build-app is used
     - install-node
