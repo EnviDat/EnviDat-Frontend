@@ -98,6 +98,7 @@ modify-env:
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
+    name: "environment variables"
     paths:
       - .env.production
 
@@ -117,6 +118,7 @@ install-node:
       - .npm/
     policy: pull-push
   artifacts:
+    name: "node dependencies"
     # stores node_modules as an artifact to be used in the next stages
     paths:
       - node_modules
@@ -126,6 +128,7 @@ run-tests:
   stage: test
   image: docker.io/node:18.18.2-alpine3.17
   dependencies:
+    - modify-env
     - install-node
   script:
     - npm run test
@@ -140,6 +143,7 @@ build-storybook:
   script:
     - npm run build-storybook -- -o ./storybook
   artifacts:
+    name: "storybook build"
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
@@ -165,6 +169,7 @@ visual-regression:
 #  script:
 #    - npm run build
 #  artifacts:
+#    name: "frontend build $CI_COMMIT_REF_NAME"
 #    # stores the built app code
 #    paths:
 #      - dist
