@@ -1,5 +1,6 @@
 <template>
   <div :id="`BaseDatePicker_${dateLabel}`">
+<!--
       <v-text-field
         v-if="isReadonly(dateProperty)"
         :label="dateLabel"
@@ -21,10 +22,7 @@
         :offset-y="$vuetify?.display?.mdAndUp"
         min-width="280px"
       >
-<!--
-        max-width="290px"
-        min-width="auto"
--->
+
 
         <template v-slot:activator="{ props }">
           <v-text-field
@@ -36,17 +34,24 @@
             :error-messages="validationErrors[dateProperty]"
           />
         </template>
+-->
 
         <v-date-picker
+          elevation="2"
           locale="en-in"
+          next-icon="navigate_next"
+          prev-icon="navigate_before"
+        >
+<!--
+          next-icon="skip_next"
+          prev-icon="skip_previous"
           @click:save="changeDatePicker(dateProperty, $event)"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
           :model-value="formatToDatePickerDate(dateField)"
-          next-icon="skip_next"
-          prev-icon="skip_previous"
-        >
-          <v-row v-if="clearable"
+-->
+
+<!--          <v-row v-if="clearable"
                   no-gutters
                   class="px-4"
                   style="align-items: center;"
@@ -65,9 +70,11 @@
                 @clicked="clearClick(dateProperty)"
               />
             </v-col>
-          </v-row>
+          </v-row>-->
         </v-date-picker>
+<!--
       </v-menu>
+-->
   </div>
 </template>
 
@@ -76,15 +83,17 @@ import { isDate, isMatch, parse } from 'date-fns';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
 
+/*
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+*/
 import {
   ckanDateFormat,
   enviDatDateFormat,
   parseDateStringToCKANFormat,
   parseDateStringToEnviDatFormat,
 } from '@/factories/mappingFactory';
-import { isFieldValid } from '@/factories/userEditingValidations';
 
+import { isFieldValid } from '@/factories/userEditingValidations';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 // eslint-disable-next-line func-names
@@ -306,7 +315,9 @@ export default {
     },
   },
   components: {
+/*
     BaseIconButton,
+*/
   },
   data: () => ({
     previewDate: '',
