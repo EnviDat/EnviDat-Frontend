@@ -7,6 +7,7 @@
 
           <video v-show="!loadingViedo && !videoError"
                  ref="videoRef"
+                 :src="url"
                  @click="catchVideoClick"
                  @load="loadingViedo = false"
                  @error="catchLoadError"
@@ -62,11 +63,26 @@ export default {
     url: String,
   },
   mounted() {
-    this.loadVideo(this.url)
+    // this.loadVideo(this.url)
+    console.log(this.supportsVideoType());
   },
   computed: {
   },
   methods: {
+    supportsVideoType(type = 'mp4') {
+      const video = this.$refs.videoRef;
+
+      // Allow user to create shortcuts, i.e. just "webm"
+      const formats = {
+        ogg: 'video/ogg; codecs="theora"',
+        mp4: 'video/mp4; codecs="avc1.42E01E"',
+        webm: 'video/webm; codecs="vp8, vorbis"',
+        vp9: 'video/webm; codecs="vp9"',
+        hls: 'application/x-mpegURL; codecs="avc1.42E01E"',
+      };
+
+      return video.canPlayType(formats[type] || type);
+    },
     loadVideo(url) {
       this.videoError = null;
       this.loadingViedo = true;

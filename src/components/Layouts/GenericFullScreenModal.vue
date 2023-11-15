@@ -59,9 +59,6 @@
  * @summary fullscreen modal page
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 14:11:27
- * Last modified  : 2021-02-02 14:48:10
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
@@ -73,6 +70,7 @@ import {
   OPEN_TEXT_PREVIEW,
   OPEN_DATA_PREVIEW_IFRAME,
   INJECT_MAP_FULLSCREEN,
+  OPEN_VIDEO_PREVIEW,
 } from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
@@ -97,7 +95,8 @@ export default {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openModal);
     eventBus.on(CLOSE_FULLSCREEN_MODAL, this.closeModal);
     eventBus.on(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
-    eventBus.on(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
+    eventBus.on(OPEN_TEXT_PREVIEW, this.showGenericPreview);
+    eventBus.on(OPEN_VIDEO_PREVIEW, this.showGenericPreview);
     eventBus.on(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.on(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
@@ -105,7 +104,8 @@ export default {
     eventBus.off(OPEN_FULLSCREEN_MODAL, this.openModal);
     eventBus.off(CLOSE_FULLSCREEN_MODAL, this.closeModal);
     eventBus.off(GCNET_OPEN_DETAIL_CHARTS, this.showGCNetModal);
-    eventBus.off(OPEN_TEXT_PREVIEW, this.showTextPreviewModal);
+    eventBus.off(OPEN_TEXT_PREVIEW, this.showGenericPreview);
+    eventBus.off(OPEN_VIDEO_PREVIEW, this.showGenericPreview);
     eventBus.off(OPEN_DATA_PREVIEW_IFRAME, this.showDataPreviewIframe);
     eventBus.off(INJECT_MAP_FULLSCREEN, this.showFullscreenMapModal);
   },
@@ -128,7 +128,7 @@ export default {
 
       eventBus.emit(OPEN_FULLSCREEN_MODAL);
     },
-    showTextPreviewModal(url) {
+    showGenericPreview(url) {
 
       const previewStrat = getPreviewStrategyFromUrlExtension(url);
 

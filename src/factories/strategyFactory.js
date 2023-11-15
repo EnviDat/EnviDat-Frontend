@@ -10,7 +10,6 @@ import {
 const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
 const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
 const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
-
 const VideoPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/VideoPreviewCard.vue');
 
 export const localIdProperty = 'localId';
