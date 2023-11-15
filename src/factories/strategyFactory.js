@@ -1,6 +1,7 @@
 import {
   OPEN_DATA_PREVIEW_IFRAME,
   OPEN_TEXT_PREVIEW,
+  OPEN_VIDEO_PREVIEW,
   SELECT_EDITING_AUTHOR,
   SELECT_EDITING_DATASET,
   SELECT_EDITING_RESOURCE,
@@ -9,6 +10,8 @@ import {
 const DataPreviewIframe = () => import('@/modules/metadata/components/ResourcePreviews/DataPreviewIframe.vue');
 const ImagePreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/ImagePreviewCard.vue');
 const TextPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/TextPreviewCard.vue');
+
+const VideoPreviewCard = () => import('@/modules/metadata/components/ResourcePreviews/VideoPreviewCard.vue');
 
 export const localIdProperty = 'localId';
 
@@ -32,6 +35,13 @@ export const clickStrategies = [
     openEvent: OPEN_TEXT_PREVIEW,
     icon: 'preview',
     tooltip: 'Click for a preview of this image',
+  },
+  {
+    strategyKeys: ['mp4', 'avi', 'mpeg'],
+    component: VideoPreviewCard,
+    openEvent: OPEN_VIDEO_PREVIEW,
+    icon: 'preview',
+    tooltip: 'Click for a preview of this video',
   },
   {
     strategyKeys: [SELECT_EDITING_RESOURCE_PROPERTY],
