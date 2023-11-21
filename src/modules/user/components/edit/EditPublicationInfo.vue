@@ -142,7 +142,7 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
+import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL, PUBLICATION_STATE_PUBLISHED} from '@/factories/metadataConsts';
 
 export default {
   name: 'EditPublicationInfo',
@@ -226,7 +226,8 @@ export default {
     },
     doiField: {
       get() {
-        return this.doi;
+        return this.publicationState === PUBLICATION_STATE_PUBLISHED
+          ? `https://www.doi.org/${this.doi}` : this.doi;
       },
       set(value) {
         const property = 'doi';
