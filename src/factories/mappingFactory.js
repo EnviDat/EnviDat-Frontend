@@ -1107,9 +1107,15 @@ export function enhanceUserObject(user) {
 export function getMetadataUrlFromTitle(title) {
   let urlName = title?.toLowerCase() || '';
   urlName = urlName.trim().replaceAll(' ', '-');
+
+  urlName = urlName.replaceAll('ä', 'ae');
+  urlName = urlName.replaceAll('ö', 'oe');
+  urlName = urlName.replaceAll('ü', 'ue');
+
   if (urlName.length > 80) {
     // only a max of 80 is allowed by the backend for the url
     urlName = urlName.substring(0, 80);
   }
+
   return urlName;
 }

@@ -478,7 +478,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
     name: fileName,
     url: resURL,
     urlType: resource.url_type,
-    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/resource/${resource.id}`,
+    restrictedUrl: `${ckanDomain}/dataset/${datasetName}/restricted_request_access/${resource.id}`,
     restricted: resource.restricted || '',
     format: fileFormat,
     state: resource.state || '',

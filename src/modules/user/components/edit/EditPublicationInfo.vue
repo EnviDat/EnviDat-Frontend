@@ -48,6 +48,7 @@
             @change="doiField = $event"
             @input="validateProperty('doi', $event)"
             :value="doiField"
+            append-icon="content_copy"  @click:append="catchClipboardCopy"
           />
 <!--
           :hint="mixinMethods_readOnlyHint('doi')"
@@ -311,6 +312,9 @@ export default {
         data: newPublicationInfo,
         property: property.toString(),
       });
+    },
+    catchClipboardCopy() {
+      navigator.clipboard.writeText(this.doiField);
     },
   },
   data: () => ({
