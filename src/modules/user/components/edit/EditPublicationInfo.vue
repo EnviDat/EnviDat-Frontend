@@ -97,7 +97,7 @@
         </v-col>
 
         <v-col cols="6">
-          <v-select
+          <!--<v-select
             :items="yearList"
             outlined
             dense
@@ -109,7 +109,45 @@
             @change="publicationYearField = $event"
             @input="validateProperty('publicationYear', $event)"
             :value="publicationYearField"
-          />
+          />-->
+          <v-menu
+              id="dateMenu"
+              key="dateMenu"
+              v-model="datePickerOpen"
+              :close-on-content-click="true"
+              transition="scale-transition"
+              :left="$vuetify?.breakpoint?.smAndDown"
+              :offset-y="$vuetify?.breakpoint?.mdAndUp"
+              min-width="280px"
+          >
+            <!--
+                    max-width="290px"
+                    min-width="auto"
+            -->
+
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                  dense
+                  outlined
+                  prepend-icon="date_range"
+                  v-on="on"
+                  :value="publicationYearField"
+              />
+            </template>
+
+            <v-date-picker
+                locale="en-in"
+                ref="picker"
+                scrollable
+                next-icon="skip_next"
+                prev-icon="skip_previous"
+                @click:year="saveYear"
+                :value="formatToDatePickerDate(currentYear)"
+            >
+              <!--                :value= "publicationYearField ? formatToDatePickerDate(yearWithMonths) : null"-->
+            </v-date-picker>
+          </v-menu>
+
         </v-col>
       </v-row>
 
@@ -129,6 +167,7 @@
  */
 import { mapState } from 'vuex';
 
+import {parse} from 'date-fns';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 // import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
@@ -143,6 +182,7 @@ import {
   isFieldValid,
 } from '@/factories/userEditingValidations';
 import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL, PUBLICATION_STATE_PUBLISHED} from '@/factories/metadataConsts';
+import {ckanDateFormat} from '@/factories/mappingFactory';
 
 export default {
   name: 'EditPublicationInfo',
@@ -200,6 +240,12 @@ export default {
       default: '',
     },
   },
+  mounted () {
+    if (this.publicationYearField) {
+      const yearFullFormat = `${this.publicationYearField}-12-31`
+      this.yearWithMonths = this.formatToDatePickerDate(yearFullFormat)
+    }
+  },
   computed: {
     ...mapState(['config']),
     maxYears() {
@@ -254,7 +300,9 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.publicationYear;
+        return this.year !== null
+            ? this.year
+            : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -317,6 +365,34 @@ export default {
     catchClipboardCopy() {
       navigator.clipboard.writeText(this.doiField);
     },
+    saveYear(year) {
+      this.year = year.toString()
+      this.publicationYearField = year.toString()
+      this.yearWithMonths = `${year}-12-31`
+      console.log(this.yearWithMonths)
+/*
+      // Reset activePicker to type YEAR
+      this.$refs.picker.activePicker = 'YEAR'
+
+      // Close the menu/datepicker
+      this.menu = false
+      */
+    },
+    formatToDatePickerDate(dateString) {
+      if (!dateString) {
+        return '';
+      }
+
+      const dateTime = parse(dateString, ckanDateFormat, new Date());
+
+      if (dateTime instanceof Date && !!dateTime.getTime()) {
+        return new Date(dateTime - new Date().getTimezoneOffset() * 60000)
+            .toISOString()
+            .substr(0, 10);
+      }
+
+      return '';
+    },
   },
   data: () => ({
     previewPublisher: null,
@@ -348,11 +424,21 @@ export default {
     buttonColor: '#269697',
     currentYear: '',
     yearList: [],
+    year: null,
+    datePickerOpen: false,
+    yearWithMonths: null,
     defaultUserEditMetadataConfig: {
       publicationYearsList: 30,
     },
     stepKey: EDITMETADATA_PUBLICATION_INFO,
   }),
+  watch: {
+    datePickerOpen (val) {
+      if (val) {
+        this.$nextTick(() => {this.$refs.picker.activePicker = 'YEAR'})
+      }
+    },
+  },
   components: {
     BaseStatusLabelView,
 //    MetadataStateChip,
@@ -361,3 +447,6 @@ export default {
 </script>
 
 <style scoped></style>
+
+<script setup>
+</script>

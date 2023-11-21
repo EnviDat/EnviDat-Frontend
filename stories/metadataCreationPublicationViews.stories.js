@@ -66,6 +66,8 @@ export const EditPublicationInfoView = () => ({
         id: 1,
         doi: 'test',
         publicationState: PUBLICATION_STATE_DRAFT,
+        publicationYear: '2020',
+        publisher: 'EnviDat',
       },
     }),
   });
