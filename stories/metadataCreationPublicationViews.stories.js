@@ -58,7 +58,10 @@ export const EditPublicationInfoView = () => ({
     },
     methods: {
       editComponentsChanged(updateObj) {
-        this.genericPropsFilled = updateObj.data;
+        this.genericPropsFilled = {
+          ...this.genericPropsFilled,
+          ...updateObj.data,
+        };
       },
     },
     data: () => ({
