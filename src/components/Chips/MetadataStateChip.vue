@@ -15,7 +15,7 @@
         <v-row v-on="on"
                align="center"
                 no-gutters>
-          <v-col  class="pl-1" ><v-icon>{{ stateIcon }}</v-icon></v-col>
+          <v-col ><v-icon>{{ stateIcon }}</v-icon></v-col>
           <v-col class="pl-1" >{{ showContent ? stateText : ''  }}</v-col>
         </v-row>
       </template>
