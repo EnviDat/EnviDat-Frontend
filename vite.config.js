@@ -99,6 +99,9 @@ export default ({ mode, config }) => {
                 // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
+              // this turf-jsts replacement is used to minimize the footprint
+              // it's a dependency of @turf/buffer
+              { find: 'turf-jsts', replacement: 'turf-jsts/jsts.min.js' },
               { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
               { find: 'leaflet', replacement: 'leaflet/dist/leaflet.js' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
