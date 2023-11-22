@@ -27,7 +27,8 @@ variables:
         - 'vue.*'
         - 'Dockerfile'
         - '.gitlab-ci.yml'
-      when: always
+#       using when: always will run all jobs regardless of previous failures?
+#      when: always
     - if: $CI_PIPELINE_SOURCE == "web"
       when: always
 
