@@ -378,7 +378,7 @@ export default {
       }
     },
     getValidationErrorMessage(property, index) {
-      return this.validationErrors?.funders[index][property] || '';
+      return this.validationErrors?.funders[index]?.[property] || '';
     },
   },
   data: () => ({
