@@ -237,7 +237,8 @@ rclone-sync:
   extends: .trigger-rules
   stage: deploy
 #  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-  image: docker.io/rclone/rclone:1.64.2
+#  image: docker.io/rclone/rclone:1.64.2
+  image: docker.io/alpine:3.15
   dependencies:
     # make sure to wait for the tests to run correctly
     - run-tests
