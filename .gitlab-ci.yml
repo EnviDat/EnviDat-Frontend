@@ -127,7 +127,7 @@ run-tests:
   extends: .trigger-rules
   stage: test
   image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
+  needs:
     - modify-env
     - install-node
   script:
@@ -137,7 +137,7 @@ build-storybook:
   extends: .trigger-rules
   stage: visual-regression
   image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
+  needs:
     - modify-env
     - install-node
   script:
@@ -163,9 +163,8 @@ build-app:
   extends: .trigger-rules
   stage: build
   image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
+  needs:
     # needs the artifact: config and environment variables
-    - set-vars
     - modify-env
     # needs the artifact: node_modules, not this could be removed when the build-app is used
     - install-node
@@ -237,8 +236,10 @@ rclone-sync:
   extends: .trigger-rules
   stage: deploy
 #  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-  image: docker.io/rclone:1.64.2
+  image: docker.io/rclone/rclone:1.64.2
   dependencies:
+    # make sure to wait for the tests to run correctly
+    - run-tests
     # needs the artifact from the build jobs for the app and it's storybook
     - build-app
     - build-storybook
