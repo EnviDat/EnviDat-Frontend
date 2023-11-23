@@ -38,13 +38,11 @@
           </div>
         </div>
 
-        <div class="textGrid mt-2 text-caption">
+        <div  class="textGrid mt-2 text-caption">
           <div>
             <v-icon small>info</v-icon>
           </div>
-          <div>
-            {{ organizationInfoText }}
-          </div>
+          <div v-html="markdownText"></div>
         </div>
       </div>
     </div>
@@ -75,6 +73,7 @@ import {
   isMember,
   isSysadmin,
 } from '@/factories/userEditingValidations';
+import {renderMarkdown} from '@/factories/stringFactory';
 
 export default {
   name: 'UserOrganizationInfo',
@@ -102,6 +101,13 @@ export default {
       }
 
       return {};
+    },
+    markdownText() {
+      return renderMarkdown(this.organizationInfoText.trim(), false);
+    },
+    noOrganizationInfoText() {
+      const infoText = 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.';
+      return (infoText);
     },
     organizationInfoText() {
       if (isSysadmin(this.organizationRoles)) {
@@ -153,9 +159,7 @@ export default {
   data: () => ({
     avatarHeight: 32,
     title: 'Organization Roles',
-    noOrganizationText: `You aren't assigned to an organisation yet.
-      If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation.
-      If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.`,
+    noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',
     memberOrganizationText: 'As a member of an organisation you can see its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.',
     editorOrganizationText: 'As an editor of an organisation you can edit datasets and create new ones.',
     adminOrganizationText: 'As an admin of an organisation you can manage the organisation users, datasets and information. ',
