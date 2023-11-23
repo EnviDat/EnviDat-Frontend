@@ -169,12 +169,17 @@ build-app:
 combine-builds:
   extends: .trigger-rules
   stage: build
-  image: docker.io/python:3.9-alpine3.17
+  image: docker.io/alpine:3.15
   needs:
     # needs the artifact: the build of the frontend app
     - build-app
     # needs the artifact: storybook
     - build-storybook
+  script:
+    - echo "Check for the artifacts in the filesystem"
+    - ls -l
+    - ls dist/ -l
+    - ls storybook/ -l
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
     # stores the built app code
@@ -280,6 +285,10 @@ rclone-sync:
       fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
+    - echo "Check for the artifacts in the filesystem"
+    - ls -l
+    - ls dist/ -l
+    - ls storybook/ -l
     - rclone sync source:./ dest:"switch:${BUCKET_NAME}" --verbose
 #    - >
 #      rclone --verbose sync
