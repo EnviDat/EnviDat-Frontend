@@ -229,7 +229,7 @@ combine-builds:
     expire_in: 1 month
     # stores the combined built code
     paths:
-      - /
+      - $CI_PROJECT_DIR
 
 
 visual-regression:
