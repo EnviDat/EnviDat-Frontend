@@ -21,6 +21,7 @@ cache:
   - key:
       files:
         - package-lock.json
+      prefix: "package-lock-$CI_COMMIT_REF_NAME"
     paths:
       - node_modules/
     policy: pull  # prevent subsequent jobs from modifying cache
