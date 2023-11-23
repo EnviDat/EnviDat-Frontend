@@ -220,7 +220,7 @@ combine-builds:
     - ls dist/ -l
     - ls storybook/ -l
     # copy all files from the dist folder into root
-    - cp dist/* /
+    - cp -r dist/* /
     # remove the dist folder recursively
     - rm -rf dist
     - ls -l
