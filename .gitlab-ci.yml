@@ -116,7 +116,6 @@ modify-env:
       if branch == 'staging' or branch == 'develop':
           value = 'true'
       dotenv.set_key(file, key, value, quote_mode='never')
-
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
