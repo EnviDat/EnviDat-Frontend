@@ -18,7 +18,7 @@ variables:
 # goal: the install job loads the cache and all other jobs can only use it
 cache:
   # uses the package-lock.json as key to determine if the node_mdules can be used from cache
-  key:
+  - key:
     files:
       - package-lock.json
     paths:
@@ -130,8 +130,8 @@ install-node:
     # overwrite the global cachine definitions with
     # pull-push to be able update the node_modules in the cache
     - key:
-        files:
-          - package-lock.json
+      files:
+        - package-lock.json
       paths:
         - node_modules/
       when: on_success
