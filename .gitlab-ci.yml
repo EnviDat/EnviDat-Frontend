@@ -145,6 +145,7 @@ build-storybook:
     - npm run build-storybook -- -o ./storybook
   artifacts:
     name: "storybook build"
+    expire_in: 1 day
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
@@ -161,15 +162,18 @@ build-app:
   script:
     - npm run build
   artifacts:
-    name: "frontend build $CI_COMMIT_REF_NAME"
+    name: "frontend build "
+    expire_in: 1 day
     # stores the built app code
     paths:
-      - dist
+      - "dist/*"
 
 combine-builds:
   extends: .trigger-rules
   stage: build
   image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
   needs:
     # needs the artifact: the build of the frontend app
     - build-app
@@ -182,15 +186,18 @@ combine-builds:
     - ls storybook/ -l
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
-    # stores the built app code
-    paths:
-      - dist/*
-      - storybook
+    expire_in: 1 month
+#    # stores the built app code
+#    paths:
+#      - *
+#      - storybook
 
 
 visual-regression:
   stage: visual-regression
   image: docker.io/node:18.18.2-alpine3.17
+  variables:
+    GIT_STRATEGY: none
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -262,7 +269,7 @@ rclone-sync:
 #  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
 #  image: docker.io/rclone/rclone:1.64.2
   image: docker.io/alpine:3.15
-  dependencies:
+  needs:
     # make sure to wait for the tests to run correctly
     - run-tests
     # needs the artifact from the build jobs for the app and it's storybook
