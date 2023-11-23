@@ -220,7 +220,8 @@ combine-builds:
     - ls dist/ -l
     - ls storybook/ -l
     # copy all files from the dist folder into root
-    - cp -r dist/* /
+    - cp -r dist/* ./
+    - ls -l
     # remove the dist folder recursively
     - rm -rf dist
     - ls -l
@@ -229,7 +230,7 @@ combine-builds:
     expire_in: 1 month
     # stores the combined built code
     paths:
-      - $CI_PROJECT_DIR
+      - ./
 
 
 visual-regression:
