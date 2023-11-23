@@ -2,8 +2,8 @@ stages:
   - config
   - install
   - test
-  - visual-regression
   - build
+  - visual-regression
 #  - package
   - deploy
 #  - release
@@ -136,7 +136,7 @@ run-tests:
 
 build-storybook:
   extends: .trigger-rules
-  stage: visual-regression
+  stage: build
   image: docker.io/node:18.18.2-alpine3.17
   needs:
     - modify-env
@@ -149,17 +149,6 @@ build-storybook:
     paths:
       - storybook
 
-visual-regression:
-  stage: visual-regression
-  image: docker.io/node:18.18.2-alpine3.17
-  dependencies:
-    - modify-env
-    - install-node
-    - build-storybook
-  script:
-    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
-  when: manual
-
 build-app:
   extends: .trigger-rules
   stage: build
@@ -167,7 +156,7 @@ build-app:
   needs:
     # needs the artifact: config and environment variables
     - modify-env
-    # needs the artifact: node_modules, not this could be removed when the build-app is used
+    # needs the artifact: node_modules to build the app
     - install-node
   script:
     - npm run build
@@ -176,6 +165,35 @@ build-app:
     # stores the built app code
     paths:
       - dist
+
+combine-builds:
+  extends: .trigger-rules
+  stage: build
+  image: docker.io/python:3.9-alpine3.17
+  needs:
+    # needs the artifact: the build of the frontend app
+    - build-app
+    # needs the artifact: storybook
+    - build-storybook
+  artifacts:
+    name: "frontend build $CI_COMMIT_REF_NAME"
+    # stores the built app code
+    paths:
+      - dist/*
+      - storybook
+
+
+visual-regression:
+  stage: visual-regression
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: storybook
+    - build-storybook
+  script:
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
+  when: manual
 
 #image-build:
 #  extends: .trigger-rules
@@ -243,8 +261,7 @@ rclone-sync:
     # make sure to wait for the tests to run correctly
     - run-tests
     # needs the artifact from the build jobs for the app and it's storybook
-    - build-app
-    - build-storybook
+    - combine-builds
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -263,6 +280,7 @@ rclone-sync:
       fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
-    - >
-      rclone --verbose sync
-      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    - rclone sync source:./ dest:"switch:${BUCKET_NAME}" --verbose
+#    - >
+#      rclone --verbose sync
+#      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
