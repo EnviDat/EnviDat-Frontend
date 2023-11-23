@@ -110,6 +110,13 @@ modify-env:
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
       dotenv.set_key(file, key, value, quote_mode='never')"
+      
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      if branch == 'staging' or branch == 'develop':
+          value = 'true'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
@@ -336,7 +343,7 @@ rclone-sync:
     - echo "Check for the artifacts in the filesystem"
     - ls -l
     - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
-    - rclone sync source:./ dest:"switch:${BUCKET_NAME}" --verbose
+    - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
 #    - >
 #      rclone --verbose sync
 #      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
