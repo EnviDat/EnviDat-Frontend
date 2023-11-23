@@ -109,13 +109,13 @@ modify-env:
 
       key = 'VITE_CONFIG_URL'
       value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
-      dotenv.set_key(file, key, value, quote_mode='never')"
+      dotenv.set_key(file, key, value, quote_mode='never')
       
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
       if branch == 'staging' or branch == 'develop':
           value = 'true'
-      dotenv.set_key(file, key, value, quote_mode='never')
+      dotenv.set_key(file, key, value, quote_mode='never') "
     - echo "created content for .env.production:"
     - cat .env.production
   artifacts:
