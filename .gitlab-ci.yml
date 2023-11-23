@@ -339,6 +339,9 @@ rclone-sync:
       else
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
     - echo "Check for the artifacts in the filesystem"
