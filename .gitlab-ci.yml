@@ -309,8 +309,6 @@ visual-regression:
 rclone-sync:
   extends: .trigger-rules
   stage: deploy
-#  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
-#  image: docker.io/rclone/rclone:1.64.2
   image: docker.io/alpine:3.15
   needs:
     # make sure to wait for the tests to run correctly
@@ -337,9 +335,8 @@ rclone-sync:
   script:
     - echo "Check for the artifacts in the filesystem"
     - ls -l
-    - ls dist/ -l
-    - ls storybook/ -l
-    - rclone sync source:/ dest:"switch:${BUCKET_NAME}" --verbose
+    - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
+    - rclone sync source:./ dest:"switch:${BUCKET_NAME}" --verbose
 #    - >
 #      rclone --verbose sync
 #      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
