@@ -19,8 +19,8 @@ variables:
 cache:
   # uses the package-lock.json as key to determine if the node_mdules can be used from cache
   - key:
-      files:
-        - package-lock.json
+    files:
+      - package-lock.json
     paths:
       - node_modules/
     policy: pull  # prevent subsequent jobs from modifying cache
@@ -131,12 +131,12 @@ install-node:
     # overwrite the global cachine definitions with
     # pull-push to be able update the node_modules in the cache
     - key:
-        files:
-          - package-lock.json
-        paths:
-          - node_modules/
-        when: on_success
-        policy: pull-push
+      files:
+        - package-lock.json
+      paths:
+        - node_modules/
+      when: on_success
+      policy: pull-push
   script:
     - npm ci --cache .npm --prefer-offline
 #  artifacts:
@@ -321,7 +321,7 @@ rclone-sync:
     - ls -l
     - ls dist/ -l
     - ls storybook/ -l
-    - rclone sync source:./ dest:"switch:${BUCKET_NAME}" --verbose
+    - rclone sync source:/ dest:"switch:${BUCKET_NAME}" --verbose
 #    - >
 #      rclone --verbose sync
 #      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
