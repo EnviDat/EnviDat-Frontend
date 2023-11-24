@@ -175,9 +175,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="contactToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">manage_accounts</v-icon>
+                    </div>
+                  </template>
+                  <span>{{ contactToolTipText }}</span>
+                </v-tooltip>
               </v-col>
               <v-col>
                 {{ contactName }}
@@ -193,9 +200,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="doiToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">fingerprint</v-icon>
+                    </div>
+                  </template>
+                  <span>{{ doiToolTipText }}</span>
+                </v-tooltip>
               </v-col>
               <v-col>
                 <a :href="doiUrl" target="_blank">{{ doi }}</a>
@@ -211,9 +225,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="createTimeToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">more_time</v-icon>
+                    </div>
+                  </template>
+                  <span>{{ createTimeToolTipText }}</span>
+                </v-tooltip>
               </v-col>
               <v-col style="font-size: 0.9rem;">
                 {{ created }}
@@ -230,9 +251,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="locationToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">location_pin</v-icon>
+                    </div>
+                  </template>
+                  <span>{{ locationToolTipText }}</span>
+                </v-tooltip>
               </v-col>
               <v-col style="font-size: 0.9rem;">
                 {{ spatialInfo }}
@@ -258,9 +286,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="emailToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">email</v-icon>
+                    </div>
+                  </template>
+                  <span>{{ emailToolTipText }}</span>
+                </v-tooltip>
               </v-col>
               <v-col>
                 <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
@@ -293,9 +328,16 @@
             <v-row no-gutters
                    align="center">
               <v-col class="flex-grow-0 pr-2">
-                <v-icon class="envidatIcon"
+                <v-tooltip v-if="modifyTimeToolTipText" bottom>
+                  <template v-slot:activator="{ on }">
+                    <div v-on="on">
+                      <v-icon class="envidatIcon"
                         :class="$vuetify.breakpoint.xs ? 'small' : ''"
                         color="black">update</v-icon>
+                    </div>
+                  </template>
+              <span>{{ modifyTimeToolTipText }}</span>
+              </v-tooltip>
               </v-col>
               <v-col style="font-size: 0.9rem;">
                 {{ modified }}
@@ -507,6 +549,12 @@ export default {
     // whiteTopToBottom: 'rgba(255,255,255, 0.3) 0%, rgba(255,255,255, 1) 60%',
     whiteTopToBottom: 'rgba(255,255,255, 0.6) 0%, rgba(255,255,255, 0.99) 70%',
     authorToolTipText: 'Show more datasets of this author',
+    contactToolTipText: 'Main contact',
+    emailToolTipText: 'Email address of Main contact',
+    doiToolTipText: 'Data Object Identifier',
+    locationToolTipText: 'Location',
+    createTimeToolTipText: 'Time of creation',
+    modifyTimeToolTipText: 'Time of modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
   }),
