@@ -16,6 +16,7 @@
         v-else
         id="dateMenu"
         key="dateMenu"
+        ref="dateMenu"
         v-model="datePickerOpen"
         :close-on-content-click="false"
         transition="scale-transition"
@@ -31,6 +32,7 @@
         <template v-slot:activator="{ on }">
           <v-text-field
             :label="dateLabel"
+            ref="dateTextField"
             dense
             outlined
             prepend-icon="date_range"
@@ -42,6 +44,7 @@
         </template>
 
         <v-date-picker
+          ref="datePicker"
           locale="en-in"
           @input="changeDatePicker(dateProperty, $event)"
           scrollable

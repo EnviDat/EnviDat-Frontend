@@ -91,7 +91,9 @@ export default {
           mutation: USER_SIGNOUT,
         });
 
-        await this.$router?.push(LANDING_PATH);
+        if (this.$route.path !== LANDING_PATH) {
+          await this.$router?.push(LANDING_PATH);
+        }
 
         return;
       }

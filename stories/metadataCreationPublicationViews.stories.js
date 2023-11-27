@@ -16,6 +16,7 @@ import {
 } from '@/factories/eventBus';
 
 import EditPublicationInfo from '@/modules/user/components/edit/EditPublicationInfo.vue';
+import { PUBLICATION_STATE_DRAFT } from '@/factories/metadataConsts';
 
 export default {
   title: '9 Editing Metadata / Edit Publication Infos',
@@ -57,13 +58,19 @@ export const EditPublicationInfoView = () => ({
     },
     methods: {
       editComponentsChanged(updateObj) {
-        this.genericPropsFilled = updateObj.data;
+        this.genericPropsFilled = {
+          ...this.genericPropsFilled,
+          ...updateObj.data,
+        };
       },
     },
     data: () => ({
       genericPropsFilled: {
         id: 1,
         doi: 'test',
+        publicationState: PUBLICATION_STATE_DRAFT,
+        publicationYear: '2020',
+        publisher: 'EnviDat',
       },
     }),
   });

@@ -80,7 +80,7 @@
  */
 
 import axios from 'axios';
-import { rewind as tRewind } from '@turf/turf';
+import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
 import {
   BROWSE_PATH,
@@ -354,7 +354,7 @@ export default {
   methods: {
     setGeoServiceLayers(location, layerConfig) {
       try {
-        location = location ? tRewind(location.geoJSON) : null;
+        location = location ? rewind(location.geoJSON) : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }

@@ -97,19 +97,40 @@
         </v-col>
 
         <v-col cols="6">
-          <v-select
-            :items="yearList"
-            outlined
-            dense
-            :label="labels.year"
-            :error-messages="validationErrors.publicationYear"
-            :readonly="mixinMethods_isFieldReadOnly('publicationYear')"
-            :hint="mixinMethods_readOnlyHint('publicationYear')"
-            prepend-icon="date_range"
-            @change="publicationYearField = $event"
-            @input="validateProperty('publicationYear', $event)"
-            :value="publicationYearField"
-          />
+          <v-menu
+              id="dateMenu"
+              key="dateMenu"
+              v-model="datePickerOpen"
+              :close-on-content-click="true"
+              transition="scale-transition"
+              :left="$vuetify?.breakpoint?.smAndDown"
+              :offset-y="$vuetify?.breakpoint?.mdAndUp"
+              min-width="280px"
+          >
+
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                  dense
+                  outlined
+                  prepend-icon="date_range"
+                  v-on="on"
+                  :value="publicationYearField"
+              />
+            </template>
+
+            <v-date-picker
+                ref="picker"
+                :active-picker.sync="activePicker"
+                next-icon="skip_next"
+                prev-icon="skip_previous"
+                no-title
+                @click:year="saveYear"
+                :value="formatToDatePickerDate(yearWithMonths)"
+            >
+
+            </v-date-picker>
+          </v-menu>
+
         </v-col>
       </v-row>
 
@@ -120,15 +141,14 @@
 <script>
 /**
  * @summary Shows Publication Information (publication state, DOI, publisher, and funding information)
- * @author Rebecca Kurup Buchholz
- * Created        : 2021-08-13
- * Last modified  : 2021-09-01 16:53:36
+ * @author Rebecca Kurup Buchholz, Ranita Pal, Dominik Haas
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
 
+import {parse} from 'date-fns';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 // import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 
@@ -142,13 +162,19 @@ import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { EDIT_METADATA_DOI_LABEL, EDIT_METADATA_PUBLICATION_YEAR_LABEL } from '@/factories/metadataConsts';
+import {
+  EDIT_METADATA_DOI_LABEL,
+  EDIT_METADATA_PUBLICATION_YEAR_LABEL,
+  PUBLICATION_STATE_PUBLISHED,
+} from '@/factories/metadataConsts';
+import { ckanDateFormat } from '@/factories/mappingFactory';
 
 export default {
   name: 'EditPublicationInfo',
   created() {
-    this.getCurrentYear();
-    this.getYearList();
+    const date = new Date();
+    const year = date.getFullYear();
+    this.currentYear = this.formatToDatePickerDate(`${year}-12-31`);
   },
   props: {
     publicationState: {
@@ -200,6 +226,14 @@ export default {
       default: '',
     },
   },
+  mounted () {
+    if (this.publicationYearField) {
+      const yearFullFormat = `${this.publicationYearField}-12-31`
+      this.yearWithMonths = this.formatToDatePickerDate(yearFullFormat)
+    } else {
+      this.yearWithMonths = this.currentYear;
+    }
+  },
   computed: {
     ...mapState(['config']),
     maxYears() {
@@ -226,7 +260,8 @@ export default {
     },
     doiField: {
       get() {
-        return this.doi;
+        return this.publicationState === PUBLICATION_STATE_PUBLISHED
+          ? `https://www.doi.org/${this.doi}` : this.doi;
       },
       set(value) {
         const property = 'doi';
@@ -253,7 +288,9 @@ export default {
     },
     publicationYearField: {
       get() {
-        return this.publicationYear;
+        return this.previewYear !== null
+            ? this.previewYear
+            : this.publicationYear;
       },
       set(value) {
         const property = 'publicationYear';
@@ -275,20 +312,6 @@ export default {
         this.validations,
         this.validationErrors,
       );
-    },
-    getCurrentYear() {
-      const date = new Date();
-      const year = date.getFullYear();
-      this.currentYear = year.toString();
-    },
-    getYearList() {
-      const date = new Date();
-      let year = date.getFullYear();
-
-      for (let i = 0; i < this.maxYears; i++) {
-        this.yearList[i] = year.toString();
-        year--;
-      }
     },
     editEntry(array, index, property, value) {
       if (array.length <= index) {
@@ -315,6 +338,26 @@ export default {
     },
     catchClipboardCopy() {
       navigator.clipboard.writeText(this.doiField);
+    },
+    saveYear(year) {
+      this.previewYear = year.toString()
+      this.publicationYearField = year.toString()
+    },
+    formatToDatePickerDate(dateString) {
+      if (!dateString) {
+        return '';
+      }
+
+      const dateTime = parse(dateString, ckanDateFormat, new Date());
+
+      if (dateTime instanceof Date && !!dateTime.getTime()) {
+        const date = new Date(dateTime - new Date().getTimezoneOffset() * 60000)
+            .toISOString()
+            .substr(0, 10);
+        return date;
+      }
+
+      return '';
     },
   },
   data: () => ({
@@ -346,12 +389,26 @@ export default {
     dataIsValid: true,
     buttonColor: '#269697',
     currentYear: '',
-    yearList: [],
+    previewYear: null,
+    datePickerOpen: false,
+    yearWithMonths: null,
     defaultUserEditMetadataConfig: {
       publicationYearsList: 30,
     },
     stepKey: EDITMETADATA_PUBLICATION_INFO,
+    activePicker: 'YEAR',
   }),
+  watch: {
+    datePickerOpen(val) {
+      if (val) {
+        // assign the activePicker after a delay so it goes into effect
+        // when the datepicker is active
+        setTimeout(() => {
+          this.activePicker = 'YEAR';
+        }, 100);
+      }
+    },
+  },
   components: {
     BaseStatusLabelView,
 //    MetadataStateChip,
@@ -360,3 +417,6 @@ export default {
 </script>
 
 <style scoped></style>
+
+<script setup>
+</script>
