@@ -197,24 +197,29 @@
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <v-row no-gutters
-                   align="center">
-              <v-col class="flex-grow-0 pr-2">
-                <v-tooltip v-if="doiToolTipText" bottom>
-                  <template v-slot:activator="{ on }">
-                    <div v-on="on">
-                      <v-icon class="envidatIcon"
-                        :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                        color="black">fingerprint</v-icon>
-                    </div>
-                  </template>
-                  <span>{{ doiToolTipText }}</span>
-                </v-tooltip>
-              </v-col>
-              <v-col>
-                <a :href="doiUrl" target="_blank">{{ doi }}</a>
-              </v-col>
-            </v-row>
+            <v-tooltip v-if="doiToolTipText"
+                       bottom>
+              <template v-slot:activator="{ on }">
+
+                <v-row no-gutters
+                       v-on="on"
+                       align="center">
+
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                            color="black">fingerprint</v-icon>
+                  </v-col>
+
+                  <v-col>
+                    <a :href="doiUrl" target="_blank">{{ doi }}</a>
+                  </v-col>
+
+                </v-row>
+              </template>
+              <span>{{ doiToolTipText }}</span>
+            </v-tooltip>
+
           </v-col>
 
           <v-col v-if="hasContent"
@@ -554,7 +559,7 @@ export default {
     doiToolTipText: 'Data Object Identifier',
     locationToolTipText: 'Location',
     createTimeToolTipText: 'Time of creation',
-    modifyTimeToolTipText: 'Time of modification',
+    modifyTimeToolTipText: 'Time of last modification',
     NotFoundTitle: 'No metadata found for',
     authorTagsMaxHeight: 75,
   }),
