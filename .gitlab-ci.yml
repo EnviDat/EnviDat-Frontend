@@ -3,7 +3,6 @@ stages:
   - install
   - test
   - build
-  - visual-regression
 #  - package
   - deploy
 #  - release
@@ -239,9 +238,9 @@ combine-builds:
       - ./
 
 
-visual-regression:
+deploy-chromatic:
   extends: .node_cache
-  stage: visual-regression
+  stage: deploy
   image: docker.io/node:18.18.2-alpine3.17
   variables:
     GIT_STRATEGY: none
@@ -253,47 +252,9 @@ visual-regression:
     # needs the artifact: storybook
     - build-storybook
   script:
+    # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
   when: manual
-
-#image-build:
-#  extends: .trigger-rules
-#  stage: build
-#  image:
-#    name: gcr.io/kaniko-project/executor:v1.9.1-debug
-#    entrypoint: [""]
-#  dependencies:
-#    # needs the artifact: config and environment variables
-#    - set-vars
-#    - modify-env
-#    # needs the artifact: node_modules, not this could be removed when the build-app is used
-#    - install-node
-#    # needs the artifact: node_modules, not this could be removed when the build-app is used
-#    #- build-app
-#    - build-storybook
-#  before_script:
-#    - mkdir -p /kaniko/.docker
-#    - >
-#      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
-#      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
-#      | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-#  script:
-#    - echo "With content of .env.production"
-#    - cat .env.production
-#    - echo "Going to build image '${IMAGE_NAME}'"
-#    - >
-#      /kaniko/executor
-#      --force
-#      --context "${CI_PROJECT_DIR}"
-#      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-#      --target prod
-#      --cache=true
-#      --destination "${IMAGE_NAME}"
-#      --build-arg APP_VERSION="${VERSION}"
-#      --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
-#      --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
-#      --build-arg INTERNAL_REG="${INTERNAL_REG}"
-#      --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
 #tag-commit-sha:
 #  extends: .trigger-rules
