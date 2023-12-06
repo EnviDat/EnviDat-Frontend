@@ -5,9 +5,6 @@
  * @summary function factory for mode methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2019-11-22 14:10:55
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
@@ -24,6 +21,7 @@ import {
 import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 
+export const MODE_STORE = 'MODE_STORE';
 /*
 async function getSwissflLogo() {
   const img = await import('../assets/modes/swissfl/logo.jpg')

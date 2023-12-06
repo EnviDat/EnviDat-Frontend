@@ -87,6 +87,9 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList.vue';
+import { useModeStore } from '@/modules/browse/store/modeStore';
+
+const modeStore = useModeStore();
 
 export default {
   name: 'BrowsePage',
@@ -100,6 +103,8 @@ export default {
     this.oldIsAuthorSearch = this.isAuthorSearch;
 
     this.checkRouteChanges(null);
+
+    console.log(modeStore.name)
   },
   methods: {
     loadRouteTags() {
@@ -464,6 +469,7 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     oldIsAuthorSearch: false,
+    modeStore,
   }),
 };
 </script>
