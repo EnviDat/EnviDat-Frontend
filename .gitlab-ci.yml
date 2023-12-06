@@ -72,7 +72,7 @@ set-vars:
     #  echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
     #  >> build.env
     - echo "BUILD_NAME=${VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
-    - echo "BUILD_ZIP_NAME=envidat-frontend-${BUILD_NAME}.zip" >> build.env
+    - echo "BUILD_ZIP_NAME=envidat-frontend-${VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
     - echo "content of build.env"
     - cat build.env
   artifacts:
