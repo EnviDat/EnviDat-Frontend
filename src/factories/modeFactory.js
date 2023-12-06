@@ -22,12 +22,7 @@ import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 
 export const MODE_STORE = 'MODE_STORE';
-/*
-async function getSwissflLogo() {
-  const img = await import('../assets/modes/swissfl/logo.jpg')
-  return img
-}
-*/
+
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
@@ -44,9 +39,13 @@ function getSwissflIcons() {
   };
 }
 
-// const swissflLogo = getSwissflLogo();
+function getEDNAIcons() {
+  const ednaImgs = import.meta.glob('@/assets/modes/edna/*', { eager: true });
 
-const modes = [
+  return ednaImgs;
+}
+
+export const modes = [
   {
     name: SWISSFL_MODE,
     title: 'Swiss Forest Lab',
@@ -64,10 +63,11 @@ const modes = [
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
     logo: ednaLogo,
-    icons: getSwissflIcons(),
+    icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
   },
 ];
+
 
 export function getModeData(mode) {
 
@@ -77,7 +77,7 @@ export function getModeData(mode) {
     return modeData;
   }
 
-  throw new Error(`Not Mode Objection for mode: "${mode}" implemented`);
+  throw new Error(`No Mode Data for mode: "${mode}" implemented`);
 }
 
 

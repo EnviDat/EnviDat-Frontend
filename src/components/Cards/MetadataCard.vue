@@ -242,7 +242,7 @@ import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChi
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
-import { getModeData } from '@/factories/modeFactory';
+
 import { stripMarkdown } from '@/factories/stringFactory';
 
 // Header Sleek design
@@ -287,7 +287,7 @@ export default {
     unlockedIconString: String,
     geoJSONIcon: String,
     categoryColor: String,
-    mode: String,
+    modeData: Object,
     showGenericOpenButton: {
       type: Boolean,
       default: false,
@@ -470,16 +470,11 @@ export default {
         const key = keys[i];
 
         if (this.tags.findIndex(t => t.name === key.toUpperCase()) >= 0) {
-          return this.modeData.icons[key];
+          return key;
         }
       }
 
-      return Object.values(this.modeData.icons)[0];
-    },
-    modeData() {
-      if (!this.mode) return null;
-
-      return getModeData(this.mode);
+      return keys[0];
     },
   },
   created() {},

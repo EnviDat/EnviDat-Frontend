@@ -4,7 +4,7 @@
             key="BrowsePage">
 
     <metadata-list ref="metadataList"
-                    :listContent="filteredContent"
+                    :listContent="filteredDatasets"
                     :mapFilteringPossible="mapFilteringPossible"
                     :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchTagClicked"
@@ -16,7 +16,7 @@
                     @clickedCard="catchMetadataClicked"
                     :prePinnedIds="selectedPins"
                     @pinnedIds="catchPinnedIds"
-                    :mode="mode"
+                    :modeData="modeData"
                     :defaultListControls="defaultControls"
                     :enabledControls="enabledControls"
                     :useDynamicHeight="true"
@@ -64,6 +64,8 @@ import {
   mapGetters,
   mapState,
 } from 'vuex';
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
 import {
   BROWSE_PAGENAME,
   BROWSE_PATH,
@@ -89,22 +91,42 @@ import {
 import MetadataList from '@/components/MetadataList.vue';
 import { useModeStore } from '@/modules/browse/store/modeStore';
 
-const modeStore = useModeStore();
 
 export default {
   name: 'BrowsePage',
+/*
+  setup() {
+    const modeStore = useModeStore();
+    // const { modeDatasets } = storeToRefs(modeStore);
+
+    const currentDatasets = ref(modeStore.modeDatasets);
+
+    return {
+      currentDatasets,
+      modeStore,
+    }
+  },
+*/
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
   },
+  created() {
+    this.modeStore.$subscribe(() => {
+      this.modeContent = this.modeStore.getDatasets(this.mode);
+      },
+      {
+        immediate: true,
+        deep: true,
+      },
+    );
+  },
   mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
 
     this.checkRouteChanges(null);
-
-    console.log(modeStore.name)
   },
   methods: {
     loadRouteTags() {
@@ -195,7 +217,13 @@ export default {
 
       return visibleContent;
     },
-    filterContent() {
+    async filterContent() {
+      if (this.mode) {
+        console.log(`loading content for ${this.mode}`);
+        this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
+        return;
+      }
+
       this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
         {
           selectedTagNames: this.selectedTagNames,
@@ -425,8 +453,34 @@ export default {
     mode() {
       return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
     },
+    modeData() {
+      return this.modeStore.getModeData(this.mode);
+    },
+    filteredDatasets() {
+      if (this.modeContent) {
+
+/*
+        console.log('currentDatasets');
+        console.log(this.currentDatasets[1].length);
+        console.log('modeContent');
+        console.log(this.modeContent);
+
+        console.log('getDatasets');
+        console.log(this.modeStore.getDatasets(this.mode).length);
+*/
+        return this.modeContent;
+      }
+
+      return this.filteredContent;
+    },
   },
   watch: {
+/*
+    currentDatasets() {
+      console.log('watch currentDatasets');
+      console.log(this.currentDatasets[1].length);
+    },
+*/
     /* eslint-disable no-unused-vars */
     $route: function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
@@ -450,6 +504,8 @@ export default {
     MetadataList,
   },
   data: () => ({
+    modeStore: useModeStore(),
+    modeContent: null,
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
@@ -469,7 +525,6 @@ export default {
       LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
     ],
     oldIsAuthorSearch: false,
-    modeStore,
   }),
 };
 </script>
