@@ -341,10 +341,11 @@ rclone-sync:
   script:
     - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - ls -l
+    #- 'wget --header="JOB-TOKEN: $CI_JOB_TOKEN" ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}'
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}"
+      -O "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}"
     - unzip ${BUILD_ZIP_NAME}
     - rm ${BUILD_ZIP_NAME}
     - ls -l
