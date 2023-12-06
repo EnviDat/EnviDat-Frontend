@@ -290,13 +290,15 @@ publish-build:
   script:
     - echo "Check for the artifacts in the filesystem"
     - echo "api url ${CI_API_V4_URL} and project id ${CI_PROJECT_ID} for version ${VERSION}"
+    - echo "token ${CI_JOB_TOKEN} with user ${CI_DEPLOY_USER} for the registry"
+    - echo "maybe use IMAGE_REGISTRY_USER ${IMAGE_REGISTRY_USER} ?"
     - ls -l
     - zip -r envidat-frontend.zip ./
     - ls -l
     # https://gitlabext.wsl.ch/api/v4/projects/129/packages/generic/envidat-frontend/${VERSION}-${CI_COMMIT_REF_NAME}/
     # - PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
     - |
-      curl --header "PRIVATE-TOKEN: gitlab_package_deployment" \
+      curl --header "PRIVATE-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
       --upload-file envidat-frontend.zip \
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${VERSION}/envidat-frontend.zip"
