@@ -298,7 +298,7 @@ publish-build:
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
-      --upload-file envidat-frontend.zip \
+      --upload-file ${ZIP_NAME} \
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${ZIP_NAME}"
       
 
