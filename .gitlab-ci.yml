@@ -292,7 +292,7 @@ publish-build:
   before_script:
     - apk add curl zip --no-cache
   script:
-    - echo "Going to publish build ${BUILD_NAME}"
+    - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - zip -r ${BUILD_ZIP_NAME} ./
     - ls -l
     # https://gitlabext.wsl.ch/api/v4/projects/129/packages/generic/envidat-frontend/${VERSION}-${CI_COMMIT_REF_NAME}/
@@ -310,6 +310,8 @@ rclone-sync:
   stage: deploy
   image: docker.io/alpine:3.15
   needs:
+    # needs the enviromental variables for the version number
+    - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
     # needs the artifact from the build jobs for the app and it's storybook
@@ -337,7 +339,7 @@ rclone-sync:
       fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
-    - echo "Check for the artifacts in the filesystem"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
     - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
