@@ -1,10 +1,29 @@
 [
     {
+        "id": "SPY192816_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192816 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192816_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -15,10 +34,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192816 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -72,142 +105,161 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Clupeocephala"
-            },
-            {
-                "name": "Carcharhiniformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Belonidae"
-            },
-            {
-                "name": "Beloniformes"
-            },
-            {
-                "name": "Eupercaria"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
                 "name": "Chondrichthyes"
-            },
-            {
-                "name": "Argentiniformes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
             },
             {
                 "name": "Gobiidae"
             },
             {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Scyliorhinidae"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Cololabis saira"
-            },
-            {
-                "name": "Argentinidae"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Sparidae"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Peristediidae"
+                "name": "Istiophoridae"
             },
             {
                 "name": "Actinopteri"
             },
             {
-                "name": "Scyliorhinus canicula"
-            },
-            {
-                "name": "Argentina sp."
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
                 "name": "Clupeiformes"
             },
             {
-                "name": "Merluccius merluccius"
+                "name": "Perciformes"
             },
             {
-                "name": "Gobiiformes"
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Clupeocephala"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Eupercaria"
+            },
+            {
+                "name": "Carcharhiniformes"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Belonidae"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Argentinidae"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Beloniformes"
+            },
+            {
+                "name": "Argentiniformes"
             },
             {
                 "name": "Pomatoschistus minutus"
             },
             {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Merluccius merluccius"
+            },
+            {
                 "name": "Spariformes"
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Scyliorhinus canicula"
+            },
+            {
+                "name": "Peristediidae"
+            },
+            {
+                "name": "Gobiiformes"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Cololabis saira"
+            },
+            {
+                "name": "Scyliorhinidae"
+            },
+            {
+                "name": "Sparidae"
+            },
+            {
+                "name": "Argentina sp."
             }
         ]
     },
     {
+        "id": "SPY192821_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192821 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192821_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -218,10 +270,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192821 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -275,13 +341,37 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Chondrichthyes"
+            },
+            {
+                "name": "Rajidae"
+            },
+            {
+                "name": "Istiophoridae"
+            },
+            {
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Gadidae"
             },
             {
                 "name": "Leucoraja fullonica"
@@ -290,64 +380,59 @@
                 "name": "Scomber scombrus"
             },
             {
-                "name": "Gadidae"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Chondrichthyes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
                 "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Actinopteri"
             },
             {
                 "name": "Rajiformes"
             },
             {
-                "name": "Istiophoriformes"
-            },
-            {
-                "name": "Clupeiformes"
+                "name": "Scomber sp."
             },
             {
                 "name": "Merluccius merluccius"
             },
             {
-                "name": "Rajidae"
+                "name": "Scombridae"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
             }
         ]
     },
     {
+        "id": "SPY192833_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192833 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192833_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -358,10 +443,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192833 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -415,88 +514,107 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Zeus faber"
-            },
-            {
-                "name": "Zeiformes"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Trachinidae"
+                "name": "Istiophorus sp."
             },
             {
                 "name": "Istiophoridae"
             },
             {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Zeidae"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
                 "name": "Actinopteri"
             },
             {
-                "name": "Istiophoriformes"
+                "name": "Zeiformes"
             },
             {
                 "name": "Clupeiformes"
             },
             {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Trachinidae"
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
                 "name": "Trachinus draco"
             },
             {
-                "name": "Istiophorus sp."
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Zeidae"
+            },
+            {
+                "name": "Zeus faber"
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Istiophoriformes"
             }
         ]
     },
     {
+        "id": "SPY192840_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192840 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192840_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -507,10 +625,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192840 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -564,16 +696,13 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Clupeiformes"
             },
             {
                 "name": "Caproidae"
@@ -582,13 +711,16 @@
                 "name": "Sardina pilchardus"
             },
             {
-                "name": "Clupeidae"
-            },
-            {
                 "name": "Capros aper"
             },
             {
                 "name": "Actinopteri"
+            },
+            {
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Clupeidae"
             },
             {
                 "name": "Caproiformes"
@@ -596,11 +728,30 @@
         ]
     },
     {
+        "id": "SPY192843_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192843 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192843_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -611,10 +762,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192843 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -668,103 +833,122 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Sprattus sp."
-            },
-            {
-                "name": "Lamna nasus"
-            },
-            {
-                "name": "Sciaenidae"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Triglidae"
-            },
-            {
-                "name": "Sardina sp."
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
+                "name": "Chelidonichthys sp."
             },
             {
                 "name": "Chondrichthyes"
             },
             {
+                "name": "Lamna nasus"
+            },
+            {
+                "name": "Triglidae"
+            },
+            {
                 "name": "Istiophoridae"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Chelidonichthys sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Sprattus sprattus"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Lamniformes"
-            },
-            {
-                "name": "Alopiidae"
             },
             {
                 "name": "Actinopteri"
             },
             {
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Lamniformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sprattus sprattus"
+            },
+            {
+                "name": "Sciaenidae"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Sardina sp."
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Sprattus sp."
+            },
+            {
                 "name": "Istiophoriformes"
             },
             {
-                "name": "Clupeiformes"
+                "name": "Alopiidae"
+            },
+            {
+                "name": "Scombriformes"
             }
         ]
     },
     {
+        "id": "SPY192846_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192846 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192846_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -775,10 +959,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192846 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -832,40 +1030,40 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Carangidae"
             },
             {
                 "name": "Carangiformes"
             },
             {
-                "name": "Clupeiformes"
-            },
-            {
-                "name": "Cololabis saira"
-            },
-            {
                 "name": "Sardina pilchardus"
             },
             {
-                "name": "Trachurus sp."
+                "name": "Engraulidae"
             },
             {
-                "name": "Belonidae"
+                "name": "Actinopteri"
             },
             {
                 "name": "Beloniformes"
             },
             {
-                "name": "Carangidae"
+                "name": "Cololabis saira"
             },
             {
-                "name": "Engraulidae"
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Belonidae"
             },
             {
                 "name": "Clupeidae"
@@ -874,19 +1072,38 @@
                 "name": "Engraulis sp."
             },
             {
-                "name": "Sardina sp."
+                "name": "Trachurus sp."
             },
             {
-                "name": "Actinopteri"
+                "name": "Sardina sp."
             }
         ]
     },
     {
+        "id": "SPY192850_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY192850 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY192850_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -897,10 +1114,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY192850 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -954,76 +1185,13 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Moronidae"
-            },
-            {
-                "name": "Micromesistius poutassou"
-            },
-            {
-                "name": "Lophiidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Clupeocephala"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Belonidae"
-            },
-            {
-                "name": "Beloniformes"
-            },
-            {
-                "name": "Gadidae"
-            },
-            {
-                "name": "Dicentrarchus labrax"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Chondrichthyes"
-            },
-            {
-                "name": "Argentiniformes"
-            },
-            {
-                "name": "Caproiformes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Leucoraja naevus"
             },
             {
                 "name": "Caproidae"
@@ -1032,85 +1200,167 @@
                 "name": "Pleuronectiformes"
             },
             {
+                "name": "Chondrichthyes"
+            },
+            {
+                "name": "Rajidae"
+            },
+            {
                 "name": "Gobiidae"
             },
             {
-                "name": "Engraulidae"
+                "name": "Moronidae"
             },
             {
-                "name": "Engraulis sp."
+                "name": "Dicentrarchus labrax"
             },
             {
-                "name": "Dicentrarchus sp."
-            },
-            {
-                "name": "Scophthalmidae"
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Lophiiformes"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Lophius sp."
-            },
-            {
-                "name": "Cololabis saira"
-            },
-            {
-                "name": "Argentinidae"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
+                "name": "Istiophoridae"
             },
             {
                 "name": "Actinopteri"
             },
             {
-                "name": "Argentina sp."
-            },
-            {
-                "name": "Rajiformes"
-            },
-            {
-                "name": "Istiophoriformes"
+                "name": "Lophius sp."
             },
             {
                 "name": "Clupeiformes"
             },
             {
-                "name": "Gobiiformes"
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Lophiidae"
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Clupeocephala"
+            },
+            {
+                "name": "Lophiiformes"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadidae"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Belonidae"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Argentinidae"
+            },
+            {
+                "name": "Leucoraja naevus"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Beloniformes"
+            },
+            {
+                "name": "Rajiformes"
+            },
+            {
+                "name": "Caproiformes"
+            },
+            {
+                "name": "Argentiniformes"
             },
             {
                 "name": "Pomatoschistus minutus"
             },
             {
-                "name": "Capros sp."
+                "name": "Dicentrarchus sp."
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Micromesistius poutassou"
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Gobiiformes"
+            },
+            {
+                "name": "Engraulidae"
             },
             {
                 "name": "Capros aper"
             },
             {
-                "name": "Rajidae"
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Cololabis saira"
+            },
+            {
+                "name": "Argentina sp."
+            },
+            {
+                "name": "Capros sp."
+            },
+            {
+                "name": "Scophthalmidae"
             }
         ]
     },
     {
+        "id": "SPY203398_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203398 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203398_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1121,10 +1371,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203398 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1178,28 +1442,43 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Myctophiformes"
             },
             {
-                "name": "Myctophiformes"
+                "name": "Scombridae"
+            },
+            {
+                "name": "Alepocephaliformes"
+            },
+            {
+                "name": "Scomber scombrus"
             },
             {
                 "name": "Alepocephalidae"
             },
             {
-                "name": "Micromesistius poutassou"
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Gadidae"
+            },
+            {
+                "name": "Actinopteri"
             },
             {
                 "name": "Merluccius merluccius"
             },
             {
-                "name": "Scomber sp."
+                "name": "Scombriformes"
             },
             {
                 "name": "Merluccius sp."
@@ -1208,46 +1487,50 @@
                 "name": "Myctophidae"
             },
             {
-                "name": "Scomber scombrus"
+                "name": "Scomber sp."
             },
             {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Alepocephaliformes"
-            },
-            {
-                "name": "Gadidae"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Protomyctophum arcticum"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
+                "name": "Micromesistius sp."
             },
             {
                 "name": "Xenodermichthys copei"
             },
             {
-                "name": "Actinopteri"
+                "name": "Gadiformes"
             },
             {
-                "name": "Micromesistius sp."
+                "name": "Protomyctophum arcticum"
+            },
+            {
+                "name": "Micromesistius poutassou"
             }
         ]
     },
     {
+        "id": "SPY203399_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203399 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203399_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1258,10 +1541,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203399 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1315,118 +1612,137 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Lophiidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Sardina sp."
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Argentiniformes"
-            },
-            {
-                "name": "Caproiformes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
                 "name": "Caproidae"
-            },
-            {
-                "name": "Gobiidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Lophiiformes"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Argentinidae"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Lophius piscatorius"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Actinopteri"
-            },
-            {
-                "name": "Argentina sp."
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
-                "name": "Clupeiformes"
-            },
-            {
-                "name": "Gobiiformes"
             },
             {
                 "name": "Istiophorus sp."
             },
             {
+                "name": "Gobiidae"
+            },
+            {
+                "name": "Istiophoridae"
+            },
+            {
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Lophiidae"
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Lophiiformes"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Argentinidae"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Caproiformes"
+            },
+            {
+                "name": "Argentiniformes"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Sardina sp."
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Gobiiformes"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
                 "name": "Capros aper"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Lophius piscatorius"
+            },
+            {
+                "name": "Argentina sp."
             }
         ]
     },
     {
+        "id": "SPY203400_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203400 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203400_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1437,10 +1753,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203400 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1494,22 +1824,41 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
             }
         ]
     },
     {
+        "id": "SPY203401_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203401 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203401_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1520,10 +1869,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203401 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1577,58 +1940,16 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Moronidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Clupeocephala"
-            },
-            {
-                "name": "Sciaenidae"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Dicentrarchus labrax"
-            },
-            {
-                "name": "Triglidae"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Argentiniformes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
+                "name": "Chelidonichthys sp."
             },
             {
                 "name": "Pleuronectiformes"
@@ -1637,73 +1958,134 @@
                 "name": "Gobiidae"
             },
             {
-                "name": "Chelidonichthys sp."
+                "name": "Triglidae"
             },
             {
-                "name": "Merlucciidae"
+                "name": "Moronidae"
             },
             {
-                "name": "Engraulidae"
+                "name": "Dicentrarchus labrax"
             },
             {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Scophthalmidae"
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Sprattus sprattus"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Argentinidae"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
+                "name": "Istiophoridae"
             },
             {
                 "name": "Actinopteri"
             },
             {
-                "name": "Argentina sp."
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
                 "name": "Clupeiformes"
+            },
+            {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Thunnus"
+            },
+            {
+                "name": "Clupeocephala"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Argentinidae"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sprattus sprattus"
+            },
+            {
+                "name": "Argentiniformes"
+            },
+            {
+                "name": "Sciaenidae"
+            },
+            {
+                "name": "Scomber sp."
             },
             {
                 "name": "Merluccius merluccius"
             },
             {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
                 "name": "Gobiiformes"
             },
             {
-                "name": "Thunnus"
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Argentina sp."
+            },
+            {
+                "name": "Scophthalmidae"
             }
         ]
     },
     {
+        "id": "SPY203402_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203402 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203402_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1714,10 +2096,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203402 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1771,22 +2167,41 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
             }
         ]
     },
     {
+        "id": "SPY203403_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203403 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203403_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1797,10 +2212,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203403 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1854,22 +2283,19 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Carangidae"
             },
             {
-                "name": "Actinopteri"
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
-                "name": "Istiophoridae"
+                "name": "Istiophorus sp."
             },
             {
                 "name": "Carangiformes"
@@ -1878,22 +2304,44 @@
                 "name": "Istiophorus albicans"
             },
             {
-                "name": "Istiophorus sp."
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Istiophoridae"
+            },
+            {
+                "name": "Actinopteri"
             },
             {
                 "name": "Trachurus sp."
-            },
-            {
-                "name": "Carangidae"
             }
         ]
     },
     {
+        "id": "SPY203404_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203404 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203404_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -1904,10 +2352,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203404 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -1961,55 +2423,74 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Alepocephalidae"
-            },
-            {
-                "name": "Merluccius merluccius"
-            },
-            {
-                "name": "Sciaenidae"
-            },
-            {
                 "name": "Spariformes"
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Alepocephaliformes"
-            },
-            {
-                "name": "Sparidae"
             },
             {
                 "name": "Pagellus bogaraveo"
             },
             {
-                "name": "Gadiformes"
+                "name": "Alepocephaliformes"
+            },
+            {
+                "name": "Alepocephalidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Sciaenidae"
+            },
+            {
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Sparidae"
             },
             {
                 "name": "Xenodermichthys copei"
             },
             {
-                "name": "Actinopteri"
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Merluccius merluccius"
             }
         ]
     },
     {
+        "id": "SPY203405_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203405 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203405_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2020,10 +2501,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203405 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2077,49 +2572,25 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Lophiidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Sebastidae"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
+                "name": "Istiophorus sp."
             },
             {
                 "name": "Gobiidae"
             },
             {
-                "name": "Carangidae"
+                "name": "Istiophoridae"
             },
             {
-                "name": "Lophiiformes"
+                "name": "Actinopteri"
             },
             {
                 "name": "Lophius sp."
@@ -2128,34 +2599,77 @@
                 "name": "Perciformes"
             },
             {
-                "name": "Scombriformes"
+                "name": "Lophiidae"
             },
             {
-                "name": "Actinopteri"
+                "name": "Lophiiformes"
             },
             {
-                "name": "Helicolenus sp."
+                "name": "Trachurus sp."
             },
             {
-                "name": "Istiophoriformes"
+                "name": "Carangiformes"
             },
             {
-                "name": "Gobiiformes"
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sebastidae"
             },
             {
                 "name": "Pomatoschistus minutus"
             },
             {
-                "name": "Istiophorus sp."
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Gobiiformes"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Helicolenus sp."
             }
         ]
     },
     {
+        "id": "SPY203406_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203406 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203406_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2166,10 +2680,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203406 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2223,94 +2751,113 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Clupeocephala"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
+                "name": "Istiophorus sp."
             },
             {
                 "name": "Istiophoridae"
             },
             {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Sprattus sprattus"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
                 "name": "Actinopteri"
-            },
-            {
-                "name": "Istiophoriformes"
             },
             {
                 "name": "Clupeiformes"
             },
             {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Clupeocephala"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sprattus sprattus"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
                 "name": "Merluccius merluccius"
             },
             {
-                "name": "Istiophorus sp."
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
             }
         ]
     },
     {
+        "id": "SPY203407_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203407 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203407_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2321,10 +2868,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203407 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2378,22 +2939,41 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
             }
         ]
     },
     {
+        "id": "SPY203408_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203408 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203408_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2404,10 +2984,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203408 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2461,37 +3055,56 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Merlucciidae"
             },
             {
-                "name": "Merluccius merluccius"
+                "name": "Actinopteri"
             },
             {
                 "name": "Merluccius sp."
             },
             {
-                "name": "Merlucciidae"
-            },
-            {
                 "name": "Gadiformes"
             },
             {
-                "name": "Actinopteri"
+                "name": "Merluccius merluccius"
             }
         ]
     },
     {
+        "id": "SPY203409_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203409 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203409_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2502,10 +3115,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203409 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2559,70 +3186,89 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Trachichthyiformes"
-            },
-            {
-                "name": "Alepocephalidae"
-            },
-            {
-                "name": "Trachichthyidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Merluccius merluccius"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Alepocephaliformes"
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
                 "name": "Carangidae"
-            },
-            {
-                "name": "Scombriformes"
             },
             {
                 "name": "Scombridae"
             },
             {
-                "name": "Gadiformes"
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Alepocephaliformes"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Trachichthyiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Alepocephalidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Trachichthyidae"
             },
             {
                 "name": "Xenodermichthys copei"
             },
             {
-                "name": "Actinopteri"
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Merluccius merluccius"
             }
         ]
     },
     {
+        "id": "SPY203410_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203410 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203410_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2633,10 +3279,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203410 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2690,22 +3350,22 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
                 "name": "Merlucciidae"
             },
             {
-                "name": "Merluccius merluccius"
+                "name": "Gadiformes"
             },
             {
-                "name": "Gadiformes"
+                "name": "Merluccius merluccius"
             },
             {
                 "name": "Actinopteri"
@@ -2713,11 +3373,30 @@
         ]
     },
     {
+        "id": "SPY203411_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203411 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203411_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2728,10 +3407,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203411 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2785,31 +3478,13 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Clupeiformes"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Istiophorus albicans"
             },
             {
                 "name": "Sardina pilchardus"
@@ -2818,25 +3493,62 @@
                 "name": "Engraulidae"
             },
             {
-                "name": "Engraulis sp."
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Istiophoridae"
+            },
+            {
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeiformes"
             },
             {
                 "name": "Clupeidae"
             },
             {
+                "name": "Engraulis sp."
+            },
+            {
                 "name": "Gadiformes"
             },
             {
-                "name": "Actinopteri"
+                "name": "Engraulis encrasicolus"
             }
         ]
     },
     {
+        "id": "SPY203412_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203412 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203412_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -2847,10 +3559,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203412 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -2904,46 +3630,70 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Caproidae"
             },
             {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Carcharhiniformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Belonidae"
-            },
-            {
-                "name": "Beloniformes"
+                "name": "Chondrichthyes"
             },
             {
                 "name": "Triglidae"
             },
             {
-                "name": "Argentina silus"
+                "name": "Istiophoridae"
             },
             {
-                "name": "Scombridae"
+                "name": "Actinopteri"
+            },
+            {
+                "name": "Clupeiformes"
+            },
+            {
+                "name": "Perciformes"
             },
             {
                 "name": "Gadiformes"
             },
             {
-                "name": "Chondrichthyes"
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Thunnus"
+            },
+            {
+                "name": "Carcharhiniformes"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Belonidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Argentinidae"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Beloniformes"
             },
             {
                 "name": "Caproiformes"
@@ -2952,76 +3702,71 @@
                 "name": "Argentiniformes"
             },
             {
-                "name": "Istiophoridae"
-            },
-            {
-                "name": "Scyliorhinus sp."
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
                 "name": "Scomber sp."
-            },
-            {
-                "name": "Caproidae"
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Scyliorhinidae"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Cololabis saira"
-            },
-            {
-                "name": "Argentinidae"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Actinopteri"
-            },
-            {
-                "name": "Istiophoriformes"
-            },
-            {
-                "name": "Clupeiformes"
             },
             {
                 "name": "Merluccius merluccius"
             },
             {
-                "name": "Thunnus"
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Argentina silus"
+            },
+            {
+                "name": "Scyliorhinus sp."
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
             },
             {
                 "name": "Capros aper"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Cololabis saira"
+            },
+            {
+                "name": "Scyliorhinidae"
             }
         ]
     },
     {
+        "id": "SPY203413_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203413 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203413_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3032,10 +3777,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203413 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3089,40 +3848,13 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Belonidae"
-            },
-            {
-                "name": "Beloniformes"
-            },
-            {
-                "name": "Eupercaria"
-            },
-            {
-                "name": "Sardina sp."
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
-            },
-            {
-                "name": "Pomatoschistus sp."
-            },
-            {
-                "name": "Scomber sp."
             },
             {
                 "name": "Pleuronectiformes"
@@ -3131,34 +3863,7 @@
                 "name": "Gobiidae"
             },
             {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Scophthalmidae"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Cololabis saira"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Peristediidae"
+                "name": "Pomatoschistus sp."
             },
             {
                 "name": "Actinopteri"
@@ -3167,16 +3872,89 @@
                 "name": "Clupeiformes"
             },
             {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Eupercaria"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Belonidae"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Beloniformes"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Sardina sp."
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Peristediidae"
+            },
+            {
                 "name": "Gobiiformes"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Cololabis saira"
+            },
+            {
+                "name": "Scophthalmidae"
             }
         ]
     },
     {
+        "id": "SPY203414_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203414 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203414_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3187,10 +3965,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203414 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3244,22 +4036,41 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
             }
         ]
     },
     {
+        "id": "SPY203415_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203415 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203415_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3270,10 +4081,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203415 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3327,16 +4152,13 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
-            },
-            {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Alepocephaliformes"
             },
             {
                 "name": "Xenodermichthys copei"
@@ -3345,16 +4167,38 @@
                 "name": "Alepocephalidae"
             },
             {
+                "name": "Alepocephaliformes"
+            },
+            {
                 "name": "Actinopteri"
             }
         ]
     },
     {
+        "id": "SPY203416_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203416 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203416_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3365,10 +4209,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203416 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3422,13 +4280,25 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Istiophorus sp."
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Istiophorus albicans"
             },
             {
                 "name": "Istiophoriformes"
@@ -3437,46 +4307,53 @@
                 "name": "Istiophoridae"
             },
             {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Clupeiformes"
+                "name": "Actinopteri"
             },
             {
                 "name": "Gadoidei"
             },
             {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Istiophorus sp."
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
+                "name": "Clupeiformes"
             },
             {
                 "name": "Clupeidae"
             },
             {
-                "name": "Sardina sp."
+                "name": "Engraulis sp."
             },
             {
                 "name": "Gadiformes"
             },
             {
-                "name": "Actinopteri"
+                "name": "Sardina sp."
             }
         ]
     },
     {
+        "id": "SPY203417_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203417 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203417_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3487,10 +4364,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203417 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3544,97 +4435,116 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Lophiidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
+                "name": "Chelidonichthys sp."
             },
             {
                 "name": "Triglidae"
             },
             {
-                "name": "Scombridae"
-            },
-            {
                 "name": "Istiophoridae"
-            },
-            {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Chelidonichthys sp."
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Lophiiformes"
-            },
-            {
-                "name": "Sprattus sprattus"
-            },
-            {
-                "name": "Lophius sp."
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Peristediidae"
             },
             {
                 "name": "Actinopteri"
             },
             {
-                "name": "Istiophoriformes"
+                "name": "Lophius sp."
             },
             {
                 "name": "Clupeiformes"
+            },
+            {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Lophiidae"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Lophiiformes"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sprattus sprattus"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Peristediidae"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Scombriformes"
             }
         ]
     },
     {
+        "id": "SPY203420_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203420 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203420_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3645,10 +4555,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203420 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3702,121 +4626,140 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Lamna nasus"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Scomber scombrus"
-            },
-            {
-                "name": "Triglidae"
-            },
-            {
-                "name": "Sardina sp."
-            },
-            {
-                "name": "Chelon ramada"
-            },
-            {
-                "name": "Scombridae"
-            },
-            {
-                "name": "Gadiformes"
+                "name": "Chelidonichthys sp."
             },
             {
                 "name": "Chondrichthyes"
             },
             {
-                "name": "Mugilidae"
+                "name": "Lamna nasus"
+            },
+            {
+                "name": "Triglidae"
             },
             {
                 "name": "Istiophoridae"
             },
             {
-                "name": "Engraulis encrasicolus"
-            },
-            {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Scomber sp."
-            },
-            {
-                "name": "Chelidonichthys sp."
-            },
-            {
-                "name": "Merlucciidae"
-            },
-            {
-                "name": "Engraulidae"
-            },
-            {
-                "name": "Engraulis sp."
-            },
-            {
-                "name": "Carangidae"
-            },
-            {
-                "name": "Sprattus sprattus"
-            },
-            {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Perciformes"
-            },
-            {
-                "name": "Scombriformes"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Mugiliformes"
-            },
-            {
-                "name": "Lamniformes"
-            },
-            {
-                "name": "Alopiidae"
-            },
-            {
                 "name": "Actinopteri"
-            },
-            {
-                "name": "Istiophoriformes"
             },
             {
                 "name": "Clupeiformes"
             },
             {
+                "name": "Perciformes"
+            },
+            {
+                "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Mugilidae"
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Lamniformes"
+            },
+            {
+                "name": "Chelon ramada"
+            },
+            {
+                "name": "Scomber scombrus"
+            },
+            {
+                "name": "Istiophorus albicans"
+            },
+            {
+                "name": "Sprattus sprattus"
+            },
+            {
+                "name": "Scomber sp."
+            },
+            {
+                "name": "Sardina sp."
+            },
+            {
                 "name": "Merluccius merluccius"
+            },
+            {
+                "name": "Carangidae"
+            },
+            {
+                "name": "Scombridae"
+            },
+            {
+                "name": "Engraulidae"
+            },
+            {
+                "name": "Merlucciidae"
+            },
+            {
+                "name": "Istiophoriformes"
+            },
+            {
+                "name": "Alopiidae"
+            },
+            {
+                "name": "Scombriformes"
+            },
+            {
+                "name": "Mugiliformes"
             }
         ]
     },
     {
+        "id": "SPY203421_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203421 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203421_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3827,10 +4770,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203421 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -3884,43 +4841,58 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
+                "name": "Istiophorus sp."
             },
             {
                 "name": "Moronidae"
             },
             {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
                 "name": "Dicentrarchus labrax"
-            },
-            {
-                "name": "Gadiformes"
             },
             {
                 "name": "Istiophoridae"
             },
             {
-                "name": "Engraulis encrasicolus"
+                "name": "Actinopteri"
             },
             {
-                "name": "Istiophorus albicans"
-            },
-            {
-                "name": "Engraulidae"
+                "name": "Clupeiformes"
             },
             {
                 "name": "Engraulis sp."
+            },
+            {
+                "name": "Gadiformes"
+            },
+            {
+                "name": "Engraulis encrasicolus"
+            },
+            {
+                "name": "Sardina pilchardus"
+            },
+            {
+                "name": "Gadoidei"
+            },
+            {
+                "name": "Clupeidae"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Istiophorus albicans"
             },
             {
                 "name": "Dicentrarchus sp."
@@ -3929,34 +4901,38 @@
                 "name": "Carangidae"
             },
             {
-                "name": "Gadoidei"
-            },
-            {
-                "name": "Sardina pilchardus"
-            },
-            {
-                "name": "Clupeidae"
-            },
-            {
-                "name": "Actinopteri"
+                "name": "Engraulidae"
             },
             {
                 "name": "Istiophoriformes"
-            },
-            {
-                "name": "Clupeiformes"
-            },
-            {
-                "name": "Istiophorus sp."
             }
         ]
     },
     {
+        "id": "SPY203422_ab01048c-f3b9-465c-85c7-6d7055cc7c3d",
         "title": "SPY203422 - Environmental DNA Marine France Evohex 2020",
         "name": "SPY203422_environmental-dna-marine-france-evohex-2020",
-        "author": "[{\"affiliation\": \"ETH\", \"affiliation_02\": \"\", \"affiliation_03\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"0000-0003-1629-2389\", \"name\": \"Albouy\"}]",
-        "date": "[{\"date\": \"2020-10-29\", \"date_type\": \"collected\", \"end_date\": \"2020-11-12\"}, {\"date\": \"2020-10-29\", \"date_type\": \"created\", \"end_date\": \"2020-11-12\"}]",
-        "doi": "10.16904/envidat.444",
+        "author": [
+            {
+                "email": "albouycamille@gmail.com",
+                "given_name": "Camille",
+                "identifier": "0000-0003-1629-2389",
+                "name": "Albouy"
+            }
+        ],
+        "date": [
+            {
+                "date": "2020-10-29",
+                "date_type": "collected",
+                "end_date": "2020-11-12"
+            },
+            {
+                "date": "2020-10-29",
+                "date_type": "created",
+                "end_date": "2020-11-12"
+            }
+        ],
+        "doi": "https://www.doi.org/10.16904/envidat.444",
         "extras": [
             {
                 "key": "edna_type",
@@ -3967,10 +4943,24 @@
                 "value": "https://os.zhdk.cloud.switch.ch/envicloud/edna/ma_fr_evohex_2020/metadata/metadata_ma_evhoex_2020.csv"
             }
         ],
-        "funding": "[{\"grant_number\": \"\", \"institution\": \"Ifremer (internal) - FisheDNA\", \"institution_url\": \"https://www.ifremer.fr/\"}]",
+        "funding": [
+            {
+                "grant_number": "",
+                "institution": "Ifremer (internal) - FisheDNA",
+                "institution_url": "https://www.ifremer.fr/"
+            }
+        ],
         "license_title": "Creative Commons Attribution Share-Alike (CC-BY-SA)",
-        "maintainer": "{\"affiliation\": \"\", \"email\": \"albouycamille@gmail.com\", \"given_name\": \"Camille\", \"identifier\": \"\", \"name\": \"Albouy\"}",
-        "publication": "{\"publication_year\": \"2023\", \"publisher\": \"EnviDat\"}",
+        "maintainer": {
+            "email": "albouycamille@gmail.com",
+            "given_name": "Camille",
+            "identifier": "",
+            "name": "Albouy"
+        },
+        "publication": {
+            "publication_year": "2023",
+            "publisher": "EnviDat"
+        },
         "related_datasets": "ma_evhoex_2019; ma_evhoex_2021",
         "related_publications": "No related publications available for this dataset. ",
         "notes": "Sample SPY203422 of dataset: https://www.doi.org/10.16904/envidat.444",
@@ -4024,55 +5014,55 @@
         },
         "tags": [
             {
+                "name": "open_ocean"
+            },
+            {
                 "name": "ocean"
             },
             {
                 "name": "water"
             },
             {
-                "name": "open_ocean"
-            },
-            {
-                "name": "Alepocephalidae"
-            },
-            {
-                "name": "Carangiformes"
-            },
-            {
-                "name": "Prionace glauca"
-            },
-            {
                 "name": "Caproidae"
-            },
-            {
-                "name": "Carcharhiniformes"
-            },
-            {
-                "name": "Trachurus sp."
-            },
-            {
-                "name": "Carcharhinidae"
-            },
-            {
-                "name": "Alepocephaliformes"
             },
             {
                 "name": "Carangidae"
             },
             {
+                "name": "Carangiformes"
+            },
+            {
+                "name": "Alepocephaliformes"
+            },
+            {
+                "name": "Trachurus sp."
+            },
+            {
                 "name": "Chondrichthyes"
+            },
+            {
+                "name": "Carcharhinidae"
+            },
+            {
+                "name": "Prionace glauca"
+            },
+            {
+                "name": "Alepocephalidae"
             },
             {
                 "name": "Capros aper"
             },
             {
-                "name": "Xenodermichthys copei"
-            },
-            {
                 "name": "Actinopteri"
             },
             {
+                "name": "Carcharhiniformes"
+            },
+            {
                 "name": "Caproiformes"
+            },
+            {
+                "name": "Xenodermichthys copei"
             }
         ]
     }

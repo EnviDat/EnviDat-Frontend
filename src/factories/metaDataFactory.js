@@ -32,6 +32,8 @@ import {
   PUBLICATION_STATE_PUBLISHED,
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
+// eslint-disable-next-line import/no-cycle
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.

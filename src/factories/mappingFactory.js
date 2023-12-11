@@ -463,6 +463,10 @@ export function getFrontendJSONForStep(stepKey, data) {
   return convertToFrontendJSONWithRules(rules, data);
 }
 
+export function getFrontendJSONAllStep(data) {
+  // const rules = JJSON
+}
+
 export function stringifyResourceForBackend(resource) {
   let resourceSize = resource.resource_size;
 

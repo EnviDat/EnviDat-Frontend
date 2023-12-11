@@ -38,7 +38,7 @@
                     :reloadDelay="vReloadDelay"
                     :updatingTags="updatingTags"
                     :loading="loading"
-                    :metadatasContent="metadatasContent"
+                    :metadatasContent="allDatasets"
                     :categoryCards="categoryCards"
     />
 
@@ -64,13 +64,13 @@ import {
   mapGetters,
   mapState,
 } from 'vuex';
-import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
+
 import {
   BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
+
 import {
   CLEAR_SEARCH_METADATA,
   FILTER_METADATA,
@@ -94,19 +94,6 @@ import { useModeStore } from '@/modules/browse/store/modeStore';
 
 export default {
   name: 'BrowsePage',
-/*
-  setup() {
-    const modeStore = useModeStore();
-    // const { modeDatasets } = storeToRefs(modeStore);
-
-    const currentDatasets = ref(modeStore.modeDatasets);
-
-    return {
-      currentDatasets,
-      modeStore,
-    }
-  },
-*/
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
@@ -114,14 +101,12 @@ export default {
     });
   },
   created() {
-    this.modeStore.$subscribe(() => {
-      this.modeContent = this.modeStore.getDatasets(this.mode);
-      },
-      {
-        immediate: true,
-        deep: true,
-      },
-    );
+    if(this.mode) {
+      this.$nextTick(async () => {
+        this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
+        this.filteredModeContent = this.modeStore.getFilteredDatasets([], this.mode);
+      });
+    }
   },
   mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -155,6 +140,7 @@ export default {
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
+        query: this.$route.query,
         params: {
           metadataid: datasetname,
         },
@@ -219,12 +205,11 @@ export default {
     },
     async filterContent() {
       if (this.mode) {
-        console.log(`loading content for ${this.mode}`);
-        this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
+        this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
         return;
       }
 
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
+      await this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
         {
           selectedTagNames: this.selectedTagNames,
           mode: this.mode,
@@ -457,30 +442,21 @@ export default {
       return this.modeStore.getModeData(this.mode);
     },
     filteredDatasets() {
-      if (this.modeContent) {
-
-/*
-        console.log('currentDatasets');
-        console.log(this.currentDatasets[1].length);
-        console.log('modeContent');
-        console.log(this.modeContent);
-
-        console.log('getDatasets');
-        console.log(this.modeStore.getDatasets(this.mode).length);
-*/
-        return this.modeContent;
+      if (this.filteredModeContent) {
+        return this.filteredModeContent;
       }
 
       return this.filteredContent;
     },
+    allDatasets() {
+      if (this.modeContent) {
+        return this.modeContent;
+      }
+
+      return this.metadatasContent
+    },
   },
   watch: {
-/*
-    currentDatasets() {
-      console.log('watch currentDatasets');
-      console.log(this.currentDatasets[1].length);
-    },
-*/
     /* eslint-disable no-unused-vars */
     $route: function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
@@ -490,9 +466,6 @@ export default {
       if (!this.isFilteringContent) {
         this.setScrollPos(this.browseScrollPosition);
       }
-    },
-    metadatasContent() {
-      this.filterContent();
     },
     searchedMetadatasContent() {
       if (!this.searchingMetadatasContent && this.searchingMetadatasContentOK) {
@@ -506,6 +479,7 @@ export default {
   data: () => ({
     modeStore: useModeStore(),
     modeContent: null,
+    filteredModeContent: null,
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',
