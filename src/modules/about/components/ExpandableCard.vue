@@ -33,7 +33,6 @@
         <base-icon-button
           materialIconName="expand_more"
           :outlined="true"
-          color="transparent"
           :iconColor="expanded ? 'accent' : 'primary'"
           :rotateOnClick="true"
           :rotateToggle="expanded"
