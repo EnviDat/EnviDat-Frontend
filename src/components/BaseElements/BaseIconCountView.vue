@@ -24,18 +24,13 @@
                 />
               </v-col>
 
-              <v-col v-if="iconString"
-                     class="pa-0">
-                <img
-                  class="envidatIcon"
-                  :src="iconString"
-                  :alt="`${iconString} icon`"
+              <v-col class="pa-0">
+                <BaseIcon :custom-icon='iconString'
+                          :material-icon='materialIconName'
                 />
-              </v-col>
 
-              <v-col v-if="materialIconName">
-                <v-icon>{{ materialIconName }}</v-icon>
               </v-col>
+              
             </v-row>
           </v-container>
         </div>
@@ -51,12 +46,13 @@
           @mouseleave="hoverBadge = false"
           no-gutters
         >
-          <v-col class="pa-0">
+          <v-col class="pa-0"
+                 style="z-index: 2;"
+          >
             <v-badge
               :left="!hoverBadge"
               overlap
               color="secondary"
-              style="z-index: 2;"
               :class="{
                 envidatBadgeBigNumber: count > 9,
                 envidatBadge: count <= 9,
@@ -66,10 +62,7 @@
           </v-col>
 
           <v-col class="pa-0" style="z-index: 1;">
-            <img
-              class="envidatIcon"
-              :src="iconString"
-              :alt="`${iconString} icon`"
+            <BaseIcon :custom-icon='iconString'
             />
           </v-col>
         </v-row>
@@ -79,6 +72,8 @@
 </template>
 
 <script>
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
 /**
  * BaseIconCountView.vue creates a round with an icon with a badge which shows a number
  * Similar to @class BaseIconButton but without the click event.
@@ -94,6 +89,7 @@
  */
 export default {
   name: 'BaseIconCountView',
+  components: { BaseIcon },
   props: {
     iconString: String,
     materialIconName: String,

@@ -1,5 +1,6 @@
 <template>
-  <div style="width: 24px; height: 24px;">
+  <div id="BaseIcon"
+       style="width: 24px; height: 24px;">
 
     <img v-show="customIcon"
          class="envidatIcon"
