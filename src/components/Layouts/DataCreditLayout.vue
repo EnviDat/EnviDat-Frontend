@@ -25,31 +25,23 @@
               :key="index"
               class="flex-grow-0 pt-3 pt-md-4 px-1" >
 
-      <v-hover v-slot:default="{ hover }" >
-        <v-badge class="dataCreditIcon"
-                  bordered
-                  :overlap="!hover"
-                  :color="badgeColor"
+      <v-hover v-slot="{ isHovering, props }" >
+        <v-badge v-bind="props"
+                 class="dataCreditIcon"
+                 :overlap="!isHovering"
+                 :color="badgeColor"
                  :content="dataCreditCounts[index]"
         >
-
-<!--
-          <template v-slot:badge >
-            <span :class="!dark ? 'white&#45;&#45;text' : 'black&#45;&#45;text'" >
-                  {{ dataCreditCounts[index] }}
-            </span>
-          </template>
--->
-
-          <v-tooltip bottom >
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      class="pa-1"
-                      :style="`border: ${dataCreditCounts[index] > 0 ? '0px solid' : '0px' };
+          
+          <v-tooltip location='bottom' >
+            <template v-slot:activator="{ props }">
+              <BaseIcon v-bind="props"
+                        class="pa-1"
+                        :style="`border: ${dataCreditCounts[index] > 0 ? '0px solid' : '0px' };
                                 border-radius: 50%;`"
-                      :color="iconColor" >
-                {{ iconLookup(creditName) }}
-              </v-icon>
+                        :materialIcon="iconLookup(creditName)"
+                        :iconColor="iconColor"
+              />
             </template >
 
             {{ `Author made ${dataCreditCounts[index]} ${creditName} contribution${ dataCreditCounts[index] > 1 ? 's': ''}` }}
@@ -65,10 +57,12 @@
 <script>
 
 import { getDataCreditIcon } from '@/factories/authorFactory';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'DataCreditLayout',
   components: {
+    BaseIcon,
   },
   props: {
     totalDataCredits: Object,
