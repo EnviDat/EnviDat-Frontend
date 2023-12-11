@@ -29,15 +29,13 @@
         
       <div v-if="!error"
            class="readableText" >
-          <v-icon :color="complete ? 'secondary' : 'grey'">
-            {{ complete ? 'check_circle' : 'check_circle_outline' }}
-          </v-icon>
+        <BaseIcon :material-icon="complete ? 'check_circle' : 'check_circle_outline'"
+                  :icon-color="complete ? 'secondary' : 'grey'" />
       </div>
 
-      <v-icon v-if="error"
-              color="error">
-        error
-      </v-icon>
+      <BaseIcon v-if="error"
+                material-icon="error"
+                icon-color="error" />
 
     </div>
 
@@ -45,8 +43,7 @@
 
 </template>
 
-<script>
-/**
+<script>/**
  * StepButton.vue
  *
  * @summary
@@ -57,9 +54,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'StepButton',
+  components: { BaseIcon },
   props: {
     title: {
       type: String,
