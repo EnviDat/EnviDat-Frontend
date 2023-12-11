@@ -9,7 +9,7 @@
 
     <i v-show="materialIcon"
        class='material-icons'
-       :style="colorStyle"
+       :style="iconStyle"
     >{{ materialIcon }}</i>
 
   </div>
@@ -33,9 +33,11 @@ export default {
     customIcon: String,
     materialIcon: String,
     iconColor: String,
+    rotateOnClick: Boolean,
+    rotated: Boolean,
   },
   computed: {
-    colorStyle() {
+    iconStyle() {
       let color = this.iconColor ? this.iconColor : 'primary';
       const keys = Object.keys(this.$vuetify.theme.themes.light.colors);
 
@@ -43,7 +45,10 @@ export default {
         color = this.$vuetify.theme.themes.light.colors[color];
       }
 
-      return `color: ${ color };`;
+      let style = `color: ${ color };`;
+      style += `transition: 0.3s all; ${this.rotateOnClick && this.rotated ? 'transform: rotate(-180deg);' : ''};`;
+
+      return style;
     },
   },
 };

@@ -68,13 +68,12 @@
       <span>{{ tooltipText }}</span>
     </v-tooltip>
 -->
-
     <v-btn
       style="margin: 0 !important;"
       icon
-      variant="outlined"
+      :variant="outlined ? 'outlined' : 'flat'"
       density="comfortable"
-      :color="color ? color : outlined ? 'primary' : 'transparent'"
+      :color="dynamicIconColor"
       :href="url"
       :disabled="disabled"
       :class="buttonClass"
@@ -93,7 +92,7 @@
       <i v-if="materialIconName"
          class='material-icons'
          :style="`color: ${iconColor ? iconColor : $vuetify.theme.themes.light.colors.primary};
-                  ${rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''};`"
+                  transition: 0.3s all; ${rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''};`"
       >{{ materialIconName }}</i>
 
     </v-btn>
@@ -112,8 +111,7 @@
   </div>
 </template>
 
-<script>
-/**
+<script>/**
  * BaseIconButton.vue creates a round button with an icon, either a custom icon or a material (material design libery) icon.
  * Similar to @class RectangleButton
  * React on the 'clicked' event or pass an @prop url to create a href-link.
@@ -167,6 +165,13 @@ export default {
     hoverBadge: false,
   }),
   computed: {
+    dynamicIconColor() {
+      if (this.color) {
+        return this.color;
+      }
+
+      return this.outlined ? 'primary' : 'transparent';
+    },
     height() {
       if (this.overwriteHeight) {
         return this.overwriteHeight;
