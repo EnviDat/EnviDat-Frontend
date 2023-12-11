@@ -10,7 +10,7 @@
 
       <template v-slot:progress>
         <v-progress-linear color="primary"
-                           indeterminate/>
+                           indeterminate />
       </template>
 
       <v-row no-gutters
@@ -28,12 +28,11 @@
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      dark
-                      small
-                      :class="dark ? 'white--text' : 'black--text'">
-                hourglass_bottom
-              </v-icon>
+              <BaseIcon v-on="on"
+                        materialIcon="hourglass_bottom"
+                        small
+                        class='pr-2'
+              />
             </template>
 
             {{ authorPassedInfo }}
@@ -65,20 +64,18 @@
         <v-col class="flex-grow-0 py-0"
                style="max-height: 36px;">
 
-          <base-icon-button class="ma-0"
-                            material-icon-name="search"
-                            :iconColor="dark ? 'white' : darkColor"
-                            outlined
-                            :color="dark ? 'white' : darkColor"
-                            :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                            @clicked="catchSearchAuthor(author)"/>
+          <BaseIconButton class="ma-0"
+                          material-icon-name="search"
+                          :iconColor="dark ? 'white' : darkColor"
+                          outlined
+                          :color="dark ? 'white' : darkColor"
+                          :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
+                          @clicked="catchSearchAuthor(author)"/>
 
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
-                   style="top: -25px; right: -2px;">
-              <span :class="!dark ? 'white--text' : 'black--text'">
-                    {{ author.datasetCount }}
-              </span>
+                   style="position:relative; top: -20px; right: -2px;"
+                   :content="author.datasetCount">
           </v-badge>
 
         </v-col>
@@ -107,12 +104,11 @@
         <v-col class="flex-grow-0">
           <v-tooltip bottom>
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on"
-                      class="badgesIcon"
-                      dark
-                      :class="dark ? 'white--text' : 'black--text'">
-                info_outline
-              </v-icon>
+              <BaseIcon v-on="on"
+                        :class="dark ? 'white--text' : 'black--text'"
+                        materialIcon="info_outline"
+                        small
+              />
             </template>
 
             {{ dataCreditScoreInfo }}
@@ -120,11 +116,11 @@
         </v-col>
 
         <v-col class="flex-grow-0 pl-2">
-          <div :style="`background-color: ${ !this.dark ? darkColor : whiteColor };`"
+          <div :style="`background-color: ${ dark ? darkColor : whiteColor };`"
                class="dataCreditScore elevation-5">
 
             <div :style="bigCountStyling"
-                 :class="!this.dark ? 'white--text' : 'black--text'">
+                 :class="dark ? 'white--text' : 'black--text'">
               {{ dataCreditScore }}
             </div>
           </div>
@@ -141,13 +137,15 @@
         </v-col>
 
         <v-col class="flex-grow-0">
-          <v-btn icon
-                 :color="dark ? 'white' : 'black'"
-                 outlined
-                 class="ma-0 badgesIcon"
-                 @click="infosExpanded = !infosExpanded">
-            <v-icon> {{ infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left' }}</v-icon>
-          </v-btn>
+
+          <BaseIconButton :materialIconName="infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left'"
+                          :iconColor="$vuetify.theme.themes.light.colors.accent"
+                          outlined
+                          :color="dark ? 'white' : darkColor"
+                          class="ma-0 badgesIcon"
+                          @clicked="infosExpanded = !infosExpanded"
+          />
+
         </v-col>
       </v-row>
 
@@ -280,6 +278,7 @@ import {
 
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import {
   getLevelProgress,
   getDataCreditLevel, getAuthorName,
@@ -290,10 +289,6 @@ import {
 
 export default {
   name: 'AuthorCard',
-  components: {
-    DataCreditLayout,
-    BaseIconButton,
-  },
   props: {
     author: Object,
     asciiDead: String,
@@ -494,6 +489,11 @@ export default {
     colorPaletteTo: ['rgba(226, 242, 124, 0.4)', 'rgba(158, 219, 129, 0.4)', 'rgba(0, 191, 173, 0.4)', 'rgba(8, 135, 124, 0.4)', 'rgba(153, 88, 209, 0.4)', 'rgba(55, 55, 55, 0.4)'],
     // colorsPalette: ['#E2F27C', '#9EDB81', '#00BFAD', '#08877C', '#111111'],
   }),
+  components: {
+    BaseIcon,
+    DataCreditLayout,
+    BaseIconButton,
+  },
 };
 </script>
 
