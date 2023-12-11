@@ -56,6 +56,7 @@ export const modes = [
     logo: swissflLogo,
     icons: getSwissflIcons(),
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
+    datasetUrl: '',
   },
   {
     name: EDNA_MODE,
@@ -66,6 +67,7 @@ export const modes = [
     logo: ednaLogo,
     icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
+    datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
   },
 ];
 

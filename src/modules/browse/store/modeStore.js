@@ -36,7 +36,7 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
-    getModeData(mode) {
+    getModeMetadata(mode) {
       if (!mode) return null;
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
@@ -92,7 +92,9 @@ export const useModeStore = defineStore(MODE_STORE, {
       throw new Error(`No Mode Datasets for mode: "${mode}" implemented`);
     },
     async loadModeDatasets(mode) {
-      const reponse = await fetch ('./testdata/eDNA_shallowDatasets.json');
+
+      const modeMetadata = this.getModeMetadata(mode);
+      const reponse = await fetch (modeMetadata.datasetUrl);
       const data = await reponse.json();
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);

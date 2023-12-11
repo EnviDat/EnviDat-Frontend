@@ -439,7 +439,7 @@ export default {
       return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
     },
     modeData() {
-      return this.modeStore.getModeData(this.mode);
+      return this.modeStore.getModeMetadata(this.mode);
     },
     filteredDatasets() {
       if (this.filteredModeContent) {
