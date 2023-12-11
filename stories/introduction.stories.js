@@ -15,7 +15,7 @@
 // eslint-disable-next-line import/extensions
 import IntroductionCard from '@/components/Cards/IntroductionCard.vue';
 import fileIcon from '@/assets/icons/file.png';
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 
 import metadataCards from './js/metadata';
@@ -37,7 +37,7 @@ const currentLocalDataset = {
   flatLayout: true,
 };
 
-enhanceMetadatas([currentLocalDataset], undefined, categoryCards);
+enhanceMetadatasTitleImage([currentLocalDataset], undefined, categoryCards);
 
 export const IntroductionCardViews = () => ({
   components: { IntroductionCard },

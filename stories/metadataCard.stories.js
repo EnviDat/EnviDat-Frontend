@@ -12,7 +12,7 @@
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
-import { enhanceMetadatas, getMetadataVisibilityState } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import globalMethods from '@/factories/globalMethods';
 
@@ -34,7 +34,7 @@ import metadataCards from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
-enhanceMetadatas(metadataCards, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadataCards, cardBGImages, categoryCards);
 
 const methods = {
   hasRestrictedResources(metadata) {

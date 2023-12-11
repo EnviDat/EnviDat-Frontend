@@ -956,7 +956,7 @@ export function enhanceMetadataEntry(
  * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
-export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
+export function enhanceMetadatasTitleImage(metadatas, cardBGImages, categoryCards) {
   if (metadatas === undefined) {
     return undefined;
   }
@@ -1380,3 +1380,27 @@ export const possibleVisibilityStates = [
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
 ];
+
+
+export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
+  if (!(datasets instanceof Array)) {
+    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
+  }
+
+  const enhancedContent = {};
+
+  for (let i = 0; i < datasets.length; i++) {
+    let dataset = datasets[i];
+    dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
+    dataset = enhanceMetadataWithModeExtras(mode, dataset);
+
+    dataset = enhanceTags(dataset, categoryCards);
+
+    dataset.location = createLocation(dataset);
+
+    enhancedContent[dataset.id] = dataset;
+  }
+
+  return enhancedContent;
+}
+
