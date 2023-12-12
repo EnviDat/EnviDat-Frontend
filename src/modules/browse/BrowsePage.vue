@@ -9,7 +9,7 @@
                     :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchTagClicked"
                     :selectedTagNames="selectedTagNames"
-                    :allTags="allTags"
+                    :allTags="tagsFromDatasets"
                     @clickedExpand="catchFilterExpandClicked"
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
@@ -104,7 +104,7 @@ export default {
     if(this.mode) {
       this.$nextTick(async () => {
         this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
-        this.filteredModeContent = this.modeStore.getFilteredDatasets([], this.mode);
+        await this.filterContent();
       });
     }
   },
@@ -206,6 +206,11 @@ export default {
     async filterContent() {
       if (this.mode) {
         this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
+
+        this.$nextTick(() => {
+          this.modeTags = this.modeStore.getModeKeywords(this.mode);
+        })
+
         return;
       }
 
@@ -455,6 +460,13 @@ export default {
 
       return this.metadatasContent
     },
+    tagsFromDatasets() {
+      if (this.modeTags) {
+        return this.modeTags;
+      }
+
+      return this.allTags;
+    },
   },
   watch: {
     /* eslint-disable no-unused-vars */
@@ -480,6 +492,7 @@ export default {
     modeStore: useModeStore(),
     modeContent: null,
     filteredModeContent: null,
+    modeTags: null,
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',

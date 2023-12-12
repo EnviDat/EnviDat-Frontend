@@ -89,11 +89,11 @@ function mergedExtraTags(modeObj, tags) {
   return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 }
 
-export function getTagsMergedWithExtras(mode, tags) {
+export function getTagsMergedWithExtras(mode, tags, modeData = undefined) {
   if (!mode) return null;
 
   try {
-    const modeObj = getModeData(mode);
+    const modeObj = modeData || getModeData(mode);
     return mergedExtraTags(modeObj, tags);
   } catch (e) {
     console.error(e);

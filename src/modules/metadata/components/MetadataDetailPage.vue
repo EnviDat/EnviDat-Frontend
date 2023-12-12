@@ -652,7 +652,7 @@ export default {
     catchTagClicked(tagName) {
       const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
 
-      const query = {};
+      const query = this.$route.query;
       query.tags = stringTags;
 
       // clear the search result here, in case this metadata entry
@@ -680,7 +680,7 @@ export default {
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
 
-      const query = {};
+      const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
       // so the special characters won't case issues

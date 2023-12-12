@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
 import mainStore from '@/store/store';
+import mainCategoryTags from '@/modules/metadata/store/metadataTags';
 
 import {
+  getTagsMergedWithExtras,
   // getSelectedTagsMergedWithHidden,
   MODE_STORE,
   modes,
@@ -9,7 +11,7 @@ import {
 
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
-import { tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 
 const initState = {
   modeMetadata: [],
@@ -46,6 +48,34 @@ export const useModeStore = defineStore(MODE_STORE, {
       }
 
       throw new Error(`No Mode Data for mode: "${mode}" implemented`);
+    },
+    getModeKeywords(mode) {
+      if (!mode) return null;
+
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
+      const metaData = this.modeMetadata[index];
+      const currentFilteredKeywords = this.modeFilters[index];
+
+      const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
+      let allWithExtras = [];
+
+      const mergedExtraTags = getTagsMergedWithExtras(mode, mainCategoryTags, metaData);
+
+      if (mergedExtraTags) {
+        const popularTags = getPopularTags(filteredContent, metaData.mainTag.name, 5, filteredContent.length);
+        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+
+        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+        // tags with the same count as the content have no use, remove them
+        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
+        allWithExtras = mergedWithoutDublicates;
+      } else {
+        allWithExtras = mainCategoryTags;
+      }
+
+      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
+
+      return updatedTags;
     },
     getFilteredDatasets(selectedTagNames = [], mode = undefined) {
 
@@ -94,8 +124,9 @@ export const useModeStore = defineStore(MODE_STORE, {
     async loadModeDatasets(mode) {
 
       const modeMetadata = this.getModeMetadata(mode);
-      const reponse = await fetch (modeMetadata.datasetUrl);
-      const data = await reponse.json();
+      const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
+      const response = await fetch (url);
+      const data = await response.json();
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       let enhancedDatasetsObject = {};
