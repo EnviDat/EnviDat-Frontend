@@ -9,7 +9,7 @@ import {
   modes,
 } from '@/factories/modeFactory';
 
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 
@@ -48,6 +48,14 @@ export const useModeStore = defineStore(MODE_STORE, {
       }
 
       throw new Error(`No Mode Data for mode: "${mode}" implemented`);
+    },
+    searchModeDatasets() {
+      // get filtered datasets based on the selected tags
+      // then narrow down the list via local text search
+
+      const results = localSearch()
+
+      return results;
     },
     getModeKeywords(mode) {
       if (!mode) return null;
