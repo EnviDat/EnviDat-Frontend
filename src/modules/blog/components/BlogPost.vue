@@ -1,5 +1,6 @@
 <template>
-  <div class="blogPost" v-html="postContentMarkdown"></div>
+  <div id="blogPostContent"
+       class="blogPost" v-html="postContentMarkdown"></div>
 </template>
 
 <script>
@@ -32,7 +33,26 @@ export default {
 </script>
 
 <style>
-.blogPost img {
-  max-width: 100%;
+.blogPost {
+  img {
+    max-width: 100%;
+    border-radius: 5px;
+  }
+
+  h1 + p,
+  h2 + p {
+
+    &::first-letter {
+      font-size: 2rem;
+      font-family: 'Baskervville', serif !important;
+    }
+  }
+
 }
+
+p {
+  text-wrap: pretty;
+}
+
+
 </style>
