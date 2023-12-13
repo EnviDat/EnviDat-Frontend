@@ -1409,28 +1409,27 @@ export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
 export function localSearch(searchTerm, datasets) {
   const foundDatasets = [];
 
-  let term1 = searchTerm;
+  let term1 = searchTerm.toLowerCase();
   let term2 = '';
   const check2Terms = searchTerm.includes(' ');
 
   if (check2Terms) {
-    const splits = searchTerm.split(' ');
+    const splits = searchTerm.toLowerCase().split(' ');
     term1 = splits[0];
     term2 = splits[1];
   }
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset = datasets[i];
-
-    const match1 = dataset.title.includes(term1)
-      || dataset.author.includes(term1)
-      || dataset.notes.includes(term1);
+    const match1 = dataset.title?.toLowerCase().includes(term1)
+      || dataset.author?.toLowerCase().includes(term1)
+      || dataset.notes?.toLowerCase().includes(term1);
 
     let match2 = true;
     if (check2Terms) {
-      match2 = dataset.title.includes(term2)
-        || dataset.author.includes(term2)
-        || dataset.notes.includes(term2);
+      match2 = dataset.title?.toLowerCase().includes(term2)
+        || dataset.author?.toLowerCase().includes(term2)
+        || dataset.notes?.toLowerCase().includes(term2);
     }
 
     if (match1 && match2) {

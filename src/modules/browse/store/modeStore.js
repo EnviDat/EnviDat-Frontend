@@ -26,6 +26,7 @@ const getters = [];
 modes.forEach((modeMeta) => {
   initState.modeMetadata.push(modeMeta);
   initState.modeDatasets.push({});
+  initState.modeFilters.push([]);
 })
 
 
@@ -49,11 +50,18 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       throw new Error(`No Mode Data for mode: "${mode}" implemented`);
     },
-    searchModeDatasets() {
+    searchModeDatasets(parameter, mode) {
       // get filtered datasets based on the selected tags
       // then narrow down the list via local text search
+      let results = [];
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
+      const currentFilteredKeywords = this.modeFilters[index];
 
-      const results = localSearch()
+      const filteredContent = this.getFilteredDatasets(currentFilteredKeywords, mode);
+
+      if (parameter ) {
+        results = localSearch(parameter, filteredContent)
+      }
 
       return results;
     },
@@ -97,10 +105,11 @@ export const useModeStore = defineStore(MODE_STORE, {
       const datasetObject = this.getDatasets(mode);
       const content = Object.values(datasetObject);
       let filteredContent = [];
-
+      const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       try {
 
         if (selectedTagNames.length > 0) {
+          this.modeFilters[index] = selectedTagNames;
           for (let i = 0; i < content.length; i++) {
             const entry = content[i];
 
@@ -109,6 +118,7 @@ export const useModeStore = defineStore(MODE_STORE, {
             }
           }
         } else {
+          this.modeFilters[index] = []
           filteredContent = content;
         }
       } catch (e) {

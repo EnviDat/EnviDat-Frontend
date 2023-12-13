@@ -259,8 +259,12 @@ export default {
       if (checkSearchTriggering) {
 
         if (searchParameter && searchParameter.length > 0) {
-
-          this.metadataSearch(searchParameter, this.metadataConfig);
+          if (this.mode) {
+            this.filteredModeContent = this.modeStore.searchModeDatasets(searchParameter, this.mode)
+          }
+          else {
+            this.metadataSearch(searchParameter, this.metadataConfig);
+          }
           this.resetScrollPos();
 
           // prevent immediately filtering, the search results
@@ -316,7 +320,7 @@ export default {
     },
     catchSearchClicked(search) {
       // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
-      if (this.currentSearchTerm.trim() !== search) {
+      if (this.currentSearchTerm.trim() !== search || search.trim() === '') {
         // the search parameter needs to be '' to clear it
 
         this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
@@ -327,8 +331,8 @@ export default {
     catchSearchCleared() {
       // Only change route if state currentSearchTrim is not equal to an empty string
       // to avoid redundant navigation when there are no search terms
-      if (this.currentSearchTerm.trim() !== '') {
 
+      if (this.currentSearchTerm.trim() === '') {
         // the search parameter needs to be '' to clear it
         this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
         undefined, undefined, undefined,
