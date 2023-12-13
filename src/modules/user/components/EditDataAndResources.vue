@@ -102,6 +102,7 @@ import {
   UPLOAD_STATE_UPLOAD_PROGRESS,
   UPLOAD_STATE_UPLOAD_STARTED,
   UPLOAD_STATE_RESET,
+  EDITMETADATA_CLEAR_PREVIEW,
 } from '@/factories/eventBus';
 
 import { EDIT_METADATA_RESOURCES_TITLE } from '@/factories/metadataConsts';
@@ -123,6 +124,7 @@ import {
   ACTION_GET_USER_LIST,
   FETCH_USER_DATA,
   GET_USER_LIST,
+  METADATA_CANCEL_RESOURCE_EDITING,
   METADATA_CREATION_RESOURCE,
   METADATA_EDITING_SELECT_RESOURCE,
   USER_NAMESPACE,
@@ -137,15 +139,6 @@ const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangl
 
 export default {
   name: 'EditDataAndResources',
-  components: {
-    EditMetadataResources,
-    EditDropResourceFiles,
-    // EditMultiDropResourceFiles,
-    EditResourcePasteUrl,
-    EditResource,
-    EditResourceRedirect,
-    BaseRectangleButton,
-  },
   props: {
     resources: {
       type: Array,
@@ -198,6 +191,9 @@ export default {
       default: undefined,
     },
   },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+  },
   mounted() {
     subscribeOnUppyEvent('upload', this.uploadStarted);
     subscribeOnUppyEvent('progress', this.uploadProgress);
@@ -210,6 +206,8 @@ export default {
     });
   },
   beforeDestroy() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.unselectCurrentResource);
+
     unSubscribeOnUppyEvent('upload', this.uploadStarted);
     unSubscribeOnUppyEvent('progress', this.uploadProgress);
     unSubscribeOnUppyEvent('complete', this.uploadCompleted);
@@ -425,6 +423,11 @@ export default {
         this.$store.commit(`${USER_NAMESPACE}/${METADATA_EDITING_SELECT_RESOURCE}`, newRes?.id);
       });
     },
+    unselectCurrentResource() {
+      if(this.selectedResource) {
+        this.$store.commit(`${USER_NAMESPACE}/${METADATA_CANCEL_RESOURCE_EDITING}`, this.selectedResource?.id);
+      }
+    },
     catchEditResourceClose() {
       eventBus.emit(CANCEL_EDITING_RESOURCE, this.selectedResource);
     },
@@ -446,11 +449,20 @@ export default {
                     <br />
                     Please edit resources via the legacy website by clicking on
                     the button below.`,
-    addResourceRedirectText: `Adding new resources is not available.
+    addResourceRedirectText: `Adding new resources is not available right now.
                     <br />
                     Please add resources via the legacy website by clicking on
                     the button below.`,
   }),
+  components: {
+    EditMetadataResources,
+    EditDropResourceFiles,
+    // EditMultiDropResourceFiles,
+    EditResourcePasteUrl,
+    EditResource,
+    EditResourceRedirect,
+    BaseRectangleButton,
+  },
 };
 </script>
 
