@@ -319,25 +319,14 @@ export default {
       });
     },
     catchSearchClicked(search) {
-      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
-      if (this.currentSearchTerm.trim() !== search || search.trim() === '') {
-        // the search parameter needs to be '' to clear it
-
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
-          undefined, undefined, undefined,
-            this.isAuthorSearch);
-      }
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
+          undefined, this.mode, undefined,
+          this.isAuthorSearch);
     },
     catchSearchCleared() {
-      // Only change route if state currentSearchTrim is not equal to an empty string
-      // to avoid redundant navigation when there are no search terms
-
-      if (this.currentSearchTerm.trim() === '') {
-        // the search parameter needs to be '' to clear it
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
-        undefined, undefined, undefined,
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
+          undefined, this.mode, undefined,
           this.isAuthorSearch);
-      }
     },
     catchAuthorSearchClick() {
       this.oldIsAuthorSearch = this.isAuthorSearch;
