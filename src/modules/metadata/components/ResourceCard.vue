@@ -75,7 +75,6 @@
               :label="doiIcon ? '' : 'DOI:'"
               :icon="doiIcon"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -84,7 +83,6 @@
               :label="extensionIcon ? '' : 'File format:'"
               :icon="extensionIcon"
               icon-tooltip="Format of the file"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -93,7 +91,6 @@
               :label="fileSizeIcon ? '' : 'File size:'"
               :icon="fileSizeIcon"
               icon-tooltip="Filesize"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -102,7 +99,6 @@
               :label="dateCreatedIcon ? '' : 'Created at:'"
               :icon="dateCreatedIcon"
               icon-tooltip="Date of file creation"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -111,7 +107,6 @@
               :label="lastModifiedIcon ? '' : 'Modified at:'"
               :icon="lastModifiedIcon"
               icon-tooltip="Date of last modification"
-              :align-left="twoColumnLayout"
             />
           </v-col>
         </v-row>
