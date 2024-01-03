@@ -1,6 +1,5 @@
 stages:
   - config
-  - install
   - test
   - build
 #  - package
@@ -128,7 +127,7 @@ install-node:
   extends:
     - .trigger-rules
     - .node_cache
-  stage: install
+  stage: config
   image: docker.io/node:18.18.2-alpine3.17
   cache:
     # for all install job use the npm internal caching
