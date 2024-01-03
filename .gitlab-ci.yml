@@ -169,7 +169,8 @@ run-tests:
   script:
     - npm run test
 
-build-app-and-storybook:
+
+build-storybook:
   extends:
     - .trigger-rules
     - .node_cache
@@ -181,93 +182,62 @@ build-app-and-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm run build
     - npm run build-storybook -- -o ./storybook
+  artifacts:
+    name: "storybook build"
+    # keep the storybook for 7 days to be able to trigger the chromatic-deployment
+    expire_in: 7 day
+    # stores the storybook build as an artifact to be used in the next stages
+    paths:
+      - storybook
+
+build-app:
+  extends:
+    - .trigger-rules
+    - .node_cache
+  stage: build
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  script:
+    - npm run build
+  artifacts:
+    name: "frontend build "
+    expire_in: 1 day
+    # stores the built app code
+    paths:
+      - dist
+
+combine-builds:
+  extends: .trigger-rules
+  stage: build
+  image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the artifact: the build of the frontend app
+    - build-app
+    # needs the artifact: storybook
+    - build-storybook
+  script:
     - echo "Check for the artifacts in the filesystem"
     # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
     # copy all files from the dist folder into root
     - cp -r dist/* ./
     # - ls -l
     # remove the dist folder recursively
-    - rm -rf dist
-    - rm -rf node_modules
-    - ls -l    
+    # - rm -rf dist
+    - ls -l
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
-    expire_in: 1 day
-    # stores the storybook build as an artifact to be used in the next stages
+    # stores the combined built code
     paths:
       - ./
-      - storybook
-
-
-# build-storybook:
-#   extends:
-#     - .trigger-rules
-#     - .node_cache
-#   stage: build
-#   image: docker.io/node:18.18.2-alpine3.17
-#   needs:
-#     # needs the artifact: config and environment variables
-#     - modify-env
-#     # needs the artifact: node_modules to build storybook
-#     - install-node
-#   script:
-#     - npm run build-storybook -- -o ./storybook
-#   artifacts:
-#     name: "storybook build"
-#     expire_in: 1 day
-#     # stores the storybook build as an artifact to be used in the next stages
-#     paths:
-#       - storybook
-
-# build-app:
-#   extends:
-#     - .trigger-rules
-#     - .node_cache
-#   stage: build
-#   image: docker.io/node:18.18.2-alpine3.17
-#   needs:
-#     # needs the artifact: config and environment variables
-#     - modify-env
-#     # needs the artifact: node_modules to build the app
-#     - install-node
-#   script:
-#     - npm run build
-#   artifacts:
-#     name: "frontend build "
-#     expire_in: 1 day
-#     # stores the built app code
-#     paths:
-#       - dist
-
-# combine-builds:
-#   extends: .trigger-rules
-#   stage: build
-#   image: docker.io/alpine:3.15
-#   variables:
-#     GIT_STRATEGY: none
-#   needs:
-#     # needs the artifact: the build of the frontend app
-#     - build-app
-#     # needs the artifact: storybook
-#     - build-storybook
-#   script:
-#     - echo "Check for the artifacts in the filesystem"
-#     - ls -l
-#     # - ls dist/ -l
-#     # - ls storybook/ -l
-#     # copy all files from the dist folder into root
-#     - cp -r dist/* ./
-#     # - ls -l
-#     # remove the dist folder recursively
-#     - rm -rf dist
-#     - ls -l
-#   artifacts:
-#     name: "frontend build $CI_COMMIT_REF_NAME"
-#     # stores the combined built code
-#     paths:
-#       - ./
 
 
 deploy-chromatic:
@@ -282,7 +252,7 @@ deploy-chromatic:
     # needs the artifact: node_modules to build the app
     - install-node
     # needs the artifact: storybook
-    - build-app-and-storybook
+    - build-storybook
   script:
     # manually deploy the storybook build to chromatic for visual regression testing
     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
@@ -316,7 +286,7 @@ publish-build:
     # needs the enviromental variables for the version number
     - set-vars
     # needs the artifact: the build of the frontend app and storybook build
-    - build-app-and-storybook
+    - combine-builds
   before_script:
     - apk add curl zip --no-cache
   script:
