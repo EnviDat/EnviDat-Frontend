@@ -32,13 +32,11 @@
                  :color="badgeColor"
                  :content="dataCreditCounts[index]"
         >
-          
+
           <v-tooltip location='bottom' >
             <template v-slot:activator="{ props }">
               <BaseIcon v-bind="props"
                         class="pa-1"
-                        :style="`border: ${dataCreditCounts[index] > 0 ? '0px solid' : '0px' };
-                                border-radius: 50%;`"
                         :materialIcon="iconLookup(creditName)"
                         :iconColor="iconColor"
               />

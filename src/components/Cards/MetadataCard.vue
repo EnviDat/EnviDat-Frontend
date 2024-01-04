@@ -2,7 +2,6 @@
   <v-card
     @mouseover="hover = true"
     @mouseleave="hover = false"
-    class="fill-height"
     :dark="false"
     @click.native="cardClick"
   >
