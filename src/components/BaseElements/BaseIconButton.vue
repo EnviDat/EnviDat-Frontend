@@ -73,7 +73,7 @@
       icon
       :variant="outlined ? 'outlined' : 'flat'"
       density="comfortable"
-      :color="dynamicIconColor"
+      :color="dynamicButtonColor"
       :href="url"
       :disabled="disabled"
       :class="buttonClass"
@@ -165,7 +165,7 @@ export default {
     hoverBadge: false,
   }),
   computed: {
-    dynamicIconColor() {
+    dynamicButtonColor() {
       if (this.color) {
         return this.color;
       }

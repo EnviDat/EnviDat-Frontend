@@ -9,41 +9,39 @@
       <v-col cols="2"
               sm="auto">
         <v-row no-gutters>
-          <v-col cols="12">
+          <v-col cols="12"
+                 class='pl-2 py-2'
+          >
             <v-menu
-                open-on-hover
-                open-on-click
+                :open-on-hover='true'
+                :open-on-click='true'
                 :close-on-click="false"
                 :close-on-content-click="false"
                 offset-y
                 z-index="2"
             >
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                    style="width: 36px; height: 36px;"
-                    :color="abstract ? 'primary' : 'gray'"
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  info
-                </v-icon>
+              <template v-slot:activator="{ on, props }">
+                <BaseIcon material-icon='info'
+                          :icon-color="abstract ? 'primary' : 'gray'"
+                          v-bind="props"
+                          v-on="on"
+                />
               </template>
 
               <div class="pa-4"
                    style="background-color: white;"
-                   v-html="abstract"
-                   >
-              </div>
+                   v-html="abstract" />
 
             </v-menu>
           </v-col>
 
-          <v-col cols="12">
+          <v-col cols="12"
+                  class="pl-1">
             <BaseIconButton material-icon-name="fingerprint"
                             :disabled="!doi"
+                            :icon-color="doi ? '' : 'gray'"
                             :tooltipText="`doi: ${doi}`"
-                            :url="doiUrl"/>
-
+                            :url="doiUrl" />
           </v-col>
 
         </v-row>
@@ -59,8 +57,7 @@
   </v-container>
 </template>
 
-<script>
-/**
+<script>/**
  * BaseCitationView.vue base element for citations, show the abstract when hovering over the info icon
  *
  * @summary citation base element
@@ -69,6 +66,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 export default {
   name: 'BaseCitationView',
@@ -95,6 +94,8 @@ export default {
   data: () => ({
   }),
   components: {
+    BaseIcon,
+    BaseIconButton,
   },
 };
 </script>
