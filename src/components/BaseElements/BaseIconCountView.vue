@@ -3,8 +3,10 @@
        style="max-width: 26px;" >
 
     <v-tooltip v-if="$vuetify.display.mdAndUp && tooltipText" bottom>
-      <template v-slot:activator="{ on }">
-        <div v-on="on" class="iconCountView">
+      <template v-slot:activator="{ on, props }">
+        <div v-on="on"
+             v-bind="props"
+             class="iconCountView">
           <v-container fluid class="pa-0">
             <v-row
               @mouseover="hoverBadge = true"

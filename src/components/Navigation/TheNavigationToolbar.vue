@@ -88,8 +88,8 @@
                     :style="!signInDisabled  ? 'cursor: pointer;' : ''">
 
               <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
-                  <div v-bind="attrs"
+                <template v-slot:activator="{ on, props }">
+                  <div v-bind="props"
                         v-on="on"
                         style="text-align: right;"
                         class="text-body-2">
@@ -105,13 +105,13 @@
             <v-col class="flex-grow-0" >
 
               <v-tooltip bottom>
-                <template v-slot:activator="{ on, attrs }">
+                <template v-slot:activator="{ on, props }">
                   <v-btn icon
                          :disabled="signInDisabled"
                           color="black"
                           small
                           @click="catchSigninClicked"
-                          v-bind="attrs"
+                          v-bind="props"
                           v-on="on" >
                     <v-icon>account_circle</v-icon>
                   </v-btn>

@@ -3,9 +3,10 @@
     v-bind="{ tooltipPosition: true }"
     :disabled="$vuetify.display.smAndDown || !tooltipText"
   >
-    <template v-slot:activator="{ on }">
+    <template v-slot:activator="{ on, props }">
       <v-btn
         v-on="on"
+        v-bind="props"
         :small="isSmall"
         :x-small="isXsSmall"
         :class="marginClass"

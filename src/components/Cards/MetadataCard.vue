@@ -32,9 +32,10 @@
               v-if="maxTitleLengthReached && !$vuetify.display.xsOnly"
               bottom
             >
-              <template v-slot:activator="{ on }">
+              <template v-slot:activator="{ on, props }">
                 <div
                   v-on="on"
+                  v-bind="props"
                   class="pa-4 metadataTitle mb-0"
                   :class="titleClass"
                 >

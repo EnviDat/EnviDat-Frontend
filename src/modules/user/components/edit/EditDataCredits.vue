@@ -34,8 +34,9 @@
             </v-icon>
 
             <v-tooltip bottom >
-              <template v-slot:activator="{ on }">
+              <template v-slot:activator="{ on, props }">
                 <v-icon v-on="on"
+                        v-bind="props"
                         class="pa-1"
                         :color="creditIconColor(creditName)"
                         :disabled="readOnly"

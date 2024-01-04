@@ -33,9 +33,10 @@
           style="min-width: 45px; text-align: center;"
         >
           <v-tooltip bottom :disabled="$vuetify.display.xsOnly">
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ on, props }">
               <tag-chip
                 v-on="on"
+                v-bind="props"
                 :style="
                   $vuetify.display.xsOnly
                     ? 'font-size: 0.65rem !important;'
@@ -71,9 +72,10 @@
             bottom
             :disabled="$vuetify.display.xsOnly || !searchToolTipText"
           >
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ on, props }">
               <v-text-field
                 v-on="on"
+                v-bind="props"
                 class="envidatSmallSearch"
                 style="align-items: center;"
                 :class="{ small: compactLayout }"

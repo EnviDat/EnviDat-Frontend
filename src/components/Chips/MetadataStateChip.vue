@@ -11,8 +11,9 @@
     :style="!showContent ? 'font-size: 0.9rem;' : ''"
   >
     <v-tooltip bottom>
-      <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ on, props }">
         <v-row v-on="on"
+               v-bind="props"
                align="center"
                 no-gutters>
           <v-col >{{ showContent ? stateText : stateText.substring(0, 1) }}</v-col>

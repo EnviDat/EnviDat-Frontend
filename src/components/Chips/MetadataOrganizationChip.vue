@@ -8,8 +8,8 @@
     @click="$emit('organizationClicked', organization)"
   >
     <v-tooltip v-if="tooltip" bottom>
-      <template v-slot:activator="{ on }">
-        <div v-on="on">
+      <template v-slot:activator="{ on, props }">
+        <div v-on="on" v-bind="props" >
           <v-icon size="18">home_filled</v-icon>
           {{ showContent ? organizationText : '' }}
         </div>

@@ -27,8 +27,9 @@
                class="flex-grow-0 py-0">
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ on, props }">
               <BaseIcon v-on="on"
+                        v-bind="props"
                         materialIcon="hourglass_bottom"
                         small
                         class='pr-2'
@@ -103,8 +104,9 @@
 
         <v-col class="flex-grow-0">
           <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
+            <template v-slot:activator="{ on, props }">
               <BaseIcon v-on="on"
+                        v-bind="props"
                         :class="dark ? 'white--text' : 'black--text'"
                         materialIcon="info_outline"
                         small

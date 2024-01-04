@@ -1,8 +1,9 @@
 <template>
   <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
-    <template v-slot:activator="{ on }">
+    <template v-slot:activator="{ on, props }">
       <v-row
         v-on="on"
+        v-bind="props"
         id="BaseIconLabelView"
         no-gutters
         style="min-height: 24px;"
