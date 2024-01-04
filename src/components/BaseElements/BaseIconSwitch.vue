@@ -2,9 +2,10 @@
   <v-tooltip bottom
               id="BaseIconSwitch" >
 
-    <template v-slot:activator="{ on }">
+    <template v-slot:activator="{ on, props }">
 
       <div v-on="on"
+           v-bind="props"
            style="position: relative; width: 44px; " >
 
         <div class="authorSwitch"
@@ -12,12 +13,11 @@
              :style="active ? 'left: -5px;' : 'left: 21px;'"
              @click="emitClick"
              >
-          <v-icon v-if="materialIconName"
-                  :color="active ? 'primary' : 'gray'"
-                  style="top: 0; left: 1px;">
-            {{ materialIconName }}
-          </v-icon>
-
+          <BaseIcon v-if="materialIconName"
+                    :material-icon="materialIconName"
+                    :iconColor="active ? 'primary' : 'gray'"
+                    style="position:relative; top: 1px; left: 1px;"
+          />
         </div>
 
         <div class="authorSwitchHover"
@@ -36,8 +36,7 @@
   </v-tooltip>
 </template>
 
-<script>
-/**
+<script>/**
  * BaseIconSwitch.vue create a on/off switch which can contain an icon
  * from the material design font
  *
@@ -50,9 +49,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'BaseIconSwitch',
+  components: { BaseIcon },
   props: {
     active: {
       type: Boolean,
