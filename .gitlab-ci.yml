@@ -180,7 +180,7 @@ build-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm run build-storybook -- -o ./storybook --quiet
+    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
@@ -201,7 +201,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm run build
+    - npm run build --logLevel error
   artifacts:
     name: "frontend build "
     expire_in: 1 day
