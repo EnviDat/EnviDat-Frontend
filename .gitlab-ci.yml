@@ -19,7 +19,7 @@ variables:
     - key:
         files:
           - package-lock.json
-        prefix: "package-lock-$CI_COMMIT_REF_NAME"
+#        prefix: "package-lock-$CI_COMMIT_REF_NAME"
       paths:
         - node_modules/
       policy: pull  # prevent subsequent jobs from modifying cache
@@ -130,19 +130,20 @@ install-node:
   stage: config
   image: docker.io/node:18.18.2-alpine3.17
   cache:
-    # for all install job use the npm internal caching
-    - key: "Commit-$CI_COMMIT_REF_NAME"
-      paths:
-        - .npm/
-      when: on_success
-      policy: pull-push
-    # overwrite the global cachine definitions with
+#    # for all install job use the npm internal caching
+#    - key: "Commit-$CI_COMMIT_REF_NAME"
+#      paths:
+#        - .npm/
+#      when: on_success
+#      policy: pull-push
+    # overwrite the global caching definitions with
     # pull-push to be able update the node_modules in the cache
     - key:
         files:
           - package-lock.json
-        prefix: "package-lock-$CI_COMMIT_REF_NAME"
+#        prefix: "package-lock-$CI_COMMIT_REF_NAME"
       paths:
+        - .npm/
         - node_modules/
       when: on_success
       policy: pull-push
