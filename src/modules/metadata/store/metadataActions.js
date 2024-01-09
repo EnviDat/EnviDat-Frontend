@@ -54,7 +54,7 @@ import {
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
 import {
-  getTagColor,
+  getTagColor, localSearch,
   sortObjectArray,
 } from '@/factories/metaDataFactory';
 
@@ -120,40 +120,6 @@ function createSolrQuery(searchTerm) {
   return solrQuery;
 }
 
-function localSearch(searchTerm, datasets) {
-  const foundDatasets = [];
-
-  let term1 = searchTerm;
-  let term2 = '';
-  const check2Terms = searchTerm.includes(' ');
-
-  if (check2Terms) {
-    const splits = searchTerm.split(' ');
-    term1 = splits[0];
-    term2 = splits[1];
-  }
-
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
-
-    const match1 = dataset.title.includes(term1)
-      || dataset.author.includes(term1)
-      || dataset.notes.includes(term1);
-
-    let match2 = true;
-    if (check2Terms) {
-      match2 = dataset.title.includes(term2)
-        || dataset.author.includes(term2)
-        || dataset.notes.includes(term2);
-    }
-
-    if (match1 && match2) {
-      foundDatasets.push(dataset);
-    }
-  }
-
-  return foundDatasets;
-}
 
 // Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
@@ -322,22 +288,22 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-        let allWithExtras = [];
+      let allWithExtras = [];
 
-        const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
-        if (mergedExtraTags) {
-          const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
-          const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+      const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
+      if (mergedExtraTags) {
+        const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
+        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
 
-          const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-          // tags with the same count as the content have no use, remove them
-          // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-          allWithExtras = mergedWithoutDublicates;
-        } else {
-          allWithExtras = metadataTags;
-        }
+        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+        // tags with the same count as the content have no use, remove them
+        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
+        allWithExtras = mergedWithoutDublicates;
+      } else {
+        allWithExtras = metadataTags;
+      }
 
-        const updatedTags = getEnabledTags(allWithExtras, filteredContent);
+      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);

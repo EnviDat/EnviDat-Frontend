@@ -63,6 +63,12 @@ export function getEnabledTags(tags, content) {
   return updatedTags;
 }
 
+/**
+ *
+ * @param {object[]} tags
+ * @param {string[]} selectedTagNames
+ * @returns {boolean}
+ */
 export function tagsIncludedInSelectedTags(tags, selectedTagNames) {
   if (!tags || !selectedTagNames) return false;
 

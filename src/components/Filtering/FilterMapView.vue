@@ -94,7 +94,6 @@ import selectedMarker from '@/assets/map/selected-marker-icon.png';
 import selectedMarker2x from '@/assets/map/selected-marker-icon-2x.png';
 import FilterMapWidget from '@/components/Filtering/FilterMapWidget.vue';
 import { createLocation } from '@/factories/metaDataFactory';
-import { getModeData } from '@/factories/modeFactory';
 // HACK end
 
 export default {
@@ -103,7 +102,7 @@ export default {
     content: Array,
     pinnedIds: Array,
     topLayout: Boolean,
-    mode: String,
+    modeData: Object,
   },
   beforeMount() {
     this.pinIcon = this.mixinMethods_getIcon('marker');
@@ -159,11 +158,6 @@ export default {
     },
     modeIconModel() {
       return this.modeData ? this.modeData.icons[2] : null;
-    },
-    modeData() {
-      if (!this.mode) return null;
-
-      return getModeData(this.mode);
     },
   },
   methods: {

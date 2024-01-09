@@ -32,6 +32,8 @@ import {
   PUBLICATION_STATE_PUBLISHED,
   PUBLICATION_STATE_RESERVED,
 } from '@/factories/metadataConsts';
+// eslint-disable-next-line import/no-cycle
+import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
 
 /**
  * Create a pseudo random integer based on a given seed using the 'seedrandom' lib.
@@ -893,11 +895,11 @@ let tempImgKeys = [];
 let tempImgValues = [];
 
 /**
- * @param {Object} metadata
- * @param {Object<String, String>} cardBGImages, it's an object of key value pairs paths to images
+ * @param {object} metadata
+ * @param {object} cardBGImages it's an object of key value pairs paths to images
  *
  * @param {Array<Object>} categoryCards
- * @return {Object} metadata entry enhanced with a title image based on its tags
+ * @return {object} metadata entry enhanced with a title image based on its tags
  */
 export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
   if (!metadata || !categoryCards) {
@@ -956,7 +958,7 @@ export function enhanceMetadataEntry(
  * @param categoryCards
  * @return {Array} metadatas enhanced with a title image based on the metadatas tags
  */
-export function enhanceMetadatas(metadatas, cardBGImages, categoryCards) {
+export function enhanceMetadatasTitleImage(metadatas, cardBGImages, categoryCards) {
   if (metadatas === undefined) {
     return undefined;
   }
@@ -1380,3 +1382,67 @@ export const possibleVisibilityStates = [
   METADATA_STATE_INVISILBE,
   METADATA_STATE_VISILBE,
 ];
+
+/**
+ *
+ * @param {object[]}datasets
+ * @param cardBGImages
+ * @param categoryCards
+ * @param mode
+ * @returns {{}}
+ */
+export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
+  if (!(datasets instanceof Array)) {
+    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
+  }
+
+  const enhancedContent = {};
+
+  for (let i = 0; i < datasets.length; i++) {
+    let dataset = datasets[i];
+    dataset = enhanceMetadataEntry(dataset, cardBGImages, categoryCards);
+    dataset = enhanceMetadataWithModeExtras(mode, dataset);
+
+    dataset = enhanceTags(dataset, categoryCards);
+
+    dataset.location = createLocation(dataset);
+
+    enhancedContent[dataset.id] = dataset;
+  }
+
+  return enhancedContent;
+}
+
+export function localSearch(searchTerm, datasets) {
+  const foundDatasets = [];
+
+  let term1 = searchTerm.toLowerCase();
+  let term2 = '';
+  const check2Terms = searchTerm.includes(' ');
+
+  if (check2Terms) {
+    const splits = searchTerm.toLowerCase().split(' ');
+    term1 = splits[0];
+    term2 = splits[1];
+  }
+
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
+    const match1 = dataset.title?.toLowerCase().includes(term1)
+      || dataset.author?.toLowerCase().includes(term1)
+      || dataset.notes?.toLowerCase().includes(term1);
+
+    let match2 = true;
+    if (check2Terms) {
+      match2 = dataset.title?.toLowerCase().includes(term2)
+        || dataset.author?.toLowerCase().includes(term2)
+        || dataset.notes?.toLowerCase().includes(term2);
+    }
+
+    if (match1 && match2) {
+      foundDatasets.push(dataset);
+    }
+  }
+
+  return foundDatasets;
+}

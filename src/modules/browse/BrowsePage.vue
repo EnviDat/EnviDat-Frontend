@@ -4,19 +4,19 @@
             key="BrowsePage">
 
     <metadata-list ref="metadataList"
-                    :listContent="filteredContent"
+                    :listContent="filteredDatasets"
                     :mapFilteringPossible="mapFilteringPossible"
                     :placeHolderAmount="placeHolderAmount"
                     @clickedTag="catchTagClicked"
                     :selectedTagNames="selectedTagNames"
-                    :allTags="allTags"
+                    :allTags="tagsFromDatasets"
                     @clickedExpand="catchFilterExpandClicked"
                     @clickedTagClose="catchTagCloseClicked"
                     @clickedClear="catchTagCleared"
                     @clickedCard="catchMetadataClicked"
                     :prePinnedIds="selectedPins"
                     @pinnedIds="catchPinnedIds"
-                    :mode="mode"
+                    :modeData="modeData"
                     :defaultListControls="defaultControls"
                     :enabledControls="enabledControls"
                     :useDynamicHeight="true"
@@ -38,7 +38,7 @@
                     :reloadDelay="vReloadDelay"
                     :updatingTags="updatingTags"
                     :loading="loading"
-                    :metadatasContent="metadatasContent"
+                    :metadatasContent="allDatasets"
                     :categoryCards="categoryCards"
     />
 
@@ -64,11 +64,13 @@ import {
   mapGetters,
   mapState,
 } from 'vuex';
+
 import {
   BROWSE_PAGENAME,
   BROWSE_PATH,
   METADATADETAIL_PAGENAME,
 } from '@/router/routeConsts';
+
 import {
   CLEAR_SEARCH_METADATA,
   FILTER_METADATA,
@@ -87,6 +89,8 @@ import {
 } from '@/store/mainMutationsConsts';
 
 import MetadataList from '@/components/MetadataList.vue';
+import { useModeStore } from '@/modules/browse/store/modeStore';
+
 
 export default {
   name: 'BrowsePage',
@@ -95,6 +99,14 @@ export default {
       vm.$store.commit(SET_CURRENT_PAGE, BROWSE_PAGENAME);
       vm.$store.commit(SET_APP_BACKGROUND, vm.PageBGImage);
     });
+  },
+  created() {
+    if(this.mode) {
+      this.$nextTick(async () => {
+        this.modeContent = await this.modeStore.loadModeDatasets(this.mode);
+        await this.filterContent();
+      });
+    }
   },
   mounted() {
     this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -128,6 +140,7 @@ export default {
 
       this.$router.push({
         name: METADATADETAIL_PAGENAME,
+        query: this.$route.query,
         params: {
           metadataid: datasetname,
         },
@@ -190,8 +203,18 @@ export default {
 
       return visibleContent;
     },
-    filterContent() {
-      this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
+    async filterContent() {
+      if (this.mode) {
+        this.filteredModeContent = this.modeStore.getFilteredDatasets(this.selectedTagNames, this.mode);
+
+        this.$nextTick(() => {
+          this.modeTags = this.modeStore.getModeKeywords(this.mode);
+        })
+
+        return;
+      }
+
+      await this.$store.dispatch(`${METADATA_NAMESPACE}/${FILTER_METADATA}`,
         {
           selectedTagNames: this.selectedTagNames,
           mode: this.mode,
@@ -236,8 +259,12 @@ export default {
       if (checkSearchTriggering) {
 
         if (searchParameter && searchParameter.length > 0) {
-
-          this.metadataSearch(searchParameter, this.metadataConfig);
+          if (this.mode) {
+            this.filteredModeContent = this.modeStore.searchModeDatasets(searchParameter, this.mode)
+          }
+          else {
+            this.metadataSearch(searchParameter, this.metadataConfig);
+          }
           this.resetScrollPos();
 
           // prevent immediately filtering, the search results
@@ -292,25 +319,14 @@ export default {
       });
     },
     catchSearchClicked(search) {
-      // this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search);
-      if (this.currentSearchTerm.trim() !== search) {
-        // the search parameter needs to be '' to clear it
-
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
-          undefined, undefined, undefined,
-            this.isAuthorSearch);
-      }
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, search,
+          undefined, this.mode, undefined,
+          this.isAuthorSearch);
     },
     catchSearchCleared() {
-      // Only change route if state currentSearchTrim is not equal to an empty string
-      // to avoid redundant navigation when there are no search terms
-      if (this.currentSearchTerm.trim() !== '') {
-
-        // the search parameter needs to be '' to clear it
-        this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
-        undefined, undefined, undefined,
+      this.mixinMethods_additiveChangeRoute(BROWSE_PATH, '',
+          undefined, this.mode, undefined,
           this.isAuthorSearch);
-      }
     },
     catchAuthorSearchClick() {
       this.oldIsAuthorSearch = this.isAuthorSearch;
@@ -415,10 +431,34 @@ export default {
       return this.$vuetify.breakpoint.smAndUp;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredDatasets?.length > 0 ? Object.keys(this.filteredDatasets).length : 0;
     },
     mode() {
       return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
+    },
+    modeData() {
+      return this.modeStore.getModeMetadata(this.mode);
+    },
+    filteredDatasets() {
+      if (this.mode) {
+        return this.filteredModeContent;
+      }
+
+      return this.filteredContent;
+    },
+    allDatasets() {
+      if (this.modeContent) {
+        return this.modeContent;
+      }
+
+      return this.metadatasContent
+    },
+    tagsFromDatasets() {
+      if (this.mode) {
+        return this.modeTags;
+      }
+
+      return this.allTags;
     },
   },
   watch: {
@@ -432,9 +472,6 @@ export default {
         this.setScrollPos(this.browseScrollPosition);
       }
     },
-    metadatasContent() {
-      this.filterContent();
-    },
     searchedMetadatasContent() {
       if (!this.searchingMetadatasContent && this.searchingMetadatasContentOK) {
         this.filterContent();
@@ -445,6 +482,10 @@ export default {
     MetadataList,
   },
   data: () => ({
+    modeStore: useModeStore(),
+    modeContent: null,
+    filteredModeContent: null,
+    modeTags: null,
     PageBGImage: 'app_b_browsepage',
     placeHolderAmount: 4,
     suggestionText: 'Try one of these categories',

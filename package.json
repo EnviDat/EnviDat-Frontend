@@ -47,6 +47,7 @@
     "leaflet.markercluster": "^1.5.3",
     "material-design-icons-iconfont": "^6.7.0",
     "mitt": "^3.0.0",
+    "pinia": "^2.1.7",
     "remark": "^13.0.0",
     "remark-breaks": "^3.0.2",
     "remark-html": "^13.0.2",

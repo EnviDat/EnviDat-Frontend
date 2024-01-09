@@ -5,18 +5,17 @@
  * @summary function factory for global methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2020-10-13 23:35:11
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+// eslint-disable-next-line import/no-cycle
 import {
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_POINT,
   LOCATION_TYPE_POLYGON,
 } from '@/factories/metaDataFactory';
+
 import {
   DIVERSITY,
   FOREST,
