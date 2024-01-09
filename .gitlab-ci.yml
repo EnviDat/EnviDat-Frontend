@@ -22,10 +22,7 @@ variables:
         prefix: "package-lock"
       paths:
         - .npm/
-      policy: pull-push
-      when: on_success
-      untracked: true
-
+      policy: pull
 
 .trigger-rules:
   rules:
@@ -131,24 +128,18 @@ install-node:
     - .node_cache
   stage: config
   image: docker.io/node:18.18.2-alpine3.17
-#  cache:
-#    # for all install job use the npm internal caching
-#    - key: "Commit-$CI_COMMIT_REF_NAME"
-#      paths:
-#        - .npm/
-#      when: on_success
-#      policy: pull-push
-#    # overwrite the global caching definitions with
-#    # pull-push to be able to update the node_modules in the cache
-#    - key:
-#        files:
-#          - package-lock.json
-#        prefix: "package-lock"
-#      paths:
-#        - .npm/
-#        - node_modules/
-#      when: on_success
-#      policy: pull-push
+  cache:
+    # overwrite the global caching definitions with
+    # pull-push to be able to update the node_modules in the cache
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+      when: on_success
+      policy: pull-push
+      untracked: true
   script:
 #    - echo "the cache work if node_modules and .npm/ folders are available"
 #    - ls -a
@@ -189,7 +180,7 @@ build-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm run build-storybook -- -o ./storybook
+    - npm run build-storybook -- -o ./storybook --quiet
   artifacts:
     name: "storybook build"
     # keep the storybook for 7 days to be able to trigger the chromatic-deployment
