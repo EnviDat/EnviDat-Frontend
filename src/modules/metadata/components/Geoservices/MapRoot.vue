@@ -49,7 +49,7 @@ import {
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_POINT,
-} from '@/factories/metaDataFactory';
+} from '@/factories/metadataConsts';
 
 
 import MapLeaflet from './MapLeaflet.vue';
