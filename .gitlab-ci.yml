@@ -154,7 +154,7 @@ install-node:
   script:
     - echo "the cache work if node_modules and .npm/ folders are available"
     - ls -a
-    - npm ci --cache .npm/ --prefer-offline
+    - npm ci --cache=.npm/ --prefer-offline
     - echo "Check afterwards how the folders are"
     - ls -a
   artifacts:
