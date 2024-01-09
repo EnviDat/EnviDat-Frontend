@@ -19,8 +19,9 @@ variables:
     - key:
         files:
           - package-lock.json
-#        prefix: "package-lock-$CI_COMMIT_REF_NAME"
+        prefix: "package-lock-"
       paths:
+        - .npm/
         - node_modules/
       policy: pull  # prevent subsequent jobs from modifying cache
 
@@ -141,7 +142,7 @@ install-node:
     - key:
         files:
           - package-lock.json
-#        prefix: "package-lock-$CI_COMMIT_REF_NAME"
+        prefix: "package-lock-"
       paths:
         - .npm/
         - node_modules/
@@ -154,7 +155,7 @@ install-node:
   artifacts:
     name: "node dependencies"
     # stores node_modules as an artifact to be used in the next jobs
-    # caching isn't garanteed to work always
+    # caching isn't always guaranteed to work
     paths:
       - node_modules
 
