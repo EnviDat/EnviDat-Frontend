@@ -12,6 +12,7 @@ import {
 import { enhanceMetadatas, localSearch } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import { getEnabledTags, getPopularTags, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
+import { EDNA_MODE } from '@/store/metadataMutationsConsts';
 
 const initState = {
   modeMetadata: [],
@@ -39,6 +40,11 @@ export const useModeStore = defineStore(MODE_STORE, {
   },
 */
   actions: {
+    /**
+     * returns the metadata object for a mode name
+     * @param {string} mode
+     * @returns {*|null}
+     */
     getModeMetadata(mode) {
       if (!mode) return null;
 
@@ -142,20 +148,17 @@ export const useModeStore = defineStore(MODE_STORE, {
     async loadModeDatasets(mode) {
 
       const modeMetadata = this.getModeMetadata(mode);
-      const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
-      const response = await fetch (url);
-      const data = await response.json();
+      const data = await modeMetadata.loadDatasets(modeMetadata);
+
+      let enhancedDatasetsObject = data;
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
-      let enhancedDatasetsObject = {};
-
       if (index >= 0) {
-        enhancedDatasetsObject = enhanceMetadatas(data, mainStore.state.cardBGImages, categoryCards, mode);
+        if (mode === EDNA_MODE) {
+          // eDNA shallow datasets need enhancement
+          enhancedDatasetsObject = enhanceMetadatas(data, mainStore.state.cardBGImages, categoryCards, mode);
+        }
         this.modeDatasets[index] = enhancedDatasetsObject;
-/*
-        console.log('loadModeDatasets');
-        console.log(data);
-*/
       }
 
       return enhancedDatasetsObject;

@@ -895,11 +895,11 @@ let tempImgKeys = [];
 let tempImgValues = [];
 
 /**
- * @param {Object} metadata
- * @param {Object<String, String>} cardBGImages, it's an object of key value pairs paths to images
+ * @param {object} metadata
+ * @param {object} cardBGImages it's an object of key value pairs paths to images
  *
  * @param {Array<Object>} categoryCards
- * @return {Object} metadata entry enhanced with a title image based on its tags
+ * @return {object} metadata entry enhanced with a title image based on its tags
  */
 export function enhanceTitleImg(metadata, cardBGImages, categoryCards) {
   if (!metadata || !categoryCards) {
@@ -1383,7 +1383,14 @@ export const possibleVisibilityStates = [
   METADATA_STATE_VISILBE,
 ];
 
-
+/**
+ *
+ * @param {object[]}datasets
+ * @param cardBGImages
+ * @param categoryCards
+ * @param mode
+ * @returns {{}}
+ */
 export function enhanceMetadatas(datasets, cardBGImages, categoryCards, mode) {
   if (!(datasets instanceof Array)) {
     throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);

@@ -470,11 +470,11 @@ export default {
         const key = keys[i];
 
         if (this.tags.findIndex(t => t.name === key.toUpperCase()) >= 0) {
-          return key;
+          return this.modeData.icons[key];
         }
       }
 
-      return keys[0];
+      return this.modeData.icons[keys[0]];
     },
   },
   created() {},

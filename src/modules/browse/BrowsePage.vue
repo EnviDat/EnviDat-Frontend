@@ -431,7 +431,7 @@ export default {
       return this.$vuetify.breakpoint.smAndUp;
     },
     searchCount() {
-      return this.filteredContent !== undefined ? Object.keys(this.filteredContent).length : 0;
+      return this.filteredDatasets?.length > 0 ? Object.keys(this.filteredDatasets).length : 0;
     },
     mode() {
       return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
@@ -440,7 +440,7 @@ export default {
       return this.modeStore.getModeMetadata(this.mode);
     },
     filteredDatasets() {
-      if (this.filteredModeContent) {
+      if (this.mode) {
         return this.filteredModeContent;
       }
 
@@ -454,7 +454,7 @@ export default {
       return this.metadatasContent
     },
     tagsFromDatasets() {
-      if (this.modeTags) {
+      if (this.mode) {
         return this.modeTags;
       }
 
