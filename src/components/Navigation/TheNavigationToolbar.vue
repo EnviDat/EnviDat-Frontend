@@ -1,7 +1,7 @@
 <template>
   <v-app-bar color="white"
              order="-1"
-              :height="$vuetify.display.xsOnly ? 50 : 36" >
+              :height="$vuetify.display.xs ? 50 : 36" >
 
     <v-container fluid
                   class="pa-0" >
@@ -160,7 +160,7 @@ export default {
   },
   computed: {
     compact() {
-      return this.$vuetify.display.xsOnly;
+      return this.$vuetify.display.xs;
     },
     hasModeData() {
       return !!this.mode;

@@ -84,7 +84,7 @@
         />
 
         <SmallSearchBarView
-          v-if="$vuetify.display.xsOnly"
+          v-if="$vuetify.display.xs"
           :labelText="welcomeInfo.smallSearchLabelText"
           :buttonText="buttonText"
           @clicked="catchSearchClicked"

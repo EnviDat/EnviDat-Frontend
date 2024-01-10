@@ -2,7 +2,7 @@
   <v-card>
     <v-container class="pa-4" fluid>
       <v-row no-gutters justify="space-between">
-        <v-col :class="$vuetify.display.xsOnly ? 'title' : 'text-h4'">
+        <v-col :class="$vuetify.display.xs ? 'title' : 'text-h4'">
           {{ fileObject.chartTitle }}
         </v-col>
         <v-col class="text-h6 text-right">
@@ -13,7 +13,7 @@
       <v-row no-gutters>
         <v-col
           v-if="chartIsLoading && preloading"
-          :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
         >
           <v-row class="fill-height" justify="center" align="center">
             <v-col class="flex-grow-0">
@@ -40,7 +40,7 @@
 
         <v-col
           v-if="!preloading"
-          :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
+          :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
         >
           <!-- <v-row class="fill-height" column
                     justify="center" align="center"> -->
@@ -76,7 +76,7 @@
         <v-col v-show="showChart">
           <div
             :id="chartId"
-            :style="`height: ${$vuetify.display.xsOnly ? 300 : 350}px;`"
+            :style="`height: ${$vuetify.display.xs ? 300 : 350}px;`"
           ></div>
         </v-col>
       </v-row>

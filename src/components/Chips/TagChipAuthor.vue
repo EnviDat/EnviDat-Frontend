@@ -4,7 +4,7 @@
             'white--text': highlighted,
             smallChip: $vuetify.display.smAndDown,
            }"
-          :style="{ height: $vuetify.display.xsOnly ? '15px' : '' }"
+          :style="{ height: $vuetify.display.xs ? '15px' : '' }"
           @click.stop="clicked"
           :small="isSmall"
           close-icon="close"

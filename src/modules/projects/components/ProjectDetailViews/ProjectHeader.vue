@@ -2,7 +2,7 @@
   <v-card :height="height"
           :class="{
             'pa-4': $vuetify.display.smAndUp,
-            'pa-3': $vuetify.display.xsOnly,
+            'pa-3': $vuetify.display.xs,
           }"
           :dark="dark"
           :color="showPlaceholder ? 'primary' : 'white'" >

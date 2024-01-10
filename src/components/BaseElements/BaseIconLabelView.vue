@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
+  <v-tooltip bottom :disabled="$vuetify.display.xs || !iconTooltip">
     <template v-slot:activator="{ on, props }">
       <v-row
         v-on="on"

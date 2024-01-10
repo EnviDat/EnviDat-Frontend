@@ -32,7 +32,7 @@
           class="flex-grow-0 py-0 mx-sm-2"
           style="min-width: 45px; text-align: center;"
         >
-          <v-tooltip bottom :disabled="$vuetify.display.xsOnly">
+          <v-tooltip bottom :disabled="$vuetify.display.xs">
             <template v-slot:activator="{ on, props }">
               <tag-chip
                 v-on="on"
@@ -70,7 +70,7 @@
         >
           <v-tooltip
             bottom
-            :disabled="$vuetify.display.xsOnly || !searchToolTipText"
+            :disabled="$vuetify.display.xs || !searchToolTipText"
           >
             <template v-slot:activator="{ on, props }">
               <v-text-field

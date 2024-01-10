@@ -26,7 +26,7 @@
         <project-body
           :description="currentProject ? currentProject.description : null"
           :showPlaceholder="loading"
-          :maxTextLength="$vuetify.display.xsOnly ? 900 : 2000"
+          :maxTextLength="$vuetify.display.xs ? 900 : 2000"
         />
       </v-col>
 

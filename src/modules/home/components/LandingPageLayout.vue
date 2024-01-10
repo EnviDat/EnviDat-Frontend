@@ -2,7 +2,7 @@
   <article
     class="landingPageGrid pa-0"
     :class="{
-      gridXs: $vuetify.display.xsOnly,
+      gridXs: $vuetify.display.xs,
       gridSm: $vuetify.display.smOnly,
     }"
     id="LandingPage"

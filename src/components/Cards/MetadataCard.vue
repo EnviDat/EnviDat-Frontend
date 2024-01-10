@@ -21,7 +21,7 @@
             "
           >
             <div
-              v-if="!maxTitleLengthReached || $vuetify.display.xsOnly"
+              v-if="!maxTitleLengthReached || $vuetify.display.xs"
               class="pa-4 metadataTitle mb-0"
               :class="titleClass"
             >
@@ -29,7 +29,7 @@
             </div>
 
             <v-tooltip
-              v-if="maxTitleLengthReached && !$vuetify.display.xsOnly"
+              v-if="maxTitleLengthReached && !$vuetify.display.xs"
               bottom
             >
               <template v-slot:activator="{ on, props }">
@@ -449,8 +449,8 @@ export default {
       return {
         black_title: !this.dark,
         white_title: this.dark,
-        // smallScreenTitle: this.compactLayout || this.$vuetify.display.xsOnly,
-        smallScreenTitle: this.$vuetify.display.xsOnly,
+        // smallScreenTitle: this.compactLayout || this.$vuetify.display.xs,
+        smallScreenTitle: this.$vuetify.display.xs,
         compactTitle: this.compactLayout || this.$vuetify.display.smOnly,
       };
     },

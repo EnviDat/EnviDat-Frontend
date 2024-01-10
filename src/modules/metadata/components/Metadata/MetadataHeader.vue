@@ -42,12 +42,12 @@
       <v-col v-if="hasContent"
               cols="12" >
         <div class="headerTitle"
-              :style="`line-height: ${$vuetify.display.xsOnly ? '1.5rem' : ''};`"
+              :style="`line-height: ${$vuetify.display.xs ? '1.5rem' : ''};`"
               :class="{ 'py-0': $vuetify.display.smAndDown,
                         'display-2': $vuetify.display.xlOnly,
                         'text-h4': $vuetify.display.mdAndUp,
                         'headline': $vuetify.display.smOnly,
-                        'subtitle-1': $vuetify.display.xsOnly,
+                        'subtitle-1': $vuetify.display.xs,
                       }" >
           {{ metadataTitle }}
         </div>
@@ -87,7 +87,7 @@
                   id="authors_divier"
                   key="authors_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                      :class="{ 'my-1': $vuetify.display.xs,
                                 'my-2': $vuetify.display.smAndUp }" />
           </v-col>
 
@@ -130,7 +130,7 @@
                       id="authors_placeholder_divier"
                       key="authors_placeholder_divier" >
                 <v-divider :dark="dark"
-                          :class="{ 'my-1': $vuetify.display.xsOnly,
+                          :class="{ 'my-1': $vuetify.display.xs,
                                     'my-2': $vuetify.display.smAndUp }" />
               </v-col>
             </v-row>
@@ -154,7 +154,7 @@
                   id="headerinfo_divier"
                   key="headerinfo_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                      :class="{ 'my-1': $vuetify.display.xs,
                                 'my-2': $vuetify.display.smAndUp }" />
           </v-col>
         </v-row>
@@ -307,7 +307,7 @@
                   id="tags_divier"
                   key="tags_divier" >
             <v-divider :dark="dark"
-                      :class="{ 'my-1': $vuetify.display.xsOnly,
+                      :class="{ 'my-1': $vuetify.display.xs,
                                 'my-2': $vuetify.display.smAndUp }" />
           </v-col>
 

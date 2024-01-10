@@ -63,7 +63,7 @@
     </v-container>
 
     <base-icon-button
-      v-if="$vuetify.display.xsOnly"
+      v-if="$vuetify.display.xs"
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
       material-icon-name="expand_more"
@@ -171,7 +171,7 @@ export default {
     maxUnselectedTagNumber() {
       let maxTextLength = this.maxUnselectedTagsTextLength;
 
-      if (this.$vuetify.display.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxTextLength = this.xsTextLength;
       } else if (this.$vuetify.display.smAndDown) {
         maxTextLength = this.smTextLength;
@@ -198,7 +198,7 @@ export default {
     isCleanTag(tagName) {
       let maxWordsPerTag = 3;
 
-      if (this.$vuetify.display.xsOnly) {
+      if (this.$vuetify.display.xs) {
         maxWordsPerTag = 2;
       } else if (this.$vuetify.display.smAndDown) {
         maxWordsPerTag = 20;
@@ -242,7 +242,7 @@ export default {
     minTagCountToBeVisible() {
       let minCount = 5;
 
-      if (this.$vuetify.display.xsOnly) {
+      if (this.$vuetify.display.xs) {
         minCount = 25;
       } else if (this.$vuetify.display.smAndDown) {
         minCount = 20;

@@ -20,7 +20,7 @@
                 $vuetify.display.smAndUp ? 4 : 0
               }px;
                     border-top-right-radius: ${
-                      $vuetify.display.xsOnly ? 4 : 0
+                      $vuetify.display.xs ? 4 : 0
                     }px;`
             "
           />

@@ -121,7 +121,7 @@ export default {
         return true;
       }
 
-      if (this.$vuetify.display.xsOnly) {
+      if (this.$vuetify.display.xs) {
         return text.length <= this.maxSingleTextLengthXs;
       }
 
