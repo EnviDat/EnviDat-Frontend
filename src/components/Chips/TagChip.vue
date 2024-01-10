@@ -1,18 +1,21 @@
 <template>
   <v-chip
-    class="envidatChip"
+    class="envidatChip black--text"
     :class="{
       'white--text': highlighted,
       smallChip: $vuetify.display.smAndDown,
     }"
-    v-bind="{ color: highlighted ? 'primary' : color }"
-    :style="{ height: $vuetify.display.xsOnly ? '15px' : '' }"
+    :color="highlighted ? 'primary' : color"
+    :style="{ height: $vuetify.display.xs ? '15px' : '' }"
     :small="isSmall"
     close-icon="close"
     @click.stop="clicked"
     :close="closeable"
     @click:close="$emit('clickedClose', name)"
   >
+<!--
+    :color="$vuetify.theme.themes.light.colors.primary"
+-->
     {{ name }}
 
     <!-- <span v-if="closeable"
@@ -46,7 +49,7 @@ export default {
     count: Number,
     color: {
       type: String,
-      default: '#e0e0e0',
+      default: '#222',
     },
     isSmall: {
       type: Boolean,

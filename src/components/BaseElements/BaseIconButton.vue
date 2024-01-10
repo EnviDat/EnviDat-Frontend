@@ -81,11 +81,11 @@
       @click.stop="onClick"
     >
       <div v-if="customIcon"
+           :style="`height: ${height}px; `"
            class="iconCentering">
-        <img
-          class="envidatIcon"
-          :alt="`${customIcon} icon`"
-          :src="customIcon"
+        <img class="envidatIcon"
+              :alt="`${customIcon} icon`"
+              :src="customIcon"
         />
       </div>
 

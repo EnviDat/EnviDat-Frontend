@@ -54,11 +54,18 @@ export const SmallSearchBarButtonCompact = {
   },
 };
 
-export const SmallSearchBarSearchCount = {
+export const SmallSearchBarSearchCountZero = {
   args: {
     ...BasicSmallSearchBar.args,
-    searchCount: 123,
+    searchCount: 0,
     showSearchCount: true,
+  },
+};
+
+export const SmallSearchBarSearchCount = {
+  args: {
+    ...SmallSearchBarSearchCountZero.args,
+    searchCount: 123,
   },
 };
 

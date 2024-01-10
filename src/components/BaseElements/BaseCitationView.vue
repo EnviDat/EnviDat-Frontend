@@ -39,6 +39,7 @@
                   class="pl-1">
             <BaseIconButton material-icon-name="fingerprint"
                             :disabled="!doi"
+                            :isSmall="true"
                             :icon-color="doi ? '' : 'gray'"
                             :tooltipText="`doi: ${doi}`"
                             :url="doiUrl" />
