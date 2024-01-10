@@ -37,11 +37,7 @@
               <tag-chip
                 v-on="on"
                 v-bind="props"
-                :style="
-                  $vuetify.display.xsOnly
-                    ? 'font-size: 0.65rem !important;'
-                    : 'font-size: 0.8rem !important;'
-                "
+                :style="`font-size: ${$vuetify.display.xs ? '0.65rem' : '0.8rem'} !important;`"
                 :name="searchCount ? searchCount.toString() : '0'"
                 :selectable="false"
                 :highlighted="searchCount > 0"
@@ -56,8 +52,9 @@
         <v-col v-if="showSearch && !hasButton"
                class="flex-grow-0 pa-0 hidden-xs-only">
           <base-icon-button
-            materialIconName="search"
+            material-icon-name="search"
             marginClass="ma-0"
+            is-small
             color="transparent"
             :outlined="!searchTerm"
             @clicked="clicked"
@@ -66,7 +63,7 @@
 
         <v-col v-if="showSearch"
                class="grow py-0 mr-sm-2"
-              :class="hasButton ? 'ml-4 ' : 'ml-2 ml-sm-0'"
+              :class="hasButton ? 'ml-4 ' : 'ml-2 ml-xs-0'"
         >
           <v-tooltip
             bottom
