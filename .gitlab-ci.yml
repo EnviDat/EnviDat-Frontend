@@ -201,7 +201,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm run build -- --loglevel error
+    - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
     expire_in: 1 day
