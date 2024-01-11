@@ -290,14 +290,16 @@ publish-build:
   before_script:
     - apk add curl zip --no-cache
   script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${$CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
     - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "to location ${BUILD_LOCATION}"
     - zip -r ${BUILD_ZIP_NAME} ./
-    - ls -l
+    # - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
       --upload-file ${BUILD_ZIP_NAME} \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}"
+      "${PUBLISH_LOCATION}"
 
 
 rclone-sync:
@@ -332,12 +334,14 @@ rclone-sync:
       fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${$CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
     - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
-    - ls -l
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}" \
+      "${PUBLISH_LOCATION}" \
       -o ${BUILD_ZIP_NAME}
     # use -q for quiet to not list all the files
     - unzip -q ${BUILD_ZIP_NAME}
@@ -450,11 +454,13 @@ publish-box-build:
   before_script:
     - apk add curl zip --no-cache
   script:
+    - export BOX_PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/frontend-in-a-box/frontend-in-a-box-${CI_COMMIT_REF_NAME}/${BOX_BUILD_ZIP_NAME}"
     - echo "Going to publish build an frotend build for 'envidat in a box' ${BUILD_NAME} with zip name ${BOX_BUILD_ZIP_NAME}"
+    - echo "to build location ${BOX_BUILD_LOCATION}"
     - zip -r ${BOX_BUILD_ZIP_NAME} ./
-    - ls -l
+    # - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
       --upload-file ${BOX_BUILD_ZIP_NAME} \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/envidat-in-a-box/${BOX_BUILD_ZIP_NAME}"
+      "${BOX_PUBLISH_LOCATION}"
