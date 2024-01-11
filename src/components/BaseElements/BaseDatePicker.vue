@@ -1,10 +1,9 @@
 <template>
   <div :id="`BaseDatePicker_${dateLabel}`">
-<!--
       <v-text-field
         v-if="isReadonly(dateProperty)"
         :label="dateLabel"
-        readonly
+        :readonly="true"
         prepend-icon="date_range"
         :hint="readOnlyHint(dateProperty)"
         :model-value="formatToEnviDatDate(dateField, dateProperty)"
@@ -23,58 +22,36 @@
         min-width="280px"
       >
 
-
         <template v-slot:activator="{ props }">
           <v-text-field
             :label="dateLabel"
             prepend-icon="date_range"
             v-bind="props"
+            :clearable="true"
+            clear-icon="clear"
             :model-value="formatToEnviDatDate(dateField, dateProperty)"
             @change="changedDateTextField(dateProperty, $event)"
             :error-messages="validationErrors[dateProperty]"
           />
         </template>
--->
 
         <v-date-picker
           elevation="2"
           locale="en-in"
+          :color='$vuetify.theme.themes.light.colors.primary'
           next-icon="navigate_next"
           prev-icon="navigate_before"
+          :min="formatToDatePickerDate(minDate)"
+          :max="formatToDatePickerDate(maxDate)"
+          :model-value="formatToDatePickerDate(dateField)"
+          @click:save="changeDatePicker(dateProperty, $event)"
         >
 <!--
           next-icon="skip_next"
           prev-icon="skip_previous"
-          @click:save="changeDatePicker(dateProperty, $event)"
-          :min="formatToDatePickerDate(minDate)"
-          :max="formatToDatePickerDate(maxDate)"
-          :model-value="formatToDatePickerDate(dateField)"
 -->
-
-<!--          <v-row v-if="clearable"
-                  no-gutters
-                  class="px-4"
-                  style="align-items: center;"
-          >
-            <v-col>
-              <div @click="clearClick(dateProperty)">
-                {{ `Clear the ${dateLabel}` }}
-              </div>
-            </v-col>
-
-            <v-col class="flex-grow-0">
-              <BaseIconButton
-                materialIconName="clear"
-                iconColor="red"
-                :tooltipText="`Clear the ${dateLabel}`"
-                @clicked="clearClick(dateProperty)"
-              />
-            </v-col>
-          </v-row>-->
         </v-date-picker>
-<!--
       </v-menu>
--->
   </div>
 </template>
 
@@ -83,9 +60,6 @@ import { isDate, isMatch, parse } from 'date-fns';
 import * as yup from 'yup';
 import { ValidationError } from 'yup';
 
-/*
-import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-*/
 import {
   ckanDateFormat,
   enviDatDateFormat,
@@ -95,6 +69,7 @@ import {
 
 import { isFieldValid } from '@/factories/userEditingValidations';
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { useDate } from 'vuetify';
 
 // eslint-disable-next-line func-names
 yup.addMethod(yup.date, 'parseDateString', function() {
@@ -277,8 +252,8 @@ export default {
     clearClick(dateProperty) {
       if (dateProperty === this.dateProperty) {
         this.previewDate = '';
+        this.datePickerOpen = false;
       }
-
 
       this.$emit('clearClick', dateProperty);
     },
@@ -303,6 +278,10 @@ export default {
         return '';
       }
 
+      const adapter = useDate()
+      return adapter.parseISO(dateString);
+
+/*
       const dateTime = parse(dateString, ckanDateFormat, new Date());
 
       if (dateTime instanceof Date && !!dateTime.getTime()) {
@@ -312,12 +291,8 @@ export default {
       }
 
       return '';
-    },
-  },
-  components: {
-/*
-    BaseIconButton,
 */
+    },
   },
   data: () => ({
     previewDate: '',

@@ -22,13 +22,16 @@ export const FilledAndClearable = {
     date: '2023-02-05',
     dateLabel: 'Date',
     clearable: true,
+    clearClick: () => {
+      FilledAndClearable.args.date = '';
+    },
   },
 };
 
 export const WithMinDate = {
   args: {
     ...FilledAndClearable.args,
-    minDate: '2023-02-03',
+    minDate: '2023-02-05',
   },
 };
 
