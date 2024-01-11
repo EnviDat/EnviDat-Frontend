@@ -35,17 +35,16 @@
 
 <script>
 /**
-
  * @summary Stepper for structuring a workflow
  * @author Dominik Haas-Artho
  *
  * Created at     : 2021-06-29 13:51:43
  * Last modified  : 2021-07-28 07:54:13
-
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
+import StepButton from '@/components/Navigation/StepButton.vue';
 
 export default {
   name: 'StepperHeader',
@@ -106,7 +105,9 @@ export default {
       this.$emit('stepClick', title);
     },
   },
-  components: {},
+  components: {
+    StepButton,
+  },
 };
 </script>
 
