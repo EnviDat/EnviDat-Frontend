@@ -17,94 +17,13 @@ import {
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 
 export default {
   title: '4 Filtering / filtering control panels',
-  component: BaseIconSwitch,
+  component: ControlPanel,
 };
-
-export const BaseIconSwitches = () => ({
-  components: { BaseIconSwitch },
-  template: `
-  <v-row>
-    <v-col cols="12">
-      BaseIconSwitch inactive
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="false"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch active
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="true"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch with lock icon
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="true"
-                      materialIconName="lock"
-                      tooltipText="access restricted" />
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch with lock open icon
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch materialIconName="lock_open"
-                      tooltipText="access public" />
-    </v-col>
-    
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="!active"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active = !active"/>
-    </v-col>
-
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="active2"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-    
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-
-    <v-col class="flex-grow-0">
-      <BaseIconSwitch :active="active"
-                      materialIconName="info"
-                      tooltipText="notification tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-
-  </v-row>
-  `,
-  data: () => ({
-    active: false,
-    active2: false,
-  }),
-})
 
 /*
 const Template = (args, { argTypes }) => ({

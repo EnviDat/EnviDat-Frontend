@@ -6,7 +6,8 @@
 
       <div v-on="on"
            v-bind="props"
-           style="position: relative; width: 44px; " >
+           class="my-2"
+           style="position: relative; width: 44px; height: 26px;" >
 
         <div class="authorSwitch"
              :class="disabled ? '': 'authorSwitchClickable'"
@@ -23,7 +24,7 @@
         <div class="authorSwitchHover"
              :style="active ? 'left: -10px;' : 'left: 16px;'" />
 
-        <div style="width: 44px; height: 14px; border-radius: 8px;"
+        <div style="width: 44px; height: 14px; border-radius: 8px; position: relative; top: 8px;"
              :style="`background-color: ${bgColor};`"
               class="" />
 
@@ -71,7 +72,7 @@ export default {
   }),
   computed: {
     bgColor() {
-      const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
+      const secondary = this.$vuetify?.theme?.themes?.light?.colors?.secondary || 'lightgray';
       return this.active ? secondary : 'lightgray';
     },
   },
@@ -104,7 +105,7 @@ export default {
   transition: 0.3s all ease-in-out;
   border-radius: 50%;
   background-color: #fff;
-  top: -6px;
+  top: 0;
   height: 26px;
   width: 26px;
 }
@@ -115,7 +116,7 @@ export default {
 
 .authorSwitchHover {
   visibility: hidden;
-  top: -11px;
+  top: -5px;
   background-color: rgba(33, 33, 33, 0.2);
   width: 36px;
   height: 36px;
