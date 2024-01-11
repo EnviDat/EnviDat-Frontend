@@ -229,7 +229,7 @@ combine-builds:
     - cp -r dist/* ./
     # - ls -l
     # remove the dist folder recursively
-    # - rm -rf dist
+    - rm -rf dist
     - ls -l
   artifacts:
     name: "frontend build $CI_COMMIT_REF_NAME"
