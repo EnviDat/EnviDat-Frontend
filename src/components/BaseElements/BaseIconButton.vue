@@ -1,6 +1,5 @@
 <template>
   <div
-    :style="`height: ${height}px; `"
     @mouseover="hoverBadge = true"
     @mouseleave="hoverBadge = false"
   >
