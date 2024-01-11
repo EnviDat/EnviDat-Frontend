@@ -357,6 +357,9 @@ modify-box-env:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
+    # specific setup for 'envidat in a box' which runs
+    # the frontend locally, that's why it needs the VITE_API_ROOT and VITE_CONFIG_URL
+    # set to work from the local file system / connect to localhost for the backend
     - |
       python -c "import os
       import dotenv
@@ -365,9 +368,7 @@ modify-box-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'https://{branch}.envidat.ch'
-      if branch == 'main' or branch == 'beta':
-          value = 'https://envidat.ch'
+      value = f'https://www.envidat.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
@@ -380,8 +381,6 @@ modify-box-env:
       
       key = 'VITE_BUILD_SOURCEMAPS'
       value = 'false'
-      if branch == 'staging' or branch == 'develop':
-          value = 'true'
       dotenv.set_key(file, key, value, quote_mode='never') "
     - echo "created content for .env.production:"
     - cat .env.production
@@ -391,17 +390,18 @@ modify-box-env:
       - .env.production
 
 build-box-app:
-  when: manual
   extends:
     - .node_cache
   stage: build
   image: docker.io/node:18.18.2-alpine3.17
   needs:
-    # needs the artifact: config and environment variables
-    - modify-env
+    # needs environment variables from the frontend in a box setup
+    - modify-box-env
     # needs the artifact: node_modules to build the app
     - install-node
   script:
+    - echo "checked content for .env.production:"
+    - cat .env.production
     - npm run build -- --logLevel error
   artifacts:
     name: "frontend envidat-in-a-box build"
@@ -426,7 +426,7 @@ combine-box-builds:
     - cp -r dist/* ./
     # - ls -l
     # remove the dist folder recursively
-    # - rm -rf dist
+    - rm -rf dist
     - ls -l
   artifacts:
     name: "frontend-in-a-box build"
@@ -445,8 +445,8 @@ publish-box-build:
     - set-vars
     # make sure to wait for the tests to run correctly
     - run-tests
-    # needs the artifact: the build of the frontend app and storybook build
-    - build-box-app
+    # needs the artifact: of the frontend in a box build
+    - combine-box-builds
   before_script:
     - apk add curl zip --no-cache
   script:
