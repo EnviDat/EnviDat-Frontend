@@ -275,7 +275,7 @@ export default {
     },
     formatToDatePickerDate(dateString) {
       if (!dateString) {
-        return '';
+        return undefined;
       }
 
       const adapter = useDate()
