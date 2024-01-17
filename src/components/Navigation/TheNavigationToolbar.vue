@@ -14,9 +14,9 @@
         <v-col cols="4" sm="2">
           <v-row no-gutters>
 
-            <v-col class="shrink px-2" >
+            <v-col class="shrink px-2" cols="1">
               <v-btn icon
-                      class="ma-0 pt-1"
+                      class="ma-0 pt-2"
                       small
                       @click.stop="catchHomeClicked" >
                       <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->
@@ -26,9 +26,11 @@
                       alt="envidat_logo" />
               </v-btn>
             </v-col>
-
-            <v-col class="text-h6 text-md-h5 envidatNavbarTitleSmall py-0">
-              {{ logoText }}
+            <v-col class="shrink px-2" cols="2">
+              <v-btn class="py-0" text @click.stop="catchHomeClicked">
+                <span class="text-md-h5 envidatText">{{logoText}}</span>
+              </v-btn>
+              <!--<a href="#"><span class="text-md-h5 envidatText">{{logoText}}</span> </a>-->
             </v-col>
           </v-row>
 
@@ -199,3 +201,13 @@ export default {
   },
 };
 </script>
+<style>
+
+.envidatText {
+  font-family: "Raleway", sans-serif, sans-serif !important;
+  text-transform: none;
+}
+
+
+
+</style>
