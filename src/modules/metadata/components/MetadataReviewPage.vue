@@ -89,13 +89,13 @@ import {
 } from '@/store/metadataMutationsConsts';
 import {
   createBody,
-  createCitation,
-  createHeader,
   createLicense,
   createResources,
+  formatDate,
+  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
-import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
+import { getAuthorName, getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
 import { getConfigFiles, getConfigUrls } from '@/factories/chartFactory';
 
@@ -103,6 +103,7 @@ import {
   AUTHOR_SEARCH_CLICK,
   EDITMETADATA_PUBLICATION_INFO,
   eventBus,
+  METADATA_MAIN_HEADER,
 } from '@/factories/eventBus';
 
 import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
@@ -293,18 +294,48 @@ export default {
       this.configInfos = {};
 
       if (currentContent && currentContent.title !== undefined) {
-        const subDataset = currentContent;
-        delete subDataset.author;
-        delete subDataset.maintainer;
-        delete subDataset.organization;
+        // const subDataset = currentContent;
+        const parsedContent = convertJSON(currentContent, false);
+/*
+        delete parsedContent.author;
+        delete parsedContent.maintainer;
+        delete parsedContent.organization;
+*/
 
+        this.header = getFrontendJSONForStep(METADATA_MAIN_HEADER, parsedContent);
+        // this.header.metadataState = getMetadataVisibilityState(this.header);
+        this.header.contactName = getAuthorName(this.header);
+        this.header.created = formatDate(this.header.created);
+        this.header.modified = formatDate(this.header.modified);
+
+/*
         this.header = createHeader(
           subDataset,
           this.$vuetify.breakpoint.smAndDown,
           this.authorDeadInfo,
         );
 
-        const parsedContent = convertJSON(currentContent, false);
+        {
+          metadataTitle: dataset.title,
+            doi: dataset.doi,
+            contactName: maintainer ? getAuthorName(maintainer) : '',
+            contactEmail,
+            tags: dataset.tags,
+            titleImg: dataset.titleImg,
+            maxTags: smallScreen ? 5 : 12,
+            authors,
+            authorDeadInfo,
+            categoryColor: dataset.categoryColor,
+            organization: dataset.organization?.name || '',
+            organizationTooltip: dataset.organization?.title || '',
+            metadataState: visibility,
+            spatialInfo: dataset.spatial_info,
+            created,
+            modified,
+        };
+*/
+
+        // const parsedContent = convertJSON(currentContent, false);
         const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
         this.header.publicationYear = publicationData.publicationYear;
 
