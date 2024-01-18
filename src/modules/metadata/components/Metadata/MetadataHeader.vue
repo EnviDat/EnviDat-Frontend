@@ -177,12 +177,13 @@
                 <v-row no-gutters
                        v-on="on"
                        align="center">
-                  <v-col class="flex-grow-0 pr-2">
-                          <v-icon class="envidatIcon"
-                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                            color="black">manage_accounts</v-icon>
 
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">manage_accounts</v-icon>
                   </v-col>
+
                   <v-col>
                     {{ contactName }}
                   </v-col>
@@ -231,13 +232,13 @@
                 <v-row no-gutters
                        v-on="on"
                        align="center">
+
                   <v-col class="flex-grow-0 pr-2">
-
-                          <v-icon class="envidatIcon"
-                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                            color="black">more_time</v-icon>
-
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">more_time</v-icon>
                   </v-col>
+
                   <v-col style="font-size: 0.9rem;">
                     {{ created }}
                   </v-col>
@@ -257,12 +258,13 @@
                 <v-row no-gutters
                        v-on="on"
                        align="center">
-                  <v-col class="flex-grow-0 pr-2">
-                          <v-icon class="envidatIcon"
-                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                            color="black">location_pin</v-icon>
 
+                  <v-col class="flex-grow-0 pr-2">
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">location_pin</v-icon>
                   </v-col>
+
                   <v-col style="font-size: 0.9rem;">
                     {{ spatialInfo }}
                   </v-col>
@@ -291,13 +293,13 @@
                 <v-row no-gutters
                        v-on="on"
                        align="center">
+
                   <v-col class="flex-grow-0 pr-2">
-
-                          <v-icon class="envidatIcon"
-                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                            color="black">email</v-icon>
-
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">email</v-icon>
                   </v-col>
+
                   <v-col>
                     <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
                   </v-col>
@@ -334,13 +336,13 @@
                 <v-row no-gutters
                        v-on="on"
                        align="center">
+
                   <v-col class="flex-grow-0 pr-2">
-
-                          <v-icon class="envidatIcon"
-                            :class="$vuetify.breakpoint.xs ? 'small' : ''"
-                            color="black">update</v-icon>
-
+                    <v-icon class="envidatIcon"
+                      :class="$vuetify.breakpoint.xs ? 'small' : ''"
+                      color="black">update</v-icon>
                   </v-col>
+
                   <v-col style="font-size: 0.9rem;">
                     {{ modified }}
                   </v-col>
