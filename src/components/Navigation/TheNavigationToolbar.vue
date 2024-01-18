@@ -27,10 +27,6 @@
               </v-btn>
             </v-col>
             <v-col class="shrink py-0" >
-              <!--<v-btn class="py-0" text @click.stop="catchHomeClicked">
-                <span class="text-md-h5 envidatText">{{logoText}}</span>
-              </v-btn>-->
-              <!--<a href="#"><span class="text-md-h5 envidatText">{{logoText}}</span> </a>-->
               <div class="text-md-h5 envidatText clickable " @click.stop="catchHomeClicked">{{logoText}}</div>
             </v-col>
           </v-row>
@@ -180,7 +176,6 @@ export default {
       }
     },
     catchHomeClicked() {
-      console.log('hi');
       this.$emit('homeClick');
     },
     catchContinueClick() {
