@@ -14,9 +14,9 @@
         <v-col cols="4" sm="2">
           <v-row no-gutters>
 
-            <v-col class="shrink px-2" cols="1">
+            <v-col class="shrink px-2" >
               <v-btn icon
-                      class="ma-0 pt-2"
+                      class="ma-0 pt-1"
                       small
                       @click.stop="catchHomeClicked" >
                       <!-- :style="`background-color: ${ item.active ? $vuetify.theme.themes.light.accent : 'transparent' }`" -->
@@ -26,11 +26,12 @@
                       alt="envidat_logo" />
               </v-btn>
             </v-col>
-            <v-col class="shrink px-2" cols="2">
-              <v-btn class="py-0" text @click.stop="catchHomeClicked">
+            <v-col class="shrink py-0" >
+              <!--<v-btn class="py-0" text @click.stop="catchHomeClicked">
                 <span class="text-md-h5 envidatText">{{logoText}}</span>
-              </v-btn>
+              </v-btn>-->
               <!--<a href="#"><span class="text-md-h5 envidatText">{{logoText}}</span> </a>-->
+              <div class="text-md-h5 envidatText clickable " @click.stop="catchHomeClicked">{{logoText}}</div>
             </v-col>
           </v-row>
 
@@ -179,6 +180,7 @@ export default {
       }
     },
     catchHomeClicked() {
+      console.log('hi');
       this.$emit('homeClick');
     },
     catchContinueClick() {
@@ -206,6 +208,9 @@ export default {
 .envidatText {
   font-family: "Raleway", sans-serif, sans-serif !important;
   text-transform: none;
+}
+.clickable {
+ cursor: pointer;
 }
 
 
