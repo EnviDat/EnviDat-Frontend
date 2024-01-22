@@ -33,7 +33,7 @@
       <v-row no-gutters
              align="center">
         <v-col>
-          {{ swapStatusTextWithSoltText && expanded ? $slots.default[0].text : statusText }}
+          {{ swapStatusTextWithSoltText && expanded ? $slots.default()[0].text : statusText }}
         </v-col>
 
         <v-col class="flex-grow-0">
@@ -137,11 +137,6 @@ export default {
   methods: {
     readMore() {
       this.expanded = !this.expanded;
-    },
-    rightPos() {
-      return this.$refs.text && this.$refs.text.clientHeight >= 500
-        ? '0px'
-        : '10px';
     },
   },
   data: () => ({
