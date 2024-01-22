@@ -42,7 +42,7 @@
                         :minMapHeight="minMapHeight"
                         :pinnedIds="pinnedIds"
                         :topLayout="mapTopLayout"
-                        :mode="mode"
+                        :modeData="modeData"
                         @pointClicked="catchPointClicked"
                         @clearButtonClicked="catchClearButtonClick" />
 
@@ -92,7 +92,7 @@
                           :titleImg="metadatasContent[pinnedId].titleImg"
                           :restricted="hasRestrictedResources(metadatasContent[pinnedId])"
                           :resourceCount="metadatasContent[pinnedId].num_resources"
-                          :mode="mode"
+                          :modeData="modeData"
                           :flatLayout="listView"
                           :compactLayout="isCompactLayout"
                           :fileIconString="fileIconString"
@@ -101,8 +101,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadatasContent[pinnedId].location)"
                           :categoryColor="metadatasContent[pinnedId].categoryColor"
                           :state="getMetadataState(metadatasContent[pinnedId])"
-                          :organization="metadatasContent[pinnedId].organization.name"
-                          :organizationTooltip="metadatasContent[pinnedId].organization.title"
+                          :organization="metadatasContent[pinnedId].organization?.name"
+                          :organizationTooltip="metadatasContent[pinnedId].organization?.title"
                           :showOrganizationOnHover="showOrganizationOnHover"
                           @clickedEvent="metaDataClicked"
                           @clickedTag="catchTagClicked" />
@@ -122,7 +122,7 @@
                           :titleImg="metadata.titleImg"
                           :restricted="hasRestrictedResources(metadata)"
                           :resourceCount="metadata.num_resources"
-                          :mode="mode"
+                          :modeData="modeData"
                           :flatLayout="listView"
                           :compactLayout="isCompactLayout"
                           :fileIconString="fileIconString"
@@ -131,8 +131,8 @@
                           :geoJSONIcon="getGeoJSONIcon(metadata.location)"
                           :categoryColor="metadata.categoryColor"
                           :state="getMetadataState(metadata)"
-                          :organization="metadata.organization.name"
-                          :organizationTooltip="metadata.organization.title"
+                          :organization="metadata.organization?.name"
+                          :organizationTooltip="metadata.organization?.title"
                           :showOrganizationOnHover="showOrganizationOnHover"
                           @organizationClicked="$emit('organizationClicked', metadata.organization)"
                           @clickedEvent="metaDataClicked"
@@ -253,7 +253,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    mode: String,
+    modeData: Object,
     showSearch: Boolean,
     searchTerm: String,
     searchCount: Number,
@@ -371,7 +371,7 @@ export default {
       };
     },
     contentSize() {
-      return this.listContent !== undefined ? Object.keys(this.listContent).length : 0;
+      return this.listContent ? Object.keys(this.listContent).length : 0;
     },
     isCompactLayout() {
       return this.isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE);

@@ -12,7 +12,7 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage, enhanceTags } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
@@ -123,7 +123,7 @@ export function enhanceMetadataFromCategories(store, metadatas) {
 
   datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
 
-  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
+  const enhanced = enhanceMetadatasTitleImage(datasets, cardBGImages, categoryCards);
   return isArrayInput ? enhanced : enhanced[0];
 }
 

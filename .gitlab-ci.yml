@@ -1,6 +1,5 @@
 stages:
   - config
-  - install
   - test
   - build
 #  - package
@@ -10,21 +9,20 @@ stages:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-  npm_config_cache: '$CI_PROJECT_DIR/.npm'
+  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
 
 
-# defined a template for the jobs with node, insteaad of defining a global cache for all jobs
+# defined a template for the jobs with node, instead of defining a global cache for all jobs
 .node_cache:
   cache:
-    # uses the package-lock.json as key to determine if the node_mdules can be used from cache
+    # uses the package-lock.json as key to determine if the node_modules can be used from cache
     - key:
         files:
           - package-lock.json
-        prefix: "package-lock-$CI_COMMIT_REF_NAME"
+        prefix: "package-lock"
       paths:
-        - node_modules/
-      policy: pull  # prevent subsequent jobs from modifying cache
-
+        - .npm/
+      policy: pull
 
 .trigger-rules:
   rules:
@@ -128,33 +126,32 @@ install-node:
   extends:
     - .trigger-rules
     - .node_cache
-  stage: install
+  stage: config
   image: docker.io/node:18.18.2-alpine3.17
   cache:
-    # for all install job use the npm internal caching
-    - key: "Commit-$CI_COMMIT_REF_NAME"
+    # overwrite the global caching definitions with
+    # pull-push to be able to update the node_modules in the cache
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
       paths:
         - .npm/
       when: on_success
       policy: pull-push
-    # overwrite the global cachine definitions with
-    # pull-push to be able update the node_modules in the cache
-    - key:
-        files:
-          - package-lock.json
-        prefix: "package-lock-$CI_COMMIT_REF_NAME"
-      paths:
-        - node_modules/
-      when: on_success
-      policy: pull-push
+      untracked: true
   script:
-    - echo "used cache job for .npm Commit-${CI_COMMIT_REF_NAME}"
-    - echo "used cache job for node_modules package-lock-${CI_COMMIT_REF_NAME}"
-    - npm ci --cache .npm --prefer-offline
+#    - echo "the cache work if node_modules and .npm/ folders are available"
+#    - ls -a
+    - npm config set cache .npm/
+#    - npm cache verify
+    - npm ci --prefer-offline --no-audit
+#    - echo "Check afterwards how the folders are"
+#    - ls -a
   artifacts:
     name: "node dependencies"
     # stores node_modules as an artifact to be used in the next jobs
-    # caching isn't garanteed to work always
+    # caching isn't always guaranteed to work
     paths:
       - node_modules
 
@@ -170,6 +167,7 @@ run-tests:
   script:
     - npm run test
 
+
 build-storybook:
   extends:
     - .trigger-rules
@@ -182,10 +180,11 @@ build-storybook:
     # needs the artifact: node_modules to build storybook
     - install-node
   script:
-    - npm run build-storybook -- -o ./storybook
+    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
   artifacts:
     name: "storybook build"
-    expire_in: 1 day
+    # keep the storybook for 7 days to be able to trigger the chromatic-deployment
+    expire_in: 7 day
     # stores the storybook build as an artifact to be used in the next stages
     paths:
       - storybook
@@ -202,7 +201,7 @@ build-app:
     # needs the artifact: node_modules to build the app
     - install-node
   script:
-    - npm run build
+    - npm run build -- --logLevel error
   artifacts:
     name: "frontend build "
     expire_in: 1 day
@@ -223,7 +222,7 @@ combine-builds:
     - build-storybook
   script:
     - echo "Check for the artifacts in the filesystem"
-    - ls -l
+    # - ls -l
     # - ls dist/ -l
     # - ls storybook/ -l
     # copy all files from the dist folder into root
@@ -284,20 +283,23 @@ publish-build:
   needs:
     # needs the enviromental variables for the version number
     - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
     # needs the artifact: the build of the frontend app and storybook build
     - combine-builds
   before_script:
     - apk add curl zip --no-cache
   script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
     - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "to location ${BUILD_LOCATION}"
     - zip -r ${BUILD_ZIP_NAME} ./
-    - ls -l
+    # - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
       --upload-file ${BUILD_ZIP_NAME} \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}"
-      
+      "${PUBLISH_LOCATION}"
 
 
 rclone-sync:
@@ -307,8 +309,6 @@ rclone-sync:
   needs:
     # needs the enviromental variables for the version number
     - set-vars
-    # make sure to wait for the tests to run correctly
-    - run-tests
     # needs the published build for the app and it's storybook
     - publish-build
   variables:
@@ -334,12 +334,14 @@ rclone-sync:
       fi
       echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
     - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
-    - ls -l
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
     - |
       curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
       --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
-      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend/${BUILD_NAME}/${BUILD_ZIP_NAME}" \
+      "${PUBLISH_LOCATION}" \
       -o ${BUILD_ZIP_NAME}
     # use -q for quiet to not list all the files
     - unzip -q ${BUILD_ZIP_NAME}
@@ -347,3 +349,118 @@ rclone-sync:
     - ls -l
     - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
     - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
+
+
+modify-box-env:
+  when: manual
+  stage: config
+  image: docker.io/python:3.9-alpine3.17
+  dependencies:
+    - set-vars
+  before_script:
+    - pip install --upgrade pip
+    - pip install python-dotenv==0.19.*
+  script:
+    # specific setup for 'envidat in a box' which runs
+    # the frontend locally, that's why it needs the VITE_API_ROOT and VITE_CONFIG_URL
+    # set to work from the local file system / connect to localhost for the backend
+    - |
+      python -c "import os
+      import dotenv
+
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
+
+      key = 'VITE_DOMAIN'
+      value = f'https://www.envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_API_ROOT'
+      value = f'https://localhost:8989'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_CONFIG_URL'
+      value = f'./config.json'
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      dotenv.set_key(file, key, value, quote_mode='never') "
+    - echo "created content for .env.production:"
+    - cat .env.production
+  artifacts:
+    name: "frontend-in-a-box environment variables"
+    paths:
+      - .env.production
+
+build-box-app:
+  extends:
+    - .node_cache
+  stage: build
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs environment variables from the frontend in a box setup
+    - modify-box-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  script:
+    - echo "checked content for .env.production:"
+    - cat .env.production
+    - npm run build -- --logLevel error
+  artifacts:
+    name: "frontend envidat-in-a-box build"
+    expire_in: 1 day
+    paths:
+      - dist
+
+combine-box-builds:
+  stage: build
+  image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the artifact: the build of the frontend app
+    - build-box-app
+  script:
+    # - echo "Check for the artifacts in the filesystem"
+    # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    - ls -l
+  artifacts:
+    name: "frontend-in-a-box build"
+    # stores the combined built code
+    paths:
+      - ./
+
+publish-box-build:
+  stage: deploy
+  image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
+    BOX_BUILD_ZIP_NAME: 'frontend-in-a-box.zip'
+  needs:
+    # needs the enviromental variables for the version number
+    - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
+    # needs the artifact: of the frontend in a box build
+    - combine-box-builds
+  before_script:
+    - apk add curl zip --no-cache
+  script:
+    - export BOX_PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/frontend-in-a-box/frontend-in-a-box-${CI_COMMIT_REF_NAME}/${BOX_BUILD_ZIP_NAME}"
+    - echo "Going to publish build an frotend build for 'envidat in a box' ${BUILD_NAME} with zip name ${BOX_BUILD_ZIP_NAME}"
+    - echo "to build location ${BOX_PUBLISH_LOCATION}"
+    - zip -r ${BOX_BUILD_ZIP_NAME} ./
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      --upload-file ${BOX_BUILD_ZIP_NAME} \
+      "${BOX_PUBLISH_LOCATION}"

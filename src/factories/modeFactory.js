@@ -5,31 +5,24 @@
  * @summary function factory for mode methods
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:07:03
- * Last modified  : 2019-11-22 14:10:55
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
 import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
 import globalMethods from '@/factories/globalMethods';
-import { createTag } from '@/factories/metadataFilterMethods';
+import { createTag, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import {
   SWISSFL_MODE,
   EDNA_MODE,
   SWISSFL_MODE_EXTRAS_KEY,
-  EDNA_MODE_EXTRAS_KEY,
+  EDNA_MODE_EXTRAS_KEY, METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
 import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
 
-/*
-async function getSwissflLogo() {
-  const img = await import('../assets/modes/swissfl/logo.jpg')
-  return img
-}
-*/
+export const MODE_STORE = 'MODE_STORE';
+
 
 function getSwissflIcons() {
   // use the relative path to the assets, because it will run in unit tests
@@ -46,9 +39,56 @@ function getSwissflIcons() {
   };
 }
 
-// const swissflLogo = getSwissflLogo();
+function getEDNAIcons() {
+  return {
+    dataset: ednaLogo,
+  };
+}
 
-const modes = [
+/**
+ * loads the dataset specific for the eDNA mode based on its modeMetadata
+ *
+ * @param {object} modeMetadata
+ * @returns {Promise<any>}
+ */
+const loadEDNADatasets = async (modeMetadata) => {
+  const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
+  const response = await fetch (url);
+  const data = await response.json();
+
+  return data;
+}
+
+/**
+ * loads the dataset specific for the swissFL mode based on its modeMetadata
+ *
+ * @param {object} modeMetadata
+ * @returns {Promise<any>}
+ */
+const loadSwissFLDatasets = async (modeMetadata) => {
+
+  // eslint-disable-next-line import/no-cycle
+  const store = await import('@/modules/metadata/store/metadataStore');
+  const state = store.metadata.state;
+  const isSearchResultContent = store[METADATA_NAMESPACE].getters.searchingMetadatasContentOK(state);
+  let content = [];
+
+  if (isSearchResultContent) {
+    const searchContent = store[METADATA_NAMESPACE].getters.searchedMetadatasContent(state);
+
+    if (Object.keys(searchContent).length > 0) {
+      content = Object.values(searchContent);
+    }
+  } else {
+    content = store[METADATA_NAMESPACE].getters.allMetadatas(state);
+  }
+
+  const swissFLDatasets = content.filter((entry) => tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]));
+
+  return swissFLDatasets;
+}
+
+export const modes = [
   {
     name: SWISSFL_MODE,
     title: 'Swiss Forest Lab',
@@ -58,6 +98,8 @@ const modes = [
     logo: swissflLogo,
     icons: getSwissflIcons(),
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
+    datasetUrl: '',
+    loadDatasets: loadSwissFLDatasets,
   },
   {
     name: EDNA_MODE,
@@ -66,11 +108,19 @@ const modes = [
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
     logo: ednaLogo,
-    icons: getSwissflIcons(),
+    icons: getEDNAIcons(),
     extrasKey: EDNA_MODE_EXTRAS_KEY,
+    datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
+    loadDatasets: loadEDNADatasets,
   },
 ];
 
+
+/**
+ * Get the metadata of a mode
+ * @param {string} mode
+ * @returns {{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<*[]>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: {infrastructure: any, model: any, dataset: any}, extraTags: [{color: string, name: string, enabled: boolean},{color: string, name: string, enabled: boolean}]}|{externalUrl: string, datasetUrl: string, loadDatasets: (function(Object): Promise<{}>), name: string, extrasKey: string, mainTag: {name: string, enabled: boolean}, logo: {}, title: string, icons: Record<string, unknown>, extraTags: *[]}}
+ */
 export function getModeData(mode) {
 
   const modeData = modes.filter((m) => m.name === mode)[0];
@@ -79,7 +129,7 @@ export function getModeData(mode) {
     return modeData;
   }
 
-  throw new Error(`Not Mode Objection for mode: "${mode}" implemented`);
+  throw new Error(`No Mode Data for mode: "${mode}" implemented`);
 }
 
 
@@ -88,11 +138,11 @@ function mergedExtraTags(modeObj, tags) {
   return mergedTags.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
 }
 
-export function getTagsMergedWithExtras(mode, tags) {
+export function getTagsMergedWithExtras(mode, tags, modeData = undefined) {
   if (!mode) return null;
 
   try {
-    const modeObj = getModeData(mode);
+    const modeObj = modeData || getModeData(mode);
     return mergedExtraTags(modeObj, tags);
   } catch (e) {
     console.error(e);
@@ -126,6 +176,12 @@ export function getSelectedTagsMergedWithHidden(mode, selectedTagNames) {
 
 let tempModeData = null;
 
+/**
+ *
+ * @param {string} mode
+ * @param {object} metdataEntry
+ * @returns {*}
+ */
 export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
   if (!mode || !metdataEntry) return metdataEntry;
 
@@ -156,3 +212,4 @@ export function enhanceMetadataWithModeExtras(mode, metdataEntry) {
 
   return metdataEntry;
 }
+

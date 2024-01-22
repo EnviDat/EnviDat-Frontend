@@ -311,7 +311,7 @@ import {
 
 import { getNameInitials } from '@/factories/authorFactory';
 import { errorMessage } from '@/factories/notificationFactory';
-import { enhanceMetadatas, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage, getMetadataVisibilityState, getTagColor } from '@/factories/metaDataFactory';
 import {
   getUserOrganizationRoleMap,
   hasOrganizationRoles,
@@ -645,7 +645,7 @@ export default {
         flatLayout: true,
       };
 
-      enhanceMetadatas([localDataset], undefined, this.categoryCards);
+      enhanceMetadatasTitleImage([localDataset], undefined, this.categoryCards);
 
       return localDataset;
     },

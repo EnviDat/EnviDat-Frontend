@@ -13,6 +13,7 @@
  */
 
 import Vue from 'vue';
+import { createPinia, PiniaVuePlugin } from 'pinia'
 
 import store from '@/store/store';
 import App from '@/App.vue';
@@ -31,6 +32,8 @@ Vue.directive('hide', {
   // Run on subsequent updates to the value supplied to the directive
   update: (el, binding) => {el.style.visibility = (binding.value) ? 'hidden' : ''},
 })
+Vue.use(PiniaVuePlugin);
+const pinia = createPinia();
 
 initAxios(Vue, store);
 initAzureLogin(Vue);
@@ -44,4 +47,5 @@ new Vue({
   vuetify,
   components: { App },
   template: '<App/>',
+  pinia,
 });

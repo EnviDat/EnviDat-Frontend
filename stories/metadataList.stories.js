@@ -11,7 +11,7 @@
 
 import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import globalMethods from '@/factories/globalMethods';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
@@ -20,7 +20,7 @@ import metadata from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
-enhanceMetadatas(metadata, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadata, cardBGImages, categoryCards);
 
 
 const popularTags = getPopularTags(metadata, undefined, 1);
