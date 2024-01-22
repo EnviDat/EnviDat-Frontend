@@ -4,7 +4,7 @@
     <v-card :height="headerCardHeight" class="elevation-3" style="z-index: 1;">
       <v-card-text>
         <div
-          class="skeleton skeleton-size-big skeleton-color-concrete skeleton-animation-shimmer"
+          class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
         >
           <div class="bone bone-type-multiline bone-style-steps" />
         </div>
@@ -15,7 +15,7 @@
     <v-card height="100%" style="z-index: 0;" class="elevation-2 mx-2">
       <v-card-text>
         <div
-          class="skeleton skeleton-color-silver skeleton-animation-shimmer"
+          class="skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
           style="width: 100%;"
         >
           <div class="bone bone-type-multiline" />

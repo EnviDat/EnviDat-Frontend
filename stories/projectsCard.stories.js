@@ -2,63 +2,74 @@
  * @summary story of ProjectCard for sandbox testing
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2020-10-27 14:55:40
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// get Project test data and enhance it
 import bark2 from '@/assets/cards/forest/c_b_forest_texture_bark2.jpg';
 import {
   enhanceSubprojectsFromExtras,
 } from '@/factories/projectsDataFactory';
 import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
-import ProjectCardPlaceholder from '@/modules/projects/components/ProjectCardPlaceholder.vue';
 
+// get Project test data and enhance it
 import projectJSON from './testdata/projects.json';
-
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
 const projectsCards = enhancedProjects;
 
-const methods = {
-//  onCardClick: action('clicked on card'),
-//  onTagClick: action('clicked on tag'),
-  projectsCardsParents() {
-    const noParents = [];
+function projectsCardsParents() {
+  const noParents = [];
 
-    for (let i = 0; i < this.projectsCards.length; i++) {
-      const p = this.projectsCards[i];
-      if (!p.parent) {
-        noParents.push(p);
-      }
+  for (let i = 0; i < projectsCards.length; i++) {
+    const p = projectsCards[i];
+    if (p.subProjects) {
+      noParents.push(p);
     }
+  }
 
-    return noParents;
-  },
-  projectsCardsChilds() {
-    const parents = [];
+  return noParents;
+}
 
-    for (let i = 0; i < this.projectsCards.length; i++) {
-      const p = this.projectsCards[i];
-      if (p.parent) {
-        parents.push(p);
-      }
+function projectsCardsChilds() {
+  const parents = [];
+
+  for (let i = 0; i < projectsCards.length; i++) {
+    const p = projectsCards[i];
+    if (p.parent) {
+      parents.push(p);
     }
+  }
 
-    return parents;
-  },
-};
+  return parents;
+}
 
 export default {
   title: '3 Cards / Projects Cards',
-  decorators: [],
-  parameters: {
-  },
+  component: ProjectCard,
 };
 
+const projectCardForParent = projectsCardsParents()[0];
+
+export const ProjectCardParent = {
+  args: {
+    ...projectCardForParent,
+    img: projectCardForParent.image_url,
+    defaultImg: bark2,
+  },
+}
+
+const projectCardForChildren = projectsCardsChilds()[0]
+
+export const ProjectCardChildren = {
+  args: {
+    ...projectCardForChildren,
+    img: projectCardForChildren.image_url,
+    defaultImg: bark2,
+  },
+}
+
+/*
 export const ProjectCardsParents = () => ({
     components: { ProjectCard, ProjectCardPlaceholder },
     template: `
@@ -85,13 +96,17 @@ export const ProjectCardsParents = () => ({
     </v-row>
     </v-container>
     `,
-    methods,
+    methods: {
+      projectsCardsParents,
+    },
     data: () => ({
       projectsCards,
       defaultImg: bark2,
     }),
   });
+*/
 
+/*
 export const ProjectCardsChildren = () => ({
     components: { ProjectCard },
     template: `
@@ -115,9 +130,12 @@ export const ProjectCardsChildren = () => ({
     </v-row>
     </v-container>
     `,
-    methods,
+    methods: {
+      projectsCardsChilds,
+    },
     data: () => ({
       projectsCards,
       defaultImg: bark2,
     }),
   });
+*/
