@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditResource"
           :key="id"
-          :loading="loading"
+          :loading="loadingColor"
           class="pa-0">
 
     <!-- prettier-ignore -->
@@ -19,10 +19,6 @@
 
 
     <v-container fluid class="pa-4">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary" indeterminate/>
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -490,6 +486,13 @@ export default {
   mounted() {
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     editingRestrictingActive() {
       return this.userEditMetadataConfig?.editingRestrictingActive || false;
     },

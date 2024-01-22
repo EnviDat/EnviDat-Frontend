@@ -3,12 +3,9 @@
       id="EditPublicationStatus"
       class="pa-0"
       max-width="100%"
-      :loading="loading"
+      :loading="loadingColor"
     >
       <v-container fluid class="pa-4">
-        <template v-slot:progress>
-          <v-progress-linear color="primary" indeterminate />
-        </template>
 
         <v-row>
           <v-col cols="6" class="text-h5">
@@ -205,6 +202,13 @@
     },
     computed: {
       ...mapState(['config']),
+      loadingColor() {
+        if (this.loading) {
+          return 'accent';
+        }
+
+        return undefined;
+      },
       pStatesAndArrows() {
         const pStateWithDiv = [];
         if (!this.possiblePublicationStates) {

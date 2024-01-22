@@ -5,11 +5,8 @@
     class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
-    :loading="loading"
+    :loading="loadingColor"
   >
-    <template v-slot:progress>
-      <v-progress-linear color="accent" indeterminate />
-    </template>
 
     <v-card-title class="text-h5 resourceHeadline white--text">
       {{ resourceName }}
@@ -188,8 +185,9 @@
               class="pl-1 pt-1"
               :class="downloadActive ? 'iconCircle' : ''"
               :disabled="!downloadActive"
-              >shield</v-icon
-            >
+              >
+              shield
+            </v-icon>
 
             <div
               v-if="downloadActive"
@@ -284,6 +282,13 @@ export default {
     EDIT_METADATA_DOI_LABEL,
   }),
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     readableCreated() {
       return formatDate(this.created) || this.created;
     },

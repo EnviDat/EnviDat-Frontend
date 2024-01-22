@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditAddExistingAuthor"
           class="pa-0"
-          :loading="loading" >
+          :loading="loadingColor" >
 
     <v-container fluid
                  class="pa-4" >
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6"
@@ -136,6 +131,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     isUserPickerReadOnly() {
       return this.isReadOnly('authors');
     },

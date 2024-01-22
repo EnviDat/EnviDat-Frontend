@@ -1,7 +1,7 @@
 <template>
   <v-card id="EditAddAuthor"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <BaseIconButton v-if="isEditingAuthor"
                     id="EditResourceCloseButton"
@@ -18,11 +18,6 @@
 
     <v-container fluid
                  class="pa-4 fill-height">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate/>
-      </template>
 
       <v-row>
 
@@ -338,6 +333,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     affiliationField: {
       get() {
         return this.previews.affiliation !== null ? this.previews.affiliation : this.affiliation;

@@ -3,15 +3,10 @@
           class="pa-0"
           :height="height"
           :width="minWidth"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                  class="pa-4">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col class="text-h5">
@@ -212,6 +207,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     firstNameField() {
       return this.previews.firstName !== null ? this.previews.firstName : this.firstName;
     },

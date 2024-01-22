@@ -2,15 +2,10 @@
 
   <v-card id="EditKeywords"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                 class="pa-4">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6"
@@ -234,6 +229,13 @@ export default {
     ...mapState([
       'config',
     ]),
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     userEditMetadataConfig() {
       if (!this.$store) {
         return this.defaultUserEditMetadataConfig;

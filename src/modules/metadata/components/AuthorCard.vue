@@ -3,15 +3,10 @@
           id="AuthorCard"
           :class="cardClass"
           :style="dynamicCardBackground"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                  class="pa-4">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row no-gutters
              class="pb-3">
@@ -331,6 +326,13 @@ export default {
     this.infosExpanded = this.overrideAuthorInfosExpanded;
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     // getDataCreditLevel(currentScore) {
     //   const entires = this.authorDataCreditLevels;
 

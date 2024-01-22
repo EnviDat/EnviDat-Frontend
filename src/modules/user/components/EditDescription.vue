@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditDescription"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                   class="pa-4">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="8"
@@ -138,6 +133,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     genericTextAreaObject() {
       return {
         labelTextarea: this.labels.labelTextarea,

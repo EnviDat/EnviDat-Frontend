@@ -2,12 +2,7 @@
   <v-card id="UserCard"
           :width="width"
           :height="height"
-          :loading="loading">
-
-    <template v-slot:progress>
-      <v-progress-linear color="primary"
-                         indeterminate />
-    </template>
+          :loading="loadingColor">
 
     <div class="cardGrid fill-height"
           :style="`grid-template-rows: ${headerHeight}px 70px auto`">
@@ -103,6 +98,13 @@ export default {
     avatarHeight: 64,
   }),
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     userCardBanner() {
       if (this.$store) {
         const imgPath = 'projects/data_creator';

@@ -1,15 +1,10 @@
 <template>
   <v-card id="EditMetadataHeader"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
 
     <v-container fluid
                  class="pa-4 fill-height">
-
-      <template v-slot:progress>
-        <v-progress-linear color="primary"
-                           indeterminate/>
-      </template>
 
       <v-row>
 
@@ -374,6 +369,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     metadataTitleField: {
       get() {
         return this.previews[METADATA_TITLE_PROPERTY] !== null ? this.previews[METADATA_TITLE_PROPERTY] : this.metadataTitle;

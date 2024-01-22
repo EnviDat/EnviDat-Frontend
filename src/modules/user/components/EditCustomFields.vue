@@ -1,9 +1,8 @@
 <template>
-  <v-card id="EditCustomFields" class="pa-0" :loading="loading">
+  <v-card id="EditCustomFields"
+          class="pa-0"
+          :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template v-slot:progress>
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -184,6 +183,13 @@ export default {
   },
   computed: {
     ...mapState(['config']),
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     maxCustomFields() {
       let max = this.defaultUserEditMetadataConfig.customFieldsMax;
 

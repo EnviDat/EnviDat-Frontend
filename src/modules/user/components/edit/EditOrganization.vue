@@ -1,9 +1,8 @@
 <template>
-  <v-card id="EditOrganization" class="pa-0" :loading="loading">
+  <v-card id="EditOrganization"
+          class="pa-0"
+          :loading="loadingColor">
     <v-container fluid class="pa-4">
-      <template v-slot:progress>
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="6" class="text-h5">
@@ -161,6 +160,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreview);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     organizationField: {
       get() {
         return this.previewOrganizationId ? this.previewOrganizationId : this.organizationId;

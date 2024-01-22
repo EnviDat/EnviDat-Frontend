@@ -1,11 +1,9 @@
 <template>
   <v-card id="EditDataDates"
           class="pa-0"
-          :loading="loading">
+          :loading="loadingColor">
+
     <v-container fluid class="pa-4 fill-height">
-      <template v-slot:progress>
-        <v-progress-linear color="primary" indeterminate />
-      </template>
 
       <v-row>
         <v-col cols="8" class="text-h5">
@@ -155,6 +153,13 @@ export default {
     eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   computed: {
+    loadingColor() {
+      if (this.loading) {
+        return 'accent';
+      }
+
+      return undefined;
+    },
     datesField: {
       get() {
         const dates =
