@@ -74,22 +74,23 @@
               :text="doi"
               material-icon-name="fingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
+              dark
             />
 
             <base-icon-label-view
               v-if="format"
               :text="format"
-              :label="extensionIcon ? '' : 'File format:'"
-              :icon="extensionIcon"
+              material-icon-name="insert_drive_file"
               icon-tooltip="Format of the file"
+              dark
             />
 
             <base-icon-label-view
               v-if="size"
               :text="formatedBytes"
-              :label="fileSizeIcon ? '' : 'File size:'"
-              :icon="fileSizeIcon"
+              material-icon-name="photo_size_select_small"
               icon-tooltip="Filesize"
+              dark
             />
 
             <base-icon-label-view
@@ -97,6 +98,7 @@
               :text="readableCreated"
               material-icon-name="more_time"
               icon-tooltip="Date of file creation"
+              dark
             />
 
             <base-icon-label-view
@@ -104,6 +106,7 @@
               :text="readableLastModified"
               material-icon-name="update"
               icon-tooltip="Date of last modification"
+              dark
             />
           </v-col>
         </v-row>
