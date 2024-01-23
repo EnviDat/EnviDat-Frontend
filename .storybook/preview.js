@@ -10,6 +10,7 @@ setup((app) => {
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy
 export const parameters = {
+  layout: 'fullscreen',
   options: {
     storySort: {
       method: 'alphabetical',

@@ -14,6 +14,43 @@
                    :class="$vuetify.display.smAndDown ? 'compactTitle' : ''" >
               {{ datasetTitleText }}
             </v-col>
+
+            <v-col v-if="$vuetify.breakpoint.smAndDown
+                          && !isCreationWorkflow"
+                    class="flex-grow-0">
+              <StepperInteractionView :steps="steps"
+                                      :showPreviewButton="showPreviewButton"
+                                      :showProgress="showProgress"
+                                      :showSaveButton="showSaveButton"
+                                      :isCreationWorkflow="isCreationWorkflow"
+                                      :message="message"
+                                      :messageDetails="messageDetails"
+                                      :error="error"
+                                      :errorDetails="errorDetails"
+                                      @clickedClose="catchCloseClick"
+                                      @clickedPreview="catchPreviewClick"
+                                      @clickedSaveDataset="catchSaveDatasetClick"
+              />
+            </v-col>
+          </v-row>
+
+          <v-row v-if="$vuetify.breakpoint.smAndDown
+                          && isCreationWorkflow">
+            <v-col>
+              <StepperInteractionView :steps="steps"
+                                      :showPreviewButton="showPreviewButton"
+                                      :showProgress="showProgress"
+                                      :showSaveButton="showSaveButton"
+                                      :isCreationWorkflow="isCreationWorkflow"
+                                      :message="message"
+                                      :messageDetails="messageDetails"
+                                      :error="error"
+                                      :errorDetails="errorDetails"
+                                      @clickedClose="catchCloseClick"
+                                      @clickedPreview="catchPreviewClick"
+                                      @clickedSaveDataset="catchSaveDatasetClick"
+              />
+            </v-col>
           </v-row>
 
           <v-row class="pt-1"
@@ -24,8 +61,8 @@
             <v-col>
               <ExpandableLayout cardClass="pa-0"
                                 :statusText="isCreationWorkflow ? creationShortInstructions : editingShortInstructions"
-                                swapStatusTextWithSoltText
-                                :isFlat="true">
+                                swapStatusTextWithSlotText
+                                isFlat >
 
                 {{ isCreationWorkflow ? creationInstructions : editingInstructions }}
 
@@ -36,7 +73,8 @@
 
       </div>
 
-      <div class="interaction pl-md-2 py-2 py-sm-0">
+      <div v-if="$vuetify.breakpoint.mdAndUp"
+           class="interaction pl-md-2 py-2 py-sm-0">
 
         <StepperInteractionView :steps="steps"
                                 :showPreviewButton="showPreviewButton"
@@ -54,17 +92,16 @@
       </div>
     </div>
 
-    <div class="stepper px-5 headerContentGrid"
+    <div class="stepper ma-2 py-0 px-4 headerContentGrid"
           :style="`background-color: ${backgroundColor}`"
     >
       <!-- prettier-ignore -->
-      <StepperHeader class="py-2"
-                         :steps="steps"
-                         activeColor="accent"
-                         inactiveColor="secondary"
-                         :stepColor="stepColor"
-                         :currentStepIndex="currentStepIndex"
-                         @stepClick="catchStepClick" />
+      <StepperHeader :steps="steps"
+                     activeColor="accent"
+                     inactiveColor="secondary"
+                     :stepColor="stepColor"
+                     :currentStepIndex="currentStepIndex"
+                     @stepClick="catchStepClick" />
 
       <v-progress-linear v-show="saving"
                          indeterminate
@@ -76,7 +113,7 @@
     </div>
 
     <div
-      class="content fill-height pa-1 pt-0"
+      class="content fill-height pa-1"
       :style="`background-color: ${backgroundColor}`"
     >
       <v-card v-show="loading" class="fill-height pa-4">
@@ -380,7 +417,7 @@ export default {
 .stepperContentGrid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 72px minmax(auto, 1fr);
+  grid-template-rows: auto 58px minmax(auto, 1fr);
   gap: 0;
   grid-template-areas:
     'infoPanel'

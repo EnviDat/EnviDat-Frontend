@@ -69,10 +69,8 @@
             <base-icon-label-view
               v-if="doi"
               :text="doi"
-              :label="doiIcon ? '' : 'DOI:'"
-              :icon="doiIcon"
+              material-icon-name="fingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -81,7 +79,6 @@
               :label="extensionIcon ? '' : 'File format:'"
               :icon="extensionIcon"
               icon-tooltip="Format of the file"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
@@ -90,25 +87,20 @@
               :label="fileSizeIcon ? '' : 'File size:'"
               :icon="fileSizeIcon"
               icon-tooltip="Filesize"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
               v-if="created"
               :text="readableCreated"
-              :label="dateCreatedIcon ? '' : 'Created at:'"
-              :icon="dateCreatedIcon"
+              material-icon-name="more_time"
               icon-tooltip="Date of file creation"
-              :align-left="twoColumnLayout"
             />
 
             <base-icon-label-view
               v-if="lastModified"
               :text="readableLastModified"
-              :label="lastModifiedIcon ? '' : 'Modified at:'"
-              :icon="lastModifiedIcon"
+              material-icon-name="update"
               icon-tooltip="Date of last modification"
-              :align-left="twoColumnLayout"
             />
           </v-col>
         </v-row>
@@ -241,10 +233,7 @@ export default {
     twoColumnLayout: Boolean,
     height: String,
     dark: Boolean,
-    doiIcon: String,
     fileSizeIcon: String,
-    dateCreatedIcon: String,
-    lastModifiedIcon: String,
     isProtected: Boolean,
     fileExtensionIcon: Object,
     metadataContact: String,

@@ -1,5 +1,5 @@
 {
-  "version": "0.7.573",
+  "version": "0.8.1",
   "welcomeInfo": {
     "titleText": "EnviDat",
     "Slogan": "Environmental Research Data at your Fingertips",
@@ -57,7 +57,8 @@
     },
     "resourcesConfig": {
       "downloadActive": true
-    }
+    },
+    "ednaExternalDatasets": "https://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csvhttps://os.zhdk.cloud.switch.ch/envicloud/edna/fw_ch_modipl_2020/metadata/metadata_fw_ch_modipl_2020.csv"
   },
   "projectsConfig": {
     "loadLocalFile": false,
@@ -119,7 +120,7 @@
     "introText": "Dataset creation is simplified via the new website, just click the 'New Dataset' button! If you are missing a feature (like changing uploaded resources in a unpublished dataset) go to your ",
     "feedbackText": ". If you have issues while using EnviDat or though of an improvement, please <a href='mailto:envidat@wsl.ch'>let us know</a>.",
     "userEditingEnabled": true,
-    "useTokenSignin": false,
+    "useTokenSignin": true,
     "organizationRolesText": {
       "noOrganizationText": "You aren't assigned to an organisation yet. If you are working at WSL ask your group leader to assign editor rights, so you can create dataset within your organisation. If you aren't working at WSL you can ask for being added as a collaborator to a dataset, get in contact with the datasets main contact.",
       "memberOrganizationText": "As a member of an organisation you can its datasets but not edit or create new ones. Get in contact with your group leader to get editor rights.",
@@ -129,5 +130,14 @@
       "collaboratorText": "You are added as collaborator to datasets, you can edit these datasets. They are listed under 'Collaborator Datasets'."
     },
     "showOldDashboardUrl": true
+  },
+  "signinPageConfig": {
+    "wslSigninEnabled": false,
+    "disclaimerText": "Please note that by publishing data, you allow EnviDat to store, copy and transform any deposited digital objects for preservation purposes, as well as to provide long-term access to them. All EnviDat datasets will be published with a Digital Object Identifier (DOI) and consequently, every <b>data provider</b>:",
+    "disclaimerPoints": [
+	  "has acquired the permission to publish the dataset (e.g. from the group or research unit leader) and that the dataset doesn't violate copyright, privacy, confidentiality, non-disclosure agreements or institutional research integrity policies.",
+	  "after the publication, understands the responsibility not to modify the already uploaded data files, as well as any metadata field that influences the <b>citation</b> (Dataset Title, Authors, etc...); if errors will need to be corrected, please get in touch with the EnviDat team at envidat@wsl.ch for devising an appropriate solution.",
+	  "will always use the DOI to reference the dataset in any publication and will regularly review and curate the published dataset, e.g. by improving the Description of the dataset or by adding associated papers to the list of Related Publications."
+	]
   }
 }

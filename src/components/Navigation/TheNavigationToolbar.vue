@@ -26,9 +26,8 @@
                       alt="envidat_logo" />
               </v-btn>
             </v-col>
-
-            <v-col class="text-h6 text-md-h5 envidatNavbarTitleSmall py-0">
-              {{ logoText }}
+            <v-col class="shrink py-0" >
+              <div class="text-md-h5 envidatText clickable " @click.stop="catchHomeClicked">{{logoText}}</div>
             </v-col>
           </v-row>
 
@@ -199,3 +198,16 @@ export default {
   },
 };
 </script>
+<style>
+
+.envidatText {
+  font-family: "Raleway", sans-serif, sans-serif !important;
+  text-transform: none;
+}
+.clickable {
+ cursor: pointer;
+}
+
+
+
+</style>

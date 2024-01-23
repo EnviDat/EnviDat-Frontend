@@ -23,6 +23,7 @@
                         :complete="step.completed"
                         :number="step.number"
                         :error="step.error"
+                        :showNumberOnly="$vuetify.display.smAndDown"
                         @stepClick="catchStepClick(step.title)"
             />
 

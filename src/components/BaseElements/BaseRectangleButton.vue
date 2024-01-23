@@ -34,7 +34,8 @@
   </v-tooltip>
 </template>
 
-<script>/**
+<script>
+/**
  * BaseRectangleButton.vue creates a rectangle button with an icon, either a custom icon or a material (material design libery) icon.
  * Similar to @class IconButton
  * React on the 'clicked' event or pass an @prop url to create a href-link.

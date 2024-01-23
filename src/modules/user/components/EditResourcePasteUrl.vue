@@ -89,7 +89,7 @@ export default {
     url: '',
     labels: {
       title: 'Create Resource From Link',
-      instructions: 'Paste a link to create a new resource. Make sure add the file format and size afterwards.',
+      instructions: 'Paste a link to create a new resource. Make sure to add the file format and size afterwards. If you have links to DORA publications, please add them under in \'Related Publications\' in the related information step.',
       buttonText: 'Create Resource',
       textFieldLabel: 'Link',
     },

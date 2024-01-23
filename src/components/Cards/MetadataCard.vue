@@ -278,7 +278,7 @@ export default {
     unlockedIconString: String,
     geoJSONIcon: String,
     categoryColor: String,
-    mode: String,
+    modeData: Object,
     showGenericOpenButton: {
       type: Boolean,
       default: false,
@@ -465,12 +465,7 @@ export default {
         }
       }
 
-      return Object.values(this.modeData.icons)[0];
-    },
-    modeData() {
-      if (!this.mode) return null;
-
-      return getModeData(this.mode);
+      return this.modeData.icons[keys[0]];
     },
   },
   created() {},

@@ -4,9 +4,6 @@
  * @summary categories for metadata
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2020-11-04 09:09:07
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
@@ -27,7 +24,11 @@ import {
 // import meteoImg from '@/assets/cards/c_b_c_b_clouds_lighting_small.jpg';
 // import dataCreatorImg from '@/assets/cards/data_creator_small.jpg';
 // import swissFLLogo from '@/assets/cards/swiss_forest_lab_logo.jpg';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { SWISSFL_MODE, EDNA_MODE } from '@/store/metadataMutationsConsts';
+import { getModeData } from '@/factories/modeFactory';
+
+const swissFLMode = getModeData(SWISSFL_MODE);
+const ednaMode = getModeData(EDNA_MODE);
 
 export default [
   {
@@ -84,6 +85,7 @@ export default [
     darkColor: '#C5CAE9',
     disabled: false,
   },
+/*
   {
     title: 'Sign In',
     type: 'login',
@@ -93,14 +95,24 @@ export default [
     darkColor: '#B2DFDB',
     disabled: false,
   },
+*/
   {
-    title: 'Swiss Forest Lab View',
+    title: `${swissFLMode.title} View`,
     type: `mode_${SWISSFL_MODE}`,
     alias: [],
     imgPath: 'cards/swiss_forest_lab_logo',
     color: '#8BC34A',
     darkColor: '#8BC34A',
     contain: true,
+    disabled: false,
+  },
+  {
+    title: `${ednaMode.title} View`,
+    type: `mode_${EDNA_MODE}`,
+    alias: [],
+    imgPath: 'cards/edna_logo_small',
+    color: '#3966d0',
+    darkColor: '#2f5dc7',
     disabled: false,
   },
 ];

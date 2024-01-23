@@ -351,14 +351,15 @@
  * @summary Show all textfields for a resource
  * @author Dominik Haas-Artho
  *
- * Created at     : 2021-06-28 15:55:22
- * Last modified  : 2021-08-18 16:09:39
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
+import {
+  EDITMETADATA_CLEAR_PREVIEW,
+  EDITMETADATA_DATA_RESOURCE,
+  eventBus,
+} from '@/factories/eventBus';
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
@@ -482,6 +483,12 @@ export default {
       type: Object,
       default: undefined,
     },
+  },
+  created() {
+    eventBus.on(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
+  },
+  beforeDestroy() {
+    eventBus.off(EDITMETADATA_CLEAR_PREVIEW, this.clearPreviews);
   },
   mounted() {
   },

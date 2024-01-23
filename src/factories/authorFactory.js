@@ -37,11 +37,11 @@ export function getAuthorLastName(author) {
 }
 
 export function getAuthorName(author) {
-  let fullName = author.fullName;
+  let fullName = author?.fullName;
 
   if (!fullName) {
-    const firstName = author.given_name || author.firstName || '';
-    const lastName = author.name || author.lastName || '';
+    const firstName = author?.given_name || author?.firstName || '';
+    const lastName = author?.name || author?.lastName || '';
 
     fullName = `${firstName.trim()} ${lastName.trim()}`;
   }
@@ -610,4 +610,14 @@ export function enhanceAuthorsFromAuthorMap(authors, authorMap) {
   }
 
   return enhancedAuthors;
+}
+
+export function getAuthorByName(fullName, authors) {
+  const found = authors.filter(auth => getAuthorName(auth) === fullName);
+  return found.length > 0 ? found[0] : null;
+}
+
+export function getAuthorByEmail(email, authors) {
+  const found = authors.filter(auth => auth.email === email);
+  return found[0] || null;
 }

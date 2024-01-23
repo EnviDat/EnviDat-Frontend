@@ -106,6 +106,8 @@ export default {
 
     updateResources(this, state, fResource);
 
+    eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
+
     setTimeout(() => {
       this.commit(`${USER_NAMESPACE}/resetMessage`, stepKey);
     }, state.metadataSavingMessageTimeoutTime);
@@ -164,6 +166,11 @@ export default {
     author.loading = false;
 
     updateAuthors(this, state, author);
+
+    // maybe necessary here too?
+    // like on the METADATA_EDITING_PATCH_RESOURCE_SUCCESS ?
+    // not tested yet
+    // eventBus.emit(EDITMETADATA_CLEAR_PREVIEW);
 
     resetErrorObject(state);
   },

@@ -190,7 +190,7 @@
         <v-col cols="12" >
 
           <ExpandableLayout statusText="Advanced Header info"
-                            :isFlat="true">
+                            isFlat>
 
             <v-text-field ref="metadataUrl"
                           :id="METADATA_URL_PROPERTY"
@@ -266,7 +266,7 @@ import {
   isFieldValid,
   isObjectValid,
 } from '@/factories/userEditingValidations';
-import { getArrayOfFullNames, getAuthorName } from '@/factories/authorFactory';
+import { getArrayOfFullNames, getAuthorByEmail, getAuthorByName, getAuthorName } from '@/factories/authorFactory';
 import {
   EDIT_METADATA_TITLE,
   EDIT_METADATA_TITLE_LABEL, EDIT_METADATA_URL_LABEL,
@@ -402,8 +402,8 @@ export default {
       },
     },
     preselectAuthorNames() {
-      const author = this.getAuthorByEmail(this.contactEmailField);
-      const fullName = this.getFullName(author);
+      const author = getAuthorByEmail(this.contactEmailField, this.existingAuthorsWrap);
+      const fullName = getAuthorName(author);
 
       return fullName ? [fullName] : [];
     },
@@ -420,9 +420,9 @@ export default {
     },
     metadataPreviewEntry() {
 
-      const fullName = this.getFullName({
-        given_name: this.contactGivenNameField,
-        name: this.contactSurnameField,
+      const fullName = getAuthorName({
+        firstName: this.contactGivenNameField,
+        lastName: this.contactSurnameField,
       });
 
       const previewEntry = {
@@ -515,12 +515,6 @@ export default {
 
       return true;
     },
-    getFullName(authorObj) {
-      if (!authorObj) {
-        return [];
-      }
-      return getAuthorName(authorObj);
-    },
     focusIn(event) {
       this.markPropertyActive(event.target, true);
     },
@@ -553,7 +547,7 @@ export default {
       this.authorIsPicked = hasAuthor;
 
       if (this.authorIsPicked) {
-        const author = this.getAuthorByName(pickedAuthorName);
+        const author = getAuthorByName(pickedAuthorName, this.existingAuthorsWrap);
         const authorObject = this.getAuthorObject(author);
 
         this.previews.contactGivenName = authorObject?.contactGivenName;
@@ -571,32 +565,6 @@ export default {
         this.previews.contactEmail = '';
       }
 
-    },
-    getAuthorByName(fullName) {
-      const authors = this.existingAuthorsWrap;
-      const found = authors.filter(auth => auth.fullName === fullName);
-      return found[0] || null;
-    },
-    getAuthorByEmail(email) {
-      const authors = this.existingAuthorsWrap;
-      const found = authors.filter(auth => auth.email === email);
-      return found[0] || null;
-    },
-    getAuthorByNameProp(property, value) {
-
-      const authors = this.existingAuthorsWrap;
-
-      if (property === 'contactGivenName') {
-        const found = authors.filter(auth => auth.firstName === value);
-        return found[0] || null;
-      }
-
-      if (property === 'contactSurname') {
-        const found = authors.filter(auth => auth.lastName === value);
-        return found[0] || null;
-      }
-
-      return null;
     },
     getAuthorObject(author) {
 
@@ -639,7 +607,7 @@ export default {
         if (isFieldValid(property, value, this.validations, this.validationErrors)) {
 
           // autocomplete author
-          const author = this.getAuthorByEmail(value);
+          const author = getAuthorByEmail(value, this.existingAuthorsWrap);
 
           const autoCompletedAuthorObject = this.getAuthorObject(author);
 

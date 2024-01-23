@@ -16,6 +16,17 @@ import ProjectCard from '@/modules/projects/components/ProjectCard.vue';
 import projectJSON from './testdata/projects.json';
 
 const enhancedProjects = enhanceSubprojectsFromExtras(projectJSON.result);
+
+for (let i = 0; i < enhancedProjects.length; i++) {
+  const project = enhancedProjects[i];
+  if (project.subProjects) {
+    for (let j = 0; j < project.subProjects.length; j++) {
+      const sub = project.subProjects[j];
+      delete sub.parent;
+    }
+  }
+}
+
 const projectsCards = enhancedProjects;
 
 function projectsCardsParents() {
@@ -32,16 +43,18 @@ function projectsCardsParents() {
 }
 
 function projectsCardsChilds() {
-  const parents = [];
+  const subProjects = [];
 
   for (let i = 0; i < projectsCards.length; i++) {
-    const p = projectsCards[i];
-    if (p.parent) {
-      parents.push(p);
+    const project = projectsCards[i];
+    if (project.subProjects) {
+      project.subProjects.forEach((p) => {
+        subProjects.push(p);
+      })
     }
   }
 
-  return parents;
+  return subProjects;
 }
 
 export default {
@@ -50,20 +63,28 @@ export default {
 };
 
 const projectCardForParent = projectsCardsParents()[0];
+// console.log(projectCardForParent);
 
 export const ProjectCardParent = {
   args: {
-    ...projectCardForParent,
+    id: projectCardForParent.name,
+    title: projectCardForParent.title,
+    description: projectCardForParent.description,
+    subProjects: projectCardForParent.subProjects,
     img: projectCardForParent.image_url,
     defaultImg: bark2,
   },
 }
 
 const projectCardForChildren = projectsCardsChilds()[0]
+// console.log(projectCardForChildren);
 
 export const ProjectCardChildren = {
   args: {
-    ...projectCardForChildren,
+    id: projectCardForChildren.name,
+    title: projectCardForChildren.title,
+    description: projectCardForChildren.description,
+    subProjects: projectCardForChildren.subProjects,
     img: projectCardForChildren.image_url,
     defaultImg: bark2,
   },

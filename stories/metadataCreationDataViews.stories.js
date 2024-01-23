@@ -75,7 +75,7 @@ const userEditMetadataConfig = {
   editingRestrictingActive: true,
 };
 
-  export const EditResourceViews = () => ({
+export const EditResourceViews = () => ({
   components: { EditResource },
   template: `
     <v-col>
@@ -259,7 +259,7 @@ export const EditDataAndResourcesListViews = () => ({
       </v-row>
 
       <v-row>
-        EditDataAndResources Component resourceUploadActive: true
+        EditDataAndResources Component resourceUploadActive: true && resourceEditingActive: true
       </v-row>
 
       <v-row class="py-3" >
@@ -283,11 +283,6 @@ export const EditDataAndResourcesListViews = () => ({
       eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
     },
     computed: {
-      userEditMetadataConfig() {
-        return {
-          resourceUploadActive: true,
-        };
-      },
       genericProps() {
         return {
           resources: this.resources,
@@ -308,7 +303,11 @@ export const EditDataAndResourcesListViews = () => ({
           resourcesConfig: {
             downloadActive: false,
           },
-          userEditMetadataConfig: this.userEditMetadataConfig,
+          userEditMetadataConfig: {
+            resourceUploadActive: true,
+            resourceEditingActive: true,
+            editingRestrictingActive: true,
+          },
         };
       },
     },

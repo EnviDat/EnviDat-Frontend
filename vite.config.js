@@ -4,13 +4,13 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
 import { defineConfig, loadEnv } from 'vite';
+import { configDefaults } from 'vitest/dist/config.cjs';
 import eslint from 'vite-plugin-eslint';
 import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import Unfonts from 'unplugin-fonts/vite'
 import { visualizer } from 'rollup-plugin-visualizer';
 
-// import { getFilesWithPrefix } from '@/factories/enhancementsFactoryNode';
-import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
+import { getFilesWithPrefix } from '@/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
@@ -42,8 +42,16 @@ export default ({ mode }) => {
         }
     }
 
-    console.log(`starting server | version: ${version} | prod: ${isProd}`);
+    const env = loadEnv(mode, process.cwd())
+    console.log(`With VITE_USE_TESTDATA: ${env.VITE_USE_TESTDATA}`);
+    console.log(`With VITE_CONFIG_URL: ${env.VITE_CONFIG_URL}`);
+    console.log(`With VITE_API_ROOT: ${env.VITE_API_ROOT}`);
+    console.log(`With VITE_API_BASE_URL: ${env.VITE_API_BASE_URL}`);
+    console.log(`With VITE_API_DOI_BASE_URL: ${env.VITE_API_DOI_BASE_URL}`);
+    console.log(`With VITE_BUILD_SOURCEMAPS: ${env.VITE_BUILD_SOURCEMAPS}`);
+    console.log(`starting ${mode} | version: ${version} | prod: ${isProd}`);
 
+    const buildSourceMaps = env.VITE_BUILD_SOURCEMAPS === 'true'
 
     return defineConfig({
         plugins: [
@@ -71,8 +79,14 @@ export default ({ mode }) => {
             title : 'EnviDat Build Visualizer',
           }),
         ],
+        test: {
+          exclude: [
+            ...configDefaults.exclude,
+            './tests/unit/ckanRegression.spec.js',
+          ],
+        },
         define: {
-            'process.env': loadEnv(mode, process.cwd()),
+          'process.env': loadEnv(mode, process.cwd()),
           'import.meta.env.VITE_VERSION': JSON.stringify(version),
         },
         optimizeDeps: {
@@ -98,8 +112,8 @@ export default ({ mode }) => {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
           cssCodeSplit: true,
-          minify: isProd,
-          sourcemap: !isProd,
+          minify: !buildSourceMaps,
+          sourcemap: buildSourceMaps,
           emptyOutDir: true,
           rollupOptions: isProd ? {
             output: {

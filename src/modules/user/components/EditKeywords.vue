@@ -127,52 +127,26 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
+import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
+import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import catCards from '@/store/categoryCards';
-import { METADATA_NAMESPACE } from '@/store/metadataMutationsConsts';
 
 import { enhanceTitleImg, getTagColor } from '@/factories/metaDataFactory';
-
-import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
-
 import {
   getValidationMetadataEditingObject,
   isFieldValid,
 } from '@/factories/userEditingValidations';
-import { EDIT_METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
+
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
 
 
 export default {
   name: 'EditKeywords',
-  data: () => ({
-    search: null,
-    keywordValidConcise: true,
-    keywordValidMin3Characters: true,
-    keywordCount: 0,
-    rulesKeywords: [],
-    labels: {
-      title: EDIT_METADATA_KEYWORDS_TITLE,
-      keywordsLabel: 'Keywords',
-      placeholder: 'Pick keywords from the list or type in a new keyword',
-      cardInstructions1: 'Please enter at least 5 keywords.',
-      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
-          ' To create a new keyword type it and press enter.',
-      previewText: 'Metadata card preview',
-    },
-    defaultUserEditMetadataConfig: {
-      keywordsListWordMax: 2,
-      keywordsCountMin: 5,
-    },
-    validationErrors: {
-      keywords: '',
-    },
-    previewKeywords: [],
-    stepKey: EDITMETADATA_KEYWORDS,
-  }),
   props: {
     existingKeywords: {
       type: Array,
@@ -457,6 +431,31 @@ export default {
       return readOnlyHint(this.$props, dateProperty);
     },
   },
+  data: () => ({
+    search: null,
+    keywordValidConcise: true,
+    keywordValidMin3Characters: true,
+    keywordCount: 0,
+    rulesKeywords: [],
+    labels: {
+      title: EDIT_METADATA_KEYWORDS_TITLE,
+      keywordsLabel: 'Keywords',
+      placeholder: 'Pick keywords from the list or type in a new keyword',
+      cardInstructions1: 'Please enter at least 5 keywords.',
+      cardInstructions2: 'To pick a keyword click into the list, you can start typing to search for a existing keywords.' +
+        ' To create a new keyword type it and press enter.',
+      previewText: 'Metadata card preview',
+    },
+    defaultUserEditMetadataConfig: {
+      keywordsListWordMax: 2,
+      keywordsCountMin: 5,
+    },
+    validationErrors: {
+      keywords: '',
+    },
+    previewKeywords: [],
+    stepKey: EDITMETADATA_KEYWORDS,
+  }),
   components: {
     MetadataCard,
     TagChip,

@@ -3,9 +3,6 @@
  * @summary story of all the Editing Author MetadataDetailViews for sandbox testing
  * @author Dominik Haas-Artho
  *
- * Created at     : 2019-10-23 16:34:51
- * Last modified  : 2021-08-18 18:08:18
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */

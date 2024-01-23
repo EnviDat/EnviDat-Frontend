@@ -1,6 +1,8 @@
 <template>
-  <v-container id="MetadataGenericSubStepper" fluid class="pa-0">
-    <v-row no-gutters>
+  <v-container id="MetadataGenericSubStepper"
+               fluid class="pa-0">
+    <v-row id="GenericStepperHeader"
+           no-gutters>
       <v-col class="px-sm-10">
         <!-- prettier-ignore -->
         <StepperHeader  :steps="steps"
@@ -12,7 +14,8 @@
       </v-col>
     </v-row>
 
-    <v-row class="fill-height">
+    <v-row id="GenericContent"
+           class="fill-height">
       <v-col v-if="currentStep" cols="12">
         <component
           :is="currentStep.component"

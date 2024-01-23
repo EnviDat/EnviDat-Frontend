@@ -3,7 +3,9 @@
       <v-text-field
         v-if="isReadonly(dateProperty)"
         :label="dateLabel"
-        :readonly="true"
+        dense
+        outlined
+        readonly
         prepend-icon="date_range"
         :hint="readOnlyHint(dateProperty)"
         :model-value="formatToEnviDatDate(dateField, dateProperty)"
@@ -14,6 +16,7 @@
         v-else
         id="dateMenu"
         key="dateMenu"
+        ref="dateMenu"
         v-model="datePickerOpen"
         :close-on-content-click="false"
         transition="scale-transition"
@@ -21,10 +24,12 @@
         :offset-y="$vuetify?.display?.mdAndUp"
         min-width="280px"
       >
-
         <template v-slot:activator="{ props }">
           <v-text-field
             :label="dateLabel"
+            ref="dateTextField"
+            dense
+            outlined
             prepend-icon="date_range"
             v-bind="props"
             :clearable="true"
@@ -37,18 +42,18 @@
 
         <v-date-picker
           elevation="2"
+          ref="datePicker"
           locale="en-in"
           :color='$vuetify.theme.themes.light.colors.primary'
           next-icon="navigate_next"
           prev-icon="navigate_before"
           :min="formatToDatePickerDate(minDate)"
           :max="formatToDatePickerDate(maxDate)"
+          :value="formatToDatePickerDate(dateField)"
           :model-value="formatToDatePickerDate(dateField)"
           @click:save="changeDatePicker(dateProperty, $event)"
         >
 <!--
-          next-icon="skip_next"
-          prev-icon="skip_previous"
 -->
         </v-date-picker>
       </v-menu>

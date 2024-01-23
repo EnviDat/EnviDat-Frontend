@@ -5,7 +5,9 @@
             smallChip: $vuetify.display.smAndDown,
            }"
           :style="{ height: $vuetify.display.xs ? '15px' : '' }"
+          :color="highlighted ? 'primary' : color"
           @click.stop="clicked"
+          :draggable="draggable"
           :small="isSmall"
           close-icon="close"
           :close="isCloseable"
@@ -22,6 +24,7 @@
       <template v-slot:activator="{ on, props }">
         <v-icon v-on="on" v-bind="props" x-small >hourglass_bottom</v-icon>
       </template>
+
       {{ authorPassedInfo }}
     </v-tooltip>
 
@@ -48,6 +51,10 @@ export default {
     name: String,
     tooltipText: String,
     highlighted: Boolean,
+    color: {
+      type: String,
+      default: '#f8f8f8',
+    },
     asciiDead: String,
     authorPassedInfo: String,
     isSmall: {
@@ -55,6 +62,10 @@ export default {
       default: false,
     },
     isCloseable: Boolean,
+    draggable: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   computed: {
     authorIsDead() {
@@ -76,7 +87,9 @@ export default {
 
   .authorTag {
     opacity: 0.85;
+    /*
     background-color: #f8f8f8 !important;
+    */
     margin: 0 2px !important;
   }
 

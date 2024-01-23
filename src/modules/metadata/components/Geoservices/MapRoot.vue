@@ -40,16 +40,16 @@
 </template>
 
 <script>
-import * as tBuffer from '@turf/buffer';
-import * as tCentroid from '@turf/centroid';
-import * as tEnvelope from '@turf/envelope';
+import buffer from '@turf/buffer';
+import centroid from '@turf/centroid';
+import envelope from '@turf/envelope';
 
 import { eventBus,MAP_TOGGLE_BASE_LAYER } from '@/factories/eventBus';
 import {
   LOCATION_TYPE_GEOMCOLLECTION,
   LOCATION_TYPE_MULTIPOINT,
   LOCATION_TYPE_POINT,
-} from '@/factories/metaDataFactory';
+} from '@/factories/metadataConsts';
 
 
 import MapLeaflet from './MapLeaflet.vue';
@@ -111,22 +111,22 @@ export default {
         }
         // If the centroid of the geometry is above 60° or below -60°
         // zoom out even futher
-        const centroid = tCentroid(this.site);
-        if (Math.abs(centroid.geometry.coordinates[1]) > 60) {
+        const cent = centroid(this.site);
+        if (Math.abs(cent.geometry.coordinates[1]) > 60) {
           zoomDist = 200;
         }
 
         // Depending on points and their latitudinal location, we want a buffered maxExtent for the map
         // const bbox = tEnvelope(this.site);
-        let envelope = tBuffer(this.site, zoomDist, { units: 'kilometers' });
-        envelope = tEnvelope(envelope);
+        let env = buffer(this.site, zoomDist, { units: 'kilometers' });
+        env = envelope(env);
 
         // Convert from geometry to extent object
         extent = {
-          minx: envelope.geometry.coordinates[0][0][0],
-          miny: envelope.geometry.coordinates[0][0][1],
-          maxx: envelope.geometry.coordinates[0][2][0],
-          maxy: envelope.geometry.coordinates[0][2][1],
+          minx: env.geometry.coordinates[0][0][0],
+          miny: env.geometry.coordinates[0][0][1],
+          maxx: env.geometry.coordinates[0][2][0],
+          maxy: env.geometry.coordinates[0][2][1],
         };
       } else if (this.layerConfig) {
         extent = this.layerConfig.bbox;

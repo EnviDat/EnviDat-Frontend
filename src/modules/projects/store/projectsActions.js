@@ -16,6 +16,7 @@ import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
 import {
+  ACTION_GET_PROJECTS,
   GET_PROJECTS,
   GET_PROJECTS_ERROR,
   GET_PROJECTS_SUCCESS,
@@ -30,7 +31,7 @@ export default {
     commit(GET_PROJECTS);
 
     let url = urlRewrite(
-      'group_list?all_fields=true&include_groups=true&include_extras=true&include_datasets=true',
+      ACTION_GET_PROJECTS(),
       API_BASE,
       API_ROOT,
     );
@@ -42,7 +43,7 @@ export default {
     //     { root: true });
     // }
 
-    // if (import.meta.env.DEV) {
+    // if (import.meta.env?.DEV) {
     //   url = './testdata/projects.json';
     // }
 

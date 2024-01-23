@@ -42,7 +42,11 @@
                     :hint="readOnlyHint('organization') || 'Your Organization was autocompleted'"
                     persistent-hint
                     label="Organization"
-          />
+          >
+            <template v-slot:selection="{ item }">
+              <MetadataOrganizationChip :organization="item.title"/>
+            </template>
+          </v-select>
 
         </v-col>
 

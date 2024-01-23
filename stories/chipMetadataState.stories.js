@@ -44,7 +44,7 @@ const Template = (args, {argTypes}) => ({
     components: { MetadataStateChip },
     props: Object.keys(argTypes),
     template: `
-     <div>
+     <v-container fluid>
        <v-row>
         <MetadataStateChip v-bind="$props" />
        </v-row>
@@ -58,7 +58,7 @@ const Template = (args, {argTypes}) => ({
             <MetadataStateChip v-bind="$props" show-on-hover />
          </v-col>
        </v-row>
-     </div>
+     </v-container>
    `,
 });
 

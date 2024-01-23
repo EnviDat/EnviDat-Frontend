@@ -35,6 +35,10 @@ import {
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
   METADATA_UPDATE_EXISTING_KEYWORDS_ERROR,
+  ACTION_BULK_LOAD_METADATAS_CONTENT,
+  ACTION_LOAD_METADATA_CONTENT_BY_ID,
+  ACTION_METADATA_UPDATE_EXISTING_KEYWORDS,
+  ACTION_SEARCH_METADATA,
 } from '@/store/metadataMutationsConsts';
 
 import catCards from '@/store/categoryCards';
@@ -50,7 +54,7 @@ import {
 } from '@/factories/modeFactory';
 import { urlRewrite } from '@/factories/apiFactory';
 import {
-  getTagColor,
+  getTagColor, localSearch,
   sortObjectArray,
 } from '@/factories/metaDataFactory';
 
@@ -61,10 +65,15 @@ import { SELECT_EDITING_AUTHOR_PROPERTY } from '@/factories/eventBus';
 */
 
 /* eslint-disable no-unused-vars  */
-const API_ROOT = import.meta.env.VITE_API_ROOT;
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
+let API_BASE = '';
+let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
+
+if (!useTestdata) {
+  API_BASE = import.meta.env?.VITE_API_BASE_URL;
+  API_ROOT = import.meta.env?.VITE_API_ROOT;
+}
 
 function contentSize(content) {
   return content !== undefined ? Object.keys(content).length : 0;
@@ -111,40 +120,6 @@ function createSolrQuery(searchTerm) {
   return solrQuery;
 }
 
-function localSearch(searchTerm, datasets) {
-  const foundDatasets = [];
-
-  let term1 = searchTerm;
-  let term2 = '';
-  const check2Terms = searchTerm.includes(' ');
-
-  if (check2Terms) {
-    const splits = searchTerm.split(' ');
-    term1 = splits[0];
-    term2 = splits[1];
-  }
-
-  for (let i = 0; i < datasets.length; i++) {
-    const dataset = datasets[i];
-
-    const match1 = dataset.title.includes(term1)
-      || dataset.author.includes(term1)
-      || dataset.notes.includes(term1);
-
-    let match2 = true;
-    if (check2Terms) {
-      match2 = dataset.title.includes(term2)
-        || dataset.author.includes(term2)
-        || dataset.notes.includes(term2);
-    }
-
-    if (match1 && match2) {
-      foundDatasets.push(dataset);
-    }
-  }
-
-  return foundDatasets;
-}
 
 // Returns array with strings that are both only maxWords or less and do not start with a number
 function getfilteredArray(arr, maxWords) {
@@ -191,6 +166,7 @@ export default {
     searchTerm,
     metadataConfig = {},
     isAuthorSearch = false,
+    mode = undefined,
   }) {
     const originalTerm = searchTerm.trim();
 
@@ -201,15 +177,17 @@ export default {
     if (loadLocalFile) {
       const datasets = this.getters[`${METADATA_NAMESPACE}/allMetadatas`];
       const localSearchResult = localSearch(searchTerm, datasets);
+
       commit(SEARCH_METADATA_SUCCESS, {
         payload: localSearchResult,
         isLocalSearch: true,
+        mode,
       });
       return;
     }
 
     const solrQuery = isAuthorSearch ? getAuthorSolrQuery(originalTerm) : createSolrQuery(originalTerm);
-    const query = `query?q=${solrQuery}`;
+    const query = `${ACTION_SEARCH_METADATA()}?q=${solrQuery}`;
     const queryAdditions = '&wt=json&rows=1000';
     const publicOnlyQuery = `${query}${queryAdditions}&fq=capacity:public&fq=state:active`;
     const url = urlRewrite(publicOnlyQuery, '/', API_ROOT);
@@ -220,6 +198,7 @@ export default {
 
         commit(SEARCH_METADATA_SUCCESS, {
           payload: response.data.response.docs,
+          mode,
         });
       })
       .catch((reason) => {
@@ -247,7 +226,8 @@ export default {
       return;
     }
 
-    const url = urlRewrite(`package_show?id=${metadataId}`, API_BASE, API_ROOT);
+    const actionUrl = ACTION_LOAD_METADATA_CONTENT_BY_ID();
+    const url = urlRewrite(`${actionUrl}?id=${metadataId}`, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
       commit(`${commitMethodPrefix}_SUCCESS`, response.data.result, {
@@ -265,12 +245,8 @@ export default {
 
     const metadataConfig = config.metadataConfig || {};
 
-    let url = urlRewrite('current_package_list_with_resources?limit=1000&offset=0',
-                API_BASE, API_ROOT);
-
-    if (import.meta.env.DEV && useTestdata) {
-      url = './testdata/packagelist.json';
-    }
+    const actionUrl = ACTION_BULK_LOAD_METADATAS_CONTENT();
+    let url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     const localFileUrl = metadataConfig.localFileUrl;
     const loadLocalFile = metadataConfig.loadLocalFile;
@@ -312,22 +288,22 @@ export default {
     commit(UPDATE_TAGS);
 
     try {
-        let allWithExtras = [];
+      let allWithExtras = [];
 
-        const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
-        if (mergedExtraTags) {
-          const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
-          const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
+      const mergedExtraTags = getTagsMergedWithExtras(mode, allTags);
+      if (mergedExtraTags) {
+        const popularTags = getPopularTags(filteredContent, 'SWISS FOREST LAB', 5, filteredContent.length);
+        const mergedWithPopulars = [...mergedExtraTags, ...popularTags.slice(0, 15)];
 
-          const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
-          // tags with the same count as the content have no use, remove them
-          // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
-          allWithExtras = mergedWithoutDublicates;
-        } else {
-          allWithExtras = metadataTags;
-        }
+        const mergedWithoutDublicates = mergedWithPopulars.filter((item, pos, self) => self.findIndex(v => v.name === item.name) === pos);
+        // tags with the same count as the content have no use, remove them
+        // allWithExtras = mergedWithoutDublicates.filter((item) => { item.count >= filteredContent.length});
+        allWithExtras = mergedWithoutDublicates;
+      } else {
+        allWithExtras = metadataTags;
+      }
 
-        const updatedTags = getEnabledTags(allWithExtras, filteredContent);
+      const updatedTags = getEnabledTags(allWithExtras, filteredContent);
       commit(UPDATE_TAGS_SUCCESS, updatedTags);
     } catch (error) {
       commit(UPDATE_TAGS_ERROR, error);
@@ -404,7 +380,8 @@ export default {
     const existingKeywords = this.getters[`${METADATA_NAMESPACE}/allTags`];
     // commit(METADATA_UPDATE_EXISTING_KEYWORDS, existingKeywords);
 
-    const url = urlRewrite('tag_list', API_BASE, API_ROOT);
+    const actionUrl = ACTION_METADATA_UPDATE_EXISTING_KEYWORDS();
+    const url = urlRewrite(actionUrl, API_BASE, API_ROOT);
 
     await axios.get(url).then((response) => {
 

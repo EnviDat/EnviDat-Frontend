@@ -35,7 +35,6 @@ import {
   SET_DETAIL_PAGE_BACK_URL,
   SET_ABOUT_PAGE_BACK_URL,
   SET_VIRTUAL_LIST_INDEX,
-  SWISSFL_MODE,
   METADATA_UPDATE_EXISTING_AUTHORS,
   METADATA_UPDATE_EXISTING_KEYWORDS,
   METADATA_UPDATE_EXISTING_KEYWORDS_SUCCESS,
@@ -51,12 +50,6 @@ import {
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-import {
-  enhanceMetadataEntry,
-  enhanceTags,
-  createLocation,
-} from '@/factories/metaDataFactory';
-
 import globalMethods from '@/factories/globalMethods';
 
 import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
@@ -64,35 +57,7 @@ import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
-import { enhanceMetadataWithModeExtras } from '@/factories/modeFactory';
-
-
-
-function enhanceMetadatas(store, datasets) {
-  if (!(datasets instanceof Array)) {
-    throw new Error(`enhanceMetadatas() expects an array of datasets got ${typeof datasets}`);
-  }
-
-  // const rootBGImgs = store.rootState?.getters?.cardBGImages;
-  let cardBGImgs = store.state.cardBGImages; // || rootBGImgs;
-  cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
-  const categoryCards = store.state.categoryCards;
-  const enhancedContent = {};
-
-  for (let i = 0; i < datasets.length; i++) {
-    let dataset = datasets[i];
-    dataset = enhanceMetadataEntry(dataset, cardBGImgs, categoryCards);
-    dataset = enhanceMetadataWithModeExtras(SWISSFL_MODE, dataset);
-
-    dataset = enhanceTags(dataset, categoryCards);
-
-    dataset.location = createLocation(dataset);
-
-    enhancedContent[dataset.id] = dataset;
-  }
-
-  return enhancedContent;
-}
+import { enhanceMetadatas } from '@/factories/metaDataFactory';
 
 
 export default {
@@ -105,6 +70,7 @@ export default {
   [SEARCH_METADATA_SUCCESS](state, {
     payload,
     isLocalSearch = false,
+    mode = undefined,
   }) {
 
     let convertedPayload = [];
@@ -117,7 +83,11 @@ export default {
       }
     }
 
-    state.searchedMetadatasContent = enhanceMetadatas(this, convertedPayload);
+    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
+    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
+    const categoryCards = this.state.categoryCards;
+
+    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, cardBGImgs, categoryCards, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
@@ -142,7 +112,12 @@ export default {
   },
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
-    const enhancedPayload = enhanceMetadatas(this, [payload]);
+
+    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
+    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
+    const categoryCards = this.state.categoryCards;
+    const enhancedPayload = enhanceMetadatas([payload], cardBGImgs, categoryCards);
+
     state.currentMetadataContent = Object.values(enhancedPayload)[0];
   },
   [LOAD_METADATA_CONTENT_BY_ID_ERROR](state, reason) {
@@ -161,7 +136,13 @@ export default {
     state.metadatasContent = {};
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
-    state.metadatasContent = enhanceMetadatas(this, payload);
+
+    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
+    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
+    const categoryCards = this.state.categoryCards;
+
+    state.metadatasContent = enhanceMetadatas(payload, cardBGImgs, categoryCards);
+
     state.authorsMap = extractAuthorsMap(payload);
 
     state.metadatasContentOK = true;

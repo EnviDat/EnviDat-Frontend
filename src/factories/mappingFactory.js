@@ -34,6 +34,7 @@ import {
   EDITMETADATA_PUBLICATION_INFO,
   EDITMETADATA_RELATED_DATASETS,
   EDITMETADATA_RELATED_PUBLICATIONS,
+  METADATA_MAIN_HEADER,
   USER_OBJECT,
 } from '@/factories/eventBus';
 
@@ -74,12 +75,29 @@ import {
   METADATA_TITLE_PROPERTY,
   METADATA_URL_PROPERTY, EDIT_METADATA_PUBLISHER_LABEL,
 } from '@/factories/metadataConsts';
+import { createAuthor } from '@/factories/authorFactory';
 
 /**
  * Json conversion rules from frontend to backend and vise versa
  * https://stackoverflow.com/questions/50081462/javascript-how-to-map-a-backend-entity-to-a-frontend-entity-and-the-opposite
  */
 const JSONFrontendBackendRules = {
+  [METADATA_MAIN_HEADER]: [
+    [METADATA_TITLE_PROPERTY,'title'],
+    ['contactEmail','maintainer.email'],
+    ['firstName','maintainer.given_name'],
+    ['lastName','maintainer.name'],
+    ['doi','doi'],
+    ['tags','tags'],
+    ['authors','author'],
+    ['organization','organization.name'],
+    ['organizationTooltip','organization.title'],
+    ['spatialInfo','spatial_info'],
+    ['created','metadata_created'],
+    ['modified','metadata_modified'],
+    ['state','state'],
+    ['private','private'],
+  ],
   [EDITMETADATA_MAIN_HEADER]: [
     [METADATA_TITLE_PROPERTY,'title'],
     [METADATA_URL_PROPERTY,'name'],
@@ -270,7 +288,7 @@ export function convertJSON(data, stringify, recursive = false) {
           }
         } catch (e) {
 
-          if (import.meta.env.DEV) {
+          if (import.meta.env?.DEV) {
             if (e instanceof SyntaxError) {
               // eslint-disable-next-line no-console
               console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
@@ -379,7 +397,7 @@ export function getArrayInOtherCase(fromCaseArray, caseConversionFunc) {
   return otherCaseArray;
 }
 
-function convertPut(entity, property, v) {
+function convertPut(entity, property, value) {
   const path = property.split('.');
   const key = path.pop();
 
@@ -391,13 +409,16 @@ function convertPut(entity, property, v) {
     return entry[prop];
   }, entity);
 
-  o[key] = v;
+  o[key] = value;
 
   return entity;
 }
 
 function convertGet(entity, property) {
-  return property.split('.').reduce( (entry, b) => entry[b], entity);
+  return property.split('.').reduce((entry, key) => 
+    // Check if entry is an object and the key exists in the entry
+     (entry && typeof entry === 'object' && key in entry) ? entry[key] : undefined
+  , entity);
 }
 
 export function convertToBackendJSONWithRules(rules, data) {
@@ -733,12 +754,8 @@ function populateEditingAuthors(commit, snakeCaseJSON) {
 
   snakeCaseJSON.author.forEach((bAuthor) => {
     const author = getFrontendJSONForStep(EDITMETADATA_AUTHOR, bAuthor);
-
-    if (typeof author.dataCredit === 'string') {
-      author.dataCredit = [author.dataCredit];
-    }
-
-    authors.push(author);
+    const fAuthor = createAuthor(author)
+    authors.push(fAuthor);
   })
 
   commitEditingData(commit, stepKey, { authors });
@@ -1110,9 +1127,15 @@ export function enhanceUserObject(user) {
 export function getMetadataUrlFromTitle(title) {
   let urlName = title?.toLowerCase() || '';
   urlName = urlName.trim().replaceAll(' ', '-');
+
+  urlName = urlName.replaceAll('ä', 'ae');
+  urlName = urlName.replaceAll('ö', 'oe');
+  urlName = urlName.replaceAll('ü', 'ue');
+
   if (urlName.length > 80) {
     // only a max of 80 is allowed by the backend for the url
     urlName = urlName.substring(0, 80);
   }
+
   return urlName;
 }

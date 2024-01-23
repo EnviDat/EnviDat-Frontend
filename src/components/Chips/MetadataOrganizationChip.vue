@@ -3,6 +3,7 @@
     class="organizationChip text--black px-2"
     :outlined="!showContent"
     color="black"
+    style="cursor: default;"
     @mouseover="hover = true"
     @mouseleave="hover = false"
     @click="$emit('organizationClicked', organization)"

@@ -13,35 +13,61 @@ import SearchBarView from '@/modules/home/components/SearchBarView.vue';
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
-  title: '4 Filtering / SearchBarView',
+  title: '4 Filtering / SearchBar View',
   component: SearchBarView,
 };
 
-const Template = (args, { argTypes }) => ({
-  components: { SearchBarView },
-  props: Object.keys(argTypes),
-  template: '<search-bar-view v-bind="$props" />',
-});
-
-export const BasicSearchBar = Template.bind({});
-BasicSearchBar.args = {
-  labelText: 'Search for something',
-  buttonText: 'SEARCH',
-  hasButton: true,
+export const Default = {
+  args: {
+    labelText: 'Search',
+    buttonText: 'Go',
+    hasButton: true,
+  },
 };
 
-export const BasicSearchBarMobile = Template.bind({});
-BasicSearchBarMobile.args = {
-  ...BasicSearchBar.args,
-  hasButton: false,
+export const NoButton = {
+  args: {
+    ...Default.args,
+    hasButton: false,
+  },
 };
-BasicSearchBarMobile.parameters = mobileViewportParams;
 
-export const BasicSearchBarLargeMobile = Template.bind({});
-BasicSearchBarLargeMobile.args = { ...BasicSearchBarMobile.args };
-BasicSearchBarLargeMobile.parameters = mobileLargeViewportParams;
+export const CustomLabels = {
+  args: {
+    labelText: 'Find Documents',
+    buttonText: 'Submit Query',
+    hasButton: true,
+  },
+};
 
-export const BasicSearchBarTablet = Template.bind({});
-BasicSearchBarTablet.args = { ...BasicSearchBarMobile.args };
-BasicSearchBarTablet.parameters = tabletViewportParams;
+export const LongLabels = {
+  args: {
+    labelText: 'Enter the details for a comprehensive search:',
+    buttonText: 'Initiate Complex Search',
+    hasButton: true,
+  },
+};
 
+export const EmptyLabels = {
+  args: {
+    labelText: '',
+    buttonText: '',
+    hasButton: true,
+  },
+};
+
+
+export const DefaultMobile = {
+  args: { ...Default.args },
+  parameters: mobileViewportParams,
+};
+
+export const DefaultLargeMobile = {
+  args: { ...Default.args },
+  parameters: mobileLargeViewportParams,
+};
+
+export const DefaultTablet = {
+  args: { ...Default.args },
+  parameters: tabletViewportParams,
+};

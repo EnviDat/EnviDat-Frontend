@@ -11,7 +11,7 @@
 
 import MetadataCardLocal from '@/components/Cards/MetadataCardLocal.vue';
 
-import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
 import globalMethods from '@/factories/globalMethods';
 import { METADATA_STATE_DRAFT } from '@/factories/metadataConsts';
@@ -22,7 +22,7 @@ import metadataCards from './js/metadata';
 
 const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
 
-enhanceMetadatas(metadataCards, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadataCards, cardBGImages, categoryCards);
 
 export default {
   title: '3 Cards / Metadata Cards',

@@ -12,7 +12,7 @@
 * file 'LICENSE.txt', which is part of this source code package.
 */
 
-import { enhanceMetadatas, enhanceTags } from '@/factories/metaDataFactory';
+import { enhanceMetadatasTitleImage, enhanceTags } from '@/factories/metaDataFactory';
 
 import {
   EDITMETADATA_AUTHOR_LIST,
@@ -86,21 +86,10 @@ export function createErrorMessage(reason, message = defaultMessage) {
     const errorObj = reason.response.data?.error || reason.response.error || null;
 
     if (errorObj) {
-
-      if (errorObj.__type) {
-        details += `${errorObj.__type}: `;
-      }
-
-      if (errorObj.message) {
-        details += errorObj.message;
-      } else if (errorObj.__junk) {
-        details += errorObj.__junk;
-      } else {
-        const errKeys = Object.keys(errorObj);
-        for (let i = 0; i < errKeys.length; i++) {
-          const key = errKeys[i];
-          details += `${key} ${errorObj[key]} `;
-        }
+      const errKeys = Object.keys(errorObj);
+      for (let i = 0; i < errKeys.length; i++) {
+        const key = errKeys[i];
+        details += `${key}: ${ JSON.stringify(errorObj[key]) } `;
       }
 
     } else {
@@ -134,7 +123,7 @@ export function enhanceMetadataFromCategories(store, metadatas) {
 
   datasets.forEach(dataset => enhanceTags(dataset, categoryCards));
 
-  const enhanced = enhanceMetadatas(datasets, cardBGImages, categoryCards);
+  const enhanced = enhanceMetadatasTitleImage(datasets, cardBGImages, categoryCards);
   return isArrayInput ? enhanced : enhanced[0];
 }
 

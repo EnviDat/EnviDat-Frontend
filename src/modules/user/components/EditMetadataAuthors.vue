@@ -24,6 +24,19 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col >
+          <ExpandableLayout statusText="Click here to change the author sequence via Drag and Drop"
+                            isFlat>
+
+            <BaseDraggableList :items="authorFullNames"
+                               :useAuthorTags="true"
+                               @listChanged="reorderList"/>
+          </ExpandableLayout>
+
+        </v-col>
+      </v-row>
+
       <v-row >
         <v-col cols="12">
           <MetadataAuthors :genericProps="metadataAuthorsObject" >
@@ -77,6 +90,8 @@ import {
 import MetadataAuthors from '@/modules/metadata/components/Metadata/MetadataAuthors.vue';
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import EditDataCredits from '@/modules/user/components/edit/EditDataCredits.vue';
+import BaseDraggableList from '@/components/BaseElements/BaseDraggableList.vue';
+import ExpandableLayout from '@/components/Layouts/ExpandableLayout.vue'
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -86,7 +101,9 @@ import {
   EDITMETADATA_OBJECT_UPDATE,
   eventBus,
 } from '@/factories/eventBus';
+
 import { getValidationMetadataEditingObject, isFieldValid } from '@/factories/userEditingValidations';
+import { getAuthorName } from '@/factories/authorFactory';
 
 export default {
   name: 'EditMetadataAuthors',
@@ -130,6 +147,13 @@ export default {
 
       return undefined;
     },
+    authorFullNames() {
+      if (!this.authorsFields) {
+        return [];
+      }
+
+      return this.authorsFields.map((a) => getAuthorName(a));
+    },
     authorsFields() {
       const authors = this.previewAuthors || this.authors;
 
@@ -155,6 +179,37 @@ export default {
     },
   },
   methods: {
+    reorderList(newList) {
+      const newAuthors = [];
+
+      for (let i = 0; i < newList.length; i++) {
+        const fullName = newList[i];
+        const author = this.authorsFields.filter((a) => getAuthorName(a) === fullName)[0];
+        if (author) {
+          newAuthors.push(author);
+        }
+      }
+
+      this.previewAuthors = newAuthors;
+      this.notifyChange();
+    },
+    notifyChange() {
+      if (!this.previewAuthors) {
+        return;
+      }
+
+      eventBus.emit(EDITMETADATA_OBJECT_UPDATE, {
+        object: EDITMETADATA_AUTHOR_LIST,
+        data: {
+          ...this.$props,
+          authors: this.previewAuthors,
+       },
+      });
+
+      // DO NOT clear the preview because than the user isn't able to remove the last author
+      // this lead to a UX where the user had to add a second author to then remove the first, it
+      // changes want to be made
+    },
     authorEditingProperties(author) {
       let editingProperties = {};
 
@@ -172,10 +227,6 @@ export default {
         overrideAuthorInfosExpanded: true,
         authorDetailsConfig: this.authorDetailsConfig,
         ...this.authorDeadInfo,
-        /*
-                  :asciiDead="authorDeadInfo ? authorDeadInfo.asciiDead : ''"
-                  :authorPassedInfo="authorDeadInfo ? authorDeadInfo.authorPassedInfo : ''"
-        */
       };
     },
     clearPreviews() {
@@ -234,6 +285,8 @@ export default {
     MetadataAuthors,
     AuthorCard,
     EditDataCredits,
+    BaseDraggableList,
+    ExpandableLayout,
   },
 };
 </script>

@@ -35,6 +35,7 @@
         </v-col>
 
         <v-col v-if="materialIconName"
+               cols="3"
                 class="flex-grow-0">
           <v-icon class="pr-2">{{ materialIconName }}</v-icon>
         </v-col>
@@ -48,9 +49,9 @@
         </v-col>
 
         <v-col v-if="url" :style="textStyle">
-          <a :href="url" target="_blank" rel="noopener noreferrer">{{
-            text ? text : url
-          }}</a>
+          <a :href="url" target="_blank" rel="noopener noreferrer">
+            {{ text ? text : url }}
+          </a>
         </v-col>
 
         <v-col v-if="!text && usePlaceholder">

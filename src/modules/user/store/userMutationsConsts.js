@@ -9,14 +9,14 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_ERROR = 'GET_USER_LIST_ERROR';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
 
 export const ACTION_GET_USER_LIST = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/user_list.json';
   }
 
@@ -27,8 +27,13 @@ export const GET_USER_CONTEXT = 'GET_USER_CONTEXT';
 export const GET_USER_CONTEXT_ERROR = 'GET_USER_CONTEXT_ERROR';
 export const GET_USER_CONTEXT_SUCCESS = 'GET_USER_CONTEXT_SUCCESS';
 
-export const ACTION_GET_USER_CONTEXT = () => {
-  if (import.meta.env.DEV && useTestdata) {
+/**
+ * (old) endpoint to get the user information
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_GET_USER_CONTEXT = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/envidat_context_user_show.json';
   }
 
@@ -38,8 +43,14 @@ export const ACTION_GET_USER_CONTEXT = () => {
 export const USER_SIGNIN = 'USER_SIGNIN';
 export const USER_SIGNIN_ERROR = 'USER_SIGNIN_ERROR';
 export const USER_SIGNIN_SUCCESS = 'USER_SIGNIN_SUCCESS';
-export const ACTION_USER_SIGNIN = () => {
-  if (import.meta.env.DEV && useTestdata) {
+
+/**
+ * (old) endpoint for the signin with the token from the email
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_USER_SIGNIN = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_user_login.json';
   }
 
@@ -49,16 +60,29 @@ export const ACTION_USER_SIGNIN = () => {
 export const REQUEST_TOKEN = 'REQUEST_TOKEN';
 export const REQUEST_TOKEN_ERROR = 'REQUEST_TOKEN_ERROR';
 export const REQUEST_TOKEN_SUCCESS = 'REQUEST_TOKEN_SUCCESS';
-export const ACTION_REQUEST_TOKEN = () => {
-  if (import.meta.env.DEV && useTestdata) {
+
+/**
+ * (old) endpoint to request login token
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_OLD_REQUEST_TOKEN = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_perform_reset.json';
   }
 
   return 'passwordless_perform_reset';
 };
 
+/**
+ * endpoint to get the users information
+ * (JWT style signin)
+ *
+ * @returns {string}
+ * @constructor
+ */
 export const ACTION_GET_USER_CONTEXT_TOKEN = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_get_user.json';
   }
 
@@ -70,12 +94,27 @@ export const API_TOKEN = 'API_TOKEN';
 export const API_TOKEN_ERROR = 'API_TOKEN_ERROR';
 export const API_TOKEN_SUCCESS = 'API_TOKEN_SUCCESS';
 */
-export const ACTION_API_TOKEN = () => {
-  if (import.meta.env.DEV && useTestdata) {
+
+/**
+ * endpoint to sign in with the token received via email
+ *
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_USER_SIGNIN_TOKEN = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_request_api_token.json';
   }
 
   return 'passwordless_request_api_token';
+};
+
+export const ACTION_API_TOKEN_AZURE = () => {
+  if (import.meta.env.DEV && useTestdata) {
+    return './testdata/passwordless_request_api_token_azure_ad.json';
+  }
+
+  return 'passwordless_request_api_token_azure_ad';
 };
 
 /*
@@ -83,8 +122,15 @@ export const RESET_KEY = 'RESET_KEY';
 export const RESET_KEY_ERROR = 'RESET_KEY_ERROR';
 export const RESET_KEY_SUCCESS = 'RESET_KEY_SUCCESS';
 */
-export const ACTION_REQUEST_TOKEN_RESET = () => {
-  if (import.meta.env.DEV && useTestdata) {
+
+/**
+ * endpoint to request a new token via email
+ *
+ * @returns {string}
+ * @constructor
+ */
+export const ACTION_RESET_TOKEN = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_request_reset_key.json';
   }
 
@@ -95,8 +141,8 @@ export const USER_SIGNOUT = 'USER_SIGNOUT';
 export const USER_SIGNOUT_ERROR = 'USER_SIGNOUT_ERROR';
 export const USER_SIGNOUT_SUCCESS = 'USER_SIGNOUT_SUCCESS';
 
-export const ACTION_USER_SIGNOUT = () => {
-  if (import.meta.env.DEV && useTestdata) {
+export const ACTION_OLD_USER_SIGNOUT = () => {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_user_logout.json';
   }
 
@@ -104,7 +150,7 @@ export const ACTION_USER_SIGNOUT = () => {
 };
 
 export const ACTION_USER_SIGNOUT_REVOKE_TOKEN = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/passwordless_revoke_api_token.json';
   }
 
@@ -118,7 +164,7 @@ export const FETCH_USER_DATA = 'FETCH_USER_DATA';
 export const SIGNIN_USER_ACTION = 'SIGNIN_USER_ACTION';
 
 export const ACTION_COLLABORATOR_DATASET_IDS = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/package_collaborator_list_for_user.json';
   }
 
@@ -130,7 +176,7 @@ export const USER_GET_COLLABORATOR_DATASET_IDS_ERROR = 'USER_GET_COLLABORATOR_DA
 export const USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS = 'USER_GET_COLLABORATOR_DATASET_IDS_SUCCESS';
 
 export const ACTION_USER_COLLABORATOR_DATASETS = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/collaborator_search.json';
   }
 
@@ -142,7 +188,7 @@ export const USER_GET_COLLABORATOR_DATASETS_ERROR = 'USER_GET_COLLABORATOR_DATAS
 export const USER_GET_COLLABORATOR_DATASETS_SUCCESS = 'USER_GET_COLLABORATOR_DATASETS_SUCCESS';
 
 export const ACTION_USER_SHOW = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/user_show.json';
     // return './testdata/unknow_file.json'; // to test error handling
   }
@@ -159,7 +205,7 @@ export const USER_EDITING_UPDATE_SUCCESS = 'USER_EDITING_UPDATE_SUCCESS';
 export const USER_EDITING_UPDATE_ERROR = 'USER_EDITING_UPDATE_ERROR';
 
 export const ACTION_USER_EDITING_UPDATE = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/user_patch.json';
   }
 
@@ -191,7 +237,7 @@ export const METADATA_EDITING_PATCH_RESOURCE_ERROR = 'METADATA_EDITING_PATCH_RES
 export const METADATA_EDITING_PATCH_RESOURCE_SUCCESS = 'METADATA_EDITING_PATCH_RESOURCE_SUCCESS';
 
 export const ACTION_METADATA_EDITING_PATCH_RESOURCE = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/resource_patch.json';
   }
 
@@ -201,7 +247,7 @@ export const ACTION_METADATA_EDITING_PATCH_RESOURCE = () => {
 export const METADATA_EDITING_REMOVE_AUTHOR = 'METADATA_EDITING_REMOVE_AUTHOR';
 
 export const ACTION_METADATA_EDITING_PATCH_DATASET = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/package_patch.json';
   }
 
@@ -211,7 +257,7 @@ export const ACTION_METADATA_EDITING_PATCH_DATASET = () => {
 export const METADATA_EDITING_PATCH_DATASET_ORGANIZATION = 'METADATA_EDITING_PATCH_DATASET_ORGANIZATION';
 
 export const ACTION_METADATA_EDITING_PATCH_DATASET_ORGANIZATION = () => {
-  if (import.meta.env.DEV && useTestdata) {
+  if (import.meta.env?.DEV && useTestdata) {
     return './testdata/package_owner_org_update.json';
   }
 
@@ -271,15 +317,16 @@ export const ACTION_METADATA_CREATION_DATASET = () => {
 const requests = {
   get:[
     ACTION_GET_USER_CONTEXT_TOKEN,
-    ACTION_GET_USER_CONTEXT,
-    ACTION_USER_SIGNIN,
-    ACTION_USER_SIGNOUT_REVOKE_TOKEN,
-    ACTION_USER_SIGNOUT,
+    ACTION_OLD_GET_USER_CONTEXT,
+    ACTION_OLD_USER_SIGNIN,
+    ACTION_OLD_USER_SIGNOUT,
   ],
   post: [
-    ACTION_REQUEST_TOKEN,
-    ACTION_REQUEST_TOKEN_RESET,
-    ACTION_API_TOKEN,
+    ACTION_API_TOKEN_AZURE,
+    ACTION_OLD_REQUEST_TOKEN,
+    ACTION_RESET_TOKEN,
+    ACTION_USER_SIGNIN_TOKEN,
+    ACTION_USER_SIGNOUT_REVOKE_TOKEN,
   ],
 }
 

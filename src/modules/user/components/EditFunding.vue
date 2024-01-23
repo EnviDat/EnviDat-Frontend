@@ -39,7 +39,7 @@
       <v-row
         v-for="(item, index) in fundersField"
         :key="`${item}_${index}`"
-        :class="index === 0 ? 'pt-4' : 'py-1'"
+        :class="index === 0 ? 'pt-2' : 'py-0'"
         no-gutters
       >
         <v-col cols="4" class="pr-2">
@@ -382,7 +382,7 @@ export default {
       }
     },
     getValidationErrorMessage(property, index) {
-      return this.validationErrors?.funders[index][property] || '';
+      return this.validationErrors?.funders[index]?.[property] || '';
     },
     isReadOnly(dateProperty) {
       return isFieldReadOnly(this.$props, dateProperty);

@@ -14,13 +14,6 @@
 import axios from 'axios';
 import { urlRewrite } from '@/factories/apiFactory';
 
-/*
-import {
-//  mapFrontendToBackend,
-  populateEditingComponents,
-} from '@/factories/mappingFactory';
-*/
-
 import { EDITMETADATA_DATA_RESOURCE } from '@/factories/eventBus';
 import {
   getBackendJSONForStep,
@@ -40,11 +33,12 @@ import {
   ACTION_METADATA_CREATION_DATASET,
 } from './userMutationsConsts';
 
+
 // don't use an api base url or API_ROOT when using testdata
 let API_BASE = '';
 let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
@@ -77,10 +71,7 @@ export default {
       });
 
     } catch(reason) {
-      commit(METADATA_CREATION_RESOURCE_ERROR, {
-        stepKey: EDITMETADATA_DATA_RESOURCE,
-        reason,
-      });
+      commit(METADATA_CREATION_RESOURCE_ERROR, reason);
     }
   },
   async [METADATA_DELETE_RESOURCE]({ commit }, resourceId) {
@@ -122,9 +113,7 @@ export default {
       });
 
     } catch(reason) {
-      commit(METADATA_CREATION_DATASET_ERROR, {
-        reason,
-      });
+      commit(METADATA_CREATION_DATASET_ERROR, reason);
     }
 
   },

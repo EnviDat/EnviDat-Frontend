@@ -8,21 +8,22 @@
       {{ modeInfo }}
     </v-col>
 
-    <v-col
-      v-if="modeLogo"
-      class="flex-grow-0 mx-1"
-      style="height: 34px; width: 34px;"
-    >
+    <v-col v-if="modeLogo"
+            class="flex-grow-0 mx-1" >
       <a
         v-if="modeExternalUrl"
         :href="modeExternalUrl"
         rel="noopener noreferrer"
         target="_blank"
       >
-        <v-img :src="modeLogo" height="34" width="34" />
+        <v-img :src="modeLogo"
+               :height="size"
+               :width="size" />
       </a>
 
-      <v-img v-else :src="modeLogo" height="34" width="34" />
+      <v-img v-else :src="modeLogo"
+                     :height="size"
+                     :width="size" />
     </v-col>
 
     <v-col class="flex-grow-0 mx-1">
@@ -81,6 +82,9 @@ export default {
     tooltipText: 'You are in a specific view which shows data for',
   }),
   computed: {
+    size() {
+      return this.compact ? 24 : 34;
+    },
     modeInfo() {
       let infoText = this.modeInfoPrefix;
 

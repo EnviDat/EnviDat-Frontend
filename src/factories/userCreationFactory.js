@@ -322,7 +322,7 @@ export function createNewDatasetFromSteps(steps, userEditMetadataConfig) {
 
   const bData = getFlatBackendDataFromSteps(steps);
   const bDefaults = getNewDatasetDefaults(userEditMetadataConfig);
-  const name = getMetadataUrlFromTitle(bData.title);
+  const name = bData.name ? bData.name : getMetadataUrlFromTitle(bData.title);
 
   const orgaId = bData.organization?.id || '';
 
@@ -555,9 +555,7 @@ function combineAuthorDataChanges(dataKey, data) {
   if (dataKey === EDITMETADATA_AUTHOR_LIST) {
 
     const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
-    // ensure that authors which can't be resolved from the list of existingAuthors aren't overwritten
-    // that's why it is necessary to know which have been removed via the picker and combined the three lists
-    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, data.authors, data.removedAuthors);
+    authorsStepData.authors = data.authors;
     return authorsStepData;
   }
 
@@ -565,9 +563,12 @@ function combineAuthorDataChanges(dataKey, data) {
 
     const email = data;
     const authorsStepData = readDataFromLocalStorage(EDITMETADATA_AUTHOR_LIST);
-    const authorToRemove = authorsStepData.authors.filter(a => a.email === email);
+    const deleteIndex = authorsStepData.authors.findIndex(a => a.email === email);
 
-    authorsStepData.authors = combineAuthorLists(authorsStepData.authors, [], authorToRemove);
+    if (deleteIndex >= 0) {
+      authorsStepData.authors.splice(deleteIndex, 1)
+    }
+
     return authorsStepData;
   }
 

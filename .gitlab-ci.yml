@@ -1,42 +1,46 @@
 stages:
-  - test
-# - visual-regression
   - config
+  - test
   - build
-  - package
+#  - package
   - deploy
-  - release
+#  - release
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
+  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
+
+
+# defined a template for the jobs with node, instead of defining a global cache for all jobs
+.node_cache:
+  cache:
+    # uses the package-lock.json as key to determine if the node_modules can be used from cache
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+      policy: pull
 
 .trigger-rules:
   rules:
-    - if: >
-          ($CI_COMMIT_REF_NAME == "main"
-          && $CI_PIPELINE_SOURCE == "push")
-      when: always
-    - if: >
-          ($CI_COMMIT_REF_NAME == "staging"
-          && $CI_PIPELINE_SOURCE == "push")
-      when: always
-    - if: >
-          ($CI_COMMIT_REF_NAME == "develop"
-          && $CI_PIPELINE_SOURCE == "push")
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
       changes:
-        - src/**/*
-        - public/**/*
-        - tests/**/*
-        - nginx/**/*
-        - chart/**/*
-        - .env*
-        - package.json*
-        - vue.*
-        - Dockerfile
-        - .gitlab-ci.yml
-      when: always
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+        - 'src/**/*'
+        - 'public/**/*'
+        - 'tests/**/*'
+        - 'nginx/**/*'
+        - 'chart/**/*'
+        - '.env*'
+        - 'package.json*'
+        - 'vue.*'
+        - 'Dockerfile'
+        - '.gitlab-ci.yml'
+#       using when: always will run all jobs regardless of previous failures?
+#      when: always
+    - if: $CI_PIPELINE_SOURCE == "web"
       when: always
 
 set-vars:
@@ -50,144 +54,263 @@ set-vars:
       apk add jq yq --no-cache
       --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community
   script:
-    - echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
+    # extract version number from package.json, to make it available in the app
+    - >
+      echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
+    # move all variables from the from the CI / CD into the build variables
     - cat .env >> build.env
-    - echo "NAMESPACE=envidat-frontend" >> build.env
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
         echo "CI_COMMIT_REF_NAME=dev" >> build.env
       fi
-    - echo CHART_VERSION=$(yq '.version' chart/Chart.yaml) >> build.env
+    # bash "source" command loads all the variables from the file
     - source build.env
-    - >
-      echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
-      >> build.env
+    # extract version number from package.json, to make it available in the app (to be able to use VERSION)
+    # - >
+    #  echo "IMAGE_NAME=${INTERNAL_REG}/envidat-frontend:${VERSION}-${CI_COMMIT_REF_NAME}"
+    #  >> build.env
+    - echo "BUILD_NAME=${VERSION}-${CI_COMMIT_REF_NAME}" >> build.env
+    - echo "BUILD_ZIP_NAME=envidat-frontend-${VERSION}-${CI_COMMIT_REF_NAME}.zip" >> build.env
+    - echo "content of build.env"
+    - cat build.env
   artifacts:
     reports:
       dotenv: build.env
 
-run-tests:
-  extends: .trigger-rules
-  stage: test
-  image: docker.io/node:16
-  cache:
-    key: node-modules
-    paths:
-      - node_modules/
-    policy: pull-push
-  before_script:
-    - npm ci
-  script:
-    - npm run test
-
-# visual-regression:
-#   extends: .trigger-rules
-#   stage: visual-regression
-#   image: docker.io/node:16
-#   cache:
-#     key: node-modules
-#     paths:
-#       - node_modules/
-#     policy: pull
-#   before_script:
-#     - npm ci
-#   script:
-#     - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes
-
 modify-env:
   extends: .trigger-rules
   stage: config
-  image: docker.io/python:3.9-alpine
-  cache:
-    key: dotenv-config
-    paths:
-      - .env.production
-    policy: push
+  image: docker.io/python:3.9-alpine3.17
+  dependencies:
+    - set-vars
   before_script:
     - pip install --upgrade pip
     - pip install python-dotenv==0.19.*
   script:
-    - "python -c
-      \"import os;
-      import dotenv;
-      file = '.env.production';
-      branch = os.getenv('CI_COMMIT_REF_NAME'); \
-      \
-      key = 'VITE_API_ROOT';
-      value = 'https://envidat.ch' if branch == 'main' \
-      else f'https://ckan-{branch}.envidat.ch';
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_CONFIG_URL';
-      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json';
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_ENVIDAT_DOMAIN';
-      value = 'https://frontend.s3-website-zh.os.switch.ch' \
-      if branch == 'main' \
-      else ( \
-          f'https://frontend-{branch}.s3-website-zh.os.switch.ch' \
-      );
-      dotenv.set_key(file, key, value, quote_mode='never');
-      \
-      key = 'VITE_OTEL_NAME';
-      value = f'frontend-{branch}';
-      dotenv.set_key(file, key, value, quote_mode='never')\"
-      "
+    - |
+      python -c "import os
+      import dotenv
 
-image-build:
-  extends: .trigger-rules
-  stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  cache:
-    key: dotenv-config
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
+
+      key = 'VITE_DOMAIN'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_API_ROOT'
+      value = f'https://{branch}.envidat.ch'
+      if branch == 'main' or branch == 'beta':
+          value = 'https://envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_CONFIG_URL'
+      value = f'https://frontend-config.s3-zh.os.switch.ch/{branch}.json'
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      if branch == 'staging' or branch == 'develop':
+          value = 'true'
+      dotenv.set_key(file, key, value, quote_mode='never') "
+    - echo "created content for .env.production:"
+    - cat .env.production
+  artifacts:
+    name: "environment variables"
     paths:
       - .env.production
-    policy: pull
-  before_script:
-    - mkdir -p /kaniko/.docker
-    - >
-      echo "{\"auths\":{\"${INTERNAL_REG}\":{\"auth\":\"$(printf
-      "%s:%s" "${IMAGE_REGISTRY_USER}" "${IMAGE_REGISTRY_PASS}"
-      | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-  script:
-    - >
-      /kaniko/executor
-      --force
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --target prod
-      --cache=true
-      --destination "${IMAGE_NAME}"
-      --build-arg APP_VERSION="${VERSION}"
-      --build-arg MAINTAINER_APP="${MAINTAINER_APP}"
-      --build-arg MAINTAINER_CD="${MAINTAINER_CD}"
-      --build-arg INTERNAL_REG="${INTERNAL_REG}"
-      --build-arg EXTERNAL_REG="${EXTERNAL_REG}"
 
-tag-commit-sha:
+install-node:
+  extends:
+    - .trigger-rules
+    - .node_cache
+  stage: config
+  image: docker.io/node:18.18.2-alpine3.17
+  cache:
+    # overwrite the global caching definitions with
+    # pull-push to be able to update the node_modules in the cache
+    - key:
+        files:
+          - package-lock.json
+        prefix: "package-lock"
+      paths:
+        - .npm/
+      when: on_success
+      policy: pull-push
+      untracked: true
+  script:
+#    - echo "the cache work if node_modules and .npm/ folders are available"
+#    - ls -a
+    - npm config set cache .npm/
+#    - npm cache verify
+    - npm ci --prefer-offline --no-audit
+#    - echo "Check afterwards how the folders are"
+#    - ls -a
+  artifacts:
+    name: "node dependencies"
+    # stores node_modules as an artifact to be used in the next jobs
+    # caching isn't always guaranteed to work
+    paths:
+      - node_modules
+
+run-tests:
+  extends:
+    - .trigger-rules
+    - .node_cache
+  stage: test
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    - modify-env
+    - install-node
+  script:
+    - npm run test
+
+
+build-storybook:
+  extends:
+    - .trigger-rules
+    - .node_cache
+  stage: build
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build storybook
+    - install-node
+  script:
+    - npm run build-storybook -- -o ./storybook --loglevel error --disable-telemetry
+  artifacts:
+    name: "storybook build"
+    # keep the storybook for 7 days to be able to trigger the chromatic-deployment
+    expire_in: 7 day
+    # stores the storybook build as an artifact to be used in the next stages
+    paths:
+      - storybook
+
+build-app:
+  extends:
+    - .trigger-rules
+    - .node_cache
+  stage: build
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  script:
+    - npm run build -- --logLevel error
+  artifacts:
+    name: "frontend build "
+    expire_in: 1 day
+    # stores the built app code
+    paths:
+      - dist
+
+combine-builds:
   extends: .trigger-rules
-  stage: package
-  image: docker.io/regclient/regctl:v0.3-alpine
+  stage: build
+  image: docker.io/alpine:3.15
   variables:
     GIT_STRATEGY: none
-  before_script:
-    - export REG_HOST=${INTERNAL_REG%/*}
-    - >
-      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
-      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
-      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
+  needs:
+    # needs the artifact: the build of the frontend app
+    - build-app
+    # needs the artifact: storybook
+    - build-storybook
   script:
-      - >
-        regctl --verbosity debug image copy
-        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
+    - echo "Check for the artifacts in the filesystem"
+    # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    - ls -l
+  artifacts:
+    name: "frontend build $CI_COMMIT_REF_NAME"
+    # stores the combined built code
+    paths:
+      - ./
+
+
+deploy-chromatic:
+  extends: .node_cache
+  stage: deploy
+  image: docker.io/node:18.18.2-alpine3.17
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the artifact: config and environment variables
+    - modify-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+    # needs the artifact: storybook
+    - build-storybook
+  script:
+    # manually deploy the storybook build to chromatic for visual regression testing
+    - npx chromatic --project-token=${CHROMATIC_PROJECT_TOKEN} --exit-zero-on-changes --storybook-build-dir ./storybook
+  when: manual
+
+#tag-commit-sha:
+#  extends: .trigger-rules
+#  stage: package
+#  image: docker.io/regclient/regctl:v0.3-alpine
+#  variables:
+#    GIT_STRATEGY: none
+#  before_script:
+#    - export REG_HOST=${INTERNAL_REG%/*}
+#    - >
+#      echo "{\"hosts\":{\"${REG_HOST}\":{\"tls\":\"enabled\",\"hostname\":
+#      \"${REG_HOST}\",\"user\":\"${IMAGE_REGISTRY_USER}\",\"pass\":
+#      \"${IMAGE_REGISTRY_PASS}\"}}}" >> /home/appuser/.regctl/config.json
+#  script:
+#      - >
+#        regctl --verbosity debug image copy
+#        "${IMAGE_NAME}" "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
+
+
+publish-build:
+  extends: .trigger-rules
+  stage: deploy
+  image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
+  needs:
+    # needs the enviromental variables for the version number
+    - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
+    # needs the artifact: the build of the frontend app and storybook build
+    - combine-builds
+  before_script:
+    - apk add curl zip --no-cache
+  script:
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to publish build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "to location ${BUILD_LOCATION}"
+    - zip -r ${BUILD_ZIP_NAME} ./
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      --upload-file ${BUILD_ZIP_NAME} \
+      "${PUBLISH_LOCATION}"
+
 
 rclone-sync:
   extends: .trigger-rules
   stage: deploy
-  image: "${INTERNAL_REG}/envidat-frontend:${CI_COMMIT_SHA}"
+  image: docker.io/alpine:3.15
+  needs:
+    # needs the enviromental variables for the version number
+    - set-vars
+    # needs the published build for the app and it's storybook
+    - publish-build
   variables:
     GIT_STRATEGY: none
     RCLONE_CONFIG_SWITCH_TYPE: 's3'
@@ -198,49 +321,146 @@ rclone-sync:
     - curl -O https://downloads.rclone.org/v1.59.0/rclone-v1.59.0-linux-amd64.zip
     - unzip rclone-v1.59.0-linux-amd64.zip
     - cp rclone-v1.59.0-linux-amd64/rclone /usr/bin/
+    - rm rclone-v1.59.0-linux-amd64.zip
+    - rm -rf rclone-v1.59.0-linux-amd64
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "main" ]; then
         BUCKET_NAME="frontend"
       else
         BUCKET_NAME="frontend-${CI_COMMIT_REF_NAME}"
       fi
+      if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
+        BUCKET_NAME="frontend-dev"
+      fi
+      echo "Going to rclone sync to the bucket: '${BUCKET_NAME}'"
   script:
-    - >
-      rclone --verbose sync
-      /usr/share/nginx/html/ "switch:${BUCKET_NAME}"
+    - export PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/envidat-frontend-${CI_COMMIT_REF_NAME}/${BUILD_NAME}/${BUILD_ZIP_NAME}"
+    - echo "Going to pull build ${BUILD_NAME} with zip name ${BUILD_ZIP_NAME}"
+    - echo "from location ${PUBLISH_LOCATION}"
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      "${PUBLISH_LOCATION}" \
+      -o ${BUILD_ZIP_NAME}
+    # use -q for quiet to not list all the files
+    - unzip -q ${BUILD_ZIP_NAME}
+    - rm ${BUILD_ZIP_NAME}
+    - ls -l
+    - echo "going to rclone sync from ./ to switch:${BUCKET_NAME}"
+    - rclone sync ./ "switch:${BUCKET_NAME}" --verbose
 
-collect:
-  stage: release
-  image: "${INTERNAL_REG}/envidat-frontend:${VERSION}-main"
-  rules:
-    - if: $CI_COMMIT_TAG
+
+modify-box-env:
+  when: manual
+  stage: config
+  image: docker.io/python:3.9-alpine3.17
+  dependencies:
+    - set-vars
+  before_script:
+    - pip install --upgrade pip
+    - pip install python-dotenv==0.19.*
+  script:
+    # specific setup for 'envidat in a box' which runs
+    # the frontend locally, that's why it needs the VITE_API_ROOT and VITE_CONFIG_URL
+    # set to work from the local file system / connect to localhost for the backend
+    - |
+      python -c "import os
+      import dotenv
+
+      file = '.env.production'
+      branch = os.getenv('CI_COMMIT_REF_NAME')
+
+      key = 'VITE_DOMAIN'
+      value = f'https://www.envidat.ch'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_API_ROOT'
+      value = f'https://localhost:8989'
+      dotenv.set_key(file, key, value, quote_mode='never')
+
+      key = 'VITE_CONFIG_URL'
+      value = f'./config.json'
+      dotenv.set_key(file, key, value, quote_mode='never')
+      
+      key = 'VITE_BUILD_SOURCEMAPS'
+      value = 'false'
+      dotenv.set_key(file, key, value, quote_mode='never') "
+    - echo "created content for .env.production:"
+    - cat .env.production
+  artifacts:
+    name: "frontend-in-a-box environment variables"
+    paths:
+      - .env.production
+
+build-box-app:
+  extends:
+    - .node_cache
+  stage: build
+  image: docker.io/node:18.18.2-alpine3.17
+  needs:
+    # needs environment variables from the frontend in a box setup
+    - modify-box-env
+    # needs the artifact: node_modules to build the app
+    - install-node
+  script:
+    - echo "checked content for .env.production:"
+    - cat .env.production
+    - npm run build -- --logLevel error
+  artifacts:
+    name: "frontend envidat-in-a-box build"
+    expire_in: 1 day
+    paths:
+      - dist
+
+combine-box-builds:
+  stage: build
+  image: docker.io/alpine:3.15
   variables:
     GIT_STRATEGY: none
-  script:
-    - echo "Copying build dist to project dir"
-    - mkdir -p $CI_PROJECT_DIR
-    - mv /usr/share/nginx/html $CI_PROJECT_DIR/envidat-frontend
-    - echo "Creating frontend artifact."
-  artifacts:
-    name: frontend-${VERSION}
-    paths:
-      - ./envidat-frontend
-
-release:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:v0.13.0
-  rules:
-    - if: $CI_COMMIT_TAG
-  script:
-    - echo "Running the release job."
   needs:
-    - job: collect
-      artifacts: true
-  release:
-    name: 'Release $CI_COMMIT_TAG'
-    description: 'Release created using the release-cli.'
-    tag_name: $CI_COMMIT_TAG
-    assets:
-      links:
-        - name: 'Frontend build'
-          url: 'https://gitlabext.wsl.ch/EnviDat/EnviDat-Frontend/-/jobs/artifacts/${CI_COMMIT_TAG}/download?job=collect'
+    # needs the artifact: the build of the frontend app
+    - build-box-app
+  script:
+    # - echo "Check for the artifacts in the filesystem"
+    # - ls -l
+    # - ls dist/ -l
+    # - ls storybook/ -l
+    # copy all files from the dist folder into root
+    - cp -r dist/* ./
+    # - ls -l
+    # remove the dist folder recursively
+    - rm -rf dist
+    - ls -l
+  artifacts:
+    name: "frontend-in-a-box build"
+    # stores the combined built code
+    paths:
+      - ./
+
+publish-box-build:
+  stage: deploy
+  image: docker.io/alpine:3.15
+  variables:
+    GIT_STRATEGY: none
+    BOX_BUILD_ZIP_NAME: 'frontend-in-a-box.zip'
+  needs:
+    # needs the enviromental variables for the version number
+    - set-vars
+    # make sure to wait for the tests to run correctly
+    - run-tests
+    # needs the artifact: of the frontend in a box build
+    - combine-box-builds
+  before_script:
+    - apk add curl zip --no-cache
+  script:
+    - export BOX_PUBLISH_LOCATION="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/frontend-in-a-box/frontend-in-a-box-${CI_COMMIT_REF_NAME}/${BOX_BUILD_ZIP_NAME}"
+    - echo "Going to publish build an frotend build for 'envidat in a box' ${BUILD_NAME} with zip name ${BOX_BUILD_ZIP_NAME}"
+    - echo "to build location ${BOX_PUBLISH_LOCATION}"
+    - zip -r ${BOX_BUILD_ZIP_NAME} ./
+    # - ls -l
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+      --user "${CI_DEPLOY_USER}:${CI_DEPLOY_PASSWORD}" \
+      --upload-file ${BOX_BUILD_ZIP_NAME} \
+      "${BOX_PUBLISH_LOCATION}"

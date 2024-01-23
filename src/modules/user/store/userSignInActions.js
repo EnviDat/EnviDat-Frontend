@@ -16,7 +16,7 @@ import { urlRewrite } from '@/factories/apiFactory';
 import { extractBodyIntoUrl } from '@/factories/stringFactory';
 
 import {
-  ACTION_GET_USER_CONTEXT,
+  ACTION_OLD_GET_USER_CONTEXT,
   ACTION_USER_EDITING_UPDATE,
   SIGNIN_USER_ACTION,
   GET_USER_CONTEXT,
@@ -26,7 +26,7 @@ import {
   requestMethodsForLoginActions,
   USER_SIGNIN_NAMESPACE,
   ACTION_GET_USER_CONTEXT_TOKEN,
-  ACTION_API_TOKEN,
+  ACTION_USER_SIGNIN_TOKEN,
 } from './userMutationsConsts';
 
 
@@ -34,7 +34,7 @@ import {
 let API_BASE = '';
 let API_ROOT = '';
 
-const useTestdata = import.meta.env.VITE_USE_TESTDATA === 'true';
+const useTestdata = import.meta.env?.VITE_USE_TESTDATA === 'true';
 
 if (!useTestdata) {
   API_BASE = import.meta.env.VITE_API_BASE_URL || '/api/action/';
@@ -69,7 +69,7 @@ export default {
         if (payload.commit) {
           commit(`${payload.mutation}_SUCCESS`, response.data.result);
 
-          if (actionUrl === ACTION_API_TOKEN()) {
+          if (actionUrl === ACTION_USER_SIGNIN_TOKEN()) {
             // make an additional call with the token to get the cookie set
             const token = response.data.result.token;
 
@@ -112,7 +112,7 @@ export default {
 
       await dispatch(SIGNIN_USER_ACTION,
         {
-          action: ACTION_GET_USER_CONTEXT,
+          action: ACTION_OLD_GET_USER_CONTEXT,
           commit: true,
           mutation: GET_USER_CONTEXT,
         });

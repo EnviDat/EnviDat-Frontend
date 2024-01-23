@@ -10,34 +10,56 @@
  */
 
 import ModeView from '@/components/Layouts/ModeView.vue';
-import { SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { EDNA_MODE, SWISSFL_MODE } from '@/store/metadataMutationsConsts';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 
 export default {
   title: '14 Mode / Mode View',
+  component: ModeView,
   decorators: [],
   parameters: {},
 };
 
-export const SwissForestLabView = () => ({
-components: { ModeView },
-  template: `
-  <v-row>
+export const Empty = { args: {} };
+export const SwissForestLabMode = {
+  args: {
+    mode: SWISSFL_MODE,
+    closeCallback: () => {},
+  },
+};
 
-    <v-col cols="12" style="border: solid 1px;" >
-      <mode-view :mode="SWISSFL_MODE" />
-    </v-col>
+export const SwissForestLabModeCompact = {
+  args: {
+    ...SwissForestLabMode.args,
+    compact: true,
+  },
+};
 
-    <v-col cols="12" style="border: solid 1px;" >
-      <mode-view :mode="SWISSFL_MODE" :compact="true" />
-    </v-col>
+export const EDNAMode = {
+  args: {
+    mode: EDNA_MODE,
+    closeCallback: () => {},
+  },
+};
 
-    <v-col cols="12" style="border: solid 1px;" >
-      <mode-view :mode="emptyMode" />
-    </v-col>
+export const EDNAModeCompact = {
+  args: {
+    ...EDNAMode.args,
+    compact: true,
+  },
+};
 
-  </v-row> `,
-  data: () => ({
-    SWISSFL_MODE,
-    emptyMode: '',
-  }),
-});
+export const MobileEDNAMode = {
+  args: { ...EDNAModeCompact.args },
+  parameters: mobileViewportParams,
+};
+
+export const MobileLargeEDNAMode = {
+  args: { ...EDNAModeCompact.args },
+  parameters: mobileLargeViewportParams,
+};
+
+export const TabletEDNAMode = {
+  args: { ...EDNAModeCompact.args },
+  parameters: tabletViewportParams,
+};

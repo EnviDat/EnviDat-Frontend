@@ -11,7 +11,6 @@
  */
 
 /* eslint-disable import/no-extraneous-dependencies */
-import SigninView from '@/modules/user/components/SigninView.vue';
 import WelcomeCard from '@/components/Cards/WelcomeCard.vue';
 
 import NotFoundCard from '@/components/Cards/NotFoundCard.vue';
@@ -120,38 +119,5 @@ export const NoUserDatasetsViews = () => ({
         image: UserNotFound2,
       },
     }),
-    methods,
-  });
-
-export const SignInViews = () => ({
-    components: { SigninView },
-    template: `
-    <v-row >
-      <v-col cols="12">
-        <Signin-view />
-      </v-col>
-
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" requestLoading />
-      </v-col>
-
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" :requestSuccess="true" />
-      </v-col>
-
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" prefilledKey="01234567890123456789012345678901" />
-      </v-col>
-
-      <v-col cols="12">
-        <Signin-view prefilledEmail="dominik.haas@wsl.ch" prefilledKey="01234567890123456789012345678901" signInLoading />
-      </v-col>
-
-      <v-col cols="12">
-        <Signin-view signedInEmail="dominik.haas@wsl.ch" signedIn  />
-      </v-col>
-
-    </v-row>
-    `,
     methods,
   });

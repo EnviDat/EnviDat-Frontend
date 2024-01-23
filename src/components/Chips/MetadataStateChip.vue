@@ -16,8 +16,8 @@
                v-bind="props"
                align="center"
                 no-gutters>
-          <v-col >{{ showContent ? stateText : stateText.substring(0, 1) }}</v-col>
-          <v-col v-show="showContent" class="pl-1"><v-icon>{{ stateIcon }}</v-icon></v-col>
+          <v-col ><v-icon>{{ stateIcon }}</v-icon></v-col>
+          <v-col class="pl-1" >{{ showContent ? stateText : ''  }}</v-col>
         </v-row>
       </template>
 

@@ -80,13 +80,11 @@
  */
 
 import axios from 'axios';
-import * as tRewind from '@turf/rewind';
+import rewind from '@turf/rewind';
 import { mapGetters, mapState } from 'vuex';
-import {
-  BROWSE_PATH,
-  METADATADETAIL_PAGENAME,
-  METADATAEDIT_PAGENAME,
-} from '@/router/routeConsts';
+import { useModeStore } from '@/modules/browse/store/modeStore';
+
+import { BROWSE_PATH, METADATADETAIL_PAGENAME, METADATAEDIT_PAGENAME } from '@/router/routeConsts';
 
 import {
   ACTION_USER_SHOW,
@@ -95,10 +93,7 @@ import {
   USER_NAMESPACE,
   USER_SIGNIN_NAMESPACE,
 } from '@/modules/user/store/userMutationsConsts';
-import {
-  SET_APP_BACKGROUND,
-  SET_CURRENT_PAGE,
-} from '@/store/mainMutationsConsts';
+import { SET_APP_BACKGROUND, SET_CURRENT_PAGE } from '@/store/mainMutationsConsts';
 import {
   CLEAN_CURRENT_METADATA,
   CLEAR_SEARCH_METADATA,
@@ -115,16 +110,11 @@ import {
   createPublications,
   createRelatedDatasets,
   createResources,
-  getMetadataVisibilityState,
 } from '@/factories/metaDataFactory';
 
 import { getFullAuthorsFromDataset } from '@/factories/authorFactory';
 
-import {
-  getConfigFiles,
-  getConfigUrls,
-  getFeatureCollectionFromGcNetStations,
-} from '@/factories/chartFactory';
+import { getConfigFiles, getConfigUrls, getFeatureCollectionFromGcNetStations } from '@/factories/chartFactory';
 
 import {
   AUTHOR_SEARCH_CLICK,
@@ -135,10 +125,7 @@ import {
   GCNET_PREPARE_DETAIL_CHARTS,
 } from '@/factories/eventBus';
 
-import {
-  enhanceElementsWithStrategyEvents,
-  enhanceResourcesWithMetadataExtras,
-} from '@/factories/strategyFactory';
+import { enhanceElementsWithStrategyEvents, enhanceResourcesWithMetadataExtras } from '@/factories/strategyFactory';
 
 import TwoColumnLayout from '@/components/Layouts/TwoColumnLayout.vue';
 
@@ -182,11 +169,8 @@ export default {
    * @description load all the icons once before the first component's rendering.
    */
   beforeMount() {
-    this.doiIcon = this.mixinMethods_getIcon('doi');
     this.fileSizeIcon = this.mixinMethods_getIcon('fileSize');
     this.fileIcon = this.mixinMethods_getIcon('file');
-    this.dateCreatedIcon = this.mixinMethods_getIcon('dateCreated');
-    this.lastModifiedIcon = this.mixinMethods_getIcon('dateModified');
 
     window.scrollTo(0, 0);
   },
@@ -233,12 +217,17 @@ export default {
       currentMetadataContent: `${METADATA_NAMESPACE}/currentMetadataContent`,
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
       authorsMap: `${METADATA_NAMESPACE}/authorsMap`,
-      iconImages: 'iconImages',
-      cardBGImages: 'cardBGImages',
       appScrollPosition: 'appScrollPosition',
       asciiDead: `${METADATA_NAMESPACE}/asciiDead`,
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
+    metadataContent() {
+      if (this.mode) {
+        return this.modeDataset;
+      }
+
+      return this.currentMetadataContent;
+    },
     hasGcnetStationConfig() {
       return this.configInfos?.stationsConfigUrl !== null;
     },
@@ -295,9 +284,9 @@ export default {
     metadataId() {
       return this.$route.params.metadataid;
     },
-    /**
-     * @returns {Boolean} if the placeHolders should be shown be somethings are still loading
-     */
+    mode() {
+      return this.$route.query.mode ? this.$route.query.mode.toLowerCase() : undefined;
+    },
     showPlaceholder() {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
     },
@@ -354,7 +343,7 @@ export default {
   methods: {
     setGeoServiceLayers(location, layerConfig) {
       try {
-        location = location ? tRewind(location.geoJSON) : null;
+        location = location ? rewind(location.geoJSON) : null;
       } catch (error) {
         this.geoServiceLayersError = error;
       }
@@ -458,7 +447,7 @@ export default {
      * @description
      */
     createMetadataContent() {
-      const currentContent = this.currentMetadataContent;
+      const currentContent = this.metadataContent;
 
       // always initialize because when changing the url directly the reloading
       // would not work and the old content would be loaded
@@ -506,7 +495,7 @@ export default {
 
         this.funding = createFunding(currentContent);
 
-        this.loadAuthors(currentContent);
+        // authors are going to be loaded via the watch when the AuthorsMap is available
       }
     },
     loadAuthors(currentContent) {
@@ -527,25 +516,22 @@ export default {
     },
     loadResources() {
       const { components } = this.$options;
-      const currentContent = this.currentMetadataContent;
+      const currentContent = this.metadataContent;
 
       this.resources = createResources(currentContent, this.user, this.userOrganizationIds) || {};
 
       const license = createLicense(currentContent);
 
-      this.resources.doiIcon = this.doiIcon;
       this.resources.fileSizeIcon = this.fileSizeIcon;
       this.resources.fileIcon = this.fileIcon;
-      this.resources.dateCreatedIcon = this.dateCreatedIcon;
-      this.resources.lastModifiedIcon = this.lastModifiedIcon;
 
       if (this.resources.resources) {
         this.configInfos = getConfigFiles(this.resources.resources);
 
         enhanceElementsWithStrategyEvents(this.resources.resources, undefined, true);
-        enhanceResourcesWithMetadataExtras(this.currentMetadataContent.extras, this.resources.resources);
+        enhanceResourcesWithMetadataExtras(this.metadataContent.extras, this.resources.resources);
 
-        this.resources.dates = getFrontendDates(this.currentMetadataContent.date);
+        this.resources.dates = getFrontendDates(this.metadataContent.date);
       }
 
       this.$nextTick(() => {
@@ -652,7 +638,7 @@ export default {
      * @returns {any}
      */
     isCurrentIdOrName(idOrName) {
-      return this.currentMetadataContent?.id === idOrName || this.currentMetadataContent?.name === idOrName;
+      return this.metadataContent?.id === idOrName || this.metadataContent?.name === idOrName;
     },
     /**
      * @description
@@ -661,7 +647,7 @@ export default {
     catchTagClicked(tagName) {
       const stringTags = this.mixinMethods_convertArrayToUrlString([tagName]);
 
-      const query = {};
+      const query = this.$route.query;
       query.tags = stringTags;
 
       // clear the search result here, in case this metadata entry
@@ -689,7 +675,7 @@ export default {
     },
     catchAuthorClicked(authorGivenName, authorLastName) {
 
-      const query = {};
+      const query = this.$route.query;
 
       // make sure to remove the ascii marker for dead authors for the search
       // so the special characters won't case issues
@@ -736,6 +722,13 @@ export default {
      * Either loads it from the backend via action or creates it from the localStorage.
      */
     async loadMetaDataContent() {
+      if (this.mode) {
+        const modeDatasets = this.modeStore.getDatasets(this.mode);
+        const datasets = Object.values(modeDatasets);
+        this.modeDataset = datasets.filter(entry => entry.name === this.metadataId)[0];
+        // console.log(this.modeDataset);
+      }
+
       if (!this.loadingMetadatasContent
           && !this.isCurrentIdOrName(this.metadataId) ) {
         // in case of navigating into the page load the content directly via Id
@@ -744,7 +737,7 @@ export default {
         });
       } else {
         // in case of entring the page directly via Url without having loaded the rest of the app.
-        // this call is to initiailze the components in the their loading state
+        // this call is to initialize the components in the their loading state
         this.$nextTick(() => {
           this.createMetadataContent();
 
@@ -830,6 +823,11 @@ export default {
         this.fetchUserDatasets();
       }
     },
+    authorsMap() {
+      if (this.authorsMap) {
+        this.loadAuthors(this.metadataContent);
+      }
+    },
   },
   components: {
     MetadataHeader,
@@ -844,6 +842,8 @@ export default {
     MetadataGeo,
   },
   data: () => ({
+    modeStore: useModeStore(),
+    modeDataset: null,
     PageBGImage: 'app_b_browsepage',
     baseStationURL: 'https://www.envidat.ch/data-files/',
     baseStationURLTestdata: './testdata/',
@@ -867,19 +867,8 @@ export default {
     authors: null,
     amountOfResourcesToShowDetailsLeft: 4,
     notFoundBackPath: 'browse',
-    doiIcon: null,
     fileSizeIcon: null,
     fileIcon: null,
-    dateCreatedIcon: null,
-    lastModifiedIcon: null,
-    modalTitle: '',
-    gcnetModalComponent: null,
-    textPreviewComponent: null,
-    textPreviewUrl: null,
-    dataIframeComponent: null,
-    dataPreviewUrl: null,
-    fullScreenComponent: null,
-    fullScreenConfig: null,
     eventBus,
     stationsConfig: null,
     currentStation: null,
