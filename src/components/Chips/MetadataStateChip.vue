@@ -3,7 +3,7 @@
     class="stateChip"
     :class="{
         stateChipHover: !this.showContent,
-        'px-3': true,
+        'px-2': true,
       }"
     @mouseover="hover = true"
     @mouseleave="hover = false"
@@ -16,7 +16,9 @@
                align="center"
                 no-gutters>
           <v-col ><v-icon>{{ stateIcon }}</v-icon></v-col>
-          <v-col class="pl-1" >{{ showContent ? stateText : ''  }}</v-col>
+          <v-col :class="showContent ? 'pl-1' : ''" >
+            {{ showContent ? stateText : ''  }}
+          </v-col>
         </v-row>
       </template>
 
