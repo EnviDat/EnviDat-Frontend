@@ -3,7 +3,6 @@ import axios from 'axios';
 
 import {
   ACTION_METADATA_REVIEW,
-  ACTION_METADATA_REVIEW_RESOURCES,
   METADATA_REVIEW_STORE,
 } from '@/store/metadataMutationsConsts';
 
@@ -23,18 +22,10 @@ const initState = {
   loadingMetadata: false,
   metadata: {},
   metadataError: null,
-  loadingResources: false,
-  resources: [],
-  resourcesError: null,
 }
 
 export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
   state: () => ({ ...initState }),
-/*
-  getters: {
-    doubleCount: (state) => state.count * 2,
-  },
-*/
   actions: {
     async loadReviewMetadata(metadataId) {
 
@@ -50,22 +41,6 @@ export const useReviewStore = defineStore(METADATA_REVIEW_STORE, {
         this.metadataError = e;
       } finally {
         this.loadingMetadata = false;
-      }
-    },
-    async loadReviewResources(metadataId) {
-
-      this.loadingResources = true;
-      const actionUrl = ACTION_METADATA_REVIEW_RESOURCES();
-      const url = urlRewrite(`${actionUrl}?id=${metadataId}`, API_BASE, API_ROOT);
-
-      try {
-        const response= await axios.get(url);
-
-        this.resources = response.data.result;
-      } catch (e) {
-        this.resourcesError = e;
-      } finally {
-        this.loadingResources = false;
       }
     },
   },

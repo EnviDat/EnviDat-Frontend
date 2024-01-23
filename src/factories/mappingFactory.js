@@ -712,6 +712,8 @@ function mapCustomFields(fields, frontendToBackend = true) {
 }
 
 function formatDatesForFrontend(dates) {
+  if (!dates) return [];
+
   const formattedDates = [];
 
   for (let i = 0; i < dates.length; i++) {

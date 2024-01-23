@@ -109,11 +109,3 @@ export const ACTION_METADATA_REVIEW = () => {
 
   return 'review';
 };
-
-export const ACTION_METADATA_REVIEW_RESOURCES = () => {
-  if (import.meta.env?.DEV && useTestdata) {
-    return './testdata/review_resources.json';
-  }
-
-  return 'review_resources';
-};
