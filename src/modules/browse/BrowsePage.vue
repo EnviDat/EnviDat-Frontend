@@ -26,12 +26,14 @@
                     @onScroll="storeScroll"
                     :showSearch="true"
                     :isAuthorSearch="isAuthorSearch"
+                    :isShallow="isShallowData"
                     :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
                     @authorSearchClick="catchAuthorSearchClick"
+                    @shallowRealClick="catchShallowRealClick"
                     @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
@@ -72,7 +74,7 @@ import {
 } from '@/router/routeConsts';
 
 import {
-  CLEAR_SEARCH_METADATA,
+  CLEAR_SEARCH_METADATA, EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -338,6 +340,17 @@ export default {
           newIsAuthorSearchParameter);
 
     },
+    catchShallowRealClick() {
+      console.log(`clicked on shallow: ${this.isShallowData}`);
+
+      if (this.mode === EDNA_MODE) {
+        this.isShallowData = !this.isShallowData;
+        const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+        modeMetadata.isShallow = this.isShallowData;
+        this.modeStore.loadModeDatasets(EDNA_MODE);
+      }
+
+    },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
       // console.log(`clicked on ${organization}`);
@@ -498,6 +511,7 @@ export default {
     showMapFilter: false,
     smallMapHeight: 250,
     largeMapHeight: 325,
+    isShallowData: true,
     mapFilterVisibleIds: [],
     preenabledControls: [
       LISTCONTROL_LIST_ACTIVE,

@@ -13,6 +13,7 @@
 
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
 import {
+  EDNA_MODE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
@@ -98,6 +99,17 @@ export const BaseIconSwitches = () => ({
                       @clicked="active2 = !active2"/>
     </v-col>
 
+    <v-col cols="12">
+      BaseIconSwitch active clickable
+    </v-col>
+    
+    <v-col class="shrink">
+      <BaseIconSwitch :active="active2"
+                      materialIconName="layers"
+                      tooltipText="Type of dataset tool tip"
+                      @clicked="active2 = !active2"/>
+    </v-col>
+
   </v-row>
   `,
   data: () => ({
@@ -155,6 +167,13 @@ PrefilledAuthorSearch.args = {
   showSearch: true,
   isAuthorSearch: true,
   searchTerm: 'In Memory of Koni Steffen',
+}
+
+export const ToggleShallowReal = Template2.bind({});
+ToggleShallowReal.args = {
+  ...PrefilledSearchEnabled.args,
+  isShallow: true,
+  mode: EDNA_MODE,
 }
 
 export const PrefilledWithSearchCount = Template2.bind({});

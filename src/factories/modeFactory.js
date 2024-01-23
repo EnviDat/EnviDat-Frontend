@@ -47,20 +47,6 @@ function getEDNAIcons() {
 }
 
 /**
- * loads the dataset specific for the eDNA mode based on its modeMetadata
- *
- * @param {object} modeMetadata
- * @returns {Promise<any>}
- */
-const loadEDNADatasets = async (modeMetadata) => {
-  const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
-  const response = await fetch (url);
-  const data = await response.json();
-
-  return data;
-}
-
-/**
  * loads the dataset specific for the swissFL mode based on its modeMetadata
  *
  * @param {object} modeMetadata
@@ -88,6 +74,22 @@ const loadSwissFLDatasets = async (modeMetadata) => {
 
   return swissFLDatasets;
 }
+/**
+ * loads the dataset specific for the eDNA mode based on its modeMetadata
+ *
+ * @param {object} modeMetadata
+ * @returns {Promise<any>}
+ */
+const loadEDNADatasets = async (modeMetadata) => {
+  if(modeMetadata.isShallow) {
+    const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    return data;
+  }
+  return loadSwissFLDatasets(modeMetadata);
+}
 
 export const modes = [
   {
@@ -113,6 +115,7 @@ export const modes = [
     extrasKey: EDNA_MODE_EXTRAS_KEY,
     datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
     loadDatasets: loadEDNADatasets,
+    isShallow: true,
   },
 ];
 
