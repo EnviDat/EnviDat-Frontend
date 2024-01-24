@@ -99,3 +99,13 @@ export const ACTION_METADATA_UPDATE_EXISTING_KEYWORDS = () => {
 
   return 'tag_list';
 };
+
+export const METADATA_REVIEW_STORE = 'METADATA_REVIEW_STORE';
+
+export const ACTION_METADATA_REVIEW = () => {
+  if (import.meta.env?.DEV && useTestdata) {
+    return './testdata/review.json';
+  }
+
+  return 'review';
+};
