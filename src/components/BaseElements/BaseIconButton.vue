@@ -8,9 +8,9 @@
       v-if="$vuetify.display.mdAndUp && tooltipText"
       v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
     >
-      <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ props }">
         <v-btn
-          v-on="on"
+          v-bind="props"
           :style="{
             height: `${height}px`,
             width: `${height}px`,
@@ -52,6 +52,7 @@
 
           <v-icon
             v-if="materialIconName"
+            class="material-icons"
             :color="iconColor ? iconColor : 'primary'"
             :style="
               rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
@@ -69,6 +70,7 @@
 -->
     <v-btn
       style="margin: 0 !important;"
+      :elevation="isElevated ? 5 : 2"
       icon
       :variant="outlined ? 'outlined' : 'flat'"
       density="comfortable"

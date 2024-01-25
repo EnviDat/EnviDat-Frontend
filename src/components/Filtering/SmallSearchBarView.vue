@@ -1,5 +1,5 @@
 <template>
-  <v-card style="width: 100%;">
+  <v-card style="width: 100%;" >
     <v-container
       class=" fill-height"
       fluid

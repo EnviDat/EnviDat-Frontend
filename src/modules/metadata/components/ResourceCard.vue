@@ -8,19 +8,19 @@
     :loading="loadingColor"
   >
 
-    <v-card-title class="text-h5 resourceHeadline white--text">
+    <v-card-title class="text-h5 resourceHeadline">
       {{ resourceName }}
     </v-card-title>
 
     <v-card-text
-      class="pt-0 white--text"
+      class="pt-0"
       :class="{
         'pb-5': !showFullDescription,
         'pb-10': showFullDescription,
         'pr-2': showFullDescription,
         'pb-md-3': !showFullDescription,
         'pb-md-10': showFullDescription,
-      }"
+    }"
     >
       <v-container class="pa-0" fluid>
         <v-row no-gutters>
@@ -30,6 +30,10 @@
                 (!showFullDescription && !maxDescriptionLengthReached)
             "
             class="readableText resourceCardText heightAndScroll"
+            :class="{
+              'white--text': dark,
+              'black--text': !dark,
+            }"
             :style="
               `scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`
             "
@@ -170,11 +174,11 @@
       <v-row v-if="isProtected">
         <v-col>
           <div
-            class="fabMenu fabPosition elevation-2 ma-2 pl-2 pt-2"
+            class="fabMenu fabPosition elevation-5 ma-2 pl-2 pt-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
           >
             <v-icon
-              class="pl-1 pt-1"
+              class="pl-1 pt-1 material-icons"
               :class="downloadActive ? 'iconCircle' : ''"
               :disabled="!downloadActive"
               >
@@ -232,7 +236,10 @@ export default {
     format: String,
     twoColumnLayout: Boolean,
     height: String,
-    dark: Boolean,
+    dark: {
+      type: Boolean,
+      default: true,
+    },
     fileSizeIcon: String,
     isProtected: Boolean,
     fileExtensionIcon: Object,
@@ -465,13 +472,18 @@ export default {
   height: 100%;
   border-radius: 3px 3px;
   display: inherit;
-}
 
-.fabMenuHover:hover .v-icon,
-.fabMenuHover:active .v-icon {
-  border: 1px solid grey;
-  border-radius: 50%;
-  padding: 0 4px 4px 0;
+  .v-icon {
+    color: grey;
+    border: 1px solid grey;
+    border-radius: 50%;
+    padding: 0 4px 4px 0;
+  }
+
+  .lockedText {
+    display: inherit;
+    opacity: 1;
+  }
 }
 
 .lockedText {
@@ -479,11 +491,6 @@ export default {
   opacity: 0;
 }
 
-.fabMenuHover:hover .lockedText,
-.fabMenuHover:active .lockedText {
-  display: inherit;
-  opacity: 1;
-}
 
 .resourceInfo {
   font-size: 12px !important;

@@ -1,8 +1,7 @@
 <template>
   <v-tooltip bottom :disabled="$vuetify.display.xs || !iconTooltip">
-    <template v-slot:activator="{ on, props }">
+    <template v-slot:activator="{ props }">
       <v-row
-        v-on="on"
         v-bind="props"
         id="BaseIconLabelView"
         no-gutters
@@ -37,7 +36,7 @@
         <v-col v-if="materialIconName"
                cols="3"
                 class="flex-grow-0">
-          <v-icon class="pr-2">{{ materialIconName }}</v-icon>
+          <v-icon class="pr-2 material-icons">{{ materialIconName }}</v-icon>
         </v-col>
 
         <v-col v-if="label" cols="3" :style="textStyle">
