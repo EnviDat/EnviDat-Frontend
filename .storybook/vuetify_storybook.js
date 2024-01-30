@@ -5,6 +5,7 @@ import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 // load the icon font
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import './vuetify_storybook_styles.css';
 
 import config from '../src/plugins/vuetifyConfig';
 
