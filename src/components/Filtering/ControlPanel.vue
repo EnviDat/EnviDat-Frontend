@@ -42,13 +42,23 @@
 
         </v-col>
 
-        <v-col v-if="showSearch"
+        <v-col v-if="showSearch && mode !== EDNA_MODE"
                class="py-0 ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
                           materialIconName="account_circle"
                           @clicked="catchAuthorSearchClick" />
+
+        </v-col>
+
+        <v-col v-if="showSearch && mode === EDNA_MODE"
+               class="py-0 ml-sm-4 shrink">
+
+          <BaseIconSwitch :active="isShallow"
+                          :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
+                          materialIconName="layers"
+                          @clicked="catchShallowRealClick" />
 
         </v-col>
 
@@ -75,9 +85,6 @@
  * @summary filterable list of metadata cards
  * @author Dominik Haas-Artho
  *
- * Created at     : 2020-07-07 11:40:00
- * Last modified  : 2020-07-07 11:44:32
- *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
@@ -85,6 +92,7 @@ import SmallSearchBarView from '@/components/Filtering/SmallSearchBarView.vue';
 import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
+import {EDNA_MODE} from '@/store/metadataMutationsConsts';
 
 export default {
   name: 'ControlPanel',
@@ -102,6 +110,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    isShallow: {
+      type: Boolean,
+      default: false,
+    },
+    mode: String,
     searchTerm: String,
     searchCount: Number,
     searchBarPlaceholder: String,
@@ -118,6 +131,9 @@ export default {
     },
     catchAuthorSearchClick() {
       this.$emit('authorSearchClick');
+    },
+    catchShallowRealClick() {
+      this.$emit('shallowRealClick');
     },
     catchSearchCleared() {
       this.$emit('searchCleared');
@@ -143,6 +159,9 @@ export default {
       return `${this.fixedHeight}px`;
     },
   },
+  data: () => ({
+    EDNA_MODE,
+  }),
 };
 
 </script>

@@ -12,20 +12,24 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import ControlPanel from '@/components/Filtering/ControlPanel.vue';
+
 import {
+  EDNA_MODE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
-import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
+// import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+
 
 
 export default {
   title: '4 Filtering / filtering control panels',
-  component: BaseIconSwitch,
+  component: ControlPanel,
 };
 
+/*
 export const BaseIconSwitches = () => ({
   components: { BaseIconSwitch },
   template: `
@@ -98,6 +102,17 @@ export const BaseIconSwitches = () => ({
                       @clicked="active2 = !active2"/>
     </v-col>
 
+    <v-col cols="12">
+      BaseIconSwitch active clickable
+    </v-col>
+    
+    <v-col class="shrink">
+      <BaseIconSwitch :active="active2"
+                      materialIconName="layers"
+                      tooltipText="Type of dataset tool tip"
+                      @clicked="active2 = !active2"/>
+    </v-col>
+
   </v-row>
   `,
   data: () => ({
@@ -105,6 +120,7 @@ export const BaseIconSwitches = () => ({
     active2: false,
   }),
 })
+*/
 
 /*
 const Template = (args, { argTypes }) => ({
@@ -136,6 +152,8 @@ const Template2 = (args, { argTypes }) => ({
   </v-row>
 `,
 });
+
+
 export const EmptySearchDisabled = Template2.bind({});
 
 export const EmptyWithPlaceholder = Template2.bind({});
@@ -155,6 +173,13 @@ PrefilledAuthorSearch.args = {
   showSearch: true,
   isAuthorSearch: true,
   searchTerm: 'In Memory of Koni Steffen',
+}
+
+export const ToggleShallowReal = Template2.bind({});
+ToggleShallowReal.args = {
+  ...PrefilledSearchEnabled.args,
+  isShallow: true,
+  mode: EDNA_MODE,
 }
 
 export const PrefilledWithSearchCount = Template2.bind({});
@@ -208,3 +233,4 @@ MobileLargePrefilledSearchWithActiveControls.parameters = mobileLargeViewportPar
 export const TabletPrefilledSearchWithActiveControls = Template2.bind({});
 TabletPrefilledSearchWithActiveControls.args = { ...PrefilledSearchWithActiveControls.args };
 TabletPrefilledSearchWithActiveControls.parameters = tabletViewportParams;
+

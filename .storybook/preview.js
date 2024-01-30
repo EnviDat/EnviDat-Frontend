@@ -10,8 +10,6 @@ import Vue from 'vue';
 import globalMethods from '../src/factories/globalMethods';
 import { envidatViewportParameters } from '~/stories/js/envidatViewports';
 
-import vuetify_storybook_styles from './vuetify_storybook_styles.css';
-
 Vue.mixin(globalMethods);
 
 // read more: https://storybook.js.org/docs/react/writing-stories/naming-components-and-hierarchy

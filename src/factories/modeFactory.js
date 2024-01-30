@@ -46,26 +46,12 @@ function getEDNAIcons() {
 }
 
 /**
- * loads the dataset specific for the eDNA mode based on its modeMetadata
+ * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
  *
  * @param {object} modeMetadata
  * @returns {Promise<any>}
  */
-const loadEDNADatasets = async (modeMetadata) => {
-  const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
-  const response = await fetch (url);
-  const data = await response.json();
-
-  return data;
-}
-
-/**
- * loads the dataset specific for the swissFL mode based on its modeMetadata
- *
- * @param {object} modeMetadata
- * @returns {Promise<any>}
- */
-const loadSwissFLDatasets = async (modeMetadata) => {
+const loadModeDatasetsWithMainTag = async (modeMetadata) => {
 
   // eslint-disable-next-line import/no-cycle
   const store = await import('@/modules/metadata/store/metadataStore');
@@ -83,9 +69,24 @@ const loadSwissFLDatasets = async (modeMetadata) => {
     content = store[METADATA_NAMESPACE].getters.allMetadatas(state);
   }
 
-  const swissFLDatasets = content.filter((entry) => tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]));
+  return content.filter((entry) => tagsIncludedInSelectedTags(entry.tags, [modeMetadata.mainTag.name]));
+}
+/**
+ * loads the dataset specific for the eDNA mode based on its modeMetadata
+ *
+ * @param {object} modeMetadata
+ * @returns {Promise<any>}
+ */
+const loadEDNADatasets = async (modeMetadata) => {
+  if(modeMetadata.isShallow) {
+    const url = `${modeMetadata.datasetUrl}?nocache=${new Date().getTime()}`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-  return swissFLDatasets;
+    return data;
+  }
+
+  return loadModeDatasetsWithMainTag(modeMetadata);
 }
 
 export const modes = [
@@ -99,7 +100,7 @@ export const modes = [
     icons: getSwissflIcons(),
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
     datasetUrl: '',
-    loadDatasets: loadSwissFLDatasets,
+    loadDatasets: loadModeDatasetsWithMainTag,
   },
   {
     name: EDNA_MODE,
@@ -112,6 +113,7 @@ export const modes = [
     extrasKey: EDNA_MODE_EXTRAS_KEY,
     datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
     loadDatasets: loadEDNADatasets,
+    isShallow: true,
   },
 ];
 

@@ -26,12 +26,14 @@
                     @onScroll="storeScroll"
                     :showSearch="true"
                     :isAuthorSearch="isAuthorSearch"
+                    :isShallow="showShallowData"
                     :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
                     @searchClick="catchSearchClicked"
                     @searchCleared="catchSearchCleared"
                     @authorSearchClick="catchAuthorSearchClick"
+                    @shallowRealClick="catchShallowRealClick"
                     @organizationClicked="catchOrganizationClicked"
                     :showScrollTopButton="true"
                     :reloadAmount="reloadAmount"
@@ -40,7 +42,9 @@
                     :loading="loading"
                     :metadatasContent="allDatasets"
                     :categoryCards="categoryCards"
-    />
+    >
+
+    </metadata-list>
 
   </article>
 </template>
@@ -72,7 +76,7 @@ import {
 } from '@/router/routeConsts';
 
 import {
-  CLEAR_SEARCH_METADATA,
+  CLEAR_SEARCH_METADATA, EDNA_MODE,
   FILTER_METADATA,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   LISTCONTROL_LIST_ACTIVE,
@@ -338,6 +342,24 @@ export default {
           newIsAuthorSearchParameter);
 
     },
+    catchShallowRealClick() {
+
+      this.showShallowData = !this.showShallowData;
+
+/*
+      if (this.mode === EDNA_MODE) {
+        this.isShallowData = !this.isShallowData;
+        console.log(`clicked on shallow: ${this.isShallowData}`);
+        const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+        modeMetadata.isShallow = this.isShallowData;
+
+        // reload the datasets again because there is a different behavior
+        // based on the isShallow property
+        this.modeStore.loadModeDatasets(EDNA_MODE);
+      }
+*/
+
+    },
     // eslint-disable-next-line no-unused-vars
     catchOrganizationClicked(organization) {
       // console.log(`clicked on ${organization}`);
@@ -460,6 +482,32 @@ export default {
 
       return this.allTags;
     },
+    showShallowData: {
+      get() {
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          return modeMetadata.isShallow;
+        }
+
+        return false;
+      },
+      async set(showShallow) {
+
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          modeMetadata.isShallow = showShallow;
+          console.log(`clicked on shallow: ${modeMetadata.isShallow}`);
+
+          // reload the datasets again because there is a different behavior
+          // based on the isShallow property
+          await this.modeStore.loadModeDatasets(EDNA_MODE);
+
+          this.$nextTick(() => {
+            this.filterContent();
+          });
+        }
+      },
+    },
   },
   watch: {
     /* eslint-disable no-unused-vars */
@@ -482,6 +530,7 @@ export default {
     MetadataList,
   },
   data: () => ({
+    EDNA_MODE,
     modeStore: useModeStore(),
     modeContent: null,
     filteredModeContent: null,

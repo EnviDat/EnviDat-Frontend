@@ -18,12 +18,14 @@
                             @clickedClear="catchTagCleared" />
     </template>
 
-    <template v-slot:controlPanel>
+    <template #controlPanel>
       <control-panel :compactLayout="true"
                       :searchTerm="searchTerm"
                       :showSearch="showSearch"
                       :searchCount="searchCount"
                       :isAuthorSearch="isAuthorSearch"
+                      :isShallow="isShallow"
+                      :mode="modeData?.name"
                       :fixedHeight="36"
                       :searchBarPlaceholder="searchBarPlaceholder"
                       :loading="loading"
@@ -33,6 +35,7 @@
                       @searchCleared="catchSearchCleared"
                       @controlsChanged="controlsChanged"
                       @authorSearchClick="catchAuthorSearchClick"
+                      @shallowRealClick="catchShallowRealClick"
                       />
 
     </template>
@@ -258,6 +261,10 @@ export default {
     searchTerm: String,
     searchCount: Number,
     isAuthorSearch: {
+      type: Boolean,
+      default: false,
+    },
+    isShallow: {
       type: Boolean,
       default: false,
     },
@@ -593,6 +600,9 @@ export default {
     },
     catchAuthorSearchClick() {
       this.$emit('authorSearchClick');
+    },
+    catchShallowRealClick() {
+      this.$emit('shallowRealClick');
     },
     resetVirtualContent() {
       // this.$store.commit(`${METADATA_NAMESPACE}/${SET_VIRTUAL_LIST_INDEX}`, 0);
