@@ -42,7 +42,7 @@
 
         </v-col>
 
-        <v-col v-if="showSearch && mode!== EDNA_MODE"
+        <v-col v-if="showSearch && mode !== EDNA_MODE"
                class="py-0 ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isAuthorSearch"
@@ -52,7 +52,7 @@
 
         </v-col>
 
-        <v-col v-if="showSearch && mode===EDNA_MODE"
+        <v-col v-if="showSearch && mode === EDNA_MODE"
                class="py-0 ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isShallow"
@@ -84,9 +84,6 @@
  *
  * @summary filterable list of metadata cards
  * @author Dominik Haas-Artho
- *
- * Created at     : 2020-07-07 11:40:00
- * Last modified  : 2020-07-07 11:44:32
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.

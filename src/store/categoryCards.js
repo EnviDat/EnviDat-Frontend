@@ -113,6 +113,7 @@ export default [
     imgPath: 'cards/edna_logo_small',
     color: '#3966d0',
     darkColor: '#2f5dc7',
+    contain: true,
     disabled: false,
   },
 ];

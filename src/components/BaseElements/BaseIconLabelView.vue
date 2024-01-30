@@ -35,7 +35,7 @@
 
         <v-col v-if="materialIconName"
                 class="flex-grow-0">
-          <v-icon class="pr-2">{{ materialIconName }}</v-icon>
+          <v-icon :dark="dark">{{ materialIconName }}</v-icon>
         </v-col>
 
         <v-col v-if="label" cols="3" :style="textStyle">
@@ -95,6 +95,7 @@ export default {
     usePlaceholder: Boolean,
     wordBreak: Boolean,
     compactLayout: Boolean,
+    dark: Boolean,
   },
   computed: {
     alignClass() {

@@ -18,7 +18,7 @@
                             @clickedClear="catchTagCleared" />
     </template>
 
-    <template v-slot:controlPanel>
+    <template #controlPanel>
       <control-panel :compactLayout="true"
                       :searchTerm="searchTerm"
                       :showSearch="showSearch"

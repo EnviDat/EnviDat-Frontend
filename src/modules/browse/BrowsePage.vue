@@ -26,7 +26,7 @@
                     @onScroll="storeScroll"
                     :showSearch="true"
                     :isAuthorSearch="isAuthorSearch"
-                    :isShallow="isShallowData"
+                    :isShallow="showShallowData"
                     :searchTerm="currentSearchTerm"
                     :searchCount="searchCount"
                     :searchBarPlaceholder="searchBarPlaceholder"
@@ -42,7 +42,9 @@
                     :loading="loading"
                     :metadatasContent="allDatasets"
                     :categoryCards="categoryCards"
-    />
+    >
+
+    </metadata-list>
 
   </article>
 </template>
@@ -341,14 +343,21 @@ export default {
 
     },
     catchShallowRealClick() {
-      console.log(`clicked on shallow: ${this.isShallowData}`);
 
+      this.showShallowData = !this.showShallowData;
+
+/*
       if (this.mode === EDNA_MODE) {
         this.isShallowData = !this.isShallowData;
+        console.log(`clicked on shallow: ${this.isShallowData}`);
         const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
         modeMetadata.isShallow = this.isShallowData;
+
+        // reload the datasets again because there is a different behavior
+        // based on the isShallow property
         this.modeStore.loadModeDatasets(EDNA_MODE);
       }
+*/
 
     },
     // eslint-disable-next-line no-unused-vars
@@ -473,6 +482,32 @@ export default {
 
       return this.allTags;
     },
+    showShallowData: {
+      get() {
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          return modeMetadata.isShallow;
+        }
+
+        return false;
+      },
+      async set(showShallow) {
+
+        if (this.mode === EDNA_MODE) {
+          const modeMetadata = this.modeStore.getModeMetadata(EDNA_MODE);
+          modeMetadata.isShallow = showShallow;
+          console.log(`clicked on shallow: ${modeMetadata.isShallow}`);
+
+          // reload the datasets again because there is a different behavior
+          // based on the isShallow property
+          await this.modeStore.loadModeDatasets(EDNA_MODE);
+
+          this.$nextTick(() => {
+            this.filterContent();
+          });
+        }
+      },
+    },
   },
   watch: {
     /* eslint-disable no-unused-vars */
@@ -495,6 +530,7 @@ export default {
     MetadataList,
   },
   data: () => ({
+    EDNA_MODE,
     modeStore: useModeStore(),
     modeContent: null,
     filteredModeContent: null,
@@ -511,7 +547,6 @@ export default {
     showMapFilter: false,
     smallMapHeight: 250,
     largeMapHeight: 325,
-    isShallowData: true,
     mapFilterVisibleIds: [],
     preenabledControls: [
       LISTCONTROL_LIST_ACTIVE,
