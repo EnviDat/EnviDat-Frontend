@@ -9,7 +9,7 @@
       <template slot="progress">
         <v-progress-linear color="primary" indeterminate />
       </template>
-
+      
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -39,63 +39,65 @@
         </v-col>
       </v-row>
 
-      <v-row
-        v-for="(item, index) in previewFundersAndEmpty"
-        :key="`${item}_${index}`"
-        :class="index === 0 ? 'pt-2' : 'py-0'"
-        no-gutters
-      >
-        <v-col cols="4" class="pr-2">
-          <v-text-field
-            :label="labels.institution"
-            outlined
-            dense
-            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
-            :hint="mixinMethods_readOnlyHint(INSTITUTION)"
-            :value="item.institution"
-            :error-messages="getValidationErrorMessage(INSTITUTION, index)"
-            @keyup="blurOnEnterKey"
-            @change="onChange(index, INSTITUTION, $event)"
-          />
-        </v-col>
+      <v-card flat max-height="350px" class="overflow-auto">
+        <v-row
+          v-for="(item, index) in previewFundersAndEmpty"
+          :key="`${item}_${index}`"
+          :class="index === 0 ? 'pt-2' : 'py-0'"
+          no-gutters
+        >
+          <v-col cols="4" class="pr-2">
+            <v-text-field
+              :label="labels.institution"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
+              :hint="mixinMethods_readOnlyHint(INSTITUTION)"
+              :value="item.institution"
+              :error-messages="getValidationErrorMessage(INSTITUTION, index)"
+              @keyup="blurOnEnterKey"
+              @change="onChange(index, INSTITUTION, $event)"
+            />
+          </v-col>
 
-        <v-col cols="3" class="px-2">
-          <v-text-field
-            :label="labels.grantNumber"
-            outlined
-            dense
-            :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
-            :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
-            :value="item.grantNumber"
-            :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
-            @keyup="blurOnEnterKey"
-            @change="onChange(index, GRANTNUMBER, $event)"
-          />
-        </v-col>
+          <v-col cols="3" class="px-2">
+            <v-text-field
+              :label="labels.grantNumber"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
+              :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
+              :value="item.grantNumber"
+              :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
+              @keyup="blurOnEnterKey"
+              @change="onChange(index, GRANTNUMBER, $event)"
+            />
+          </v-col>
 
-        <v-col class="grow pl-2">
-          <v-text-field
-            :label="labels.institutionUrl"
-            outlined
-            dense
-            :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
-            :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
-            :value="item.institutionUrl"
-            :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
-            @keyup="blurOnEnterKey"
-            @change="onChange(index, INSTITUTION_URL, $event)"
-          />
-        </v-col>
+          <v-col class="grow pl-2">
+            <v-text-field
+              :label="labels.institutionUrl"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
+              :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
+              :value="item.institutionUrl"
+              :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
+              @keyup="blurOnEnterKey"
+              @change="onChange(index, INSTITUTION_URL, $event)"
+            />
+          </v-col>
 
-        <v-col class="shrink px-1">
-          <BaseIconButton
-            material-icon-name="clear"
-            icon-color="red"
-            :disabled="index >= previewFundersAndEmpty.length - 1"
-            @clicked="deleteFundersEntry(index)"
-          />
-        </v-col>
-      </v-row>
+          <v-col class="shrink px-1">
+            <BaseIconButton
+              material-icon-name="clear"
+              icon-color="red"
+              :disabled="index >= previewFundersAndEmpty.length - 1"
+              @clicked="deleteFundersEntry(index)"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
 
       <v-row v-if="validationErrors.fundersArray" no-gutters>
         <v-col cols="12">
