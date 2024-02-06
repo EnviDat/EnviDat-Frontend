@@ -262,6 +262,7 @@ export default {
         // The last UI entry is a special case,
         // it does not exist in the data until the user enters something
         this.previewFunders.push({...this.emptyEntry, [property]: value});
+        this.validationErrors.funders.push({...this.emptyEntry});
       }
 
       const entry = this.previewFunders[index];
