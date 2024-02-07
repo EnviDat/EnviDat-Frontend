@@ -19,53 +19,18 @@ import EditFunding from '@/modules/user/components/EditFunding.vue';
 
 export default {
   title: '9 Editing Metadata / Funding Infos',
-  decorators: [],
-  parameters: {},
+  component: EditFunding,
 };
 
 
-export const EditFundingView = () => ({
-  components: { EditFunding },
-  template: `
-    <v-col>
+export const EditFundingEmpty = {
+  args: {},
+  parameters: {},
+}
 
-      <v-row>
-        Edit Funding fields unfilled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditFunding />
-        </v-col>
-      </v-row>
-
-       <v-row>
-        Edit Funding fields filled
-      </v-row>
-
-      <v-row class="py-3" >
-        <v-col >
-          <EditFunding v-bind="genericPropsFilled" />
-        </v-col>
-      </v-row>
-
-    </v-col> `,
-  created() {
-    eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  beforeDestroy() {
-    eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
-  },
-  methods: {
-    editComponentsChanged(updateObj) {
-//      if (updateObj.data.id === this.genericPropsFilled.id) {
-        this.genericPropsFilled.funders = updateObj.data.funders;
-//      }
-    },
-  },
-  data: () => ({
-    genericPropsFilled: {
-      id: 1,
+export const EditFundingData = {
+  args: {
+    id: 1,
       funders: [
         {
           institution: 'WSL',
@@ -78,6 +43,60 @@ export const EditFundingView = () => ({
           institutionUrl: 'https://www.superduper.ch',
         },
       ],
-    },
-  }),
-});
+  },
+  parameters: {},
+}
+  // components: { EditFunding },
+  // template: `
+  //   <v-col>
+// 
+  //     <v-row>
+  //       Edit Funding fields unfilled
+  //     </v-row>
+// 
+  //     <v-row class="py-3" >
+  //       <v-col >
+  //         <EditFunding />
+  //       </v-col>
+  //     </v-row>
+// 
+  //      <v-row>
+  //       Edit Funding fields filled
+  //     </v-row>
+// 
+  //     <v-row class="py-3" >
+  //       <v-col >
+  //         <EditFunding v-bind="genericPropsFilled" />
+  //       </v-col>
+  //     </v-row>
+// 
+  //   </v-col> `,
+  // created() {
+  //   eventBus.on(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  // },
+  // beforeDestroy() {
+  //   eventBus.off(EDITMETADATA_OBJECT_UPDATE, this.editComponentsChanged);
+  // },
+  // methods: {
+  //   editComponentsChanged(updateObj) {
+  //       this.genericPropsFilled.funders = updateObj.data.funders;
+  //   },
+  // },
+  // data: () => ({
+  //   genericPropsFilled: {
+  //     id: 1,
+  //     funders: [
+  //       {
+  //         institution: 'WSL',
+  //         grantNumber: 'XYZ',
+  //         institutionUrl: 'https://www.wsl.ch',
+  //       },
+  //       {
+  //         institution: 'NSF',
+  //         grantNumber: '123',
+  //         institutionUrl: 'https://www.superduper.ch',
+  //       },
+  //     ],
+  //   },
+  // }),
+  // }

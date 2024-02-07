@@ -179,7 +179,7 @@ export default {
   watch: {
     funders: {
       immediate: true,
-      handler(newData, oldData) {
+      handler(newData) {
         this.previewFunders = [...newData] ?? [];
       },
     },
