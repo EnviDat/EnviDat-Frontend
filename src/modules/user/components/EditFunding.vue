@@ -38,8 +38,7 @@
           <div class="text-subtitle-1">{{ labels.fundingInformation }}</div>
         </v-col>
       </v-row>
-
-      <v-card flat max-height="350px" class="overflow-auto">
+      <v-card flat max-height="350px" max-width="1200px" class="overflow-auto">
         <v-row
           v-for="(item, index) in previewFundersAndEmpty"
           :key="`${item}_${index}`"
@@ -55,7 +54,7 @@
               :hint="mixinMethods_readOnlyHint(INSTITUTION)"
               :value="item.institution"
               :error-messages="getValidationErrorMessage(INSTITUTION, index)"
-              @keyup="blurOnEnterKey"
+              @keyup="onKeyUp"
               @change="onChange(index, INSTITUTION, $event)"
             />
           </v-col>
@@ -69,7 +68,7 @@
               :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
               :value="item.grantNumber"
               :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
-              @keyup="blurOnEnterKey"
+              @keyup="onKeyUp"
               @change="onChange(index, GRANTNUMBER, $event)"
             />
           </v-col>
@@ -83,7 +82,7 @@
               :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
               :value="item.institutionUrl"
               :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
-              @keyup="blurOnEnterKey"
+              @keyup="onKeyUp"
               @change="onChange(index, INSTITUTION_URL, $event)"
             />
           </v-col>
@@ -182,29 +181,24 @@ export default {
       immediate: true,
       handler(newData, oldData) {
         this.previewFunders = [...newData] ?? [];
-        // Clean slate since the state would not be synced otherwise
-        this.validationErrors.funders = [];
-        this.validationErrors.fundersArray = null;
-        for(let i = 0; i < this.previewFunders.length + 1; i += 1) {
-          this.validationErrors.funders.push({ ...this.emptyEntry });
-        }
       },
     },
   },
   computed: {
     previewFundersAndEmpty() {
-      return [...this.previewFunders, this.emptyEntry];
+      // Check if the last entry has an error and prevent the new entry to be shown
+      const lastEntry = this.validationErrors.funders[this.validationErrors.funders.length - 1];
+      const entryIsValid = !Object.values(lastEntry ?? {}).find((i) => i !== '' && i !== null && i !== undefined);
+      if(entryIsValid) {
+        return [...this.previewFunders, this.emptyEntry];
+      }
+      return [...this.previewFunders];
     },
     validations() {
       return getValidationMetadataEditingObject(this.stepKey);
     },
   },
   methods: {
-    blurOnEnterKey(keyboardEvent) {
-      if (keyboardEvent.key === 'Enter') {
-        keyboardEvent.target.blur();
-      }
-    },
     setFundersInfo(property, value) {
       const newPublicationInfo = {
         ...this.$props,
@@ -219,6 +213,11 @@ export default {
     },
     /** Validates all entries or a specific property */
     validate(index = undefined, property = undefined) {
+      // Keep the validation object in sync
+      const sizeDiff = this.previewFunders.length - this.validationErrors.funders.length;
+      for(let i = 0; i < sizeDiff; i += 1) {
+        this.validationErrors.funders.push({ ...this.emptyEntry });
+      }
       // Validate entire array (cases like min/max entries)
       if(index === undefined && !property) {
         return isFieldValid(
@@ -241,38 +240,36 @@ export default {
           errorArray,
         );
       }
-      throw new Error('Unable to validate EditFunding');
+      throw new Error('Unable to validate EditFunding')
     },
     deleteFundersEntry(index) {
-      if (this.previewFunders.length <= 1) {
-        return;
-      }
-
-      const errorArray = this.validationErrors.funders;
+      // If two entries with the same data exist, the UI does not update accordingly
+      // This is due to the key in the v-for not being able to differentiate
+      // and then it doesn't clean up correctly
       this.previewFunders.splice(index, 1);
-      errorArray.splice(index, 1);
-      
+      this.validationErrors.funders.splice(index, 1);
       if (this.validate()) {
         this.setFundersInfo('funders', this.previewFunders);
       }
     },
+    onKeyUp(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
     onChange(index, property, value) {
-
-      if(index === this.previewFunders.length){
+      if (index === this.previewFunders.length) {
         // The last UI entry is a special case,
         // it does not exist in the data until the user enters something
         this.previewFunders.push({...this.emptyEntry, [property]: value});
-        this.validationErrors.funders.push({...this.emptyEntry});
       }
-
       const entry = this.previewFunders[index];
-      // TODO: Bind this properly no need for custom code
       entry[property] = value;
 
-      if(isObjectEmpty(entry)) {
+      if (isObjectEmpty(entry)) {
         // Remove entry since it's empty
         this.deleteFundersEntry(index);
-      } else if ( this.validate(index, property)) {
+      } else if (this.validate(index, property) && this.validate()) {
         this.setFundersInfo('funders', this.previewFunders);
       }
     },
