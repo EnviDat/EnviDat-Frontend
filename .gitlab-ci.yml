@@ -376,7 +376,7 @@ modify-box-env:
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'https://localhost:8989'
+      value = f'http://envidat-prod01.wsl.ch:8989'
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_CONFIG_URL'
