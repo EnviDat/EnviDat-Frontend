@@ -13,7 +13,7 @@
              @click="emitClick"
              >
           <v-icon v-if="materialIconName"
-                  :color="active ? 'primary' : 'gray'"
+                  :color="!active ? 'primary' : 'gray'"
                   style="top: 0; left: 1px;">
             {{ materialIconName }}
           </v-icon>
@@ -71,7 +71,7 @@ export default {
   computed: {
     bgColor() {
       const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
-      return this.active ? secondary : 'lightgray';
+      return !this.active ? secondary : 'lightgray';
     },
   },
   methods: {
