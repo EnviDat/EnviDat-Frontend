@@ -76,6 +76,7 @@ const emptyMetadataInEditing = {
   },
   [EDITMETADATA_DATA_RESOURCES]: {
     resources: [],
+    customFields: [],
   },
   [EDITMETADATA_DATA_INFO]: {
     dates: [],

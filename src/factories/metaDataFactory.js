@@ -488,6 +488,7 @@ export function createResource(resource, datasetName, resourceOrganizationID, si
     format: fileFormat,
     state: resource.state || '',
     created,
+    deprecated: !!resource.deprecated,
     lastModified: modified,
     position: resource.position || '',
     isProtected,
@@ -526,6 +527,7 @@ export function createResources(dataset, signedInUser, signedInUserOrganizationI
   }
 
   return {
+    
     metadataId: dataset.id,
     metadataTitle: dataset.title,
     doi: dataset.doi,

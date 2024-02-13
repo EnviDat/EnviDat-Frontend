@@ -187,6 +187,7 @@ const JSONFrontendBackendRules = {
   ],
   [EDITMETADATA_DATA_RESOURCES]: [
     ['resources','resources'],
+    ['customFields', 'extras'],
   ],
   [EDITMETADATA_DATA_INFO]: [
     ['dates','date'],
@@ -502,10 +503,6 @@ export function getFrontendJSONForStep(stepKey, data) {
   const rules = JSONFrontendBackendRules[stepKey];
 
   return convertToFrontendJSONWithRules(rules, data);
-}
-
-export function getFrontendJSONAllStep(data) {
-  // const rules = JJSON
 }
 
 export function stringifyResourceForBackend(resource) {
@@ -838,7 +835,7 @@ function populateEditingDataInfo(commit, snakeCaseJSON) {
   return dataObject;
 }
 
-function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
+function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFields) {
 
   const dataObject = {};
 
@@ -851,9 +848,17 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo) {
 
   resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
   resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
-
+  const deprecatedResources = customFields.deprecated_resources;
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
+
+    // HACK: Due to the lack of proper mapping in the frontend
+    // and the inability to change the schema in the backend
+    // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
+    // The counterpart is found in editActions -> METADATA_EDITING_PATCH_RESOURCE
+    // change this ASAP (move to centralised mapping, or simply adjust backend)!
+    resources.deprecated = deprecatedResources.includes(resources[i].id);
+
   }
 
   enhanceElementsWithStrategyEvents(
@@ -930,9 +935,10 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 
-  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo);
+  const {customFields} = populateEditingRelatedResearch(commit, snakeCaseJSON);
 
-  populateEditingRelatedResearch(commit, snakeCaseJSON);
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFields);
+
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
 

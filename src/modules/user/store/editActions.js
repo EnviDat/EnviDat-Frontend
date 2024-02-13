@@ -139,8 +139,39 @@ export default {
     const cleaned = getBackendJSONForStep(stepKey, localData);
     const postData = stringifyResourceForBackend(cleaned);
 
+    // Why is this using await AND then/catch?
     await axios.post(url, postData)
       .then((response) => {
+        // HACK: Due to the lack of proper mapping in the frontend
+        // and the inability to change the schema in the backend
+        // the mapping of the deprecated field is performed here in a very inefficient and unmaintainable way
+        // The counterpart is found in  mappingFactory -> populateEditingResources
+        // change this ASAP (move to centralised mapping, or simply adjust backend)!
+        
+        // Map to backend structure --> fill in custom_fields
+        //   fieldName "deprecated_resources"
+        //   content "array of ids"
+        
+        // 
+        // TODO: Get the entire structure from backend
+        const resources = {} // dummy;
+        const deprecatedResourcesRaw = resources.custom_fields.deprecated_resources ?? '[]';
+        const isDeprecatedOnServer = deprecatedResourcesRaw.includes(cleaned.id);
+        const isDeprecatedLocally = data.deprecated === true;
+        const isDeprecatedDirty = isDeprecatedLocally !== isDeprecatedOnServer;
+        if(isDeprecatedDirty){
+          let deprecatedResources = JSON.parse(deprecatedResourcesRaw);
+          if(isDeprecatedLocally){
+            // Add case
+            deprecatedResources.push(cleaned.id);
+          } else {
+            // Remove case
+            deprecatedResources = deprecatedResources.filter(i=> i !== cleaned.id);
+          }
+          resources.custom_fields.deprecated_resources = JSON.stringify(deprecatedResources);
+          // TODO: dispatch METADATA_EDITING_PATCH_DATASET_OBJECT
+        }
+
 
         commit(METADATA_EDITING_PATCH_RESOURCE_SUCCESS, {
           stepKey,
