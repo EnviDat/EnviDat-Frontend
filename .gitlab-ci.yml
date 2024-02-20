@@ -127,7 +127,9 @@ install-node:
     - .trigger-rules
     - .node_cache
   stage: config
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
+  # image: docker.io/node:18.19.1-alpine3.19
   cache:
     # overwrite the global caching definitions with
     # pull-push to be able to update the node_modules in the cache
@@ -160,7 +162,8 @@ run-tests:
     - .trigger-rules
     - .node_cache
   stage: test
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
   needs:
     - modify-env
     - install-node
@@ -173,7 +176,8 @@ build-storybook:
     - .trigger-rules
     - .node_cache
   stage: build
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -194,7 +198,8 @@ build-app:
     - .trigger-rules
     - .node_cache
   stage: build
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs the artifact: config and environment variables
     - modify-env
@@ -241,7 +246,8 @@ combine-builds:
 deploy-chromatic:
   extends: .node_cache
   stage: deploy
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
   variables:
     GIT_STRATEGY: none
   needs:
@@ -397,7 +403,8 @@ build-box-app:
   extends:
     - .node_cache
   stage: build
-  image: docker.io/node:18.18.2-alpine3.17
+  image: docker.io/node:20.11.1-alpine3.19
+  # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs environment variables from the frontend in a box setup
     - modify-box-env
