@@ -27,7 +27,7 @@
 
         <TagChipAuthor v-if="useAuthorTags"
                        :name="item"
-                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                       :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                        :highlighted="currentDragItem === item"
                        :isSmall="true"
                        :draggable="true"
@@ -35,7 +35,7 @@
 
         <TagChip v-if="!useAuthorTags"
                  :name="item"
-                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.accent : undefined"
+                 :color="currentHoverItem === item ? $vuetify.theme.themes.light.colors.accent : undefined"
                  :highlighted="currentDragItem === item"
                  :isSmall="false"
         />
@@ -60,6 +60,8 @@
  */
 
 import { EDITMETADATA_CLEAR_PREVIEW, eventBus } from '@/factories/eventBus';
+import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
+import TagChip from '@/components/Chips/TagChip.vue';
 
 export default {
   name: 'BaseDraggableList',
@@ -147,6 +149,8 @@ export default {
     },
   },
   components: {
+    TagChip,
+    TagChipAuthor,
   },
   data: () => ({
     currentDragItem: '',

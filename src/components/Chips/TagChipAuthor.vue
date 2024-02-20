@@ -1,5 +1,5 @@
 <template>
-  <v-chip class="authorTag"
+  <v-chip class="authorTag black--text"
           :class="{
             'white--text': highlighted,
             smallChip: $vuetify.display.smAndDown,
@@ -13,6 +13,7 @@
           :close="isCloseable"
           @click:close="$emit('closeClicked', authorName)"
           >
+
     <v-avatar left>
       <v-icon size="24px" >account_circle</v-icon>
     </v-avatar>
@@ -21,8 +22,8 @@
 
     <v-tooltip v-if="authorIsDead"
                 bottom>
-      <template v-slot:activator="{ on, props }">
-        <v-icon v-on="on" v-bind="props" x-small >hourglass_bottom</v-icon>
+      <template v-slot:activator="{ props }">
+        <v-icon v-bind="props" size='small' >hourglass_bottom</v-icon>
       </template>
 
       {{ authorPassedInfo }}
@@ -53,7 +54,7 @@ export default {
     highlighted: Boolean,
     color: {
       type: String,
-      default: '#f8f8f8',
+      default: '#222',
     },
     asciiDead: String,
     authorPassedInfo: String,

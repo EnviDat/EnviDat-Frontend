@@ -42,6 +42,14 @@ IconOnlyOutlined.args = {
   iconColor: 'black',
 }
 
+export const IconAndElevated = Template.bind({});
+IconAndElevated.args = {
+  materialIconName: 'save',
+  isElevated: true,
+  iconColor: 'black',
+  color: 'accent',
+}
+
 export const IconRotated = Template.bind({});
 IconRotated.args = {
   materialIconName: 'expand_less',

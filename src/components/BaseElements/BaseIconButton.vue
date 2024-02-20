@@ -70,7 +70,7 @@
 -->
     <v-btn
       style="margin: 0 !important;"
-      :elevation="isElevated ? 5 : 2"
+      :elevation="isElevated ? 5 : 0"
       icon
       :variant="outlined ? 'outlined' : 'flat'"
       density="comfortable"
