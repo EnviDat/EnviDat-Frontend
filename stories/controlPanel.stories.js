@@ -25,34 +25,33 @@ export default {
   component: ControlPanel,
 };
 
-/*
-const Template = (args, { argTypes }) => ({
-  components: { ControlPanel },
-  props: Object.keys(argTypes),
-  template: '<ControlPanel v-bind="$props" />',
-});
-*/
 
 const Template2 = (args, { argTypes }) => ({
   components: { ControlPanel },
   props: Object.keys(argTypes),
   template: `
+  <v-container fluid>
   <v-row>
-    <v-col cols="12">
+    <v-col >
         compact layout disabled
-    </v-col>  
-    <v-col cols="12">
+    </v-col>
+  </v-row>
+  <v-row>     
+    <v-col >
         <ControlPanel v-bind="$props" />
     </v-col>
-
-    <v-col cols="12">
+  </v-row>
+  <v-row>
+    <v-col >
         compact layout enabled
     </v-col>
-    
-    <v-col cols="12">
+  </v-row>
+  <v-row>
+    <v-col >
         <ControlPanel v-bind="$props" compact-layout />
     </v-col>    
   </v-row>
+  </v-container>
 `,
 });
 export const EmptySearchDisabled = Template2.bind({});
@@ -101,6 +100,7 @@ const enabledControls = [
   LISTCONTROL_MAP_ACTIVE,
   LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
 ];
+
 const controlsActive = [LISTCONTROL_COMPACT_LAYOUT_ACTIVE];
 
 export const PrefilledSearchWithControls = Template2.bind({});
@@ -113,6 +113,7 @@ PrefilledSearchWithControls.args = {
 export const PrefilledSearchWithActiveControls = Template2.bind({});
 PrefilledSearchWithActiveControls.args = {
   ...PrefilledSearchWithControls.args,
+  enabledControls,
   controlsActive,
 }
 

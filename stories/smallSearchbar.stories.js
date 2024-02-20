@@ -9,21 +9,13 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
+import { mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import SmallSearchBarView from '../src/components/Filtering/SmallSearchBarView.vue';
 
 export default {
   title: '4 Filtering / Small SearchBar View',
   component: SmallSearchBarView,
 };
-
-/*
-const Template = (args, { argTypes }) => ({
-  components: { SmallSearchBarView },
-  props: Object.keys(argTypes),
-  template: '<SmallSearchBarView v-bind="$props" />',
-});
-*/
 
 export const Basic = {
   args: {
@@ -46,6 +38,22 @@ export const SmallSearchBarButton = {
   },
 };
 
+export const SmallSearchBarButtonMobile = {
+  args: SmallSearchBarButton.args,
+  parameters: mobileViewportParams,
+};
+
+export const SmallSearchBarButtonLargeMobile = {
+  args: SmallSearchBarButton.args,
+  parameters: mobileLargeViewportParams,
+};
+
+export const SmallSearchBarButtonTablet = {
+  args: SmallSearchBarButton.args,
+  parameters: tabletViewportParams,
+};
+
+
 export const SmallSearchBarButtonCompact = {
   args: {
     ...SmallSearchBarButton.args,
@@ -56,7 +64,7 @@ export const SmallSearchBarButtonCompact = {
 
 export const SmallSearchBarSearchCountZero = {
   args: {
-    ...BasicSmallSearchBar.args,
+    ...SmallSearchBarButton.args,
     searchCount: 0,
     showSearchCount: true,
   },
@@ -77,6 +85,24 @@ export const SearchBarInFilterView = {
     compactLayout: true,
   },
 };
+
+export const SearchBarInFilterViewMobile = {
+  args: SearchBarInFilterView.args,
+  parameters: mobileViewportParams,
+};
+
+export const SearchBarInFilterViewLargeMobile = {
+  args: SearchBarInFilterView.args,
+  parameters: mobileLargeViewportParams,
+};
+
+export const SearchBarInFilterViewTablet = {
+  args: SearchBarInFilterView.args,
+  parameters: tabletViewportParams,
+};
+
+
+
 
 /*
 export const SmallSearchViews = () => ({

@@ -4,61 +4,62 @@
       v-if="isEnabledControl(LISTCONTROL_MAP_ACTIVE)"
       v-model="controlsActive"
       class="fill-height"
-      borderless
-      tile
-      dense
+      density='compact'
+      :divided='true'
+      variant='text'
     >
       <v-btn
         @click="catchControlClick(LISTCONTROL_MAP_ACTIVE)"
         class="controlButton"
-        :class="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
-        text
+        :color="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
+        variant='text'
       >
-        <v-icon>map</v-icon>
+        <BaseIcon
+          material-icon='map'
+          icon-color='#333' />
       </v-btn>
     </v-btn-toggle>
 
     <v-btn-toggle
-      v-if="
-        isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
-          isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)
-      "
+      v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE) ||
+            isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
       v-model="controlsActive"
       class="fill-height ml-2"
-      tile
-      borderless
-      dense
+      density='compact'
+      :divided='true'
+      variant='text'
     >
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_LIST_ACTIVE)"
         @click="catchControlClick(LISTCONTROL_LIST_ACTIVE)"
         class="controlButton"
-        :class="isActiveControl(LISTCONTROL_LIST_ACTIVE) ? 'secondary' : ''"
-        text
+        :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
       >
-        <v-icon>view_headline</v-icon>
+        <BaseIcon
+          material-icon='view_headline'
+          icon-color='#333' />
       </v-btn>
 
       <v-btn
         v-if="isEnabledControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         @click="catchControlClick(LISTCONTROL_COMPACT_LAYOUT_ACTIVE)"
         class="controlButton"
-        :class="
-          isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''
-        "
-        text
+        :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
       >
-        <v-icon>view_comfortable</v-icon>
+        <BaseIcon
+          material-icon='view_comfortable'
+          icon-color='#333' />
       </v-btn>
 
       <v-btn
         v-if="isEnabledControl(3)"
         @click="catchControlClick(3)"
         class="controlButton"
-        :class="isActiveControl(3) ? 'highlight' : ''"
-        text
+        :color="isActiveControl(3) ? 'highlight' : ''"
       >
-        <v-icon>view_stream</v-icon>
+        <BaseIcon
+          material-icon='view_stream'
+          icon-color='#333' />
       </v-btn>
     </v-btn-toggle>
   </v-row>
@@ -84,8 +85,11 @@ import {
   LISTCONTROL_MAP_ACTIVE,
 } from '@/store/metadataMutationsConsts';
 
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
 export default {
   name: 'ListControlToggle',
+  components: { BaseIcon },
   props: {
     controls: Array,
     enabledControls: Array,
@@ -97,25 +101,33 @@ export default {
     mapFilterDeactivateText: 'Deactivate Mapfiltering',
     listViewActivate: 'List view',
     listViewDeactivate: 'Grid view',
-    controlsActive: [],
-    listViewIcon: null,
-    mapIcon: null,
+    // controlsActive: [],
     LISTCONTROL_LIST_ACTIVE,
     LISTCONTROL_MAP_ACTIVE,
     LISTCONTROL_COMPACT_LAYOUT_ACTIVE,
   }),
-  beforeMount: function beforeMount() {
-    this.listViewIcon = this.mixinMethods_getIcon('listView');
-    this.mapIcon = this.mixinMethods_getIcon('map');
-  },
   mounted() {
     this.controlsActive = this.controls;
   },
+  computed: {
+    controlsActive: {
+      get() {
+        return this.controls || [];
+      },
+/*
+      set(value) {
+
+      },
+*/
+    },
+  },
+/*
   watch: {
     controls() {
       this.controlsActive = this.controls;
     },
   },
+*/
   methods: {
     isActiveControl(number) {
       return this.controlsActive ? this.controlsActive.includes(number) : false;
@@ -151,5 +163,6 @@ export default {
 .controlButton {
   min-width: 36px !important;
   height: 100% !important;
+  padding: 0;
 }
 </style>
