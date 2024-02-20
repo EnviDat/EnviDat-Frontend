@@ -16,12 +16,8 @@
             :src="sloganImg ? sloganImg : fallbackImg"
             style="min-height: 100%; border-top-left-radius: 4px;"
             :style="
-              `max-height: ${maxHeight}px; border-bottom-left-radius: ${
-                $vuetify.display.smAndUp ? 4 : 0
-              }px;
-                    border-top-right-radius: ${
-                      $vuetify.display.xs ? 4 : 0
-                    }px;`
+              `max-height: ${maxHeight}px; border-bottom-left-radius: ${ $vuetify.display.smAndUp ? 4 : 0 }px;
+              border-top-right-radius: ${ $vuetify.display.xs ? 4 : 0 }px;`
             "
           />
         </v-col>
