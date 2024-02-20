@@ -3,16 +3,14 @@
     v-bind="{ tooltipPosition: true }"
     :disabled="$vuetify.display.smAndDown || !tooltipText"
   >
-    <template v-slot:activator="{ on, props }">
+    <template v-slot:activator="{ props }">
       <v-btn
-        v-on="on"
         v-bind="props"
         :small="isSmall"
         :x-small="isXsSmall"
         :class="marginClass"
-        :outlined="isOutlined"
-        :text="isFlat"
         :color="color"
+        :variant='buttonStyle'
         :disabled="disabled"
         :href="url"
         :loading="loading"
@@ -23,7 +21,7 @@
 
         <BaseIcon :materialIcon="materialIconName"
                   :customIcon="customIcon"
-                  class='pr-2'
+                  class='mr-1'
                   />
 
         {{ buttonText }}
@@ -85,6 +83,15 @@ export default {
     tooltipPosition: {
       type: String,
       default: 'bottom',
+    },
+  },
+  computed: {
+    buttonStyle() {
+      if (this.isFlat) return 'plain';
+
+      if (this.isOutlined) return 'outlined';
+
+      return 'elevated';
     },
   },
   methods: {
