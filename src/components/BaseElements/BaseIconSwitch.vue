@@ -16,7 +16,7 @@
              >
           <BaseIcon v-if="materialIconName"
                     :material-icon="materialIconName"
-                    :iconColor="active ? 'primary' : 'gray'"
+                    :iconColor="active ? 'gray' : 'primary'"
                     style="position:relative; top: 1px; left: 1px;"
           />
         </div>
@@ -73,7 +73,7 @@ export default {
   computed: {
     bgColor() {
       const secondary = this.$vuetify?.theme?.themes?.light?.colors?.secondary || 'lightgray';
-      return this.active ? secondary : 'lightgray';
+      return this.active ? 'lightgray' : secondary;
     },
   },
   methods: {

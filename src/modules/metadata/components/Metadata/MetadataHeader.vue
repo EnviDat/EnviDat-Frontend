@@ -339,12 +339,12 @@
 
           </v-col>
 
-          <v-col v-if="hasContent"
-                 cols="12"
+          <v-col cols="12"
                  sm="3"
                  class="headerInfo py-1 py-sm-0" >
 
-            <MetadataOrganizationChip :organization="organization"
+            <MetadataOrganizationChip v-if="hasContent && organization"
+                                      :organization="organization"
                                       :tooltip="organizationTooltip" />
 
           </v-col>

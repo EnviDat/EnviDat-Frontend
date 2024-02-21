@@ -14,6 +14,7 @@
         :disabled="disabled"
         :href="url"
         :loading="loading"
+        :elevation="elevation"
         rel="noopener noreferrer"
         target="_blank"
         @click.stop="onClick"
@@ -83,6 +84,10 @@ export default {
     tooltipPosition: {
       type: String,
       default: 'bottom',
+    },
+    elevation: {
+      type: Number,
+      default: undefined,
     },
   },
   computed: {

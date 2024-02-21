@@ -27,7 +27,7 @@
               </v-btn>
             </v-col>
             <v-col class="shrink py-0" >
-              <div class="text-md-h5 envidatText clickable " @click.stop="catchHomeClicked">{{logoText}}</div>
+              <div class="text-md-h5 envidatText clickable mt-1 mt-sm-0" @click.stop="catchHomeClicked">{{logoText}}</div>
             </v-col>
           </v-row>
 

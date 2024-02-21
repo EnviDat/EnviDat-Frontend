@@ -6,7 +6,10 @@
     :loading="loadingColor"
   >
     <v-container fluid class="pa-4">
-
+      <template slot="progress">
+        <v-progress-linear color="primary" indeterminate />
+      </template>
+      
       <v-row>
         <v-col cols="6" class="text-h5">
           {{ labels.cardTitle }}
@@ -35,64 +38,65 @@
           <div class="text-subtitle-1">{{ labels.fundingInformation }}</div>
         </v-col>
       </v-row>
+      <v-card flat max-height="350px" max-width="1200px" class="overflow-auto">
+        <v-row
+          v-for="(item, index) in previewFundersAndEmpty"
+          :key="`${item}_${index}`"
+          :class="index === 0 ? 'pt-2' : 'py-0'"
+          no-gutters
+        >
+          <v-col cols="4" class="pr-2">
+            <v-text-field
+              :label="labels.institution"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION)"
+              :hint="mixinMethods_readOnlyHint(INSTITUTION)"
+              :value="item.institution"
+              :error-messages="getValidationErrorMessage(INSTITUTION, index)"
+              @keyup="onKeyUp"
+              @change="onChange(index, INSTITUTION, $event)"
+            />
+          </v-col>
 
-      <v-row
-        v-for="(item, index) in fundersField"
-        :key="`${item}_${index}`"
-        :class="index === 0 ? 'pt-2' : 'py-0'"
-        no-gutters
-      >
-        <v-col cols="4" class="pr-2">
-          <v-text-field
-            :label="labels.institution"
-            outlined
-            dense
-            :readonly="isReadOnly(INSTITUTION)"
-            :hint="readOnlyHint(INSTITUTION)"
-            :value="item.institution"
-            :error-messages="getValidationErrorMessage(INSTITUTION, index)"
-            @keyup="blurOnEnterKey"
-            @change="notifyChange(index, INSTITUTION, $event)"
-          />
-        </v-col>
+          <v-col cols="3" class="px-2">
+            <v-text-field
+              :label="labels.grantNumber"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(GRANTNUMBER)"
+              :hint="mixinMethods_readOnlyHint(GRANTNUMBER)"
+              :value="item.grantNumber"
+              :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
+              @keyup="onKeyUp"
+              @change="onChange(index, GRANTNUMBER, $event)"
+            />
+          </v-col>
 
-        <v-col cols="3" class="px-2">
-          <v-text-field
-            :label="labels.grantNumber"
-            outlined
-            dense
-            :readonly="isReadOnly(GRANTNUMBER)"
-            :hint="readOnlyHint(GRANTNUMBER)"
-            :value="item.grantNumber"
-            :error-messages="getValidationErrorMessage(GRANTNUMBER, index)"
-            @keyup="blurOnEnterKey"
-            @change="notifyChange(index, GRANTNUMBER, $event)"
-          />
-        </v-col>
+          <v-col class="grow pl-2">
+            <v-text-field
+              :label="labels.institutionUrl"
+              outlined
+              dense
+              :readonly="mixinMethods_isFieldReadOnly(INSTITUTION_URL)"
+              :hint="mixinMethods_readOnlyHint(INSTITUTION_URL)"
+              :value="item.institutionUrl"
+              :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
+              @keyup="onKeyUp"
+              @change="onChange(index, INSTITUTION_URL, $event)"
+            />
+          </v-col>
 
-        <v-col class="grow pl-2">
-          <v-text-field
-            :label="labels.institutionUrl"
-            outlined
-            dense
-            :readonly="isReadOnly(INSTITUTION_URL)"
-            :hint="readOnlyHint(INSTITUTION_URL)"
-            :value="item.institutionUrl"
-            :error-messages="getValidationErrorMessage(INSTITUTION_URL, index)"
-            @keyup="blurOnEnterKey"
-            @change="notifyChange(index, INSTITUTION_URL, $event)"
-          />
-        </v-col>
-
-        <v-col class="flex-grow-0 px-1">
-          <BaseIconButton
-            material-icon-name="clear"
-            icon-color="red"
-            :disabled="index >= fundersField.length - 1"
-            @clicked="deleteFundersEntry(index)"
-          />
-        </v-col>
-      </v-row>
+          <v-col class="shrink px-1">
+            <BaseIconButton
+              material-icon-name="clear"
+              icon-color="red"
+              :disabled="index >= previewFundersAndEmpty.length - 1"
+              @clicked="deleteFundersEntry(index)"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
 
       <v-row v-if="validationErrors.fundersArray" no-gutters>
         <v-col cols="12">
@@ -101,20 +105,6 @@
           </div>
         </v-col>
       </v-row>
-
-      <!--
-      <v-row >
-
-        <v-col cols="3">
-          <div :style="`border-radius: 50%; width: 30px; height: 30px; background-color: ${ dataIsValid ? 'green' : 'red' };`"
-                />
-        </v-col>
-        <v-col cols="3">
-          <v-btn @click="saveData()">save</v-btn>
-        </v-col>
-
-      </v-row>
--->
     </v-container>
   </v-card>
 </template>
@@ -127,7 +117,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mapState } from 'vuex';
 
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 
@@ -137,8 +126,6 @@ import {
   eventBus,
 } from '@/factories/eventBus';
 import {
-  deleteEmptyObject,
-  isMaxLength,
   isObjectEmpty,
 } from '@/factories/userEditingFactory';
 import {
@@ -189,112 +176,29 @@ export default {
       default: '',
     },
   },
-  computed: {
-    ...mapState(['config']),
-    loadingColor() {
-      if (this.loading) {
-        return 'accent';
-      }
-
-      return undefined;
-    },
-    maxFunders() {
-      let max = this.defaultUserEditMetadataConfig.publicationMaxFunders;
-
-      if (this.$store) {
-        max = this.config?.userEditMetadataConfig?.publicationMaxFunders || max;
-      }
-
-      return max;
-    },
-    fundersField: {
-      get() {
-        let funders = [...this.funders];
-
-        if (funders.length <= 0) {
-          // const emptyCopy = {...this.emptyEntry};
-          funders = [{ ...this.emptyEntry }];
-
-          // const errorsEmptyCopy = {...this.emptyEntry};
-          // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-          this.validationErrors.funders = [{ ...this.emptyEntry }];
-        } else {
-          this.addFunderObj(funders);
-        }
-
-        return funders;
+  watch: {
+    funders: {
+      immediate: true,
+      handler(newData) {
+        this.previewFunders = [...newData] ?? [];
       },
     },
-    maxFundersMessage() {
-      return `Maximum number of funders: ${this.maxFunders}. Please contact the EnviDat support team if you have additional funders.`;
+  },
+  computed: {
+    previewFundersAndEmpty() {
+      // Check if the last entry has an error and prevent the new entry to be shown
+      const lastEntry = this.validationErrors.funders[this.validationErrors.funders.length - 1];
+      const entryIsValid = !Object.values(lastEntry ?? {}).find((i) => i !== '' && i !== null && i !== undefined);
+      if(entryIsValid) {
+        return [...this.previewFunders, this.emptyEntry];
+      }
+      return [...this.previewFunders];
     },
     validations() {
       return getValidationMetadataEditingObject(this.stepKey);
     },
   },
   methods: {
-    blurOnEnterKey(keyboardEvent) {
-      if (keyboardEvent.key === 'Enter') {
-        keyboardEvent.target.blur();
-      }
-    },
-    validateProperty(property, value) {
-      return isFieldValid(
-        property,
-        value,
-        this.validations,
-        this.validationErrors,
-      );
-    },
-    addFunderObj(localfunders) {
-      // Assign lastFunder to last item in this.funderArray
-      const lastFunder = localfunders[localfunders.length - 1];
-
-      // Assign lastFunderInstitution to value of institution key in lastFunder
-      const lastFunderInstitution = lastFunder.institution;
-
-      // If lastFunderInstitution is an empty string then assign addFunder to false
-      let addFunder = true;
-      if (lastFunderInstitution === '') {
-        addFunder = false;
-      }
-
-      // If addFunder is true and length of funderArray is less than maxFunders then push new funder object to funderArray
-      // Else if funderArray is greater than or equal to maxFunders then assign maxFundersReached to true
-      // Else it funderArray is less than maxFunders then assign maxFundersReached to false
-      if (addFunder && localfunders.length < this.maxFunders) {
-        localfunders.push({ ...this.emptyEntry });
-
-        const sizeDiff =
-          localfunders.length - this.validationErrors.funders.length;
-
-        for (let i = 0; i < sizeDiff; i++) {
-          this.validationErrors.funders.push({ ...this.emptyEntry });
-        }
-      }
-    },
-    removeUnusedFundersEntry(localfunders) {
-      const lastFunder = localfunders[localfunders.length - 1];
-
-      // Assign isEmpty to true if all values in lastFunder are null or empty strings, else assign isEmpty to false
-      const isEmpty = isObjectEmpty(lastFunder);
-
-      // If isEmpty is true and localfunders has at least one item then remove last element of array
-      if (isEmpty && localfunders.length > 0) {
-        localfunders.pop();
-      }
-    },
-    editFundersEntry(array, index, property, value) {
-      if (array.length <= index) {
-        return;
-      }
-
-      const currentEntry = array[index];
-      array[index] = {
-        ...currentEntry,
-        [property]: value,
-      };
-    },
     setFundersInfo(property, value) {
       const newPublicationInfo = {
         ...this.$props,
@@ -307,57 +211,28 @@ export default {
         property: property.toString(),
       });
     },
-    deleteFundersEntry(index) {
-      const localCopy = [...this.fundersField];
-      const errorArray = this.validationErrors.funders;
-
-      if (localCopy.length > 1) {
-        localCopy.splice(index, 1);
+    /** Validates all entries or a specific property */
+    validate(index = undefined, property = undefined) {
+      // Keep the validation object in sync
+      const sizeDiff = this.previewFunders.length - this.validationErrors.funders.length;
+      for(let i = 0; i < sizeDiff; i += 1) {
+        this.validationErrors.funders.push({ ...this.emptyEntry });
       }
-
-      // the last entry is always unused, removed it before saving
-      this.removeUnusedFundersEntry(localCopy);
-
-      const arrayIsValid = isFieldValid(
-        'funders',
-        localCopy,
-        this.validations,
-        this.validationErrors,
-        'fundersArray',
-      );
-
-      if (arrayIsValid) {
-        //        if (deleted || !deleted && isArrayValid(localCopy, 'funders', index, property, this.validations, errorArray)) {
-        this.setFundersInfo('funders', localCopy);
-
-        if (errorArray.length > 1) {
-          errorArray.splice(index, 1);
-        }
-      }
-    },
-    notifyChange(index, property, value) {
-      const localCopy = [...this.fundersField];
-      const errorArray = this.validationErrors.funders;
-
-      this.editFundersEntry(localCopy, index, property, value);
-
-      const deleted = deleteEmptyObject(index, localCopy);
-
-      // the last entry is always unused, removed it before saving
-      this.removeUnusedFundersEntry(localCopy);
-
-      let arrayIsValid = false;
-      if (deleted) {
-        arrayIsValid = isFieldValid(
+      // Validate entire array (cases like min/max entries)
+      if(index === undefined && !property) {
+        return isFieldValid(
           'funders',
-          localCopy,
+          this.previewFunders,
           this.validations,
           this.validationErrors,
           'fundersArray',
         );
-      } else {
-        arrayIsValid = isArrayContentValid(
-          localCopy,
+      } 
+      if(index >= 0 && property) {
+        // Validate a single entry and prop
+        const errorArray = this.validationErrors.funders;
+        return isArrayContentValid(
+          this.previewFunders,
           'funders',
           index,
           property,
@@ -365,20 +240,37 @@ export default {
           errorArray,
         );
       }
-
-      if (arrayIsValid) {
-        this.setFundersInfo('funders', localCopy);
-
-        if (deleted) {
-          // delete also from the errorArray to keep the arrays in sync
-          if (errorArray.length > 1) {
-            errorArray.splice(index, 1);
-          }
-        }
+      throw new Error('Unable to validate EditFunding')
+    },
+    deleteFundersEntry(index) {
+      // If two entries with the same data exist, the UI does not update accordingly
+      // This is due to the key in the v-for not being able to differentiate
+      // and then it doesn't clean up correctly
+      this.previewFunders.splice(index, 1);
+      this.validationErrors.funders.splice(index, 1);
+      if (this.validate()) {
+        this.setFundersInfo('funders', this.previewFunders);
       }
+    },
+    onKeyUp(keyboardEvent) {
+      if (keyboardEvent.key === 'Enter') {
+        keyboardEvent.target.blur();
+      }
+    },
+    onChange(index, property, value) {
+      if (index === this.previewFunders.length) {
+        // The last UI entry is a special case,
+        // it does not exist in the data until the user enters something
+        this.previewFunders.push({...this.emptyEntry, [property]: value});
+      }
+      const entry = this.previewFunders[index];
+      entry[property] = value;
 
-      if (isMaxLength(this.maxFunders, localCopy)) {
-        this.validationErrors.fundersArray = this.maxFundersMessage;
+      if (isObjectEmpty(entry)) {
+        // Remove entry since it's empty
+        this.deleteFundersEntry(index);
+      } else if (this.validate(index, property) && this.validate()) {
+        this.setFundersInfo('funders', this.previewFunders);
       }
     },
     getValidationErrorMessage(property, index) {
@@ -400,6 +292,7 @@ export default {
       grantNumber: '',
       institutionUrl: '',
     },
+    previewFunders: [],
     labels: {
       cardTitle: 'Funding Information',
       fundingInformation: 'Provide information about who funded the research efforts.',
@@ -407,8 +300,6 @@ export default {
       grantNumber: 'Grant Number',
       institutionUrl: 'Link',
     },
-    fundersValidation: '',
-    propertyValidationSuffix: 'Validation',
     validationErrors: {
       funders: [
         {
@@ -418,11 +309,6 @@ export default {
         },
       ],
       fundersArray: null,
-    },
-    dataIsValid: true,
-    buttonColor: '#269697',
-    defaultUserEditMetadataConfig: {
-      publicationMaxFunders: 5,
     },
     stepKey: EDITMETADATA_FUNDING_INFO,
   }),

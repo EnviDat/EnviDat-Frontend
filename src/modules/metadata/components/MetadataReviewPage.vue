@@ -166,12 +166,8 @@ export default {
 */
   computed: {
     ...mapState(['config']),
-    ...mapState(USER_NAMESPACE, [
-      'userDatasets',
-    ]),
     ...mapGetters(USER_SIGNIN_NAMESPACE, [
       'user',
-      'userLoading',
     ]),
     ...mapGetters({
       detailPageBackRoute: `${METADATA_NAMESPACE}/detailPageBackRoute`,
@@ -181,10 +177,7 @@ export default {
       authorPassedInfo: `${METADATA_NAMESPACE}/authorPassedInfo`,
     }),
     metadataContent() {
-      return {
-        ...this.reviewStore.metadata,
-        resources: this.reviewStore.resources,
-      };
+      return this.reviewStore.metadata;
     },
     metadataConfig() {
       return this.config?.metadataConfig || {};
@@ -244,17 +237,6 @@ export default {
       }
 
       return this.appScrollPosition < 20;
-    },
-    showEditButton() {
-      const userId = this.user?.id;
-
-      if (!userId || !this.userDatasets || this.userDatasets.length <= 0) {
-        return false;
-      }
-
-      const matches = this.userDatasets.filter(dSet => dSet.name === this.metadataId || dSet.id === this.metadataId);
-
-      return matches.length > 0;
     },
   },
   methods: {
@@ -335,9 +317,10 @@ export default {
         };
 */
 
-        // const parsedContent = convertJSON(currentContent, false);
         const publicationData = getFrontendJSONForStep(EDITMETADATA_PUBLICATION_INFO, parsedContent);
         this.header.publicationYear = publicationData.publicationYear;
+
+        // this.header.publicationYear = currentContent.version;
 
         this.body = createBody(
           currentContent,
@@ -358,15 +341,17 @@ export default {
 
       this.authors = getFullAuthorsFromDataset(this.authorsMap, currentContent);
 
-      this.$nextTick(() => {
+      if (this.authors) {
+        this.$nextTick(() => {
 
-        this.$set(components.MetadataAuthors, 'genericProps', {
-          authors: this.authors,
-          authorDetailsConfig: this.authorDetailsConfig,
-          authorDeadInfo: this.authorDeadInfo,
-          showPlaceholder: this.showPlaceholder,
+          this.$set(components.MetadataAuthors, 'genericProps', {
+            authors: this.authors,
+            authorDetailsConfig: this.authorDetailsConfig,
+            authorDeadInfo: this.authorDeadInfo,
+            showPlaceholder: this.showPlaceholder,
+          });
         });
-      });
+      }
 
     },
     loadResources(currentContent) {
@@ -515,9 +500,6 @@ export default {
      */
     async loadMetaDataContent() {
       await this.reviewStore.loadReviewMetadata(this.metadataId);
-      await this.reviewStore.loadReviewResources(this.metadataId)
-
-      console.log(this.metadataContent);
 
       this.$nextTick(() => {
         this.createMetadataContent(this.metadataContent);

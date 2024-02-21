@@ -413,6 +413,10 @@ export function getFullAuthorsFromDataset(authorMap, dataset) {
   if (!authorMap || !dataset) { return null; }
 
   const authors = createAuthors(dataset);
+  if (!authors) {
+    return []
+  }
+
   const fullAuthors = [];
 
   for (let i = 0; i < authors.length; i++) {
