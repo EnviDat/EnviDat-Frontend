@@ -201,38 +201,38 @@ export default {
       return this.loadingMetadatasContent || this.loadingCurrentMetadataContent;
     },
     firstColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.firstCol : this.singleCol;
+      return this.$vuetify.display.mdAndUp ? this.firstCol : this.singleCol;
     },
     secondColumn() {
-      return this.$vuetify.breakpoint.mdAndUp ? this.secondCol : [];
+      return this.$vuetify.display.mdAndUp ? this.secondCol : [];
     },
     headerStyle() {
       let width = 82.25;
       let margin = '0px 8.33333%';
 
-      if (this.$vuetify.breakpoint.mdAndDown) {
+      if (this.$vuetify.display.mdAndDown) {
         width = 100;
         margin = '0';
       }
 
-      if (this.$vuetify.breakpoint.lg) {
+      if (this.$vuetify.display.lg) {
         width = 82.5;
       }
 
       let pos = 'position: ';
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         pos += 'absolute';
       } else if (this.appScrollPosition > 20) {
         pos += 'fixed';
       } else {
         pos += 'relative';
       }
-      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.breakpoint.smAndDown ? 'relative' : 'absolute'}`;
+      // const pos = `position: ${this.appScrollPosition > 20 ? 'fixed' : this.$vuetify.display.smAndDown ? 'relative' : 'absolute'}`;
 
       return `${pos}; width: ${width}%; margin: ${margin}; `;
     },
     headerExpanded() {
-      if (this.$vuetify.breakpoint.mdAndUp) {
+      if (this.$vuetify.display.mdAndUp) {
         return true;
       }
 
@@ -250,8 +250,8 @@ export default {
     headerHeight() {
       let height = -2;
 
-      if ((this.$vuetify.breakpoint.smAndDown && this.appScrollPosition > 20)
-        || this.$vuetify.breakpoint.mdAndUp ) {
+      if ((this.$vuetify.display.smAndDown && this.appScrollPosition > 20)
+        || this.$vuetify.display.mdAndUp ) {
         if (this.$refs && this.$refs.header) {
           height = this.$refs.header.clientHeight;
         }
@@ -293,7 +293,7 @@ export default {
 /*
         this.header = createHeader(
           subDataset,
-          this.$vuetify.breakpoint.smAndDown,
+          this.$vuetify.display.smAndDown,
           this.authorDeadInfo,
         );
 
@@ -324,7 +324,7 @@ export default {
 
         this.body = createBody(
           currentContent,
-          this.$vuetify.breakpoint.smAndDown,
+          this.$vuetify.display.smAndDown,
         );
 
 /*

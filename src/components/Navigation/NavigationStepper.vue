@@ -15,7 +15,7 @@
               {{ datasetTitleText }}
             </v-col>
 
-            <v-col v-if="$vuetify.breakpoint.smAndDown
+            <v-col v-if="$vuetify.display.smAndDown
                           && !isCreationWorkflow"
                     class="flex-grow-0">
               <StepperInteractionView :steps="steps"
@@ -34,7 +34,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-if="$vuetify.breakpoint.smAndDown
+          <v-row v-if="$vuetify.display.smAndDown
                           && isCreationWorkflow">
             <v-col>
               <StepperInteractionView :steps="steps"
@@ -73,7 +73,7 @@
 
       </div>
 
-      <div v-if="$vuetify.breakpoint.mdAndUp"
+      <div v-if="$vuetify.display.mdAndUp"
            class="interaction pl-md-2 py-2 py-sm-0">
 
         <StepperInteractionView :steps="steps"
