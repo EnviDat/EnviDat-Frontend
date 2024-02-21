@@ -2,9 +2,7 @@ stages:
   - config
   - test
   - build
-#  - package
   - deploy
-#  - release
 
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
@@ -27,19 +25,6 @@ variables:
 .trigger-rules:
   rules:
     - if: '$CI_COMMIT_REF_NAME =~ /^(main|staging|develop|beta)$/'
-      changes:
-        - 'src/**/*'
-        - 'public/**/*'
-        - 'tests/**/*'
-        - 'nginx/**/*'
-        - 'chart/**/*'
-        - '.env*'
-        - 'package.json*'
-        - 'vue.*'
-        - 'Dockerfile'
-        - '.gitlab-ci.yml'
-#       using when: always will run all jobs regardless of previous failures?
-#      when: always
     - if: $CI_PIPELINE_SOURCE == "web"
       when: always
 
@@ -57,7 +42,7 @@ set-vars:
     # extract version number from package.json, to make it available in the app
     - >
       echo "VERSION=$(jq '.version' package.json --raw-output)" >> build.env
-    # move all variables from the from the CI / CD into the build variables
+    # move all variables from the CI / CD into the build variables
     - cat .env >> build.env
     - |
       if [ "${CI_COMMIT_REF_NAME}" == "develop" ]; then
@@ -78,9 +63,9 @@ set-vars:
       dotenv: build.env
 
 modify-env:
-  extends: .trigger-rules
   stage: config
   image: docker.io/python:3.9-alpine3.17
+  extends: .trigger-rules
   dependencies:
     - set-vars
   before_script:
@@ -123,13 +108,11 @@ modify-env:
       - .env.production
 
 install-node:
+  stage: config
+  image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
     - .node_cache
-  stage: config
-  image: docker.io/node:20.11.1-alpine3.19
-  # image: docker.io/node:18.18.2-alpine3.17
-  # image: docker.io/node:18.19.1-alpine3.19
   cache:
     # overwrite the global caching definitions with
     # pull-push to be able to update the node_modules in the cache
@@ -158,12 +141,11 @@ install-node:
       - node_modules
 
 run-tests:
+  stage: test
+  image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
     - .node_cache
-  stage: test
-  image: docker.io/node:20.11.1-alpine3.19
-  # image: docker.io/node:18.18.2-alpine3.17
   needs:
     - modify-env
     - install-node
@@ -172,11 +154,11 @@ run-tests:
 
 
 build-storybook:
+  stage: build
+  image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
     - .node_cache
-  stage: build
-  image: docker.io/node:20.11.1-alpine3.19
   # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs the artifact: config and environment variables
@@ -194,11 +176,11 @@ build-storybook:
       - storybook
 
 build-app:
+  stage: build
+  image: docker.io/node:20.11.1-alpine3.19
   extends:
     - .trigger-rules
     - .node_cache
-  stage: build
-  image: docker.io/node:20.11.1-alpine3.19
   # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs the artifact: config and environment variables
@@ -215,9 +197,9 @@ build-app:
       - dist
 
 combine-builds:
-  extends: .trigger-rules
   stage: build
   image: docker.io/alpine:3.15
+  extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -244,9 +226,11 @@ combine-builds:
 
 
 deploy-chromatic:
-  extends: .node_cache
   stage: deploy
   image: docker.io/node:20.11.1-alpine3.19
+  extends:
+    - .node_cache
+    - .trigger-rules
   # image: docker.io/node:18.18.2-alpine3.17
   variables:
     GIT_STRATEGY: none
@@ -281,9 +265,9 @@ deploy-chromatic:
 
 
 publish-build:
-  extends: .trigger-rules
   stage: deploy
   image: docker.io/alpine:3.15
+  extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -309,9 +293,9 @@ publish-build:
 
 
 rclone-sync:
-  extends: .trigger-rules
   stage: deploy
   image: docker.io/alpine:3.15
+  extends: .trigger-rules
   needs:
     # needs the enviromental variables for the version number
     - set-vars
@@ -400,10 +384,11 @@ modify-box-env:
       - .env.production
 
 build-box-app:
-  extends:
-    - .node_cache
   stage: build
   image: docker.io/node:20.11.1-alpine3.19
+  extends:
+    - .trigger-rules
+    - .node_cache
   # image: docker.io/node:18.18.2-alpine3.17
   needs:
     # needs environment variables from the frontend in a box setup
@@ -423,6 +408,7 @@ build-box-app:
 combine-box-builds:
   stage: build
   image: docker.io/alpine:3.15
+  extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
   needs:
@@ -448,6 +434,7 @@ combine-box-builds:
 publish-box-build:
   stage: deploy
   image: docker.io/alpine:3.15
+  extends: .trigger-rules
   variables:
     GIT_STRATEGY: none
     BOX_BUILD_ZIP_NAME: 'frontend-in-a-box.zip'
