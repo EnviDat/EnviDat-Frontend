@@ -18,13 +18,9 @@ export default {
 </script>
 
 <style>
-  .vuetifyStorybookApp {
-    min-height: fit-content !important;
-  }
-
-  .vuetifyStorybookApp > .v-application--wrap {
-    min-height: fit-content !important;
-    font-family: 'Raleway', sans-serif !important;
+  .vuetifyStorybookApp .v-application__wrap {
+    font-family: 'Raleway', sans-serif;
+    min-height: auto;
   }
 </style>
 
