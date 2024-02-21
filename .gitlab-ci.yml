@@ -228,7 +228,9 @@ combine-builds:
 deploy-chromatic:
   stage: deploy
   image: docker.io/node:20.11.1-alpine3.19
-  extends: .node_cache
+  extends:
+    - .node_cache
+    - .trigger-rules
   # image: docker.io/node:18.18.2-alpine3.17
   variables:
     GIT_STRATEGY: none
