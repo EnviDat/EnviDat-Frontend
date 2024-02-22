@@ -19,7 +19,7 @@ export default {
   component: BaseIconSwitch,
 };
 
-export const InActive = {};
+export const Inactive = {};
 
 export const Active = { args: { active: true } };
 
@@ -31,9 +31,9 @@ export const WithIconAndTooltip = {
   },
 };
 
-export const WithIconAndTooltipInActive = {
+export const WithIconAndTooltipInactive = {
   args: {
-    ...InActive.args,
+    ...Inactive.args,
     materialIconName: 'lock',
     tooltipText: 'access restricted',
   },

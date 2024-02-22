@@ -1,39 +1,31 @@
 <template>
-  <v-tooltip bottom
-              id="BaseIconSwitch" >
+  <div class="baseIconSwitch">
+    <v-tooltip bottom >
 
-    <template v-slot:activator="{ on }">
-
-      <div v-on="on"
-           style="position: relative; width: 44px; " >
-
-        <div class="authorSwitch"
-             :class="disabled ? '': 'authorSwitchClickable'"
-             :style="active ? 'left: -5px;' : 'left: 21px;'"
-             @click="emitClick"
-             >
-          <v-icon v-if="materialIconName"
-                  :color="!active ? 'primary' : 'gray'"
-                  style="top: 0; left: 1px;">
+      <template v-slot:activator="{ on }">
+        <button
+          tabindex="0"
+          type="button"
+          :disabled="disabled"
+          class="iconSwitchPip"
+          :id="'iconSwitchPip' + _uid"
+          :class="classList" 
+          role="switch"
+          :aria-labelledby="'iconSwitchLabel' + _uid"
+          :aria-checked="active"
+          @click="emitClick"
+          v-on="on"
+        >
+          <v-icon v-if="materialIconName" class="iconSwitchPipIcon" :color="pipColor">
             {{ materialIconName }}
           </v-icon>
+        </button>
+      </template>
 
-        </div>
+      <label :for="'iconSwitchPip' + _uid">{{ tooltipText }}</label>
 
-        <div class="authorSwitchHover"
-             :style="active ? 'left: -10px;' : 'left: 16px;'" />
-
-        <div style="width: 44px; height: 14px; border-radius: 8px;"
-             :style="`background-color: ${bgColor};`"
-              class="" />
-
-      </div>
-
-    </template>
-
-    <span>{{ tooltipText }}</span>
-
-  </v-tooltip>
+    </v-tooltip>
+  </div>
 </template>
 
 <script>
@@ -65,13 +57,29 @@ export default {
     materialIconName: String,
     tooltipText: String,
   },
+  watch: {
+    active: {
+      immediate: true,
+      handler(newValue){
+        this.internalActive = newValue;
+      },
+    },
+  },
   data: () => ({
-    hoverBadge: false,
+    internalActive: false,
   }),
   computed: {
+    classList(){
+      return {
+        'clickable': !this.disabled,
+        'active': this.active,
+      }
+    },
+    pipColor(){
+      return this.internalActive ? 'primary' : 'gray';
+    },
     bgColor() {
-      const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
-      return !this.active ? secondary : 'lightgray';
+      return this.internalActive ? 'primary lighten-2' : 'gray lighten-1';
     },
   },
   methods: {
@@ -87,42 +95,62 @@ export default {
 
 </script>
 
-<style>
+<style scoped lang="scss">
 
-.authorSwitch {
-  z-index: 1;
-  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
-}
+$switch-length: 44px;
+$switch-bg-height: 14px;
+$pip-size: 26px;
+$pip-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+$slide-duration: 0.2s;
 
-.authorSwitchClickable:hover {
-  cursor: pointer;
-}
-
-.authorSwitch, .authorSwitchHover {
-  position: absolute;
-  transition: 0.3s all ease-in-out;
-  border-radius: 50%;
-  background-color: #fff;
-  top: -6px;
-  height: 26px;
-  width: 26px;
-}
-
-.authorSwitch:hover + .authorSwitchHover {
-  visibility: visible;
-}
-
-.authorSwitchHover {
-  visibility: hidden;
-  top: -11px;
-  background-color: rgba(33, 33, 33, 0.2);
-  width: 36px;
-  height: 36px;
+.baseIconSwitch {
+  position: relative;
   z-index: 0;
-}
+  width: $switch-length;
+  height: $pip-size;
+  .iconSwitchPip {
+    margin: 0;
+    padding: 0;
+    box-shadow: $pip-shadow;
+    border-radius: 50%;
+    background-color: #fff;
+    height: $pip-size;
+    width: $pip-size;
+    left: 0;
+    transition: left $slide-duration ease-in-out;
 
-.authorSwitchHover:hover {
-  display: inherit;
+    &.active {
+      $activeDelta: $switch-length - $pip-size;
+      position: absolute;
+      left: $activeDelta;
+      transition: left $slide-duration ease-in-out;
+      &:before {
+        margin-left: -$activeDelta;
+        transition: margin-left $slide-duration ease-in-out;
+      }
+    }
+
+    &.clickable {
+      &:hover {
+        box-shadow: $pip-shadow, 0 0 0 4px rgba(33,33,33,0.2);
+      }
+    }
+
+    // BG
+    &:before {
+      content: ' ';
+      position: absolute;
+      display: block; 
+      width: $switch-length;
+      height: $switch-bg-height;
+      border-radius: 8px; 
+      top: ($pip-size - $switch-bg-height) / 2;
+      background-color: lightgray;
+      box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
+      z-index: -1; // Behind the pip
+    }
+
+  }
 }
 
 </style>
