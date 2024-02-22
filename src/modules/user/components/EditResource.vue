@@ -840,9 +840,8 @@ export default {
     imagePreviewError: null,
     labels: {
       title: 'Edit Selected Resource',
-      instructions:
-        'Include a description others will understand and fill out as many fields as possible.',
-      subInstructions: 'For files larger then 5GB contact the envidat team.',
+      instructions: 'Include an apt name and description others will understand',
+      subInstructions: 'For files larger then 5GB contact the EnviDat team.',
       createButtonText: 'Save Resource',
       description: 'Resource description',
       resourceName: 'Name of the resource',
@@ -858,7 +857,7 @@ export default {
       dataAccessSwitchTooltip: 'If the resource is private, only signed in users from the same organization have access',
       hasAllowedUsersSwitchLabel: 'Grant specific users access',
       hasAllowedUsersSwitchTooltip: 'Grant access to a specific list of users even if the resource is marked as private',
-      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an envidat user.',
+      allowedUsersTypingInfo: 'Start typing the name in the text field to search for an EnviDat user.',
       restrictedAllowedUsersInfo: 'Additional access is granted to the following users',
       editingRestrictingUnavailableInfo: 'Editing the accessibility of resources is not available at the moment. Please contact the EnviDat team if you need to make changes.',
     },
@@ -885,16 +884,16 @@ export default {
 </script>
 
 <style scoped>
-.imagePreviewErrorContainer {
-  display: grid;
-}
+  .imagePreviewErrorContainer {
+    display: grid;
+  }
 
-#backdrop, #curtain {
-  grid-area: 1/1;
-}
+  #backdrop, #curtain {
+    grid-area: 1/1;
+  }
 
-.customIcon {
-  opacity: 0.5;
-}
+  .customIcon {
+    opacity: 0.5;
+  }
 
 </style>

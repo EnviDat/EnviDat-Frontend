@@ -39,7 +39,7 @@ const msalConfig = {
      const msg = err.message ? err.message : err;
      const errStack = err.stack
        ? err.stack
-       : 'No error stack available, please let the envidat team know of this Error!';
+       : 'No error stack available, please let the EnviDat team know of this Error!';
 
      console.error(`err: ${msg} . Error Stack: ${errStack}`);
      
