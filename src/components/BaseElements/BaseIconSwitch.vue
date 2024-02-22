@@ -7,22 +7,23 @@
           tabindex="0"
           type="button"
           :disabled="disabled"
-          class="iconSwitchPip"
-          :id="'iconSwitchPip' + _uid"
+          class="iconSwitchButton"
+          :id="'iconSwitchButton' + _uid"
           :class="classList" 
+          :style="styleList"
           role="switch"
           :aria-labelledby="'iconSwitchLabel' + _uid"
           :aria-checked="active"
           @click="emitClick"
           v-on="on"
         >
-          <v-icon v-if="materialIconName" class="iconSwitchPipIcon" :color="pipColor">
+          <v-icon v-if="materialIconName" class="iconSwitchButtonIcon" :color="iconColor">
             {{ materialIconName }}
           </v-icon>
         </button>
       </template>
 
-      <label :for="'iconSwitchPip' + _uid">{{ tooltipText }}</label>
+      <label :for="'iconSwitchButton' + _uid">{{ tooltipText }}</label>
 
     </v-tooltip>
   </div>
@@ -50,6 +51,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    color: {
+      type: String,
+      default: 'primary',
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -69,17 +74,21 @@ export default {
     internalActive: false,
   }),
   computed: {
+    styleList() {
+      return {
+
+      }
+    },
     classList(){
       return {
         'clickable': !this.disabled,
         'active': this.active,
+        [`${this.color}--text text--lighten-2`]: this.internalActive,
+        'grey--text text--lighten-1': !this.internalActive,
       }
     },
-    pipColor(){
-      return this.internalActive ? 'primary' : 'gray';
-    },
-    bgColor() {
-      return this.internalActive ? 'primary lighten-2' : 'gray lighten-1';
+    iconColor(){
+      return this.internalActive ? this.color : 'gray';
     },
   },
   methods: {
@@ -99,40 +108,40 @@ export default {
 
 $switch-length: 44px;
 $switch-bg-height: 14px;
-$pip-size: 26px;
-$pip-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+$button-size: 26px;
+$button-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
 $slide-duration: 0.2s;
 
 .baseIconSwitch {
   position: relative;
   z-index: 0;
   width: $switch-length;
-  height: $pip-size;
-  .iconSwitchPip {
+  height: $button-size;
+  .iconSwitchButton {
     margin: 0;
     padding: 0;
-    box-shadow: $pip-shadow;
+    box-shadow: $button-shadow;
     border-radius: 50%;
     background-color: #fff;
-    height: $pip-size;
-    width: $pip-size;
+    height: $button-size;
+    width: $button-size;
     left: 0;
     transition: left $slide-duration ease-in-out;
 
     &.active {
-      $activeDelta: $switch-length - $pip-size;
+      $activeDelta: $switch-length - $button-size;
       position: absolute;
       left: $activeDelta;
       transition: left $slide-duration ease-in-out;
       &:before {
         margin-left: -$activeDelta;
-        transition: margin-left $slide-duration ease-in-out;
+        transition: margin-left $slide-duration ease-in-out, background-color $slide-duration;
       }
     }
 
     &.clickable {
       &:hover {
-        box-shadow: $pip-shadow, 0 0 0 4px rgba(33,33,33,0.2);
+        box-shadow: $button-shadow, 0 0 0 4px rgba(33,33,33,0.2);
       }
     }
 
@@ -144,10 +153,10 @@ $slide-duration: 0.2s;
       width: $switch-length;
       height: $switch-bg-height;
       border-radius: 8px; 
-      top: ($pip-size - $switch-bg-height) / 2;
-      background-color: lightgray;
+      top: ($button-size - $switch-bg-height) / 2;
+      background-color: currentColor;
       box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
-      z-index: -1; // Behind the pip
+      z-index: -1; // Behind the button
     }
 
   }

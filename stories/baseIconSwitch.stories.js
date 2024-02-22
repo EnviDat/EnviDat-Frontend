@@ -71,6 +71,17 @@ export const InteractiveSwitches = () => ({
   <v-row>
     <v-col cols="12"
            class="flex-grow-0">
+      <BaseIconSwitch :active="!active"
+                      materialIconName="home"
+                      tooltipText="Home"
+                      color="orange"
+                      @clicked="active = !active"/>
+    </v-col>
+  </v-row>
+
+  <v-row>
+    <v-col cols="12"
+           class="flex-grow-0">
       <BaseIconSwitch :active="active"
                       materialIconName="account_circle"
                       tooltipText="Author search tool tip"
