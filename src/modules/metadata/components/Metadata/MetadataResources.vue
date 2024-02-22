@@ -175,11 +175,8 @@ export default {
       return this.mixinMethods_getGenericProp('doi');
     },
     resources() {
-      let r = this.mixinMethods_getGenericProp('resources') ?? [];
-      debugger;
-      r = r.sort((a, b) => Number(!!a.deprecated) - Number(!!b.deprecated));
-      debugger;
-      return r;
+      const r = this.mixinMethods_getGenericProp('resources') ?? [];
+      return r.sort((a, b) => Number(!!a.deprecated) - Number(!!b.deprecated));
     },
     dates() {
       return this.mixinMethods_getGenericProp('dates');

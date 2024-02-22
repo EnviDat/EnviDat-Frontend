@@ -848,7 +848,8 @@ function populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, custom
 
   resourceData.dataLicenseTitle = dataLicenseInfo.dataLicenseTitle;
   resourceData.dataLicenseUrl = dataLicenseInfo.dataLicenseUrl;
-  const deprecatedResources = customFields.deprecated_resources;
+  const deprecatedResources = customFields.deprecatedResources;
+
   for (let i = 0; i < resources.length; i++) {
     resources[i] = cleanResourceForFrontend(resources[i]);
 
@@ -935,9 +936,9 @@ export function populateEditingComponents(commit, metadataRecord, categoryCards)
 
   const { dataLicenseInfo } = populateEditingDataInfo(commit, snakeCaseJSON);
 
-  const {customFields} = populateEditingRelatedResearch(commit, snakeCaseJSON);
+  const { customFieldsData } = populateEditingRelatedResearch(commit, snakeCaseJSON);
 
-  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFields);
+  populateEditingResources(commit, snakeCaseJSON, dataLicenseInfo, customFieldsData);
 
 
   const { publicationData } = populateEditingPublicationInfo(commit, metadataRecord, snakeCaseJSON);
