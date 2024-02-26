@@ -11,7 +11,6 @@
               class="iconSwitchButton"
               :id="'iconSwitchButton' + _uid"
               :class="classList"
-              :style="styleList"
               role="switch"
               :aria-describedby="'iconSwitchLabel' + _uid"
               :aria-checked="active"

@@ -852,7 +852,7 @@ export default {
       size: 'File size',
       sizeFormatList: ['KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
-      openAccessPreferedInstructions: 'Resource is **NOT** Open Access! \n EnviDat recommends providing "Open Access" to research data! Please make your data available to everyone without a barrier, unless it contains sensitive data.',
+      openAccessPreferedInstructions: 'Resource is **NOT** Open Access!\nPlease make your data available to everyone without a barrier, unless it contains sensitive data.',
       dataAccessSwitchLabel: 'Is data private',
       dataAccessSwitchTooltip: 'If the resource is private, only signed in users from the same organization have access',
       hasAllowedUsersSwitchLabel: 'Grant specific users access',
