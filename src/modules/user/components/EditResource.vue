@@ -297,7 +297,7 @@
                               multiplePick
                               prependIcon="key"
                               userTagsCloseable
-                              :hint="labels.allowedUsersTypingInfo"
+                              :placeholder="labels.allowedUsersTypingInfo"
                               :preSelected="preSelectedAllowedUsers"
                               @removedUsers="changeAllowedUsers"
                               @pickedUsers="changeAllowedUsers"

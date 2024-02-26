@@ -16,14 +16,13 @@
               :aria-describedby="'iconSwitchLabel' + _uid"
               :aria-checked="active"
               @click="emitClick"
-              
             >
               <v-icon v-if="materialIconName" class="iconSwitchButtonIcon" :color="iconColor">
                 {{ materialIconName }}
               </v-icon>
             </button>
           </div>
-          <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel ml-2" :class="{disabled}">{{ label }}</label>
+          <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel" :class="{disabled}">{{ label }}</label>
         </div>
       </template>
       <span v-if="tooltipText">{{ tooltipText }}</span>
@@ -118,7 +117,11 @@ $slide-duration: 0.2s;
   flex-wrap: nowrap;
   .iconSwitchLabel {
     user-select: none;
+    padding-left: 12px;
+    margin-top: 3px;
+    cursor: pointer;
     &.disabled {
+      cursor: default;
       color: rgba(0, 0, 0, 0.38);
     }
   }
