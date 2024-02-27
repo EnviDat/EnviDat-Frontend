@@ -80,7 +80,8 @@
             <base-icon-label-view
               v-if="format"
               :text="format"
-              material-icon-name="insert_drive_file"
+              :icon="extensionIcon"
+              class="whiteIcon"
               icon-tooltip="Format of the file"
               dark
             />
@@ -217,6 +218,7 @@ import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
 import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
+import { getFileIcon } from '@/factories/imageFactory';
 
 export default {
   name: 'ResourceCard',
@@ -372,44 +374,7 @@ export default {
       return `Could not load the resource, please contact ${this.metadataContact} for getting access or envidat@wsl.ch for support.`;
     },
     extensionIcon() {
-      if (this.$store) {
-        if (this.audioFormats.includes(this.format)) {
-          return this.mixinMethods_getIcon('Audio');
-        }
-
-        let extIcon = this.mixinMethods_getIconFileExtension(this.format);
-
-        if (!extIcon && this.format.toLowerCase() === 'url') {
-          extIcon = this.linkIcon;
-        }
-
-        if (extIcon) {
-          return extIcon;
-        }
-
-        return this.mixinMethods_getIcon('file');
-      }
-
-      if (this.fileExtensionIcon) {
-        return this.lookupExtensionIcon;
-      }
-
-      return null;
-    },
-    lookupExtensionIcon() {
-      const lookUp = `file${this.format.toLowerCase()}`;
-      let icon = this.fileExtensionIcon[`./${lookUp}`];
-
-      if (!icon && this.audioFormats.includes(this.format)) {
-        icon = this.fileExtensionIcon['./fileAudio'];
-      }
-
-      if (!icon) {
-        icon = this.fileExtensionIcon['./file'];
-      }
-
-      // console.log(`icon ${icon}`);
-      return icon;
+      return getFileIcon(this.format);
     },
   },
   methods: {},
@@ -417,6 +382,11 @@ export default {
 </script>
 
 <style scoped>
+
+.whiteIcon {
+  filter: brightness(0) invert(1);
+}
+
 .resourceHeadline {
   line-height: 1.5rem;
 }
