@@ -129,7 +129,7 @@ $slide-duration: 0.2s;
     position: relative;
     z-index: 0;
     min-width: $switch-length;
-    min-height: $button-size + 4px;
+    min-height: $button-size;
     .iconSwitchButton {
       position: absolute;
       border-radius: 50%;
@@ -171,7 +171,7 @@ $slide-duration: 0.2s;
         width: $switch-length;
         height: $switch-bg-height;
         border-radius: 8px; 
-        top: ($button-size - $switch-bg-height) / 2;
+        top: ($button-size - $switch-bg-height) / 2 + 1px;
         background-color: currentColor;
         z-index: -1; // Behind the button
         box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);

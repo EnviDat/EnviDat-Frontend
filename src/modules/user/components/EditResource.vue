@@ -262,7 +262,9 @@
         <div class="pa-1">
 
           <v-expand-transition>
-            <v-alert v-if="isDataPrivate" type="warning" icon="warning" v-html="openAccessDetails"></v-alert>
+            <v-alert v-if="isDataPrivate" type="warning" icon="warning">
+              <div v-html="openAccessDetails"></div>
+            </v-alert>
           </v-expand-transition>
 
           <BaseIconSwitch
@@ -852,8 +854,8 @@ export default {
       size: 'File size',
       sizeFormatList: ['KB', 'MB', 'GB', 'TB', 'PB'],
       format: 'File format',
-      openAccessPreferedInstructions: 'Resource is **NOT** Open Access!\nPlease make your data available to everyone without a barrier, unless it contains sensitive data.',
-      dataAccessSwitchLabel: 'Is data private',
+      openAccessPreferedInstructions: 'Resource is **NOT** Open Access!\nPlease make your data available to everyone unless it contains sensitive data.\nData is **always** accessible by people in the same organization.',
+      dataAccessSwitchLabel: 'Data is private',
       dataAccessSwitchTooltip: 'If the resource is private, only signed in users from the same organization have access',
       hasAllowedUsersSwitchLabel: 'Grant specific users access',
       hasAllowedUsersSwitchTooltip: 'Grant access to a specific list of users even if the resource is marked as private',
