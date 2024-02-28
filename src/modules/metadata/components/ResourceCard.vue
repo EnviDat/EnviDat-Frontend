@@ -12,7 +12,10 @@
     </template>
 
     <v-card-title class="text-h5 resourceHeadline white--text">
-      {{ resourceName }}
+      <span class="d-flex align-center">
+        <v-icon v-if="isProtected" left>lock</v-icon>
+        {{ resourceName }}
+      </span>
     </v-card-title>
 
     <v-card-text
@@ -69,6 +72,13 @@
 
         <v-row v-if="!showFullDescription" no-gutters>
           <v-col class="resourceInfo">
+            <base-icon-label-view
+              v-if="isProtected"
+              text="This resource is private"
+              material-icon-name="lock"
+              dark
+            />
+
             <base-icon-label-view
               v-if="doi"
               :text="doi"
@@ -336,6 +346,7 @@ export default {
 
       return formatBytes(sizeNumber);
     },
+
     isLink() {
       return (
         this.format &&

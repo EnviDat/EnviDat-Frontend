@@ -24,10 +24,12 @@
         <v-progress-linear color="primary" indeterminate/>
       </template>
 
-      <v-row class="mb-1">
-        <v-col cols="6" class="text-h5">
-          {{ labels.title }}
+      <v-row>
+        <v-col cols="6" class="text-h5 d-flex align-center">
+          <v-icon v-if="this.isRestrictedField" color="error" left>lock</v-icon>
+          <span>{{ labels.title }}</span>
         </v-col>
+
         <v-col v-if="message">
           <BaseStatusLabelView
               statusIcon="check"
@@ -36,6 +38,7 @@
               :expandedText="messageDetails"
           />
         </v-col>
+
         <v-col v-if="error">
           <BaseStatusLabelView
               statusIcon="error"
