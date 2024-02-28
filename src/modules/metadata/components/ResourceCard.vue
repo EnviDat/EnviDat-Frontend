@@ -91,7 +91,7 @@
               v-if="created"
               :text="readableCreated"
               material-icon-name="more_time"
-              icon-tooltip="Date of file creation"
+              icon-tooltip="Date of resource creation"
               dark
               class="mb-1"
             />
@@ -162,7 +162,7 @@
             iconColor="black"
             color="accent"
             :isElevated="true"
-            :tooltipText="isFile ? 'Download file' : 'Open link'"
+            :tooltipText="isFile ? 'Download resource' : 'Open link'"
             :url="url"
             :disabled="!downloadActive"
           />
