@@ -4,12 +4,7 @@
       <template v-slot:activator="{ on }">
         <div v-on="on" class="BaseIconLabelViewWrapper">
           <div class="BaseIconLabelViewIcon" :class="{dark}">
-            <img
-              v-if="icon"
-              :class="compactLayout ? 'small' : ''"
-              :src="icon"
-              :alt="iconAlt"
-            />
+            <img v-if="icon" :src="icon" :alt="iconAlt"/>
             <v-icon v-else :dark="dark">{{ materialIconName }}</v-icon>
           </div>
           
@@ -69,30 +64,33 @@ export default {
 
 <style lang="scss">
 
-$icon-size: 24px;
+  $icon-size: 24px;
 
-.BaseIconLabelViewWrapper {
-  display: inline-flex;
-  align-items: center;
-}
-
-.BaseIconLabelViewText {
-  // TODO: Remove this once a sensible default font was chosen
-  font-family: sans-serif !important;
-}
-
-.BaseIconLabelViewIcon {
-  &.dark {
-    filter: brightness(0) invert(1);
+  .BaseIconLabelViewWrapper {
+    display: inline-flex;
+    align-items: center;
   }
-  height: $icon-size;
-  width: $icon-size;
-  margin-right: 12px;
-  img {
-    object-fit: contain;
+
+  .BaseIconLabelViewText {
+    // TODO: Remove this once a sensible default font was chosen
+    font-family: sans-serif !important;
+  }
+
+  .BaseIconLabelViewIcon {
+    
+    &.dark {
+      // Make the icon white
+      filter: brightness(0) invert(1);
+    }
     height: $icon-size;
     width: $icon-size;
+    margin-right: 12px;
+    img {
+      user-select: none;
+      object-fit: contain;
+      height: $icon-size;
+      width: $icon-size;
+    }
   }
-}
 
 </style>
