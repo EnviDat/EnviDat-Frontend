@@ -75,23 +75,16 @@
               material-icon-name="fingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               dark
+              class="mb-1"
             />
 
             <base-icon-label-view
               v-if="format"
-              :text="format"
+              :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
-              class="whiteIcon"
-              icon-tooltip="Format of the file"
+              :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
               dark
-            />
-
-            <base-icon-label-view
-              v-if="size"
-              :text="formatedBytes"
-              material-icon-name="photo_size_select_small"
-              icon-tooltip="Filesize"
-              dark
+              class="mb-1"
             />
 
             <base-icon-label-view
@@ -100,6 +93,7 @@
               material-icon-name="more_time"
               icon-tooltip="Date of file creation"
               dark
+              class="mb-1"
             />
 
             <base-icon-label-view
@@ -108,6 +102,7 @@
               material-icon-name="update"
               icon-tooltip="Date of last modification"
               dark
+              class="mb-1"
             />
           </v-col>
         </v-row>
@@ -382,10 +377,6 @@ export default {
 </script>
 
 <style scoped>
-
-.whiteIcon {
-  filter: brightness(0) invert(1);
-}
 
 .resourceHeadline {
   line-height: 1.5rem;

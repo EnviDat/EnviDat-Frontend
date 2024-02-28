@@ -1,41 +1,27 @@
 <template>
-  <div>
+  <div class="BaseIconLabelView">
     <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
       <template v-slot:activator="{ on }">
-        <v-row
-          v-on="on"
-          class="BaseIconLabelView"
-          no-gutters
-          align="center"
-        >
-          <v-col v-if="icon" :class="alignClass">
+        <div v-on="on" class="BaseIconLabelViewWrapper">
+          <div class="BaseIconLabelViewIcon" :class="{dark}">
             <img
-              class="envidatIcon"
+              v-if="icon"
               :class="compactLayout ? 'small' : ''"
               :src="icon"
               :alt="iconAlt"
             />
-          </v-col>
-          <v-col v-else-if="materialIconName">
-            <v-icon :dark="dark">{{ materialIconName }}</v-icon>
-          </v-col>
-
-          <v-col v-if="text && !url" :style="textStyle">
+            <v-icon v-else :dark="dark">{{ materialIconName }}</v-icon>
+          </div>
+          
+          <div class="BaseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
             </a>
             <span v-else>
               {{ text }}
             </span>
-          </v-col>
-          <v-col v-if="!text && usePlaceholder">
-            <div
-              class="pr-1 skeleton skeleton-size-normal skeleton-color-concrete skeleton-animation-shimmer"
-            >
-              <div class="bone bone-type-text bone-style-steps" />
-            </div>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </template>
 
       <span>{{ iconTooltip }}</span>
@@ -66,11 +52,6 @@ export default {
     iconTooltip: String,
     text: String,
     url: String,
-    alignLeft: Boolean,
-    bold: Boolean,
-    usePlaceholder: Boolean,
-    wordBreak: Boolean,
-    compactLayout: Boolean,
     dark: Boolean,
   },
   computed: {
@@ -78,29 +59,40 @@ export default {
       return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
     },
     textStyle() {
-      let style = '';
-
-      if (this.bold) {
-        style = 'font-weight: 700 !important;';
+      return {
+        'font-size': this.$vuetify.breakpoint.smAndDown ? 'font-size: 0.85rem;' : undefined,
       }
-
-      if (this.wordBreak) {
-        style += 'word-break: break-word;';
-      }
-
-      if (this.$vuetify.breakpoint.smAndDown) {
-        style += 'font-size: 0.85rem;';
-      }
-
-      return style;
     },
   },
 };
 </script>
 
-<style>
-.iconCentering {
-  position: relative;
-  top: 2px;
+<style lang="scss">
+
+$icon-size: 24px;
+
+.BaseIconLabelViewWrapper {
+  display: inline-flex;
+  align-items: center;
 }
+
+.BaseIconLabelViewText {
+  // TODO: Remove this once a sensible default font was chosen
+  font-family: sans-serif !important;
+}
+
+.BaseIconLabelViewIcon {
+  &.dark {
+    filter: brightness(0) invert(1);
+  }
+  height: $icon-size;
+  width: $icon-size;
+  margin-right: 12px;
+  img {
+    object-fit: contain;
+    height: $icon-size;
+    width: $icon-size;
+  }
+}
+
 </style>
