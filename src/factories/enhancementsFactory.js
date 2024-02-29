@@ -88,7 +88,7 @@ export function checkWebpFeatureAsync(feature, callback) {
 
 let webpOk = null;
 
-// accoring to https://stackoverflow.com/questions/5573096/detecting-webp-support
+// according to https://stackoverflow.com/questions/5573096/detecting-webp-support
 export function checkWebpFeature() {
 
   if (webpOk === null && document) {
