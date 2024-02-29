@@ -568,6 +568,8 @@ export default {
     },
   },
   data: () => ({
+    mdiChartBar,
+    mdiDownload,
     microChart: null,
     dataError: '',
     noDataText: 'No preview data available, click on the chart icon to see all data.',

@@ -85,6 +85,7 @@ export default {
   },
   data: () => ({
     expanded: false,
+    mdiChevronDown,
   }),
   computed: {
     markdownText() {

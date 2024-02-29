@@ -105,6 +105,7 @@ export default {
     },
   },
   data: () => ({
+    mdiUpload,
     labels: {
       instructions: 'Drag and drop a file here',
       subInstructions: 'Or use the file picker to select files',

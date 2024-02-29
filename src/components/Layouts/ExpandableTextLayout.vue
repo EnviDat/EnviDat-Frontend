@@ -149,6 +149,7 @@ export default {
     },
   },
   data: () => ({
+    mdiChevronDown,
     showFullText: false,
   }),
 };

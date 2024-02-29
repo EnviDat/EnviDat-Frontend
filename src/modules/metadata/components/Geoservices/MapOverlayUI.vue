@@ -113,6 +113,11 @@ export default {
     this.loadBaseMapImages();
   },
   data: () => ({
+    mdiImageFilterCenterFocus,
+    mdiMapMarker,
+    mdiMinus,
+    mdiPlus,
+    mdiSimpleIcons,
     layerControlOpen: false,
     opacity: 100,
     showSite: true,

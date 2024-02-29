@@ -4,8 +4,7 @@
 
     <BaseIconButton 
       v-if="showCloseButton"
-      class="blogHeaderCloseButton"
-      class="ma-2"
+      class="blogHeaderCloseButton ma-2"
       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 0; z-index: 2;"
       material-icon-name="close"

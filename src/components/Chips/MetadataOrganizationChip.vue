@@ -71,6 +71,7 @@ export default {
     },
   },
   data: () => ({
+    mdiHome,
     hover: false,
   }),
 };

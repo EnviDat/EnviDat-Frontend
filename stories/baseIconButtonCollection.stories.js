@@ -7,6 +7,7 @@
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiChevronDown, mdiContentSave } from '@mdi/js';
 
 
 export default {
@@ -32,49 +33,49 @@ const Template = (args, { argTypes }) => ({
 
 export const IconOnly = Template.bind({});
 IconOnly.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
 }
 
 export const IconOnlyOutlined = Template.bind({});
 IconOnlyOutlined.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
   outlined: true,
   iconColor: 'black',
 }
 
 export const IconAndElevated = Template.bind({});
 IconAndElevated.args = {
-  materialIconName: 'save',
-  isElevated: true,
+  icon: mdiContentSave,
+  elevated: true,
   iconColor: 'black',
   color: 'accent',
 }
 
 export const IconRotated = Template.bind({});
 IconRotated.args = {
-  materialIconName: 'expand_less',
+  icon: mdiChevronDown,
   outlined: true,
-  rotateOnClick: true,
+  rotated: true,
 }
 
 export const FancyButton = Template.bind({});
 FancyButton.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
   outlined: true,
   iconColor: 'black',
-  isFancy: true,
+  fancy: true,
 }
 
 export const GlowingButton = Template.bind({});
 GlowingButton.args = {
   ...IconOnlyOutlined.args,
-  isGlowing: true,
+  glowing: true,
 }
 
 export const FancyAndGlowingButton = Template.bind({});
 FancyAndGlowingButton.args = {
   ...FancyButton.args,
-  isGlowing: true,
+  glowing: true,
 }
 
 export const CountButton = Template.bind({});

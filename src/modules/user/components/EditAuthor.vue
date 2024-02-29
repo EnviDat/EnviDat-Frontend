@@ -275,6 +275,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     labels: {
       title: 'Edit Selected Author',
       instructions: 'Change information about this author.',

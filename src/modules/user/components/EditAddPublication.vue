@@ -242,6 +242,7 @@ export default {
     },
   },
   data: () => ({
+    mdiPlus,
     isResolving: false,
     previewCitation: null,
     previewPID: null,

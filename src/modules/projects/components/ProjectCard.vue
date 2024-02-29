@@ -178,6 +178,7 @@ export default {
     },
   },
   data: () => ({
+    mdiFileFind,
     maxDescriptionLength: 290,
     maxTitleLength: 100,
     hovered: false,

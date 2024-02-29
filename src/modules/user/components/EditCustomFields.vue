@@ -123,6 +123,7 @@ import { mdiClose } from '@mdi/js';
 export default {
   name: 'EditCustomFields',
   data: () => ({
+    mdiClose,
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',

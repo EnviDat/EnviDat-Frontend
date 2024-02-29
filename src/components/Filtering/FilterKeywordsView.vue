@@ -116,6 +116,8 @@ export default {
     compactLayout: Boolean,
   },
   data: () => ({
+    mdiChevronDown,
+    mdiPaletteSwatchOutline,
     maxSelectedTagsTextLength: 25,
     maxUnselectedTagsTextLength: 250,
     xsTextLength: 25,

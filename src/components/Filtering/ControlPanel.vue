@@ -163,6 +163,7 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
+    mdiShareVariant,
   }),
 };
 

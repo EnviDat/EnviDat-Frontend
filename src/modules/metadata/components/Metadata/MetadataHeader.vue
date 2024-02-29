@@ -530,6 +530,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     showTagsExpanded: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',

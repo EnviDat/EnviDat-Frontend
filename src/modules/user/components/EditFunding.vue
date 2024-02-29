@@ -285,6 +285,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     INSTITUTION,
     GRANTNUMBER,
     INSTITUTION_URL,

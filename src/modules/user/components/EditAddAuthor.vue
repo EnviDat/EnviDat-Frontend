@@ -17,11 +17,8 @@
       @clicked="$emit('closeClicked')" 
     />
 
-    <v-container fluid
-                 class="pa-4 fill-height">
-
+    <v-container fluid class="pa-4 fill-height">
       <v-row>
-
         <v-col class="text-h5" cols="8">
           {{ titleLabel }}
         </v-col>
@@ -569,6 +566,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {

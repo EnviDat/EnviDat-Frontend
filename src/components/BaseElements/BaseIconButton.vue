@@ -63,8 +63,11 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseIcon from './BaseIcon.vue';
+
 export default {
   name: 'BaseIconButton',
+  components: {BaseIcon},
   props: {
     color: { type: String, default: undefined },
     tooltipText: { type: String, default: undefined },

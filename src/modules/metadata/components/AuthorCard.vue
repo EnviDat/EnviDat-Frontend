@@ -481,6 +481,9 @@ export default {
     },
   },
   data: () => ({
+    mdiChevronDown,
+    mdiChevronLeft,
+    mdiMagnify,
     dataScoreLabel: AUTHORS_DATACREDIT_SCORE,
     dataCountLabel: AUTHORS_PUBLISHED_DATACOUNT,
     dataCreditScoreInfo: 'Data Credit Score: represents the dedication of an author to publish data and declare how on their involvement was in a dataset.',

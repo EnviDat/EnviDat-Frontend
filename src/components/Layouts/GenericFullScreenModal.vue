@@ -188,6 +188,7 @@ export default {
   },
   components: { BaseIconButton },
   data: () => ({
+    mdiClose,
     showModal: false,
     genericProps: {},
     currentComponent: null,

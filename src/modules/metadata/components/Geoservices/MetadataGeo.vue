@@ -163,6 +163,9 @@ export default {
     },
   },
   data: () => ({
+    mdiArrowCollapseAll,
+    mdiContentSave,
+    mdiUndo,
     ready: false,
     map: null,
     smallSize: 300,

@@ -269,6 +269,9 @@ export default {
     loading: Boolean,
   },
   data: () => ({
+    mdiChevronDown,
+    mdiDownload,
+    mdiLink,
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],

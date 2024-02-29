@@ -115,6 +115,7 @@ export default {
   },
   data: () => ({
     expanded: false,
+    mdiChevronDown,
   }),
 };
 </script>

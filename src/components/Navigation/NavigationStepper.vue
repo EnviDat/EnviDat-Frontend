@@ -392,6 +392,7 @@ export default {
     },
   },
   data: () => ({
+    mdiInformationOutline,
     currentStep: null,
     currentStepIndex: -1,
     creationTitle: 'Dataset Creation',

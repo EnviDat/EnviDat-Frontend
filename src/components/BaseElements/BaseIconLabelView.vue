@@ -5,7 +5,7 @@
         <div v-on="on" class="BaseIconLabelViewWrapper">
           <div class="BaseIconLabelViewIcon" :class="{dark}">
             <img v-if="icon" :src="icon" :alt="iconAlt"/>
-            <v-icon v-else :dark="dark">{{ materialIconName }}</v-icon>
+            <v-icon v-else :dark="dark" :icon="materialIconName"></v-icon>
           </div>
           
           <div class="BaseIconLabelViewText" :style="textStyle">

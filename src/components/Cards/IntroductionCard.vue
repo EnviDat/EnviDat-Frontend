@@ -173,6 +173,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiClose,
     introTextFallback:
       'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',

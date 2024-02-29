@@ -52,6 +52,7 @@ export default {
   },
   data: () => ({
     Logo,
+    mdiMenu,
     logoText: 'EnviDat',
     show: false,
   }),
@@ -92,7 +93,7 @@ export default {
         this.$emit('itemClick', item);
       }
     },
-  },
+  },,
 };
 </script>
 

@@ -186,6 +186,11 @@ export default {
       this.$emit('clickedSaveDataset');
     },
   },
+  data: ()=>({
+    mdiClose,
+    mdiContentSave,
+    mdiEye,
+  }),
   components: {
     BaseIconButton,
     BaseProgressView,

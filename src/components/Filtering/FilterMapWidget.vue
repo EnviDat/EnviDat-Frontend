@@ -160,6 +160,9 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
+    mdiEye,
+    mdiLayers,
     filterText: 'Pinned: ',
     highlightedText: 'Select markers to pin entries to the top of the list',
     clearButtonText: 'Clear Pins',

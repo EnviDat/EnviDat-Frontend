@@ -150,6 +150,7 @@ export default {
     this.searchText = this.searchTerm;
   },
   data: () => ({
+    mdiMagnify,
     searchText: '',
     lastSearch: '',
     placeHolderText: 'Enter research term, topic or author',

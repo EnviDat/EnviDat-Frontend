@@ -130,6 +130,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     height: 150,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',

@@ -27,8 +27,8 @@
               </v-col>
 
               <v-col class="pa-0">
-                <BaseIcon :custom-icon='iconString'
-                          :material-icon='materialIconName'
+                <BaseIcon :custom-icon="iconString"
+                          :icon="materialIconName"
                 />
 
               </v-col>
