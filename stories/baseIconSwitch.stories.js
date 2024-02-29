@@ -19,7 +19,7 @@ export default {
   component: BaseIconSwitch,
 };
 
-export const InActive = {};
+export const Inactive = {};
 
 export const Active = { args: { active: true } };
 
@@ -31,9 +31,9 @@ export const WithIconAndTooltip = {
   },
 };
 
-export const WithIconAndTooltipInActive = {
+export const WithIconAndTooltipInactive = {
   args: {
-    ...InActive.args,
+    ...Inactive.args,
     materialIconName: 'lock',
     tooltipText: 'access restricted',
   },
@@ -51,43 +51,51 @@ export const InteractiveSwitches = () => ({
   components: { BaseIconSwitch },
   template: `
     <v-container>
-  <v-row>
-    
-    <v-col cols="12">
-      BaseIconSwitch active clickable
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12"
-           class="flex-grow-0">
-      <BaseIconSwitch :active="!active"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active = !active"/>
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12"
-           class="flex-grow-0">
-      <BaseIconSwitch :active="active"
-                      materialIconName="account_circle"
-                      tooltipText="Author search tool tip"
-                      @clicked="active = !active"/>
-    </v-col>
-  </v-row>
-
-  <v-row>
-    <v-col cols="12"
-           class="flex-grow-0">
-      <BaseIconSwitch :active="active2"
-                      materialIconName="info"
-                      tooltipText="notification tool tip"
-                      @clicked="active2 = !active2"/>
-    </v-col>
-
-  </v-row>
+      <h2>Active clickable</h2>
+      <v-row>
+        <v-col cols="3">
+          <BaseIconSwitch 
+            :active="active"
+            materialIconName="account_circle"
+            tooltipText="Author search tool tip"
+            @clicked="active = !active"
+            label="Enable user registration"/>
+        </v-col>
+        <v-col cols="3">
+          <BaseIconSwitch 
+            :active="active"
+            materialIconName="home"
+            tooltipText="Home"
+            color="orange"
+            @clicked="active = !active"/>
+        </v-col>
+        <v-col cols="3">
+          <BaseIconSwitch
+            :active="active"
+            materialIconName="account_circle"
+            tooltipText="Author search tool tip"
+            @clicked="active = !active"/>
+        </v-col>
+        <v-col cols="12">
+          <BaseIconSwitch 
+            :active="active2"
+            materialIconName="info"
+            tooltipText="notification tool tip"
+            @clicked="active2 = !active2"/>
+        </v-col>
+      </v-row>
+      <h2>Disabled</h2>
+      <v-row>
+        <v-col cols="12">
+          <BaseIconSwitch 
+            :active="active2"
+            materialIconName="info"
+            tooltipText="notification tool tip"
+            disabled
+            label="Show informational label"
+            @clicked="active2 = !active2"/>
+        </v-col>
+      </v-row>
     </v-container>
   `,
   data: () => ({

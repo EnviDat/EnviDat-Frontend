@@ -32,7 +32,9 @@ const organizationsState = {
 export const organizations = {
   namespaced: true,
   state: organizationsState,
-  getters: {},
+  getters: {
+    hasUserOrganizations: state => state.userOrganizations?.length > 0,
+  },
   mutations,
   actions,
 };

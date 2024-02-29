@@ -365,6 +365,8 @@ export default {
       return points;
     },
     createMapElements(locationDataSet) {
+      if (!locationDataSet) return;
+
       const pins = [];
       const multiPins = [];
       const polys = [];

@@ -145,23 +145,30 @@ export const useModeStore = defineStore(MODE_STORE, {
 
       throw new Error(`No Mode Datasets for mode: "${mode}" implemented`);
     },
+    /**
+     *
+     * @param {string} mode
+     * @returns {Promise<object>} enhancedDatasetsDictionary
+     */
     async loadModeDatasets(mode) {
 
       const modeMetadata = this.getModeMetadata(mode);
       const data = await modeMetadata.loadDatasets(modeMetadata);
 
-      let enhancedDatasetsObject = data;
+      let datasets = data;
 
       const index = this.modeMetadata.findIndex((modeInfo) => modeInfo.name === mode);
       if (index >= 0) {
         if (mode === EDNA_MODE) {
           // eDNA shallow datasets need enhancement
-          enhancedDatasetsObject = enhanceMetadatas(data, mainStore.state.cardBGImages, categoryCards, mode);
+          const enhancedDatasetsDictionary = enhanceMetadatas(data, mainStore.state.cardBGImages, categoryCards, mode);
+          datasets = Object.values(enhancedDatasetsDictionary);
         }
-        this.modeDatasets[index] = enhancedDatasetsObject;
+
+        this.modeDatasets[index] = datasets;
       }
 
-      return enhancedDatasetsObject;
+      return datasets;
     },
   },
 })

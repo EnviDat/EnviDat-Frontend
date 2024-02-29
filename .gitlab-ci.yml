@@ -231,9 +231,6 @@ deploy-chromatic:
   extends:
     - .node_cache
     - .trigger-rules
-  # image: docker.io/node:18.18.2-alpine3.17
-  variables:
-    GIT_STRATEGY: none
   needs:
     # needs the artifact: config and environment variables
     - modify-env

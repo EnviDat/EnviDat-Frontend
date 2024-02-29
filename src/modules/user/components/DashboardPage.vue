@@ -382,7 +382,7 @@ export default {
     if (this.user) {
       this.fetchUserDatasets();
       this.fetchCollaboratorDatasets();
-      this.fetchUserOrganisationData();
+      this.fetchUserOrganisationData(true);
     }
   },
   mounted() {
@@ -712,11 +712,13 @@ export default {
       // always call the USER_GET_COLLABORATOR_DATASETS action because it resolves the store & state also when collaboratorDatasetIds is empty
       await this.$store.dispatch(`${USER_NAMESPACE}/${USER_GET_COLLABORATOR_DATASETS}`, this.collaboratorDatasetIds);
     },
-    async fetchUserOrganisationData() {
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
+    async fetchUserOrganisationData(forceReload = false) {
+      if (forceReload || !forceReload && this.$store.getters[`${ORGANIZATIONS_NAMESPACE}/hasUserOrganizations`]) {
+        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATION_IDS}`, this.user.id);
 
-      // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
-      await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+        // always call the USER_GET_ORGANIZATIONS action because it resolves the store & state also when userOrganizationIds is empty
+        await this.$store.dispatch(`${ORGANIZATIONS_NAMESPACE}/${USER_GET_ORGANIZATIONS}`, this.userOrganizationIds);
+      }
     },
     async fetchUserOrganisationDataRecursive() {
       // this was a test to see if the datasets of the organizations the users is in can be
@@ -740,7 +742,7 @@ export default {
     },
     catchRefreshOrgaClick() {
       if (this.user) {
-        this.fetchUserOrganisationData();
+        this.fetchUserOrganisationData(true);
       }
     },
     catchSigninClick() {
