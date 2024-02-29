@@ -1,39 +1,32 @@
 <template>
-  <v-tooltip bottom
-              id="BaseIconSwitch" >
-
-    <template v-slot:activator="{ on }">
-
-      <div v-on="on"
-           style="position: relative; width: 44px; " >
-
-        <div class="authorSwitch"
-             :class="disabled ? '': 'authorSwitchClickable'"
-             :style="active ? 'left: -5px;' : 'left: 21px;'"
-             @click="emitClick"
-             >
-          <v-icon v-if="materialIconName"
-                  :color="active ? 'primary' : 'gray'"
-                  style="top: 0; left: 1px;">
-            {{ materialIconName }}
-          </v-icon>
-
+  <div class="baseIconSwitch">
+    <v-tooltip :disabled="!tooltipText" bottom>
+      <template v-slot:activator="{ on }">
+        <div class="d-flex" v-on="on">
+          <div class="iconSwitch">
+            <button
+              tabindex="0"
+              type="button"
+              :disabled="disabled"
+              class="iconSwitchButton"
+              :id="'iconSwitchButton' + _uid"
+              :class="classList"
+              role="switch"
+              :aria-describedby="'iconSwitchLabel' + _uid"
+              :aria-checked="active"
+              @click="emitClick"
+            >
+              <v-icon v-if="materialIconName" class="iconSwitchButtonIcon" :color="iconColor">
+                {{ materialIconName }}
+              </v-icon>
+            </button>
+          </div>
+          <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel" :class="{disabled}">{{ label }}</label>
         </div>
-
-        <div class="authorSwitchHover"
-             :style="active ? 'left: -10px;' : 'left: 16px;'" />
-
-        <div style="width: 44px; height: 14px; border-radius: 8px;"
-             :style="`background-color: ${bgColor};`"
-              class="" />
-
-      </div>
-
-    </template>
-
-    <span>{{ tooltipText }}</span>
-
-  </v-tooltip>
+      </template>
+      <span v-if="tooltipText">{{ tooltipText }}</span>
+    </v-tooltip>
+  </div>
 </template>
 
 <script>
@@ -58,6 +51,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    label: {
+      type: String,
+      default: undefined,
+    },
+    color: {
+      type: String,
+      default: 'primary',
+    },
     disabled: {
       type: Boolean,
       default: false,
@@ -65,13 +66,28 @@ export default {
     materialIconName: String,
     tooltipText: String,
   },
+  watch: {
+    active: {
+      immediate: true,
+      handler(newValue){
+        this.internalActive = newValue;
+      },
+    },
+  },
   data: () => ({
-    hoverBadge: false,
+    internalActive: false,
   }),
   computed: {
-    bgColor() {
-      const secondary = this.$vuetify?.theme?.themes?.light?.secondary || 'lightgray';
-      return this.active ? secondary : 'lightgray';
+    classList(){
+      return {
+        disabled: this.disabled,
+        active: this.active,
+        [`${this.color}--text text--lighten-2`]: this.internalActive,
+        'grey--text text--lighten-2': !this.internalActive,
+      }
+    },
+    iconColor(){
+      return this.internalActive ? this.color : 'gray';
     },
   },
   methods: {
@@ -87,42 +103,82 @@ export default {
 
 </script>
 
-<style>
+<style scoped lang="scss">
 
-.authorSwitch {
-  z-index: 1;
-  box-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
-}
+$switch-length: 44px;
+$switch-bg-height: 14px;
+$button-size: 26px;
+$button-shadow: 0 2px 4px -1px rgba(0,0,0,.2),0 4px 5px 0 rgba(0,0,0,.14),0 1px 10px 0 rgba(0,0,0,.12);
+$slide-duration: 0.2s;
 
-.authorSwitchClickable:hover {
-  cursor: pointer;
-}
+.baseIconSwitch {
+  display: flex;
+  flex-wrap: nowrap;
+  .iconSwitchLabel {
+    user-select: none;
+    padding-left: 12px;
+    margin-top: 3px;
+    cursor: pointer;
+    &.disabled {
+      cursor: default;
+      color: rgba(0, 0, 0, 0.38);
+    }
+  }
 
-.authorSwitch, .authorSwitchHover {
-  position: absolute;
-  transition: 0.3s all ease-in-out;
-  border-radius: 50%;
-  background-color: #fff;
-  top: -6px;
-  height: 26px;
-  width: 26px;
-}
+  .iconSwitch {
+    position: relative;
+    z-index: 0;
+    min-width: $switch-length;
+    min-height: $button-size;
+    .iconSwitchButton {
+      position: absolute;
+      border-radius: 50%;
+      height: $button-size;
+      width: $button-size;
+      left: 0;
+      box-shadow: $button-shadow;
+      background-color: #FFF;
+      transition: none;
 
-.authorSwitch:hover + .authorSwitchHover {
-  visibility: visible;
-}
+      &:hover {
+        box-shadow: $button-shadow, 0 0 0 4px rgba(33,33,33,0.2);
+      }
 
-.authorSwitchHover {
-  visibility: hidden;
-  top: -11px;
-  background-color: rgba(33, 33, 33, 0.2);
-  width: 36px;
-  height: 36px;
-  z-index: 0;
-}
+      &.active {
+        $activeDelta: $switch-length - $button-size;
+        left: $activeDelta;
+        transition: left $slide-duration ease-in-out;
+        &:before {
+          margin-left: -$activeDelta;
+          transition: margin-left $slide-duration ease-in-out, background-color $slide-duration;
+        }
+      }
 
-.authorSwitchHover:hover {
-  display: inherit;
+      &.disabled {
+        background-color: #DDD;
+        cursor: not-allowed;
+        box-shadow: 0 0 1px 1px rgba(33, 33, 33, 0.1);
+        &:before {
+          box-shadow: none;
+        }
+      }
+
+      // BG
+      &:before {
+        content: ' ';
+        position: absolute;
+        display: block; 
+        width: $switch-length;
+        height: $switch-bg-height;
+        border-radius: 8px; 
+        top: ($button-size - $switch-bg-height) / 2 + 1px;
+        background-color: currentColor;
+        z-index: -1; // Behind the button
+        box-shadow: inset 1px 1px 3px rgba(33, 33, 33, 0.2);
+      }
+
+    }
+  }
 }
 
 </style>
