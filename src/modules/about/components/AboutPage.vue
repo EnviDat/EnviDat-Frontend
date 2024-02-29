@@ -19,7 +19,7 @@
           >
             {{ $vuetify.display.smAndUp ? tab.name : '' }}
 
-            <v-icon>{{ tab.icon }}</v-icon>
+            <v-icon :icon="tab.icon" />
           </v-tab>
         </v-tabs>
       </v-col>

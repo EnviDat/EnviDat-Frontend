@@ -40,7 +40,7 @@
 
         <div  class="textGrid mt-2 text-caption">
           <div>
-            <v-icon small>info</v-icon>
+            <v-icon small :icon="mdiInformation" />
           </div>
           <div v-html="markdownText"></div>
         </div>
@@ -63,6 +63,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+
+import {mdiInformation} from '@mdi/js';
 
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';

@@ -11,7 +11,7 @@
     <v-tooltip v-if="tooltip" bottom>
       <template v-slot:activator="{ on, props }">
         <div v-on="on" v-bind="props" >
-          <v-icon size="18">home_filled</v-icon>
+          <v-icon size="18" :icon="mdiHome" />
           {{ showContent ? organizationText : '' }}
         </div>
       </template>
@@ -20,7 +20,7 @@
     </v-tooltip>
 
     <div v-if="!tooltip">
-      <v-icon size="18">home_filled</v-icon>
+      <v-icon size="18" :icon="mdiHome" />
       {{ showContent ? organizationText : '' }}
     </div>
   </v-chip>
@@ -39,6 +39,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
+ import { mdiHome } from '@mdi/js';
 
 export default {
   name: 'MetadataOrganizationChip',

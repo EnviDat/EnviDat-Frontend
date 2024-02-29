@@ -9,7 +9,7 @@
         <v-col v-if="filterExpanded || $vuetify.display.smAndUp" cols="12">
           <v-row>
             <v-col class="metadataInfoIcon flex-grow-0">
-              <v-icon size="24px" color="black">style</v-icon>
+              <v-icon size="24px" color="black" :icon="mdiPaletteSwatchOutline" />
             </v-col>
 
             <v-col v-if="showPlaceholder" class="grow pl-0">
@@ -94,6 +94,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import { mdiPaletteSwatchOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';

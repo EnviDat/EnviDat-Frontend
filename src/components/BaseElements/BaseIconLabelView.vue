@@ -33,10 +33,8 @@
           </div>
         </v-col>
 
-        <v-col v-if="materialIconName"
-               cols="3"
-                class="flex-grow-0">
-          <v-icon class="pr-2 material-icons" :dark="dark">{{ materialIconName }}</v-icon>
+        <v-col v-if="materialIconName" cols="3" class="flex-grow-0">
+          <v-icon class="pr-2" :dark="dark" :icon="materialIconName" />
         </v-col>
 
         <v-col v-if="label" cols="3" :style="textStyle">

@@ -112,7 +112,7 @@
                           @click="catchSigninClicked"
                           v-bind="props"
                           v-on="on" >
-                    <v-icon>account_circle</v-icon>
+                    <v-icon :icon="mdiAccountCircleOutline" />
                   </v-btn>
                 </template>
 
@@ -135,6 +135,7 @@
 </template>
 
 <script>
+import {mdiAccountCircleOutline} from '@mdi/js';
 import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';

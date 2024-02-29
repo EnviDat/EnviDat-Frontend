@@ -68,7 +68,7 @@
                    no-gutters
                    class="py-2"
                    justify="center">
-              <v-icon>arrow_upward</v-icon>
+              <v-icon :icon="mdiArrowUp" />
             </v-row>
 
             <v-row v-if="currentStateInfos.positionIndex === index && currentStateInfos.buttonText"
@@ -142,6 +142,8 @@
    * This file is subject to the terms and conditions defined in
    * file 'LICENSE.txt', which is part of this source code package.
    */
+
+  import {mdiArrowUp} from '@mdi/js';
   import { mapState } from 'vuex';
 
   import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';

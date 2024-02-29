@@ -9,7 +9,7 @@
     <v-container fluid class="pa-0">
       <v-row justify="center" no-gutters>
         <v-col cols="12" class="text-body-2">
-          <v-icon>upload_file</v-icon> {{ labels.instructions }}
+          <v-icon :icon="mdiUpload" /> {{ labels.instructions }}
         </v-col>
       </v-row>
 
@@ -68,6 +68,8 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+
+ import { mdiUpload } from '@mdi/js';
 
 export default {
   name: 'BaseFileDropField',

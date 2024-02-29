@@ -8,11 +8,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { md2 } from 'vuetify/blueprints';
+import { aliases, mdi } from 'vuetify/iconsets/mdi-svg'
 import { lightColorblind } from './colorThemes';
-
-// Icons list: https://jossef.github.io/material-design-icons-iconfont/
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
-
 
 const colors = { ...lightColorblind };
 
@@ -27,6 +24,13 @@ export default {
   theme: {
     themes: {
       light: { colors },
+    },
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
     },
   },
 };

@@ -9,7 +9,7 @@
     <v-card-title>
       <v-row align="start">
         <v-col class="flex-grow-0">
-          <v-icon>{{ notification.icon }}</v-icon>
+          <v-icon :icon="notification.icon" />
         </v-col>
 
         <v-col>

@@ -1,16 +1,19 @@
 <template>
-  <div id="BaseIcon" >
+  <div class="baseIcon" @click="onClick">
 
-    <img v-show="customIcon"
-         class="envidatIcon"
-        :alt="`${customIcon} icon`"
-        :src="customIcon"
-        />
-
-    <i v-show="materialIcon"
-       class='material-icons'
-       :style="iconStyle"
-    >{{ materialIcon }}</i>
+    <img
+      v-if="customIcon" 
+      :style="imgStyle" 
+      class="envidatIcon"
+      :alt="`${customIcon} icon`" 
+      :src="customIcon"
+    />
+    <v-icon
+      v-if="materialIcon"
+      :style="iconStyle"
+      :color="iconColor"
+      :icon="materialIcon"
+    />
 
   </div>
 </template>
@@ -30,30 +33,49 @@
 export default {
   name: 'BaseIcon',
   props: {
-    customIcon: String,
-    materialIcon: String,
-    iconColor: String,
+    icon: String,
+    color: String,
     rotateOnClick: Boolean,
-    rotated: Boolean,
+  },
+  data: ()=>({
+    isRotated: false,
+  }),
+  methods: {
+    onClick() {
+      if(this.rotateOnClick){
+        this.isRotated = !this.isRotated;
+      }
+    },
+    getThemeColor(colorName){
+      const theme = this.$vuetify.theme.themes.light.colors;
+      const themeColors = Object.keys(theme);
+      if (themeColors.includes(colorName)) {
+        return theme[colorName];
+      }
+      return null;
+    },
   },
   computed: {
-    iconStyle() {
-      let color = this.iconColor ? this.iconColor : 'primary';
-      const keys = Object.keys(this.$vuetify.theme.themes.light.colors);
-
-      if (keys.includes(color)) {
-        color = this.$vuetify.theme.themes.light.colors[color];
+    imgStyle() {
+      const color = this.getThemeColor(this.iconColor ?? 'primary');
+      return  {
+        ...this.iconStyle,
+        filter: `opacity(.5) drop-shadow(0 0 0 ${color})'`,
       }
-
-      let style = `color: ${ color };`;
-      style += `transition: 0.3s all; ${this.rotateOnClick && this.rotated ? 'transform: rotate(-180deg);' : ''};`;
-
-      return style;
+    },
+    iconStyle() {
+      return {
+        transform: this.isRotated ? 'transform: rotate(-180deg);' : '',
+      }
     },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+  .baseIcon {
+    transition: 0.3s all ease-in-out;
+  }
 
 </style>

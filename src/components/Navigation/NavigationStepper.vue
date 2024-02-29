@@ -56,7 +56,7 @@
           <v-row class="pt-1"
                  no-gutters>
             <v-col class="flex-grow-0">
-              <v-icon color="secondary" class="pr-2">info</v-icon>
+              <v-icon :icon="mdiInformationOutline" />
             </v-col>
             <v-col>
               <ExpandableLayout cardClass="pa-0"
@@ -166,6 +166,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import { mdiInformationOutline } from '@mdi/js';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 import StepperHeader from '@/components/Navigation/StepperHeader.vue';

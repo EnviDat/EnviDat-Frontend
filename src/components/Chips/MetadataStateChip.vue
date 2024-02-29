@@ -16,7 +16,7 @@
                v-bind="props"
                align="center"
                 no-gutters>
-          <v-col ><v-icon>{{ stateIcon }}</v-icon></v-col>
+          <v-col ><v-icon :icon="stateIcon" /></v-col>
           <v-col :class="showContent ? 'pl-1' : ''" >
             {{ showContent ? stateText : ''  }}
           </v-col>

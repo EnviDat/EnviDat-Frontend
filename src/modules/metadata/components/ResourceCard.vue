@@ -81,7 +81,7 @@
             <base-icon-label-view
               v-if="format"
               :text="format"
-              material-icon-name="insert_drive_file"
+              material-icon-name="minus"
               icon-tooltip="Format of the file"
               dark
             />

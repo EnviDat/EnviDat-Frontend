@@ -4,6 +4,7 @@ import {
  withKnobs, text, number,
 } from '@storybook/addon-knobs';
 */
+import { mdiBookOpenVariantOutline, mdiLibraryOutline, mdiCodeTags, mdiWidgetsOutline, mdiAccountVoice, mdiAccountSupervisorOutline } from '@mdi/js';
 
 import AuthorCard from '@/modules/metadata/components/AuthorCard.vue';
 import DataCreditLayout from '@/components/Layouts/DataCreditLayout.vue';
@@ -244,7 +245,16 @@ export const AuthorCardList = () => ({
 // stories.addDecorator(withKnobs);
 
 
-export const backgroundTest = () => ({
+
+export const BackgroundTest = () => ({
+  data: ()=>({
+    mdiBookOpenVariantOutline, 
+    mdiLibraryOutline, 
+    mdiCodeTags, 
+    mdiWidgetsOutline, 
+    mdiAccountVoice, 
+    mdiAccountSupervisorOutline,
+  }),
   components: {
   },
   template: `
@@ -252,44 +262,19 @@ export const backgroundTest = () => ({
       
       <v-col cols="12" md="4" pt-5 >
         <div>
-          <v-icon>menu_book</v-icon>
-          <v-icon>local_library</v-icon>
-          <v-icon>code</v-icon>
-          <v-icon>widgets</v-icon>
-          <v-icon>record_voice_over</v-icon>
-          <v-icon>supervision_account</v-icon>
+          <v-icon :icon="mdiBookOpenVariantOutline" />
+          <v-icon :icon="mdiLibraryOutline" />
+          <v-icon :icon="mdiCodeTags" />
+          <v-icon :icon="mdiWidgetsOutline" />
+          <v-icon :icon="mdiAccountVoice" />
+          <v-icon :icon="mdiAccountSupervisorOutline" />
         </div>
-        
-<!--
-        <div style="width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
-          <div v-for="(index) in 10" 
-               :key="index"
-                :style="getStyle(index, 300, 300)" >
-            <v-icon>widgets</v-icon>
-          </div>
-
-          <div v-for="(index) in 10"
-               :key="index * 100"
-               :style="getStyle(index, 300, 300, -60)" >
-            <v-icon>code</v-icon>
-          </div>
-          
-        </div>
--->
 
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; width: 300px; height: 300px; background-color: whitesmoke; overflow: hidden;">
           <div v-for="(index) in 10"
                :key="index">
-            <v-icon>widgets</v-icon>
+            <v-icon :icon="mdiWidgetsOutline" />
           </div>
-
-<!--
-          <div v-for="(index) in 10"
-               :key="index * 100"
-               :style="getStyle(index, 300, 300, -60)" >
-            <v-icon>code</v-icon>
-          </div>
--->
 
         </div>        
       </v-col>
@@ -314,6 +299,4 @@ export const backgroundTest = () => ({
       return `transform: translate(${pos}px, ${tPos}px); opacity: 0.25; width: ${size}px; height: ${size}px;`;
     },
   },
-  data: () => ({
-  }),
 });
