@@ -13,25 +13,25 @@
   >
     <template v-slot:clearPins>
       <base-icon-button
-        materialIconName="close"
-        iconColor="red"
+        :icon="mdiClose"
+        icon-color="red"
         :color="topLayout ? 'transparent' : 'primary'"
         :outlined="!topLayout && pinnedIds.length > 0"
-        :isSmall="mdScreen || topLayout"
+        :small="mdScreen || topLayout"
         :disabled="pinnedIds.length <= 0"
-        :tooltipText="clearButtonTooltipText"
+        :tooltip-text="clearButtonTooltipText"
         @clicked="catchClearClicked()"
       />
     </template>
 
     <template v-slot:focus>
       <base-icon-button
-        materialIconName="remove_red_eye"
-        iconColor="black"
+        :icon="mdiEye"
+        icon-color="black"
         color="highlight"
-        :isSmall="mdScreen"
+        :small="mdScreen"
         outlined
-        :tooltipText="focusText"
+        :tooltip-text="focusText"
         @clicked="catchFocusClicked()"
       />
     </template>
@@ -39,12 +39,9 @@
     <template v-slot:pinEnabled>
       <base-icon-button
         :count="pinNumber"
-        :customIcon="pinIcon"
+        :icon="pinIcon"
         color="secondary"
-        :fillColor="
-          pinEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
-        "
-        :isSmall="mdScreen"
+        :small="mdScreen"
         outlined
         :tooltipText="pinText"
         @clicked="catchPinClicked()"
@@ -54,14 +51,11 @@
     <template v-slot:multiPinEnabled>
       <base-icon-button
         :count="multiPinNumber"
-        :customIcon="multiPinIcon"
+        :icon="multiPinIcon"
         color="secondary"
-        :fillColor="
-          multiPinEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
-        "
         outlined
-        :isSmall="mdScreen"
-        :tooltipText="multiPinText"
+        :small="mdScreen"
+        :tooltip-text="multiPinText"
         @clicked="catchMultipinClicked()"
       />
     </template>
@@ -69,15 +63,12 @@
     <template v-slot:polygonEnabled>
       <base-icon-button
         :count="polygonNumber"
-        materialIconName="layers"
-        iconColor="black"
+        :icon="mdiLayers"
+        icon-color="black"
         color="secondary"
-        :fillColor="
-          polygonEnabled ? $vuetify.theme.themes.light.colors.primary : 'transparent'
-        "
-        :isSmall="mdScreen"
+        :small="mdScreen"
         outlined
-        :tooltipText="polygonText"
+        :tooltip-text="polygonText"
         @clicked="catchPolygonClicked()"
       />
     </template>
@@ -100,6 +91,7 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import FilterMapWidgetLayout from '@/components/Filtering/FilterMapWidgetLayout.vue';
+import { mdiClose, mdiEye, mdiLayers } from '@mdi/js';
 
 export default {
   name: 'FilterMapWidget',

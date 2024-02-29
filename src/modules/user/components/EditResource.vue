@@ -4,18 +4,18 @@
           :loading="loadingColor"
           class="pa-0">
 
-    <!-- prettier-ignore -->
-    <BaseIconButton id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1': $vuetify.display.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel Resource Editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')"/>
+    <BaseIconButton 
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
+      :icon="mdiClose"
+      icon-color="primary"
+      color="primary"
+      outlined
+      tooltip-text="Cancel Resource Editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')"
+    />
 
 
     <div class="pa-3">

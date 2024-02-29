@@ -38,13 +38,12 @@
 
         <v-col class="flex-grow-0">
           <base-icon-button
-                  material-icon-name="expand_more"
-                  isSmall
-                  iconColor="black"
+                  :icon="mdiChevronDown"
+                  small
+                  icon-color="black"
                   color="secondary"
                   outlined
-                  :rotateOnClick="true"
-                  :rotateToggle="expanded"
+                  :rotated="expanded"
                   :tooltipText="expanded ? 'Close' : 'Expand'"
                   @clicked="readMore"
           />
@@ -58,32 +57,6 @@
         </v-col>
       </v-row>
     </v-card-text>
-
-<!--    <v-card-text v-if="$slots.default && expanded"
-                 :class="isFlat ? 'pa-0' : 'pa-4'"
-                  class="pt-0">
-      <slot name="default"></slot>
-    </v-card-text>-->
-
-<!--
-    <v-card-actions
-      class="ma-0"
-      :class="isFlat ? 'pa-0' : 'pa-2'"
-      :style="`position: absolute; bottom: 0; right: 0;`"
-    >
-      <base-icon-button
-        material-icon-name="expand_more"
-        isSmall
-        iconColor="black"
-        color="secondary"
-        outlined
-        :rotateOnClick="true"
-        :rotateToggle="expanded"
-        :tooltipText="expanded ? 'Close' : 'Expand'"
-        @clicked="readMore"
-      />
-    </v-card-actions>
--->
   </v-card>
 </template>
 
@@ -103,6 +76,7 @@
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableLayout',

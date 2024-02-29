@@ -47,14 +47,12 @@
       :style="`position: absolute; bottom: 0px; right: ${rightPos()};`"
     >
       <base-icon-button
-        material-icon-name="expand_more"
-        :iconColor="showFullText ? 'primary' : 'accent'"
-        :fillColor="showFullText ? '' : $vuetify.theme.themes.light.colors.primary"
+        :icon="mdiChevronDown"
+        :icon-color="showFullText ? 'primary' : 'accent'"
         :color="showFullText ? 'accent' : 'transparent'"
         :outlined="showFullText"
-        :rotateOnClick="true"
-        :rotateToggle="showFullText"
-        :tooltipText="showFullText ? 'Collaspe text' : 'Show full text'"
+        :rotated="showFullText"
+        :tooltip-text="showFullText ? 'Collaspe text' : 'Show full text'"
         @clicked="readMore"
       />
     </v-card-actions>
@@ -78,6 +76,7 @@
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableTextLayout',

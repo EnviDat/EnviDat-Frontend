@@ -31,14 +31,15 @@
                class="py-0 px-sm-1 flex-grow-0"
                 id="shareSearchResult" >
 
-          <BaseIconButton style="opacity: 0.8;"
-                          materialIconName="share"
-                          iconColor="black"
-                          isSmall
-                          tooltipBottom
-                          tooltipText="Copy the url to this view to the clipboard to share it."
-                          @clicked="catchShareClick"
-                          />
+          <BaseIconButton
+            style="opacity: 0.8;"
+            :icon="mdiShareVariant"
+            iconColor="black"
+            small
+            tooltip-bottom
+            tooltip-text="Copy the url to this view to the clipboard to share it."
+            @clicked="catchShareClick"
+          />
 
         </v-col>
 
@@ -93,6 +94,7 @@ import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+import { mdiShareVariant } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',

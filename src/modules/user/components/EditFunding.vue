@@ -89,7 +89,7 @@
 
           <v-col class="shrink px-1">
             <BaseIconButton
-              material-icon-name="clear"
+              :icon="mdiClose"
               icon-color="red"
               :disabled="index >= previewFundersAndEmpty.length - 1"
               @clicked="deleteFundersEntry(index)"
@@ -135,6 +135,7 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiClose } from '@mdi/js';
 
 const INSTITUTION = 'institution';
 const GRANTNUMBER = 'grantNumber';

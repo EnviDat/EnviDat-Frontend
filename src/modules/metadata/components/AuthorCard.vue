@@ -60,13 +60,15 @@
         <v-col class="flex-grow-0 py-0"
                style="max-height: 36px;">
 
-          <BaseIconButton class="ma-0"
-                          material-icon-name="search"
-                          :iconColor="dark ? 'white' : darkColor"
-                          outlined
-                          :color="dark ? 'white' : darkColor"
-                          :tooltipText="`Search for the datasets of ${author.firstName} ${author.lastName}`"
-                          @clicked="catchSearchAuthor(author)"/>
+          <BaseIconButton 
+            class="ma-0"
+            :icon="mdiMagnify"
+            :icon-color="dark ? 'white' : darkColor"
+            outlined
+            :color="dark ? 'white' : darkColor"
+            :tooltip-text="`Search for the datasets of ${author.firstName} ${author.lastName}`"
+            @clicked="catchSearchAuthor(author)"
+          />
 
           <v-badge :color="dark ? 'white' : darkColor"
                    overlap
@@ -135,12 +137,13 @@
 
         <v-col class="flex-grow-0">
 
-          <BaseIconButton :materialIconName="infosExpanded ? 'keyboard_arrow_down' : 'keyboard_arrow_left'"
-                          :iconColor="$vuetify.theme.themes.light.colors.accent"
-                          outlined
-                          :color="dark ? 'white' : darkColor"
-                          class="ma-0 badgesIcon"
-                          @clicked="infosExpanded = !infosExpanded"
+          <BaseIconButton 
+            :icon="infosExpanded ? mdiChevronDown : mdiChevronLeft"
+            icon-color="accent"
+            outlined
+            :color="dark ? 'white' : darkColor"
+            class="ma-0 badgesIcon"
+            @clicked="infosExpanded = !infosExpanded"
           />
 
         </v-col>
@@ -220,13 +223,14 @@
                  style="position: absolute; top: 0; right: 0; width: 40px;">
       <v-row>
         <v-col cols="12">
-          <base-icon-button :materialIconName="openButtonIcon"
-                            iconColor="black"
-                            color="accent"
-                            :disabled="loading"
-                            :isElevated="true"
-                            :tooltipText="openButtonTooltip"
-                            @clicked="$emit('openButtonClicked')"/>
+          <base-icon-button 
+            :icon="openButtonIcon"
+            icon-color="black"
+            color="accent"
+            :disabled="loading"
+            elevated
+            :tooltip-text="openButtonTooltip"
+            @clicked="$emit('openButtonClicked')"/>
         </v-col>
       </v-row>
 
@@ -280,6 +284,7 @@ import {
   getLevelProgress,
   getDataCreditLevel, getAuthorName,
 } from '@/factories/authorFactory';
+import { mdiChevronDown, mdiChevronLeft, mdiMagnify } from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder

@@ -66,14 +66,13 @@
       v-if="$vuetify.display.xs"
       :count="selectedTags.length"
       style="position: absolute; bottom: 0; right: 0;"
-      material-icon-name="expand_more"
+      :icon="mdiChevronDown"
       color="secondary"
       icon-color="secondary"
       class="ma-1"
-      :outlined="true"
-      :is-small="true"
-      :rotate-on-click="true"
-      :rotate-toggle="filterExpanded"
+      outlined
+      small
+      :rotated="filterExpanded"
       @clicked="catchExpandClicked"
     />
   </v-card>
@@ -94,7 +93,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import { mdiPaletteSwatchOutline } from '@mdi/js';
+import { mdiChevronDown, mdiPaletteSwatchOutline } from '@mdi/js';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import TagChipPlaceholder from '@/components/Chips/TagChipPlaceholder.vue';

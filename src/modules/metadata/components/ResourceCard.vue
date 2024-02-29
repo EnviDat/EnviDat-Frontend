@@ -50,19 +50,6 @@
           >
             {{ markdownTextTruncated }}
           </v-col>
-
-          <!-- <v-col v-if="maxDescriptionLengthReached && !showFullDescription"
-                  style="width: 30px;"
-                  class="flex-grow-0"
-                  align-self="end" >
-
-            <base-icon-button material-icon-name="expand_more"
-                              iconColor="accent"
-                              color="accent"
-                              outlined
-                              tooltipText="Show full description"
-                              @clicked="showFullDescription = !showFullDescription" />
-          </v-col> -->
         </v-row>
 
         <v-row v-if="!showFullDescription" no-gutters>
@@ -124,21 +111,20 @@
       class="ma-0 pa-2"
       style="position: absolute; bottom: 0; right: 55px;"
     >
-      <base-icon-button v-if="maxDescriptionLengthReached"
-                        :class="isProtected ? 'mr-2' : ''"
-                        material-icon-name="expand_more"
-                        :iconColor="showFullDescription ? 'primary' : 'accent'"
-                        color="accent"
-                        :fillColor="showFullDescription ? $vuetify.theme.themes.light.colors.accent : ''"
-                        outlined
-                        :rotateOnClick="true"
-                        :rotateToggle="showFullDescription"
-                        :tooltipText="
-                          showFullDescription
-                            ? 'Hide full description'
-                            : 'Show full description'
-                        "
-                        @clicked="showFullDescription = !showFullDescription"
+      <base-icon-button 
+        v-if="maxDescriptionLengthReached"
+        :class="isProtected ? 'mr-2' : ''"
+        :icon="mdiChevronDown"
+        :icon-color="showFullDescription ? 'primary' : 'accent'"
+        color="accent"
+        outlined
+        :rotated="showFullDescription"
+        :tooltipText="
+          showFullDescription
+            ? 'Hide full description'
+            : 'Show full description'
+        "
+        @clicked="showFullDescription = !showFullDescription"
       />
     </v-card-actions>
 
@@ -151,11 +137,11 @@
       <v-row>
         <v-col cols="12">
           <base-icon-button
-            :materialIconName="openButtonIcon"
-            iconColor="black"
+            :icon="openButtonIcon"
+            icon-color="black"
             color="accent"
-            :isElevated="true"
-            :tooltipText="openButtonTooltip"
+            elevated
+            :tooltip-text="openButtonTooltip"
             @clicked="$emit('openButtonClicked')"
           />
         </v-col>
@@ -169,11 +155,11 @@
       <v-row v-if="!isProtected">
         <v-col cols="12">
           <base-icon-button
-            :materialIconName="isFile ? 'file_download' : 'link'"
-            iconColor="black"
+            :icon="isFile ? mdiDownload : mdiLink"
+            icon-color="black"
             color="accent"
-            :isElevated="true"
-            :tooltipText="isFile ? 'Download resource' : 'Open link'"
+            elevated
+            :tooltip-text="isFile ? 'Download resource' : 'Open link'"
             :url="url"
             :disabled="!downloadActive"
           />
@@ -226,6 +212,7 @@ import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
+import { mdiChevronDown, mdiDownload, mdiLink } from '@mdi/js';
 
 export default {
   name: 'ResourceCard',

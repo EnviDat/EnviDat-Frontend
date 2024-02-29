@@ -31,12 +31,11 @@
         style="position: absolute; bottom: 5px; right: 5px;"
       >
         <base-icon-button
-          materialIconName="expand_more"
-          :outlined="true"
-          :iconColor="expanded ? 'accent' : 'primary'"
-          :rotateOnClick="true"
-          :rotateToggle="expanded"
-          :tooltipText="expanded ? 'Hide info' : 'Show info'"
+          :icon="mdiChevronDown"
+          outlined
+          :icon-color="expanded ? 'accent' : 'primary'"
+          :rotated="expanded"
+          :tooltip-text="expanded ? 'Hide info' : 'Show info'"
           @clicked="toggleExpand"
         />
       </v-card-actions>
@@ -69,6 +68,7 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { renderMarkdown } from '@/factories/stringFactory';
+import { mdiChevronDown } from '@mdi/js';
 
 export default {
   name: 'ExpandableCard',

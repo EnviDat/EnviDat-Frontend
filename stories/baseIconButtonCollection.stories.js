@@ -27,7 +27,7 @@ const Template = (args, { argTypes }) => ({
   data: () => ({
     rotated: false,
   }),
-  template: '<BaseIconButton v-bind="$props" :rotate-toggle="rotated" @clicked="rotationClick" />',
+  template: '<BaseIconButton v-bind="$props" :rotated="rotated" @clicked="rotationClick" />',
 });
 
 export const IconOnly = Template.bind({});

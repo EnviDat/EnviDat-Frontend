@@ -25,14 +25,16 @@
 
           <v-col class="flex-grow-0" >
 
-            <BaseIconButton id="GenericFullScreenModalCloseButton"
-                              material-icon-name="close"
-                              icon-color="white"
-                              color="white"
-                              outlined
-                              tooltipText="Close fullscreen view"
-                              :tooltipBottom="true"
-                              @clicked="closeClicked" />
+            <BaseIconButton
+              class="genericFullScreenModalCloseButton"
+              :icon="mdiClose"
+              icon-color="white"
+              color="white"
+              outlined
+              tooltip-text="Close fullscreen view"
+              :tooltip-bottom="true"
+              @clicked="closeClicked"
+            />
 
           </v-col>
         </v-row>
@@ -81,6 +83,7 @@ import {
   getPreviewStrategyFromUrlExtension,
   SHOW_DATA_PREVIEW_PROPERTY,
 } from '@/factories/strategyFactory';
+import { mdiClose } from '@mdi/js';
 
 const MetadataMapFullscreen = () => import('@/modules/metadata/components/Geoservices/MetadataMapFullscreen.vue');
 const DetailChartsList = () => import('@/modules/metadata/components/GC-Net/DetailChartsList.vue');

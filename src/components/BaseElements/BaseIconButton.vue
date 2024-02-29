@@ -1,48 +1,36 @@
 <template>
-  <div
-    @mouseover="hoverBadge = true"
-    @mouseleave="hoverBadge = false"
-  >
+  <div class="BaseIconButton">
     <v-btn
       style="margin: 0 !important;"
-      :elevation="isElevated ? 5 : 0"
+      :elevation="elevated ? 5 : 0"
       icon
       :variant="outlined ? 'outlined' : 'flat'"
       density="comfortable"
       :color="dynamicButtonColor"
       :href="url"
-      :disabled="disabled"
       :class="buttonClass"
-      v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
+      v-bind="$props"
     >
-      <div v-if="customIcon"
-           :style="`height: ${height}px; `"
-           class="iconCentering">
-        <img class="envidatIcon"
-              :alt="`${customIcon} icon`"
-              :src="customIcon"
-        />
-      </div>
-
-      <i v-if="materialIconName"
-         class='material-icons'
-         :style="`color: ${iconColor ? iconColor : $vuetify.theme.themes.light.colors.primary};
-                  transition: 0.3s all; ${rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''};`"
-      >{{ materialIconName }}</i>
-
+      <base-icon 
+        :icon="icon"
+        :big="big"
+        :small="small"
+        :rotated="rotated"
+        :color="iconColor"
+      ></base-icon>
     </v-btn>
 
     <v-badge
       v-if="count > 0"
-      :overlap="!isSmall"
-      :left="isSmall"
-      :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
+      :overlap="!small"
+      :left="small"
+      :style="small ? 'position: relative; bottom: 10px;' : ''"
       :content="count"
       color="highlight"
       :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
       @click.stop="onClick"
-      />
+    />
 
   </div>
 </template>
@@ -78,28 +66,21 @@
 export default {
   name: 'BaseIconButton',
   props: {
-    fillColor: String,
-    customIcon: String,
-    materialIconName: String,
-    tooltipText: String,
-    tooltipBottom: Boolean,
-    color: String,
-    iconColor: String,
-    outlined: Boolean,
-    isSmall: Boolean,
-    rotateOnClick: Boolean,
-    rotateToggle: Boolean,
-    url: String,
-    isElevated: Boolean,
-    disabled: Boolean,
-    count: Number,
-    overwriteHeight: Number,
-    isFancy:Boolean,
-    isGlowing:Boolean,
+    color: { type: String, default: undefined },
+    tooltipText: { type: String, default: undefined },
+    tooltipBottom: { type: Boolean, default: false },
+    icon: { type: String, default: undefined, required: true },
+    iconColor: { type: String, default: undefined },
+    rotated: { type: Boolean, default: false },
+    url: { type: String, default: undefined },
+    elevated: { type: Boolean, default: false },
+    small: { type: Boolean, default: false },
+    big: { type: Boolean, default: false },
+    count: { type: Number, default: undefined },
+    outlined: {type: Boolean, default: undefined },
+    fancy: { type:Boolean, default: false },
+    glowing: { type:Boolean, default: false },
   },
-  data: () => ({
-    hoverBadge: false,
-  }),
   computed: {
     dynamicButtonColor() {
       if (this.color) {
@@ -108,25 +89,10 @@ export default {
 
       return this.outlined ? 'primary' : 'transparent';
     },
-    height() {
-      if (this.overwriteHeight) {
-        return this.overwriteHeight;
-      }
-
-      let height = 36;
-
-      if (this.isSmall) {
-        height = 28;
-      } else if (this.isElevated) {
-        height = 40;
-      }
-
-      return height;
-    },
     buttonClass() {
-      let classes = this.isFancy ? 'fancyButton' : '';
+      let classes = this.fancy ? 'fancyButton' : '';
 
-      classes += this.isGlowing ? ' glowingButton' : '';
+      classes += this.glowing ? ' glowingButton' : '';
 
       return classes;
     },

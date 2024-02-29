@@ -43,9 +43,8 @@
         <BaseIconButton
           materialIconName="arrow_drop_down"
           iconColor="primary"
-          isSmall
-          :rotateOnClick="true"
-          :rotateToggle="expanded"
+          small
+          :rotated="expanded"
           @clicked="expanded = !expanded"
         />
       </v-col>

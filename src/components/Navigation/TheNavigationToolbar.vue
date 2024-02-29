@@ -50,19 +50,17 @@
               {{ signedInUser.fullName }}
             </v-col>
 
-            <v-col v-if="editingDatasetName"
-                   class="flex-grow-0">
-              <BaseIconButton id="EditButtonNavigationToolbar"
-                              material-icon-name="edit"
-                              :fillColor="$vuetify.theme.themes.light.colors.accent"
-                              iconColor="black"
-                              color="accent"
-                              :isSmall="true"
-                              :isElevated="true"
-                              :tooltipText="`Continue editing ${editingDatasetName}`"
-                              :tooltipBottom="true"
-                              :overwriteHeight="24"
-                              @clicked="catchContinueClick" />
+            <v-col v-if="editingDatasetName" class="flex-grow-0">
+              <BaseIconButton 
+                class="editButtonNavigationToolbar"
+                :icon="mdiPencil"
+                icon-color="black"
+                color="accent"
+                small
+                elevated
+                :tooltip-text="`Continue editing ${editingDatasetName}`"
+                tooltip-bottom
+                @clicked="catchContinueClick" />
             </v-col>
 
             <v-col class="flex-grow-0">
@@ -135,7 +133,7 @@
 </template>
 
 <script>
-import {mdiAccountCircleOutline} from '@mdi/js';
+import {mdiAccountCircleOutline, mdiPencil} from '@mdi/js';
 import ModeView from '@/components/Layouts/ModeView.vue';
 import EnviDatLogo from '@/assets/logo/EnviDat_logo_32.png';
 import UserMenu from '@/modules/user/components/UserMenu.vue';

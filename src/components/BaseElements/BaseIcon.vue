@@ -1,5 +1,5 @@
 <template>
-  <div class="baseIcon" @click="onClick">
+  <div class="baseIcon" :class="classList" @click="onClick">
 
     <img
       v-if="customIcon" 
@@ -9,10 +9,10 @@
       :src="customIcon"
     />
     <v-icon
-      v-if="materialIcon"
+      v-else
       :style="iconStyle"
       :color="iconColor"
-      :icon="materialIcon"
+      :icon="icon"
     />
 
   </div>
@@ -30,43 +30,37 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import {getIcon} from '@/factories/imageFactory';
+
 export default {
   name: 'BaseIcon',
   props: {
-    icon: String,
-    color: String,
-    rotateOnClick: Boolean,
+    icon: {type: String, default: undefined, required: true },
+    color: {type: String, default: undefined },
+    small: {type: Boolean, default: false },
+    big: {type: Boolean, default: false },
+    rotated: {type: Boolean, default: false },
+    left: {type: Boolean, default: false },
+    right: {type: Boolean, default: false },
   },
   data: ()=>({
-    isRotated: false,
   }),
-  methods: {
-    onClick() {
-      if(this.rotateOnClick){
-        this.isRotated = !this.isRotated;
+  computed: {
+    classList(){
+      return {
+        'rotated': this.rotated,
+        'small': this.dense,
+        'big': this.spacious,
+        'left': this.left,
+        'right': this.right,
+        [`${this.color}--text`]: this.color,
       }
     },
-    getThemeColor(colorName){
-      const theme = this.$vuetify.theme.themes.light.colors;
-      const themeColors = Object.keys(theme);
-      if (themeColors.includes(colorName)) {
-        return theme[colorName];
+    customIcon() {
+      if(typeof this.icon === 'string'){
+        return getIcon(this.icon);
       }
       return null;
-    },
-  },
-  computed: {
-    imgStyle() {
-      const color = this.getThemeColor(this.iconColor ?? 'primary');
-      return  {
-        ...this.iconStyle,
-        filter: `opacity(.5) drop-shadow(0 0 0 ${color})'`,
-      }
-    },
-    iconStyle() {
-      return {
-        transform: this.isRotated ? 'transform: rotate(-180deg);' : '',
-      }
     },
   },
 };
@@ -76,6 +70,30 @@ export default {
 
   .baseIcon {
     transition: 0.3s all ease-in-out;
+    // TODO: Height should be normalized through sass vars/config for all components
+    height: 36px;
+    &.rotated {
+      transform: rotate(-180deg);
+    }
+    &.small {
+      height: 24px;
+      img { height: 24px; }
+    }
+    &.big {
+      height: 48px;
+      img { height: 48px; }
+    }
+    &.left {
+      margin-right: 12px;
+    }
+    &.right {
+      margin-left: 12px;
+    }
+
+    img {
+      height: 36px;
+      filter: opacity(.5) drop-shadow(0 0 0 currentColor);
+    }
   }
 
 </style>

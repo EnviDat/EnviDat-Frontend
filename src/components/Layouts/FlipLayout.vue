@@ -3,12 +3,14 @@
 
     <div :style="`position: absolute; z-index: 2; top: 10px; left: ${ width - 50}px; width: 40px;`">
 
-      <base-icon-button :materialIconName="buttonIcon"
-                        iconColor="black"
-                        :color="buttonColor"
-                        :isElevated="true"
-                        :isSmall="true"
-                        @clicked="flipCard" />
+      <base-icon-button 
+        :icon="buttonIcon"
+        icon-color="black"
+        :color="buttonColor"
+        elevated
+        small
+        @clicked="flipCard"
+      />
     </div>
 
     <div class="flipAnimation"

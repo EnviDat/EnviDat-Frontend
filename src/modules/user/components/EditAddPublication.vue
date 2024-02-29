@@ -52,11 +52,11 @@
 
       <v-col cols="auto"
              class="ma-auto ma-md-0 pl-md-4 pt-4 pt-md-0">
-        <BaseIconButton material-icon-name="add"
-                        :fillColor="$vuetify.theme.themes.light.colors.primary"
-                        icon-color="white"
-                        :is-small="dense && $vuetify.display.mdAndUp"
-                        @clicked="addClick"
+        <BaseIconButton 
+          :icon="mdiPlus"
+          icon-color="white"
+          :small="dense && $vuetify.display.mdAndUp"
+          @clicked="addClick"
         />
 
       </v-col>
@@ -117,6 +117,7 @@ import {
   resolveDoiCitationObjectsViaDora,
   resolvePidCitationObjectsViaDora,
 } from '@/factories/metaDataFactory';
+import { mdiPlus } from '@mdi/js';
 
 
 export default {

@@ -49,12 +49,10 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && !hasButton"
-               class="flex-grow-0 pa-0 hidden-xs-only">
+        <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs-only">
           <base-icon-button
-            material-icon-name="search"
-            marginClass="ma-0"
-            is-small
+            :icon="mdiMagnify"
+            small
             color="transparent"
             :outlined="!searchTerm"
             @clicked="clicked"
@@ -124,6 +122,7 @@
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
+import { mdiMagnify } from '@mdi/js';
 
 export default {
   components: {
