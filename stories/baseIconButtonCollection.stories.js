@@ -7,7 +7,7 @@
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
-import { mdiChevronDown, mdiContentSave } from '@mdi/js';
+import { mdiChevronDown, mdiContentSave, mdiHome } from '@mdi/js';
 
 
 export default {
@@ -20,15 +20,22 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { BaseIconButton },
   props: Object.keys(argTypes),
+  data: ()=>({args}),
+  template: '<div><BaseIconButton v-bind="$props" /></div>',
+});
+
+const TemplateRotatable = (args, { argTypes }) => ({
+  components: { BaseIconButton },
+  props: Object.keys(argTypes),
   methods: {
     rotationClick() {
       this.rotated = !this.rotated;
     },
   },
   data: () => ({
-    rotated: false,
+    rotated: args.rotated,
   }),
-  template: '<BaseIconButton v-bind="$props" :rotated="rotated" @clicked="rotationClick" />',
+  template: '<div><BaseIconButton v-bind="$props" :rotated="rotated" @clicked="rotationClick" /></div>',
 });
 
 export const IconOnly = Template.bind({});
@@ -51,11 +58,32 @@ IconAndElevated.args = {
   color: 'accent',
 }
 
-export const IconRotated = Template.bind({});
+export const CustomIcon = Template.bind({});
+CustomIcon.args = {
+  icon: 'file',
+  outlined: true,
+  color: 'secondary',
+}
+
+export const IconRotated = TemplateRotatable.bind({});
 IconRotated.args = {
   icon: mdiChevronDown,
   outlined: true,
   rotated: true,
+}
+
+export const LargeButton = Template.bind({});
+LargeButton.args = {
+  icon: mdiChevronDown,
+  large: true,
+  outlined: true,
+}
+
+export const SmallButton = Template.bind({});
+SmallButton.args = {
+  icon: mdiHome,
+  small: true,
+  outlined: true,
 }
 
 export const FancyButton = Template.bind({});

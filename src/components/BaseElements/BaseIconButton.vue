@@ -1,12 +1,13 @@
 <template>
-  <div class="BaseIconButton">
+  <div class="baseIconButton">
     <v-btn
       style="margin: 0 !important;"
-      :elevation="elevated ? 5 : 0"
+      :elevation="elevated ? 5 : undefined"
       icon
-      :variant="outlined ? 'outlined' : 'flat'"
+      :variant="outlined ? 'outlined' : 'text'"
       density="comfortable"
-      :color="dynamicButtonColor"
+      :size="large ? 'large' : small ? 'small' : undefined"
+      :color="color"
       :href="url"
       :class="buttonClass"
       @click.stop="onClick"
@@ -14,7 +15,7 @@
     >
       <base-icon 
         :icon="icon"
-        :big="big"
+        :large="large"
         :small="small"
         :rotated="rotated"
         :color="iconColor"
@@ -78,26 +79,18 @@ export default {
     url: { type: String, default: undefined },
     elevated: { type: Boolean, default: false },
     small: { type: Boolean, default: false },
-    big: { type: Boolean, default: false },
+    large: { type: Boolean, default: false },
     count: { type: Number, default: undefined },
     outlined: {type: Boolean, default: undefined },
     fancy: { type:Boolean, default: false },
     glowing: { type:Boolean, default: false },
   },
   computed: {
-    dynamicButtonColor() {
-      if (this.color) {
-        return this.color;
-      }
-
-      return this.outlined ? 'primary' : 'transparent';
-    },
     buttonClass() {
-      let classes = this.fancy ? 'fancyButton' : '';
-
-      classes += this.glowing ? ' glowingButton' : '';
-
-      return classes;
+      return {
+        fancyButton: this.fancy,
+        glowingButton: this.glowing,
+      }
     },
   },
   methods: {
@@ -129,13 +122,13 @@ export default {
 }
 
 .glowingButton {
-  animation-name: glow;
+  animation-name: glowing;
   animation-duration: 2.5s;
   animation-iteration-count: infinite;
 }
 
-@keyframes glow {
-  from {
+@keyframes glowing {
+  0% {
     box-shadow: 0 0 10px 0 yellow;
   }
 
@@ -143,7 +136,7 @@ export default {
     box-shadow: 0 0 10px 10px yellow;
   }
 
-  to {
+  100% {
     box-shadow: 0 0 10px 0 yellow;
   }
 }

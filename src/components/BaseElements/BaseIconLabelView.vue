@@ -1,14 +1,14 @@
 <template>
-  <div class="BaseIconLabelView">
+  <div class="baseIconLabelView">
     <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
       <template v-slot:activator="{ on }">
-        <div v-on="on" class="BaseIconLabelViewWrapper">
-          <div class="BaseIconLabelViewIcon" :class="{dark}">
+        <div v-on="on" class="baseIconLabelViewWrapper">
+          <div class="baseIconLabelViewIcon" :class="{dark}">
             <img v-if="icon" :src="icon" :alt="iconAlt"/>
             <v-icon v-else :dark="dark" :icon="materialIconName"></v-icon>
           </div>
           
-          <div class="BaseIconLabelViewText" :style="textStyle">
+          <div class="baseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
             </a>

@@ -42,11 +42,11 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+// import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 export default {
   name: 'BaseIconSwitch',
-  components: { BaseIcon },
+  // components: { BaseIcon },
   props: {
     active: {
       type: Boolean,

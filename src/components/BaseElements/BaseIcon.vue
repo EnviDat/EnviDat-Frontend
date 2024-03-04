@@ -1,20 +1,20 @@
 <template>
   <div class="baseIcon" :class="classList" @click="onClick">
-
-    <img
-      v-if="customIcon" 
-      :style="imgStyle" 
-      class="envidatIcon"
-      :alt="`${customIcon} icon`" 
-      :src="customIcon"
-    />
+    <div
+      v-if="customIcon"
+      role="img"
+      :aria-label="`${icon} icon`"
+      class="baseIconCustomIcon"
+      :style="customIconStyle"
+      :class="{['bg-' + color]: true}"
+    ></div>
     <v-icon
       v-else
+      :size="large ? 'x-large' : small ? 'small' : undefined"
       :style="iconStyle"
       :color="iconColor"
       :icon="icon"
     />
-
   </div>
 </template>
 
@@ -35,9 +35,9 @@ export default {
   name: 'BaseIcon',
   props: {
     icon: {type: String, default: undefined, required: true },
-    color: {type: String, default: undefined },
+    color: {type: String, default: 'primary' },
     small: {type: Boolean, default: false },
-    big: {type: Boolean, default: false },
+    large: {type: Boolean, default: false },
     rotated: {type: Boolean, default: false },
     left: {type: Boolean, default: false },
     right: {type: Boolean, default: false },
@@ -45,14 +45,20 @@ export default {
   data: ()=>({
   }),
   computed: {
+    customIconStyle(){
+      return {
+        '-webkit-mask': `url("${this.customIcon}") center/contain`,
+        'mask': `url("${this.customIcon}") center/contain`,
+      }
+    },
     classList(){
       return {
         'rotated': this.rotated,
-        'small': this.dense,
-        'big': this.spacious,
+        'small': this.small,
+        'large': this.large,
         'left': this.left,
         'right': this.right,
-        [`${this.color}--text`]: this.color,
+        [`text-${this.color}`]: this.color,
       }
     },
     customIcon() {
@@ -69,29 +75,35 @@ export default {
 
   .baseIcon {
     transition: 0.3s all ease-in-out;
-    // TODO: Height should be normalized through sass vars/config for all components
-    height: 36px;
+    height: 24px; // Based on the v-icon size
+    width: 24px; // Based on the v-icon size
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    position: relative;
+
+    .baseIconCustomIcon {
+      height: 100%;
+      width: 100%;
+    }
+
+    &.small {
+      height: 15px; // Based on the v-icon size
+      width: 15px; // Based on the v-icon size
+    }
+    &.large {
+      height: 32px; // Based on the v-icon size
+      width: 32px; // Based on the v-icon size
+    }
+
     &.rotated {
       transform: rotate(-180deg);
-    }
-    &.small {
-      height: 24px;
-      img { height: 24px; }
-    }
-    &.big {
-      height: 48px;
-      img { height: 48px; }
     }
     &.left {
       margin-right: 12px;
     }
     &.right {
       margin-left: 12px;
-    }
-
-    img {
-      height: 36px;
-      filter: opacity(.5) drop-shadow(0 0 0 currentColor);
     }
   }
 
