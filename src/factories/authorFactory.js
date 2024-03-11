@@ -15,7 +15,7 @@ import {
   compareAsc,
   parseISO,
 } from 'date-fns';
-import { localIdProperty } from '@/factories/strategyFactory';
+import { mdiAccountSupervisor, mdiAccountVoice, mdiBookOpenVariant, mdiCodeTags, mdiInformation, mdiLibrary, mdiWidgets } from '@mdi/js';
 
 const authorDataCreditLevels = [
   { score: 160, lvl: 6 },
@@ -154,19 +154,19 @@ export function getAuthorsCitationString(dataset) {
 export function getDataCreditIcon(creditName) {
   switch (creditName) {
     case 'publication':
-      return 'menu_book';
+      return mdiBookOpenVariant;
     case 'software':
-      return 'code';
+      return mdiCodeTags;
     case 'curation':
-      return 'local_library';
+      return mdiLibrary;
     case 'collection':
-      return 'widgets';
+      return mdiWidgets;
     case 'validation':
-      return 'record_voice_over';
+      return mdiAccountVoice;
     case 'supervision':
-      return 'supervisor_account';
+      return mdiAccountSupervisor;
     default:
-      return 'info';
+      return mdiInformation;
   }
 }
 

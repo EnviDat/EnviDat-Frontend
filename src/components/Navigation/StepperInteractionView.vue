@@ -4,34 +4,32 @@
 
     <v-row justify="end">
 
-      <v-col v-if="showPreviewButton"
-             class="flex-grow-0">
+      <v-col v-if="showPreviewButton" class="flex-grow-0">
         <BaseIconButton
-                id="PreviewMetadataButton"
-                material-icon-name="remove_red_eye"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Preview Dataset"
-                :tooltipBottom="true"
-                @clicked="catchPreviewClick"
+          class="previewMetadataButton"
+          :icon="mdiEye"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Preview Dataset"
+          :tooltip-bottom="true"
+          @clicked="catchPreviewClick"
         />
       </v-col>
 
-      <v-col v-if="isCreationWorkflow"
-              class="flex-grow-0">
+      <v-col v-if="isCreationWorkflow" class="flex-grow-0">
         <BaseIconButton
-                id="SaveMetadataButton"
-                material-icon-name="save"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Save Dataset On the Server"
-                :disabled="!showSaveButton"
-                isFancy
-                :is-glowing="showSaveButton"
-                :tooltipBottom="true"
-                @clicked="catchSaveDatasetClick"
+          class="saveMetadataButton"
+          :icon="mdiContentSave"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Save Dataset On the Server"
+          :disabled="!showSaveButton"
+          fancy
+          :glowing="showSaveButton"
+          :tooltip-bottom="true"
+          @clicked="catchSaveDatasetClick"
         />
       </v-col>
 
@@ -50,16 +48,15 @@
       </v-col>
 
       <v-col class="flex-grow-0">
-
         <BaseIconButton
-                id="MetadataEditCloseButton"
-                material-icon-name="close"
-                icon-color="black"
-                color="black"
-                outlined
-                tooltipText="Close workflow"
-                :tooltipBottom="true"
-                @clicked="catchCloseClick"
+          class="metadataEditCloseButton"
+          :icon="mdiClose"
+          icon-color="black"
+          color="black"
+          outlined
+          tooltip-text="Close workflow"
+          tooltip-bottom
+          @clicked="catchCloseClick"
         />
       </v-col>
 
@@ -101,6 +98,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseProgressView from '@/components/BaseElements/BaseProgressView.vue'
 
 import { countSteps } from '@/factories/userCreationFactory';
+import { mdiClose, mdiContentSave, mdiEye } from '@mdi/js';
 
 export default {
   name: 'StepperInteractionView',
@@ -188,6 +186,11 @@ export default {
       this.$emit('clickedSaveDataset');
     },
   },
+  data: ()=>({
+    mdiClose,
+    mdiContentSave,
+    mdiEye,
+  }),
   components: {
     BaseIconButton,
     BaseProgressView,

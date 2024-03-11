@@ -11,15 +11,17 @@
       <!-- this loads the background image -->
     </div>
 
-    <base-icon-button class="ma-2"
-                      style="position: absolute; top: 0; right: 0; z-index: 2;"
-                      material-icon-name="close"
-                      icon-color="primary"
-                      color="primary"
-                      outlined
-                      tooltipText="Close project detail view"
-                      :tooltipBottom="true"
-                      @clicked="catchBackClicked" />
+    <base-icon-button 
+      class="ma-2"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="primary"
+      color="primary"
+      outlined
+      tooltip-text="Close project detail view"
+      tooltip-bottom
+      @clicked="catchBackClicked"
+    />
 
 
     <div v-if="title"
@@ -73,6 +75,7 @@
 */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiClose } from '@mdi/js';
 
 export default {
   components: {
@@ -127,6 +130,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     height: 150,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',

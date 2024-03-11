@@ -66,18 +66,6 @@
       </v-col>
     </v-row>
 
-<!--
-    <v-snackbar
-        :value="!!uploadProgessText"
-        bottom
-        elevation="24"
-    >
-      <v-icon color="highlight">checkmark</v-icon>
-      {{ uploadProgessText }}
-
-    </v-snackbar>
--->
-
   </v-container>
 </template>
 

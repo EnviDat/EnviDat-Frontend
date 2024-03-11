@@ -10,6 +10,7 @@
  */
 
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { mdiPencil, mdiMagnify, mdiPlus } from '@mdi/js';
 
 export default {
   title: '1 Base Elements / Rectangle Buttons Collection',
@@ -26,7 +27,7 @@ export const SingleButton = Template.bind({});
 SingleButton.args = {
   buttonText: 'Single Button',
   isOutlined: true,
-  materialIconName: 'edit',
+  icon: mdiPencil,
 }
 
 /*
@@ -44,6 +45,11 @@ SingleButton.play = async ({canvasElement}) => {
 
 export const ButtonsCollectionViews = () => ({
     components: { BaseRectangleButton },
+    data: ()=>({
+      mdiPencil,
+      mdiMagnify,
+      mdiPlus,
+    }),
     template: `
     <v-row >
 
@@ -175,13 +181,13 @@ export const ButtonsCollectionViews = () => ({
       <v-col cols="4">
         <base-rectangle-button
           buttonText="button with icon"
-          materialIconName="edit"
+          :icon="mdiPencil"
           iconColor="white" />
       </v-col>
       <v-col cols="4">
         <base-rectangle-button
           buttonText="button with icon"
-          materialIconName="add"
+          :icon="mdiPlus"
           iconColor="secondary"
           isOutlined />
       </v-col>
@@ -190,7 +196,7 @@ export const ButtonsCollectionViews = () => ({
       <v-col cols="4">
         <base-rectangle-button
           buttonText="button with icon"
-          materialIconName="search"
+          :icon="mdiMagnify"
           isFlat
           disabled />
       </v-col>

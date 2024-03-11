@@ -41,11 +41,12 @@
             </v-col>
 
             <v-col cols="5" style="display: inline-flex; justify-content: center;">
-              <base-icon-button material-icon-name="clear"
-                                :fill-color="$vuetify.theme.themes.light.colors.error"
-                                icon-color="black"
-                                tooltip-text="Delete your local dataset"
-                                @clicked="$emit('clearButtonClicked', $event)"
+              <base-icon-button 
+                :icon="mdiClose"
+                color="error"
+                icon-color="black"
+                tooltip-text="Delete your local dataset"
+                @clicked="$emit('clearButtonClicked', $event)"
               />
             </v-col>
 
@@ -108,6 +109,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
+import { mdiClose } from '@mdi/js';
 
 export default {
   name: 'IntroductionCard',
@@ -171,6 +173,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiClose,
     introTextFallback:
       'Manage your datasets and create new ones. <br/>',
     createText: 'Create a dataset',

@@ -21,10 +21,11 @@
                 z-index="2"
             >
               <template v-slot:activator="{ on, props }">
-                <BaseIcon material-icon='info'
-                          :icon-color="abstract ? 'primary' : 'gray'"
-                          v-bind="props"
-                          v-on="on"
+                <BaseIcon
+                  :icon="mdiInformationOutline"
+                  :icon-color="abstract ? 'primary' : 'gray'"
+                  v-bind="props"
+                  v-on="on"
                 />
               </template>
 
@@ -37,12 +38,14 @@
 
           <v-col cols="12"
                   class="pl-1">
-            <BaseIconButton material-icon-name="fingerprint"
-                            :disabled="!doi"
-                            :isSmall="true"
-                            :icon-color="doi ? '' : 'gray'"
-                            :tooltipText="`doi: ${doi}`"
-                            :url="doiUrl" />
+            <BaseIconButton 
+              :icon="mdiFingerprint"
+              :disabled="!doi"
+              small
+              :icon-color="doi ? '' : 'gray'"
+              :tooltip-text="`doi: ${doi}`"
+              :url="doiUrl"
+            />
           </v-col>
 
         </v-row>
@@ -67,6 +70,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+import {mdiInformationOutline, mdiFingerprint} from '@mdi/js';
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
@@ -93,6 +97,8 @@ export default {
   computed: {
   },
   data: () => ({
+    mdiInformationOutline,
+    mdiFingerprint,
   }),
   components: {
     BaseIcon,

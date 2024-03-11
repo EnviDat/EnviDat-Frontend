@@ -16,9 +16,7 @@
               :aria-checked="active"
               @click="emitClick"
             >
-              <v-icon v-if="materialIconName" class="iconSwitchButtonIcon" :color="iconColor">
-                {{ materialIconName }}
-              </v-icon>
+              <base-icon :icon="icon" :color="iconColor"></base-icon>
             </button>
           </div>
           <label v-if="label" :for="'iconSwitchButton' + _uid" class="iconSwitchLabel" :class="{disabled}">{{ label }}</label>
@@ -29,7 +27,8 @@
   </div>
 </template>
 
-<script>/**
+<script>
+/**
  * BaseIconSwitch.vue create a on/off switch which can contain an icon
  * from the material design font
  *
@@ -42,64 +41,52 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+
+import BaseIcon from './BaseIcon.vue';
 
 export default {
-  name: 'BaseIconSwitch',
-  components: { BaseIcon },
-  props: {
-    active: {
-      type: Boolean,
-      default: false,
+    name: 'BaseIconSwitch',
+    components: { BaseIcon },
+    props: {
+      label:  { type: String,  default: undefined, required: true},
+      icon:   { type: String,  default: undefined, required: true},
+      color:  { type: String,  default: 'primary'},
+      active: { type: Boolean, default: false},
+      disabled: { type: Boolean, default: false},
+      tooltipText: {type: String, default: undefined },
     },
-    label: {
-      type: String,
-      default: undefined,
-    },
-    color: {
-      type: String,
-      default: 'primary',
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    materialIconName: String,
-    tooltipText: String,
-  },
-  watch: {
-    active: {
-      immediate: true,
-      handler(newValue){
-        this.internalActive = newValue;
+    watch: {
+      active: {
+        immediate: true,
+        handler(newValue) {
+            this.internalActive = newValue;
+        },
       },
     },
-  },
-  data: () => ({
-    internalActive: false,
-  }),
-  computed: {
-    classList(){
-      return {
-        disabled: this.disabled,
-        active: this.active,
-        [`${this.color}--text text--lighten-2`]: this.internalActive,
-        'grey--text text--lighten-2': !this.internalActive,
-      }
+    data: () => ({
+      internalActive: false,
+    }),
+    computed: {
+      classList() {
+        return {
+          disabled: this.disabled,
+          active: this.internalActive,
+          [`text-${this.color}-lighten-2`]: this.internalActive,
+          'text-grey-lighten-2': !this.internalActive,
+        };
+      },
+      iconColor() {
+        return this.internalActive ? this.color : 'grey';
+      },
     },
-    iconColor(){
-      return this.internalActive ? this.color : 'gray';
+    methods: {
+      emitClick(event) {
+        if (this.disabled) {
+          return;
+        }
+        this.$emit('clicked', event);
+      },
     },
-  },
-  methods: {
-    emitClick(event) {
-      if (this.disabled){
-        return;
-      }
-      
-      this.$emit('clicked', event);
-    },
-  },
 };
 
 </script>

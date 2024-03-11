@@ -1,80 +1,14 @@
 <template>
-  <div id="BaseIconCountView"
-       style="max-width: 26px;" >
-
-    <v-tooltip v-if="$vuetify.display.mdAndUp && tooltipText" bottom>
-      <template v-slot:activator="{ on, props }">
-        <div v-on="on"
-             v-bind="props"
-             class="iconCountView">
-          <v-container fluid class="pa-0">
-            <v-row
-              @mouseover="hoverBadge = true"
-              @mouseleave="hoverBadge = false"
-              no-gutters
-            >
-              <v-col class="pa-0">
-                <v-badge
-                  :left="!hoverBadge"
-                  overlap
-                  color="secondary"
-                  :content="count"
-                  :class="{
-                    envidatBadgeBigNumber: count > 9,
-                    envidatBadge: count <= 9,
-                  }"
-                />
-              </v-col>
-
-              <v-col class="pa-0">
-                <BaseIcon :custom-icon='iconString'
-                          :material-icon='materialIconName'
-                />
-
-              </v-col>
-              
-            </v-row>
-          </v-container>
-        </div>
-      </template>
-
-      <span>{{ tooltipText }}</span>
-    </v-tooltip>
-
-    <div v-else class="iconCountView">
-      <v-container fluid class="pa-0">
-        <v-row
-          @mouseover="hoverBadge = true"
-          @mouseleave="hoverBadge = false"
-          no-gutters
-        >
-          <v-col class="pa-0"
-                 style="z-index: 2;"
-          >
-            <v-badge
-              :left="!hoverBadge"
-              overlap
-              color="secondary"
-              :class="{
-                envidatBadgeBigNumber: count > 9,
-                envidatBadge: count <= 9,
-              }"
-              :content="count"
-            />
-          </v-col>
-
-          <v-col class="pa-0" style="z-index: 1;">
-            <BaseIcon :custom-icon='iconString'
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
+  <div class="BaseIconCountView">
+    <base-icon-button
+      :icon="icon"
+      :count="count"
+    ></base-icon-button>
   </div>
 </template>
 
 <script>
-import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 
 /**
  * BaseIconCountView.vue creates a round with an icon with a badge which shows a number
@@ -91,10 +25,10 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
  */
 export default {
   name: 'BaseIconCountView',
-  components: { BaseIcon },
+  components: { BaseIconButton },
   props: {
     iconString: String,
-    materialIconName: String,
+    icon: String,
     count: Number,
     tooltipText: String,
   },
@@ -105,9 +39,9 @@ export default {
 </script>
 
 <style>
-.iconCountView {
-  /* line-height has to be based on the root (1rem) because of the
-    use in ex. v-card-title */
-  line-height: 1rem;
-}
+  .iconCountView {
+    /* line-height has to be based on the root (1rem) because of the
+      use in ex. v-card-title */
+    line-height: 1rem;
+  }
 </style>

@@ -5,9 +5,8 @@
         <v-row no-gutters>
           <v-col class="flex-grow-0">
             <BaseIconButton
-              materialIconName="add"
-              iconColor="black"
-              fillColor="white"
+              :icon="mdiPlus"
+              icon-color="black"
               color="secondary"
               outlined
               @clicked="triggerZoomIn"
@@ -16,9 +15,8 @@
 
           <v-col class="px-1 flex-grow-0">
             <BaseIconButton
-              materialIconName="remove"
-              iconColor="black"
-              fillColor="white"
+              :icon="mdiMinus"
+              icon-color="black"
               color="secondary"
               outlined
               @clicked="triggerZoomOut"
@@ -27,9 +25,8 @@
 
           <v-col class="px-2 flex-grow-0">
             <BaseIconButton
-              materialIconName="filter_center_focus"
-              iconColor="black"
-              fillColor="white"
+              :icon="mdiImageFilterCenterFocus"
+              icon-color="black"
               color="secondary"
               outlined
               @clicked="triggerZoomCenter"
@@ -40,23 +37,11 @@
 
       <v-col class="ml-auto">
         <v-row no-gutters>
-          <!--
-          <v-col v-if="showMapSplitButton"
-                  class="flex-grow-0" >
-                &lt;!&ndash; style="position: absolute; top: 0; left: 45%;" &ndash;&gt;
-            <BaseIconButton materialIconName="vertical_split"
-                            iconColor="black"
-                            :fillColor="$vuetify.theme.themes.light.colors.accent"
-                            @clicked="triggerSplit" />
-          </v-col>
-          -->
 
           <v-col v-if="showMapSplitCloseButton" class="flex-grow-0">
-            <!-- style="position: absolute; top: 0; left: 45%;" -->
             <BaseIconButton
-              materialIconName="close"
-              iconColor="red"
-              fillColor="white"
+              :icon="mdiSimpleIcons"
+              icon-color="red"
               @clicked="triggerSplitEnd"
             />
           </v-col>
@@ -68,67 +53,12 @@
     <v-row v-if="layerConfig" class="d-flex flex-column" no-gutters>
       <v-col v-if="site" cols="1" class="py-2 flex-grow-0">
         <BaseIconButton
-          materialIconName="location_on"
-          iconColor="black"
-          fillColor="white"
+          :icon="mdiMapMarker"
+          icon-color="black"
           disabled
           @clicked="showSite = !showSite"
         />
       </v-col>
-
-      <!--
-      <v-col class="pb-2 flex-grow-0" >
-        <v-row no-gutters>
-
-          <v-col class="flex-grow-0"
-                  cols="1" >
-            <BaseIconButton materialIconName="layers"
-                            iconColor="black"
-                            fillColor="white"
-                            @clicked="layerControlOpen = !layerControlOpen" />
-          </v-col>
-
-          <v-col v-if="layerControlOpen">
-            <v-card >
-              <v-card-text class="readableText">
-                {{ layerConfigTitle }}
-              </v-card-text>
-            </v-card>
-          </v-col>
-
-        </v-row>
-      </v-col>
-
-      <v-col v-if="!layerControlOpen && selectedLayerName"
-              class="pb-2 flex-grow-0" >
-            <v-card max-width="25%">
-              <v-card-text class="readableText">
-                {{ `Active Layer: ${selectedLayerName}` }}
-              </v-card-text>
-            </v-card>
-      </v-col>
-
-      <v-col v-if="layerControlOpen"
-              class="pb-2 flex-grow-0" >
-        <map-layer-control :layers="layerConfig.layers"
-                            :selectedLayerName="selectedLayerName"
-                            @changeLayer="changeLayer"
-                            @changeOpacity="changeOpacity"  />
-      </v-col>
--->
-
-      <!--
-            <v-col v-if="featureinfo.length > 0"
-                    cols="12 flex-grow-0">
-
-              <feature-info :div-id="`${mapDivId}_graph`"
-                            :layers="layerConfig.layers"
-                            :selectedLayerName="selectedLayerName" />
-
-          < style="position: absolute; top: 5px; z-index: 1000000; height: 200px; right: 50px; left: 50px;" >
-
-      </v-col>
-      -->
     </v-row>
 
     <div style="position: absolute; bottom: 50px;">
@@ -155,14 +85,12 @@ import {
   MAP_ZOOM_IN,
   MAP_ZOOM_OUT,
 } from '@/factories/eventBus';
+import { mdiImageFilterCenterFocus, mdiMapMarker, mdiMinus, mdiPlus, mdiSimpleIcons } from '@mdi/js';
 
 
 export default {
   name: 'MapOverlayUI',
   components: {
-    // FeatureInfo,
-    // TimeSlider,
-    // MapLayerControl,
     BaseIconButton,
   },
   props: {
@@ -182,10 +110,14 @@ export default {
     showMapSplitCloseButton: Boolean,
   },
   created() {
-    // console.log(this.showMapSplitButton);
     this.loadBaseMapImages();
   },
   data: () => ({
+    mdiImageFilterCenterFocus,
+    mdiMapMarker,
+    mdiMinus,
+    mdiPlus,
+    mdiSimpleIcons,
     layerControlOpen: false,
     opacity: 100,
     showSite: true,
@@ -194,7 +126,6 @@ export default {
   computed: {
     layerConfigTitle() {
       return `WMS Config Title: ${this.layerConfig?.title}`;
-      // return `${this.layerConfig?.title} ${this.layerConfig?.ContactInformation?.ContactPersonPrimary?.ContactOrganization}`;
     },
     featureinfo() {
       return this.$store.state.geoservices.timeseries;
@@ -298,8 +229,4 @@ export default {
 .overlayInteraction .v-card {
   pointer-events: auto;
 }
-
-/* .overlayInteraction .v-btn {
-    pointer-events: auto !important;
-  } */
 </style>

@@ -4,18 +4,18 @@
           :loading="loadingColor"
           class="pa-0">
 
-    <!-- prettier-ignore -->
-    <BaseIconButton id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1': $vuetify.display.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel Resource Editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')"/>
+    <BaseIconButton 
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2"
+      :icon="mdiClose"
+      icon-color="primary"
+      color="primary"
+      outlined
+      tooltip-text="Cancel Resource Editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')"
+    />
 
 
     <div class="pa-3">
@@ -157,11 +157,7 @@
 
             <v-row no-gutters >
               <v-col class="shrink pt-2">
-                <img class="customIcon"
-                    :src="fileFormatIcon"
-                    width="24"
-                    height="24"
-                    alt="file extension icon" />
+                <BaseIcon :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-2">
@@ -186,11 +182,7 @@
 
             <v-row no-gutters >
               <v-col class="shrink pt-2">
-                <img class="customIcon"
-                    :src="fileSizeIcon"
-                    width="24"
-                    height="24"
-                    alt="file size icon" />
+                <BaseIcon :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-2" >
@@ -269,7 +261,7 @@
           <BaseIconSwitch
             :active="isDataPrivate"
             :disabled="!editingRestrictingActive"
-            materialIconName="lock"
+            :icon="mdiLock"
             class="mt-2"
             :tooltipText="labels.dataAccessSwitchTooltip"
             @clicked="isDataPrivate = !isDataPrivate"
@@ -280,7 +272,7 @@
             v-if="isDataPrivate"
             :active="hasAllowedUsers"
             :disabled="!editingRestrictingActive"
-            materialIconName="groups"
+            :icon="mdiAccount"
             class="mt-2"
             :tooltipText="labels.hasAllowedUsersSwitchTooltip"
             @clicked="hasAllowedUsers = !hasAllowedUsers"
@@ -371,6 +363,8 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
+import { mdiAccount, mdiLock } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 
 export default {
@@ -830,6 +824,8 @@ export default {
     },
   },
   data: () => ({
+    mdiAccount,
+    mdiLock,
     previews: {
       name: null,
       description: null,
@@ -883,7 +879,9 @@ export default {
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
-  },
+    BaseIcon,
+    BaseIcon
+},
 };
 </script>
 

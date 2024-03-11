@@ -7,47 +7,43 @@
  */
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
-import globalMethods from '@/factories/globalMethods';
-import tagIcon from '@/assets/icons/tag.png';
-import tagsIcon from '@/assets/icons/tags.png';
-
+import { mdiAccount, mdiPencil } from '@mdi/js';
 
 export default {
   title: '1 Base Elements / Icon Font & Custom',
   component: BaseIcon,
 };
 
-
 export const EditFontIcon = {
   args: {
-    materialIcon: 'edit',
+    icon: mdiPencil,
   },
 }
 
 export const EditBlackFontIcon = {
   args: {
     ...EditFontIcon.args,
-    iconColor: 'black',
+    color: 'black',
   },
 }
 
 export const ErrorFontIcon = {
   args: {
-    materialIcon: 'person',
-    iconColor: 'error',
+    icon: mdiAccount,
+    color: 'error',
   },
 }
 
 export const CustomPinIcon = {
   args: {
-    iconColor: 'green',
-    customIcon: tagIcon,
+    color: 'green',
+    icon: 'tag',
   },
 }
 
 export const CustomMultiPinIcon = {
   args: {
-    iconColor: 'secondary',
-    customIcon: tagsIcon,
+    color: 'secondary',
+    icon: 'tags',
   },
 }

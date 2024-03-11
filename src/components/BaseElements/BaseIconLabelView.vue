@@ -1,14 +1,13 @@
 <template>
-  <div class="BaseIconLabelView">
-    <v-tooltip bottom :disabled="$vuetify.breakpoint.xsOnly || !iconTooltip">
+  <div class="baseIconLabelView">
+    <v-tooltip bottom :disabled="$vuetify.display.xsOnly || !iconTooltip">
       <template v-slot:activator="{ on }">
-        <div v-on="on" class="BaseIconLabelViewWrapper">
-          <div class="BaseIconLabelViewIcon" :class="{dark}">
-            <img v-if="icon" :src="icon" :alt="iconAlt"/>
-            <v-icon v-else :dark="dark">{{ materialIconName }}</v-icon>
+        <div v-on="on" class="baseIconLabelViewWrapper">
+          <div class="baseIconLabelViewIcon" :class="{dark}">
+            <BaseIcon :icon="icon" />
           </div>
           
-          <div class="BaseIconLabelViewText" :style="textStyle">
+          <div class="baseIconLabelViewText" :style="textStyle">
             <a v-if="url" :href="url" target="_blank" rel="noopener noreferrer">
               {{ text ? text : url }}
             </a>
@@ -25,6 +24,8 @@
 </template>
 
 <script>
+import BaseIcon from './BaseIcon.vue';
+
 /**
  * BaseIconLabelView.vue creates a field with a label (text or icon) with the given
  * text as well a tooltip.
@@ -40,25 +41,25 @@
  */
 
 export default {
-  name: 'BaseIconLabelView',
-  props: {
-    icon: String,
-    materialIconName: String,
-    iconTooltip: String,
-    text: String,
-    url: String,
-    dark: Boolean,
-  },
-  computed: {
-    iconAlt() {
-      return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
+    name: 'BaseIconLabelView',
+    components: { BaseIcon },
+    props: {
+        icon: String,
+        iconTooltip: String,
+        text: String,
+        url: String,
+        dark: Boolean,
     },
-    textStyle() {
-      return {
-        'font-size': this.$vuetify.breakpoint.smAndDown ? 'font-size: 0.85rem;' : undefined,
-      }
+    computed: {
+        iconAlt() {
+            return this.iconTooltip ?? this.label ?? `${this.icon} + icon`;
+        },
+        textStyle() {
+            return {
+                'font-size': this.$vuetify.display.smAndDown ? 'font-size: 0.85rem;' : undefined,
+            };
+        },
     },
-  },
 };
 </script>
 

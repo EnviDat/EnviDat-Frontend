@@ -7,6 +7,7 @@
  */
 
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiChevronDown, mdiContentSave, mdiHome } from '@mdi/js';
 
 
 export default {
@@ -19,62 +20,90 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { BaseIconButton },
   props: Object.keys(argTypes),
+  data: ()=>({args}),
+  template: '<div><BaseIconButton v-bind="$props" /></div>',
+});
+
+const TemplateRotatable = (args, { argTypes }) => ({
+  components: { BaseIconButton },
+  props: Object.keys(argTypes),
   methods: {
     rotationClick() {
       this.rotated = !this.rotated;
     },
   },
   data: () => ({
-    rotated: false,
+    rotated: args.rotated,
   }),
-  template: '<BaseIconButton v-bind="$props" :rotate-toggle="rotated" @clicked="rotationClick" />',
+  template: '<div><BaseIconButton v-bind="$props" :rotated="rotated" @clicked="rotationClick" /></div>',
 });
 
 export const IconOnly = Template.bind({});
 IconOnly.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
 }
 
 export const IconOnlyOutlined = Template.bind({});
 IconOnlyOutlined.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
   outlined: true,
   iconColor: 'black',
 }
 
 export const IconAndElevated = Template.bind({});
 IconAndElevated.args = {
-  materialIconName: 'save',
-  isElevated: true,
+  icon: mdiContentSave,
+  elevated: true,
   iconColor: 'black',
   color: 'accent',
 }
 
-export const IconRotated = Template.bind({});
-IconRotated.args = {
-  materialIconName: 'expand_less',
+export const CustomIcon = Template.bind({});
+CustomIcon.args = {
+  icon: 'file',
   outlined: true,
-  rotateOnClick: true,
+  color: 'secondary',
+}
+
+export const IconRotated = TemplateRotatable.bind({});
+IconRotated.args = {
+  icon: mdiChevronDown,
+  outlined: true,
+  rotated: true,
+}
+
+export const LargeButton = Template.bind({});
+LargeButton.args = {
+  icon: mdiChevronDown,
+  large: true,
+  outlined: true,
+}
+
+export const SmallButton = Template.bind({});
+SmallButton.args = {
+  icon: mdiHome,
+  small: true,
+  outlined: true,
 }
 
 export const FancyButton = Template.bind({});
 FancyButton.args = {
-  materialIconName: 'save',
+  icon: mdiContentSave,
   outlined: true,
   iconColor: 'black',
-  isFancy: true,
+  fancy: true,
 }
 
 export const GlowingButton = Template.bind({});
 GlowingButton.args = {
   ...IconOnlyOutlined.args,
-  isGlowing: true,
+  glowing: true,
 }
 
 export const FancyAndGlowingButton = Template.bind({});
 FancyAndGlowingButton.args = {
   ...FancyButton.args,
-  isGlowing: true,
+  glowing: true,
 }
 
 export const CountButton = Template.bind({});

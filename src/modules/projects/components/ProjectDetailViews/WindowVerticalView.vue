@@ -75,7 +75,7 @@
 
                   <v-col cols="1">
                     <v-btn icon>
-                      <v-icon>find_in_page</v-icon>
+                      <v-icon :icon="mdiFileFindOutline" />
                     </v-btn>
                   </v-col>
 
@@ -113,12 +113,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import {mdiFileFindOutline} from '@mdi/js'; 
 
 export default {
-  components: {
-    // BaseIconButton,
-  },
   props: {
     subProjects: Array,
     metadatas: Array,
@@ -131,6 +128,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiFileFindOutline,
     window: 0,
   }),
 };

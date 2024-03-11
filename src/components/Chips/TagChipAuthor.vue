@@ -15,7 +15,7 @@
           >
 
     <v-avatar left>
-      <v-icon size="24px" >account_circle</v-icon>
+      <v-icon size="24px" :icon="mdiAccountCircle" />
     </v-avatar>
 
     {{ authorName }}
@@ -23,7 +23,7 @@
     <v-tooltip v-if="authorIsDead"
                 bottom>
       <template v-slot:activator="{ props }">
-        <v-icon v-bind="props" size='small' >hourglass_bottom</v-icon>
+        <v-icon v-bind="props" size='small' :icon="mdiTimerSand" />
       </template>
 
       {{ authorPassedInfo }}
@@ -47,6 +47,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
 */
 
+import {mdiTimerSand, mdiAccountCircle} from '@mdi/js';
+
 export default {
   props: {
     name: String,
@@ -68,6 +70,10 @@ export default {
       default: undefined,
     },
   },
+  data: ()=>({
+    mdiTimerSand,
+    mdiAccountCircle,
+  }),
   computed: {
     authorIsDead() {
       return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;

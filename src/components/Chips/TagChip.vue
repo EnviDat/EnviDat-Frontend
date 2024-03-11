@@ -13,16 +13,7 @@
     :close="closeable"
     @click:close="$emit('clickedClose', name)"
   >
-<!--
-    :color="$vuetify.theme.themes.light.colors.primary"
--->
     {{ name }}
-
-    <!-- <span v-if="closeable"
-          style="margin: 0 -5px 3px 5px;"
-          class="" >
-      <v-icon small >close</v-icon>
-    </span> -->
   </v-chip>
 </template>
 

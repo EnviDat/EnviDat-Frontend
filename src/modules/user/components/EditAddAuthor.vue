@@ -3,24 +3,22 @@
           class="pa-0"
           :loading="loadingColor">
 
-    <BaseIconButton v-if="isEditingAuthor"
-                    id="EditResourceCloseButton"
-                    class="ma-2"
-                    :class="{ 'mx-1' : $vuetify.display.smAndDown }"
-                    style="position: absolute; top: 0; right: 0; z-index: 2;"
-                    material-icon-name="close"
-                    icon-color="primary"
-                    color="primary"
-                    outlined
-                    tooltipText="Cancel author editing"
-                    :tooltipBottom="true"
-                    @clicked="$emit('closeClicked')" />
+    <BaseIconButton 
+      v-if="isEditingAuthor"
+      class="editResourceCloseButton ma-2"
+      :class="{ 'mx-1' : $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2;"
+      :icon="mdiClose"
+      icon-color="primary"
+      color="primary"
+      outlined
+      tooltip-text="Cancel author editing"
+      tooltip-bottom
+      @clicked="$emit('closeClicked')" 
+    />
 
-    <v-container fluid
-                 class="pa-4 fill-height">
-
+    <v-container fluid class="pa-4 fill-height">
       <v-row>
-
         <v-col class="text-h5" cols="8">
           {{ titleLabel }}
         </v-col>
@@ -208,13 +206,13 @@
 
       <v-row v-if="isEditingAuthor" >
         <v-col>
-          <BaseRectangleButton material-icon-name="clear"
-                                icon-color="white"
-                                color="error"
+          <BaseRectangleButton :icon="mdiClose"
+                               icon-color="white"
+                               color="error"
                                :disabled="isReadOnly('authors')"
-                                button-text="Remove Author"
-                                tooltip-text="Remove this author from the dataset"
-                                @clicked="removeAuthorClick(email)"/>
+                               button-text="Remove Author"
+                               tooltip-text="Remove this author from the dataset"
+                               @clicked="removeAuthorClick(email)"/>
 
         </v-col>
       </v-row>
@@ -264,6 +262,7 @@ import {
 } from '@/factories/eventBus';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiClose } from '@mdi/js';
 
 
 export default {
@@ -567,6 +566,7 @@ export default {
     },
   },
   data: () => ({
+    mdiClose,
     authorIsPicked: false,
     authorPickerTouched: false,
     previews: {

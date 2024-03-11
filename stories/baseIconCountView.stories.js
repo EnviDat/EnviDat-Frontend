@@ -7,7 +7,8 @@
  */
 
 import BaseIconCountView from '@/components/BaseElements/BaseIconCountView.vue';
-import fileIcon from '../src/assets/icons/file.png';
+import { mdiHome } from '@mdi/js';
+
 
 
 export default {
@@ -15,9 +16,9 @@ export default {
   component: BaseIconCountView,
 };
 
-export const CountButton = {
+export const IconCount = {
   args: {
-    iconString: fileIcon,
+    icon: mdiHome,
     count: 55,
     tooltipText: 'This is the tooltip of the icon count view',
   },

@@ -28,23 +28,23 @@
 
     <v-col class="flex-grow-0 mx-1">
       <base-icon-button
-        materialIconName="info_outline"
-        :tooltipText="`${tooltipText} ${modeTitle}`"
-        tooltipBottom
+        :icon="mdiInformationOutline"
+        :tooltip-text="`${tooltipText} ${modeTitle}`"
+        tooltip-bottom
         color="transparent"
-        iconColor="secondary"
-        isSmall
+        icon-color="secondary"
+        small
       />
     </v-col>
 
     <div v-if="closeCallback" class="flex-grow-0 mx-1">
       <base-icon-button
-        materialIconName="close"
-        :tooltipText="`Exit ${modeTitle} ${modeInfoPrefix}`"
-        tooltipBottom
+        :icon="mdiClose"
+        :tooltip-text="`Exit ${modeTitle} ${modeInfoPrefix}`"
+        tooltip-bottom
         color="transparent"
-        iconColor="red"
-        isSmall
+        icon-color="red"
+        small
         @clicked="closeCallback"
       />
     </div>
@@ -66,6 +66,7 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { getModeData } from '@/factories/modeFactory';
+import { mdiClose, mdiInformationOutline } from '@mdi/js';
 
 export default {
   name: 'ModeView',
@@ -78,6 +79,8 @@ export default {
     closeCallback: Function,
   },
   data: () => ({
+    mdiClose,
+    mdiInformationOutline,
     modeInfoPrefix: 'Special View',
     tooltipText: 'You are in a specific view which shows data for',
   }),

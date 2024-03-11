@@ -120,11 +120,11 @@
         <v-row v-if="modeData" no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
             <base-icon-button
-              isFlat
-              isSmall
+              flat
+              small
               color="transparent"
               :disabled="true"
-              :customIcon="modeEntryIcon"
+              :icon="modeEntryIcon"
             />
           </v-col>
         </v-row>
@@ -133,7 +133,7 @@
           <v-col class="cardIcons flex-grow-0">
             <base-icon-count-view
               :count="resourceAmount"
-              :icon-string="fileIconString"
+              :icon="fileIconString"
             />
           </v-col>
         </v-row>
@@ -168,18 +168,18 @@
 
           <v-col v-if="modeData" class="pl-1 flex-grow-0 cardIcons">
             <base-icon-button
-              isFlat
-              isSmall
+              flat
+              small
               color="transparent"
               :disabled="true"
-              :customIcon="modeEntryIcon"
+              :icon="modeEntryIcon"
             />
           </v-col>
 
           <v-col class="pl-3 flex-grow-0 cardIcons">
             <base-icon-count-view
               :count="resourceAmount"
-              :icon-string="fileIconString"
+              :icon="fileIconString"
             />
           </v-col>
 
@@ -198,12 +198,12 @@
       <v-row>
         <v-col cols="12">
           <base-icon-button
-            :materialIconName="openButtonIcon"
-            iconColor="black"
+            :icon="openButtonIcon"
+            icon-color="black"
             color="accent"
-            :isElevated="true"
-            :isSmall="true"
-            :tooltipText="openButtonTooltip"
+            elevated
+            small
+            :tooltip-text="openButtonTooltip"
             @clicked="$emit('openButtonClicked')"
           />
         </v-col>

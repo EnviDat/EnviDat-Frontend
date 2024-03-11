@@ -14,9 +14,7 @@
         :color="isActiveControl(LISTCONTROL_MAP_ACTIVE) ? 'secondary' : ''"
         variant='text'
       >
-        <BaseIcon
-          material-icon='map'
-          icon-color='#333' />
+        <BaseIcon :icon='mdiMap' color='grey-darken-3' />
       </v-btn>
     </v-btn-toggle>
 
@@ -35,9 +33,7 @@
         class="controlButton"
         :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
       >
-        <BaseIcon
-          material-icon='view_headline'
-          icon-color='#333' />
+        <BaseIcon :icon='mdiViewHeadline' color='grey-darken-3' />
       </v-btn>
 
       <v-btn
@@ -46,9 +42,7 @@
         class="controlButton"
         :color="isActiveControl(LISTCONTROL_COMPACT_LAYOUT_ACTIVE) ? 'secondary' : ''"
       >
-        <BaseIcon
-          material-icon='view_comfortable'
-          icon-color='#333' />
+        <BaseIcon :icon="mdiViewComfy" color="grey-darken-3" />
       </v-btn>
 
       <v-btn
@@ -57,9 +51,7 @@
         class="controlButton"
         :color="isActiveControl(3) ? 'highlight' : ''"
       >
-        <BaseIcon
-          material-icon='view_stream'
-          icon-color='#333' />
+        <BaseIcon :icon="mdiViewAgenda" color="grey-darken-3" />
       </v-btn>
     </v-btn-toggle>
   </v-row>
@@ -86,6 +78,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 
 import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
+import { mdiMap, mdiViewAgenda, mdiViewComfy, mdiViewHeadline } from '@mdi/js';
 
 export default {
   name: 'ListControlToggle',
@@ -97,6 +90,10 @@ export default {
     flat: Boolean,
   },
   data: () => ({
+    mdiMap,
+    mdiViewAgenda,
+    mdiViewComfy,
+    mdiViewHeadline,
     mapFilterActivateText: 'Activate Mapfiltering',
     mapFilterDeactivateText: 'Deactivate Mapfiltering',
     listViewActivate: 'List view',

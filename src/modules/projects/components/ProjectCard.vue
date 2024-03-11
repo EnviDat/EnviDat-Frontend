@@ -70,12 +70,12 @@
 
           <v-col class="py-0" cols="1">
             <base-icon-button
-              materialIconName="find_in_page"
+              :icon="mdiFileFind"
               color="transparent"
-              iconColor="secondary"
-              :tooltipText="`Open Subproject ${sub.title}`"
-              tooltipBottom
-              :isSmall="true"
+              icon-color="secondary"
+              :tooltip-text="`Open Subproject ${sub.title}`"
+              tooltip-bottom
+              small
               @clicked="subprojectClick(sub.name)"
             />
           </v-col>
@@ -101,6 +101,7 @@
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import { stripMarkdown } from '@/factories/stringFactory';
+import { mdiFileFind } from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
@@ -177,6 +178,7 @@ export default {
     },
   },
   data: () => ({
+    mdiFileFind,
     maxDescriptionLength: 290,
     maxTitleLength: 100,
     hovered: false,

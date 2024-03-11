@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.19.6",
-    "@mdi/font": "^5.8.55",
+    "@mdi/js": "^7.4.47",
     "@originjs/vite-plugin-require-context": "^1.0.9",
     "storybook": "^7.6.17",
     "@storybook/addon-essentials": "^7.6.17",

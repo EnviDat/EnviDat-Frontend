@@ -31,14 +31,15 @@
                class="py-0 px-sm-1 flex-grow-0"
                 id="shareSearchResult" >
 
-          <BaseIconButton style="opacity: 0.8;"
-                          materialIconName="share"
-                          iconColor="black"
-                          isSmall
-                          tooltipBottom
-                          tooltipText="Copy the url to this view to the clipboard to share it."
-                          @clicked="catchShareClick"
-                          />
+          <BaseIconButton
+            style="opacity: 0.8;"
+            :icon="mdiShareVariant"
+            iconColor="black"
+            small
+            tooltip-bottom
+            tooltip-text="Copy the url to this view to the clipboard to share it."
+            @clicked="catchShareClick"
+          />
 
         </v-col>
 
@@ -47,17 +48,16 @@
 
           <BaseIconSwitch :active="isAuthorSearch"
                           :tooltipText="`Author search is ${isAuthorSearch ? 'active' : 'inactive'}`"
-                          materialIconName="account_circle"
+                          :icon="mdiAccountCircle"
                           @clicked="catchAuthorSearchClick" />
 
         </v-col>
 
-        <v-col v-if="showSearch && mode === EDNA_MODE"
-               class="py-0 ml-sm-4 shrink">
+        <v-col v-if="showSearch && mode === EDNA_MODE" class="py-0 ml-sm-4 shrink">
 
           <BaseIconSwitch :active="isShallow"
                           :tooltipText="`Type of dataset is ${isShallow ? 'Shallow' : 'Real'}`"
-                          materialIconName="layers"
+                          :icon="mdiLayers"
                           @clicked="catchShallowRealClick" />
 
         </v-col>
@@ -93,6 +93,7 @@ import ListControlToggle from '@/components/Filtering/ListControlToggle.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseIconSwitch from '@/components/BaseElements/BaseIconSwitch.vue'
 import {EDNA_MODE} from '@/store/metadataMutationsConsts';
+import { mdiAccountCircle, mdiLayers, mdiShareVariant } from '@mdi/js';
 
 export default {
   name: 'ControlPanel',
@@ -161,6 +162,9 @@ export default {
   },
   data: () => ({
     EDNA_MODE,
+    mdiAccountCircle,
+    mdiLayers,
+    mdiShareVariant,
   }),
 };
 

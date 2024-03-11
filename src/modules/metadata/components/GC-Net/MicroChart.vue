@@ -150,22 +150,22 @@
             <v-col class="grow pt-1" style="align-self: flex-end;" cols="2">
               <v-row no-gutters justify="end" class="pb-2">
                 <BaseIconButton
-                  materialIconName="bar_chart"
+                  :icon="mdiChartBar"
                   color="accent"
-                  iconColor="black"
-                  isElevated
-                  tooltipText="Show measurement details"
+                  icon-color="black"
+                  elevated
+                  tooltip-text="Show measurement details"
                   @clicked="catchDetailClick(station.alias)"
                 />
               </v-row>
 
               <v-row v-if="downloadAllUrl" no-gutters justify="end">
                 <BaseIconButton
-                  materialIconName="file_download"
+                  :icon="mdiDownload"
                   color="accent"
-                  iconColor="black"
-                  isElevated
-                  tooltipText="Download station data"
+                  icon-color="black"
+                  elevated
+                  tooltip-text="Download station data"
                   @clicked="downloadData()"
                 />
               </v-row>
@@ -188,6 +188,7 @@ import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
 import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.vue';
 import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
+import { mdiChartBar, mdiDownload } from '@mdi/js';
 
 export default {
   name: 'MicroChart',
@@ -567,6 +568,8 @@ export default {
     },
   },
   data: () => ({
+    mdiChartBar,
+    mdiDownload,
     microChart: null,
     dataError: '',
     noDataText: 'No preview data available, click on the chart icon to see all data.',

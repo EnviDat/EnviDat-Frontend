@@ -19,13 +19,13 @@
       </v-row>
     </v-container>
 
-    <div v-if="clickCallback"
-         style="position: absolute; right: 8px;">
+    <div v-if="clickCallback" style="position: absolute; right: 8px;">
 
-      <BaseIconButton :overwriteHeight="32"
-                      :materialIconName="icon"
-                      :tooltipText="tooltipText"
-                      @clicked="clickCallback" />
+      <BaseIconButton
+        :icon="icon"
+        :tooltipText="tooltipText"
+        @clicked="clickCallback"
+      />
     </div>
 
 

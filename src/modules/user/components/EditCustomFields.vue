@@ -68,7 +68,7 @@
 
         <v-col class="flex-grow-0 px-1">
           <BaseIconButton
-            material-icon-name="clear"
+            :icon="mdiClose"
             icon-color="red"
             :disabled="index >= customFieldsProp.length - 1"
             @clicked="deleteEntry(index)"
@@ -118,10 +118,12 @@ import {
 } from '@/factories/userEditingValidations';
 
 import { isFieldReadOnly, readOnlyHint } from '@/factories/globalMethods';
+import { mdiClose } from '@mdi/js';
 
 export default {
   name: 'EditCustomFields',
   data: () => ({
+    mdiClose,
     maxCustomFieldsReached: false,
     labels: {
       cardTitle: 'Custom Fields',

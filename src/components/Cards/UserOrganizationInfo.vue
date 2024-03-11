@@ -40,7 +40,7 @@
 
         <div  class="textGrid mt-2 text-caption">
           <div>
-            <v-icon small>info</v-icon>
+            <v-icon small :icon="mdiInformation" />
           </div>
           <div v-html="markdownText"></div>
         </div>
@@ -63,6 +63,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import { mapState } from 'vuex';
+
+import {mdiInformation} from '@mdi/js';
 
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
 import UserAvatar from '@/components/Layouts/UserAvatar.vue';
@@ -157,6 +159,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiInformation,
     avatarHeight: 32,
     title: 'Organization Roles',
     noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',

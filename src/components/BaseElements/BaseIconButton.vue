@@ -1,113 +1,37 @@
 <template>
-  <div
-    @mouseover="hoverBadge = true"
-    @mouseleave="hoverBadge = false"
-  >
-<!--
-    <v-tooltip
-      v-if="$vuetify.display.mdAndUp && tooltipText"
-      v-bind="{ top: !tooltipBottom, bottom: tooltipBottom }"
-    >
-      <template v-slot:activator="{ props }">
-        <v-btn
-          v-bind="props"
-          :style="{
-            height: `${height}px`,
-            width: `${height}px`,
-          }"
-          :icon="materialIconName"
-          style="margin: 0 !important;"
-          variant="outlined"
-          density="comfortable"
-          :href="url"
-          :disabled="disabled"
-          :class="buttonClass"
-          v-bind="{ ['target']: '_blank' }"
-          @click.stop="onClick"
-        >
-
-&lt;!&ndash;
-
-          :style="{
-            height: `${height}px`,
-            width: `${height}px`,
-            backgroundColor: fillColor ? fillColor : '',
-          }"
-
-          :icon="!isElevated"
-          :fab="isElevated"
-          :small="(isSmall || isElevated) && !(isSmall && isElevated)"
-          :x-small="isSmall && isElevated"
-          :outlined="outlined"
-          :color="color ? color : disabled ? '' : 'primary'"
-&ndash;&gt;
-
-          <div v-if="customIcon">
-            <img
-              class="envidatIcon"
-              :alt="`${customIcon} icon`"
-              :src="customIcon"
-            />
-          </div>
-
-          <v-icon
-            v-if="materialIconName"
-            class="material-icons"
-            :color="iconColor ? iconColor : 'primary'"
-            :style="
-              rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''
-            "
-          >
-            {{ materialIconName }}
-          </v-icon>
-
-          <slot v-else> </slot>
-        </v-btn>
-      </template>
-
-      <span>{{ tooltipText }}</span>
-    </v-tooltip>
--->
+  <div class="baseIconButton">
     <v-btn
       style="margin: 0 !important;"
-      :elevation="isElevated ? 5 : 0"
+      :elevation="elevated ? 5 : undefined"
       icon
-      :variant="outlined ? 'outlined' : 'flat'"
+      :variant="outlined ? 'outlined' : 'text'"
       density="comfortable"
-      :color="dynamicButtonColor"
+      :size="large ? 'large' : small ? 'small' : undefined"
+      :color="color"
       :href="url"
-      :disabled="disabled"
       :class="buttonClass"
-      v-bind="{ ['target']: '_blank' }"
       @click.stop="onClick"
+      v-bind="$props"
     >
-      <div v-if="customIcon"
-           :style="`height: ${height}px; `"
-           class="iconCentering">
-        <img class="envidatIcon"
-              :alt="`${customIcon} icon`"
-              :src="customIcon"
-        />
-      </div>
-
-      <i v-if="materialIconName"
-         class='material-icons'
-         :style="`color: ${iconColor ? iconColor : $vuetify.theme.themes.light.colors.primary};
-                  transition: 0.3s all; ${rotateOnClick && rotateToggle ? 'transform: rotate(-180deg);' : ''};`"
-      >{{ materialIconName }}</i>
-
+      <base-icon 
+        :icon="icon"
+        :large="large"
+        :small="small"
+        :rotated="rotated"
+        :color="iconColor"
+      ></base-icon>
     </v-btn>
 
     <v-badge
       v-if="count > 0"
-      :overlap="!isSmall"
-      :left="isSmall"
-      :style="isSmall ? 'position: relative; bottom: 10px;' : ''"
+      :overlap="!small"
+      :left="small"
+      :style="small ? 'position: relative; bottom: 10px;' : ''"
       :content="count"
       color="highlight"
       :class="{ envidatBadgeBigNumber: count > 9, envidatBadge: count <= 9 }"
       @click.stop="onClick"
-      />
+    />
 
   </div>
 </template>
@@ -140,60 +64,33 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import BaseIcon from './BaseIcon.vue';
+
 export default {
   name: 'BaseIconButton',
+  components: {BaseIcon},
   props: {
-    fillColor: String,
-    customIcon: String,
-    materialIconName: String,
-    tooltipText: String,
-    tooltipBottom: Boolean,
-    color: String,
-    iconColor: String,
-    outlined: Boolean,
-    isSmall: Boolean,
-    rotateOnClick: Boolean,
-    rotateToggle: Boolean,
-    url: String,
-    isElevated: Boolean,
-    disabled: Boolean,
-    count: Number,
-    overwriteHeight: Number,
-    isFancy:Boolean,
-    isGlowing:Boolean,
+    color: { type: String, default: undefined },
+    tooltipText: { type: String, default: undefined },
+    tooltipBottom: { type: Boolean, default: false },
+    icon: { type: String, default: undefined, required: true },
+    iconColor: { type: String, default: undefined },
+    rotated: { type: Boolean, default: false },
+    url: { type: String, default: undefined },
+    elevated: { type: Boolean, default: false },
+    small: { type: Boolean, default: false },
+    large: { type: Boolean, default: false },
+    count: { type: Number, default: undefined },
+    outlined: {type: Boolean, default: undefined },
+    fancy: { type:Boolean, default: false },
+    glowing: { type:Boolean, default: false },
   },
-  data: () => ({
-    hoverBadge: false,
-  }),
   computed: {
-    dynamicButtonColor() {
-      if (this.color) {
-        return this.color;
-      }
-
-      return this.outlined ? 'primary' : 'transparent';
-    },
-    height() {
-      if (this.overwriteHeight) {
-        return this.overwriteHeight;
-      }
-
-      let height = 36;
-
-      if (this.isSmall) {
-        height = 28;
-      } else if (this.isElevated) {
-        height = 40;
-      }
-
-      return height;
-    },
     buttonClass() {
-      let classes = this.isFancy ? 'fancyButton' : '';
-
-      classes += this.isGlowing ? ' glowingButton' : '';
-
-      return classes;
+      return {
+        fancyButton: this.fancy,
+        glowingButton: this.glowing,
+      }
     },
   },
   methods: {
@@ -225,13 +122,13 @@ export default {
 }
 
 .glowingButton {
-  animation-name: glow;
+  animation-name: glowing;
   animation-duration: 2.5s;
   animation-iteration-count: infinite;
 }
 
-@keyframes glow {
-  from {
+@keyframes glowing {
+  0% {
     box-shadow: 0 0 10px 0 yellow;
   }
 
@@ -239,7 +136,7 @@ export default {
     box-shadow: 0 0 10px 10px yellow;
   }
 
-  to {
+  100% {
     box-shadow: 0 0 10px 0 yellow;
   }
 }

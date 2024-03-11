@@ -21,10 +21,9 @@
                class="flex-grow-0 pl-2">
           <BaseIconButton
             :disabled="!undoButtonEnabled"
-            materialIconName="undo"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.colors.accent"
-            tooltipText="Undo"
+            :icon="mdiUndo"
+            icon-color="black"
+            tooltip-text="Undo"
             @clicked="triggerGeomUndo"
           />
         </v-col>
@@ -34,10 +33,9 @@
           <BaseIconButton
             :disabled="!saveButtonEnabled"
             :loading="saveButtonInProgress"
-            materialIconName="save"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.colors.accent"
-            tooltipText="Save"
+            :icon="mdiContentSave"
+            icon-color="black"
+            tooltip-text="Save"
             @clicked="triggerGeomSave"
           />
         </v-col>
@@ -45,9 +43,8 @@
         <v-col class="flex-grow-0 pl-2">
           <BaseIconButton
             v-if="showFullscreenButton"
-            materialIconName="zoom_out_map"
-            iconColor="black"
-            :fillColor="$vuetify.theme.themes.light.colors.accent"
+            :icon="mdiArrowCollapseAll"
+            icon-color="black"
             @clicked="triggerFullscreen"
           />
         </v-col>
@@ -97,6 +94,7 @@ import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.v
 import { eventBus, INJECT_MAP_FULLSCREEN } from '@/factories/eventBus';
 import { METADATA_LOCATION_TITLE } from '@/factories/metadataConsts';
 import MapRoot from '@/modules/metadata/components/Geoservices/MapRoot.vue';
+import { mdiArrowCollapseAll, mdiContentSave, mdiUndo } from '@mdi/js';
 
 export default {
   name: 'MetadataGeo',
@@ -165,6 +163,9 @@ export default {
     },
   },
   data: () => ({
+    mdiArrowCollapseAll,
+    mdiContentSave,
+    mdiUndo,
     ready: false,
     map: null,
     smallSize: 300,
