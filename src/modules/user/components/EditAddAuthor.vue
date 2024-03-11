@@ -206,13 +206,13 @@
 
       <v-row v-if="isEditingAuthor" >
         <v-col>
-          <BaseRectangleButton material-icon-name="clear"
-                                icon-color="white"
-                                color="error"
+          <BaseRectangleButton :icon="mdiClose"
+                               icon-color="white"
+                               color="error"
                                :disabled="isReadOnly('authors')"
-                                button-text="Remove Author"
-                                tooltip-text="Remove this author from the dataset"
-                                @clicked="removeAuthorClick(email)"/>
+                               button-text="Remove Author"
+                               tooltip-text="Remove this author from the dataset"
+                               @clicked="removeAuthorClick(email)"/>
 
         </v-col>
       </v-row>

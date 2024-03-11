@@ -157,11 +157,7 @@
 
             <v-row no-gutters >
               <v-col class="shrink pt-2">
-                <img class="customIcon"
-                    :src="fileFormatIcon"
-                    width="24"
-                    height="24"
-                    alt="file extension icon" />
+                <BaseIcon :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-2">
@@ -186,11 +182,7 @@
 
             <v-row no-gutters >
               <v-col class="shrink pt-2">
-                <img class="customIcon"
-                    :src="fileSizeIcon"
-                    width="24"
-                    height="24"
-                    alt="file size icon" />
+                <BaseIcon :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-2" >
@@ -269,7 +261,7 @@
           <BaseIconSwitch
             :active="isDataPrivate"
             :disabled="!editingRestrictingActive"
-            materialIconName="lock"
+            :icon="mdiLock"
             class="mt-2"
             :tooltipText="labels.dataAccessSwitchTooltip"
             @clicked="isDataPrivate = !isDataPrivate"
@@ -280,7 +272,7 @@
             v-if="isDataPrivate"
             :active="hasAllowedUsers"
             :disabled="!editingRestrictingActive"
-            materialIconName="groups"
+            :icon="mdiAccount"
             class="mt-2"
             :tooltipText="labels.hasAllowedUsersSwitchTooltip"
             @clicked="hasAllowedUsers = !hasAllowedUsers"
@@ -371,6 +363,8 @@ import {
   ACCESS_LEVEL_SAMEORGANIZATION_VALUE,
   ACCESS_LEVEL_PUBLIC_VALUE,
 } from '@/factories/userEditingFactory';
+import { mdiAccount, mdiLock } from '@mdi/js';
+import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 
 
 export default {
@@ -830,6 +824,8 @@ export default {
     },
   },
   data: () => ({
+    mdiAccount,
+    mdiLock,
     previews: {
       name: null,
       description: null,
@@ -883,7 +879,9 @@ export default {
     BaseRectangleButton,
     BaseIconButton,
     BaseIconSwitch,
-  },
+    BaseIcon,
+    BaseIcon
+},
 };
 </script>
 

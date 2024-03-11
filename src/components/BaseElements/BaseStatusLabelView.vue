@@ -41,7 +41,7 @@
       <v-col v-show="showExpandIcon"
              class="flex-grow-0">
         <BaseIconButton
-          materialIconName="arrow_drop_down"
+          :icon="mdiArrowDownDropCircle"
           iconColor="primary"
           small
           :rotated="expanded"
@@ -78,6 +78,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiArrowDownDropCircle } from '@mdi/js';
 
 export default {
   name: 'BaseStatusLabelView',
@@ -100,6 +101,7 @@ export default {
     },
   },
   data: () => ({
+    mdiArrowDownDropCircle,
     expanded: false,
   }),
   components: {

@@ -20,10 +20,7 @@
         @click.stop="onClick"
       >
 
-        <BaseIcon :materialIcon="materialIconName"
-                  :customIcon="customIcon"
-                  class='mr-1'
-                  />
+        <BaseIcon :icon="icon" class='mr-1'/>
 
         {{ buttonText }}
       </v-btn>
@@ -61,8 +58,7 @@ import BaseIcon from '@/components/BaseElements/BaseIcon.vue';
 export default {
   name: 'BaseRectangleButton',
   props: {
-    customIcon: String,
-    materialIconName: String,
+    icon: String,
     buttonText: String,
     tooltipText: String,
     isOutlined: Boolean,

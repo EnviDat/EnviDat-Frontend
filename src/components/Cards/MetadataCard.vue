@@ -133,7 +133,7 @@
           <v-col class="cardIcons flex-grow-0">
             <base-icon-count-view
               :count="resourceAmount"
-              :icon-string="fileIconString"
+              :icon="fileIconString"
             />
           </v-col>
         </v-row>
@@ -179,7 +179,7 @@
           <v-col class="pl-3 flex-grow-0 cardIcons">
             <base-icon-count-view
               :count="resourceAmount"
-              :icon-string="fileIconString"
+              :icon="fileIconString"
             />
           </v-col>
 

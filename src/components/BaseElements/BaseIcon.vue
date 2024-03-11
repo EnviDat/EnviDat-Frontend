@@ -12,7 +12,7 @@
       v-else
       :size="large ? 'x-large' : small ? 'small' : undefined"
       :style="iconStyle"
-      :color="iconColor"
+      :color="color"
       :icon="icon"
     />
   </div>

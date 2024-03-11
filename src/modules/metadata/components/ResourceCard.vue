@@ -63,14 +63,14 @@
             <base-icon-label-view
               v-if="isProtected"
               text="This resource is private"
-              material-icon-name="lock"
+              :icon="mdiLock"
               dark
             />
 
             <base-icon-label-view
               v-if="doi"
               :text="doi"
-              material-icon-name="fingerprint"
+              :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
               dark
               class="mb-1"
@@ -88,7 +88,7 @@
             <base-icon-label-view
               v-if="created"
               :text="readableCreated"
-              material-icon-name="more_time"
+              :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
               dark
               class="mb-1"
@@ -97,7 +97,7 @@
             <base-icon-label-view
               v-if="lastModified"
               :text="readableLastModified"
-              material-icon-name="update"
+              :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
               dark
               class="mb-1"
@@ -172,14 +172,7 @@
             class="fabMenu fabPosition elevation-5 ma-2 pl-2 pt-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'"
           >
-            <v-icon
-              class="pl-1 pt-1 material-icons"
-              :class="downloadActive ? 'iconCircle' : ''"
-              :disabled="!downloadActive"
-              >
-              shield
-            </v-icon>
-
+            <BaseIcon class="pl-1 pt-1" :icon="mdiShield"></BaseIcon>
             <div
               v-if="downloadActive"
               class="pt-2 lockedText black--text protectedLink"
@@ -212,7 +205,7 @@ import { renderMarkdown,stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
-import { mdiChevronDown, mdiDownload, mdiLink } from '@mdi/js';
+import { mdiChevronDown, mdiDownload, mdiFingerprint, mdiLink, mdiLock, mdiShield, mdiTimerPlusOutline, mdiUpdate } from '@mdi/js';
 
 export default {
   name: 'ResourceCard',
@@ -269,9 +262,14 @@ export default {
     loading: Boolean,
   },
   data: () => ({
+    mdiShield,
     mdiChevronDown,
     mdiDownload,
     mdiLink,
+    mdiFingerprint,
+    mdiLock,
+    mdiTimerPlusOutline,
+    mdiUpdate,
     maxDescriptionLength: 175,
     showFullDescription: false,
     audioFormats: ['mp3', 'wav', 'wma', 'ogg'],

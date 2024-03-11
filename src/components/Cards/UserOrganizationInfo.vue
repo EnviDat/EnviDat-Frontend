@@ -159,6 +159,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiInformation,
     avatarHeight: 32,
     title: 'Organization Roles',
     noOrganizationText: 'If you are an employee of WSL or affiliated with WSL, please contact <a href="mailto:envidat@wsl.ch">envidat@wsl.ch</a> to receive editing rights for publishing datasets.',

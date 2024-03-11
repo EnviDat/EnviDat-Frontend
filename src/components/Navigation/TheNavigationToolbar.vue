@@ -182,6 +182,8 @@ export default {
     },
   },
   data: () => ({
+    mdiAccountCircleOutline,
+    mdiPencil,
     EnviDatLogo,
     logoText: 'EnviDat',
     expanded: false,

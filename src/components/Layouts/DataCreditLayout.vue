@@ -37,8 +37,8 @@
             <template v-slot:activator="{ props }">
               <BaseIcon v-bind="props"
                         class="pa-1"
-                        :materialIcon="iconLookup(creditName)"
-                        :iconColor="iconColor"
+                        :icon="iconLookup(creditName)"
+                        :color="iconColor"
               />
             </template >
 

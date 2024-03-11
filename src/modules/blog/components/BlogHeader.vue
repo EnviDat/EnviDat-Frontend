@@ -7,7 +7,7 @@
       class="blogHeaderCloseButton ma-2"
       :class="{ 'mx-1' : $vuetify.display.smAndDown }"
       style="position: absolute; top: 0; right: 0; z-index: 2;"
-      material-icon-name="close"
+      :icon="mdiClose"
       icon-color="white"
       isElevated
       tooltipText="Close post and return to blog overview"
@@ -38,9 +38,13 @@
 
 import ImgAndTextLayout from '@/components/Layouts/ImgAndTextLayout.vue';
 import BaseIconButton from '@/components/BaseElements/BaseIconButton.vue';
+import { mdiClose } from '@mdi/js';
 
 export default {
   name: 'BlogHeader',
+  data: ()=>({
+    mdiClose,
+  }),
   props: {
     title: String,
     titleImage: String,

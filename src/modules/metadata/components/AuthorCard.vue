@@ -23,11 +23,12 @@
 
           <v-tooltip bottom>
             <template v-slot:activator="{ on, props }">
-              <BaseIcon v-on="on"
-                        v-bind="props"
-                        materialIcon="hourglass_bottom"
-                        small
-                        class='pr-2'
+              <BaseIcon 
+                v-on="on"
+                v-bind="props"
+                :icon="mdiTimerSandComplete"
+                small
+                class='pr-2'
               />
             </template>
 
@@ -105,7 +106,7 @@
               <BaseIcon v-on="on"
                         v-bind="props"
                         :class="dark ? 'white--text' : 'black--text'"
-                        materialIcon="info_outline"
+                        :icon="mdiInformationOutline"
                         small
               />
             </template>
@@ -284,7 +285,7 @@ import {
   getLevelProgress,
   getDataCreditLevel, getAuthorName,
 } from '@/factories/authorFactory';
-import { mdiChevronDown, mdiChevronLeft, mdiMagnify } from '@mdi/js';
+import { mdiChevronDown, mdiChevronLeft, mdiInformationOutline, mdiMagnify, mdiTimerSandComplete } from '@mdi/js';
 
 // checkout skeleton
 // https://github.com/ToxicJojo/SkeletonPlaceholder
@@ -481,6 +482,8 @@ export default {
     },
   },
   data: () => ({
+    mdiInformationOutline,
+    mdiTimerSandComplete,
     mdiChevronDown,
     mdiChevronLeft,
     mdiMagnify,

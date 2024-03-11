@@ -22,6 +22,11 @@ export default {
     },
   },
   theme: {
+    variations: {
+      colors: ['primary', 'secondary'],
+      lighten: 2,
+      darken: 2,
+    },
     themes: {
       light: { colors },
     },

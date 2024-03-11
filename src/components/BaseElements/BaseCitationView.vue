@@ -97,6 +97,8 @@ export default {
   computed: {
   },
   data: () => ({
+    mdiInformationOutline,
+    mdiFingerprint,
   }),
   components: {
     BaseIcon,

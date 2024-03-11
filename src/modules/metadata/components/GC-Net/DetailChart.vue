@@ -52,7 +52,7 @@
             <v-col class="flex-grow-0 pt-3">
               <BaseRectangleButton
                 buttonText="Load historical data"
-                materialIconName="refresh"
+                :icon="mdiRefresh"
                 @clicked="
                   preloading = true;
                   intersected = true;
@@ -94,6 +94,7 @@ import {
   defaultSeriesSettings,
   hasData,
 } from '@/factories/chartFactory';
+import { mdiRefresh } from '@mdi/js';
 
 /* eslint-disable no-tabs */
 
@@ -348,6 +349,7 @@ export default {
   },
   data() {
     return {
+      mdiRefresh,
       dateFormat: 'MMM dd, YYYY HH:mm UTC',
       dateFormatNoTime: 'MMM dd, YYYY',
       detailChart: null,

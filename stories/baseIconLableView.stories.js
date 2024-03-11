@@ -10,33 +10,28 @@
  */
 
 import BaseIconLabelView from '@/components/BaseElements/BaseIconLabelView.vue';
-import fileIcon from '../src/assets/icons/fileAudio.png';
-
 
 export default {
   title: '1 Base Elements / Labels Collection',
-  decorators: [],
-  parameters: {},
+  component: BaseIconLabelView,
 };
 
 export const DifferentLabelsView = () => ({
   components: { BaseIconLabelView },
   template: `
-    <v-row style="border: solid 1px;">
+    <v-row>
 
       <v-col cols="12">
-        <p>hover over the icon label for a description of the properties used</p>
+        <v-alert type="info">Hover over the icon label for a description of the properties used</v-alert>
       </v-col>
 
       <v-col cols="4">
         <base-icon-label-view iconTooltip="icon label view with label & text"
-                              label="label text: "
                               text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view iconTooltip="icon label view with alignLeft, label & text"
-                              label="label text: "
+        <base-icon-label-view iconTooltip="icon label view with alignLeft"
                               text="somefilename.mp4"
                               alignLeft
                               />
@@ -51,7 +46,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with bold, icon, label & text"
                               label="label text: "
                               text="somefilename.mp4"
@@ -59,7 +54,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with alignLeft, icon, label & text"
                               label="label text: "
                               text="somefilelongerfilename.mp4"
@@ -67,7 +62,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view without text & usePlaceholder, alignLeft, icon, label"
                               label="label text: "
                               alignLeft
@@ -75,7 +70,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with wordBreak, icon, label & text"
                               label="label text: "
                               text="somefilename.mp4"
@@ -83,7 +78,7 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with compactLayout, icon, label & text"
                               label="label text: "
                               text="somefilename.mp4"
@@ -91,13 +86,13 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with icon, text & without label text"
                               text="somefilename.mp4" />
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="icon label view with compactLayout, alignLeft, icon, text & without label text"
                               text="somefilename.mp4"
                               alignLeft
@@ -105,15 +100,10 @@ export const DifferentLabelsView = () => ({
       </v-col>
 
       <v-col cols="4">
-        <base-icon-label-view :icon="fileIcon"
+        <base-icon-label-view icon="fileAudio"
                               iconTooltip="Url test with wsl link"
                               url="https://www.wsl.ch" />
       </v-col>
 
-    </v-row>
-          `,
-  // methods,
-  data: () => ({
-    fileIcon,
-  }),
+    </v-row>`,
 });

@@ -77,7 +77,7 @@
 
               <BaseRectangleButton id='interactiveButton'
                                    :button-text="currentStateInfos.buttonText"
-                                   :material-icon-name="currentStateInfos.buttonIcon"
+                                   :icon="currentStateInfos.buttonIcon"
                                    icon-color="white"
                                    :loading="loading"
                                    :url="publicationState === PUBLICATION_STATE_PUBLISHED ? doiUrl : undefined"
@@ -263,6 +263,7 @@
       },
     },
     data: () => ({
+      mdiArrowUp,
       possiblePublicationStates,
       stateTextMapEditor: new Map([
         [PUBLICATION_STATE_DRAFT, {

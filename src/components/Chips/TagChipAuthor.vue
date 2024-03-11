@@ -70,6 +70,10 @@ export default {
       default: undefined,
     },
   },
+  data: ()=>({
+    mdiTimerSand,
+    mdiAccountCircle,
+  }),
   computed: {
     authorIsDead() {
       return this.asciiDead && this.name ? this.name.includes(this.asciiDead) : false;

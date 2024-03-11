@@ -128,6 +128,7 @@ export default {
   },
   methods: {},
   data: () => ({
+    mdiFileFindOutline,
     window: 0,
   }),
 };

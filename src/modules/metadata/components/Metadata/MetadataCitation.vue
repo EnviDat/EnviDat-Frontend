@@ -27,7 +27,7 @@
                                     color="secondary"
                                     :button-text="link.text"
                                     :tooltipText="link.tooltipText"
-                                    material-icon-name="assignment"
+                                    :icon="mdiClipboardText"
                                     :is-small="true"
                                     icon-color="white"
                                     :url="link.url" />
@@ -38,7 +38,7 @@
                                    color="secondary"
                                    button-text="Copy"
                                    tooltipText="Copy citation text to your clipboard"
-                                   material-icon-name="content_copy"
+                                   :icon="mdiContentCopy"
                                    :is-small="true"
                                    icon-color="white"
                                    @clicked="catchClipboardCopy"
@@ -98,6 +98,7 @@ import {
 } from '@/factories/stringFactory';
 import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 import { METADATA_CITATION_TITLE } from '@/factories/metadataConsts';
+import { mdiClipboard, mdiClipboardText, mdiContentCopy } from '@mdi/js';
 
 export default {
   name: 'MetadataCitation',
@@ -110,6 +111,9 @@ export default {
   },
   data: () => ({
     METADATA_CITATION_TITLE,
+    mdiClipboard,
+    mdiClipboardText,
+    mdiContentCopy,
   }),
   computed: {
     markdownText() {

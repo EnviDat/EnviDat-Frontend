@@ -13,7 +13,7 @@
                 class="flex-grow-0 resourcesIcons" >
           <base-icon-count-view :count="resources.length"
                                 tooltip-text="Amount of Resources"
-                                materialIconName="insert_drive_file" />
+                                :icon="mdiFile" />
         </v-col>
       </v-row>
     </v-card-title>
@@ -23,7 +23,7 @@
              align="center">
         <v-col class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
-                             materialIconName="policy"
+                             :icon="mdiShieldSearch"
                              :text="dataLicenseTitle"
                              :url="dataLicenseUrl"
                              />
@@ -150,6 +150,7 @@ import {
 } from '@/factories/eventBus';
 
 import { dataLicenses, WSL_DATA_LICENSE_ID } from '@/factories/dataLicense';
+import { mdiFile, mdiShieldSearch } from '@mdi/js';
 
 export default {
   name: 'MetadataResources',
@@ -245,6 +246,8 @@ export default {
     },
   },
   data: () => ({
+    mdiFile,
+    mdiShieldSearch,
     injectedComponent: null,
     injectAtStart: true,
     injectedComponentConfig: null,

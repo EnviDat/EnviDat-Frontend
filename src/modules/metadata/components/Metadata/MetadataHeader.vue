@@ -172,13 +172,9 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ props }">
 
-                  <v-row no-gutters
-                        v-bind="props"
-                        align="center">
+                  <v-row no-gutters align="center" v-bind="props">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">manage_accounts</v-icon>
+                      <BaseIcon :icon="mdiAccountCog" :small="$vuetify.display.xs" color="black"></BaseIcon>
                     </v-col>
                     <v-col>
                       {{ contactName }}
@@ -202,9 +198,7 @@
                         v-bind="props"
                       align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">fingerprint</v-icon>
+                      <BaseIcon color="black" :icon="mdiFingerprint" :small="$vuetify.display.xs"></BaseIcon>
                     </v-col>
                     <v-col>
                       <a :href="doiUrl" target="_blank">{{ doi }}</a>
@@ -231,9 +225,7 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">more_time</v-icon>
+                      <BaseIcon color="black" :icon="mdiClockPlusOutline" :small="$vuetify.display.xs"></BaseIcon>
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ created }}
@@ -258,9 +250,7 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">location_pin</v-icon>
+                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMapMarker"></BaseIcon>
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ spatialInfo }}
@@ -289,9 +279,7 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">email</v-icon>
+                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiMail"></BaseIcon>
                     </v-col>
                     <v-col>
                       <a :href="contactEmailLowerCase ? `mailto:${contactEmailLowerCase}` : ''" target="_blank">{{ contactEmailLowerCase }}</a>
@@ -321,9 +309,7 @@
                         v-bind="props"
                         align="center">
                     <v-col class="flex-grow-0 pr-2">
-                      <v-icon class="envidatIcon material-icons"
-                              :class="$vuetify.display.xs ? 'small' : ''"
-                              color="black">update</v-icon>
+                      <BaseIcon color="black" :small="$vuetify.display.xs" :icon="mdiUpdate"></BaseIcon>
                     </v-col>
                     <v-col style="font-size: 0.9rem;">
                       {{ modified }}
@@ -466,7 +452,7 @@ import { getAuthorName, getAuthorGivenName, getAuthorLastName } from '@/factorie
 import TagChipAuthor from '@/components/Chips/TagChipAuthor.vue';
 import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChip.vue';
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
-import { mdiClose } from '@mdi/js';
+import { mdiClose, mdiMail, mdiMapMarker } from '@mdi/js';
 
 export default {
   name: 'MetadataHeader',
@@ -531,6 +517,8 @@ export default {
   },
   data: () => ({
     mdiClose,
+    mdiMail,
+    mdiMapMarker,
     showTagsExpanded: false,
     dark: false,
     blackTopToBottom: 'rgba(80,80,80, 0.1) 0%, rgba(80,80,80, 0.9) 70%',
