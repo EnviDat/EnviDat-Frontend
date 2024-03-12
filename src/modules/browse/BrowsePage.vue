@@ -430,31 +430,6 @@ export default {
 
       return this.isAuthorSearch ? this.authorSearchPlaceholderText : this.searchPlaceholderText;
     },
-    // keywordsPlaceholder() {
-    //   return this.searchingMetadatasContent || this.updatingTags;
-    // },
-    searchMetadatasContentSize() {
-      return this.searchedMetadatasContent !== undefined ? Object.keys(this.searchedMetadatasContent).length : 0;
-    },
-    mapFilterHeight() {
-      const sHeight = document.documentElement.clientHeight;
-
-      let height = this.maxMapFilterHeight;
-
-      if (sHeight < this.maxMapFilterHeight) {
-        height = sHeight - 165;
-      }
-
-      return height;
-    },
-    metadataListStyling() {
-      return {
-        xs8: this.mapFilteringPossible && this.showMapFilter,
-        xs12: this.mapFilteringPossible && !this.showMapFilter,
-        'mt-2': !this.showMapFilter,
-        // style: this.showMapFilter ? `margin-top: -${this.mapFilterHeight}px;` : '',
-      };
-    },
     mapFilteringPossible() {
       return this.$vuetify.breakpoint.smAndUp;
     },
@@ -512,12 +487,6 @@ export default {
     },
   },
   watch: {
-    async metadatasContent() {
-      if (this.mode) {
-        await this.loadModeDatasets();
-        await this.filterContent();
-      }
-    },
     /* eslint-disable no-unused-vars */
     $route: async function watchRouteChanges(to, from) {
       // react on changes of the route (browser back / forward click)
