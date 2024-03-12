@@ -23,7 +23,7 @@ variables:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - /cache/${$CI_PROJECT_DIR}/.npm/
+        - '/cache/${$CI_PROJECT_DIR}/.npm/'
       policy: pull
 
 .trigger-rules:
@@ -125,7 +125,7 @@ install-node:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - /cache/${$CI_PROJECT_DIR}/.npm/
+        - '/cache/${$CI_PROJECT_DIR}/.npm/'
       when: on_success
       policy: pull-push
       untracked: true
