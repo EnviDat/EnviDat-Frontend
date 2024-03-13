@@ -90,7 +90,7 @@ modify-env:
       dotenv.set_key(file, key, value, quote_mode='never')
 
       key = 'VITE_API_ROOT'
-      value = f'https://{branch}.envidat.ch'
+      value = f'http://{branch}.envidat.ch'
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
