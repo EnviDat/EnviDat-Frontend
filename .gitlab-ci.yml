@@ -84,7 +84,7 @@ modify-env:
       branch = os.getenv('CI_COMMIT_REF_NAME')
 
       key = 'VITE_DOMAIN'
-      value = f'https://{branch}.envidat.ch'
+      value = f'http://{branch}.envidat.ch'
       if branch == 'main' or branch == 'beta':
           value = 'https://envidat.ch'
       dotenv.set_key(file, key, value, quote_mode='never')
