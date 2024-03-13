@@ -11,7 +11,7 @@ stages:
 variables:
   ARTIFACT_COMPRESSION_LEVEL: "fast"
   CACHE_COMPRESSION_LEVEL: "fast"
-  # npm_config_cache: '$CI_PROJECT_DIR/.npm/'
+  npm_config_cache: '$CI_PROJECT_DIR/.npm/'
 
 
 # defined a template for the jobs with node, instead of defining a global cache for all jobs
@@ -23,7 +23,7 @@ variables:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - '/cache/.npm/'
+        - '.npm/'
       policy: pull
 
 .trigger-rules:
@@ -125,14 +125,14 @@ install-node:
           - package-lock.json
         prefix: "package-lock"
       paths:
-        - '/cache/.npm/'
+        - '.npm/'
       when: on_success
       policy: pull-push
       untracked: true
   script:
 #    - echo "the cache work if node_modules and .npm/ folders are available"
 #    - ls -a
-    - npm config set cache /cache/.npm/
+    - npm config set cache .npm/
 #    - npm cache verify
     - npm ci --prefer-offline --no-audit
 #    - echo "Check afterwards how the folders are"
