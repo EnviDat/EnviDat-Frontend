@@ -93,7 +93,7 @@ export default {
         this.$emit('itemClick', item);
       }
     },
-  },,
+  },
 };
 </script>
 

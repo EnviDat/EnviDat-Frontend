@@ -4,13 +4,12 @@ import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 
 import { defineConfig, loadEnv } from 'vite';
-import { configDefaults } from 'vitest/dist/config.cjs';
+import { configDefaults } from 'vitest/dist/config';
 import eslint from 'vite-plugin-eslint';
-import ViteRequireContext from '@originjs/vite-plugin-require-context';
 import Unfonts from 'unplugin-fonts/vite'
 import { visualizer } from 'rollup-plugin-visualizer';
 
-import { getFilesWithPrefix } from '@/factories/enhancementsFactoryNode';
+import { getFilesWithPrefix } from './src/factories/enhancementsFactoryNode';
 
 const version = process.env.npm_package_version;
 
@@ -62,7 +61,6 @@ export default ({ mode }) => {
             vuetify({
               autoImport: true,
             }),
-            ViteRequireContext(),
             Unfonts({
               google: {
                 families: [

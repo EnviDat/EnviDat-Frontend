@@ -181,6 +181,7 @@ export default {
           return webpImg;
         }
 
+        // eslint-disable-next-line no-console
         console.warn(`Wanted to get ${imageKey}, but didn't find it`);
       }
 

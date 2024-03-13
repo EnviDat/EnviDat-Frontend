@@ -147,6 +147,7 @@ export function getTagsMergedWithExtras(mode, tags, modeData = undefined) {
     const modeObj = modeData || getModeData(mode);
     return mergedExtraTags(modeObj, tags);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     return null;
   }
@@ -170,6 +171,7 @@ export function getSelectedTagsMergedWithHidden(mode, selectedTagNames) {
     const modeObj = getModeData(mode);
     return mergedHiddenFilters(modeObj, selectedTagNames);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error(e);
     return null;
   }

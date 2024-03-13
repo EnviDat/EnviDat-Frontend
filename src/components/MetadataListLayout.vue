@@ -29,7 +29,7 @@
       <v-col class="py-0 pl-2" cols="8">
         <v-row ref="controlPanel">
           <v-col
-            class="hidden-xs-only"
+            class="hidden-xs"
             id="controlPanel"
             key="controlPanel"
             cols="12"
@@ -78,7 +78,7 @@
         <slot name="filterKeywords" />
       </v-col>
 
-      <v-col class="hidden-xs-only pb-2" cols="12" key="controlPanel">
+      <v-col class="hidden-xs pb-2" cols="12" key="controlPanel">
         <slot name="controlPanel" />
       </v-col>
 

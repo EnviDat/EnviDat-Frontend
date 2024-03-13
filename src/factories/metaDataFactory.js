@@ -289,6 +289,7 @@ export function createCitation(dataset) {
     try {
       publication = JSON.parse(publication);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error(e);
     }
   }

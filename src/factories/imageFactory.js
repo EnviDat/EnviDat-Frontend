@@ -1,6 +1,6 @@
-import {checkIsFileAudio, checkIsFileVideo, getExtensionlessPath, getFileBaseName, getFileExtension} from './fileFactory';
+import {checkIsFileAudio, checkIsFileVideo, getExtensionlessPath, getFileExtension} from './fileFactory';
 
-export const imageUrlMap = import.meta.glob('@/assets/**/*.{png,jpg,jpeg,webp,WEBP,PNG,JPEG,JPG}',  { eager: true, as: 'url' });
+export const imageUrlMap = import.meta.glob('@/assets/**/*.{png,jpg,jpeg,webp,WEBP,PNG,JPEG,JPG}',  { eager: true, query: '?url', import: 'default' });
 
 /** @private */
 let isWebpSupported;

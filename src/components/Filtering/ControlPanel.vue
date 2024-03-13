@@ -62,7 +62,7 @@
 
         </v-col>
 
-        <v-col class="hidden-xs-only py-0 fill-height" >
+        <v-col class="hidden-xs py-0 fill-height" >
           <list-control-toggle :style="`height: ${controlsHeight};`"
                                 :controls="controlsActive"
                                 :enabledControls="enabledControls"
