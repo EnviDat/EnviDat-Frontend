@@ -66,7 +66,7 @@ export default {
   width: 24px; // Based on the v-icon size
   display: flex;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   position: relative;
 
   .baseIconCustomIcon {

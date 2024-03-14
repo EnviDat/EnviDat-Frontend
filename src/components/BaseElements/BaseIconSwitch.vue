@@ -121,6 +121,12 @@ $slide-duration: 0.2s;
       box-shadow: $button-shadow;
       background-color: #FFF;
       transition: none;
+      display: grid;
+
+      .baseIcon {
+        justify-self: center;
+        align-self: center;
+      }
 
       &:hover {
         box-shadow: $button-shadow, 0 0 0 4px rgba(33, 33, 33, 0.2);

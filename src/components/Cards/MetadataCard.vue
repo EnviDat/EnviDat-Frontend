@@ -1,16 +1,9 @@
 <template>
   <v-card @mouseover="hover = true" @mouseleave="hover = false" :dark="false" @click.native="cardClick">
-    <!-- <v-card-title primary-title class="pa-0"> -->
-
     <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col>
-          <v-img :style="headerImageStyle" :height="flatLayout
-            ? '55px'
-            : $vuetify.display.smAndDown
-              ? '90px'
-              : '115px'
-            ">
+          <div role="img" :style="headerImageStyle">
             <div v-if="!maxTitleLengthReached || $vuetify.display.xs" class="pa-4 metadataTitle mb-0" :class="titleClass">
               {{ truncatedTitle }}
             </div>
@@ -24,7 +17,7 @@
 
               <span>{{ title }}</span>
             </v-tooltip>
-          </v-img>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -248,6 +241,7 @@ export default {
 
       return {
         'border-radius': this.showCardBody ? '4px 4px 0 0' : '4px',
+        'height': this.flatLayout ? '55px' : '115px',
 
         // Has image
         'background-image': hasImage ? `linear-gradient(0deg, ${gradient}), url(${this.titleImg})` : undefined,
@@ -422,10 +416,7 @@ export default {
   },
   data: () => ({
     hover: false,
-    singleLineCss:
-      'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;',
     show: false,
-    showDataText: 'SHOW DATA',
     titleLength: 100,
     compactTitleLength: 115,
     flatTitleLength: 120,
