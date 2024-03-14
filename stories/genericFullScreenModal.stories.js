@@ -9,7 +9,6 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-// eslint-disable-next-line import/extensions
 import GenericFullScreenModal from '@/components/Layouts/GenericFullScreenModal.vue';
 import {
   eventBus,

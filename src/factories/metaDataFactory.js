@@ -164,7 +164,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     try {
       maintainer = JSON.parse(dataset.maintainer);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Maintainer json parse err: ${e}`);
     }
   }
@@ -177,7 +176,6 @@ export function createHeader(dataset, smallScreen, authorDeadInfo = null) {
     try {
       authors = JSON.parse(dataset.author);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Author json parse err: ${e}`);
     }
   } else if (dataset.author instanceof Array) {
@@ -265,7 +263,6 @@ export function createFunding(dataset) {
 
       return funding;
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`Error JSON Parse of Funding: ${e}`);
     }
   }
@@ -289,7 +286,6 @@ export function createCitation(dataset) {
     try {
       publication = JSON.parse(publication);
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e);
     }
   }
@@ -782,7 +778,6 @@ export function createLocation(dataset) {
       try {
         spatialJSON = JSON.parse(dataset.spatial);
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error(`MetaDataFactory: geojson parsing error ${error}`);
       }
     }

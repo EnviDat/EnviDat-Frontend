@@ -1,21 +1,9 @@
 <template>
-  <v-card id="EditResource"
-          :key="id"
-          :loading="loadingColor"
-          class="pa-0">
+  <v-card id="EditResource" :key="id" :loading="loadingColor" class="pa-0">
 
-    <BaseIconButton 
-      class="editResourceCloseButton ma-2"
-      :class="{ 'mx-1': $vuetify.display.smAndDown }"
-      style="position: absolute; top: 0; right: 0; z-index: 2"
-      :icon="mdiClose"
-      icon-color="primary"
-      color="primary"
-      outlined
-      tooltip-text="Cancel Resource Editing"
-      tooltip-bottom
-      @clicked="$emit('closeClicked')"
-    />
+    <BaseIconButton class="editResourceCloseButton ma-2" :class="{ 'mx-1': $vuetify.display.smAndDown }"
+      style="position: absolute; top: 0; right: 0; z-index: 2" :icon="mdiClose" icon-color="primary" color="primary"
+      outlined tooltip-text="Cancel Resource Editing" tooltip-bottom @clicked="$emit('closeClicked')" />
 
 
     <div class="pa-3">
@@ -27,21 +15,12 @@
         </v-col>
 
         <v-col v-if="message">
-          <BaseStatusLabelView
-              statusIcon="check"
-              statusColor="success"
-              :statusText="message"
-              :expandedText="messageDetails"
-          />
+          <BaseStatusLabelView statusIcon="check" statusColor="success" :statusText="message"
+            :expandedText="messageDetails" />
         </v-col>
 
         <v-col v-if="error">
-          <BaseStatusLabelView
-              statusIcon="error"
-              statusColor="error"
-              :statusText="error"
-              :expandedText="errorDetails"
-          />
+          <BaseStatusLabelView statusIcon="error" statusColor="error" :statusText="error" :expandedText="errorDetails" />
         </v-col>
       </v-row>
 
@@ -49,164 +28,87 @@
 
         <v-alert type="info" border="left" outlined dense icon="info">{{ labels.instructions }}</v-alert>
 
-        <v-row id="resourceName"
-              no-gutters class="pt-4">
+        <v-row id="resourceName" no-gutters class="pt-4">
           <v-col cols="12">
-            <v-text-field
-              :label="labels.resourceName"
-              ref="resourceName"
-              outlined
-              required
-              :disabled="loading"
-              v-model="resourceNameField"
-              :error-messages="validationErrors.name"
-            />
+            <v-text-field :label="labels.resourceName" ref="resourceName" outlined required :disabled="loading"
+              v-model="resourceNameField" :error-messages="validationErrors.name" />
 
           </v-col>
         </v-row>
 
-        <v-row id="description"
-              no-gutters
-                class="pt-2">
+        <v-row id="description" no-gutters class="pt-2">
           <v-col cols="12">
 
-            <v-textarea
-              :label="labels.description"
-              outlined
-              auto-grow
-              :disabled="loading"
-              v-model="descriptionField"
-              :error-messages="validationErrors.description"
-            />
+            <v-textarea :label="labels.description" outlined auto-grow :disabled="loading" v-model="descriptionField"
+              :error-messages="validationErrors.description" />
 
           </v-col>
         </v-row>
 
-        <v-row id="resourceUrl"
-              no-gutters
-              class="pt-2">
-          <v-col v-if="showImagePreview"
-                cols="4"
-                class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
+        <v-row id="resourceUrl" no-gutters class="pt-2">
+          <v-col v-if="showImagePreview" cols="4" class="pt-3 pb-4 pr-4 flex-grow-0 flex-shrink-1">
 
-            <div v-if="loadingImagePreview"
-                class="skeleton skeleton-animation-shimmer"
-                style="height: 100%; width: 100%; " >
-              <div style="width: 100%; min-height: 100%; "
-                  class="bone bone-type-image">
+            <div v-if="loadingImagePreview" class="skeleton skeleton-animation-shimmer"
+              style="height: 100%; width: 100%; ">
+              <div style="width: 100%; min-height: 100%; " class="bone bone-type-image">
               </div>
             </div>
 
 
-            <v-img v-show="!imagePreviewError"
-                  :src="urlField"
-                  ref="filePreview"
-                  style="max-height: 100%; max-width: 100%; cursor: pointer;"
-                  @click="catchImageClick"
-                  @error="catchImageLoadError"
-                  @load="loadingImagePreview = false"
-                  alt="resource image preview"/>
+            <v-img v-show="!imagePreviewError" :src="urlField" ref="filePreview"
+              style="max-height: 100%; max-width: 100%; cursor: pointer;" @click="catchImageClick"
+              @error="catchImageLoadError" @load="loadingImagePreview = false" alt="resource image preview" />
 
-            <div v-if="imagePreviewError"
-                class="imagePreviewErrorContainer">
+            <div v-if="imagePreviewError" class="imagePreviewErrorContainer">
 
-              <v-img id="curtain"
-                    :src="notFoundImg"
-                    style="max-height: 100%; max-width: 100%; opacity: 0.25;"
-                    alt="resource image could not be loaded!"/>
+              <v-img id="curtain" :src="notFoundImg" style="max-height: 100%; max-width: 100%; opacity: 0.25;"
+                alt="resource image could not be loaded!" />
 
-              <div id="backdrop"
-                  class="pa-4 text-body-1">Image preview could not be loaded! </div>
+              <div id="backdrop" class="pa-4 text-body-1">Image preview could not be loaded! </div>
             </div>
           </v-col>
 
           <v-col :class="showImagePreview ? 'pt-3 pb-4' : ''">
-            <v-textarea v-if="isLongUrl"
-                        :label="isLink ? labels.url : labels.fileName"
-                        outlined
-                        auto-grow
-                        readonly
-                        dense
-                        hide-details
-                        :disabled="loading"
-                        :value="urlField"
-                        :error-messages="validationErrors.url"
-            />
+            <v-textarea v-if="isLongUrl" :label="isLink ? labels.url : labels.fileName" outlined auto-grow readonly dense
+              hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
 
-            <v-text-field v-if="!isLongUrl"
-                          :label="isLink ? labels.url : labels.fileName"
-                          outlined
-                          readonly
-                          dense
-                          hide-details
-                          :disabled="loading"
-                          :value="urlField"
-                          :error-messages="validationErrors.url"
-            />
+            <v-text-field v-if="!isLongUrl" :label="isLink ? labels.url : labels.fileName" outlined readonly dense
+              hide-details :disabled="loading" :value="urlField" :error-messages="validationErrors.url" />
 
           </v-col>
         </v-row>
 
-        <v-row id="format"
-              no-gutters
-              class="pt-5">
+        <v-row id="format" no-gutters class="pt-5">
 
-          <v-col cols="12"
-                  md="6"
-                  class="pr-md-4">
+          <v-col cols="12" md="6" class="pr-md-4">
 
-            <v-row no-gutters >
+            <v-row no-gutters>
               <v-col class="shrink pt-2">
                 <BaseIcon :icon="fileFormatIcon"></BaseIcon>
               </v-col>
 
               <v-col class="pl-2">
-                <v-text-field
-                    :label="labels.format"
-                    outlined
-                    dense
-                    hide-details="auto"
-                    :disabled="loading"
-                    @change="formatField = $event"
-                    :value="formatField"
-                    :error-messages="validationErrors.format"
-                />
+                <v-text-field :label="labels.format" outlined dense hide-details="auto" :disabled="loading"
+                  @change="formatField = $event" :value="formatField" :error-messages="validationErrors.format" />
               </v-col>
             </v-row>
           </v-col>
 
-          <v-col id="size"
-                cols="12"
-                md="6"
-                class="pt-2 pt-md-0">
+          <v-col id="size" cols="12" md="6" class="pt-2 pt-md-0">
 
-            <v-row no-gutters >
+            <v-row no-gutters>
               <v-col class="shrink pt-2">
                 <BaseIcon :icon="fileSizeIcon"></BaseIcon>
               </v-col>
 
-              <v-col class="pl-2" >
-                <v-text-field
-                    :label="labels.size"
-                    outlined
-                    dense
-                    hide-details="auto"
-                    :disabled="!isLink || loading"
-                    @change="sizeField = $event"
-                    :value="isLink ? sizeField : sizeFieldText"
-                    :error-messages="validationErrors.size"
-                />
+              <v-col class="pl-2">
+                <v-text-field :label="labels.size" outlined dense hide-details="auto" :disabled="!isLink || loading"
+                  @change="sizeField = $event" :value="isLink ? sizeField : sizeFieldText"
+                  :error-messages="validationErrors.size" />
               </v-col>
               <v-col class="pl-2">
-                <v-select :items="labels.sizeFormatList"
-                          v-model="sizeFormatField"
-                          label="File size format"
-                          outlined
-                          dense
-                          hide-details="auto"
-                          :disabled="!isLink || loading"
-                          :error-messages="validationErrors.sizeFormat"
-                />
+                <v-select :items="labels.sizeFormatList" v-model="sizeFormatField" label="File size format" outlined dense
+                  hide-details="auto" :disabled="!isLink || loading" :error-messages="validationErrors.sizeFormat" />
               </v-col>
             </v-row>
 
@@ -214,37 +116,16 @@
           </v-col>
         </v-row>
 
-        <v-row id="dates"
-              no-gutters
-              align="center"
-              class="pt-3">
+        <v-row id="dates" no-gutters align="center" class="pt-3">
 
-          <v-col cols="12"
-                md="6"
-                class="pr-md-4">
-            <v-text-field
-              :label="labels.created"
-              prepend-icon="date_range"
-              outlined
-              readonly
-              dense
-              hide-details
-              :disabled="loading"
-              :value="readableCreated"
-            />
+          <v-col cols="12" md="6" class="pr-md-4">
+            <v-text-field :label="labels.created" prepend-icon="date_range" outlined readonly dense hide-details
+              :disabled="loading" :value="readableCreated" />
           </v-col>
 
           <v-col cols="12" md="6" class="pt-2 pt-md-0">
-            <v-text-field
-              :label="labels.lastModified"
-              prepend-icon="update"
-              outlined
-              readonly
-              dense
-              hide-details
-              :disabled="loading"
-              :value="readableLastModified"
-            />
+            <v-text-field :label="labels.lastModified" prepend-icon="update" outlined readonly dense hide-details
+              :disabled="loading" :value="readableLastModified" />
           </v-col>
         </v-row>
 
@@ -258,43 +139,21 @@
             </v-alert>
           </v-expand-transition>
 
-          <BaseIconSwitch
-            :active="isDataPrivate"
-            :disabled="!editingRestrictingActive"
-            :icon="mdiLock"
-            class="mt-2"
-            :tooltipText="labels.dataAccessSwitchTooltip"
-            @clicked="isDataPrivate = !isDataPrivate"
-            :label="labels.dataAccessSwitchLabel"
-          />
+          <BaseIconSwitch :active="isDataPrivate" :disabled="!editingRestrictingActive" :icon="mdiLock" class="mt-2"
+            :tooltipText="labels.dataAccessSwitchTooltip" @clicked="isDataPrivate = !isDataPrivate"
+            :label="labels.dataAccessSwitchLabel" />
 
-          <BaseIconSwitch 
-            v-if="isDataPrivate"
-            :active="hasAllowedUsers"
-            :disabled="!editingRestrictingActive"
-            :icon="mdiAccount"
-            class="mt-2"
-            :tooltipText="labels.hasAllowedUsersSwitchTooltip"
-            @clicked="hasAllowedUsers = !hasAllowedUsers"
-            :label="labels.hasAllowedUsersSwitchLabel"
-          />
+          <BaseIconSwitch v-if="isDataPrivate" :active="hasAllowedUsers" :disabled="!editingRestrictingActive"
+            :icon="mdiAccount" class="mt-2" :tooltipText="labels.hasAllowedUsersSwitchTooltip"
+            @clicked="hasAllowedUsers = !hasAllowedUsers" :label="labels.hasAllowedUsersSwitchLabel" />
 
-          <v-row v-if="isDataPrivate && hasAllowedUsers"
-                no-gutters
-                class="px-2 pt-3">
+          <v-row v-if="isDataPrivate && hasAllowedUsers" no-gutters class="px-2 pt-3">
 
-            <v-col cols="12"
-                    class="pt-2">
-              <BaseUserPicker :users="envidatUserNameStrings"
-                              :pickerLabel="labels.restrictedAllowedUsersInfo"
-                              multiplePick
-                              prependIcon="key"
-                              userTagsCloseable
-                              :placeholder="labels.allowedUsersTypingInfo"
-                              :preSelected="preSelectedAllowedUsers"
-                              @removedUsers="changeAllowedUsers"
-                              @pickedUsers="changeAllowedUsers"
-              />
+            <v-col cols="12" class="pt-2">
+              <BaseUserPicker :users="envidatUserNameStrings" :pickerLabel="labels.restrictedAllowedUsersInfo"
+                multiplePick prependIcon="key" userTagsCloseable :placeholder="labels.allowedUsersTypingInfo"
+                :preSelected="preSelectedAllowedUsers" @removedUsers="changeAllowedUsers"
+                @pickedUsers="changeAllowedUsers" />
             </v-col>
 
           </v-row>
@@ -305,15 +164,11 @@
             </v-col>
           </v-row>
 
-          <v-row no-gutters
-                class="pt-4"
-                justify="end">
+          <v-row no-gutters class="pt-4" justify="end">
             <v-col class="shrink">
               <!-- prettier-ignore -->
-              <BaseRectangleButton :disabled="!saveButtonEnabled"
-                                  :loading="loading"
-                                  :buttonText="labels.createButtonText"
-                                  @clicked="saveResourceClick"/>
+              <BaseRectangleButton :disabled="!saveButtonEnabled" :loading="loading" :buttonText="labels.createButtonText"
+                @clicked="saveResourceClick" />
             </v-col>
           </v-row>
         </div>
@@ -726,7 +581,7 @@ export default {
       let convertedSized = size / 1024;
       let index = 0;
 
-      while(convertedSized > 1) {
+      while (convertedSized > 1) {
         convertedSized /= 1024;
         index++;
       }
@@ -750,8 +605,8 @@ export default {
       }
 
       this.saveButtonEnabled = isObjectValidCheckAllProps(
-          objectToValidate,
-          this.validations, this.validationErrors);
+        objectToValidate,
+        this.validations, this.validationErrors);
     },
     saveResourceClick() {
 
@@ -793,7 +648,6 @@ export default {
           vm.imagePreviewError = e;
           vm.loadingImagePreview = false;
 
-          // eslint-disable-next-line no-console
           console.error(`Loading image preview failed: ${e}`);
         }
       });
@@ -810,10 +664,10 @@ export default {
     },
     validateField(property, value) {
       return isFieldValid(
-          property,
-          value,
-          this.validations,
-          this.validationErrors,
+        property,
+        value,
+        this.validations,
+        this.validationErrors,
       );
     },
     clearPreviews() {
@@ -880,21 +734,21 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
     BaseIcon,
-},
+  },
 };
 </script>
 
 <style scoped>
-  .imagePreviewErrorContainer {
-    display: grid;
-  }
+.imagePreviewErrorContainer {
+  display: grid;
+}
 
-  #backdrop, #curtain {
-    grid-area: 1/1;
-  }
+#backdrop,
+#curtain {
+  grid-area: 1/1;
+}
 
-  .customIcon {
-    opacity: 0.5;
-  }
-
+.customIcon {
+  opacity: 0.5;
+}
 </style>

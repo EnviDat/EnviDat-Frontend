@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 import path from 'path';
 import vue from '@vitejs/plugin-vue';
@@ -93,10 +94,8 @@ export default ({ mode }) => {
           include: ['vuetify'],
         },
         base: './',
-        // runtimeCompiler: true,
         resolve: {
             alias: [
-                // 'vue': path.resolve(__dirname, './node_modules/vue/dist/vue.esm.js'),
               { find: '@', replacement: path.resolve(__dirname, 'src') },
               { find: '~', replacement: path.resolve(__dirname) },
               { find: 'leaflet/dist/leaflet.css', replacement: 'leaflet/dist/leaflet.css' },
@@ -104,20 +103,18 @@ export default ({ mode }) => {
               { find: 'leaflet.markercluster/dist/MarkerCluster.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.css' },
               { find: 'leaflet.markercluster/dist/MarkerCluster.Default.css', replacement: 'leaflet.markercluster/dist/MarkerCluster.Default.css' },
               { find: 'leaflet.markercluster', replacement: 'leaflet.markercluster/dist/leaflet.markercluster.js' },
-              // { find: 'vue', replacement: `vue/dist/vue.${ isProd ? 'min' : 'esm' }.js` },
-              // { find: 'vue', replacement: '@vue/compat' },
             ],
         },
         build: {
           assetsDir: './static',
           chunkSizeWarningLimit: 500,
+          assetsInlineLimit: 4096 / 2, // Reduce the amount of image inlining so the chunks don't get huge
           cssCodeSplit: true,
           minify: !buildSourceMaps,
           sourcemap: buildSourceMaps,
           emptyOutDir: true,
           rollupOptions: isProd ? {
             output: {
-              // eslint-disable-next-line consistent-return
               manualChunks: (id) => {
                 if (id.includes('skeleton-placeholder')) {
                   return 'vendor_skeleton';
@@ -170,6 +167,8 @@ export default ({ mode }) => {
                 if (id.includes('node_modules')) {
                   return 'vendors';
                 }
+
+                return undefined;
               },
             },
           } : {},

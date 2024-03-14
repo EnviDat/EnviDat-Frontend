@@ -426,8 +426,7 @@ export default {
           this.currentParticles.particles.size.anim.enable = false;
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
+        console.error(`Error during particle stop: ${error}`);
       } finally {
         this.currentParticles = null;
         if (fullClean) {

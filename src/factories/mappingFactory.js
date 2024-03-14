@@ -290,10 +290,8 @@ export function convertJSON(data, stringify, recursive = false) {
 
           if (import.meta.env?.DEV) {
             if (e instanceof SyntaxError) {
-              // eslint-disable-next-line no-console
-              console.log(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
+              console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             } else {
-              // eslint-disable-next-line no-console
               console.error(`Json parse error on property: ${prop} with value: ${value} had error: ${e}`);
             }
           }

@@ -1,123 +1,69 @@
 <template>
-  <v-app class="application envidat-font-overwrite"
-         :style="dynamicBackground">
+  <v-app class="application envidat-font-overwrite" :style="dynamicBackground">
 
-    <div v-show="showDecemberParticles"
-         id="christmas-canvas"
-         style="position: absolute; width: 100%; height: 100%;"></div>
-
-    <link v-if="showDecemberParticles"
-          rel="stylesheet"
-          href="./particles/decemberEffects.css">
-
-    <div v-for="(notification, index) in visibleNotifications()"
-         :key="`notification_${index}`"
-         :style="`position: absolute;
-                  right: ${$vuetify.display.xs ? 0 : 15}px;
-                  top: ${35 + index * 175}px;
-                  z-index: ${NotificationZIndex};`">
-
-      <notification-card v-if="notification.show"
-                         :notification="notification"
-                         :height="165"
-                         :showReportButton="config.errorReportingEnabled && notification.type === 'error'"
-                         :showCloseButton="true"
-                         @clickedClose="catchCloseClicked(notification.key)"
-                         @clickedReport="catchReportClicked(notification.key)"/>
+    <div v-show="showDecemberParticles" id="christmas-canvas" style="position: absolute; width: 100%; height: 100%;">
     </div>
 
-    <TheNavigationToolbar v-if="showToolbar"
-                            ref="TheNavigationToolbar"
-                            class="envidatToolbar"
-                            :style="`z-index: ${NavToolbarZIndex}`"
-                            :loading="loading"
-                            :mode="mode"
-                            :modeCloseCallback="catchModeClose"
-                            :signedInUser="user"
-                            :signInDisabled="signinDisabled"
-                            :userNavigationItems="userMenuItems"
-                            :editingDatasetName="lastEditedDataset"
-                            @userMenuItemClick="catchUserItemClicked"
-                            @signinClick="catchSigninClicked"
-                            @homeClick="catchHomeClicked"
-                            @continueClick="catchContinueClick"/>
+    <link v-if="showDecemberParticles" rel="stylesheet" href="./particles/decemberEffects.css">
 
-    <TheNavigation :style="`z-index: ${NavigationZIndex}`"
-                   :navigationItems="navigationItems"
-                   :version="appVersion"
-                   @menuClick="catchMenuClicked"
-                   @itemClick="catchItemClicked"/>
+    <div v-for="(notification, index) in visibleNotifications()" :key="`notification_${index}`" :style="`position: absolute;
+                  right: ${$vuetify.display.xs ? 0 : 15}px;
+                      top: ${35 + index * 175}px;
+                      z-index: ${NotificationZIndex};`">
+
+      <notification-card v-if="notification.show" :notification="notification" :height="165"
+        :showReportButton="config.errorReportingEnabled && notification.type === 'error'" :showCloseButton="true"
+        @clickedClose="catchCloseClicked(notification.key)" @clickedReport="catchReportClicked(notification.key)" />
+    </div>
+
+    <TheNavigationToolbar v-if="showToolbar" ref="TheNavigationToolbar" class="envidatToolbar"
+      :style="`z-index: ${NavToolbarZIndex}`" :loading="loading" :mode="mode" :modeCloseCallback="catchModeClose"
+      :signedInUser="user" :signInDisabled="signinDisabled" :userNavigationItems="userMenuItems"
+      :editingDatasetName="lastEditedDataset" @userMenuItemClick="catchUserItemClicked" @signinClick="catchSigninClicked"
+      @homeClick="catchHomeClicked" @continueClick="catchContinueClick" />
+
+    <TheNavigation :style="`z-index: ${NavigationZIndex}`" :navigationItems="navigationItems" :version="appVersion"
+      @menuClick="catchMenuClicked" @itemClick="catchItemClicked" />
 
     <v-main>
 
-      <v-container class="pa-2 pa-sm-3 fill-height"
-                   fluid
-                   v-on:scroll="updateScroll()"
-                   id="appContainer"
-                   ref="appContainer"
-                   :style="pageStyle">
+      <v-container class="pa-2 pa-sm-3 fill-height" fluid v-on:scroll="updateScroll()" id="appContainer"
+        ref="appContainer" :style="pageStyle">
 
-        <v-row class="fill-height"
-               id="mainPageRow">
-          <v-col class="mx-0 py-0"
-                 cols="12">
+        <v-row class="fill-height" id="mainPageRow">
+          <v-col class="mx-0 py-0" cols="12">
 
             <transition name="fade" mode="out-in">
-              <router-view/>
+              <router-view />
             </transition>
 
           </v-col>
         </v-row>
       </v-container>
 
-      <TextBanner v-if="maintenanceBannerVisible"
-                  id="maintenanceBanner"
-                  style="position: absolute; top: 0; z-index: 1001; width: 100%; "
-                  :text="maintenanceBannerText"
-                  confirmText="Okay"
-                  :bannerColor="maintenanceBannerColor"
-                  :confirmClick="catchMaintenanceConfirmClick"/>
+      <TextBanner v-if="maintenanceBannerVisible" id="maintenanceBanner"
+        style="position: absolute; top: 0; z-index: 1001; width: 100%; " :text="maintenanceBannerText" confirmText="Okay"
+        :bannerColor="maintenanceBannerColor" :confirmClick="catchMaintenanceConfirmClick" />
 
-      <TextBanner v-if="showCookieInfo"
-                  id="cookieBanner"
-                  style="position: absolute; bottom: 0; z-index: 1001; width: 100%; "
-                  :text="cookieInfoText"
-                  icon="cookie"
-                  confirmText="Okay"
-                  bannerColor="highlight"
-                  :confirmClick="catchCookieInfoOk"/>
+      <TextBanner v-if="showCookieInfo" id="cookieBanner"
+        style="position: absolute; bottom: 0; z-index: 1001; width: 100%; " :text="cookieInfoText" icon="cookie"
+        confirmText="Okay" bannerColor="highlight" :confirmClick="catchCookieInfoOk" />
 
-      <v-dialog v-model="showReloadDialog"
-                persistent
-                :style="`z-index: ${NotificationZIndex};`"
-                max-width="450">
+      <v-dialog v-model="showReloadDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="450">
 
-        <ConfirmTextCard title="New Version Available!"
-                         :text="dialogVersionText()"
-                         confirmText="Reload"
-                         :confirmClick="reloadApp"
-                         cancelText="Cancel"
-                         :cancelClick="() => { reloadDialogCanceled = true }"
-        />
+        <ConfirmTextCard title="New Version Available!" :text="dialogVersionText()" confirmText="Reload"
+          :confirmClick="reloadApp" cancelText="Cancel" :cancelClick="() => { reloadDialogCanceled = true }" />
 
       </v-dialog>
 
-      <v-dialog v-model="showInfoDialog"
-                persistent
-                :style="`z-index: ${NotificationZIndex};`"
-                max-width="500">
+      <v-dialog v-model="showInfoDialog" persistent :style="`z-index: ${NotificationZIndex};`" max-width="500">
 
-        <ConfirmTextCard :title="dialogTitle"
-                         :text="dialogMessage"
-                         :confirmText="dialogConfirmText"
-                         :confirmClick="dialogCallback"
-                         :cancelText="dialogCancelText"
-                         :cancelClick="dialogCancelCallback"
-        />
+        <ConfirmTextCard :title="dialogTitle" :text="dialogMessage" :confirmText="dialogConfirmText"
+          :confirmClick="dialogCallback" :cancelText="dialogCancelText" :cancelClick="dialogCancelCallback" />
 
       </v-dialog>
 
-      <GenericFullScreenModal :auto-scroll="true"/>
+      <GenericFullScreenModal :auto-scroll="true" />
     </v-main>
 
   </v-app>
@@ -216,7 +162,7 @@ export default {
     eventBus.on(SHOW_REDIRECT_DASHBOARD_DIALOG, this.showRedirectDashboardDialog);
 
     const strShowCookieInfo = localStorage.getItem(ENVIDAT_SHOW_COOKIE_BANNER);
-    this.showCookieInfo = strShowCookieInfo!== 'false';
+    this.showCookieInfo = strShowCookieInfo !== 'false';
   },
   beforeUnmount() {
     eventBus.on(OPEN_FULLSCREEN_MODAL, this.openGenericFullscreen);
@@ -255,8 +201,7 @@ export default {
         }
 
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log(`Error during particle stop: ${error}`);
+        console.error(`Error during particle stop: ${error}`);
       } finally {
         this.currentParticles = null;
         if (fullClean) {
@@ -516,7 +461,7 @@ export default {
       if (this.config?.userDashboardConfig && !this.useTokenSignin) {
         action = ACTION_OLD_GET_USER_CONTEXT;
       }
-      
+
       this.$store.dispatch(`${USER_SIGNIN_NAMESPACE}/${SIGNIN_USER_ACTION}`,
         {
           action,
@@ -537,18 +482,18 @@ export default {
       'lastEditedDatasetPath',
     ]),
     ...mapGetters(
-        METADATA_NAMESPACE, [
-          'metadataIds',
-          'metadatasContent',
-          'metadatasContentSize',
-          'loadingMetadataIds',
-          'loadingMetadatasContent',
-          'loadingCurrentMetadataContent',
-          'searchingMetadatasContent',
-          'currentMetadataContent',
-          'filteredContent',
-          'isFilteringContent',
-        ],
+      METADATA_NAMESPACE, [
+      'metadataIds',
+      'metadatasContent',
+      'metadatasContentSize',
+      'loadingMetadataIds',
+      'loadingMetadatasContent',
+      'loadingCurrentMetadataContent',
+      'searchingMetadatasContent',
+      'currentMetadataContent',
+      'filteredContent',
+      'isFilteringContent',
+    ],
     ),
     ...mapGetters({
       currentPage: 'currentPage',
@@ -577,7 +522,7 @@ export default {
       return this.userDashboardConfig?.useTokenSignin || false;
     },
     maintenanceBannerVisible() {
-      if (!this.maintenanceConfig.messageActive){
+      if (!this.maintenanceConfig.messageActive) {
         return false;
 
       }
@@ -726,8 +671,8 @@ export default {
     dialogConfirmText: 'Ok',
     dialogCancelText: 'Cancel',
     dialogMessage: '',
-    dialogCallback: () => {},
-    dialogCancelCallback: () => {},
+    dialogCallback: () => { },
+    dialogCancelCallback: () => { },
     showCookieInfo: true,
     cookieInfoText: 'On envidat.ch cookies are used to enhance your experience and provide features when you\'re signed in. These cookies are "technical only" and are NOT used for tracking or monitoring you.',
     redirectToDashboard: false,
