@@ -40,7 +40,6 @@
     "@uppy/status-bar": "^3.0.1",
     "@uppy/vue": "^1.0.1",
     "axios": "^1.6.7",
-    "crypto-js": "^4.1.1",
     "css-loader": "^3.6.0",
     "date-fns": "^2.28.0",
     "leaflet": "^1.8.0",
@@ -56,6 +55,7 @@
     "skeleton-placeholder": "^1.0.0",
     "strip-markdown": "^4.0.0",
     "style-loader": "^1.2.1",
+    "tiny-js-md5": "^1.1.2",
     "uplot": "^1.6.30",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
@@ -76,6 +76,7 @@
     "@storybook/testing-library": "^0.2.2",
     "@storybook/vue3": "^8.0.0",
     "@storybook/vue3-vite": "^8.0.0",
+    "@vitejs/plugin-vue": "^5.0.4",
     "babel-loader": "^8.3.0",
     "chromatic": "^6.24.1",
     "eslint": "^8.57.0",
@@ -98,7 +99,6 @@
     "vite-plugin-static-copy": "^0.17.1",
     "vite-plugin-vuetify": "^2.0.3",
     "vite-plugin-webfont-dl": "^3.9.1",
-    "@vitejs/plugin-vue": "^5.0.4",
     "vitest": "^0.34.6"
   },
   "browserslist": [

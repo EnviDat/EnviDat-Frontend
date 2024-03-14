@@ -9,18 +9,16 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+import { imageBgs } from '@/factories/imageFactory';
 import MetadataList from '@/components/MetadataList.vue';
 import categoryCards from '@/store/categoryCards';
 import { enhanceMetadatasTitleImage } from '@/factories/metaDataFactory';
-import globalMethods from '@/factories/globalMethods';
 import baseTags from '@/modules/metadata/store/metadataTags';
 import { getEnabledTags, getPopularTags } from '@/factories/metadataFilterMethods';
 import { envidatViewportParameters, mobileLargeViewportParams, mobileViewportParams, tabletViewportParams } from './js/envidatViewports';
 import metadata from './js/metadata';
 
-const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
-
-enhanceMetadatasTitleImage(metadata, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadata, imageBgs, categoryCards);
 
 
 const popularTags = getPopularTags(metadata, undefined, 1);

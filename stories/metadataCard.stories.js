@@ -7,14 +7,14 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+*/
 
 import MetadataCard from '@/components/Cards/MetadataCard.vue';
 import MetadataCardPlaceholder from '@/components/Cards/MetadataCardPlaceholder.vue';
 
+import { imageBgs } from '@/factories/imageFactory';
 import { enhanceMetadatasTitleImage, getMetadataVisibilityState } from '@/factories/metaDataFactory';
 import categoryCards from '@/store/categoryCards';
-import globalMethods from '@/factories/globalMethods';
 
 import {
   mobileLargeViewportParams,
@@ -32,9 +32,7 @@ import polygonIcon from '../src/assets/icons/polygons.png';
 // metadata gets enhance in the storybook config
 import metadataCards from './js/metadata';
 
-const cardBGImages = globalMethods.methods.mixinMethods_getCardBackgrounds();
-
-enhanceMetadatasTitleImage(metadataCards, cardBGImages, categoryCards);
+enhanceMetadatasTitleImage(metadataCards, imageBgs, categoryCards);
 
 const methods = {
   hasRestrictedResources(metadata) {

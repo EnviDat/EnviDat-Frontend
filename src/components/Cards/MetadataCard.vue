@@ -1,44 +1,23 @@
 <template>
-  <v-card
-    @mouseover="hover = true"
-    @mouseleave="hover = false"
-    :dark="false"
-    @click.native="cardClick"
-  >
+  <v-card @mouseover="hover = true" @mouseleave="hover = false" :dark="false" @click.native="cardClick">
     <!-- <v-card-title primary-title class="pa-0"> -->
 
     <v-container fluid class="pa-0">
       <v-row no-gutters>
         <v-col>
-          <v-img
-            :style="headerImageStyle"
-            :height="
-              flatLayout
-                ? '55px'
-                : $vuetify.display.smAndDown
-                ? '90px'
-                : '115px'
-            "
-          >
-            <div
-              v-if="!maxTitleLengthReached || $vuetify.display.xs"
-              class="pa-4 metadataTitle mb-0"
-              :class="titleClass"
-            >
+          <v-img :style="headerImageStyle" :height="flatLayout
+            ? '55px'
+            : $vuetify.display.smAndDown
+              ? '90px'
+              : '115px'
+            ">
+            <div v-if="!maxTitleLengthReached || $vuetify.display.xs" class="pa-4 metadataTitle mb-0" :class="titleClass">
               {{ truncatedTitle }}
             </div>
 
-            <v-tooltip
-              v-if="maxTitleLengthReached && !$vuetify.display.xs"
-              bottom
-            >
+            <v-tooltip v-if="maxTitleLengthReached && !$vuetify.display.xs" bottom>
               <template v-slot:activator="{ on, props }">
-                <div
-                  v-on="on"
-                  v-bind="props"
-                  class="pa-4 metadataTitle mb-0"
-                  :class="titleClass"
-                >
+                <div v-on="on" v-bind="props" class="pa-4 metadataTitle mb-0" :class="titleClass">
                   {{ truncatedTitle }}
                 </div>
               </template>
@@ -50,14 +29,11 @@
       </v-row>
     </v-container>
 
-    <v-card-text
-      v-if="showCardBody"
-      :class="{
-        cardText: $vuetify.display.mdAndUp,
-        compactText: flatLayout || $vuetify.display.smAndDown,
-        'pr-5': flatLayout,
-      }"
-    >
+    <v-card-text v-if="showCardBody" :class="{
+      cardText: $vuetify.display.mdAndUp,
+      compactText: flatLayout || $vuetify.display.smAndDown,
+      'pr-5': flatLayout,
+    }">
       <v-container fluid class="pa-0 fill-height">
         <v-row v-if="!compactLayout" no-gutters class="pb-2">
           <v-col cols="12">
@@ -66,18 +42,9 @@
         </v-row>
 
         <v-row v-if="tags" no-gutters>
-          <v-col
-            v-for="(tag, index) in tags.slice(0, maxTagNumber)"
-            :key="index"
-            class="flex-grow-0"
-          >
-            <tag-chip
-              class="py-0"
-              :name="tag.name || tag"
-              :selectable="true"
-              :color="tag.color"
-              @clicked="catchTagClicked(tag.name)"
-            />
+          <v-col v-for="(tag, index) in tags.slice(0, maxTagNumber)" :key="index" class="flex-grow-0">
+            <tag-chip class="py-0" :name="tag.name || tag" :selectable="true" :color="tag.color"
+              @clicked="catchTagClicked(tag.name)" />
           </v-col>
           <v-col v-if="maxTagsReached" class="flex-grow-0">
             <tag-chip class="py-0" name="..." />
@@ -86,16 +53,11 @@
       </v-container>
     </v-card-text>
 
-    <v-card-actions
-      class="ma-0 pa-2"
-      :style="
-        `position: absolute; bottom: 0; right: 0;
-                              background-color: ${
-                                showCardBody ? 'white' : 'transparent'
-                              };
+    <v-card-actions class="ma-0 pa-2" :style="`position: absolute; bottom: 0; right: 0;
+                              background-color: ${showCardBody ? 'white' : 'transparent'
+      };
                               border-radius: 10px;`
-      "
-    >
+      ">
       <v-container v-if="showCardBody" class="pa-0">
         <v-row v-if="state" class="pb-1" no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
@@ -119,22 +81,13 @@
 
         <v-row v-if="modeData" no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
-            <base-icon-button
-              flat
-              small
-              color="transparent"
-              :disabled="true"
-              :icon="modeEntryIcon"
-            />
+            <base-icon-button flat small color="transparent" :disabled="true" :icon="modeEntryIcon" />
           </v-col>
         </v-row>
 
         <v-row no-gutters justify="end">
           <v-col class="cardIcons flex-grow-0">
-            <base-icon-count-view
-              :count="resourceAmount"
-              :icon="fileIconString"
-            />
+            <base-icon-count-view :count="resourceAmount" :icon="fileIconString" />
           </v-col>
         </v-row>
 
@@ -155,32 +108,17 @@
           </v-col>
 
           <v-col v-if="organization" class="pl-1 flex-grow-0">
-            <MetadataOrganizationChip
-              :organization="organization"
-              :tooltip="organizationTooltip"
-              :showOnHover="
-                showOrganizationOnHover === true ||
-                  (showOrganizationOnHover === undefined && !hover)
-              "
-              @organizationClicked="$emit('organizationClicked', $event)"
-            />
+            <MetadataOrganizationChip :organization="organization" :tooltip="organizationTooltip" :showOnHover="showOrganizationOnHover === true ||
+              (showOrganizationOnHover === undefined && !hover)
+              " @organizationClicked="$emit('organizationClicked', $event)" />
           </v-col>
 
           <v-col v-if="modeData" class="pl-1 flex-grow-0 cardIcons">
-            <base-icon-button
-              flat
-              small
-              color="transparent"
-              :disabled="true"
-              :icon="modeEntryIcon"
-            />
+            <base-icon-button flat small color="transparent" :disabled="true" :icon="modeEntryIcon" />
           </v-col>
 
           <v-col class="pl-3 flex-grow-0 cardIcons">
-            <base-icon-count-view
-              :count="resourceAmount"
-              :icon="fileIconString"
-            />
+            <base-icon-count-view :count="resourceAmount" :icon="fileIconString" />
           </v-col>
 
           <v-col v-if="geoJSONIcon" class="pl-1 flex-grow-0 cardIcons">
@@ -190,22 +128,12 @@
       </v-container>
     </v-card-actions>
 
-    <v-container
-      v-if="showGenericOpenButton"
-      class="ma-2 pa-0"
-      style="position: absolute; top: 0; right: 0; width: 30px;"
-    >
+    <v-container v-if="showGenericOpenButton" class="ma-2 pa-0"
+      style="position: absolute; top: 0; right: 0; width: 30px;">
       <v-row>
         <v-col cols="12">
-          <base-icon-button
-            :icon="openButtonIcon"
-            icon-color="black"
-            color="accent"
-            elevated
-            small
-            :tooltip-text="openButtonTooltip"
-            @clicked="$emit('openButtonClicked')"
-          />
+          <base-icon-button :icon="openButtonIcon" icon-color="black" color="accent" elevated small
+            :tooltip-text="openButtonTooltip" @clicked="$emit('openButtonClicked')" />
         </v-col>
       </v-row>
     </v-container>
@@ -313,29 +241,23 @@ export default {
       return !!this.tags || !this.compactLayout;
     },
     headerImageStyle() {
-      let topBorderStyle =
-        'border-top-left-radius: 4px; border-top-right-radius: 4px; ';
-      if (!this.showCardBody) {
-        topBorderStyle = 'border-radius: 4px; ';
-      }
-      const imgStyle = !this.flatLayout
-        ? this.dynamicCardBackground
-        : `background-color: ${this.categoryColor}; `;
-
-      return `${topBorderStyle} ${imgStyle}`;
-    },
-    dynamicCardBackground() {
       const gradient = this.dark
         ? this.blackTopToBottom
         : this.whiteTopToBottom;
+      const hasImage = !this.flatLayout && this.titleImg && this.$vuetify.display.mdAndUp;
 
-      if (this.titleImg && this.$vuetify.display.mdAndUp) {
-        return `background-image: linear-gradient(0deg, ${gradient}), url(${this.titleImg});
-                background-position: center, center;
-                background-size: cover; background-repeat: initial; `;
+      return {
+        'border-radius': this.showCardBody ? '4px 4px 0 0' : '4px',
+
+        // Has image
+        'background-image': hasImage ? `linear-gradient(0deg, ${gradient}), url(${this.titleImg})` : undefined,
+        'background-position': hasImage ? 'center, center' : undefined,
+        'background-size': hasImage ? 'cover' : undefined,
+        'background-repeat': hasImage ? 'initial' : undefined,
+
+        // Has no image
+        'background-color': !hasImage ? this.categoryColor : undefined,
       }
-
-      return `background-color: ${this.categoryColor}; `;
     },
     maxTagsReached() {
       return this.tags && this.tags.length > this.maxTagNumber;
@@ -467,7 +389,7 @@ export default {
       return this.modeData.icons[keys[0]];
     },
   },
-  created() {},
+  created() { },
   methods: {
     flatAndMaxReached(textLength) {
       return this.flatLayout && textLength >= this.flatTagtextLength;
@@ -523,11 +445,16 @@ export default {
 <style scoped>
 .card .card__media {
   /* Fallback if the background images don't work */
-  background: #00695c; /* Old Browsers */
-  background: -webkit-linear-gradient(top, #00695c, #00897b); /*Safari 5.1-6*/
-  background: -o-linear-gradient(top, #00695c, #00897b); /*Opera 11.1-12*/
-  background: -moz-linear-gradient(top, #00695c, #00897b); /*Fx 3.6-15*/
-  background: linear-gradient(to bottom, #00695c, #00897b); /*Standard*/
+  background: #00695c;
+  /* Old Browsers */
+  background: -webkit-linear-gradient(top, #00695c, #00897b);
+  /*Safari 5.1-6*/
+  background: -o-linear-gradient(top, #00695c, #00897b);
+  /*Opera 11.1-12*/
+  background: -moz-linear-gradient(top, #00695c, #00897b);
+  /*Fx 3.6-15*/
+  background: linear-gradient(to bottom, #00695c, #00897b);
+  /*Standard*/
 }
 
 .black_title {

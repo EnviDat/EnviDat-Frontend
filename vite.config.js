@@ -156,11 +156,20 @@ export default ({ mode }) => {
                 if (id.includes('amchart') || id.includes('uplot')) {
                   return 'vendor_charts';
                 }
-                if (id.includes('uppy')) {
+                if (id.includes('uppy') || id.includes('exifr')) {
                   return 'vendor_uppy';
                 }
                 if (id.includes('core-js')) {
                   return 'vendor_core_js';
+                }
+                if (id.includes('lodash')) {
+                  return 'vendor_lodash';
+                }
+                if (id.includes('tokenize')) {
+                  return 'vendor_tokenize';
+                }
+                if (id.includes('micromark') || id.includes('remark') || id.includes('markdown') || id.includes('mdast-util') || id.includes('hast-util') || id.includes('unist-util')) {
+                  return 'vendor_markdown';
                 }
 
                 // all other node_modules
