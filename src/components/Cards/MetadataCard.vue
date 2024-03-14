@@ -233,7 +233,6 @@ import MetadataOrganizationChip from '@/components/Chips/MetadataOrganizationChi
 import MetadataStateChip from '@/components/Chips/MetadataStateChip.vue';
 import TagChip from '@/components/Chips/TagChip.vue';
 import UserRoleChip from '@/components/Chips/UserRoleChip.vue';
-import { getModeData } from '@/factories/modeFactory';
 import { stripMarkdown } from '@/factories/stringFactory';
 
 // Header Sleek design

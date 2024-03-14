@@ -1,17 +1,15 @@
 
-
-import globalMethods from '@/factories/globalMethods';
 import ResourceCard from '@/modules/metadata/components/ResourceCard.vue';
 import ResourceCardPlaceholder from '@/modules/metadata/components/ResourceCardPlaceholder.vue';
 
+import { getImages } from '@/factories/imageFactory';
 import dateCreatedIcon from '../src/assets/icons/dateCreated.png';
 import lastModifiedIcon from '../src/assets/icons/dateModified.png';
 import doiIcon from '../src/assets/icons/doi.png';
 import fileSizeIcon from '../src/assets/icons/fileSize.png';
 import unFormatedMetadataCards from './js/metadata';
 
-const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
-const iconFiles = globalMethods.methods.mixinMethods_importImages(iconImgPath);
+const iconFiles = getImages('icons');
 
 // let str = '';
 // for (const [key, value] of iconFiles) {

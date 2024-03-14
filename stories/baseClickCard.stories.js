@@ -10,22 +10,21 @@
  */
 
 import BaseClickCard from '@/components/BaseElements/BaseClickCard.vue';
-import globalMethods from '@/factories/globalMethods';
 import categoryCards from '@/store/categoryCards';
+import { getImages } from '@/factories/imageFactory';
 import {
   mobileLargeViewportParams,
   mobileViewportParams,
   tabletViewportParams,
 } from './js/envidatViewports';
 
-const jpgAssetPaths = require.context('@/assets/', true, /\.jpg$/)
-const jpgAssets = globalMethods.methods.mixinMethods_importImages(jpgAssetPaths);
+const images = getImages();
 
 for (let i = 0; i < categoryCards.length; i++) {
   const cardInfo = categoryCards[i];
-  const imageKey = `./${cardInfo.imgPath}.jpg`;
+  const imageKey = cardInfo.imgPath;
 
-  cardInfo.img = jpgAssets[imageKey];
+  cardInfo.img = images[imageKey];
 }
 
 export default {
@@ -54,7 +53,6 @@ const Template = (args, { argTypes }) => ({
              sm='6'
              class='pa-2'
              :key="card.title">
-        
         <BaseClickCard :title="card.title"
                        :img='card.img'
                        :color='card.color' />

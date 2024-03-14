@@ -21,18 +21,9 @@ import { organizations } from '@/modules/organizations/store/organizationsStore'
 import mutations from '@/store/mainMutations';
 import actions from '@/store/mainActions';
 
-
 import { LISTCONTROL_MAP_ACTIVE } from '@/store/metadataMutationsConsts';
-import {
-  checkWebpFeatureAsync,
-  loadImages,
-} from '@/factories/enhancementsFactory';
 
-import globalMethods from '@/factories/globalMethods';
 import categoryCards from './categoryCards';
-
-const iconImgPath = require.context('@/assets/icons/', false, /\.png$/);
-const iconImages = globalMethods.methods.mixinMethods_importImages(iconImgPath);
 
 
 /*
@@ -47,14 +38,7 @@ if (typeof errReport === 'string') {
 
 
 const initialState = {
-  webpIsSupported: false,
   currentPage: '',
-  // use a './' before the img for the img name for the local path
-  appBGImage: '',
-  webpAssets: null,
-  jpgAssets: null,
-  cardBGImages: null,
-  iconImages,
   /**
    * static category cards for the suggestions of search categories
    */
@@ -87,9 +71,6 @@ function createStore() {
     state: initialState,
     getters: {
       currentPage: state => state.currentPage,
-      appBGImage: state => state.appBGImage,
-      cardBGImages: state => state.cardBGImages,
-      iconImages: state => state.iconImages,
       aboutText: state => state.aboutText,
       categoryCards: state => state.categoryCards,
       defaultControls: state => state.defaultControls,
@@ -125,14 +106,6 @@ try {
 
     store = createStore();
   }
-}
-
-if (import.meta.env.MODE === 'test') {
-  loadImages(store);
-} else {
-  checkWebpFeatureAsync('lossy', (feature, isSupported) => {
-    loadImages(store, isSupported);
-  });
 }
 
 

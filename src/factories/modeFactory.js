@@ -8,8 +8,7 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
 */
-import swissflLogo from '@/assets/modes/swissfl/logo.jpg';
-import globalMethods from '@/factories/globalMethods';
+
 import { createTag, tagsIncludedInSelectedTags } from '@/factories/metadataFilterMethods';
 import { swissFLExtraTags, swissFLTag } from '@/modules/metadata/store/swissForestLabTags';
 import {
@@ -18,32 +17,10 @@ import {
   SWISSFL_MODE_EXTRAS_KEY,
   EDNA_MODE_EXTRAS_KEY, METADATA_NAMESPACE,
 } from '@/store/metadataMutationsConsts';
-import ednaLogo from '@/assets/modes/edna/edna_logo.jpg';
 import { ednaTag } from '@/modules/metadata/store/ednaLabTags';
+import { ednaImages, swissflImages } from './imageFactory';
 
 export const MODE_STORE = 'MODE_STORE';
-
-
-function getSwissflIcons() {
-  // use the relative path to the assets, because it will run in unit tests
-  const swissflPngs = require.context('@/assets/modes/swissfl', false, /\.png$/);
-  const iconImgs = globalMethods.methods.mixinMethods_importImages(swissflPngs);
-  // const swissflPngs = import.meta.glob('../assets/modes/swissfl/*.png', { eager: true });
-  // const iconImgs = globalMethods.methods.mixinMethods_importGlobImages(swissflPngs);
-
-  const icons = Object.values(iconImgs);
-  return {
-    dataset: icons[0],
-    infrastructure: icons[1],
-    model: icons[2],
-  };
-}
-
-function getEDNAIcons() {
-  return {
-    dataset: ednaLogo,
-  };
-}
 
 /**
  * loads the dataset specific for a mode based on the mainTag property on its modeMetadata
@@ -96,8 +73,8 @@ export const modes = [
     externalUrl: 'https://swissforestlab.wsl.ch',
     mainTag: swissFLTag,
     extraTags: swissFLExtraTags,
-    logo: swissflLogo,
-    icons: getSwissflIcons(),
+    logo: swissflImages.logo,
+    icons: swissflImages,
     extrasKey: SWISSFL_MODE_EXTRAS_KEY,
     datasetUrl: '',
     loadDatasets: loadModeDatasetsWithMainTag,
@@ -108,8 +85,8 @@ export const modes = [
     externalUrl: 'https://www.wsl.ch/en/about-wsl/instrumented-field-sites-and-laboratories/laboratories/edna-laboratory/',
     mainTag: ednaTag,
     extraTags: [], // swissFLExtraTags,
-    logo: ednaLogo,
-    icons: getEDNAIcons(),
+    logo: ednaImages.logo,
+    icons: ednaImages,
     extrasKey: EDNA_MODE_EXTRAS_KEY,
     datasetUrl: 'https://s3-zh.os.switch.ch/frontend-static/modes/eDNA_datasets.json',
     loadDatasets: loadEDNADatasets,

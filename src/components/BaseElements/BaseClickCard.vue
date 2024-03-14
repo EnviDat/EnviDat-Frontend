@@ -3,6 +3,8 @@
     max-width='500px'
     :height="height"
     :disabled="disabled"
+    link
+    hover
     @click="clicked"
   >
     <v-container class="pa-0">

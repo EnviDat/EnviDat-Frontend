@@ -189,6 +189,7 @@ import BaseStatusLabelView from '@/components/BaseElements/BaseStatusLabelView.v
 import {addStartEndDateUrl, hasData} from '@/factories/chartFactory';
 import { eventBus, GCNET_PREPARE_DETAIL_CHARTS } from '@/factories/eventBus';
 import { mdiChartBar, mdiDownload } from '@mdi/js';
+import { getImages } from '@/factories/imageFactory';
 
 export default {
   name: 'MicroChart',
@@ -218,9 +219,7 @@ export default {
     BaseStatusLabelView,
   },
   beforeMount() {
-
-    const iconImgPath = require.context('@/assets/logo/', false, /\.png$/);
-    this.logoImgs = this.mixinMethods_importImages(iconImgPath);
+    this.logoImgs = getImages('logo/');
   },
   mounted() {
     let that = this;

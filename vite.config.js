@@ -56,7 +56,9 @@ export default ({ mode }) => {
         plugins: [
             vue(),
             eslint({
-              exclude: ['/virtual:/**', 'node_modules/**'],
+              // https://github.com/storybookjs/builder-vite/issues/367#issuecomment-1938214165
+              // Remove warnings because Vite falesly tries to lint folders it should not
+              exclude: ['/virtual:/**', 'node_modules/**', '/sb-preview/**'],
             }),
             vuetify({
               autoImport: true,

@@ -15,15 +15,6 @@ import {
   LOCATION_TYPE_POLYGON,
 } from '@/factories/metadataConsts';
 
-import {
-  DIVERSITY,
-  FOREST,
-  HAZARD,
-  LAND,
-  METEO,
-  SNOW,
-} from '@/store/categoriesConsts';
-
 export const isFieldReadOnly = (props, property) => {
   if (props?.readOnlyFields?.length > 0) {
     return props.readOnlyFields.includes(property);
@@ -162,112 +153,6 @@ export default {
 
       return str;
     },
-    /**
-     * Return the loaded webp image or instead a jpg as fallback
-     *
-     * @param {*} imageAssetPathName
-     * @param state
-     * @returns
-     */
-    mixinMethods_getWebpImage(imageAssetPathName, state) {
-      const imageKey = `./${imageAssetPathName}`;
-
-      if (state.webpIsSupported) {
-        const webpImg = state.webpAssets[`${imageKey}.webp`];
-
-        // console.log(`resolving ${imageKey} found ${webpImg}`);
-
-        if (webpImg) {
-          return webpImg;
-        }
-
-        // eslint-disable-next-line no-console
-        console.warn(`Wanted to get ${imageKey}, but didn't find it`);
-      }
-
-      return state.jpgAssets[`${imageKey}.jpg`];
-    },
-    /**
-     * Loads the path to the icon image
-     *
-     * @param {String} iconName
-     * @return {String} relative file path with extension to the icon image file
-     */
-    mixinMethods_getIcon(iconName) {
-      const iconKey = `./${iconName}.png`;
-
-      return this.$store?.getters?.iconImages[iconKey] || null;
-    },
-    /**
-     * Loads the path to the icon image representing a file extension
-     *
-     * @param {*} fileExtension
-     * @return {string|null} relative file path to the icon image file
-     */
-    mixinMethods_getIconFileExtension(fileExtension) {
-      const ext = fileExtension.toLowerCase();
-      const iconKey = `./file${ext}.png`;
-
-      const iconString = this.$store.getters.iconImages[iconKey];
-      return iconString || null;
-    },
-    /**
-     * Loads the file path to given images into a Map.
-     *
-     * @param {Map<string, string>} imgPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
-     * @param {String} checkForString
-     *
-     * @return {Map<string, string>} Image cache
-     */
-    mixinMethods_importImages(imgPaths, checkForString) {
-      if (!imgPaths) {
-        // console.log(`Got empty imgs for ${checkForString}`);
-        return null;
-      }
-      const imgCache = {};
-
-      imgPaths.keys().forEach((key) => {
-        if (!checkForString || (checkForString && key.includes(checkForString))) {
-          // imgCache[key] = imgPaths(key).default;
-
-          const imgPath = imgPaths(key)?.default || '';
-          const imgUrl = new URL(imgPath, import.meta.url)
-          imgCache[key] = imgUrl.href;
-        }
-      });
-
-      return imgCache;
-    },
-    /**
-     * Loads the file path to given images into a Map.
-     *
-     * @param {Map<string, string>} imgsPaths imageContext which is loaded via import.meta.glob (ex. import.meta.glob('./assets/*.jpg');)
-     * @param {String} checkForString
-     *
-     * @return {Map<string, string>} Image cache
-     */
-    mixinMethods_importGlobImages(imgPaths, checkForString) {
-      if (!imgPaths) {
-        // console.log(`Got empty imgs for ${checkForString}`);
-        return null;
-      }
-      const imgCache = {};
-
-      for (const path in imgPaths) {
-        if (path) {
-          if (!checkForString || (checkForString && path.includes(checkForString))) {
-
-            const splits = path.split('/');
-            const imgName = splits[splits.length - 1];
-
-            const imgUrl = new URL(path, import.meta.url)
-            imgCache[imgName] = imgUrl.href;
-          }
-        }
-      }
-
-      return imgCache;
-    },
     mixinMethods_getGeoJSONIcon(type) {
       if (type) {
 
@@ -292,27 +177,6 @@ export default {
       }
 
       return this.genericProps[propName] ? this.genericProps[propName] : defaultValue;
-    },
-    mixinMethods_getCardBackgrounds(useWebp = false) {
-      const bgs = {};
-
-      if (useWebp) {
-        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.webp$/));
-        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.webp$/));
-        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.webp$/));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.webp$/));
-        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.webp$/));
-        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.webp$/));
-      } else {
-        bgs[LAND] = this.mixinMethods_importImages(require.context('@/assets/cards/landscape/', false, /\.jpg$/));
-        bgs[FOREST] = this.mixinMethods_importImages(require.context('@/assets/cards/forest/', false, /\.jpg$/));
-        bgs[SNOW] = this.mixinMethods_importImages(require.context('@/assets/cards/snow/', false, /\.jpg$/));
-        bgs[DIVERSITY] = this.mixinMethods_importImages(require.context('@/assets/cards/diversity/', false, /\.jpg$/));
-        bgs[HAZARD] = this.mixinMethods_importImages(require.context('@/assets/cards/hazard/', false, /\.jpg$/));
-        bgs[METEO] = this.mixinMethods_importImages(require.context('@/assets/cards/meteo/', false, /\.jpg$/));
-      }
-
-      return bgs;
     },
   },
 };

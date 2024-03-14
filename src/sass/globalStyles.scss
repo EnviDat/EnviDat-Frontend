@@ -57,14 +57,14 @@
   color: #FFD740 !important;
 }
 
-.imagezoom,
-.imagezoom .v-image__image {
-  transition: all 0.2s;
-}
-
-.imagezoom:hover .v-image__image,
-.imagezoom:focus .v-image__image {
-  transform: scale(1.2);
+.imagezoom  {
+  img {
+    transition: all 0.2s ease-in-out;
+    &:hover {
+      transform: scale(1.2);
+      transition: all 0.2s ease-in-out;
+    }
+  }
 }
 
 .envidatSmallNavigation {

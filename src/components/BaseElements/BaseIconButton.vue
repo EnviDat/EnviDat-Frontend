@@ -1,7 +1,7 @@
 <template>
   <div class="baseIconButton">
     <v-btn
-      style="margin: 0 !important;"
+      class="ma-0"
       :elevation="elevated ? 5 : undefined"
       icon
       :variant="outlined ? 'outlined' : 'text'"
@@ -20,7 +20,7 @@
         :rotated="rotated"
         :color="iconColor"
       ></base-icon>
-    </v-btn>
+  </v-btn>
 
     <v-badge
       v-if="count > 0"
@@ -84,6 +84,7 @@ export default {
     outlined: {type: Boolean, default: undefined },
     fancy: { type:Boolean, default: false },
     glowing: { type:Boolean, default: false },
+    readonly: { type:Boolean, default: false },
   },
   computed: {
     buttonClass() {
@@ -95,6 +96,9 @@ export default {
   },
   methods: {
     onClick() {
+      if(this.readonly){
+        return;
+      }
       this.$emit('clicked');
     },
   },
