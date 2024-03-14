@@ -264,10 +264,7 @@ export default {
         dispatch(METADATA_UPDATE_EXISTING_AUTHORS);
 
         // make sure the existingKeywords list is up-2-date
-        dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
-
-        // for the case when loaded up on landingpage
-        return dispatch(FILTER_METADATA, { selectedTagNames: [] });
+        return dispatch(METADATA_UPDATE_EXISTING_KEYWORDS, config.userEditMetadataConfig);
       })
       .catch((reason) => {
         commit(BULK_LOAD_METADATAS_CONTENT_ERROR, reason);
