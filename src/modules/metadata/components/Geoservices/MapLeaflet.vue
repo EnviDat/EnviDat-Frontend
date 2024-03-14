@@ -11,7 +11,6 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-bing-layer';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
-import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 import {
   map as createMap,

@@ -123,7 +123,7 @@ import { getSelectedElement } from '@/factories/userEditingFactory';
 
 import { mergeResourceSizeForFrontend } from '@/factories/mappingFactory';
 
-const BaseRectangleButton = () => import('@/components/BaseElements/BaseRectangleButton.vue');
+import BaseRectangleButton from '@/components/BaseElements/BaseRectangleButton.vue';
 
 export default {
   name: 'EditDataAndResources',
@@ -268,7 +268,7 @@ export default {
       try {
         mergedSize = mergeResourceSizeForFrontend(this.selectedResource);
       } catch (e) {
-        console.log('mergeResourceSizeForFrontend failed:');
+        console.error('mergeResourceSizeForFrontend failed:');
         console.error(e);
         // TODO Error tracking
       }

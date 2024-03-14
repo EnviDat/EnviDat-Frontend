@@ -118,6 +118,7 @@ export default {
   },
   methods: {
     submit() {
+      // eslint-disable-next-line no-console
       console.log('submit clicked');
     },
   },

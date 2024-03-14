@@ -49,7 +49,7 @@
           </v-tooltip>
         </v-col>
 
-        <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs-only">
+        <v-col v-if="showSearch && !hasButton" class="flex-grow-0 pa-0 hidden-xs">
           <base-icon-button
             :icon="mdiMagnify"
             small

@@ -128,7 +128,7 @@ export const useModeStore = defineStore(MODE_STORE, {
           filteredContent = content;
         }
       } catch (e) {
-        console.log('Error in getFilteredDatasets()');
+        console.error('Error in getFilteredDatasets()');
         console.error(e)
       }
 

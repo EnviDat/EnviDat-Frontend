@@ -28,7 +28,7 @@
             v-html="slogan"
           ></div>
           <div
-            class="hidden-xs-only hidden-md-and-up envidatSlogan text-h5 pb-5"
+            class="hidden-xs hidden-md-and-up envidatSlogan text-h5 pb-5"
             v-html="slogan"
           ></div>
           <div

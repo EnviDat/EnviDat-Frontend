@@ -320,7 +320,7 @@ export default {
             const lastDigit = Number.parseInt(lastChar, 2);
             cutOff = Number.isInteger(lastDigit);
           } catch (e) {
-            console.log(`lastDigit parse failed: ${e}`);
+            console.error(`lastDigit parse failed: ${e}`);
           }
 
           if (!this.listHasSimilarString(paramList, stringToCheck)) {

@@ -50,14 +50,12 @@ import {
 
 import { ADD_USER_NOTIFICATION } from '@/store/mainMutationsConsts';
 
-import globalMethods from '@/factories/globalMethods';
-
 import { METADATA_KEYWORDS_TITLE } from '@/factories/metadataConsts';
 
-import { checkWebpFeature } from '@/factories/enhancementsFactory';
 import { extractAuthorsMap } from '@/factories/authorFactory';
 import { solrResultToCKANJSON } from '@/factories/apiFactory';
 import { enhanceMetadatas } from '@/factories/metaDataFactory';
+import { imageBgs } from '@/factories/imageFactory';
 
 
 export default {
@@ -83,11 +81,8 @@ export default {
       }
     }
 
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
     const categoryCards = this.state.categoryCards;
-
-    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, cardBGImgs, categoryCards, mode);
+    state.searchedMetadatasContent = enhanceMetadatas(convertedPayload, imageBgs, categoryCards, mode);
 
     state.searchingMetadatasContentOK = true;
     state.searchingMetadatasContent = false;
@@ -113,10 +108,8 @@ export default {
   [LOAD_METADATA_CONTENT_BY_ID_SUCCESS](state, payload) {
     state.loadingCurrentMetadataContent = false;
 
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
     const categoryCards = this.state.categoryCards;
-    const enhancedPayload = enhanceMetadatas([payload], cardBGImgs, categoryCards);
+    const enhancedPayload = enhanceMetadatas([payload], imageBgs, categoryCards);
 
     state.currentMetadataContent = Object.values(enhancedPayload)[0];
   },
@@ -137,11 +130,9 @@ export default {
   },
   [BULK_LOAD_METADATAS_CONTENT_SUCCESS](state, payload) {
 
-    let cardBGImgs = this.state.cardBGImages; // || rootBGImgs;
-    cardBGImgs = cardBGImgs || globalMethods.methods.mixinMethods_getCardBackgrounds(checkWebpFeature());
     const categoryCards = this.state.categoryCards;
 
-    state.metadatasContent = enhanceMetadatas(payload, cardBGImgs, categoryCards);
+    state.metadatasContent = enhanceMetadatas(payload, imageBgs, categoryCards);
 
     state.authorsMap = extractAuthorsMap(payload);
 

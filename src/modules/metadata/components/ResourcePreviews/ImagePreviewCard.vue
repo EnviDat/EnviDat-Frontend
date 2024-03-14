@@ -89,7 +89,7 @@ export default {
       this.$emit('previewImageClicked');
     },
     catchImageLoadError(event) {
-      console.log('catchImageLoadError');
+      console.error('catchImageLoadError');
       console.error(event);
       this.loadingImagePreview = false;
       this.imagePreviewError = event;
@@ -111,9 +111,6 @@ export default {
 #backdrop, #curtain {
   grid-area: 1/1;
 }
-
-#backdrop {  }
-#curtain {  }
 
 .customIcon {
   opacity: 0.5;

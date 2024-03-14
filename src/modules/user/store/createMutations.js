@@ -111,7 +111,7 @@ export default {
     state.newMetadatasetName = null;
     state.metadataCreationError = null;
   },
-  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset, message }) {
+  [METADATA_CREATION_DATASET_SUCCESS](state, { dataset }) {
     state.metadataCreationLoading = false;
 
     // convert properties and stringified json to match the frontend structure

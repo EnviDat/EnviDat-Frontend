@@ -435,8 +435,8 @@ export function convertToBackendJSONWithRules(rules, data) {
       const value = convertGet(data, rule[0]);
       convertPut(backendJson, rule[1], value);
     } catch (e) {
-      console.log(i);
-      console.log(rule);
+      console.error(i);
+      console.error(rule);
       console.error(e);
     }
   }
@@ -460,8 +460,8 @@ function convertToFrontendJSONWithRules(rules, data) {
       const value = convertGet(data, rule[1]);
       convertPut(frontendJson, rule[0], value);
     } catch (e) {
-      console.log(i);
-      console.log(rule);
+      console.error(i);
+      console.error(rule);
       console.error(e);
     }
   }
@@ -564,7 +564,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       resSize = JSON.parse(resSize);
     } catch (e) {
-      console.log(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`resourceSize parsing failed (fallback used!) resource id: ${resource.id}`);
       resSize = { size_value: '', size_units: '' };
     }
   }
@@ -577,7 +577,7 @@ export function cleanResourceForFrontend(resource) {
     try {
       restricted = JSON.parse(restricted);
     } catch (e) {
-      console.log(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
+      console.error(`restricted parsing failed (fallback used!) resource id: ${resource.id}`);
       restricted = { allowed_users: '', level: 'public', shared_secret: '' };
     }
   }
@@ -1090,7 +1090,7 @@ export function mergeResourceSizeForFrontend(resource) {
       try {
         size = Number.parseFloat(resourceSize.sizeValue);
       } catch (e) {
-        console.log(`sizeValue parsing failed resource id: ${resource.id}`);
+        console.error(`sizeValue parsing failed resource id: ${resource.id}`);
       }
 
       if (Number.isNaN(size)) {

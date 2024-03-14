@@ -880,7 +880,6 @@ export default {
     BaseIconButton,
     BaseIconSwitch,
     BaseIcon,
-    BaseIcon
 },
 };
 </script>

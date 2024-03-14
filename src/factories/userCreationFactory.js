@@ -16,7 +16,6 @@ import {
 } from '@/factories/eventBus';
 
 import {
-  combineAuthorLists,
   createAuthor,
   mergeAuthorsDataCredit,
 } from '@/factories/authorFactory';
@@ -135,63 +134,6 @@ function initCreationDataWithDefaults(creationData, user, organizationId) {
     }
   }
 
-}
-
-const minRequiredPropsForDatasetCreation = [
-  'metadataTitle',
-  'contactEmail',
-  'contactGivenName',
-  'contactSurname',
-  'keywords',
-  'description',
-  'authors',
-  'dataLicenseId',
-  'funders',
-  'dates',
-  'organizationId',
-  // 'location', // 'location.geoJSON',
-  'publisher',
-  'publicationYear',
-];
-
-function matchedWithRequiredProps(steps) {
-
-  let step;
-  let matches;
-
-  for (let i = 0; i < steps.length; i++) {
-    step = steps[i];
-    const genericKeys = Object.keys(step.genericProps);
-
-    matches = minRequiredPropsForDatasetCreation.filter((prop) => genericKeys.includes(prop));
-
-    if (matches.length > 0) {
-
-      for (let j = 0; j < matches.length; j++) {
-
-        const key = matches[j];
-        const value = step.genericProps[key];
-        const isArray = value instanceof Array;
-        const arrayWithValues = isArray && value.length > 0;
-
-        if (value && (!isArray || arrayWithValues)) {
-          // continue
-        } else {
-          return false;
-        }
-      }
-    }
-
-    if (step.detailSteps) {
-      const detailMatched = matchedWithRequiredProps(step.detailSteps);
-
-      if (!detailMatched) {
-        return false;
-      }
-    }
-  }
-
-  return true;
 }
 
 /**
