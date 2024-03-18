@@ -1,26 +1,11 @@
 <template>
-  <v-tooltip
-    v-bind="{ tooltipPosition: true }"
-    :disabled="$vuetify.display.smAndDown || !tooltipText"
-  >
+  <v-tooltip v-bind="{ tooltipPosition: true }" :disabled="$vuetify.display.smAndDown || !tooltipText">
     <template v-slot:activator="{ props }">
-      <v-btn
-        v-bind="props"
-        :small="isSmall"
-        :x-small="isXsSmall"
-        :class="marginClass"
-        :color="color"
-        :variant='buttonStyle'
-        :disabled="disabled"
-        :href="url"
-        :loading="loading"
-        :elevation="elevation"
-        rel="noopener noreferrer"
-        target="_blank"
-        @click.stop="onClick"
-      >
+      <v-btn v-bind="props" :size="buttonSize" :class="marginClass" :color="color" :variant='buttonStyle'
+        :disabled="disabled" :href="url" :loading="loading" :elevation="elevation" rel="noopener noreferrer"
+        target="_blank" @click.stop="onClick">
 
-        <BaseIcon :icon="icon" class='mr-1'/>
+        <BaseIcon v-if="icon" :icon="icon" class='mr-1' />
 
         {{ buttonText }}
       </v-btn>
@@ -63,30 +48,27 @@ export default {
     tooltipText: String,
     isOutlined: Boolean,
     isFlat: Boolean,
-    color: {
-      type: String,
-      default: 'primary',
-    },
-    iconColor: {
-      type: String,
-      default: undefined,
-    },
+    color: { type: String, default: 'primary' },
+    iconColor: { type: String, default: undefined },
     isSmall: Boolean,
     isXsSmall: Boolean,
     url: String,
     marginClass: String,
     disabled: Boolean,
     loading: Boolean,
-    tooltipPosition: {
-      type: String,
-      default: 'bottom',
-    },
-    elevation: {
-      type: Number,
-      default: undefined,
-    },
+    tooltipPosition: { type: String, default: 'bottom' },
+    elevation: { type: Number, default: undefined },
   },
   computed: {
+    buttonSize() {
+      if (this.isSmall) {
+        return 'small';
+      }
+      if (this.isXsSmall) {
+        return 'xs-small';
+      }
+      return 'default';
+    },
     buttonStyle() {
       if (this.isFlat) return 'plain';
 
