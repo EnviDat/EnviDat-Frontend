@@ -153,24 +153,6 @@ export default {
 
       return str;
     },
-    mixinMethods_getGeoJSONIcon(type) {
-      if (type) {
-
-        if (type === LOCATION_TYPE_POINT) {
-          return this.mixinMethods_getIcon('marker');
-        }
-
-        if (type === LOCATION_TYPE_MULTIPOINT) {
-          return this.mixinMethods_getIcon('markerMulti');
-        }
-
-        if (type === LOCATION_TYPE_POLYGON) {
-          return this.mixinMethods_getIcon('polygons');
-        }
-      }
-
-      return null;
-    },
     mixinMethods_getGenericProp(propName, defaultValue = null) {
       if (!this.genericProps) {
         return defaultValue;

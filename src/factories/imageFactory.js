@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { LAND, FOREST, SNOW, DIVERSITY, HAZARD, METEO } from '@/store/categoriesConsts';
 import {checkIsFileAudio, checkIsFileVideo, getExtensionlessPath, getFileExtension, normalizePath} from './fileFactory';
+import { LOCATION_TYPE_MULTIPOINT, LOCATION_TYPE_POINT, LOCATION_TYPE_POLYGON } from './metadataConsts';
 
 export const imageUrlMap = import.meta.glob('@/assets/**/*.{png,jpg,jpeg,webp,WEBP,PNG,JPEG,JPG}',  { eager: true, query: '?url', import: 'default' });
 
@@ -78,7 +79,7 @@ export const getImage = (imagePath) => {
  * Gets a specific icon-image url from the assets directory 
  * @param {string} iconName The icon name, for example ```'file'```
  */
-export const getIcon = (iconName) => getImage(`icons/${iconName}`);
+export const getIcon = (iconName) => getImage(`src/assets/icons/${normalizeImagePath(iconName).replace(/^[/\\]?icons[/\\]/, '')}`);
 
 /**
 * Loads the path to the icon image representing a file extension
@@ -99,6 +100,18 @@ export const getFileIcon = (fileExtension) => {
     return getIcon(`file${ext}`) ?? getIcon('file');
 };
 
+export const getGeoJSONIcon = (type) => {
+    switch(type) {
+        case LOCATION_TYPE_POINT:
+            return getIcon('marker');
+        case LOCATION_TYPE_MULTIPOINT:
+            return getIcon('markerMulti');
+        case LOCATION_TYPE_POLYGON:
+            return getIcon('polygons');
+        default:
+            return getIcon('marker');
+    }
+}
 
 export const imageBgs = {
     [LAND]: getImages('cards/landscape/'),
