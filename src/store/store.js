@@ -38,6 +38,7 @@ if (typeof errReport === 'string') {
 
 
 const initialState = {
+  appBGImage: '',
   currentPage: '',
   /**
    * static category cards for the suggestions of search categories
@@ -70,6 +71,7 @@ function createStore() {
     strict: true,
     state: initialState,
     getters: {
+      appBGImage: state => state.appBGImage,
       currentPage: state => state.currentPage,
       aboutText: state => state.aboutText,
       categoryCards: state => state.categoryCards,

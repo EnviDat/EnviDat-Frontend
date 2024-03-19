@@ -261,6 +261,7 @@ import {
 } from '@/store/metadataMutationsConsts';
 import store from '@/store/store';
 import { importStoreModule } from '@/factories/enhancementsFactory';
+import { getIcon, getImage } from '@/factories/imageFactory';
 
 // Login & Register form and animation
 // https://codepen.io/yusufbkr/pen/RPBQqg
@@ -300,11 +301,8 @@ export default {
   },
   beforeMount() {
 
-    this.fileIconString = this.mixinMethods_getIcon('file');
-    this.fallbackCardImg = this.mixinMethods_getWebpImage(
-      'about/contact',
-      this.$store.state,
-    );
+    this.fileIconString = getIcon('file');
+    this.fallbackCardImg = getImage('about/contact');
   },
   mounted() {
     window.scrollTo(0, 0);
@@ -376,19 +374,13 @@ export default {
       return this.effectsConfig.decemberWishes;
     },
     winterHolidayImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/holidays_winter',
-        this.$store.state,
-      );
+      return getImage('cards/slogan/holidays_winter');
     },
     newYearWishes() {
       return this.effectsConfig.newYearWishes || '';
     },
     newYearImage() {
-      return this.mixinMethods_getWebpImage(
-        'cards/slogan/new_year',
-        this.$store.state,
-      );
+      return getImage('cards/slogan/new_year');
     },
     effectsConfig() {
       return this.config?.effectsConfig || {};
