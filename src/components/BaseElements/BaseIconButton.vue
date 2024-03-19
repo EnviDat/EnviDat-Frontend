@@ -15,7 +15,8 @@
         :icon="icon"
         :large="large"
         :rotated="rotated"
-        :color="iconColor"></base-icon>
+        :color="iconColor">
+      </base-icon>
     </v-btn>
 
     <v-badge v-if="count > 0" :overlap="!small" :left="small" :style="small ? 'position: relative; bottom: 10px;' : ''"

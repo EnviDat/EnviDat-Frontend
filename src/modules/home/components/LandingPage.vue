@@ -3,10 +3,9 @@
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas"
-      style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;"
-    />
+      style="position: absolute; width: 99%; height: 325px; bottom: 0; left: 0;" />
 
-<!--
+    <!--
     <div
       v-show="showPolygonParticles"
       id="polygon-canvas2"
@@ -19,11 +18,10 @@
       :datasetsTitle="welcomeInfo.datasetsTitle"
       :datasetsTotal="datasetsTotal"
       :newsTitle="welcomeInfo.newsTitle"
-      :articlesTitle="welcomeInfo.articlesTitle"
-    >
+      :articlesTitle="welcomeInfo.articlesTitle">
       <template v-if="$vuetify.display.mdAndUp" v-slot:logo>
         <v-row no-gutters
-               align="center">
+          align="center">
           <v-col class="hidden-sm-and-down" cols="4" lg="3">
             <v-img :src="mdLogo" height="128" width="128" :alt="alternativeText" />
 
@@ -39,20 +37,17 @@
 
           <v-col
             class="envidatTitle text-h1 pl-5 hidden-md-and-down"
-            style="font-size: 80px !important;"
-          >
+            style="font-size: 80px !important;">
             {{ welcomeInfo.titleText }}
           </v-col>
 
           <v-col
-            class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up"
-          >
+            class="envidatTitle text-h2 pl-2 hidden-sm-and-down hidden-lg-and-up">
             {{ welcomeInfo.titleText }}
           </v-col>
 
           <v-col
-            class="envidatTitle text-h3 pl-2 hidden-xs hidden-md-and-up"
-          >
+            class="envidatTitle text-h3 pl-2 hidden-xs hidden-md-and-up">
             {{ welcomeInfo.titleText }}
           </v-col>
 
@@ -70,8 +65,7 @@
           :buttonText="sloganButtonText"
           :buttonCallback="catchBrowseClicked"
           :moreButtonText="sloganMoreButtonText"
-          :moreButtonCallback="catchMoreClicked"
-        />
+          :moreButtonCallback="catchMoreClicked" />
       </template>
 
       <template v-slot:search>
@@ -80,15 +74,13 @@
           :labelText="welcomeInfo.searchLabelText"
           :buttonText="buttonText"
           :hasButton="true"
-          @clicked="catchSearchClicked"
-        />
+          @clicked="catchSearchClicked" />
 
         <SmallSearchBarView
           v-if="$vuetify.display.xs"
           :labelText="welcomeInfo.smallSearchLabelText"
           :buttonText="buttonText"
-          @clicked="catchSearchClicked"
-        />
+          @clicked="catchSearchClicked" />
       </template>
 
       <template v-slot:datasets>
@@ -103,8 +95,7 @@
             v-for="(metadata, index) in recentMetadata"
             :key="index"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <MetadataCard
               :key="index"
               :id="metadata.id"
@@ -116,8 +107,7 @@
               :fileIconString="fileIconString"
               :categoryColor="metadata.categoryColor"
               :compactLayout="true"
-              @clickedEvent="catchMetadataClicked"
-            />
+              @clickedEvent="catchMetadataClicked" />
           </v-col>
         </v-row>
       </template>
@@ -128,17 +118,15 @@
             v-for="card in categoryCards"
             :key="card.title"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <BaseClickCard
               :height="$vuetify.display.lgAndDown ? '65' : '90'"
               :title="card.title"
-              :img="card.img"
+              :img="card.imgPath"
               :color="card.darkColor"
               :contain="card.contain"
               :disabled="card.disabled"
-              @click="catchCategoryClicked(card.type)"
-            />
+              @click="catchCategoryClicked(card.type)" />
           </v-col>
         </v-row>
       </template>
@@ -149,8 +137,7 @@
             v-for="(post, index) in blogPosts"
             :key="index"
             cols="6"
-            class="pa-2"
-          >
+            class="pa-2">
             <BlogPostCard
               :postTitle="post.title"
               :titleImg="post.titleImg"
@@ -158,8 +145,7 @@
               titleCssClass="compactBlogPostCard"
               subtitleCssClass="text-caption"
               :height="$vuetify.display.lgAndDown ? '75' : '100'"
-              @clicked="catchPostClick(post.postFile)"
-            />
+              @clicked="catchPostClick(post.postFile)" />
           </v-col>
         </v-row>
       </template>
@@ -168,35 +154,30 @@
         <TitleCard
           :title="welcomeInfo.newsTitle"
           cardClass="pa-2"
-          titleClass="titleCardClass"
-        />
+          titleClass="titleCardClass" />
 
         <div
           v-for="(entry, index) in newsEntries"
           :key="index"
-          class="pt-4 px-1"
-        >
+          class="pt-4 px-1">
           <SloganCard
             :slogan="entry.title"
             :subSlogan="entry.text"
-            :sloganImg="entry.image"
-          />
+            :sloganImg="entry.image" />
         </div>
 
         <div v-if="showWinterHolidayWishs" class="pt-4 px-1">
           <SloganCard
             slogan="Happy Holidays!"
             :sloganImg="winterHolidayImage"
-            :subSlogan="decemberWishes"
-          />
+            :subSlogan="decemberWishes" />
         </div>
 
         <div v-if="showNewYearWishs" class="pt-4 px-1">
           <SloganCard
             slogan="Happy New Year!"
             :sloganImg="newYearImage"
-            :subSlogan="newYearWishes"
-          />
+            :subSlogan="newYearWishes" />
         </div>
       </template>
     </LandingPageLayout>
@@ -287,15 +268,15 @@ export default {
   beforeCreate() {
     const importFun = () => import('@/modules/blog/store/blogStore');
     importStoreModule(store, 'blog', importFun)
-    .then(() => {
-      this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
-    });
+      .then(() => {
+        this.$store.dispatch(`${BLOG_NAMESPACE}/${GET_BLOG_LIST}`);
+      });
 
   },
   created() {
     this.blogModuleLoaded = !!this.$store?.state?.blog;
 
-    this.$store?.watch((state) => state.blog,(value) => {
+    this.$store?.watch((state) => state.blog, (value) => {
       this.blogModuleLoaded = !!value;
     });
   },
@@ -444,19 +425,19 @@ export default {
         );
 
         // eslint-disable-next-line no-undef
-/*
-        particlesJS.load(
-          'polygon-canvas2',
-          './particles/polygonParticleOptions2.json',
-          () => {
-            // console.log('polygon-canvas - particles.js config loaded');
-            if (this.currentParticles) {
-              this.stopParticles(false);
-            }
-            this.currentParticles = window.pJS;
-          },
-        );
-*/
+        /*
+                particlesJS.load(
+                  'polygon-canvas2',
+                  './particles/polygonParticleOptions2.json',
+                  () => {
+                    // console.log('polygon-canvas - particles.js config loaded');
+                    if (this.currentParticles) {
+                      this.stopParticles(false);
+                    }
+                    this.currentParticles = window.pJS;
+                  },
+                );
+        */
       }
     },
     catchCategoryClicked(cardType) {
@@ -575,9 +556,7 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
 
 <style>
 .compactBlogPostCard {
