@@ -40,6 +40,7 @@ export default {
     left: { type: Boolean, default: false },
     right: { type: Boolean, default: false },
     dark: { type: Boolean, default: false },
+    light: { type: Boolean, default: false },
   },
   data: () => ({
   }),
@@ -58,6 +59,7 @@ export default {
         'left': this.left,
         'right': this.right,
         'dark': this.dark,
+        'light': this.light,
         [`text-${this.color}`]: this.color,
       }
     },
@@ -74,13 +76,18 @@ export default {
 
 <style lang="scss" scoped>
 .baseIcon {
-  transition: 0.3s all ease-in-out;
-  height: 24px; // Based on the v-icon size
-  width: 24px; // Based on the v-icon size
+  height: 24px; // Based on the old v-icon size
+  width: 24px; // Based on the old v-icon size
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+
+  .v-icon {
+    // The vuetify-3 default is smaller than the old one
+    // To keep it consistent force it to be the same size
+    font-size: 24px;
+  }
 
   .baseIconCustomIcon {
     height: 100%;
@@ -88,13 +95,21 @@ export default {
   }
 
   &.small {
-    height: 15px; // Based on the v-icon size
-    width: 15px; // Based on the v-icon size
+    height: 15px;
+    width: 15px;
+
+    .v-icon {
+      font-size: 15px;
+    }
   }
 
   &.large {
-    height: 32px; // Based on the v-icon size
-    width: 32px; // Based on the v-icon size
+    height: 32px;
+    width: 32px;
+
+    .v-icon {
+      font-size: 32px;
+    }
   }
 
   &.rotated {
@@ -110,8 +125,13 @@ export default {
   }
 
   &.dark {
-    // Make the icon white
+    // Make the icon white (to be used in the dark theme)
     filter: brightness(0) invert(1);
+  }
+
+  &.light {
+    // Make the icon black (to be used in the light theme)
+    filter: brightness(0);
   }
 }
 </style>

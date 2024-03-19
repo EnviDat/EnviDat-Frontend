@@ -1,9 +1,21 @@
 <template>
   <div class="baseIconButton">
-    <v-btn class="ma-0" :elevation="elevated ? 5 : undefined" icon :variant="outlined ? 'outlined' : 'text'"
-      density="comfortable" :size="large ? 'large' : small ? 'small' : undefined" :color="color" :href="url"
-      :class="buttonClass" @click.stop="onClick" v-bind="$props">
-      <base-icon :icon="icon" :large="large" :rotated="rotated" :color="iconColor"></base-icon>
+    <v-btn
+      class="ma-0"
+      :elevation="elevated ? 5 : undefined"
+      icon
+      :variant="outlined ? 'outlined' : undefined"
+      density="comfortable"
+      :size="large ? 'large' : small ? 'small' : undefined"
+      :color="color"
+      :href="url"
+      :class="buttonClass"
+      @click.stop="onClick">
+      <base-icon
+        :icon="icon"
+        :large="large"
+        :rotated="rotated"
+        :color="iconColor"></base-icon>
     </v-btn>
 
     <v-badge v-if="count > 0" :overlap="!small" :left="small" :style="small ? 'position: relative; bottom: 10px;' : ''"
@@ -59,7 +71,7 @@ export default {
     small: { type: Boolean, default: false },
     large: { type: Boolean, default: false },
     count: { type: Number, default: undefined },
-    outlined: { type: Boolean, default: undefined },
+    outlined: { type: Boolean, default: false },
     fancy: { type: Boolean, default: false },
     glowing: { type: Boolean, default: false },
     readonly: { type: Boolean, default: false },

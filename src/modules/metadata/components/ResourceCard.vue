@@ -1,7 +1,7 @@
 <template>
   <v-card
     :id="`resourceCard_${id}`"
-    :color="cardColor"
+    :color="dark ? 'white' : 'primary'"
     class="metadataResourceCard"
     :class="isSelected ? 'highlighted' : ''"
     style="height: 100%;"
@@ -9,7 +9,7 @@
 
     <v-card-title class="text-h5 resourceHeadline">
       <span class="d-flex align-center">
-        <v-icon v-if="isProtected" left>lock</v-icon>
+        <BaseIcon color="primary-lighten-2" v-if="isProtected" left :icon="mdiLock"></BaseIcon>
         {{ resourceName }}
       </span>
     </v-card-title>
@@ -58,14 +58,17 @@
               v-if="isProtected"
               text="This resource is private"
               :icon="mdiLock"
-              dark />
+              :light="dark"
+              :dark="!dark"
+              class="mb-1" />
 
             <base-icon-label-view
               v-if="doi"
               :text="doi"
               :icon="mdiFingerprint"
               :icon-tooltip="EDIT_METADATA_DOI_LABEL"
-              dark
+              :light="dark"
+              :dark="!dark"
               class="mb-1" />
 
             <base-icon-label-view
@@ -73,7 +76,8 @@
               :text="formatedBytes ? `${format} - ${formatedBytes}` : format"
               :icon="extensionIcon"
               :icon-tooltip="formatedBytes ? 'Resource type and size' : 'Resource type'"
-              dark
+              :light="dark"
+              :dark="!dark"
               class="mb-1" />
 
             <base-icon-label-view
@@ -81,7 +85,8 @@
               :text="readableCreated"
               :icon="mdiTimerPlusOutline"
               icon-tooltip="Date of resource creation"
-              dark
+              :light="dark"
+              :dark="!dark"
               class="mb-1" />
 
             <base-icon-label-view
@@ -89,7 +94,8 @@
               :text="readableLastModified"
               :icon="mdiUpdate"
               icon-tooltip="Date of last modification"
-              dark
+              :light="dark"
+              :dark="!dark"
               class="mb-1" />
           </v-col>
         </v-row>
@@ -151,9 +157,9 @@
       <v-row v-if="isProtected">
         <v-col>
           <div
-            class="fabMenu fabPosition elevation-5 ma-2 pl-2 pt-2"
+            class="fabMenu fabPosition elevation-5 ma-2"
             :class="downloadActive ? 'fabMenuHover' : 'fabMenuDisabled'">
-            <BaseIcon class="pl-1 pt-1" :icon="mdiShield"></BaseIcon>
+            <BaseIcon :icon="mdiShield"></BaseIcon>
             <div
               v-if="downloadActive"
               class="pt-2 lockedText black--text protectedLink">
@@ -186,7 +192,7 @@ import { renderMarkdown, stripMarkdown } from '@/factories/stringFactory';
 import { formatBytes, formatDate } from '@/factories/metaDataFactory';
 import { EDIT_METADATA_DOI_LABEL } from '@/factories/metadataConsts';
 import { getFileIcon } from '@/factories/imageFactory';
-import { mdiChevronDown, mdiDownload, mdiFingerprint, mdiLink, mdiLock, mdiShield, mdiTimerPlusOutline, mdiUpdate } from '@mdi/js';
+import { mdiChevronDown, mdiDownload, mdiFingerprint, mdiLink, mdiLock, mdiMonitorEye, mdiShield, mdiTimerPlusOutline, mdiUpdate } from '@mdi/js';
 
 export default {
   name: 'ResourceCard',
@@ -210,7 +216,7 @@ export default {
     height: String,
     dark: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     isProtected: Boolean,
     metadataContact: String,
@@ -229,11 +235,7 @@ export default {
     openButtonTooltip: String,
     openButtonIcon: {
       type: String,
-      default: 'preview',
-    },
-    cardColor: {
-      type: String,
-      default: 'primary',
+      default: mdiMonitorEye,
     },
     isSelected: {
       type: Boolean,
@@ -367,7 +369,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .resourceHeadline {
   line-height: 1.5rem;
 }
@@ -397,7 +399,9 @@ export default {
   height: 48px;
   background-color: #ffd740;
   border-radius: 50%;
-  /* transition: .1s; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fabMenuDisabled {
@@ -408,18 +412,23 @@ export default {
 .fabMenuHover:hover,
 .fabMenuHover:active {
   background: #fff;
+  color: black !important;
   min-width: 160px;
   min-height: 160px;
   width: 100%;
   height: 100%;
   border-radius: 3px 3px;
   display: inherit;
+  padding: 8px;
 
-  .v-icon {
-    color: grey;
-    border: 1px solid grey;
+  a {
+    color: rgb(var(--v-theme-primary)) !important;
+  }
+
+  .baseIcon {
+    border: 1px solid grey !important;
     border-radius: 50%;
-    padding: 0 4px 4px 0;
+    padding: 16px;
   }
 
   .lockedText {

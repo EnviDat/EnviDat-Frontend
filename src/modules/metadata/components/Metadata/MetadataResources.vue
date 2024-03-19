@@ -1,46 +1,45 @@
 <template>
   <v-card id="MetadataResources"
-          :class="{ ['pt-2']: this.isOnTop }" >
+    :class="{ ['pt-2']: this.isOnTop }">
 
     <v-card-title class="pa-4 pb-2">
       <v-row justify="end"
-              no-gutters>
+        no-gutters>
         <v-col class="text-h6 metadata_title grow">
           {{ METADATA_RESOURCES_TITLE }}
         </v-col>
 
         <v-col v-if="!showPlaceholder && resources && resources.length > 0"
-                class="flex-grow-0 resourcesIcons" >
+          class="flex-grow-0 resourcesIcons">
           <base-icon-count-view :count="resources.length"
-                                tooltip-text="Amount of Resources"
-                                :icon="mdiFile" />
+            tooltip-text="Amount of Resources"
+            :icon="mdiFile" />
         </v-col>
       </v-row>
     </v-card-title>
 
     <v-card-text>
       <v-row no-gutters
-             align="center">
+        align="center">
         <v-col class="pr-2">
           <BaseIconLabelView icon-tooltip="Data License"
-                             :icon="mdiShieldSearch"
-                             :text="dataLicenseTitle"
-                             :url="dataLicenseUrl"
-                             />
+            :icon="mdiShieldSearch"
+            :text="dataLicenseTitle"
+            :url="dataLicenseUrl" />
         </v-col>
 
         <v-col>
           <v-row no-gutters
-                 justify="end"
-                 v-for="(dateObj, index) in dates"
-                 :key="index">
-            <v-col >{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
+            justify="end"
+            v-for="(dateObj, index) in dates"
+            :key="index">
+            <v-col>{{ dateObj[DATE_PROPERTY_DATE_TYPE] }}</v-col>
 
-<!--
+            <!--
             <v-col class="flex-grow-0 px-2">Start:</v-col>
 -->
             <v-col align-self="end" class="">{{ dateObj[DATE_PROPERTY_START_DATE] }}</v-col>
-<!--
+            <!--
             <v-col class="flex-grow-0 px-2">End:</v-col>
 -->
             <v-col align-self="end">{{ dateObj[DATE_PROPERTY_END_DATE] }}</v-col>
@@ -51,14 +50,14 @@
     </v-card-text>
 
     <v-container v-if="showPlaceholder"
-                  id="resourcePlaceholderList"
-                  fluid
-                  class="pa-2 pt-0" >
-      <v-row no-gutters >
+      id="resourcePlaceholderList"
+      fluid
+      class="pa-2 pt-0">
+      <v-row no-gutters>
         <v-col v-for="n in 2"
-                :key="n"
-                cols="12" sm="6"
-                class="pa-2" >
+          :key="n"
+          cols="12" sm="6"
+          class="pa-2">
 
           <ResourceCardPlaceholder />
         </v-col>
@@ -66,53 +65,54 @@
     </v-container>
 
     <v-container v-if="!showPlaceholder && availableResources && availableResources.length > 0"
-                  id="resourceList"
-                  fluid
-                  :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
-                  class="heightAndScroll pa-2 pt-0" >
+      id="resourceList"
+      fluid
+      :style="`scrollbar-color: ${scrollbarColorFront} ${scrollbarColorBack}`"
+      class="heightAndScroll pa-2 pt-0">
 
       <v-row v-if="injectedComponent && injectAtStart"
-              no-gutters >
+        no-gutters>
         <component :is="injectedComponent"
-                    :stationConfig="injectedComponentConfig" />
+          :stationConfig="injectedComponentConfig" />
       </v-row>
 
-      <v-row no-gutters >
+      <v-row no-gutters>
 
         <v-col v-for="res in availableResources"
-                :key="res.id"
-                cols="12"
-                :sm="availableResources.length > 1 ? 6 : 12"
-                :order="res.position"
-                class="pa-2" >
+          :key="res.id"
+          cols="12"
+          :sm="availableResources.length > 1 ? 6 : 12"
+          :order="res.position"
+          class="pa-2">
 
-          <ResourceCard v-bind="res"
-                          :key="res.id"
-                          :doiIcon="doiIcon"
-                          :fileSizeIcon="fileSizeIcon"
-                          :dateCreatedIcon="dateCreatedIcon"
-                          :lastModifiedIcon="lastModifiedIcon"
-                          :twoColumnLayout="twoColumnLayout"
-                          :downloadActive="resourcesConfig.downloadActive"
-                          :showGenericOpenButton="!!res.openEvent"
-                          :genericOpenButtonBottom="true"
-                          :openButtonTooltip="res.openButtonTooltip"
-                          :openButtonIcon="res.openButtonIcon"
-                          cardColor="primary"
-                          @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
+          <ResourceCard
+            v-bind="res"
+            :key="res.id"
+            :doiIcon="doiIcon"
+            :fileSizeIcon="fileSizeIcon"
+            :dateCreatedIcon="dateCreatedIcon"
+            :lastModifiedIcon="lastModifiedIcon"
+            :twoColumnLayout="twoColumnLayout"
+            :downloadActive="resourcesConfig.downloadActive"
+            :showGenericOpenButton="!!res.openEvent"
+            :genericOpenButtonBottom="true"
+            :openButtonTooltip="res.openButtonTooltip"
+            :openButtonIcon="res.openButtonIcon"
+            cardColor="primary"
+            @openButtonClicked="catchOpenClick(res.openEvent, res.openProperty)" />
         </v-col>
       </v-row>
 
       <v-row v-if="injectedComponent && !injectAtStart"
-              no-gutters >
+        no-gutters>
         <component :is="injectedComponent"
-                    :config="injectedComponentConfig" />
+          :config="injectedComponentConfig" />
       </v-row>
 
     </v-container>
 
     <v-card-text v-if="!showPlaceholder && (!resources || resources.length <= 0)"
-                  :style="`color: ${emptyTextColor}};`" >
+      :style="`color: ${emptyTextColor}};`">
       {{ emptyText }}
     </v-card-text>
 
@@ -207,10 +207,10 @@ export default {
       const licenseId = this.mixinMethods_getGenericProp('dataLicenseId');
       if (licenseId === WSL_DATA_LICENSE_ID) {
         const wslDataLicense = dataLicenses.filter((l) => l.id === WSL_DATA_LICENSE_ID)[0];
-        
-        return wslDataLicense.link; 
+
+        return wslDataLicense.link;
       }
-      
+
       return this.mixinMethods_getGenericProp('dataLicenseUrl');
     },
     dateCreatedIcon() {
@@ -261,14 +261,13 @@ export default {
 </script>
 
 <style scoped>
+.heightAndScroll {
+  max-height: 750px;
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+}
 
-  .heightAndScroll {
-    max-height: 750px;
-    overflow-y: auto !important;
-    scrollbar-width: thin;
-  }
-
-  .resourcesIcons {
-    opacity: 0.5;
-  }
+.resourcesIcons {
+  opacity: 0.5;
+}
 </style>
